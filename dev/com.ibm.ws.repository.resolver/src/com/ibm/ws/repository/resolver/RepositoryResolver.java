@@ -475,7 +475,7 @@ public class RepositoryResolver {
      */
     void resolveFeaturesAsSet() {
         FeatureResolver resolver = new FeatureResolverImpl();
-        Result result = resolver.resolveFeatures(resolverRepository, kernelFeatures, featureNamesToResolve, Collections.<String> emptySet(), false);
+        Result result = resolver.resolve(resolverRepository, kernelFeatures, featureNamesToResolve, Collections.<String> emptySet(), false, Collections.<String> emptySet());
 
         featureConflicts.putAll(result.getConflicts());
 

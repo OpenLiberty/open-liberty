@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,33 +26,54 @@ import com.ibm.ws.kernel.feature.ProcessType;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 
 /**
- * A resolver for liberty features. The resolver is responsible for determining a set of
- * features that must be installed in order to satisfy the feature requirements of an initial
- * set of root features.
+ * A resolver for liberty features. The resolver has two modes:
+ *
+ * First, the resolver accepts kernel and requested features and resolves
+ * the constituents of these, selecting feature versions which mutually
+ * satisfy the features. All <strong>auto</strong> features which are
+ * satisfied as also selected. This first resolver mode is used when
+ * starting the server, and is used when running minify on the server.
+ *
+ * Secondly, the resolver selects all constituents of requested features.
+ * This second mode is used during installation.
  */
 public interface FeatureResolver {
+    /** Java7 predicate interface. */
+    public static interface Selector<T> {
+        boolean test(T input);
+    }
+
+    //
+
     /**
-     * A repository that contains a set of known liberty features. The
-     * repository is used by the resolver to lookup features based on feature
-     * names.
+     * A collection of features which are available for feature resolution.
      */
-    public interface Repository {
+    public static interface Repository {
         /**
-         * Returns all known liberty features contained in this repository
-         * which are considered to be auto features.
+         * Answer all feature within this repository.
          *
-         * @return a collection of auto features.
+         * @return All features of this repository.
+         */
+        List<ProvisioningFeatureDefinition> getFeatures();
+
+        /**
+         * Answer all auto-features of the repository.
+         *
+         * See {@link ProvisioningFeatureDefinition#isAutoFeature()}.
+         *
+         * @return The auto-features of this repository.
          */
         Collection<ProvisioningFeatureDefinition> getAutoFeatures();
 
         /**
-         * Gets a feature based on the feature name. The feature name may
-         * be the short name (if it is a public feature) or the full
-         * symbolic name. The full symbolic name will include the version
-         * (e.g. com.ibm.ws.something_1.0)
+         * Answer the feature which matches a specified feature name.
          *
-         * @param featureName the feature name
-         * @return the feature with the specified name or {@code null}.
+         * The feature name may be the short name of a public feature,
+         * or a feature symbolic name.
+         *
+         * @param featureName A feature short name or symbolic name.
+         *
+         * @return The named feature. Null if no matching feature is found.
          */
         ProvisioningFeatureDefinition getFeature(String featureName);
 
@@ -73,205 +94,212 @@ public interface FeatureResolver {
 
     /**
      * A feature resolution result.
+     *
+     * The result includes both resolved features, and includes feature resolution
+     * errors.
      */
-    public interface Result {
-        /**
-         * The set of feature names that are required to resolve an initial set of root features.
-         *
-         * @return the feature names that are resolved
-         */
+    public static interface Result {
         Set<String> getResolvedFeatures();
 
-        /**
-         * The required features that could not be found while trying to resolve root features.
-         *
-         * @return the missing features
-         */
+        //
+
+        boolean hasErrors();
+
         Set<String> getMissing();
 
-        /**
-         * The set of root features must be public. This will return any that are not
-         *
-         * @return the non public root features
-         */
         Set<String> getNonPublicRoots();
 
-        /**
-         * The conflicting chains that resulted from a resolution operation. The key
-         * is the base name of the feature that has conflicting versions required.
-         * The value is a collection of dependency {@link Chain}s that transitively
-         * lead to the conflicting versions of the feature.
-         *
-         * @return
-         */
-        Map<String, Collection<Chain>> getConflicts();
-
-        /**
-         * Not really used yet
-         *
-         * @return
-         */
         Map<String, Chain> getWrongProcessTypes();
 
-        /**
-         * A quick check to tell if there are any errors in the result.
-         *
-         * @return
-         * @see #getMissing()
-         * @see #getNonPublicRoots()
-         * @see #getConflicts()
-         * @see #getWrongProcessTypes()
-         */
-        boolean hasErrors();
+        Map<String, Collection<Chain>> getConflicts();
     }
 
-    /**
-     * A dependency chain of feature requirements that lead a singleton feature and a list of candidates
-     */
+    public static final List<String> EMPTY_STRINGS = Collections.emptyList();
+
     public static class Chain {
+        private static Version parseVersion(String preferredVersion) {
+            try {
+                return Version.parseVersion(preferredVersion);
+            } catch (IllegalArgumentException e) {
+                return Version.emptyVersion;
+            }
+        }
+
+        private static List<String> copyChain(Collection<String> chain) {
+            return (chain.isEmpty() ? EMPTY_STRINGS : new ArrayList<String>(chain));
+        }
+
+        public Chain(String featureName, String preferredVersion) {
+            this(EMPTY_STRINGS, Collections.singletonList(featureName), preferredVersion, featureName);
+        }
+
+        public Chain(Chain otherChain) {
+            this._chain = copyChain(otherChain._chain);
+
+            this._featureName = otherChain._featureName;
+            this._preferredVersion = otherChain._preferredVersion;
+
+            this._candidates = new ArrayList<String>(otherChain.getCandidates());
+
+            this.toString = getString();
+        }
+
+        public Chain(Collection<String> chain, List<String> candidates, String preferredVersion, String featureName) {
+            this._chain = copyChain(chain);
+
+            this._featureName = featureName;
+            this._preferredVersion = parseVersion(preferredVersion);
+
+            this._candidates = candidates;
+
+            this.toString = getString();
+        }
+
+        public Chain(String candidate, String preferredVersion, String featureName) {
+            this._chain = EMPTY_STRINGS;
+
+            this._featureName = featureName;
+            this._preferredVersion = parseVersion(preferredVersion);
+
+            this._candidates = Collections.singletonList(candidate);
+
+            this.toString = getString();
+        }
+
+        //
+
         private final List<String> _chain;
-        private final List<String> _candidates;
+
+        private final String _featureName;
         private final Version _preferredVersion;
-        private final String _originalFeatureReq;
+        private final List<String> _candidates;
 
-        /**
-         * Creates a dependency chain.
-         *
-         * @param chain              The chain of feature names that have lead to a requirement on a singleton feature
-         * @param candidates         The tolerated candidates that were found which may satisfy the feature requirement
-         * @param preferredVersion   The preferred version
-         * @param originalFeatureReq The full feature name that is required.
-         */
-        public Chain(Collection<String> chain, List<String> candidates, String preferredVersion, String originalFeatureReq) {
-            _chain = chain.isEmpty() ? Collections.<String> emptyList() : new ArrayList<String>(chain);
-            _candidates = candidates;
-            Version v;
-            try {
-                v = Version.parseVersion(preferredVersion);
-            } catch (IllegalArgumentException e) {
-                v = Version.emptyVersion;
-            }
-            _preferredVersion = v;
-            _originalFeatureReq = originalFeatureReq;
-        }
-
-        public Chain(String candidate, String preferredVersion, String originalFeatureReq) {
-            _chain = Collections.<String> emptyList();
-            _candidates = Collections.singletonList(candidate);
-            Version v;
-            try {
-                v = Version.parseVersion(preferredVersion);
-            } catch (IllegalArgumentException e) {
-                v = Version.emptyVersion;
-            }
-            _preferredVersion = v;
-            _originalFeatureReq = originalFeatureReq;
-        }
-
-        /**
-         * @return the dependency chain
-         */
         public List<String> getChain() {
             return _chain;
         }
 
-        /**
-         * @return the tolerated candidates
-         */
         public List<String> getCandidates() {
             return _candidates;
         }
 
-        /**
-         * @return the preferredVersion
-         */
         public Version getPreferredVersion() {
             return _preferredVersion;
         }
 
-        /**
-         * @return the full feature requirement name
-         */
         public String getFeatureRequirement() {
-            return _originalFeatureReq;
+            return _featureName;
         }
+
+        private String getString() {
+            StringBuilder builder = new StringBuilder();
+
+            builder.append("ROOT->");
+
+            for (String featureName : _chain) {
+                builder.append(featureName);
+                builder.append("->");
+            }
+            builder.append(_candidates);
+            builder.append(" ");
+            builder.append(_preferredVersion);
+
+            return builder.toString();
+        }
+
+        private final String toString;
 
         @Override
         public String toString() {
-            StringBuilder builder = new StringBuilder();
-            // print the chain first
-            // always start with saying ROOT->
-            builder.append("ROOT->");
-            for (String featureName : _chain) {
-                builder.append(featureName).append("->");
-            }
-            // print candidates
-            builder.append(_candidates);
-            // print preferred version
-            builder.append(" ").append(_preferredVersion);
-            return builder.toString();
+            return toString;
         }
     }
 
-    /**
-     * Resolves a collection of root features against a repository.
-     * This is a convenience method that effectively does the following:
-     * <code>
-     * resolveFeatures(repository, Collections.emptySet(), rootFeatures, preResolved, allowMultipleVersions);
-     * </code>
-     *
-     * @param repository            the feature repository to use
-     * @param rootFeatures          the root features to resolve
-     * @param preResolved           the set of already resolved features to base the resolution delta off of
-     * @param allowMultipleVersions a flag that allows multiple versions (this flag will effectively ignore singletons)
-     * @return the resolution result
-     */
-    public Result resolveFeatures(Repository repository, Collection<String> rootFeatures, Set<String> preResolved, boolean allowMultipleVersions);
+    //
 
     /**
-     * Resolves a collection of root features against a repository.
-     * This is a convenience method that effectively does the following:
-     * <code>
-     * resolveFeatures(repository, kernelFeatures, rootFeatures, preResolved, allowMultipleVersions, EnumSet.allOf(ProcessType.class));
-     * </code>
-     *
-     * @param repository            the feature repository to use
-     * @param kernelFeatures        the set of kernel features to use for auto-feature processing
-     * @param rootFeatures          the root features to resolve
-     * @param preResolved           the set of already resolved features to base the resolution delta off of
-     * @param allowMultipleVersions a flag that allows multiple versions (this flag will effectively ignore singletons)
-     * @return the resolution result
+     * Resolve with an empty collection of kernel features.
      */
-    public Result resolveFeatures(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
-                                  boolean allowMultipleVersions);
+    Result resolveFeatures(Repository repository,
+                           Collection<String> rootFeatures,
+                           Set<String> preResolved,
+                           boolean allowMultipleVersions);
 
     /**
-     * Resolves a collection of root features against a repository.
-     *
-     * @param repository            the feature repository to use
-     * @param kernelFeatures        the set of kernel features to use for auto-feature processing
-     * @param rootFeatures          the root features to resolve
-     * @param preResolved           the set of already resolved features to base the resolution delta off of
-     * @param allowMultipleVersions a flag that allows multiple versions (this flag will effectively ignore singletons)
-     * @param supportedProcessTypes the supported process types to allow to be resolved
-     * @return the resolution result
+     * Resolve allowing all process types.
      */
-    public Result resolveFeatures(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
-                                  boolean allowMultipleVersions,
-                                  EnumSet<ProcessType> supportedProcessTypes);
+    Result resolveFeatures(Repository repository,
+                           Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                           Collection<String> rootFeatures,
+                           Set<String> preResolved,
+                           boolean allowMultipleVersions);
 
     /**
-     * Resolves a collection of root features against a repository.
-     *
-     * @param repository              the feature repository to use
-     * @param kernelFeatures          the set of kernel features to use for auto-feature processing
-     * @param rootFeatures            the root features to resolve
-     * @param preResolved             the set of already resolved features to base the resolution delta off of
-     * @param allowedMultipleVersions the set that includes features that effectively ignore singletons (null means none, empty set means all)
-     * @param supportedProcessTypes   the supported process types to allow to be resolved
-     * @return the resolution result
+     * Main resolution API: Resolve features using the supplied parameters.
      */
-    public Result resolveFeatures(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
-                                  Set<String> allowedMultipleVersions,
-                                  EnumSet<ProcessType> supportedProcessTypes);
+    Result resolveFeatures(Repository repository,
+                           Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                           Collection<String> rootFeatures,
+                           Set<String> preResolved,
+                           boolean allowMultipleVersions,
+                           EnumSet<ProcessType> supportedProcessTypes);
+
+    /**
+     * Main resolution API: Resolve features using the supplied parameters.
+     *
+     * Specify features which multiple-versions are allowed using a set.
+     */
+    Result resolveFeatures(Repository repository,
+                           Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                           Collection<String> rootFeatures,
+                           Set<String> preResolved,
+                           Set<String> allowedMultipleVersions,
+                           EnumSet<ProcessType> supportedProcessTypes);
+
+    // Updated, platform aware, feature resolution API.
+
+    Result resolve(Repository repository,
+                   Collection<String> rootFeatures,
+                   Set<String> preResolved,
+                   boolean allowMultipleVersions,
+                   Collection<String> rootPlatforms);
+
+    Result resolve(Repository repository,
+                   Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                   Collection<String> rootFeatures,
+                   Set<String> preResolved,
+                   boolean allowMultipleVersions,
+                   Collection<String> platforms);
+
+    Result resolve(Repository repository,
+                   Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                   Collection<String> rootFeatures,
+                   Set<String> preResolved,
+                   boolean allowMultipleVersions,
+                   EnumSet<ProcessType> supportedProcessTypes,
+                   Collection<String> platforms);
+
+    /**
+     * Fully parameterized feature resolution: Resolves a root features and root
+     * platforms against a repository.
+     *
+     * @param repository              A feature repository.
+     * @param kernelFeatures          Preset kernel features.
+     * @param rootFeatures            Public features which are to be resolved.
+     * @param preResolved             Optional fully resolved features collection.
+     * @param allowedMultipleVersions Control parameter: Should resolution respect singleton
+     *                                    specifications on features.
+     * @param supportedProcessTypes   Control parameter: Limit resolution to features which support
+     *                                    these process types.
+     * @param rootPlatforms           Optional platforms which enable resolution of
+     *                                    versionless features.
+     *
+     * @return The feature resolution result.
+     */
+    public Result resolve(Repository repository,
+                          Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                          Collection<String> rootFeatures,
+                          Set<String> preResolved,
+                          Set<String> allowedMultipleVersions,
+                          EnumSet<ProcessType> supportedProcessTypes,
+                          Collection<String> rootPlatforms);
 }

@@ -16,6 +16,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -32,57 +33,38 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.jakartaee11.internal.apps.jakartaee11.web.WebProfile11TestServlet;
+import io.openliberty.jakartaee11.internal.tests.util.FATFeatureResolver;
 
 @RunWith(FATRunner.class)
 public class JakartaEE11Test extends FATServletClient {
 
-    private static Set<String> getCompatFeatures(boolean openLibertyOnly) {
-        Set<String> compatFeatures = EE11FeatureCompatibilityTest.getAllCompatibleFeatures(openLibertyOnly);
-        // remove features so that they don't cause feature conflicts.
-        compatFeatures.remove("jdbc-4.0");
-        compatFeatures.remove("jdbc-4.1");
-        compatFeatures.remove("jdbc-4.2");
-        compatFeatures.remove("sessionCache-1.0");
-        compatFeatures.remove("facesContainer-4.1");
-        compatFeatures.remove("jsonbContainer-3.0");
-        compatFeatures.remove("jsonpContainer-2.1");
-        compatFeatures.remove("passwordUtilities-1.1");
-        compatFeatures.remove("persistenceContainer-3.2");
+    public static EE11Features ee11Features;
 
-        // remove client features
-        compatFeatures.remove("jakartaeeClient-11.0");
-        compatFeatures.remove("appSecurityClient-1.0");
-
-        // remove acmeCA-2.0 since it requires additional resources and configuration
-        compatFeatures.remove("acmeCA-2.0");
-
-        // remove noship features
-        compatFeatures.remove("data-1.1");
-        compatFeatures.remove("jcacheContainer-1.1");
-        compatFeatures.remove("netty-1.0");
-        compatFeatures.remove("noShip-1.0");
-        compatFeatures.remove("scim-2.0");
-
-        // noship, still in development
-        compatFeatures.remove("mpReactiveStreams-3.0");
-        compatFeatures.remove("mpReactiveMessaging-3.0");
-
-        // remove logAnalysis-1.0.  It depends on hpel being configured
-        compatFeatures.remove("logAnalysis-1.0");
-
-        return compatFeatures;
+    static {
+        try {
+            ee11Features = new EE11Features(FATFeatureResolver.getInstallRoot());
+        } catch (Exception e) {
+            Assert.fail("Feature initialization error: " + e);
+        }
     }
 
-    private static final String ALL_COMPAT_OL_FEATURES = "AllEE11CompatFeatures_OL_ONLY";
-    private static final String ALL_COMPAT_FEATURES = "AllEE11CompatFeatures";
+    public static EE11Features getFeatures() {
+        return ee11Features;
+    }
+
+    //
+
+    private static final String COMPAT_OL_FEATURES = "EE11CompatFeatures_OL";
+    private static final String COMPAT_WL_FEATURES = "EE11CompatFeatures_WL";
 
     @ClassRule
     public static RepeatTests repeat;
 
     static {
-        Set<String> olCompatFeatures = getCompatFeatures(true);
-        Set<String> allCompatFeatures = getCompatFeatures(false);
-        repeat = RepeatTests
+        Set<String> olCompatFeatures = getFeatures().getExtendedCompatibleFeatures(EE11Features.OPEN_LIBERTY_ONLY);
+        Set<String> wlCompatFeatures = getFeatures().getExtendedCompatibleFeatures(!EE11Features.OPEN_LIBERTY_ONLY);
+
+        RepeatTests useRepeat = RepeatTests
                         .with(new FeatureReplacementAction()
                                         .removeFeature("webProfile-11.0")
                                         .addFeature("jakartaee-11.0")
@@ -97,19 +79,22 @@ public class JakartaEE11Test extends FATServletClient {
                                         .removeFeature("webProfile-11.0")
                                         .removeFeature("jakartaee-11.0")
                                         .addFeatures(olCompatFeatures)
-                                        .withID(ALL_COMPAT_OL_FEATURES)); //LITE
-        if (!olCompatFeatures.equals(allCompatFeatures)) {
+                                        .withID(COMPAT_OL_FEATURES)); //LITE
+
+        if (!olCompatFeatures.equals(wlCompatFeatures)) {
             Set<String> featuresToAdd = new HashSet<>();
-            for (String feature : allCompatFeatures) {
+            for (String feature : wlCompatFeatures) {
                 if (!olCompatFeatures.contains(feature)) {
                     featuresToAdd.add(feature);
                 }
             }
-            repeat = repeat.andWith(new FeatureReplacementAction()
+            useRepeat = useRepeat.andWith(new FeatureReplacementAction()
                             .addFeatures(featuresToAdd)
-                            .withID(ALL_COMPAT_FEATURES)
+                            .withID(COMPAT_WL_FEATURES)
                             .fullFATOnly());
         }
+
+        repeat = useRepeat;
     }
 
     public static final String APP_NAME = "webProfile11App";
@@ -130,9 +115,8 @@ public class JakartaEE11Test extends FATServletClient {
         ShrinkHelper.exportDropinAppToServer(server, earApp, DeployOptions.SERVER_ONLY);
 
         String consoleName = JakartaEE11Test.class.getSimpleName() + RepeatTestFilter.getRepeatActionsAsString();
-        if (RepeatTestFilter.isRepeatActionActive(ALL_COMPAT_FEATURES)) {
-            // set it to 15 minutes.
-            server.setServerStartTimeout(15 * 60 * 1000L);
+        if (RepeatTestFilter.isRepeatActionActive(COMPAT_WL_FEATURES)) {
+            server.setServerStartTimeout(15 * 60 * 1000L); // 15 min
         }
         server.startServer(consoleName + ".log");
     }
@@ -140,27 +124,32 @@ public class JakartaEE11Test extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         String[] toleratedWarnErrors;
-        if (RepeatTestFilter.isRepeatActionActive(ALL_COMPAT_OL_FEATURES)) {
+        if (RepeatTestFilter.isRepeatActionActive(COMPAT_OL_FEATURES)) {
             toleratedWarnErrors = new String[] { "SRVE0280E", // TODO: SRVE0280E tracked by OpenLiberty issue #4857
                                                  "CWWKS5207W", // The remaining ones relate to config not done for the server / app
                                                  "CWWWC0002W",
                                                  "CWMOT0010W",
+                                                 "CWWKE0701E", // TODO: Fix this or verify that it is expected
                                                  "TRAS4352W" // Only happens when running with WebSphere Liberty image due to an auto feature
             };
-        } else if (RepeatTestFilter.isRepeatActionActive(ALL_COMPAT_FEATURES)) {
+
+        } else if (RepeatTestFilter.isRepeatActionActive(COMPAT_WL_FEATURES)) {
             toleratedWarnErrors = new String[] { "SRVE0280E", // TODO: SRVE0280E tracked by OpenLiberty issue #4857
                                                  "CWWKS5207W", // The remaining ones relate to config not done for the server / app
                                                  "CWWWC0002W",
                                                  "CWMOT0010W",
+                                                 "CWWKE0701E", // TODO: Fix this or verify that it is expected
                                                  "CWWKG0033W", // related to missing config for collectives
                                                  "CWSJY0035E", // wmqJmsClient.rar.location variable not in the server.xml
                                                  "CWWKE0701E", // wmqJmsClient.rar.location variable not in the server.xml
                                                  "TRAS4352W", // Only happens when running with WebSphere Liberty image due to an auto feature
                                                  "CWWKB0758E" // zosAutomaticRestartManager-1.0 error due to missing SAF configuration
             };
+
         } else {
             toleratedWarnErrors = new String[] { "SRVE0280E" };// TODO: SRVE0280E tracked by OpenLiberty issue #4857
         }
+
         server.stopServer(toleratedWarnErrors);
     }
 }

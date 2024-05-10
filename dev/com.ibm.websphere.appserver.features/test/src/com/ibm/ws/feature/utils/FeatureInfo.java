@@ -17,12 +17,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import com.ibm.ws.feature.tasks.FeatureBnd;
 import com.ibm.ws.feature.tasks.FeatureBuilder;
@@ -38,6 +40,7 @@ public class FeatureInfo {
     private Set<String> autoFeatures = new LinkedHashSet<String>();
     private Map<String, Attrs> dependentFeatures = new LinkedHashMap<String, Attrs>();
     private Set<String> activatingAutoFeature = new LinkedHashSet<String>();
+    private List<String> sortedDependentNames;
 
     private String edition;
     private String kind;
@@ -50,6 +53,7 @@ public class FeatureInfo {
     private boolean isDisableOnConflictEnabled = true;
     private boolean isDisableOnConflictSet = false;
     private boolean isAlsoKnownAsSet = false;
+    private String alsoKnownAs;
     private boolean isSingleton = false;
     private String visibility = "private";
     private String shortName;
@@ -78,6 +82,41 @@ public class FeatureInfo {
             populateInfo();
 
         return this.name;
+    }
+
+    public static String getBaseName(String featureName) {
+        int versionIndex = featureName.lastIndexOf('-');
+        if (versionIndex != -1) {
+            return featureName.substring(0, versionIndex);
+        } else {
+            return featureName;
+        }
+    }
+
+    public static String getVersion(String featureName) {
+        int versionIndex = featureName.lastIndexOf('-');
+        if (versionIndex != -1) {
+            return featureName.substring(versionIndex + 1, featureName.length());
+        } else {
+            return null;
+        }
+    }
+
+    public String getBaseName() {
+        if (!isInit)
+            populateInfo();
+
+        return this.name.split("-")[0];
+    }
+
+    public String getVersion() {
+        if (!isInit)
+            populateInfo();
+
+        if (this.shortName.split("-").length > 1) {
+            return this.shortName.split("-")[1];
+        }
+        return null;
     }
 
     public boolean isAutoFeature() {
@@ -115,6 +154,13 @@ public class FeatureInfo {
         return this.isAlsoKnownAsSet;
     }
 
+    public String getAlsoKnownAs() {
+        if (!isInit)
+            populateInfo();
+
+        return this.alsoKnownAs;
+    }
+
     public boolean isSingleton() {
         if (!isInit)
             populateInfo();
@@ -127,6 +173,16 @@ public class FeatureInfo {
             populateInfo();
 
         return this.visibility;
+    }
+
+    public boolean isPublic() {
+        if (!isInit)
+            populateInfo();
+
+        if(this.visibility.toLowerCase().equals("public")){
+            return true;
+        }
+        return false;
     }
 
     //Activating autofeature just means "I'm an autofeature, and i *might* activate this other feature
@@ -163,6 +219,14 @@ public class FeatureInfo {
             populateInfo();
 
         return this.lockedDependentFeatures;
+    }
+
+    public List<String> getSortedDependentNames() {
+        return sortedDependentNames;
+    }
+
+    public void forEachSortedDepName(Consumer<? super String> consumer) {
+        getSortedDependentNames().forEach(consumer);
     }
 
     public String getEdition() {
@@ -220,6 +284,7 @@ public class FeatureInfo {
             this.isDisableOnConflictSet = disableOnConflict != null;
             this.isDisableOnConflictEnabled = disableOnConflict == null || "true".equals(disableOnConflict);
             this.isAlsoKnownAsSet = builder.getProperty("WLP-AlsoKnownAs") != null;
+            this.alsoKnownAs = builder.getProperty("WLP-AlsoKnownAs");
             String singleton = builder.getProperty("singleton");
             this.isSingleton = singleton != null && "true".equals(singleton.trim());
             String vis = builder.getProperty("visibility");
@@ -242,14 +307,26 @@ public class FeatureInfo {
             }
             this.lockedAutoFeatures = this.autoFeatures.toArray(new String[this.autoFeatures.size()]);
 
-            for (Map.Entry<String, Attrs> feature : builder.getFeatures()) {
-                this.dependentFeatures.put(feature.getKey(), feature.getValue());
-            }
+            Set<Map.Entry<String, Attrs>> useFeatures = builder.getFeatures();
+
+            List<String> useDepNames = new ArrayList<>(useFeatures.size());
+            Map<String, Attrs> useDeps = new LinkedHashMap<>(useFeatures.size());
+
+            useFeatures.forEach((Map.Entry<String, Attrs> entry) -> {
+                String depName = entry.getKey();
+                useDepNames.add(depName);
+                useDeps.put(depName, entry.getValue());
+
+            });
+
+            useDepNames.sort(Comparator.comparing(String::toString));
+
+            this.sortedDependentNames = useDepNames;
+            this.dependentFeatures = useDeps;
 
             this.lockedDependentFeatures = Collections.unmodifiableMap(new LinkedHashMap<String, Attrs>(this.dependentFeatures));
 
             this.autoFeatures = null;
-            this.dependentFeatures = null;
 
             builder.close();
         } catch (IOException e) {

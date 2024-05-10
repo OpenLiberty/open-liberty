@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,62 +16,79 @@ import java.util.EnumSet;
 
 import org.osgi.framework.Version;
 
+/**
+ * Base feature definition.
+ *
+ * This interface defines a lightweight API which is exported across
+ * bundles.
+ *
+ * Provisioning APIs must not be added to this interface. That reduces
+ * the ability to cleanup between provisioning operations.
+ */
 public interface FeatureDefinition {
-
-    // NOTE: This is in an exported package for other bundles to use.
-    // Do not expose bulk or provisioning methods like getHeaders or getHeaderElements:
-    // it reduces our ability to clean up between provisioning operations.
+    /**
+     * Answer the symbolic name of this feature.
+     *
+     * The feature symbolic name is stored as a header attribute.
+     *
+     * @return The symbolic name of this feature.
+     */
+    String getSymbolicName();
 
     /**
-     * Get the Symbolic Name for this feature, as defined by its header.
-     * 
-     * @return
+     * Answer the name of this feature.
+     *
+     * @return The name of this feature.
      */
-    public String getSymbolicName();
+    String getFeatureName();
 
     /**
-     * Get the Feature Name for this feature.
-     * 
-     * @return
+     * Answer the version of this feature.
+     *
+     * The feature version is stored as a header attribute.
+     *
+     * @return The version of this feature.
      */
-    public String getFeatureName();
+    Version getVersion();
 
     /**
-     * Get the Version for this feature, as defined by its header.
-     * 
-     * @return
+     * Answer the visibility of this feature.
+     *
+     * The feature visibility is stored as a header attribute.
+     *
+     * @return The visibility of this feature.
      */
-    public Version getVersion();
+    Visibility getVisibility();
 
     /**
-     * Get the Visibility for this feature, as defined by its header.
-     * 
-     * @return
+     * Answer the types of processes on which this feature may
+     * be provisioned.
+     *
+     * The process types are stored in a header attribute.
+     *
+     * @return The types of processes on which this feature may
+     *         be provisioned.
      */
-    public Visibility getVisibility();
+    EnumSet<ProcessType> getProcessTypes();
 
     /**
-     * Get the process types for this feature, as defined by its header.
-     * 
-     * @return the process type
+     * Answer the setting of whether updates to this feature
+     * require applications to be restarted.
+     *
+     * There are several defined behaviors; see {@link AppForceRestart}
+     * for more details.
+     *
+     * @return The setting of whether updates to this feature
+     *         require applications to be restarted.
      */
-    public EnumSet<ProcessType> getProcessTypes();
+    AppForceRestart getAppForceRestart();
 
     /**
-     * Get the IBM-App-ForceRestart setting for this feature, as defined by its header.
-     * 
-     * @return
+     * Tell if this is a kernel feature.
+     *
+     * @return True or false telling if this is a kernel feature.
      */
-    public AppForceRestart getAppForceRestart();
+    boolean isKernel();
 
-    /**
-     * @return true if this is the kernel feature definition
-     */
-    public boolean isKernel();
-
-    /**
-     * @return
-     */
-    public String getApiServices();
-
+    String getApiServices();
 }
