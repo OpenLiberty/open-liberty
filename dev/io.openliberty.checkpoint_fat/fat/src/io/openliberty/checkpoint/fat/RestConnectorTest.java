@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,6 @@ import javax.json.JsonValue;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,13 +34,12 @@ import com.ibm.websphere.simplicity.config.BasicRegistry;
 import com.ibm.websphere.simplicity.config.BasicRegistry.User;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import componenttest.topology.utils.HttpUtils;
 import componenttest.topology.utils.HttpsRequest;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
@@ -57,11 +55,8 @@ public class RestConnectorTest extends FATServletClient {
     @ClassRule
     public static RepeatTests repeatTest = FATSuite.defaultMPRepeat(SERVER_NAME);
 
-    @BeforeClass
-    public static void copyAppToDropins() throws Exception {
-        HttpUtils.trustAllCertificates();
-        HttpUtils.trustAllHostnames();
-        HttpUtils.setDefaultAuth("adminuser", "adminpwd");
+    private HttpsRequest createHttpsRequestWithAdminUser(LibertyServer server, String path) {
+        return new HttpsRequest(server, path).allowInsecure().basicAuth("adminuser", "adminpwd");
     }
 
     @Before
@@ -79,11 +74,11 @@ public class RestConnectorTest extends FATServletClient {
         assertNotNull(server.waitForStringInLog("CWPKI0803A")); // CWPKI0803A: SSL certificate created in # seconds. SSL key file: ...
         assertNotNull(server.waitForStringInLog("CWWKO0219I:.*defaultHttpEndpoint-ssl")); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
 
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config").run(JsonArray.class);
+        JsonArray json = createHttpsRequestWithAdminUser(server, "/ibm/api/config").run(JsonArray.class);
         int count = json.size();
         assertTrue("Unexpected response: " + json, count > 1);
 
-        JsonArray json2 = new HttpsRequest(server, "/ibm/api/config/").run(JsonArray.class);
+        JsonArray json2 = createHttpsRequestWithAdminUser(server, "/ibm/api/config/").run(JsonArray.class);
         int count2 = json2.size();
         assertEquals(count, count2);
 
@@ -97,7 +92,7 @@ public class RestConnectorTest extends FATServletClient {
         //Add another user
         addUser("user2", "user2pwd");
         server.checkpointRestore();
-        json = new HttpsRequest(server, "/ibm/api/config").run(JsonArray.class);
+        json = createHttpsRequestWithAdminUser(server, "/ibm/api/config").run(JsonArray.class);
 
         allConfig = getAllConfig(json);
         j = allConfig.get("basicRegistry");
@@ -111,10 +106,10 @@ public class RestConnectorTest extends FATServletClient {
         server.checkpointRestore();
         assertNotNull(server.waitForStringInLog("CWWKO0219I:.*defaultHttpEndpoint-ssl")); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
 
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config/dataSource").run(JsonArray.class);
+        JsonArray json = createHttpsRequestWithAdminUser(server, "/ibm/api/config/dataSource").run(JsonArray.class);
         assertEquals("unexpected response: " + json, 1, json.size());
 
-        JsonArray json2 = new HttpsRequest(server, "/ibm/api/config/dataSource/").run(JsonArray.class);
+        JsonArray json2 = createHttpsRequestWithAdminUser(server, "/ibm/api/config/dataSource/").run(JsonArray.class);
         assertEquals(json, json2);
 
         Map<String, JsonObject> allConfig = getAllConfig(json);
@@ -133,7 +128,7 @@ public class RestConnectorTest extends FATServletClient {
         server.updateServerConfiguration(config);
 
         server.checkpointRestore();
-        json = new HttpsRequest(server, "/ibm/api/config/dataSource").run(JsonArray.class);
+        json = createHttpsRequestWithAdminUser(server, "/ibm/api/config/dataSource").run(JsonArray.class);
         allConfig = getAllConfig(json);
         j = allConfig.get("DefaultDataSource").getJsonObject("properties.derby.embedded");
         assertNotNull("Unexpected response: " + json, j);

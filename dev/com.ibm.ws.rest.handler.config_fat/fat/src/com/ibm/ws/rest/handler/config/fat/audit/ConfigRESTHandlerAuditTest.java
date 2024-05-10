@@ -18,11 +18,11 @@ import static org.junit.Assert.assertTrue;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 
-import org.junit.rules.RuleChain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.security.audit.AuditConstants;
@@ -40,7 +40,6 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(FATRunner.class)
 public class ConfigRESTHandlerAuditTest extends FATServletClient {
@@ -60,7 +59,8 @@ public class ConfigRESTHandlerAuditTest extends FATServletClient {
     /**
      * Need the first repeat to make sure that audit-2.0 from a previous repeat gets put back to audit-1.0
      */
-    public static RepeatTests auditRepeat = RepeatTests.with(new FeatureReplacementAction("audit-2.0", "audit-1.0").forServers("com.ibm.ws.rest.handler.config.audit.fat").fullFATOnly())
+    public static RepeatTests auditRepeat = RepeatTests
+                    .with(new FeatureReplacementAction("audit-2.0", "audit-1.0").forServers("com.ibm.ws.rest.handler.config.audit.fat").fullFATOnly())
                     .andWith(new FeatureReplacementAction("audit-1.0", "audit-2.0").forServers("com.ibm.ws.rest.handler.config.audit.fat"));
 
     @ClassRule
@@ -98,7 +98,7 @@ public class ConfigRESTHandlerAuditTest extends FATServletClient {
         // Lacking this fix, transaction manager will experience an auth failure and log FFDC for it.
         // The following line causes an XA-capable data source to be used for the first time outside of a test method execution,
         // so that the FFDC is not considered a test failure.
-        new HttpsRequest(server, "/ibm/api/validation/dataSource/DefaultDataSource").run(JsonObject.class);
+        FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/dataSource/DefaultDataSource").run(JsonObject.class);
     }
 
     @AfterClass
@@ -123,7 +123,7 @@ public class ConfigRESTHandlerAuditTest extends FATServletClient {
         Log.info(c, testName.getMethodName(), "Looking for audit log at " + auditFileLogPath);
         AuditAsserts asserts = new AuditAsserts(c, recent);
 
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config").run(JsonArray.class);
+        JsonArray json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config").run(JsonArray.class);
         String err = "unexpected response: " + json;
         int count = json.size();
         assertTrue(err, count > 10);
