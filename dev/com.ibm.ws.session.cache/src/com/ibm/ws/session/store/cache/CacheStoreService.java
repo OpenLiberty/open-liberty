@@ -89,7 +89,6 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                                                                                           "writeInterval"));
 
     Map<String, Object> configurationProperties;
-    Map<String, Object> oldConfigurationProperties;
     private static final int BASE_PREFIX_LENGTH = CONFIG_KEY_PROPERTIES.length();
     private static final int TOTAL_PREFIX_LENGTH = BASE_PREFIX_LENGTH + 3; //3 is the length of .0.
     
@@ -135,7 +134,6 @@ public class CacheStoreService implements Introspector, SessionStoreService {
      * @param props   service properties
      */
     protected void activate(ComponentContext context, Map<String, Object> props) {
-        oldConfigurationProperties = new HashMap<String, Object>(props);
         processConfiguration(props);       
     }
 
@@ -169,7 +167,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                 String key = entry.getKey();
                 Object newValue = entry.getValue();
                 
-                Object oldValue = oldConfigurationProperties.get(key);
+                Object oldValue = configurationProperties.get(key);
                 if (sessionCacheAttributes.contains(key) && !Objects.deepEquals(newValue, oldValue)) {
                     Tr.warning(tc, "UPDATED_CONFIG_NOT_USED_AT_RESTORE", key);
                 }       

@@ -69,9 +69,9 @@ CONFIG_ATTRIBUTE_IGNORED=SESN0311W: The {0} configuration attribute was specifie
 CONFIG_ATTRIBUTE_IGNORED.explanation=The specified configuration is ignored as it is provided by the specified cacheManagerRef.
 CONFIG_ATTRIBUTE_IGNORED.useraction=No action is required.
 
-UPDATED_CONFIG_NOT_USED_AT_RESTORE=SESN0312W: The HTTP Session Cache configuration attribute {0} has changed when restoring the server process. If the value of the attribute changes when restoring the server process, the application will not use the updated value.
-UPDATED_CONFIG_NOT_USED_AT_RESTORE.explanation=The specified configuration attribute cannot be modified when restoring the server process.
-UPDATED_CONFIG_NOT_USED_AT_RESTORE.useraction=Provide a predetermined value for the configuration attribute before the checkpoint.
+UPDATED_CONFIG_NOT_USED_AT_RESTORE=SESN0312W: The {0} HTTP Session Cache configuration attribute changed since the server was checkpointed. If the value of the attribute is changed after the server checkpoint, but before the server process is restored, the application does not use the updated value.
+UPDATED_CONFIG_NOT_USED_AT_RESTORE.explanation=The specified configuration attribute cannot be modified during the time between the server checkpoint and the server process restore.
+UPDATED_CONFIG_NOT_USED_AT_RESTORE.useraction=Set the value for the attribute before you perform the server checkpoint.
 
 INTERNAL_SERVER_ERROR=Internal Server Error
 

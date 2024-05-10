@@ -67,15 +67,15 @@ public class CheckpointSessionCacheConfigUpdateTest extends FATServletClient {
         httpSessionCache.setScheduleInvalidationSecondHour(Integer.toString(hour2));
         server.updateServerConfiguration(config);
         server.checkpointRestore();
-        assertNotNull("'SESN0312W: The HTTP Session Cache configuration attribute writeContents has changed when restoring the server process' not found in log.",
+        assertNotNull("'SESN0312W: The writeContents HTTP Session Cache configuration attribute changed' not found in log.",
                       server.waitForStringInLog("SESN0312W: .*writeContents*"));
-        assertNotNull("'SESN0312W: The HTTP Session Cache configuration attribute writeFrequency has changed when restoring the server process' not found in log.",
+        assertNotNull("'SESN0312W: The writeFrequency HTTP Session Cache configuration attribute changed' not found in log.",
                       server.waitForStringInLog("SESN0312W: .*writeFrequency*"));
-        assertNotNull("'SESN0312W: The HTTP Session Cache configuration attribute writeInterval has changed when restoring the server process' not found in log.",
+        assertNotNull("'SESN0312W: The writeInterval HTTP Session Cache configuration attribute changed' not found in log' not found in log.",
                       server.waitForStringInLog("SESN0312W: .*writeInterval*"));
-        assertNotNull("'SESN0312W: The HTTP Session Cache configuration attribute scheduleInvalidationFirstHour has changed when restoring the server process' not found in log.",
+        assertNotNull("'SESN0312W: The scheduleInvalidationFirstHour HTTP Session Cache configuration attribute changed' not found in log' not found in log.",
                       server.waitForStringInLog("SESN0312W: .*scheduleInvalidationFirstHour*"));
-        assertNotNull("'SESN0312W:The HTTP Session Cache configuration attribute scheduleInvalidationSecondHour has changed when restoring the server process' not found in log.",
+        assertNotNull("'SESN0312W: The scheduleInvalidationSecondHour HTTP Session Cache configuration attribute changed' not found in log' not found in log.",
                       server.waitForStringInLog("SESN0312W: .*scheduleInvalidationSecondHour*"));
 
     }
