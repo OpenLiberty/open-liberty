@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,8 +41,6 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
@@ -426,7 +424,7 @@ public class AnnotationScanTest {
      * the Application init-param element.
      */
     @Test
-    @SkipForRepeat({JakartaEE9Action.ID, JakartaEE10Action.ID}) // this actually should be fine under the EE8/EE9 spec - but it would ignore any Application subclasses
+    @SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE11_FEATURES}) // this actually should be fine under the EE8/EE9 spec - but it would ignore any Application subclasses
     public void testServletSpecifiedWithoutApplicationInitParam() throws Exception {
         final String targetRegex = "CWWKW0101W.*annotationscan.*App7IBMRestServlet.*com.ibm.websphere.jaxrs.server.IBMRestServlet";
         final String stringSearch = server.waitForStringInLog(targetRegex);

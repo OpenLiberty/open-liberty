@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,8 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
                     .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0").alwaysAddFeature("xmlBinding-3.0").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                    .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").alwaysAddFeature("xmlBinding-4.0"));
+                    .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").alwaysAddFeature("xmlBinding-4.0"))
+                    .andWith(FeatureReplacementAction.EE11_FEATURES().alwaysAddFeature("jsonb-3.0").removeFeature("xmlBinding-4.0"));
 
 }
 

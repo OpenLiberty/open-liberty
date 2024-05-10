@@ -96,7 +96,9 @@ tested.features: \
   xmlWS-4.0,\
   mpmetrics-5.0,\
   microprofile-6.0,\
-  jakartaee-10.0
+  jakartaee-10.0,\
+  appsecurity-6.0,\
+  restfulws-4.0
   
 
 -buildpath: \

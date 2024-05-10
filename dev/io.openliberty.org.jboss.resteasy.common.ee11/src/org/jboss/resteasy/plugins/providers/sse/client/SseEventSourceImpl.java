@@ -86,7 +86,7 @@ public class SseEventSourceImpl implements SseEventSource {
         private ScheduledExecutorService executor;
 
         //tck requires this default behavior
-        private boolean alwaysReconnect = true;
+        private boolean alwaysReconnect = false;
 
         public SourceBuilder() {
             //NOOP
@@ -234,9 +234,7 @@ public class SseEventSourceImpl implements SseEventSource {
         try {
             return sseEventSourceScheduler.awaitTermination(timeout, unit);
         } catch (InterruptedException e) {
-            onErrorConsumers.forEach(consumer -> {
-                consumer.accept(e);
-            });
+            runOnErrorConsumers(e);
             Thread.currentThread().interrupt();
             return false;
         }
@@ -248,6 +246,12 @@ public class SseEventSourceImpl implements SseEventSource {
         }
     }
 
+    private void runOnErrorConsumers(final Throwable t) {
+        // Ensure the onComplete callbacks do not get invoked
+        completeListenersInvoked.set(true);
+        onErrorConsumers.forEach(onError -> onError.accept(t));
+    }
+
     private void internalClose() {
         if (state.getAndSet(State.CLOSED) == State.CLOSED) {
             return;
@@ -257,9 +261,7 @@ public class SseEventSourceImpl implements SseEventSource {
             try {
                 clientResponse.releaseConnection(false);
             } catch (IOException e) {
-                onErrorConsumers.forEach(consumer -> {
-                    consumer.accept(e);
-                });
+                runOnErrorConsumers(e);
             }
         }
         sseEventSourceScheduler.shutdownNow();
@@ -274,9 +276,9 @@ public class SseEventSourceImpl implements SseEventSource {
 
         private long reconnectDelay;
 
-        private String verb;
-        private Entity<?> entity;
-        private MediaType[] mediaTypes;
+        private final String verb;
+        private final Entity<?> entity;
+        private final MediaType[] mediaTypes;
 
         EventHandler(final long reconnectDelay, final String lastEventId, final String verb, final Entity<?> entity,
                 final MediaType... mediaTypes) {
@@ -304,11 +306,11 @@ public class SseEventSourceImpl implements SseEventSource {
             }
 
             SseEventInputImpl eventInput = null;
-            InboundSseEvent event = null; // Liberty change - declaring earlier for invocation in two try blocks
-            final Providers providers = (ClientConfiguration) target.getConfiguration(); //Liberty change
+            InboundSseEvent event = null;
+            final Providers providers = (ClientConfiguration) target.getConfiguration();
             try {
                 final Invocation.Builder requestBuilder = buildRequest(mediaTypes);
-                Invocation request = null;
+                Invocation request;
                 if (entity == null) {
                     request = requestBuilder.build(verb);
                 } else {
@@ -323,18 +325,20 @@ public class SseEventSourceImpl implements SseEventSource {
                         runCompleteConsumers();
                         return;
                     }
-                    // liberty change end
                     eventInput = clientResponse.readEntity(SseEventInputImpl.class);
                     //if 200<= response code <300 and response contentType is null, fail the connection.
                     if (eventInput == null) {
-                        if (!alwaysReconnect) {
-                           runCompleteConsumers(); // Liberty change - just run completion listeners instead of internalClose()
-                        } else {
+                        if (alwaysReconnect) {
                             reconnect(this.reconnectDelay);
+                        } else {
+                            // Run the onComplete callback, then close as something went wrong
+                            runCompleteConsumers();
+                            internalClose();
                         }
                         return;
                     }
-                    event = eventInput.read(providers); // Liberty change
+                    // Success, read the event data
+                    event = eventInput.read(providers);
                 } else {
                     //Let's buffer the entity in case the response contains an entity the user would like to retrieve from the exception.
                     //This will also ensure that the connection is correctly closed.
@@ -344,13 +348,14 @@ public class SseEventSourceImpl implements SseEventSource {
                 }
             } catch (ServiceUnavailableException ex) {
                 if (ex.hasRetryAfter()) {
-                    try { // https://issues.redhat.com/browse/RESTEASY-2952
+                    // Reconnect, but if an error occurs this is unrecoverable, see https://issues.redhat.com/browse/RESTEASY-2952
+                    try {
                         onConnection();
                         Date requestTime = new Date();
                         long localReconnectDelay = ex.getRetryTime(requestTime).getTime() - requestTime.getTime();
                         reconnect(localReconnectDelay);
                     } catch (Throwable t) {
-                        onUnrecoverableError(t); // https://issues.redhat.com/browse/RESTEASY-2952
+                        onUnrecoverableError(t);
                     }
                 } else {
                     onUnrecoverableError(ex);
@@ -362,32 +367,21 @@ public class SseEventSourceImpl implements SseEventSource {
             }
 
             while (!Thread.currentThread().isInterrupted() && state.get() == State.OPEN) {
-                // Liberty start
-                if (event == null && eventInput.isClosed()) {
-                    reconnect(reconnectDelay);
-                    break;
-                }
-                // Liberty end
-                if (eventInput != null && eventInput.isClosed()) {
+                if (event == null || eventInput.isClosed()) {
+                    if (alwaysReconnect) {
+                        reconnect(reconnectDelay);
+                    } else {
+                        // Run the onComplete callback, then close as something went wrong
+                        runCompleteConsumers();
+                        internalClose();
+                    }
                     break;
                 }
                 try {
-                    if (event != null) {
-                        onEvent(event);
-                    }
-                    //event sink closed
-                    else if (!alwaysReconnect || eventInput == null || eventInput.isClosed()) // liberty change - check for eventInput == null
-                    {
-                        runCompleteConsumers(); // Liberty change - just run completion listeners instead of internalClose()
-                        break;
-                    }
-                    // Liberty change start - effectively making this a do/while instead of while loop
+                    // Process the event
+                    onEvent(event);
+                    // Read next event
                     event = eventInput.read(providers);
-                    if (event == null) {
-                        runCompleteConsumers();
-                        break;
-                    }
-                    // Liberty change end
                 } catch (IOException e) {
                     reconnect(reconnectDelay);
                     break;
@@ -410,9 +404,7 @@ public class SseEventSourceImpl implements SseEventSource {
 
         private void onUnrecoverableError(Throwable throwable) {
             connectedLatch.countDown();
-            onErrorConsumers.forEach(consumer -> {
-                consumer.accept(throwable);
-            });
+            runOnErrorConsumers(throwable);
             internalClose();
         }
 
