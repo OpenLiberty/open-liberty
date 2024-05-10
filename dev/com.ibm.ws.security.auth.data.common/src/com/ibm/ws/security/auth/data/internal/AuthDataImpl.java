@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,6 +24,8 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.auth.data.AuthData;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
+
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * The auth data from server.xml.
@@ -46,7 +48,11 @@ public class AuthDataImpl implements AuthData {
         username = (String) props.get(CFG_KEY_USER);
         SerializableProtectedString sps = (SerializableProtectedString) props.get(CFG_KEY_PASSWORD);
         String configuredPassword = sps == null ? "" : new String(sps.getChars());
-        password = PasswordUtil.passwordDecode(configuredPassword);
+
+        // Cipher algorithims may be unavailable at server checkpoint
+        CheckpointPhase.onRestore(() -> {
+            password = PasswordUtil.passwordDecode(configuredPassword);
+        });
 
         principal = (String) props.get("krb5Principal");
         String sCcache = (String) props.get("krb5TicketCache");

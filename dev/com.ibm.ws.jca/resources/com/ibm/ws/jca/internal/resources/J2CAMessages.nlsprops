@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,9 +49,25 @@ J2CA8510.create.timed.out=J2CA8510E: A timer could not be created for resource a
 J2CA8510.create.timed.out.explanation=It is taking longer than expected to create the timer.
 J2CA8510.create.timed.out.useraction=Verify if there is a high load on the system and consider decreasing it.
 
+J2CA8511.create.timer.failed.checkpoint=J2CA8511E: The server checkpoint request failed because the {0} resource adapter created a timer.
+J2CA8511.create.timer.failed.checkpoint.explanation=Liberty does not support resource adapters that create a timer while applications start when a server checkpoint is requested.
+J2CA8511.create.timer.failed.checkpoint.useraction=Configure the checkpoint to occur before the application starts by using the at=beforeAppStart server checkpoint option.
+
+J2CA8512.create.timer.not.supported.checkpoint=J2CA8512E: A timer could not be created for the {0} resource adapter during the server checkpoint request.
+J2CA8512.create.timer.not.supported.checkpoint.explanation=Liberty does not support the creation of timers by resource adapters while applications start when a server checkpoint is requested.
+J2CA8512.create.timer.not.supported.checkpoint.useraction=Configure the checkpoint to occur before the application starts by using the at=beforeAppStart server checkpoint option.
+
 J2CA8600.work.start.timeout=J2CA8600E: The work {0} submitted by resource adapter {1} did not start within {2} milliseconds.
 J2CA8600.work.start.timeout.explanation=The attempt to start the work has timed out.
 J2CA8600.work.start.timeout.useraction=Verify if there is a high load on the system and consider decreasing it, or contact the resource adapter vendor to consider if they should increase the work timeout that they use when submitting work to the JCA work manager.
+
+J2CA8601.work.submit.failed.checkpoint=J2CA8601E: The server checkpoint request failed because the {0} resource adapter submitted work {1}.
+J2CA8601.work.submit.failed.checkpoint.explanation=Liberty does not support resource adapters that submit work while applications start when a server checkpoint is requested.
+J2CA8601.work.submit.failed.checkpoint.useraction=Configure the checkpoint to occur before the application starts by using the at=beforeAppStart server checkpoint option.
+
+J2CA8602.work.submit.not.supported.checkpoint=J2CA8602E: The {0} work that was submitted by the {1} resource adapter was rejected during the server checkpoint request.
+J2CA8602.work.submit.not.supported.checkpoint.explanation=Liberty does not support the submission of work by resource adapters while applications start when a server checkpoint is requested.
+J2CA8602.work.submit.not.supported.checkpoint.useraction=Configure the checkpoint to occur before the application starts by using the at=beforeAppStart server checkpoint option.
 
 # 8622 deleted
 
@@ -168,6 +184,3 @@ BEAN_VALIDATION_FAILED_J2CA0238.useraction=Consult the documentation of the Reso
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241=J2CA0241W: Resource Adapter Bean Archives are not supported.
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.explanation=The beans.xml file in the META-INF directory will be ignored, as CDI Managed Bean Archive Resource Adapters are not supported.
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.useraction=Remove the beans.xml file from the META-INF directory, as CDI Managed Bean Archive Resource Adapters are not supported.
-
-
-

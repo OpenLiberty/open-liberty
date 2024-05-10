@@ -1,0 +1,10 @@
+# Enable unsupported RA behaviors in checkpoint test artifacts
+#-Dunsupported.action=derbyra.start.create timer
+#-Dunsupported.action=servlet.init.create timer
+#-Dunsupported.action=servlet.init.create timer.async
+#-Dunsupported.action=servlet.init.submit.work
+#-Dunsupported.action=servlet.init.submit.work.async
+
+# Enable features jca-1.7, connectors-2.0, connectors-2.1 for InstantOn
+# TODO Remove at GA
+-Dcom.ibm.ws.beta.edition=true
