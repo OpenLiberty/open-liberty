@@ -15,6 +15,8 @@ import java.util.Optional;
 import com.ibm.websphere.monitor.jmx.Meter;
 import com.ibm.websphere.monitor.meters.StatisticsMeter;
 
+import io.openliberty.http.monitor.mbean.HttpStatsMXBean;
+
 /**
  *
  */

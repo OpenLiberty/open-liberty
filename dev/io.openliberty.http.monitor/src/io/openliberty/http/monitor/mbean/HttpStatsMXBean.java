@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.http.monitor;
+package io.openliberty.http.monitor.mbean;
 
 /**
  *
