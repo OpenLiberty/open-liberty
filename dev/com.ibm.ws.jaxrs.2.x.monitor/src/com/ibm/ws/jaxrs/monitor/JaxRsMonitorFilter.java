@@ -53,6 +53,8 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
     private static final TraceComponent tc = Tr.register(JaxRsMonitorFilter.class);
+    
+    private static final String REST_HTP_ROUTE_ATTR = "RESTFUL.HTTP.ROUTE";
 
     @Context
     ResourceInfo resourceInfo;
@@ -204,7 +206,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
             if (route != null && !route.isEmpty()) {
                 // System.out.println("RestfulWsMonitorFilter: servlet request httproute: " +
                 // route);
-                servletRequest.setAttribute("RESTFUL.HTTP.ROUTE", route);
+                servletRequest.setAttribute(REST_HTP_ROUTE_ATTR, route);
             }
         }
 

@@ -34,6 +34,8 @@ public class ServletFilter implements Filter {
 	
 	private static final TraceComponent tc = Tr.register(ServletFilter.class);
 	
+	private static final String REST_HTP_ROUTE_ATTR = "RESTFUL.HTTP.ROUTE";
+	
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
@@ -60,7 +62,7 @@ public class ServletFilter implements Filter {
 			resolveResponseAttributes(servletResponse, httpStatsAttributesHolder);
 
 			// attempt to retrieve the `httpRoute` from the RESTful filter
-			httpRoute = (String) servletRequest.getAttribute("RESTFUL.HTTP.ROUTE");
+			httpRoute = (String) servletRequest.getAttribute(REST_HTP_ROUTE_ATTR);
 			
 			/*
 			 * If it does not exist.
