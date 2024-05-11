@@ -83,8 +83,6 @@ public class ServletFilter implements Filter {
 						
 						//Can be null for direct match with servlet URL pattern with no wildcard
 						String pathInfo = webAppDispatcherContext40.getPathInfo();
-						//System.out.println("path Info: " + pathInfo); // Deal with null....
-						
 
 						HttpServletMapping httpServletMapping = webAppDispatcherContext40.getServletMapping();
 						if (httpServletMapping != null && pathInfo != null) {
@@ -142,9 +140,10 @@ public class ServletFilter implements Filter {
 							else if (pattern != null && pattern.endsWith("/*") && !matchValue.isEmpty()) {
 								httpRoute = contextPath + pattern;
 							} else {
-								// unknown scenario
+								if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+									Tr.debug(tc, String.format("Can not resolve HTTP route. Pattern:[%s] matchValue:[%s] pathInfo:[%s] ", pattern,matchValue,pathInfo));
+								}
 							}
-							//System.out.println("Servlet Mapping pattern: " + pattern);
 						} else if (pathInfo != null){
 
 							/*
@@ -163,9 +162,10 @@ public class ServletFilter implements Filter {
 							else if (pathInfo.equals("/")) {
 								httpRoute = contextPath + "/";
 								httpStatsAttributesHolder.setHttpRoute(httpRoute);
-								//System.out.println(" DEFAULT PAGE : ");
 							} else {
-								// something really weird has happened?!
+								if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+									Tr.debug(tc, String.format("Can not resolve HTTP route.  matchValue:[%s] Pattern:[%s] pathInfo:[%s] ", matchValue,pattern,pathInfo));
+								}
 							}
 						} else if (httpServletMapping != null && pathInfo == null){ // A SERVLET!!
 							String pattern = httpServletMapping.getPattern();
@@ -173,7 +173,9 @@ public class ServletFilter implements Filter {
 							if (pattern != null && !pattern.equals("/") && !matchValue.isEmpty()) {
 								httpRoute = contextPath + pattern;
 							} else {
-								//completely non-existent
+								if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+									Tr.debug(tc, String.format("Can not resolve HTTP route.  matchValue:[%s] pathInfo:[%s] Pattern:[%s]", matchValue,pathInfo, pattern));
+								}
 								httpRoute = null;
 							}
 						}
