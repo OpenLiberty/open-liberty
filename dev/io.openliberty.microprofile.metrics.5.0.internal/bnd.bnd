@@ -25,6 +25,8 @@ IBM-Authorization-Roles: com.ibm.ws.management
 IBM-Web-Extension-Processing-Disabled: true
 
 Import-Package: \
+	!io.openliberty.http.monitor,\
+	!io.openliberty.http.monitor.metrics,\
 	jakarta.enterprise.inject; version="[4.0,5)",\
 	jakarta.enterprise.util; version="[4.0,5)",\
 	jakarta.annotation; version="[2.1,3)",\
@@ -32,6 +34,10 @@ Import-Package: \
 	jakarta.enterprise.context.spi; version="[4.0,5)",\
 	org.eclipse.microprofile.config; version="[3.0,4)",\
 	*
+
+DynamicImport-Package: \
+    io.openliberty.http.monitor,\
+    io.openliberty.http.monitor.metrics
 
 Private-Package: \
 	com.ibm.ws.microprofile.metrics.resources,\

@@ -28,14 +28,13 @@ import io.openliberty.microprofile.metrics50.SharedMetricRegistries;
 /**
  *
  */
-@Component(service = { HTTPMetricAdapter.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
+@Component(service = { HTTPMetricAdapter.class }, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class MPMetricsHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
 
     static SharedMetricRegistries sharedMetricRegistries;
 
     @Activate
     public void activate() {
-
     }
 
     @Reference

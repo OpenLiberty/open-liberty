@@ -164,7 +164,7 @@ public class ServletFilter implements Filter {
 								httpStatsAttributesHolder.setHttpRoute(httpRoute);
 							} else {
 								if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-									Tr.debug(tc, String.format("Can not resolve HTTP route.  matchValue:[%s] Pattern:[%s] pathInfo:[%s] ", matchValue,pattern,pathInfo));
+									Tr.debug(tc, String.format("Can not resolve HTTP route.  pathInfo:[%s] ",pathInfo));
 								}
 							}
 						} else if (httpServletMapping != null && pathInfo == null){ // A SERVLET!!
