@@ -271,6 +271,7 @@ public class EE11Features {
         features.remove("acmeCA-2.0");
 
         // remove noship features
+        features.remove("data-1.1");
         features.remove("jcacheContainer-1.1");
         features.remove("netty-1.0");
         features.remove("noShip-1.0");

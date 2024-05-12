@@ -36,8 +36,6 @@ def getBetaVersion() {
     return year + "." + major + "." + minor + "." + new_month
 }
 
-def isAutomatedBuild = true
-
 def libertyBeta = rootProject.userProps.getProperty("betaVersionOverride") == null ? (getBetaVersion() + "-beta") : (rootProject.userProps.getProperty("betaVersionOverride") + "-beta")
 def betaVersion = libertyBeta + "-" + rootProject.userProps.getProperty("version.qualifier")
 

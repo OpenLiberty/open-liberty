@@ -186,16 +186,11 @@ public class EE11FeatureCompatibilityTest extends FATServletClient {
     }
 
     @Test
-    @Mode(TestMode.FULL)
+    //@Mode(TestMode.FULL)
     public void testJakarta11ConvenienceFeature() throws Exception {
         String method = "testJakarta11ConvenienceFeature";
 
         Set<String> features = new HashSet<>(getVersionedFeatures());
-
-        // opentracing-1.3 and jakartaee-11.0 take over an hour to run on power linux system.
-        // For now excluding opentracing-1.3 in order to not go past the 3 hour limit for a
-        // Full FAT to run.
-        features.remove("opentracing-1.3");
 
         Map<String, String> specialConflicts = new HashMap<>();
         // faces and facesContainer conflict with each other
@@ -212,6 +207,8 @@ public class EE11FeatureCompatibilityTest extends FATServletClient {
         // For now excluding opentracing-1.3 in order to not go past the 3 hour limit for a
         // Full FAT to run.
         features.remove("opentracing-1.3");
+        //webprofile-11.0 (brought in by jakartaee-11) only brings in data-1.0
+        features.remove("data-1.1");
 
         // Add EE11 features that are not part of EE9
         // They will conflict by their long name
