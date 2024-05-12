@@ -186,7 +186,7 @@ public class EE11FeatureCompatibilityTest extends FATServletClient {
     }
 
     @Test
-    //@Mode(TestMode.FULL)
+    @Mode(TestMode.FULL)
     public void testJakarta11ConvenienceFeature() throws Exception {
         String method = "testJakarta11ConvenienceFeature";
 
