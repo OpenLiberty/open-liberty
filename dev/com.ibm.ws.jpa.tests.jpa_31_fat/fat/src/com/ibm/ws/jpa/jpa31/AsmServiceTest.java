@@ -67,6 +67,10 @@ public class AsmServiceTest extends JPAFATServletClient {
     private final static Set<String> populateSet = new HashSet<String>();
     private static long timestart = 0;
 
+    private final static String[] IGNORED_WARNINGS = new String[] {
+                                                                    "CWWJP9991W", // From Eclipselink drop-and-create tables option
+    };
+
     public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
 
     static {
@@ -201,7 +205,7 @@ public class AsmServiceTest extends JPAFATServletClient {
             setupDatabaseApp(server);
             setupTestApplication(server);
             runTest(server);
-            server.stopServer();
+            server.stopServer(IGNORED_WARNINGS);
             if (server.defaultTraceFileExists()) {
                 List<String> asmImplMsgList = server.findStringsInTrace("[eclipselink] " + expectedAsmImpl + " ASM implementation is used.");
                 Assert.assertFalse(asmImplMsgList.isEmpty());
