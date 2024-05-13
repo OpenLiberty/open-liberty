@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,13 +15,13 @@ package com.ibm.ws.beanvalidation.fat.cdi;
 import java.util.Collections;
 import java.util.Set;
 
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.ws.beanvalidation.fat.basic.BasicValidation_Common;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.beanvalidation.fat.basic.BasicValidation_Common;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
@@ -87,7 +87,7 @@ public class BeanValidation20CDITest extends BeanValidationCDI_Common {
      * to implement the interface.
      */
     @Test
-    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
+    @SkipForRepeat({ SkipForRepeat.EE9_OR_LATER_FEATURES })
     public void testDynamicStartStopOfCDI() throws Exception {
         ServerConfiguration config = getServer().getServerConfiguration();
 
