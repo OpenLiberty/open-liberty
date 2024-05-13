@@ -125,6 +125,8 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     private volatile String tcCachingProvider; // requires lazy activation
 
     volatile UserTransaction userTransaction;
+    
+    private Condition runningCondition;
 
     /**
      * Declarative Services method to activate this component.
@@ -162,7 +164,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     }
 
     protected void modified(Map<String, Object> config) {
-        if (checkpointPhase != CheckpointPhase.INACTIVE && checkpointPhase.restored()) {
+        if (checkpointPhase != CheckpointPhase.INACTIVE && runningCondition == null) {
             for (Map.Entry<String, Object> entry: config.entrySet()) {
                 String key = entry.getKey();
                 Object newValue = entry.getValue();
@@ -590,6 +592,10 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     protected void setConfigCondition(Condition configCondition) {
         // do nothing; this is just a reference that we use to force the component to recycle
     }
+    
+    protected void setRunningCondition(Condition runningCondition) {
+        this.runningCondition = runningCondition;
+    }
 
     protected void setSerializationService(SerializationService serializationService) {
         this.serializationService = serializationService;
@@ -610,6 +616,10 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                     configureMonitoring(cacheName);
                 return null;
             });
+    }
+    
+    protected void unsetRunningCondition(Condition runningCondition) {
+        this.runningCondition = null;
     }
 
     protected void unsetSerializationService(SerializationService serializationService) {

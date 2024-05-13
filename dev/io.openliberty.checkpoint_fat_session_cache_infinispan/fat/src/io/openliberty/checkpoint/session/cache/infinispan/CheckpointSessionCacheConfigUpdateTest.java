@@ -13,6 +13,7 @@
 package io.openliberty.checkpoint.session.cache.infinispan;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.time.ZonedDateTime;
 
@@ -28,6 +29,7 @@ import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServer.CheckpointInfo;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
@@ -43,7 +45,11 @@ public class CheckpointSessionCacheConfigUpdateTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
+        SessionCacheApp app = new SessionCacheApp(server, true, "session.cache.infinispan.web", "session.cache.infinispan.web.listener1", "session.cache.infinispan.web.listener2");
+        CheckpointInfo checkpointInfo = new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, null);
+        // Expecting the application to restart when config is changed while the server is running.
+        checkpointInfo.setAssertNoAppRestartOnRestore(false);
+        server.setCheckpoint(checkpointInfo);
         server.startServer();
     }
 
@@ -77,6 +83,19 @@ public class CheckpointSessionCacheConfigUpdateTest extends FATServletClient {
                       server.waitForStringInLog("SESN0312W: .*scheduleInvalidationFirstHour*"));
         assertNotNull("'SESN0312W: The scheduleInvalidationSecondHour HTTP Session Cache configuration attribute changed' not found in log' not found in log.",
                       server.waitForStringInLog("SESN0312W: .*scheduleInvalidationSecondHour*"));
+
+        server.setMarkToEndOfLog();
+        // When the config changes while the server is running, the application should restart and we should not see the warning.
+        httpSessionCache.setWriteContents("ONLY_SET_ATTRIBUTES");
+        httpSessionCache.setWriteFrequency("MANUAL_UPDATE");
+        server.updateServerConfiguration(config);
+
+        assertNotNull("'CWWKZ0018I: Starting application sessionCacheApp' not found in log.",
+                      server.waitForStringInLogUsingMark("CWWKZ0018I: .*Starting application sessionCacheApp*"));
+        assertNull("'SESN0312W: The writeContents HTTP Session Cache configuration attribute changed' should not be found in log.",
+                   server.waitForStringInLogUsingMark("SESN0312W: .*writeContents*"));
+        assertNull("'SESN0312W: The writeFrequency HTTP Session Cache configuration attribute changed' should not be found in log.",
+                   server.waitForStringInLogUsingMark("SESN0312W: .*writeFrequency*"));
 
     }
 }
