@@ -45,7 +45,7 @@ Import-Package: \
 Export-Package: \
   io.openliberty.http.monitor;thread-context=true,\
   io.openliberty.http.monitor.metrics,\
-  io.openliberty.http.monitor.mbean; type="ibm-api"
+  io.openliberty.http.monitor.mbean
 
 Liberty-Monitoring-Components: \
 			io.openliberty.http.monitor.HttpStatsMonitor
