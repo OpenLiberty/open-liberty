@@ -21,14 +21,19 @@ import static org.junit.Assert.fail;
 import static test.jakarta.data.jpa.web.Assertions.assertArrayEquals;
 import static test.jakarta.data.jpa.web.Assertions.assertIterableEquals;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.OffsetDateTime;
 import java.time.Period;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -115,6 +120,9 @@ public class DataJPATestServlet extends FATServlet {
 
     @Inject
     Customers customers;
+
+    @Inject
+    Demographics demographics;
 
     @Inject
     Drivers drivers;
@@ -218,6 +226,30 @@ public class DataJPATestServlet extends FATServlet {
         creditCards.save(card1a, card1m, card1v);
         creditCards.save(c2, c3, c4);
         customers.save(c5, c6, c7);
+
+        demographics.write(new DemographicInfo(2024, 4, 30, 133809000, 7136033799632.56, 27480960216618.32));
+        demographics.write(new DemographicInfo(2023, 4, 28, 134060000, 6852746625848.93, 24605068022566.94));
+        demographics.write(new DemographicInfo(2022, 4, 29, 132250000, 6526909395140.41, 23847245116757.60));
+        demographics.write(new DemographicInfo(2021, 4, 30, 127160000, 6118659345749.70, 22056055138417.67));
+        demographics.write(new DemographicInfo(2020, 4, 30, 123190000, 5920553066244.38, 19053618801919.97));
+        demographics.write(new DemographicInfo(2019, 4, 30, 130600000, 5843472921623.80, 16192789476576.03));
+        demographics.write(new DemographicInfo(2018, 4, 30, 128570000, 5733071837291.80, 15335128360141.59));
+        demographics.write(new DemographicInfo(2017, 4, 28, 125970000, 5552784531172.11, 14293344777463.61));
+        demographics.write(new DemographicInfo(2016, 4, 29, 123760000, 5346192750684.33, 13841194733299.04));
+        demographics.write(new DemographicInfo(2015, 4, 30, 121490000, 5098878878836.55, 13053681247951.16));
+        demographics.write(new DemographicInfo(2014, 4, 30, 118720000, 5004968792143.34, 12503468335518.28));
+        demographics.write(new DemographicInfo(2013, 4, 30, 116310000, 4885697098978.25, 11943148398205.65));
+        demographics.write(new DemographicInfo(2012, 4, 30, 114810000, 4776297169202.55, 10916070898102.68));
+        demographics.write(new DemographicInfo(2011, 4, 29, 112560000, 4632679886492.71, 9654950165830.41));
+        demographics.write(new DemographicInfo(2010, 4, 30, 111710000, 4514304290243.70, 8434434625613.16));
+        demographics.write(new DemographicInfo(2009, 4, 30, 112630000, 4307767198983.08, 6930824942975.56));
+        demographics.write(new DemographicInfo(2008, 4, 30, 120030000, 4133362638109.27, 5244194578964.17));
+        demographics.write(new DemographicInfo(2007, 4, 30, 121090000, 3833110332444.19, 5007058051986.64));
+        demographics.write(new DemographicInfo(2006, 4, 30, 119690000, 3535769322660.75, 4819948752057.74));
+        demographics.write(new DemographicInfo(2005, 4, 29, 117020000, 3213472491939.22, 4551064845424.92));
+        demographics.write(new DemographicInfo(2004, 4, 30, 114520000, 2974811477645.08, 4158978012936.35));
+        demographics.write(new DemographicInfo(2003, 4, 30, 113320000, 2757535748111.21, 3702844997678.07));
+        demographics.write(new DemographicInfo(2002, 4, 30, 112700000, 2582340471146.16, 3402336886067.70));
     }
 
     /**
@@ -240,6 +272,52 @@ public class DataJPATestServlet extends FATServlet {
         assertNotNull(found);
         assertEquals("Found " + found.toString(), 1, found.size());
         assertEquals("IBM", found.get(0).name);
+    }
+
+    /**
+     * Use a repository method comparing a BigDecimal value on an entity that includes BigDecimal attributes.
+     * This includes both a comparison in the query conditions as well as ordering on the BigDecimal attribute.
+     */
+    @Test
+    public void testBigDecimal() {
+        final ZoneId EASTERN = ZoneId.of("America/New_York");
+
+        List<DemographicInfo> list = demographics.findByPublicDebtBetween(BigDecimal.valueOf(5000000000000.00), // 5 trillion
+                                                                          BigDecimal.valueOf(10000000000000.00)); // 10 trillion
+        assertEquals(list.toString(), 5, list.size());
+        assertEquals(2007, list.get(0).collectedOn.atZone(EASTERN).get(ChronoField.YEAR));
+        assertEquals(2008, list.get(1).collectedOn.atZone(EASTERN).get(ChronoField.YEAR));
+        assertEquals(2009, list.get(2).collectedOn.atZone(EASTERN).get(ChronoField.YEAR));
+        assertEquals(2010, list.get(3).collectedOn.atZone(EASTERN).get(ChronoField.YEAR));
+        assertEquals(2011, list.get(4).collectedOn.atZone(EASTERN).get(ChronoField.YEAR));
+
+        // Use the BigDecimal and BigInteger values in a computation.
+        List<BigDecimal> debtPerFullTimeWorker = demographics.debtPerFullTimeWorker()
+                        .map(DebtPerWorker::get)
+                        .sorted()
+                        .toList();
+
+        assertEquals(debtPerFullTimeWorker.toString(), 23, debtPerFullTimeWorker.size());
+        assertEquals(53102.72, debtPerFullTimeWorker.get(0).doubleValue(), 0.02); // 2002
+        assertEquals(258704.53, debtPerFullTimeWorker.get(22).doubleValue(), 0.02); // 2024
+    }
+
+    /**
+     * Use a repository method comparing a BigInteger value on an entity that includes BigInteger attributes.
+     * This includes both a comparison in the query conditions as well as ordering on the BigInteger attribute.
+     */
+    @Test
+    public void testBigInteger() {
+        ZoneId ET = ZoneId.of("America/New_York");
+
+        List<Instant> list = demographics.whenFullTimeEmploymentWithin(BigInteger.valueOf(120000000),
+                                                                       BigInteger.valueOf(126000000));
+        assertEquals(2008, list.get(0).atZone(ET).get(ChronoField.YEAR));
+        assertEquals(2007, list.get(1).atZone(ET).get(ChronoField.YEAR));
+        assertEquals(2015, list.get(2).atZone(ET).get(ChronoField.YEAR));
+        assertEquals(2020, list.get(3).atZone(ET).get(ChronoField.YEAR));
+        assertEquals(2016, list.get(4).atZone(ET).get(ChronoField.YEAR));
+        assertEquals(2017, list.get(5).atZone(ET).get(ChronoField.YEAR));
     }
 
     /**
