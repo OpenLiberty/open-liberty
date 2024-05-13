@@ -117,7 +117,7 @@ public class DataTest extends FATServletClient {
      * This test has conditional logic based on the JDBC driver/database.
      */
     @Test
-    @SkipIfSysProp(DB_DB2) //Failing on Db2 due to eclipselink issue.
+    @SkipIfSysProp(DB_DB2) //Failing on Db2 due to eclipselink issue.  OL Issue #28289
     public void testFindAndDeleteReturnsObjects() throws Exception {
         runTest(server, "DataTestApp", "testFindAndDeleteReturnsObjects&jdbcJarName=" + jdbcJarName);
     }

@@ -907,7 +907,7 @@ JSON-P Default Provider [jakarta.json] https://github.com/eclipse-ee4j/jsonp
 JSON-P Default Provider [jakarta.json] https://repo.maven.apache.org/maven2/org/glassfish/jakarta.json/2.0.0
 Jakarta Annotations API [jakarta.annotation-api] https://projects.eclipse.org/projects/ee4j.ca
 Jakarta Authentication [jakarta.authentication-api] https://github.com/eclipse-ee4j/authentication
-Jakarta Authentication [jakarta.authentication-api] https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0
+Jakarta Authentication [jakarta.authentication-api] https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/3.1.0.M1
 Jakarta Authorization [jakarta.authorization-api] https://github.com/
 Jakarta Authorization [jakarta.authorization-api] https://repo.maven.apache.org/maven2/jakarta/authorization/jakarta.authorization-api/2.1.0
 Jakarta Concurrency [jakarta.enterprise.concurrent-api] https://github.com/jakartaee/concurrency
@@ -927,7 +927,7 @@ Jakarta Mail API jar [jakarta.mail-api] https://repo.maven.apache.org/maven2/jak
 Jakarta Messaging API [jakarta.jms-api] https://projects.eclipse.org/projects/ee4j.jms
 Jakarta RESTful WS API [jakarta.ws.rs-api] https://github.com/eclipse-ee4j/
 Jakarta Security [jakarta.security.enterprise-api] https://repo.maven.apache.org/maven2/jakarta/security/enterprise/jakarta.security.enterprise-api/2.0.0
-Jakarta Security [jakarta.security.enterprise-api] https://repo.maven.apache.org/maven2/jakarta/security/enterprise/jakarta.security.enterprise-api/3.0.0
+Jakarta Security [jakarta.security.enterprise-api] https://repo.maven.apache.org/maven2/jakarta/security/enterprise/jakarta.security.enterprise-api/4.0.0.M1
 Jakarta Server Pages API [jakarta.servlet.jsp-api] https://projects.eclipse.org/projects/ee4j.jsp
 Jakarta Servlet [jakarta.servlet-api] https://projects.eclipse.org/projects/ee4j.servlet
 Jakarta Standard Tag Library API [jakarta.servlet.jsp.jstl-api] https://projects.eclipse.org/projects/ee4j.jstl

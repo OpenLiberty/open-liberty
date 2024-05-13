@@ -27,6 +27,7 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
@@ -92,6 +93,31 @@ public class JSPJava17Test {
     }
 
     /**
+     * 
+     *  Try to compile a JSP with Java 21 features.  Compilation error is expected.
+     *  This is to ensure that Java 17 is used, nothing higher.  
+     *
+     * @throws Exception
+     */
+    @Test
+    @AllowedFFDC("java.security.PrivilegedActionException") // Occurs in EE10 and lower
+    public void testJava21AgainstJava17SourceJSP() throws Exception {
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
+
+        String url = JSPUtils.createHttpUrlString(server, APP_NAME, "testJava21.jsp");
+        LOG.info("url: " + url);
+
+        WebRequest request = new GetMethodWebRequest(url);
+        WebResponse response = wc.getResponse(request);
+        LOG.info("Servlet response : " + response.getText());
+
+        assertEquals("Expected " + 500 + " status code was not returned!",
+                     500, response.getResponseCode());
+        assertTrue("The response did not contain 'testJava21.jsp failed to compile' message", response.getText().contains("testJava21.jsp failed to compile"));
+    }
+
+    /**
      * Same test as testJava17JSP, but using the runtime JDK (via JSP's useJDKCompiler option rather than the default Eclipse Compiler for Java (ECJ))
      *
      * https://openliberty.io/docs/latest/reference/config/jspEngine.html
@@ -128,13 +154,53 @@ public class JSPJava17Test {
     }
 
     /*
-     * Verifies that javaSourceLevel overrides jdkSourceLevel if both are set. Warning is also logged
+     * Verify the precompile and javaSourceLevel interact nicely. 
+     * Precompile is enabled via prepareJSPs. 
+     * Note: testJava21.jsp will fail to compile 
+     * 
+     * @throws Exception if something goes horribly wrong
      */
     @Test
+    public void testJava17viaPreCompile() throws Exception {
+
+        ServerConfiguration configuration = server.getServerConfiguration();
+        configuration.getJspEngine().setUseJDKCompiler(false);
+        configuration.getJspEngine().setPrepareJSPs("0");
+        LOG.info("New server configuration used: " + configuration);
+
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(configuration);
+        server.stopServer("SRVE8115W","SRVE8094W");
+        server.startServer();
+
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
+
+        String url = JSPUtils.createHttpUrlString(server, APP_NAME, "index.jsp");
+        LOG.info("url: " + url);
+
+        WebRequest request = new GetMethodWebRequest(url);
+        WebResponse response = wc.getResponse(request);
+        LOG.info("Servlet response : " + response.getText());
+
+        assertEquals("Expected " + 200 + " status code was not returned!",
+                     200, response.getResponseCode());
+        assertTrue("The response did not contain: success", response.getText().contains("success-text-block"));
+        assertTrue("The response did not contain: success", response.getText().contains("success-pattern-matching"));
+    }
+
+    /*
+     * Verifies that javaSourceLevel overrides jdkSourceLevel if both are set. Warning is also logged
+     * 
+     * AllowedFFDC Added due to precompile of testJava21.jsp in the test above
+     */
+    @Test
+    @AllowedFFDC("java.security.PrivilegedActionException") // Occurs in EE10 and lower
     public void testBothjdkSourceLevelAndjavaSourceLevel() throws Exception {
 
         ServerConfiguration configuration = server.getServerConfiguration();
         configuration.getJspEngine().setJdkSourceLevel("18");
+        configuration.getJspEngine().setPrepareJSPs("1000000000"); 
         LOG.info("New server configuration used: " + configuration);
 
         server.setMarkToEndOfLog();

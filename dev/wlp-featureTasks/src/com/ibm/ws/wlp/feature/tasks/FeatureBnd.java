@@ -315,9 +315,7 @@ public class FeatureBnd extends Task {
                 Attrs attributes = c.getValue();
                 // check the location attribute and if lib/ needs to be added, add it.
                 addLibFolderIfRequired(attributes);
-                if (!c.getKey().equals("com.ibm.json4j")) {
-                    content.put(c.getKey(), attributes);
-                }
+                content.put(c.getKey(), attributes);
             }
 
             // Now we go through all the entries in Subsystem-Content.

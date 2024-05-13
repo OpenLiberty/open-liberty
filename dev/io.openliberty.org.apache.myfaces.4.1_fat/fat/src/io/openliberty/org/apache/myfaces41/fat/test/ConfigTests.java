@@ -130,9 +130,9 @@ public class ConfigTests {
      *
      * @throws Exception
      */
-    // @Test
+    @Test
     public void verifyFullStateSavingViewIdsIsDeprecated() throws Exception {
-        // TO DO -- Warning will be added in next MyFaces Release (RC2)
+        assertEquals(1, server.findStringsInLogs("The configuration 'jakarta.faces.FULL_STATE_SAVING_VIEW_IDS' is deprecated").size());
     }
 
 

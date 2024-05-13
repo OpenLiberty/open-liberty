@@ -119,7 +119,20 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         _globalId = globalID;
 
         final TxPrimaryKey pk = initializeTran(timeout);
-        _xid = new XidImpl(pk);
+
+        byte[] gtridbytes = null;
+
+        if (globalID != null && globalID.length() == (2 * XidImpl.GTRID_JTA_GTRID_LENGTH)) {
+            gtridbytes = Util.fromHexString(globalID);
+        }
+
+        if (gtridbytes != null) {
+            if (traceOn && tc.isDebugEnabled())
+                Tr.debug(tc, "Using gtrid from parent"); // This string is used in a test
+            _xid = new XidImpl(gtridbytes, pk, 1);
+        } else {
+            _xid = new XidImpl(pk);
+        }
 
         if (traceOn) {
             traceCreate();
@@ -1178,6 +1191,7 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         // NullPointerException when getId() is called
         Thread local_thread = _thread;
         return super.toString() + ",active=" + _activeAssociations + ",suspended=" + _suspendedAssociations + ","
-               + (local_thread != null ? "thread=" + String.format("%08X", local_thread.getId()) : "Not on a thread, globalId=" + _globalId);
+               + (local_thread != null ? "thread=" + String.format("%08X", local_thread.getId()) : "Not on a thread, globalId=" + _globalId + ", gtrid="
+                                                                                                   + Util.toHexString(_xid.getGlobalTransactionId()));
     }
 }

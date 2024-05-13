@@ -72,6 +72,7 @@ import com.ibm.wsspi.persistence.InMemoryMappingFile;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 import com.ibm.wsspi.resource.ResourceFactory;
 
+import io.openliberty.data.internal.persistence.EntityInfo;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import jakarta.data.exceptions.MappingException;
@@ -120,7 +121,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
     public DBStoreEMBuilder(String dataStore, boolean isConfigDisplayId, boolean isJNDIName,
                             AnnotatedType<?> type, ClassLoader repositoryClassLoader,
                             DataExtensionProvider provider) {
-        super(repositoryClassLoader);
+        super(provider, repositoryClassLoader);
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
@@ -551,7 +552,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
                 }
             } else {
                 if (c.isRecord()) {
-                    String entityClassName = c.getName() + "Entity"; // an entity class is generated for the record
+                    String entityClassName = c.getName() + EntityInfo.RECORD_ENTITY_SUFFIX; // an entity class is generated for the record
                     byte[] generatedEntityBytes = generateEntityClassBytes(c, entityClassName);
                     generatedEntities.add(new InMemoryMappingFile(generatedEntityBytes, entityClassName.replace('.', '/') + ".class"));
                     Class<?> generatedEntity = classDefiner.findLoadedOrDefineClass(getRepositoryClassLoader(), entityClassName, generatedEntityBytes);

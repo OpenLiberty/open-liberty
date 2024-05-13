@@ -19,6 +19,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.RecordComponent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -399,6 +400,128 @@ public class QueryInfo {
     }
 
     /**
+     * Generates the SELECT clause of the JPQL.
+     *
+     * @return the SELECT clause.
+     */
+    StringBuilder generateSelectClause() {
+        StringBuilder q = new StringBuilder(200);
+        String o = entityVar;
+        String o_ = entityVar_;
+
+        String[] cols, selections = entityInfo.builder.provider.compat.getSelections(method);
+        if (selections == null || selections.length == 0) {
+            cols = null;
+        } else if (type == QueryInfo.Type.FIND_AND_DELETE) {
+            // TODO NLS message for error path once selections are supported function
+            throw new UnsupportedOperationException();
+        } else {
+            cols = new String[selections.length];
+            for (int i = 0; i < cols.length; i++) {
+                String name = entityInfo.getAttributeName(selections[i], true);
+                cols[i] = name == null ? selections[i] : name;
+            }
+        }
+
+        Class<?> singleType = getSingleResultType();
+
+        if (singleType.isPrimitive())
+            singleType = QueryInfo.wrapperClassIfPrimitive(singleType);
+
+        q.append("SELECT ");
+
+        if (cols == null || cols.length == 0) {
+            if (singleType.isAssignableFrom(entityInfo.entityClass)
+                || entityInfo.inheritance && entityInfo.entityClass.isAssignableFrom(singleType)) {
+                // Whole entity
+                q.append(o);
+            } else {
+                // Look for single entity attribute with the desired type:
+                String singleAttributeName = null;
+                for (Map.Entry<String, Class<?>> entry : entityInfo.attributeTypes.entrySet()) {
+                    Class<?> collectionElementType = entityInfo.collectionElementTypes.get(entry.getKey());
+                    Class<?> attributeType = collectionElementType == null ? entry.getValue() : collectionElementType;
+                    if (attributeType.isPrimitive())
+                        attributeType = QueryInfo.wrapperClassIfPrimitive(attributeType);
+                    if (singleType.isAssignableFrom(attributeType))
+                        if (singleAttributeName == null)
+                            singleAttributeName = entry.getKey();
+                        else
+                            throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
+                                                                    method.getDeclaringClass().getName() +
+                                                                    " repository specifies the " + singleType.getName() +
+                                                                    " result type, which corresponds to multiple entity attributes: " +
+                                                                    singleAttributeName + ", " + entry.getKey() +
+                                                                    ". To use this result type, update the repository method to " +
+                                                                    "instead use the Query annotation with a SELECT clause to " +
+                                                                    "disambiguate which entity attribute to use as the result " +
+                                                                    "of the query."); // TODO NLS
+                }
+
+                if (singleAttributeName == null) {
+                    // Construct new instance for record or IdClass
+                    q.append("NEW ").append(singleType.getName()).append('(');
+                    RecordComponent[] recordComponents;
+                    boolean first = true;
+                    if ((recordComponents = singleType.getRecordComponents()) != null)
+                        for (RecordComponent component : recordComponents) {
+                            String name = component.getName();
+                            q.append(first ? "" : ", ").append(o).append('.').append(name);
+                            first = false;
+                        }
+                    else if (entityInfo.idClassAttributeAccessors != null && singleType.equals(entityInfo.idType))
+                        // TODO determine correct order of idClass attributes for constructor (possibly based on type?)
+                        // instead of guessing they are alphabetized?
+                        for (String idClassAttributeName : entityInfo.idClassAttributeAccessors.keySet()) {
+                            String name = entityInfo.getAttributeName(idClassAttributeName, true);
+                            q.append(first ? "" : ", ").append(o).append('.').append(name);
+                            first = false;
+                        }
+                    else
+                        throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
+                                                                method.getDeclaringClass().getName() + " repository specifies the " +
+                                                                singleType.getName() + " result type, which is not convertible from the " +
+                                                                entityInfo.entityClass.getName() + " entity type. A repository method " +
+                                                                "result type must be the entity type, an entity attribute type, or a " +
+                                                                "Java record with attribute names that are a subset of the entity attribute names, " +
+                                                                "or the Query annotation must be used to construct the result type with JPQL."); // TODO NLS
+                    q.append(')');
+                } else {
+                    q.append(o_).append(singleAttributeName);
+                }
+            }
+        } else { // Individual columns are requested by @Select
+            Class<?> entityType = entityInfo.getType();
+            boolean selectAsColumns = singleType.isAssignableFrom(entityType)
+                                      || singleType.isInterface() // NEW instance doesn't apply to interfaces
+                                      || singleType.isPrimitive() // NEW instance should not be used on primitives
+                                      || singleType.getName().startsWith("java") // NEW instance constructor is unlikely for non-user-defined classes
+                                      || entityInfo.inheritance && entityType.isAssignableFrom(singleType);
+            if (!selectAsColumns && cols.length == 1) {
+                String singleAttributeName = cols[0];
+                Class<?> attributeType = entityInfo.collectionElementTypes.get(singleAttributeName);
+                if (attributeType == null)
+                    attributeType = entityInfo.attributeTypes.get(singleAttributeName);
+                selectAsColumns = attributeType != null && (Object.class.equals(attributeType) // JPA metamodel does not preserve the type if not an EmbeddableCollection
+                                                            || singleType.isAssignableFrom(attributeType));
+            }
+            if (selectAsColumns) {
+                // Specify columns without creating new instance
+                for (int i = 0; i < cols.length; i++)
+                    q.append(i == 0 ? "" : ", ").append(o).append('.').append(cols[i]);
+            } else {
+                // Construct new instance from defined columns
+                q.append("NEW ").append(singleType.getName()).append('(');
+                for (int i = 0; i < cols.length; i++)
+                    q.append(i == 0 ? "" : ", ").append(o).append('.').append(cols[i]);
+                q.append(')');
+            }
+        }
+
+        return q;
+    }
+
+    /**
      * Locate the entity information for the specified result class.
      *
      * @param entityType              single result type of a repository method, which is hopefully an entity class.
@@ -417,7 +540,7 @@ public class QueryInfo {
                     failedFuture = future;
                 } else {
                     EntityInfo info = future.join();
-                    if (entityType.equals(info.entityClass))
+                    if (entityType.equals(info.entityClass) || entityType.equals(info.recordClass))
                         return info;
                 }
             if (failedFuture != null)
@@ -428,8 +551,11 @@ public class QueryInfo {
                                        " repository does not specify an entity class. To correct this, have the repository interface" +
                                        " extend DataRepository or another built-in repository interface and supply the entity class" +
                                        " as the first type variable."); // TODO NLS
-        else
-            return primaryEntityInfoFuture.join();
+
+        if (!primaryEntityInfoFuture.isDone() && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "await completion of primary entity info", primaryEntityInfoFuture);
+
+        return primaryEntityInfoFuture.join();
     }
 
     /**
@@ -442,28 +568,47 @@ public class QueryInfo {
      */
     @Trivial
     EntityInfo getEntityInfo(String entityName, Map<String, CompletableFuture<EntityInfo>> entityInfos) {
+        EntityInfo entityInfo;
         CompletableFuture<EntityInfo> future = entityInfos.get(entityName);
         if (future == null) {
-            // Identify possible case mismatch
-            for (String name : entityInfos.keySet())
-                if (entityName.equalsIgnoreCase(name))
+            // When a Java record is used as an entity, the name is [RecordName]Entity
+            String recordEntityName = entityName + EntityInfo.RECORD_ENTITY_SUFFIX;
+            future = entityInfos.get(recordEntityName);
+            if (future == null) {
+                entityInfo = null;
+            } else {
+                entityInfo = future.join();
+                if (entityInfo.recordClass == null)
+                    entityInfo = null;
+            }
+
+            if (entityInfo == null) {
+                // Identify possible case mismatch
+                for (String name : entityInfos.keySet()) {
+                    if (recordEntityName.equalsIgnoreCase(name) && entityInfos.get(name).join().recordClass != null)
+                        name = name.substring(0, name.length() - EntityInfo.RECORD_ENTITY_SUFFIX.length());
+                    if (entityName.equalsIgnoreCase(name))
+                        throw new MappingException("The " + method.getName() + " method of the " + method.getDeclaringClass().getName() +
+                                                   " repository specifies query language that requires a " + entityName +
+                                                   " entity that is not found but is a close match for the " + name +
+                                                   " entity. Review the query language to ensure the correct entity name is used."); // TODO NLS
+                }
+
+                future = entityInfos.get(EntityInfo.FAILED);
+                if (future == null)
                     throw new MappingException("The " + method.getName() + " method of the " + method.getDeclaringClass().getName() +
                                                " repository specifies query language that requires a " + entityName +
-                                               " entity that is not found but is a close match for the " + name +
-                                               " entity. Review the query language to ensure the correct entity name is used."); // TODO NLS
-
-            future = entityInfos.get(EntityInfo.FAILED);
-            if (future == null)
-                throw new MappingException("The " + method.getName() + " method of the " + method.getDeclaringClass().getName() +
-                                           " repository specifies query language that requires a " + entityName +
-                                           " entity that is not found. Check if " + entityName + " is the name of a valid entity." +
-                                           " To enable the entity to be found, give the repository a life cycle method that is" +
-                                           " annotated with one of " + "(Insert, Save, Update, Delete)" +
-                                           " and supply the entity as its parameter or have the repository extend" +
-                                           " DataRepository or another built-in repository interface with the entity class as the" +
-                                           " first type variable."); // TODO NLS
+                                               " entity that is not found. Check if " + entityName + " is the name of a valid entity." +
+                                               " To enable the entity to be found, give the repository a life cycle method that is" +
+                                               " annotated with one of " + "(Insert, Save, Update, Delete)" +
+                                               " and supply the entity as its parameter or have the repository extend" +
+                                               " DataRepository or another built-in repository interface with the entity class as the" +
+                                               " first type variable."); // TODO NLS
+            }
+        } else {
+            entityInfo = future.join();
         }
-        return future.join();
+        return entityInfo;
     }
 
     /**
@@ -649,8 +794,8 @@ public class QueryInfo {
                             // Entity identifier variable is not present. Add it.
                             entityVar = "o";
                             entityVar_ = "o.";
-                            jpql = new StringBuilder(entityName.length() + 14) //
-                                            .append("DELETE FROM ").append(entityName).append(" o").toString();
+                            jpql = new StringBuilder(entityInfo.name.length() + 14) //
+                                            .append("DELETE FROM ").append(entityInfo.name).append(" o").toString();
                         } else if (startAt + 6 < length
                                    && ql.regionMatches(true, startAt, "WHERE", 0, 5)
                                    && !Character.isJavaIdentifierPart(ql.charAt(startAt + 5))) {
@@ -658,7 +803,7 @@ public class QueryInfo {
                             entityVar = "o";
                             entityVar_ = "o.";
                             StringBuilder q = new StringBuilder(ql.length() * 3 / 2) //
-                                            .append("DELETE FROM ").append(entityName).append(" o WHERE");
+                                            .append("DELETE FROM ").append(entityInfo.name).append(" o WHERE");
                             jpql = appendWithIdentifierName(ql, startAt + 5, ql.length(), q).toString();
                         }
                     }
@@ -683,7 +828,7 @@ public class QueryInfo {
                     throw new MappingException("@Repository " + method.getDeclaringClass().getName() + " does not specify an entity class." + // TODO NLS
                                                " To correct this, have the repository interface extend DataRepository" +
                                                " or another built-in repository interface and supply the entity class as the first parameter.");
-                if (startAt + 1 < length && entityName.length() > 0 && Character.isWhitespace(ql.charAt(startAt))) {
+                if (startAt + 1 < length && entityInfo.name.length() > 0 && Character.isWhitespace(ql.charAt(startAt))) {
                     for (startAt++; startAt < length && Character.isWhitespace(ql.charAt(startAt)); startAt++);
                     if (startAt + 4 < length
                         && ql.regionMatches(true, startAt, "SET", 0, 3)
@@ -691,7 +836,7 @@ public class QueryInfo {
                         entityVar = "o";
                         entityVar_ = "o.";
                         StringBuilder q = new StringBuilder(ql.length() * 3 / 2) //
-                                        .append("UPDATE ").append(entityName).append(" o SET");
+                                        .append("UPDATE ").append(entityInfo.name).append(" o SET");
                         jpql = appendWithIdentifierName(ql, startAt + 3, ql.length(), q).toString();
                     }
                 }
@@ -908,14 +1053,16 @@ public class QueryInfo {
                 whereLen += 2 + (addSpace ? 1 : 0);
             }
 
-            StringBuilder q = new StringBuilder(ql.length() + (selectLen >= 0 ? 0 : 50) + (fromLen >= 0 ? 0 : 50) + 2);
-            q.append("SELECT");
-            if (selectLen > 0)
+            StringBuilder q;
+            if (selectLen > 0) {
+                q = new StringBuilder(ql.length() + (selectLen >= 0 ? 0 : 50) + (fromLen >= 0 ? 0 : 50) + 2);
+                q.append("SELECT");
                 appendWithIdentifierName(ql, select0, select0 + selectLen, q);
-            else
-                q.append(' ').append(entityVar).append(' ');
+            } else {
+                q = generateSelectClause();
+            }
 
-            q.append("FROM");
+            q.append(" FROM");
             if (fromLen > 0 && !lacksEntityVar)
                 q.append(ql.substring(from0, from0 + fromLen));
             else
@@ -1182,39 +1329,39 @@ public class QueryInfo {
      * @param orderBy array of OrderBy annotations if present, otherwise an empty array.
      * @param count   The Count annotation if present, otherwise null.
      * @param exists  The Exists annotation if present, otherwise null.
-     * @param select  The Select annotation value if present, otherwise null.
      * @return Count, Delete, Exists, Find, Insert, Query, Save, or Update annotation if present. Otherwise null.
      * @throws UnsupportedOperationException if the combination of annotations is not valid.
      */
     @Trivial
     Annotation validateAnnotationCombinations(Delete delete, Insert insert, Update update, Save save,
                                               Find find, jakarta.data.repository.Query query, OrderBy[] orderBy,
-                                              Annotation count, Annotation exists, Annotation select) {
+                                              Annotation count, Annotation exists) {
         int o = orderBy.length == 0 ? 0 : 1;
 
         // These can be paired with OrderBy:
         int f = find == null ? 0 : 1;
         int q = query == null ? 0 : 1;
-        int s = select == null ? 0 : 1;
 
         // These cannot be paired with OrderBy or with each other:
         int ius = (insert == null ? 0 : 1) +
                   (update == null ? 0 : 1) +
                   (save == null ? 0 : 1);
 
-        int iusdce = ius +
-                     (delete == null ? 0 : 1) +
-                     (count == null ? 0 : 1) +
-                     (exists == null ? 0 : 1);
+        int iusce = ius +
+                    (count == null ? 0 : 1) +
+                    (exists == null ? 0 : 1);
+
+        int iusdce = iusce +
+                     (delete == null ? 0 : 1);
 
         if (iusdce + f > 1 // more than one of (Insert, Update, Save, Delete, Count, Exists, Find)
-            || iusdce + o > 1 // more than one of (Insert, Update, Save, Delete, Count, Exists, OrderBy)
-            || iusdce + q + s > 1) { // one of (Insert, Update, Save, Delete, Count, Exists) with Query or Select, or both Query and Select
+            || iusce + o > 1 // more than one of (Insert, Update, Save, Delete, Count, Exists, OrderBy)
+            || iusdce + q > 1) { // one of (Insert, Update, Save, Delete, Count, Exists) with Query
 
             // Invalid combination of multiple annotations
 
             List<String> annoClassNames = new ArrayList<String>();
-            for (Annotation anno : Arrays.asList(count, delete, exists, find, insert, query, save, select, update))
+            for (Annotation anno : Arrays.asList(count, delete, exists, find, insert, query, save, update))
                 if (anno != null)
                     annoClassNames.add(anno.annotationType().getName());
             if (orderBy.length > 0)

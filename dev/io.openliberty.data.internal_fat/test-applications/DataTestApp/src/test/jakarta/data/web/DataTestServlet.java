@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -86,6 +87,7 @@ import jakarta.transaction.UserTransaction;
 import org.junit.Test;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 
 @DataSourceDefinition(name = "java:app/jdbc/DerbyDataSource",
@@ -578,6 +580,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Delete multiple entries and use a default method to atomically remove and return a removed entity.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testDefaultRepositoryMethod() {
         products.clear();
@@ -721,6 +724,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Unannotated entity with an attribute that is an embeddable type.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28380
     @Test
     public void testEmbeddable() {
         houses.dropAll();
@@ -1127,6 +1131,7 @@ public class DataTestServlet extends FATServlet {
     public void testFindAndDeleteMultipleAnnotated(HttpServletRequest request, HttpServletResponse response) {
         packages.save(new Package(60001, 61.0f, 41.0f, 26.0f, "testFindAndDeleteMultipleAnnotated"));
         packages.save(new Package(60002, 62.0f, 42.0f, 25.0f, "testFindAndDeleteMultipleAnnotated"));
+        packages.save(new Package(60003, 59.0f, 39.0f, 24.0f, "testFindAndDeleteMultipleAnnotated"));
 
         String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
         boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
@@ -1134,27 +1139,34 @@ public class DataTestServlet extends FATServlet {
         List<Package> list = supportsOrderByForUpdate //
                         ? packages.takeOrdered("testFindAndDeleteMultipleAnnotated") //
                         : packages.take("testFindAndDeleteMultipleAnnotated");
-        assertEquals(list.toString(), 2, list.size());
+        assertEquals(list.toString(), 3, list.size());
 
         if (!supportsOrderByForUpdate) {
             System.out.println("Sorting results in test code.");
-            list.sort(Comparator.comparing(p -> p.id));
+            list.sort(Comparator.comparing(p -> p.width));
         }
 
         Package p0 = list.get(0);
         Package p1 = list.get(1);
+        Package p2 = list.get(2);
 
-        assertEquals(60001, p0.id);
-        assertEquals(61.0f, p0.length, 0.01f);
-        assertEquals(41.0f, p0.width, 0.01f);
-        assertEquals(26.0f, p0.height, 0.01f);
+        assertEquals(60003, p0.id);
+        assertEquals(59.0f, p0.length, 0.01f);
+        assertEquals(39.0f, p0.width, 0.01f);
+        assertEquals(24.0f, p0.height, 0.01f);
         assertEquals("testFindAndDeleteMultipleAnnotated", p0.description);
 
-        assertEquals(60002, p1.id);
-        assertEquals(62.0f, p1.length, 0.01f);
-        assertEquals(42.0f, p1.width, 0.01f);
-        assertEquals(25.0f, p1.height, 0.01f);
+        assertEquals(60001, p1.id);
+        assertEquals(61.0f, p1.length, 0.01f);
+        assertEquals(41.0f, p1.width, 0.01f);
+        assertEquals(26.0f, p1.height, 0.01f);
         assertEquals("testFindAndDeleteMultipleAnnotated", p1.description);
+
+        assertEquals(60002, p2.id);
+        assertEquals(62.0f, p2.length, 0.01f);
+        assertEquals(42.0f, p2.width, 0.01f);
+        assertEquals(25.0f, p2.height, 0.01f);
+        assertEquals("testFindAndDeleteMultipleAnnotated", p2.description);
 
         assertEquals(Collections.EMPTY_LIST, packages.take("testFindAndDeleteMultipleAnnotated"));
     }
@@ -1353,6 +1365,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Search for missing item. Insert it. Search again.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testFindCreateFind() {
         UUID id = UUID.nameUUIDFromBytes("OL306-233F".getBytes());
@@ -1410,6 +1423,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use the % and _ characters, which are wildcards in JPQL, within query parameters.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testFindLike() throws Exception {
         // Remove data from previous tests:
@@ -1575,6 +1589,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Repository methods where the FROM clause identifies the entity.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testFromClauseIdentifiesEntity() {
         products.clear();
@@ -1844,6 +1859,7 @@ public class DataTestServlet extends FATServlet {
      * Tests repository insert methods.
      */
     @AllowedFFDC("jakarta.data.exceptions.EntityExistsException")
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28380
     @Test
     public void testInsert() throws Exception {
         people.deleteBySSN_IdBetween(0L, 999999999L);
@@ -1949,6 +1965,7 @@ public class DataTestServlet extends FATServlet {
      * Insert and delete multiple entities.
      */
     // @AllowedFFDC("jakarta.data.exceptions.EntityExistsException")
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28380
     @Test
     public void testInsertAndDeleteMultiple() throws Exception {
         people.deleteBySSN_IdBetween(0L, 999999999L);
@@ -3011,6 +3028,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use a repository where methods are for different entities.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testMultipleEntitiesInARepository() {
         // Remove any pre-existing data that could interfere with the test:
@@ -3459,6 +3477,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Tests all CrudRepository methods (apart from those inherited from BasicRepository) with a record as the entity.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28380
     @Test
     public void testRecordCrudRepositoryMethods() {
         receipts.deleteByTotalLessThan(1000000.0f);
@@ -3569,6 +3588,26 @@ public class DataTestServlet extends FATServlet {
         assertEquals(true, receipts.deleteByTotalLessThan(1000000.0f));
 
         assertEquals(0L, receipts.count());
+    }
+
+    /**
+     * Tests that a record entity can be specified in the FROM clause of JDQL.
+     */
+    @Test
+    public void testRecordInFromClause() {
+        receipts.deleteByTotalLessThan(2000.0f);
+
+        receipts.saveAll(List.of(new Receipt(2000L, "C2000-00-123", 20.98f),
+                                 new Receipt(2001L, "C2000-00-123", 15.99f)));
+
+        assertEquals(20.98f, receipts.totalOf(2000L), 0.001f);
+        assertEquals(15.99f, receipts.totalOf(2001L), 0.001f);
+
+        assertEquals(true, receipts.addTax(2001L, 0.0813f));
+
+        assertEquals(17.29f, receipts.totalOf(2001L), 0.001f);
+
+        assertEquals(2, receipts.removeIfTotalUnder(2000.0f));
     }
 
     /**
@@ -4740,6 +4779,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Update multiple entries.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testUpdateMultiple() {
         products.clear();
@@ -4864,6 +4904,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use update methods with a versioned entity parameter to make updates.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testUpdateWithVersionedEntityParameter() {
         Product prod1 = new Product();
@@ -4916,6 +4957,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use JPQL query to update based on version.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testVersionedUpdateViaQuery() {
         Product prod1 = new Product();
@@ -4953,6 +4995,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use repository save method to update based on version.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testVersionedUpdateViaRepository() {
         Product prod1 = new Product();

@@ -17,7 +17,7 @@
 # Note:
 #Last used error meessage code was SESN8502I
 #
-#Use 8600 - 8699 for Servlet 6.0 - EE10
+#Use 8600 - 8699 for Servlet 6.0 (EE10) and above
 #
 # -----------------------------------------------
 cookie.attribute.name.null=SESN8600E: o nome do atributo na classe Cookie \u00e9 nulo.
@@ -27,3 +27,13 @@ cookie.attribute.name.null.useraction=Assegure-se de que o nome do atributo n\u0
 cookie.attribute.name.invalid.[{0}]=SESN8601E: o nome do atributo [{0}] cont\u00e9m caracteres inv\u00e1lidos.
 cookie.attribute.name.invalid.[{0}].explanation=O nome do atributo cont\u00e9m pelo menos um dos caracteres separadores a seguir, que n\u00e3o podem ser usados no nome do atributo na classe Cookie: ( ) < > @ , ; :  " / [ ] ? = { }
 cookie.attribute.name.invalid.[{0}].useraction=Assegure-se de que o nome do atributo n\u00e3o contenha nenhum caractere separador e que o nome do atributo seja v\u00e1lido.
+# -----------------------------------------------
+# Servlet 6.1
+session.is.invalid=SESN8602E: A sess\u00e3o \u00e9 inv\u00e1lida.
+session.is.invalid.explanation=A sess\u00e3o atual expirou e \u00e9 inv\u00e1lida..
+session.is.invalid.useraction=Tente efetuar login ou obter nova sess\u00e3o novamente.
+# -----------------------------------------------
+# Servlet 6.1
+session.id.is.invalid=SESN8603E: O ID de sess\u00e3o \u00e9 inv\u00e1lido.
+session.id.is.invalid.explanation=O ID de sess\u00e3o mudou desde o \u00faltimo acesso.
+session.id.is.invalid.useraction=O ID de sess\u00e3o mudou desde o \u00faltimo acesso. Tente efetuar login novamente.

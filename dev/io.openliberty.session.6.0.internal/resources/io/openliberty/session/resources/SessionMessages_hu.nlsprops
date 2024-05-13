@@ -17,7 +17,7 @@
 # Note:
 #Last used error meessage code was SESN8502I
 #
-#Use 8600 - 8699 for Servlet 6.0 - EE10
+#Use 8600 - 8699 for Servlet 6.0 (EE10) and above
 #
 # -----------------------------------------------
 cookie.attribute.name.null=SESN8600E: A cookie oszt\u00e1ly attrib\u00fatumneve null\u00e9rt\u00e9k.
@@ -27,3 +27,13 @@ cookie.attribute.name.null.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az attri
 cookie.attribute.name.invalid.[{0}]=SESN8601E: A(z) [{0}] attrib\u00fatumn\u00e9v \u00e9rv\u00e9nytelen karaktereket tartalmaz.
 cookie.attribute.name.invalid.[{0}].explanation=Az attrib\u00fatumn\u00e9v legal\u00e1bb az egyik olyan al\u00e1bbi elv\u00e1laszt\u00f3 karaktert tartalmazza, amely nem haszn\u00e1lhat\u00f3 a Cookie oszt\u00e1ly attrib\u00fatumnev\u00e9ben: ( ) < > @ , ; :  " / [ ] ? = { }
 cookie.attribute.name.invalid.[{0}].useraction=Gondoskodj\u00e9k r\u00f3la, hogy az attrib\u00fatumn\u00e9v ne tartalmazzon elv\u00e1laszt\u00f3 karaktereket, \u00e9s hogy az attrib\u00fatumn\u00e9v \u00e9rv\u00e9nyes legyen.
+# -----------------------------------------------
+# Servlet 6.1
+session.is.invalid=SESN8602E: A munkamenet \u00e9rv\u00e9nytelen.
+session.is.invalid.explanation=Az aktu\u00e1lis munkamenet lej\u00e1rt \u00e9s \u00e9rv\u00e9nytelen.
+session.is.invalid.useraction=Pr\u00f3b\u00e1ljon meg bejelentkezni vagy \u00faj munkamenetet szerezni.
+# -----------------------------------------------
+# Servlet 6.1
+session.id.is.invalid=SESN8603E: A szekci\u00f3azonos\u00edt\u00f3 \u00e9rv\u00e9nytelen.
+session.id.is.invalid.explanation=A munkamenet-azonos\u00edt\u00f3 megv\u00e1ltozott a legut\u00f3bbi hozz\u00e1f\u00e9r\u00e9s \u00f3ta.
+session.id.is.invalid.useraction=A munkamenet-azonos\u00edt\u00f3 megv\u00e1ltozott a legut\u00f3bbi hozz\u00e1f\u00e9r\u00e9s \u00f3ta. Pr\u00f3b\u00e1ljon meg ism\u00e9t bejelentkezni.

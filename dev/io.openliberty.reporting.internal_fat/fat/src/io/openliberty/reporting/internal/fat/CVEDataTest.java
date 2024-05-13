@@ -77,6 +77,8 @@ public class CVEDataTest extends FATServletClient {
         assertThat("The property 'productEdition' did not match", props.getProperty("productEdition"),
                    Matchers.isIn(productEdition));
 
+        assertThat("The property 'productName' did not match", props.getProperty("productName"), Matchers.is("Liberty"));
+
         assertTrue("The property 'productVersion' did not match at the start",
                    props.getProperty("productVersion").matches("^\\d\\d\\..*"));
 
