@@ -11195,14 +11195,10 @@
             <resolved>com.ibm.websphere.appserver.classloading-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.injection-2.0</resolved>
             <resolved>io.openliberty.beanValidationCore-2.0</resolved>
-            <resolved>io.openliberty.servlet.api-6.1</resolved>
             <resolved>io.openliberty.jakarta.expressionLanguage-6.0</resolved>
+            <resolved>expressionLanguage-6.0</resolved>
             <resolved>io.openliberty.jakarta.interceptor-2.2</resolved>
             <resolved>io.openliberty.jakarta.cdi-4.1</resolved>
-            <resolved>io.openliberty.jta-2.0</resolved>
-            <resolved>io.openliberty.jakarta.connectors-2.1</resolved>
-            <resolved>com.ibm.websphere.appserver.transaction-2.0</resolved>
-            <resolved>expressionLanguage-6.0</resolved>
             <resolved>beanValidation-3.1</resolved>
         </output>
     </case>

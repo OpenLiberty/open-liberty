@@ -332,6 +332,7 @@
             <resolved>beanValidation</resolved>
         </output>
     </case>
+
     <case>
         <name>servlet-3.1_io.openliberty.versionless.cdi</name>
         <description>Feature pair [ servlet-3.1, io.openliberty.versionless.cdi ]</description>
@@ -13041,6 +13042,7 @@
             <root>io.openliberty.versionless.beanValidation</root>
         </input>
         <output>
+            <resolved>com.ibm.websphere.appserver.eeCompatible-11.0</resolved>
             <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
@@ -13066,18 +13068,14 @@
             <resolved>io.openliberty.servlet-servletSpi2.0</resolved>
             <resolved>servlet-6.1</resolved>
             <resolved>noShip-1.0</resolved>
-            <resolved>io.openliberty.jakarta.expressionLanguage-4.0</resolved>
-            <resolved>expressionLanguage-4.0</resolved>
-            <resolved>io.openliberty.jakarta.interceptor-2.0</resolved>
-            <resolved>io.openliberty.jakarta.cdi-3.0</resolved>
-            <resolved>io.openliberty.beanValidation3.0.internal.ee-9.0</resolved>
-            <resolved>io.openliberty.jakarta.validation-3.0</resolved>
+            <resolved>io.openliberty.jakarta.validation-3.1</resolved>
             <resolved>io.openliberty.beanValidationCore-2.0</resolved>
-            <resolved>io.openliberty.jta-2.0</resolved>
-            <resolved>io.openliberty.jakarta.connectors-2.0</resolved>
-            <resolved>com.ibm.websphere.appserver.transaction-2.0</resolved>
-            <resolved>beanValidation-3.0</resolved>
-            <resolved>io.openliberty.internal.versionless.beanValidation-3.0</resolved>
+            <resolved>io.openliberty.jakarta.expressionLanguage-6.0</resolved>
+            <resolved>expressionLanguage-6.0</resolved>
+            <resolved>io.openliberty.jakarta.interceptor-2.2</resolved>
+            <resolved>io.openliberty.jakarta.cdi-4.1</resolved>
+            <resolved>beanValidation-3.1</resolved>
+            <resolved>io.openliberty.internal.versionless.beanValidation-3.1</resolved>
             <resolved>beanValidation</resolved>
         </output>
     </case>
