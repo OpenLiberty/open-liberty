@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -86,6 +87,7 @@ import jakarta.transaction.UserTransaction;
 import org.junit.Test;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 
 @DataSourceDefinition(name = "java:app/jdbc/DerbyDataSource",
@@ -578,6 +580,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Delete multiple entries and use a default method to atomically remove and return a removed entity.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testDefaultRepositoryMethod() {
         products.clear();
@@ -721,6 +724,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Unannotated entity with an attribute that is an embeddable type.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28380
     @Test
     public void testEmbeddable() {
         houses.dropAll();
@@ -1361,6 +1365,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Search for missing item. Insert it. Search again.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testFindCreateFind() {
         UUID id = UUID.nameUUIDFromBytes("OL306-233F".getBytes());
@@ -1418,6 +1423,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use the % and _ characters, which are wildcards in JPQL, within query parameters.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testFindLike() throws Exception {
         // Remove data from previous tests:
@@ -1583,6 +1589,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Repository methods where the FROM clause identifies the entity.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testFromClauseIdentifiesEntity() {
         products.clear();
@@ -1852,6 +1859,7 @@ public class DataTestServlet extends FATServlet {
      * Tests repository insert methods.
      */
     @AllowedFFDC("jakarta.data.exceptions.EntityExistsException")
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28380
     @Test
     public void testInsert() throws Exception {
         people.deleteBySSN_IdBetween(0L, 999999999L);
@@ -1957,6 +1965,7 @@ public class DataTestServlet extends FATServlet {
      * Insert and delete multiple entities.
      */
     // @AllowedFFDC("jakarta.data.exceptions.EntityExistsException")
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28380
     @Test
     public void testInsertAndDeleteMultiple() throws Exception {
         people.deleteBySSN_IdBetween(0L, 999999999L);
@@ -3019,6 +3028,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use a repository where methods are for different entities.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testMultipleEntitiesInARepository() {
         // Remove any pre-existing data that could interfere with the test:
@@ -3467,6 +3477,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Tests all CrudRepository methods (apart from those inherited from BasicRepository) with a record as the entity.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28380
     @Test
     public void testRecordCrudRepositoryMethods() {
         receipts.deleteByTotalLessThan(1000000.0f);
@@ -4768,6 +4779,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Update multiple entries.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testUpdateMultiple() {
         products.clear();
@@ -4892,6 +4904,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use update methods with a versioned entity parameter to make updates.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testUpdateWithVersionedEntityParameter() {
         Product prod1 = new Product();
@@ -4944,6 +4957,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use JPQL query to update based on version.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testVersionedUpdateViaQuery() {
         Product prod1 = new Product();
@@ -4981,6 +4995,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use repository save method to update based on version.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testVersionedUpdateViaRepository() {
         Product prod1 = new Product();

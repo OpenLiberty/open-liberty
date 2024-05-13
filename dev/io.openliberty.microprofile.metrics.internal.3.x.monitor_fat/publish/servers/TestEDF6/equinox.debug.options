@@ -1,0 +1,2 @@
+# Prints out CDS class loading debug information
+org.eclipse.osgi/debug/loader/cds=true

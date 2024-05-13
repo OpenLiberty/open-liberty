@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2023 IBM Corporation and others.
+# Copyright (c) 2022, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -21,24 +21,12 @@ Bundle-Name: io.openliberty.restfulWS.mpMetrics.filter
 Bundle-SymbolicName: io.openliberty.restfulWS.mpMetrics.filter
 Bundle-Description: io.openliberty.restfulWS.mpMetrics.filter; version=${bVersion}
 
-Include-Resource:\
-  META-INF=resources/META-INF
-
-src: src, resources
+src: src
 
 -dsannotations:  \
  	io.openliberty.restfulws.mpmetrics.MonitorAppStateListener,\
- 	io.openliberty.restfulws.mpmetrics.MetricsRestfulWsEMCallbackImpl
-
-app-resources= \
-  META-INF/services/jakarta.ws.rs.ext.Providers
-
-Service-Component: \
-  io.openliberty.jaxrs.monitor.ResourceProvider; \
-    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
-    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
-    configuration-policy:=optional; \
-    properties:="resources=${app-resources}"
+ 	io.openliberty.restfulws.mpmetrics.MetricsRestfulWsEMCallbackImpl,\
+ 	io.openliberty.restfulws.mpmetrics.RestMetricsCallbackImpl
 
 WS-TraceGroup: JAXRS
 
@@ -80,4 +68,5 @@ DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
 	io.openliberty.org.eclipse.microprofile.metrics.5.0;version=latest,\
 	com.ibm.ws.jaxrs.defaultexceptionmapper.jakarta;version=latest, \
 	com.ibm.ws.microprofile.metrics.common;version=latest,\
+	com.ibm.ws.jaxrs.2.x.monitor,\
 	io.openliberty.org.jboss.resteasy.common.ee10
