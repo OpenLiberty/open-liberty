@@ -40,8 +40,8 @@ import componenttest.topology.impl.LibertyServer;
  * Tests for CHIPS (Partitioned Cookies) via samesite partitioned metatype
  * 
  * Remaining Work: 
- * - Test Precedence for Paritioned (Security and Session Cookies)
- * - Test Paritioned via JSP
+ * - Test Precedence for partitioned (Security and Session Cookies)
+ * - Test partitioned via JSP
  */
 @RunWith(FATRunner.class)
 public class WCPartitionedAttributeTests {
@@ -64,8 +64,11 @@ public class WCPartitionedAttributeTests {
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
+
+       // CWWKG0032W: Unexpected value specified for property [cookiePartitioned], value = [InvalidValue]. 
+
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CWWKG0032W");
         }
     }
 
@@ -147,12 +150,12 @@ public class WCPartitionedAttributeTests {
     }
 
     /**
-     * Ensure Paritioned is not set twice if already set programmatically within the servlet and specifed via server.xml config. 
+     * Ensure partitioned is not set twice if already set programmatically within the servlet and specifed via server.xml config. 
      * Configuration Tested:
      *    <samesite none="*" partitioned="true"/>
      */
     @Test
-    public void testDuplicateParitionDoesNotOccur() throws Exception {
+    public void testDuplicatepartitionDoesNotOccur() throws Exception {
         String expectedSetHeader = "Set-Cookie: PartitionedCookieName_SetHeader=PartitionedCookieValue_SetHeader; SameSite=None; Partitioned";
         String expectedAddHeader = "Set-Cookie: PartitionedCookieName_AddHeader=PartitionedCookieValue_AddHeader; SameSite=None; Partitioned";
 
@@ -219,7 +222,7 @@ public class WCPartitionedAttributeTests {
     }
 
     /**
-     * Checks the default behavior (paritioned is false - therefore not added). 
+     * Checks the default behavior (partitioned is false - therefore not added). 
      * Configuration Tested:
      *    <samesite none="*" />
      */
@@ -297,12 +300,12 @@ public class WCPartitionedAttributeTests {
     }
 
     /**
-     * Verify Paritioned is not set on Lax Cookies. 
+     * Verify partitioned is not set on Lax Cookies. 
      * Configuration Tested:
      *    <samesite lax="*" partitioned="true" />
      */
     @Test
-    public void testParitionedNotSetOnLax() throws Exception {
+    public void testpartitionedNotSetOnLax() throws Exception {
         String expectedSetHeader = "Set-Cookie: PartitionedCookieName_SetHeader=PartitionedCookieValue_SetHeader; SameSite=Lax";
         String expectedAddHeader = "Set-Cookie: PartitionedCookieName_AddHeader=PartitionedCookieValue_AddHeader; SameSite=Lax";
         String expectedAddCookie = "Set-Cookie: PartitionedCookieName_AddCookie=PartitionedCookieValue_AddCookie; SameSite=Lax";
@@ -373,12 +376,12 @@ public class WCPartitionedAttributeTests {
     }
 
     /**
-     * Verify Paritioned is not set on Strict Cookies. 
+     * Verify partitioned is not set on Strict Cookies. 
      * Configuration Tested:
      *    <samesite strict="*" partitioned="true" />
      */
     @Test
-    public void testParitionedNotSetOnStrict() throws Exception {
+    public void testpartitionedNotSetOnStrict() throws Exception {
         String expectedSetHeader = "Set-Cookie: PartitionedCookieName_SetHeader=PartitionedCookieValue_SetHeader; SameSite=Strict";
         String expectedAddHeader = "Set-Cookie: PartitionedCookieName_AddHeader=PartitionedCookieValue_AddHeader; SameSite=Strict";
         String expectedAddCookie = "Set-Cookie: PartitionedCookieName_AddCookie=PartitionedCookieValue_AddCookie; SameSite=Strict";
@@ -451,7 +454,7 @@ public class WCPartitionedAttributeTests {
 
     /**
      * Ensure cookies are not split when Partitioned is specified via setHeader/addHeader and addCookie is invoked. 
-     * Paritioned should be a recongized cookie attribute by the server
+     * partitioned should be a recongized cookie attribute by the server
      * See more information here: https://github.com/OpenLiberty/open-liberty/issues/22324#issuecomment-1961939339
      */
     @Test
@@ -607,7 +610,7 @@ public class WCPartitionedAttributeTests {
     }
 
     /**
-     * Verify Paritioned is Not Set by Default
+     * Verify partitioned is Not Set by Default
      * No Configurations enabled in the server.xml
      */
     @Test
@@ -665,7 +668,7 @@ public class WCPartitionedAttributeTests {
     }
 
     /**
-     * Verify Paritioned is set when CookiePartitioned=true
+     * Verify partitioned is set when CookiePartitioned=true
      * Configuration Tested:
      *    <httpSession cookiePartitioned="true" cookieSameSite="none"/> 
      */
@@ -682,7 +685,7 @@ public class WCPartitionedAttributeTests {
         HttpSession httpSession = configuration.getHttpSession();
 
         httpSession.setCookieSameSite("none");
-        httpSession.setCookiePartitioned(true);
+        httpSession.setCookiePartitioned("true");
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(configuration);
@@ -724,12 +727,12 @@ public class WCPartitionedAttributeTests {
 
 
     /**
-     * Verify Paritioned is not set on the SameSite=Lax Cookie
+     * Verify partitioned is not set on the SameSite=Lax Cookie
      * Configuration Tested:
      *    <httpSession cookiePartitioned="true" cookieSameSite="*"/> 
      */
     @Test
-    public void testParitionedNotSetonLaxSessionCookie() throws Exception {
+    public void testpartitionedNotSetonLaxSessionCookie() throws Exception {
         String expectedResponse = "Welcome to the TestPartitionedSessionServlet!";
 
         server.saveServerConfiguration();
@@ -741,7 +744,7 @@ public class WCPartitionedAttributeTests {
         HttpSession httpSession = configuration.getHttpSession();
 
         httpSession.setCookieSameSite("lax");
-        httpSession.setCookiePartitioned(true);
+        httpSession.setCookiePartitioned("true");
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(configuration);
@@ -784,12 +787,12 @@ public class WCPartitionedAttributeTests {
     }
 
     /**
-     * Verify Paritioned is not set on SameSite=Strict
+     * Verify partitioned is not set on SameSite=Strict
      * Configuration Tested:
      *    <httpSession cookiePartitioned="true" cookieSameSite="strict"/> 
      */
     @Test
-    public void testParitionedNotSetonStrictSessionCookie() throws Exception {
+    public void testpartitionedNotSetonStrictSessionCookie() throws Exception {
         String expectedResponse = "Welcome to the TestPartitionedSessionServlet!";
 
         server.saveServerConfiguration();
@@ -801,7 +804,7 @@ public class WCPartitionedAttributeTests {
         HttpSession httpSession = configuration.getHttpSession();
 
         httpSession.setCookieSameSite("strict");
-        httpSession.setCookiePartitioned(true);
+        httpSession.setCookiePartitioned("true");
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(configuration);
@@ -863,7 +866,7 @@ public class WCPartitionedAttributeTests {
         HttpSession httpSession = configuration.getHttpSession();
 
         httpSession.setCookieSameSite("none");
-        httpSession.setCookiePartitioned(false);
+        httpSession.setCookiePartitioned("false");
 
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
 
@@ -916,7 +919,7 @@ public class WCPartitionedAttributeTests {
             server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*PartitionedTest.*");
         }
     }
-
+    
      /**
      * Verify HttpSession's Config overrides the HttpChannel Config. 
      * All cookies except the Session Cookie is Partitioned. 
@@ -936,7 +939,7 @@ public class WCPartitionedAttributeTests {
         LOG.info("Server configuration that was saved: " + configuration);
 
         HttpSession httpSession = configuration.getHttpSession();
-        httpSession.setCookiePartitioned(false);
+        httpSession.setCookiePartitioned("false");
 
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
 
@@ -1008,7 +1011,7 @@ public class WCPartitionedAttributeTests {
         LOG.info("Server configuration that was saved: " + configuration);
 
         HttpSession httpSession = configuration.getHttpSession();
-        httpSession.setCookiePartitioned(true);
+        httpSession.setCookiePartitioned("true");
 
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
 
@@ -1061,5 +1064,422 @@ public class WCPartitionedAttributeTests {
         }
     }
 
+    /**
+     *  Only the session cookie is partitioned. 
+     * 
+     * Configuration Tested:
+     *    <httpSession cookieSameSite="None" /> 
+     *    <samesite partitioned="true" />
+     */
+    @Test
+    public void testHttpSessionOverridesHttpChannelConfigCase4() throws Exception {
+        String expectedResponse = "Welcome to the TestPartitionedSessionServlet!";
+
+        server.saveServerConfiguration();
+
+        ServerConfiguration configuration = server.getServerConfiguration();
+        LOG.info("Server configuration that was saved: " + configuration);
+
+        HttpSession httpSession = configuration.getHttpSession();
+        httpSession.setCookieSameSite("none");
+
+        HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
+
+        httpEndpoint.getSameSite().setPartitioned(true);  
+
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(configuration);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*PartitionedTest.*");
+
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME + "/TestPartitionedSession";
+        LOG.info("url: " + url);
+
+        HttpGet getMethod = new HttpGet(url);
+
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
+
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                     
+                    if(headerValue.contains("Set-Cookie: JSESSIONID=")){
+                        // Assert SameSite=None IS contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", headerValue.contains("SameSite=None"));
+                         // Assert Partitioned is contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", headerValue.contains("Partitioned"));
+                    } else if (headerValue.contains("Set-Cookie: AddCookieName=")) {
+                        // Assert SameSite=None IS contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", !headerValue.contains("SameSite=None"));
+                        // Assert Partitioned IS contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", !headerValue.contains("Partitioned"));
+                    } else {
+                        fail("Unknown cookie encountered: " + headerValue);
+                    }
+                }
+            }
+        } finally {  
+            server.setMarkToEndOfLog();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*PartitionedTest.*");
+        }
+    }
+
+    /**
+     *  Only the session cookie is partitioned.  Same as below, but we explictly set defer. 
+     * 
+     * Configuration Tested:
+     *    <httpSession cookieSameSite="None" cookiePartitioned="defer" /> 
+     *    <samesite partitioned="true" />
+     */
+    @Test
+    public void testHttpSessionOverridesHttpChannelConfigCase5() throws Exception {
+        String expectedResponse = "Welcome to the TestPartitionedSessionServlet!";
+
+        server.saveServerConfiguration();
+
+        ServerConfiguration configuration = server.getServerConfiguration();
+        LOG.info("Server configuration that was saved: " + configuration);
+
+        HttpSession httpSession = configuration.getHttpSession();
+        httpSession.setCookiePartitioned("defer");
+        httpSession.setCookieSameSite("none");
+
+        HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
+
+        httpEndpoint.getSameSite().setPartitioned(true);  
+
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(configuration);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*PartitionedTest.*");
+
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME + "/TestPartitionedSession";
+        LOG.info("url: " + url);
+
+        HttpGet getMethod = new HttpGet(url);
+
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
+
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                     
+                    if(headerValue.contains("Set-Cookie: JSESSIONID=")){
+                        // Assert SameSite=None IS contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", headerValue.contains("SameSite=None"));
+                         // Assert Partitioned is contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", headerValue.contains("Partitioned"));
+                    } else if (headerValue.contains("Set-Cookie: AddCookieName=")) {
+                        // Assert SameSite=None IS contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", !headerValue.contains("SameSite=None"));
+                        // Assert Partitioned IS contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", !headerValue.contains("Partitioned"));
+                    } else {
+                        fail("Unknown cookie encountered: " + headerValue);
+                    }
+                }
+            }
+        } finally {  
+            server.setMarkToEndOfLog();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*PartitionedTest.*");
+        }
+    }
+
+    /**
+     *  The session cookie should NOT be partitioned.
+     * 
+     * Configuration Tested:
+     *    <httpSession cookiePartitioned="true" /> 
+     */
+    @Test
+    public void testHttpSessionPartitionedOnly() throws Exception {
+        String expectedResponse = "Welcome to the TestPartitionedSessionServlet!";
+
+        server.saveServerConfiguration();
+
+        ServerConfiguration configuration = server.getServerConfiguration();
+        LOG.info("Server configuration that was saved: " + configuration);
+
+        HttpSession httpSession = configuration.getHttpSession();
+        httpSession.setCookiePartitioned("true");
+
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(configuration);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*PartitionedTest.*");
+
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME + "/TestPartitionedSession";
+        LOG.info("url: " + url);
+
+        HttpGet getMethod = new HttpGet(url);
+
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
+
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                     
+                    if(headerValue.contains("Set-Cookie: JSESSIONID=")){
+                        // Assert SameSite=None IS contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", !headerValue.contains("SameSite="));
+                         // Assert Partitioned is contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", !headerValue.contains("Partitioned"));
+                    } else if (headerValue.contains("Set-Cookie: AddCookieName=")) {
+                        // Assert SameSite=None IS contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", !headerValue.contains("SameSite=None"));
+                        // Assert Partitioned IS contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", !headerValue.contains("Partitioned"));
+                    } else {
+                        fail("Unknown cookie encountered: " + headerValue);
+                    }
+                }
+            }
+        } finally {  
+            server.setMarkToEndOfLog();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*PartitionedTest.*");
+        }
+    }
+
+    /**
+     * Verify HttpSession's Config overrides the HttpChannel Config. 
+     * HttpSession Cookie should not be Partitioned
+     * All cookies should have SameSite=Strict
+     * 
+     * Configuration Tested:
+     *    <httpSession cookiePartitioned="true" /> 
+     *    <samesite strict="*" />
+     */
+    @Test
+    public void testPartitionedHierarchy_NotAddedtoStrictSessionCookie() throws Exception {
+        String expectedResponse = "Welcome to the TestPartitionedSessionServlet!";
+
+        server.saveServerConfiguration();
+
+        ServerConfiguration configuration = server.getServerConfiguration();
+        LOG.info("Server configuration that was saved: " + configuration);
+
+        HttpSession httpSession = configuration.getHttpSession();
+        httpSession.setCookiePartitioned("true");
+
+        HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
+
+        httpEndpoint.getSameSite().setStrict("*");  
+
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(configuration);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*PartitionedTest.*");
+
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME + "/TestPartitionedSession";
+        LOG.info("url: " + url);
+
+        HttpGet getMethod = new HttpGet(url);
+
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
+
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                     
+                    if(headerValue.contains("Set-Cookie: JSESSIONID=")){
+                        // Assert SameSite=None IS contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", headerValue.contains("SameSite=Strict"));
+                         // Assert Partitioned is contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", !headerValue.contains("Partitioned"));
+                    } else if (headerValue.contains("Set-Cookie: AddCookieName=")) {
+                        // Assert SameSite=None IS contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", headerValue.contains("SameSite=Strict"));
+                         // Assert Partitioned is NOT contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", !headerValue.contains("Partitioned"));
+                    } else {
+                        fail("Unknown cookie encountered: " + headerValue);
+                    }
+                }
+            }
+        } finally {  
+            server.setMarkToEndOfLog();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*PartitionedTest.*");
+        }
+    }
+
+    /**
+     * Verify HttpSession's Config overrides the HttpChannel Config. 
+     * HttpSession Cookie should not be Partitioned
+     * All cookies should have SameSite=Lax
+     * 
+     * Configuration Tested:
+     *    <httpSession cookiePartitioned="true" /> 
+     *    <samesite lax="*" />
+     */
+    @Test
+    public void testPartitionedHierarchy_NotAddedtoLaxSessionCookie() throws Exception {
+        String expectedResponse = "Welcome to the TestPartitionedSessionServlet!";
+
+        server.saveServerConfiguration();
+
+        ServerConfiguration configuration = server.getServerConfiguration();
+        LOG.info("Server configuration that was saved: " + configuration);
+
+        HttpSession httpSession = configuration.getHttpSession();
+        httpSession.setCookiePartitioned("true");
+
+        HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
+
+        httpEndpoint.getSameSite().setLax("*");  
+
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(configuration);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*PartitionedTest.*");
+
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME + "/TestPartitionedSession";
+        LOG.info("url: " + url);
+
+        HttpGet getMethod = new HttpGet(url);
+
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
+
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                     
+                    if(headerValue.contains("Set-Cookie: JSESSIONID=")){
+                        // Assert SameSite=None IS contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", headerValue.contains("SameSite=Lax"));
+                         // Assert Partitioned is contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", !headerValue.contains("Partitioned"));
+                    } else if (headerValue.contains("Set-Cookie: AddCookieName=")) {
+                        // Assert SameSite=None IS contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", headerValue.contains("SameSite=Lax"));
+                         // Assert Partitioned is NOT contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", !headerValue.contains("Partitioned"));
+                    } else {
+                        fail("Unknown cookie encountered: " + headerValue);
+                    }
+                }
+            }
+        } finally {  
+            server.setMarkToEndOfLog();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*PartitionedTest.*");
+        }
+    }
+
+    /**
+     *  Only the session cookie is partitioned.  Same as below, but we explictly set defer. 
+     * 
+     * Configuration Tested:
+     *    <httpSession cookiePartitioned="InvalidValue" /> 
+     */
+    @Test
+    public void testHttpSessionInvalidValue() throws Exception {
+        String expectedResponse = "Welcome to the TestPartitionedSessionServlet!";
+
+        server.saveServerConfiguration();
+
+        ServerConfiguration configuration = server.getServerConfiguration();
+        LOG.info("Server configuration that was saved: " + configuration);
+
+        HttpSession httpSession = configuration.getHttpSession();
+        httpSession.setCookiePartitioned("InvalidValue");
+        httpSession.setCookieSameSite("none");
+
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(configuration);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*PartitionedTest.*");
+
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME + "/TestPartitionedSession";
+        LOG.info("url: " + url);
+
+        HttpGet getMethod = new HttpGet(url);
+
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
+
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                     
+                    if(headerValue.contains("Set-Cookie: JSESSIONID=")){
+                        // Assert SameSite=None IS contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", headerValue.contains("SameSite=None"));
+                         // Assert Partitioned is contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", !headerValue.contains("Partitioned"));
+                    } else if (headerValue.contains("Set-Cookie: AddCookieName=")) {
+                        // Assert SameSite=None IS contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", !headerValue.contains("SameSite=None"));
+                        // Assert Partitioned IS contained in the Cookie
+                        assertTrue("The response did not contain the expected cookies header for the session", !headerValue.contains("Partitioned"));
+                    } else {
+                        fail("Unknown cookie encountered: " + headerValue);
+                    }
+                }
+                assertTrue("The following Warning was not found in the logs: CWWKG0032W: Unexpected value specified for property [cookiePartitioned]",
+                server.waitForStringInLogUsingMark("CWWKG0032W.*cookiePartitioned.*InvalidValue") != null);
+            }
+        } finally {  
+            server.setMarkToEndOfLog();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*PartitionedTest.*");
+        }
+    }
 
 }
