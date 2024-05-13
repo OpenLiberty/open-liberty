@@ -12993,8 +12993,6 @@
     </output>
 </case>
 
-----
-
 <case>
     <name>servlet-3.1_io.openliberty.versionless.appAuthentication</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.appAuthentication ]</description>
