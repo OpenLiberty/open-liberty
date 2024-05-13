@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.jaxws.security.internal;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -99,7 +100,7 @@ public class JaxWsSecurityConfigurationServiceImpl implements JaxWsSecurityConfi
     }
 
     @Override
-    public void configClientSSL(Conduit conduit, String sslRef, String certAlias) {
+    public void configClientSSL(Conduit conduit, String address, String sslRef, String certAlias) {
         Map<String, Object> overrideProps = new HashMap<String, Object>();
         if (null != certAlias) {
             overrideProps.put(JaxWsSecurityConstants.CLIENT_KEY_STORE_ALIAS, certAlias);
@@ -107,8 +108,15 @@ public class JaxWsSecurityConfigurationServiceImpl implements JaxWsSecurityConfi
 
         if (conduit instanceof HTTPConduit) {
             HTTPConduit httpConduit = (HTTPConduit) conduit;
+            URI uri = URI.create(address);
+            int port = uri.getPort();
+            // if the port wasn't specified, use the default SSL port (443)
+            if (port == -1) {
+                Tr.debug(tc, "port was not specified, using the default SSL port (443)");
+                port = 443;
+            }
 
-            TLSClientParameters tlsClientParams = retriveHTTPTLSClientParametersUsingSSLRef(httpConduit, sslRef, overrideProps);
+            TLSClientParameters tlsClientParams = retriveHTTPTLSClientParametersUsingSSLRef(httpConduit, sslRef, overrideProps, uri.getHost(), port);
             if (null != tlsClientParams) {
                 httpConduit.setTlsClientParameters(tlsClientParams);
             }
@@ -117,7 +125,7 @@ public class JaxWsSecurityConfigurationServiceImpl implements JaxWsSecurityConfi
 
     }
 
-    private TLSClientParameters retriveHTTPTLSClientParametersUsingSSLRef(HTTPConduit httpConduit, String sslRef, Map<String, Object> overrideProps) {
+    private TLSClientParameters retriveHTTPTLSClientParametersUsingSSLRef(HTTPConduit httpConduit, String sslRef, Map<String, Object> overrideProps, String host, int port) {
         TLSClientParameters tlsClientParams = httpConduit.getTlsClientParameters();
 
         SSLSocketFactory sslSocketFactory = null;
@@ -131,7 +139,7 @@ public class JaxWsSecurityConfigurationServiceImpl implements JaxWsSecurityConfi
                 Tr.debug(tc, "Get the Liberty default SSLSocketFactory.");
             }
         }
-        sslSocketFactory = JaxWsSSLManager.getProxySSLSocketFactoryBySSLRef(sslRef, overrideProps);
+        sslSocketFactory = JaxWsSSLManager.getSSLSocketFactoryBySSLRef(sslRef, overrideProps, host, port);
 
         if (null != sslSocketFactory) {
             if (null == tlsClientParams) {

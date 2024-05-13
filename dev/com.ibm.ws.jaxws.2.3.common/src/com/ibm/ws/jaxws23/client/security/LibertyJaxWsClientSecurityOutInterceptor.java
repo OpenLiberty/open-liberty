@@ -147,7 +147,7 @@ public class LibertyJaxWsClientSecurityOutInterceptor extends AbstractPhaseInter
 
             //if unmanaged service uses SSL,config default SSL
             if (isSecured) {
-                securityConfigService.configClientSSL(message.getExchange().getConduit(message), null, null);
+                securityConfigService.configClientSSL(message.getExchange().getConduit(message), address, null, null);
             }
 
             return;
@@ -162,7 +162,7 @@ public class LibertyJaxWsClientSecurityOutInterceptor extends AbstractPhaseInter
             }
             // try to use the server default ssl configuration, and disableCNcheck is true
             if (isSecured) {
-                securityConfigService.configClientSSL(message.getExchange().getConduit(message), null, null);
+                securityConfigService.configClientSSL(message.getExchange().getConduit(message), address, null, null);
             }
 
         } else {
@@ -173,7 +173,7 @@ public class LibertyJaxWsClientSecurityOutInterceptor extends AbstractPhaseInter
 
             // configure the ssl
             if (isSecured) {
-                securityConfigService.configClientSSL(message.getExchange().getConduit(message), portRefInfo.getSSLRef(), portRefInfo.getKeyAlias());
+                securityConfigService.configClientSSL(message.getExchange().getConduit(message), address, portRefInfo.getSSLRef(), portRefInfo.getKeyAlias());
             }
         }
 
