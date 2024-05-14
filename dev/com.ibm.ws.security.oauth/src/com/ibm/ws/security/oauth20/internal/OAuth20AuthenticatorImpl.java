@@ -89,22 +89,21 @@ public class OAuth20AuthenticatorImpl implements OAuth20Authenticator {
                     }
                 }
                 boolean oauthOnly = provider.isOauthOnly();
-                if (!isProtectedResourceRequest(req)){
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "The resource is unprotected, skipping oauth authentication");
+                if (oauthOnly) {
+                    if (!isTokenRequest(req)) {
+                        isOauthProtected = true;
+                    }
+                } else {
+                    if (isProtectedResourceRequest(req)) {
+                        isOauthProtected = true;
+                    } else {
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, "There is no access token, falling back to available authentication.");
+                        }
                     }
                 }
-                else{
-                    if (oauthOnly) {
-                        if (!isTokenRequest(req)) {
-                            isOauthProtected = true;
-                        }
-                    } else {
-                            isOauthProtected = true;
-                    }
-                    if (isOauthProtected) {
-                        result = checkAccess(req, res, provider);
-                    }
+                if (isOauthProtected) {
+                    result = checkAccess(req, res, provider);
                 }
             } else {
                 // duplicate entry, return an internal error.
