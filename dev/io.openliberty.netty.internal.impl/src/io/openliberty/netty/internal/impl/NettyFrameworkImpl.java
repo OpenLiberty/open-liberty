@@ -474,13 +474,6 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         return TCPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
     }
     
-    public FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
-            ChannelFutureListener bindListener, AtomicBoolean cancelToken) throws NettyException {
-    	
-    	System.out.println("Starting channel with cancel token set to: " + cancelToken.get());
-    	
-        return TCPUtils.start(this, bootstrap, inetHost, inetPort, bindListener, cancelToken);
-    }
 
     @Override
     public FutureTask<ChannelFuture> start(BootstrapExtended bootstrap, String inetHost, int inetPort,

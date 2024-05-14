@@ -82,9 +82,6 @@ public interface NettyFramework {
     FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
             ChannelFutureListener bindListener) throws NettyException;
     
-    FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
-            ChannelFutureListener bindListener, AtomicBoolean cancelToken) throws NettyException;
-
     /**
      * Binds a Bootstrap to the given host and port, and registers the Channel with
      * this framework
