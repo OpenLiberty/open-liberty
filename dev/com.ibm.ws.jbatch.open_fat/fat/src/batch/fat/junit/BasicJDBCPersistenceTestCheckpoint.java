@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *   IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package batch.fat.junit;
 
 import org.jboss.shrinkwrap.api.Archive;
@@ -14,22 +26,25 @@ import com.ibm.ws.jbatch.test.FatUtils;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
+import com.ibm.ws.jbatch.test.FatUtils;
+import componenttest.annotation.CheckpointTest;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
-@CheckpointTest
-public class BasicJDBCPersistenceTest extends BatchFATHelper {
+public class BasicJDBCPersistenceTestCheckpoint extends BatchFATHelper {
 
     @BeforeClass
     public static void setup() throws Exception {
 
-        BatchFATHelper.setConfig(DFLT_SERVER_XML, BasicJDBCPersistenceTest.class);
+        BatchFATHelper.setConfig("commonCheckpoint/server.xml", BasicJDBCPersistenceTestCheckpoint.class);
 
         BatchAppUtils.addDropinsBatchFATWar(server);
         BatchAppUtils.addDropinsBonusPayoutWar(server);
         BatchAppUtils.addDropinsDbServletAppWar(server);
-
+        
+        
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, null);
         server.startServer();
         FatUtils.waitForSmarterPlanet(server);
 
