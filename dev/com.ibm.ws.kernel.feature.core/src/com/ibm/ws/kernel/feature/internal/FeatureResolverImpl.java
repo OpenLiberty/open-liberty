@@ -119,9 +119,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
     //
 
-    // private static final boolean isBeta =
-    //     Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
-    private static final boolean isBeta = true;
+    private static final boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
 
     // Feature parse cache ...
 

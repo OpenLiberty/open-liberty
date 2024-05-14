@@ -1514,24 +1514,6 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                 boolean reportedConfigurationErrors = reportErrors(result, restrictedAccessAttempts, newConfiguredFeatures, installStatus);
                 goodFeatures = result.getResolvedFeatures();
 
-//                System.out.println("Root Features: " + newConfiguredFeatures);
-//
-//                for(String rootFeat : newConfiguredFeatures){
-//                    if(!!!rootFeat.contains("-")){
-//                        boolean found = false;
-//                        for(String resolvedFeat : goodFeatures){
-//                            if(resolvedFeat.toLowerCase().startsWith(rootFeat.toLowerCase())){
-//                                System.out.println("Versionless Feature " + rootFeat + " resolved to " + resolvedFeat);
-//                                found = true;
-//                                break;
-//                            }
-//                        }
-//                        if(!!!found){
-//                            System.out.println("No feature was resolved from versionless feature " + rootFeat);
-//                        }
-//                    }
-//                }
-
                 // If the final list of good features matches the currently installed features, we don't need to do anything else.
                 // NOTE: we need to recompute the bundleCache if the java spec version has changed since last launch
                 if (!sameJavaSpecVersion || !featureRepository.featureSetEquals(goodFeatures)) {
