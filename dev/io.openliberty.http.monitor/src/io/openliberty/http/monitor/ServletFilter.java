@@ -34,7 +34,7 @@ public class ServletFilter implements Filter {
 	
 	private static final TraceComponent tc = Tr.register(ServletFilter.class);
 	
-	private static final String REST_HTP_ROUTE_ATTR = "RESTFUL.HTTP.ROUTE";
+	private static final String REST_HTTP_ROUTE_ATTR = "REST.HTTP.ROUTE";
 	
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)

@@ -54,7 +54,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
 
     private static final TraceComponent tc = Tr.register(JaxRsMonitorFilter.class);
     
-    private static final String REST_HTTP_ROUTE_ATTR = "RESTFUL.HTTP.ROUTE";
+    private static final String REST_HTTP_ROUTE_ATTR = "REST.HTTP.ROUTE";
 
     @Context
     ResourceInfo resourceInfo;
