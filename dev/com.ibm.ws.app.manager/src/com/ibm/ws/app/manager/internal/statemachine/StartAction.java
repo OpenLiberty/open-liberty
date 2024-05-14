@@ -52,6 +52,7 @@ class StartAction implements Action, CheckpointHook {
     private volatile boolean cancelled = false;
     private final AtomicReference<Future<?>> _slowMessageAction = new AtomicReference<Future<?>>();
     private final ApplicationConfigurator _configurator;
+    private final AtomicReference<String> failStartCheckpoint = new AtomicReference<>();
     private final CompletionListener<Boolean> _listener = new CompletionListener<Boolean>() {
 
         @Override
@@ -72,13 +73,16 @@ class StartAction implements Action, CheckpointHook {
                 } else {
                     if (!cancelled) {
                         String key = _update ? "APPLICATION_NOT_UPDATED" : "APPLICATION_NOT_STARTED";
+                        String msg = AppMessageHelper.get(_aii.getHandler()).formatMessage(key, _config.getName());
                         NotificationHelper.broadcastChange(_config.getMBeanNotifier(), _config.getMBeanName(), _update ? "application.update" : "application.start", Boolean.FALSE,
-                                                           AppMessageHelper.get(_aii.getHandler()).formatMessage(key, _config.getName()));
+                                                           msg);
                         AppMessageHelper.get(_aii.getHandler()).audit(key, _config.getName());
                         _configurator.restoreMessage(() -> {
                             AppMessageHelper.get(_aii.getHandler()).audit(key, _config.getName());
                         });
+                        failStartCheckpoint.set(msg);
                     }
+
                     callback.failed(null);
                 }
             } else {
@@ -95,12 +99,14 @@ class StartAction implements Action, CheckpointHook {
                 stopSlowStartMessage();
 
                 String key = _update ? "APPLICATION_UPDATE_FAILED" : "APPLICATION_START_FAILED";
+                String msg = AppMessageHelper.get(_aii.getHandler()).formatMessage(key, _config.getName(), t.toString());
                 NotificationHelper.broadcastChange(_config.getMBeanNotifier(), _config.getMBeanName(), _update ? "application.update" : "application.start", Boolean.FALSE,
-                                                   AppMessageHelper.get(_aii.getHandler()).formatMessage(key, _config.getName(), t.toString()));
+                                                   msg);
                 AppMessageHelper.get(_aii.getHandler()).error(key, _config.getName(), t.toString());
                 _configurator.restoreMessage(() -> {
                     AppMessageHelper.get(_aii.getHandler()).error(key, _config.getName(), t.toString());
                 });
+                failStartCheckpoint.set(msg);
                 callback.failed(t);
             } else {
                 if (_tc.isEventEnabled()) {
@@ -143,6 +149,10 @@ class StartAction implements Action, CheckpointHook {
 
     @Override
     public void prepare() {
+        String failStartMsg = failStartCheckpoint.getAndSet(null);
+        if (failStartMsg != null) {
+            throw new IllegalStateException(failStartMsg);
+        }
         if (_callback.get() != null) {
             // application startup timed out, fail checkpoint
             final ApplicationHandler<?> handler = _aii.getHandler();

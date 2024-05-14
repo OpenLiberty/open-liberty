@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,14 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import static app2.EarlyStartupAppCode.PROP_FAIL_STARTUP;
+import static io.openliberty.checkpoint.fat.FATSuite.configureBootStrapProperties;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
+import static io.openliberty.checkpoint.fat.FATSuite.removeBootStrapProperties;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
+import java.util.Collections;
 
 import org.junit.After;
 import org.junit.Before;
@@ -25,11 +30,13 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -76,6 +83,17 @@ public class CheckpointPhaseTest {
     }
 
     @Test
+    @ExpectedFFDC({ "java.lang.RuntimeException", "com.ibm.ws.container.service.state.StateChangeException", "io.openliberty.checkpoint.internal.criu.CheckpointFailedException" })
+    public void testFailAppStart() throws Exception {
+        configureBootStrapProperties(server, Collections.singletonMap(PROP_FAIL_STARTUP, "true"));
+        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, true, true, (s) -> {
+            assertNotNull("App code should have run.", server.waitForStringInLogUsingMark("TESTING - contextInitialized", 100));
+        }));
+        ProgramOutput output = server.startServer();
+        assertEquals("Wrong return code from checkpoint", 72, output.getReturnCode());
+    }
+
+    @Test
     public void testBeforeAppStart() throws Exception {
         server.setCheckpoint(new CheckpointInfo(CheckpointPhase.BEFORE_APP_START, true, (s) -> {
             assertEquals("Unexpected app code ran.", null, s.waitForStringInLogUsingMark("TESTING - contextInitialized", 100));
@@ -112,6 +130,7 @@ public class CheckpointPhaseTest {
     @After
     public void tearDown() throws Exception {
         server.stopServer();
+        removeBootStrapProperties(server, PROP_FAIL_STARTUP);
     }
 
 }
