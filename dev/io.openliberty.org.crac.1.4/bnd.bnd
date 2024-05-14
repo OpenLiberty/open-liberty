@@ -14,21 +14,21 @@ bVersion: 1.0
 
 Bundle-Name: Open Liberty CRaC API
 Bundle-Description: Open Liberty CRaC API, version ${bVersion}
-Bundle-SymbolicName: io.openliberty.org.crac
+Bundle-SymbolicName: io.openliberty.org.crac.1.4
 Private-Package: io.openliberty.crac.*
 Export-Package: org.crac;version="1.4.0", org.crac.management;version="1.4.0"
 Import-Package: *
 WS-TraceGroup: checkpoint
 
-instrument.classesExcludes: \
-  org/crac/*.class
+instrument.ffdc: true
+instrument.classesIncludes: \
+ org/crac/Liberty**.class,\
+ org/crac/package-info.class
+publish.wlp.jar.suffix: dev/api/stable
 
 -includeresource: \
    @${repo;org.crac:crac;1.4.0;EXACT},\
    org/crac=${bin}/org/crac
-
--dsannotations: \
-	io.openliberty.crac.LibertyCheckpoint
 
 -buildpath: \
 	org.crac:crac;version=1.4.0,\

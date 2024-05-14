@@ -25,8 +25,6 @@
 
 package org.crac;
 
-import io.openliberty.crac.LibertyCheckpoint;
-
 /**
  * The coordination service.
  */
