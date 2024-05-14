@@ -666,37 +666,16 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public boolean isCommitted() {
-        System.out.println("DEBUG -> isCommitted() -> " + this.committed);
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        System.out.println("Current stack trace:");
-        for (StackTraceElement element : stackTraceElements) {
-            System.out.println(element.toString());
-
-        }
         return this.committed;
     }
 
     @Override
     public void setCommitted() {
         this.committed = Boolean.TRUE;
-        System.out.println("DEBUG -> setCommitted() -> " + this.committed);
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        System.out.println("Current stack trace:");
-        for (StackTraceElement element : stackTraceElements) {
-            System.out.println(element.toString());
-
-        }
     }
 
     public void setCommitted(boolean committed) {
         this.committed = committed;
-        System.out.println("DEBUG -> setCommitted() -> " + this.committed);
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        System.out.println("Current stack trace:");
-        for (StackTraceElement element : stackTraceElements) {
-            System.out.println(element.toString());
-
-        }
     }
 
     @Override
