@@ -490,15 +490,6 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      */
     @Override
     public boolean isCommitted() {
-
-        System.out.println("DEBUG -> isCommitted() -> " + this.bIsCommitted);
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        System.out.println("Current stack trace:");
-        for (StackTraceElement element : stackTraceElements) {
-            System.out.println(element.toString());
-
-        }
-
         return this.bIsCommitted;
     }
 
@@ -513,13 +504,6 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
         this.bIsCommitted = true;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Committed flag set on " + this);
-
-        }
-        System.out.println("DEBUG -> SET COMMITTED -> " + this.bIsCommitted);
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        System.out.println("Current stack trace:");
-        for (StackTraceElement element : stackTraceElements) {
-            System.out.println(element.toString());
 
         }
     }
@@ -2941,12 +2925,12 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
                     // Set Partitioned Flag for SameSite=None Cookie
                     if (getServiceContext().getHttpConfig().getPartitioned() == true
                         && sameSiteAttributeValue.equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName())) {
-                            if(cookie.getAttribute("partitioned") == null) {  // null means no value has been set yet
-                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "[1] Setting the Partitioned attribute for SameSite=None");
-                                }
-                                cookie.setAttribute("partitioned", "");
+                        if (cookie.getAttribute("partitioned") == null) { // null means no value has been set yet
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "[1] Setting the Partitioned attribute for SameSite=None");
                             }
+                            cookie.setAttribute("partitioned", "");
+                        }
                     }
 
                 } else {
@@ -2955,12 +2939,12 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
                     }
                 }
             }
-            
-            // If SameSite=None is set programmatically, but partitioned is set via server.xml, then add the partitioned attribute
+
+            // If SameSite=None is set programmatically, but partitioned is set via server.xml, then add the parititioned attribute
             if (getServiceContext().getHttpConfig().useSameSiteConfig() && cookie.getAttribute("samesite") != null) {
                 boolean sameSiteNoneUsed = cookie.getAttribute("samesite").equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName());
-                if(getServiceContext().getHttpConfig().getPartitioned() && sameSiteNoneUsed) {
-                    if(cookie.getAttribute("partitioned") == null) {  // null means no value has been set yet
+                if (getServiceContext().getHttpConfig().getPartitioned() && sameSiteNoneUsed) {
+                    if (cookie.getAttribute("partitioned") == null) { // null means no value has been set yet
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "[2] Setting the Partitioned attribute for SameSite=None");
                         }
