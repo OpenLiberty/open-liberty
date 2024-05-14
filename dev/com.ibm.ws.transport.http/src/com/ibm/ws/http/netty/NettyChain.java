@@ -185,12 +185,10 @@ public class NettyChain extends HttpChain {
         if (!newConfig.unchanged(oldConfig)) {
             MSP.log("This configuration differs and should cause an update");
             currentConfig = newConfig;
-
-        if (configurationsDiffer(resolvedHostName)) {
             stopAndWait();
             startNettyChannel();
             MSP.log("Channel restarted with new configuration.");
-        }
+        }       
     }
 
     public synchronized void startNettyChannel() {

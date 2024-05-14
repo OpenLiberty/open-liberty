@@ -162,7 +162,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         channel.attr(NettyHttpConstants.ENDPOINT_PID).set(chain.getEndpointPID());
 
         //TODO:Uncomment for debug
-        pipeline.addLast(new DebugHandler());
+        //pipeline.addLast(new DebugHandler());
 
         if (chain.isHttps()) {
             if (chain.isHttp2Enabled()) { // h2 setup starts here
@@ -222,78 +222,14 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
      *
      * @param pipeline ChannelPipeline to update as necessary
      */
-//    private void setupH2cPipeline(ChannelPipeline pipeline) {
-////        pipeline.addLast(HTTP_DISPATCHER_HANDLER_NAME, new HttpDispatcherHandler(httpConfig));
-////        addPreHttpCodecHandlers(pipeline);
-////        addH2CCodecHandlers(pipeline);
-////        addPreDispatcherHandlers(pipeline, true);
-//        HttpServerCodec httpServerCodec = new HttpServerCodec();
-//        HttpServerUpgradeHandler.UpgradeCodecFactory upgradeCodecFactory = protocol -> {
-//            if (AsciiString.contentEquals(Http2CodecUtil.HTTP_UPGRADE_PROTOCOL_NAME, protocol)) {
-//                // If the protocol is HTTP/2, return the upgrade codec for HTTP/2
-//                return new CleartextHttp2ServerUpgradeHandler.Http2ServerUpgradeCodec(new LibertyUpgradeCodec(httpConfig));
-//            } else if (AsciiString.contentEquals(WebSocketServerProtocolHandler.SUB_PROTOCOL_WILDCARD, protocol)) {
-//                // If the protocol is WebSocket, we can add logic here to add web socket handlers, for now just return null
-//                return null;
-//            }
-//            // For other protocols or if you want to ignore the upgrade, return null
-//            return null;
-//        };
-//
-//        CleartextHttp2ServerUpgradeHandler cleartextHttp2ServerUpgradeHandler = new CleartextHttp2ServerUpgradeHandler(
-//            httpServerCodec,
-//            new HttpServerUpgradeHandler(httpServerCodec, upgradeCodecFactory),
-//            new LibertyUpgradeCodec(httpConfig)
-//        );
-//
-//        pipeline.addLast(cleartextHttp2ServerUpgradeHandler);
-//        pipeline.addLast(HTTP_DISPATCHER_HANDLER_NAME, new HttpDispatcherHandler(httpConfig));
-//
-//        // Handler to decide if an upgrade occurred or not and to add HTTP/1 handlers on top
-//        pipeline.addLast(NO_UPGRADE_OCURRED_HANDLER_NAME, new SimpleChannelInboundHandler<HttpMessage>() {
-//            @Override
-//            protected void channelRead0(ChannelHandlerContext ctx, HttpMessage msg) throws Exception {
-//                // If this handler is hit, then no upgrade has been attempted and the client is just talking HTTP/1.1.
-//                ctx.pipeline().remove(this);
-//                addHttp11Handlers(ctx.pipeline());
-//                ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
-//            }
-//        });
-//    }
 
     private void setupH2cPipeline(ChannelPipeline pipeline) {
         pipeline.addLast(HTTP_DISPATCHER_HANDLER_NAME, new HttpDispatcherHandler(httpConfig));
         addPreHttpCodecHandlers(pipeline);
         addH2CCodecHandlers(pipeline);
         addPreDispatcherHandlers(pipeline, true);
-//        HttpServerCodec httpServerCodec = new HttpServerCodec(HttpObjectDecoder.DEFAULT_MAX_INITIAL_LINE_LENGTH, Integer.MAX_VALUE, httpConfig.getIncomingBodyBufferSize());
-//
-//        pipeline.addLast(NETTY_HTTP_SERVER_CODEC, httpServerCodec);
-//
-//        LibertyUpgradeCodec libertyUpgradeCodec = new LibertyUpgradeCodec(httpConfig, pipeline.channel());
-//        HttpServerUpgradeHandler upgradeHandler = new HttpServerUpgradeHandler(httpServerCodec, libertyUpgradeCodec);
-//        pipeline.addLast(upgradeHandler);
-//
-//        // Check for non-upgraded requests (HTTP/1.1 including WebSocket)
-//        pipeline.addLast(NO_UPGRADE_OCURRED_HANDLER_NAME, new SimpleChannelInboundHandler<HttpMessage>() {
-//            @Override
-//            protected void channelRead0(ChannelHandlerContext ctx, HttpMessage msg) throws Exception {
-//                // Handler logic for non-upgraded requests (HTTP/1.1)
-//                MSP.log("Triggering read for names: " + ctx.pipeline().names().toString());
-//                ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
-//            }
-//        });
-//
-//        // Continue adding other necessary handlers for HTTP/1.1
-//        addHttp11Handlers(pipeline);
-    }
 
-//    private void addHttp11Handlers(ChannelPipeline pipeline) {
-//        pipeline.addLast(HTTP_DISPATCHER_HANDLER_NAME, new HttpDispatcherHandler(httpConfig));
-//        addPreHttpCodecHandlers(pipeline);
-//        addPreDispatcherHandlers(pipeline, false);
-//        MSP.log("Pipeline was configured as:  " + pipeline.names().toString());
-//    }
+    }
 
     /**
      * Utility method for building an HTTP1.1 pipeline
@@ -301,13 +237,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
      * @param pipeline ChannelPipeline to update as necessary
      */
     private void setupHttp11Pipeline(ChannelPipeline pipeline) {
-//        long maxHeaderSize = httpConfig.getLimitOfFieldSize() * httpConfig.getLimitOnNumberOfHeaders() * 1L;
-//        if (maxHeaderSize > Integer.MAX_VALUE)
-//            maxHeaderSize = Integer.MAX_VALUE;
-//        pipeline.addLast(NETTY_HTTP_SERVER_CODEC,
-//                         new HttpServerCodec(HttpObjectDecoder.DEFAULT_MAX_INITIAL_LINE_LENGTH, (int) maxHeaderSize, httpConfig.getIncomingBodyBufferSize()));
-        // POC Codec for custom validation?
-//        HttpServerCodec sourceCodec = new HttpServerCodec(HttpObjectDecoder.DEFAULT_MAX_INITIAL_LINE_LENGTH, HttpObjectDecoder.DEFAULT_MAX_HEADER_SIZE, httpConfig.getIncomingBodyBufferSize(), httpConfig.getLimitOfFieldSize(), httpConfig.getLimitOnNumberOfHeaders());
         HttpServerCodec sourceCodec = new HttpServerCodec(HttpObjectDecoder.DEFAULT_MAX_INITIAL_LINE_LENGTH, Integer.MAX_VALUE, httpConfig.getIncomingBodyBufferSize());
         pipeline.addLast(NETTY_HTTP_SERVER_CODEC, sourceCodec);
         pipeline.addLast(HTTP_DISPATCHER_HANDLER_NAME, new HttpDispatcherHandler(httpConfig));
@@ -359,13 +288,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, NO_UPGRADE_OCURRED_HANDLER_NAME, new SimpleChannelInboundHandler<HttpMessage>() {
             @Override
             protected void channelRead0(ChannelHandlerContext ctx, HttpMessage msg) throws Exception {
-                // If this handler is hit then no upgrade has been attempted and the client is just talking HTTP 1.1.
-                // ctx.pipeline().addBefore("chunkLoggingHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
-                // ctx.pipeline().addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, "objectAggregator",
-                //                         new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
-                // ctx.pipeline().remove(HttpServerUpgradeHandler.class);
-                // ctx.fireChannelRead(ReferenceCountUtil.retain(msg, 1));
-
                 if ("HTTP2".equals(ctx.pipeline().channel().attr(NettyHttpConstants.PROTOCOL).get())) {
 
                     ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
@@ -385,14 +307,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                         NettyServletUpgradeHandler upgradeHandler = new NettyServletUpgradeHandler(ctx.channel());
                         ctx.pipeline().addLast(upgradeHandler);
                     }
-
-                    System.out.println("BEFORE DISPATCHER MESSAGE DIRECT CALL :" + ctx.pipeline().names());
-
-                    //HttpDispatcherHandler dispatcherHandler = (HttpDispatcherHandler) ctx.pipeline().get(HTTP_DISPATCHER_HANDLER_NAME);
                     MSP.log("Names before direct dispatcher call: " + ctx.pipeline().names().toString());
-                    //dispatcherHandler.processMessageDirectly((FullHttpRequest) ReferenceCountUtil.retain(msg));
-                    //ReferenceCountUtil.retain(msg);
-                    //return;
+                   
 
                 } else {
 
@@ -400,18 +316,10 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                     //TODO: this is a very large number, check best practice
                     pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, null,
                                       new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
-
-//                ctx.pipeline().addBefore("chunkWriteHandler", "objectAggregator", new LibertyHttpObjectAggregator(maxContentLength));
-//                ctx.pipeline().addBefore("objectAggregator", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
-                    MSP.log("Have added the http handler, not the dispatcher");
                     MSP.log("Names: " + ctx.pipeline().names().toString());
 
-                    //Removing upgrade handler, let the container handle it
-                    // Remove unused handlers
 
-                    //ctx.pipeline().remove(HttpServerUpgradeHandler.class);
                     ctx.pipeline().remove(this);
-                    //TODO: this needs to be improved, what happens if first request is not H2 but second is.
                     MSP.log("Names after remove: " + ctx.pipeline().names().toString());
 
                 }
@@ -458,13 +366,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                               new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
         }
 
-        //pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new HttpObjectAggregator(maxContentLength);
-        //pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new HttpObjectAggregator(64 * 1024));
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, "chunkLoggingHandler", new ChunkSizeLoggingHandler());
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, "chunkWriteHandler", new ChunkedWriteHandler());
-        // if (httpConfig.useAutoCompression()) {
-        //   pipeline.addLast(new NettyHttpContentCompressor());
-        //}
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new ByteBufferCodec());
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new TransportInboundHandler(httpConfig));
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new TransportOutboundHandler(httpConfig));
