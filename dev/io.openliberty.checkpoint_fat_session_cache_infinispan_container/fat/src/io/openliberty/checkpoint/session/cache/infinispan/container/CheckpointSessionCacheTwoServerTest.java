@@ -124,10 +124,10 @@ public class CheckpointSessionCacheTwoServerTest extends FATServletClient {
         } finally {
             try {
                 if (serverA.isStarted())
-                    serverA.stopServer();
+                    serverA.stopServer("SESN0312W");
             } finally {
                 if (serverB.isStarted())
-                    serverB.stopServer();
+                    serverB.stopServer("SESN0312W");
             }
             configureEnvVariable(serverA, emptyMap());
             configureEnvVariable(serverB, emptyMap());
@@ -148,7 +148,7 @@ public class CheckpointSessionCacheTwoServerTest extends FATServletClient {
 
         // Now verify the cache failed over to Server B
         appB.sessionGet("testFailover-1", "foo", session);
-        serverB.stopServer();
+        serverB.stopServer("SESN0312W");
     }
 
     /**
