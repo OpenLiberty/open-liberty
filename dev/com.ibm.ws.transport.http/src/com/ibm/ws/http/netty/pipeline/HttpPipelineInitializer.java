@@ -162,7 +162,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         channel.attr(NettyHttpConstants.ENDPOINT_PID).set(chain.getEndpointPID());
 
         //TODO:Uncomment for debug
-        //pipeline.addLast(new DebugHandler());
+        pipeline.addLast(new DebugHandler());
 
         if (chain.isHttps()) {
             if (chain.isHttp2Enabled()) { // h2 setup starts here
