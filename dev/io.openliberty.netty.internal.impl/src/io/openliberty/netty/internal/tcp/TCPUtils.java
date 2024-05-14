@@ -88,7 +88,7 @@ public class TCPUtils {
 
     private static ChannelFuture open(NettyFrameworkImpl framework, AbstractBootstrap bootstrap,
             final TCPConfigurationImpl config, String inetHost, int inetPort, ChannelFutureListener openListener,
-            final int retryCount, AtomicBoolean cancelToken) {
+            final int retryCount) {
 
         ChannelFuture oFuture = null;
         if (inetHost.equals("*")) {
@@ -172,11 +172,6 @@ public class TCPUtils {
                 }
                 
                 System.out.println("open failed for " + config.getExternalName() + " due to: " + future.cause().getMessage());
-                System.out.println("Did we pass the cancelToken: " + cancelToken.get());
-                if(cancelToken.get()) {
-                	System.out.println("Cancel token received, not attempting to bind. Exiting...");
-                	return;
-                }
 
                 if (retryCount > 0 ) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -192,7 +187,7 @@ public class TCPUtils {
                             Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
                         }
                     }
-                    open(framework, bootstrap, config, newHost, inetPort, openListener, retryCount - 1, cancelToken);
+                    open(framework, bootstrap, config, newHost, inetPort, openListener, retryCount - 1);
                 } else {
                     if (config.isInbound()) {
                         Tr.error(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(), newHost,
@@ -210,7 +205,7 @@ public class TCPUtils {
     }
 
     private static FutureTask<ChannelFuture> startHelper(NettyFrameworkImpl framework, AbstractBootstrap bootstrap,
-            TCPConfigurationImpl config, String inetHost, int inetPort, ChannelFutureListener openListener, AtomicBoolean cancelToken)
+            TCPConfigurationImpl config, String inetHost, int inetPort, ChannelFutureListener openListener)
             throws NettyException {
     	if(framework.isStopping()){ // Framework already started and is no longer active
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -223,7 +218,7 @@ public class TCPUtils {
                     @Override
                     public ChannelFuture call() {
                         return open(framework, bootstrap, config, inetHost, inetPort, openListener,
-                                config.getPortOpenRetries(), cancelToken);
+                                config.getPortOpenRetries());
                     }
                 });
             } catch (Exception e) {
@@ -252,21 +247,7 @@ public class TCPUtils {
             Tr.debug(tc, "start (TCP): attempt to bind a channel at host " + inetHost + " port " + inetPort);
         }
         TCPConfigurationImpl config = (TCPConfigurationImpl) bootstrap.getConfiguration();
-        AtomicBoolean cancelToken = new AtomicBoolean(false);
-        return startHelper(framework, bootstrap, config, inetHost, inetPort, openListener, cancelToken);
-    }
-    
-    
-    public static FutureTask<ChannelFuture> start(NettyFrameworkImpl framework, ServerBootstrapExtended bootstrap, String inetHost,
-            int inetPort, ChannelFutureListener openListener, AtomicBoolean cancelToken) throws NettyException {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "start (TCP): attempt to bind a channel at host " + inetHost + " port " + inetPort);
-        }
-        
-        System.out.println("start (TCP): attempt to bind a channel at host " + inetHost + " port " + inetPort + " CancelToken: " + cancelToken.get());
-        
-        TCPConfigurationImpl config = (TCPConfigurationImpl) bootstrap.getConfiguration();
-        return startHelper(framework, bootstrap, config, inetHost, inetPort, openListener, cancelToken);
+        return startHelper(framework, bootstrap, config, inetHost, inetPort, openListener);
     }
 
     /**
@@ -286,16 +267,7 @@ public class TCPUtils {
             Tr.debug(tc, "startOutbound (TCP): attempt to connect to host " + inetHost + " port " + inetPort);
         }
         TCPConfigurationImpl config = (TCPConfigurationImpl) bootstrap.getConfiguration();
-        return startHelper(framework, bootstrap, config, inetHost, inetPort, openListener, new AtomicBoolean(false));
-    }
-    
-    public static FutureTask<ChannelFuture> startOutbound(NettyFrameworkImpl framework, BootstrapExtended bootstrap,
-            String inetHost, int inetPort, ChannelFutureListener openListener, AtomicBoolean cancelToken) throws NettyException {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "startOutbound (TCP): attempt to connect to host " + inetHost + " port " + inetPort);
-        }
-        TCPConfigurationImpl config = (TCPConfigurationImpl) bootstrap.getConfiguration();
-        return startHelper(framework, bootstrap, config, inetHost, inetPort, openListener, cancelToken);
+        return startHelper(framework, bootstrap, config, inetHost, inetPort, openListener);
     }
 
     /**
