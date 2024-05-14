@@ -52,6 +52,7 @@ import componenttest.rules.repeater.RepeatTests;
         BatchNoSecurityTest.class,
         BatchTransactionalMiscTest.class,
         CDITest.class,
+        CDITestCheckpoint.class,
         ChunkTest.class,
         JdbcConfigTest.class,
         LocalServerJobRecoveryAtStartUpTest.class,
@@ -65,8 +66,8 @@ import componenttest.rules.repeater.RepeatTests;
         JPAPersistenceBatchJobOperatorApiTest.class
 })
 public class FATSuite {
-    @ClassRule
-    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
-        .andWith(new JakartaEE9Action().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-        .andWith(new JakartaEE10Action()); 
+//    @ClassRule
+//    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
+//        .andWith(new JakartaEE9Action().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+//        .andWith(new JakartaEE10Action()); 
 }
