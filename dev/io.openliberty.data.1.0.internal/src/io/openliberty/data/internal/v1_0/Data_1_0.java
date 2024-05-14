@@ -29,6 +29,35 @@ import io.openliberty.data.internal.version.DataVersionCompatibility;
            configurationPolicy = ConfigurationPolicy.IGNORE,
            service = DataVersionCompatibility.class)
 public class Data_1_0 implements DataVersionCompatibility {
+    @Override
+    @Trivial
+    public StringBuilder appendCondition(StringBuilder q, int qp,
+                                         Method method, int p,
+                                         String o_, String attrName,
+                                         boolean isCollection, Annotation[] annos) {
+        return q.append(o_).append(attrName).append("=?").append(qp);
+    }
+
+    @Override
+    @Trivial
+    public StringBuilder appendConditionsForIdClass(StringBuilder q, int qp,
+                                                    Method method, int p,
+                                                    String o_, String[] idClassAttrNames,
+                                                    Annotation[] annos) {
+        q.append('(');
+
+        int count = 0;
+        for (String name : idClassAttrNames) {
+            if (count != 0)
+                q.append(" AND ");
+
+            q.append(o_).append(name).append("=?").append(count++ + qp);
+        }
+
+        q.append(')');
+
+        return q;
+    }
 
     @Override
     @Trivial
@@ -44,25 +73,19 @@ public class Data_1_0 implements DataVersionCompatibility {
 
     @Override
     @Trivial
-    public String getFunctionCall(Annotation functionAnno) {
-        throw new UnsupportedOperationException(); // unreachable
-    }
-
-    @Override
-    @Trivial
     public String[] getSelections(Method method) {
         return null;
     }
 
     @Override
     @Trivial
-    public String[] getUpdateAttributeAndOperation(Annotation anno) {
+    public String[] getUpdateAttributeAndOperation(Annotation[] annos) {
         throw new UnsupportedOperationException(); // unreachable
     }
 
     @Override
     @Trivial
-    public boolean roundToNearest(Annotation anno) {
-        throw new UnsupportedOperationException(); // unreachable
+    public boolean hasOrAnnotation(Annotation[] annos) {
+        return false;
     }
 }
