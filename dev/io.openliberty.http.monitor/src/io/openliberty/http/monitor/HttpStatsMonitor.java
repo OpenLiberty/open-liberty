@@ -42,7 +42,7 @@ public class HttpStatsMonitor extends StatisticActions {
 	private static final ThreadLocal<HttpStatAttributes> tl_httpStats = new ThreadLocal<HttpStatAttributes>();
 	private static final ThreadLocal<Long> tl_startNanos = new ThreadLocal<Long>();
 	
-	public static HttpStatsMonitor instance;
+	private static HttpStatsMonitor instance;
 
 	/*
 	 * Instance block to create singleton.
@@ -57,7 +57,9 @@ public class HttpStatsMonitor extends StatisticActions {
 		if (instance == null) {
 			instance = this;
 		} else {
-			Tr.debug(tc, String.format("Multiple attempts to create %s. We already have an instance", HttpStatsMonitor.class.getName()));
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+				Tr.debug(tc, String.format("Multiple attempts to create %s. We already have an instance", HttpStatsMonitor.class.getName()));
+			}
 		}
 
 	}
@@ -87,7 +89,7 @@ public class HttpStatsMonitor extends StatisticActions {
 
 		if (retrievedHttpStatAttr == null) {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-				Tr.debug(tc, "Unable to retrieve HttpStatAttributes. Unable t time.");
+				Tr.debug(tc, "Unable to retrieve HttpStatAttributes. Unable to record time.");
 			}
 			return;
 		}
@@ -190,6 +192,7 @@ public class HttpStatsMonitor extends StatisticActions {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(tc, String.format("Invalid HTTP Stats attributes : \n %s", httpStatAttributes.toString()));
 			}
+			return;
 		}
 		
 		/*

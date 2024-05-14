@@ -42,8 +42,6 @@ public interface HttpStatsMXBean {
 	
 	public long getCount();
 	
-    public double getDuration();
-
-    
+	public double getDuration();
     
 }

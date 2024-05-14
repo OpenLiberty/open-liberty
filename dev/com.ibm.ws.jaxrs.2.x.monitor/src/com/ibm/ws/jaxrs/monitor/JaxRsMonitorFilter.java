@@ -54,7 +54,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
 
     private static final TraceComponent tc = Tr.register(JaxRsMonitorFilter.class);
     
-    private static final String REST_HTP_ROUTE_ATTR = "RESTFUL.HTTP.ROUTE";
+    private static final String REST_HTTP_ROUTE_ATTR = "RESTFUL.HTTP.ROUTE";
 
     @Context
     ResourceInfo resourceInfo;
@@ -186,7 +186,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
         /*
          * Attempt to resolve HTTP Route of Restful Resource.
          * If value is resolved, set it into HttpServletRequest's
-         * attribute as "Restfu.http.route"
+         * attribute as "RESTFUL.HTTP.ROUTE"
          */
         if (resourceClass != null && resourceMethod != null) {
             String route;
@@ -204,9 +204,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
 
             route = template.toTemplate();
             if (route != null && !route.isEmpty()) {
-                // System.out.println("RestfulWsMonitorFilter: servlet request httproute: " +
-                // route);
-                servletRequest.setAttribute(REST_HTP_ROUTE_ATTR, route);
+                servletRequest.setAttribute(REST_HTTP_ROUTE_ATTR, route);
             }
         }
 

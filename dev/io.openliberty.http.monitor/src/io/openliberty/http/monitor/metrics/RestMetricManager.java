@@ -32,9 +32,9 @@ import io.openliberty.http.monitor.HttpStatsMonitor;
 public class RestMetricManager {
 
 	
-	public static RestMetricManager instance;
+	private static RestMetricManager instance;
 	
-	private static final TraceComponent tc = Tr.register(HttpStatsMonitor.class);    
+	private static final TraceComponent tc = Tr.register(RestMetricManager.class);
     
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     private volatile List<HTTPMetricAdapter> httpMetricRuntimes;

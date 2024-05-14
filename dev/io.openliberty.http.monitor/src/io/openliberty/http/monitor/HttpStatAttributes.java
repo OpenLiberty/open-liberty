@@ -41,12 +41,12 @@ public class HttpStatAttributes {
 	
 	
 	public boolean validate() {
-		return ((requestMethod != null) &&
+		return (requestMethod != null) &&
 				(scheme != null) &&
 				(networkProtocolName != null) &&
 				(networkProtocolVersion != null) &&
 				(serverName != null) &&
-				serverPort != 0) ? true : false;
+				(serverPort != 0);
 	}
 	
 	public Optional<String> getErrorType() {
@@ -141,7 +141,7 @@ public class HttpStatAttributes {
 		return String.format(
 				" ------- \n" 
 		+ "Request Method (mandatory): [%s] \n" 
-		+ "Scheme (mandatory): [%s] \n" + "Network Protocol Name: [%s] \n"
+		+ "Scheme (mandatory): [%s] \n"
 		+ "Network Protocol Name (optional): [%s] \n" 
 		+ "Network Protocol Version (mandatory): [%s] \n" 
 		+ "Server Name (mandatory): [%s] \n" 
