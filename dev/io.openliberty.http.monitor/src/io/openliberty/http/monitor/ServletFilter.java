@@ -62,7 +62,7 @@ public class ServletFilter implements Filter {
 			resolveResponseAttributes(servletResponse, httpStatsAttributesHolder);
 
 			// attempt to retrieve the `httpRoute` from the RESTful filter
-			httpRoute = (String) servletRequest.getAttribute(REST_HTP_ROUTE_ATTR);
+			httpRoute = (String) servletRequest.getAttribute(REST_HTTP_ROUTE_ATTR);
 			
 			/*
 			 * If it does not exist.
