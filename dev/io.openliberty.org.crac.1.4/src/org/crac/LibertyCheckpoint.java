@@ -8,21 +8,23 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.crac;
+package org.crac;
 
 import java.lang.ref.WeakReference;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Deque;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.crac.CheckpointException;
-import org.crac.Context;
-import org.crac.Resource;
-import org.crac.RestoreException;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
-import org.osgi.service.component.annotations.Component;
+import org.osgi.framework.FrameworkUtil;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -32,12 +34,15 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
-@Component(property = { Constants.SERVICE_RANKING + ":Integer=" + Integer.MAX_VALUE,
-                        CheckpointHook.MULTI_THREADED_HOOK + ":Boolean=true",
-                        "io.openliberty.crac.hooks:Boolean=true" })
-public class LibertyCheckpoint implements CheckpointHook {
+/*
+ * Using package private class here to avoid adding to the API JAR.
+ * NOTE: package private classes cannot be service components;
+ *       therefore this class programmatically registers the CheckpointHook
+ */
+class LibertyCheckpoint implements CheckpointHook {
     private static final TraceComponent tc = Tr.register(LibertyCheckpoint.class);
     private static final Deque<CheckpointHook> hooks = new ConcurrentLinkedDeque<CheckpointHook>();
+    private static final AtomicBoolean registerHookService = new AtomicBoolean(false);
 
     @Override
     public void prepare() {
@@ -70,8 +75,9 @@ public class LibertyCheckpoint implements CheckpointHook {
         }
     }
 
-    static public void register(Resource r, Context<? extends Resource> c) {
+    static void register(Resource r, Context<? extends Resource> c) {
         debug(tc, () -> "Registering resource " + r + " from context " + c);
+        registerHookService();
         CheckpointPhase phase = CheckpointPhase.getPhase();
         if (phase == CheckpointPhase.INACTIVE) {
             return;
@@ -109,8 +115,9 @@ public class LibertyCheckpoint implements CheckpointHook {
         hooks.addLast(hook);
     }
 
-    public static void checkpointRestore() throws RestoreException, CheckpointException {
+    static void checkpointRestore() throws RestoreException, CheckpointException {
         debug(tc, () -> "Requesting an application initiated checkpoint.");
+        registerHookService();
         String errorMessage = Tr.formatMessage(tc, "CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553");
         final Exception fail = CheckpointPhase.INACTIVE == CheckpointPhase.getPhase() ? new UnsupportedOperationException(errorMessage) : new CheckpointException(errorMessage);
         fail.fillInStackTrace();
@@ -123,6 +130,24 @@ public class LibertyCheckpoint implements CheckpointHook {
             }
         });
         sneakyThrow(fail);
+    }
+
+    private static void registerHookService() {
+        if (registerHookService.compareAndSet(false, true)) {
+            Bundle b = FrameworkUtil.getBundle(LibertyCheckpoint.class);
+            if (b == null) {
+                throw new IllegalStateException("No bundle for LibertyCheckpoint class.");
+            }
+            BundleContext bc = AccessController.doPrivileged((PrivilegedAction<BundleContext>) () -> b.getBundleContext());
+            if (bc == null) {
+                throw new IllegalStateException("No bundle context for LibertyCheckpoint class.");
+            }
+            Hashtable<String, Object> serviceProps = new Hashtable<>();
+            serviceProps.put(Constants.SERVICE_RANKING, Integer.MAX_VALUE);
+            serviceProps.put(CheckpointHook.MULTI_THREADED_HOOK, Boolean.TRUE);
+            serviceProps.put("io.openliberty.crac.hooks", Boolean.TRUE);
+            bc.registerService(CheckpointHook.class, new LibertyCheckpoint(), serviceProps);
+        }
     }
 
     @Trivial
