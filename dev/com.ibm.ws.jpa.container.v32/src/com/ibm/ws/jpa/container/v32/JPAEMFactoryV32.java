@@ -93,5 +93,9 @@ public class JPAEMFactoryV32 extends JPAEMFactory {
     public void runInTransaction(Consumer<EntityManager> work) {
     	 ivFactory.runInTransaction(work);
     }
+    @Override
+    public void callInTransaction(Function<EntityManager, R> work) {
+     	 ivFactory.callInTransaction(work);
+     }
 
 }
