@@ -531,11 +531,11 @@ public class FeatureResolverImpl implements FeatureResolver {
                             Collection<String> rootPlatforms) {
 
         if (isBeta) {
-            Set<String> envPlatforms = collectPlatformCompatibilityFeatures(repository);
-            if (envPlatforms != null) {
-                rootPlatforms = envPlatforms;
+            Collection<String> serverPlatforms = collectPlatformCompatibilityFeatures(repository, rootPlatforms);
+            if (serverPlatforms != null) {
+                rootPlatforms = serverPlatforms;
             } else {
-                rootPlatforms = collectPlatformCompatibilityFeatures(repository, rootPlatforms);
+                rootPlatforms = collectPlatformCompatibilityFeatures(repository);
             }
         }
 
