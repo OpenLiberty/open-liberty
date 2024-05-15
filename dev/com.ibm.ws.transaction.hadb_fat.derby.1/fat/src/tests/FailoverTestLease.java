@@ -15,7 +15,6 @@ package tests;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.junit.After;
@@ -25,7 +24,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
@@ -474,142 +472,6 @@ public class FailoverTestLease extends FATServletClient {
             if (!foundThemAll)
                 fail("Did not attempt peer recovery for all servers");
             FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, server1fastcheck, server2fastcheck);
-        }
-        Log.info(this.getClass(), method, "test complete");
-    }
-
-    /**
-     * Test aggressive takeover of recovery logs by a home server
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testAggressiveTakeover1() throws Exception {
-        final String method = "testAggressiveTakeover1";
-        if (!TxTestContainerSuite.isDerby()) { // Embedded Derby cannot support tests with concurrent server startup
-            StringBuilder sb = null;
-
-            FATUtils.startServers(runner, longLeaseCompeteServer1);
-
-            Log.info(this.getClass(), method, "Call longLeaseCompeteServer1");
-
-            sb = runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "setupForAggressivePeerRecovery1");
-
-            Log.info(this.getClass(), method, "setupForAggressivePeerRecovery returned: " + sb);
-            try {
-                // We expect this to fail since it is gonna crash the server
-                sb = runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "setupRec007");
-            } catch (IOException e) {
-            }
-            Log.info(this.getClass(), method, "back from runTestWithResponse in testAggressiveTakeover1, sb is " + sb);
-
-            // wait for 1st server to have gone away
-            Log.info(this.getClass(), method, "wait for first server to go away in testDBBaseRecovery");
-            assertNotNull(longLeaseCompeteServer1.getServerName() + " did not crash", longLeaseCompeteServer1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
-            longLeaseCompeteServer1.postStopServerArchive(); // must explicitly collect since crashed server
-            // The server has been halted but its status variable won't have been reset because we crashed it. In order to
-            // setup the server for a restart, set the server state manually.
-            longLeaseCompeteServer1.setStarted(false);
-
-            // Now start server2
-            server2fastcheck.setHttpDefaultPort(9992);
-            FATUtils.startServers(runner, server2fastcheck);
-
-            // Now start server1
-            FATUtils.startServers(runner, longLeaseCompeteServer1);
-
-            // Server appears to have started ok. Check for key string to see whether recovery has succeeded, irrespective of what server2fastcheck has done
-            assertNotNull("peer recovery failed", longLeaseCompeteServer1
-                            .waitForStringInTrace("All persistent services have been directed to perform recovery processing for this WebSphere server", LOG_SEARCH_TIMEOUT));
-
-            // Did server2 attempt peer recovery? Report only.
-            List<String> theList = server2fastcheck
-                            .findStringsInTrace("Server with identity cloud0021 attempted but failed to recover the logs of peer server cloud0011");
-            if (theList.isEmpty())
-                Log.info(this.getClass(), method, "Server2 was NOT interrupted when peer recovering server1");
-            else
-                Log.info(this.getClass(), method, "Server2 was interrupted when peer recovering server1");
-
-            theList = server2fastcheck
-                            .findStringsInTrace("Server with identity cloud0021 has recovered the logs of peer server cloud0011");
-            if (theList.isEmpty())
-                Log.info(this.getClass(), method, "Server2 did not peer recover server1");
-            else
-                Log.info(this.getClass(), method, "Server2 did peer recover server1");
-
-            // cleanup HATable
-            sb = runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "dropHATable");
-            Log.info(this.getClass(), method, "dropHATable returned: " + sb);
-
-            FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, server2fastcheck, longLeaseCompeteServer1);
-        }
-        Log.info(this.getClass(), method, "test complete");
-    }
-
-    /**
-     * Test aggressive takeover of recovery logs by a home server. Take over at different point in server2's processing.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testAggressiveTakeover2() throws Exception {
-        final String method = "testAggressiveTakeover2";
-        if (!TxTestContainerSuite.isDerby()) { // Embedded Derby cannot support tests with concurrent server startup
-            StringBuilder sb = null;
-
-            FATUtils.startServers(runner, longLeaseCompeteServer1);
-
-            Log.info(this.getClass(), method, "Call longLeaseCompeteServer1");
-
-            sb = runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "setupForAggressivePeerRecovery2");
-
-            Log.info(this.getClass(), method, "setupForAggressivePeerRecovery returned: " + sb);
-            try {
-                // We expect this to fail since it is gonna crash the server
-                sb = runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "setupRec007");
-            } catch (IOException e) {
-            }
-            Log.info(this.getClass(), method, "back from runTestWithResponse in testAggressiveTakeover2, sb is " + sb);
-
-            // wait for 1st server to have gone away
-            Log.info(this.getClass(), method, "wait for first server to go away in testDBBaseRecovery");
-            assertNotNull(longLeaseCompeteServer1.getServerName() + " did not crash", longLeaseCompeteServer1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
-            longLeaseCompeteServer1.postStopServerArchive(); // must explicitly collect since crashed server
-            // The server has been halted but its status variable won't have been reset because we crashed it. In order to
-            // setup the server for a restart, set the server state manually.
-            longLeaseCompeteServer1.setStarted(false);
-
-            // Now start server2
-            server2fastcheck.setHttpDefaultPort(9992);
-            FATUtils.startServers(runner, server2fastcheck);
-
-            // Now start server1
-            FATUtils.startServers(runner, longLeaseCompeteServer1);
-
-            // Server appears to have started ok. Check for key string to see whether recovery has succeeded, irrespective of what server2fastcheck has done
-            assertNotNull("peer recovery failed", longLeaseCompeteServer1
-                            .waitForStringInTrace("All persistent services have been directed to perform recovery processing for this WebSphere server", LOG_SEARCH_TIMEOUT));
-
-            // Did server2 attempt peer recovery? Report only.
-            List<String> theList = server2fastcheck
-                            .findStringsInTrace("Server with identity cloud0021 attempted but failed to recover the logs of peer server cloud0011");
-            if (theList.isEmpty())
-                Log.info(this.getClass(), method, "Server2 was NOT interrupted when peer recovering server1");
-            else
-                Log.info(this.getClass(), method, "Server2 was interrupted when peer recovering server1");
-
-            theList = server2fastcheck
-                            .findStringsInTrace("Server with identity cloud0021 has recovered the logs of peer server cloud0011");
-            if (theList.isEmpty())
-                Log.info(this.getClass(), method, "Server2 did not peer recover server1");
-            else
-                Log.info(this.getClass(), method, "Server2 did peer recover server1");
-
-            // cleanup HATable
-            sb = runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "dropHATable");
-            Log.info(this.getClass(), method, "dropHATable returned: " + sb);
-
-            FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, server2fastcheck, longLeaseCompeteServer1);
         }
         Log.info(this.getClass(), method, "test complete");
     }

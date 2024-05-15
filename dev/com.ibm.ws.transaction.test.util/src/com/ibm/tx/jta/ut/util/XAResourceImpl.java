@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -140,6 +140,7 @@ public class XAResourceImpl implements XAResource, Serializable {
     public static final int RETURN_TRUE = -5000;
     public static final int RETURN_FALSE = -6000;
     public static final int SLEEP_RECOVER = -7000;
+    public static final int CONDITIONAL_RUNTIME_EXCEPTION = -8000;
 
     public static final int NOT_STARTED = 1;
     public static final int COMMITTED = 2;
@@ -912,34 +913,37 @@ public class XAResourceImpl implements XAResource, Serializable {
         if (recoverAction != XAResource.XA_OK) {
             final int repeatCount = self().getRecoverRepeatCount();
             System.out.println("recoverRepeatCount = "+repeatCount+", recoverAction = "+actionFormatter(recoverAction));
-            if(recoverAction == SLEEP_RECOVER) {
-                // Check property
-                final String sleepflagStr = java.security.AccessController.doPrivileged(new PrivilegedAction<String>() {
-                    @Override
-                    public String run() {
-                        return System.getProperty("com.ibm.tx.sleepInRecover");
-                    }
-                });
-                boolean sleepFlag = false;
-                if (sleepflagStr != null) {
-                    sleepFlag =  Boolean.parseBoolean(sleepflagStr);
+            boolean scupperRecovery = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+                @Override
+                public Boolean run() {
+                    return Boolean.getBoolean("com.ibm.tx.scupperRecovery");
                 }
-                System.out.println("sleepFlag is " + sleepFlag);
-                if(sleepFlag) {
+            });
+            
+            if(recoverAction == SLEEP_RECOVER) {
+                System.out.println("scupperRecovery is " + scupperRecovery);
+                if(scupperRecovery) {
                 	try {
                 		System.out.println("Sleeping in RECOVER");
                 		Thread.sleep(120 * 1000);
                 	} catch (InterruptedException e) {
                 		// TODO Auto-generated catch block
                 		e.printStackTrace();
-                	}            	
+                	} finally {
+                		System.out.println("Awoken in RECOVER");
+                	}
                 }
             } else {
             	self().setRecoverRepeatCount(repeatCount - 1);
             	if (repeatCount > 0) {
             		switch (recoverAction) {
-            		    case RUNTIME_EXCEPTION:
-            		    	throw new RuntimeException();
+        		    case CONDITIONAL_RUNTIME_EXCEPTION:
+        		    	if (scupperRecovery)
+        		    		throw new RuntimeException();
+        		    	break;
+
+        		    case RUNTIME_EXCEPTION:
+        		    	throw new RuntimeException();
 
             		    case DIE:
             		    	killDoomedServers(true);
@@ -1567,6 +1571,8 @@ public class XAResourceImpl implements XAResource, Serializable {
         	return "READONLY";
         case RUNTIME_EXCEPTION:
         	return "RUNTIME_EXCEPTION";
+        case CONDITIONAL_RUNTIME_EXCEPTION:
+        	return "CONDITIONAL_RUNTIME_EXCEPTION";
         case DIE:
         	return "DIE";
         case SLEEP_COMMIT:
@@ -1577,6 +1583,8 @@ public class XAResourceImpl implements XAResource, Serializable {
         	return "RETURN_TRUE";
         case RETURN_FALSE:
         	return "RETURN_FALSE";
+        case SLEEP_RECOVER:
+        	return "SLEEP_RECOVER";
         default:
         	return "NO ACTION (" + action +")";
         }

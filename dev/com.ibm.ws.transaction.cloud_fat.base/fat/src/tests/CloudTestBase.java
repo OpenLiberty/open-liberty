@@ -13,6 +13,7 @@
 package tests;
 
 import org.junit.After;
+import org.junit.Before;
 
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.websphere.simplicity.log.Log;
@@ -56,7 +57,6 @@ public class CloudTestBase extends FATServletClient {
             }
             Log.info(CloudTestBase.class, "cleanup", "Cleaning " + String.join(", ", serverNames));
             FATUtils.stopServers(toleratedMsgs, serversToCleanup);
-            serversToCleanup = null;
         } else {
             Log.info(CloudTestBase.class, "cleanup", "No servers to stop");
         }
@@ -66,5 +66,10 @@ public class CloudTestBase extends FATServletClient {
 
         // Remove tranlog DB
         server1.deleteDirectoryFromLibertyInstallRoot("/usr/shared/resources/data");
+    }
+
+    @Before
+    public void setup() throws Exception {
+        serversToCleanup = null;
     }
 }

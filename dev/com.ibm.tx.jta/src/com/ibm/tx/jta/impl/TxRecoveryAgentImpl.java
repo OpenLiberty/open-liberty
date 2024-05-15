@@ -531,8 +531,9 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     }
 
                     // If Recovery Failed, then by default, if this is the home server, we shall bring down the Liberty Server
-                    if (fsc != null && fsc.getRecoveryManager() != null) {
-                        if (fsc.getRecoveryManager().recoveryFailed()) {
+                    RecoveryManager rm; // RecoverManager might be removed on another thread
+                    if (fsc != null && (rm = fsc.getRecoveryManager()) != null) {
+                        if (rm.recoveryFailed()) {
                             // Check the system property but by default we want the server to be shutdown if we, the server
                             // that owns the logs is not able to recover them. The System Property supports the tWAS style
                             // of processing.
