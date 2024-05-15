@@ -14,8 +14,11 @@ package io.openliberty.data.internal.v1_1;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -25,7 +28,17 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import io.openliberty.data.internal.version.DataVersionCompatibility;
 import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
+import io.openliberty.data.repository.Or;
 import io.openliberty.data.repository.Select;
+import io.openliberty.data.repository.comparison.Contains;
+import io.openliberty.data.repository.comparison.EndsWith;
+import io.openliberty.data.repository.comparison.GreaterThan;
+import io.openliberty.data.repository.comparison.GreaterThanEqual;
+import io.openliberty.data.repository.comparison.In;
+import io.openliberty.data.repository.comparison.LessThan;
+import io.openliberty.data.repository.comparison.LessThanEqual;
+import io.openliberty.data.repository.comparison.Like;
+import io.openliberty.data.repository.comparison.StartsWith;
 import io.openliberty.data.repository.function.AbsoluteValue;
 import io.openliberty.data.repository.function.CharCount;
 import io.openliberty.data.repository.function.ElementCount;
@@ -39,6 +52,7 @@ import io.openliberty.data.repository.update.Assign;
 import io.openliberty.data.repository.update.Divide;
 import io.openliberty.data.repository.update.Multiply;
 import io.openliberty.data.repository.update.SubtractFrom;
+import jakarta.data.exceptions.MappingException;
 
 /**
  * Capability that is specific to the version of Jakarta Data.
@@ -47,6 +61,9 @@ import io.openliberty.data.repository.update.SubtractFrom;
            configurationPolicy = ConfigurationPolicy.IGNORE,
            service = DataVersionCompatibility.class)
 public class Data_1_1 implements DataVersionCompatibility {
+    private static final String COMPARISON_ANNO_PACKAGE = In.class.getPackageName();
+    private static final String FUNCTION_ANNO_PACKAGE = Rounded.class.getPackageName();
+
     private static final Map<String, String> FUNCTION_CALLS = new HashMap<>();
     static {
         FUNCTION_CALLS.put(AbsoluteValue.class.getSimpleName(), "ABS(");
@@ -70,6 +87,164 @@ public class Data_1_1 implements DataVersionCompatibility {
 
     @Override
     @Trivial
+    public StringBuilder appendCondition(StringBuilder q, int qp,
+                                         Method method, int p,
+                                         String o_, String attrName,
+                                         boolean isCollection, Annotation[] annos) {
+        boolean ignoreCase = false;
+        StringBuilder attributeExpr = new StringBuilder();
+
+        Annotation comparisonAnno = null;
+        List<Annotation> functionAnnos = new ArrayList<>();
+        for (int a = annos.length - 1; a >= 0; a--) {
+            String annoPackage = annos[a].annotationType().getPackageName();
+            if (COMPARISON_ANNO_PACKAGE.equals(annoPackage)) {
+                if (comparisonAnno == null)
+                    comparisonAnno = annos[a];
+                else
+                    throw new MappingException("The " + Set.of(comparisonAnno, annos[a]) +
+                                               " annotations cannot be combined on parameter " + (p + 1) + " of the " +
+                                               method.getName() + " method of the " +
+                                               method.getDeclaringClass().getName() + " repository."); // TODO NLS
+            } else if (FUNCTION_ANNO_PACKAGE.equals(annoPackage)) {
+                functionAnnos.add(annos[a]);
+                String functionType = annos[a] instanceof Extract ? ((Extract) annos[a]).value().name() //
+                                : annos[a] instanceof Rounded ? ((Rounded) annos[a]).value().name() //
+                                                : annos[a].annotationType().getSimpleName();
+                String functionCall = FUNCTION_CALLS.get(functionType);
+                ignoreCase |= "LOWER(".equals(functionCall);
+                attributeExpr.append(functionCall);
+            }
+        }
+
+        attributeExpr.append(o_).append(attrName);
+
+        for (Annotation anno : functionAnnos) {
+            if (anno instanceof Rounded && ((Rounded) anno).value() == Rounded.Direction.NEAREST)
+                attributeExpr.append(", 0)"); // round to zero digits beyond the decimal
+            else
+                attributeExpr.append(')');
+        }
+
+        if (isCollection)
+            if (comparisonAnno != null && !(comparisonAnno instanceof Contains) || ignoreCase)
+                throw new MappingException(new UnsupportedOperationException("The parameter annotation " +
+                                                                             (ignoreCase ? "IgnoreCase" : comparisonAnno.annotationType().getSimpleName()) +
+                                                                             " which is applied to entity property " + attrName +
+                                                                             " is not supported for collection properties.")); // TODO NLS (future)
+
+        if (comparisonAnno == null) { // Equals
+            q.append(attributeExpr).append('=');
+            appendParam(q, ignoreCase, qp);
+        } else if (comparisonAnno instanceof GreaterThan) {
+            q.append(attributeExpr).append('>');
+            appendParam(q, ignoreCase, qp);
+        } else if (comparisonAnno instanceof GreaterThanEqual) {
+            q.append(attributeExpr).append(">=");
+            appendParam(q, ignoreCase, qp);
+        } else if (comparisonAnno instanceof LessThan) {
+            q.append(attributeExpr).append('<');
+            appendParam(q, ignoreCase, qp);
+        } else if (comparisonAnno instanceof LessThanEqual) {
+            q.append(attributeExpr).append("<=");
+            appendParam(q, ignoreCase, qp);
+        } else if (comparisonAnno instanceof Contains) {
+            if (isCollection) {
+                q.append(" ?").append(qp).append(" MEMBER OF ").append(attributeExpr);
+            } else {
+                q.append(attributeExpr).append(" LIKE CONCAT('%', ");
+                appendParam(q, ignoreCase, qp).append(", '%')");
+            }
+        } else if (comparisonAnno instanceof Like) {
+            q.append(attributeExpr).append(" LIKE ");
+            appendParam(q, ignoreCase, qp);
+        } else if (comparisonAnno instanceof StartsWith) {
+            q.append(attributeExpr).append(" LIKE CONCAT(");
+            appendParam(q, ignoreCase, qp).append(", '%')");
+        } else if (comparisonAnno instanceof EndsWith) {
+            q.append(attributeExpr).append(" LIKE CONCAT('%', ");
+            appendParam(q, ignoreCase, qp).append(')');
+        } else if (comparisonAnno instanceof In) {
+            if (ignoreCase)
+                throw new MappingException("The " + Set.of("IgnoreCase", "In") +
+                                           " annotations cannot be combined on parameter " + (p + 1) + " of the " +
+                                           method.getName() + " method of the " +
+                                           method.getDeclaringClass().getName() + " repository."); // TODO NLS
+            q.append(attributeExpr).append(" IN ");
+            appendParam(q, ignoreCase, qp);
+        } else {
+            throw new UnsupportedOperationException(comparisonAnno.annotationType().toString());
+        }
+
+        return q;
+    }
+
+    @Override
+    @Trivial
+    public StringBuilder appendConditionsForIdClass(StringBuilder q, int qp,
+                                                    Method method, int p,
+                                                    String o_, String[] idClassAttrNames,
+                                                    Annotation[] annos) {
+        boolean ignoreCase = false;
+        for (int a = annos.length - 1; a >= 0; a--) {
+            String annoPackage = annos[a].annotationType().getPackageName();
+            if (COMPARISON_ANNO_PACKAGE.equals(annoPackage)) {
+                throw new MappingException("The " + annos[a].annotationType().getSimpleName() +
+                                           " annotation cannot be applied to a parameter of the " +
+                                           method.getName() + " method of the " +
+                                           method.getDeclaringClass().getName() +
+                                           " repository because the parameter type is an IdClass."); // TODO NLS
+            } else if (annos[a] instanceof IgnoreCase) {
+                ignoreCase = true;
+            } else if (annos[a] instanceof Not) {
+                q.append(" NOT ");
+            } else if (FUNCTION_ANNO_PACKAGE.equals(annoPackage)) {
+                throw new MappingException("The " + annos[a].annotationType().getSimpleName() +
+                                           " annotation cannot be applied to a parameter of the " +
+                                           method.getName() + " method of the " +
+                                           method.getDeclaringClass().getName() +
+                                           " repository because the parameter type is an IdClass."); // TODO NLS
+
+            }
+        }
+
+        q.append('(');
+
+        int count = 0;
+        for (String name : idClassAttrNames) {
+            if (count != 0)
+                q.append(" AND ");
+
+            if (ignoreCase)
+                q.append("LOWER(").append(o_).append(name).append(')');
+            else
+                q.append(o_).append(name);
+
+            q.append('=');
+            appendParam(q, ignoreCase, count++ + qp);
+        }
+
+        q.append(')');
+
+        return q;
+    }
+
+    /**
+     * Appends JQPL for a repository method parameter. Either of the form ?1 or LOWER(?1)
+     *
+     * @param q     builder for the JPQL query.
+     * @param lower indicates if the query parameter should be compared in lower case.
+     * @param num   parameter number.
+     * @return the same builder for the JPQL query.
+     */
+    @Trivial
+    private static StringBuilder appendParam(StringBuilder q, boolean lower, int num) {
+        q.append(lower ? "LOWER(?" : '?').append(num);
+        return lower ? q.append(')') : q;
+    }
+
+    @Override
+    @Trivial
     public Annotation getCountAnnotation(Method method) {
         return method.getAnnotation(Count.class);
     }
@@ -82,46 +257,34 @@ public class Data_1_1 implements DataVersionCompatibility {
 
     @Override
     @Trivial
-    public String getFunctionCall(Annotation anno) {
-        String functionType = anno instanceof Extract ? ((Extract) anno).value().name() //
-                        : anno instanceof Rounded ? ((Rounded) anno).value().name() //
-                                        : anno.annotationType().getSimpleName();
-
-        String functionCall = FUNCTION_CALLS.get(functionType);
-
-        if (functionCall == null)
-            throw new UnsupportedOperationException(anno.toString()); // should never occur
-        return functionCall;
-    }
-
-    @Override
-    @Trivial
     public String[] getSelections(Method method) {
         Annotation select = method.getAnnotation(Select.class);
         return select == null ? null : ((Select) select).value();
     }
 
     @Override
-    @Trivial
-    public String[] getUpdateAttributeAndOperation(Annotation anno) {
-        if (anno instanceof Assign) {
-            return new String[] { ((Assign) anno).value(), "=" };
-        } else if (anno instanceof Add) {
-            return new String[] { ((Add) anno).value(), "+" };
-        } else if (anno instanceof Multiply) {
-            return new String[] { ((Multiply) anno).value(), "*" };
-        } else if (anno instanceof Divide) {
-            return new String[] { ((Divide) anno).value(), "/" };
-        } else if (anno instanceof SubtractFrom) {
-            return new String[] { ((SubtractFrom) anno).value(), "-" };
-        } else { // should be unreachable
-            throw new UnsupportedOperationException(anno.toString());
-        }
+    public String[] getUpdateAttributeAndOperation(Annotation[] annos) {
+        for (Annotation anno : annos)
+            if (anno instanceof Assign) {
+                return new String[] { ((Assign) anno).value(), "=" };
+            } else if (anno instanceof Add) {
+                return new String[] { ((Add) anno).value(), "+" };
+            } else if (anno instanceof Multiply) {
+                return new String[] { ((Multiply) anno).value(), "*" };
+            } else if (anno instanceof Divide) {
+                return new String[] { ((Divide) anno).value(), "/" };
+            } else if (anno instanceof SubtractFrom) {
+                return new String[] { ((SubtractFrom) anno).value(), "-" };
+            }
+        return null;
     }
 
     @Override
     @Trivial
-    public boolean roundToNearest(Annotation anno) {
-        return anno instanceof Rounded && ((Rounded) anno).value() == Rounded.Direction.NEAREST;
+    public boolean hasOrAnnotation(Annotation[] annos) {
+        for (Annotation anno : annos)
+            if (anno instanceof Or)
+                return true;
+        return false;
     }
 }

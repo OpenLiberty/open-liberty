@@ -20,6 +20,43 @@ import java.lang.reflect.Method;
  */
 public interface DataVersionCompatibility {
     /**
+     * Append a condition such as o.myAttribute < ?1 to the JPQL query.
+     *
+     * @param q            JPQL query to which to append.
+     * @param qp           query parameter position (1-based).
+     * @param method       the repository method.
+     * @param p            method parameter position (0-based).
+     * @param o_           entity identifier variable.
+     * @param attrName     entity attribute name.
+     * @param isCollection whether the entity attribute is a collection.
+     * @param annos        method parameter annotations.
+     * @return the updated JPQL query.
+     */
+    StringBuilder appendCondition(StringBuilder q, int qp,
+                                  Method method, int p,
+                                  String o_, String attrName,
+                                  boolean isCollection, Annotation[] annos);
+
+    /**
+     * Append conditions for an IdClass attribute such as
+     * (o.idClassAttr1 = ?1 AND o.idClassAttr2 = ?2)
+     * to the JPQL query.
+     *
+     * @param q                JPQL query to which to append.
+     * @param qp               query parameter position (1-based).
+     * @param method           the repository method.
+     * @param p                method parameter position (0-based).
+     * @param o_               entity identifier variable.
+     * @param idClassAttrNames entity attribute names for the IdClass.
+     * @param annos            method parameter annotations.
+     * @return the updated JPQL query.
+     */
+    StringBuilder appendConditionsForIdClass(StringBuilder q, int qp,
+                                             Method method, int p,
+                                             String o_, String[] idClassAttrNames,
+                                             Annotation[] annos);
+
+    /**
      * Obtains the Count annotation if present on the method. Otherwise null.
      *
      * @param method repository method. Must not be null.
@@ -36,16 +73,6 @@ public interface DataVersionCompatibility {
     Annotation getExistsAnnotation(Method method);
 
     /**
-     * Obtains the start of a function call, including the opening parenthesis
-     * and possibly other syntax following the opening parenthesis as needed,
-     * but not the value or closing parenthesis.
-     *
-     * @param functionAnno function annotation. Must not be null.
-     * @return the start of the function call. Must not be null.
-     */
-    String getFunctionCall(Annotation functionAnno);
-
-    /**
      * Obtains the value of the Select annotation if present on the method.
      * Otherwise null.
      *
@@ -58,18 +85,18 @@ public interface DataVersionCompatibility {
     /**
      * Return a 2-element array where the first element is the entity attribute name
      * and the second element is the operation (=, +, -, *, or /).
+     * Null if none of the annotations indicate an update.
      *
-     * @param anno Assign, Add, SubtractFrom, Multiply, or Divide annotation. Must not be null.
-     * @return operation and entity attribute name.
+     * @param annos annotations on the method parameter. Must not be null.
+     * @return operation and entity attribute name. Null if not an update.
      */
-    String[] getUpdateAttributeAndOperation(Annotation anno);
+    String[] getUpdateAttributeAndOperation(Annotation[] annos);
 
     /**
-     * Return true if the annotation is the Rounded annotation and has
-     * direction of NEAREST, otherwise false.
+     * True if any of the annotations represent Or.
      *
-     * @param rounded function annotation. Must not be null.
-     * @return true if the annotation is Rounded has direction of NEAREST, otherwise false.
+     * @param annos annotations on the method parameter. Must not be null.
+     * @return True if any of the annotations represent Or. Otherwise false.
      */
-    boolean roundToNearest(Annotation anno);
+    boolean hasOrAnnotation(Annotation[] annos);
 }
