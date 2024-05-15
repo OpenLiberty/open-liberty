@@ -45,6 +45,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	private static String userFeatureSigPath = "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc";
 	static Network network = Network.newNetwork();
 	
+	
 //	@ClassRule
 	/*
 	 * Increased startup timeout because nexus container might take more than 60
