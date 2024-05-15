@@ -74,3 +74,6 @@ jdk.management.agent/jdk.internal.agent=ALL-UNNAMED
 # Also for https://github.com/OpenLiberty/open-liberty/issues/20858
 --add-exports
 java.base/jdk.internal.vm=ALL-UNNAMED
+# for OpenJCEPlus (299515) 
+--add-exports
+openjceplus/com.ibm.misc=ALL-UNNAMED
