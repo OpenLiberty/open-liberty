@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,8 +16,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
+import java.security.AccessController;
 import java.security.CodeSource;
+import java.security.PrivilegedExceptionAction;
 import java.security.ProtectionDomain;
 import java.text.MessageFormat;
 import java.util.Collections;
@@ -92,11 +96,11 @@ public class KernelUtils {
      * <p>
      *
      * @param duration
-     *            The object retrieved from the configuration property map/dictionary.
+     *                     The object retrieved from the configuration property map/dictionary.
      *
      * @param units
-     *            The unit of time for the duration value. This is only used when
-     *            converting from a String value.
+     *                     The unit of time for the duration value. This is only used when
+     *                     converting from a String value.
      *
      * @return String in the specified time units if the duration is parsed successfully, otherwise null
      */
@@ -115,9 +119,9 @@ public class KernelUtils {
      * Converts a string value representing a unit of time into a Long value.
      *
      * @param strVal
-     *            A String representing a unit of time.
+     *                   A String representing a unit of time.
      * @param unit
-     *            The unit of time that the string value should be converted into
+     *                   The unit of time that the string value should be converted into
      * @return Long The value of the string in the desired time unit
      */
     @FFDCIgnore(NumberFormatException.class)
@@ -248,7 +252,7 @@ public class KernelUtils {
      * returning.
      *
      * @param is
-     *            InputStream to read properties from
+     *               InputStream to read properties from
      * @return Properties object; will be empty if InputStream is null or empty.
      * @throws LaunchException
      */
@@ -277,9 +281,9 @@ public class KernelUtils {
 
     /**
      * @param reader
-     *            Reader from which to read service class names
+     *                   Reader from which to read service class names
      * @param limit
-     *            Maximum number of service classes to find (0 is no limit)
+     *                   Maximum number of service classes to find (0 is no limit)
      * @return
      * @throws IOException
      */
@@ -339,5 +343,33 @@ public class KernelUtils {
         if (!dir.exists() && !created)
             throw new IllegalStateException("The " + dirType + "  could not be created. " + dirType + "=" + dir);
 
+    }
+
+    /**
+     * Gets the CanonicalHostName using the java.net.InetAddress
+     *
+     * @return serverHostName
+     */
+    public static String getServerHostName() {
+        String serverHostName = null;
+        //Resolve server name to be the DOCKER HOST name or the cannonical host name.
+        String containerHost = System.getenv("CONTAINER_HOST");
+        if (containerHost == null || containerHost.equals("") || containerHost.length() == 0) {
+            try {
+                serverHostName = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
+                    @Override
+                    public String run() throws UnknownHostException {
+                        return InetAddress.getLocalHost().getCanonicalHostName();
+                    }
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                serverHostName = "";
+            }
+        } else {
+            serverHostName = containerHost;
+        }
+        return serverHostName;
     }
 }

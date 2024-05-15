@@ -32,7 +32,8 @@ src: \
 	test-applications/ProgrammaticFaceletTests.war/src,\
 	test-applications/SubscribeToEventTest.war/src,\
 	test-applications/WebSocket.war/src,\
-	test-applications/MYFACES-4628.war/src
+	test-applications/MYFACES-4628.war/src,\
+	test-applications/MYFACES-4658.war/src
 
 tested.features:\
     expressionlanguage-6.0,\

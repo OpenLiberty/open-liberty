@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -84,9 +85,11 @@ public class MultiServerTest extends WSATTest {
 		DBTestBase.initWSATTest(server3);
 
 		ShrinkHelper.defaultDropinApp(server, "oneway", "web.oneway.*");
-		ShrinkHelper.defaultDropinApp(server, "endtoend", "web.endtoend.*");
-		ShrinkHelper.defaultDropinApp(server2, "endtoend", "web.endtoend.*");
-		ShrinkHelper.defaultDropinApp(server3, "endtoend", "web.endtoend.*");
+
+        final WebArchive app = ShrinkHelper.buildDefaultApp("endtoend", "web.endtoend.*");
+        ShrinkHelper.exportDropinAppToServer(server, app);
+        ShrinkHelper.exportDropinAppToServer(server2, app);
+        ShrinkHelper.exportDropinAppToServer(server3, app);
 
 		FATUtils.startServers(server, server2, server3);
 	}
@@ -156,8 +159,10 @@ public class MultiServerTest extends WSATTest {
 		HttpURLConnection con = getHttpConnection(new URL(urlStr), 
 				HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerCommit");
 		BufferedReader br = HttpUtils.getConnectionStream(con);
+		
+		assertNotNull(server2.waitForStringInTraceUsingMark("Using gtrid from parent"));
 
-                server2.waitForStringInTraceUsingMark("< commitOperation Exit");
+		server2.waitForStringInTraceUsingMark("< commitOperation Exit");
 
 		String result = br.readLine();
 		assertNotNull(result);

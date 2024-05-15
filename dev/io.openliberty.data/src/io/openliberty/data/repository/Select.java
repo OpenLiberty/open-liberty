@@ -16,6 +16,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
@@ -23,16 +25,25 @@ import jakarta.data.repository.Insert;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
 
+// This annotation will not be needed at all and can be removed if the Find
+// annotation is enhanced to accept the entity attribute names, or if some
+// other alternative approach is added to Jakarta Data.
 /**
- * <p>Specifies which entity attribute values are retrieved by a repository method
- * find operation and, in the case of multiple entity attributes, also the ordering
- * of these entity attribute values to use when constructing results for the method.</p>
+ * <p>Specifies which entity attribute values are retrieved by a repository
+ * {@link Find} method. For a single entity attribute, the method return type
+ * can be the type of the entity attribute or an array, {@link List},
+ * {@link Stream}, or {@link Optional} of that type
+ * For one or more entity attributes, the method return type is a Java class
+ * or record with a public constructor that accepts the entity attributes in
+ * the same order specified or an array, {@link List}, {@link Stream}, or
+ * {@link Optional} of that type.</p>
  *
  * <p>Example query for single attribute value:</p>
  *
  * <pre>
- * {@literal @Select}("price")
- * Optional{@literal <Float>} priceOf({@literal @By("id")} long productId);
+ * {@code @Find}
+ * {@code @Select}("price")
+ * Optional{@code <Float>} priceOf({@code @By(ID)} long productId);
  * </pre>
  *
  * <p>Example usage:</p>
@@ -44,20 +55,21 @@ import jakarta.data.repository.Update;
  * <p>Example query of Employee entities converted to record type Person(firstName, surname):</p>
  *
  * <pre>
- * {@literal @Select}("firstName", "lastName")
- * {@literal @OrderBy}("lastName")
- * {@literal @OrderBy}("firstName")
- * List{@literal <Person>} ofAge({@literal @By("age")} int yearsOld);
+ * {@code @Find}
+ * {@code @Select}({"firstName", "lastName"})
+ * {@code @OrderBy}("lastName")
+ * {@code @OrderBy}("firstName")
+ * List{@code <Person>} ofAge({@code @By("age")} int yearsOld);
  * </pre>
  *
  * <p>Example usage:</p>
  *
  * <pre>
- * List{@literal <Person>} thirtyYearOlds = employees.ofAge(30);
+ * List{@code <Person>} thirtyYearOlds = employees.ofAge(30);
  * </pre>
  *
  * <p>Do not use in combination with the {@link jakarta.data.repository.Query Query},
- * {@link Count}, {@link Delete}, {@link Exists}, {@link Find}, {@link Insert}, {@link Save}, or {@link Update} annotation,
+ * {@link Count}, {@link Delete}, {@link Exists}, {@link Insert}, {@link Save}, or {@link Update} annotation,
  * or with any annotation in the {@link io.openliberty.data.repository.update} package.</p>
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -73,15 +85,17 @@ public @interface Select {
      * An example of returning a single attribute,
      *
      * <pre>
-     * &#64;Select("price")
-     * List&#60;Float&#62; findByProductIdIn(Collection<String> productIds);
+     * {@code @Find}
+     * {@code @Select("price")}
+     * List&#60;Float&#62; pricesOf({@code @By("productId") @In} Collection<String> ids);
      * </pre>
      *
      * An example of returning multiple attributes as a different type,
      *
      * <pre>
-     * &#64;Select({ "productId", "available" })
-     * List&#60;SurplusItem&#62; findByAvailableGreaterThan(int targetInventoryLevel);
+     * {@code @Find}
+     * {@code @Select}({ "productId", "available" })
+     * List&#60;SurplusItem&#62; overstocked({@code @By("available") @GreaterThan} int targetInventoryLevel);
      * </pre>
      *
      * @return names of entity attributes to select.

@@ -17,7 +17,7 @@
 # Note:
 #Last used error meessage code was SESN8502I
 #
-#Use 8600 - 8699 for Servlet 6.0 - EE10
+#Use 8600 - 8699 for Servlet 6.0 (EE10) and above
 #
 # -----------------------------------------------
 cookie.attribute.name.null=SESN8600E: \ucfe0\ud0a4 \ud074\ub798\uc2a4\uc758 \uc18d\uc131 \uc774\ub984\uc774 \ub110\uc785\ub2c8\ub2e4.
@@ -27,3 +27,13 @@ cookie.attribute.name.null.useraction=\uc18d\uc131 \uc774\ub984\uc774 \ub110\uc7
 cookie.attribute.name.invalid.[{0}]=SESN8601E: [{0}] \uc18d\uc131 \uc774\ub984\uc5d0 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \ubb38\uc790\uac00 \uc788\uc2b5\ub2c8\ub2e4.
 cookie.attribute.name.invalid.[{0}].explanation=\uc18d\uc131 \uc774\ub984\uc740 \ub2e4\uc74c \uad6c\ubd84 \uae30\ud638 \ubb38\uc790 \uc911 \ud558\ub098 \uc774\uc0c1\uc744 \ud3ec\ud568\ud558\uba70 \ucfe0\ud0a4 \ud074\ub798\uc2a4\uc758 \uc18d\uc131 \uc774\ub984\uc5d0 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. ( ) < > @ , ; :  " / [ ] ? = { }
 cookie.attribute.name.invalid.[{0}].useraction=\uc18d\uc131 \uc774\ub984\uc5d0 \uad6c\ubd84 \uae30\ud638 \ubb38\uc790\uac00 \ud3ec\ud568\ub418\uc5b4 \uc788\uc9c0 \uc54a\uc73c\uba70 \uc18d\uc131 \uc774\ub984\uc774 \uc720\ud6a8\ud55c\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+# -----------------------------------------------
+# Servlet 6.1
+session.is.invalid=SESN8602E: \uc138\uc158\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+session.is.invalid.explanation=\ud604\uc7ac \uc138\uc158\uc774 \ub9cc\ub8cc\ub418\uc5c8\uc73c\uba70 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+session.is.invalid.useraction=\ub85c\uadf8\uc778\uc744 \uc2dc\ub3c4\ud558\uac70\ub098 \uc0c8 \uc138\uc158\uc744 \ub2e4\uc2dc \ud655\ubcf4\ud558\uc2ed\uc2dc\uc624.
+# -----------------------------------------------
+# Servlet 6.1
+session.id.is.invalid=SESN8603E: \uc138\uc158 ID\uac00 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+session.id.is.invalid.explanation=\ub9c8\uc9c0\ub9c9 \uc561\uc138\uc2a4 \uc774\ud6c4 \uc138\uc158 ID\uac00 \ubcc0\uacbd\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+session.id.is.invalid.useraction=\ub9c8\uc9c0\ub9c9 \uc561\uc138\uc2a4 \uc774\ud6c4 \uc138\uc158 ID\uac00 \ubcc0\uacbd\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ub2e4\uc2dc \ub85c\uadf8\uc778\ud558\uc2ed\uc2dc\uc624.

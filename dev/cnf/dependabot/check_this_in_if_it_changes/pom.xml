@@ -389,7 +389,7 @@
     <dependency>
       <groupId>commons-cli</groupId>
       <artifactId>commons-cli</artifactId>
-      <version>1.4</version>
+      <version>1.5.0</version>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
@@ -1467,11 +1467,6 @@
       <version>3.1.0</version>
     </dependency>
     <dependency>
-      <groupId>jakarta.persistence</groupId>
-      <artifactId>jakarta.persistence-api</artifactId>
-      <version>3.2.0-M2</version>
-    </dependency>
-    <dependency>
       <groupId>jakarta.resource</groupId>
       <artifactId>jakarta.resource-api</artifactId>
       <version>2.0.0</version>
@@ -2354,7 +2349,7 @@
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-api</artifactId>
-      <version>4.1.0-RC1</version>
+      <version>4.1.0-RC2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
@@ -2379,7 +2374,7 @@
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-impl</artifactId>
-      <version>4.1.0-RC1</version>
+      <version>4.1.0-RC2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.neethi</groupId>
@@ -2454,7 +2449,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-el-api</artifactId>
-      <version>11.0.0-M19</version>
+      <version>11.0.0-M20</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
@@ -2469,7 +2464,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper-el</artifactId>
-      <version>11.0.0-M19</version>
+      <version>11.0.0-M20</version>
     </dependency>
     <dependency>
       <groupId>org.apache.wink</groupId>
@@ -2539,7 +2534,7 @@
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcpg-jdk18on</artifactId>
-      <version>1.75</version>
+      <version>1.78.1</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
@@ -2553,8 +2548,18 @@
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk18on</artifactId>
+      <version>1.78.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
       <artifactId>bcutil-jdk18on</artifactId>
       <version>1.75</version>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcutil-jdk18on</artifactId>
+      <version>1.78.1</version>
     </dependency>
     <dependency>
       <groupId>org.brotli</groupId>
@@ -3139,7 +3144,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.reactive.messaging</groupId>
       <artifactId>microprofile-reactive-messaging-api</artifactId>
-      <version>3.0</version>
+      <version>3.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.rest.client</groupId>
@@ -3704,7 +3709,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-cdi</artifactId>
-      <version>6.2.3.Final</version>
+      <version>6.2.8.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3714,7 +3719,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client-api</artifactId>
-      <version>6.2.3.Final</version>
+      <version>6.2.8.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3734,7 +3739,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client</artifactId>
-      <version>6.2.3.Final</version>
+      <version>6.2.8.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3744,7 +3749,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-core-spi</artifactId>
-      <version>6.2.3.Final</version>
+      <version>6.2.8.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3754,7 +3759,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-core</artifactId>
-      <version>6.2.3.Final</version>
+      <version>6.2.8.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3764,7 +3769,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxb-provider</artifactId>
-      <version>6.2.3.Final</version>
+      <version>6.2.8.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3774,7 +3779,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-multipart-provider</artifactId>
-      <version>6.2.3.Final</version>
+      <version>6.2.8.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3784,7 +3789,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-rxjava2</artifactId>
-      <version>6.2.3.Final</version>
+      <version>6.2.8.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3794,7 +3799,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-servlet-initializer</artifactId>
-      <version>6.2.3.Final</version>
+      <version>6.2.8.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3809,7 +3814,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-validator-provider</artifactId>
-      <version>6.2.3.Final</version>
+      <version>6.2.8.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.shrinkwrap</groupId>

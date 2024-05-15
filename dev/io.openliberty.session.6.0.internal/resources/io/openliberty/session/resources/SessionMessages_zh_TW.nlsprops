@@ -17,13 +17,23 @@
 # Note:
 #Last used error meessage code was SESN8502I
 #
-#Use 8600 - 8699 for Servlet 6.0 - EE10
+#Use 8600 - 8699 for Servlet 6.0 (EE10) and above
 #
 # -----------------------------------------------
-cookie.attribute.name.null=SESN8600E: Cookie \u985e\u5225\u4e0a\u7684\u5c6c\u6027\u540d\u7a31\u662f\u7a7a\u503c\u3002
+cookie.attribute.name.null=SESN8600E\uff1aCookie \u985e\u5225\u4e0a\u7684\u5c6c\u6027\u540d\u7a31\u662f\u7a7a\u503c\u3002
 cookie.attribute.name.null.explanation=\u5c6c\u6027\u540d\u7a31\u4e0d\u80fd\u662f\u7a7a\u503c\u3002
 cookie.attribute.name.null.useraction=\u8acb\u78ba\u5b9a\u5c6c\u6027\u540d\u7a31\u4e0d\u662f\u7a7a\u503c\u3002
 # -----------------------------------------------
-cookie.attribute.name.invalid.[{0}]=SESN8601E: [{0}] \u5c6c\u6027\u540d\u7a31\u5305\u542b\u7121\u6548\u5b57\u5143\u3002
+cookie.attribute.name.invalid.[{0}]=SESN8601E\uff1a[{0}] \u5c6c\u6027\u540d\u7a31\u5305\u542b\u7121\u6548\u5b57\u5143\u3002
 cookie.attribute.name.invalid.[{0}].explanation=\u5c6c\u6027\u540d\u7a31\u81f3\u5c11\u5305\u542b\u4e0b\u5217\u5176\u4e2d\u4e00\u500b\u5206\u9694\u5b57\u5143\uff0c\u9019\u4e9b\u5206\u9694\u5b57\u5143\u4e0d\u80fd\u7528\u65bc Cookie \u985e\u5225\u7684\u5c6c\u6027\u540d\u7a31\u4e2d\uff1a( ) < > @ , ; :  " / [ ] ? = { }
 cookie.attribute.name.invalid.[{0}].useraction=\u8acb\u78ba\u5b9a\u5c6c\u6027\u540d\u7a31\u4e0d\u5305\u542b\u4efb\u4f55\u5206\u9694\u5b57\u5143\uff0c\u4e14\u5c6c\u6027\u540d\u7a31\u6709\u6548\u3002
+# -----------------------------------------------
+# Servlet 6.1
+session.is.invalid=SESN8602E: \u968e\u6bb5\u4f5c\u696d\u7121\u6548\u3002
+session.is.invalid.explanation=\u73fe\u884c\u968e\u6bb5\u4f5c\u696d\u5df2\u904e\u671f\u4e14\u7121\u6548\u3002
+session.is.invalid.useraction=\u8acb\u5617\u8a66\u767b\u5165\u6216\u91cd\u65b0\u53d6\u5f97\u65b0\u7684\u968e\u6bb5\u4f5c\u696d\u3002
+# -----------------------------------------------
+# Servlet 6.1
+session.id.is.invalid=SESN8603E: \u968e\u6bb5\u4f5c\u696d ID \u7121\u6548\u3002
+session.id.is.invalid.explanation=\u968e\u6bb5\u4f5c\u696d ID \u81ea\u524d\u6b21\u5b58\u53d6\u4ee5\u4f86\u5df2\u8b8a\u66f4\u3002
+session.id.is.invalid.useraction=\u968e\u6bb5\u4f5c\u696d ID \u81ea\u524d\u6b21\u5b58\u53d6\u4ee5\u4f86\u5df2\u8b8a\u66f4\u3002 \u8acb\u518d\u5617\u8a66\u767b\u5165\u3002
