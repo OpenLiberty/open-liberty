@@ -25,24 +25,24 @@ Bundle-Activator: org.apache.cxf.bus.osgi.CXFActivator
 # META-INF/services/javax.xml.ws.spi.Provider = com.ibm.ws.jaxws.client.LibertyProviderImpl
 # so we need make com.ibm.ws.jaxws.client;thread-context=true
 Export-Package: \
-    com.ibm.ws.jaxws;version=${exportVer},\
-    com.ibm.ws.jaxws.bus;version=${exportVer},\
-    com.ibm.ws.jaxws.catalog;version=${exportVer},\
-    com.ibm.ws.jaxws.client;thread-context=true;version=${exportVer},\
-    com.ibm.ws.jaxws.client.injection;version=${exportVer},\
-    com.ibm.ws.jaxws.endpoint;version=${exportVer},\
-    com.ibm.ws.jaxws.jaxb;version=${exportVer},\
-    com.ibm.ws.jaxws.injection;version=${exportVer},\
-    com.ibm.ws.jaxws.metadata;version=${exportVer},\
-    com.ibm.ws.jaxws.metadata.builder;version=${exportVer},\
-    com.ibm.ws.jaxws.monitor;version=${exportVer},\
-    com.ibm.ws.jaxws.policy;version=${exportVer},\
-    com.ibm.ws.jaxws.security;version=${exportVer},\
-    com.ibm.ws.jaxws.support;version=${exportVer},\
-    com.ibm.ws.jaxws.utils;version=${exportVer},\
-    com.ibm.ws.jaxws.threading;version=${exportVer},\
-    com.ibm.ws.jaxws23.client.security;version=${exportVer},\
-    com.ibm.wsspi.jaxws;version=${exportVer}
+	com.ibm.ws.jaxws;version='${exportVer}',\
+	com.ibm.ws.jaxws.bus;version='${exportVer}',\
+	com.ibm.ws.jaxws.catalog;version='${exportVer}',\
+	com.ibm.ws.jaxws.client;thread-context=true;version='${exportVer}',\
+	com.ibm.ws.jaxws.client.injection;version='${exportVer}',\
+	com.ibm.ws.jaxws.endpoint;version='${exportVer}',\
+	com.ibm.ws.jaxws.jaxb;version='${exportVer}',\
+	com.ibm.ws.jaxws.injection;version='${exportVer}',\
+	com.ibm.ws.jaxws.metadata;version='${exportVer}',\
+	com.ibm.ws.jaxws.metadata.builder;version='${exportVer}',\
+	com.ibm.ws.jaxws.monitor;version='${exportVer}',\
+	com.ibm.ws.jaxws.policy;version='${exportVer}',\
+	com.ibm.ws.jaxws.security;version='${exportVer}',\
+	com.ibm.ws.jaxws.support;version='${exportVer}',\
+	com.ibm.ws.jaxws.utils;version='${exportVer}',\
+	com.ibm.ws.jaxws.threading;version='${exportVer}',\
+	com.ibm.ws.jaxws23.client.security;version='${exportVer}',\
+	com.ibm.wsspi.jaxws;version='${exportVer}'
 
 Import-Package: \
    javax.xml.bind.*;version="[2.2,3)", \
@@ -57,6 +57,7 @@ Import-Package: \
    javax.xml.soap;version=!, \
    com.ctc.wstx.*;resolution:=optional, \
    org.codehaus.stax2.*;resolution:=optional, \
+   io.openliberty.jaxws.jaxb.*;version="[3.2,4)",\
    *
 
 Private-Package:\

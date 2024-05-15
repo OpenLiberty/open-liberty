@@ -10,6 +10,8 @@
 package com.ibm.ws.jaxws.client;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringWriter;
@@ -220,8 +222,8 @@ public class LibertyWebServiceClientInInterceptorTest {
         interceptor.handleMessage(message);
 
         // Assert message has the set values.
-        assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to true", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
-        
+        assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to false", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
+        assertNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 
     }
     
     /*
@@ -243,7 +245,7 @@ public class LibertyWebServiceClientInInterceptorTest {
         // invoke LibertyWebServiceClientInInterceptor.handleMessage(message)
         interceptor.handleMessage(message);
 
-        // Assert message has the set values.
+        // Assert message has correct value
         assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + SCHEMA_VALIDATION + " property to true", MessageUtils.getContextualBoolean(message, SCHEMA_VALIDATION));
     }
     
@@ -267,8 +269,8 @@ public class LibertyWebServiceClientInInterceptorTest {
         interceptor.handleMessage(message);
 
         // Assert message has the set values.
-        assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to false", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
-        
+        assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to true", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
+        assertNotNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 
     }
 
     /*
@@ -293,9 +295,10 @@ public class LibertyWebServiceClientInInterceptorTest {
 
         // Assert message has the set values.
         // NOTE:
-        //  Because the  JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER boolean has to be flipped, we assertFalse when setting WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP to true.
-        assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to true", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
+        //  Because the  WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP boolean has to be flipped, we assertFalse when setting WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP to true.
+        assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to false", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
         assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + SCHEMA_VALIDATION + " property to false", MessageUtils.getContextualBoolean(message, SCHEMA_VALIDATION));
+        assertNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 
     }
     
     /*
@@ -319,10 +322,9 @@ public class LibertyWebServiceClientInInterceptorTest {
         interceptor.handleMessage(message);
 
         // Assert message has the set values
-        // NOTE:
-        //  Because the  JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER boolean has to be flipped, we assertFalse when setting WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP to true.
-        assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to false", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
+        assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to true", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
         assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + SCHEMA_VALIDATION + " property to true", MessageUtils.getContextualBoolean(message, SCHEMA_VALIDATION));
+        assertNotNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER));
     }
 
     
@@ -375,6 +377,7 @@ public class LibertyWebServiceClientInInterceptorTest {
         // invoke LibertyWebServiceClientInInterceptor.handleMessage(message)
         interceptor.handleMessage(message);
 
+
         // Assert message has the set values.
         assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + SCHEMA_VALIDATION + " property to true", MessageUtils.getContextualBoolean(message, SCHEMA_VALIDATION));
     }
@@ -400,8 +403,8 @@ public class LibertyWebServiceClientInInterceptorTest {
         interceptor.handleMessage(message);
 
         // Assert message has the set values.
-        assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to true", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
-        
+        assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to false", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
+        assertNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 
     }
     
 
@@ -425,8 +428,8 @@ public class LibertyWebServiceClientInInterceptorTest {
         interceptor.handleMessage(message);
 
         // Assert message has the set values.
-        assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to false", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
-        
+        assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to true", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
+        assertNotNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 
     }
 
     
@@ -447,11 +450,9 @@ public class LibertyWebServiceClientInInterceptorTest {
         interceptor.handleMessage(message);
 
         // Assert message has the set values.
-        // NOTE:
-        //  Because the  JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER boolean has to be flipped, we assertFalse when setting WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP to true.
-        assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to true", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
+        assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to false", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
         assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + SCHEMA_VALIDATION + " property to false", MessageUtils.getContextualBoolean(message, SCHEMA_VALIDATION));
-        
+        assertNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 
     }
     
     @Test
@@ -471,11 +472,9 @@ public class LibertyWebServiceClientInInterceptorTest {
         interceptor.handleMessage(message);
 
         // Assert message has the set values
-        // NOTE:
-        //  Because the  JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER boolean has to be flipped, we assertFalse when setting WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP to true.
-        assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to false", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
+        assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to false", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
         assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + SCHEMA_VALIDATION + " property to true", MessageUtils.getContextualBoolean(message, SCHEMA_VALIDATION));
-        
+        assertNotNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 
     }
     
 
@@ -517,11 +516,9 @@ public class LibertyWebServiceClientInInterceptorTest {
         interceptor.handleMessage(message);
 
         // Assert message has the set values.
-        // NOTE:
-        //  Because the  JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER boolean has to be flipped, we assertFalse when setting WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP to true.
-        assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to true", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
+        assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to false", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
         assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + SCHEMA_VALIDATION + " property to false", MessageUtils.getContextualBoolean(message, SCHEMA_VALIDATION));
-        
+        assertNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER));  
     }
     
     /*
@@ -553,11 +550,9 @@ public class LibertyWebServiceClientInInterceptorTest {
         interceptor.handleMessage(message);
 
         // Assert message has the set values
-        // NOTE:
-        //  Because the  JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER boolean has to be flipped, we assertFalse when setting WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP to true.
-        assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to false", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
+        assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to true", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
         assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + SCHEMA_VALIDATION + " property to true", MessageUtils.getContextualBoolean(message, SCHEMA_VALIDATION));
-        
+        assertNotNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 
     }
     
     /*
@@ -590,11 +585,9 @@ public class LibertyWebServiceClientInInterceptorTest {
         interceptor.handleMessage(message);
 
         // Assert message has the set values.
-        // NOTE:
-        //  Because the  JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER boolean has to be flipped, we assertFalse when setting WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP to true.
-        assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to true", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
+        assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to true", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
         assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + SCHEMA_VALIDATION + " property to false", MessageUtils.getContextualBoolean(message, SCHEMA_VALIDATION));
-        
+        assertNotNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 
     }
     
     
@@ -626,10 +619,11 @@ public class LibertyWebServiceClientInInterceptorTest {
         interceptor.handleMessage(message);
 
         // Assert message has the set values
-        // NOTE:
-        //  Because the  JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER boolean has to be flipped, we assertFalse when setting WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP to true.
-        assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to false", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
-        assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + SCHEMA_VALIDATION + " property to true", MessageUtils.getContextualBoolean(message, SCHEMA_VALIDATION));
+        assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to false", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
+
+        // Assert message has the set values.
+        assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to false", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
+        assertNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 
         
     }
 }
