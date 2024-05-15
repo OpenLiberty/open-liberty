@@ -58,9 +58,9 @@ public class ReporterTask implements Runnable {
     public void run() {
         // Run if disabled flag has not been found
         try {
-            DataCollector collector = new DataCollector(featureProvisioner, fixManager, serverInfo);
-            Map<String, String> data = collector.getData();
             Map<String, ? extends ProductInfo> allProductInfo = ProductInfo.getAllProductInfo();
+            DataCollector collector = new DataCollector(featureProvisioner, fixManager, serverInfo, allProductInfo);
+            Map<String, String> data = collector.getData();
             String productUri = (allProductInfo.containsKey("com.ibm.websphere.appserver")) ? allProductInfo.get("com.ibm.websphere.appserver").getCVEReportingUri() : allProductInfo.get("io.openliberty").getCVEReportingUri();
             String urlLink = setUrl(productUri, (String) props.get("urlLink"));
             JSONObject response = new CVEServiceClient().retrieveCVEData(data, urlLink);
