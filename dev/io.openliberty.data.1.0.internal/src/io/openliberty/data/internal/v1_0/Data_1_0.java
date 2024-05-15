@@ -50,14 +50,8 @@ public class Data_1_0 implements DataVersionCompatibility {
 
     @Override
     @Trivial
-    public Annotation getSelectAnnotation(Method method) {
+    public String[] getSelections(Method method) {
         return null;
-    }
-
-    @Override
-    @Trivial
-    public String[] getSelections(Annotation select) {
-        throw new UnsupportedOperationException(); // unreachable
     }
 
     @Override

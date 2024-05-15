@@ -34,10 +34,10 @@ import componenttest.topology.utils.tck.TCKRunner;
 @MinimumJavaLevel(javaLevel = 17)
 public class DataCoreTckLauncher {
 
-    @Server("io.openliberty.org.jakarta.data.1.0.core")
+    @Server("io.openliberty.jakarta.data.1.0.core")
     public static LibertyServer persistenceServer;
 
-    @Server("io.openliberty.org.jakarta.data.1.0.core.nosql")
+    @Server("io.openliberty.jakarta.data.1.0.core.nosql")
     public static LibertyServer noSQLServer;
 
     @After
@@ -69,8 +69,11 @@ public class DataCoreTckLauncher {
         additionalProps.put("tck_protocol", "rest");
         additionalProps.put("jakarta.profile", "core");
 
-        //FIXME Always skip signature tests since our implementation has experimental API
-        additionalProps.put("included.groups", "core & persistence");
+        if (FATSuite.shouldRunSignatureTests()) {
+            additionalProps.put("included.groups", "core & persistence");
+        } else {
+            additionalProps.put("included.groups", "core & persistence & !signature");
+        }
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
@@ -103,8 +106,11 @@ public class DataCoreTckLauncher {
         additionalProps.put("tck_protocol", "rest");
         additionalProps.put("jakarta.profile", "core");
 
-        //FIXME Always skip signature tests since our implementation has experimental API
-        additionalProps.put("included.groups", "core & nosql & !signature");
+        if (FATSuite.shouldRunSignatureTests()) {
+            additionalProps.put("included.groups", "core & nosql");
+        } else {
+            additionalProps.put("included.groups", "core & nosql & !signature");
+        }
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");

@@ -20,7 +20,8 @@ Export-Package: \
   com.ibm.ws.crypto.common
 
 -buildpath: \
-	com.ibm.ws.logging, \
+  com.ibm.ws.logging;version=latest, \
+  com.ibm.ws.kernel.boot.core;version=latest, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 

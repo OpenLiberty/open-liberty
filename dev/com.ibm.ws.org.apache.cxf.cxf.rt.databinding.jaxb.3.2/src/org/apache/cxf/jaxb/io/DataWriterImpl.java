@@ -56,7 +56,7 @@ import org.apache.cxf.service.model.MessagePartInfo;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 
 public class DataWriterImpl<T> extends JAXBDataBase implements DataWriter<T> {
-    private static final Logger LOG = LogUtils.getLogger(JAXBDataBinding.class);
+    private static final Logger LOG = LogUtils.getLogger(DataWriterImpl.class); // Liberty change
 
     ValidationEventHandler veventHandler;
     boolean setEventHandler = true;
@@ -85,6 +85,11 @@ public class DataWriterImpl<T> extends JAXBDataBase implements DataWriter<T> {
             if (veventHandler == null) {
                 veventHandler = databinding.getValidationEventHandler();
             }
+	    // Liberty change begin
+	    if (LOG.isLoggable(Level.FINEST)) { 
+		LOG.finest("Validation event handler: " + (veventHandler != null ? veventHandler.getClass().getCanonicalName() : "null"));
+	    } 
+	    // Liberty change end
             setEventHandler = MessageUtils.getContextualBoolean(m,
                     JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, true);
         }
@@ -105,6 +110,11 @@ public class DataWriterImpl<T> extends JAXBDataBase implements DataWriter<T> {
             String msg = event.getMessage();
             if ((msg.startsWith("cvc-type.3.1.2") || msg.startsWith("cvc-complex-type.2.2"))
                 && msg.contains(marshaller.getLastMTOMElementName().getLocalPart())) {
+	        // Liberty change begin
+	        if (LOG.isLoggable(Level.FINEST)) { 
+		   LOG.finest("Event message starts with cvc, returning true: " + msg);
+	        } 
+	        // Liberty change end
                 return true;
             }
 
@@ -130,6 +140,7 @@ public class DataWriterImpl<T> extends JAXBDataBase implements DataWriter<T> {
         //    Collection<?> col = (Collection<?>)elValue;
         //    elValue = col.toArray((Object[])Array.newInstance(cls.getComponentType(), col.size()));
         //}
+	boolean isLoggableFinest = LOG.isLoggable(Level.FINEST);  // Liberty change
         Marshaller marshaller;
         try {
             // Liberty change begin
@@ -176,10 +187,20 @@ public class DataWriterImpl<T> extends JAXBDataBase implements DataWriter<T> {
 
             marshaller.setSchema(schema);
             AttachmentMarshaller atmarsh = getAttachmentMarshaller();
+	    // Liberty change begin
+	    if (isLoggableFinest) {
+	       LOG.finest("Setting AttachmentMarshaller: " + (atmarsh != null ? atmarsh.getClass().getName() : "null") );
+	    } 
+	    // Liberty change end
             marshaller.setAttachmentMarshaller(atmarsh);
 
             if (schema != null
                 && atmarsh instanceof JAXBAttachmentMarshaller) {
+	        // Liberty change begin
+	        if (isLoggableFinest) {
+		   LOG.finest("Setting MtomValidationHandler on marshaller.");
+	        } 
+	        // Liberty change end
                 //we need a special even handler for XOP attachments
                 marshaller.setEventHandler(new MtomValidationHandler(marshaller.getEventHandler(),
                                                             (JAXBAttachmentMarshaller)atmarsh));

@@ -182,4 +182,5 @@ instrument.classesExcludes: \
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
   com.ibm.websphere.org.osgi.service.cm;version=latest, \
   com.ibm.wsspi.org.osgi.core, \
-  com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3;version=latest
+  com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3;version=latest, \
+  com.ibm.ws.jaxb.tools

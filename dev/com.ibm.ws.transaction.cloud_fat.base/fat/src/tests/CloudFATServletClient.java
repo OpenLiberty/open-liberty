@@ -29,9 +29,6 @@ public abstract class CloudFATServletClient extends CloudTestBase {
 
     private static boolean _isDerby;
 
-    public static LibertyServer server1;
-    public static LibertyServer server2;
-
     public static String APP_NAME;
     public static String SERVLET_NAME;
 

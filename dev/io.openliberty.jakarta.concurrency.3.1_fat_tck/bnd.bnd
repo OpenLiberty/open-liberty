@@ -23,4 +23,4 @@ src: \
 
 fat.project: true
 
-tested.features: appsecurity-6.0, cdi-4.1, concurrent-3.1, pages-4.0
+tested.features: appsecurity-6.0, cdi-4.1, concurrent-3.1, pages-4.0, connectors-2.1, noship-1.0

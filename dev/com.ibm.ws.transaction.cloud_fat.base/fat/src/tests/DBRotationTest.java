@@ -19,14 +19,12 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
@@ -92,9 +90,6 @@ public class DBRotationTest extends CloudFATServletClient {
                                                         "com.ibm.ws.transaction_ANYDBCLOUD002.shortlease",
     };
 
-    private LibertyServer[] serversToCleanup;
-    private static final String[] toleratedMsgs = new String[] { ".*" };
-
     public static SetupRunner runner = new SetupRunner() {
         @Override
         public void run(LibertyServer s) throws Exception {
@@ -132,22 +127,6 @@ public class DBRotationTest extends CloudFATServletClient {
         DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
 
         server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
-    }
-
-    @After
-    public void cleanup() throws Exception {
-        // If any servers have been added to the serversToCleanup array, we'll stop them now
-        // test is long gone so we don't care about messages & warnings anymore
-        if (serversToCleanup != null && serversToCleanup.length > 0) {
-            FATUtils.stopServers(toleratedMsgs, serversToCleanup);
-            serversToCleanup = null;
-        }
-
-        // Clean up XA resource files
-        server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
-
-        // Remove tranlog DB
-        server1.deleteDirectoryFromLibertyInstallRoot("/usr/shared/resources/data");
     }
 
     @AfterClass

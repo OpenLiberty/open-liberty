@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,11 +12,11 @@
  *******************************************************************************/
 package com.ibm.ws.beanvalidation.fat.cdi;
 
+import com.ibm.ws.beanvalidation.fat.basic.BasicValidation_Common;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-
-import com.ibm.ws.beanvalidation.fat.basic.BasicValidation_Common;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
@@ -30,7 +30,7 @@ import componenttest.topology.utils.PrivHelper;
  * that everything that worked without CDI works with it as well.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
+@SkipForRepeat({ SkipForRepeat.EE9_OR_LATER_FEATURES })
 public class BeanValidation11CDITest extends BeanValidationCDI_Common {
 
     @Server("com.ibm.ws.beanvalidation.cdi_1.1.fat")

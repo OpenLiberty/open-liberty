@@ -12,8 +12,11 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.session.cache.infinispan;
 
+import java.io.File;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.runner.RunWith;
@@ -86,4 +89,14 @@ public class FATSuite {
                         .withID(ID)
                         .forServers(servers);
     }
+
+    static void configureEnvVariable(LibertyServer server, Map<String, String> newEnv) throws Exception {
+        File serverEnvFile = new File(server.getFileFromLibertyServerRoot("server.env").getAbsolutePath());
+        try (PrintWriter out = new PrintWriter(serverEnvFile)) {
+            for (Map.Entry<String, String> entry : newEnv.entrySet()) {
+                out.println(entry.getKey() + "=" + entry.getValue());
+            }
+        }
+    }
+
 }

@@ -19,13 +19,13 @@
 	/>
 
 	<transaction
-	  backendURL="http://localhost:${bvt.prop.HTTP_default}"
-      recoveryIdentity="Server1"
-      recoveryGroup="defaultGroup"
-      recoverOnStartup="true"
-      waitForRecovery="true"
-    />
+    backendURL="http://localhost:${bvt.prop.HTTP_default}"
+    recoveryIdentity="Server1"
+    recoveryGroup="defaultGroup"
+    recoverOnStartup="true"
+    waitForRecovery="true"
+    leaseLength="3h"
+  />
 
-	<javaPermission name="*" actions="*" className="java.security.AllPermission"/>
-
+  <javaPermission name="*" actions="*" className="java.security.AllPermission"/>
 </server>

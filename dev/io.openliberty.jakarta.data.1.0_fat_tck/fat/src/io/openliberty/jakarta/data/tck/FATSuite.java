@@ -20,9 +20,14 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.utility.DockerImageName;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.topology.impl.JavaInfo;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -38,4 +43,34 @@ public class FATSuite extends TestContainerSuite {
 
     @ClassRule
     public static MongoDBContainer noSQLDatabase = new MongoDBContainer(DockerImageName.parse("mongo:6.0.6"));
+
+    public static boolean shouldRunSignatureTests() {
+        boolean result = false;
+        String reason = "";
+
+        try {
+            if (TestModeFilter.shouldRun(TestMode.FULL)) {
+                reason = "Signature test is not run in " + TestModeFilter.FRAMEWORK_TEST_MODE + " mode.";
+                return result = false;
+            }
+
+            if (System.getProperty("os.name", "unknown").toLowerCase().contains("windows")) {
+                reason = "signature test plugin not supported on Windows.";
+                return result = false;
+            }
+
+            if (JavaInfo.JAVA_VERSION != 17 && JavaInfo.JAVA_VERSION != 21) {
+                reason = "signature test not supported on non-LTS java versions: " + JavaInfo.JAVA_VERSION;
+                return result = false;
+            }
+
+            //default option
+            reason = "signature test can run as configured";
+            return result = true;
+
+        } finally {
+            Log.info(FATSuite.class, "shouldRunSignatureTests", "Return: " + result + ", because " + reason);
+        }
+
+    }
 }

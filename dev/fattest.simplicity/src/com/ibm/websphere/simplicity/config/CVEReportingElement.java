@@ -16,11 +16,11 @@ import javax.xml.bind.annotation.XmlAttribute;
  */
 public class CVEReportingElement extends ConfigElement {
 
-    private boolean enabled;
+    private String enabled;
 
     private String urlLink;
 
-    public Boolean getEnabled() {
+    public String getEnabled() {
         return enabled;
     }
 
@@ -29,8 +29,12 @@ public class CVEReportingElement extends ConfigElement {
     }
 
     @XmlAttribute(name = "enabled")
-    public void setEnabled(Boolean b) {
+    public void setEnabled(String b) {
         this.enabled = b;
+    }
+
+    public void setEnabled(Boolean b) {
+        this.enabled = b == null ? null : b.toString();
     }
 
     @XmlAttribute(name = "urlLink")

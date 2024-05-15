@@ -291,7 +291,8 @@ public class FormLoginAuthenticatorTest {
                 will(returnValue(paramMap)); //
                 one(extReq).setAttribute(PostParameterHelper.ATTRIB_HASH_MAP, null); //
                 one(extReq).setInputStreamData((HashMap) paramMap); //
-                allowing(extReq).getInputStreamData();
+                one(webAppSecConfig).postParamMaxRequestBodySize();
+                allowing(extReq).getInputStreamData(1024 * 1024 * 128L);
                 will(returnValue(paramMap));
                 allowing(extReq).sizeInputStreamData(paramMap);
                 will(returnValue(100L));
@@ -398,7 +399,7 @@ public class FormLoginAuthenticatorTest {
                 will(returnValue(paramMap)); //
                 allowing(extReq).setAttribute(PostParameterHelper.ATTRIB_HASH_MAP, null);//
                 allowing(extReq).setInputStreamData((HashMap) paramMap); //
-                allowing(extReq).getInputStreamData();
+                allowing(extReq).getInputStreamData(1024 * 1024 * 128L);
                 will(returnValue(paramMap));
                 allowing(extReq).isSecure();
                 will(returnValue(true));

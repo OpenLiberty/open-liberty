@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.jcache.internal;
 
+import static io.openliberty.jcache.internal.Activator.CACHE_MANAGER_CONFIG_CONDITION;
 import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
 
 import java.util.HashSet;
@@ -24,8 +25,10 @@ import javax.cache.spi.CachingProvider;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -69,11 +72,7 @@ public class CachingProviderService {
     public void activate(Map<String, Object> configProps) throws Exception {
         closeSyncObject = new Object();
 
-        /*
-         * Get the cache name and the ID.
-         */
-        cachingProviderClass = (String) configProps.get(KEY_PROVIDER_CLASS);
-        id = (String) configProps.get(KEY_ID);
+        processConfiguration(configProps);
 
         /*
          * load JCache provider from configured library, which is either specified as a
@@ -95,6 +94,16 @@ public class CachingProviderService {
                 throw e;
             }
         });
+    }
+
+    @Modified
+    public void modified(Map<String, Object> configProps) {
+        processConfiguration(configProps);
+    }
+
+    private void processConfiguration(Map<String, Object> configProps) {
+        id = (String) configProps.get(KEY_ID);
+        cachingProviderClass = (String) configProps.get(KEY_PROVIDER_CLASS);
     }
 
     @Deactivate
@@ -244,6 +253,11 @@ public class CachingProviderService {
      */
     public void unsetClassLoadingService(ClassLoadingService classLoadingService) {
         this.classLoadingService = null;
+    }
+
+    @Reference(name = "configCondition", service = Condition.class, target = "(" + Condition.CONDITION_ID + "=" + CACHE_MANAGER_CONFIG_CONDITION + ")")
+    protected void setConfigCondition(Condition configCondition) {
+        // do nothing; this is just a reference that we use to force the component to recycle
     }
 
     @Override
