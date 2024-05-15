@@ -19,8 +19,6 @@
 
 package org.jboss.resteasy.concurrent;
 
-import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
-
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
@@ -40,6 +38,8 @@ import com.ibm.ws.threading.CompletionStageExecutor; //Liberty change
 
 import io.openliberty.restfulWS.client.AsyncClientExecutorService; //Liberty change
 
+import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
+
 /**
  * An {@linkplain ExecutorService executor} which wraps runnables and callables to capture the context of the current
  * thread.
@@ -51,11 +51,11 @@ import io.openliberty.restfulWS.client.AsyncClientExecutorService; //Liberty cha
  * <strong>Note:</strong> if the executor is consider managed, for example running in a Jakarta EE environment, the
  * following methods are effectively ignored.
  * <ul>
- *     <li>{@link #shutdown()}</li>
- *     <li>{@link #shutdownNow()}</li>
- *     <li>{@link #isShutdown()}</li>
- *     <li>{@link #isTerminated()}</li>
- *     <li>{@link #awaitTermination(long, TimeUnit)}</li>
+ * <li>{@link #shutdown()}</li>
+ * <li>{@link #shutdownNow()}</li>
+ * <li>{@link #isShutdown()}</li>
+ * <li>{@link #isTerminated()}</li>
+ * <li>{@link #awaitTermination(long, TimeUnit)}</li>
  * </ul>
  * </p>
  *
@@ -77,7 +77,7 @@ public class ContextualExecutorService implements ExecutorService {
     @Override
     public void shutdown() {
         if (shutdown.compareAndSet(false, true)) {
-            if (managed) {
+            if (isManaged()) {
                 // Clear the delegate as we're done with it
                 delegate = null;
             } else {
@@ -93,7 +93,7 @@ public class ContextualExecutorService implements ExecutorService {
     @Override
     public List<Runnable> shutdownNow() {
         if (shutdown.compareAndSet(false, true)) {
-            if (managed) {
+            if (isManaged()) {
                 // Clear the delegate as we're done with it
                 delegate = null;
             } else {
@@ -106,7 +106,7 @@ public class ContextualExecutorService implements ExecutorService {
 
     @Override
     public boolean isShutdown() {
-        if (managed) {
+        if (isManaged()) {
             return shutdown.get();
         }
         return getDelegate().isShutdown();
@@ -114,7 +114,7 @@ public class ContextualExecutorService implements ExecutorService {
 
     @Override
     public boolean isTerminated() {
-        if (managed) {
+        if (isManaged()) {
             return false;
         }
         return getDelegate().isTerminated();
@@ -122,7 +122,7 @@ public class ContextualExecutorService implements ExecutorService {
 
     @Override
     public boolean awaitTermination(final long timeout, final TimeUnit unit) throws InterruptedException {
-        if (managed) {
+        if (isManaged()) {
             return false;
         }
         return getDelegate().awaitTermination(timeout, unit);
@@ -164,7 +164,7 @@ public class ContextualExecutorService implements ExecutorService {
 
     @Override
     public <T> T invokeAny(final Collection<? extends Callable<T>> tasks, final long timeout,
-                           final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+            final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         return getDelegate().invokeAny(ContextualExecutors.callable(tasks), timeout, unit);
     }
 
@@ -177,11 +177,11 @@ public class ContextualExecutorService implements ExecutorService {
      * Indicates this executor is managed and the following methods are not executed. If the method has a return type
      * a default value is returned.
      * <ul>
-     *     <li>{@link #shutdown()}</li>
-     *     <li>{@link #shutdownNow()}</li>
-     *     <li>{@link #isShutdown()}</li>
-     *     <li>{@link #isTerminated()}</li>
-     *     <li>{@link #awaitTermination(long, TimeUnit)}</li>
+     * <li>{@link #shutdown()}</li>
+     * <li>{@link #shutdownNow()}</li>
+     * <li>{@link #isShutdown()}</li>
+     * <li>{@link #isTerminated()}</li>
+     * <li>{@link #awaitTermination(long, TimeUnit)}</li>
      * </ul>
      *
      * @return {@code true} if this is a managed executor, otherwise {@code false}

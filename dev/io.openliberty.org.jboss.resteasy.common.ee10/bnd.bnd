@@ -19,7 +19,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 bVersion=1.0
 
-resteasy-version=6.2.3.Final
+resteasy-version=6.2.8.Final
 resteasy-tracing-api-version=1.1.0.Final
 apache-mime4j-version=0.8.10
 
@@ -81,6 +81,7 @@ Export-Package: \
   org.jboss.resteasy.client.jaxrs.internal;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.client.jaxrs;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.concurrent;version=${resteasy-version};thread-context=true, \
+  org.jboss.resteasy.core.concurrent;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.core.interception.jaxrs;version=${resteasy-version}, \
   org.jboss.resteasy.core.messagebody;version=${resteasy-version}, \
   org.jboss.resteasy.core.providerfactory;version=${resteasy-version};thread-context=true, \
