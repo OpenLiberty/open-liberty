@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package com.ibm.ws.config.xml.internal.variables;
 
 import java.util.regex.Pattern;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.config.xml.LibertyVariable;
 
 public abstract class AbstractLibertyVariable implements LibertyVariable {
@@ -22,6 +23,7 @@ public abstract class AbstractLibertyVariable implements LibertyVariable {
     final String OBSCURED_VALUE = "*****";
     final String ENCRYPTION_KEY = "wlp.password.encryption.key";
 
+    @Trivial
     private String getObscuredValue(String value) {
         if (isSensitive())
             return OBSCURED_VALUE;
@@ -38,11 +40,15 @@ public abstract class AbstractLibertyVariable implements LibertyVariable {
         return value;
     }
 
+    // Prevent 'calling traceable methods' warning from ConfigVariable.toString
+    @Trivial
     @Override
     public String getObscuredValue() {
         return getObscuredValue(getValue());
     }
 
+    // Prevent 'calling traceable methods' warning from ConfigVariable.toString
+    @Trivial
     @Override
     public String getObscuredDefaultValue() {
         return getObscuredValue(getDefaultValue());

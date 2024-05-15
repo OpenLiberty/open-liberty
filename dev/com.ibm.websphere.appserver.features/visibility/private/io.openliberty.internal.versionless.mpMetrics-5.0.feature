@@ -3,7 +3,8 @@ symbolicName=io.openliberty.internal.versionless.mpMetrics-5.0
 visibility=private
 singleton=true
 -features= \
-    com.ibm.websphere.appserver.eeCompatible-10.0, \
+    io.openliberty.noShip-1.0, \
+    io.openliberty.internal.mpVersion-6.0, \
     io.openliberty.mpMetrics-5.0
-kind=beta
-edition=core
+kind=noship
+edition=full

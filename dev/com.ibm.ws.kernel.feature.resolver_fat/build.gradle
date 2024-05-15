@@ -1,0 +1,48 @@
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+configurations {
+  kernel
+}
+
+dependencies {
+  kernel project(':org.eclipse.osgi'),
+      project(':com.ibm.ws.logging.core'),
+      project(':com.ibm.ws.kernel.boot.cmdline'),
+      project(':com.ibm.ws.kernel.boot.common'),
+      project(':com.ibm.ws.kernel.boot.core'),
+      project(':com.ibm.ws.kernel.boot.nested'),
+      project(':com.ibm.ws.kernel.service'),
+      project(':com.ibm.ws.kernel.feature.core'),
+      project(':com.ibm.ws.runtime.update'),
+      project(':com.ibm.websphere.org.osgi.core'),
+      project(':com.ibm.websphere.org.osgi.service.cm'),
+      project(':com.ibm.websphere.org.osgi.service.component'),
+      project(':com.ibm.wsspi.org.osgi.namespace.service'),
+      project(':com.ibm.wsspi.org.osgi.service.component.annotations'),
+      project(':com.ibm.wsspi.org.osgi.service.event'),
+      project(':com.ibm.ws.org.eclipse.equinox.region'),
+      project(':com.ibm.ws.org.apache.aries.util'),
+      project(':com.ibm.ws.org.osgi.annotation.versioning')
+}
+
+task addJunitdependencies(type: Copy) {
+  from configurations.kernel
+  into "${buildDir}/autoFVT/lib/"
+}
+
+addRequiredLibraries {
+  dependsOn addDerby
+  dependsOn addJunitdependencies
+}
+
