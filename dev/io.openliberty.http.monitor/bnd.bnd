@@ -25,7 +25,8 @@ src: src
 
 -dsannotations: \
   io.openliberty.http.monitor.ServletContainerInitializer,\
-  io.openliberty.http.monitor.metrics.RestMetricManager
+  io.openliberty.http.monitor.metrics.RestMetricManager,\
+  io.openliberty.http.monitor.MonitorAppStateListener
 
 WS-TraceGroup: 
 
@@ -76,4 +77,5 @@ DynamicImport-Package: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	io.openliberty.jakarta.restfulWS.3.1,\
 	io.openliberty.jakarta.annotation.2.1;version=latest,\
-	com.ibm.ws.channelfw;version=latest
+	com.ibm.ws.channelfw;version=latest,\
+	com.ibm.ws.container.service
