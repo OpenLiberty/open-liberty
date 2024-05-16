@@ -3611,6 +3611,118 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use repository methods that have various return types for a record entity.
+     */
+    public void testRecordReturnTypes() throws Exception {
+        receipts.removeIfTotalUnder(1000000.0f);
+
+        receipts.insertAll(List.of(new Receipt(3000L, "RRT10155", 100.98f),
+                                   new Receipt(3001L, "RRT10155", 48.99f),
+                                   new Receipt(3002L, "RRT20618", 12.98f),
+                                   new Receipt(3003L, "RRT10155", 34.97f),
+                                   new Receipt(3004L, "RRT10155", 4.15f),
+                                   new Receipt(3005L, "RRT10155", 51.95f),
+                                   new Receipt(3006L, "RRT20618", 629.99f),
+                                   new Receipt(3007L, "RRT10155", 71.79f),
+                                   new Receipt(3008L, "RRT20618", 8.98f),
+                                   new Receipt(3009L, "RRT10155", 99.94f),
+                                   new Receipt(3010L, "RRT10155", 10.49f),
+                                   new Receipt(3011L, "RRT10155", 101.92f),
+                                   new Receipt(3012L, "RRT20618", 12.99f),
+                                   new Receipt(3013L, "RRT30033", 31.99f),
+                                   new Receipt(3014L, "RRT10155", 434.99f),
+                                   new Receipt(3015L, "RRT10155", 55.59f)));
+
+        // various forms of completion stage results
+        CompletableFuture<Receipt> futureResult = receipts.findByPurchaseId(3013L);
+        CompletionStage<Optional<Receipt>> futureOptionalPresent = receipts.findByPurchaseIdIfPresent(3014L);
+        CompletionStage<Optional<Receipt>> futureOptionalMissing = receipts.findByPurchaseIdIfPresent(3116L);
+        CompletableFuture<List<Receipt>> futureList = receipts.forCustomer("RRT20618", Order.by(Sort.desc("total")));
+
+        // single record
+        Receipt receipt = receipts.withPurchaseNum(3015L);
+        assertEquals("RRT10155", receipt.customer());
+        assertEquals(55.59f, receipt.total(), 0.001f);
+
+        // array of record
+        Receipt[] array = receipts.forCustomer("RRT20618");
+        assertEquals(Arrays.toString(array), 4, array.length);
+        assertEquals(3002L, array[0].purchaseId());
+        assertEquals(3006L, array[1].purchaseId());
+        assertEquals(3008L, array[2].purchaseId());
+        assertEquals(3012L, array[3].purchaseId());
+
+        // page of record
+        PageRequest pageReq = PageRequest.ofSize(5);
+
+        Page<Receipt> page1 = receipts.forCustomer("RRT10155", pageReq, Sort.asc("total"));
+        assertEquals(List.of(3004L, 3010L, 3003L, 3001L, 3005L),
+                     page1.stream()
+                                     .map(Receipt::purchaseId)
+                                     .toList());
+
+        Page<Receipt> page2 = receipts.forCustomer("RRT10155", page1.nextPageRequest(), Sort.asc("total"));
+        assertEquals(List.of(3015L, 3007L, 3009L, 3000L, 3011L),
+                     page2.stream()
+                                     .map(Receipt::purchaseId)
+                                     .toList());
+
+        Page<Receipt> page3 = receipts.forCustomer("RRT10155", page2.nextPageRequest(), Sort.asc("total"));
+        assertEquals(List.of(3014L),
+                     page3.stream()
+                                     .map(Receipt::purchaseId)
+                                     .toList());
+
+        // cursored page of record
+        PageRequest above3006 = PageRequest.ofSize(3).afterCursor(Cursor.forKey(3006L));
+
+        CursoredPage<Receipt> pageAbove3006 = receipts.forCustomer("RRT10155", above3006, Sort.asc("purchaseId"));
+        assertEquals(List.of(3007L, 3009L, 3010L),
+                     pageAbove3006.stream()
+                                     .map(Receipt::purchaseId)
+                                     .toList());
+
+        CursoredPage<Receipt> pageAbove3010 = receipts.forCustomer("RRT10155", pageAbove3006.nextPageRequest(), Sort.asc("purchaseId"));
+        assertEquals(List.of(3011L, 3014L, 3015L),
+                     pageAbove3010.stream()
+                                     .map(Receipt::purchaseId)
+                                     .toList());
+
+        CursoredPage<Receipt> pageBelow3007 = receipts.forCustomer("RRT10155", pageAbove3006.previousPageRequest(), Sort.asc("purchaseId"));
+        assertEquals(List.of(3003L, 3004L, 3005L),
+                     pageBelow3007.stream()
+                                     .map(Receipt::purchaseId)
+                                     .toList());
+
+        CursoredPage<Receipt> pageBelow3003 = receipts.forCustomer("RRT10155", pageBelow3007.previousPageRequest(), Sort.asc("purchaseId"));
+        assertEquals(List.of(3000L, 3001),
+                     pageBelow3003.stream()
+                                     .map(Receipt::purchaseId)
+                                     .toList());
+
+        // completable future single result that was requested earlier
+        assertEquals(31.99f, futureResult.get(TIMEOUT_MINUTES, TimeUnit.MINUTES).total(), 0.001f);
+
+        // completable future list of results that were requested earlier
+        assertEquals(List.of(3006L, 3012L, 3002L, 3008L),
+                     futureList.get(TIMEOUT_MINUTES, TimeUnit.MINUTES)
+                                     .stream()
+                                     .map(Receipt::purchaseId)
+                                     .collect(Collectors.toList()));
+
+        // completion stage optional result that was requested earlier
+        Receipt r3014 = futureOptionalPresent.toCompletableFuture().get(TIMEOUT_MINUTES, TimeUnit.MINUTES).orElseThrow();
+        assertEquals(3014L, r3014.purchaseId());
+        assertEquals("RRT10155", r3014.customer());
+        assertEquals(434.99f, r3014.total(), 0.001f);
+
+        assertEquals(false, futureOptionalMissing.toCompletableFuture().get(TIMEOUT_MINUTES, TimeUnit.MINUTES).isPresent());
+
+        // remove data to avoid interference with other tests
+        assertEquals(16, receipts.removeIfTotalUnder(1000000.0f));
+    }
+
+    /**
      * Use repository updateBy methods with multiplication and division,
      */
     @Test
