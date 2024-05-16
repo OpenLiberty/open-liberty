@@ -24,7 +24,8 @@ tested.features: \
   mpConfig-3.1, \
   servlet-6.0, \
   mpMetrics-5.1, \
-  cdi-4.0
+  cdi-4.0, \
+  checkpoint
 
 
 -buildpath: \
