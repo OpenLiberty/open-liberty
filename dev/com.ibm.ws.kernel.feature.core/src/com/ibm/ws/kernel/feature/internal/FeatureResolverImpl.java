@@ -254,7 +254,6 @@ public class FeatureResolverImpl implements FeatureResolver {
         if (rootPlatforms == null) {
             return null;
         }
-        System.out.println(rootPlatforms);
         Set<String> compatibilityFeatures = new HashSet<String>();
 
         for (String plat : rootPlatforms) {
@@ -273,7 +272,6 @@ public class FeatureResolverImpl implements FeatureResolver {
                 compatibilityFeature = "com.ibm.websphere.appserver.eeCompatible-" + platVersion;
             } else if (platBase.startsWith("microprofile")) {
                 compatibilityFeature = "io.openliberty.internal.mpVersion-" + platVersion;
-                System.out.println(compatibilityFeature);
 
             } else {
                 trace("Platform element [ " + plat + " ] is not a known platform.");
@@ -557,7 +555,6 @@ public class FeatureResolverImpl implements FeatureResolver {
             rootFeaturesList.addAll(rootPlatforms);
         }
 
-        System.out.println(rootFeaturesList);
         selectionContext.primeSelected(preResolved);
         selectionContext.primeSelected(rootFeaturesList);
 
