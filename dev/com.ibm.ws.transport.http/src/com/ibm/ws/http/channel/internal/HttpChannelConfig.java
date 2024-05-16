@@ -1249,14 +1249,10 @@ public class HttpChannelConfig {
      * @param option
      */
     protected void parseCookiesSameSiteLax(Object option) {
-        MSP.debug("SAMESITE: option null? " + Objects.nonNull(option) + " usingSamesite: " + this.useSameSiteOptions);
         if (Objects.nonNull(option) && this.useSameSiteOptions) {
-            MSP.debug("SAMESITE 1");
             if (option instanceof String[]) {
-                MSP.debug("SAMESITE 2");
                 String[] cookies = (String[]) option;
                 for (String s : cookies) {
-                    MSP.debug("SAMESITE cookie found: " + s);
                     addSameSiteAttribute(s, HttpConfigConstants.SameSite.LAX);
                 }
             }
@@ -1339,7 +1335,6 @@ public class HttpChannelConfig {
             //be more than one * character in the string.
             if (name.endsWith(HttpConfigConstants.WILDCARD_CHAR) && name.indexOf(HttpConfigConstants.WILDCARD_CHAR) == name.lastIndexOf(HttpConfigConstants.WILDCARD_CHAR)) {
                 //Check that it isn't already defined with a different SameSite value
-                MSP.debug("addSameSiteAttribute 2 ");
                 if (this.sameSiteStringPatterns.containsKey(name) && !this.sameSiteStringPatterns.get(name).equals(sameSiteAttribute.getName())) {
                     this.sameSiteStringPatterns.remove(name);
                     Tr.warning(tc, "cookies.samesite.duplicateName", name, sameSiteAttribute.getName().toLowerCase());
@@ -1348,7 +1343,6 @@ public class HttpChannelConfig {
                     // If this is not a duplicate with the same value then add it, otherwise ignore the duplicate.
                     if (!this.sameSiteStringPatterns.containsKey(name)) {
                         this.sameSiteStringPatterns.put(name, sameSiteAttribute.getName());
-                        MSP.debug("addSameSiteAttribute 3");
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                             Tr.event(tc, "The duplicate pattern: " + name + " was not added again to the: " + sameSiteAttribute.getName() + " list.");

@@ -280,6 +280,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         this.sameSiteStringPatterns = new HashMap<String, String>();
         this.sameSitePatterns = null;
         this.onlySameSiteStar = false;
+        this.isPartitioned = false;
     }
 
     private void parseSameSiteOptions(Map<String, Object> options) {
@@ -293,10 +294,14 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         this.sameSiteStringPatterns = new HashMap<String, String>();
         this.sameSitePatterns = null;
         this.onlySameSiteStar = false;
+        this.isPartitioned = false;
+
+        MSP.log("Setting samesite partition? -> " + options.containsKey("partitioned"));
 
         if (this.useSameSiteOptions && (options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_LAX) ||
                                         options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_NONE) ||
-                                        options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_STRICT))) {
+                                        options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_STRICT) ||
+                                        options.containsKey("partitioned"))) {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, method, "Http Channel Config: SameSite configuration has been enabled");
@@ -305,6 +310,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
             parseCookiesSameSiteLax(options.get(HttpConfigConstants.PROPNAME_SAMESITE_LAX));
             parseCookiesSameSiteNone(options.get(HttpConfigConstants.PROPNAME_SAMESITE_NONE));
             parseCookiesSameSiteStrict(options.get(HttpConfigConstants.PROPNAME_SAMESITE_STRICT));
+            parseCookiesSameSitePartitioned(options.get("partitioned"));
 
             initSameSiteCookiesPatterns();
 

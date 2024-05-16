@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.cookies.CookieUtils;
+import com.ibm.ws.http.netty.MSP;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.http.HttpCookie;
 
@@ -27,19 +28,6 @@ public enum CookieEncoder {
     INSTANCE;
 
     private final String SAMESITE = "samesite";
-
-//    public String encode(String name, String Value, HttpChannelConfig config) {
-//
-//        String cookie = null;
-//
-//        CookieUtils.
-//
-//        if(config.useSameSiteConfig() )
-//
-//
-//        return cookie;
-//
-//    }
 
     public String encode(HttpCookie cookie, HeaderKeys header, HttpChannelConfig config) {
 
@@ -73,8 +61,29 @@ public enum CookieEncoder {
                 if (!!!cookie.isSecure() && sameSiteAttributeValue.equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName())) {
                     cookie.setSecure(Boolean.TRUE);
                 }
+
+                // Set Partitioned Flag for SameSite=None Cookie
+                if (config.getPartitioned() == Boolean.TRUE
+                    && sameSiteAttributeValue.equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName())) {
+                    if (cookie.getAttribute("partitioned") == null) { // null means no value has been set yet
+
+                        MSP.log("[1] Setting the Partitioned attribute for SameSite=None");
+                        cookie.setAttribute("partitioned", "");
+                    }
+                }
             } else {
                 //trace
+            }
+
+        }
+        if (config.useSameSiteConfig() && cookie.getAttribute("samesite") != null) {
+            boolean sameSiteNoneUsed = cookie.getAttribute("samesite").equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName());
+            if (config.getPartitioned() && sameSiteNoneUsed) {
+                if (cookie.getAttribute("partitioned") == null) { // null means no value has been set yet
+
+                    MSP.log("[2] Setting the Partitioned attribute for SameSite=None");
+                    cookie.setAttribute("partitioned", "");
+                }
             }
         }
 
