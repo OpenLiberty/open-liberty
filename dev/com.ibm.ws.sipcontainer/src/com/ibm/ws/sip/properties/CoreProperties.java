@@ -29,6 +29,15 @@ public class CoreProperties
 	 */
 	private static final transient LogMgr c_logger = Log
 			.get(CoreProperties.class);
+	
+	
+	/**
+	* Check state when creating proxy branch
+	*/
+	public static final String CHECK_STATE_WHEN_CREATING_PROXY_BRANCH = "checkStateWhenCreatingProxyBranch";
+	public static final boolean CHECK_STATE_WHEN_CREATING_PROXY_BRANCH_DEFAULT = true;
+	
+	
 	/**
 	 * Maximum sipAppSessions allowed. 
 	 */
@@ -790,8 +799,8 @@ public class CoreProperties
 			c_logger.traceEntry(CoreProperties.class.getName(),
 					"loadDefaultProperties");
 		}
-    	
-    	properties.setInt(MAX_APP_SESSIONS, MAX_APP_SESSIONS_DEFAULT,CustPropSource.DEFAULT);
+		properties.setBoolean(CHECK_STATE_WHEN_CREATING_PROXY_BRANCH, CHECK_STATE_WHEN_CREATING_PROXY_BRANCH_DEFAULT, CustPropSource.DEFAULT);
+		properties.setInt(MAX_APP_SESSIONS, MAX_APP_SESSIONS_DEFAULT,CustPropSource.DEFAULT);
 		properties.setInt(MAX_MESSAGE_RATE, MAX_MESSAGE_RATE_DEFAULT,CustPropSource.DEFAULT);
 		properties.setInt(MAX_RESPONSE_TIME, MAX_RESPONSE_TIME_DEFAULT,CustPropSource.DEFAULT);
 		properties.setInt(STAT_UPDATE_RANGE, STAT_UPDATE_RANGE_DEFAULT,CustPropSource.DEFAULT);
