@@ -21,6 +21,10 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.FeatureProvisioner;
 import com.ibm.ws.kernel.feature.FixManager;
+import com.ibm.ws.kernel.productinfo.DuplicateProductInfoException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
+import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
 
 /**
  * If the feature is enabled the FixReportingComponent will run this task.
@@ -54,9 +58,11 @@ public class ReporterTask implements Runnable {
     public void run() {
         // Run if disabled flag has not been found
         try {
-            DataCollector collector = new DataCollector(featureProvisioner, fixManager, serverInfo);
+            Map<String, ? extends ProductInfo> allProductInfo = ProductInfo.getAllProductInfo();
+            DataCollector collector = new DataCollector(featureProvisioner, fixManager, serverInfo, allProductInfo);
             Map<String, String> data = collector.getData();
-            String urlLink = (String) props.get("urlLink");
+            String productUri = (allProductInfo.containsKey("com.ibm.websphere.appserver")) ? allProductInfo.get("com.ibm.websphere.appserver").getCVEReportingUri() : allProductInfo.get("io.openliberty").getCVEReportingUri();
+            String urlLink = setUrl(productUri, (String) props.get("urlLink"));
             JSONObject response = new CVEServiceClient().retrieveCVEData(data, urlLink);
             CVEResponseHandler.handleResponse(data.get("productEdition"), response);
         } catch (MalformedURLException e) {
@@ -71,7 +77,7 @@ public class ReporterTask implements Runnable {
                 Tr.debug(tc, "Failed due to: " + causes);
             }
 
-        } catch (DataCollectorException e) {
+        } catch (ProductInfoParseException | DuplicateProductInfoException | ProductInfoReplaceException | DataCollectorException e) {
             Tr.warning(tc, "CWWKF1706.issue.parsing");
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 String causes = buildExceptionMessage(e);
@@ -110,6 +116,16 @@ public class ReporterTask implements Runnable {
         }
 
         return causes.toString();
+    }
+
+    public static String setUrl(String cveReportingUri, String link) throws DataCollectorException {
+        if (link == null || link.isEmpty()) {
+            link = cveReportingUri;
+            if (link == null || link.isEmpty()) {
+                link = "https://cves.openliberty.io/report";
+            }
+        }
+        return link;
     }
 
 }

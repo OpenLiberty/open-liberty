@@ -36,4 +36,74 @@ public class ReporterTaskTest {
         assertEquals("java.lang.Exception: TEST3: java.lang.Exception: TEST2: java.lang.Exception: TEST1", response);
     }
 
+    @Test
+    public void testSetUrlIfNull() throws DataCollectorException {
+        String uri = "https://cves.openliberty.io/report";
+        String urlLink = null;
+
+        String link = ReporterTask.setUrl(uri, urlLink);
+
+        assertEquals("https://cves.openliberty.io/report", link);
+    }
+
+    @Test
+    public void testSetUrlIfEmpty() throws DataCollectorException {
+        String uri = "https://cves.openliberty.io/report";
+        String urlLink = "";
+
+        String link = ReporterTask.setUrl(uri, urlLink);
+
+        assertEquals("https://cves.openliberty.io/report", link);
+    }
+
+    @Test
+    public void testSetUrlIfNullAndZOS() throws DataCollectorException {
+        String uri = "https://cves.websphere.ibm.com/report";
+        String urlLink = null;
+
+        String link = ReporterTask.setUrl(uri, urlLink);
+
+        assertEquals("https://cves.websphere.ibm.com/report", link);
+    }
+
+    @Test
+    public void testSetUrlIfEmptyAndZOS() throws DataCollectorException {
+        String uri = "https://cves.websphere.ibm.com/report";
+        String urlLink = "";
+
+        String link = ReporterTask.setUrl(uri, urlLink);
+
+        assertEquals("https://cves.websphere.ibm.com/report", link);
+    }
+
+    @Test
+    public void testSetUrlIfSet() throws DataCollectorException {
+        String uri = "https://cves.websphere.ibm.com/report";
+        String urlLink = "TESTING";
+
+        String link = ReporterTask.setUrl(uri, urlLink);
+
+        assertEquals("TESTING", link);
+    }
+
+    @Test
+    public void testSetUrlIfUriNull() throws DataCollectorException {
+        String uri = null;
+        String urlLink = null;
+
+        String link = ReporterTask.setUrl(uri, urlLink);
+
+        assertEquals("https://cves.openliberty.io/report", link);
+    }
+
+    @Test
+    public void testSetUrlIfUriEmpty() throws DataCollectorException {
+        String uri = "";
+        String urlLink = null;
+
+        String link = ReporterTask.setUrl(uri, urlLink);
+
+        assertEquals("https://cves.openliberty.io/report", link);
+    }
+
 }
