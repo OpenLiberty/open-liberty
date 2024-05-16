@@ -1012,9 +1012,35 @@ public class NettyBaseMessage implements HttpBaseMessage {
                         cookie.setSecure(true);
                     }
 
+                    // Set Partitioned Flag for SameSite=None Cookie
+                    if (config.getPartitioned() == Boolean.TRUE
+                        && sameSiteAttributeValue.equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName())) {
+                        if (cookie.getAttribute("partitioned") == null) { // null means no value has been set yet
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "[1] Setting the Partitioned attribute for SameSite=None");
+                            }
+                            MSP.log("[1] Setting the Partitioned attribute for SameSite=None");
+                            cookie.setAttribute("partitioned", "");
+                        }
+                    }
+
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "No SameSite configuration found");
+                    }
+                }
+            }
+
+            // If SameSite=None is set programmatically, but partitioned is set via server.xml, then add the partitioned attribute
+            if (config.useSameSiteConfig() && cookie.getAttribute("samesite") != null) {
+                boolean sameSiteNoneUsed = cookie.getAttribute("samesite").equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName());
+                if (config.getPartitioned() && sameSiteNoneUsed) {
+                    if (cookie.getAttribute("partitioned") == null) { // null means no value has been set yet
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "[2] Setting the Partitioned attribute for SameSite=None");
+                        }
+                        MSP.log("[2] Setting the Partitioned attribute for SameSite=None");
+                        cookie.setAttribute("partitioned", "");
                     }
                 }
             }
