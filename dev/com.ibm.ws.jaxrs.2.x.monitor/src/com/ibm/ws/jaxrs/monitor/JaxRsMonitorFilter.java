@@ -23,13 +23,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.ext.Provider;
+import javax.ws.rs.Path;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.monitor.annotation.Monitor;
@@ -50,9 +53,14 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
     private static final TraceComponent tc = Tr.register(JaxRsMonitorFilter.class);
+    
+    private static final String REST_HTTP_ROUTE_ATTR = "REST.HTTP.ROUTE";
 
     @Context
     ResourceInfo resourceInfo;
+    
+    @Context
+    HttpServletRequest servletRequest;
     
     // jaxRSCountByName is a MeterCollection that will hold the RESTStats MXBean for each RESTful
     // resource method
@@ -171,6 +179,36 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
      */
     @Override
     public void filter(ContainerRequestContext reqCtx, ContainerResponseContext respCtx) throws IOException {
+    	
+        Class<?> resourceClass = resourceInfo.getResourceClass();
+        Method resourceMethod = resourceInfo.getResourceMethod();
+    	
+        /*
+         * Attempt to resolve HTTP Route of Restful Resource.
+         * If value is resolved, set it into HttpServletRequest's
+         * attribute as "RESTFUL.HTTP.ROUTE"
+         */
+        if (resourceClass != null && resourceMethod != null) {
+            String route;
+
+            String contextRoot = reqCtx.getUriInfo().getBaseUri().getPath();
+            UriBuilder template = UriBuilder.fromPath(contextRoot);
+
+            if (resourceClass.isAnnotationPresent(Path.class)) {
+                template.path(resourceClass);
+            }
+
+            if (resourceMethod.isAnnotationPresent(Path.class)) {
+                template.path(resourceMethod);
+            }
+
+            route = template.toTemplate();
+            if (route != null && !route.isEmpty()) {
+                servletRequest.setAttribute(REST_HTTP_ROUTE_ATTR, route);
+            }
+        }
+
+    	
         if (!MonitorAppStateListener.isRESTEnabled()) return;
         // Check that the StatsContext has been set on the request context.  This will happen when 
         // the ContainerRequestFilter.filter() method is invoked.  Situations, such as an improper jwt will cause the 
