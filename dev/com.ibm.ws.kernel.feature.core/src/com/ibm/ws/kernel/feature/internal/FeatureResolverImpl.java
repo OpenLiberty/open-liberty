@@ -254,7 +254,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         if (rootPlatforms == null) {
             return null;
         }
-
+        System.out.println(rootPlatforms);
         Set<String> compatibilityFeatures = new HashSet<String>();
 
         for (String plat : rootPlatforms) {
@@ -271,8 +271,9 @@ public class FeatureResolverImpl implements FeatureResolver {
             String compatibilityFeature;
             if (platBase.startsWith("jakartaee") || platBase.startsWith("javaee")) {
                 compatibilityFeature = "com.ibm.websphere.appserver.eeCompatible-" + platVersion;
-            } else if (platBase.startsWith("MicroProfile")) {
+            } else if (platBase.startsWith("microprofile")) {
                 compatibilityFeature = "io.openliberty.internal.mpVersion-" + platVersion;
+                System.out.println(compatibilityFeature);
 
             } else {
                 trace("Platform element [ " + plat + " ] is not a known platform.");
@@ -355,7 +356,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
             if (platBase.startsWith("jakartaee") || platBase.startsWith("javaee")) {
                 eeCompatibleVersions.add(platVersion);
-            } else if (plat.startsWith("MicroProfile")) {
+            } else if (plat.startsWith("microprofile")) {
                 mpCompatibleVersions.add(platVersion);
             } else {
                 trace("Platform environment variable [ " + PREFERRED_PLATFORM_VERSIONS_ENV_VAR + " ]" +
@@ -555,6 +556,8 @@ public class FeatureResolverImpl implements FeatureResolver {
         if (isBeta && rootPlatforms != null) {
             rootFeaturesList.addAll(rootPlatforms);
         }
+
+        System.out.println(rootFeaturesList);
         selectionContext.primeSelected(preResolved);
         selectionContext.primeSelected(rootFeaturesList);
 
