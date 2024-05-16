@@ -3718,8 +3718,12 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(false, futureOptionalMissing.toCompletableFuture().get(TIMEOUT_MINUTES, TimeUnit.MINUTES).isPresent());
 
+        assertEquals(1L, receipts.removeByPurchaseId(3000L));
+
+        assertEquals(List.of(3002L, 3010L, 3012L), receipts.removeByTotalBetween(10.00f, 20.00f));
+
         // remove data to avoid interference with other tests
-        assertEquals(16, receipts.removeIfTotalUnder(1000000.0f));
+        assertEquals(12, receipts.removeIfTotalUnder(1000000.0f));
     }
 
     /**

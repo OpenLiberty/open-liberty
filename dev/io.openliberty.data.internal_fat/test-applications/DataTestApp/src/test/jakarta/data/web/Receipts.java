@@ -71,6 +71,11 @@ public interface Receipts extends CrudRepository<Receipt, Long> {
 
     CursoredPage<Receipt> forCustomer(String customer, PageRequest req, Sort<?>... sorts);
 
+    long removeByPurchaseId(long purchaseId);
+
+    @OrderBy("purchaseId")
+    List<Long> removeByTotalBetween(float min, float max);
+
     @Query("DELETE FROM Receipt WHERE total < :max")
     int removeIfTotalUnder(float max);
 
