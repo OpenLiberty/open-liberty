@@ -27,13 +27,11 @@ Bundle-Activator: com.ibm.ws.kernel.feature.internal.Activator
 Import-Package: \
   !com.ibm.websphere.ras.annotation, \
   !com.ibm.websphere.ras, \
-  com.ibm.ws.kernel.feature, \
-  com.ibm.ws.kernel.feature.provisioning, \
-  com.ibm.ws.kernel.feature.resolver, \
   org.osgi.framework;version="[1.8,2)"
 
 Private-Package: \
-  com.ibm.ws.kernel.feature.internal
+  com.ibm.ws.kernel.feature.internal, \
+  com.ibm.ws.kernel.feature.internal.util
 
 Export-Package: \
  com.ibm.ws.kernel.feature;                 provide:=true, \

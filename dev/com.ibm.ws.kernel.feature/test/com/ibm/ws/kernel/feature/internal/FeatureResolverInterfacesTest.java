@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,6 +34,7 @@ import org.apache.aries.util.manifest.ManifestHeaderProcessor.GenericMetadata;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.osgi.framework.Filter;
+//import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.Version;
@@ -42,6 +43,7 @@ import org.osgi.framework.VersionRange;
 import com.ibm.ws.kernel.feature.AppForceRestart;
 import com.ibm.ws.kernel.feature.ProcessType;
 import com.ibm.ws.kernel.feature.Visibility;
+import com.ibm.ws.kernel.feature.internal.FeatureResolverInterfacesTest.TestFeature;
 import com.ibm.ws.kernel.feature.provisioning.ActivationType;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.HeaderElementDefinition;
@@ -55,6 +57,10 @@ import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
  */
 public class FeatureResolverInterfacesTest {
 
+    private static Result resolve(FeatureResolver resolver, TestRepository repo, String... features) {
+        return resolver.resolve(repo, Arrays.asList(features), Collections.<String> emptySet(), false, null);
+    }
+
     @Test
     public void testSingleFeatures() {
         FeatureResolver resolver = new FeatureResolverImpl();
@@ -63,15 +69,15 @@ public class FeatureResolverInterfacesTest {
         repo.add(TestFeature.create("com.example.featureA").build());
         repo.add(TestFeature.create("com.example.featureB").shortName("featureB").build());
 
-        Result result = resolver.resolveFeatures(repo, Arrays.asList("featureB"), Collections.<String> emptySet(), false);
+        Result result = resolve(resolver, repo, "featureB");
         assertThat(result.hasErrors(), is(false));
         assertThat(result.getResolvedFeatures(), containsInAnyOrder("featureB"));
 
-        Result result2 = resolver.resolveFeatures(repo, Arrays.asList("com.example.featureA"), Collections.<String> emptySet(), false);
+        Result result2 = resolve(resolver, repo, "com.example.featureA");
         assertThat(result2.hasErrors(), is(false));
         assertThat(result2.getResolvedFeatures(), containsInAnyOrder("com.example.featureA"));
 
-        Result result3 = resolver.resolveFeatures(repo, Arrays.asList("com.example.featureA", "com.example.featureB"), Collections.<String> emptySet(), false);
+        Result result3 = resolve(resolver, repo, "com.example.featureA", "com.example.featureB");
         assertThat(result3.hasErrors(), is(false));
         assertThat(result3.getResolvedFeatures(), containsInAnyOrder("com.example.featureA", "featureB"));
     }
@@ -84,7 +90,7 @@ public class FeatureResolverInterfacesTest {
         repo.add(TestFeature.create("com.example.featureA").build());
         repo.add(TestFeature.create("com.example.featureB").shortName("featureB").dependency("com.example.featureA").build());
 
-        Result result = resolver.resolveFeatures(repo, Arrays.asList("featureB"), Collections.<String> emptySet(), false);
+        Result result = resolve(resolver, repo, "featureB");
         assertThat(result.hasErrors(), is(false));
         assertThat(result.getResolvedFeatures(), containsInAnyOrder("featureB", "com.example.featureA"));
     }
@@ -98,7 +104,7 @@ public class FeatureResolverInterfacesTest {
         repo.add(TestFeature.create("com.example.featureA-1.1").build());
         repo.add(TestFeature.create("com.example.featureB-1.1").shortName("featureB-1.1").dependency("com.example.featureA-1.0", "1.1").build());
 
-        Result result = resolver.resolveFeatures(repo, Arrays.asList("featureB-1.1"), Collections.<String> emptySet(), false);
+        Result result = resolve(resolver, repo, "featureB-1.1");
         assertThat(result.hasErrors(), is(false));
         assertThat(result.getResolvedFeatures(), containsInAnyOrder("featureB-1.1", "com.example.featureA-1.0"));
     }
@@ -111,7 +117,7 @@ public class FeatureResolverInterfacesTest {
         repo.add(TestFeature.create("com.example.featureA-1.1").build());
         repo.add(TestFeature.create("com.example.featureB-1.1").shortName("featureB-1.1").dependency("com.example.featureA-1.0", "1.1").build());
 
-        Result result = resolver.resolveFeatures(repo, Arrays.asList("featureB-1.1"), Collections.<String> emptySet(), false);
+        Result result = resolve(resolver, repo, "featureB-1.1");
         assertThat(result.hasErrors(), is(false));
         assertThat(result.getResolvedFeatures(), containsInAnyOrder("featureB-1.1", "com.example.featureA-1.1"));
     }
@@ -126,7 +132,7 @@ public class FeatureResolverInterfacesTest {
         repo.add(TestFeature.create("com.example.featureB-1.1").dependency("com.example.featureA-1.0", "1.1").build());
         repo.add(TestFeature.create("com.example.featureC-1.0").dependency("com.example.featureA-1.1").build());
 
-        Result result = resolver.resolveFeatures(repo, Arrays.asList("com.example.featureB-1.1", "com.example.featureC-1.0"), Collections.<String> emptySet(), false);
+        Result result = resolve(resolver, repo, "com.example.featureB-1.1", "com.example.featureC-1.0");
         assertThat(result.hasErrors(), is(false));
         assertThat(result.getResolvedFeatures(), containsInAnyOrder("com.example.featureC-1.0", "com.example.featureB-1.1", "com.example.featureA-1.1"));
     }
@@ -144,7 +150,7 @@ public class FeatureResolverInterfacesTest {
         autoFeature.autofeatureDependency("com.example.featureB-1.0");
         repo.add(autoFeature.build());
 
-        Result result = resolver.resolveFeatures(repo, Arrays.asList("com.example.featureA-1.0", "com.example.featureB-1.0"), Collections.<String> emptySet(), false);
+        Result result = resolve(resolver, repo, "com.example.featureA-1.0", "com.example.featureB-1.0");
         assertThat(result.hasErrors(), is(false));
         assertThat(result.getResolvedFeatures(), containsInAnyOrder("com.example.featureA-1.0", "com.example.featureB-1.0", "com.example.autoFeature-1.0"));
     }
@@ -155,7 +161,7 @@ public class FeatureResolverInterfacesTest {
 
         TestRepository repo = new TestRepository();
 
-        Result result = resolver.resolveFeatures(repo, Arrays.asList("com.example.missingFeature"), Collections.<String> emptySet(), false);
+        Result result = resolve(resolver, repo, "com.example.missingFeature");
         assertThat(result.hasErrors(), is(true));
         assertThat(result.getResolvedFeatures(), is(empty()));
         assertThat(result.getMissing(), contains("com.example.missingFeature"));
@@ -168,7 +174,7 @@ public class FeatureResolverInterfacesTest {
         TestRepository repo = new TestRepository();
         repo.add(TestFeature.create("com.example.featureA-1.0").dependency("com.example.missingFeature").build());
 
-        Result result = resolver.resolveFeatures(repo, Arrays.asList("com.example.featureA-1.0"), Collections.<String> emptySet(), false);
+        Result result = resolve(resolver, repo, "com.example.featureA-1.0");
         assertThat(result.hasErrors(), is(true));
         assertThat(result.getResolvedFeatures(), contains("com.example.featureA-1.0"));
         assertThat(result.getMissing(), contains("com.example.missingFeature"));
@@ -181,7 +187,7 @@ public class FeatureResolverInterfacesTest {
         TestRepository repo = new TestRepository();
         repo.add(TestFeature.create("com.example.featureA-1.0").dependency("com.example.missingFeature-1.0", "1.1", "1.2").build());
 
-        Result result = resolver.resolveFeatures(repo, Arrays.asList("com.example.featureA-1.0"), Collections.<String> emptySet(), false);
+        Result result = resolve(resolver, repo, "com.example.featureA-1.0");
         assertThat(result.hasErrors(), is(true));
         assertThat(result.getResolvedFeatures(), contains("com.example.featureA-1.0"));
         assertThat(result.getMissing(), contains("com.example.missingFeature-1.0"));
@@ -203,7 +209,7 @@ public class FeatureResolverInterfacesTest {
         repo.add(TestFeature.create("root2-1.0").dependency("rootConflict-2.0").dependency("middleMan-1.0", "2.0").build());
         repo.add(TestFeature.create("root3-1.0").dependency("tolerateConflict-2.0").build());
 
-        Result result = resolver.resolveFeatures(repo, Arrays.asList("root1-1.0", "root2-1.0", "root3-1.0"), Collections.<String> emptySet(), false);
+        Result result = resolve(resolver, repo, "root1-1.0", "root2-1.0", "root3-1.0");
         assertThat(result.hasErrors(), is(true));
         assertThat(result.getResolvedFeatures(), containsInAnyOrder("root1-1.0", "root2-1.0", "root3-1.0", "tolerateConflict-2.0", "middleMan-2.0"));
 
@@ -220,6 +226,16 @@ public class FeatureResolverInterfacesTest {
 
         private final HashMap<String, ProvisioningFeatureDefinition> features = new HashMap<>();
         private final HashMap<String, ProvisioningFeatureDefinition> autoFeatures = new HashMap<>();
+
+        @Override
+        public List<ProvisioningFeatureDefinition> getFeatures() {
+            throw new UnsupportedOperationException("Unimplemented method 'getFeatures'");
+        }
+
+        // @Override
+        // public List<ProvisioningFeatureDefinition> select(FeatureResolver.Selector<ProvisioningFeatureDefinition> selector) {
+        //     throw new UnsupportedOperationException("Unimplemented method 'select'");
+        // }
 
         @Override
         public Collection<ProvisioningFeatureDefinition> getAutoFeatures() {

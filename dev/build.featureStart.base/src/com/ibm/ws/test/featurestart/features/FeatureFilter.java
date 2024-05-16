@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -67,9 +67,8 @@ public class FeatureFilter {
             // location variable.
             return "Required variable 'wmqJmsClient.rar.location' is not set";
 
-        } else if (shortName.equalsIgnoreCase("mpHealth") ||
-                   shortName.equalsIgnoreCase("mpMetrics")){
-            // Versionless feature cannot run by itself
+        } else if (shortName.indexOf("-") == -1 ) {
+            // Versionless features cannot run by themselves
             // Requires other features to be configured for it to resolve
             return "Cannot start by itself";
 
