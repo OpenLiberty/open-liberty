@@ -47,8 +47,6 @@ public class DataJPATest extends FATServletClient {
         // Get driver type
         DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
         server.addEnvVar("DB_DRIVER", type.getDriverName());
-        server.addEnvVar("DB_USER", testContainer.getUsername());
-        server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
 
         // Set up server DataSource properties
         DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
