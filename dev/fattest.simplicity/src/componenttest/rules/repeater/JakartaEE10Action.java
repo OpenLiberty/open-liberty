@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -71,7 +71,7 @@ public class JakartaEE10Action extends JakartaEEAction {
                                                   "cdi-4.0",
                                                   "concurrent-3.0",
                                                   "connectors-2.1",
-                                                  "data-1.0",
+                                                  "data-1.0", // TODO temporarily enabled with EE10 for testing/experimentation. Later, switch this to EE11
                                                   "expressionLanguage-5.0",
                                                   "enterpriseBeans-4.0",
                                                   "enterpriseBeansHome-4.0",

@@ -202,13 +202,12 @@ public class EE11FeatureCompatibilityTest extends FATServletClient {
         // the convenience feature depends on jdbc-4.2 and tolerates 4.3
         specialConflicts.put("jdbc-4.0", "com.ibm.websphere.appserver.jdbc");
         specialConflicts.put("jdbc-4.1", "com.ibm.websphere.appserver.jdbc");
+        specialConflicts.put("data-1.1", "io.openliberty.data");
 
         // opentracing-1.3 and jakartaee-9.1 take over an hour to run on power linux system.
         // For now excluding opentracing-1.3 in order to not go past the 3 hour limit for a
         // Full FAT to run.
         features.remove("opentracing-1.3");
-        //webprofile-11.0 (brought in by jakartaee-11) only brings in data-1.0
-        features.remove("data-1.1");
 
         // Add EE11 features that are not part of EE9
         // They will conflict by their long name
