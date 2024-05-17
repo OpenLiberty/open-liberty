@@ -13,7 +13,6 @@
 package test.jakarta.data.jpa.web;
 
 import static componenttest.annotation.SkipIfSysProp.DB_Not_Default;
-import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
 import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.assertEquals;
@@ -624,6 +623,13 @@ public class DataJPATestServlet extends FATServlet {
         cityNames.add("Mitchell");
         cityNames.add("Pierre");
 
+        //FIXME Provided eclipse link with this query:           eclipselink.ps.query   3 Execute query ReportQuery(referenceClass=City sql="SELECT NAME, STATENAME FROM WLPCity WHERE (STATENAME = ?) ORDER BY NAME")
+        // Eclipse link then sent this following query to Oracle eclipselink.ps.sql     3 SELECT NAME AS a1, STATENAME AS a2 FROM WLPCity WHERE (STATENAME = ?) AND (STATENAME,NAME) IN (SELECT null,null FROM (SELECT null,null, ROWNUM rnum  FROM (SELECT NAME AS a1, STATENAME AS a2 FROM WLPCity WHERE (STATENAME = ?) ORDER BY null,null) WHERE ROWNUM <= ?) WHERE rnum > ? )  ORDER BY NAME FOR UPDATE
+        if (jdbcJarName.startsWith("ojdbc8_g")) {
+            cities.removeByStateName("South Dakota"); //Cleanup Cities repository and skip the rest of these tests
+            return;
+        }
+
         Order<City> orderByCityName = supportsOrderByForUpdate ? Order.by(Sort.asc("name")) : Order.by();
         Iterator<CityId> ids = cities.deleteFirst3ByStateName("South Dakota", orderByCityName).iterator();
         CityId id;
@@ -1116,10 +1122,6 @@ public class DataJPATestServlet extends FATServlet {
      */
     @SkipIfSysProp({
                      DB_Postgres, //Failing on Postgres due to eclipselink issue.  OL Issue #28368
-                     // JPA Feature does not include the Oracle extension and thus cannot map oracle.sql.TIMESTAMPTZ to java.time.OffsetDateTime
-                     // This support is currently under feature review here: https://github.com/OpenLiberty/open-liberty/issues/14894
-                     // No customer workaround is available (so far as I can tell)
-                     DB_Oracle
     })
     @Test
     public void testEntitiesAsParameters() throws Exception {
@@ -1586,10 +1588,6 @@ public class DataJPATestServlet extends FATServlet {
      */
     @SkipIfSysProp({
                      DB_Postgres, //Failing on Postgres due to eclipselink issue.  OL Issue #28368
-                     // JPA Feature does not include the Oracle extension and thus cannot map oracle.sql.TIMESTAMPTZ to java.time.OffsetDateTime
-                     // This support is currently under feature review here: https://github.com/OpenLiberty/open-liberty/issues/14894
-                     // No customer workaround is available (so far as I can tell)
-                     DB_Oracle
     })
     @Test
     public void testGeneratedKey() {
