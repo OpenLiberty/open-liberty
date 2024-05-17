@@ -18,6 +18,8 @@
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
-    
+    <webContainer>
+        <stopAppStartUponListenerException>true</stopAppStartUponListenerException>
+    </webContainer>
     <variable name="VARIABLE_SOURCE_DIRS" defaultValue="defaultSrcDir" />
 </server>
