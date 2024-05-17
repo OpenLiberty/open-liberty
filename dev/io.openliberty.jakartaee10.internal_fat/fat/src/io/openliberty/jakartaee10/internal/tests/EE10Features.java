@@ -202,6 +202,7 @@ public class EE10Features {
 
         features.remove("mpReactiveMessaging-3.0"); //still in development
         features.remove("mpTelemetry-2.0"); //Not yet assigned to an MPXX_FEATURES_ARRAY
+        features.remove("mpFaultTolerance-4.1"); //MP70 is just a placeholder for now
 
         features.remove("mpHealth"); //versionless features in development
         features.remove("mpMetrics");
@@ -301,6 +302,7 @@ public class EE10Features {
 
         features.remove("mpReactiveMessaging-3.0"); //still in development
         features.remove("mpTelemetry-2.0"); //Not yet assigned to an MPXX_FEATURES_ARRAY
+        features.remove("mpFaultTolerance-4.1"); //MP70 is just a placeholder for now
 
         // Test features may or may not be compatible, we don't want to assert either way
         features.removeAll(getTestFeatures());
