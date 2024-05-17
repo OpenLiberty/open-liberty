@@ -9,6 +9,8 @@
  *******************************************************************************/
 package io.openliberty.microprofile.metrics50.internal.tck.launcher;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -18,6 +20,7 @@ import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
+import java.util.Scanner;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -29,7 +32,6 @@ import javax.net.ssl.X509TrustManager;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
-import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,18 +78,79 @@ public class RestApplicationTest {
     public void normalPathGet() throws Exception {
         final String method = "normalPathGet";
 
-        Assume.assumeTrue(server.isStarted());
+        assertTrue(server.isStarted());
 
         //Read to run a smarter planet
         server.waitForStringInLogUsingMark("CWWKF0011I");
         server.setMarkToEndOfLog();
+        String route = "/RestApp/resource/normalPathGet";
+        String requestMethod = "GET";
+        String responseStatus = "200";
 
-        String res = getHttpServlet(
-                                    "/RestApp/resource/normalPathGet");
+        String res = getHttpServlet(route);
 
-        String metrics = getHttpServlet("/metrics?scope=vendor");
+        String vendorMetricsOutput = getHttpServlet("/metrics?scope=vendor");
+        Log.info(c, method, vendorMetricsOutput);
 
-        Log.info(c, method, metrics);
+        assertTrue(validatePrometheusHTTPMetric(vendorMetricsOutput, route, responseStatus, requestMethod));
+
+    }
+
+    @Test
+    public void normalPathPost() throws Exception {
+        final String method = "normalPathGet";
+
+        assertTrue(server.isStarted());
+
+        //Read to run a smarter planet
+        server.waitForStringInLogUsingMark("CWWKF0011I");
+        server.setMarkToEndOfLog();
+        String route = "/RestApp/resource/normalPathPost";
+        String requestMethod = "POST";
+        String responseStatus = "200";
+
+        String res = postHttpServlet(route);
+
+        String vendorMetricsOutput = getHttpServlet("/metrics?scope=vendor");
+        Log.info(c, method, vendorMetricsOutput);
+
+        assertTrue(validatePrometheusHTTPMetric(vendorMetricsOutput, route, responseStatus, requestMethod));
+
+    }
+
+    private boolean validatePrometheusHTTPMetric(String vendorMetricsOutput, String route, String responseStatus, String requestMethod) {
+        return validatePrometheusHTTPMetric(vendorMetricsOutput, route, responseStatus, requestMethod, null);
+    }
+
+    private boolean validatePrometheusHTTPMetric(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String count) {
+
+        if (count == null) {
+            count = "[0-9]+\\.[0-9]+";
+        }
+
+        String matchString = "http_server_request_duration_seconds_count\\{error_type=\"\",http_route=\"" + route
+                             + "\",http_scheme=\"http\",mp_scope=\"vendor\",network_name=\"HTTP\",network_version=\"1\\.[01]\",request_method=\"" + requestMethod
+                             + "\",response_status=\"" + responseStatus + "\",server_name=\"localhost\",server_port=\"[0-9]+\",\\} " + count;
+
+        try (Scanner sc = new Scanner(vendorMetricsOutput)) {
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+
+                /*
+                 * Skip things we don't care about for perfomance
+                 */
+                if (!line.startsWith("http_server_request_duration_seconds_count")) {
+                    continue;
+                }
+                Log.info(c, "validatePrometheusHTTPMetric", "line is " + line);
+
+                if (line.matches(matchString)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private static void trustAll() throws Exception {
@@ -174,6 +237,33 @@ public class RestApplicationTest {
                 lines.append(line).append(sep);
             }
             Log.info(c, "getHttpServlet", sURL);
+            return lines.toString();
+        } finally {
+            if (con != null)
+                con.disconnect();
+        }
+    }
+
+    private String postHttpServlet(String servletPath) throws Exception {
+        HttpURLConnection con = null;
+        try {
+            String sURL = "http://" + server.getHostname() + ":"
+                          + server.getHttpDefaultPort() + servletPath;
+            URL checkerServletURL = new URL(sURL);
+            con = (HttpURLConnection) checkerServletURL.openConnection();
+            con.setDoInput(true);
+            con.setDoOutput(true);
+            con.setUseCaches(false);
+            con.setRequestMethod("POST");
+            String sep = System.getProperty("line.separator");
+            String line = null;
+            StringBuilder lines = new StringBuilder();
+            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+            while ((line = br.readLine()) != null && line.length() > 0) {
+                lines.append(line).append(sep);
+            }
+            Log.info(c, "postHttpServlet", sURL);
             return lines.toString();
         } finally {
             if (con != null)
