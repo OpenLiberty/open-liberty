@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
@@ -22,11 +22,15 @@ import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
+import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -52,23 +56,24 @@ public class WCPartitionedCookieAttributeSecurityTest {
     private static final Logger LOG = Logger.getLogger(WCPartitionedCookieAttributeSecurityTest.class.getName());
     private static final String APP_NAME_SAMESITE_SECURITY = "SameSiteSecurityTest";
 
-    @Server("servlet40_sameSiteSecurity")
-    public static LibertyServer sameSiteSecurityServer;
+    @Server("servlet40_partitionedSecurity")
+    public static LibertyServer partitionedSecurityServer;
 
     @BeforeClass
     public static void before() throws Exception {
         // Build and deploy the application that we need for this test
-        ShrinkHelper.defaultApp(sameSiteSecurityServer, APP_NAME_SAMESITE_SECURITY + ".war", "samesite.security.servlet");
+        ShrinkHelper.defaultApp(partitionedSecurityServer, APP_NAME_SAMESITE_SECURITY + ".war", "samesite.security.servlet");
 
         // Start the server and use the class name so we can find logs easily.
-        sameSiteSecurityServer.startServer(WCPartitionedCookieAttributeSecurityTest.class.getSimpleName() + ".log");
+        partitionedSecurityServer.startServer(WCPartitionedCookieAttributeSecurityTest.class.getSimpleName() + ".log");
+        partitionedSecurityServer.waitForSSLStart();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
-        if (sameSiteSecurityServer != null && sameSiteSecurityServer.isStarted()) {
-            sameSiteSecurityServer.stopServer();
+        if (partitionedSecurityServer != null && partitionedSecurityServer.isStarted()) {
+            partitionedSecurityServer.stopServer();
         }
     }
 
@@ -93,9 +98,10 @@ public class WCPartitionedCookieAttributeSecurityTest {
 
         // CWWKS4105I: LTPA configuration is ready after x seconds
         assertNotNull("CWWKS4105I LTPA configuration message not found.",
-                      sameSiteSecurityServer.waitForStringInLogUsingMark("CWWKS4105I.*"));
+                      partitionedSecurityServer.waitForStringInLogUsingMark("CWWKS4105I.*"));
 
-        String url = "http://" + sameSiteSecurityServer.getHostname() + ":" + sameSiteSecurityServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE_SECURITY
+        // Need to use https since we're testing SameSite=None and that requires a secure connection for the Cookies to be sent.
+        String url = "https://" + partitionedSecurityServer.getHostname() + ":" + partitionedSecurityServer.getHttpDefaultSecurePort() + "/" + APP_NAME_SAMESITE_SECURITY
                      + "/SameSiteSecurityServlet";
         String userName = "user1";
         String password = "user1Login";
@@ -105,7 +111,17 @@ public class WCPartitionedCookieAttributeSecurityTest {
 
         // Drive the initial request.
         LOG.info("Initial Request: url = " + getMethod.getUri().toString() + " request method = " + getMethod);
-        try (final CloseableHttpClient client = HttpClientBuilder.create().disableRedirectHandling().build()) {
+        try (CloseableHttpClient client = HttpClients.custom()
+                        .setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
+                                        .setSSLSocketFactory(SSLConnectionSocketFactoryBuilder.create()
+                                                        .setSslContext(SSLContextBuilder.create()
+                                                                        .loadTrustMaterial(TrustAllStrategy.INSTANCE)
+                                                                        .build())
+                                                        .build())
+                                        .build())
+                        .disableRedirectHandling()
+                        .build()) {
+
             try (final CloseableHttpResponse response = client.execute(getMethod)) {
                 LOG.info("Initial request result: " + response.getReasonPhrase());
                 LOG.info("Initial request page status code: " + response.getCode());
