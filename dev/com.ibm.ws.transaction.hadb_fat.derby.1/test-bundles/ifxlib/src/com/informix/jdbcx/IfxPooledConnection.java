@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -220,9 +220,6 @@ public class IfxPooledConnection implements PooledConnection {
                         } else if (failingOperation == 773) {
                             IfxConnection.setTestingLeaselogGetFlag(true);
                         }
-                    } else if (testTypeInt == 7) { // Aggressive peer recovery takeover tests
-                        IfxConnection.setPeerRecoveryPause(true);
-                        IfxConnection.setFailingRetries(numberOfFailuresInt);
                     }
                 } else {
                     System.out.println("SIMHADB: Empty result set");

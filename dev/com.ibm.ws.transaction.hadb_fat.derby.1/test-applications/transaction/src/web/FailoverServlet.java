@@ -47,7 +47,7 @@ public class FailoverServlet extends FATServlet {
     private DataSource ds;
 
     private enum TestType {
-        STARTUP, RUNTIME, DUPLICATE_RESTART, DUPLICATE_RUNTIME, HALT, CONNECT, LEASE, AGGRESSIVE
+        STARTUP, RUNTIME, DUPLICATE_RESTART, DUPLICATE_RUNTIME, HALT, CONNECT, LEASE
     };
 
     /**
@@ -150,18 +150,6 @@ public class FailoverServlet extends FATServlet {
         System.out.println("FAILOVERSERVLET: drive setupForLeaseGet");
         setupTestParameters(request, response, TestType.LEASE, 0, 773, 1); // 773 interpreted as lease get
         System.out.println("FAILOVERSERVLET: setupForLeaseGet complete");
-    }
-
-    public void setupForAggressivePeerRecovery1(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        System.out.println("FAILOVERSERVLET: drive setupForAggressivePeerRecovery1");
-        setupTestParameters(request, response, TestType.AGGRESSIVE, 0, 0, 1);
-        System.out.println("FAILOVERSERVLET: setupForAggressivePeerRecovery1 complete");
-    }
-
-    public void setupForAggressivePeerRecovery2(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        System.out.println("FAILOVERSERVLET: drive setupForAggressivePeerRecovery2");
-        setupTestParameters(request, response, TestType.AGGRESSIVE, 0, 0, 2);
-        System.out.println("FAILOVERSERVLET: setupForAggressivePeerRecovery2 complete");
     }
 
     private void setupTestParameters(HttpServletRequest request, HttpServletResponse response, TestType testType,
@@ -556,8 +544,6 @@ public class FailoverServlet extends FATServlet {
 
         Connection con = getConnection();
         con.setAutoCommit(false);
-        DatabaseMetaData mdata = con.getMetaData();
-        String dbName = mdata.getDatabaseProductName();
         System.out.println("setupBatchOfStaleLeases1");
         // Access the Database
 
@@ -608,8 +594,6 @@ public class FailoverServlet extends FATServlet {
 
         Connection con = getConnection();
         con.setAutoCommit(false);
-        DatabaseMetaData mdata = con.getMetaData();
-        String dbName = mdata.getDatabaseProductName();
         System.out.println("setupBatchOfStaleLeases2");
         // Access the Database
 
