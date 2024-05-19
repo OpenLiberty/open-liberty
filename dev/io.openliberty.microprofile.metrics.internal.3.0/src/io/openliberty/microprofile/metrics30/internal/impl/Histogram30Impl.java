@@ -110,12 +110,13 @@ public class Histogram30Impl implements Histogram {
         return reservoir.getSnapshot();
     }
 
+    /**
+     * Returns a map of histogram buckets
+     *
+     * @return a map of histogram buckets
+     */
     public Map<String, Map<Double, BucketValue>> getBuckets() {
         return manager.getBuckets();
-    }
-
-    public BucketManager getManager() {
-        return manager;
     }
 
     /** {@inheritDoc} */
@@ -124,10 +125,21 @@ public class Histogram30Impl implements Histogram {
         return sum.sum();
     }
 
+    /**
+     * Returns user configured list of percentiles
+     *
+     * @return user configured list of percentiles
+     */
     public double[] getConfiguredPercentiles() {
         return percentiles;
     }
 
+    /**
+     * Sets and returns user configured list of percentiles
+     *
+     * @param metadata
+     * @return user configured list of percentiles
+     */
     public double[] setConfiguredPercentiles(Metadata metadata) {
         Optional<String> percentileConfiguration = ConfigProvider.getConfig().getOptionalValue("mp.metrics.distribution.percentiles", String.class);
         String metricName = metadata.getName();
