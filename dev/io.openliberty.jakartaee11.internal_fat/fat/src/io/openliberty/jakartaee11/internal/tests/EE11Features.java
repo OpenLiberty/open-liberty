@@ -194,7 +194,7 @@ public class EE11Features {
 
         // Add back EE-11
         features.addAll(JakartaEE11Action.EE11_FEATURE_SET);
-        features.add("data-1.0"); // tolerates EE-11
+        features.add("data-1.1"); // tolerates EE-11
 
         // Value-add features which aren't compatible
         features.remove("openid-2.0"); // stabilized
