@@ -25,7 +25,7 @@ When available, add links to required feature documents. Use "N/A" to mark parti
     - Click "Share" > select "People with link" > click "Link Settings" > under "Link Expiration" select "Disable Shared Link on" > set an expiration date ~10 years into the future
     - If you lack permissions, contact [OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect)
 - FTS: Link to Feature Test Summary GH Issue
-- Beta Blog(s): Link to Beta Blog Post(s) GH Issue(s)
+- Beta Blog(s): Link to Beta Blog Post GH Issue(s)
 - GA Blog: Link to GA Blog Post GH Issue
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
