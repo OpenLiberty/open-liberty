@@ -23,6 +23,7 @@
   <transaction
     backendURL="http://localhost:${bvt.prop.HTTP_default}"
     heuristicRetryInterval="10"
+    leaseExpiryThreshold="5"
     leaseLength="10m"
     recoverOnStartup="true"
     recoveryGroup="recovery-group-1"

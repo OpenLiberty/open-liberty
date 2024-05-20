@@ -1,5 +1,7 @@
 package com.ibm.tx.jta.impl;
 
+import java.time.Instant;
+
 /*******************************************************************************
  * Copyright (c) 2002, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProviderManager;
+import com.ibm.tx.util.Utils;
 import com.ibm.tx.util.alarm.Alarm;
 import com.ibm.tx.util.alarm.AlarmListener;
 import com.ibm.websphere.ras.Tr;
@@ -87,7 +90,7 @@ public class LeaseTimeoutManager {
 
         void schedule(int delay) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Scheduling lease renewal in {0} seconds", delay);
+                Tr.debug(tc, "Scheduling lease renewal for {0}", Utils.traceTime(Instant.now().plusSeconds(delay).toEpochMilli()));
             _alarm = ConfigurationProviderManager.getConfigurationProvider().getAlarmManager().scheduleAlarm(delay * 1000l, this, delay);
         }
 
