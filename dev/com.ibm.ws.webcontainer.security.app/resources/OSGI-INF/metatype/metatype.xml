@@ -140,7 +140,11 @@
         </AD>    
         
         <AD id="partitionedCookie" name="%partitionedCookie" description="%partitionedCookie.desc"
-            required="false" type="Boolean" />
+            required="false" type="String" default="Defer">
+            <Option label="%partitionedCookieTrue"  value="True"/>
+            <Option label="%partitionedCookieFalse" value="False"/>
+            <Option label="%partitionedCookieDefer" value="Defer"/>
+        </AD>
 
         <AD id="useContextRootForSSOCookiePath" name="%useContextRootForSSOCookiePath" description="%useContextRootForSSOCookiePath.desc" 
             required="false" type="Boolean" default="false"/>

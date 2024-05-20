@@ -192,9 +192,17 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         loginFormContextRoot = (String) newProperties.get(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT);
         basicAuthRealmName = (String) newProperties.get(CFG_KEY_BASIC_AUTH_REALM_NAME);
         sameSiteCookie = (String) newProperties.get(CFG_KEY_SAME_SITE_COOKIE);
-        partitionedCookie = (Boolean) newProperties.get(CFG_KEY_PARTITIONED_COOKIE);
         useContextRootForSSOCookiePath = (Boolean) newProperties.get(CFG_KEY_USE_CONTEXT_ROOT_FOR_SSO_COOKIE_PATH);
         postParamMaxRequestBodySize = (Long) newProperties.get(CFG_KEY_MAX_CONTENT_LENGTH_TO_SAVE_POST_PARAMETERS);
+
+
+        String partValue = (String) newProperties.get(CFG_KEY_PARTITIONED_COOKIE);
+        if ("true".equalsIgnoreCase(partValue)||"false".equalsIgnoreCase(partValue)) {
+          //we want partitionedCookie to be null unless the value is true or false
+          partitionedCookie = getBooleanValue(CFG_KEY_PARTITIONED_COOKIE, partValue);
+        } else {
+          partitionedCookie = null;
+        }
 
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(this);
     }
@@ -621,4 +629,20 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     public long postParamMaxRequestBodySize() {
         return postParamMaxRequestBodySize.longValue();
     }
+
+    // This method is for config users that need to know if an admin has provided a true/false or no value for a
+    // boolean config attribute.  The current infrastructure does not properly support this
+    public static Boolean getBooleanValue(String attribute, String strValue) {
+      Boolean retVal = null;
+      if (strValue!=null && strValue.length()>0) {
+        if ("true".equalsIgnoreCase(strValue) || "false".equalsIgnoreCase(strValue)) {
+          retVal = Boolean.valueOf(strValue);
+        } else {
+          Object[] inserts = new Object[] { strValue, (attribute==null?"":attribute)}; 
+          Tr.warning(tc, "INVALID_BOOLEAN_ATTRIBUTE", inserts);
+        }
+      }
+      return(retVal);
+    }
+
 }

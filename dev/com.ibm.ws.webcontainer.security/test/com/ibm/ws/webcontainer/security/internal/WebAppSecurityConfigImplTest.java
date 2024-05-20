@@ -26,13 +26,17 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+
+import test.common.SharedOutputManager;
 
 public class WebAppSecurityConfigImplTest {
 
@@ -48,6 +52,7 @@ public class WebAppSecurityConfigImplTest {
 
     private final String USER_DIR = "userDir";
     private final String SERVER_NAME = "serverName";
+    static SharedOutputManager outputMgr;
 
     @Before
     public void setUp() {
@@ -61,6 +66,20 @@ public class WebAppSecurityConfigImplTest {
                 will(returnValue(SERVER_NAME));
             }
         });
+    }
+
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        // make stdout/stderr "quiet"-- no output will show up for test
+        // unless one of the copy methods or documentThrowable is called
+        outputMgr = SharedOutputManager.getInstance();
+        outputMgr.captureStreams();
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        // Make stdout and stderr "normal"
+        outputMgr.restoreStreams();
     }
 
     @Test
@@ -454,10 +473,22 @@ public class WebAppSecurityConfigImplTest {
         assertEquals("isPartitioned value should be false, but is ["+webCfg.isPartitionedCookie()+"]", false, webCfg.isPartitionedCookie());
     }
 
+    //defer is same as not set
+    @Test
+    public void testPartitioned_defer() {
+        final String PART_NAME = "partitionedCookie";
+        final String PART_VALUE = "Defer";
+        Map<String, Object> cfg = new HashMap<String, Object>();
+        cfg.put(PART_NAME,PART_VALUE);
+        WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef, null, null);
+        assertNull("Partitioned value should be null, but is ["+webCfg.getPartitionedCookie()+"]", webCfg.getPartitionedCookie());
+        assertEquals("isPartitioned value should be false, but is ["+webCfg.isPartitionedCookie()+"]", false, webCfg.isPartitionedCookie());
+    }
+
     @Test
     public void testPartitioned_true() {
         final String PART_NAME = "partitionedCookie";
-        final Boolean PART_VALUE = Boolean.TRUE;
+        final String PART_VALUE = "true";
         Map<String, Object> cfg = new HashMap<String, Object>();
         cfg.put(PART_NAME,PART_VALUE);
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef, null, null);
@@ -468,7 +499,7 @@ public class WebAppSecurityConfigImplTest {
     @Test
     public void testPartitioned_false() {
         final String PART_NAME = "partitionedCookie";
-        final Boolean PART_VALUE = Boolean.FALSE;
+        final String PART_VALUE = "false";
         Map<String, Object> cfg = new HashMap<String, Object>();
         cfg.put(PART_NAME,PART_VALUE);
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef, null, null);
