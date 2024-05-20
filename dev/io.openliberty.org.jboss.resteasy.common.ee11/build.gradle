@@ -16,10 +16,10 @@ configurations {
 }
 
 dependencies {
-  resteasy 'org.jboss.resteasy:resteasy-client:6.2.8.Final',
-           'org.jboss.resteasy:resteasy-client-api:6.2.8.Final',
-           'org.jboss.resteasy:resteasy-core:6.2.8.Final',
-           'org.jboss.resteasy:resteasy-core-spi:6.2.8.Final'
+  resteasy 'org.jboss.resteasy:resteasy-client:7.0.0.Alpha1',
+           'org.jboss.resteasy:resteasy-client-api:7.0.0.Alpha1',
+           'org.jboss.resteasy:resteasy-core:7.0.0.Alpha1',
+           'org.jboss.resteasy:resteasy-core-spi:7.0.0.Alpha1'
 }
 
 task extractInjectedClasses(type: Copy) {

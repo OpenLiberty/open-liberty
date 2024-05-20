@@ -34,7 +34,6 @@ tested.features: \
   appsecurity-2.0,\
   appsecurity-3.0,\
   appsecurity-4.0,\
-  appsecurity-5.0,\
   expressionlanguage-4.0,\
   xmlbinding-3.0
 

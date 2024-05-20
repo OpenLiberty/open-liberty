@@ -36,7 +36,7 @@ import componenttest.topology.utils.FATServletClient;
  * Tests that @RegisterRestClient does not cause an UnsatisfiedResolutionException, see https://github.com/OpenLiberty/open-liberty/issues/21547
  */
 @AllowedFFDC
-@SkipForRepeat(SkipForRepeat.EE11_FEATURES)
+@SkipForRepeat("EE11") // Skip until MicroProfile supports Jakarta EE 11
 @RunWith(FATRunner.class)
 public class RegisterRestClientTest extends FATServletClient {
 

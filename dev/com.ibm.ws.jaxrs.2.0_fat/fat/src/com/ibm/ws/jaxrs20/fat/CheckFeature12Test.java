@@ -34,7 +34,7 @@ import componenttest.topology.impl.LibertyServer;
  * the server had to be restarted if the cdi-1.0 feature was added after the server had started.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat({"EE9_FEATURES", "EE10_FEATURES", "EE11_FEATURES"}) // this test is not applicable for EE9 because restfulWS-3.0 always enables cdi-3.0
+@SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE11_FEATURES}) // this test is not applicable for EE9 because restfulWS-3.0 always enables cdi-3.0
 public class CheckFeature12Test {
 
     @Server("com.ibm.ws.jaxrs.fat.checkFeature")

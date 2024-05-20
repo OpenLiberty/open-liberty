@@ -54,7 +54,7 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
                     .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                    .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                    .andWith(FeatureReplacementAction.EE11_FEATURES());
+                    .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+                    .andWith(FeatureReplacementAction.EE11_FEATURES().alwaysAddFeature("jsonb-3.0"));
 ;
 }

@@ -43,7 +43,7 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests r = 
         RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-        .andWith(new JakartaEE10Action().withID("EE10").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+        .andWith(new JakartaEE10Action().withID("EE10").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
         .andWith(FeatureReplacementAction.EE11_FEATURES().withID("EE11"));
 
 }

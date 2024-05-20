@@ -31,7 +31,6 @@ tested.features: \
   jsonb-3.0,\
   expressionlanguage-5.0,\
   expressionlanguage-6.0,\
-  beanvalidation-3.1,\
   xmlbinding-4.0,\
   beanvalidation-3.1
 

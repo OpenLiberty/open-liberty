@@ -50,7 +50,7 @@ import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.EE11_FEATURES) // this test neeeds to be skipped until microprofile-7.0 there.
+@SkipForRepeat(SkipForRepeat.EE11_FEATURES) // this test needs to be skipped until microprofile is upgraded to support.
 public class RestMetricsTest {
 
     private final static Class<?> c = RestMetricsTest.class;

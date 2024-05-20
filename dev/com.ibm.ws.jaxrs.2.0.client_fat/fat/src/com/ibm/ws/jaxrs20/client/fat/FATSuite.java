@@ -108,12 +108,12 @@ public class FATSuite {
             r = RepeatTests.withoutModificationInFullMode()
                             .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1").fullFATOnly())
                             .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                            .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").alwaysAddFeature("servlet-6.0").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                            .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").alwaysAddFeature("servlet-6.0").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                             .andWith(FeatureReplacementAction.EE11_FEATURES().alwaysAddFeature("jsonb-3.0").alwaysAddFeature("servlet-6.1"));
 
         } else {
             r = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                            .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").alwaysAddFeature("servlet-6.0").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                            .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").alwaysAddFeature("servlet-6.0").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                             .andWith(FeatureReplacementAction.EE11_FEATURES().alwaysAddFeature("jsonb-3.0").alwaysAddFeature("servlet-6.1"));
 
         }

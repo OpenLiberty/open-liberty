@@ -68,6 +68,7 @@ public class BasicSseTest extends FATServletClient {
     }
 
     @Test
+    @SkipForRepeat(SkipForRepeat.EE11_FEATURES) // JAXB removed from Jakarta Rest in EE11
     public void testJaxbSse() throws Exception {
         runTest(server, SERVLET_PATH, "testJaxbSse");
     }

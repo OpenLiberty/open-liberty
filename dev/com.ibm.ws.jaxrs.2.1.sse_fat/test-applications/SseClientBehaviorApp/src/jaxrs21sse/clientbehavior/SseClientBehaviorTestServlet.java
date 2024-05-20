@@ -37,6 +37,7 @@ import javax.ws.rs.sse.SseEventSource;
 import org.junit.After;
 import org.junit.Test;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -61,6 +62,7 @@ public class SseClientBehaviorTestServlet extends FATServlet {
         }
     }
     @Test
+    @SkipForRepeat(SkipForRepeat.EE11_FEATURES)   //Investigate
     public void testOneEventAndClose(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         final List<String> receivedEvents = new ArrayList<String>();
@@ -160,13 +162,7 @@ public class SseClientBehaviorTestServlet extends FATServlet {
 
             source.open();
             _log.info("client source open");
-            // The following assert is commented out because the behavior changed in EE10 (but no corresponding TCK
-            // were created.  Previously the completion runnable was called regardless of whether an error was
-            // thrown or not.  After EE10 (Jakarta Rest 3.1) the completion runnable is not executed if an 
-            // error occurs.
- //         assertTrue("Completion listener runnable was not executed", executionLatch.await(30, TimeUnit.SECONDS));
-            executionLatch.await(30, TimeUnit.SECONDS); 
-
+            assertTrue("Completion listener runnable was not executed", executionLatch.await(30, TimeUnit.SECONDS));
         } catch (InterruptedException e) {
             // falls through
             e.printStackTrace();

@@ -35,7 +35,7 @@ public class FATSuite {
     public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
                     .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1").fullFATOnly())
                     .andWith(new JakartaEE9Action().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                    .andWith(new JakartaEE10Action().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                    .andWith(new JakartaEE10Action().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                     .andWith(FeatureReplacementAction.EE11_FEATURES());
 
 }
