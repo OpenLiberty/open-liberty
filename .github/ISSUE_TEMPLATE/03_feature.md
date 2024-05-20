@@ -2,7 +2,7 @@
 name: Open Liberty Feature Template
 about: Steps for Feature Creation and Delivery (Open Liberty org members only)
 title: 'Open Liberty Feature Template'
-labels: Epic
+labels: Epic,Feature
 assignees: ''
 
 ---
