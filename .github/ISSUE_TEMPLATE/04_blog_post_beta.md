@@ -41,7 +41,7 @@ Please provide the following information:
     </GHA-BLOG-SUMMARY>
 
 ## What happens next?
-- Add the label for the beta you're targeting: `target:YY00X-beta`.
+- Add the label to the blog issue for the beta you're targeting (e.g. `target:YY00X-beta`).
 - Make sure this blog post is linked back to the Epic for this feature/function.
 - Your paragraph will be included in the beta blog post. It might be edited for style and consistency.
 - You will be asked to review a draft before publication.
