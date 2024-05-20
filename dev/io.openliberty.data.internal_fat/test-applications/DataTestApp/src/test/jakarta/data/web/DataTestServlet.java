@@ -12,6 +12,8 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import static componenttest.annotation.SkipIfSysProp.DB_DB2;
+import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
 import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.assertArrayEquals;
@@ -71,8 +73,6 @@ import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.HeuristicMixedException;
 import jakarta.transaction.HeuristicRollbackException;
 import jakarta.transaction.InvalidTransactionException;
@@ -1030,8 +1030,8 @@ public class DataTestServlet extends FATServlet {
     /**
      * Query-by-method name repository operation to remove and return one or more entities.
      */
-    // Test annotation is present on corresponding method in DataTest
-    public void testFindAndDelete(HttpServletRequest request, HttpServletResponse response) {
+    @Test
+    public void testFindAndDelete() {
         packages.save(new Package(40001, 41.0f, 14.0f, 4.0f, "testFindAndDelete#40001"));
         packages.save(new Package(40004, 44.0f, 40.4f, 4.4f, "testFindAndDelete#40004"));
         packages.save(new Package(40012, 42.0f, 12.0f, 2.0f, "testFindAndDelete#4001x"));
@@ -1054,7 +1054,7 @@ public class DataTestServlet extends FATServlet {
             // expected
         }
 
-        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
         boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
         Sort<?>[] sorts = supportsOrderByForUpdate ? new Sort[] { Sort.asc("id") } : null;
 
@@ -1127,13 +1127,13 @@ public class DataTestServlet extends FATServlet {
     /**
      * Annotated repository operation to remove and return a single entity.
      */
-    // Test annotation is present on corresponding method in DataTest
-    public void testFindAndDeleteMultipleAnnotated(HttpServletRequest request, HttpServletResponse response) {
+    @Test
+    public void testFindAndDeleteMultipleAnnotated() {
         packages.save(new Package(60001, 61.0f, 41.0f, 26.0f, "testFindAndDeleteMultipleAnnotated"));
         packages.save(new Package(60002, 62.0f, 42.0f, 25.0f, "testFindAndDeleteMultipleAnnotated"));
         packages.save(new Package(60003, 59.0f, 39.0f, 24.0f, "testFindAndDeleteMultipleAnnotated"));
 
-        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
         boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
 
         List<Package> list = supportsOrderByForUpdate //
@@ -1234,9 +1234,10 @@ public class DataTestServlet extends FATServlet {
     /**
      * Find-and-delete repository operations that return one or more IDs, corresponding to removed entities.
      */
-    // Test annotation is present on corresponding method in DataTest
-    public void testFindAndDeleteReturnsIds(HttpServletRequest request, HttpServletResponse response) {
-        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+    @SkipIfSysProp(DB_Oracle) // FIXME SELECT FOR UPDATE returns incorrect results. packages.deleteFirst < returns no results
+    @Test
+    public void testFindAndDeleteReturnsIds() throws Exception {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
         boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
 
         packages.deleteAll();
@@ -1308,9 +1309,13 @@ public class DataTestServlet extends FATServlet {
     /**
      * Find-and-delete repository operations that return one or more objects, corresponding to removed entities.
      */
-    // Test annotation is present on corresponding method in DataTest
-    public void testFindAndDeleteReturnsObjects(HttpServletRequest request, HttpServletResponse response) {
-        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+    @Test
+    @SkipIfSysProp({
+                     DB_DB2, //Failing on Db2 due to eclipselink issue.  OL Issue #28289
+                     DB_Oracle //FIXME SELECT FOR UPDATE returns incorrect results.  packages.destroy returns 70007
+    })
+    public void testFindAndDeleteReturnsObjects() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
         boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
 
         packages.deleteAll();
@@ -4634,6 +4639,8 @@ public class DataTestServlet extends FATServlet {
      * Obtain total counts of number of elements and pages when JPQL is supplied via the Query annotation
      * where a count query is inferred from the Query annotation value, which has an ORDER BY clause.
      */
+    @SkipIfSysProp(DB_Oracle) //SQLSyntaxErrorException ORA-00918: LENGTH(ROMANNUMERAL): column ambiguously specified - appears in  and
+    // Call: SELECT * FROM (SELECT a.*, ROWNUM rnum  FROM (SELECT DISTINCT LENGTH(ROMANNUMERAL), LENGTH(ROMANNUMERAL) FROM WLPPrime WHERE (NUMBERID <= ?) ORDER BY LENGTH(ROMANNUMERAL) DESC) a WHERE ROWNUM <= ?) WHERE rnum > ?
     @Test
     public void testTotalCountsForQueryWithOrderBy() {
         Page<Integer> page1 = primes.romanNumeralLengths(41L, PageRequest.ofSize(4));
