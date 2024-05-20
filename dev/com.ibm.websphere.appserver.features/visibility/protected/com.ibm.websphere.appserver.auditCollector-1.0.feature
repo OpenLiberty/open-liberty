@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.auditCollector-1.0
+singleton=true
 WLP-DisableAllFeatures-OnConflict: false
 visibility=protected
 IBM-API-Package: com.ibm.websphere.security.audit; type="ibm-api"

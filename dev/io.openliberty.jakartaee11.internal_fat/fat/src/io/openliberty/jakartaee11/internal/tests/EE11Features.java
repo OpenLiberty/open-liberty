@@ -283,6 +283,7 @@ public class EE11Features {
 
         // remove logAnalysis-1.0.  It depends on hpel being configured
         features.remove("logAnalysis-1.0");
+        features.remove("audit-2.0");
 
         return features;
     }
