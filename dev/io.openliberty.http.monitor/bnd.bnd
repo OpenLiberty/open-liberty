@@ -46,7 +46,7 @@ Import-Package: \
 Export-Package: \
   io.openliberty.http.monitor;thread-context=true,\
   io.openliberty.http.monitor.metrics,\
-  io.openliberty.http.monitor.mbean; type="ibm-api"
+  io.openliberty.http.monitor.mbean
 
 Liberty-Monitoring-Components: \
 			io.openliberty.http.monitor.HttpStatsMonitor
@@ -78,4 +78,5 @@ DynamicImport-Package: \
 	io.openliberty.jakarta.restfulWS.3.1,\
 	io.openliberty.jakarta.annotation.2.1;version=latest,\
 	com.ibm.ws.channelfw;version=latest,\
-	com.ibm.ws.container.service
+	com.ibm.ws.container.service,\
+	com.ibm.ws.kernel.boot.core;version=latest

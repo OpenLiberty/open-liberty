@@ -21,6 +21,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.webcontainer.servlet.ServletWrapper;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.pmi.factory.StatisticActions;
@@ -91,7 +92,15 @@ public class HttpStatsMonitor extends StatisticActions {
 	@ProbeSite(clazz = "com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink", method = "sendResponse", args = "com.ibm.wsspi.http.channel.values.StatusCodes,java.lang.String,java.lang.Exception,boolean")
 	public void atSendResponseReturn(@This Object probedHttpDispatcherLinkObj) {
 
-		
+		/*
+		 * Just prevent probed code execution. This bundle starts from an auto-feature.
+		 * User's are not explicitly enabling this so lets not throw an exception. We'll
+		 * quietly get out of the way.
+		 */
+		if (!ProductInfo.getBetaEdition()) {
+			return;
+		}
+
 		long elapsedNanos = System.nanoTime() - tl_startNanos.get();
 		HttpStatAttributes retrievedHttpStatAttr = tl_httpStats.get();
 
@@ -135,7 +144,16 @@ public class HttpStatsMonitor extends StatisticActions {
 	@ProbeAtEntry
 	@ProbeSite(clazz = "com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink", method = "sendResponse", args = "com.ibm.wsspi.http.channel.values.StatusCodes,java.lang.String,java.lang.Exception,boolean")
 	public void atSendResponse(@This Object probedHttpDispatcherLinkObj, @Args Object[] myargs) {
-		
+
+		/*
+		 * Just prevent probed code execution. This bundle starts from an auto-feature.
+		 * User's are not explicitly enabling this so lets not throw an exception. We'll
+		 * quietly get out of the way.
+		 */
+		if (!ProductInfo.getBetaEdition()) {
+			return;
+		}
+
 		tl_httpStats.set(null);; //reset just in case
 		
 		tl_startNanos.set(System.nanoTime());
@@ -197,6 +215,19 @@ public class HttpStatsMonitor extends StatisticActions {
      * @param appName Can be null (would mean its from these probes -- ergo server, don't have to worry about unloading)
      */
 	public void updateHttpStatDuration(HttpStatAttributes httpStatAttributes, Duration duration, String appName) {
+
+		/*
+		 * Just prevent this from happening. This bundle starts from an auto-feature.
+		 * User's are not explicitly enabling this so lets not throw an exception. We'll
+		 * quietly get out of the way.
+		 * 
+		 * Other beta blocks should prevent this from ever happening. But regardless,
+		 * this method is the lynch-pin. This is where MBean is registered and Metrics
+		 * are registered to Metric/Meter registries.
+		 */
+		if (!ProductInfo.getBetaEdition()) {
+			return;
+		}
 
 		/*
 		 * First validate that we got all properties.
