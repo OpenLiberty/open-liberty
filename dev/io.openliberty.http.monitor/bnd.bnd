@@ -25,7 +25,8 @@ src: src
 
 -dsannotations: \
   io.openliberty.http.monitor.ServletContainerInitializer,\
-  io.openliberty.http.monitor.metrics.RestMetricManager
+  io.openliberty.http.monitor.metrics.RestMetricManager,\
+  io.openliberty.http.monitor.MonitorAppStateListener
 
 WS-TraceGroup: 
 
@@ -45,7 +46,7 @@ Import-Package: \
 Export-Package: \
   io.openliberty.http.monitor;thread-context=true,\
   io.openliberty.http.monitor.metrics,\
-  io.openliberty.http.monitor.mbean
+  io.openliberty.http.monitor.mbean; type="ibm-api"
 
 Liberty-Monitoring-Components: \
 			io.openliberty.http.monitor.HttpStatsMonitor
@@ -76,4 +77,5 @@ DynamicImport-Package: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	io.openliberty.jakarta.restfulWS.3.1,\
 	io.openliberty.jakarta.annotation.2.1;version=latest,\
-	com.ibm.ws.channelfw;version=latest
+	com.ibm.ws.channelfw;version=latest,\
+	com.ibm.ws.container.service
