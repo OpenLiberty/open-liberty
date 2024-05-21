@@ -13,12 +13,15 @@ import java.util.logging.Level;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.session.SessionApplicationParameters;
+import com.ibm.ws.session.SessionContext;
 import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.SessionStoreService;
 import com.ibm.ws.session.http.AbstractHttpSession;
 import com.ibm.ws.session.utils.LoggingUtil;
 import com.ibm.ws.webcontainer31.session.impl.HttpSessionContext31Impl;
 import com.ibm.wsspi.session.ISession;
+import com.ibm.wsspi.session.ISessionAffinityManager;
+import com.ibm.wsspi.session.IStore;
 import com.ibm.wsspi.session.SessionAffinityContext;
 
 import io.openliberty.session.impl.SessionCookieConfigImpl60;
@@ -73,7 +76,7 @@ public class HttpSessionContextImpl60 extends HttpSessionContext31Impl {
     @Override
     public Object createSessionObject(ISession isess, ServletContext servCtx) {
         if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
-            LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " createSessionObject");
+            LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " createSessionObject -> WCHttpSessionImpl60");
         }
 
         return new WCHttpSessionImpl60(isess, this, servCtx);
@@ -93,5 +96,13 @@ public class HttpSessionContextImpl60 extends HttpSessionContext31Impl {
         }
 
         return session;
+    }
+
+    @Override
+    public ISessionAffinityManager createSessionAffinityManager(SessionManagerConfig smc, SessionContext sctx, IStore istore) {
+        if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+            LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " createSessionAffinityManager -> SessionAffinityManagerImpl60");
+        }
+        return new SessionAffinityManagerImpl60(smc, sctx, istore);
     }
 }
