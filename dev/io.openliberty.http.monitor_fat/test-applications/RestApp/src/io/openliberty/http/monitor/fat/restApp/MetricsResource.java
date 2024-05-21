@@ -10,8 +10,12 @@
 package io.openliberty.http.monitor.fat.restApp;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HEAD;
+import jakarta.ws.rs.OPTIONS;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 
 /**
@@ -30,7 +34,30 @@ public class MetricsResource {
     @POST
     @Path("/normalPathPost")
     public String normalPathPost() throws InterruptedException {
-        return "Hello, mister POST man";
+        return "Hello, mister POST man!";
     }
 
+    @PUT
+    @Path("/put")
+    public String normalPathPut() throws Exception {
+        return "Hello, PUT me in!";
+    }
+
+    @DELETE
+    @Path("/delete")
+    public String normalPathDelete() throws Exception {
+        return "Hello, don't DELETE me.";
+    }
+
+    @OPTIONS
+    @Path("/options")
+    public String normalPathOptions() throws Exception {
+        return "Hello, give me my OPTIONS";
+    }
+
+    @HEAD
+    @Path("/head")
+    public String normalPathHead() throws Exception {
+        return "Hello, I've lost my HEAD!";
+    }
 }

@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.metrics50.internal.tck.launcher;
+package io.openliberty.http.monitor.fat;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
