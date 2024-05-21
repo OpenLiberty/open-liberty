@@ -13,11 +13,14 @@
 package com.ibm.ws.jaxrs.monitor;
 
 import java.io.IOException;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -73,6 +76,115 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     static final Set<JaxRsMonitorFilter> instances = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private static final RestMonitorKeyCache monitorKeyCache = new RestMonitorKeyCache();
     private static final String STATS_CONTEXT = "REST_Stats_Context";
+
+    private static final ConcurrentHashMap<RestRouteKey, String> routes = new ConcurrentHashMap<>();
+
+    private static final ReferenceQueue<Class<?>> referenceQueue = new ReferenceQueue<>();
+
+    @SuppressWarnings("unchecked")
+    private static void poll() {
+        RestRouteKeyWeakReference<Class<?>> key;
+        while ((key = (RestRouteKeyWeakReference<Class<?>>) referenceQueue.poll()) != null) {
+            routes.remove(key.getOwningKey());
+        }
+    }
+
+    private static String getRoute(Class<?> restClass, Method restMethod) {
+        poll();
+        return routes.get(new RestRouteKey(restClass, restMethod));
+    }
+
+    /**
+     * Add a new route for the specified REST Class and Method.
+     *
+     * @param restClass
+     * @param restMethod
+     * @param route
+     */
+    private static void putRoute(Class<?> restClass, Method restMethod, String route) {
+        poll();
+        routes.put(new RestRouteKey(referenceQueue, restClass, restMethod), route);
+    }
+
+    private static class RestRouteKey {
+        private final RestRouteKeyWeakReference<Class<?>> restClassRef;
+        private final RestRouteKeyWeakReference<Method> restMethodRef;
+        private final int hash;
+
+        RestRouteKey(Class<?> restClass, Method restMethod) {
+            this.restClassRef = new RestRouteKeyWeakReference<>(restClass, this);
+            this.restMethodRef = new RestRouteKeyWeakReference<>(restMethod, this);
+            hash = Objects.hash(restClass, restMethod);
+        }
+
+        RestRouteKey(ReferenceQueue<Class<?>> referenceQueue, Class<?> restClass, Method restMethod) {
+            this.restClassRef = new RestRouteKeyWeakReference<>(restClass, this, referenceQueue);
+            this.restMethodRef = new RestRouteKeyWeakReference<>(restMethod, this);
+            hash = Objects.hash(restClass, restMethod);
+        }
+
+        @Override
+        public int hashCode() {
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            RestRouteKey other = (RestRouteKey) obj;
+            if (!restClassRef.equals(other.restClassRef)) {
+                return false;
+            }
+            if (!restMethodRef.equals(other.restMethodRef)) {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    private static class RestRouteKeyWeakReference<T> extends WeakReference<T> {
+        private final RestRouteKey owningKey;
+
+        RestRouteKeyWeakReference(T referent, RestRouteKey owningKey) {
+            super(referent);
+            this.owningKey = owningKey;
+        }
+
+        RestRouteKeyWeakReference(T referent, RestRouteKey owningKey,
+                                  ReferenceQueue<T> referenceQueue) {
+            super(referent, referenceQueue);
+            this.owningKey = owningKey;
+        }
+
+        RestRouteKey getOwningKey() {
+            return owningKey;
+        }
+
+        @SuppressWarnings("rawtypes")
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) {
+                return true;
+            }
+
+            if (obj instanceof RestRouteKeyWeakReference) {
+                return get() == ((RestRouteKeyWeakReference) obj).get();
+            }
+
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            T referent = get();
+            return new StringBuilder("RestRouteKeyWeakReference: ").append(referent).toString();
+        }
+    }
 
     static {
     	/*
@@ -189,20 +301,33 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
          * attribute as "RESTFUL.HTTP.ROUTE"
          */
         if (resourceClass != null && resourceMethod != null) {
-            String route;
+            String route = getRoute(resourceClass, resourceMethod);
 
-            String contextRoot = reqCtx.getUriInfo().getBaseUri().getPath();
-            UriBuilder template = UriBuilder.fromPath(contextRoot);
+            if (route == null) {
 
-            if (resourceClass.isAnnotationPresent(Path.class)) {
-                template.path(resourceClass);
+                int checkResourceSize = reqCtx.getUriInfo().getMatchedResources().size();
+
+                // Check the resource size using getMatchedResource()
+                // A resource size > 1 indicates that there is a subresource
+                // We can't currently compute the route correctly when subresources are used
+                if (checkResourceSize == 1) {
+
+                    String contextRoot = reqCtx.getUriInfo().getBaseUri().getPath();
+                    UriBuilder template = UriBuilder.fromPath(contextRoot);
+
+                    if (resourceClass.isAnnotationPresent(Path.class)) {
+                        template.path(resourceClass);
+                    }
+
+                    if (resourceMethod.isAnnotationPresent(Path.class)) {
+                        template.path(resourceMethod);
+                    }
+
+                    route = template.toTemplate();
+                    putRoute(resourceClass, resourceMethod, route);
+                }
             }
 
-            if (resourceMethod.isAnnotationPresent(Path.class)) {
-                template.path(resourceMethod);
-            }
-
-            route = template.toTemplate();
             if (route != null && !route.isEmpty()) {
                 servletRequest.setAttribute(REST_HTTP_ROUTE_ATTR, route);
             }
