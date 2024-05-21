@@ -52,19 +52,13 @@ instrument.disabled: true
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.kernel.feature.cmdline;version=latest,\
 	com.ibm.ws.kernel.feature.core;version=latest,\
-<<<<<<< HEAD
-<<<<<<< HEAD
 	org.bouncycastle:bcpg-jdk18on;version=1.78.1,\
 	org.bouncycastle:bcprov-jdk18on;version=1.78.1,\
 	org.bouncycastle:bcutil-jdk18on;version=1.78.1,\
-=======
 	org.bouncycastle:bcpg-jdk18on;version=1.78,\
 	org.bouncycastle:bcprov-jdk18on;version=1.78,\
->>>>>>> e16a0301b9 (changed from v1.75 -> 1.78)
-=======
 	org.bouncycastle:bcpg-jdk18on;version=1.78.1,\
 	org.bouncycastle:bcprov-jdk18on;version=1.78.1,\
->>>>>>> 36d5137f5e (updated to use v1.78.1)
 	org.glassfish.javax.json
 
 
