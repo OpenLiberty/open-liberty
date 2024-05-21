@@ -97,6 +97,7 @@ public class NettyChain extends HttpChain {
         MSP.log("Attempting to stop NettyChain. Attempt count: " + stopCount + " Current state: " + state.get());
 
         if (state.get() != ChainState.STOPPING) {
+            endpointMgr.removeEndPoint(endpointName);
             ChainState previousState = state.getAndSet(ChainState.STOPPING);
 
             if (Objects.nonNull(channelFuture)) {
@@ -115,7 +116,6 @@ public class NettyChain extends HttpChain {
                 }
 
             } finally {
-                endpointMgr.removeEndPoint(endpointName);
                 if (previousState.val > ChainState.QUIESCED.val) {
                     VirtualHostMap.notifyStopped(owner, currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
                     MSP.log("stop()-> VHOST notified");
