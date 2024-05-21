@@ -25,6 +25,7 @@
     clientInactivityTimeout="15s"
     heuristicRetryInterval="10"
     heuristicRetryLimit="10"
+    leaseExpiryThreshold="5"
     leaseLength="10m"
     recoverOnStartup="true"
     recoveryGroup="recovery-group-1"
