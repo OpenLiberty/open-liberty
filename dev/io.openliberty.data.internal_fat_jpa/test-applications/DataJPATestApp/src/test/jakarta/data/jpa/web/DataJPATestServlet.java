@@ -58,6 +58,7 @@ import java.util.stream.StreamSupport;
 
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
+import jakarta.data.Direction;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
@@ -3169,6 +3170,35 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals("Mon", asc.property());
 
         assertEquals(null, _EntityModelUnknown.years);
+    }
+
+    /**
+     * Test passing a Sort created with Sort.of, particularly the ignoreCase parameter
+     */
+    @Test
+    public void testSortOf() {
+        City eagan = cities.save(new City("eagan", "minnesota", 67_396, Set.of(651)));
+
+        // With ignoreCase=true, eagan should be first
+        Sort<City> of = Sort.of("name", Direction.ASC, true);
+        List<City> all = cities.allSorted(of);
+        City first = all.get(0);
+        assertEquals("eagan", first.name);
+
+        // With ignoreCase=false Kansas City should be first
+        of = Sort.of("name", Direction.ASC, false);
+        all = cities.allSorted(of);
+        assertEquals("Kansas City", all.get(0).name);
+
+        of = Sort.of("population", Direction.DESC, true);
+        try {
+            cities.allSorted(of);
+            fail("Should not be able to applay a Sort with ignoreCase=true on a non-string property");
+        } catch (UnsupportedOperationException x) {
+            // expected
+        }
+
+        cities.remove(eagan);
     }
 
     /**
