@@ -193,11 +193,8 @@ public class JSPJava17Test {
 
     /*
      * Verifies that javaSourceLevel overrides jdkSourceLevel if both are set. Warning is also logged
-     *
-     * AllowedFFDC Added due to precompile of testJava21.jsp in the test above
      */
     @Test
-    @AllowedFFDC("java.security.PrivilegedActionException") // Occurs in EE10 and lower
     public void testBothjdkSourceLevelAndjavaSourceLevel() throws Exception {
 
         ServerConfiguration configuration = server.getServerConfiguration();
@@ -207,8 +204,13 @@ public class JSPJava17Test {
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(configuration);
+
+        // Wait for the server configuration update to complete before restarting the application.
+        server.waitForConfigUpdateInLogUsingMark(null);
+
+        // Restart the application and ensure it finishes starting.
         server.restartApplication(APP_NAME);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*TestJSPWithJava17.*");
+        server.waitForStringInLogUsingMark("CWWKT0016I:.*TestJSPWithJava17.*");
 
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
