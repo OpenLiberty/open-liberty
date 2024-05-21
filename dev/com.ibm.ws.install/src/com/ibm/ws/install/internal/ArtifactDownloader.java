@@ -322,8 +322,10 @@ public class ArtifactDownloader implements AutoCloseable {
 
     private void downloadInternal(URI address, File destination, MavenRepository repository) throws IOException, InstallException {
         URL url = address.toURL();
-        logger.fine("non Proxy Hosts: " + System.getProperty("http.nonProxyHosts"));
-        logger.fine("url: " + url.getHost());
+        if (System.getProperty("featureUtility.beta") != null && System.getProperty("featureUtility.beta").equals("true")) {
+            logger.fine("non Proxy Hosts: " + System.getProperty("http.nonProxyHosts"));
+        }
+        logger.fine("downloadInternal url host: " + url.getHost());
         String proxyEncodedAuth = "";
         if (url.getProtocol().equals("https") && envMap.get("https.proxyHost") != null) {
             proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("https.proxyUser"), (String) envMap.get("https.proxyPassword"));
