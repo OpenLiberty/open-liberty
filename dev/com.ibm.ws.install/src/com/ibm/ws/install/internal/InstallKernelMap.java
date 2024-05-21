@@ -1138,7 +1138,7 @@ public class InstallKernelMap implements Map {
                     System.setProperty("https.proxyPort", (String) envMap.get("http.proxyPort"));
                 }
             }
-            if (envMap.get("http.nonProxyHosts") != null) {
+            if (System.getProperty("featureUtility.beta").equals("true") && envMap.get("http.nonProxyHosts") != null) {
                 String noProxyHosts = (String) envMap.get("http.nonProxyHosts");
                 //if users provide list of hosts using ",", replace to "|"
                 noProxyHosts = noProxyHosts.replace(",", "|");
@@ -1958,7 +1958,9 @@ public class InstallKernelMap implements Map {
                 envMapRet.put(key, httpsProxyVariables.get(key));
             }
         }
-        envMapRet.put("http.nonProxyHosts", System.getenv("no_proxy"));
+        if (System.getProperty("featureUtility.beta").equals("true")) {
+            envMapRet.put("http.nonProxyHosts", System.getenv("no_proxy"));
+        }
 
         envMapRet.put("FEATURE_REPO_URL", System.getenv("FEATURE_REPO_URL"));
         envMapRet.put("FEATURE_REPO_USER", System.getenv("FEATURE_REPO_USER"));
@@ -1974,7 +1976,7 @@ public class InstallKernelMap implements Map {
         envMapRet.put("FEATURE_VERIFY", System.getenv("FEATURE_VERIFY"));
 
         //search through the properties file to look for overrides if they exist
-        //TODO remove?
+        //TODO remove? - Do we use featureUtility.env ?
         Map<String, String> propsFileMap = getFeatureUtilEnvProps();
         if (!propsFileMap.isEmpty()) {
             fine("The properties found in featureUtility.env will override latent environment variables of the same name");
