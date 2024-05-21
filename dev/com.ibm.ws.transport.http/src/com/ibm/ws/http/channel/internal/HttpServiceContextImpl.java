@@ -3007,10 +3007,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             Tr.debug(tc, "Number of bytes to write: " + getNumBytesWritten());
         }
 
-        if (this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) != null) {
-            System.out.println("Skipping HTTP content because upgrade was triggered!");
-
-        }
         boolean shouldSkipWriteOnUpgrade = nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)
                                            && !nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).get().equals("HTTP2");
         if (!shouldSkipWriteOnUpgrade && Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {

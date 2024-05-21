@@ -20,6 +20,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -41,11 +42,11 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.ws.http.dispatcher.classify.DecoratedExecutorThread;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink.TaskWrapper;
 import com.ibm.ws.http.internal.VirtualHostImpl;
 import com.ibm.ws.http.internal.VirtualHostMap;
 import com.ibm.ws.http.internal.VirtualHostMap.RequestHelper;
 import com.ibm.ws.http.netty.MSP;
+import com.ibm.ws.http.netty.NettyConnectionLink;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
 import com.ibm.ws.http.netty.message.NettyRequestMessage;
@@ -158,6 +159,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private boolean usingNetty = false;
     private ChannelHandlerContext nettyContext;
     private FullHttpRequest nettyRequest;
+    private ConnectionLink nettyConnectionLink;
 
     /**
      * Constructor.
@@ -211,6 +213,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         this.response = new HttpResponseImpl(this);
         isc.setNettyResponse(new DefaultHttpResponse(nettyRequest.protocolVersion(), HttpResponseStatus.OK));
         MSP.log("Netty response completed");
+        this.nettyConnectionLink = new NettyConnectionLink(context.channel());
         super.init(nettyVc);
     }
 
@@ -800,6 +803,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
     @Override
     public ConnectionLink getHttpInboundDeviceLink() {
+        if (Objects.nonNull(this.nettyContext)) {
+            return nettyConnectionLink;
+        }
         if ((isc != null) && (isc.getLink() != null)) {
             return isc.getLink().getDeviceLink();
         }
