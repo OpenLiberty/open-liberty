@@ -63,7 +63,7 @@ public class JSPJava17Test {
         // Stop the server
         if (server != null && server.isStarted()) {
             // testBothjdkSourceLevelAndjavaSourceLevel causes CWWJS0007W: Both javaSourceLevel=17 and jdkSourceLevel=18 are specified. Defaulting to javaSourceLevel=17
-            server.stopServer("CWWJS0007W");
+            server.stopServer("CWWJS0007W", "SRVE8115W", "SRVE8094W");
         }
     }
 
