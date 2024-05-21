@@ -25,19 +25,16 @@ import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig.NettyConfigBuilder;
 import com.ibm.ws.http.netty.NettyHttpConstants;
-import com.ibm.ws.http.netty.debug.DebugHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyNettyALPNHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyUpgradeCodec;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpObjectAggregator;
 import com.ibm.ws.http.netty.pipeline.inbound.TransportInboundHandler;
-import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpObjectDecoder;
 import io.netty.handler.codec.http.HttpServerCodec;
@@ -297,32 +294,22 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 }
                 MSP.log("NO UPGRADE DETECTED - ADD HTTP ");
 
-                if (msg instanceof FullHttpRequest) {
+                pipeline.addBefore("chunkWriteHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+                //TODO: this is a very large number, check best practice
+                pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, null,
+                                  new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
 
-                    System.out.println("Removing handlers and calling into the dispatcher");
+//                ctx.pipeline().addBefore("chunkWriteHandler", "objectAggregator", new LibertyHttpObjectAggregator(maxContentLength));
+//                ctx.pipeline().addBefore("objectAggregator", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+                MSP.log("Have added the http handler, not the dispatcher");
+                MSP.log("Names: " + ctx.pipeline().names().toString());
 
-                    ctx.pipeline().remove(NO_UPGRADE_OCURRED_HANDLER_NAME);
-                    ctx.pipeline().remove("HttpServerUpgradeHandler#0");
-
-                    if (ctx.pipeline().get(NettyServletUpgradeHandler.class) == null) {
-
-                        NettyServletUpgradeHandler upgradeHandler = new NettyServletUpgradeHandler(ctx.channel());
-                        ctx.pipeline().addLast(upgradeHandler);
-                    }
-                    MSP.log("Names before direct dispatcher call: " + ctx.pipeline().names().toString());
-
-                } else {
-
-                    pipeline.addBefore("chunkWriteHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
-                    //TODO: this is a very large number, check best practice
-                    pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, null,
-                                      new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
-                    MSP.log("Names: " + ctx.pipeline().names().toString());
-
-                    ctx.pipeline().remove(this);
-                    MSP.log("Names after remove: " + ctx.pipeline().names().toString());
-
-                }
+                //Removing upgrade handler, let the container handle it
+                // Remove unused handlers
+                //ctx.pipeline().remove(HttpServerUpgradeHandler.class);
+                ctx.pipeline().remove(this);
+                //TODO: this needs to be improved, what happens if first request is not H2 but second is.
+                MSP.log("Names after remove: " + ctx.pipeline().names().toString());
 
                 ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
 
