@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: appAuthentication
 Subsystem-Name: appAuthentication
 -features=io.openliberty.internal.versionless.jaspic-1.1; ibm.tolerates:="2.0,3.0"
-kind=noship
-edition=full
+kind=beta
+edition=base

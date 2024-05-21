@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: xmlBinding
 Subsystem-Name: xmlBinding
 -features=io.openliberty.internal.versionless.xmlBinding-3.0; ibm.tolerates:="4.0"
-kind=noship
-edition=full
+kind=beta
+edition=base

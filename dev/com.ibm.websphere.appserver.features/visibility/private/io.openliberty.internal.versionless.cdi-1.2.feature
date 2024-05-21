@@ -3,7 +3,6 @@ symbolicName=io.openliberty.internal.versionless.cdi-1.2
 visibility=private
 singleton=true
 -features= \
-    io.openliberty.noShip-1.0, \
     com.ibm.websphere.appserver.cdi-1.2
-kind=noship
-edition=full
+kind=beta
+edition=base
