@@ -31,7 +31,7 @@ public interface TaxPayers extends DataRepository<TaxPayer, Long> {
     @Delete
     long delete();
 
-    @Query("SELECT bankAccounts WHERE o.ssn=?1")
+    @Query("SELECT bankAccounts WHERE ssn=?1")
     Set<AccountId> findAccountsBySSN(long ssn);
 
     Stream<AccountId> findBankAccountsByFilingStatus(TaxPayer.FilingStatus status);

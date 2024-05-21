@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import java.util.Set;
 import java.util.stream.Stream;
 
 import jakarta.data.Sort;
@@ -19,6 +20,7 @@ import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 /**
@@ -34,7 +36,12 @@ public interface Ratings {
     @Delete
     long clear();
 
+    Stream<Rating> findByCommentsContainsOrderByIdDesc(String comment);
+
     Stream<Rating> findByItemPriceBetween(float min, float max, Sort<?>... sorts);
+
+    @Query("SELECT comments WHERE id=?1")
+    Set<String> getComments(int id);
 
     @Find
     @OrderBy("item.price")

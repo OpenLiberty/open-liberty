@@ -20,7 +20,7 @@ public record Rating(
                 Item item,
                 int numStars,
                 Reviewer reviewer,
-                String comments) { // TODO Set<String> after making generated entity have a field of type Set<String> rather than Set.
+                Set<String> comments) {
 
     public static class Reviewer {
         public String firstName;
@@ -60,22 +60,5 @@ public record Rating(
         public String toString() {
             return "Item: " + name + " $" + price;
         }
-    }
-
-    // TODO remove the following code after switching data type of comments to Set<String>
-    public Rating(
-                  int id,
-                  Item item,
-                  int numStars,
-                  Reviewer reviewer,
-                  Set<String> comments) {
-        this(id, item, numStars, reviewer, combine(comments));
-    }
-
-    private static String combine(Set<String> comments) {
-        StringBuilder s = new StringBuilder();
-        for (String comment : comments)
-            s.append(comment).append(' ');
-        return s.toString();
     }
 }

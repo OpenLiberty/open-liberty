@@ -3743,7 +3743,7 @@ public class DataTestServlet extends FATServlet {
 
         Rating.Item blender = new Rating.Item("blender", 41.99f);
         Rating.Item toaster = new Rating.Item("toaster", 28.98f);
-        Rating.Item microwave = new Rating.Item("microwave", 53.89f);
+        Rating.Item microwave = new Rating.Item("microwave", 63.89f);
 
         ratings.add(new Rating(1000, toaster, 2, user4, Set.of("Burns everything.", "Often gets stuck.", "Bagels don't fit.")));
         ratings.add(new Rating(1001, blender, 0, user4, Set.of("Broke after first use.")));
@@ -3752,10 +3752,29 @@ public class DataTestServlet extends FATServlet {
         ratings.add(new Rating(1004, microwave, 5, user2, Set.of()));
         ratings.add(new Rating(1005, microwave, 3, user1, Set.of("It works okay.")));
         ratings.add(new Rating(1006, toaster, 4, user1, Set.of("It toasts things.")));
-        ratings.add(new Rating(1007, blender, 3, user1, Set.of("It blends things. Sometimes.")));
+        ratings.add(new Rating(1007, blender, 3, user1, Set.of("Too noisy.", "It blends things. Sometimes.")));
         ratings.add(new Rating(1008, blender, 5, user2, Set.of("Nice product!")));
         ratings.add(new Rating(1009, toaster, 5, user2, Set.of("Nice product!")));
         ratings.add(new Rating(1010, toaster, 3, user3, Set.of("Timer malfunctions on occasion, but it otherwise works.")));
+
+        assertEquals(Set.of("Uneven cooking.", "Too noisy."),
+                     ratings.getComments(1002));
+
+        // TODO enable once we have the getter and setter methods generated with type variables.
+        //assertEquals(List.of("Rachel", "Rex", "Ryan"),
+        //             ratings.findByItemPriceBetween(40.00f, 50.00f, Sort.asc("reviewer.email"))
+        //                             .map(r -> r.reviewer().firstName)
+        //                             .collect(Collectors.toList()));
+
+        //assertEquals(List.of(1007, 1002),
+        //             ratings.findByCommentsContainsOrderByIdDesc("Too noisy.")
+        //                             .map(Rating::id)
+        //                             .collect(Collectors.toList()));
+
+        //assertEquals(List.of("toaster", "blender", "microwave"),
+        //             ratings.search(3)
+        //                             .map(r -> r.item().name)
+        //                             .collect(Collectors.toList()));
 
         assertEquals(11L, ratings.clear());
     }
