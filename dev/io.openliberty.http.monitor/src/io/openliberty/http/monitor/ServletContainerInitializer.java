@@ -15,6 +15,8 @@ import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+
 import jakarta.servlet.FilterRegistration;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -25,13 +27,23 @@ import jakarta.servlet.ServletException;
 @Component(configurationPolicy = IGNORE)
 public class ServletContainerInitializer implements jakarta.servlet.ServletContainerInitializer {
 
-    //happens when app id deployed
-    @Override
-    public void onStartup(Set<Class<?>> c, ServletContext sc) throws ServletException {
-        FilterRegistration.Dynamic filterRegistration = sc
-                .addFilter("io.openliberty.http.monitor.ServletFilter", ServletFilter.class);
-        filterRegistration.addMappingForUrlPatterns(null, true, "/*");
-        filterRegistration.setAsyncSupported(true);
+	// happens when app id deployed
+	@Override
+	public void onStartup(Set<Class<?>> c, ServletContext sc) throws ServletException {
 
-    }
+		/*
+		 * Just prevent Servlet filter registration. This bundle starts from an
+		 * auto-feature. User's are not explicitly enabling this so lets not throw an
+		 * exception. We'll quietly get out of the way.
+		 */
+		if (!ProductInfo.getBetaEdition()) {
+			return;
+		}
+
+		FilterRegistration.Dynamic filterRegistration = sc.addFilter("io.openliberty.http.monitor.ServletFilter",
+				ServletFilter.class);
+		filterRegistration.addMappingForUrlPatterns(null, true, "/*");
+		filterRegistration.setAsyncSupported(true);
+
+	}
 }
