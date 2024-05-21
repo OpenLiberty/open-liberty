@@ -172,7 +172,7 @@ public class JSPJava17Test {
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(configuration);
-        server.stopServer("SRVE8115W", "SRVE8094W");
+        server.stopServer("CWWJS0007W", "SRVE8115W", "SRVE8094W");
         server.startServer();
 
         WebConversation wc = new WebConversation();
