@@ -210,6 +210,7 @@ public class EE9Features {
         features.remove("springBoot-2.0");
         features.remove("springBoot-3.0"); // springBoot 3.0 only supports EE 10
         features.remove("mpTelemetry-2.0"); //Not yet assigned to an MPXX_FEATURES_ARRAY
+        features.remove("mpFaultTolerance-4.1"); //MP70 is just a placeholder for now
 
         features.remove("mpReactiveMessaging-3.0"); //still in development
 
@@ -307,6 +308,7 @@ public class EE9Features {
 
         features.remove("mpReactiveMessaging-3.0"); //still in development
         features.remove("mpTelemetry-2.0"); //Not yet assigned to an MPXX_FEATURES_ARRAY
+        features.remove("mpFaultTolerance-4.1"); //MP70 is just a placeholder for now
 
         // Test features may or may not be compatible, we don't want to assert either way
         features.removeAll(getTestFeatures());
