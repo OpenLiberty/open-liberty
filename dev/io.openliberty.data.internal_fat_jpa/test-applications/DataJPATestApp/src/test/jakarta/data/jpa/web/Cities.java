@@ -106,4 +106,7 @@ public interface Cities {
     @Find
     @OrderBy("stateName")
     Stream<City> withNameOf(String name);
+
+    @Find
+    List<City> allSorted(Sort<?>... sorts);
 }
