@@ -95,6 +95,8 @@ public class JSPJava17Test {
      * Try to compile a JSP with Java 21 features. Compilation error is expected.
      * This is to ensure that Java 17 is used, nothing higher.
      *
+     * Allow an FFDC for the compilation error.
+     *
      * @throws Exception
      */
     @Test
@@ -156,7 +158,7 @@ public class JSPJava17Test {
         assertTrue("The response did not contain: success", response.getText().contains("success-pattern-matching"));
     }
 
-    /*
+    /**
      * Verify the precompile and javaSourceLevel interact nicely.
      * Precompile is enabled via prepareJSPs.
      * Note: testJava21.jsp will fail to compile
@@ -196,7 +198,7 @@ public class JSPJava17Test {
         assertTrue("The response did not contain: success", response.getText().contains("success-pattern-matching"));
     }
 
-    /*
+    /**
      * Verifies that javaSourceLevel overrides jdkSourceLevel if both are set. Warning is also logged
      */
     @Test
