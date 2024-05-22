@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsp23.fat.tests;
@@ -12,7 +12,6 @@ package com.ibm.ws.jsp23.fat.tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Collections;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -28,8 +27,8 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -47,7 +46,7 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JSPJava7Test {
-    
+
     private static final String APP_NAME = "TestJSPWithJava8"; // Using Java 8 Test App to Verify it fails with Java 7 Source
 
     private static final Logger LOG = Logger.getLogger(JSPJava7Test.class.getName());
@@ -67,7 +66,7 @@ public class JSPJava7Test {
         // Stop the server
         if (server != null && server.isStarted()) {
             // SRVE8115W: WARNING: Cannot set header. Response already committed.
-            // SRVE8094W: WARNING: Cannot set header. 
+            // SRVE8094W: WARNING: Cannot set header.
             server.stopServer("SRVE8115W", "SRVE8094W", "CWWKE0921W", "CWWKE0912W");
         }
     }
@@ -86,7 +85,8 @@ public class JSPJava7Test {
         LOG.info("New server configuration used: " + configuration);
 
         server.updateServerConfiguration(configuration);
-        server.restartServer();
+        server.stopServer("SRVE8115W", "SRVE8094W");
+        server.startServer();
 
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -101,7 +101,7 @@ public class JSPJava7Test {
         assertEquals("Expected " + 500 + " status code was not returned!",
                      500, response.getResponseCode());
 
-        assertTrue("Compilation error message not found!", response.getText().contains("Lambda expressions are allowed only at source level 1.8 or above")); 
+        assertTrue("Compilation error message not found!", response.getText().contains("Lambda expressions are allowed only at source level 1.8 or above"));
     }
 
     /*
@@ -119,7 +119,7 @@ public class JSPJava7Test {
         LOG.info("New server configuration used: " + configuration);
 
         server.updateServerConfiguration(configuration);
-        server.stopServer("SRVE8115W","SRVE8094W");
+        server.stopServer("SRVE8115W", "SRVE8094W");
         server.startServer();
 
         WebConversation wc = new WebConversation();
@@ -135,7 +135,7 @@ public class JSPJava7Test {
         assertEquals("Expected " + 500 + " status code was not returned!",
                      500, response.getResponseCode());
 
-        assertTrue("Compilation error message not found!", response.getText().contains("Lambda expressions are allowed only at source level 1.8 or above")); 
+        assertTrue("Compilation error message not found!", response.getText().contains("Lambda expressions are allowed only at source level 1.8 or above"));
     }
 
     /*
@@ -153,7 +153,7 @@ public class JSPJava7Test {
         LOG.info("New server configuration used: " + configuration);
 
         server.updateServerConfiguration(configuration);
-        server.stopServer("SRVE8115W","SRVE8094W");
+        server.stopServer("SRVE8115W", "SRVE8094W");
         server.startServer();
 
         WebConversation wc = new WebConversation();
@@ -169,6 +169,6 @@ public class JSPJava7Test {
         assertEquals("Expected " + 500 + " status code was not returned!",
                      500, response.getResponseCode());
 
-        assertTrue("Compilation error message not found!", response.getText().contains("use -source 8 or higher to enable lambda expressions")); 
+        assertTrue("Compilation error message not found!", response.getText().contains("use -source 8 or higher to enable lambda expressions"));
     }
 }
