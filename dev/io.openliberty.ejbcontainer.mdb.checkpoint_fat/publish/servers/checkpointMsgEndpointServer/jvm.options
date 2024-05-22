@@ -1,2 +1,0 @@
-# Enable MDB features for InstantOn
--Dcom.ibm.ws.beta.edition=true
