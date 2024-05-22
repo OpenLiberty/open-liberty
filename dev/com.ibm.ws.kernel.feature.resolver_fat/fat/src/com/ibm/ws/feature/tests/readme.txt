@@ -1,4 +1,106 @@
-[FEATURE RESOLUTION FAT NOTES][TFB][23-Apr-2024][START]
+[FEATURE RESOLUTION FAT NOTES][TFB][22-May-2024][START]>
+
+Part 1: Feature testing
+
+When testing feature updates, the following tests are recommended to be run:
+
+Unit tests:
+
+  dev/com.ibm.ws.kernel.feature
+  
+FATs:
+
+  com.ibm.ws.kernel.feature.resolver_fat
+  io.openliberty.jakartaee9.internal_fat
+  io.openliberty.jakartaee10.internal_fat
+  io.openliberty.jakartaee11.internal_fat
+
+---
+
+Part 2: Updating baseline data:
+
+A typical resolution failure obtained from subclasses of the
+feature resolution unit test "FeatureResolutionUnitTestBase"
+is a change to what features are resolved.
+
+Baseline test cases are recorded in several data files under
+"com.ibm.ws.kernel.feature.resolver_fat/publish/verify".
+
+Cases for all public features:
+
+    singleton_expected.xml
+    singleton_expected_WL.xml
+
+Cases which combine a single versioned servlet feature with single
+versionless feature:
+
+    servlet_expected.xml
+    servlet_expected_WL.xml
+
+For example, the resolution of  "acmeCA-2.0" as a server feature is
+present in "singleton_expected.xml":
+
+    <case>
+        <name>com.ibm.websphere.appserver.acmeCA-2.0_SERVER</name>
+        <description>Singleton [ com.ibm.websphere.appserver.acmeCA-2.0 ] [ SERVER ]</description>
+        <input>
+            <server/>
+            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
+            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
+            <root>com.ibm.websphere.appserver.acmeCA-2.0</root>
+        </input>
+        <output>
+            <resolved>com.ibm.websphere.appserver.certificateCreator-2.0</resolved>
+            <resolved>json-1.0</resolved>
+            <resolved>com.ibm.websphere.appserver.eeCompatible-6.0</resolved>
+            <resolved>io.openliberty.servlet.api-3.1</resolved>
+            <resolved>com.ibm.websphere.appserver.javaeeddSchema-1.0</resolved>
+            <resolved>com.ibm.websphere.appserver.servlet-servletSpi1.0</resolved>
+            <!-- ... additional resolved features ... -->
+        </output>
+    </case>
+
+This shows a single case described as the resolution of the singleton "acmCA-2.0"
+as a server feature.  This example has omitted most of the resolved features.
+
+The meaning of a feature resolution case is that the the input features are
+expected to resolve to the output features. 
+
+Each case has an "input" element, which provides resolution settings, a list of
+kernel features, and a list of root features.  The root features are generally
+the most import input and are what distinguish cases.
+
+Each case has an "output" element which has a full listing of the resolved
+features.  The output element lists all public and private internal features
+which were resolved from the inputs.
+
+Usually, two data files are read, one with open-liberty specific data,
+and one with WAS liberty specific data.  When multiple data files are
+read, later read files overlay the earlier read files, using case name
+as key.
+
+Failures are usually because one or more features was added or removed to the
+resolution result.  The necessary correction will be to update the base line
+data with the added or removed features.  That is, adding or removing
+"resolved" elements from cases which failed.  The correction is made directly
+to the case file.
+
+  * If the feature update which triggers the failure was made in
+    open-liberty, both data files should be updated.
+    
+  * If the feature update which triggers the failure was made in
+    WAS-liberty, only the WAS liberty data files should be updated.
+
+As a convenience, the FAT test log contains suggested XML text which may be
+used to update the baseline data file.");
+
+Alternatively, the entire case data can be regenerated using
+"VersionlessResolutionTest".  See section 3 of these notes for more information
+about regenerating the case data.
+
+---
+
+Part 3: Generating entirely new baseline data
 
 Several of the feature resolution FATs follow the pattern of:
 
@@ -85,4 +187,4 @@ dev/com.ibm.ws.kernel.feature.resolver_fat/fat/src/com/ibm/ws/feature/tests/
   BaselineServletUnitTest.java
   BaselineSingletonUnitTest.java
 
-[FEATURE RESOLUTION FAT NOTES][TFB][23-Apr-2024][END]
+[FEATURE RESOLUTION FAT NOTES][TFB][22-May-2024][END]
