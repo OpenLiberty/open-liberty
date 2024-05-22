@@ -71,7 +71,7 @@ public class JSPJava7Test {
         }
     }
 
-    /*
+    /**
      * Ensure JdkSourceLevel works by testing option 17 (Java 7).
      * Lambda were added in Java 8, so the JSP is expected to fail.
      */
@@ -84,7 +84,9 @@ public class JSPJava7Test {
         configuration.getJspEngine().setUseJDKCompiler(false);
         LOG.info("New server configuration used: " + configuration);
 
+        server.setMarkToEndOfLog();
         server.updateServerConfiguration(configuration);
+        server.waitForConfigUpdateInLogUsingMark(null);
         server.stopServer("SRVE8115W", "SRVE8094W");
         server.startServer();
 
@@ -104,7 +106,7 @@ public class JSPJava7Test {
         assertTrue("Compilation error message not found!", response.getText().contains("Lambda expressions are allowed only at source level 1.8 or above"));
     }
 
-    /*
+    /**
      * Ensure JdkSourceLevel works by testing option 17 (Java 7).
      * Lambda were added in Java 8, so the JSP is expected to fail.
      */
@@ -118,7 +120,9 @@ public class JSPJava7Test {
         configuration.getJspEngine().setPrepareJSPs("0");
         LOG.info("New server configuration used: " + configuration);
 
+        server.setMarkToEndOfLog();
         server.updateServerConfiguration(configuration);
+        server.waitForConfigUpdateInLogUsingMark(null);
         server.stopServer("SRVE8115W", "SRVE8094W");
         server.startServer();
 
@@ -138,7 +142,7 @@ public class JSPJava7Test {
         assertTrue("Compilation error message not found!", response.getText().contains("Lambda expressions are allowed only at source level 1.8 or above"));
     }
 
-    /*
+    /**
      * Ensure JdkSourceLevel works by testing option 17 (Java 7).
      * Lambda were added in Java 8, so the JSP is expected to fail.
      */
@@ -152,7 +156,9 @@ public class JSPJava7Test {
         configuration.getJspEngine().setPrepareJSPs("0");
         LOG.info("New server configuration used: " + configuration);
 
+        server.setMarkToEndOfLog();
         server.updateServerConfiguration(configuration);
+        server.waitForConfigUpdateInLogUsingMark(null);
         server.stopServer("SRVE8115W", "SRVE8094W");
         server.startServer();
 
