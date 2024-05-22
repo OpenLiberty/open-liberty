@@ -31,6 +31,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.RecordComponent;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -53,6 +54,8 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.GeneratorAdapter;
+import org.objectweb.asm.signature.SignatureVisitor;
+import org.objectweb.asm.signature.SignatureWriter;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -87,7 +90,7 @@ import jakarta.persistence.EntityManager;
  * It creates entity managers from a PersistenceServiceUnit from the persistence service.
  */
 public class DBStoreEMBuilder extends EntityManagerBuilder {
-    private static final String EOLN = String.format("%n");
+    static final String EOLN = String.format("%n");
     private static final long MAX_WAIT_FOR_SERVICE_NS = TimeUnit.SECONDS.toNanos(60);
     private static final TraceComponent tc = Tr.register(DBStoreEMBuilder.class);
 
@@ -386,7 +389,23 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
         FieldVisitor fv;
         for (RecordComponent component : recordClass.getRecordComponents()) {
             String componentName = component.getName();
-            String typeDesc = org.objectweb.asm.Type.getDescriptor(component.getType());
+            Class<?> componentClass = component.getType();
+            Type componentType = component.getGenericType();
+            String typeDesc = org.objectweb.asm.Type.getDescriptor(componentClass);
+            String signature = null;
+            if (componentType instanceof ParameterizedType) {
+                SignatureWriter sigwriter = new SignatureWriter();
+                SignatureVisitor componentClassVisitor = sigwriter.visitParameterType();
+                componentClassVisitor.visitClassType(componentClass.getName());
+                for (Type typeVarType : ((ParameterizedType) componentType).getActualTypeArguments()) {
+                    SignatureVisitor typeVarVisitor = componentClassVisitor.visitTypeArgument('=');
+                    typeVarVisitor.visitClassType(typeVarType.getTypeName());
+                    typeVarVisitor.visitEnd();
+                }
+                sigwriter.visitEnd();
+                signature = sigwriter.toString().substring(1); // remove the preceding ( character
+                signature = signature.replace('.', '/');
+            }
 
             // --------------------------------------------------------------------
             // public <FieldType> <FieldName>;
@@ -394,13 +413,17 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
             if (trace && tc.isEntryEnabled())
                 Tr.debug(tc, "     " + "adding field : " +
                              componentName + " " +
-                             typeDesc);
+                             typeDesc,
+                         signature);
 
             fv = cw.visitField(ACC_PUBLIC, componentName,
                                typeDesc,
-                               null, null);
+                               signature,
+                               null);
 
             fv.visitEnd();
+
+            // TODO include signature for setter and getter
 
             // --------------------------------------------------------------------
             // public setter...
