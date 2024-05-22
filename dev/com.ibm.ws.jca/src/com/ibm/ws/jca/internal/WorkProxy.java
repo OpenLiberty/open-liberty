@@ -467,24 +467,27 @@ public class WorkProxy implements Callable<Void>, Runnable {
     protected WorkListener lsnr;
 
     /**
-     * Fail checkpoint when the RA submits a work request
+     * Fail checkpoint whenever an RA submits work during application startup.
      */
     private static class CheckpointHookForNewWorkProxy implements CheckpointHook {
-        private static final CheckpointHookForNewWorkProxy instance = new CheckpointHookForNewWorkProxy();
 
         @Override
         public void prepare() {
             throw new IllegalStateException(Utils.getMessage("J2CA8601.work.submit.failed.checkpoint", raId, workId));
         }
 
+        private final String raId, workId;
+
+        private CheckpointHookForNewWorkProxy(String raId, String workId) {
+            this.raId = raId;
+            this.workId = workId;
+        }
+
         private static final AtomicBoolean alreadyAdded = new AtomicBoolean(false);
-        private String raId, workId;
 
         private static void add(String raId, String workId) {
             if (alreadyAdded.compareAndSet(false, true)) {
-                instance.raId = raId;
-                instance.workId = workId;
-                CheckpointPhase.getPhase().addMultiThreadedHook(instance);
+                CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHookForNewWorkProxy(raId, workId));
             }
         }
     }

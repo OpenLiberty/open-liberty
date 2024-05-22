@@ -143,23 +143,26 @@ public class J2CTimer extends Timer {
     }
 
     /**
-     * Fail checkpoint whenever the RA creates a timer
+     * Fail checkpoint whenever an RA creates a timer during application startup.
      */
     private static class CheckpointHookForNewJ2CTimer implements CheckpointHook {
-        private static final CheckpointHookForNewJ2CTimer instance = new CheckpointHookForNewJ2CTimer();
 
         @Override
         public void prepare() {
             throw new IllegalStateException(Utils.getMessage("J2CA8511.create.timer.failed.checkpoint", raId));
         }
 
+        private final String raId;
+
+        private CheckpointHookForNewJ2CTimer(String raId) {
+            this.raId = raId;
+        }
+
         private static final AtomicBoolean alreadyAdded = new AtomicBoolean(false);
-        private String raId;
 
         private static void add(String raId) {
             if (alreadyAdded.compareAndSet(false, true)) {
-                instance.raId = raId;
-                CheckpointPhase.getPhase().addMultiThreadedHook(instance);
+                CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHookForNewJ2CTimer(raId));
             }
         }
     }
