@@ -12,7 +12,6 @@ package com.ibm.ws.jsp23.fat.tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Collections;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -133,8 +132,13 @@ public class JSPJava17Test {
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(configuration);
+
+        // Wait for the server configuration update to complete before restarting the application.
+        server.waitForConfigUpdateInLogUsingMark(null);
+
+        // Restart the application and ensure it finishes starting.
         server.restartApplication(APP_NAME);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*TestJSPWithJava17.*");
+        server.waitForStringInLogUsingMark("CWWKT0016I:.*TestJSPWithJava17.*");
 
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -172,6 +176,7 @@ public class JSPJava17Test {
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(configuration);
+        server.waitForConfigUpdateInLogUsingMark(null);
         server.stopServer("CWWJS0007W", "SRVE8115W", "SRVE8094W");
         server.startServer();
 
