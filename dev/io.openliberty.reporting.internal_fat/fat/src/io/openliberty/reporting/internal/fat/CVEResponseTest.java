@@ -308,6 +308,7 @@ public class CVEResponseTest extends FATServletClient {
     public void testNonExistingServer() throws Exception {
         ServerConfiguration config = testServer.getServerConfiguration();
         config.getCVEReporting().setUrlLink("https://localhost:65535/does/not/exist");
+        testServer.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true", "-Dcve.insight.enabled=true"));
         testServer.updateServerConfiguration(config);
         testServer.startServer();
         testServer.addIgnoredErrors(Collections.singletonList("CWWKF1705W"));
@@ -325,7 +326,8 @@ public class CVEResponseTest extends FATServletClient {
     @Test
     public void testIncorrectProtocol() throws Exception {
         ServerConfiguration config = testServer.getServerConfiguration();
-        config.getCVEReporting().setUrlLink("http://localhost:65535/does/not/exist");
+        config.getCVEReporting().setUrlLink("http://localhost:65535/incorrect/protocol");
+        testServer.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true", "-Dcve.insight.enabled=true"));
         testServer.updateServerConfiguration(config);
         testServer.startServer();
         testServer.addIgnoredErrors(Collections.singletonList("CWWKF1704W"));
