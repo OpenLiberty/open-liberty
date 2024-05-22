@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsp23.fat.tests;
@@ -12,7 +12,6 @@ package com.ibm.ws.jsp23.fat.tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Collections;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -95,11 +94,11 @@ public class JSPJava11Test {
 
     /**
      * Same test as testJava11JSP, but using the runtime JDK (via JSP's useJDKCompiler option rather than the default Eclipse Compiler for Java (ECJ))
-     * 
+     *
      * https://openliberty.io/docs/latest/reference/config/jspEngine.html
      *
      * @throws Exception if something goes horribly wrong
-     *                
+     *
      */
     @Test
     public void testJava11viaUseJDKCompiler() throws Exception {
@@ -109,8 +108,13 @@ public class JSPJava11Test {
         LOG.info("New server configuration used: " + configuration);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(configuration);
+
+        // Wait for the server configuration update to complete before restarting the application.
+        server.waitForConfigUpdateInLogUsingMark(null);
+
+        // Restart the application and ensure it finishes starting.
         server.restartApplication(APP_NAME);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*TestJSPWithJava11.*");
+        server.waitForStringInLogUsingMark("CWWKT0016I:.*TestJSPWithJava11.*");
 
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
