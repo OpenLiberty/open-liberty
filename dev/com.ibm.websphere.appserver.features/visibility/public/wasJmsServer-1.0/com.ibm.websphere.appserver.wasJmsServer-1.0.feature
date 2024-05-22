@@ -29,3 +29,4 @@ Subsystem-Name: Message Server 1.0
 kind=ga
 edition=base
 WLP-InstantOn-Enabled: true; type:=beta
+WLP-Platform: javaee-7.0,javaee-8.0

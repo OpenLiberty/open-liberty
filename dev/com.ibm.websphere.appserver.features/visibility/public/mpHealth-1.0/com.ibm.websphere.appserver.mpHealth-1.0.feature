@@ -26,3 +26,4 @@ Subsystem-Name: MicroProfile Health 1.0
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-Platform: microProfile-1.2,microProfile-1.3,microProfile-1.4,microProfile-2.0,microProfile-2.1,microProfile-2.2

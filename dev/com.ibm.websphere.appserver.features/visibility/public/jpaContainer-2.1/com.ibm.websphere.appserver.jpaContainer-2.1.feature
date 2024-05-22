@@ -30,3 +30,4 @@ IBM-App-ForceRestart: uninstall, \
 -bundles=com.ibm.ws.jpa.container.v21, \
  com.ibm.ws.jpa.container, \
  com.ibm.ws.jpa.container.thirdparty
+WLP-Platform: javaee-7.0

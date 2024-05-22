@@ -234,3 +234,4 @@ kind=noship
 edition=full
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
+WLP-Platform: jakartaee-11.0

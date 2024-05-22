@@ -27,3 +27,4 @@ Subsystem-Name: Java EE Web Profile 7.0
   com.ibm.websphere.appserver.jsf-2.2
 kind=ga
 edition=core
+WLP-Platform: javaee-7.0

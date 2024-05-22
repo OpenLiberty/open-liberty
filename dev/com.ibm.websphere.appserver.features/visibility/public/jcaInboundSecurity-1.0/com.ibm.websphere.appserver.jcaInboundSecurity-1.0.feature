@@ -21,3 +21,4 @@ Subsystem-Name: Java Connector Architecture Security Inflow 1.0
    com.ibm.websphere.javaee.jaspic.1.1; location:=dev/api/spec/; mavenCoordinates="javax.security.auth.message:javax.security.auth.message-api:1.1"
 kind=ga
 edition=base
+WLP-Platform: javaee-7.0,javaee-8.0

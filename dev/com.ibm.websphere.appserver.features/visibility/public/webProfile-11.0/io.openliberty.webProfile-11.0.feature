@@ -29,3 +29,4 @@ Subsystem-Name: Jakarta EE Web Profile 11.0
 kind=noship
 edition=full
 WLP-InstantOn-Enabled: true
+WLP-Platform: jakartaee-11.0

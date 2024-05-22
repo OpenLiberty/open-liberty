@@ -97,3 +97,4 @@ Subsystem-Name: Java Web Services 2.2
 kind=ga
 edition=base
 WLP-InstantOn-Enabled: true
+WLP-Platform: javaee-7.0,javaee-8.0

@@ -8,3 +8,4 @@ Subsystem-Name: Transport Security 1.0
 kind=ga
 edition=core
 WLP-InstantOn-Enabled: true
+WLP-Platform: jakartaee-9.1,jakartaee-10.0,jakartaee-11.0

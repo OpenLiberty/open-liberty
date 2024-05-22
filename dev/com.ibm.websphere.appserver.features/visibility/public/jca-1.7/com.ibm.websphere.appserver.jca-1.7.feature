@@ -25,3 +25,4 @@ kind=ga
 edition=base
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true; type:=beta
+WLP-Platform: javaee-7.0,javaee-8.0

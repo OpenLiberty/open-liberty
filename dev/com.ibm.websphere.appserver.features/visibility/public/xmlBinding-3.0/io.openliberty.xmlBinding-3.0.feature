@@ -32,3 +32,4 @@ edition=core
 WLP-Activation-Type: parallel
 WLP-AlsoKnownAs: jaxb-3.0
 WLP-InstantOn-Enabled: true
+WLP-Platform: jakartaee-9.1

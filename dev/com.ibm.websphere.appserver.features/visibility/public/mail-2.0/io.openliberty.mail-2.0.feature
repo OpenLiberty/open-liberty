@@ -53,3 +53,4 @@ IBM-SPI-Package: \
 kind=ga
 edition=core
 WLP-InstantOn-Enabled: true
+WLP-Platform: jakartaee-9.1
