@@ -235,8 +235,13 @@ public class FeatureResolutionUnitTestBase {
         return testCase;
     }
 
-    //
-
+    /*
+     * Example PreferredPlatforms:
+     * 
+     * "jakartaee-10.0, jakartaee-9.0, jakartaee-8.0, jakartaee-7.0," + 
+     * "MicroProfile-6.0, MicroProfile-5.0, MicroProfile-4.0, MicroProfile-3.0, MicroProfile-2.0, MicroProfile-1.2";
+     * 
+    */
     public String getPreferredPlatforms() {
         return null;
     }
