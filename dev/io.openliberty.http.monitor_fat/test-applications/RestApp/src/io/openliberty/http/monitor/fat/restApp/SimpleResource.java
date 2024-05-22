@@ -22,41 +22,41 @@ import jakarta.ws.rs.Path;
  *
  */
 @ApplicationScoped
-@Path("/")
-public class MetricsResource {
+@Path("/simple")
+public class SimpleResource {
 
     @GET
-    @Path("/normalPathGet")
+    @Path("/pathGet")
     public String normalPathGet() throws InterruptedException {
         return "Hello, do you GET it?";
     }
 
     @POST
-    @Path("/normalPathPost")
+    @Path("/pathPost")
     public String normalPathPost() throws InterruptedException {
         return "Hello, mister POST man!";
     }
 
     @PUT
-    @Path("/put")
+    @Path("/pathPut")
     public String normalPathPut() throws Exception {
         return "Hello, PUT me in!";
     }
 
     @DELETE
-    @Path("/delete")
+    @Path("/pathDelete")
     public String normalPathDelete() throws Exception {
         return "Hello, don't DELETE me.";
     }
 
     @OPTIONS
-    @Path("/options")
+    @Path("/pathOptions")
     public String normalPathOptions() throws Exception {
         return "Hello, give me my OPTIONS";
     }
 
     @HEAD
-    @Path("/head")
+    @Path("/pathHead")
     public String normalPathHead() throws Exception {
         return "Hello, I've lost my HEAD!";
     }

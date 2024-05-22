@@ -28,30 +28,26 @@ import componenttest.topology.impl.LibertyServer;
 import jakarta.ws.rs.HttpMethod;
 
 @RunWith(FATRunner.class)
-public class RestApplicationTest extends BaseTestClass {
+public class ServletApplicationTest extends BaseTestClass {
 
-    private static Class<?> c = RestApplicationTest.class;
+    private static Class<?> c = ServletApplicationTest.class;
 
-    static final String CONTEXT_ROOT = "/RestApp";
+    static final String CONTEXT_ROOT = "/ServletApp";
 
-    static final String REST_APP_URL = CONTEXT_ROOT + "/resource";
+    static final String SIMPLE_SERVLET_URL = CONTEXT_ROOT + "/simpleServlet";
 
-    static final String SIMPLE_RESOURCE_URL = REST_APP_URL + "/simple";
+    static final String FAIL_SERVLET_URL = CONTEXT_ROOT + "/failServlet";
 
-    static final String FAIL_RESOURCE_URL = REST_APP_URL + "/fail";
-
-    static final String PATH_PARAM_RESOURCE_URL = REST_APP_URL + "/pathParam";
-
-    @Server("SimpleRestServer")
+    @Server("SimpleServletServer")
     public static LibertyServer server;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
         trustAll();
         WebArchive testWAR = ShrinkWrap
-                        .create(WebArchive.class, "RestApp.war")
+                        .create(WebArchive.class, "ServletApp.war")
                         .addPackage(
-                                    "io.openliberty.http.monitor.fat.restApp");
+                                    "io.openliberty.http.monitor.fat.servletApp");
 
         ShrinkHelper.exportDropinAppToServer(server, testWAR,
                                              DeployOptions.SERVER_ONLY);
@@ -67,16 +63,16 @@ public class RestApplicationTest extends BaseTestClass {
     public static void afterClass() throws Exception {
         //catch if a server is still running.
         if (server != null && server.isStarted()) {
-            server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWPMI2006W", "CWMMC0013E", "CWWKG0033W", "SRVE0315E");
+            server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWPMI2006W", "CWMMC0013E", "CWWKG0033W", "SRVE0190E", "SRVE0315E", "SRVE0777E");
         }
     }
 
     @Test
-    public void r1_normalPathGet() throws Exception {
+    public void s1_simplePathGet() throws Exception {
 
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_RESOURCE_URL + "/pathGet";
+        String route = SIMPLE_SERVLET_URL;
         String requestMethod = HttpMethod.GET;
         String responseStatus = "200";
 
@@ -87,10 +83,10 @@ public class RestApplicationTest extends BaseTestClass {
     }
 
     @Test
-    public void r1_normalPathPost() throws Exception {
+    public void s1_simplePathPost() throws Exception {
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_RESOURCE_URL + "/pathPost";
+        String route = SIMPLE_SERVLET_URL;
         String requestMethod = HttpMethod.POST;
         String responseStatus = "200";
 
@@ -101,11 +97,11 @@ public class RestApplicationTest extends BaseTestClass {
     }
 
     @Test
-    public void r1_normalPathPut() throws Exception {
+    public void s1_simplePathPut() throws Exception {
 
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_RESOURCE_URL + "/pathPut";
+        String route = SIMPLE_SERVLET_URL;
         String requestMethod = HttpMethod.PUT;
         String responseStatus = "200";
 
@@ -116,11 +112,11 @@ public class RestApplicationTest extends BaseTestClass {
     }
 
     @Test
-    public void r1_normalPathDelete() throws Exception {
+    public void s1_simplePathDelete() throws Exception {
 
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_RESOURCE_URL + "/pathDelete";
+        String route = SIMPLE_SERVLET_URL;
         String requestMethod = HttpMethod.DELETE;
         String responseStatus = "200";
 
@@ -131,11 +127,11 @@ public class RestApplicationTest extends BaseTestClass {
     }
 
     @Test
-    public void r1_normalPathOptions() throws Exception {
+    public void s1_simplePathOptions() throws Exception {
 
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_RESOURCE_URL + "/pathOptions";
+        String route = SIMPLE_SERVLET_URL;
         String requestMethod = HttpMethod.OPTIONS;
         String responseStatus = "200";
 
@@ -146,31 +142,32 @@ public class RestApplicationTest extends BaseTestClass {
     }
 
     @Test
-    public void r1_normalPathHead() throws Exception {
+    public void s1_simplePathHead() throws Exception {
 
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_RESOURCE_URL + "/pathHead";
+        String route = SIMPLE_SERVLET_URL;
         String requestMethod = HttpMethod.HEAD;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
         assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), route, responseStatus, requestMethod));
+
     }
 
     @Test
     @AllowedFFDC
-    public void r1_failDivZero() throws Exception {
+    public void s1_failDivZero() throws Exception {
 
         assertTrue(server.isStarted());
 
-        String route = FAIL_RESOURCE_URL + "/zero";
+        String route = FAIL_SERVLET_URL;
         String requestMethod = HttpMethod.GET;
         String responseStatus = "500";
         String errorType = responseStatus;
 
-        String res = requestHttpServlet(route, server, requestMethod);
+        String res = requestHttpServlet(route, server, requestMethod, "failMode=zero");
 
         assertTrue(validatePrometheusHTTPMetricWithErrorType(getVendorMetrics(server), route, responseStatus, requestMethod, errorType));
 
@@ -178,14 +175,14 @@ public class RestApplicationTest extends BaseTestClass {
 
     @Test
     @AllowedFFDC
-    public void r1_nonExistentPath() throws Exception {
+    public void s1_failNonExistentPath() throws Exception {
 
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_RESOURCE_URL + "/fakePath";
-        String resolvedRoute = REST_APP_URL + "/\\*";
+        String route = CONTEXT_ROOT + "/nonExistent";
         String requestMethod = HttpMethod.GET;
         String responseStatus = "404";
+        String resolvedRoute = CONTEXT_ROOT + "/\\*";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
@@ -194,17 +191,32 @@ public class RestApplicationTest extends BaseTestClass {
     }
 
     @Test
-    @AllowedFFDC
-    public void r1_failThrowIO() throws Exception {
+    public void s1_failCustom() throws Exception {
 
         assertTrue(server.isStarted());
 
-        String route = FAIL_RESOURCE_URL + "/io";
+        String route = FAIL_SERVLET_URL;
+        String requestMethod = HttpMethod.GET;
+        String responseStatus = "456";
+
+        String res = requestHttpServlet(route, server, requestMethod, "failMode=custom");
+
+        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), route, responseStatus, requestMethod));
+
+    }
+
+    @Test
+    @AllowedFFDC
+    public void s1_failIOE() throws Exception {
+
+        assertTrue(server.isStarted());
+
+        String route = FAIL_SERVLET_URL;
         String requestMethod = HttpMethod.GET;
         String responseStatus = "500";
         String errorType = responseStatus;
 
-        String res = requestHttpServlet(route, server, requestMethod);
+        String res = requestHttpServlet(route, server, requestMethod, "failMode=io");
 
         assertTrue(validatePrometheusHTTPMetricWithErrorType(getVendorMetrics(server), route, responseStatus, requestMethod, errorType));
 
@@ -212,16 +224,16 @@ public class RestApplicationTest extends BaseTestClass {
 
     @Test
     @AllowedFFDC
-    public void r1_failThrowIAE() throws Exception {
+    public void s1_failIAE() throws Exception {
 
         assertTrue(server.isStarted());
 
-        String route = FAIL_RESOURCE_URL + "/iae";
+        String route = FAIL_SERVLET_URL;
         String requestMethod = HttpMethod.GET;
         String responseStatus = "500";
         String errorType = responseStatus;
 
-        String res = requestHttpServlet(route, server, requestMethod);
+        String res = requestHttpServlet(route, server, requestMethod, "failMode=iae");
 
         assertTrue(validatePrometheusHTTPMetricWithErrorType(getVendorMetrics(server), route, responseStatus, requestMethod, errorType));
 
