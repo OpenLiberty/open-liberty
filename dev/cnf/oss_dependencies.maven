@@ -308,9 +308,9 @@ jakarta.validation:jakarta.validation-api:3.0.2
 jakarta.validation:jakarta.validation-api:3.1.0-M2
 jakarta.websocket:jakarta.websocket-api:2.0.0
 jakarta.websocket:jakarta.websocket-api:2.1.1
-jakarta.websocket:jakarta.websocket-api:2.2.0-M1
+jakarta.websocket:jakarta.websocket-api:2.2.0
 jakarta.websocket:jakarta.websocket-client-api:2.1.1
-jakarta.websocket:jakarta.websocket-client-api:2.2.0-M1
+jakarta.websocket:jakarta.websocket-client-api:2.2.0
 jakarta.ws.rs:jakarta.ws.rs-api:3.0.0
 jakarta.ws.rs:jakarta.ws.rs-api:3.1.0
 jakarta.ws.rs:jakarta.ws.rs-api:4.0.0
