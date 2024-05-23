@@ -50,6 +50,7 @@ public class AuthDataImpl implements AuthData {
         String configuredPassword = sps == null ? "" : new String(sps.getChars());
 
         // Cipher algorithims may be unavailable at server checkpoint
+        password = configuredPassword;
         CheckpointPhase.onRestore(() -> {
             password = PasswordUtil.passwordDecode(configuredPassword);
         });
