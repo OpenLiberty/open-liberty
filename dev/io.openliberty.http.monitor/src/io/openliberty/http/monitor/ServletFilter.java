@@ -14,6 +14,7 @@ import java.time.Duration;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.servlet.error.ServletErrorReport;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer40.osgi.webapp.WebAppDispatcherContext40;
 import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
@@ -40,6 +41,10 @@ public class ServletFilter implements Filter {
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
 
+		String appName = servletRequest.getServletContext().getAttribute("com.ibm.websphere.servlet.enterprise.application.name").toString();
+
+		Exception servletException = null;
+		
 		String httpRoute;
 		String contextPath = servletRequest.getServletContext().getContextPath();
 		long nanosStart = System.nanoTime();
@@ -48,6 +53,7 @@ public class ServletFilter implements Filter {
 		} catch (IOException ioe) {
 			throw ioe;
 		} catch (ServletException se) {
+			servletException = se;
 			throw se;
 		} finally {
 			long elapsednanos = System.nanoTime()-nanosStart;
@@ -58,8 +64,27 @@ public class ServletFilter implements Filter {
 			// Retrieve the HTTP request attributes
 			resolveRequestAttributes(servletRequest, httpStatsAttributesHolder);
 
-			// Retrieve the HTTP response attribute (i.e. the response status)
-			resolveResponseAttributes(servletResponse, httpStatsAttributesHolder);
+			/*
+			 *  Retrieve the HTTP response attribute (i.e. the response status)
+			 *  If servlet exception occurs, we can get the ServletErrorReport
+			 *  and retrieve the error.
+			 *  
+			 *  If it isn't, then we'll set it to a 500.
+			 */
+			if (servletException != null ) {
+				if (servletException instanceof ServletErrorReport) {
+					ServletErrorReport ser = (ServletErrorReport) servletException;
+					httpStatsAttributesHolder.setResponseStatus(ser.getErrorCode());
+				} else {
+					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+						Tr.debug(tc, String.format("Servlet Exception occured, but could not obtain a ServletErrorReport. Default to a 500 response. The exception [%s].",servletException));
+					}
+					httpStatsAttributesHolder.setResponseStatus(500);
+				}
+				
+			} else {
+				resolveResponseAttributes(servletResponse, httpStatsAttributesHolder);
+			}
 
 			// attempt to retrieve the `httpRoute` from the RESTful filter
 			httpRoute = (String) servletRequest.getAttribute(REST_HTTP_ROUTE_ATTR);
@@ -82,6 +107,7 @@ public class ServletFilter implements Filter {
 						WebAppDispatcherContext40 webAppDispatcherContext40 = (WebAppDispatcherContext40) webAppdispatcherContext;
 						
 						//Can be null for direct match with servlet URL pattern with no wildcard
+						//OR 
 						String pathInfo = webAppDispatcherContext40.getPathInfo();
 
 						HttpServletMapping httpServletMapping = webAppDispatcherContext40.getServletMapping();
@@ -178,6 +204,20 @@ public class ServletFilter implements Filter {
 								}
 								httpRoute = null;
 							}
+						} else if ((pathInfo == null) && 
+								(webAppDispatcherContext40.getServletPathForMapping() != null) 
+								&& (!webAppDispatcherContext40.getServletPathForMapping().isBlank())){
+							
+							/*
+							 * PathInfo is null, httpServlet Mapping is null.
+							 * If we can get a servletPathForMapping value.
+							 * We'll use that.
+							 * 
+							 * Example: JSP that wasn't configured in web.xml
+							 */
+							
+							httpRoute = contextPath + webAppDispatcherContext40.getServletPathForMapping();
+							
 						}
 
 					} // cast to WebAppDispatcherContext40
@@ -191,7 +231,7 @@ public class ServletFilter implements Filter {
 			 */
 			HttpStatsMonitor httpMetricsMonitor = HttpStatsMonitor.getInstance();
 			if (httpMetricsMonitor != null) {
-				httpMetricsMonitor.updateHttpStatDuration(httpStatsAttributesHolder, Duration.ofNanos(elapsednanos));
+				httpMetricsMonitor.updateHttpStatDuration(httpStatsAttributesHolder, Duration.ofNanos(elapsednanos), appName);
 			} else {
 				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 					Tr.debug(tc, "Could not acquire instance of HTTpStatsMonitor. Can not proceed to create/update Mbean.");
