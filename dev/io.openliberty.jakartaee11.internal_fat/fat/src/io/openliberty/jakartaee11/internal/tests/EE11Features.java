@@ -137,19 +137,6 @@ public class EE11Features {
                                                                OPEN_LIBERTY_ONLY);
 
         this.serverFeatures_wl = getInstalledFeatures(installRoot, !OPEN_LIBERTY_ONLY);
-
-        // Temporarily remove features that currently work with EE 11, but will be updated to no longer work with EE 11.
-        // When the changes are in, this list of features will be moved to remove from the compatible list.
-        serverFeatures_wl.remove("appState-1.0");
-        serverFeatures_wl.remove("appState-2.0");
-        serverFeatures_wl.remove("bluemixUtility-1.0");
-        serverFeatures_wl.remove("cloudAutowiring-1.0");
-        serverFeatures_wl.remove("logAnalysis-1.0");
-        serverFeatures_wl.remove("mediaServerControl-1.0");
-        serverFeatures_wl.remove("productInsights-1.0");
-        serverFeatures_wl.remove("serverStatus-1.0");
-        serverFeatures_wl.remove("timedOperations-1.0");
-
         this.versionedFeatures_wl = getVersionedFeatures(serverFeatures_wl);
 
         this.compatibleFeatures_wl = getCompatibleFeatures(versionedFeatures_wl, !OPEN_LIBERTY_ONLY);
@@ -220,14 +207,17 @@ public class EE11Features {
         features.remove("sipServlet-1.1"); // purposely not supporting EE 11
         features.remove("springBoot-1.5"); // springBoot 3.0 only supports EE11
         features.remove("springBoot-2.0");
-        features.remove("couchdb-1.0"); // stabilized
-        features.remove("mongodb-2.0"); // stabilized
 
         features.remove("mpReactiveMessaging-3.0"); //still in development
         features.remove("mpTelemetry-2.0"); //Not yet assigned to an MPXX_FEATURES_ARRAY
         features.remove("mpFaultTolerance-4.1"); //MP70 is just a placeholder for now
 
         features.remove("jwtSso-1.0"); // this will be removed when MP supports EE 11
+
+        // Stabilized features were changed to not support EE 11 even though
+        // they do not depend on Java / Jakarta EE features.
+        features.remove("couchdb-1.0");
+        features.remove("mongodb-2.0");
 
         if (!openLibertyOnly) {
             // stabilized features
@@ -255,6 +245,18 @@ public class EE11Features {
             // heritage API features
             features.remove("heritageAPIs-1.0");
             features.remove("heritageAPIs-1.1");
+
+            // Stabilized / discontinued / bluemix features were changed to not support EE 11 even though
+            // they do not depend on Java / Jakarta EE features.
+            features.remove("appState-1.0");
+            features.remove("appState-2.0");
+            features.remove("bluemixUtility-1.0");
+            features.remove("cloudAutowiring-1.0");
+            features.remove("logAnalysis-1.0");
+            features.remove("mediaServerControl-1.0");
+            features.remove("productInsights-1.0");
+            features.remove("serverStatus-1.0");
+            features.remove("timedOperations-1.0");
         }
 
         // Test features may or may not be compatible, we don't want to assert either way
