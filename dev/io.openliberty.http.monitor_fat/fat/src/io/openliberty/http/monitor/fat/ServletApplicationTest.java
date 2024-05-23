@@ -32,11 +32,17 @@ public class ServletApplicationTest extends BaseTestClass {
 
     private static Class<?> c = ServletApplicationTest.class;
 
-    static final String CONTEXT_ROOT = "/ServletApp";
+    static final String SIMPLE_APP_CONTEXT_ROOT = "/ServletApp";
 
-    static final String SIMPLE_SERVLET_URL = CONTEXT_ROOT + "/simpleServlet";
+    static final String WILDCARD_APP_CONTEXT_ROOT = "/WildCardServlet";
 
-    static final String FAIL_SERVLET_URL = CONTEXT_ROOT + "/failServlet";
+    static final String SIMPLE_SERVLET_URL = SIMPLE_APP_CONTEXT_ROOT + "/simpleServlet";
+
+    static final String FAIL_SERVLET_URL = SIMPLE_APP_CONTEXT_ROOT + "/failServlet";
+
+    static final String SUB1_SERVLET_URL = SIMPLE_APP_CONTEXT_ROOT + "/sub";
+
+    static final String SUB2_SERVLET_URL = SIMPLE_APP_CONTEXT_ROOT + "/sub/sub";
 
     @Server("SimpleServletServer")
     public static LibertyServer server;
@@ -44,13 +50,20 @@ public class ServletApplicationTest extends BaseTestClass {
     @BeforeClass
     public static void beforeClass() throws Exception {
         trustAll();
-        WebArchive testWAR = ShrinkWrap
+        WebArchive simpleSerletWAR = ShrinkWrap
                         .create(WebArchive.class, "ServletApp.war")
                         .addPackage(
                                     "io.openliberty.http.monitor.fat.servletApp");
 
-        ShrinkHelper.exportDropinAppToServer(server, testWAR,
+        WebArchive wildCardServletWAR = ShrinkWrap
+                        .create(WebArchive.class, "WildCardServlet.war")
+                        .addPackage(
+                                    "io.openliberty.http.monitor.fat.wildCardServletApp");
+
+        ShrinkHelper.exportDropinAppToServer(server, simpleSerletWAR,
                                              DeployOptions.SERVER_ONLY);
+
+        ShrinkHelper.exportDropinAppToServer(server, wildCardServletWAR, DeployOptions.SERVER_ONLY);
 
         server.startServer();
 
@@ -179,10 +192,10 @@ public class ServletApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = CONTEXT_ROOT + "/nonExistent";
+        String route = SIMPLE_APP_CONTEXT_ROOT + "/nonExistent";
         String requestMethod = HttpMethod.GET;
         String responseStatus = "404";
-        String resolvedRoute = CONTEXT_ROOT + "/\\*";
+        String resolvedRoute = SIMPLE_APP_CONTEXT_ROOT + "/\\*";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
@@ -236,6 +249,22 @@ public class ServletApplicationTest extends BaseTestClass {
         String res = requestHttpServlet(route, server, requestMethod, "failMode=iae");
 
         assertTrue(validatePrometheusHTTPMetricWithErrorType(getVendorMetrics(server), route, responseStatus, requestMethod, errorType));
+
+    }
+
+    @Test
+    public void s1_rootWildCard() throws Exception {
+
+        assertTrue(server.isStarted());
+
+        String route = WILDCARD_APP_CONTEXT_ROOT + "/anythingGoes";
+        String expectedRoute = WILDCARD_APP_CONTEXT_ROOT + "/\\*";
+        String requestMethod = HttpMethod.GET;
+        String responseStatus = "200";
+
+        String res = requestHttpServlet(route, server, requestMethod);
+
+        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
 
     }
 

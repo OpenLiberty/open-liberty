@@ -69,7 +69,7 @@ public abstract class BaseTestClass {
         HttpsURLConnection con = null;
         try {
             String sURL = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() + servletPath;
-            Log.info(c, "getHttpsServlet", sURL);
+            Log.info(c, "requestHttpSecureServlet", sURL);
             URL checkerServletURL = new URL(sURL);
             con = (HttpsURLConnection) checkerServletURL.openConnection();
             con.setDoInput(true);
@@ -97,7 +97,7 @@ public abstract class BaseTestClass {
                 if (!line.startsWith("#"))
                     lines.append(line).append(sep);
             }
-            Log.info(c, "requestHttpSecureServlet", sURL);
+
             return lines.toString();
         } finally {
             if (con != null)
@@ -132,7 +132,10 @@ public abstract class BaseTestClass {
             Log.info(c, "requestHttpServlet", sURL);
             return lines.toString();
         } catch (IOException e) {
-            Log.info(c, "requestHttpServlet", "Encountered exceptoin " + e);
+            Log.info(c, "requestHttpServlet", "Encountered IO exception " + e);
+            return null;
+        } catch (Exception e) {
+            Log.info(c, "requestHttpServlet", "Encountered an exception " + e);
             return null;
         } finally {
             if (con != null)

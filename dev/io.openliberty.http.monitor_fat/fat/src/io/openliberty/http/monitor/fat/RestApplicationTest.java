@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -40,7 +41,7 @@ public class RestApplicationTest extends BaseTestClass {
 
     static final String FAIL_RESOURCE_URL = REST_APP_URL + "/fail";
 
-    static final String PATH_PARAM_RESOURCE_URL = REST_APP_URL + "/pathParam";
+    static final String PARAM_RESOURCE_URL = REST_APP_URL + "/params";
 
     @Server("SimpleRestServer")
     public static LibertyServer server;
@@ -224,6 +225,101 @@ public class RestApplicationTest extends BaseTestClass {
         String res = requestHttpServlet(route, server, requestMethod);
 
         assertTrue(validatePrometheusHTTPMetricWithErrorType(getVendorMetrics(server), route, responseStatus, requestMethod, errorType));
+
+    }
+
+    @Test
+    public void r1_params_any() throws Exception {
+
+        assertTrue(server.isStarted());
+
+        String route = PARAM_RESOURCE_URL + "/awooga";
+        String expectedRoute = PARAM_RESOURCE_URL + "/\\{anything\\}";
+
+        String requestMethod = HttpMethod.GET;
+        String responseStatus = "200";
+
+        String res = requestHttpServlet(route, server, requestMethod);
+
+        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+
+    }
+
+    @Test
+    public void r1_params_getName() throws Exception {
+
+        assertTrue(server.isStarted());
+
+        String route = PARAM_RESOURCE_URL + "/name/watson";
+        String expectedRoute = PARAM_RESOURCE_URL + "/name/\\{name\\}";
+
+        String requestMethod = HttpMethod.GET;
+        String responseStatus = "200";
+
+        String res = requestHttpServlet(route, server, requestMethod);
+
+        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+
+    }
+
+    @Test
+    public void r1_params_postName() throws Exception {
+
+        assertTrue(server.isStarted());
+
+        String route = PARAM_RESOURCE_URL + "/name/watson";
+        String expectedRoute = PARAM_RESOURCE_URL + "/name/\\{name\\}";
+
+        String requestMethod = HttpMethod.POST;
+        String responseStatus = "200";
+
+        String res = requestHttpServlet(route, server, requestMethod);
+
+        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+
+    }
+
+    @Test
+    public void r1_params_query() throws Exception {
+
+        /*
+         * Query params aren't part of the rout.
+         * so we jsut expect "query"
+         */
+        assertTrue(server.isStarted());
+
+        String route = PARAM_RESOURCE_URL + "/query?useless=this";
+        String expectedRoute = PARAM_RESOURCE_URL + "/query";
+
+        String requestMethod = HttpMethod.GET;
+        String responseStatus = "200";
+
+        String res = requestHttpServlet(route, server, requestMethod);
+
+        Log.info(c, " r1_params_query", "the response is " + res);
+
+        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+
+    }
+
+    @Test
+    public void r1_params_queryParam() throws Exception {
+
+        /*
+         * Query params aren't part of the rout.
+         * so we jsut expect "query"
+         */
+        assertTrue(server.isStarted());
+
+        String route = PARAM_RESOURCE_URL + "/pq/peeqeee?useless=this";
+        String expectedRoute = PARAM_RESOURCE_URL + "/pq/\\{pq\\}";
+
+        String requestMethod = HttpMethod.GET;
+        String responseStatus = "200";
+
+        String res = requestHttpServlet(route, server, requestMethod);
+
+        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
 
     }
 
