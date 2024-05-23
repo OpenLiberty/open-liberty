@@ -12137,7 +12137,6 @@
         </input>
         <output>
             <resolved>com.ibm.websphere.appserver.eeCompatible-11.0</resolved>
-            <resolved>noShip-1.0</resolved>
             <resolved>io.openliberty.jakarta.websocket-2.2</resolved>
             <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
