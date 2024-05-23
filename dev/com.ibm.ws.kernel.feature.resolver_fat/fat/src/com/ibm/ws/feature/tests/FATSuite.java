@@ -20,7 +20,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 BaselineSingletonUnitTest.class,
                 BaselineServletUnitTest.class,
-                MicroProfileCrossPlatformUnitTest.class, // Disabled until the platform API is implemented
+                //MicroProfileCrossPlatformUnitTest.class, // This is already tested in JavaEE/Servlet to MicroProfile cases
 
                 VersionlessResolutionTest.class, //Disabled for inital PR, needs servlet-3.0 cases
 
