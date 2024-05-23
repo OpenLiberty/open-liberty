@@ -13,6 +13,7 @@
 package com.ibm.ws.feature.tests;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -61,6 +62,14 @@ public class BaselineSingletonUnitTest extends FeatureResolutionUnitTestBase {
 
     public static File getDataFile_WL() {
         return new File(DATA_FILE_PATH_WL);
+    }
+
+    @Override
+    public List<File> getDataFiles() {
+        List<File> dataFiles = new ArrayList<>(2);
+        dataFiles.add(getDataFile_OL());
+        dataFiles.add(getDataFile_WL());
+        return dataFiles;
     }
 
     // To use change the name of parameterized tests, you say:

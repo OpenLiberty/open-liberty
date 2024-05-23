@@ -40,11 +40,12 @@ import com.ibm.ws.kernel.feature.internal.util.VerifyXML;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
+// import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
 
 /**
  * Feature resolution testing.
  */
-public class FeatureResolutionUnitTestBase {
+public abstract class FeatureResolutionUnitTestBase {
 
     public static void largeDashes(PrintStream stream) {
         stream.println("============================================================");
@@ -96,25 +97,71 @@ public class FeatureResolutionUnitTestBase {
             }
         }
 
-        public String getMessage() {
+        public String getMessage(List<File> dataFiles) {
             StringBuilder builder = new StringBuilder();
             builder.append("Feature resolution [ " + description + " ]");
             builder.append(" failed with [ ");
             builder.append(Integer.toString(messages.size()));
-            builder.append(" ] errors: ");
+            builder.append(" ] errors:\n");
 
             int errorNo = 0;
             for (String error : messages) {
-                if (errorNo > 3) {
-                    builder.append("...");
-                    break;
-                } else if (errorNo > 0) {
-                    builder.append(", ");
+                if (errorNo > 0) {
+                    builder.append(",\n");
                 }
-
                 builder.append(error);
                 errorNo++;
             }
+            builder.append('\n');
+
+            builder.append("Expected / baseline data was read from these files:\n");
+            for (File dataFile : dataFiles) {
+                builder.append("  [ " + dataFile.getAbsolutePath() + " ]\n");
+            }
+            builder.append('\n');
+            builder.append('\n');
+
+            builder.append("The failure message usually displays one or more features which were\n");
+            builder.append("added or which were removed from the resolution result.\n");
+            builder.append("The necessary correction will be to update the baseline data with\n");
+            builder.append("the added or removed features.\n");
+            builder.append('\n');
+
+            builder.append("For more information, see:\n");
+            builder.append("open-liberty/dev/com.ibm.ws.kernel.feature.resolver_fat/\n");
+            builder.append("  /src/com/ibm/ws/feature/tests/readme.txt/n");
+            builder.append('\n');
+
+            builder.append("Notes:\n");
+            builder.append('\n');
+
+            builder.append("Usually, two data files are read, one with open-liberty specific\n");
+            builder.append("data, and one with WAS liberty specific data:\n");
+            builder.append("  * If the feature update which triggers the failure was made in\n");
+            builder.append("    open-liberty, both data files should be updated.\n");
+            builder.append("  * If the feature update which triggers the failure was made in\n");
+            builder.append("    WAS-liberty, only the WAS liberty data files should be updated.\n");
+            builder.append('\n');
+
+            builder.append("As a convenience, the FAT test log contains suggested XML text\n");
+            builder.append("which may be used to update the baseline data file.");
+            builder.append('\n');
+
+            builder.append("The format of the baseline data files is a list of resolution cases,\n");
+            builder.append("each having one or more features which are to be resolved (inputs),\n");
+            builder.append("and each having a list of resolved features (outputs).  When multiple\n");
+            builder.append("baseline data files are used, their contents are additive.\n");
+            builder.append('\n');
+            builder.append("NOTE: Often, WAS-liberty cases replace open-liberty cases.\n");
+            builder.append('\n');
+
+            builder.append("When testing feature updates, the following tests are recommended to be run:\n");
+            builder.append("  dev/com.ibm.ws.kernel.feature (unit tests)");
+            builder.append("  com.ibm.ws.kernel.feature.resolver_fat\n");
+            builder.append("  io.openliberty.jakartaee9.internal_fat\n");
+            builder.append("  io.openliberty.jakartaee10.internal_fat\n");
+            builder.append("  io.openliberty.jakartaee11.internal_fat\n");
+            builder.append('\n');
 
             return builder.toString();
         }
@@ -235,6 +282,8 @@ public class FeatureResolutionUnitTestBase {
         return testCase;
     }
 
+    public abstract List<File> getDataFiles();
+
     //
 
     public String getPreferredPlatforms() {
@@ -337,7 +386,7 @@ public class FeatureResolutionUnitTestBase {
         List<String> rootErrors = detectFeatureErrors(inputCase.input.roots);
         if (rootErrors != null) {
             FailureSummary summary = addRootFailure(inputCase, rootErrors);
-            fail(summary.getMessage());
+            fail(summary.getMessage(getDataFiles()));
             return; // 'fail' never returns.
         }
 
@@ -381,7 +430,7 @@ public class FeatureResolutionUnitTestBase {
 
         if ((errors != null) && !errors.isEmpty()) {
             FailureSummary summary = addFailure(inputCase, extra, missing);
-            fail(summary.getMessage());
+            fail(summary.getMessage(getDataFiles()));
             return; // 'fail' never returns.
         }
     }
