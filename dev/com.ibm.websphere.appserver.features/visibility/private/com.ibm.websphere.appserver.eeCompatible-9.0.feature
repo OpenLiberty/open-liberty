@@ -7,3 +7,4 @@ Subsystem-Version: 9.0.0
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-Platform: jakartaee-9.0
