@@ -19,7 +19,6 @@ import com.ibm.websphere.monitor.annotation.This;
 import com.ibm.websphere.monitor.meters.MeterCollection;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.webcontainer.servlet.ServletWrapper;

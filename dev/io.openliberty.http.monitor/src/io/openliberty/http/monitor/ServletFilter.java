@@ -317,11 +317,6 @@ public class ServletFilter implements Filter {
 		httpStat.setNetworkProtocolVersion(networkVersion);
 	}
 	
-	/*
-	 * 
-	 * 
-	 */
-	
 	/**
 	 * Taken from WebApprrorReport.constructErrorReport()
 	 * Trimmed to remove unecessary servlet 30 if statement.
