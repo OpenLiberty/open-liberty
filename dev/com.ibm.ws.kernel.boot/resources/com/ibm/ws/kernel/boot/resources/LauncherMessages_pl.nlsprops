@@ -774,6 +774,14 @@ warning.timeoutWaitingForServerProcessToStop=CWWKE0968W: Przekroczono limit czas
 warning.timeoutWaitingForServerProcessToStop.explanation=Serwer nie zosta\u0142 zatrzymany w czasie dozwolonym przez warto\u015b\u0107 limitu czasu. Mo\u017ce to by\u0107 spowodowane powolnym zamkni\u0119ciem serwera lub zawieszeniem si\u0119 serwera.   
 warning.timeoutWaitingForServerProcessToStop.useraction=Je\u015bli serwer nadal dzia\u0142a, rozwa\u017c zwi\u0119kszenie warto\u015bci limitu czasu dla komendy 'server stop'. W systemach typu UNIX komenda zatrzymania serwera oczekuje na zatrzymanie procesu serwera. W systemie Windows komenda oczekuje na na\u0142o\u017cenie blokady na plik console.log . U\u017cyj narz\u0119dzi do monitorowania plik\u00f3w, aby sprawdzi\u0107, czy inny program, taki jak edytor, zablokowa\u0142 plik console.log .
 
+warning.manual.PPV.env.var=CWWKE0969W: Podczas tworzenia pakietu serwera okre\u015blono r\u0119czn\u0105 zmienn\u0105 \u015brodowiskow\u0105 PREFERRED_PLATFORM_VERSION.
+warning.manual.PPV.env.var.explanation=W \u015brodowisku zosta\u0142a ustawiona r\u0119czna zmienna \u015brodowiskowa PREFERRED_PLATFORM_VERSION, ale nie zostanie ona uwzgl\u0119dniona w pakiecie serwera.
+warning.manual.PPV.env.var.useraction=Aby zachowa\u0107 zmienn\u0105 \u015brodowiskow\u0105 PREFERRED_PLATFORM_VERSION, nale\u017cy j\u0105 okre\u015bli\u0107 w pliku konfiguracyjnym server.env .
+
+error.read.server.env=CWWKE0970E: Nie mo\u017cna odczyta\u0107 pliku server.env w po\u0142o\u017ceniu {}.
+error.read.server.env.explanation=Nie powiod\u0142o si\u0119 odczytanie pliku server.env .
+error.read.server.env.useraction=Nie mo\u017cna odczyta\u0107 pliku server.env .  Sprawd\u017a uprawnienia do pliku i pon\u00f3w operacj\u0119.
+
 info.serverStarting=Uruchamianie serwera {0}.
 info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.
 info.serverStartedWithPID=Serwer {0} zosta\u0142 uruchomiony. ID procesu: {1}.
