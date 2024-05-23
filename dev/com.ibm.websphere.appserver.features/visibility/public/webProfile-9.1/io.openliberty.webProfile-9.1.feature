@@ -30,4 +30,3 @@ Subsystem-Name: Jakarta EE Web Profile 9.1
 kind=ga
 edition=core
 WLP-InstantOn-Enabled: true
-WLP-Platform: jakartaee-9.1

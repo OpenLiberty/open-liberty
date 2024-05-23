@@ -29,4 +29,3 @@ Subsystem-Name: Java EE Web Profile 8.0
 kind=ga
 edition=core
 WLP-InstantOn-Enabled: true
-WLP-Platform: javaee-8.0
