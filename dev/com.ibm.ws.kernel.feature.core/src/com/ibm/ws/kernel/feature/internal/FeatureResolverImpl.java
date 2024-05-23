@@ -1382,14 +1382,16 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         void addPostponed(String baseName, Chain chain) {
-            Chains existing = _current._postponed.get(baseName);
+            Map<String, Chains> usePostponed;
+            if (baseName.startsWith("io.openliberty.internal.versionless.")) {
+                usePostponed = _current._postponedVersionless;
+            } else {
+                usePostponed = _current._postponed;
+            }
+            Chains existing = usePostponed.get(baseName);
             if (existing == null) {
                 existing = new Chains();
-                if (baseName.startsWith("io.openliberty.internal.versionless.")) {
-                    _current._postponedVersionless.put(baseName, existing);
-                } else {
-                    _current._postponed.put(baseName, existing);
-                }
+                usePostponed.put(baseName, existing);
             }
             existing.add(chain);
         }
