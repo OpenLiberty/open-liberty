@@ -299,7 +299,9 @@ public class HttpStatsMonitor extends StatisticActions {
 	public void removeStat(String appName) {
 		Set<String> retSet = appNameToStat.get(appName);
 		if (retSet != null) {
-			retSet.stream().forEach( statName -> HttpConnByRoute.remove(statName));
+			for (String statName : retSet) {
+				HttpConnByRoute.remove(statName));
+			}
 		}
 	}
 	
