@@ -13998,6 +13998,7 @@
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
             <resolved>io.openliberty.cdi3.0-appSecurity</resolved>
             <resolved>io.openliberty.restfulWS3.0-monitor1.0</resolved>
+            <resolved>io.openliberty.httpStat-monitor1.0.jakarta</resolved>
         </output>
     </case>
     <case>
@@ -14135,6 +14136,7 @@
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
             <resolved>io.openliberty.cdi3.0-appSecurity</resolved>
             <resolved>io.openliberty.restfulWS3.0-monitor1.0</resolved>
+            <resolved>io.openliberty.httpStat-monitor1.0.jakarta</resolved>
         </output>
     </case>
     <case>
@@ -14962,6 +14964,7 @@
             <resolved>io.openliberty.servlet5.0-monitor1.0</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
+            <resolved>io.openliberty.httpStat-monitor1.0.jakarta</resolved>
         </output>
     </case>
     <case>
@@ -15058,6 +15061,7 @@
             <resolved>io.openliberty.servlet5.0-monitor1.0</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
+            <resolved>io.openliberty.httpStat-monitor1.0.jakarta</resolved>
         </output>
     </case>
     <case>
