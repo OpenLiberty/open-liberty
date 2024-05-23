@@ -19,7 +19,6 @@ import java.util.Set;
 
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
-import org.jboss.jandex.IndexView;
 import org.jboss.jandex.Indexer;
 
 import com.ibm.websphere.ras.Tr;
@@ -43,9 +42,8 @@ public class IndexUtils {
     private static final TraceComponent tc = Tr.register(IndexUtils.class);
 
     /**
-     * The getIndexView method generates an org.jboss.jandex.Index that contains all of the classes that need to be
-     * scanned for OpenAPI/JAX-RS annotations. This Index is passed to the SmallRye OpenAPI implementation which
-     * performs the scanning.
+     * Generates an {@code org.jboss.jandex.Index} that contains all of the classes that need to be scanned for OpenAPI/JAX-RS annotations. This {@code Index} is passed to the
+     * SmallRye OpenAPI implementation which performs the scanning.
      *
      * @param webModuleInfo
      *     The module info for the web module
@@ -53,8 +51,7 @@ public class IndexUtils {
      *     The module classes container info for the web module
      * @param config
      *     The configuration that may specify which classes/packages/JARs to include/exclude.
-     * @return Index
-     * The org.jboss.jandex.Index instance.
+     * @return The {@code org.jboss.jandex.Index} instance.
      */
     public static Index getIndex(WebModuleInfo webModuleInfo, ModuleClassesContainerInfo moduleClassesContainerInfo, OpenApiConfig config) {
 
@@ -124,18 +121,18 @@ public class IndexUtils {
      * The acceptClassForScanning method determines whether the specified class should be scanned for MicroProfile
      * OpenAPI annotations based on the configuration specified in the following proeprties:
      *
+     * <pre>
      * mp.openapi.scan.classes
      * mp.openapi.scan.packages
      * mp.openapi.scan.exclude.classes
      * mp.openapi.scan.exclude.packages
+     * </pre>
      *
      * @param filter
-     *     The SmallRye {@link FilterIndexView} class which wraps an {@link IndexView} instance and filters the
-     *     contents based on the settings provided via {@link OpenApiConfig}.
+     *     The SmallRye {@link FilterIndexView} class which filters the contents based on the settings provided via {@link OpenApiConfig}.
      * @param className
      *     The name of the class
-     * @return boolean
-     * True if the class should be accepted for scanning, false otherwise
+     * @return {@code true} if the class should be accepted for scanning, {@code false} otherwise
      */
     private static boolean acceptClassForScanning(final FilteredIndexView filter, final String className) {
 
@@ -162,8 +159,7 @@ public class IndexUtils {
      *     The OpenAPIConfig representation of the configuration
      * @param jarFileName
      *     The full name of the JAR file, including the path
-     * @return boolean
-     * True if the contents of the JAR file should be accepted for scanning, false otherwise
+     * @return {@code true} if the contents of the JAR file should be accepted for scanning, {@code false} otherwise
      */
     private static boolean acceptJarForScanning(final OpenApiConfig config, final String jarFileName) {
 
