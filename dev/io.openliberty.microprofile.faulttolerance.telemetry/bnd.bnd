@@ -1,0 +1,58 @@
+#*******************************************************************************
+# Copyright (c) 2018, 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+openTelemetryVersion=1.35.0
+
+Bundle-Name: io.openliberty.microprofile.faulttolerance.telemetry
+Bundle-SymbolicName: io.openliberty.microprofile.faulttolerance.telemetry
+
+Bundle-Description:MicroProfile Fault Tolerance telemetery integration, version ${bVersion}
+
+WS-TraceGroup: FAULTTOLERANCE
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
+-dsannotations-inherit: true
+-dsannotations: io.openliberty.microprofile.faulttolerance.telemetry.metrics.integration.MetricRecorderProviderImpl
+
+Import-Package: *
+
+Export-Package: io.openliberty.microprofile.faulttolerance.telemetry.metrics.integration
+
+Private-Package: io.openliberty.microprofile.faulttolerance.telemetry.metrics.integration.resources
+
+-buildpath: \
+        com.ibm.ws.logging;version=latest, \
+        com.ibm.ws.logging.core;version=latest, \
+        com.ibm.ws.kernel.service;version=latest,\
+        org.eclipse.osgi;version=latest, \
+        com.ibm.websphere.org.osgi.core;version=latest, \
+        com.ibm.websphere.org.osgi.service.component;version=latest, \
+        com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+        com.ibm.ws.microprofile.faulttolerance;version=latest, \
+        com.ibm.ws.microprofile.faulttolerance.spi;version=latest, \
+        io.openliberty.org.eclipse.microprofile.config.3.1;version=latest,\
+        com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+        io.opentelemetry:opentelemetry-api;version='${openTelemetryVersion}';strategy=exact, \
+        io.openliberty.microprofile.telemetry.internal.common;version=latest
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
+	org.hamcrest:hamcrest-all;version=1.3
+

@@ -57,7 +57,7 @@ public class SessionAffinityManagerImpl extends SessionAffinityManager {
         }        
         
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
-            LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodClassName, "Clone ID of this server=" + _cloneID);        
+            LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, " constructor ", "Clone ID of this server=" + _cloneID);        
         }
     }
 
@@ -350,14 +350,31 @@ public class SessionAffinityManagerImpl extends SessionAffinityManager {
         return name;
     }    
     
-    public void setCookie(ServletRequest request, ServletResponse response,
-                          SessionAffinityContext affinityContext, Object session) {
+    public void setCookie(ServletRequest request, ServletResponse response, SessionAffinityContext affinityContext, Object session) { 
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+            LoggingUtil.SESSION_LOGGER_CORE.entering(methodClassName, methodNames[SET_COOKIE]);
+        }
+
+        Cookie cookie = cookieGenerator(request, response, affinityContext, session);
+
+        if (cookie != null)
+            ((IExtendedResponse) response).addSessionCookie(cookie);
+
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+            LoggingUtil.SESSION_LOGGER_CORE.exiting(methodClassName, methodNames[SET_COOKIE]);
+        }
+    }
+    
+    /*
+     * Refactor out the cookie generation to reuse it in both Servlet 6.0 and previous versions
+     */
+    protected Cookie cookieGenerator(ServletRequest request, ServletResponse response, SessionAffinityContext affinityContext, Object session) {
 
         //create local variable - JIT performance improvement
         final boolean isTraceOn = com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
-            LoggingUtil.SESSION_LOGGER_CORE.entering(methodClassName, methodNames[SET_COOKIE]);
+            LoggingUtil.SESSION_LOGGER_CORE.entering(methodClassName, "cookieGenerator");
         }
 
         // check if server will allow setting of cookies ... if not this function returns
@@ -365,7 +382,7 @@ public class SessionAffinityManagerImpl extends SessionAffinityManager {
             if (isTraceOn && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
                 LoggingUtil.SESSION_LOGGER_CORE.exiting(methodClassName, methodNames[SET_COOKIE], "Cookies not enabled.");
             }
-            return;
+            return null;
         }
 
         int sessionVersion = affinityContext.getResponseSessionVersion();
@@ -436,7 +453,7 @@ public class SessionAffinityManagerImpl extends SessionAffinityManager {
                     cookie.setSecure(_smc.getSessionCookieSecure());
                 
                 cookie.setHttpOnly(_smc.getSessionCookieHttpOnly());
-
+  
                 if (isTraceOn && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
                     logStringBuffer.append("Setting cookie: ").append(whichCookie)
                                     .append(";Path: ").append(_smc.getSessionCookiePath())
@@ -536,7 +553,11 @@ public class SessionAffinityManagerImpl extends SessionAffinityManager {
 
                     }
 
-                    ((IExtendedResponse) response).addSessionCookie(cookie);
+                    if (isTraceOn && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+                        LoggingUtil.SESSION_LOGGER_CORE.exiting(methodClassName, "cookieGenerator , return [" + cookie + "]");
+                    }
+
+                    return cookie;
                 } else {
                     if (isTraceOn && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
                         LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[SET_COOKIE],
@@ -545,9 +566,12 @@ public class SessionAffinityManagerImpl extends SessionAffinityManager {
                 }
             }
         }
+        
         if (isTraceOn && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
-            LoggingUtil.SESSION_LOGGER_CORE.exiting(methodClassName, methodNames[SET_COOKIE]);
+            LoggingUtil.SESSION_LOGGER_CORE.exiting(methodClassName, "cookieGenerator");
         }
+
+        return null;
     }
 
     public void setSIPCookie(ServletRequest request, ServletResponse response, String sipCookieString) {

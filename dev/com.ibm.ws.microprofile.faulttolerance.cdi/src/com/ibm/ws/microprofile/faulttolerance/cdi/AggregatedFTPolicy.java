@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,6 +13,8 @@
 package com.ibm.ws.microprofile.faulttolerance.cdi;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.enterprise.inject.Instance;
 
@@ -23,6 +25,8 @@ import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
 import com.ibm.ws.microprofile.faulttolerance.spi.ExecutorBuilder;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceProvider;
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorderProvider;
 import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorderProvider.AsyncType;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
@@ -177,13 +181,24 @@ public class AggregatedFTPolicy {
             builder.setBulkheadPolicy(bulkheadPolicy);
         }
 
-        builder.setMetricRecorder(FaultToleranceCDIComponent.getMetricProvider().getMetricRecorder(method,
-                                                                                                   retryPolicy,
-                                                                                                   circuitBreakerPolicy,
-                                                                                                   timeoutPolicy,
-                                                                                                   bulkheadPolicy,
-                                                                                                   fallbackPolicy,
-                                                                                                   isAsynchronous() ? AsyncType.ASYNC : AsyncType.SYNC));
+        List<MetricRecorderProvider> providers = FaultToleranceCDIComponent.getMetricProviders();
+        List<MetricRecorder> metricRecorders = new ArrayList<MetricRecorder>();
+
+        providers.forEach(provider -> metricRecorders.add(provider.getMetricRecorder(method,
+                                                                                     retryPolicy,
+                                                                                     circuitBreakerPolicy,
+                                                                                     timeoutPolicy,
+                                                                                     bulkheadPolicy,
+                                                                                     fallbackPolicy,
+                                                                                     isAsynchronous() ? AsyncType.ASYNC : AsyncType.SYNC)));
+
+        if (metricRecorders.size() == 1) {
+            builder.setMetricRecorder(metricRecorders.get(0));
+        } else if (metricRecorders.size() > 1) {
+            CombinedMetricRecorderProxy cmrp = new CombinedMetricRecorderProxy(metricRecorders);
+            builder.setMetricRecorder(cmrp);
+        }
+        //If size is zero don't set anything, the builder will default to a dummy recorder.
 
         return builder;
     }

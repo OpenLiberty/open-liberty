@@ -224,7 +224,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
      */
     @Trivial
     private void appendSort(StringBuilder q, String o_, Sort<?> sort, boolean sameDirection) {
-
         q.append(sort.ignoreCase() ? "LOWER(" : "").append(o_).append(sort.property());
 
         if (sort.ignoreCase())
@@ -237,6 +236,22 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (sort.isAscending())
                 q.append(" DESC");
         }
+    }
+
+    /**
+     * Validates that ignoreCase is only true if the type of the property being sort on is a String.
+     *
+     * @param sort      the Jakarta Data Sort object being evaluated
+     * @param queryInfo the query info to determine the type of the property being sorted
+     */
+    @Trivial
+    private void validateSort(Sort<?> sort, QueryInfo queryInfo) {
+        Class<?> propertyClass = queryInfo.entityInfo.attributeTypes.get(sort.property());
+
+        if (sort.ignoreCase() == true && !propertyClass.equals(String.class))
+            throw new UnsupportedOperationException("The ignoreCase parameter in a Sort can only be true if the Entity" +
+                                                    " property being sorted is of type String. The property [" + sort.property() +
+                                                    "] is of type [" + propertyClass + "]"); //TODO NLS
     }
 
     /**
@@ -1411,6 +1426,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         boolean first = true;
         for (Sort<?> sort : queryInfo.sorts) {
+            validateSort(sort, queryInfo);
             fwd.append(first ? " ORDER BY " : ", ");
             appendSort(fwd, queryInfo.entityVar_, sort, true);
 
@@ -2135,6 +2151,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             StringBuilder q = new StringBuilder(queryInfo.jpql);
                             StringBuilder order = null; // ORDER BY clause based on Sorts
                             for (Sort<?> sort : sortList) {
+                                validateSort(sort, queryInfo);
                                 order = order == null ? new StringBuilder(100).append(" ORDER BY ") : order.append(", ");
                                 appendSort(order, queryInfo.entityVar_, sort, forward);
                             }
@@ -2748,6 +2765,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 if (entityInfo.versionAttributeName == null)
                     throw new OptimisticLockingFailureException("Entity was not found."); // TODO NLS
                 else
+                    //TODO if the version is 0, let the user know the object returned from the insert/save operation must be used, not the original object
                     throw new OptimisticLockingFailureException("Version " + version + " of the entity was not found."); // TODO NLS
             }
         } else if (numDeleted > 1) {

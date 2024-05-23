@@ -21,7 +21,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
@@ -46,8 +45,6 @@ import test.jakarta.data.web.DataTestServlet;
 @MinimumJavaLevel(javaLevel = 17)
 @CheckpointTest
 public class DataTestCheckpoint extends FATServletClient {
-    private static String jdbcJarName;
-
     @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
@@ -60,7 +57,9 @@ public class DataTestCheckpoint extends FATServletClient {
     public static void setUp() throws Exception {
         // Get driver type
         DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
-        jdbcJarName = type.getDriverName();
+        server.addEnvVar("DB_DRIVER", type.getDriverName());
+        server.addEnvVar("DB_USER", testContainer.getUsername());
+        server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
 
         // Set up server DataSource properties
         DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
@@ -85,37 +84,5 @@ public class DataTestCheckpoint extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
-    }
-
-    /**
-     * This test has conditional logic based on the JDBC driver/database.
-     */
-    @Test
-    public void testFindAndDelete() throws Exception {
-        runTest(server, "DataTestApp", "testFindAndDelete&jdbcJarName=" + jdbcJarName);
-    }
-
-    /**
-     * This test has conditional logic based on the JDBC driver/database.
-     */
-    @Test
-    public void testFindAndDeleteMultipleAnnotated() throws Exception {
-        runTest(server, "DataTestApp", "testFindAndDeleteMultipleAnnotated&jdbcJarName=" + jdbcJarName);
-    }
-
-    /**
-     * This test has conditional logic based on the JDBC driver/database.
-     */
-    @Test
-    public void testFindAndDeleteReturnsIds() throws Exception {
-        runTest(server, "DataTestApp", "testFindAndDeleteReturnsIds&jdbcJarName=" + jdbcJarName);
-    }
-
-    /**
-     * This test has conditional logic based on the JDBC driver/database.
-     */
-    @Test
-    public void testFindAndDeleteReturnsObjects() throws Exception {
-        runTest(server, "DataTestApp", "testFindAndDeleteReturnsObjects&jdbcJarName=" + jdbcJarName);
     }
 }

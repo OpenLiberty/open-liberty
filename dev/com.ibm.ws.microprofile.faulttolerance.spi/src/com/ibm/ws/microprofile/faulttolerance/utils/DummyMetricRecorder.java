@@ -94,6 +94,18 @@ public final class DummyMetricRecorder implements MetricRecorder {
     /** {@inheritDoc} */
     @Override
     public void reportCircuitClosed() {}
+    
+    /** {@inheritDoc} */
+    @Override
+    public void reportCircuitOpen(long now) {}
+
+    /** {@inheritDoc} */
+    @Override
+    public void reportCircuitHalfOpen(long now) {}
+
+    /** {@inheritDoc} */
+    @Override
+    public void reportCircuitClosed(long now) {}
 
     /** {@inheritDoc} */
     @Override

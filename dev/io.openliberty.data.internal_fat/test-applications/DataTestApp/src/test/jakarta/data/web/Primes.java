@@ -286,7 +286,10 @@ public interface Primes {
 
     @OrderBy(value = "even", descending = true)
     @OrderBy(value = "name", descending = false)
-    @Query(" WHERE( numberId<=:max AND UPPER(romanNumeral) NOT LIKE '%VII' AND (numberId-(numberId/10)* 10)<>3 AND\tnumberId\t>= :min)")
+    // Query used to contain (numberId-(numberId/10)* 10)<>3
+    // Long values in oracle are stored as a NUMBER which includes a
+    // floating point, therefore integer based arithmetic is not supported.
+    @Query(" WHERE( numberId<=:max AND UPPER(romanNumeral) NOT LIKE '%VII' AND MOD(numberId,10)<>3 AND\tnumberId\t>= :min)")
     CursoredPage<Prime> withinButNotEndingIn7or3(@Param("min") long minimum,
                                                  @Param("max") long maximum,
                                                  PageRequest pageRequest);

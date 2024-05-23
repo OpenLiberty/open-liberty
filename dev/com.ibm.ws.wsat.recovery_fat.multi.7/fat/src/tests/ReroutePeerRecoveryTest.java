@@ -37,7 +37,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
-@AllowedFFDC(value = { "com.ibm.tx.jta.ut.util.AlreadyDumpedException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException", "java.io.EOFException", "java.io.FileNotFoundException", "java.net.SocketException" })
+@AllowedFFDC(value = { "javax.xml.stream.XMLStreamException", "com.ibm.tx.jta.ut.util.AlreadyDumpedException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException", "java.io.EOFException", "java.io.FileNotFoundException", "java.net.SocketException" })
 @RunWith(FATRunner.class)
 public class ReroutePeerRecoveryTest extends MultiRecoveryTest {
 

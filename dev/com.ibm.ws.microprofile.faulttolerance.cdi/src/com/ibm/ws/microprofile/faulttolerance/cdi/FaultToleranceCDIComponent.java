@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,12 +15,17 @@ package com.ibm.ws.microprofile.faulttolerance.cdi;
 import static java.util.Collections.unmodifiableList;
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 import static org.osgi.service.component.annotations.ReferenceCardinality.MANDATORY;
+import static org.osgi.service.component.annotations.ReferenceCardinality.MULTIPLE;
 import static org.osgi.service.component.annotations.ReferencePolicy.DYNAMIC;
 import static org.osgi.service.component.annotations.ReferencePolicyOption.GREEDY;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import com.ibm.ws.microprofile.faulttolerance.spi.FTAnnotationInspector;
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorderProvider;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -28,16 +33,13 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 
-import com.ibm.ws.microprofile.faulttolerance.spi.FTAnnotationInspector;
-import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorderProvider;
-
 /**
  * This component provides access to various services through a static methods
  */
 @Component(configurationPolicy = IGNORE, immediate = true)
 public class FaultToleranceCDIComponent {
 
-    private static MetricRecorderProvider metricProvider = null;
+    private static List<MetricRecorderProvider> metricProviders = new CopyOnWriteArrayList<MetricRecorderProvider>();
 
     private static FTEnablementConfig enablementConfig = null;
 
@@ -63,26 +65,23 @@ public class FaultToleranceCDIComponent {
     }
 
     /**
-     * Get the current metric provider
+     * Get the current metric providers
      * <p>
      * The provider may change if features are updated
+     *
+     * @return an unmodifiable list of metric providers.
      */
-    public static MetricRecorderProvider getMetricProvider() {
-        return metricProvider;
+    public static List<MetricRecorderProvider> getMetricProviders() {
+        return Collections.unmodifiableList(metricProviders);
     }
 
-    // Require a provider, update dynamically if a new one becomes available
-    @Reference(policy = DYNAMIC, policyOption = GREEDY, cardinality = MANDATORY)
+    @Reference(policy = DYNAMIC, policyOption = GREEDY, cardinality = MULTIPLE)
     protected void setProvider(MetricRecorderProvider provider) {
-        metricProvider = provider;
+        metricProviders.add(provider);
     }
 
     protected void unsetProvider(MetricRecorderProvider provider) {
-        // Unless we're shutting down, we expect this to be called just *after* setProvider has been called with the new provider
-        // so don't unset the field unconditionally.
-        if (metricProvider == provider) {
-            metricProvider = null;
-        }
+        metricProviders.remove(provider);
     }
 
     /**

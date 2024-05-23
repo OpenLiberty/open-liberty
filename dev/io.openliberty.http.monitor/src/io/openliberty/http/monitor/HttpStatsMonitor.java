@@ -21,7 +21,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
-import com.ibm.ws.webcontainer.servlet.ServletWrapper;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.pmi.factory.StatisticActions;
 
@@ -30,12 +29,7 @@ import io.openliberty.http.monitor.metrics.RestMetricManager;
 import com.ibm.wsspi.http.HttpRequest;
 
 import java.time.Duration;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
-import jakarta.servlet.GenericServlet;
 
 /**
  *
@@ -47,8 +41,6 @@ public class HttpStatsMonitor extends StatisticActions {
 
 	private static final ThreadLocal<HttpStatAttributes> tl_httpStats = new ThreadLocal<HttpStatAttributes>();
 	private static final ThreadLocal<Long> tl_startNanos = new ThreadLocal<Long>();
-	
-	private static final ConcurrentHashMap<String,Set<String>> appNameToStat = new ConcurrentHashMap<String,Set<String>>();
 	
 	private static HttpStatsMonitor instance;
 
@@ -102,7 +94,7 @@ public class HttpStatsMonitor extends StatisticActions {
 			return;
 		}
 
-		updateHttpStatDuration(retrievedHttpStatAttr, Duration.ofNanos(elapsedNanos), null);
+		updateHttpStatDuration(retrievedHttpStatAttr, Duration.ofNanos(elapsedNanos));
 
 	}
 	
@@ -190,13 +182,8 @@ public class HttpStatsMonitor extends StatisticActions {
 		}
 	}
 
-    /**
-     * 
-     * @param httpStatAttributes
-     * @param duration
-     * @param appName Can be null (would mean its from these probes -- ergo server, don't have to worry about unloading)
-     */
-	public void updateHttpStatDuration(HttpStatAttributes httpStatAttributes, Duration duration, String appName) {
+
+	public void updateHttpStatDuration(HttpStatAttributes httpStatAttributes, Duration duration) {
 
 		/*
 		 * First validate that we got all properties.
@@ -215,7 +202,7 @@ public class HttpStatsMonitor extends StatisticActions {
 
 		HttpStats hms = HttpConnByRoute.get(key);
 		if (hms == null) {
-			hms = initializeHttpStat(key, httpStatAttributes, appName);
+			hms = initializeHttpStat(key, httpStatAttributes);
 		}
 
 		//Monitor bundle when updating statistics will do synchronization
@@ -232,7 +219,7 @@ public class HttpStatsMonitor extends StatisticActions {
 		}
 	}
 
-	private synchronized HttpStats initializeHttpStat(String key, HttpStatAttributes statAttri, String appName) {
+	private synchronized HttpStats initializeHttpStat(String key, HttpStatAttributes statAttri) {
 		/*
 		 * Check again it was added, thread that was blocking may have been adding it
 		 */
@@ -242,37 +229,8 @@ public class HttpStatsMonitor extends StatisticActions {
 
 		HttpStats httpMetricStats = new HttpStats(statAttri);
 		HttpConnByRoute.put(key, httpMetricStats);
-		
-		/*
-		 * null means from server.
-		 * Specifically splash page.
-		 * 
-		 * Add to appName -> stat cache
-		 */
-		if (appName != null) {
-			appNameToStat.compute(appName, (appNameKey, currValSet) -> {
-				if (currValSet == null) {
-					HashSet<String> hs = new HashSet<String>();
-					hs.add(key);
-					return hs;
-				} else {
-					currValSet.add(key);
-					return currValSet;
-				}
-			});
-		}
-		
 		return httpMetricStats;
 	}
-	
-	
-	public void removeStat(String appName) {
-		Set<String> retSet = appNameToStat.get(appName);
-		if (retSet != null) {
-			retSet.stream().forEach( statName -> HttpConnByRoute.remove(statName));
-		}
-	}
-	
 
 	/**
 	 * Resolve the object name (specifically the name property)
@@ -303,21 +261,12 @@ public class HttpStatsMonitor extends StatisticActions {
 			sb.append(";httpRoute:" + route.replace("*", "\\*"));
 		});
 
-		errorType.ifPresent(route -> {
+		httpRoute.ifPresent(route -> {
 			sb.append(";errorType:" + errorType);
 		});
 
 		sb.append("\""); // ending quote
 		return sb.toString();
 	}
-	
-    @ProbeAtEntry
-    @ProbeSite(clazz = "com.ibm.ws.webcontainer.servlet.ServletWrapper", method = "destroy")
-    public void atServletDestroy(@This GenericServlet s) {
-    	
-        String appName = (String) s.getServletContext().getAttribute("com.ibm.websphere.servlet.enterprise.application.name");
-        removeStat(appName);
-    	
-    }
 
 }

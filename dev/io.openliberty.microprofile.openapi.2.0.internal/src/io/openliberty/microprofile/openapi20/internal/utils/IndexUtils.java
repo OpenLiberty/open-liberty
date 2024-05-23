@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.util.Set;
 
 import org.jboss.jandex.DotName;
+import org.jboss.jandex.Index;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.Indexer;
 
@@ -42,8 +43,8 @@ public class IndexUtils {
     private static final TraceComponent tc = Tr.register(IndexUtils.class);
 
     /**
-     * The getIndexView method generates an org.jboss.jandex.IndexView that contains all of the classes that need to be
-     * scanned for OpenAPI/JAX-RS annotations. This IndexView is passes to the SmallRye OpenAPI implementation which
+     * The getIndexView method generates an org.jboss.jandex.Index that contains all of the classes that need to be
+     * scanned for OpenAPI/JAX-RS annotations. This Index is passed to the SmallRye OpenAPI implementation which
      * performs the scanning.
      *
      * @param webModuleInfo
@@ -52,10 +53,10 @@ public class IndexUtils {
      *     The module classes container info for the web module
      * @param config
      *     The configuration that may specify which classes/packages/JARs to include/exclude.
-     * @return IndexView
-     * The org.jboss.jandex.IndexView instance.
+     * @return Index
+     * The org.jboss.jandex.Index instance.
      */
-    public static IndexView getIndexView(WebModuleInfo webModuleInfo, ModuleClassesContainerInfo moduleClassesContainerInfo, OpenApiConfig config) {
+    public static Index getIndex(WebModuleInfo webModuleInfo, ModuleClassesContainerInfo moduleClassesContainerInfo, OpenApiConfig config) {
 
         long startTime = System.currentTimeMillis();
 
@@ -73,14 +74,14 @@ public class IndexUtils {
         }
 
         // Complete the index
-        IndexView view = indexer.complete();
+        Index index = indexer.complete();
         long endTime = System.currentTimeMillis();
         if (LoggingUtils.isEventEnabled(tc)) {
-            Tr.event(tc, "Index size: " + view.getKnownClasses().size());
+            Tr.event(tc, "Index size: " + index.getKnownClasses().size());
             Tr.event(tc, "Indexing elapsed time: " + (endTime - startTime));
         }
 
-        return view;
+        return index;
     }
 
     private static void indexContainer(Container container, String packageName, Indexer indexer, FilteredIndexView filter) {

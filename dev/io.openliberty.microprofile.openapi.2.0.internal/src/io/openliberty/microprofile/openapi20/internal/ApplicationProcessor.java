@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import java.util.List;
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.OASFilter;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.jboss.jandex.Index;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.component.annotations.Component;
@@ -218,11 +219,14 @@ public class ApplicationProcessor {
             if (LoggingUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Retrieved configuration values : " + configProcessor);
             }
-            CacheEntry newCacheEntry = null;
             OpenApiConfig config = configProcessor.getOpenAPIConfig();
             String modulePathString = appContainer.getPhysicalPath();
             Path modulePath = modulePathString == null ? null : Paths.get(modulePathString);
             Path cacheDir = getCacheDir();
+            // Cache entry that we're building to store later. Null if we can't cache the result.
+            CacheEntry newCacheEntry = null;
+            // Cache entry we loaded from disk. Null if we can't cache the result or there's no usable cached data.
+            CacheEntry loadedCacheEntry = null;
 
             if (modulePath != null && isWar(modulePath) && cacheDir != null) {
                 // The web module is a single file. We should use the cache if possible.
@@ -230,8 +234,8 @@ public class ApplicationProcessor {
                 newCacheEntry.setConfig(config);
                 newCacheEntry.addDependentFile(modulePath);
 
-                CacheEntry loadedCacheEntry = CacheEntry.read(moduleInfo.getApplicationInfo().getDeploymentName(), cacheDir);
-                if (loadedCacheEntry != null && loadedCacheEntry.isUpToDateWith(newCacheEntry)) {
+                loadedCacheEntry = CacheEntry.read(moduleInfo.getApplicationInfo().getDeploymentName(), cacheDir, configSerializer);
+                if (loadedCacheEntry != null && loadedCacheEntry.modelUpToDate(newCacheEntry)) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Using OpenAPI model loaded from cache");
                     }
@@ -241,12 +245,28 @@ public class ApplicationProcessor {
             }
 
             if (openAPIModel == null) {
+                Index index = null;
+                if (!config.scanDisable()) {
+                    if (loadedCacheEntry != null && loadedCacheEntry.indexUpToDate(newCacheEntry)) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "Using Jandex index from cache");
+                        }
+                        index = loadedCacheEntry.getIndex();
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "Building Jandex index");
+                        }
+                        index = IndexUtils.getIndex(moduleInfo, moduleClassesContainerInfo, config);
+                    }
+                }
+
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Generating OpenAPI model");
                 }
 
-                openAPIModel = generateModel(config, appContainer, moduleInfo, moduleClassesContainerInfo, appClassloader);
+                openAPIModel = generateModel(config, appContainer, appClassloader, index);
                 if (openAPIModel != null && newCacheEntry != null) {
+                    newCacheEntry.setIndex(index);
                     newCacheEntry.setModel(openAPIModel);
                     newCacheEntry.write();
                 }
@@ -298,8 +318,7 @@ public class ApplicationProcessor {
         return openAPIProvider;
     }
 
-    private OpenAPI generateModel(OpenApiConfig config, Container appContainer, WebModuleInfo moduleInfo, ModuleClassesContainerInfo moduleClassesContainerInfo,
-                                  ClassLoader appClassloader) {
+    private OpenAPI generateModel(OpenApiConfig config, Container appContainer, ClassLoader appClassloader, Index index) {
         OpenAPI openAPIModel;
 
         ClassLoader tccl = classLoadingService.createThreadContextClassLoader(appClassloader);
@@ -318,9 +337,8 @@ public class ApplicationProcessor {
             }
 
             // Step 3: Scan OpenAPI and JAX-RS annotations and add to model
-            if (!config.scanDisable()) {
-                openAPIModel = MergeUtil.merge(openAPIModel,
-                                               OpenApiProcessor.modelFromAnnotations(config, IndexUtils.getIndexView(moduleInfo, moduleClassesContainerInfo, config)));
+            if (index != null) {
+                openAPIModel = MergeUtil.merge(openAPIModel, OpenApiProcessor.modelFromAnnotations(config, index));
             }
 
             // Step 4: Apply any filters configured in the application to the model
