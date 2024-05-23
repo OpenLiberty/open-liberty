@@ -9,8 +9,11 @@
  *******************************************************************************/
 package io.openliberty.http.monitor;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.Duration;
+
+import jakarta.servlet.UnavailableException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -44,6 +47,7 @@ public class ServletFilter implements Filter {
 		String appName = servletRequest.getServletContext().getAttribute("com.ibm.websphere.servlet.enterprise.application.name").toString();
 
 		Exception servletException = null;
+		Exception exception = null;
 		
 		String httpRoute;
 		String contextPath = servletRequest.getServletContext().getContextPath();
@@ -55,6 +59,9 @@ public class ServletFilter implements Filter {
 		} catch (ServletException se) {
 			servletException = se;
 			throw se;
+		} catch (Exception e) {
+			exception = e;
+			throw e;
 		} finally {
 			long elapsednanos = System.nanoTime()-nanosStart;
 			
@@ -82,6 +89,8 @@ public class ServletFilter implements Filter {
 					httpStatsAttributesHolder.setResponseStatus(500);
 				}
 				
+			} else if (exception != null) {
+				httpStatsAttributesHolder.setResponseStatus(resolveStatusForException(exception));
 			} else {
 				resolveResponseAttributes(servletResponse, httpStatsAttributesHolder);
 			}
@@ -307,7 +316,50 @@ public class ServletFilter implements Filter {
 		httpStat.setNetworkProtocolName(networkProtocolName);
 		httpStat.setNetworkProtocolVersion(networkVersion);
 	}
-
 	
+	/*
+	 * 
+	 * 
+	 */
+	
+	/**
+	 * Taken from WebApprrorReport.constructErrorReport()
+	 * Trimmed to remove unecessary servlet 30 if statement.
+	 * 
+	 * @param th
+	 * @return
+	 */
+	private int resolveStatusForException(Throwable th) {
+        Throwable rootCause = th;
+        while (rootCause.getCause() != null) {
+            rootCause = rootCause.getCause();
+        }
+        
+        int status;
+        
+        if (rootCause instanceof FileNotFoundException) {
+        	status = HttpServletResponse.SC_NOT_FOUND;
+        }
+        else if (rootCause instanceof UnavailableException) {
+            UnavailableException ue = (UnavailableException) rootCause;
+            if (ue.isPermanent()) {
+            	status = HttpServletResponse.SC_NOT_FOUND;
+            } else {
+            	status = HttpServletResponse.SC_SERVICE_UNAVAILABLE;
+            }
+        }
+        else if (rootCause instanceof IOException
+                        && th.getMessage() != null
+                        && th.getMessage().contains("CWWWC0005I")) {     //Servlet 6.0 added
+        	status = HttpServletResponse.SC_BAD_REQUEST;
+        }
+        else {
+        	status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+        }
+        
+        return status;
+
+
+	}
 
 }
