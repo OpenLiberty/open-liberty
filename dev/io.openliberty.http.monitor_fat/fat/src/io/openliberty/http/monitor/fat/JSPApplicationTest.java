@@ -77,6 +77,22 @@ public class JSPApplicationTest extends BaseTestClass {
         assertTrue(server.isStarted());
 
         String route = CONTEXT_ROOT + "/unconfigured.jsp";
+        String expectedRoute = CONTEXT_ROOT + "/\\*.jsp";
+        String requestMethod = HttpMethod.GET;
+        String responseStatus = "200";
+
+        String res = requestHttpServlet(route, server, requestMethod);
+
+        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+
+    }
+
+    @Test
+    public void jsp_configredWebXmlJSP() throws Exception {
+
+        assertTrue(server.isStarted());
+
+        String route = CONTEXT_ROOT + "/configured";
         String requestMethod = HttpMethod.GET;
         String responseStatus = "200";
 
@@ -85,35 +101,32 @@ public class JSPApplicationTest extends BaseTestClass {
         assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), route, responseStatus, requestMethod));
 
     }
-//
-//    @Test
-//    public void jsp_configredWebXmlJSP() throws Exception {
-//
-//        assertTrue(server.isStarted());
-//
-//        String route = CONTEXT_ROOT + "/configured";
-//        String requestMethod = HttpMethod.GET;
-//        String responseStatus = "200";
-//
-//        String res = requestHttpServlet(route, server, requestMethod);
-//
-//        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), route, responseStatus, requestMethod));
-//
-//    }
 
+    //First hit of HTML does not go through servlets....
 //    @Test
-//    public void jsp_webXMLconfiguredJSP() throws Exception {
+//    public void jsp_defaultHTML() throws Exception {
 //
 //        assertTrue(server.isStarted());
 //
-//        String route = SIMPLE_RESOURCE_URL + "/pathGet";
+//        String route = CONTEXT_ROOT;
+//        String expectedRoute = CONTEXT_ROOT + "/\\*";
 //        String requestMethod = HttpMethod.GET;
-//        String responseStatus = "200";
+//        String responseStatus = "304";
 //
 //        String res = requestHttpServlet(route, server, requestMethod);
 //
-//        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), route, responseStatus, requestMethod));
+//        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
 //
-//    }
+//        //Request an explicity HTML page, will also return 304, we'll now check count
+//
+//        route = CONTEXT_ROOT + "/Testhtml.html";
+//        expectedRoute = CONTEXT_ROOT + "/\\*";
+//        requestMethod = HttpMethod.GET;
+//        responseStatus = "304";
+//
+//        res = requestHttpServlet(route, server, requestMethod);
+//
+//        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod, "2.0", null));
+    }
 
 }
