@@ -27,4 +27,3 @@ Subsystem-Name: Admin REST Connector 2.0
 kind=ga
 edition=core
 WLP-InstantOn-Enabled: true
-WLP-Platform: jakartaee-9.1
