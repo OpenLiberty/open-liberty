@@ -54,8 +54,7 @@ public class DataStandaloneTckLauncher {
         additionalProps.put("jimage.dir", "/jimage/output/");
         additionalProps.put("jakarta.profile", "none");
 
-        //FIXME Always skip signature tests since our implementation has experimental API
-        additionalProps.put("included.groups", "standalone & nosql & !signature");
+        additionalProps.put("included.groups", "standalone & nosql");
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");

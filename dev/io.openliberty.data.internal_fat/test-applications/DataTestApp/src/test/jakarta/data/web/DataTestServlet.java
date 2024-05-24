@@ -583,7 +583,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Delete multiple entries and use a default method to atomically remove and return a removed entity.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testDefaultRepositoryMethod() {
         products.clear();
@@ -1237,7 +1237,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Find-and-delete repository operations that return one or more IDs, corresponding to removed entities.
      */
-    @SkipIfSysProp(DB_Oracle) // FIXME SELECT FOR UPDATE returns incorrect results. packages.deleteFirst < returns no results
+    @SkipIfSysProp(DB_Oracle) //TODO Eclipse link SQL Generation bug on Oracle: https://github.com/OpenLiberty/open-liberty/issues/28545
     @Test
     public void testFindAndDeleteReturnsIds() throws Exception {
         String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
@@ -1314,8 +1314,8 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     @SkipIfSysProp({
-                     DB_DB2, //Failing on Db2 due to eclipselink issue.  OL Issue #28289
-                     DB_Oracle //FIXME SELECT FOR UPDATE returns incorrect results.  packages.destroy returns 70007
+                     DB_DB2, //TODO Failing on Db2 due to eclipselink issue.  OL Issue #28289
+                     DB_Oracle //TODO Eclipse link SQL Generation bug on Oracle: https://github.com/OpenLiberty/open-liberty/issues/28545
     })
     public void testFindAndDeleteReturnsObjects() {
         String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
@@ -1373,7 +1373,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Search for missing item. Insert it. Search again.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testFindCreateFind() {
         UUID id = UUID.nameUUIDFromBytes("OL306-233F".getBytes());
@@ -1431,7 +1431,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use the % and _ characters, which are wildcards in JPQL, within query parameters.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testFindLike() throws Exception {
         // Remove data from previous tests:
@@ -1597,7 +1597,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Repository methods where the FROM clause identifies the entity.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testFromClauseIdentifiesEntity() {
         products.clear();
@@ -3036,7 +3036,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use a repository where methods are for different entities.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testMultipleEntitiesInARepository() {
         // Remove any pre-existing data that could interfere with the test:
@@ -4955,7 +4955,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Update multiple entries.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testUpdateMultiple() {
         products.clear();
@@ -5080,7 +5080,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use update methods with a versioned entity parameter to make updates.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testUpdateWithVersionedEntityParameter() {
         Product prod1 = new Product();
@@ -5133,7 +5133,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use JPQL query to update based on version.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testVersionedUpdateViaQuery() {
         Product prod1 = new Product();
@@ -5171,7 +5171,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use repository save method to update based on version.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testVersionedUpdateViaRepository() {
         Product prod1 = new Product();
