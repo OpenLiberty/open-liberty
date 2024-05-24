@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,6 +30,11 @@ class TestServiceReference implements ServiceReference<String> {
 
     TestServiceReference(String name) {
         this.name = name;
+    }
+
+    TestServiceReference(String name, Integer ranking) {
+        this.name = name;
+        this.ranking = ranking;
     }
 
     @Override
@@ -85,8 +90,23 @@ class TestServiceReference implements ServiceReference<String> {
     /** {@inheritDoc} */
     @Override
     public int compareTo(Object reference) {
-        TestServiceReference that = (TestServiceReference) reference;
-        return name.compareTo(that.name);
+        TestServiceReference other = (TestServiceReference) reference;
+        final int thisRanking = !(this.ranking instanceof Integer) ? 0 : ((Integer) this.ranking).intValue();
+        final int otherRanking = !(other.ranking instanceof Integer) ? 0 : ((Integer) other.ranking).intValue();
+        if (thisRanking != otherRanking) {
+            if (thisRanking < otherRanking) {
+                return -1;
+            }
+            return 1;
+        }
+
+        if (this.id == other.id) {
+            return name.compareTo(other.name);
+        }
+        if (this.id < other.id) {
+            return 1;
+        }
+        return -1;
     }
 
     /** {@inheritDoc} */

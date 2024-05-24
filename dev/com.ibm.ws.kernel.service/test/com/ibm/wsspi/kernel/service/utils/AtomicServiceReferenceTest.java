@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
+import test.common.ComponentContextMockery;
 import test.common.SharedOutputManager;
 import test.utils.Utils;
 
@@ -61,12 +62,9 @@ public class AtomicServiceReferenceTest {
 
     Mockery context = new Mockery();
 
-    @SuppressWarnings("unchecked")
-    ServiceReference<String> mockServiceReference = context.mock(ServiceReference.class, "1");
-    @SuppressWarnings("unchecked")
-    ServiceReference<String> mockServiceReference2 = context.mock(ServiceReference.class, "2");
-
     ComponentContext mockComponentContext = context.mock(ComponentContext.class);
+    ServiceReference<String> mockServiceReference1 = ComponentContextMockery.mockService(context, mockComponentContext, "1", null, 1, null);
+    ServiceReference<String> mockServiceReference2 = ComponentContextMockery.mockService(context, mockComponentContext, "2", null, 2, null);
 
     @Test
     public void testAtomicServiceReference() {
@@ -77,8 +75,8 @@ public class AtomicServiceReferenceTest {
             assertNull("A-1 getReference should return null when ref not set: " + test, test.getReference());
             assertNull("A-2 getService should return null when ref not set: " + test, test.getService());
 
-            boolean setResult = test.setReference(mockServiceReference);
-            assertSame("B-1 getReference should return the set reference: " + test, mockServiceReference, test.getReference());
+            boolean setResult = test.setReference(mockServiceReference1);
+            assertSame("B-1 getReference should return the set reference: " + test, mockServiceReference1, test.getReference());
             assertFalse("B-2 setReference is not replacing a previous value: " + test, setResult);
             assertNull("B-3 getService should return null-- context not set: " + test, test.getService());
             setResult = test.setReference(mockServiceReference2);
@@ -113,13 +111,25 @@ public class AtomicServiceReferenceTest {
             assertSame("E-1 getReference should return the set reference: " + test, mockServiceReference2, test.getReference());
             assertSame("E-2 getService should return result of locateService: " + test, service, test.getService());
 
-            test.unsetReference(mockServiceReference2);
+            setResult = test.unsetReference(mockServiceReference1);
+            // should be false because ref2 is higher rank;
+            assertFalse("Should not have replaced.", setResult);
+            setResult = test.unsetReference(mockServiceReference2);
+            assertTrue("Should have replaced.", setResult);
             assertNull("E-3 getReference should return null when ref not set: " + test, test.getReference());
             assertNull("E-4 getService should return null when ref not set: " + test, test.getService());
 
-            test.setReference(mockServiceReference);
+            test.setReference(mockServiceReference1);
             setResult = test.unsetReference(mockServiceReference2);
             assertFalse("Unset did not match with 'current' reference: " + test, setResult);
+            assertTrue("Should have replaced with null", test.unsetReference(mockServiceReference1));
+
+            // order setReference calls should not matter
+            assertFalse("Should replace when when current is null.", test.setReference(mockServiceReference2));
+            assertFalse("Should not replace with lower rank.", test.setReference(mockServiceReference1));
+            assertEquals("Wrong reference.", mockServiceReference2, test.getReference());
+            assertTrue("Should have replaced lower rank.", test.unsetReference(mockServiceReference2));
+            assertEquals("Wrong reference.", mockServiceReference1, test.getReference());
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(m, t);
@@ -132,7 +142,7 @@ public class AtomicServiceReferenceTest {
     @Test(expected = IllegalStateException.class)
     public void getServiceWithExceptionWithNullContext() {
         AtomicServiceReference<String> aRef = new AtomicServiceReference<String>("string");
-        aRef.setReference(mockServiceReference);
+        aRef.setReference(mockServiceReference1);
         aRef.getServiceWithException();
     }
 
@@ -153,12 +163,12 @@ public class AtomicServiceReferenceTest {
     public void getServiceWithExceptionCantFindLocatedService() {
         context.checking(new Expectations() {
             {
-                one(mockComponentContext).locateService("string", mockServiceReference);
+                one(mockComponentContext).locateService("string", mockServiceReference1);
                 will(returnValue(null));
             }
         });
         AtomicServiceReference<String> aRef = new AtomicServiceReference<String>("string");
-        aRef.setReference(mockServiceReference);
+        aRef.setReference(mockServiceReference1);
         aRef.activate(mockComponentContext);
         aRef.getServiceWithException();
     }
@@ -170,12 +180,12 @@ public class AtomicServiceReferenceTest {
     public void getServiceWithExceptionWithValidService() {
         context.checking(new Expectations() {
             {
-                one(mockComponentContext).locateService("string", mockServiceReference);
+                one(mockComponentContext).locateService("string", mockServiceReference1);
             }
         });
 
         AtomicServiceReference<String> aRef = new AtomicServiceReference<String>("string");
-        aRef.setReference(mockServiceReference);
+        aRef.setReference(mockServiceReference1);
         aRef.activate(mockComponentContext);
         assertNotNull(aRef.getServiceWithException());
     }
@@ -187,8 +197,9 @@ public class AtomicServiceReferenceTest {
 
         context.checking(new Expectations() {
             {
-                one(mockComponentContext).locateService("string", mockServiceReference);
+                one(mockComponentContext).locateService("string", mockServiceReference1);
                 will(returnValue(service1));
+
                 one(mockComponentContext).locateService("string", mockServiceReference2);
                 will(returnValue(service2));
             }
@@ -197,12 +208,12 @@ public class AtomicServiceReferenceTest {
         AtomicServiceReference<String> aRef = new AtomicServiceReference<String>("string");
         aRef.activate(mockComponentContext);
 
-        aRef.setReference(mockServiceReference);
+        aRef.setReference(mockServiceReference1);
         assertEquals(service1, aRef.getService());
 
         // Do not replace/remove located object if the same service reference is set
-        // a second time.. 
-        aRef.setReference(mockServiceReference);
+        // a second time..
+        aRef.setReference(mockServiceReference1);
         assertEquals(service1, aRef.getService());
 
         aRef.setReference(mockServiceReference2);
