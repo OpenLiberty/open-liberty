@@ -74,6 +74,8 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     private static final RestMonitorKeyCache monitorKeyCache = new RestMonitorKeyCache();
     private static final String STATS_CONTEXT = "REST_Stats_Context";
 
+    private static final RestRouteCache ROUTE_CACHE = new RestRouteCache();
+
     static {
     	/*
     	 * Eagerly load the inner classes so that they are not loaded while calculating the amount of time a method took.
@@ -189,20 +191,8 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
          * attribute as "RESTFUL.HTTP.ROUTE"
          */
         if (resourceClass != null && resourceMethod != null) {
-            String route;
+            String route = getRoute(reqCtx, resourceClass, resourceMethod);
 
-            String contextRoot = reqCtx.getUriInfo().getBaseUri().getPath();
-            UriBuilder template = UriBuilder.fromPath(contextRoot);
-
-            if (resourceClass.isAnnotationPresent(Path.class)) {
-                template.path(resourceClass);
-            }
-
-            if (resourceMethod.isAnnotationPresent(Path.class)) {
-                template.path(resourceMethod);
-            }
-
-            route = template.toTemplate();
             if (route != null && !route.isEmpty()) {
                 servletRequest.setAttribute(REST_HTTP_ROUTE_ATTR, route);
             }
@@ -301,6 +291,38 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
                 }
             }
         }
+    }
+
+    private static String getRoute(final ContainerRequestContext request, Class<?> resourceClass, Method resourceMethod) {
+
+        String route = ROUTE_CACHE.getRoute(resourceClass, resourceMethod);
+
+        if (route == null) {
+
+            int checkResourceSize = request.getUriInfo().getMatchedResources().size();
+
+            // Check the resource size using getMatchedResource()
+            // A resource size > 1 indicates that there is a subresource
+            // We can't currently compute the route correctly when subresources are used
+            if (checkResourceSize == 1) {
+
+                String contextRoot = request.getUriInfo().getBaseUri().getPath();
+                UriBuilder template = UriBuilder.fromPath(contextRoot);
+
+                if (resourceClass.isAnnotationPresent(Path.class)) {
+                    template.path(resourceClass);
+                }
+
+                if (resourceMethod.isAnnotationPresent(Path.class)) {
+                    template.path(resourceMethod);
+                }
+
+                route = template.toTemplate();
+                ROUTE_CACHE.putRoute(resourceClass, resourceMethod, route);
+            }
+        }
+        return route;
+
     }
     
     private void maybeStartNewMinute(REST_Stats stats) {
