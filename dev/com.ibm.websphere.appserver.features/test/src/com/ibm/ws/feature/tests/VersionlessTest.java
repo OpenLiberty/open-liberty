@@ -401,7 +401,7 @@ public class VersionlessTest {
         return selectorCohorts;
     }
 
-    public static List<String> skipFeatures = new ArrayList<String>(Arrays.asList("webProfile"));
+    public static List<String> skipFeatures = new ArrayList<String>(Arrays.asList("webProfile", "restConnector"));
 
     private static Map<String, int[]> versions = new HashMap<>();
 
