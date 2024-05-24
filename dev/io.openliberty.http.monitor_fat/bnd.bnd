@@ -18,7 +18,8 @@ src: \
 	fat/src,\
 	test-applications/RestApp/src,\
 	test-applications/ServletApp/src,\
-	test-applications/WildCardServletApp/src
+	test-applications/WildCardServletApp/src,\
+	test-applications/jspApp/src
 
 fat.project: true
 

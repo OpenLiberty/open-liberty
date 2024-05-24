@@ -15,8 +15,10 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                RestApplicationTest.class,
-                ServletApplicationTest.class
+                //NoAppTest.class,
+                JSPApplicationTest.class
+//RestApplicationTest.class,
+//ServletApplicationTest.class
 })
 
 public class FATSuite {

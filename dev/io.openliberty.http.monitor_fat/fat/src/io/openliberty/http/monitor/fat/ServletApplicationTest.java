@@ -254,11 +254,46 @@ public class ServletApplicationTest extends BaseTestClass {
 
     @Test
     public void s1_rootWildCard() throws Exception {
+        // path -> <app>/*
 
         assertTrue(server.isStarted());
 
         String route = WILDCARD_APP_CONTEXT_ROOT + "/anythingGoes";
         String expectedRoute = WILDCARD_APP_CONTEXT_ROOT + "/\\*";
+        String requestMethod = HttpMethod.GET;
+        String responseStatus = "200";
+
+        String res = requestHttpServlet(route, server, requestMethod);
+
+        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+
+    }
+
+    @Test
+    public void s1_subWildCardCard() throws Exception {
+        // path -> <app>/sub/*
+
+        assertTrue(server.isStarted());
+
+        String route = WILDCARD_APP_CONTEXT_ROOT + "/sub/aloha";
+        String expectedRoute = WILDCARD_APP_CONTEXT_ROOT + "/sub/\\*";
+        String requestMethod = HttpMethod.GET;
+        String responseStatus = "200";
+
+        String res = requestHttpServlet(route, server, requestMethod);
+
+        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+
+    }
+
+    @Test
+    public void s1_subSubWildCardCard() throws Exception {
+        // path -> <app>/sub/sub/*
+
+        assertTrue(server.isStarted());
+
+        String route = WILDCARD_APP_CONTEXT_ROOT + "/sub/sub/bonjourno";
+        String expectedRoute = WILDCARD_APP_CONTEXT_ROOT + "/sub/sub/\\*";
         String requestMethod = HttpMethod.GET;
         String responseStatus = "200";
 

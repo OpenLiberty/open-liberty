@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="fat/resources"/>
+	<classpathentry kind="src" path="test-applications/JspApp/src"/>
 	<classpathentry kind="src" path="test-applications/WildCardServletApp/src"/>
 	<classpathentry kind="src" path="test-applications/ServletApp/src"/>
 	<classpathentry kind="src" path="test-applications/RestApp/src"/>
