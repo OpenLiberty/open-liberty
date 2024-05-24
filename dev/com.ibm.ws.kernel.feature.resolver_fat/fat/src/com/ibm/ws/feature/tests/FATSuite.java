@@ -18,7 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                //BaselineSingletonUnitTest.class,
+                BaselineSingletonUnitTest.class,
                 //BaselineServletUnitTest.class,
 // MicroProfileCrossPlatformUnitTest.class, // Disabled until the platform API is implemented
 
