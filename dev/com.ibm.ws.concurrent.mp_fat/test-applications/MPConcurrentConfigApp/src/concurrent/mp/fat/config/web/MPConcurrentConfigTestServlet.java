@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -52,6 +52,7 @@ import org.test.context.location.TestContextTypes;
 import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
 
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -396,6 +397,7 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
     /**
      * Security context propagation should include subjects that are created by the application.
      */
+    @MaximumJavaLevel(javaLevel = 22) //Subject.doAs fails in Java 23, Subject.runAs for replacement is only in Java 18+: https://bugs.openjdk.org/browse/JDK-8327134
     @Test
     public void testSecurityContextPropagatesSubjectCreatedByApp() throws Exception {
         Subject subject = new Subject();
