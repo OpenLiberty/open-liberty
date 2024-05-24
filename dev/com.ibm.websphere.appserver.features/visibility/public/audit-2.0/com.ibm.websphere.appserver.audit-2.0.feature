@@ -9,6 +9,6 @@ Subsystem-Name: Audit 2.0
   com.ibm.websphere.appserver.auditCollector-2.0
 -bundles=com.ibm.ws.security.audit.utils, \
   com.ibm.ws.security.audit.file
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-InstantOn-Enabled: true
