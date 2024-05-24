@@ -365,8 +365,7 @@ public class EsaResourceImpl extends RepositoryResourceImpl implements EsaResour
         addVersionDisplayString();
     }
 
-    @Override
-    public Collection<AppliesToFilterInfo> getAppliesToFilterInfo() {
+    protected Collection<AppliesToFilterInfo> getAppliesToFilterInfo() {
         return _asset.getWlpInformation().getAppliesToFilterInfo();
     }
 
