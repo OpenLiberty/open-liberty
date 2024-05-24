@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,8 +19,9 @@ public class AuditMessageConstants {
 	public static final String CWWKS0008I_SECURITY_SERVICE_READY = "CWWKS0008I";
 
 	public static final String AUDIT_FEATURE_PACKAGE = "audit-1.0";
-	public static final String CWWKF0012I_AUDIT_FEATURE_INSTALLED = "CWWKF0012I.*" + AUDIT_FEATURE_PACKAGE;  // wild card search will not work in lite buckets during language tests, see ReadOnlyRegistryAuditTest for alternate usage
-	public static final String CWWKF0013I_AUDIT_FEATURE_REMOVED = "CWWKF0013I.*" + AUDIT_FEATURE_PACKAGE;
+	public static final String AUDIT20_FEATURE_PACKAGE = "audit-2.0";
+	public static final String CWWKF0012I_AUDIT_FEATURE_INSTALLED = "CWWKF0012I.*" + AUDIT_FEATURE_PACKAGE +"|" + AUDIT20_FEATURE_PACKAGE;  // wild card search will not work in lite buckets during language tests, see ReadOnlyRegistryAuditTest for alternate usage
+	public static final String CWWKF0013I_AUDIT_FEATURE_REMOVED = "CWWKF0013I.*" + AUDIT_FEATURE_PACKAGE +"|" + AUDIT20_FEATURE_PACKAGE;
 	
 	public static final String CWWKS5850I_AUDIT_SERVICE_STARTING = "CWWKS5850I";
 	public static final String CWWKS5851I_AUDIT_SERVICE_READY = "CWWKS5851I";

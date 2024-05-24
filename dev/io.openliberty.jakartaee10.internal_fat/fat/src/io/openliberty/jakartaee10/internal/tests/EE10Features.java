@@ -283,6 +283,8 @@ public class EE10Features {
         // remove logAnalysis-1.0.  It depends on hpel being configured
         features.remove("logAnalysis-1.0");
 
+        features.remove("audit-2.0");
+
         // springBoot-3.0, data-1.0 and nosql-1.0 require Java 17 so if we are currently not using Java 17 or later, remove it from the list of features.
         if (JavaInfo.JAVA_VERSION < 17) {
             features.remove("springBoot-3.0");

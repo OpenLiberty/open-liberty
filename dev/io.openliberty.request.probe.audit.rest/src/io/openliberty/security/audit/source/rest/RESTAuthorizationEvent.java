@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.audit.event;
+package io.openliberty.security.audit.source.rest;
 
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -87,7 +85,7 @@ public class RESTAuthorizationEvent extends AuditEvent {
                     set(AuditEvent.TARGET_ROLE_NAMES, rolesList.toString());
             }
             int statusCode = response.getStatus();
-            if (statusCode == HttpServletResponse.SC_OK) {
+            if (statusCode == 200) {
                 setOutcome("success");
                 set(AuditEvent.REASON_CODE, statusCode);
             } else {

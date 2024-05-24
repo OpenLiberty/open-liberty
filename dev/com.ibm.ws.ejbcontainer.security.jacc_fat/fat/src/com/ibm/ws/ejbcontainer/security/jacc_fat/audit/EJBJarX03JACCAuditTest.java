@@ -19,6 +19,10 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import org.junit.ClassRule;
+import componenttest.rules.repeater.RepeatTests;
+import componenttest.rules.repeater.FeatureReplacementAction;
+
 import com.ibm.websphere.security.audit.AuditConstants;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.websphere.simplicity.log.Log;
@@ -47,6 +51,13 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class EJBJarX03JACCAuditTest extends EJBAnnTestBase {
+
+    /**
+     * Need the first repeat to make sure that audit-2.0 from a previous repeat gets put back to audit-1.0
+     */
+    @ClassRule
+    public static RepeatTests auditRepeat = RepeatTests.with(new FeatureReplacementAction("audit-2.0", "audit-1.0").forServers(Constants.SERVER_EJBJAR_AUDIT).fullFATOnly())
+                    .andWith(new FeatureReplacementAction("audit-1.0", "audit-2.0").forServers(Constants.SERVER_EJBJAR_AUDIT));
 
     protected static Class<?> logClass = EJBJarX03JACCAuditTest.class;
 

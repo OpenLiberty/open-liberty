@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,6 +24,10 @@ fat.project: true
 -sub: *.bnd
 
 -buildpath: \
+    com.ibm.ws.logging.core,\
+    com.ibm.json4j;version=latest,\
+    com.ibm.websphere.security;version=latest,\
+    com.ibm.ws.security.audit_fat.common.tooling;version=latest,\
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     com.ibm.websphere.javaee.connector.1.7;version=latest,\
     com.ibm.websphere.javaee.ejb.3.2;version=latest,\
@@ -57,4 +61,6 @@ tested.features: componenttest-2.0,\
                  jsonp-1.1,\
                  jaxrsclient-2.1,\
                  jaxrs-2.1,\
-                 restfulws-3.1
+                 restfulws-3.1,\
+                 audit-2.0,\
+                 restconnector-2.0 
