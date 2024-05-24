@@ -300,7 +300,7 @@ public class HttpStatsMonitor extends StatisticActions {
 		Set<String> retSet = appNameToStat.get(appName);
 		if (retSet != null) {
 			for (String statName : retSet) {
-				HttpConnByRoute.remove(statName));
+				HttpConnByRoute.remove(statName);
 			}
 		}
 	}
