@@ -77,11 +77,11 @@ class LibertyCheckpoint implements CheckpointHook {
 
     static void register(Resource r, Context<? extends Resource> c) {
         debug(tc, () -> "Registering resource " + r + " from context " + c);
-        registerHookService();
         CheckpointPhase phase = CheckpointPhase.getPhase();
         if (phase == CheckpointPhase.INACTIVE) {
             return;
         }
+        registerHookService();
         final WeakReference<Resource> ref = new WeakReference<>(r);
         CheckpointHook hook = new CheckpointHook() {
             @Override
@@ -117,7 +117,6 @@ class LibertyCheckpoint implements CheckpointHook {
 
     static void checkpointRestore() throws RestoreException, CheckpointException {
         debug(tc, () -> "Requesting an application initiated checkpoint.");
-        registerHookService();
         String errorMessage = Tr.formatMessage(tc, "CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553");
         final Exception fail = CheckpointPhase.INACTIVE == CheckpointPhase.getPhase() ? new UnsupportedOperationException(errorMessage) : new CheckpointException(errorMessage);
         fail.fillInStackTrace();

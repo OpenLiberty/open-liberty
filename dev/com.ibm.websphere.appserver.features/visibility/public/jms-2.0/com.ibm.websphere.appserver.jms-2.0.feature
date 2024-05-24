@@ -20,5 +20,5 @@ Subsystem-Name: Java Message Service 2.0
 -bundles=com.ibm.ws.jms20.feature
 kind=ga
 edition=base
-WLP-InstantOn-Enabled: true; type:=beta
+WLP-InstantOn-Enabled: true
 WLP-Platform: javaee-7.0,javaee-8.0

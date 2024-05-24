@@ -214,6 +214,11 @@ public class EE11Features {
 
         features.remove("jwtSso-1.0"); // this will be removed when MP supports EE 11
 
+        // Stabilized features were changed to not support EE 11 even though
+        // they do not depend on Java / Jakarta EE features.
+        features.remove("couchdb-1.0");
+        features.remove("mongodb-2.0");
+
         if (!openLibertyOnly) {
             // stabilized features
             features.remove("apiDiscovery-1.0");
@@ -240,6 +245,18 @@ public class EE11Features {
             // heritage API features
             features.remove("heritageAPIs-1.0");
             features.remove("heritageAPIs-1.1");
+
+            // Stabilized / discontinued / bluemix features were changed to not support EE 11 even though
+            // they do not depend on Java / Jakarta EE features.
+            features.remove("appState-1.0");
+            features.remove("appState-2.0");
+            features.remove("bluemixUtility-1.0");
+            features.remove("cloudAutowiring-1.0");
+            features.remove("logAnalysis-1.0");
+            features.remove("mediaServerControl-1.0");
+            features.remove("productInsights-1.0");
+            features.remove("serverStatus-1.0");
+            features.remove("timedOperations-1.0");
         }
 
         // Test features may or may not be compatible, we don't want to assert either way
