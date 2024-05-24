@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,7 +34,7 @@ import componenttest.topology.impl.LibertyServer;
  * the server had to be restarted if the cdi-1.0 feature was added after the server had started.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat({"EE9_FEATURES", "EE10_FEATURES"}) // this test is not applicable for EE9 because restfulWS-3.0 always enables cdi-3.0
+@SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE11_FEATURES}) // this test is not applicable for EE9 because restfulWS-3.0 always enables cdi-3.0
 public class CheckFeature12Test {
 
     @Server("com.ibm.ws.jaxrs.fat.checkFeature")

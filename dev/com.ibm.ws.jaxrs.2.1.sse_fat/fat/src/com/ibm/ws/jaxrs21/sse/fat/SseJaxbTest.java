@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -57,6 +58,7 @@ public class SseJaxbTest extends FATServletClient {
     }
 
     @Test
+    @SkipForRepeat(SkipForRepeat.EE11_FEATURES) // JAXB removed from Jakarta Rest in EE11
     public void testJaxbSse() throws Exception {
         runTest(server, SERVLET_PATH, "testJaxbSse");
     }

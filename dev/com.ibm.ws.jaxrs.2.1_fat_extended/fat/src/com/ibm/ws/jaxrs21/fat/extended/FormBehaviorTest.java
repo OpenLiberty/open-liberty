@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jaxrs21.fat.form.FormBehaviorTestServlet;
 
-@SkipForRepeat({JakartaEE9Action.ID, JakartaEE10Action.ID}) // RESTEasy does not support the proper form behavior from issue https://github.com/eclipse-ee4j/jaxrs-api/issues/659
+@SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE11_FEATURES}) // RESTEasy does not support the proper form behavior from issue https://github.com/eclipse-ee4j/jaxrs-api/issues/659
 // see also: https://github.com/OpenLiberty/open-liberty/pull/5281
 @RunWith(FATRunner.class)
 public class FormBehaviorTest extends FATServletClient {

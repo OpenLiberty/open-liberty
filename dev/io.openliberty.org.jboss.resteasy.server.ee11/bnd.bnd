@@ -1,0 +1,79 @@
+#*******************************************************************************
+# Copyright (c) 2022, 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+Bundle-Name: io.openliberty.org.jboss.resteasy.server.ee11
+Bundle-SymbolicName: io.openliberty.org.jboss.resteasy.server.ee11
+
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
+bVersion=1.0
+resteasy-version=7.0.0.Alpha1
+
+src: src, resources
+
+-cdiannotations:
+
+Service-Component: \
+  io.openliberty.org.jboss.resteasy.servlet.initializer; \
+    implementation:=io.openliberty.org.jboss.resteasy.server.component.RESTfulServletContainerInitializer; \
+    provide:=jakarta.servlet.ServletContainerInitializer; \
+    immediate:=true;\
+    properties:="service.vendor=IBM"
+
+Export-Package: \
+  com.ibm.websphere.jaxrs.server;version=3.0.0;thread-context=true, \
+  org.jboss.resteasy.plugins.servlet;version=${resteasy-version}, \
+  org.jboss.resteasy.plugins.servlet.i18n;version=${resteasy-version}
+
+Import-Package: \
+  !jakarta.json.bind, \
+  !jakarta.json.bind.spi, \
+  !jakarta.mail, \
+  !jakarta.mail.internet, \
+  !jakarta.mail.util, \
+  !com.sun.xml.bind.marshaller, \
+  !org.apache.james.mime4j.*, \
+  !org.jboss.resteasy.plugins.providers.jaxb, \
+  !sun.misc, \
+  org.jboss.resteasy.plugins.server.servlet, \
+  jakarta.ws.rs.*;version="[4.0,5.0)", \
+  jakarta.annotation;version="[3.0,4.0)", \
+  *
+
+Private-Package: \
+  io.openliberty.org.jboss.resteasy.server.component
+
+instrument.ffdc: false
+instrument.disabled: false
+
+Include-Resource:\
+  @${repo;org.jboss.resteasy:resteasy-servlet-initializer;${resteasy-version};EXACT}, \
+  com/ibm/websphere=${bin}/com/ibm/websphere, \
+  io/openliberty=${bin}/io/openliberty
+
+-buildpath: \
+  org.jboss.resteasy:resteasy-core-spi;strategy=exact;version='${resteasy-version}',\
+  org.jboss.resteasy:resteasy-core;strategy=exact;version='${resteasy-version}',\
+  org.jboss.resteasy:resteasy-servlet-initializer;strategy=exact;version='${resteasy-version}',\
+  com.ibm.websphere.org.osgi.core;version=latest,\
+  com.ibm.websphere.org.osgi.service.component;version=latest,\
+  com.ibm.ws.logging.core,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+  io.openliberty.org.jboss.resteasy.common.ee11,\
+  io.openliberty.jakarta.servlet.6.1, \
+  io.openliberty.jakarta.restfulWS.4.0

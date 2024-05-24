@@ -12896,7 +12896,7 @@
             <resolved>io.openliberty.enterpriseBeansRemoteClientServer-2.0</resolved>
             <resolved>io.openliberty.cdi4.1-servlet6.1</resolved>
             <resolved>io.openliberty.cdi3.0-ejb4.0</resolved>
-            <resolved>io.openliberty.restfulWS3.1-validator3.0</resolved>
+            <resolved>io.openliberty.restfulWS4.0-validator3.1</resolved>
             <resolved>io.openliberty.messaging.defaultresource-3.0</resolved>
             <resolved>io.openliberty.connectorsInboundSecurity-2.1</resolved>
             <resolved>io.openliberty.cdi3.0-websocket2.0</resolved>
@@ -16914,7 +16914,7 @@
             <resolved>io.openliberty.jpa3.0-bv3.0</resolved>
             <resolved>io.openliberty.cdi4.1-servlet6.1</resolved>
             <resolved>io.openliberty.cdi3.0-ejb4.0</resolved>
-            <resolved>io.openliberty.restfulWS3.1-validator3.0</resolved>
+            <resolved>io.openliberty.restfulWS4.0-validator3.1</resolved>
             <resolved>io.openliberty.cdi3.0-websocket2.0</resolved>
             <resolved>io.openliberty.restfulWSClient3.0-ssl1.0</resolved>
             <resolved>io.openliberty.jpaContainer-cdi</resolved>

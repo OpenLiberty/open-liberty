@@ -254,7 +254,7 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
  // TODO: https://github.com/OpenLiberty/open-liberty/issues/18849
     @Test
     @MinimumJavaLevel(javaLevel = 11)
-    @SkipForRepeat({"EE9_FEATURES","EE10_FEATURES"}) // RESTEasy only supports properties set on ClientBuilder
+    @SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE11_FEATURES}) // RESTEasy only supports properties set on ClientBuilder
     public void testTunnelThroughProxyToHTTPSEndpoint_Client() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
@@ -317,7 +317,7 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
     }
 
     @Test
-    @SkipForRepeat({"EE9_FEATURES","EE10_FEATURES"}) // RESTEasy only supports properties set on ClientBuilder
+    @SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE11_FEATURES}) // RESTEasy only supports properties set on ClientBuilder
     public void testTunnelThroughProxyToHTTPEndpointTimeout_Client() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
@@ -360,7 +360,7 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
     // TODO: https://github.com/OpenLiberty/open-liberty/issues/18849
     @Test
     @MinimumJavaLevel(javaLevel = 11)
-    @SkipForRepeat({"EE9_FEATURES","EE10_FEATURES"}) // RESTEasy only supports properties set on ClientBuilder
+    @SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE11_FEATURES}) // RESTEasy only supports properties set on ClientBuilder
     public void testTunnelThroughProxyToHTTPSEndpoint_WebTarget() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
@@ -422,7 +422,7 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
     }
 
     @Test
-    @SkipForRepeat({"EE9_FEATURES","EE10_FEATURES"}) // RESTEasy only supports properties set on ClientBuilder
+    @SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE11_FEATURES}) // RESTEasy only supports properties set on ClientBuilder
     public void testTunnelThroughProxyToHTTPEndpointTimeout_WebTarget() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
