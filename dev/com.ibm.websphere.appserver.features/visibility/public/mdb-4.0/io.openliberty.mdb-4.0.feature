@@ -94,4 +94,4 @@ Subsystem-Name: Jakarta Enterprise Beans 4.0 Message-Driven Beans
 kind=ga
 edition=base
 WLP-Activation-Type: parallel
-WLP-InstantOn-Enabled: true; type:=beta
+WLP-InstantOn-Enabled: true
