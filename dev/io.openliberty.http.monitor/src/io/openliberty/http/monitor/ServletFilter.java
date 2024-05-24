@@ -215,7 +215,7 @@ public class ServletFilter implements Filter {
 							}
 						} else if ((pathInfo == null) && 
 								(webAppDispatcherContext40.getServletPathForMapping() != null) 
-								&& (!webAppDispatcherContext40.getServletPathForMapping().isBlank())){
+								&& (!webAppDispatcherContext40.getServletPathForMapping().isEmpty())){
 							
 							/*
 							 * PathInfo is null, httpServlet Mapping is null.
