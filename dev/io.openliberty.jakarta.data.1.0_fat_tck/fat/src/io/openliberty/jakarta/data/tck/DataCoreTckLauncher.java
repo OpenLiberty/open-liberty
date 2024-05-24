@@ -75,6 +75,8 @@ public class DataCoreTckLauncher {
             additionalProps.put("included.groups", "core & persistence & !signature");
         }
 
+        additionalProps.put("excluded.tests", FATSuite.getExcludedTestByDatabase(DatabaseContainerType.valueOf(FATSuite.relationalDatabase)));
+
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
         additionalProps.put("jakarta.data.tck.version", "1.0.0-RC1");

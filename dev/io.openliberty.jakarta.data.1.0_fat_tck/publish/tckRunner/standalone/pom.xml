@@ -154,6 +154,9 @@
 						<signature.sigTestClasspath>${project.build.directory}/signaturedirectory/jakarta.data-api.jar:${jimage.dir}/java.base:${jimage.dir}/java.rmi:${jimage.dir}/java.sql:${jimage.dir}/java.naming</signature.sigTestClasspath>
 						<jakarta.tck.skip.deployment>true</jakarta.tck.skip.deployment>
 					</systemPropertyVariables>
+					<excludes>
+						<exclude>${excluded.tests}</exclude>
+					</excludes>
 					<groups>${included.groups}</groups>
 					<reportNameSuffix>${jakarta.profile}</reportNameSuffix>
 					<testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
