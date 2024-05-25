@@ -85,3 +85,4 @@ Subsystem-Name: Application Client Support for Server 1.0
 kind=ga
 edition=base
 WLP-Activation-Type: parallel
+WLP-Platform: javaee-7.0,javaee-8.0

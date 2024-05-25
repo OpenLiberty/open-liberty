@@ -40,3 +40,4 @@ edition=core
 -jars=io.openliberty.jaspic.spi; location:=dev/spi/ibm/
 -files=dev/spi/ibm/javadoc/io.openliberty.jaspic.spi_1.1-javadoc.zip
 WLP-InstantOn-Enabled: true
+WLP-Platform: jakartaee-9.1

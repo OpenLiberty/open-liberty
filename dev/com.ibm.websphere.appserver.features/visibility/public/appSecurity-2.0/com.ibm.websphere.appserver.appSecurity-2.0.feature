@@ -16,3 +16,4 @@ Subsystem-Name: Application Security 2.0
 kind=ga
 edition=core
 WLP-InstantOn-Enabled: true
+WLP-Platform: javaee-7.0

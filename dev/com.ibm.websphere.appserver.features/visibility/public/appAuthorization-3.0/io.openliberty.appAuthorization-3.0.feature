@@ -19,3 +19,4 @@ kind=noship
 edition=full
 -jars=io.openliberty.jacc; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/io.openliberty.jacc_1.0-javadoc.zip
+WLP-Platform: jakartaee-11.0

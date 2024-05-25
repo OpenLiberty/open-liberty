@@ -25,3 +25,4 @@ kind=beta
 edition=base
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
+WLP-Platform: jakartaee-11.0
