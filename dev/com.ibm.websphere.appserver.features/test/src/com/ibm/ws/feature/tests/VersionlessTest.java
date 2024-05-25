@@ -270,6 +270,7 @@ public class VersionlessTest {
      */
     @Test
     public void listSelectorDetails() {
+        StringBuilder errorMessage = new StringBuilder();
         Map<String, VersionlessFeatureDefinition> versionlessFeatures = new HashMap<String, VersionlessFeatureDefinition>();
 
         System.out.println("Selectors:");
@@ -299,8 +300,14 @@ public class VersionlessTest {
                         if (depInfo.isAlsoKnownAsSet()) {
                             System.out.println("            [ AKA: " + depInfo.getAlsoKnownAs() + " ]");
                         }
+
                         //
                         String featureTitle = depInfo.getShortName().split("-")[0]; //Just the name not the version
+
+                        if (!skipFeatures.contains(featureTitle) && depInfo.getPlatforms().isEmpty()) {
+                            errorMessage.append(depInfo.getName()).append('\n');
+                        }
+
                         //add features to our map and add data on its platform-version link
                         if (versionlessFeatures.containsKey(featureTitle)) {
                             versionlessFeatures.get(featureTitle)
@@ -370,6 +377,10 @@ public class VersionlessTest {
                              "Verify the data inside the feature files are correct, then copy the features from 'build/versionless' into 'visibility'.\n" + createdFeatures;
 
         Assert.assertEquals(errorOutput, "", createdFeatures);
+
+        if (errorMessage.length() != 0) {
+            Assert.fail("Found features that are missing WLP-Platform settings:\n" + errorMessage.toString());
+        }
     }
 
     private static final Map<String, List<String>> selectorCohorts;
