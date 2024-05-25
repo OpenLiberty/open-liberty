@@ -624,9 +624,7 @@ public class DataJPATestServlet extends FATServlet {
         cityNames.add("Mitchell");
         cityNames.add("Pierre");
 
-        //FIXME SELECT FOR UPDATE seems to return incorrect results deleteFirst3ByStateName returns no results
-        // Provided eclipse link with this query:     eclipselink.ps.query   3 Execute query ReportQuery(referenceClass=City sql="SELECT NAME, STATENAME FROM WLPCity WHERE (STATENAME = ?) ORDER BY NAME")
-        // EclipseLink sent query to Oracle:          eclipselink.ps.sql     3 SELECT NAME AS a1, STATENAME AS a2 FROM WLPCity WHERE (STATENAME = ?) AND (STATENAME,NAME) IN (SELECT null,null FROM (SELECT null,null, ROWNUM rnum  FROM (SELECT NAME AS a1, STATENAME AS a2 FROM WLPCity WHERE (STATENAME = ?) ORDER BY null,null) WHERE ROWNUM <= ?) WHERE rnum > ? )  ORDER BY NAME FOR UPDATE
+        //TODO Eclipse link SQL Generation bug on Oracle: https://github.com/OpenLiberty/open-liberty/issues/28545
         if (jdbcJarName.startsWith("ojdbc8_g")) {
             cities.removeByStateName("South Dakota"); //Cleanup Cities repository and skip the rest of these tests
             return;
@@ -1123,7 +1121,7 @@ public class DataJPATestServlet extends FATServlet {
      * Tests CrudRepository methods that supply entities as parameters.
      */
     @SkipIfSysProp({
-                     DB_Postgres, //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+                     DB_Postgres, //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
     })
     @Test
     public void testEntitiesAsParameters() throws Exception {
@@ -1260,7 +1258,7 @@ public class DataJPATestServlet extends FATServlet {
         o7.purchasedOn = OffsetDateTime.now();
         o7.total = 70.99f;
 
-        // FIXME SQLServer throws com.microsoft.sqlserver.jdbc.SQLServerException: Violation of PRIMARY KEY constraint ...
+        // TODO SQLServer throws com.microsoft.sqlserver.jdbc.SQLServerException: Violation of PRIMARY KEY constraint ...
         // which is not a subset of SQLIntegrityConstraintViolationException
         // we are not correctly parsing this exception to re-throw as EntityExistsException
         // Related issue: https://github.com/microsoft/mssql-jdbc/issues/1199
@@ -1450,7 +1448,7 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Reproduces issue 27925.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testForeignKey() {
         Manufacturer toyota = new Manufacturer();
@@ -1589,7 +1587,7 @@ public class DataJPATestServlet extends FATServlet {
      * Avoid specifying a primary key value and let it be generated.
      */
     @SkipIfSysProp({
-                     DB_Postgres, //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+                     DB_Postgres, //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
     })
     @Test
     public void testGeneratedKey() {
@@ -3485,7 +3483,7 @@ public class DataJPATestServlet extends FATServlet {
      * Test that a method that is annotated with the Update annotation can return entity results,
      * and the resulting entities match the updated values that were written to the database.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testUpdateWithEntityResults() {
         orders.deleteAll();
@@ -3651,7 +3649,7 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Test that @Delete requires the entity to exist with the same version as the database for successful removal.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testVersionedDelete() {
         orders.deleteAll();
@@ -3763,7 +3761,7 @@ public class DataJPATestServlet extends FATServlet {
      * Test that @Update requires the entity to exist with the same version as the database for successful update.
      * This tests covers an entity type with an IdClass.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testVersionedUpdate() {
         orders.deleteAll();
