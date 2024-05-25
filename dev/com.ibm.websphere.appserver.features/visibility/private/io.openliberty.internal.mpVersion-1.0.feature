@@ -6,3 +6,4 @@ kind=ga
 edition=core
 WLP-DisableAllFeatures-OnConflict: false
 WLP-Activation-Type: parallel
+WLP-Platform: microProfile-1.0
