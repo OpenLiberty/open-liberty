@@ -12,4 +12,3 @@ kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
-WLP-Platform: javaee-7.0,jakartaee-9.1
