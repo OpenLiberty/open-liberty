@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,12 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import jakarta.ws.rs.HttpMethod;
 
+/**
+ *
+ * Tests the different Request methods to the restful resource.
+ * Tests throwing exceptions.
+ * Tests path parameters and query parameters.
+ */
 @RunWith(FATRunner.class)
 public class RestApplicationTest extends BaseTestClass {
 

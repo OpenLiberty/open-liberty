@@ -31,6 +31,7 @@ public class FailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        //accepts query parameter that helps decide how to fail
         switch (req.getParameter("failMode")) {
             case "zero":
                 divideArith(resp);

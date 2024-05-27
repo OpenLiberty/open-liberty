@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -102,31 +102,30 @@ public class JSPApplicationTest extends BaseTestClass {
 
     }
 
-    //First hit of HTML does not go through servlets....
-//    @Test
-//    public void jsp_defaultHTML() throws Exception {
-//
-//        assertTrue(server.isStarted());
-//
-//        String route = CONTEXT_ROOT;
-//        String expectedRoute = CONTEXT_ROOT + "/\\*";
-//        String requestMethod = HttpMethod.GET;
-//        String responseStatus = "304";
-//
-//        String res = requestHttpServlet(route, server, requestMethod);
-//
-//        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
-//
-//        //Request an explicity HTML page, will also return 304, we'll now check count
-//
-//        route = CONTEXT_ROOT + "/Testhtml.html";
-//        expectedRoute = CONTEXT_ROOT + "/\\*";
-//        requestMethod = HttpMethod.GET;
-//        responseStatus = "304";
-//
-//        res = requestHttpServlet(route, server, requestMethod);
-//
-//        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod, "2.0", null));
+    @Test
+    public void jsp_defaultHTML() throws Exception {
+
+        assertTrue(server.isStarted());
+
+        String route = CONTEXT_ROOT;
+        String expectedRoute = CONTEXT_ROOT + "/";
+        String requestMethod = HttpMethod.GET;
+        String responseStatus = "200";
+
+        String res = requestHttpServlet(route, server, requestMethod);
+
+        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+
+        //Request an explicity HTML page, will also return 304, we'll now check count
+
+        route = CONTEXT_ROOT + "/Testhtml.html";
+        expectedRoute = CONTEXT_ROOT + "/\\*";
+        requestMethod = HttpMethod.GET;
+        responseStatus = "200";
+
+        res = requestHttpServlet(route, server, requestMethod);
+
+        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
     }
 
 }

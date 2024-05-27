@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,9 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import jakarta.ws.rs.HttpMethod;
 
+/**
+ * This just tests hitting the splash page for the server.
+ */
 @RunWith(FATRunner.class)
 public class NoAppTest extends BaseTestClass {
 
