@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,8 @@ public final class ProductMatch {
     public static final int INVALID_EDITION = -3;
     public static final int INVALID_INSTALL_TYPE = -4;
     public static final int INVALID_LICENSE = -5;
+    public static final String NOT_OPENLIBERTY_PRODUCTID = "com.ibm.websphere.appserver";
+    public static final String OPENLIBERTY_PRODUCTID = "io.openliberty";
 
     /**
      * @param substring
@@ -61,6 +63,17 @@ public final class ProductMatch {
                     break;
                 }
             }
+        } else if (substring.startsWith("edition")) {
+            //If editions contains Open, add supported WebSphere editions.
+            if (!editions.isEmpty() && editions.contains("Open")) {
+                String editionStr = getValue(substring);
+                for (int startIndex = 0, endIndex = editionStr.indexOf(',');; startIndex = endIndex, endIndex = editionStr.indexOf(',', ++startIndex)) {
+                    editions.add(editionStr.substring(startIndex, endIndex == -1 ? editionStr.length() : endIndex));
+                    if (endIndex == -1) {
+                        break;
+                    }
+                }
+            }
         } else if (substring.startsWith("productInstallType")) {
             installType = getValue(substring);
         } else if (substring.startsWith("productLicenseType")) {
@@ -69,7 +82,7 @@ public final class ProductMatch {
     }
 
     public int matches(Properties props) {
-        if (productId.equals(props.getProperty("com.ibm.websphere.productId"))) {
+        if (!(productId.equals(NOT_OPENLIBERTY_PRODUCTID) && props.getProperty("com.ibm.websphere.productId").equals(OPENLIBERTY_PRODUCTID))) {
             if (version != null) {
                 String productVersion = props.getProperty("com.ibm.websphere.productVersion");
                 Matcher appliesToMatcher = validNumericVersionOrRange.matcher(version);
