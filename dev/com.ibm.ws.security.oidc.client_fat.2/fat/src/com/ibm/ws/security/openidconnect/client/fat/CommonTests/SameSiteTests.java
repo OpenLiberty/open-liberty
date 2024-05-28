@@ -531,7 +531,7 @@ public class SameSiteTests extends CommonTest {
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(); // use defaults
         Map<String, String> rpUpdates = new HashMap<String, String>();
-        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "true");
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
         Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates); // use defaults
 
         runVariations(opSettings, rpSettings);
@@ -542,7 +542,7 @@ public class SameSiteTests extends CommonTest {
 
         Map<String, String> rpUpdates = new HashMap<String, String>();
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
-        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "false");
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "False");
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings();
         Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
@@ -559,7 +559,7 @@ public class SameSiteTests extends CommonTest {
 
         Map<String, String> rpUpdates = new HashMap<String, String>();
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
-        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "true");
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings();
         Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
@@ -577,7 +577,7 @@ public class SameSiteTests extends CommonTest {
         Map<String, String> opUpdates = new HashMap<String, String>();
         opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_LAX);
         Map<String, String> rpUpdates = new HashMap<String, String>();
-        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "true");
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
         Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
@@ -592,7 +592,7 @@ public class SameSiteTests extends CommonTest {
         opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_LAX);
         Map<String, String> rpUpdates = new HashMap<String, String>();
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
-        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "false");
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "False");
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
         Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
@@ -611,7 +611,7 @@ public class SameSiteTests extends CommonTest {
         opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_LAX);
         Map<String, String> rpUpdates = new HashMap<String, String>();
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
-        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "true");
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
         Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
@@ -631,7 +631,7 @@ public class SameSiteTests extends CommonTest {
 
         Map<String, String> opUpdates = new HashMap<String, String>();
         opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
-        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "false");
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "False");
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
         Map<String, String> rpSettings = samesiteTestTools.setClientConfigSettings();
@@ -645,7 +645,7 @@ public class SameSiteTests extends CommonTest {
 
         Map<String, String> opUpdates = new HashMap<String, String>();
         opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
-        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "true");
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
         Map<String, String> rpSettings = samesiteTestTools.setClientConfigSettings();
@@ -659,7 +659,7 @@ public class SameSiteTests extends CommonTest {
 
         Map<String, String> opUpdates = new HashMap<String, String>();
         opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
-        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "false");
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "False");
         Map<String, String> rpUpdates = new HashMap<String, String>();
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_LAX);
 
@@ -674,7 +674,7 @@ public class SameSiteTests extends CommonTest {
 
         Map<String, String> opUpdates = new HashMap<String, String>();
         opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
-        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "true");
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
         Map<String, String> rpUpdates = new HashMap<String, String>();
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_LAX);
 
@@ -690,10 +690,10 @@ public class SameSiteTests extends CommonTest {
 
         Map<String, String> opUpdates = new HashMap<String, String>();
         opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
-        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "false");
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "False");
         Map<String, String> rpUpdates = new HashMap<String, String>();
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
-        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "false");
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "False");
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
         Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
@@ -711,10 +711,10 @@ public class SameSiteTests extends CommonTest {
 
         Map<String, String> opUpdates = new HashMap<String, String>();
         opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
-        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "false");
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "False");
         Map<String, String> rpUpdates = new HashMap<String, String>();
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
-        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "true");
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
         Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
@@ -731,10 +731,10 @@ public class SameSiteTests extends CommonTest {
 
         Map<String, String> opUpdates = new HashMap<String, String>();
         opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
-        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "true");
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
         Map<String, String> rpUpdates = new HashMap<String, String>();
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
-        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "false");
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "False");
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
         Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
@@ -751,10 +751,10 @@ public class SameSiteTests extends CommonTest {
 
         Map<String, String> opUpdates = new HashMap<String, String>();
         opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
-        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "true");
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
         Map<String, String> rpUpdates = new HashMap<String, String>();
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
-        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "true");
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
         Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
@@ -771,7 +771,7 @@ public class SameSiteTests extends CommonTest {
 
         Map<String, String> opUpdates = new HashMap<String, String>();
         opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
-        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "false");
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "False");
         Map<String, String> rpUpdates = new HashMap<String, String>();
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_STRICT);
 
@@ -786,7 +786,7 @@ public class SameSiteTests extends CommonTest {
 
         Map<String, String> opUpdates = new HashMap<String, String>();
         opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
-        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "true");
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
         Map<String, String> rpUpdates = new HashMap<String, String>();
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_STRICT);
 
@@ -806,7 +806,7 @@ public class SameSiteTests extends CommonTest {
         opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_STRICT);
         Map<String, String> rpUpdates = new HashMap<String, String>();
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
-        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "false");
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "False");
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
         Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
@@ -826,7 +826,7 @@ public class SameSiteTests extends CommonTest {
         opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_STRICT);
         Map<String, String> rpUpdates = new HashMap<String, String>();
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
-        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "true");
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
         Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
@@ -845,12 +845,33 @@ public class SameSiteTests extends CommonTest {
         opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_STRICT);
         Map<String, String> rpUpdates = new HashMap<String, String>();
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_STRICT);
-        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "true");
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
         Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
 
         runVariations(new SameSiteTestExpectations(Constants.SAMESITE_STRICT, false), opSettings, rpSettings);
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void SameSiteTests_OPnonePartitionedDeferRPnonePartitionedDefer() throws Exception {
+
+        Map<String, String> opUpdates = new HashMap<String, String>();
+        opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "Defer");
+        Map<String, String> rpUpdates = new HashMap<String, String>();
+        rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "Defer");
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
+
+        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations(Constants.SAMESITE_NONE, false);
+        testExpectations.setHttpClientAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_GENERIC_FAILURE);
+        testExpectations
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_REDIRECT_FAILURE);
+        runVariations(testExpectations, opSettings, rpSettings);
     }
 
 }
