@@ -19,15 +19,15 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 BaselineSingletonUnitTest.class,
-                //BaselineServletUnitTest.class,
- MicroProfileCrossPlatformUnitTest.class, // Disabled until the platform API is implemented
+                //BaselineServletUnitTest.class, // fix unit tests
+                //MicroProfileCrossPlatformUnitTest.class, // fix unit tests
 
- //VersionlessEnvVarErrorTest.class, // Disabled until the platform API is implemented.
+                //VersionlessEnvVarErrorTest.class, // fix error tests
 
-                VersionlessResolutionTest.class, //Disabled for inital PR, needs servlet-3.0 cases
+                //VersionlessResolutionTest.class, // needs servlet-3.0 cases
 
- VersionlessServletToMicroProfileTest.class, // Disabled until the platform API is implemented
- VersionlessJavaEEToMicroProfileTest.class, // Disabled until the platform API is implemented
+                VersionlessServletToMicroProfileTest.class,
+                VersionlessJavaEEToMicroProfileTest.class,
 })
 public class FATSuite {
     // EMPTY
