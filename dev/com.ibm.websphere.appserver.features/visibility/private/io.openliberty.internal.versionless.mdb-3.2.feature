@@ -4,6 +4,6 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.noShip-1.0, \
-    io.openliberty.mdb-3.2
+    com.ibm.websphere.appserver.mdb-3.2
 kind=noship
 edition=full
