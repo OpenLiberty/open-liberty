@@ -24,6 +24,6 @@ public class PlatformConstants {
 
     public static final String JAKARTA_DESCENDING = "jakartaee-11.0, jakartaee-10.0, jakartaee-9.1, javaee-8.0, javaee-7.0, javaee-6.0";
 
-    public static final String JAKARTA_ASCENDIN = "javaee-6.0, javaee-7.0, javaee-8.0, jakartaee-9.1, jakartaee-10.0, jakartaee-11.0";
+    public static final String JAKARTA_ASCENDING = "javaee-6.0, javaee-7.0, javaee-8.0, jakartaee-9.1, jakartaee-10.0, jakartaee-11.0";
 
 }
