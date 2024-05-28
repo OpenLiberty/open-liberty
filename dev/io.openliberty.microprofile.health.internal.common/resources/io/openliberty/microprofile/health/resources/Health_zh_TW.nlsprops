@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021 IBM Corporation and others.
+# Copyright (c) 2021, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -42,8 +42,8 @@ healthcheck.bean.call.exception.CWMMH0050E.explanation=\u6307\u5b9a\u7684\u547c\
 healthcheck.bean.call.exception.CWMMH0050E.useraction=\u8acb\u6aa2\u95b1 HealthCheck Bean \u5167\u7684\u547c\u53eb\u65b9\u6cd5\uff0c\u4ee5\u8b58\u5225\u6240\u767c\u751f\u7684\u7570\u5e38\u72c0\u6cc1\u3002
 
 # The HealthCheck bean call method had a DOWN outcome
-healthcheck.application.down.CWMMH0052W=CWMMH0052W: \u7528\u65bc\u5be6\u4f5c {1} \u61c9\u7528\u7a0b\u5f0f\uff08\u4f4d\u65bc\u6a21\u7d44 {2}\uff09\u4e2d\u7684 HealthCheckResponse \u7684 {0}\uff0c\u5831\u544a\u4e86 {3} \u72c0\u614b\uff0c\u4e26\u63d0\u4f9b\u8cc7\u6599 {4}\u3002
-healthcheck.application.down.CWMMH0052W.explanation=DOWN \u72c0\u614b\u53ef\u80fd\u5c0e\u81f4\u76e3\u8996\u670d\u52d9\u5c0d\u6b64\u670d\u52d9\u63a1\u53d6\u52d5\u4f5c\u3002
+healthcheck.application.down.CWMMH0052W=CWMMH0052W: \u5728\u6a21\u7d44 {2}\u7684 {1} \u61c9\u7528\u7a0b\u5f0f\u4e2d\u5be6\u4f5c HealthCheck\u56de\u61c9\u7684 {0} \u5831\u544a\u6027\u80fd\u6aa2\u67e5 {4}\u53ca\u8cc7\u6599 {5}\u7684 {3} \u72c0\u614b\u3002
+healthcheck.application.down.CWMMH0052W.explanation=DOWN \u72c0\u614b\u53ef\u80fd\u5c0e\u81f4\u76e3\u8996\u670d\u52d9\u5728\u6b64\u4f3a\u670d\u5668\u4e0a\u57f7\u884c\u3002
 healthcheck.application.down.CWMMH0052W.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002\u9019\u5247\u8b66\u544a\u662f\u8a18\u9304 DOWN \u72c0\u614b\u3002
 
 # The Readiness HealthCheck had a DOWN outcome, when applications are not started yet

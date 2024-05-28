@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017, 2021 IBM Corporation and others.
+# Copyright (c) 2017, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -47,8 +47,8 @@ healthcheck.bean.call.exception.CWMH0050E.explanation=Metoda de apelare specific
 healthcheck.bean.call.exception.CWMH0050E.useraction=Examina\u0163i-v\u0103 metoda de apelare din bean-ul HealthCheck pentru a identifica excep\u0163ia care a survenit.
 
 # The HealthCheck bean call method had a DOWN outcome
-healthcheck.application.down.CWMH0052W=CWMH0052W: {0} care implementeaz\u0103 HealthCheckResponse \u00een aplica\u0163ia {1} din modulul {2}, a raportat o stare {3} cu datele {4}.
-healthcheck.application.down.CWMH0052W.explanation=Starea DOWN poate duce la o ac\u0163iune a serviciului de monitorizare pe acest server.
+healthcheck.application.down.CWMH0052W=CWMH0052W: The {0} HealthCheckResponse in the {1} application in the module, {2}, reported a {3} status for the health check, {4}, and with the data {5}.
+healthcheck.application.down.CWMH0052W.explanation=Statutul JOS ar putea cauza un serviciu de monitorizare pentru a ac\u021biona pe acest server.
 healthcheck.application.down.CWMH0052W.useraction=Nu este necesar\u0103 nici-o ac\u0163iune din partea utilizatorului.  Acest avertisment este o \u00eenregistrare a st\u0103rii DOWN.
 
 # The Readiness HealthCheck had a DOWN outcome, when applications are not started yet

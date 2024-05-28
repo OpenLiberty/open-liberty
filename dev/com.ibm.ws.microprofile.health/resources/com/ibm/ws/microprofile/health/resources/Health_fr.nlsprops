@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017, 2021 IBM Corporation and others.
+# Copyright (c) 2017, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -47,8 +47,8 @@ healthcheck.bean.call.exception.CWMH0050E.explanation=La m\u00e9thode d'appel sp
 healthcheck.bean.call.exception.CWMH0050E.useraction=V\u00e9rifiez votre m\u00e9thode d'appel dans le bean HealthCheck pour identifier l'exception qui s'est produite.
 
 # The HealthCheck bean call method had a DOWN outcome
-healthcheck.application.down.CWMH0052W=CWMH0052W: La classe {0} qui impl\u00e9mente HealthCheckResponse dans l'application {1} dans le module {2} a pour statut {3} avec les donn\u00e9es suivantes : {4}.
-healthcheck.application.down.CWMH0052W.explanation=Le statut DOWN peut entra\u00eener une action du service de surveillance sur ce serveur.
+healthcheck.application.down.CWMH0052W=CWMH0052W: L' {0} impl\u00e9mentant la r\u00e9ponse HealthCheckdans l'application {1} du module, {2}, a signal\u00e9 un statut {3} pour le diagnostic d'int\u00e9grit\u00e9, {4}, et avec les donn\u00e9es {5}.
+healthcheck.application.down.CWMH0052W.explanation=Le statut DOWN peut entra\u00eener l'intervention d'un service de surveillance sur ce serveur.
 healthcheck.application.down.CWMH0052W.useraction=Aucune action de l'utilisateur n'est requise.  Cet avertissement est un enregistrement du statut DOWN.
 
 # The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
