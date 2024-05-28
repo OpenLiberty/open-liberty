@@ -10,6 +10,8 @@
 package io.openliberty.cxf.logging;
 
 import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+
 import com.ibm.ws.logging.internal.WsLogger;
 
 /**
@@ -29,7 +31,7 @@ public class CXFLogger extends WsLogger {
      */
     public CXFLogger(String name, String resourceBundleName, Class<?> c) {
         super(name, c, resourceBundleName);
-        setClassName(c.getCanonicalName());
+        setClassName(c.getName());
     }
 
     /**
@@ -67,9 +69,7 @@ public class CXFLogger extends WsLogger {
      * @return
      */
     public static CXFLogger getLogger(String loggerName, String bundleName, Class<?> cls) {
-        CXFLogger logger = (CXFLogger) CXFLogger.getLogger(loggerName, bundleName);
-        logger.setClassName(cls.getCanonicalName());
-        return logger;
+        return new CXFLogger(loggerName, bundleName, cls);
     }
 
     /**
@@ -80,4 +80,15 @@ public class CXFLogger extends WsLogger {
     public static CXFLogger getLogger(String loggerName, Class<?> cls) {
         return getLogger(loggerName, null, cls);
     }
+
+    /**
+     * @param logger
+     * @param cls
+     * @return
+     */
+    public static Logger getLogger(Logger logger, Class<?> cls) {
+        return getLogger(logger.getName(), logger.getResourceBundleName(), cls);
+    }
+    
+    
 }
