@@ -30,7 +30,7 @@ Private-Package: \
 Import-Package: \
  !org.apache.commons.compress.compressors.lzw, \
  !org.apache.commons.compress, \
- !org.apache.commons.compress.parallel, 
+ !org.apache.commons.compress.parallel, \
  !org.apache.commons.io.file, *
 
 -includeresource: \
