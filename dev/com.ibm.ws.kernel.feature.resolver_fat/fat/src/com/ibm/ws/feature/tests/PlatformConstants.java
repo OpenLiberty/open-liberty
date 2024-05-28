@@ -22,8 +22,8 @@ public class PlatformConstants {
                     "MicroProfile-2.0, MicroProfile-2.1, MicroProfile-2.2, MicroProfile-3.0, MicroProfile-3.2, MicroProfile-3.3, " +
                     "MicroProfile-4.0, MicroProfile-4.1, MicroProfile-5.0, MicroProfile-6.0, MicroProfile-6.1";
 
-    public static final String JAKARTA_DESCENDING = "jakartaee-11.0, jakartaee-10.0, jakartaee-9.0, jakartaee-8.0, jakartaee-7.0, jakartaee-6.0";
+    public static final String JAKARTA_DESCENDING = "jakartaee-11.0, jakartaee-10.0, jakartaee-9.1, javaee-8.0, javaee-7.0, javaee-6.0";
 
-    public static final String JAKARTA_ASCENDIN = "jakartaee-6.0, jakartaee-7.0, jakartaee-8.0, jakartaee-9.0, jakartaee-10.0, jakartaee-11.0";
+    public static final String JAKARTA_ASCENDIN = "javaee-6.0, javaee-7.0, javaee-8.0, jakartaee-9.1, jakartaee-10.0, jakartaee-11.0";
 
 }
