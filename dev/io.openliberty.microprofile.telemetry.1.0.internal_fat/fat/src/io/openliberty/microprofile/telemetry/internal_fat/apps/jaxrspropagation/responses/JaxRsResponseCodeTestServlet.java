@@ -39,7 +39,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-// MP Telemetry 2.0 does not consume io.opentelemetry.semconv.trace.attributes.SemanticAttributes
+// In MpTelemetry-2.0 SemanticAttributes was moved to a new package, so we use import static to allow both versions to coexist
 import static io.opentelemetry.semconv.SemanticAttributes.HTTP_RESPONSE_STATUS_CODE;
 import static io.opentelemetry.semconv.SemanticAttributes.HTTP_REQUEST_METHOD;
 import static io.opentelemetry.semconv.SemanticAttributes.URL_PATH;
