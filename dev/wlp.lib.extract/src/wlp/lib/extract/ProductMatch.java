@@ -82,9 +82,9 @@ public final class ProductMatch {
     }
 
     //Only do matches if feature.productID equals productID of Liberty Install or license to be applied.
-    //Special case: When Liberty edition=core, need to check if Open Liberty feature can be installed to Liberty Core.
+    //Special case: Open Liberty properties file with Open_Web edition means it's Core edition. Features that are not valid in Core, has editions=[Open], otherwise all OL features has empty editions list
     public int matches(Properties props) {
-        if (productId.equals(props.getProperty("com.ibm.websphere.productId")) || props.getProperty("com.ibm.websphere.productEdition").contains("LIBERTY_CORE")) {
+        if (productId.equals(props.getProperty("com.ibm.websphere.productId"))) {
             if (version != null) {
                 String productVersion = props.getProperty("com.ibm.websphere.productVersion");
                 Matcher appliesToMatcher = validNumericVersionOrRange.matcher(version);
