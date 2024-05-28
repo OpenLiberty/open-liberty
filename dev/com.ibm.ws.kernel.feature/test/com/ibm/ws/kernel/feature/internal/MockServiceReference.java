@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,9 +18,6 @@ import java.util.Hashtable;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
 
-/**
- *
- */
 public class MockServiceReference<T> implements ServiceReference<T> {
     T service;
 
@@ -28,7 +25,6 @@ public class MockServiceReference<T> implements ServiceReference<T> {
         this.service = serv;
     }
 
-    @Override
     public <A> A adapt(Class<A> arg0) {
         return null;
     }
@@ -67,12 +63,6 @@ public class MockServiceReference<T> implements ServiceReference<T> {
         return 0;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.osgi.framework.ServiceReference#getProperties()
-     */
-    @Override
     public Dictionary<String, Object> getProperties() {
         return new Hashtable<>();
     }

@@ -43,7 +43,8 @@ publish.wlp.jar.disabled: true
 	com.ibm.wsspi.org.osgi.service.event;version=latest,\
 	com.ibm.ws.org.eclipse.equinox.region;version=latest,\
 	com.ibm.ws.org.apache.aries.util;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	biz.aQute.bnd:biz.aQute.bnd;strategy=exact;version=6.4.1;packages=**
 
 # -testpath: \
 # 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

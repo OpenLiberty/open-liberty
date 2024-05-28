@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.xml.parsers.SAXParser;
@@ -235,15 +236,55 @@ public class BaseXML {
         }
 
         public void printOptionalElement(String element, Object value) {
-            if (value != null) {
-                println(assembleLine(element, value.toString()));
+            if (value == null) {
+                return;
             }
+            String valueString = value.toString();
+            if (valueString.isEmpty()) {
+                return;
+            }
+            println(assembleLine(element, valueString));
         }
 
         public void printOptionalElement(String element, boolean value) {
             if (value) {
                 printElement(element);
             }
+        }
+
+        public void printElements(String element, Collection<String> values) {
+            for ( String value : values ) {
+                printElement(element, value);
+            }
+        }
+
+        public void printElements(String element, String[] values) {
+            for ( String value : values ) {
+                printElement(element, value);
+            }
+        }
+
+        private final StringBuilder builder = new StringBuilder();
+
+        public void printDelimited(String element, String delimiter, Collection<String> values) {
+            if ( (values == null) || values.isEmpty() ) {
+                return;
+            }
+
+            boolean isFirst = true;
+            for ( String value : values ) {
+                if ( isFirst ) {
+                    isFirst = false;
+                } else {
+                    builder.append(delimiter);
+                }
+                builder.append(value);
+            }
+
+            String line = builder.toString();
+            builder.setLength(0);
+
+            printElement(element, line);
         }
 
         public void withinElement(String element, Runnable action) {
