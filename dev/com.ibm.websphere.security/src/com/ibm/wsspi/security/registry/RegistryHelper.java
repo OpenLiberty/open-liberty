@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,7 +26,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
  * Provides methods to retrieve user registry information
- * 
+ *
  * @author International Business Machines Corp.
  * @version WAS 8.5
  * @since WAS 7.0
@@ -34,8 +34,8 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  */
 public class RegistryHelper {
     private static final TraceComponent tc = Tr.register(RegistryHelper.class);
-    private final static AtomicServiceReference<WSSecurityService> wsSecurityServiceRef =
-                    new AtomicServiceReference<WSSecurityService>(WSSecurityService.KEY_WS_SECURITY_SERVICE);
+    private static volatile RegistryHelper ACTIVE_INSTANCE = null;
+    private final AtomicServiceReference<WSSecurityService> wsSecurityServiceRef = new AtomicServiceReference<WSSecurityService>(WSSecurityService.KEY_WS_SECURITY_SERVICE);
 
     public void setWsSecurityService(ServiceReference<WSSecurityService> reference) {
         wsSecurityServiceRef.setReference(reference);
@@ -46,25 +46,27 @@ public class RegistryHelper {
     }
 
     public void activate(ComponentContext cc) {
+        ACTIVE_INSTANCE = this;
         wsSecurityServiceRef.activate(cc);
     }
 
     public void deactivate(ComponentContext cc) {
         wsSecurityServiceRef.deactivate(cc);
+        ACTIVE_INSTANCE = null;
     }
 
     /**
      * Gets the UserRegistry object for the given realm. If the realm name is null
      * returns the active registry. If the realm is not valid, or security is not enabled,
      * or no registry is configured, returns null.
-     * 
+     *
      * @param realmName
      * @return UserRegistry object
      * @throws WSSecurityException if there is an internal error
      */
     public static UserRegistry getUserRegistry(String realmName) throws WSSecurityException {
         try {
-            WSSecurityService ss = wsSecurityServiceRef.getService();
+            WSSecurityService ss = getWSSecurityService();
             if (ss == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "No WSSecurityService, returning null");
@@ -93,14 +95,14 @@ public class RegistryHelper {
      * If all realms are trusted, it will return "*" in the List
      * This method requires that the realm names are unique.
      * </p>
-     * 
+     *
      * @param String (the realm name - null implies context based realm)
      * @return java.util.List<String> of trusted realms
      * @exception WSSecurityException
      **/
     public static List<String> getInboundTrustedRealms(String realmName) throws WSSecurityException {
         try {
-            WSSecurityService ss = wsSecurityServiceRef.getService();
+            WSSecurityService ss = getWSSecurityService();
             if (ss == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "No WSSecurityService, returning null");
@@ -122,13 +124,13 @@ public class RegistryHelper {
      * Determine if the inbound realm is one of the trusted realms of the
      * specified local realm. If the local realm is null the realm of the
      * current active user registry will be used.
-     * 
+     *
      * @param inboundRealm
      * @param localRealm
      * @return true - inbound realm is trusted, false - inbound reamn is not trusted
      */
     public static boolean isRealmInboundTrusted(String inboundRealm, String localRealm) {
-        WSSecurityService ss = wsSecurityServiceRef.getService();
+        WSSecurityService ss = getWSSecurityService();
         if (ss == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "No WSSecurityService, returning true");
@@ -137,5 +139,10 @@ public class RegistryHelper {
         } else {
             return ss.isRealmInboundTrusted(inboundRealm, localRealm);
         }
+    }
+
+    private static WSSecurityService getWSSecurityService() {
+        RegistryHelper current = ACTIVE_INSTANCE;
+        return current == null ? null : current.wsSecurityServiceRef.getService();
     }
 }

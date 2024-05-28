@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -56,6 +56,8 @@ public class ConfigUtils {
 
     private static TraceComponent tc = Tr.register(ConfigUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
+    private static volatile ConfigUtils ACTIVE_INSTANCE = null;
+
     protected static final List<OidcBaseClient> clientsList = Collections.synchronizedList(new ArrayList<OidcBaseClient>());
     protected static final Map<String, List<OAuth20Parameter>> providerConfigMap = Collections.synchronizedMap(new HashMap<String, List<OAuth20Parameter>>());
     protected static final Map<String, ClassLoader> providerPluginClassLoaderMap = Collections.synchronizedMap(new HashMap<String, ClassLoader>());
@@ -82,9 +84,9 @@ public class ConfigUtils {
     public static final String KEY_ID = "id";
     public static final String KEY_OIDC_SERVER_CONFIG = "oidcServerConfig";
     private static final String KEY_VMM_SERVICE = "vmmService";
-    static AtomicServiceReference<VMMService> vmmServiceRef = new AtomicServiceReference<VMMService>(KEY_VMM_SERVICE);
+    private final AtomicServiceReference<VMMService> vmmServiceRef = new AtomicServiceReference<VMMService>(KEY_VMM_SERVICE);
 
-    private final static ConcurrentServiceReferenceMap<String, OidcServerConfig> oidcServerConfigRef = new ConcurrentServiceReferenceMap<String, OidcServerConfig>(KEY_OIDC_SERVER_CONFIG);
+    private final ConcurrentServiceReferenceMap<String, OidcServerConfig> oidcServerConfigRef = new ConcurrentServiceReferenceMap<String, OidcServerConfig>(KEY_OIDC_SERVER_CONFIG);
     private static boolean bOidcUpdated = false;
     private static HashMap<String, OidcServerConfig> oidcMap = new HashMap<String, OidcServerConfig>();
 
@@ -97,6 +99,7 @@ public class ConfigUtils {
 
     @Activate
     public void activate(ComponentContext cc) {
+        ACTIVE_INSTANCE = this;
         synchronized (oidcServerConfigRef) {
             oidcServerConfigRef.activate(cc);
             bOidcUpdated = true;
@@ -111,6 +114,7 @@ public class ConfigUtils {
             bOidcUpdated = true;
         }
         vmmServiceRef.deactivate(cc);
+        ACTIVE_INSTANCE = null;
     }
 
     @Reference(service = OidcServerConfig.class, name = KEY_OIDC_SERVER_CONFIG, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.GREEDY)
@@ -191,10 +195,14 @@ public class ConfigUtils {
      */
     public static OidcServerConfig getOidcServerConfigForOAuth20Provider(String oauth20providerName) {
         OidcServerConfig oidcServerConfig = null;
-        synchronized (oidcServerConfigRef) {
+        ConcurrentServiceReferenceMap<String, OidcServerConfig> current = getOidcServerConfigRef();
+        if (current == null) {
+            return null;
+        }
+        synchronized (current) {
             if (bOidcUpdated) {
                 ConfigUtils configUtils = new ConfigUtils();
-                oidcMap = configUtils.checkDuplicateOAuthProvider(oidcServerConfigRef);
+                oidcMap = configUtils.checkDuplicateOAuthProvider(current);
                 bOidcUpdated = false;
             }
         }
@@ -208,6 +216,11 @@ public class ConfigUtils {
             }
         }
         return oidcServerConfig;
+    }
+
+    private static ConcurrentServiceReferenceMap<String, OidcServerConfig> getOidcServerConfigRef() {
+        ConfigUtils current = ACTIVE_INSTANCE;
+        return current == null ? null : current.oidcServerConfigRef;
     }
 
     /**
@@ -380,7 +393,8 @@ public class ConfigUtils {
     }
 
     public static synchronized VMMService getVMMService() {
-        return vmmServiceRef.getService();
+        ConfigUtils current = ACTIVE_INSTANCE;
+        return current == null ? null : current.vmmServiceRef.getService();
     }
 
     public static synchronized void setJwtAccessTokenMediatorService(ConcurrentServiceReferenceMap<String, JwtAccessTokenMediator> jwtAccessTokenMediatorServiceRef) {

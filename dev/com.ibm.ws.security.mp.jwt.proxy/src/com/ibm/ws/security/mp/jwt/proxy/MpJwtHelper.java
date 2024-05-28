@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -39,8 +39,9 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 @Component(service = MpJwtHelper.class, name = "MpJwtHelper", immediate = true, property = "service.vendor=IBM")
 public class MpJwtHelper {
     private static final TraceComponent tc = Tr.register(MpJwtHelper.class);
+    private static volatile MpJwtHelper ACTIVE_INSTANCE = null;
     static final String JSON_WEB_TOKEN_UTIL_REF = "JsonWebTokenUtil";
-    protected final static AtomicServiceReference<JsonWebTokenUtil> JsonWebTokenUtilRef = new AtomicServiceReference<JsonWebTokenUtil>(
+    protected final AtomicServiceReference<JsonWebTokenUtil> JsonWebTokenUtilRef = new AtomicServiceReference<JsonWebTokenUtil>(
             JSON_WEB_TOKEN_UTIL_REF);
 
     public MpJwtHelper() {
@@ -85,15 +86,17 @@ public class MpJwtHelper {
     }
 
     private static JsonWebTokenUtil getJsonWebTokenUtil() {
-        return JsonWebTokenUtilRef.getService();
+        MpJwtHelper current = ACTIVE_INSTANCE;
+        return current == null ? null : current.JsonWebTokenUtilRef.getService();
     }
 
     /**
-     * answer if the mp-jwt feature behind this proxy is active or not. Since JsonWebTokens are part of that, if we can
+     * answer if the mp-jwt feature behind this proxy is active or not. Since
+     * JsonWebTokens are part of that, if we can
      * get it, feature is active.
      */
     public static boolean isMpJwtFeatureActive() {
-        return (JsonWebTokenUtilRef.getService() != null);
+        return getJsonWebTokenUtil() != null;
     }
 
     @Reference(service = JsonWebTokenUtil.class, name = JSON_WEB_TOKEN_UTIL_REF, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
@@ -107,6 +110,7 @@ public class MpJwtHelper {
 
     @Activate
     protected void activate(ComponentContext cc) {
+        ACTIVE_INSTANCE = this;
         JsonWebTokenUtilRef.activate(cc);
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "MpJwtHelper service is activated");
@@ -123,5 +127,6 @@ public class MpJwtHelper {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "MpJwtHelper service is deactivated");
         }
+        ACTIVE_INSTANCE = null;
     }
 }

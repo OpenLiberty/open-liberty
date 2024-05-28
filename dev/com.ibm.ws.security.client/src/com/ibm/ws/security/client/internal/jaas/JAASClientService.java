@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,11 +46,9 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
  * Service to let the JDK know which JAAS login configuration file to use
  */
 
-@Component(service = JAASClientService.class,
-                immediate = true,
-                configurationPolicy = ConfigurationPolicy.IGNORE,
-                property = "service.vendor=IBM")
+@Component(service = JAASClientService.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
 public class JAASClientService {
+    private static volatile JAASClientService ACTIVE_INSTANCE = null;
     private static final TraceComponent tc = Tr.register(JAASClientService.class);
 
     protected static final String KEY_JAAS_LOGIN_CONTEXT_ENTRY = "jaasLoginContextEntry";
@@ -62,9 +60,9 @@ public class JAASClientService {
     public static final String KEY_CALLBACK_PROVIDER = "callbackHandlerProvider";
     public static final String KEY_CLIENT_AUTHN_SERVICE = "clientAuthenticationService";
 
-    private static final AtomicServiceReference<ClientAuthenticationService> clientauthenticationServiceRef = new AtomicServiceReference<ClientAuthenticationService>(KEY_CLIENT_AUTHN_SERVICE);
-    private static final AtomicServiceReference<JAASConfigurationFactory> jaasConfigurationFactoryRef = new AtomicServiceReference<JAASConfigurationFactory>(KEY_JAAS_CONFIG_FACTORY);
-    private static final AtomicServiceReference<CallbackHandlerProvider> callbackHandlerRef = new AtomicServiceReference<CallbackHandlerProvider>(KEY_CALLBACK_PROVIDER);
+    private final AtomicServiceReference<ClientAuthenticationService> clientauthenticationServiceRef = new AtomicServiceReference<ClientAuthenticationService>(KEY_CLIENT_AUTHN_SERVICE);
+    private final AtomicServiceReference<JAASConfigurationFactory> jaasConfigurationFactoryRef = new AtomicServiceReference<JAASConfigurationFactory>(KEY_JAAS_CONFIG_FACTORY);
+    private final AtomicServiceReference<CallbackHandlerProvider> callbackHandlerRef = new AtomicServiceReference<CallbackHandlerProvider>(KEY_CALLBACK_PROVIDER);
     /** Map of login context entries -- BY ID: login contexts are only in this list when all of their login modules are found */
     protected ConcurrentServiceReferenceMap<String, JAASLoginContextEntry> jaasLoginContextEntries = new ConcurrentServiceReferenceMap<String, JAASLoginContextEntry>(KEY_JAAS_LOGIN_CONTEXT_ENTRY);
 
@@ -82,12 +80,7 @@ public class JAASClientService {
     protected Map<String, Object> properties;
     private JAASConfigurationFactory jaasConfigurationFactory;
 
-    @Reference(service = JAASLoginContextEntry.class,
-                    target = "(id=*)",
-                    name = KEY_JAAS_LOGIN_CONTEXT_ENTRY,
-                    cardinality = ReferenceCardinality.MULTIPLE,
-                    policy = ReferencePolicy.DYNAMIC,
-                    policyOption = ReferencePolicyOption.GREEDY)
+    @Reference(service = JAASLoginContextEntry.class, target = "(id=*)", name = KEY_JAAS_LOGIN_CONTEXT_ENTRY, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setJaasLoginContextEntry(ServiceReference<JAASLoginContextEntry> ref) {
         processContextEntry(ref);
     }
@@ -104,12 +97,7 @@ public class JAASClientService {
         modified(properties);
     }
 
-    @Reference(service = JAASLoginModuleConfig.class,
-                    target = "(id=*)",
-                    name = KEY_JAAS_LOGIN_MODULE_CONFIG,
-                    cardinality = ReferenceCardinality.MULTIPLE,
-                    policy = ReferencePolicy.DYNAMIC,
-                    policyOption = ReferencePolicyOption.GREEDY)
+    @Reference(service = JAASLoginModuleConfig.class, target = "(id=*)", name = KEY_JAAS_LOGIN_MODULE_CONFIG, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setJaasLoginModuleConfig(ServiceReference<JAASLoginModuleConfig> ref) {
         String pid = (String) ref.getProperty(KEY_SERVICE_PID);
         jaasLoginModuleConfigs.putReference(pid, ref);
@@ -145,7 +133,7 @@ public class JAASClientService {
      * <li>If there are module pids, and some can't be found, add the entry to the pending list.
      * <li>If all is well, add it to the map.
      * </ul>
-     * 
+     *
      * @param ref JAASLoginContextEntry service reference
      */
     protected void processContextEntry(ServiceReference<JAASLoginContextEntry> ref) {
@@ -204,7 +192,7 @@ public class JAASClientService {
      * Iterate through context entries, find context entries
      * that are now missing required login modules -- remove them
      * and add to the pending list.
-     * 
+     *
      * @param moduleId login module config id
      */
     private synchronized void removedLoginModule() {
@@ -259,8 +247,7 @@ public class JAASClientService {
         jaasConfigurationFactoryRef.unsetReference(ref);
     }
 
-    @Reference(service = CallbackHandlerProvider.class,
-                    name = KEY_CALLBACK_PROVIDER)
+    @Reference(service = CallbackHandlerProvider.class, name = KEY_CALLBACK_PROVIDER)
     public void setCallbackHandlerProvider(ServiceReference<CallbackHandlerProvider> ref) {
         callbackHandlerRef.setReference(ref);
     }
@@ -269,8 +256,7 @@ public class JAASClientService {
         callbackHandlerRef.unsetReference(ref);
     }
 
-    @Reference(service = ClientAuthenticationService.class,
-                    name = KEY_CLIENT_AUTHN_SERVICE)
+    @Reference(service = ClientAuthenticationService.class, name = KEY_CLIENT_AUTHN_SERVICE)
     public void setClientAuthenticationService(ServiceReference<ClientAuthenticationService> ref) {
         clientauthenticationServiceRef.setReference(ref);
     }
@@ -281,6 +267,7 @@ public class JAASClientService {
 
     @Activate
     public void activate(ComponentContext cc, Map<String, Object> properties) {
+        ACTIVE_INSTANCE = this;
         jaasLoginModuleConfigs.activate(cc);
         jaasLoginContextEntries.activate(cc);
         jaasChangeNotifierService.activate(cc);
@@ -296,11 +283,11 @@ public class JAASClientService {
         this.properties = properties;
         jaasConfigurationFactory = jaasConfigurationFactoryRef.getService();
         if (jaasConfigurationFactory != null) {
-            // Register all the default JAAS configuration entries 
+            // Register all the default JAAS configuration entries
             jaasConfigurationFactory.installJAASConfiguration(jaasLoginContextEntries);
 
             synchronized (pendingContextEntryRefs) {
-                // If we have unsatisfied context entries... 
+                // If we have unsatisfied context entries...
                 if (!pendingContextEntryRefs.isEmpty()) {
                     HashSet<String> missingModules = new HashSet<String>();
                     // Issue warnings for entries with modules that can't be found
@@ -353,24 +340,27 @@ public class JAASClientService {
         jaasConfigurationFactoryRef.deactivate(cc);
 
         Configuration.setConfiguration(null);
+        ACTIVE_INSTANCE = null;
     }
 
     /**
      * Get the service for getting the callback handler specified in the client
      * application's deployment descriptor
-     * 
+     *
      * @return the CallbackHandlerProvider service
      */
     public static CallbackHandlerProvider getCallbackHandlerProvider() {
-        return callbackHandlerRef.getService();
+        JAASClientService current = JAASClientService.ACTIVE_INSTANCE;
+        return current == null ? null : current.callbackHandlerRef.getService();
     }
 
     /**
      * Get the service for creating the basic auth subject on the client side
-     * 
+     *
      * @return the ClientAuthenticationService service
      */
     public static ClientAuthenticationService getClientAuthenticationService() {
-        return clientauthenticationServiceRef.getServiceWithException();
+        JAASClientService current = JAASClientService.ACTIVE_INSTANCE;
+        return current == null ? null : current.clientauthenticationServiceRef.getServiceWithException();
     }
 }
