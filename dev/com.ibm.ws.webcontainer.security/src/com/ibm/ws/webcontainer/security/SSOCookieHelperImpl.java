@@ -177,13 +177,17 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
                     requestState.setCookieAttributes(cookieName, "Partitioned="+partitioned.toString());
                 }
             }
-        } else if (sameSite == null) {
+        } else {
             Boolean partitioned = config.getPartitionedCookie();
             if (partitioned!=null) {
                 WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
                 // if SS has no value, then the WC wants us to pass on our partitioned value if
                 // one was specified by the user.  Even though Partitioned is an attribute and not a N/V pair,
                 // the WC wants us to set the attribute true/false and they'll translate it.
+                // 
+                // We could end up with Partitioned=true on a cookie with no SS setting.  This happens when:
+                // SS is disabled in WebAppSecurity.  SS is disabled in channel.  Partitioned=true in WebAppSecurity
+                // This behavior is expected at this time.
                 requestState.setCookieAttributes(cookieName, "Partitioned="+partitioned.toString());
             }
 		}

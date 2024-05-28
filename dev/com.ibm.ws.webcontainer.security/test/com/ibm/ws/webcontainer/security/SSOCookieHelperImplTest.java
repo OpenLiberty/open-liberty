@@ -179,7 +179,7 @@ public class SSOCookieHelperImplTest {
                 will(returnValue(new StringBuffer(TEST_URL_STRING)));
                 allowing(config).getSameSiteCookie();
                 will(returnValue("Disabled"));
-                one(config).isUseContextRootForSSOCookiePath();
+                allowing(config).isUseContextRootForSSOCookiePath();
             }
         });
         Subject subject = new Subject();

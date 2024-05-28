@@ -213,10 +213,12 @@ public class ReferrerURLCookieHandlerTest {
                 will(returnValue(true));
                 allowing(webAppSecConfig).getHttpOnlyCookies();
                 will(returnValue(true));
-                one(webAppSecConfig).getSSORequiresSSL();
+                allowing(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(true));
                 allowing(webAppSecConfig).getSameSiteCookie();
                 will(returnValue("Disabled"));
+                allowing(webAppSecConfig).getPartitionedCookie();
+                will(returnValue(null));
             }
         });
         AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, (Subject) null);
@@ -690,10 +692,12 @@ public class ReferrerURLCookieHandlerTest {
                 allowing(webAppSecConfig).isIncludePathInWASReqURL();
                 allowing(webAppSecConfig).getHttpOnlyCookies();
                 will(returnValue(true));
-                one(webAppSecConfig).getSSORequiresSSL();
+                allowing(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(true));
                 allowing(webAppSecConfig).getSameSiteCookie();
                 will(returnValue("Disabled"));
+                allowing(webAppSecConfig).getPartitionedCookie();
+                will(returnValue(null));
             }
         });
         String url = "http://site.com:80/page";
