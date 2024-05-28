@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -56,8 +56,6 @@ public class DataTest extends FATServletClient {
         // Get driver type
         DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
         server.addEnvVar("DB_DRIVER", type.getDriverName());
-        server.addEnvVar("DB_USER", testContainer.getUsername());
-        server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
 
         // Set up server DataSource properties
         DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);

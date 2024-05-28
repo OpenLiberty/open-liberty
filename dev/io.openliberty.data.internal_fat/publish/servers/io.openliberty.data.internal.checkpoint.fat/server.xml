@@ -47,7 +47,11 @@
   </dataSource>
 
   <library id="JDBCLibrary">
-    <fileset dir="${shared.resource.dir}/jdbc" includes="derby.jar"/>
+    <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
   </library>
+
+  <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codeBase="${server.config.dir}/apps/ProviderTestApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+  <javaPermission codeBase="${server.config.dir}/apps/ProviderTestApp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
 
 </server>
