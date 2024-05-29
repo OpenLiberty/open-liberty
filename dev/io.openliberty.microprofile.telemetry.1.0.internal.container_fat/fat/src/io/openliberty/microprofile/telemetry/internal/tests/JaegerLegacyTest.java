@@ -43,6 +43,7 @@ import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryCl
 public class JaegerLegacyTest extends JaegerBaseTest {
 
     public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
+    //The native Jaeger exporter has been discontinued and is not supported in MpTelemetry-2.0. OTLP is used for Jaeger instead
     public static RepeatTests repeat = FATSuite.telemetry10and11Repeats(SERVER_NAME);
 
     @ClassRule
