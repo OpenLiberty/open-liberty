@@ -13,6 +13,7 @@
 package test.jakarta.data.jpa.web;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -34,7 +35,9 @@ public interface TaxPayers extends DataRepository<TaxPayer, Long> {
     @Query("SELECT bankAccounts WHERE ssn=?1")
     Set<AccountId> findAccountsBySSN(long ssn);
 
-    Stream<AccountId> findBankAccountsByFilingStatus(TaxPayer.FilingStatus status);
+    @OrderBy("numDependents")
+    @OrderBy("ssn")
+    List<Set<AccountId>> findBankAccountsByFilingStatus(TaxPayer.FilingStatus status);
 
     @OrderBy("income")
     @OrderBy("ssn")
