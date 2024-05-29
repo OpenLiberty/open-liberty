@@ -16,22 +16,28 @@ import java.net.URL;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testcontainers.Testcontainers;
+import org.testcontainers.containers.BrowserWebDriverContainer;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf.container.fat.FATSuite;
 import com.ibm.ws.jsf.container.fat.utils.JSFUtils;
+import com.ibm.ws.jsf23.fat.selenium_util.CustomDriver;
+import com.ibm.ws.jsf23.fat.selenium_util.ExtendedWebDriver;
+import com.ibm.ws.jsf23.fat.selenium_util.WebPage;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -55,6 +61,13 @@ public class JSF23WebSocketTests extends FATServletClient {
     @Server("jsf.container.2.3_fat.ws")
     public static LibertyServer jsf23CDIWSOCServer;
 
+    @ClassRule
+    public static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
+                    .withAccessToHost(true)
+                    .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
+
+    private static ExtendedWebDriver driver;
+
     @BeforeClass
     public static void setup() throws Exception {
 
@@ -66,6 +79,10 @@ public class JSF23WebSocketTests extends FATServletClient {
 
         // Start the server and use the class name so we can find logs easily.
         jsf23CDIWSOCServer.startServer(JSF23WebSocketTests.class.getSimpleName() + ".log");
+        
+        Testcontainers.exposeHostPorts(jsf23CDIWSOCServer.getHttpDefaultPort(), jsf23CDIWSOCServer.getHttpDefaultSecurePort());
+
+        driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
     }
 
     @AfterClass
@@ -81,6 +98,15 @@ public class JSF23WebSocketTests extends FATServletClient {
         jsf23CDIWSOCServer.setMarkToEndOfLog();
     }
 
+    /*
+     * Clear cookies for the selenium webdriver, so that session don't carry over between tests
+     */
+    @After
+    public void clearCookies()
+    {
+        driver.getRemoteWebDriver().manage().deleteAllCookies();
+    }
+
     /**
      * Test to ensure that the <f:websocket> component actually works properly.
      * The test will ensure that a message is pushed from server to client.
@@ -91,55 +117,47 @@ public class JSF23WebSocketTests extends FATServletClient {
      */
     @Test
     public void testPushWebsocket() throws Exception {
-        try (WebClient webClient = new WebClient()) {
-            webClient.getOptions().setThrowExceptionOnScriptError(false);
-
-            // Construct the URL for the test
-            URL url;
-            if (JakartaEEAction.isEE10OrLaterActive()) {
-                url = JSFUtils.createHttpUrl(jsf23CDIWSOCServer, APP_NAME, "faces40/PushWebSocketTest.jsf");
-            } else {
-                url = JSFUtils.createHttpUrl(jsf23CDIWSOCServer, APP_NAME, "jsf23/PushWebSocketTest.jsf");
-            }
-
-            HtmlPage testPushWebSocketPage = (HtmlPage) webClient.getPage(url);
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), testPushWebSocketPage.asText());
-            Log.info(c, name.getMethodName(), testPushWebSocketPage.asXml());
-
-            // Verify that the page contains the expected messages.
-            assertTrue(testPushWebSocketPage.asText().contains("JSF 2.3 WebSocket - Test message pushed from server to client"));
-            assertTrue(testPushWebSocketPage.asText().contains("Called onopen listener"));
-
-            String result1 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was opened successfully!");
-
-            // Verify that the correct message is found in the logs
-            assertNotNull("Message not found. Channel was not opened succesfully.", result1);
-
-            // Get the form that we are dealing with
-            HtmlForm form = testPushWebSocketPage.getFormByName("form1");
-
-            // Get the button to click
-            HtmlSubmitInput sendButton = form.getInputByName("form1:sendButton");
-
-            // Now click the button and get the resulted page.
-            HtmlPage resultPage = sendButton.click();
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), resultPage.asText());
-            Log.info(c, name.getMethodName(), resultPage.asXml());
-
-            // Verify that the page contains the expected messages.
-            assertTrue(resultPage.asText().contains("JSF 2.3 WebSocket - Test message pushed from server to client"));
-            assertTrue(JSFUtils.waitForPageResponse(resultPage, "Message from the server via push!"));
-            assertTrue(JSFUtils.waitForPageResponse(resultPage, "Called onclose listener"));
-
-            String result2 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
-
-            // Verify that the correct message is found in the logs
-            assertNotNull("Message not found. Channel was not closed succesfully.", result2);
+        // Construct the URL for the test
+        String url;
+        if (JakartaEEAction.isEE10OrLaterActive()) {
+            url = JSFUtils.createSeleniumURLString(jsf23CDIWSOCServer, APP_NAME, "faces40/PushWebSocketTest.jsf");
+        } else {
+            url = JSFUtils.createSeleniumURLString(jsf23CDIWSOCServer, APP_NAME, "jsf23/PushWebSocketTest.jsf");
         }
+
+        WebPage page = new WebPage(driver);
+        page.get(url);
+        page.waitForPageToLoad();
+
+        // Log the page for debugging if necessary in the future.
+        Log.info(c, name.getMethodName(), page.getPageSource());
+
+        // Verify that the page contains the expected messages.
+        assertTrue(page.isInPage("JSF 2.3 WebSocket - Test message pushed from server to client"));
+        assertTrue(page.isInPage("Called onopen listener"));
+
+        String result1 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was opened successfully!");
+
+        // Verify that the correct message is found in the logs
+        assertNotNull("Message not found. Channel was not opened succesfully.", result1);
+
+        // Now click the button and get the resulted page.
+        page.findElement(By.id("form1:sendButton")).click();
+        page.waitForCondition(driver -> page.isInPage("Message from the server via push!")); // Wait for text to appear rather than some default time
+        page.waitForCondition(driver -> page.isInPage("Called onclose listener"));
+
+        // Log the page for debugging if necessary in the future.
+        Log.info(c, name.getMethodName(), page.getPageSource());
+
+        // Verify that the page contains the expected messages.
+        assertTrue(page.isInPage("JSF 2.3 WebSocket - Test message pushed from server to client"));
+        assertTrue(page.isInPage("Message from the server via push!"));
+        assertTrue(page.isInPage("Called onclose listener"));
+
+        String result2 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
+
+        // Verify that the correct message is found in the logs
+        assertNotNull("Message not found. Channel was not closed succesfully.", result2);
     }
 
     /**
@@ -151,56 +169,47 @@ public class JSF23WebSocketTests extends FATServletClient {
      */
     @Test
     public void testOpenAndCloseWebsocket() throws Exception {
-        try (WebClient webClient = new WebClient()) {
-            webClient.getOptions().setThrowExceptionOnScriptError(false);
-
-            // Construct the URL for the test
-            URL url;
-            if (JakartaEEAction.isEE10OrLaterActive()) {
-                url = JSFUtils.createHttpUrl(jsf23CDIWSOCServer, APP_NAME, "faces40/OpenCloseWebSocketTest.jsf");
-            } else {
-                url = JSFUtils.createHttpUrl(jsf23CDIWSOCServer, APP_NAME, "jsf23/OpenCloseWebSocketTest.jsf");
-            }
-
-            HtmlPage testOpenCloseWebSocketPage = (HtmlPage) webClient.getPage(url);
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), testOpenCloseWebSocketPage.asText());
-            Log.info(c, name.getMethodName(), testOpenCloseWebSocketPage.asXml());
-
-            // Verify that the page contains the expected messages.
-            assertTrue(testOpenCloseWebSocketPage.asText()
-                            .contains("JSF 2.3 WebSocket - Test that onopen and onclose listener can be triggered manually, that is, when connected attribute is set to false"));
-
-            // Get the form that we are dealing with
-            HtmlForm form = testOpenCloseWebSocketPage.getFormByName("form1");
-
-            // Get the buttons that open and close the push connection
-            HtmlSubmitInput openButton = form.getInputByName("form1:openButton");
-            HtmlSubmitInput closeButton = form.getInputByName("form1:closeButton");
-
-            // Now click the open button and get the resulted page.
-            HtmlPage openPage = openButton.click();
-
-            // Use JSFUtils as this fails intermittently waiting for background JavaScript.
-            assertTrue(JSFUtils.waitForPageResponse(openPage, "Called onopen listener"));
-
-            String result1 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was opened successfully!");
-
-            // Verify that the correct message is found in the logs
-            assertNotNull("Message not found. Channel was not opened succesfully.", result1);
-
-            // Now click the close button and get the resulted page.
-            HtmlPage closePage = closeButton.click();
-
-            // Use JSFUtils as this fails intermittently waiting for background JavaScript.
-            assertTrue(JSFUtils.waitForPageResponse(closePage, "Called onclose listener"));
-
-            String result2 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
-
-            // Verify that the correct message is found in the logs
-            assertNotNull("Message not found. Channel was not closed succesfully.", result2);
+        // Construct the URL for the test
+        String url;
+        if (JakartaEEAction.isEE10OrLaterActive()) {
+            url = JSFUtils.createSeleniumURLString(jsf23CDIWSOCServer, APP_NAME, "faces40/OpenCloseWebSocketTest.jsf");
+        } else {
+            url = JSFUtils.createSeleniumURLString(jsf23CDIWSOCServer, APP_NAME, "jsf23/OpenCloseWebSocketTest.jsf");
         }
+
+        WebPage page = new WebPage(driver);
+        page.get(url);
+        page.waitForPageToLoad();
+
+        // Log the page for debugging if necessary in the future.
+        Log.info(c, name.getMethodName(), page.getPageSource());
+
+        // Verify that the page contains the expected messages.
+        assertTrue(page.isInPage("JSF 2.3 WebSocket - Test that onopen and onclose listener can be triggered manually, that is, when connected attribute is set to false"));
+
+        // Now click the open button and get the resulted page.
+        page.findElement(By.id("form1:openButton")).click();
+
+        // Wait for condition as this fails intermittently waiting for background JavaScript.
+        page.waitForCondition(driver -> page.isInPage("Called onopen listener"));
+        assertTrue(page.isInPage("Called onopen listener"));
+
+        String result1 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was opened successfully!");
+
+        // Verify that the correct message is found in the logs
+        assertNotNull("Message not found. Channel was not opened succesfully.", result1);
+
+        // Now click the close button and get the resulted page.
+        page.findElement(By.id("form1:closeButton")).click();
+
+        // Use JSFUtils as this fails intermittently waiting for background JavaScript.
+        page.waitForCondition(driver -> page.isInPage("Called onclose listener"));
+        assertTrue(page.isInPage("Called onclose listener"));
+        
+        String result2 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
+
+        // Verify that the correct message is found in the logs
+        assertNotNull("Message not found. Channel was not closed succesfully.", result2);
     }
 
 }

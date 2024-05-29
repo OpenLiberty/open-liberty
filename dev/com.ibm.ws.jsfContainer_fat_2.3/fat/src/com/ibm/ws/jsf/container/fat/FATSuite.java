@@ -18,6 +18,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.ws.fat.util.FatLogHandler;
 import com.ibm.ws.jsf.container.fat.tests.CDIFlowsTests;
@@ -30,6 +31,7 @@ import com.ibm.ws.jsf.container.fat.tests.JSF23CDIGeneralTests;
 import com.ibm.ws.jsf.container.fat.tests.JSF23WebSocketTests;
 import com.ibm.ws.jsf.container.fat.tests.JSFContainerTest;
 
+import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -80,10 +82,18 @@ public class FATSuite {
     public static final String MOJARRA_API_IMP_40 = "publish/files/mojarra40/jakarta.faces-4.0.0.jar";
     public static final String MYFACES_API = "publish/files/myfaces/myfaces-api-2.3.10.jar";
     public static final String MYFACES_IMP = "publish/files/myfaces/myfaces-impl-2.3.10.jar";
-    public static final String MYFACES_IMP_40 = "publish/files/myfaces40//myfaces-impl-4.0.0-RC4.jar";
+    public static final String MYFACES_IMP_40 = "publish/files/myfaces40//myfaces-impl-4.0.1.jar";
     // For ErrorPathsTest#testBadImplVersion_MyFaces Test (apps need the correct api since the tests checks for a bad implementation)
     public static final String MYFACES_API_30 = "publish/files/myfaces30/myfaces-api-3.0.2.jar";
-    public static final String MYFACES_API_40 = "publish/files/myfaces40/myfaces-api-4.0.0-RC4.jar";
+    public static final String MYFACES_API_40 = "publish/files/myfaces40/myfaces-api-4.0.1.jar";
+
+    public static DockerImageName getChromeImage() {
+        if (FATRunner.ARM_ARCHITECTURE) {
+            return DockerImageName.parse("seleniarm/standalone-chromium:4.8.3").asCompatibleSubstituteFor("selenium/standalone-chrome");
+        } else {
+            return DockerImageName.parse("selenium/standalone-chrome:4.8.3");
+        }
+    }
 
     public static WebArchive addMojarra(WebArchive app) throws Exception {
         if (JakartaEEAction.isEE10OrLaterActive()) {

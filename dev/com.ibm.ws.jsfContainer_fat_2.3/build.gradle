@@ -21,7 +21,11 @@ configurations {
     myfaces40
 }
 
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
 dependencies {
+    requiredLibs 'org.seleniumhq.selenium:selenium-java:4.8.3'
+    requiredLibs 'com.google.guava:guava:32.0.1-jre'
     requiredLibs 'net.sourceforge.cssparser:cssparser:0.9.23'
     requiredLibs 'net.sourceforge.htmlunit:htmlunit:2.20'
     requiredLibs 'net.sourceforge.htmlunit:htmlunit-core-js:2.17'
@@ -94,8 +98,8 @@ dependencies {
       'org.apache.myfaces.core:myfaces-impl:3.0.2'
     mojarra40 'org.glassfish:jakarta.faces:4.0.0'
     // Do not update since newer JS (in MyFaces 4.0.0-RC5+) is not supported 
-    myfaces40 'org.apache.myfaces.core:myfaces-api:4.0.0-RC4',
-      'org.apache.myfaces.core:myfaces-impl:4.0.0-RC4'
+    myfaces40 'org.apache.myfaces.core:myfaces-api:4.0.1',
+      'org.apache.myfaces.core:myfaces-impl:4.0.1'
     }
 
 task addMojarra(type: Copy) {
