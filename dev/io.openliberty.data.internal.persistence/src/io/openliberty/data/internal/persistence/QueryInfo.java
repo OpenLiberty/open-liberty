@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.stream.BaseStream;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -112,6 +113,13 @@ public class QueryInfo {
     boolean hasWhere;
 
     /**
+     * True if the repository method return type is Optional<Type>,
+     * CompletableFuture<Optional<Type>>, or CompletionStage<Optional<Type>>.
+     * Otherwise false.
+     */
+    final boolean isOptional;
+
+    /**
      * JPQL for the query. Null if a save operation.
      */
     String jpql;
@@ -149,6 +157,12 @@ public class QueryInfo {
     public final Method method;
 
     /**
+     * The type of data structure that returns multiple results for this query.
+     * Null if the query return type limits to single results.
+     */
+    final Class<?> multiType;
+
+    /**
      * Number of parameters to the JPQL query.
      */
     int paramCount;
@@ -181,19 +195,10 @@ public class QueryInfo {
     final Class<?> returnArrayType;
 
     /**
-     * Return type of the repository method return value,
-     * split into levels of depth for each type parameter and array component.
-     * This is useful in cases such as
-     * <code>&#64;Query(...) Optional&lt;Float&gt; priceOf(String productId)</code>
-     * which resolves to { Optional.class, Float.class }
-     * and
-     * <code>CompletableFuture&lt;Stream&lt;Product&gt&gt; findByNameLike(String namePattern)</code>
-     * which resolves to { CompletableFuture.class, Stream.class, Product.class }
-     * and
-     * <code>CompletionStage&lt;Product[]&gt; findByNameIgnoreCaseLike(String namePattern)</code>
-     * which resolves to { CompletionStage.class, Product[].class, Product.class }
+     * The type of a single result obtained by the query.
+     * For example, a single result of a query that returns List<MyEntity> is of the type MyEntity.
      */
-    final List<Class<?>> returnTypeAtDepth;
+    final Class<?> singleType;
 
     /**
      * Ordered list of Sort criteria, which can be defined statically via the OrderBy annotation or keyword,
@@ -222,13 +227,85 @@ public class QueryInfo {
     boolean validateResult;
 
     /**
+     * Constructor for the withJPQL method.
+     */
+    private QueryInfo(Method method, Class<?> entityParamType, boolean isOptional,
+                      Class<?> multiType, Class<?> returnArrayType, Class<?> singleType) {
+        this.method = method;
+        this.entityParamType = entityParamType;
+        this.isOptional = isOptional;
+        this.multiType = multiType;
+        this.returnArrayType = returnArrayType;
+        this.singleType = singleType;
+    }
+
+    /**
      * Construct partially complete query information.
+     *
+     * @param method            repository method.
+     * @param entityParamType   type of the first parameter if a life cycle method, otherwise null.
+     * @param returnArrayType   array element type if the repository method returns an array, otherwise null.
+     * @param returnTypeAtDepth return type of the repository method return value,
+     *                              split into levels of depth for each type parameter and array component.
+     *                              This is useful in cases such as
+     *                              <code>&#64;Query(...) Optional&lt;Float&gt; priceOf(String productId)</code>
+     *                              which resolves to { Optional.class, Float.class }
+     *                              and
+     *                              <code>CompletableFuture&lt;Stream&lt;Product&gt&gt; findByNameLike(String namePattern)</code>
+     *                              which resolves to { CompletableFuture.class, Stream.class, Product.class }
+     *                              and
+     *                              <code>CompletionStage&lt;Product[]&gt; findByNameIgnoreCaseLike(String namePattern)</code>
+     *                              which resolves to { CompletionStage.class, Product[].class, Product.class }
      */
     public QueryInfo(Method method, Class<?> entityParamType, Class<?> returnArrayType, List<Class<?>> returnTypeAtDepth) {
         this.method = method;
         this.entityParamType = entityParamType;
         this.returnArrayType = returnArrayType;
-        this.returnTypeAtDepth = returnTypeAtDepth;
+
+        int d = 0, depth = returnTypeAtDepth.size();
+        Class<?> type = returnTypeAtDepth.get(d);
+        if (CompletionStage.class.equals(type) || CompletableFuture.class.equals(type))
+            if (++d < depth)
+                type = returnTypeAtDepth.get(d);
+            else
+                throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
+                                                        method.getDeclaringClass().getName() +
+                                                        " repository specifies the " + method.getGenericReturnType() +
+                                                        " result type, which is not a supported result type for a repository method."); // TODO NLS and add helpful information about supported result types
+        if (isOptional = Optional.class.equals(type)) {
+            multiType = null;
+            if (++d < depth)
+                type = returnTypeAtDepth.get(d);
+            else
+                throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
+                                                        method.getDeclaringClass().getName() +
+                                                        " repository specifies the " + method.getGenericReturnType() +
+                                                        " result type, which is not a supported result type for a repository method."); // TODO NLS and add helpful information about supported result types
+        } else {
+            if (returnArrayType != null
+                || Iterator.class.equals(type)
+                || Iterable.class.isAssignableFrom(type) // includes Page, List, ...
+                || BaseStream.class.isAssignableFrom(type)) {
+                multiType = type;
+                if (++d < depth)
+                    type = returnTypeAtDepth.get(d);
+                else
+                    throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
+                                                            method.getDeclaringClass().getName() +
+                                                            " repository specifies the " + method.getGenericReturnType() +
+                                                            " result type, which is not a supported result type for a repository method."); // TODO NLS and add helpful information about supported result types
+            } else {
+                multiType = null;
+            }
+        }
+
+        singleType = type;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "result type information",
+                     "isOptional? " + isOptional,
+                     "multiType:  " + multiType,
+                     "singleType: " + singleType);
     }
 
     /**
@@ -237,8 +314,10 @@ public class QueryInfo {
     public QueryInfo(Method method, Type type) {
         this.method = method;
         this.entityParamType = null;
+        this.multiType = null;
+        this.isOptional = false;
         this.returnArrayType = null;
-        this.returnTypeAtDepth = null;
+        this.singleType = null;
         this.type = type;
     }
 
@@ -423,7 +502,7 @@ public class QueryInfo {
             }
         }
 
-        Class<?> singleType = getSingleResultType();
+        Class<?> singleType = this.singleType;
 
         if (singleType.isPrimitive())
             singleType = QueryInfo.wrapperClassIfPrimitive(singleType);
@@ -439,23 +518,25 @@ public class QueryInfo {
                 // Look for single entity attribute with the desired type:
                 String singleAttributeName = null;
                 for (Map.Entry<String, Class<?>> entry : entityInfo.attributeTypes.entrySet()) {
+                    // TODO include type variable for collection element in comparison?
+                    // JPA metamodel might not be including this information
                     Class<?> collectionElementType = entityInfo.collectionElementTypes.get(entry.getKey());
-                    Class<?> attributeType = collectionElementType == null ? entry.getValue() : collectionElementType;
+                    Class<?> attributeType = entry.getValue();
                     if (attributeType.isPrimitive())
                         attributeType = QueryInfo.wrapperClassIfPrimitive(attributeType);
                     if (singleType.isAssignableFrom(attributeType))
                         if (singleAttributeName == null)
                             singleAttributeName = entry.getKey();
                         else
-                            throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
-                                                                    method.getDeclaringClass().getName() +
-                                                                    " repository specifies the " + singleType.getName() +
-                                                                    " result type, which corresponds to multiple entity attributes: " +
-                                                                    singleAttributeName + ", " + entry.getKey() +
-                                                                    ". To use this result type, update the repository method to " +
-                                                                    "instead use the Query annotation with a SELECT clause to " +
-                                                                    "disambiguate which entity attribute to use as the result " +
-                                                                    "of the query."); // TODO NLS
+                            throw new MappingException("The " + method.getName() + " method of the " +
+                                                       method.getDeclaringClass().getName() +
+                                                       " repository specifies the " + singleType.getName() +
+                                                       " result type, which corresponds to multiple entity attributes: " +
+                                                       singleAttributeName + ", " + entry.getKey() +
+                                                       ". To use this result type, update the repository method to " +
+                                                       "instead use the Query annotation with a SELECT clause to " +
+                                                       "disambiguate which entity attribute to use as the result " +
+                                                       "of the query."); // TODO NLS
                 }
 
                 if (singleAttributeName == null) {
@@ -478,13 +559,13 @@ public class QueryInfo {
                             first = false;
                         }
                     else
-                        throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
-                                                                method.getDeclaringClass().getName() + " repository specifies the " +
-                                                                singleType.getName() + " result type, which is not convertible from the " +
-                                                                entityInfo.entityClass.getName() + " entity type. A repository method " +
-                                                                "result type must be the entity type, an entity attribute type, or a " +
-                                                                "Java record with attribute names that are a subset of the entity attribute names, " +
-                                                                "or the Query annotation must be used to construct the result type with JPQL."); // TODO NLS
+                        throw new MappingException("The " + method.getName() + " method of the " +
+                                                   method.getDeclaringClass().getName() + " repository specifies the " +
+                                                   singleType.getName() + " result type, which is not convertible from the " +
+                                                   entityInfo.entityClass.getName() + " entity type. A repository method " +
+                                                   "result type must be the entity type, an entity attribute type, or a " +
+                                                   "Java record with attribute names that are a subset of the entity attribute names, " +
+                                                   "or the Query annotation must be used to construct the result type with JPQL."); // TODO NLS
                     q.append(')');
                 } else {
                     q.append(o_).append(singleAttributeName);
@@ -522,25 +603,24 @@ public class QueryInfo {
     }
 
     /**
-     * Locate the entity information for the specified result class.
+     * Locate the entity information for this query.
      *
-     * @param entityType              single result type of a repository method, which is hopefully an entity class.
      * @param entityInfos             map of entity name to already-completed future for the entity information.
      * @param primaryEntityInfoFuture future for the repository's primary entity type if it has one, otherwise null.
      * @return entity information.
      * @throws MappingException if the entity information is not found.
      */
     @Trivial
-    EntityInfo getEntityInfo(Class<?> entityType, Map<String, CompletableFuture<EntityInfo>> entityInfos,
+    EntityInfo getEntityInfo(Map<String, CompletableFuture<EntityInfo>> entityInfos,
                              CompletableFuture<EntityInfo> primaryEntityInfoFuture) {
-        if (entityType != null) {
+        if (singleType != null) {
             CompletableFuture<EntityInfo> failedFuture = null;
             for (CompletableFuture<EntityInfo> future : entityInfos.values())
                 if (future.isCompletedExceptionally()) {
                     failedFuture = future;
                 } else {
                     EntityInfo info = future.join();
-                    if (entityType.equals(info.entityClass) || entityType.equals(info.recordClass))
+                    if (singleType.equals(info.entityClass) || singleType.equals(info.recordClass))
                         return info;
                 }
             if (failedFuture != null)
@@ -643,59 +723,24 @@ public class QueryInfo {
         return keyValues.toArray();
     }
 
+    // TODO remove this method after moving some RepositoryImpl methods to QueryInfo
     /**
      * @return returns the type of data structure that returns multiple results for this query.
      *         Null if the query return type limits to single results.
      */
     @Trivial
     Class<?> getMultipleResultType() {
-        Class<?> type = null;
-        int depth = returnTypeAtDepth.size();
-        for (int d = 0; d < depth - 1 && type == null; d++) {
-            type = returnTypeAtDepth.get(d);
-            if (Optional.class.equals(type) || CompletionStage.class.equals(type) || CompletableFuture.class.equals(type))
-                type = null;
-        }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "getMultipleResultType: " + (type == null ? null : type.getName()));
-        return type;
+        return multiType;
     }
 
-    /**
-     * @return returns the type that is returned by the repository method as an Optional<Type>.
-     *         Null if the repository method result type does not include Optional.
-     */
-    @Trivial
-    Class<?> getOptionalResultType() {
-        Class<?> type = null;
-        int depth = returnTypeAtDepth.size();
-        for (int d = 0; d < depth - 1; d++) {
-            type = returnTypeAtDepth.get(d);
-            if (Optional.class.equals(type)) {
-                type = returnTypeAtDepth.get(d + 1);
-                break;
-            } else {
-                type = null;
-                if (!CompletionStage.class.equals(type) || !CompletableFuture.class.equals(type))
-                    break;
-            }
-        }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "getOptionalResultType: " + (type == null ? null : type.getName()));
-        return type;
-    }
-
+    // TODO remove this method after moving some RepositoryImpl methods to QueryInfo
     /**
      * @return returns the type of a single result obtained by the query.
      *         For example, a single result of a query that returns List<MyEntity> is of type MyEntity.
      */
     @Trivial
     Class<?> getSingleResultType() {
-        Class<?> type = returnTypeAtDepth.get(returnTypeAtDepth.size() - 1);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "getSingleResultType: " + (type == null ? null : type.getName()));
-        return type;
+        return singleType;
     }
 
     /**
@@ -752,11 +797,10 @@ public class QueryInfo {
      * Initializes query information based on the Query annotation.
      *
      * @param ql                      Query.value() might be JPQL or JDQL
-     * @param multiType               the type of data structure that returns multiple results for this query. Otherwise null.
      * @param entityInfos             map of entity name to entity information.
      * @param primaryEntityInfoFuture future for the repository's primary entity type if it has one, otherwise null.
      */
-    void initForQuery(String ql, Class<?> multiType, Map<String, CompletableFuture<EntityInfo>> entityInfos,
+    void initForQuery(String ql, Map<String, CompletableFuture<EntityInfo>> entityInfos,
                       CompletableFuture<EntityInfo> primaryEntityInfoFuture) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
@@ -981,7 +1025,7 @@ public class QueryInfo {
             }
 
             if (entityInfo == null)
-                entityInfo = getEntityInfo(getSingleResultType(), entityInfos, primaryEntityInfoFuture);
+                entityInfo = getEntityInfo(entityInfos, primaryEntityInfoFuture);
 
             String entityName = entityInfo.name;
 
@@ -1095,34 +1139,27 @@ public class QueryInfo {
      */
     @Trivial
     boolean isFindAndDelete() {
-        boolean isFindAndDelete = true;
 
-        boolean isMultiple, isOptional;
-        int d;
-        Class<?> type = returnTypeAtDepth.get(d = 0);
-        if (CompletionStage.class.equals(type) || CompletableFuture.class.equals(type))
-            type = returnTypeAtDepth.get(++d);
-        if (isOptional = Optional.class.equals(type))
-            type = returnTypeAtDepth.get(++d);
-        if (isMultiple = d < returnTypeAtDepth.size() - 1)
-            type = returnTypeAtDepth.get(++d);
-
-        isFindAndDelete = isOptional || isMultiple || !RETURN_TYPES_FOR_DELETE_ONLY.contains(type);
+        boolean isFindAndDelete = isOptional
+                                  || multiType != null
+                                  || !RETURN_TYPES_FOR_DELETE_ONLY.contains(singleType);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "isFindAndDelete? " + isFindAndDelete + " isOptional? " + isOptional + " isMultiple? " + isMultiple +
-                               " type: " + (type == null ? null : type.getName()));
+            Tr.debug(this, tc, "isFindAndDelete? " + isFindAndDelete +
+                               "; optional?: " + isOptional +
+                               "; multiType: " + (multiType == null ? null : multiType.getSimpleName()) +
+                               "; singleType: " + (singleType == null ? null : singleType.getSimpleName()));
 
         if (isFindAndDelete) {
             if (type != null
                 && !type.equals(entityInfo.entityClass)
                 && !type.equals(entityInfo.recordClass)
                 && !type.equals(Object.class)
-                && !wrapperClassIfPrimitive(type).equals(wrapperClassIfPrimitive(entityInfo.idType)))
+                && !wrapperClassIfPrimitive(singleType).equals(wrapperClassIfPrimitive(entityInfo.idType)))
                 throw new MappingException("Results for find-and-delete repository queries must be the entity class (" +
                                            (entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName() +
                                            ") or the id class (" + entityInfo.idType +
-                                           "), not the " + type.getName() + " class."); // TODO NLS
+                                           "), not the " + method.getGenericReturnType() + " class."); // TODO NLS
         }
 
         return isFindAndDelete;
@@ -1383,7 +1420,7 @@ public class QueryInfo {
      * Copy of query information, but with updated JPQL and sort criteria.
      */
     QueryInfo withJPQL(String jpql, List<Sort<Object>> sorts) {
-        QueryInfo q = new QueryInfo(method, entityParamType, returnArrayType, returnTypeAtDepth);
+        QueryInfo q = new QueryInfo(method, entityParamType, isOptional, multiType, returnArrayType, singleType);
         q.entityInfo = entityInfo;
         q.entityVar = entityVar;
         q.entityVar_ = entityVar_;
