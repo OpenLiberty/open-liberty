@@ -9,6 +9,9 @@
  *******************************************************************************/
 package io.openliberty.http.monitor.fat;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Scanner;
 
@@ -159,9 +163,11 @@ public abstract class BaseTestClass {
     }
 
     protected boolean validatePrometheusHTTPMetric(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String count, String errorType) {
+        boolean isDefaultCountCheck = false;
 
         if (count == null) {
             count = "[0-9]+\\.[0-9]+";
+            isDefaultCountCheck = true;
         }
 
         if (errorType == null) {
@@ -183,6 +189,19 @@ public abstract class BaseTestClass {
 
                 if (line.matches(matchString)) {
                     Log.info(c, "validatePrometheusHTTPMetric", "Matched With line: " + line);
+
+                    /*
+                     * If no custom count regex was supplied.
+                     * We will check if value is greater than 0
+                     */
+                    if (isDefaultCountCheck) {
+                        String[] split = line.split("\\,\\}"); // matches with the ending ",}"
+                        assertEquals("Error. Expected 2 indexes from split " + Arrays.toString(split), split.length, 2);
+
+                        double countVal = Double.parseDouble(split[1].trim());
+                        assertTrue("Expected count value to be greater than 0", countVal > 0);
+                    }
+
                     return true;
                 }
             }

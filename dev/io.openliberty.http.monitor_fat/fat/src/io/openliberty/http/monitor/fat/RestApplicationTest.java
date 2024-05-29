@@ -184,7 +184,6 @@ public class RestApplicationTest extends BaseTestClass {
     }
 
     @Test
-    @AllowedFFDC
     public void r1_nonExistentPath() throws Exception {
 
         assertTrue(server.isStarted());

@@ -116,8 +116,6 @@ public class JSPApplicationTest extends BaseTestClass {
 
         assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
 
-        //Request an explicity HTML page, will also return 304, we'll now check count
-
         route = CONTEXT_ROOT + "/Testhtml.html";
         expectedRoute = CONTEXT_ROOT + "/\\*";
         requestMethod = HttpMethod.GET;
