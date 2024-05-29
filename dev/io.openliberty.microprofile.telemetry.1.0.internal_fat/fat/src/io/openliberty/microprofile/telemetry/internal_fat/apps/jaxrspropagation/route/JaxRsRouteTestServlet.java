@@ -35,7 +35,7 @@ import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 
-// MP Telemetry 2.0 does not consume io.opentelemetry.semconv.trace.attributes.SemanticAttributes
+// In MpTelemetry-2.0 SemanticAttributes was moved to a new package, so we use import static to allow both versions to coexist
 import static io.opentelemetry.semconv.SemanticAttributes.HTTP_RESPONSE_STATUS_CODE;
 import static io.opentelemetry.semconv.SemanticAttributes.HTTP_REQUEST_METHOD;
 import static io.opentelemetry.semconv.SemanticAttributes.URL_PATH;
@@ -171,8 +171,8 @@ public class JaxRsRouteTestServlet extends FATServlet {
     }
 
     /*
-     * Ideal behaviour for this test would be HHTP_ROUTE = /getSubResourceWithPathParam/{id}/details
-     * Due to the current behaviour when sub resources are used is that only the context root is returned
+     * Ideal behaviour for this test would be HTTP_ROUTE = /getSubResourceWithPathParam/{id}/details
+     * Due to the current behaviour when sub resources are used, only the context root is returned
      */
     @Test
     public void testRouteWithSubResourceWithPathParam() {
@@ -220,8 +220,8 @@ public class JaxRsRouteTestServlet extends FATServlet {
     }
 
     /*
-     * Ideal behaviour for this test would be HHTP_ROUTE = /getSubResourceWithQueryParam/details
-     * Due to the current behaviour when sub resources are used is that only the context root is returned
+     * Ideal behaviour for this test would be HTTP_ROUTE = /getSubResourceWithQueryParam/details
+     * Due to the current behaviour when sub resources are used, only the context root is returned
      */
     @Test
     public void testRouteWithSubResourceWithQueryParam() {
@@ -254,7 +254,7 @@ public class JaxRsRouteTestServlet extends FATServlet {
                             .withAttribute(HTTP_REQUEST_METHOD, "GET")
                             .withAttribute(HTTP_RESPONSE_STATUS_CODE, 200L)
                             .withAttribute(HTTP_ROUTE, request.getContextPath()));
-//                        .withAttribute(SemanticAttributes.URL_PATH, getPath() + "/getSubResourceWithQueryParam/details?id=myIdForTesting"));
+                            //.withAttribute(SemanticAttributes.URL_PATH, getPath() + "/getSubResourceWithQueryParam/details?id=myIdForTesting"));
             } else {
                 assertThat(clientSpan, isSpan()
                                 .withKind(SpanKind.CLIENT)
@@ -267,7 +267,7 @@ public class JaxRsRouteTestServlet extends FATServlet {
                                 .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
                                 .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
                                 .withAttribute(SemanticAttributes.HTTP_ROUTE, request.getContextPath()));
-        //                        .withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "/getSubResourceWithQueryParam/details?id=myIdForTesting"));
+                                //.withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "/getSubResourceWithQueryParam/details?id=myIdForTesting"));
                 }
     
     }

@@ -60,7 +60,7 @@ import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinQueryCl
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpan;
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpanMatcher;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
-// MP Telemetry 2.0 does not consume io.opentelemetry.semconv.trace.attributes.SemanticAttributes
+// In MpTelemetry-2.0 SemanticAttributes was moved to a new package, so we use import static to allow both versions to coexist
 import static io.opentelemetry.semconv.SemanticAttributes.HTTP_ROUTE;
 import static io.opentelemetry.semconv.SemanticAttributes.HTTP_REQUEST_METHOD;
 
