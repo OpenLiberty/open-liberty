@@ -9,6 +9,6 @@ IBM-Process-Types: server
   com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0,5.0,6.0,6.1", \
   io.openliberty.auditCollector1.0.internal.ee-6.0; ibm.tolerates:="9.0"
 
-kind=noship
-edition=full
+kind=beta
+edition=core
 
