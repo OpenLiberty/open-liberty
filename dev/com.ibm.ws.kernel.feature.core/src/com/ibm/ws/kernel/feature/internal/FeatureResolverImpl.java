@@ -596,6 +596,7 @@ public class FeatureResolverImpl implements FeatureResolver {
     }
 
     private List<String> checkRootsAreAccessibleAndSetFullName(List<String> rootFeatures, SelectionContext selectionContext, Set<String> preResolved) {
+        Map<String, Set<String>> map = new HashMap<>();
         ListIterator<String> iRootFeatures = rootFeatures.listIterator();
         while (iRootFeatures.hasNext()) {
             String rootFeatureName = iRootFeatures.next();
@@ -605,7 +606,20 @@ public class FeatureResolverImpl implements FeatureResolver {
                 iRootFeatures.remove();
                 continue;
             }
-
+            // if(rootFeatureDef.isVersionless()){
+            //     //set some value to remember we have versionless features in our configuration
+            // }
+            System.out.println(rootFeatureDef.getHeader("WLP-Platform"));
+            if(rootFeatureDef.getHeader("WLP-Platform") != null){
+                String[] s = rootFeatureDef.getHeader("WLP-Platform").split(",");
+                String[] nav = parseNameAndVersion(s[0]);
+                if(map.containsKey(nav[0])){
+                    map.get(nav[0]).retainAll(Arrays.asList(s));
+                }
+                else{
+                    map.put(nav[0], new HashSet<String>(Arrays.asList(s)));
+                }
+            }
             String symbolicName = rootFeatureDef.getSymbolicName();
             if (rootFeatureDef.getVisibility() != Visibility.PUBLIC) {
                 selectionContext.getResult().addNonPublicRoot(rootFeatureName);
@@ -617,6 +631,20 @@ public class FeatureResolverImpl implements FeatureResolver {
                 iRootFeatures.remove();
             } else {
                 iRootFeatures.set(symbolicName); // Normalize to the symbolic name
+            }
+        }
+        //check if we have versionless features in our config,
+        //we don't want to do the below code if we don't have versionless features
+        //also, need some way to capture platform equivalency, ex javaee and jakartaee
+        //can be possibly be done by checking if the platforms compatibility features are the same.
+        for(String key : map.keySet()){
+            Set<String> current = map.get(key);
+            System.out.println(key + " - " + current);
+            if(current.size() == 0 || current.size() > 1){
+                //error
+            }
+            else{
+                //add the corresponding compatibility feature to the config
             }
         }
 
@@ -949,6 +977,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         // and it is not an unresolved versionless feature,
         // process that candidate as a selection.
 
+        //revisit with versionless updates
         if ((candidateNames.size() == 1) &&
             (!!!baseSymbolicName.startsWith("io.openliberty.internal.versionless.") ||
              (baseSymbolicName.startsWith("io.openliberty.internal.versionless.") &&
@@ -960,6 +989,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
     }
 
+    //revisit with versionless updates
     private boolean isAccessible(ProvisioningFeatureDefinition includingFeature, ProvisioningFeatureDefinition candidateDef) {
         return !!!candidateDef.getFeatureName().startsWith("io.openliberty.versionless.")
                && ((candidateDef.getVisibility() != Visibility.PRIVATE) || includingFeature.getBundleRepositoryType().equals(candidateDef.getBundleRepositoryType()));
@@ -985,6 +1015,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             return true;
         }
         if (isBeta) {
+            //replace with api call
             if (chain.peekFirst().startsWith("io.openliberty.versionless.")) {
                 return true;
             }
@@ -1187,6 +1218,8 @@ public class FeatureResolverImpl implements FeatureResolver {
             return _current._result;
         }
 
+        //These need to be replaced with calls to some repo api
+
         /** The name of the EE compatibility feature. */
         private static final String COMPATIBILITY_EE = "com.ibm.websphere.appserver.eeCompatible";
         /** The name of the MicroProfile compatibility feature. */
@@ -1244,6 +1277,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             // because a platform was specified, or because a resolved feature pulls in
             // a specific compatibility feature.
 
+            //if versionless, check if its corresponding compatibility feature has been resolved, otherwise postpone
             if ((isVersionlessEE(baseSymbolicName) && (getSelected(COMPATIBILITY_EE) == null)) ||
                 (isVersionlessMP(baseSymbolicName) && (getSelected(COMPATIBILITY_MP) == null))) {
                 addPostponed(baseSymbolicName, new Chain(chain, candidateNames, preferredVersion, symbolicName));
@@ -1329,6 +1363,8 @@ public class FeatureResolverImpl implements FeatureResolver {
         // Versionless features require eeCompatible to be resolved. In rare cases, eeCompatible will be resolved after
         // all versionles features have been postponed, and nothing else is postponed except for versionless features.
         // In that case we need to run the resolve loop one more time in order to not skip versionless features.
+        
+        //I think we can delete this once we are done our changes with wlp platform, need to test
         boolean hasTriedVersionlessResolution() {
             if (!triedVersionless) {
                 triedVersionless = true;
@@ -1351,8 +1387,8 @@ public class FeatureResolverImpl implements FeatureResolver {
             //if a versionless feature is postponed, process that first
             if (isBeta) {
                 if (!!!_current._postponedVersionless.isEmpty() &&
-                    ((getSelected("io.openliberty.internal.mpVersion") != null) ||
-                     (getSelected("com.ibm.websphere.appserver.eeCompatible") != null))) {
+                    ((getSelected(COMPATIBILITY_MP) != null) ||
+                     (getSelected(COMPATIBILITY_EE) != null))) {
 
                     Set<String> entries = _current._postponedVersionless.keySet();
                     Iterator<Map.Entry<String, Chains>> postponedVersionlessIterator = _current._postponedVersionless.entrySet().iterator();
@@ -1363,12 +1399,12 @@ public class FeatureResolverImpl implements FeatureResolver {
                     while (postponedVersionlessIterator.hasNext()) {
                         firstPostponedVersionless = postponedVersionlessIterator.next();
 
-                        if (firstPostponedVersionless.getKey().substring(36, 38).equals("mp")) {
-                            if (getSelected("io.openliberty.internal.mpVersion") != null) {
+                        if (isVersionlessMP(firstPostponedVersionless.getKey())) {
+                            if (getSelected(COMPATIBILITY_MP) != null) {
                                 break;
                             }
                         } else {
-                            if (getSelected("com.ibm.websphere.appserver.eeCompatible") != null) {
+                            if (getSelected(COMPATIBILITY_EE) != null) {
                                 break;
                             }
                         }
@@ -1458,7 +1494,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         void addPostponed(String baseName, Chain chain) {
             Map<String, Chains> usePostponed;
-            if (baseName.startsWith("io.openliberty.internal.versionless.")) {
+            if (isVersionless(baseName)) {
                 usePostponed = _current._postponedVersionless;
             } else {
                 usePostponed = _current._postponed;
