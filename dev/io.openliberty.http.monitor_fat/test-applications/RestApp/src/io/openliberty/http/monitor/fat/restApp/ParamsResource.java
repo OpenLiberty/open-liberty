@@ -17,7 +17,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 
 /**
- *
+ * Params Resource
  */
 @ApplicationScoped
 @Path("/params")

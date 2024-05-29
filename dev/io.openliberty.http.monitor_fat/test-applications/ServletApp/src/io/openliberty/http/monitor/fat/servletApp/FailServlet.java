@@ -21,7 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Normal Servlet
+ * Fail Servlet
  */
 @WebServlet("/failServlet")
 public class FailServlet extends HttpServlet {
@@ -47,7 +47,7 @@ public class FailServlet extends HttpServlet {
             default:
                 break;
         }
-        resp.getWriter().append("Hello, lets fail together!");
+        resp.getWriter().append("Hello, let's fail together!");
     }
 
     private void divideArith(HttpServletResponse resp) {

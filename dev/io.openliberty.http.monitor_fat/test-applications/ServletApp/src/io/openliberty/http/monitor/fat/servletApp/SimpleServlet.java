@@ -21,7 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Normal Servlet
+ * Simple Servlet
  */
 @WebServlet("/simpleServlet")
 public class SimpleServlet extends HttpServlet {
@@ -30,7 +30,7 @@ public class SimpleServlet extends HttpServlet {
     /** {@inheritDoc} */
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().append("Hello, Deleting!");
+        resp.getWriter().append("Hello, DELETEing!");
     }
 
     /** {@inheritDoc} */

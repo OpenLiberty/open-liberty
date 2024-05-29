@@ -21,7 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Normal Servlet
+ * Sub Wild Card Servlet 2
  */
 @WebServlet(value = "/sub/sub/*")
 public class SubWildCard2 extends HttpServlet {

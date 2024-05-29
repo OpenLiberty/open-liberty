@@ -19,7 +19,7 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 
 /**
- *
+ * Simple Resource
  */
 @ApplicationScoped
 @Path("/simple")

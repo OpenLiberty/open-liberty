@@ -16,7 +16,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 
 /**
- *
+ * Fail Resource
  */
 @ApplicationScoped
 @Path("/fail")

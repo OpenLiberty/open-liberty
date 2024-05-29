@@ -21,7 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Normal Servlet
+ * Root Wild Card Servlet
  */
 @WebServlet(value = "/*")
 public class RootWildCardServlet extends HttpServlet {
@@ -29,7 +29,7 @@ public class RootWildCardServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().append("Hello, Root Wild Card Servlet! You've provided the rotue " + req.getPathInfo());
+        resp.getWriter().append("Hello, Root Wild Card Servlet! You've provided the route " + req.getPathInfo());
     }
 
 }
