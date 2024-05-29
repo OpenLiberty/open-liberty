@@ -14,6 +14,7 @@ package com.ibm.ws.kernel.feature.provisioning;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 import com.ibm.ws.kernel.feature.FeatureDefinition;
@@ -162,4 +163,43 @@ public interface ProvisioningFeatureDefinition extends FeatureDefinition {
      *         satisfied by the supplying features.
      */
     boolean isCapabilitySatisfied(Collection<ProvisioningFeatureDefinition> supplyingDefs);
+
+    /**
+     * Answer the platform of this feature.
+     *
+     * The feature platform is stored as a header attribute.
+     *
+     * @return The platform of this feature.
+     */
+    List<String> getPlatforms();
+
+    /**
+     * Tell if this is a versionless feature.
+     *
+     * @return
+     */
+    boolean isVersionless();
+
+    /**
+     * Tell if this is a convenience feature.
+     *
+     * @return
+     */
+    boolean isConvenience();
+
+    /**
+     * Tell if the feature is a compatibility feature.
+     *
+     * @return
+     */
+    boolean isCompatibility();
+
+    /**
+     * Answer the value of the platform when the feature is a compatibility feature.
+     *
+     * Always returns the first platform the WLP_Platform: list. See { {@see #getPlatforms()}
+     *
+     * @return The platform value of this compatibility feature
+     */
+    String getPlatformValue();
 }
