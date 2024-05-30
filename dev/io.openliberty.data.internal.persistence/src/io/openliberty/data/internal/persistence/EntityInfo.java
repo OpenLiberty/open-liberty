@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.concurrent.CompletableFuture;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import jakarta.data.Sort;
@@ -39,6 +41,8 @@ import jakarta.persistence.Inheritance;
  * Entity information
  */
 public class EntityInfo {
+    private static final TraceComponent tc = Tr.register(EntityInfo.class);
+
     /**
      * Suffix for generated record class names. The name used for a generated
      * record entity class is: [RecordName][RECORD_ENTITY_SUFFIX]
@@ -134,6 +138,7 @@ public class EntityInfo {
         return value;
     }
 
+    @Trivial
     String getAttributeName(String name, boolean failIfNotFound) {
         String lowerName = name.toLowerCase();
         String attributeName = attributeNames.get(lowerName);
@@ -163,6 +168,8 @@ public class EntityInfo {
                 }
             }
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "getAttributeName " + name + ": " + attributeName);
         return attributeName;
     }
 
