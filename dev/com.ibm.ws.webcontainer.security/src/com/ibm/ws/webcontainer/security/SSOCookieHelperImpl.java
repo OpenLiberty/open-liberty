@@ -171,9 +171,9 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
 
             if (sameSite.equals("None")) {
                 ssoCookie.setSecure(true);
-			 	Boolean partitioned = config.getPartitionedCookie();
+                Boolean partitioned = config.getPartitionedCookie();
                 if (partitioned!=null) {
-				    //web container wants the value as a n/v pair
+                    //web container wants the value as a n/v pair
                     requestState.setCookieAttributes(cookieName, "Partitioned="+partitioned.toString());
                 }
             }
@@ -190,7 +190,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
                 // This behavior is expected at this time.
                 requestState.setCookieAttributes(cookieName, "Partitioned="+partitioned.toString());
             }
-		}
+        }
 
         return ssoCookie;
     }

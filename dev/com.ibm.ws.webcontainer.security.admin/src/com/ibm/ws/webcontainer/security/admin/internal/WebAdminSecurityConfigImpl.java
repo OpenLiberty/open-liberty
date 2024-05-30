@@ -324,9 +324,6 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
         if (globalConfig != null)
             return globalConfig.isPartitionedCookie();
        
-        if (partitionedCookie!=null && partitionedCookie==Boolean.TRUE) {
-          return true;
-        }
         return false;
     }
 

@@ -635,12 +635,10 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     public static Boolean getBooleanValue(String attribute, String strValue) {
       Boolean retVal = null;
       if (strValue!=null && strValue.length()>0) {
+        //only values that config gives us are true/false/defer
         if ("true".equalsIgnoreCase(strValue) || "false".equalsIgnoreCase(strValue)) {
           retVal = Boolean.valueOf(strValue);
-        } else {
-          Object[] inserts = new Object[] { strValue, (attribute==null?"":attribute)}; 
-          Tr.warning(tc, "INVALID_BOOLEAN_ATTRIBUTE", inserts);
-        }
+        } 
       }
       return(retVal);
     }

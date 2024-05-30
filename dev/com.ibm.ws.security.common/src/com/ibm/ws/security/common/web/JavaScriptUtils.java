@@ -224,9 +224,9 @@ public class JavaScriptUtils {
                 cookieProperties.put("SameSite", sameSite);
                 if ("None".equalsIgnoreCase(sameSite)) {
                     cookieProperties.put("secure", null);
-			    	if (webAppSecurityConfig.isPartitionedCookie()) {
-              			cookieProperties.put("Partitioned", null);
-            		}
+                    if (webAppSecurityConfig.isPartitionedCookie()) {
+                        cookieProperties.put("Partitioned", null);
+                    }
                 }
             }
         }
