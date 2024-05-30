@@ -124,6 +124,10 @@
          
         <AD id="verifyHostname" name="%repertoire.verifyHostname" description="%repertoire.verifyHostname.desc" 
             required="false" type="Boolean" default="true" />
+       
+        <AD id="skipHostnameVerificationForHosts" name="%repertoire.skipHostnameVerificationForHosts" description="%repertoire.skipHostnameVerificationForHosts.desc" 
+            required="false" type="String" default="" />  
+       
             
         <AD id="trustDefaultCerts" name="%repertoire.trustDefaultCerts" description="%repertoire.trustDefaultCerts.desc" 
             required="false" type="Boolean" default="false" />

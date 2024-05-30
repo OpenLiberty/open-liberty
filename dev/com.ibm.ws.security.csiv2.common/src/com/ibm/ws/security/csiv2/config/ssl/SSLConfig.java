@@ -351,6 +351,28 @@ public class SSLConfig {
 
         return Boolean.valueOf(sslProps.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "true"));
     }
+    /**
+     * @param String - alias of SSL configuration being used
+     * @return String - list of hostname separate by comma
+     */
+    public String getSkipHostnameVerificationForHosts(String sslAlias) {
+
+        Properties sslProps = null;
+        final String alias = sslAlias;
+        try {
+            sslProps = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
+                @Override
+                public Properties run() throws SSLException {
+                    return jsseHelper.getProperties(alias, null, null);
+                }
+            });
+        } catch (PrivilegedActionException pae) {
+            // Can't get the properties so return false
+            return null;
+        }
+
+        return sslProps.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS);
+    }
 
     /**
      * @param sslCfgAlias
