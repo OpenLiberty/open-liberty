@@ -427,6 +427,7 @@ public class VersionlessTest {
                                                                                   "ssl",
                                                                                   "jwt",
                                                                                   "opentracing",
+                                                                                  "jndi",
                                                                                   "restConnector", // restConnector-2.0 was erroneously added to jakartaee-9.1
                                                                                   "jpaContainer", // jpa depends on jpaContainer
                                                                                   "persistenceContainer" // persistence depends on persistenceContainer.

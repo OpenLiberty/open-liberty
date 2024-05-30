@@ -251,7 +251,7 @@ public class FeatureResolverImpl implements FeatureResolver {
      *         platform values.
      */
     private static Collection<String> collectPlatformCompatibilityFeatures(Repository repo, Collection<String> rootPlatforms) {
-        if (rootPlatforms == null) {
+        if (rootPlatforms == null || rootPlatforms.isEmpty()) {
             return null;
         }
         Set<String> compatibilityFeatures = new HashSet<String>();
@@ -340,7 +340,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         Set<String> compatibilityFeatures = new HashSet<String>();
 
         for (String plat : preferredPlatforms) {
-            plat = plat.trim();
+            plat = plat.trim().toLowerCase();
 
             String[] nameAndVersion = parseNameAndVersion(plat);
             String platBase = nameAndVersion[0];

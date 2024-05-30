@@ -4,6 +4,6 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.noShip-1.0, \
-    io.openliberty.xmlBinding-2.2
+    com.ibm.websphere.appserver.jaxb-2.2
 kind=noship
 edition=full

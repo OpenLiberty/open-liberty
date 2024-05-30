@@ -270,15 +270,13 @@ public class VersionlessFeatureCreator {
         }
 
         ArrayList<String> featureVersions = feature.getAllVersions();
-        ArrayList<String> copyExistingVersions = (ArrayList<String>) existingFeatureVersions.clone();
 
         for (String v : existingFeatureVersions) {
             if (featureVersions.contains(v)) {
-                copyExistingVersions.remove(v);
                 featureVersions.remove(v);
             }
         }
-        if (!!!featureVersions.isEmpty() || !!!copyExistingVersions.isEmpty()) {
+        if (!!!featureVersions.isEmpty()) {
             return false;
         }
 
