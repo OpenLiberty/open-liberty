@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>io.openlibery.request.probe.audit.rest</name>
+	<name>io.openliberty.request.probe.audit.rest</name>
 	<comment></comment>
 	<projects>
 	</projects>
