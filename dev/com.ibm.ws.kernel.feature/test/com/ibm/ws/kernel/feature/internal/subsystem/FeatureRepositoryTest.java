@@ -265,7 +265,7 @@ public class FeatureRepositoryTest {
         }
 
         // Store the installedFeatures
-        repo.setInstalledFeatures(installedFeatures, installedFeatures, false);
+        repo.setResolvedFeatures(installedFeatures, installedFeatures, false);
 
         // Update the services, which will register the OSGi Services.
         repo.updateServices();
