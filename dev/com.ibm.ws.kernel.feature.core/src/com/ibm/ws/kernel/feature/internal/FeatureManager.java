@@ -1697,8 +1697,8 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             && featureRepository.getConfiguredFeatures().equals(newConfiguredFeatures)
             && featureRepository.getPlatforms().equals(newConfiguredPlatforms)) {
             // check that all installed features are still installed
-            for (String installedFeature : featureRepository.getResolvedFeatures()) {
-                if (featureRepository.getFeature(installedFeature) == null) {
+            for (String resolvedFeature : featureRepository.getResolvedFeatures()) {
+                if (featureRepository.getFeature(resolvedFeature) == null) {
                     return false;
                 }
             }
