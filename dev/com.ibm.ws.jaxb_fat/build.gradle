@@ -13,15 +13,28 @@
 
 configurations {
   appLibs
-  app2Libs 
+  addAppJaxb23Libs
+  addAppXmlBinding30Libs
+  addAppXmlBinding40Libs
 }
 
 dependencies {
   appLibs 'javax.xml.bind:jaxb-api:2.2.+'
   appLibs 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.+'
-  app2Libs 'javax.xml.bind:jaxb-api:2.3.+'
-  app2Libs 'com.sun.xml.bind:jaxb-impl:2.3.+'
-  app2Libs 'javax.activation:activation:1.1'
+  addAppJaxb23Libs 'javax.xml.bind:jaxb-api:2.3.+'
+  addAppJaxb23Libs 'com.sun.xml.bind:jaxb-impl:2.3.+'
+  addAppJaxb23Libs 'javax.activation:activation:1.1'
+  addAppXmlBinding30Libs 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.+'
+  addAppXmlBinding30Libs 'org.glassfish.jaxb:jaxb-core:3.0.+'
+  addAppXmlBinding30Libs 'org.glassfish.jaxb:jaxb-runtime:3.0.+'
+  addAppXmlBinding30Libs 'com.sun.istack:istack-commons-runtime:4.0.1'
+  addAppXmlBinding30Libs 'com.sun.istack:istack-commons-tools:4.0.1'
+  addAppXmlBinding40Libs 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.+'
+  addAppXmlBinding40Libs 'org.glassfish.jaxb:jaxb-core:4.0.+'
+  addAppXmlBinding40Libs 'org.glassfish.jaxb:jaxb-runtime:4.0.+'
+  addAppXmlBinding40Libs 'com.sun.istack:istack-commons-runtime:4.0.1'
+  addAppXmlBinding40Libs 'com.sun.istack:istack-commons-tools:4.0.1'
+
 }
 
 task addAppLibs(type: Copy) {
@@ -29,14 +42,38 @@ task addAppLibs(type: Copy) {
   into "${buildDir}/autoFVT/test-applications/thirdPartyJaxbJDKApp/resources/WEB-INF/lib"
 }
 
-task addApp2Libs(type: Copy) {
-  from configurations.app2Libs
-  into "${buildDir}/autoFVT/test-applications/thirdPartyJaxbApp/resources/WEB-INF/lib"
+task addAppJaxb23Libs(type: Copy) {
+  from configurations.addAppJaxb23Libs
+  into "${buildDir}/autoFVT/lib/LibertyFATTestFiles/ee8/WEB-INF/lib"
+  rename 'jaxb-api-.*.jar', 'jaxb-api.jar'
+  rename 'jaxb-impl-.*.jar', 'jaxb-impl.jar'
+  rename 'activation-.*.jar', 'activation.jar'
 }
 
+task addAppXmlBinding30Libs(type: Copy) {
+  from configurations.addAppXmlBinding30Libs
+  into "${buildDir}/autoFVT/lib/LibertyFATTestFiles/ee9/WEB-INF/lib"
+  rename 'jakarta.xml.bind-api-.*.jar', 'jakarta.xml.bind-api.jar'
+  rename 'jaxb-core-.*.jar', 'jaxb-core.jar'
+  rename 'jaxb-runtime-.*.jar', 'jaxb-runtime.jar'
+  rename 'istack-commons-runtime-.*.jar', 'istack-commons-runtime.jar'
+  rename 'istack-commons-tools-.*.jar', 'istack-commons-tools.jar'
+}
+
+task addAppXmlBinding40Libs(type: Copy) {
+  from configurations.addAppXmlBinding40Libs
+  into "${buildDir}/autoFVT/lib/LibertyFATTestFiles/ee10/WEB-INF/lib"
+  rename 'jakarta.xml.bind-api-.*.jar', 'jakarta.xml.bind-api.jar'
+  rename 'jaxb-core-.*.jar', 'jaxb-core.jar'
+  rename 'jaxb-runtime-.*.jar', 'jaxb-runtime.jar'
+  rename 'istack-commons-runtime-.*.jar', 'istack-commons-runtime.jar'
+  rename 'istack-commons-tools-.*.jar', 'istack-commons-tools.jar'
+}
 
 addRequiredLibraries {
   dependsOn addAppLibs 
-  dependsOn addApp2Libs 
+  dependsOn addAppJaxb23Libs 
+  dependsOn addAppXmlBinding30Libs
+  dependsOn addAppXmlBinding40Libs
   dependsOn addJakartaTransformer
 }

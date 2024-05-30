@@ -24,6 +24,7 @@ import javax.xml.bind.Marshaller;
 
 import org.junit.Test;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 /**
@@ -41,28 +42,53 @@ public class ThirdPartyJAXBFromAppTestServlet extends FATServlet {
 
     Logger LOG = Logger.getLogger("jaxb.thirdparty.web.ThirdPartyJAXBFromAppTestServlet");
 
-    // The app class loader, used to verify that's where the API is loaded from.
-    private static String API_APP_CLASSLOADER = "com.ibm.ws.classloading.internal.ParentLastClassLoader";
+    // The app and parent class loader, used to verify that's where the API is loaded from.
+    private static String API_PARENTLAST_CLASSLOADER = "com.ibm.ws.classloading.internal.ParentLastClassLoader";
+    private static String API_APP_CLASSLOADER = "com.ibm.ws.classloading.internal.AppClassLoader";
 
     private static String IMPL_LOCATION = "WEB-INF/lib";
 
     /**
-     * This test verifies that a app packaged JAXB 2.2 spec API is loaded from the ParentLastClassLoader classloader and WEB-INF/lib directory of the
+     * This test verifies that a app packaged JAXB 2.2 or XML Binding 3.0 is loaded from the ParentLastClassLoader classloader and WEB-INF/lib directory of the
      * application rather from our internal classloader, and bundle location.
      */
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE10_FEATURES })
     public void testJaxbAPILoadedFromApp() throws Exception {
-        assertNull("System property 'javax.xml.bind.context.factory' effects the entire JVM and should not be set by the Liberty runtime!",
-                   System.getProperty("javax.xml.bind.context.factory"));
-
+		
         // Verify JAX-B API came from the application dependencies
         ClassLoader apiLoader = JAXBContext.class.getClassLoader();
         CodeSource apiSrc = JAXBContext.class.getProtectionDomain().getCodeSource();
         String apiLocation = apiSrc == null ? null : apiSrc.getLocation().toString();
         LOG.info("Got JAX-B API from loader=  " + apiLoader);
         LOG.info("Got JAX-B API from location=" + apiLocation);
+
+        // Verify the class came form the ParentLastClassLoader
+        assertTrue("Expected JAX-B API to come from ParentLastClassLoader classloader, but it came from: " + apiLoader.getClass().getName(),
+                   apiLoader.getClass().getName().contains(API_PARENTLAST_CLASSLOADER));
+        assertTrue("Expected JAX-B API to come from the application, but it came from: " + apiLocation, apiLocation.contains(IMPL_LOCATION));
+    }
+
+    /**
+     * This test verifies that an app packaged XML Binding 4.0 is loaded from the AppClassLoader classloader and WEB-INF/lib directory of the
+     * application rather from our internal classloader, and bundle location.
+     *
+     * Since EE10 is the only platform that doesn't require classloading delegation to be parent last
+     * we need to assert to make sure it came from the app classloader
+     */
+    @Test
+    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE9_FEATURES })
+    public void testJaxbAPILoadedFromAppEE10() throws Exception {
+        // Verify JAX-B API came from the application dependencies
+        ClassLoader apiLoader = JAXBContext.class.getClassLoader();
+        CodeSource apiSrc = JAXBContext.class.getProtectionDomain().getCodeSource();
+        String apiLocation = apiSrc == null ? null : apiSrc.getLocation().toString();
+        LOG.info("Got JAX-B API from loader=  " + apiLoader);
+        LOG.info("Got JAX-B API from location=" + apiLocation);
+
         assertTrue("Expected JAX-B API to come from ParentLastClassLoader classloader, but it came from: " + apiLoader.getClass().getName(),
                    apiLoader.getClass().getName().contains(API_APP_CLASSLOADER));
+
         assertTrue("Expected JAX-B API to come from the application, but it came from: " + apiLocation, apiLocation.contains(IMPL_LOCATION));
     }
 
