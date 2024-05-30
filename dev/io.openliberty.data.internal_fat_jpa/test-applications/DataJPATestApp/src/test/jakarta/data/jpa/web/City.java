@@ -12,7 +12,9 @@ package test.jakarta.data.jpa.web;
 
 import java.util.Set;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Version;
@@ -23,6 +25,8 @@ import jakarta.persistence.Version;
 @Entity
 @IdClass(CityId.class)
 public class City {
+    // TODO uncomment to reproduce EclipseLink bug with selecting an attribute that is a collection type.
+    //@ElementCollection(fetch = FetchType.EAGER)
     public Set<Integer> areaCodes;
 
     @Version

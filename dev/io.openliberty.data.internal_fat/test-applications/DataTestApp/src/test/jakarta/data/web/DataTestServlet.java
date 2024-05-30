@@ -3765,7 +3765,12 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Set.of("Uneven cooking.", "Too noisy."),
                      ratings.getComments(1002));
 
-        // TODO enable once we have the getter and setter methods generated with type variables.
+        // TODO enable once EclipseLink bug is fixed
+        // java.lang.IllegalArgumentException: An exception occurred while creating a query in EntityManager:
+        // Exception Description: Problem compiling
+        // [SELECT NEW test.jakarta.data.web.Rating(o.id, o.item, o.numStars, o.reviewer, o.comments)
+        //  FROM RatingEntity o WHERE (o.item.price BETWEEN ?1 AND ?2) ORDER BY o.reviewer.email]. [78, 88]
+        // The state field path 'o.comments' cannot be resolved to a collection type.
         //assertEquals(List.of("Rachel", "Rex", "Ryan"),
         //             ratings.findByItemPriceBetween(40.00f, 50.00f, Sort.asc("reviewer.email"))
         //                             .map(r -> r.reviewer().firstName)

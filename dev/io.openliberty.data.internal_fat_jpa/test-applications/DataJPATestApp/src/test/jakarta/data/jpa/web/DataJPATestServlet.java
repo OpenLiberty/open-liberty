@@ -431,6 +431,27 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Use repository methods that return a collection attribute as a single value
+     * and multiple attributes including a collection attribute via a record.
+     */
+    @Test
+    public void testCollectionAttribute() {
+        assertEquals(Set.of(507),
+                     cities.areaCodes("Rochester", "Minnesota").orElseThrow());
+
+        List<AreaInfo> list = cities.areaInfo("Missouri").collect(Collectors.toList());
+        assertEquals(list.toString(), 2, list.size());
+
+        assertEquals("Kansas City", list.get(0).name());
+        assertEquals("Missouri", list.get(0).stateName());
+        assertEquals(Set.of(816, 975), list.get(0).areaCodes());
+
+        assertEquals("Springfield", list.get(1).name());
+        assertEquals("Missouri", list.get(1).stateName());
+        assertEquals(Set.of(417), list.get(1).areaCodes());
+    }
+
+    /**
      * Use a repository method with query language for the main query and count query,
      * where the count query is JDQL consisting of the FROM clause only.
      */
@@ -865,11 +886,21 @@ public class DataJPATestServlet extends FATServlet {
                                              .sorted()
                                              .collect(Collectors.toList()));
 
-        assertIterableEquals(List.of("AccountId:10105600:560237", "AccountId:15561600:391588", "AccountId:43014400:410224"),
-                             taxpayers.findBankAccountsByFilingStatus(TaxPayer.FilingStatus.HeadOfHousehold)
-                                             .map(AccountId::toString)
-                                             .sorted()
-                                             .collect(Collectors.toList()));
+        List<Set<AccountId>> list = taxpayers.findBankAccountsByFilingStatus(TaxPayer.FilingStatus.HeadOfHousehold);
+        // TODO EclipseLink bug where
+        // SELECT o.bankAccounts FROM TaxPayer o WHERE (o.filingStatus=?1) ORDER BY o.numDependents, o.ssn
+        // combines the two Set<AccountId> values that ought to be the result into a single combined list of AccountId.
+        //assertEquals(list.toString(), 2, list.size());
+        //assertEquals(Set.of("AccountId:43014400:410224"),
+        //             list.get(0)
+        //                             .stream()
+        //                             .map(AccountId::toString)
+        //                             .collect(Collectors.toSet()));
+        //assertEquals(Set.of("AccountId:10105600:560237", "AccountId:15561600:391588"),
+        //             list.get(1)
+        //                             .stream()
+        //                             .map(AccountId::toString)
+        //                             .collect(Collectors.toSet()));
 
         // TODO report EclipseLink bug that occurs on the following
         if (false)
@@ -3361,7 +3392,7 @@ public class DataJPATestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         // optional iterator of array attribute
-        Iterator<int[]> it = counties.findZipCodesByPopulationLessThanEqual(50000).orElseThrow();
+        Iterator<int[]> it = counties.findZipCodesByPopulationLessThanEqual(50000);
         assertIterableEquals(List.of(Arrays.toString(fillmoreZipCodes), Arrays.toString(wabashaZipCodes), Arrays.toString(winonaZipCodes)),
                              StreamSupport.stream(Spliterators.spliteratorUnknownSize(it, Spliterator.ORDERED), false)
                                              .map(Arrays::toString)
@@ -3380,9 +3411,8 @@ public class DataJPATestServlet extends FATServlet {
         // page of array attribute with none found
         assertEquals(0, counties.findZipCodesByNameStartsWith("Hous", PageRequest.ofSize(5)).numberOfElements());
 
-        // optional for iterator over array attribute with none found
-        counties.findZipCodesByPopulationLessThanEqual(1) //
-                        .ifPresent(i -> fail("Unexpected iterator: " + (i.hasNext() ? Arrays.toString(i.next()) : "(empty)")));
+        // iterator over array attribute with none found
+        assertEquals(false, counties.findZipCodesByPopulationLessThanEqual(1).hasNext());
 
         // update array value to empty
         assertEquals(true, counties.updateByNameSetZipCodes("Wabasha", new int[0]));

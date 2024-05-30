@@ -392,7 +392,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
             Class<?> componentClass = component.getType();
             Type componentType = component.getGenericType();
             String typeDesc = org.objectweb.asm.Type.getDescriptor(componentClass);
-            String signature = null;
+            String fieldSig = null, setterSig = null, getterSig = null;
             if (componentType instanceof ParameterizedType) {
                 SignatureWriter sigwriter = new SignatureWriter();
                 SignatureVisitor componentClassVisitor = sigwriter.visitParameterType();
@@ -403,8 +403,10 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
                     typeVarVisitor.visitEnd();
                 }
                 sigwriter.visitEnd();
-                signature = sigwriter.toString().substring(1); // remove the preceding ( character
-                signature = signature.replace('.', '/');
+                sigwriter.visitReturnType().visitBaseType('V');
+                setterSig = sigwriter.toString().replace('.', '/');
+                fieldSig = setterSig.substring(1, setterSig.length() - 2); // omit beginning ( and ending )V
+                getterSig = "()" + fieldSig;
             }
 
             // --------------------------------------------------------------------
@@ -414,11 +416,11 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
                 Tr.debug(tc, "     " + "adding field : " +
                              componentName + " " +
                              typeDesc,
-                         signature);
+                         fieldSig);
 
             fv = cw.visitField(ACC_PUBLIC, componentName,
                                typeDesc,
-                               signature,
+                               fieldSig,
                                null);
 
             fv.visitEnd();
@@ -429,11 +431,12 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
             // public setter...
             // --------------------------------------------------------------------
             if (trace && tc.isEntryEnabled())
-                Tr.debug(tc, "     " + "adding field : " +
+                Tr.debug(tc, "     " + "adding setter : " +
                              component.getName() + " " +
-                             component.getType().descriptorString());
+                             component.getType().descriptorString(),
+                         setterSig);
             String methodName = "set" + componentName.substring(0, 1).toUpperCase() + componentName.substring(1);
-            MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, methodName, "(" + typeDesc + ")V", null, null);
+            MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, methodName, "(" + typeDesc + ")V", setterSig, null);
             mv.visitVarInsn(ALOAD, 0);
             mv.visitVarInsn(org.objectweb.asm.Type.getType(component.getType()).getOpcode(ILOAD), 1);
             mv.visitFieldInsn(PUTFIELD, internal_entityClassName, componentName, typeDesc);
@@ -445,7 +448,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
             // public getter...
             // --------------------------------------------------------------------
             methodName = "get" + componentName.substring(0, 1).toUpperCase() + componentName.substring(1);
-            mv = cw.visitMethod(ACC_PUBLIC, methodName, "()" + typeDesc, null, null);
+            mv = cw.visitMethod(ACC_PUBLIC, methodName, "()" + typeDesc, getterSig, null);
             mv.visitVarInsn(ALOAD, 0);
             mv.visitFieldInsn(GETFIELD, internal_entityClassName, componentName, typeDesc);
             mv.visitInsn(org.objectweb.asm.Type.getType(component.getType()).getOpcode(Opcodes.IRETURN));
@@ -738,14 +741,17 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
             if (isPrimitive || attributeType.isInterface() || Serializable.class.isAssignableFrom(attributeType)) {
                 columnType = keyAttributeName != null && keyAttributeName.equalsIgnoreCase(attributeName) ? "id" : //
                                 "version".equalsIgnoreCase(attributeName) ? "version" : //
-                                                isCollection ? "element-collection" : //
+                                                isCollection ? "element-collection" : // TODO add fetch-type eager
                                                                 "basic";
             } else {
                 columnType = "embedded";
                 embeddableTypesQueue.add(attributeType);
             }
 
-            xml.append("   <" + columnType + " name=\"" + attributeName + "\">").append(EOLN);
+            xml.append("   <").append(columnType).append(" name=\"").append(attributeName).append('"');
+            if (isCollection)
+                xml.append(" fetch=\"EAGER\"");
+            xml.append('>').append(EOLN);
 
             if (isEmbeddable) {
                 if (!"embedded".equals(columnType))

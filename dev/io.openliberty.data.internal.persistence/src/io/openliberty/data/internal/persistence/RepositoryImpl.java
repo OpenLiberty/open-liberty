@@ -325,7 +325,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                                                  count, exists);
 
             if (query != null) { // @Query annotation
-                queryInfo.initForQuery(query.value(), multiType, entityInfos, primaryEntityInfoFuture);
+                queryInfo.initForQuery(query.value(), entityInfos, primaryEntityInfoFuture);
             } else if (save != null) { // @Save annotation
                 queryInfo.init(Save.class, QueryInfo.Type.SAVE);
             } else if (insert != null) { // @Insert annotation
@@ -1821,7 +1821,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @return possible positions of named parameters within the JPQL.
      */
     @Trivial
-    private List<Integer> getParameterPositions(String jpql) {
+    private List<Integer> getParameterPositions(String jpql) { // TODO move this to where we are already stepping through the QL
         List<Integer> positions = new ArrayList<>();
         for (int index = 0; (index = jpql.indexOf(':', index)) >= 0;)
             positions.add(++index);
@@ -2220,11 +2220,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 else if (DoubleStream.class.equals(multiType))
                                     returnValue = stream.mapToDouble(RepositoryImpl::toDouble);
                                 else
-                                    throw new UnsupportedOperationException("Stream type " + multiType.getName());
+                                    throw new UnsupportedOperationException("Stream type " + multiType.getName()); // TODO NLS
                             } else {
                                 Class<?> singleType = queryInfo.getSingleResultType();
 
                                 List<?> results = query.getResultList();
+
+                                if (trace) {
+                                    Tr.debug(this, tc, "result list type: " +
+                                                       (results == null ? null : results.getClass().toGenericString()));
+                                    if (results != null && !results.isEmpty()) {
+                                        Object r0 = results.get(0);
+                                        Tr.debug(this, tc, "type of first result: " +
+                                                           (r0 == null ? null : r0.getClass().toGenericString()));
+                                    }
+                                }
 
                                 if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE)
                                     for (Object result : results)
@@ -2269,7 +2279,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                             delete.executeUpdate();
                                         }
 
-                                if (results.isEmpty() && queryInfo.getOptionalResultType() != null) {
+                                if (results.isEmpty() && queryInfo.isOptional) {
                                     returnValue = null;
                                 } else if (multiType == null && (entityInfo.entityClass).equals(singleType)) {
                                     returnValue = oneResult(results);
@@ -2320,8 +2330,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                 }
                                         } else if (size == 1) {
                                             // convert size 1 List<Object[]> to array
-                                            Class<?> optionalType = queryInfo.getOptionalResultType();
-                                            if (firstNonNullResult.getClass().equals(optionalType))
+                                            if (queryInfo.isOptional && firstNonNullResult.getClass().equals(queryInfo.singleType))
                                                 returnValue = firstNonNullResult;
                                             else {
                                                 int len = Array.getLength(firstNonNullResult);
