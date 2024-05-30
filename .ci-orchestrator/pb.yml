@@ -114,7 +114,7 @@ steps:
 - stepName: Compile Liberty Images
   coreStep: true
   workType: RTC
-  projectName: "Open Liberty Personal Build CI Orchestrator - EBC"
+  projectName: "Open Liberty Personal Build CI Orchestrator (do not use)"
   dependsOn:
   - stepName: PR Changes
     awaitOutputProperties: true
@@ -145,7 +145,7 @@ steps:
 
 - stepName: Unittest Open Liberty
   workType: RTC
-  projectName: "Open Liberty Personal Build CI Orchestrator - EBC"
+  projectName: "Open Liberty Personal Build CI Orchestrator (do not use)"
   dependsOn:
   - stepName: PR Changes
     awaitOutputProperties: true
@@ -162,7 +162,7 @@ steps:
 
 - stepName: Compile FATs
   workType: RTC
-  projectName: "Open Liberty Personal Build CI Orchestrator - EBC"
+  projectName: "Open Liberty Personal Build CI Orchestrator (do not use)"
   dependsOn:
   - stepName: PR Changes
     awaitOutputProperties: true
