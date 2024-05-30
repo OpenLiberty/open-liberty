@@ -206,6 +206,8 @@ public class ServletFilter implements Filter {
 							String pattern = httpServletMapping.getPattern();
 							String matchValue = httpServletMapping.getMatchValue();
 							if (pattern != null && !pattern.equals("/") && !matchValue.isEmpty()) {
+								
+								pattern = (pattern.startsWith("/")) ? pattern : "/" + pattern;
 								httpRoute = contextPath + pattern;
 							} else {
 								if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
@@ -224,7 +226,8 @@ public class ServletFilter implements Filter {
 							 * 
 							 * Example: JSP that wasn't configured in web.xml
 							 */
-							
+							String path = webAppDispatcherContext40.getServletPathForMapping();
+							path = (path.startsWith("/")) ? path : "/" + path ;
 							httpRoute = contextPath + webAppDispatcherContext40.getServletPathForMapping();
 							
 						}
