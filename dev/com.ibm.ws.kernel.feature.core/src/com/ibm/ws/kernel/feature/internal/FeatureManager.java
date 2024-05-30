@@ -998,7 +998,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             Tr.audit(tc, "FEATURES_ADDED", getPublicFeatures(featureRepository.getResolvedFeatures(), true));
         }
 
-        featureRepository.copyInstalledFeaturesTo(postInstalledFeatures);
+        featureRepository.copyResolvedFeaturesTo(postInstalledFeatures);
         preInstalledFeatures.removeAll(postInstalledFeatures);
 
         // Add in any deleted autofeatures to the trace.
@@ -1761,7 +1761,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         for (Entry<String, Set<String>> javaSEEntry : javaVersiontoFeatureMap.entrySet()) {
             for (String feature : javaSEEntry.getValue()) {
                 Tr.error(tc, "FEATURE_JAVA_LEVEL_NOT_MET_ERROR", feature, javaSEEntry.getKey());
-                featureRepository.removeInstalledFeature(feature);
+                featureRepository.removeResolvedFeature(feature);
             }
         }
 

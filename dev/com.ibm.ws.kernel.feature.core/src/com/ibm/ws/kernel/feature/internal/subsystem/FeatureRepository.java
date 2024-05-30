@@ -40,6 +40,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.Version;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -60,8 +61,6 @@ import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry.BundleRepositoryHolder;
 import com.ibm.wsspi.kernel.feature.LibertyFeature;
 import com.ibm.wsspi.kernel.service.location.WsResource;
-
-import org.osgi.framework.Version;
 
 /**
  * The feature cache maintains entries describing feature definitions:
@@ -89,7 +88,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
 
     private final BundleContext bundleContext;
 
-    /** List of currently installed features */
+    /** List of currently resolved features */
     private volatile Set<String> resolvedFeatures = Collections.emptySet();
 
     private volatile Set<String> platforms = Collections.emptySet();
@@ -172,7 +171,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         readFeatureManifests();
 
         // If something was out of sync with the filesystem and this is the first pass,
-        // reset the installed features list so we re-figure out what should be installed.
+        // reset the resolved features list so we re-figure out what should be resolved.
         if (isDirty && firstInit) {
             // If stale, reset to empty list as we'll be rebuilding....
             resolvedFeatures = Collections.emptySet();
@@ -210,7 +209,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         }
 
         List<SubsystemFeatureDefinitionImpl> cachedEntries = new ArrayList<>();
-        Set<String> installed = new HashSet<>();
+        Set<String> resolved = new HashSet<>();
         Set<String> configured = new HashSet<>();
         Map<File, BadFeature> knownBad = new HashMap<>();
         boolean configError = false;
@@ -270,9 +269,9 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                 cachedEntries.add(cachedEntry);
             }
 
-            int numInstalled = in.readInt();
-            for (int i = 0; i < numInstalled; i++) {
-                installed.add(in.readUTF());
+            int numResolved = in.readInt();
+            for (int i = 0; i < numResolved; i++) {
+                resolved.add(in.readUTF());
             }
 
             int numConfigured = in.readInt();
@@ -299,7 +298,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             return;
         }
 
-        resolvedFeatures = Collections.unmodifiableSet(installed);
+        resolvedFeatures = Collections.unmodifiableSet(resolved);
         configuredFeatures = Collections.unmodifiableSet(configured);
         configurationError = configError;
         knownBadFeatures.putAll(knownBad);
@@ -340,10 +339,10 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                                        out);
             }
 
-            Collection<String> curInstalled = resolvedFeatures;
-            out.writeInt(curInstalled.size());
-            for (String installed : curInstalled) {
-                out.writeUTF(installed);
+            Collection<String> curResolved = resolvedFeatures;
+            out.writeInt(curResolved.size());
+            for (String resolved : curResolved) {
+                out.writeUTF(resolved);
             }
 
             Collection<String> curConfigured = configuredFeatures;
@@ -529,8 +528,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                         // Note: we always return false. We do the work as we see the files,
                         // instead of iterating to build a list that we then have to iterate over again...
 
-                        if (file == null)
-                         {
+                        if (file == null) {
                             return false; // NEXT!
                         }
 
@@ -551,15 +549,13 @@ public final class FeatureRepository implements FeatureResolver.Repository {
 
                         // Pessimistic test first: Is this a file we know is bad?
                         BadFeature bad = knownBadFeatures.get(file);
-                        if (isFeatureStillBad(file, bad))
-                         {
+                        if (isFeatureStillBad(file, bad)) {
                             return false; // NEXT!
                         }
 
                         // Test: if we've seen this file before, is it the same as what we saw last time?
                         SubsystemFeatureDefinitionImpl def = knownFeatures.get(file);
-                        if (isCachedEntryValid(file, def))
-                         {
+                        if (isCachedEntryValid(file, def)) {
                             return false; // NEXT!
                         }
 
@@ -722,9 +718,9 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     }
 
     /**
-     * Change the active list of installed features
+     * Change the active list of resolved features
      *
-     * @param newResolvedFeatures new set of installed features. Replaces the previous set.
+     * @param newResolvedFeatures new set of resolved features. Replaces the previous set.
      */
     public void setResolvedFeatures(Set<String> newResolvedFeatures, Set<String> newConfiguredFeatures, boolean configurationError) {
         Set<String> current = resolvedFeatures;
@@ -762,10 +758,15 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         return configurationError;
     }
 
-    /**
-     * Copies the active list of installed features into the given set.
-     */
+    @Deprecated
     public void copyInstalledFeaturesTo(Set<String> features) {
+        copyResolvedFeaturesTo(features);
+    }
+
+    /**
+     * Copies the active list of resolved features into the given set.
+     */
+    public void copyResolvedFeaturesTo(Set<String> features) {
         features.addAll(resolvedFeatures);
     }
 
@@ -840,7 +841,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         return result;
     }
 
-    public Map<String, SubsystemFeatureDefinitionImpl> getAllFeatures(){
+    public Map<String, SubsystemFeatureDefinitionImpl> getAllFeatures() {
         return cachedFeatures;
     }
 
@@ -910,15 +911,15 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             // do nothing; not really in a running system (unit tests etc.)
             return;
         }
-        Set<String> installedSymbolicNames = new HashSet<String>();
+        Set<String> resolvedSymbolicNames = new HashSet<String>();
         for (String featureName : resolvedFeatures) {
             String symbolicName = publicFeatureNameToSymbolicName.get(lowerFeature(featureName));
             if (symbolicName != null) {
-                installedSymbolicNames.add(symbolicName);
+                resolvedSymbolicNames.add(symbolicName);
             }
         }
         Set<String> removedFactories = new HashSet<String>(featureServiceFactories.keySet());
-        removedFactories.removeAll(installedSymbolicNames);
+        removedFactories.removeAll(resolvedSymbolicNames);
         for (String currentFactorySymbolicName : removedFactories) {
             LibertyFeatureServiceFactory factory = featureServiceFactories.remove(currentFactorySymbolicName);
             if (factory != null) {
@@ -926,7 +927,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             }
         }
 
-        for (String currentFactorySymbolicName : installedSymbolicNames) {
+        for (String currentFactorySymbolicName : resolvedSymbolicNames) {
             SubsystemFeatureDefinitionImpl featureDef = cachedFeatures.get(currentFactorySymbolicName);
             if (featureDef != null) {
                 LibertyFeatureServiceFactory factory = new LibertyFeatureServiceFactory();
@@ -1018,19 +1019,24 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         return isDirty;
     }
 
+    @Deprecated
+    public void removeInstalledFeature(String feature) {
+        removeResolvedFeature(feature);
+    }
+
     /**
-     * Remove an installed feature from the list. This is intended to be used to remove features that failed during
+     * Remove an resolved feature from the list. This is intended to be used to remove features that failed during
      * bundle resolution because of java version restrictions.
      *
      * It will also set configurationError to true, as this should only be called in an error scenario.
      *
      * @param feature The feature to remove
      */
-    public void removeInstalledFeature(String feature) {
+    public void removeResolvedFeature(String feature) {
         this.configurationError = true;
-        HashSet<String> newInstalledFeatures = new HashSet<>(resolvedFeatures);
-        if (newInstalledFeatures.remove(feature)) {
-            resolvedFeatures = newInstalledFeatures.isEmpty() ? Collections.<String> emptySet() : Collections.unmodifiableSet(newInstalledFeatures);
+        HashSet<String> newResolvedFeatures = new HashSet<>(resolvedFeatures);
+        if (newResolvedFeatures.remove(feature)) {
+            resolvedFeatures = newResolvedFeatures.isEmpty() ? Collections.<String> emptySet() : Collections.unmodifiableSet(newResolvedFeatures);
         }
     }
 }
