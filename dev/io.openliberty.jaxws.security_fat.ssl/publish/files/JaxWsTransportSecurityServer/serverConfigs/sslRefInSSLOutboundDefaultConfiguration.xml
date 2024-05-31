@@ -11,11 +11,11 @@
     
     <!-- outbound default SSL Configuration -->
     <sslDefault outboundSSLRef="myDefaultServerSSLSettings" />
-    <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" />
+    <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" verifyHostname="false"/>
     <keyStore id="defaultKeyStore" location="defaultKey.jks" type="JKS" password="passw0rd" />
     <keyStore id="defaultTrustStore" location="defaultTrust.jks" type="JKS" password="passw0rd" />
 
-    <ssl id="myDefaultServerSSLSettings" keyStoreRef="serverKeyStore" trustStoreRef="serverTrustStore" />
+    <ssl id="myDefaultServerSSLSettings" keyStoreRef="serverKeyStore" trustStoreRef="serverTrustStore" verifyHostname="false"/>
     <keyStore id="serverKeyStore" location="key.jks" type="JKS" password="passw0rd" />
     <keyStore id="serverTrustStore" location="trust.jks" type="JKS" password="passw0rd" />
     

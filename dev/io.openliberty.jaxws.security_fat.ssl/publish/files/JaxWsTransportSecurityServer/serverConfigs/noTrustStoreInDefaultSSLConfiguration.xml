@@ -7,9 +7,9 @@
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
-    
     <!-- no trustStore in default SSL Configuration -->
     <keyStore id="defaultKeyStore" password="passw0rd" /> 
+     <ssl id="defaultSSLConfig" verifyHostname="false" />
     
     <application id="TransportSecurityClient" name="TransportSecurityClient" location="TransportSecurityClient.war"
         context="TransportSecurityClient" type="war" />

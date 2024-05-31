@@ -9,11 +9,11 @@
 
     <include location="../fatTestPorts.xml"/>
     
-    <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" />
+    <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" verifyHostname="false"/>
     <keyStore id="defaultKeyStore" location="defaultKey.jks" type="JKS" password="passw0rd" />
     <keyStore id="defaultTrustStore" location="defaultTrust.jks" type="JKS" password="passw0rd" />
 
-    <ssl id="myDefaultServerSSLSettings" keyStoreRef="serverKeyStore" trustStoreRef="serverTrustStore" >
+    <ssl id="myDefaultServerSSLSettings" keyStoreRef="serverKeyStore" trustStoreRef="serverTrustStore" verifyHostname="false">
      	<outboundConnection host="localhost" port="${bvt.prop.HTTP_default.secure}" />
      	<outboundConnection host="127.0.0.1" port="${bvt.prop.HTTP_default.secure}" />
     </ssl>

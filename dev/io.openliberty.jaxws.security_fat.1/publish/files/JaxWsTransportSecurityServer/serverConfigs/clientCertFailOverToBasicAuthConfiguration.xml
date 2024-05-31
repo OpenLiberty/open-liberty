@@ -7,17 +7,17 @@
      </featureManager>
 
      <include location="../fatTestPorts.xml" />
-
      <!-- Server SSL configuration -->
      <ssl id="defaultSSLConfig" keyStoreRef="serverKeyStore" trustStoreRef="serverTrustStore" 
-        clientAuthenticationSupported="true"/>
+        clientAuthenticationSupported="true">
+     </ssl>
      <keyStore id="serverKeyStore" location="serverKey.jks" type="JKS" password="passw0rd" /> 
      <keyStore id="serverTrustStore" location="trust.jks" type="JKS" password="passw0rd" /> 
 
      <!-- Allow fail over to basic-auth -->
      <webAppSecurity allowFailOverToBasicAuth="true" /> 
      <!-- customize SSL configuration -->
-     <ssl id="customizeSSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" /> 
+     <ssl id="customizeSSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" verifyHostname="false"/> 
      <keyStore id="clientKeyStore" location="clientKey.jks" type="JKS" password="passw0rd" /> 
      <keyStore id="clientTrustStore" location="clientTrust.jks" type="JKS" password="passw0rd" /> 
      

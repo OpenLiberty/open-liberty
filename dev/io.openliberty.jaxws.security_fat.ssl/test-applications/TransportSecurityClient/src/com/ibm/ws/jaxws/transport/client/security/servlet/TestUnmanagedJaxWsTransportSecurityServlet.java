@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -108,6 +108,9 @@ public class TestUnmanagedJaxWsTransportSecurityServlet extends HttpServlet {
         String urlPath = sBuilder.toString();
         System.out.println(clazz.getSimpleName() + ": The request web service url is: " + urlPath);
         provider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, urlPath);
+
+        // add disableCNCheck to match the value being set in ibm-ws-bnd.xml config for the unmanaged clients.
+        provider.getRequestContext().put("http.conduit.tlsClientParameters.disableCNCheck", "true");
 
         return client;
     }

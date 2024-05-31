@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -87,7 +87,7 @@ public class SSLConfigurationUnmanagedTest extends AbstractJaxWsTransportSecurit
     // 1 Default SSL configuration
     @Test
     public void testUnmanagedDefaultSSLConfig() throws Exception {
-        prepareForTest("serverConfigs/" + DEFAULT_SSL_SERVER_CONFIG, "basicAuthWithSSL_provider_web.xml", null);
+        prepareForTest("serverConfigs/" + DEFAULT_SSL_SERVER_CONFIG, "basicAuthWithSSL_provider_web.xml", "bindings/defaultSSLConfig.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
                                                                    new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/unauthorized/employPojoService", "Hello, employee from SayHelloPojoService"),
@@ -102,7 +102,7 @@ public class SSLConfigurationUnmanagedTest extends AbstractJaxWsTransportSecurit
     // 2 SSLRef in DefaultSSL configuration
     @Test
     public void testSSLRefInDefaultSSLConfig() throws Exception {
-        prepareForTest("serverConfigs/" + SSLREF_IN_SSL_DEFAULT_CONFIG, "basicAuthWithSSL_provider_web.xml", null);
+        prepareForTest("serverConfigs/" + SSLREF_IN_SSL_DEFAULT_CONFIG, "basicAuthWithSSL_provider_web.xml", "bindings/defaultSSLConfig.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
                                                                    new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/unauthorized/employPojoService", "Hello, employee from SayHelloPojoService"),

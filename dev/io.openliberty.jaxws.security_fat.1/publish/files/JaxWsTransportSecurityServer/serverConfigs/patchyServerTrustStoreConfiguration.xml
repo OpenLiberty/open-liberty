@@ -17,7 +17,7 @@
      <webAppSecurity allowFailOverToBasicAuth="true" /> 
      
      <!-- customize SSL configuration -->
-     <ssl id="customizeSSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" /> 
+     <ssl id="customizeSSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" verifyHostname="false"/> 
      <keyStore id="clientKeyStore" location="clientKey.jks" type="JKS" password="passw0rd" /> 
      <keyStore id="clientTrustStore" location="clientTrust.jks" type="JKS" password="passw0rd" /> 
      

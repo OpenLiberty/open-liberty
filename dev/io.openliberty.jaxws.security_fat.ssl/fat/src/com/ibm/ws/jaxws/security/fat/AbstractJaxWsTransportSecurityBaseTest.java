@@ -288,7 +288,7 @@ abstract public class AbstractJaxWsTransportSecurityBaseTest {
 
         if (null != expectedServerInfos) {
             for (String info : expectedServerInfos) {
-                assertNotNull("The expected output in server log is " + info, server.waitForStringInLog(info));
+                assertNotNull("The expected output in server log is " + info, server.waitForStringInLog(info, WAIT_TIME_OUT));
             }
         }
     }

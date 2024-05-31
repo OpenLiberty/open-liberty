@@ -10,7 +10,7 @@
     
     <!-- default SSL Configuration -->
     <sslDefault sslRef="myDefaultServerSSLSettings" />
-    <ssl id="myDefaultServerSSLSettings" keyStoreRef="serverKeyStore" trustStoreRef="serverTrustStore" />
+    <ssl id="myDefaultServerSSLSettings" keyStoreRef="serverKeyStore" trustStoreRef="serverTrustStore" verifyHostname="false"/>
     <keyStore id="serverKeyStore" location="key.jks" type="JKS" password="passw0rd" />
     <keyStore id="serverTrustStore" location="trust.jks" type="JKS" password="passw0rd" />
     

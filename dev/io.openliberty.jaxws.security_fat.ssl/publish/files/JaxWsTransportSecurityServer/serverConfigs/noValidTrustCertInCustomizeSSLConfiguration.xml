@@ -11,9 +11,11 @@
      <!-- Server SSL configuration -->
      <keyStore id="defaultKeyStore" location="serverKey.jks"
           password="passw0rd" />
+          
+     <ssl id="defaultSSLConfig" verifyHostname="false" />
 
      <!-- customize SSL configuration -->
-     <ssl id="customizeSSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" /> 
+     <ssl id="customizeSSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" verifyHostname="false"/> 
      <keyStore id="clientKeyStore" location="clientKey.jks" type="JKS" password="passw0rd" /> 
      <keyStore id="clientTrustStore" location="clientInvalidTrust.jks" type="JKS" password="passw0rd" /> 
      

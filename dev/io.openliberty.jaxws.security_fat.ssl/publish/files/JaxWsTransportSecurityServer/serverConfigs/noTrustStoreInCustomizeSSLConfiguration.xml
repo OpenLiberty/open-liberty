@@ -11,9 +11,10 @@
      <!-- Server SSL configuration -->
      <keyStore id="defaultKeyStore" location="serverKey.jks"
           password="passw0rd" />
+     <ssl id="defaultSSLConfig" verifyHostname="false" />
 
      <!-- customize SSL configuration -->
-     <ssl id="customizeSSLConfig" keyStoreRef="clientKeyStore" /> 
+     <ssl id="customizeSSLConfig" keyStoreRef="clientKeyStore" verifyHostname="false" /> 
      <keyStore id="clientKeyStore" location="clientKey.jks" type="JKS" password="passw0rd" /> 
      
      <application id="TransportSecurityClient" name="TransportSecurityClient"

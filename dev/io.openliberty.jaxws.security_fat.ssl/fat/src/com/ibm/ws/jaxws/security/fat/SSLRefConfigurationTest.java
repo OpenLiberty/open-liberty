@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -73,7 +73,7 @@ public class SSLRefConfigurationTest extends AbstractJaxWsTransportSecuritySSLTe
 
     @Test
     public void testSSLRefInDefaultSSLConfig() throws Exception {
-        prepareForTest("serverConfigs/" + SSLREF_IN_SSL_DEFAULT_CONFIG, "basicAuthWithSSL_provider_web.xml", null);
+        prepareForTest("serverConfigs/" + SSLREF_IN_SSL_DEFAULT_CONFIG, "basicAuthWithSSL_provider_web.xml", "bindings/sslRefSSLConfig.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/unauthorized/employPojoService", "Hello, employee from SayHelloPojoService"),
                                                                    new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/unauthorized/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
@@ -85,7 +85,7 @@ public class SSLRefConfigurationTest extends AbstractJaxWsTransportSecuritySSLTe
     @Test
     public void testSSLRefInOutboundDefaultSSLConfig() throws Exception {
         prepareForTest("serverConfigs/" + SSLREF_IN_SSL_OUTBOUND_DEFAULT_CONFIG, "basicAuthWithSSL_provider_web.xml",
-                       null);
+                       "bindings/sslRefSSLConfig.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/unauthorized/employPojoService", "Hello, employee from SayHelloPojoService"),
                                                                    new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/unauthorized/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
@@ -97,7 +97,7 @@ public class SSLRefConfigurationTest extends AbstractJaxWsTransportSecuritySSLTe
     @Test
     public void testSSLRefInOutboundFilterSSLConfig() throws Exception {
         prepareForTest("serverConfigs/" + SSLREF_IN_SSL_OUTBOUND_FILTER_CONFIG, "basicAuthWithSSL_provider_web.xml",
-                       null);
+                       "bindings/sslRefSSLConfig.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/unauthorized/employPojoService", "Hello, employee from SayHelloPojoService"),
                                                                    new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/unauthorized/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -86,7 +86,7 @@ public class SSLConfigurationTest extends AbstractJaxWsTransportSecuritySSLTest 
     @Mode(componenttest.custom.junit.runner.Mode.TestMode.FULL)
     @Test
     public void testDefaultSSLConfig() throws Exception {
-        prepareForTest("serverConfigs/" + DEFAULT_SSL_SERVER_CONFIG, "basicAuthWithSSL_provider_web.xml", null);
+        prepareForTest("serverConfigs/" + DEFAULT_SSL_SERVER_CONFIG, "basicAuthWithSSL_provider_web.xml", "bindings/defaultSSLConfig.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
                                                                    new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/unauthorized/employPojoService", "Hello, employee from SayHelloPojoService"),
@@ -101,7 +101,7 @@ public class SSLConfigurationTest extends AbstractJaxWsTransportSecuritySSLTest 
     @Mode(componenttest.custom.junit.runner.Mode.TestMode.FULL)
     @Test
     public void testNoSSLConfig() throws Exception {
-        prepareForTest("serverConfigs/" + NO_SSL_CONFIG, "basicAuthWithSSL_provider_web.xml", null);
+        prepareForTest("serverConfigs/" + NO_SSL_CONFIG, "basicAuthWithSSL_provider_web.xml", "bindings/defaultSSLConfig.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
                                                                    new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/unauthorized/employPojoService", noSSLResps),
@@ -126,7 +126,7 @@ public class SSLConfigurationTest extends AbstractJaxWsTransportSecuritySSLTest 
     @Mode(componenttest.custom.junit.runner.Mode.TestMode.FULL)
     public void testNoTrustStoreInDefaultSSLConfig() throws Exception {
         prepareForTest("serverConfigs/" + DEFAULT_SSL_WITHOUT_TRUST_STORE_SERVER_CONFIG,
-                       "basicAuthWithSSL_provider_web.xml", null);
+                       "basicAuthWithSSL_provider_web.xml", "bindings/defaultSSLConfig.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
                                                                    new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/unauthorized/employPojoService", "Hello, employee from SayHelloPojoService"),
