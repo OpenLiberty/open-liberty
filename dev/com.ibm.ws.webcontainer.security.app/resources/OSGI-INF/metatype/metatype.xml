@@ -140,7 +140,7 @@
         </AD>    
         
         <AD id="partitionedCookie" name="%partitionedCookie" description="%partitionedCookie.desc"
-            required="false" type="String" default="Defer">
+            required="false" type="String" default="defer">
             <Option label="%partitionedCookieTrue"  value="true"/>
             <Option label="%partitionedCookieFalse" value="false"/>
             <Option label="%partitionedCookieDefer" value="defer"/>
