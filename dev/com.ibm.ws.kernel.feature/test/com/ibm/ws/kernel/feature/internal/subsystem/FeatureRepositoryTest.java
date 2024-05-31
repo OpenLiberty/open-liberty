@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.AssertionFailedError;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -34,11 +32,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.common.SharedLocationManager;
-import test.common.SharedOutputManager;
-import test.utils.SharedConstants;
-import test.utils.TestUtils;
-
 import com.ibm.ws.kernel.feature.Visibility;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils.ImmutableAttributes;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils.ProvisioningDetails;
@@ -46,6 +39,12 @@ import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 import com.ibm.ws.kernel.provisioning.ExtensionConstants;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
+
+import junit.framework.AssertionFailedError;
+import test.common.SharedLocationManager;
+import test.common.SharedOutputManager;
+import test.utils.SharedConstants;
+import test.utils.TestUtils;
 
 /**
  *
@@ -61,10 +60,10 @@ public class FeatureRepositoryTest {
 
     enum CacheField {
         publicFeatureNameToSymbolicName(false),
-        cachedFeatures(false),
+        installedFeatures(false),
         autoFeatures(true),
-        knownFeatures(true),
-        knownBadFeatures(true);
+        knownGoodFeatureFiles(true),
+        knownBadFeatureFiles(true);
 
         final Field field;
         final boolean provisioningOnly;
@@ -142,20 +141,20 @@ public class FeatureRepositoryTest {
         assertNullProvisioningCaches(repo);
 
         // Read the empty cache _AND_ the manifests based on the locations
-        // known to the BundleRepositoryImpl... 
+        // known to the BundleRepositoryImpl...
         repo.init();
         assertInitializedProvisioningCaches(repo);
 
-        int numCachedFeatures = CacheField.cachedFeatures.getMap(repo).size();
-        int numKnownFeatures = CacheField.knownFeatures.getMap(repo).size();
+        int numInstalledFeatures = CacheField.installedFeatures.getMap(repo).size();
+        int numKnownFeatures = CacheField.knownGoodFeatureFiles.getMap(repo).size();
 
-        Assert.assertTrue("There should be cached features: " + numCachedFeatures, numCachedFeatures > 0);
-        Assert.assertEquals("There should be the same number of known features", numCachedFeatures, numKnownFeatures);
-        Assert.assertEquals("There should be one known bad manifest", 1, CacheField.knownBadFeatures.getMap(repo).size());
+        Assert.assertTrue("There should be cached features: " + numInstalledFeatures, numInstalledFeatures > 0);
+        Assert.assertEquals("There should be the same number of known features", numInstalledFeatures, numKnownFeatures);
+        Assert.assertEquals("There should be one known bad manifest", 1, CacheField.knownBadFeatureFiles.getMap(repo).size());
         Assert.assertEquals("There should be one known autofeature", 1, CacheField.autoFeatures.getList(repo).size());
         Assert.assertTrue("isDirty should be true", (Boolean) isDirty.get(repo));
 
-        // Write to file... 
+        // Write to file...
         repo.storeCache();
 
         Assert.assertFalse("isDirty should be false after the cache is written", (Boolean) isDirty.get(repo));
@@ -167,9 +166,9 @@ public class FeatureRepositoryTest {
         repo.init();
         assertInitializedProvisioningCaches(repo);
 
-        Assert.assertEquals("There should be the same number of cached features as previously", numCachedFeatures, CacheField.cachedFeatures.getMap(repo).size());
-        Assert.assertEquals("There should be the same number of known features", numCachedFeatures, CacheField.knownFeatures.getMap(repo).size());
-        Assert.assertEquals("There should be one known bad manifest", 1, CacheField.knownBadFeatures.getMap(repo).size());
+        Assert.assertEquals("There should be the same number of cached features as previously", numInstalledFeatures, CacheField.installedFeatures.getMap(repo).size());
+        Assert.assertEquals("There should be the same number of known features", numInstalledFeatures, CacheField.knownGoodFeatureFiles.getMap(repo).size());
+        Assert.assertEquals("There should be one known bad manifest", 1, CacheField.knownBadFeatureFiles.getMap(repo).size());
         Assert.assertEquals("There should be one known autofeature", 1, CacheField.autoFeatures.getList(repo).size());
         Assert.assertFalse("isDirty should be false after the cache is re-read", (Boolean) isDirty.get(repo));
 
@@ -179,9 +178,9 @@ public class FeatureRepositoryTest {
         repo.init();
         assertInitializedProvisioningCaches(repo);
 
-        Assert.assertEquals("There should be the same number of cached features as previously", numCachedFeatures, CacheField.cachedFeatures.getMap(repo).size());
-        Assert.assertEquals("There should be the same number of known features", numCachedFeatures, CacheField.knownFeatures.getMap(repo).size());
-        Assert.assertEquals("There should be one known bad manifest", 1, CacheField.knownBadFeatures.getMap(repo).size());
+        Assert.assertEquals("There should be the same number of cached features as previously", numInstalledFeatures, CacheField.installedFeatures.getMap(repo).size());
+        Assert.assertEquals("There should be the same number of known features", numInstalledFeatures, CacheField.knownGoodFeatureFiles.getMap(repo).size());
+        Assert.assertEquals("There should be one known bad manifest", 1, CacheField.knownBadFeatureFiles.getMap(repo).size());
         Assert.assertEquals("There should be one known autofeature", 1, CacheField.autoFeatures.getList(repo).size());
         Assert.assertFalse("isDirty should be false after the cache is re-read", (Boolean) isDirty.get(repo));
 
@@ -220,7 +219,7 @@ public class FeatureRepositoryTest {
 
     /**
      * This method tests that every public feature has a corresponding OSGi Service registered for it.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -249,7 +248,7 @@ public class FeatureRepositoryTest {
         allFeatureDefs.add(createSubsystemFeatureDef("com.ibm.ws.public.featureg-1.0", "com.ibm.ws.public.featureg-1.0", "private", "bundleD"));
 
         // Now iterate through them and run each of them through updateMaps to get them registered in the repo. We also store the public ones
-        // in a set to use in the checking at the end of the method. We also add all of the featureNames to the installedFeatures variable that 
+        // in a set to use in the checking at the end of the method. We also add all of the featureNames to the installedFeatures variable that
         // we will push into the repo as well.
 
         Set<String> publicFeatureNames = new HashSet<String>();
@@ -265,7 +264,7 @@ public class FeatureRepositoryTest {
         }
 
         // Store the installedFeatures
-        repo.setResolvedFeatures(installedFeatures, installedFeatures, false);
+        repo.setInstalledFeatures(installedFeatures, installedFeatures, false);
 
         // Update the services, which will register the OSGi Services.
         repo.updateServices();
@@ -299,7 +298,8 @@ public class FeatureRepositoryTest {
     /*
      * A method to generate a SubsystemFeatureDefinition object from a subset of feature info.
      */
-    public static SubsystemFeatureDefinitionImpl createSubsystemFeatureDef(String shortName, String symbolicName, String visibility, String subsystemContentString) throws Exception {
+    public static SubsystemFeatureDefinitionImpl createSubsystemFeatureDef(String shortName, String symbolicName, String visibility,
+                                                                           String subsystemContentString) throws Exception {
         ProvisioningDetails details = new ProvisioningDetails(null, TestUtils.createValidFeatureManifestStream(shortName, symbolicName + "; visibility:=" + visibility,
                                                                                                                subsystemContentString));
         ImmutableAttributes iAttr = FeatureDefinitionUtils.loadAttributes("", null, details);
