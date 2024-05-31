@@ -22,6 +22,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
@@ -50,6 +52,8 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
+
+import javax.sql.DataSource;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -86,7 +90,7 @@ import jakarta.transaction.Status;
 public class RepositoryImpl<R> implements InvocationHandler {
     private static final TraceComponent tc = Tr.register(RepositoryImpl.class);
 
-    private static final ThreadLocal<Deque<EntityManager>> defaultMethodResources = new ThreadLocal<>();
+    private static final ThreadLocal<Deque<AutoCloseable>> defaultMethodResources = new ThreadLocal<>();
 
     private final AtomicBoolean isDisposed = new AtomicBoolean();
     final CompletableFuture<EntityInfo> primaryEntityInfoFuture;
@@ -494,21 +498,35 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @throws UnsupportedOperationException if the type of resource is not available.
      */
     private <T> T getResource(Class<T> type) {
-        Deque<EntityManager> resources = defaultMethodResources.get();
-        if (EntityManager.class.equals(type)) {
-            EntityManager em = primaryEntityInfoFuture.join().builder.createEntityManager();
+        Deque<AutoCloseable> resources = defaultMethodResources.get();
+        Object resource = null;
+        if (EntityManager.class.equals(type))
+            resource = primaryEntityInfoFuture.join().builder.createEntityManager();
+        else if (DataSource.class.equals(type))
+            resource = primaryEntityInfoFuture.join().builder.getDataSource();
+        else if (Connection.class.equals(type))
+            try {
+                resource = primaryEntityInfoFuture.join().builder.getDataSource().getConnection();
+            } catch (SQLException x) {
+                throw new DataConnectionException(x);
+            }
+
+        if (resource == null)
+            throw new UnsupportedOperationException("The " + type.getName() + " type of resource is not available from the Jakarta Data provider."); // TODO NLS
+
+        if (resource instanceof AutoCloseable) {
             if (resources == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, type + " accessed outside the scope of repository default method",
-                             Arrays.toString(new Exception().getStackTrace()));
+                             Arrays.toString(new Exception().getStackTrace())); // TODO log the stack without an exception
             } else {
-                resources.add(em);
+                resources.add((AutoCloseable) resource);
             }
-            @SuppressWarnings("unchecked")
-            T t = (T) em;
-            return t;
         }
-        throw new UnsupportedOperationException("The " + type.getName() + " type of resource is not available from the Jakarta Data provider."); // TODO NLS
+
+        @SuppressWarnings("unchecked")
+        T t = (T) resource;
+        return t;
     }
 
     /**
@@ -673,7 +691,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                 " is no longer in scope."); // TODO
 
             if (isDefaultMethod) {
-                Deque<EntityManager> resourceStack = defaultMethodResources.get();
+                Deque<AutoCloseable> resourceStack = defaultMethodResources.get();
                 boolean added;
                 if (added = (resourceStack == null))
                     defaultMethodResources.set(resourceStack = new LinkedList<>());
@@ -685,12 +703,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), returnValue);
                     return returnValue;
                 } finally {
-                    for (EntityManager em; (em = resourceStack.pollLast()) != null;)
-                        if (em.isOpen())
+                    for (AutoCloseable resource; (resource = resourceStack.pollLast()) != null;)
+                        if (!(resource instanceof EntityManager) ||
+                            ((EntityManager) resource).isOpen())
                             try {
                                 if (trace && tc.isDebugEnabled())
-                                    Tr.debug(this, tc, "close " + em);
-                                em.close();
+                                    Tr.debug(this, tc, "close " + resource);
+                                resource.close();
                             } catch (Throwable x) {
                                 FFDCFilter.processException(x, getClass().getName(), "1827", this);
                             }

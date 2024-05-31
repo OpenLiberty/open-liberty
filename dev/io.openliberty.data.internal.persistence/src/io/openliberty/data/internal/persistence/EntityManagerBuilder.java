@@ -31,6 +31,8 @@ import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.sql.DataSource;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -101,6 +103,14 @@ public abstract class EntityManagerBuilder implements Runnable {
      * @return a new EntityManager instance.
      */
     public abstract EntityManager createEntityManager();
+
+    /**
+     * Obtains the DataSource that is used by the EntityManager.
+     *
+     * @return the DataSource that is used by the EntityManager.
+     * @throws UnsupportedOperationException if the DataSource cannot be obtained from the EntityManager.
+     */
+    public abstract DataSource getDataSource();
 
     /**
      * Returns the record class that corresponds to the specified generated entity class.
