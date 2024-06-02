@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -403,6 +403,11 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             out.writeUTF(s);
         }
 
+        out.writeInt(iAttr.platforms.size());
+        for (String s : iAttr.platforms) {
+            out.writeUTF(s);
+        }
+
         // these attributes can be large so lets avoid the arbitrary limit of 65535 chars of writeUTF
         if (iAttr.isAutoFeature) {
             writeLongString(out, details.getCachedRawHeader(FeatureDefinitionUtils.IBM_PROVISION_CAPABILITY));
@@ -475,15 +480,24 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         for (int i = 0; i < processTypeNum; i++) {
             processTypes.add(valueOf(in.readUTF(), ProcessType.SERVER));
         }
+
         ActivationType activationType = valueOf(in.readUTF(), ActivationType.SEQUENTIAL);
+
         int altNamesCount = in.readInt();
         List<String> altNames = new ArrayList<>(altNamesCount);
         for (int x = 0; x < altNamesCount; x++) {
             altNames.add(in.readUTF());
         }
+
+        int platformsCount = in.readInt();
+        List<String> platforms = new ArrayList<>(platformsCount);
+        for (int i = 0; i < platformsCount; i++) {
+            platforms.add(in.readUTF());
+        }
+
         return new ImmutableAttributes(repositoryType, symbolicName, shortName, altNames, featureVersion, visibility, appRestart,
                                        version, featureFile, lastModified, fileSize, isAutoFeature, hasApiServices, hasApiPackages,
-                                       hasSpiPackages, isSingleton, disableOnConflict, processTypes, activationType);
+                                       hasSpiPackages, isSingleton, disableOnConflict, processTypes, activationType, platforms);
     }
 
     static ProvisioningDetails loadProvisioningDetails(DataInputStream in, ImmutableAttributes iAttr) throws IOException {
