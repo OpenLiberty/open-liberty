@@ -1,5 +1,5 @@
 <server>
-       <featureManager>
+   <featureManager>
 	<feature>localConnector-1.0</feature>
 	<feature>jsp-2.3</feature>
 	<feature>jaxws-2.2</feature>
@@ -8,11 +8,8 @@
 	<feature>servlet-3.1</feature>
   </featureManager>
 
-  <httpEndpoint httpPort="9988" httpsPort="9989"
+  <httpEndpoint httpPort="9888" httpsPort="9889"
 		id="defaultHttpEndpoint" />
-		
-		<webApplication name="testMTOM" contextRoot="testMTOM" location="testMTOM.war">
-		</webApplication>
     <logging traceSpecification="org.apache.cxf.*=all:com.ibm.ws.jaxws*=all" />
     
     <!-- TESTING THE UPLOAD! -->

@@ -12,6 +12,9 @@
 		id="defaultHttpEndpoint" />
 		
 		<webApplication name="testMTOM" contextRoot="testMTOM" location="testMTOM.war">
+			<webservices-bnd> 
+				<webservice-endpoint-properties allowNonMatchingToDefaultSoapAction="false" />
+			</webservices-bnd>
 		</webApplication>
     <logging traceSpecification="org.apache.cxf.*=all:com.ibm.ws.jaxws*=all" />
     
