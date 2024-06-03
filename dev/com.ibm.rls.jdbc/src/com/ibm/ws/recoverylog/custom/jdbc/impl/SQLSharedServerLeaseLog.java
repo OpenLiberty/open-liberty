@@ -1002,8 +1002,16 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 createTableStmt.execute(postgresqlIndexString);
             } else {
                 String genericTableString = genericTablePreString + _leaseTableName + genericTablePostString;
+
+                if (_isDB2) {
+                    String dbName = ConfigurationProviderManager.getConfigurationProvider().getTransactionLogDBName();
+                    if (!dbName.isEmpty()) {
+                        genericTableString = genericTableString + " IN DATABASE " + dbName;
+                    }
+                }
+
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Create Generic Table using: " + genericTableString);
+                    Tr.debug(tc, "Create Table using: " + genericTableString);
                 createTableStmt.executeUpdate(genericTableString);
                 String genericIndexString = "CREATE INDEX IXWS_LEASE ON " + _leaseTableName + "( \"SERVER_IDENTITY\" ASC) ";
 
