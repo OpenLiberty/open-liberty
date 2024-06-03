@@ -22,20 +22,17 @@ import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerType;
-import tests.DupXidTest;
 import tests.LongTranTest;
 import tests.Simple2PCCloudTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                DupXidTest.class,
                 Simple2PCCloudTest.class,
                 LongTranTest.class,
 })
 public class FATSuite extends TxTestContainerSuite {
 
-    static String[] serverNames = new String[] { "com.ibm.ws.transaction_DUPXID001",
-                                                 "com.ibm.ws.transaction_DUPXID002",
+    static String[] serverNames = new String[] {
                                                  "com.ibm.ws.transaction_CLOUD001",
                                                  "com.ibm.ws.transaction_CLOUD002",
                                                  "longLeaseLengthServer1",

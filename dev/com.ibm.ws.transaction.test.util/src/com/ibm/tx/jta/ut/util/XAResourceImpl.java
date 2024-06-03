@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -124,7 +125,10 @@ public class XAResourceImpl implements XAResource, Serializable {
     }
 
     static {
-        stateKeeper = new StateKeeperImpl();
+    	if (stateKeeper == null) {
+	    	System.out.println("Setting regular state keeper");
+    		stateKeeper = new StateKeeperImpl();
+    	}
     }
 
     private static List<XAEvent> _XAEvents = Collections.synchronizedList(new ArrayList<XAEvent>());
@@ -158,7 +162,11 @@ public class XAResourceImpl implements XAResource, Serializable {
     // This variable may be set to true to allow more chatty output.
     protected static boolean DEBUG_OUTPUT = true;
 
-    private static boolean _stateLoaded;
+    protected static boolean _stateLoaded;
+    
+    public static boolean isStateLoaded() {
+    	return _stateLoaded;
+    }
 
     public static final int DIRECTION_COMMIT = 0, DIRECTION_ROLLBACK = 1, DIRECTION_EITHER = 2;
 
@@ -250,7 +258,7 @@ public class XAResourceImpl implements XAResource, Serializable {
         private int forgetCount;
         private boolean heuristic;
         private int _sleepTime;
-        private Xid _xid;
+        private HashSet<XID> _xids;
         private int _state = NOT_STARTED;
         private boolean busyInLongRunningQuery;
         private boolean queryAborted;
@@ -306,14 +314,20 @@ public class XAResourceImpl implements XAResource, Serializable {
             return _sleepTime;
         }
 
-        public Xid getXid() {
-            return _xid;
+        public HashSet<XID> getXids() {
+            return _xids;
         }
 
         public void setXid(Xid xid) {
             System.out.println("setXid(" + _key + ", " + xid + ")");
+            
+            if (_xids != null) {
+                System.out.println("_xid was already set: " + _xids.size());
+            } else {
+            	_xids = new HashSet<XID>();
+            }
 
-            _xid = new TestXidImpl(xid);
+            _xids.add(new XID(xid.getFormatId(), xid.getGlobalTransactionId(), xid.getBranchQualifier()));;
         }
 
         public int getState() {
@@ -330,11 +344,13 @@ public class XAResourceImpl implements XAResource, Serializable {
         }
 
         public int getCommitAction() {
+            System.out.println("getCommitAction(" + _key + ") = " + actionFormatter(commitAction));
             return commitAction;
         }
 
         public void setCommitAction(int commitAction) {
             System.out.println("setCommitAction(" + _key + ", " + actionFormatter(commitAction) + ")");
+            this.commitRepeatCount = 0;
             this.commitAction = commitAction;
         }
 
@@ -515,7 +531,7 @@ public class XAResourceImpl implements XAResource, Serializable {
             StringBuffer sb = new StringBuffer("Resource: " + key + "\n");
             sb.append("RM: " + RM);
             sb.append("\nState: " + stateFormatter());
-            sb.append("\nXid: " + _xid);
+            sb.append("\nXid: " + _xids);
             sb.append("\nCommit order: " + _commitOrder);
             sb.append("\nRecover action: " + actionFormatter(recoverAction));
 
@@ -672,7 +688,6 @@ public class XAResourceImpl implements XAResource, Serializable {
                                          TransactionManagerFactory.getTransactionManager()
                                                          .getStatus());
         } catch (SystemException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -700,7 +715,6 @@ public class XAResourceImpl implements XAResource, Serializable {
                         try {
                             Thread.sleep(self().getSleepTime());
                         } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
                         break;
@@ -821,7 +835,6 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     @Override
     public int getTransactionTimeout() throws XAException {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -850,7 +863,6 @@ public class XAResourceImpl implements XAResource, Serializable {
                                           TransactionManagerFactory.getTransactionManager()
                                                           .getStatus());
         } catch (SystemException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -927,7 +939,6 @@ public class XAResourceImpl implements XAResource, Serializable {
                 		System.out.println("Sleeping in RECOVER");
                 		Thread.sleep(120 * 1000);
                 	} catch (InterruptedException e) {
-                		// TODO Auto-generated catch block
                 		e.printStackTrace();
                 	} finally {
                 		System.out.println("Awoken in RECOVER");
@@ -960,14 +971,18 @@ public class XAResourceImpl implements XAResource, Serializable {
 
         if (self().inState(PREPARED) && !self().inState(COMMITTED)
             && !self().inState(ROLLEDBACK)) {
-            return new Xid[] { getXid() };
+        	final HashSet<XID> xidSet = getXids();
+        	if (xidSet != null) {
+        		final XID[] xids = new XID[xidSet.size()];
+        		return xidSet.toArray(xids);
+        	}
         }
 
         return null;
     }
 
-    private Xid getXid() {
-        return self().getXid();
+    private HashSet<XID> getXids() {
+        return self().getXids();
     }
 
     @Override
@@ -988,7 +1003,6 @@ public class XAResourceImpl implements XAResource, Serializable {
                                            TransactionManagerFactory.getTransactionManager()
                                                            .getStatus());
         } catch (SystemException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -1348,7 +1362,7 @@ public class XAResourceImpl implements XAResource, Serializable {
 //        _resources.entrySet().stream().forEach(e -> sb.append(e.getValue()).append("\n"));
 
         for (XAResourceData res : _resources.values()) {
-        	if (null != res.getXid()) {
+        	if (null != res.getXids()) {
         		numResources++;
         		if (res.inState(COMMITTED)) {
         			committed++;

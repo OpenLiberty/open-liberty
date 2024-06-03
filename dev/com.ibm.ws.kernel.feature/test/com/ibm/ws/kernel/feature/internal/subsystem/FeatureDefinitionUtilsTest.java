@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011,2024 IBM Corporation and others.
+ * Copyright (c) 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -307,7 +307,6 @@ public class FeatureDefinitionUtilsTest {
         writer.write("IBM-App-ForceRestart: install \n");
         writer.write("IBM-API-Package: javax.servlet.annotation;  type=\"spec\", \n");
         writer.write(" com.ibm.wsspi.webcontainer;  type=\"internal\" \n");
-        writer.write("WLP-Platform: javaee-6.0,javaee-7.0,javaee-8.0,jakartaee-9.1\n");
         writer.flush();
 
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
@@ -317,15 +316,6 @@ public class FeatureDefinitionUtilsTest {
         Assert.assertFalse("API-service flag should be false", iAttr.hasApiServices);
         Assert.assertTrue("API-package flag should be true", iAttr.hasApiPackages);
         Assert.assertFalse("SPI-package flag should be false", iAttr.hasSpiPackages);
-
-        List<String> platforms = iAttr.platforms;
-        List<String> expectedPlatforms = Arrays.asList("javaee-6.0", "javaee-7.0", "javaee-8.0", "jakartaee-9.1");
-        int i = 0;
-        for (String platform : platforms) {
-            Assert.assertEquals("Platform list not as expected.", expectedPlatforms.get(i), platform);
-            i++;
-        }
-        //Assert.assertEquals("Platform list not as expected.", "[javaee-6.0,javaee-7.0,javaee-8.0,jakartaee-9.1]", .toString());
 
         // Do nothing that would trigger more detailed fluff up of API/SPI here..
         // Want to make sure it gets into the cache anyway..

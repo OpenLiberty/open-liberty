@@ -22,6 +22,8 @@ import com.ibm.wsspi.webcontainer.util.WSServletInputStream;
 
 import io.openliberty.webcontainer60.srt.SRTServletRequest60;
 import io.openliberty.webcontainer61.osgi.srt.SRTConnectionContext61;
+import io.openliberty.websphere.servlet61.IRequest61;
+
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -97,6 +99,33 @@ public class SRTServletRequest61 extends SRTServletRequest60 implements HttpServ
             }
         } catch (UnsupportedEncodingException e) {
             logger.logp(Level.INFO, CLASS_NAME, "setCharacterEncoding", "Unable to set request character encoding based upon Charset", e);
+        }
+    }
+    
+    /**
+     * Support request attribute "jakarta.servlet.request.secure_protocol" 
+     */
+    @Override
+    public void setSSLAttributesInRequest(HttpServletRequest httpServletReq, String cs) {
+        if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.entering(CLASS_NAME, "setSSLAttributesInRequest", this);
+        }
+        String secureProtocol = null;
+
+        /*
+         * parent set jakarta.servlet.request.cipher_suite; jakarta.servlet.request.key_size ...
+         */
+        super.setSSLAttributesInRequest(httpServletReq, cs);
+
+        if (cs != null) {
+            secureProtocol = ((IRequest61) getIRequest()).getSecureProtocol();
+        }
+
+        if (secureProtocol != null)
+            httpServletReq.setAttribute("jakarta.servlet.request.secure_protocol", secureProtocol);
+
+        if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.exiting(CLASS_NAME, "setSSLAttributesInRequest", this);
         }
     }
 }

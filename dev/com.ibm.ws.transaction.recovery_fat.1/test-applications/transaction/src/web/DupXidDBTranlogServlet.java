@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package servlets;
+package web;
 
-import javax.annotation.Resource;
-import javax.annotation.Resource.AuthenticationType;
+import java.io.IOException;
+
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 import javax.transaction.Transaction;
 
 import com.ibm.tx.jta.ExtendedTransactionManager;
@@ -29,21 +29,18 @@ import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/DupXidServlet")
-public class DupXidServlet extends FATServlet {
+@WebServlet("/DupXidDBTranlogServlet")
+public class DupXidDBTranlogServlet extends FATServlet {
 
-    @Resource(name = "jdbc/tranlogDataSource", shareable = true, authenticationType = AuthenticationType.APPLICATION)
-    DataSource ds;
-
-    public void commitSuicide(HttpServletRequest request,
-                              HttpServletResponse response) throws Exception {
-        Runtime.getRuntime().halt(0);
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        LastingXAResourceImpl.loadState();
+        super.doGet(request, response);
     }
 
     public void setupDupXid(HttpServletRequest request,
                             HttpServletResponse response) throws Exception {
-        final ExtendedTransactionManager tm = TransactionManagerFactory
-                        .getTransactionManager();
+        final ExtendedTransactionManager tm = TransactionManagerFactory.getTransactionManager();
 
         try {
             tm.begin();
@@ -53,14 +50,11 @@ public class DupXidServlet extends FATServlet {
             final LastingXAResourceImpl xares1 = XAResourceFactoryImpl.instance().getLastingXAResourceImpl(0);
             xares1.setCommitAction(XAResourceImpl.DIE);
             final LastingXAResourceImpl xares2 = XAResourceFactoryImpl.instance().getLastingXAResourceImpl(1);
-            final LastingXAResourceImpl xares3 = XAResourceFactoryImpl.instance().getLastingXAResourceImpl(2);
             tx.enlistResource(xares1);
             tx.enlistResource(xares2);
-            tx.enlistResource(xares3);
 
             tm.commit();
         } catch (Exception e) {
-            System.out.println("NYTRACE: ImplodeServlet caught exc: " + e);
             e.printStackTrace();
         }
     }
