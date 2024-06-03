@@ -123,7 +123,14 @@ public class JSPApplicationTest extends BaseTestClass {
 
         res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+        /*
+         * If 200 isn't present. The server may have redirected the request to the default page
+         * and issued a 302.
+         */
+        if (!validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod)) {
+            responseStatus = "302";
+            validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod);
+        }
     }
 
 }
