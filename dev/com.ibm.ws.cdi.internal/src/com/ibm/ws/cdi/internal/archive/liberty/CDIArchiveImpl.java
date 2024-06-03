@@ -198,6 +198,7 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
     private final ArchiveType type;
 
     @Override
+    @Trivial
     public ArchiveType getType() {
         return type;
     }

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package com.ibm.ws.cdi.internal.interfaces;
 
 import java.net.URL;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -23,11 +24,11 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.ejb.spi.EjbDescriptor;
-
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
+
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.ejb.spi.EjbDescriptor;
 
 /**
  * WebSphere specific extensions to the BDA interface
@@ -312,8 +313,25 @@ public interface WebSphereBeanDeploymentArchive extends BeanDeploymentArchive {
 
     /**
      * The the resource URL of the beans.xml file within the archive, if one exists.
-     * 
+     *
      * @return a URL which points to the beans.xml resource, or null if none exists
      */
     URL getBeansXmlResourceURL();
+
+    /**
+     * Records if this BDA has been visited, this is used as part of application scanning during
+     * CDI startup and should not be called from elsewhere.
+     *
+     * @return true if this has been visited
+     */
+    boolean hasBeenVisited();
+
+    /**
+     * Acquires an iterator over any child BDAs and also flags
+     * that this BDA has been visited. This is used as part of application scanning during
+     * CDI startup and should not be called from elsewhere.
+     *
+     * @return an iterator over the results of {@link getWebSphereBeanDeploymentArchives}
+     */
+    Iterator<WebSphereBeanDeploymentArchive> visit();
 }

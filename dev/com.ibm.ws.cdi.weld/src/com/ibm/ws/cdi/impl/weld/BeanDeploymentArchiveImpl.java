@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,24 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.inject.Inject;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.cdi.CDIException;
+import com.ibm.ws.cdi.internal.interfaces.ArchiveType;
+import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
+import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
+import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
+import com.ibm.ws.cdi.internal.interfaces.EjbEndpointService;
+import com.ibm.ws.cdi.internal.interfaces.EndPointsInfo;
+import com.ibm.ws.cdi.internal.interfaces.ManagedBeanDescriptor;
+import com.ibm.ws.cdi.internal.interfaces.Resource;
+import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
+import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
+import com.ibm.ws.cdi.internal.interfaces.WebSphereInjectionServices;
+import com.ibm.ws.cdi.utils.WeldCDIUtils;
+import com.ibm.wsspi.injectionengine.ReferenceContext;
+
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
@@ -56,24 +74,6 @@ import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.resources.MemberTransformer;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
-
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.cdi.CDIException;
-import com.ibm.ws.cdi.internal.interfaces.ArchiveType;
-import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
-import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
-import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
-import com.ibm.ws.cdi.internal.interfaces.EjbEndpointService;
-import com.ibm.ws.cdi.internal.interfaces.EndPointsInfo;
-import com.ibm.ws.cdi.internal.interfaces.ManagedBeanDescriptor;
-import com.ibm.ws.cdi.internal.interfaces.Resource;
-import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
-import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
-import com.ibm.ws.cdi.internal.interfaces.WebSphereInjectionServices;
-import com.ibm.ws.cdi.utils.WeldCDIUtils;
-import com.ibm.wsspi.injectionengine.ReferenceContext;
 
 /**
  * The implementation of Weld spi BeanDeploymentArchive to represent a CDI bean
@@ -115,6 +115,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
 
     private final Map<Class<?>, Set<EjbDescriptor<?>>> ejbDescriptorMap = new HashMap<Class<?>, Set<EjbDescriptor<?>>>();
     private boolean scanned = false;
+    private boolean visited = false;
     private boolean hasBeans = false;
     private boolean endpointsScanned = false;
 
@@ -242,7 +243,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                 // If the server.xml has the configuration of enableImplicitBeanArchives sets to false, we will not scan the implicit bean archives
                 beanDiscoveryMode = BeanDiscoveryMode.NONE;
             } else if (archive.getType() == ArchiveType.RUNTIME_EXTENSION) {
-                // Runtime extensions default to none as they are extension archives (and this means that only classes explicitly returned by getBeans() will be a bean. 
+                // Runtime extensions default to none as they are extension archives (and this means that only classes explicitly returned by getBeans() will be a bean.
                 // But if another component has added a beans.xml we will honour their request.
                 beanDiscoveryMode = BeanDiscoveryMode.NONE;
             }
@@ -259,21 +260,6 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
             }
             //mark as scanned up front to prevent loops
             this.scanned = true;
-
-            // Scan any accessible BDAs first to ensure we scan more visible things (shared libs, ear libs) before less visible things (war classes, war libs)
-            // This helps to make sure that the later call to isAccessibleBean works
-            // Don't scan accessible BDAs of runtime extensions because they sit outside the hierarchy and some of them need to see everything
-            if (getType() != ArchiveType.RUNTIME_EXTENSION) {
-                for (WebSphereBeanDeploymentArchive child : accessibleBDAs) {
-                    if (!child.hasBeenScanned()) {
-                        child.scan();
-                    }
-                }
-            }
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "scan [ " + getHumanReadableName() + " ] AFTER SCANNING CHILDREN");
-            }
 
             //find the names of all potential bean classes in this archive
             Set<String> rawBeanclassNames = scanForBeanClassNames();
@@ -1130,6 +1116,34 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                 return Thread.currentThread().getContextClassLoader();
             }
         });
+    }
+
+    @Override
+    @Trivial
+    public boolean hasBeenVisited() {
+        return visited;
+    }
+
+    @Override
+    public Iterator<WebSphereBeanDeploymentArchive> visit() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "visit");
+        }
+        visited = true;
+
+        //Runtime Extensions can see everything so they break even our rough dependency graph.
+        //Return no children so they get scanned immediately.
+        if (archive.getType() != ArchiveType.RUNTIME_EXTENSION) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, getHumanReadableName() + " visited, found these children: " + accessibleBDAs);
+            }
+            return accessibleBDAs.iterator();
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, getHumanReadableName() + " visited, found these children: []");
+            }
+            return Collections.emptyListIterator();
+        }
     }
 
     private static void setContextClassLoader(final ClassLoader newLoader) {

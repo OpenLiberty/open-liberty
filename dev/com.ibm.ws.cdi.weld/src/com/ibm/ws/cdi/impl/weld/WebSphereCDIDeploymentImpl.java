@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,17 +33,6 @@ import java.util.function.Supplier;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.weld.bootstrap.WeldBootstrap;
-import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.bootstrap.spi.BeansXml;
-import org.jboss.weld.bootstrap.spi.Metadata;
-import org.jboss.weld.manager.api.ExecutorServices;
-import org.jboss.weld.security.spi.SecurityServices;
-import org.jboss.weld.serialization.spi.ProxyServices;
-import org.jboss.weld.transaction.spi.TransactionServices;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -62,6 +51,17 @@ import com.ibm.ws.cdi.internal.interfaces.WeldDevelopmentMode;
 import com.ibm.ws.cdi.liberty.ExtensionMetaData;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
+
+import org.jboss.weld.bootstrap.WeldBootstrap;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.BeansXml;
+import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.manager.api.ExecutorServices;
+import org.jboss.weld.security.spi.SecurityServices;
+import org.jboss.weld.serialization.spi.ProxyServices;
+import org.jboss.weld.transaction.spi.TransactionServices;
 
 public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
 
@@ -630,10 +630,10 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
         for (WebSphereBeanDeploymentArchive bda : allBDAs) {
             bda.scanForBeanDefiningAnnotations(true);
         }
+
+        BeanDeploymentArchiveVisitor visitor = new BeanDeploymentArchiveVisitor();
         for (WebSphereBeanDeploymentArchive bda : allBDAs) {
-            if (!bda.hasBeenScanned()) {
-                bda.scan();
-            }
+            visitor.visit(bda);
         }
     }
 
