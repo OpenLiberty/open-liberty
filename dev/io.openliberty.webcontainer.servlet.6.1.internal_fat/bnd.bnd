@@ -26,7 +26,8 @@ src: \
     test-applications/RequestParameterTest.war/src,\
     test-applications/ResponseNoOpAfterCommit.war/src,\
     test-applications/ResponseSendRedirectTest.war/src,\
-    test-applications/SetCookieViaResponseHeader.war/src
+    test-applications/SetCookieViaResponseHeader.war/src,\
+    test-applications/SecureProtocolRequestAttribute.war/src
 
 fat.project: true
 
