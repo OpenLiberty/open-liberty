@@ -717,7 +717,7 @@ public class DatabaseStoreImpl implements DatabaseStore {
      */
     protected String createOrm(String schemaName,
                                String tablePrefix,
-                               Set<String> tableNames, // entries correspond to entityClassNames
+                               LinkedHashSet<String> tableNames, // entries correspond to entityClassNames
                                String[] entityClassNames,
                                String[] entityClassEntries) {
         StringBuilder builder = new StringBuilder();
