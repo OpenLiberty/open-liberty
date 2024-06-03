@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,14 +22,20 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-public class RecoveryTest extends RecoveryTestBase {
+public class DupXidDBTranlogTest extends DupXidTestBase {
 
-    @Server("recovery1")
-    public static LibertyServer s;
+    @Server("recovery1.dblog")
+    public static LibertyServer s1;
+
+    @Server("recovery2.dblog")
+    public static LibertyServer s2;
 
     @BeforeClass
     public static void setup() throws Exception {
-        Log.info(RecoveryTest.class, "subBefore", s.getServerName());
-        setup(s);
+        Log.info(DupXidDBTranlogTest.class, "subBefore", "");
+        // Delete existing DB files, so that the tables that support transaction recovery
+        // are created from scratch.
+        s1.deleteFileFromLibertyInstallRoot("/usr/shared/resources/data/tranlogdb");
+        setup(s1, s2, APP_NAME + "/DupXidDBTranlogServlet");
     }
 }
