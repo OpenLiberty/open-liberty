@@ -43,6 +43,7 @@ import org.osgi.framework.VersionRange;
 import com.ibm.ws.kernel.feature.AppForceRestart;
 import com.ibm.ws.kernel.feature.ProcessType;
 import com.ibm.ws.kernel.feature.Visibility;
+import com.ibm.ws.kernel.feature.internal.FeatureResolverInterfacesTest.TestFeature;
 import com.ibm.ws.kernel.feature.provisioning.ActivationType;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.HeaderElementDefinition;
@@ -492,36 +493,6 @@ public class FeatureResolverInterfacesTest {
         @Override
         public Collection<String> getIcons() {
             throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public List<String> getPlatforms() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public boolean isVersionless() {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        @Override
-        public boolean isConvenience() {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        @Override
-        public boolean isCompatibility() {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        @Override
-        public String getPlatformValue() {
-            // TODO Auto-generated method stub
-            return null;
         }
 
     }

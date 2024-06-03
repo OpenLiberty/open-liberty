@@ -78,7 +78,6 @@ public class FeatureDefinitionUtils {
     public static final String IBM_ACTIVATION_TYPE = "WLP-Activation-Type";
     public static final String IBM_ALT_NAMES = "WLP-AlsoKnownAs";
     public static final String IBM_DISABLE_ALL_FEATURES_ON_CONFLICT = "WLP-DisableAllFeatures-OnConflict";
-    public static final String WLP_PLATFORM = "WLP-Platform";
 
     static final String FILTER_ATTR_NAME = "filter";
     static final String FILTER_FEATURE_KEY = "osgi.identity";
@@ -129,7 +128,6 @@ public class FeatureDefinitionUtils {
         final File featureFile;
         final long lastModified;
         final long length;
-        final List<String> platforms;
 
         ImmutableAttributes(String repoType,
                             String symbolicName,
@@ -149,8 +147,7 @@ public class FeatureDefinitionUtils {
                             boolean isSingleton,
                             boolean disableOnConflict,
                             EnumSet<ProcessType> processType,
-                            ActivationType activationType,
-                            List<String> platforms) {
+                            ActivationType activationType) {
 
             this.bundleRepositoryType = repoType;
             this.symbolicName = symbolicName;
@@ -174,7 +171,6 @@ public class FeatureDefinitionUtils {
             this.featureFile = featureFile;
             this.lastModified = lastModified;
             this.length = fileSize;
-            this.platforms = platforms;
         }
 
         /**
@@ -277,26 +273,6 @@ public class FeatureDefinitionUtils {
     }
 
     /**
-     * Convert string of comma-separated-values to a list.
-     *
-     * @param csv
-     * @return
-     */
-    static List<String> csvToList(String csv) {
-        if (csv == null) {
-            return Collections.emptyList();
-        }
-
-        List<String> list = new ArrayList<>();
-        String[] values = csv.split(",");
-
-        for (String value : values) {
-            list.add(value);
-        }
-        return list;
-    }
-
-    /**
      * Create the ImmutableAttributes based on the contents read from a subsystem
      * manifest.
      *
@@ -316,7 +292,6 @@ public class FeatureDefinitionUtils {
         // Directive names are name attributes, but end with a colon
         Visibility visibility = Visibility.fromString(details.getNameAttribute("visibility:"));
         boolean isSingleton = Boolean.parseBoolean(details.getNameAttribute("singleton:"));
-        List<String> platforms = csvToList(details.getMainAttributeValue(WLP_PLATFORM));
 
         // ignore short name for features that are not public
         String shortName = (visibility != Visibility.PUBLIC ? null : details.getMainAttributeValue(SHORT_NAME));
@@ -371,8 +346,7 @@ public class FeatureDefinitionUtils {
                                                             hasApiPackages, hasSpiPackages, isSingleton,
                                                             disableOnConflict,
                                                             processTypes,
-                                                            activationType,
-                                                            platforms);
+                                                            activationType);
 
         // Link the details object and immutable attributes (used for diagnostic purposes:
         // the immutable attribute values are necessary for meaningful error messages)

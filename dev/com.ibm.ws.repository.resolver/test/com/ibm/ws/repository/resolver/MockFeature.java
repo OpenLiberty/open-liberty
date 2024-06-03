@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -58,7 +58,7 @@ public class MockFeature implements ProvisioningFeatureDefinition {
      * Add a dependency on another feature
      *
      * @param symbolicName the symbolic name of the dependency
-     * @param tolerates    the tolerated versions of the dependency
+     * @param tolerates the tolerated versions of the dependency
      */
     public void addDependency(String symbolicName, String... tolerates) {
         featureDependencies.add(new KernelResolverRequirement(symbolicName, Arrays.asList(tolerates)));
@@ -197,41 +197,6 @@ public class MockFeature implements ProvisioningFeatureDefinition {
     @Override
     public boolean isSupportedFeatureVersion() {
         throw new UnsupportedOperationException();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public List<String> getPlatforms() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isVersionless() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isConvenience() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isCompatibility() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getPlatformValue() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }
