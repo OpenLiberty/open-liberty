@@ -32,12 +32,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.RecordComponent;
 import java.lang.reflect.Type;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
@@ -76,6 +78,7 @@ import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.persistence.InMemoryMappingFile;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
+import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 import io.openliberty.data.internal.persistence.EntityInfo;
@@ -87,6 +90,7 @@ import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Table;
 
 /**
  * This builder is used when a data source JNDI name, id, resource reference,
@@ -276,7 +280,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
                     // The following would allow them in the annotation's properties list, as "data.createTables=true", "data.tablePrefix=TEST"
                     svcProps.put("createTables", !"FALSE".equalsIgnoreCase((String) dsRef.getProperty("properties.0.data.createTables")));
                     svcProps.put("dropTables", !"TRUE".equalsIgnoreCase((String) dsRef.getProperty("properties.0.data.dropTables")));
-                    svcProps.put("tablePrefix", Objects.requireNonNullElse((String) dsRef.getProperty("properties.0.data.tablePrefix"), "DATA"));
+                    svcProps.put("tablePrefix", Objects.requireNonNullElse((String) dsRef.getProperty("properties.0.data.tablePrefix"), ""));
                     svcProps.put("keyGenerationStrategy", Objects.requireNonNullElse((String) dsRef.getProperty("properties.0.data.keyGenerationStrategy"), "AUTO"));
 
                     dbStoreConfig = provider.configAdmin.createFactoryConfiguration("com.ibm.ws.persistence.databaseStore", bc.getBundle().getLocation());
@@ -520,11 +524,44 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
             throw new RuntimeException(x); // should never happen
         }
         if (dsFactoryRefs.isEmpty())
-            throw new IllegalStateException("The DataSource that is used by the repository is not available."); // TODO NLS
+            throw new IllegalStateException("The " + dataSourceFactoryFilter +
+                                            " DataSource that is used by the repository is not available."); // TODO NLS
 
         ResourceFactory dsFactory = bc.getService(dsFactoryRefs.iterator().next());
         try {
-            return (DataSource) dsFactory.createResource(null);
+            ResourceConfig resRef = null;
+            if (!(dsFactory instanceof DelegatingResourceFactory)) {
+                // Use a resource reference that includes the authDataRef of the databaseStore.
+                resRef = provider.resourceConfigFactory.createResourceConfig(DataSource.class.getName());
+                resRef.setSharingScope(ResourceConfig.SHARING_SCOPE_SHAREABLE);
+                resRef.setIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
+                resRef.setResAuthType(ResourceConfig.AUTH_CONTAINER);
+
+                String dbStoreFilter = FilterUtils.createPropertyFilter("id", databaseStoreId);
+                Collection<ServiceReference<DatabaseStore>> dbStoreRefs = bc.getServiceReferences(DatabaseStore.class, dbStoreFilter);
+                if (dbStoreRefs.isEmpty())
+                    throw new IllegalStateException("The " + dbStoreFilter + " resource that is used by the repository is not available."); // TODO NLS
+
+                String authDataFilter = (String) dbStoreRefs.iterator().next().getProperty("AuthData.target");
+                if (authDataFilter != null) {
+                    ServiceReference<?>[] authDataRefs = bc.getServiceReferences("com.ibm.websphere.security.auth.data.AuthData",
+                                                                                 authDataFilter);
+                    if (authDataRefs == null)
+                        throw new IllegalStateException("The " + authDataFilter + " resource that is used by the repository is not available."); // TODO NLS
+
+                    // The following pattern is copied from DatabaseStoreImpl,
+                    String authDataId = (String) authDataRefs[0].getProperty("id");
+                    resRef.addLoginProperty("DefaultPrincipalMapping",
+                                            authDataId.matches(".*(\\]/).*(\\[default-\\d*\\])") //
+                                                            ? (String) authDataRefs[0].getProperty("config.displayId") //
+                                                            : authDataId);
+                }
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "using resource reference", resRef);
+            }
+
+            return (DataSource) dsFactory.createResource(resRef);
         } catch (Exception x) {
             throw new DataException(x); // TODO NLS
         }
@@ -595,7 +632,8 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
             Tr.debug(this, tc, databaseStoreId + " databaseStore reference", ref);
 
         // Classes explicitly annotated with JPA @Entity:
-        Set<String> entityClassNames = new HashSet<>(entities.size() * 2);
+        Set<String> entityClassNames = new LinkedHashSet<>(entities.size() * 2);
+        Set<String> entityTableNames = new LinkedHashSet<>(entityClassNames.size());
 
         ArrayList<InMemoryMappingFile> generatedEntities = new ArrayList<InMemoryMappingFile>();
 
@@ -664,6 +702,8 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
         // Discover entities that are indirectly referenced via OneToOne, ManyToMany, and so forth
         for (Class<?> c; (c = annotatedEntityClassQueue.poll()) != null;)
             if (entityClassNames.add(c.getName())) {
+                Table table = c.getAnnotation(Table.class);
+                entityTableNames.add(table == null || table.name().length() == 0 ? c.getSimpleName() : table.name());
                 Class<?> e;
                 for (Field f : c.getFields())
                     if (f.getType().isAnnotationPresent(Entity.class))
@@ -681,6 +721,8 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
 
         properties.put("io.openliberty.persistence.internal.entityClassInfo",
                        entityClassInfo.toArray(new String[entityClassInfo.size()]));
+
+        properties.put("io.openliberty.persistence.internal.tableNames", entityTableNames);
 
         if (!generatedEntities.isEmpty())
             properties.put("io.openliberty.persistence.internal.generatedEntities", generatedEntities);

@@ -71,7 +71,7 @@ public abstract class EntityManagerBuilder implements Runnable {
     /**
      * OSGi service component that provides the CDI extension for Data.
      */
-    final DataExtensionProvider provider;
+    public final DataExtensionProvider provider;
 
     /**
      * The class loader for repository classes.

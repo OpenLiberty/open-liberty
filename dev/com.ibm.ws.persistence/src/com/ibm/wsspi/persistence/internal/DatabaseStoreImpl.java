@@ -18,8 +18,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.sql.DataSource;
@@ -314,8 +316,10 @@ public class DatabaseStoreImpl implements DatabaseStore {
             inMemoryFiles = Collections.singletonList(new InMemoryMappingFile(ormFileContents.getBytes("UTF-8")));
         } else {
             // hidden internal non-ship property for experimenting with Jakarta Data
+            @SuppressWarnings("unchecked") // TODO if persistence service could read @Table from the entity class, we could remove this hack
+            LinkedHashSet<String> tableNames = (LinkedHashSet<String>) properties.get("io.openliberty.persistence.internal.tableNames");
             String[] entityClassEntries = (String[]) properties.get("io.openliberty.persistence.internal.entityClassInfo");
-            InMemoryMappingFile ormFile = createOrmFile(schema, tablePrefix, entityClassNames, entityClassEntries);
+            InMemoryMappingFile ormFile = createOrmFile(schema, tablePrefix, tableNames, entityClassNames, entityClassEntries);
             inMemoryFiles = (List<InMemoryMappingFile>) properties.get("io.openliberty.persistence.internal.generatedEntities");
             if (ormFile != null)
                 if (inMemoryFiles == null) {
@@ -699,18 +703,23 @@ public class DatabaseStoreImpl implements DatabaseStore {
      */
     protected InMemoryMappingFile createOrmFile(String schemaName,
                                                 String tablePrefix,
+                                                LinkedHashSet<String> tableNames, // entries correspond to entityClassNames
                                                 String[] entityClassNames,
                                                 String[] entityClassEntries)
                     throws UnsupportedEncodingException {
         return ((entityClassNames == null || entityClassNames.length == 0) && (entityClassEntries == null || entityClassEntries.length == 0))
                         ? null
-                        : new InMemoryMappingFile(createOrm(schemaName, tablePrefix, entityClassNames, entityClassEntries).getBytes("UTF-8"));
+                        : new InMemoryMappingFile(createOrm(schemaName, tablePrefix, tableNames, entityClassNames, entityClassEntries).getBytes("UTF-8"));
     }
 
     /**
      * @return a generic ORM xml file, in string form, using the given schema, tablePrefix, and entity classes.
      */
-    protected String createOrm(String schemaName, String tablePrefix, String[] entityClassNames, String[] entityClassEntries) {
+    protected String createOrm(String schemaName,
+                               String tablePrefix,
+                               Set<String> tableNames, // entries correspond to entityClassNames
+                               String[] entityClassNames,
+                               String[] entityClassEntries) {
         StringBuilder builder = new StringBuilder();
 
         // Add header information
@@ -729,14 +738,14 @@ public class DatabaseStoreImpl implements DatabaseStore {
         // Add the entities and apply tablePrefix
         tablePrefix = (tablePrefix == null) ? "" : tablePrefix.trim();
 
-        if (entityClassNames != null)
-            for (String entityClassName : entityClassNames) {
-                String simpleName = parseSimpleName(entityClassName);
-
-                builder.append(" <entity class=" + enquote(entityClassName) + ">" + EOLN)
-                                .append("  <table name=" + enquote(tablePrefix + simpleName) + "/>" + EOLN)
+        if (entityClassNames != null) {
+            int i = 0;
+            for (String tableName : tableNames) {
+                builder.append(" <entity class=" + enquote(entityClassNames[i++]) + ">" + EOLN)
+                                .append("  <table name=" + enquote(tablePrefix + tableName) + "/>" + EOLN)
                                 .append(" </entity>" + EOLN);
             }
+        }
 
         if (entityClassEntries != null)
             for (String entityClassEntry : entityClassEntries) {
