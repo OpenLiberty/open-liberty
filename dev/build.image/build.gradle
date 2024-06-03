@@ -425,7 +425,7 @@ def replaceBetaVersionAndEdition(String pathname, String release, String beta) {
     Files.write(path, content.getBytes(charset))
 }
 
-if (isAutomatedBuild && !isIFIXBuild) {
+if (true) {// isAutomatedBuild && !isIFIXBuild) {
     //NOSHIP
     task packageOpenLibertyAll(type: PackageLibertyWithFeatures) {
         dependsOn parent.subprojects.assemble
@@ -678,7 +678,7 @@ task zipOpenLibertyDev(type: Zip) {
 }
 publish.dependsOn zipOpenLibertyDev
 
-if (isAutomatedBuild && !isIFIXBuild) {
+if (true) {// isAutomatedBuild && !isIFIXBuild) {
 
     // NOSHIP: Includes all features except excluded features.
     task zipOpenLibertyAll(type: Zip) {
