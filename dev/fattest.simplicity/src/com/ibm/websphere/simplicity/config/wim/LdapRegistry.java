@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -541,16 +541,6 @@ public class LdapRegistry extends ConfigElement {
     @XmlElement(name = "loginProperty")
     public void setLoginProperties(ConfigElementList<LoginProperty> loginProperties) {
         this.loginProperties = loginProperties;
-    }
-
-    /**
-     * Convenience method to set the the list of loginProperties list to a single entry.
-     *
-     * @param loginProperties The single instance of {@link LoginProperty} to set.
-     */
-    public void setLoginProperties(LoginProperty loginProperty) {
-        this.loginProperties = new ConfigElementList<LoginProperty>();
-        this.loginProperties.add(loginProperty);
     }
 
     /**

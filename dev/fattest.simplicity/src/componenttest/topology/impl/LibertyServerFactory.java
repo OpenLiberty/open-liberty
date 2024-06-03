@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -159,7 +159,7 @@ public class LibertyServerFactory {
                     } else {
                         Log.info(LibertyServerFactory.class, "getLibertyServer", "using supplied bootstrapping.properties");
                     }
-                    ls = new LibertyServer(serverName, bootstrap, ignoreCache, usePreviouslyConfigured, windowsServiceOption);
+                    ls = LibertyServerFactoryDelegate.createLibertyServer(serverName, bootstrap, ignoreCache, usePreviouslyConfigured, windowsServiceOption);
 
                     if (!usePreviouslyConfigured) {
                         if (installServerFromSampleJar) {
@@ -171,12 +171,12 @@ public class LibertyServerFactory {
                             }
                         } else {
                             //copy the published FAT server content for the test
-                            recursivelyCopyDirectory(ls.getMachine(), new LocalFile(ls.getPathToAutoFVTNamedServer()), new RemoteFile(ls.getMachine(), ls.getServerRoot()));
+                            recursivelyCopyDirectory(ls.getMachine(), new LocalFile(ls.getPathToAutoFVTNamedServer()), ls.getMachine().getFile(ls.getServerRoot()));
 
                             //copy any shared content
                             LocalFile sharedFolder = new LocalFile(LibertyServer.PATH_TO_AUTOFVT_SHARED);
                             if (sharedFolder.exists())
-                                recursivelyCopyDirectory(ls.getMachine(), sharedFolder, new RemoteFile(ls.getMachine(), ls.getServerSharedPath()));
+                                recursivelyCopyDirectory(ls.getMachine(), sharedFolder, ls.getMachine().getFile(ls.getServerSharedPath()));
                         }
 
                         RemoteFile[] autoInstall = applicationsToVerify(ls);
@@ -203,7 +203,7 @@ public class LibertyServerFactory {
             }
         } catch (Exception e) {
             Log.error(c, "getLibertyServer", e);
-            throw new RuntimeException("Error getting server", e);
+            throw new RuntimeException("Error getting server " + serverName, e);
         }
     }
 
@@ -451,7 +451,7 @@ public class LibertyServerFactory {
         for (String l : logs) {
             Log.finer(c, "recursivelyCopyDirectory", "Getting: " + l);
             LocalFile toCopy = new LocalFile(localDirectory, l);
-            RemoteFile toReceive = new RemoteFile(machine, destination, l);
+            RemoteFile toReceive = machine.getFile(destination, l);
             if (toCopy.isDirectory()) {
                 // Recurse
                 recursivelyCopyDirectory(machine, toCopy, toReceive);
@@ -503,7 +503,7 @@ public class LibertyServerFactory {
         LocalFile backup = getServerBackupZip(server);
 
         // Server is in the build.image/wlp/usr/servers dir
-        RemoteFile usrServersDir = new RemoteFile(m, server.getServerRoot()).getParentFile(); //should be /wlp/usr/servers
+        RemoteFile usrServersDir = m.getFile(server.getServerRoot()).getParentFile(); //should be /wlp/usr/servers
 
         if (backup.exists()) {
             return;
@@ -530,7 +530,7 @@ public class LibertyServerFactory {
     private static void postTestRecover(LibertyServer server) throws Exception {
         final String METHOD = "postTestRecover";
         Machine m = server.getMachine();
-        RemoteFile usrServersDir = new RemoteFile(m, server.getServerRoot()).getParentFile(); //should be /wlp/usr/servers
+        RemoteFile usrServersDir = m.getFile(server.getServerRoot()).getParentFile(); //should be /wlp/usr/servers
 
         LocalFile backup = getServerBackupZip(server);
         if (!backup.exists()) {
@@ -539,7 +539,7 @@ public class LibertyServerFactory {
         }
         Log.finer(c, METHOD, "Recovering Server: " + server.getServerName() + " from zip file: " + backup.getAbsolutePath());
 
-        RemoteFile serverFolder = new RemoteFile(m, server.getServerRoot());
+        RemoteFile serverFolder = m.getFile(server.getServerRoot());
         if (!!!serverFolder.delete()) {
             Log.warning(c, "Unable to delete old serverFolder. Recovery failed!");
             // retry up to 5 seconds

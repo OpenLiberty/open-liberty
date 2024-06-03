@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2020 IBM Corporation and others.
+ * Copyright (c) 2002, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -82,9 +82,9 @@ public class BinaryLogExec {
         ShrinkHelper.defaultDropinApp(server, "HpelFat", "com.ibm.ws.logging.hpel.servlet");
 
         // Liberty profile root is the install root.
-        rProfRootDir = new RemoteFile(server.getMachine(), server.getInstallRoot());
-//        rProfRootDir = new RemoteFile(HpelSetup.getNodeUnderTest().getMachine(), HpelSetup.getNodeUnderTest().getProfileDir());
-        rProfBinFile = new RemoteFile(server.getMachine(), rProfRootDir, "bin");
+        rProfRootDir = server.getMachine().getFile(server.getInstallRoot());
+//        rProfRootDir = HpelSetup.getNodeUnderTest().getMachine().getFile(HpelSetup.getNodeUnderTest().getProfileDir());
+        rProfBinFile = server.getMachine().getFile(rProfRootDir, "bin");
         // Setting the bootstrap with trace specification to get the trace logs.
         CommonTasks.addBootstrapProperty(server, "com.ibm.ws.logging.trace.specification", "*=fine=enabled");
         server.stopServer();
@@ -180,7 +180,7 @@ public class BinaryLogExec {
             formatterDefault = FormatSet.customizeDateFormat(DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM));
         }
 
-        rOutLog = new RemoteFile(server.getMachine(), server.getMachine().getTempDir(), outFileName);
+        rOutLog = server.getMachine().getFile(server.getMachine().getTempDir(), outFileName);
 
         CommonTasks.writeLogMsg(Level.INFO, "executing binaryLog on " + server.getServerName());
 
@@ -228,7 +228,7 @@ public class BinaryLogExec {
         // create message to hide
         CommonTasks.createLogEntries(server, BinaryLogExec.class.getName(), "Some Msg goes here to be excluded.", null, 25, CommonTasks.LOGS, -1);
 
-        rOutLog = new RemoteFile(server.getMachine(), server.getMachine().getTempDir(), outFileName);
+        rOutLog = server.getMachine().getFile(server.getMachine().getTempDir(), outFileName);
 
         CommonTasks.writeLogMsg(Level.INFO, "executing binaryLog on " + server.getServerName());
 
@@ -324,7 +324,7 @@ public class BinaryLogExec {
         // need to have messages for the binaryLog to process.
         CommonTasks.createLogEntries(server, BinaryLogExec.class.getName(), "Some Msg goes here", null, 25, CommonTasks.LOGS, -1);
 
-        rOutLog = new RemoteFile(server.getMachine(), server.getMachine().getTempDir(), outFileName);
+        rOutLog = server.getMachine().getFile(server.getMachine().getTempDir(), outFileName);
 
         CommonTasks.writeLogMsg(Level.INFO, "executing binaryLog for " + server.getServerName());
 
@@ -332,8 +332,8 @@ public class BinaryLogExec {
 
         ProgramOutput lvPrgmOut;
 
-        RemoteFile usrDir = new RemoteFile(server.getMachine(), rProfRootDir, "usr");
-        RemoteFile serversDir = new RemoteFile(server.getMachine(), usrDir, "servers");
+        RemoteFile usrDir = server.getMachine().getFile(rProfRootDir, "usr");
+        RemoteFile serversDir = server.getMachine().getFile(usrDir, "servers");
 
         lvPrgmOut = exeBinaryLog(new String[] { arg1, server.getServerName() }, serversDir.getAbsolutePath());
 
@@ -389,7 +389,7 @@ public class BinaryLogExec {
         // need to have messages for the binaryLog to process.
         CommonTasks.createLogEntries(server, BinaryLogExec.class.getName(), "Some Msg goes here", null, 25, CommonTasks.LOGS, -1);
 
-        rOutLog = new RemoteFile(server.getMachine(), server.getMachine().getTempDir(), outFileName);
+        rOutLog = server.getMachine().getFile(server.getMachine().getTempDir(), outFileName);
 
         CommonTasks.writeLogMsg(Level.INFO, "executing binaryLog on " + server.getServerName());
 

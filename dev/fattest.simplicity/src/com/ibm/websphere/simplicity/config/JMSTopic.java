@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,12 +34,13 @@ public class JMSTopic extends AdminObject {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.websphere.simplicity.config.ConfigElement#clone()
      */
     @Override
     public Object clone() throws CloneNotSupportedException {
         JMSTopic clone = (JMSTopic) super.clone();
+        clone.wasJmsProperties = new ConfigElementList<WasJmsProperties>();
         if (wasJmsProperties != null) {
             for (WasJmsProperties props : wasJmsProperties) {
                 clone.getWasJmsProperties().add((WasJmsProperties) props.clone());
@@ -57,8 +58,7 @@ public class JMSTopic extends AdminObject {
 
         List<?> nestedElementsList = Arrays.asList(
                                                    getProperties_FAT1(),
-                                                   getWasJmsProperties()
-                        );
+                                                   getWasJmsProperties());
         for (ConfigElementList<?> nestedElements : (List<ConfigElementList<?>>) nestedElementsList)
             if (nestedElements != null && nestedElements.size() > 0)
                 for (Object o : nestedElements)
