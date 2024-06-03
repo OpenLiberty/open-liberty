@@ -32,7 +32,9 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-// TODO com.ibm.ws.crypto.common.FipsUtils;
+import com.ibm.ws.crypto.common.CryptoMessageUtils;
+import com.ibm.ws.crypto.common.CryptoUtils;
+import com.ibm.ws.crypto.common.FipsUtils;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.filemonitor.FileBasedActionable;
@@ -249,12 +251,22 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
         httpsRequired = (Boolean) props.get(KEY_httpsRequired);
         allowCustomCacheKey = (Boolean) props.get(KEY_allowCustomCacheKey);
         wantAssertionsSigned = (Boolean) props.get(KEY_wantAssertionsSigned);
-        if (false /* TODO !FipsUtils.isFIPSEnabled() */) {
-            signatureMethodAlgorithm = trim((String) props.get(KEY_signatureMethodAlgorithm));
-        } else {
-            // In FIPS 140-3 mode we must use SHA-256 which is the default value
-            // TODO message for ignoring config if it was set to SHA1
+        signatureMethodAlgorithm = trim((String) props.get(KEY_signatureMethodAlgorithm));
+
+        // In enhanced security mode try to replace an unsecure algorithm (SHA1) with a secure one (SHA256)
+        if (FipsUtils.isFips140_3Enabled() && CryptoUtils.isUnsecureAlgorithm(signatureMethodAlgorithm)) {
+            String alternative = CryptoUtils.getSecureAlternative(signatureMethodAlgorithm);
+            if (alternative != null) {
+                // Use the alternative and log that we're replacing the configured algorithm
+                CryptoMessageUtils.logUnsecureAlgorithmReplaced(KEY_signatureMethodAlgorithm, signatureMethodAlgorithm, alternative);
+                signatureMethodAlgorithm = alternative;
+            } else {
+                // No alternative so log the unsecure algorithm in use
+                CryptoMessageUtils.logUnsecureAlgorithm(KEY_signatureMethodAlgorithm, signatureMethodAlgorithm);
+            }
         }
+
+
         authnRequestsSigned = (Boolean) props.get(KEY_authnRequestsSigned);
         includeX509InSPMetadata = (Boolean) props.get(KEY_includeX509InSPMetadata);
         forceAuthn = (Boolean) props.get(KEY_forceAuthn);
