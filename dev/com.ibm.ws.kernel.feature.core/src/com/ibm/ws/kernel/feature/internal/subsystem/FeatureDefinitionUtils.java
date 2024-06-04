@@ -128,6 +128,7 @@ public class FeatureDefinitionUtils {
         final File featureFile;
         final long lastModified;
         final long length;
+        final List<String> platformNames;
 
         ImmutableAttributes(String repoType,
                             String symbolicName,
@@ -147,7 +148,8 @@ public class FeatureDefinitionUtils {
                             boolean isSingleton,
                             boolean disableOnConflict,
                             EnumSet<ProcessType> processType,
-                            ActivationType activationType) {
+                            ActivationType activationType,
+                            List<String> platformNames) {
 
             this.bundleRepositoryType = repoType;
             this.symbolicName = symbolicName;
@@ -171,6 +173,7 @@ public class FeatureDefinitionUtils {
             this.featureFile = featureFile;
             this.lastModified = lastModified;
             this.length = fileSize;
+            this.platformNames = platformNames;
         }
 
         /**
@@ -292,6 +295,7 @@ public class FeatureDefinitionUtils {
         // Directive names are name attributes, but end with a colon
         Visibility visibility = Visibility.fromString(details.getNameAttribute("visibility:"));
         boolean isSingleton = Boolean.parseBoolean(details.getNameAttribute("singleton:"));
+        List<String> platformNames = csvToList(details.getMainAttributeValue(WLP_PLATFORM));
 
         // ignore short name for features that are not public
         String shortName = (visibility != Visibility.PUBLIC ? null : details.getMainAttributeValue(SHORT_NAME));
@@ -346,7 +350,8 @@ public class FeatureDefinitionUtils {
                                                             hasApiPackages, hasSpiPackages, isSingleton,
                                                             disableOnConflict,
                                                             processTypes,
-                                                            activationType);
+                                                            activationType,
+                                                            platformNames);
 
         // Link the details object and immutable attributes (used for diagnostic purposes:
         // the immutable attribute values are necessary for meaningful error messages)

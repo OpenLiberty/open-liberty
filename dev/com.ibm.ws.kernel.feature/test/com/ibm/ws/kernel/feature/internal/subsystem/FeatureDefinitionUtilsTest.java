@@ -317,6 +317,15 @@ public class FeatureDefinitionUtilsTest {
         Assert.assertTrue("API-package flag should be true", iAttr.hasApiPackages);
         Assert.assertFalse("SPI-package flag should be false", iAttr.hasSpiPackages);
 
+        List<String> platforms = iAttr.platformNames;
+        List<String> expectedPlatforms = Arrays.asList("javaee-6.0", "javaee-7.0", "javaee-8.0", "jakartaee-9.1");
+        int i = 0;
+        for (String platform : platforms) {
+            Assert.assertEquals("Platform list not as expected.", expectedPlatforms.get(i), platform);
+            i++;
+        }
+        //Assert.assertEquals("Platform list not as expected.", "[javaee-6.0,javaee-7.0,javaee-8.0,jakartaee-9.1]", .toString());
+
         // Do nothing that would trigger more detailed fluff up of API/SPI here..
         // Want to make sure it gets into the cache anyway..
 

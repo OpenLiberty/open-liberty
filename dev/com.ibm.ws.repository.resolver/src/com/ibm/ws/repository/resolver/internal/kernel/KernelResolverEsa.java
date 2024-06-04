@@ -226,4 +226,39 @@ public class KernelResolverEsa implements ProvisioningFeatureDefinition {
         throw new UnsupportedOperationException();
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public List<String> getPlatformNames() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isVersionless() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isConvenience() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isCompatibility() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getPlatformName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

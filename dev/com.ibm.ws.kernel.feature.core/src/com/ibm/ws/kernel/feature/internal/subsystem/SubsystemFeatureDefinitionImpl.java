@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,6 +25,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
@@ -32,6 +33,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -216,6 +219,14 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
     @Override
     public Visibility getVisibility() {
         return iAttr.visibility;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<String> getPlatformNames() {
+        return iAttr.platformNames;
     }
 
     @Override
@@ -541,5 +552,81 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
         }
 
         return bundles;
+    }
+
+    private static final Pattern endsWithVersionPattern = Pattern.compile("\\d+\\.\\d+$");
+
+    public static boolean endsWithDecimalDigits(String input) {
+        if (input == null || input.isEmpty()) {
+            return false;
+        }
+        Matcher matcher = endsWithVersionPattern.matcher(input);
+        return matcher.find();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isVersionless() {
+        if (isPrivate() && !endsWithDecimalDigits(getPlatformName())) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isConvenience() {
+        if (hasWlpPlatform() && getPlatformName().equals(iAttr.shortName)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isCompatibility() {
+        if (isPrivate() && hasWlpPlatform()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getPlatformName() {
+        if (!hasWlpPlatform()) {
+            return null;
+        }
+        // Has WlpPlatform means it has at least 1 platform.
+        iAttr.platformNames.get(0);
+        return null;
+    }
+
+    /**
+     * Tell if a feature was defined by a file containing a "WLP-Platform:" attribute
+     */
+    private boolean hasWlpPlatform() {
+        if (iAttr.platformNames == null || iAttr.platformNames.isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Answer true if the feature's visibility is private
+     */
+    public boolean isPrivate() {
+        if (iAttr.visibility == Visibility.PRIVATE) {
+            return true;
+        }
+        return false;
     }
 }

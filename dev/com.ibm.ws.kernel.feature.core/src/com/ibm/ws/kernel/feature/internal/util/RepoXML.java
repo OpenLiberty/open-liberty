@@ -233,6 +233,8 @@ public class RepoXML extends BaseXML {
             for (FeatureResource resource : def.getConstituents(null)) {
                 write(resource);
             }
+            String platforms = listOfStringsToCsvString(def.getPlatformNames());
+            printElement(WLP_PLATFORM_TAG, platforms);
 
             downIndent();
             closeElement(FEATURE_TAG);
