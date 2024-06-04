@@ -3,6 +3,6 @@ symbolicName=io.openliberty.versionless.restfulWS
 visibility=public
 IBM-ShortName: restfulWS
 Subsystem-Name: restfulWS
--features=io.openliberty.internal.versionless.jaxrs-2.0; ibm.tolerates:="2.1,3.0,3.1,4.0"
+-features=io.openliberty.internal.versionless.jaxrs-1.1; ibm.tolerates:="2.0,2.1,3.0,3.1,4.0"
 kind=beta
 edition=base

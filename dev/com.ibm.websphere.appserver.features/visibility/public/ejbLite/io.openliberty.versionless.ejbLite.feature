@@ -3,6 +3,6 @@ symbolicName=io.openliberty.versionless.ejbLite
 visibility=public
 IBM-ShortName: ejbLite
 Subsystem-Name: ejbLite
--features=io.openliberty.internal.versionless.ejbLite-3.2; ibm.tolerates:="4.0"
+-features=io.openliberty.internal.versionless.ejbLite-3.1; ibm.tolerates:="3.2,4.0"
 kind=beta
 edition=base
