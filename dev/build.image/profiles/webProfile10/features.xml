@@ -21,7 +21,6 @@
 <feature>jaxrs</feature>
 <feature>jaxrsClient</feature>
 <feature>jdbc</feature>
-<feature>jndi</feature>
 <feature>jpa</feature>
 <feature>jsf</feature>
 <feature>jsonb</feature>

@@ -547,8 +547,6 @@ public class FeatureResolverImpl implements FeatureResolver {
         // check that the root features exist and are public; remove them if not; also get the full name
         rootFeatures = checkRootsAreAccessibleAndSetFullName(new ArrayList<String>(rootFeatures), selectionContext, preResolved);
 
-        System.out.println(rootFeatures);
-
         // Always prime the selected with the pre-resolved and the root features.
         // This will ensure that the root and pre-resolved features do not conflict
         Collection<String> rootFeaturesList = new ArrayList<String>(rootFeatures);
@@ -592,7 +590,6 @@ public class FeatureResolverImpl implements FeatureResolver {
         if(allowedMultipleVersions != null && !filteredVersionless.isEmpty()){
             addBackVersionless(filteredVersionless, selectionContext);
         }
-
         // Finally return the selected result
         return selectionContext.getResult();
     }
@@ -683,6 +680,70 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         return rootFeatures;
+    }
+    
+    private List<String> filterVersionless(Collection<String> rootFeatures, SelectionContext selectionContext){
+        List<String> versionless = new ArrayList<String>();
+
+        for(String feature : rootFeatures){
+            ProvisioningFeatureDefinition featureDef = selectionContext.getRepository().getFeature(feature);
+            if(featureDef.getSymbolicName().startsWith("io.openliberty.versionless")){
+                versionless.add(feature);
+            }
+        }
+
+        rootFeatures.removeAll(versionless);
+
+        return versionless;
+    }
+
+    private void addBackVersionless(List<String> versionlessFeatures, SelectionContext selectionContext){
+        FeatureResolverResultImpl result = selectionContext.getResult();
+        Set<String> addingFeatures = new HashSet<>();
+
+        //loop through all the versionless features we filtered out earlier
+        for(String versionlessFeature : versionlessFeatures){
+            ProvisioningFeatureDefinition versionlessDef = selectionContext.getRepository().getFeature(versionlessFeature);
+            Collection<FeatureResource> versionlessDeps = versionlessDef.getConstituents(SubsystemContentType.FEATURE_TYPE);
+            List<String> features = new ArrayList<>();
+            for (FeatureResource privateVersionless : versionlessDeps) { //versionlessDeps.size will always be 1, the private versionless feature
+                String[] nav = parseNameAndVersion(privateVersionless.getSymbolicName());
+                features.add(nav[0] + "-" + nav[1]);
+                
+                if(privateVersionless.getTolerates() != null){
+                    for(String version : privateVersionless.getTolerates()) {
+                        features.add(nav[0] + "-" + version);
+                    }
+                }
+            }
+            // loops through the private features related to the versionless feature
+            for(String feature : features){
+                ProvisioningFeatureDefinition featureDef = selectionContext.getRepository().getFeature(feature);
+                Collection<FeatureResource> featureDeps = featureDef.getConstituents(SubsystemContentType.FEATURE_TYPE);
+                for (FeatureResource featureDep : featureDeps) { // could be multiple, we only care about the public versioned feature
+                    if(!!!featureDep.getSymbolicName().startsWith("com.ibm.websphere.appserver.eeCompatible") &&
+                    !!!featureDep.getSymbolicName().startsWith("io.openliberty.internal.mpVersion") &&
+                    !!!featureDep.getSymbolicName().contains("noShip")){
+                        ProvisioningFeatureDefinition versionedFeature = selectionContext.getRepository().getFeature(featureDep.getSymbolicName());
+                        if(versionedFeature == null){
+                            continue;
+                        }
+                        // if we resolved the public versioned feature, add the private versionless linking feature
+                        if(versionedFeature.getIbmShortName() != null && result._resolved.contains(versionedFeature.getIbmShortName())){
+                            addingFeatures.add(feature);
+                        }
+                    }
+                }
+            }
+
+            addingFeatures.add(versionlessFeature);
+        }
+
+        //for the environment variable
+        addingFeatures.add(EE_COMPATIBLE_FEATURE_NAME);
+        addingFeatures.add(MP_COMPATIBLE_FEATURE_NAME);
+        
+        result._resolved.addAll(addingFeatures);
     }
 
     private List<String> filterVersionless(Collection<String> rootFeatures, SelectionContext selectionContext){
@@ -1333,7 +1394,6 @@ public class FeatureResolverImpl implements FeatureResolver {
                 return;
             }
             if (!isSingleton || allowMultipleVersions(baseSymbolicName)) {
-                System.out.println(symbolicName);
                 // must allow all candidates
                 return;
             }
