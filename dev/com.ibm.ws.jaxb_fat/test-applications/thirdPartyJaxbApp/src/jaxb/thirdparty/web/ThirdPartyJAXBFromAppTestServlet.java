@@ -10,7 +10,6 @@
 package jaxb.thirdparty.web;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringWriter;
@@ -49,13 +48,13 @@ public class ThirdPartyJAXBFromAppTestServlet extends FATServlet {
     private static String IMPL_LOCATION = "WEB-INF/lib";
 
     /**
-     * This test verifies that a app packaged JAXB 2.2 or XML Binding 3.0 is loaded from the ParentLastClassLoader classloader and WEB-INF/lib directory of the
+     * This test verifies that a app packaged XML Binding 3.0 is loaded from the ParentLastClassLoader classloader and WEB-INF/lib directory of the
      * application rather from our internal classloader, and bundle location.
      */
     @Test
-    @SkipForRepeat({ SkipForRepeat.EE10_FEATURES })
+    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE10_FEATURES })
     public void testJaxbAPILoadedFromApp() throws Exception {
-		
+
         // Verify JAX-B API came from the application dependencies
         ClassLoader apiLoader = JAXBContext.class.getClassLoader();
         CodeSource apiSrc = JAXBContext.class.getProtectionDomain().getCodeSource();
@@ -70,14 +69,11 @@ public class ThirdPartyJAXBFromAppTestServlet extends FATServlet {
     }
 
     /**
-     * This test verifies that an app packaged XML Binding 4.0 is loaded from the AppClassLoader classloader and WEB-INF/lib directory of the
+     * This test verifies that an app packaged JAXB 2.2 or XML Binding 4.0 is loaded from the AppClassLoader classloader and WEB-INF/lib directory of the
      * application rather from our internal classloader, and bundle location.
-     *
-     * Since EE10 is the only platform that doesn't require classloading delegation to be parent last
-     * we need to assert to make sure it came from the app classloader
      */
     @Test
-    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE9_FEATURES })
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
     public void testJaxbAPILoadedFromAppEE10() throws Exception {
         // Verify JAX-B API came from the application dependencies
         ClassLoader apiLoader = JAXBContext.class.getClassLoader();
