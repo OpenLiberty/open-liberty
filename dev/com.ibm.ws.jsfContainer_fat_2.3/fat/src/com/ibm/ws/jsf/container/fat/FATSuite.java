@@ -52,7 +52,7 @@ import componenttest.topology.impl.JavaInfo;
                 JSF23WebSocketTests.class
 })
 
-public class FATSuite {
+public class FATSuite extends TestContainerSuite {
 
     @ClassRule
     public static RepeatTests repeat;
