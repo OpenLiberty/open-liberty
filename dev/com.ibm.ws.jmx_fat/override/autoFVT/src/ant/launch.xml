@@ -293,9 +293,20 @@
 			</fileset>
 
 			<!-- We want our doctored simplicity high on the classpath -->
-			<fileset dir="${basedir}/lib/">
+			<fileset dir="${basedir}/lib/" erroronmissingdir="false">
 				<include name="*.jar" />
 				<exclude name="${bnd.transform.jar.to.exclude}" />
+			</fileset>
+
+			<!-- fattest.simplicity -->
+			<fileset dir="${local.java}/lib/" erroronmissingdir="false">
+				<include name="fattest.simplicity.jar" />
+				<include name="com.ibm.ws.componenttest.jar" />
+			</fileset>
+
+			<fileset dir="${local.java}/build/libs/lib/" erroronmissingdir="false">
+				<include name="fattest.simplicity.jar" />
+				<include name="com.ibm.ws.componenttest.jar" />
 			</fileset>
 
 			<!-- shared libraries from bootstrapping.properties -->
