@@ -1254,7 +1254,7 @@ public class SSLConfigManager {
         // enable/disable hostname verification
         String urlHostNameVerification = getGlobalProperty(Constants.SSLPROP_URL_HOSTNAME_VERIFICATION);
 
-        if (urlHostNameVerification != null && (urlHostNameVerification.equalsIgnoreCase("false") || urlHostNameVerification.equalsIgnoreCase("no"))) {
+        if (urlHostNameVerification == null || urlHostNameVerification.equalsIgnoreCase("false") || urlHostNameVerification.equalsIgnoreCase("no")) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "com.ibm.ssl.performURLHostNameVerification disabled, disabling HttpsURLConnection default verifier");
             HostnameVerifier verifier = new HostnameVerifier() {

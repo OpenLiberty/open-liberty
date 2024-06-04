@@ -97,7 +97,7 @@ public class CommonMBeanConnection implements ICommonMBeanConnection {
         environment.put("jmx.remote.protocol.provider.pkgs", "com.ibm.ws.jmx.connector.client");
         environment.put(JMXConnector.CREDENTIALS, new String[] { user, password });
         environment.put(ClientProvider.READ_TIMEOUT, 2 * 60 * 1000);
-        environment.put(ConnectorSettings.DISABLE_HOSTNAME_VERIFICATION, Boolean.FALSE);
+        environment.put(ConnectorSettings.DISABLE_HOSTNAME_VERIFICATION, Boolean.TRUE);
         environment.put(ConnectorSettings.CUSTOM_SSLSOCKETFACTORY, sslSF);
         environment.put("isCollectiveUtil", Boolean.TRUE);
         return environment;

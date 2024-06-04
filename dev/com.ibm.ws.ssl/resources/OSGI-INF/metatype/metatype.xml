@@ -160,7 +160,7 @@
             required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
             
         <AD id="httpHostNameVerification" name="%default.httpHostNameVerification" description="%default.httpHostNameVerification.desc" 
-            required="false" type="Boolean" default="true" />
+            required="false" type="Boolean" default="false" />
             
     </OCD>
 
