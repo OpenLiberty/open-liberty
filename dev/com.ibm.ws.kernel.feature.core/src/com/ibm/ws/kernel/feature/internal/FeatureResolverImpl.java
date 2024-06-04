@@ -719,6 +719,10 @@ public class FeatureResolverImpl implements FeatureResolver {
             // loops through the private features related to the versionless feature
             for(String feature : features){
                 ProvisioningFeatureDefinition featureDef = selectionContext.getRepository().getFeature(feature);
+                if(featureDef == null){
+                    //some features aren't in this repo, we can skip those
+                    continue;
+                }
                 Collection<FeatureResource> featureDeps = featureDef.getConstituents(SubsystemContentType.FEATURE_TYPE);
                 for (FeatureResource featureDep : featureDeps) { // could be multiple, we only care about the public versioned feature
                     if(!!!featureDep.getSymbolicName().startsWith("com.ibm.websphere.appserver.eeCompatible") &&
