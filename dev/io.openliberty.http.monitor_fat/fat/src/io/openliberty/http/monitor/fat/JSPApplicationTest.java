@@ -129,7 +129,7 @@ public class JSPApplicationTest extends BaseTestClass {
          */
         if (!validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod)) {
             responseStatus = "302";
-            validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod);
+            assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
         }
     }
 
