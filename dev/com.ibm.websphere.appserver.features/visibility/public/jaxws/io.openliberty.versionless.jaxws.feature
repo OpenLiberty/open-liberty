@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: jaxws
 Subsystem-Name: jaxws
 -features=io.openliberty.internal.versionless.jaxws-2.2; ibm.tolerates:="3.0,4.0"
-kind=noship
-edition=full
+kind=beta
+edition=base
