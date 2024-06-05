@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -78,7 +78,7 @@ public class JSFContainerTest extends FATServletClient {
     }
 
     // ManagedBeans are no longer supported in Faces 4.0.
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
+    @SkipForRepeat(SkipForRepeat.EE10_OR_LATER_FEATURES)
     @Test
     public void testJSFBean_Mojarra() throws Exception {
         // Note that Mojarra does not support injecting @EJB into a JSF @ManagedBean
@@ -95,7 +95,7 @@ public class JSFContainerTest extends FATServletClient {
     }
 
     // ManagedBeans are no longer supported in Faces 4.0.
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
+    @SkipForRepeat(SkipForRepeat.EE10_OR_LATER_FEATURES)
     @Test
     public void testJSFBean_MyFaces() throws Exception {
         HttpUtils.findStringInReadyUrl(server, '/' + MYFACES_APP + "/TestBean.jsf",
