@@ -117,6 +117,7 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         }
     }
 
+
     @Override
     public void readExternal(ObjectInput input) throws IOException, ClassNotFoundException {
         MSP.log("READ EXTERNAL");
@@ -621,12 +622,9 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public boolean setCookie(HttpCookie cookie, HttpHeaderKeys cookieType) {
-        MSP.log("SETTING COOKIE -> " + cookie.getName());
-        MSP.stack();
 
         boolean result = Boolean.FALSE;
-        // if (isCommitted()) {
-        if (result) {
+        if (isCommitted()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Not adding cookie to committed message: " + cookie.getName() + " " + cookieType.getName());
             }
@@ -1057,14 +1055,14 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         if (config.useSameSiteConfig() || config.doNotAllowDuplicateSetCookies()) {
             //If there are set-cookie and set-cookie2 headers and the respective cache hasn't been initialized,
             //do so and set it as dirty so the cookie parsing logic is run.
-            if (this.containsHeader(HttpHeaderKeys.HDR_SET_COOKIE) && (this.setCookieCache == null)) {
+            if (this.containsHeader(HttpHeaderKeys.HDR_SET_COOKIE) ) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Marking set-cookie cache dirty");
                 }
                 getCookieCache(HttpHeaderKeys.HDR_SET_COOKIE).setIsDirty(true);
             }
 
-            if (this.containsHeader(HttpHeaderKeys.HDR_SET_COOKIE2) && (this.setCookie2Cache == null)) {
+            if (this.containsHeader(HttpHeaderKeys.HDR_SET_COOKIE2)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Marking set-cookie2 cache dirty");
                 }
