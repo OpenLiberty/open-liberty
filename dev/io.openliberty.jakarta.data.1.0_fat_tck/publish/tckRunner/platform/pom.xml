@@ -186,6 +186,9 @@
 						<jimage.dir>${jimage.dir}</jimage.dir>
 						<jakarta.tck.skip.deployment>false</jakarta.tck.skip.deployment>
 					</systemPropertyVariables>
+					<excludes>
+						<exclude>${excluded.tests}</exclude>
+					</excludes>
 					<groups>${included.groups}</groups>
 					<reportNameSuffix>${jakarta.profile}</reportNameSuffix>
 					<testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>

@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWWKW
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers start with '0' and are filled to a width of 4 digits.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME io.openliberty.org.jboss.resteasy.common.ee10/resources/io/openliberty/org/jboss/resteasy/common/nls/RESTfulWS.nlsprops
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW io.openliberty.restfulWS-3.1
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#RANGE 1300 - 1399
+#Message range shared with io.openliberty.org.jboss.resteasy.common
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI=CWMGQ1xxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.useraction=User action text for the message
+#
+#-------------------------------------------------------------------------------
+
+MULTIPLE_REST_SERVLETS_CWWKW1300W=CWWKW1300W: V\u00e1rios servlets REST s\u00e3o definidos para o m\u00f3dulo da web {0}. Somente zero ou um servlet REST \u00e9 permitido por m\u00f3dulo da web.
+MULTIPLE_REST_SERVLETS_CWWKW1300W.explanation=\u00c9 permitido que apenas zero ou um servlet REST seja definido por m\u00f3dulo da web. Um servlet REST \u00e9 qualquer servlet que usa um dos seguintes nomes de classe: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher ou org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. Essa mensagem indica que mais de um servlet foi especificado no arquivo web.xml ou configurado dinamicamente.
+MULTIPLE_REST_SERVLETS_CWWKW1300W.useraction=Revise o arquivo web.xml quanto a esses servlets e remova todos ou todos menos um servlet.
+
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W=CWWKW1301W: V\u00e1rios mapeamentos de servlet REST s\u00e3o definidos para o m\u00f3dulo da web {0}. Um servlet REST pode ser associado somente a um \u00fanico mapeamento de caminho.
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.explanation=\u00c9 permitido que um servlet REST seja configurado somente com zero ou um mapeamento de caminho. Um servlet REST \u00e9 qualquer servlet que usa um dos seguintes nomes de classe: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher ou org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. Essa mensagem indica que h\u00e1 mais de um mapeamento associado a um servlet REST no arquivo web.xml.
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.useraction=Revise o arquivo web.xml quanto aos mapeamentos de servlet associados ao servlet REST e remova todos ou todos menos um mapeamento de caminho.
+
+UNMAPPED_APPLICATION_CWWKW1302W=CWWKW1302W: O m\u00f3dulo da web {0} cont\u00e9m {1} classe de aplicativo JAX-RS n\u00e3o mapeada. O servidor ignora essa classe de aplicativo.
+UNMAPPED_APPLICATION_CWWKW1302W.explanation=A classe de aplicativo especificada n\u00e3o \u00e9 referenciada no arquivo web.xml do m\u00f3dulo da web e nem \u00e9 anotada com @ApplicationPath. O servidor n\u00e3o pode determinar o respectivo caminho HTTP e ignora a classe.
+UNMAPPED_APPLICATION_CWWKW1302W.useraction=Inclua uma anota\u00e7\u00e3o @ApplicationPath que especifique o caminho do aplicativo ou especifique o caminho no arquivo web.xml. Como alternativa, remova a classe de aplicativo se ela n\u00e3o for usada.

@@ -74,7 +74,7 @@ public interface Counties {
 
     @Query("SELECT zipcodes WHERE population <= ?1")
     @OrderBy("population")
-    Optional<Iterator<int[]>> findZipCodesByPopulationLessThanEqual(int maxPopulation);
+    Iterator<int[]> findZipCodesByPopulationLessThanEqual(int maxPopulation);
 
     default EntityManager getAutoClosedEntityManager() {
         return getEntityManager(); // must be automatically closed after getAutoClosedEntityManager ends

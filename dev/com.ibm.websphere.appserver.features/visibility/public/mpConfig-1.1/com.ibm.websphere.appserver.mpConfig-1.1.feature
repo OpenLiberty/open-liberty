@@ -23,3 +23,4 @@ Subsystem-Name: MicroProfile Config 1.1
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-Platform: microProfile-1.2

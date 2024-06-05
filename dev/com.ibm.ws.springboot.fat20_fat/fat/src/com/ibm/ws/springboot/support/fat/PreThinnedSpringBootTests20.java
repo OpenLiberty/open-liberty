@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -71,9 +71,9 @@ public class PreThinnedSpringBootTests20 extends AbstractSpringTests {
         // locate and copy the lib.index.cache to the shared area
         RemoteFile libIndexCache = server.getFileFromLibertyServerRoot(SPRING_WORKAREA_DIR + SPRING_LIB_INDEX_CACHE);
         assertTrue("No cache found: " + libIndexCache.getAbsolutePath(), libIndexCache.exists());
-        RemoteFile sharedDir = new RemoteFile(server.getFileFromLibertyInstallRoot(""), "usr/shared");
+        RemoteFile sharedDir = server.getMachine().getFile(server.getFileFromLibertyInstallRoot(""), "usr/shared");
         sharedDir.mkdirs();
-        RemoteFile sharedLibIndexCache = new RemoteFile(server.getFileFromLibertySharedDir(""), SHARED_SPRING_LIB_INDEX_CACHE);
+        RemoteFile sharedLibIndexCache = server.getMachine().getFile(server.getFileFromLibertySharedDir(""), SHARED_SPRING_LIB_INDEX_CACHE);
         sharedLibIndexCache.mkdirs();
         libIndexCache.copyToDest(sharedLibIndexCache, true, true);
 
@@ -81,7 +81,7 @@ public class PreThinnedSpringBootTests20 extends AbstractSpringTests {
         RemoteFile thinApps = server.getFileFromLibertyServerRoot(SPRING_WORKAREA_DIR + SPRING_THIN_APPS_DIR);
         RemoteFile[] apps = thinApps.list(false);
         assertEquals("Wrong number of apps.", 1, apps.length);
-        RemoteFile thinnedApp = new RemoteFile(server.getFileFromLibertyServerRoot("apps"), "thinnedApp.jar");
+        RemoteFile thinnedApp = server.getMachine().getFile(server.getFileFromLibertyServerRoot("apps"), "thinnedApp.jar");
         apps[0].copyToDest(thinnedApp);
 
         // configure the pre-thinned app jar as a spring boot app

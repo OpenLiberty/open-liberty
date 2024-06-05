@@ -15,6 +15,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 @Component(service = { ApplicationStateListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class MonitorAppStateListener implements ApplicationStateListener{
@@ -36,6 +37,16 @@ public class MonitorAppStateListener implements ApplicationStateListener{
 
 	@Override
 	public void applicationStopped(ApplicationInfo appInfo) {
+    	/*
+    	 * Just prevent this from happening.
+    	 * This bundle starts from an auto-feature.
+    	 * User's are not explicitly enabling this so
+    	 * lets not throw an exception. We'll
+    	 * quietly get out of the way.
+    	 */
+    	if (!ProductInfo.getBetaEdition()) { 
+    		return;
+    	}
 		HttpStatsMonitor.getInstance().removeStat(appInfo.getDeploymentName());
 		
 	}

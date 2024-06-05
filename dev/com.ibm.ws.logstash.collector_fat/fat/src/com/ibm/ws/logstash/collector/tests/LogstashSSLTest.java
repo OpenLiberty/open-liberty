@@ -47,6 +47,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class LogstashSSLTest extends LogstashCollectorTest {
+    
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("LogstashServer");
     protected static Machine machine = null;
     private static boolean connected = false;
@@ -266,6 +267,17 @@ public class LogstashSSLTest extends LogstashCollectorTest {
     public void testLogstashForAuditEvent() throws Exception {
         testName = "testLogstashForAuditEvent";
         setConfig("server_logs_audit.xml");
+        clearContainerOutput();
+
+        createTraceEvent(testName);
+
+        assertNotNull("Did not find " + LIBERTY_AUDIT, waitForStringInContainerOutput(LIBERTY_AUDIT));
+    }
+
+    @Test
+    public void testLogstashForAudit20Event() throws Exception {
+        testName = "testLogstashForAuditEvent";
+        setConfig("server_logs_audit20.xml");
         clearContainerOutput();
 
         createTraceEvent(testName);

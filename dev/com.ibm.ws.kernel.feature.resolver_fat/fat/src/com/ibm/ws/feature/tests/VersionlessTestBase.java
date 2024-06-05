@@ -32,7 +32,7 @@ public class VersionlessTestBase {
                            String[] expectedResolved,
                            FailableConsumer<LibertyServer, Exception> action) throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
-        server.addEnvVar("PREFERRED_FEATURE_VERSIONS", preferredVersions);
+        server.addEnvVar("PREFERRED_PLATFORM_VERSIONS", preferredVersions);
 
         server.startServer();
         try {

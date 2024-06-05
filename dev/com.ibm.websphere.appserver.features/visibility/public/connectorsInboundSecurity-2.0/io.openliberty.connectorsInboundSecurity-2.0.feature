@@ -20,3 +20,4 @@ Subsystem-Name: Jakarta Connectors 2.0 Inbound Security
    io.openliberty.connectors.security.internal.inbound
 kind=ga
 edition=base
+WLP-Platform: jakartaee-9.1

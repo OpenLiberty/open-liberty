@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -13,84 +12,88 @@ import java.util.regex.Pattern;
 
 public class VersionlessFeatureCreator {
 
-    private String privatePath = "build/versionless/visibility/private/";
-    private String publicPath = "build/versionless/visibility/public/";
+    private final String privatePath = "build/versionless/visibility/private/";
+    private final String publicPath = "build/versionless/visibility/public/";
 
-    private String checkExistingPublic = "visibility/public/";
-    private String checkExistingPrivate = "visibility/private/";
+    private final String checkExistingPublic = "visibility/public/";
+    private final String checkExistingPrivate = "visibility/private/";
 
     public boolean createFeatureFiles(VersionlessFeatureDefinition feature, VersionlessFeatureDefinition akaFeature) throws IOException {
         File priv = new File(privatePath);
-    	if(!priv.exists()){
+        if (!priv.exists()) {
             priv.mkdirs();
         }
         File pub = new File(publicPath);
-    	if(!pub.exists()){
+        if (!pub.exists()) {
             pub.mkdirs();
         }
 
-        if(akaFeature != null){
+        if (akaFeature != null) {
             // this feature is the older version of an newer feature
             // ex. ejb
             // in this scenario we add the future feature versions
             ArrayList<String[]> temp = akaFeature.getFeaturesAndPlatform();
-            for(String[] featAndPlat : temp){
+            for (String[] featAndPlat : temp) {
                 feature.addFeaturePlatform(featAndPlat);
             }
-        }
-        else{
-            if(feature.getAKAFutureFeature() != null){
+        } else {
+            if (feature.getAKAFutureFeature() != null) {
                 feature.setAKAFutureFeature(null);
             }
-            if(feature.getAlsoKnownAs() != null){
+            if (feature.getAlsoKnownAs() != null) {
                 feature.setAlsoKnownAs(null);
             }
         }
 
         boolean generatedNewFile = false;
 
-
         //features array:
         //  features[0] == the name of the feature ex. servlet-4.0
         //  features[1] == the name of the platform it depends on ex. jakartaPlatform-8.0
         //  features[2] == the full name of the feature ex. com.ibm.ws.servlet-4.0
-        if(feature.getAlsoKnownAs() == null){
-            for(String[] features : feature.getFeaturesAndPlatform()) {
+        if (feature.getAlsoKnownAs() == null) {
+            for (String[] features : feature.getFeaturesAndPlatform()) {
                 //Code for utilizing the ee/mp versions to add within the private feature defs
                 String[] dependencyVersions = feature.getAllDependencyVersions(features[0], features[1].split("-")[0]);
-                
+
                 String x = null;
                 String y = null;
-                if(feature.getFeatureName().startsWith("mp")){
+                if (feature.getFeatureName().startsWith("mp")) {
                     x = "io.openliberty.internal.mpVersion";
-                    if(dependencyVersions[1].equals("")){
+                    if (dependencyVersions[1].equals("")) {
                         y = features[1].split("-")[1];
-                    }
-                    else{
-                        y = dependencyVersions[0]+"; ibm.tolerates:=\"" + dependencyVersions[1] + "\"";
+                    } else {
+                        y = dependencyVersions[0] + "; ibm.tolerates:=\"" + dependencyVersions[1] + "\"";
                     }
                 }
 
-                if(createPrivateVersionedFeature(feature.getFeatureName(), features[0].split("-")[1], x, y, features[2])){
+                if (createPrivateVersionedFeature(feature.getFeatureName(), akaFeature == null ? null : akaFeature.getFeatureName(), features[0].split("-")[1], x, y,
+                                                  features[2])) {
                     generatedNewFile = true;
                 }
             }
         }
 
-        if(createPublicVersionlessFeature(feature)){
+        if (createPublicVersionlessFeature(feature, akaFeature)) {
             generatedNewFile = true;
-        };
-        createPublicFeaturePropertiesFile(feature);
+        }
+        createPublicFeaturePropertiesFile(feature, akaFeature);
 
         return generatedNewFile;
     }
 
-    private boolean createPrivateVersionedFeature(String featureName, String featureNum, String x, String y, String fullName) throws IOException {
+    private boolean createPrivateVersionedFeature(String featureName, String akaFeatureName, String featureNum, String x, String y, String fullName) throws IOException {
         File checkExisting = new File(checkExistingPrivate + "io.openliberty.internal.versionless." + featureName + "-" + featureNum + ".feature");
-        if(checkExisting.exists()){
+        if (checkExisting.exists()) {
             return false;
         }
-    	File f = new File(privatePath + "io.openliberty.internal.versionless." + featureName + "-" + featureNum + ".feature");
+        if (akaFeatureName != null) {
+            checkExisting = new File(checkExistingPrivate + "io.openliberty.internal.versionless." + akaFeatureName + "-" + featureNum + ".feature");
+            if (checkExisting.exists()) {
+                return false;
+            }
+        }
+        File f = new File(privatePath + "io.openliberty.internal.versionless." + featureName + "-" + featureNum + ".feature");
         BufferedWriter writer = new BufferedWriter(new FileWriter(f));
         writer.append("-include= ~${workspace}/cnf/resources/bnd/feature.props");
         writer.newLine();
@@ -104,7 +107,7 @@ public class VersionlessFeatureCreator {
         writer.newLine();
         writer.append("    io.openliberty.noShip-1.0, \\");
         writer.newLine();
-        if(x != null && y != null){
+        if (x != null && y != null) {
             writer.append("    " + x + "-" + y + ", \\");
             writer.newLine();
         }
@@ -114,25 +117,32 @@ public class VersionlessFeatureCreator {
         writer.newLine();
         writer.append("edition=full");
         writer.newLine();
-        
+
         writer.close();
-        
+
         return true;
     }
 
-    private boolean createPublicVersionlessFeature(VersionlessFeatureDefinition feature) throws IOException {
+    private boolean createPublicVersionlessFeature(VersionlessFeatureDefinition feature, VersionlessFeatureDefinition akaFeature) throws IOException {
         File checkExisting = new File(checkExistingPublic + feature.getFeatureName() + "/io.openliberty.versionless." + feature.getFeatureName() + ".feature");
-        //Even if we already have an existing public versionless feature, 
+        //Even if we already have an existing public versionless feature,
         //if we created a new private versionless feature we need to update the public feature with new dependencies
-        if(checkExisting.exists() && validatePublicVersionlessFeature(feature)){
+        if (checkExisting.exists() && validatePublicVersionlessFeature(feature, akaFeature)) {
             return false;
         }
-    	File dir = new File(publicPath + feature.getFeatureName());
-    	if(!dir.exists()) {
-    		dir.mkdirs();
+
+        if (akaFeature != null) {
+            checkExisting = new File(checkExistingPublic + akaFeature.getFeatureName() + "/io.openliberty.versionless." + akaFeature.getFeatureName() + ".feature");
+            if (checkExisting.exists() && validatePublicVersionlessFeature(akaFeature, feature)) {
+                return false;
+            }
+        }
+        File dir = new File(publicPath + feature.getFeatureName());
+        if (!dir.exists()) {
+            dir.mkdirs();
         }
         File f = new File(publicPath + feature.getFeatureName() + "/io.openliberty.versionless." + feature.getFeatureName() + ".feature");
-        if(f.exists()){
+        if (f.exists()) {
             f.delete();
         }
         f.createNewFile();
@@ -149,13 +159,12 @@ public class VersionlessFeatureCreator {
         writer.newLine();
         String[] versions = feature.getPreferredAndTolerates();
         String toleratesFeature = feature.getFeatureName();
-        if(feature.getAlsoKnownAs() != null){
+        if (feature.getAlsoKnownAs() != null) {
             toleratesFeature = feature.getAlsoKnownAs();
         }
-        if(versions.length == 1){
+        if (versions.length == 1) {
             writer.append("-features=io.openliberty.internal.versionless." + toleratesFeature + "-" + versions[0]);
-        }
-        else{
+        } else {
             writer.append("-features=io.openliberty.internal.versionless." + toleratesFeature + "-" + versions[0] + "; ibm.tolerates:=\"" + versions[1] + "\"");
         }
         writer.newLine();
@@ -169,15 +178,15 @@ public class VersionlessFeatureCreator {
         return true;
     }
 
-    private void createPublicFeaturePropertiesFile(VersionlessFeatureDefinition feature) throws IOException {
+    private void createPublicFeaturePropertiesFile(VersionlessFeatureDefinition feature, VersionlessFeatureDefinition akaFeature) throws IOException {
         File checkExisting = new File(checkExistingPublic + feature.getFeatureName() + "/resources/l10n/io.openliberty.versionless." + feature.getFeatureName() + ".properties");
-        if(checkExisting.exists()){
+        if (checkExisting.exists()) {
             return;
         }
-    	File dir = new File(publicPath + feature.getFeatureName() + "/resources/l10n");
+        File dir = new File(publicPath + feature.getFeatureName() + "/resources/l10n");
         dir.mkdirs();
         File f = new File(publicPath + feature.getFeatureName() + "/resources/l10n/io.openliberty.versionless." + feature.getFeatureName() + ".properties");
-        if(f.exists()){
+        if (f.exists()) {
             f.delete();
         }
         f.createNewFile();
@@ -216,59 +225,58 @@ public class VersionlessFeatureCreator {
         writer.newLine();
 
         writer.close();
-	}
+    }
 
     /*
      * True if existing public versionless feature has correct dependencies
      * false if not
      */
-    private boolean validatePublicVersionlessFeature(VersionlessFeatureDefinition feature) {
+    private boolean validatePublicVersionlessFeature(VersionlessFeatureDefinition feature, VersionlessFeatureDefinition akaFeature) {
         File existingFeature = new File(checkExistingPublic + feature.getFeatureName() + "/io.openliberty.versionless." + feature.getFeatureName() + ".feature");
         ArrayList<String> existingFeatureVersions = new ArrayList<String>();
         String featureFullName = "io.openliberty.internal.versionless." + feature.getFeatureName() + "-";
-        if(feature.getAlsoKnownAs() != null){
-            featureFullName = "io.openliberty.internal.versionless." + feature.getAlsoKnownAs() + "-";
-        }
+        String akaFeatureFullName = akaFeature == null ? null : "io.openliberty.internal.versionless." + akaFeature.getFeatureName() + "-";
         try {
             Scanner myReader = new Scanner(existingFeature);
             while (myReader.hasNextLine()) {
                 String s = myReader.nextLine();
-                if(s.contains(featureFullName)){
+                String privateFeatureFullName = null;
+                if (s.contains(featureFullName)) {
+                    privateFeatureFullName = featureFullName;
+                } else if (akaFeatureFullName != null && s.contains(akaFeatureFullName)) {
+                    privateFeatureFullName = akaFeatureFullName;
+                }
+                if (privateFeatureFullName != null) {
                     //check version after dash
-                    if(s.contains("ibm.tolerates")){
-                        existingFeatureVersions.add(s.substring(s.indexOf(featureFullName) + featureFullName.length(), s.indexOf(";")));
+                    if (s.contains("ibm.tolerates")) {
+                        existingFeatureVersions.add(s.substring(s.indexOf(privateFeatureFullName) + privateFeatureFullName.length(), s.indexOf(";")));
                         Pattern p = Pattern.compile("\"(.*?)\"");
                         Matcher m = p.matcher(s);
-                        while(m.find())
-                        {
+                        while (m.find()) {
                             existingFeatureVersions.addAll(Arrays.asList(m.group(1).split(",")));
                         }
-                        
-                    }
-                    else{
+
+                    } else {
                         //if there is no ibm.tolerates, this is the end of the line.
-                        String version = s.substring(s.indexOf(featureFullName) + featureFullName.length()).trim();
+                        String version = s.substring(s.indexOf(privateFeatureFullName) + privateFeatureFullName.length()).trim();
                         existingFeatureVersions.add(version.substring(0, version.indexOf(".") + 2));
                     }
                     break;
                 }
             }
             myReader.close();
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             // We check if file exists before entering this function, should never reach this
         }
 
         ArrayList<String> featureVersions = feature.getAllVersions();
-        ArrayList<String> copyExistingVersions = (ArrayList<String>) existingFeatureVersions.clone();
 
-        for(String v : existingFeatureVersions){
-            if(featureVersions.contains(v)){
-                copyExistingVersions.remove(v);
+        for (String v : existingFeatureVersions) {
+            if (featureVersions.contains(v)) {
                 featureVersions.remove(v);
             }
         }
-        if(!!!featureVersions.isEmpty() || !!!copyExistingVersions.isEmpty()){
+        if (!!!featureVersions.isEmpty()) {
             return false;
         }
 

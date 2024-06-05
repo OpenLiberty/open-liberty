@@ -109,8 +109,12 @@ public class ConfigHolder {
             }
             return enableSchemaValidation;
         } else {
-            // return the default value
-            return null;
+            
+            if(getDebugEnabled()) {
+                Tr.debug(tc, "getIgnoreUnexpectedElements is returning null because no properties exist for name - " + name);
+            }
+            return null; // No properties exist so return null
+            
         }
     }
 

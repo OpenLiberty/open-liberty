@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,7 +17,6 @@ import java.util.Map;
 
 import com.ibm.ws.repository.common.enums.InstallPolicy;
 import com.ibm.ws.repository.common.enums.Visibility;
-import com.ibm.ws.repository.transport.model.AppliesToFilterInfo;
 
 /**
  * Represents a Feature Resource in a repository.
@@ -125,11 +124,4 @@ public interface EsaResource extends RepositoryResource, ApplicableToProduct {
      * @return The IBM-InstallTo header property
      */
     public String getIBMInstallTo();
-
-    /**
-     * Gets the IBM getAppliesToFilterInfo property from the feature.
-     *
-     * @return The AppliesToFilter header property
-     */
-    public Collection<AppliesToFilterInfo> getAppliesToFilterInfo();
 }

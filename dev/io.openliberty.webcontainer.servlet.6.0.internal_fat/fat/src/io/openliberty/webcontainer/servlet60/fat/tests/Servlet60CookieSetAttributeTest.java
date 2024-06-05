@@ -6,12 +6,10 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.webcontainer.servlet60.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE11_OR_LATER_FEATURES;
 import static org.junit.Assert.assertTrue;
 
 import java.util.logging.Logger;
@@ -30,9 +28,11 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -140,8 +140,11 @@ public class Servlet60CookieSetAttributeTest {
 
     /*
      * Test Set-Cookie via addHeader and setHeader behavior do not change in Servlet 6.0..i.e it generates 2 Set-Cookie headers
+     *
+     * From EE11, Set-Cookie is not splitted for arbitrary attributes (see PR#28362)
      */
     @Test
+    @SkipForRepeat(EE11_OR_LATER_FEATURES)
     public void test_cookieAddAndSetHeader() throws Exception {
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/CookieSetAttributeServlet?testName=addAndSetHeaders";
         LOG.info("\n Sending Request [" + url + "]");
@@ -207,6 +210,8 @@ public class Servlet60CookieSetAttributeTest {
 
     /*
      * Test cookie setAttribute("Partitioned","")
+     *
+     * From EE11, attribute name with empty value does not have the trailing = sign (see PR#28362)
      */
     @Test
     public void test_setAttributePartitioned() throws Exception {
@@ -230,15 +235,21 @@ public class Servlet60CookieSetAttributeTest {
                 }
                 String headerValue = response.getHeader("Set-Cookie").getValue();
                 LOG.info("\n Set-Cookie value [" + headerValue + "]");
-                assertTrue("The response did not contain the following Set-Cookie header " + expectedSetCookie, headerValue.equals(expectedSetCookie));
+
+                if (JakartaEEAction.isEE10Active()) {
+                    assertTrue("The response did not contain the following Set-Cookie header " + expectedSetCookie, headerValue.equals(expectedSetCookie));
+                } else if (JakartaEEAction.isEE11OrLaterActive()) {
+                    expectedSetCookie = "CookieSetAttributeServlet=TestSetAttributePartitioned; HttpOnly; SameSite=None; partitioned"; //No equal = sign
+                    assertTrue("The response did not contain the following Set-Cookie header " + expectedSetCookie, headerValue.equals(expectedSetCookie));
+                }
             }
         }
     }
 
     /*
      * Test null removes attributes
-     *     wcCookieAtt.setAttribute("TESTNAME", "");
-    *      wcCookieAtt.setAttribute("TESTNAME", null);
+     * wcCookieAtt.setAttribute("TESTNAME", "");
+     * wcCookieAtt.setAttribute("TESTNAME", null);
      */
     @Test
     public void test_nullValueRemovesAttribute() throws Exception {

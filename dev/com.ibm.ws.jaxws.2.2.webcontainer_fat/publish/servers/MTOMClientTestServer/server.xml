@@ -1,0 +1,26 @@
+<server>
+   <featureManager>
+	<feature>localConnector-1.0</feature>
+	<feature>jsp-2.3</feature>
+	<feature>jaxws-2.2</feature>
+	<feature>jndi-1.0</feature>
+	<feature>timedexit-1.0</feature>
+	<feature>servlet-3.1</feature>
+  </featureManager>
+
+  <httpEndpoint httpPort="9888" httpsPort="9889"
+		id="defaultHttpEndpoint" />
+    <logging traceSpecification="org.apache.cxf.*=all:com.ibm.ws.jaxws*=all" />
+    
+    <!-- TESTING THE UPLOAD! -->
+  	<!-- <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="setFactory"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="createClassLoader"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+  	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+  	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+  	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>-->
+  	<javaPermission className="java.security.AllPermission" name="*" actions="*"/>
+
+</server>

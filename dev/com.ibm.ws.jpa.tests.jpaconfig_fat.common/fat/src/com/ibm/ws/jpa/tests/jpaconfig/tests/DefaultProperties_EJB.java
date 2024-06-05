@@ -61,7 +61,7 @@ import componenttest.topology.utils.PrivHelper;
 @Mode(TestMode.FULL)
 public class DefaultProperties_EJB extends JPAFATServletClient {
 
-    @Rule
+    @Rule //TODO This skips all tests during Database Rotation builds - the server will start and stop, but that is all
     public static SkipDatabaseRule skipDBRule = new SkipDatabaseRule();
 
     enum ApplicationConfig {
@@ -222,7 +222,12 @@ public class DefaultProperties_EJB extends JPAFATServletClient {
             if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("hibernate")) {
                 ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
                 ClassloaderElement loader = new ClassloaderElement();
-                loader.getCommonLibraryRefs().add("HibernateLib");
+                if (DatabaseVendor.POSTGRES.equals(getDbVendor())) {
+                    //Hibernate requires access to a utility class from the PostgreSQL Driver
+                    loader.getCommonLibraryRefs().add("HibernateLib, AnonymousJDBCLib");
+                } else {
+                    loader.getCommonLibraryRefs().add("HibernateLib");
+                }
                 cel.add(loader);
             } else if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("openjpa")) {
                 ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
@@ -230,12 +235,6 @@ public class DefaultProperties_EJB extends JPAFATServletClient {
                 loader.getCommonLibraryRefs().add("OpenJPALib");
                 cel.add(loader);
             }
-
-            // Always add the JDBC driver as common library ref as hibername/openjpa might need access to it
-            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
-            ClassloaderElement loader = new ClassloaderElement();
-            loader.getCommonLibraryRefs().add("AnonymousJDBCLib");
-            cel.add(loader);
 
             server.setMarkToEndOfLog();
             ServerConfiguration sc = server.getServerConfiguration();

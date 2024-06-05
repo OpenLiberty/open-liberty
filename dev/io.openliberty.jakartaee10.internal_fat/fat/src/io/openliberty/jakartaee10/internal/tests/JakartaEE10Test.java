@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -147,6 +147,7 @@ public class JakartaEE10Test extends FATServletClient {
             server.setServerStartTimeout(15 * 60 * 1000L); // 15 minutes
         }
         server.startServer(consoleName + ".log");
+        server.waitForSSLStart();
     }
 
     @AfterClass

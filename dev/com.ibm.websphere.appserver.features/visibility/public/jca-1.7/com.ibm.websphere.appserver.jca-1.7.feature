@@ -24,4 +24,5 @@ Subsystem-Category: JavaEE7Application
 kind=ga
 edition=base
 WLP-Activation-Type: parallel
-WLP-InstantOn-Enabled: true; type:=beta
+WLP-InstantOn-Enabled: true
+WLP-Platform: javaee-7.0,javaee-8.0

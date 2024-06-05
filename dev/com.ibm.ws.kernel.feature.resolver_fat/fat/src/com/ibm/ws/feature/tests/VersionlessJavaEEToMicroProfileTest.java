@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.annotation.MinimumJavaLevel;
 
 @RunWith(FATRunner.class)
 public class VersionlessJavaEEToMicroProfileTest extends VersionlessTestBase {
@@ -25,11 +26,9 @@ public class VersionlessJavaEEToMicroProfileTest extends VersionlessTestBase {
     public static final String[] ALLOWED_ERRORS = { "CWWKF0001E", "CWWKF0048E" };
 
     @Test
+    @MinimumJavaLevel(javaLevel = 11)
     public void ee10toHealthAndMetricsMaxTest() throws Exception {
-        String preferredVersions = "mpMetrics-5.1,mpMetrics-5.0,mpMetrics-4.0,mpMetrics-3.0" +
-                                   ",mpMetrics-2.3,mpMetrics-2.2,mpMetrics-2.0,mpMetrics-1.1,mpMetrics-1.0" +
-                                   ",mpHealth-4.0,mpHealth-3.1,mpHealth-3.0,mpHealth-2.2,mpHealth-2.1" +
-                                   ",mpHealth-2.0,mpHealth-1.0";
+        String preferredVersions = PlatformConstants.MICROPROFILE_DESCENDING;
 
         String[] expectedResolved = { "mpMetrics-5.1", "mpHealth-4.0" };
 
@@ -37,11 +36,9 @@ public class VersionlessJavaEEToMicroProfileTest extends VersionlessTestBase {
     }
 
     @Test
+    @MinimumJavaLevel(javaLevel = 11)
     public void ee10toHealthAndMetricsMinTest() throws Exception {
-        String preferredVersions = "mpMetrics-1.0,mpMetrics-1.1,mpMetrics-2.0,mpMetrics-2.2,mpMetrics-2.3" +
-                                   ",mpMetrics-3.0,mpMetrics-4.0,mpMetrics-5.0,mpMetrics-5.1" +
-                                   ",mpHealth-1.0,mpHealth-2.0,mpHealth-2.1,mpHealth-2.2,mpHealth-3.0" +
-                                   ",mpHealth-3.1,mpHealth-4.0";
+        String preferredVersions = PlatformConstants.MICROPROFILE_ASCENDING;
 
         String[] expectedResolved = { "mpMetrics-5.0", "mpHealth-4.0" };
 
@@ -52,9 +49,7 @@ public class VersionlessJavaEEToMicroProfileTest extends VersionlessTestBase {
 
     @Test
     public void ee7toHealthAndMetricsMaxTest() throws Exception {
-        String preferredVersions = "mpMetrics-5.1,mpMetrics-5.0,mpMetrics-4.0,mpMetrics-3.0,mpMetrics-2.3" +
-                                   ",mpMetrics-2.2,mpMetrics-2.0,mpMetrics-1.1,mpMetrics-1.0,mpHealth-4.0" +
-                                   ",mpHealth-3.1,mpHealth-3.0,mpHealth-2.2,mpHealth-2.1,mpHealth-2.0,mpHealth-1.0";
+        String preferredVersions = PlatformConstants.MICROPROFILE_DESCENDING;
 
         String[] expectedResolved = { "mpMetrics-2.3", "mpHealth-2.2" };
 
@@ -63,9 +58,7 @@ public class VersionlessJavaEEToMicroProfileTest extends VersionlessTestBase {
 
     @Test
     public void ee7toHealthAndMetricsMinTest() throws Exception {
-        String preferredVersions = "mpMetrics-1.0,mpMetrics-1.1,mpMetrics-2.0,mpMetrics-2.2,mpMetrics-2.3" +
-                                   ",mpMetrics-3.0,mpMetrics-4.0,mpMetrics-5.0,mpMetrics-5.1,mpHealth-1.0" +
-                                   ",mpHealth-2.0,mpHealth-2.1,mpHealth-2.2,mpHealth-3.0,mpHealth-3.1,mpHealth-4.0";
+        String preferredVersions = PlatformConstants.MICROPROFILE_ASCENDING;
 
         String[] expectedResolved = { "mpMetrics-1.0", "mpHealth-1.0" };
 
@@ -78,7 +71,7 @@ public class VersionlessJavaEEToMicroProfileTest extends VersionlessTestBase {
 
     @Test
     public void ee8toHealthAndMetricsMaxTest() throws Exception {
-        String preferredVersions = "mpMetrics-5.1,mpMetrics-5.0,mpMetrics-4.0,mpMetrics-3.0,mpMetrics-2.3,mpMetrics-2.2,mpMetrics-2.0,mpMetrics-1.1,mpMetrics-1.0,mpHealth-4.0,mpHealth-3.1,mpHealth-3.0,mpHealth-2.2,mpHealth-2.1,mpHealth-2.0,mpHealth-1.0";
+        String preferredVersions = PlatformConstants.MICROPROFILE_DESCENDING;
         String[] expectedResolved = { "mpMetrics-3.0", "mpHealth-3.1" };
 
         test(SERVER_NAME_EE8, ALLOWED_ERRORS, preferredVersions, expectedResolved);
@@ -86,42 +79,10 @@ public class VersionlessJavaEEToMicroProfileTest extends VersionlessTestBase {
 
     @Test
     public void ee8toHealthAndMetricsMinTest() throws Exception {
-        String preferredVersions = "mpMetrics-1.0,mpMetrics-1.1,mpMetrics-2.0,mpMetrics-2.2,mpMetrics-2.3,mpMetrics-3.0,mpMetrics-4.0,mpMetrics-5.0,mpMetrics-5.1,mpHealth-1.0,mpHealth-2.0,mpHealth-2.1,mpHealth-2.2,mpHealth-3.0,mpHealth-3.1,mpHealth-4.0";
+        String preferredVersions = PlatformConstants.MICROPROFILE_ASCENDING;
         String[] expectedResolved = { "mpMetrics-1.0", "mpHealth-1.0" };
 
         test(SERVER_NAME_EE8, ALLOWED_ERRORS, preferredVersions, expectedResolved);
-    }
-
-    //
-
-    public static final String SERVER_EE8 = "ee8toMP";
-
-    @Test
-    public void envVarEE8Test() throws Exception {
-        String preferredVersions = "mpMetrics-2.3,mpHealth-2.2";
-        String[] expectedResolved = { "mpMetrics-2.3", "mpHealth-2.2" };
-
-        test(SERVER_EE8, ALLOWED_ERRORS, preferredVersions, expectedResolved);
-    }
-
-    public static final String SERVER_SERV4_HEALTH = "Servlet4toHealth";
-
-    @Test
-    public void envVarServ4HealthTest() throws Exception {
-        String preferredVersions = "mpMetrics-2.3,mpHealth-2.2";
-        String[] expectedResolved = { "mpHealth-2.2" };
-
-        test(SERVER_SERV4_HEALTH, ALLOWED_ERRORS, preferredVersions, expectedResolved);
-    }
-
-    public static final String SERVER_SERV4_METRICS = "Servlet4toMetrics";
-
-    @Test
-    public void envVarServ4MetricsTest() throws Exception {
-        String preferredVersions = "mpMetrics-3.0,mpHealth-2.2";
-        String[] expectedResolved = { "mpMetrics-3.0" };
-
-        test(SERVER_SERV4_METRICS, ALLOWED_ERRORS, preferredVersions, expectedResolved);
     }
 
     //
@@ -130,7 +91,7 @@ public class VersionlessJavaEEToMicroProfileTest extends VersionlessTestBase {
 
     @Test
     public void ee9toHealthAndMetricsMaxTest() throws Exception {
-        String preferredVersions = "mpMetrics-5.1,mpMetrics-5.0,mpMetrics-4.0,mpMetrics-3.0,mpMetrics-2.3,mpMetrics-2.2,mpMetrics-2.0,mpMetrics-1.1,mpMetrics-1.0,mpHealth-4.0,mpHealth-3.1,mpHealth-3.0,mpHealth-2.2,mpHealth-2.1,mpHealth-2.0,mpHealth-1.0";
+        String preferredVersions = PlatformConstants.MICROPROFILE_DESCENDING;
         String[] expectedResolved = { "mpMetrics-4.0", "mpHealth-4.0" };
 
         test(SERVER_NAME_EE9, ALLOWED_ERRORS, preferredVersions, expectedResolved);
@@ -138,7 +99,7 @@ public class VersionlessJavaEEToMicroProfileTest extends VersionlessTestBase {
 
     @Test
     public void ee9toHealthAndMetricsMinTest() throws Exception {
-        String preferredVersions = "mpMetrics-1.0,mpMetrics-1.1,mpMetrics-2.0,mpMetrics-2.2,mpMetrics-2.3,mpMetrics-3.0,mpMetrics-4.0,mpMetrics-5.0,mpMetrics-5.1,mpHealth-1.0,mpHealth-2.0,mpHealth-2.1,mpHealth-2.2,mpHealth-3.0,mpHealth-3.1,mpHealth-4.0";
+        String preferredVersions = PlatformConstants.MICROPROFILE_ASCENDING;
         String[] expectedResolved = { "mpMetrics-4.0", "mpHealth-4.0" };
 
         test(SERVER_NAME_EE9, ALLOWED_ERRORS, preferredVersions, expectedResolved);

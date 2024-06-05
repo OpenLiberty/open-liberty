@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -54,8 +54,8 @@ import com.ibm.websphere.simplicity.config.SSL;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -134,7 +134,7 @@ public class SSLTest {
                 addKeystore("serverTrustStore", "server-truststore.jks", "JKS", "secret");
                 addSSL("defaultSSLConfig", "serverKeyStore", "serverTrustStore");
                 LibertyServerFactory.recursivelyCopyDirectory(server.getMachine(), new LocalFile("lib/LibertyFATTestFiles/sslKeystore/resources"),
-                                                              new RemoteFile(server.getMachine(), server.getServerRoot() + "/resources"));
+                                                              server.getMachine().getFile(server.getServerRoot() + "/resources"));
                 break;
             default:
                 break;

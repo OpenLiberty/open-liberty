@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.crypto.common;
@@ -19,12 +19,13 @@ import org.junit.Test;
 public class FipsUtilsTest {
 
     private static final String FIPS_MODE_PROPERTY = "com.ibm.fips.mode";
-    
+
     private String fipsModeOrig;
 
     @Before
     public void beforeTest() {
         fipsModeOrig = System.getProperty(FIPS_MODE_PROPERTY);
+        FipsUtils.unitTest = true;
     }
 
     @After
@@ -39,18 +40,21 @@ public class FipsUtilsTest {
     @Test
     public void testIsFIPSEnabledFalse() {
         System.setProperty(FIPS_MODE_PROPERTY, "140-2");
-        assertFalse("isRunningFIPS140Dash3Mode() is true", FipsUtils.isRunningFIPS140Dash3Mode());
+        FipsUtils.FIPSLevel = FipsUtils.getFipsLevel();
+        assertFalse("isFips140_3Enabled() is true", FipsUtils.isFips140_3Enabled());
     }
 
     @Test
     public void testIsFIPSEnabledFalsePropNotSet() {
         System.clearProperty(FIPS_MODE_PROPERTY);
-        assertFalse("isRunningFIPS140Dash3Mode() is true", FipsUtils.isRunningFIPS140Dash3Mode());
+        FipsUtils.FIPSLevel = FipsUtils.getFipsLevel();
+        assertFalse("isFips140_3Enabled() is true", FipsUtils.isFips140_3Enabled());
     }
 
     @Test
     public void testIsFIPSEnabledTrue() {
         System.setProperty(FIPS_MODE_PROPERTY, "140-3");
-        assertTrue("isRunningFIPS140Dash3Mode() is false", FipsUtils.isRunningFIPS140Dash3Mode());
+        FipsUtils.FIPSLevel = FipsUtils.getFipsLevel();
+        assertTrue("isFips140_3Enabled() is false", FipsUtils.isFips140_3Enabled());
     }
 }

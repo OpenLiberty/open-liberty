@@ -8,3 +8,4 @@ Subsystem-Version: 8.0.0
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-Platform: javaee-8.0

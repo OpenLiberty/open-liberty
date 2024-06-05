@@ -15,6 +15,7 @@ import static jakarta.data.repository.By.ID;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import jakarta.data.Limit;
@@ -34,6 +35,12 @@ import jakarta.data.repository.Save;
  */
 @Repository
 public interface Cities {
+    @Find
+    Optional<Set<Integer>> areaCodes(String name, String stateName);
+
+    @Find
+    @OrderBy("name")
+    Stream<AreaInfo> areaInfo(String stateName);
 
     @Delete
     void delete(City city); // copied from BasicRepository

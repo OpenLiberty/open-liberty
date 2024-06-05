@@ -24,3 +24,4 @@ Subsystem-Name: Jakarta Authentication 3.1
 kind=noship
 edition=full
 WLP-InstantOn-Enabled: true
+WLP-Platform: jakartaee-11.0

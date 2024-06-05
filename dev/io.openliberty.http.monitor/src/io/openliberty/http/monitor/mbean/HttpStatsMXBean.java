@@ -18,30 +18,40 @@ public interface HttpStatsMXBean {
 	 * HTTP Attributes
 	 */
 	
+	@Deprecated //As per beta-fencing guidelines //As per beta-fencing guidelines
 	public String getRequestMethod();
 	
+	@Deprecated //As per beta-fencing guidelines
 	public int getResponseStatus();
 	
+	@Deprecated //As per beta-fencing guidelines
 	public String getHttpRoute();
 	
+	@Deprecated //As per beta-fencing guidelines
 	public String getScheme();
 	
+	@Deprecated //As per beta-fencing guidelines
 	public String getNetworkProtocolName();
 	
+	@Deprecated //As per beta-fencing guidelines
 	public String getNetworkProtocolVersion();
 		
+	@Deprecated //As per beta-fencing guidelines
 	public String getServerName();
 	
+	@Deprecated //As per beta-fencing guidelines
 	public int getServerPort();
 	
+	@Deprecated //As per beta-fencing guidelines
 	public String getErrorType();
 	
 	/*
 	 * Metric values
 	 */
-	
+	@Deprecated //As per beta-fencing guidelines
 	public long getCount();
 	
+	@Deprecated //As per beta-fencing guidelines
 	public double getDuration();
     
 }

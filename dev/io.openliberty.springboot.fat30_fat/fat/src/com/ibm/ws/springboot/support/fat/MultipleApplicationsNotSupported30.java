@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2023 IBM Corporation and others.
+ * Copyright (c) 2018,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,11 +14,8 @@ package com.ibm.ws.springboot.support.fat;
 
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -69,7 +66,7 @@ public class MultipleApplicationsNotSupported30 extends AbstractSpringTests {
     private String[] shortApplicationNames;
 
     public String[] getApplicationNames() {
-        if ( applicationNames == null ) {
+        if (applicationNames == null) {
             computeAppNames();
         }
         return applicationNames;
@@ -77,7 +74,7 @@ public class MultipleApplicationsNotSupported30 extends AbstractSpringTests {
 
     public String[] getShortApplicationNames() {
         // The test on 'applicationNames' is correct.
-        if ( applicationNames == null ) {
+        if (applicationNames == null) {
             computeAppNames();
         }
         return shortApplicationNames;
@@ -85,16 +82,16 @@ public class MultipleApplicationsNotSupported30 extends AbstractSpringTests {
 
     protected void computeAppNames() {
         int numCopies = getDropinCopyNum();
-        String[] shortAppNames = new String[ 1 + numCopies ];
-        String[] appNames = new String[ 1 + numCopies ];
+        String[] shortAppNames = new String[1 + numCopies];
+        String[] appNames = new String[1 + numCopies];
 
         String appName = getApplication();
-        String appHead = appName.substring(0, appName.length() - 4 );
+        String appHead = appName.substring(0, appName.length() - 4);
 
         shortAppNames[0] = appHead;
         appNames[0] = appHead + "." + SPRING_APP_TYPE;
 
-        for ( int appNo = 0; appNo < numCopies; appNo++ ) {
+        for (int appNo = 0; appNo < numCopies; appNo++) {
             String shortAppHead = "app.copy" + appNo;
             shortAppNames[1 + appNo] = shortAppHead;
             appNames[1 + appNo] = shortAppHead + "." + SPRING_APP_TYPE;
@@ -131,25 +128,25 @@ public class MultipleApplicationsNotSupported30 extends AbstractSpringTests {
 
         List<String> appErrors = server.findStringsInLogs("CWWKC0255E");
         System.out.println("Application errors:");
-        for ( String appError : appErrors ) {
+        for (String appError : appErrors) {
             System.out.println("  [ " + appError + " ]");
         }
 
-        for ( String shortAppName : shortAppNames ) {
-            if ( shortAppName.equals(installedAppName) ) {
+        for (String shortAppName : shortAppNames) {
+            if (shortAppName.equals(installedAppName)) {
                 continue;
             }
 
             String appMessage = shortAppName + " cannot be started";
             boolean locatedAppError = false;
-            for ( String appError : appErrors ) {
-                if ( appError.contains(appMessage) ) {
+            for (String appError : appErrors) {
+                if (appError.contains(appMessage)) {
                     locatedAppError = true;
                     break;
                 }
             }
 
-            if ( !locatedAppError ) {
+            if (!locatedAppError) {
                 assertTrue("Failed to locate app error [ " + appMessage + " ]", locatedAppError);
             } else {
                 System.out.println("Located app error [ " + appMessage + " ]");
@@ -165,8 +162,8 @@ public class MultipleApplicationsNotSupported30 extends AbstractSpringTests {
     private void removeDropinApps(String installedAppName) throws Exception {
         System.out.println("Removing applications");
 
-        for ( String appName : getApplicationNames() ) {
-            if ( appName.equals(installedAppName) ) {
+        for (String appName : getApplicationNames()) {
+            if (appName.equals(installedAppName)) {
                 continue;
             }
             System.out.println("Removing application [ " + appName + " ]");
@@ -189,12 +186,12 @@ public class MultipleApplicationsNotSupported30 extends AbstractSpringTests {
         RemoteFile dropins = getDropinsFile();
         RemoteFile serverRoot = getServerRootFile();
 
-        RemoteFile originalFile = new RemoteFile(dropins, appName);
-        RemoteFile backupFile = new RemoteFile(serverRoot, appName);
+        RemoteFile originalFile = server.getMachine().getFile(dropins, appName);
+        RemoteFile backupFile = server.getMachine().getFile(serverRoot, appName);
 
         RemoteFile srcFile;
         RemoteFile dstFile;
-        if ( doBackup ) {
+        if (doBackup) {
             srcFile = originalFile;
             dstFile = backupFile;
         } else {
@@ -210,8 +207,8 @@ public class MultipleApplicationsNotSupported30 extends AbstractSpringTests {
     private void restoreDropinApps(String installedAppName) throws Exception {
         System.out.println("Restoring applications");
 
-        for ( String appName : getApplicationNames() ) {
-            if ( appName.equals(installedAppName) ) {
+        for (String appName : getApplicationNames()) {
+            if (appName.equals(installedAppName)) {
                 continue;
             }
             System.out.println("Restoring application [ " + appName + " ]");

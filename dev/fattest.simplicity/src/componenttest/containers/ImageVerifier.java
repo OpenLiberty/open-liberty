@@ -85,7 +85,9 @@ public final class ImageVerifier {
         IllegalStateException e = new IllegalStateException("Used testcontainer image(s) " + forgottenImages.toString() +
                                                             " were not found in the " + imageProperty + " property!" +
                                                             " To correct this, add " + imageProperty + ": " + forgottenImages.toString().replace("[", "").replace("]", "") +
-                                                            " to the bnd.bnd file for this FAT so that a testcontainer image" +
+                                                            " to the bnd.bnd file or add <property name=\"" + imageProperty + "\" value=\"" +
+                                                            forgottenImages.toString().replace("[", "").replace("]", "") + "\" />" +
+                                                            " to the build-test.xml file for this FAT so that a testcontainer image" +
                                                             " graph can be generated in the future.");
         Log.error(c, "assertImages", e);
         throw e;

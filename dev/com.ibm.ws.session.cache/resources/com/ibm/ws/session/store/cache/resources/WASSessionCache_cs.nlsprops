@@ -69,6 +69,10 @@ CONFIG_ATTRIBUTE_IGNORED=SESN0311W: Atribut konfigurace {0} byl zad\u00e1n, ale 
 CONFIG_ATTRIBUTE_IGNORED.explanation=Uveden\u00e1 konfigurace je ignorov\u00e1na, proto\u017ee je poskytov\u00e1na uveden\u00fdm atributem cacheManagerRef.
 CONFIG_ATTRIBUTE_IGNORED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
+UPDATED_CONFIG_NOT_USED_AT_RESTORE=SESN0312W: Atribut konfigurace mezipam\u011bti relace HTTP {0} se zm\u011bnil od doby, kdy byl server kontrolov\u00e1n. Pokud se hodnota atributu zm\u011bn\u00ed po kontroln\u00edm bodu serveru, ale p\u0159ed obnoven\u00edm procesu serveru, aplikace nepou\u017e\u00edv\u00e1 aktualizovanou hodnotu.
+UPDATED_CONFIG_NOT_USED_AT_RESTORE.explanation=Uveden\u00fd atribut konfigurace nelze upravit b\u011bhem doby mezi kontroln\u00edm bodem serveru a obnovou procesu serveru.
+UPDATED_CONFIG_NOT_USED_AT_RESTORE.useraction=Nastavte hodnotu atributu p\u0159ed proveden\u00edm kontroln\u00edho bodu serveru.
+
 INTERNAL_SERVER_ERROR=Intern\u00ed chyba serveru
 
 SESSION_CACHE_CONFIG_MESSAGE=Ov\u011b\u0159te, \u017ee konfigurace serveru obsahuje platnou konfiguraci httpSessionCache. Viz konfigurace uk\u00e1zky. {0}

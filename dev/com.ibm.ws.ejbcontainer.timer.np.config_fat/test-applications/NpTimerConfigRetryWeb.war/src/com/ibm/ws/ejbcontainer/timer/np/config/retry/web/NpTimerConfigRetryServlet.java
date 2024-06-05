@@ -579,13 +579,13 @@ public class NpTimerConfigRetryServlet extends FATServlet {
     public void testOverlappingRetriesAndRegularlyScheduled() throws Exception {
         //We are trying to verify the following 'rules' are obeyed:
         //    1) All normally scheduled executions that are missed because we are waiting on a retry from a previously
-        //       failed execution get "made up"...ie, they are eventually run (as oppossed to never getting run)
+        //       failed execution get "made up"...ie, they are eventually run (as opposed to never getting run)
         //
-        //    2) All of these "make ups" occur as soon as possible (as oppossed to running them at the configured interval
+        //    2) All of these "make ups" occur as soon as possible (as opposed to running them at the configured interval
         //       that we normally wait for between normally scheduled executions)
         //
-        //    3) After completing the "make ups", we resuming the normally scheduled exections based on the original
-        //      schedule (as oppossed to re-calculating the scheduled based on the current time).
+        //    3) After completing the "make ups", we resuming the normally scheduled executions based on the original
+        //      schedule (as opposed to re-calculating the scheduled based on the current time).
         //
         //
         //So, the execution flow in this test is:
@@ -604,7 +604,7 @@ public class NpTimerConfigRetryServlet extends FATServlet {
         //
         //
         //So, in words, the flow is this:
-        //    We do our intial attempt and fail, then immeidately retry and fail again, and then wait 10 seconds...while waiting,
+        //    We do our initial attempt and fail, then immediately retry and fail again, and then wait 10 seconds...while waiting,
         //    two normally scheduled executions are skipped (4.5 & 9)...then our 10 second wait interval is done, and we wake up and
         //    retry again and pass...and now we "make up" the two skipped executions as soon as we can...which should take us
         //    right up to the next normally scheduled execution at the 13.5 second mark...so we do that one at the 13.5 second
@@ -631,12 +631,14 @@ public class NpTimerConfigRetryServlet extends FATServlet {
         @SuppressWarnings("unchecked")
         ArrayList<Long> nextTimes = (ArrayList<Long>) props.get(TimerRetryDriverBean.NEXTTIMEOUT_KEY);
 
-        // Tolerate a slow system; if time to trip latch is > 22ms, then an 8th attempt for a makeup may occur
+        // Tolerate a slow system; allow multiple "catch-up" attempts based on actual time
         long actualDuration = TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
-        if (actualDuration < 22) {
-            assertEquals("Attempt count **" + count + "** was not the expected value of 7.", 7, count);
+        svLogger.info("Actual duration = " + actualDuration);
+        long expectedCount = Math.max(7, 3 + actualDuration / TIMER_INTERVAL);
+        if (expectedCount == 7) {
+            assertEquals("Attempt count **" + count + "** was not the expected value of 7.", expectedCount, count);
         } else {
-            assertTrue("Attempt count **" + count + "** was not in expected range of 7 to 8.", count == 7 || count == 8);
+            assertTrue("Attempt count **" + count + "** was not in expected range of 7 to " + expectedCount + ".", count >= 7 && count <= expectedCount);
         }
         boolean validIntervalForImmediateRetry = verifyImmediateRetryAcceptable(timestamps.get(0).longValue(), timestamps.get(1).longValue());
         boolean validIntervalForDelayedRetry = verifyRetryIntervalAcceptable(timestamps.get(1).longValue(), timestamps.get(2).longValue(), 10000);

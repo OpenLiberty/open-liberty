@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -41,6 +42,7 @@ public class FeatureInfo {
     private Map<String, Attrs> dependentFeatures = new LinkedHashMap<String, Attrs>();
     private Set<String> activatingAutoFeature = new LinkedHashSet<String>();
     private List<String> sortedDependentNames;
+    private final Set<String> platforms = new HashSet<>();
 
     private String edition;
     private String kind;
@@ -179,7 +181,7 @@ public class FeatureInfo {
         if (!isInit)
             populateInfo();
 
-        if(this.visibility.toLowerCase().equals("public")){
+        if (this.visibility.toLowerCase().equals("public")) {
             return true;
         }
         return false;
@@ -265,6 +267,13 @@ public class FeatureInfo {
         return this.SPIs;
     }
 
+    public Set<String> getPlatforms() {
+        if (!isInit) {
+            populateInfo();
+        }
+        return this.platforms;
+    }
+
     private synchronized void populateInfo() {
         if (isInit)
             return;
@@ -327,6 +336,15 @@ public class FeatureInfo {
             this.lockedDependentFeatures = Collections.unmodifiableMap(new LinkedHashMap<String, Attrs>(this.dependentFeatures));
 
             this.autoFeatures = null;
+
+            String platformString = builder.getProperty("WLP-Platform");
+
+            if (platformString != null) {
+                String[] platformArray = platformString.split(",'");
+                for (String platform : platformArray) {
+                    platforms.add(platform);
+                }
+            }
 
             builder.close();
         } catch (IOException e) {

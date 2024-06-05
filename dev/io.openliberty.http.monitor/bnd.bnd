@@ -31,38 +31,19 @@ src: src
 WS-TraceGroup: 
 
 Import-Package: \
-    !*.internal.*,\
-    !jakarta.ws.rs.*,\
-    !com.ibm.ws.webcontainer.srt,\
-    !com.ibm.ws.webcontainer40.osgi.webapp,\
-    !com.ibm.wsspi.genericbnf,\
-    !com.ibm.wsspi.webcontainer.webapp,\
     !com.ibm.ws.http.*,\
-    !com.ibm.wsspi.http.*,\
-    !jakarta.*,\
-    !javax.*,\
     *
 
 Export-Package: \
   io.openliberty.http.monitor;thread-context=true,\
   io.openliberty.http.monitor.metrics,\
-  io.openliberty.http.monitor.mbean; type="ibm-api"
+  io.openliberty.http.monitor.mbean
 
 Liberty-Monitoring-Components: \
 			io.openliberty.http.monitor.HttpStatsMonitor
 
 DynamicImport-Package: \
-  jakarta.ws.rs;version="[3.1.0,4.0.0)",\
-  jakarta.ws.rs.*;version="[3.1.0,4.0.0)",\
-  com.ibm.ws.http.*,\
-  com.ibm.wsspi.http;version="[2.1.0,3.0.0)",\
-  com.ibm.wsspi.http.*;version="[1.0.0,2.0.0)",\
-  com.ibm.wsspi.webcontainer.webapp,\
-  com.ibm.ws.webcontainer.srt,\
-  com.ibm.ws.webcontainer40.osgi.webapp,\
-  com.ibm.wsspi.genericbnf,\
-  jakarta.*,\
-  javax.*
+  com.ibm.ws.http.*
 
 -buildpath: \
     com.ibm.ws.logging;version=latest,\
@@ -75,7 +56,6 @@ DynamicImport-Package: \
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	com.ibm.ws.webcontainer.jakarta;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	io.openliberty.jakarta.restfulWS.3.1,\
-	io.openliberty.jakarta.annotation.2.1;version=latest,\
 	com.ibm.ws.channelfw;version=latest,\
-	com.ibm.ws.container.service
+	com.ibm.ws.container.service,\
+	com.ibm.ws.kernel.boot.core;version=latest

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -170,8 +170,8 @@ public class WebServerControl {
 
         Log.info(c, "getMachine", "WebServer In Front is:" + webserverInFront);
 
-        apacheInstallRoot = new RemoteFile(machine, ihsDir);
-        pluginInstallRoot = new RemoteFile(machine, plgDir);
+        apacheInstallRoot = machine.getFile(ihsDir);
+        pluginInstallRoot = machine.getFile(plgDir);
 
         running = false;
 
@@ -179,7 +179,7 @@ public class WebServerControl {
     }
 
     public static void deployPluginConfigurationFile(File cfgFile) throws Exception {
-        RemoteFile plugincfgfile = new RemoteFile(getPluginInstallRoot(), "config/" + name + "/" + cfgFile.getName());
+        RemoteFile plugincfgfile = machine.getFile(getPluginInstallRoot(), "config/" + name + "/" + cfgFile.getName());
         LocalFile localplugincfg = new LocalFile(cfgFile.getAbsolutePath());
 
         localplugincfg.copyToDest(plugincfgfile, false, true);
@@ -255,24 +255,24 @@ public class WebServerControl {
          * Apache
          */
         LocalFile logFolder = new LocalFile(logDirectoryName + "/apache");
-        toCopy = new RemoteFile(machine, apacheInstallRoot, "conf/httpd.conf");
+        toCopy = machine.getFile(apacheInstallRoot, "conf/httpd.conf");
         toReceive = new LocalFile(logFolder, "httpd.conf");
         toReceive.copyFromSource(toCopy);
 
         // Copy the log files: try to move them instead if we can
-        RemoteFile serverlogs = new RemoteFile(machine, apacheInstallRoot, "logs");
+        RemoteFile serverlogs = machine.getFile(apacheInstallRoot, "logs");
         recursivelyCopyDirectory(serverlogs, logFolder, true, true, true);
 
         /*
          * Plugin
          */
         logFolder = new LocalFile(logDirectoryName + "/plugin");
-        toCopy = new RemoteFile(machine, pluginInstallRoot, "config/" + name + "/plugin-cfg.xml");
+        toCopy = machine.getFile(pluginInstallRoot, "config/" + name + "/plugin-cfg.xml");
         toReceive = new LocalFile(logFolder, "plugin-cfg.xml");
         toReceive.copyFromSource(toCopy);
 
         // Copy the log files: try to move them instead if we can
-        RemoteFile pluginlogs = new RemoteFile(machine, pluginInstallRoot, "logs/" + name);
+        RemoteFile pluginlogs = machine.getFile(pluginInstallRoot, "logs/" + name);
         recursivelyCopyDirectory(pluginlogs, logFolder, true, true, true);
 
         Log.exiting(c, method);
@@ -292,7 +292,7 @@ public class WebServerControl {
         ArrayList<String> logs = new ArrayList<String>();
         logs = listDirectoryContents(remoteDirectory, null);
         for (String l : logs) {
-            RemoteFile toCopy = new RemoteFile(machine, remoteDirectory, l);
+            RemoteFile toCopy = machine.getFile(remoteDirectory, l);
             LocalFile toReceive = new LocalFile(destination, l);
             Log.info(c, "recursivelyCopyDirectory", "Getting: " + toCopy.getAbsolutePath());
 
@@ -348,7 +348,7 @@ public class WebServerControl {
             && !serverDir.isDirectory()
             && !serverDir.isFile()) {
             Log.info(c, "listDirectoryContents", "serverDir exists & !Dir & !File !?  Recreate serverDir,retry and hope for the best...");
-            serverDir = new RemoteFile(machine, serverDir.getAbsolutePath());
+            serverDir = machine.getFile(serverDir.getAbsolutePath());
         }
 
         if (!serverDir.isDirectory() || !serverDir.exists())

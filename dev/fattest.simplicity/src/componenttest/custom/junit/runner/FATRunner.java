@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -260,7 +260,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                     }
 
                     for (FFDCInfo ffdcInfo : unexpectedFFDCs.values()) {
-                        ffdcInfo.ffdcHeader = getFFDCHeader(new RemoteFile(ffdcInfo.machine, ffdcInfo.ffdcFile));
+                        ffdcInfo.ffdcHeader = getFFDCHeader(ffdcInfo.machine.getFile(ffdcInfo.ffdcFile));
                     }
 
                     for (IgnoredFFDC ffdcToIgnore : IgnoredFFDCs.FFDCs) {

@@ -1,0 +1,238 @@
+#*******************************************************************************
+# Copyright (c) 2022, 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+Bundle-Name: io.openliberty.org.jboss.resteasy.common.ee11
+Bundle-SymbolicName: io.openliberty.org.jboss.resteasy.common.ee11
+
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
+bVersion=1.0
+
+resteasy-version=7.0.0.Alpha2
+resteasy-tracing-api-version=1.1.0.Final
+apache-mime4j-version=0.8.10
+
+src: src, resources
+
+app-resources= \
+  META-INF/services/jakarta.ws.rs.client.ClientBuilder | \
+  META-INF/services/jakarta.ws.rs.core.EntityPart$Builder | \
+  META-INF/services/jakarta.ws.rs.sse.SseEventSource\$Builder | \
+  META-INF/services/jakarta.ws.rs.sse.SseEventSource.Builder | \
+  META-INF/services/jakarta.ws.rs.ext.MessageBodyReader | \
+  META-INF/services/jakarta.ws.rs.ext.MessageBodyWriter | \
+  META-INF/services/jakarta.ws.rs.ext.RuntimeDelegate | \
+  META-INF/services/jakarta.ws.rs.ext.Providers | \
+  META-INF/services/org.jboss.resteasy.spi.concurrent.ThreadContext
+
+-cdiannotations:
+
+-dsannotations: \
+  io.openliberty.org.jboss.resteasy.common.client.JAXRSClientConfig,\
+  io.openliberty.org.jboss.resteasy.common.client.JAXRSAppSecurity,\
+  io.openliberty.restfulWS.client.security.OAuthPropagationHelper,\
+  io.openliberty.restfulWS.introspector.ResteasyEndpointIntrospector,\
+  io.openliberty.restfulWS.client.internal.ClientAsyncTaskWrapperComponent
+
+Service-Component: \
+  io.openliberty.org.jboss.resteasy.client.clientbuilder; \
+     implementation:=io.openliberty.org.jboss.resteasy.common.client.LibertyResteasyClientBuilderImpl; \
+     provide:=jakarta.ws.rs.client.ClientBuilder; \
+     immediate:=true;\
+     properties:="service.vendor=IBM", \
+  io.openliberty.restfulWS.client.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=${app-resources}"
+
+Export-Package: \
+  com.ibm.websphere.jaxrs20.multipart;version=10.0;thread-context=true, \
+  com.ibm.ws.jaxrs20.client, \
+  com.ibm.ws.resteasy.cdi.component;version=${resteasy-version};thread-context=true, \
+  io.openliberty.restfulWS.client, \
+  io.openliberty.org.jboss.resteasy.common.client;thread-context=true, \
+  io.openliberty.restfulWS.providers;thread-context=true, \
+  org.jboss.resteasy.annotations.cache;version=${resteasy-version}, \
+  org.jboss.resteasy.annotations.jaxrs;version=${resteasy-version}, \
+  org.jboss.resteasy.annotations.providers.img;version=${resteasy-version}, \
+  org.jboss.resteasy.annotations;version=${resteasy-version}, \
+  org.jboss.resteasy.api.validation;version=${resteasy-version}, \
+  org.jboss.resteasy.client.exception;version=${resteasy-version}, \
+  org.jboss.resteasy.client.jaxrs.cache;version=${resteasy-version}, \
+  org.jboss.resteasy.client.jaxrs.engines;version=${resteasy-version}, \
+  org.jboss.resteasy.client.jaxrs.i18n;version=${resteasy-version}, \
+  org.jboss.resteasy.client.jaxrs.internal.proxy.extractors;version=${resteasy-version}, \
+  org.jboss.resteasy.client.jaxrs.internal.proxy.processors.invocation;version=${resteasy-version}, \
+  org.jboss.resteasy.client.jaxrs.internal.proxy.processors.webtarget;version=${resteasy-version}, \
+  org.jboss.resteasy.client.jaxrs.internal.proxy.processors;version=${resteasy-version}, \
+  org.jboss.resteasy.client.jaxrs.internal.proxy;version=${resteasy-version};thread-context=true, \
+  org.jboss.resteasy.client.jaxrs.internal;version=${resteasy-version};thread-context=true, \
+  org.jboss.resteasy.client.jaxrs;version=${resteasy-version};thread-context=true, \
+  org.jboss.resteasy.concurrent;version=${resteasy-version};thread-context=true, \
+  org.jboss.resteasy.core.concurrent;version=${resteasy-version};thread-context=true, \
+  org.jboss.resteasy.core.interception.jaxrs;version=${resteasy-version}, \
+  org.jboss.resteasy.core.messagebody;version=${resteasy-version}, \
+  org.jboss.resteasy.core.providerfactory;version=${resteasy-version};thread-context=true, \
+  org.jboss.resteasy.core.registry;version=${resteasy-version}, \
+  org.jboss.resteasy.core.request;version=${resteasy-version}, \
+  org.jboss.resteasy.core;version=${resteasy-version}, \
+  org.jboss.resteasy.microprofile.config;version=${resteasy-version}, \
+  org.jboss.resteasy.mock;version=${resteasy-version}, \
+  org.jboss.resteasy.plugins.delegates;version=${resteasy-version}, \
+  org.jboss.resteasy.plugins.interceptors;version=${resteasy-version};thread-context=true, \
+  org.jboss.resteasy.plugins.providers.multipart;version=${resteasy-version};thread-context=true, \
+  org.jboss.resteasy.plugins.providers.sse.client;version=${resteasy-version};thread-context=true, \
+  org.jboss.resteasy.plugins.providers.sse;version=${resteasy-version};thread-context=true, \
+  org.jboss.resteasy.plugins.providers;version=${resteasy-version};thread-context=true, \
+  org.jboss.resteasy.plugins.server.embedded;version=${resteasy-version}, \
+  org.jboss.resteasy.plugins.server.resourcefactory;version=${resteasy-version}, \
+  org.jboss.resteasy.plugins.server.servlet;version=${resteasy-version}, \
+  org.jboss.resteasy.plugins.server;version=${resteasy-version}, \
+  org.jboss.resteasy.plugins.touri;version=${resteasy-version}, \
+  org.jboss.resteasy.resteasy_jaxrs.i18n;version=${resteasy-version}, \
+  org.jboss.resteasy.specimpl;version=${resteasy-version}, \
+  org.jboss.resteasy.spi.concurrent;version=${resteasy-version}, \
+  org.jboss.resteasy.spi.interception;version=${resteasy-version}, \
+  org.jboss.resteasy.spi.metadata;version=${resteasy-version}, \
+  org.jboss.resteasy.spi.statistics;version=${resteasy-version}, \
+  org.jboss.resteasy.spi.touri;version=${resteasy-version}, \
+  org.jboss.resteasy.spi.util;version=${resteasy-version};thread-context=true, \
+  org.jboss.resteasy.spi.validation;version=${resteasy-version}, \
+  org.jboss.resteasy.spi;version=${resteasy-version};thread-context=true, \
+  org.jboss.resteasy.statistics;version=${resteasy-version}, \
+  org.jboss.resteasy.test;version=${resteasy-version}, \
+  org.jboss.resteasy.tracing.api.providers;version=${resteasy-tracing-api-version},\
+  org.jboss.resteasy.tracing.api;version=${resteasy-tracing-api-version},\
+  org.jboss.resteasy.tracing;version=${resteasy-version}, \
+  org.jboss.resteasy.util.snapshot;version=${resteasy-version}, \
+  org.jboss.resteasy.util;version=${resteasy-version}
+
+Import-Package: \
+  jakarta.annotation.*;version="[3.0,4.0)", \
+  jakarta.ws.rs.*;version="[4.0,5.0)", \
+  jakarta.servlet.*;version="[6.1,7)", \
+  jakarta.enterprise.context;version="[4.1,5.0)", \
+  jakarta.enterprise.context.spi;version="[4.1,5.0)", \
+  jakarta.enterprise.event;version="[4.1,5.0)", \
+  jakarta.enterprise.inject.spi;version="[4.1,5.0)", \
+  jakarta.enterprise.util;version="[4.1,5.0)", \
+  !jakarta.json.bind, \
+  !jakarta.json.bind.spi, \
+  !jakarta.mail, \
+  !jakarta.mail.internet, \
+  !jakarta.mail.util, \
+  !com.ibm.websphere.security, \
+  !com.ibm.websphere.security.auth, \
+  !com.ibm.websphere.security.web, \
+  !com.sun.xml.bind.marshaller, \
+  !org.apache.cxf.*, \
+  !org.apache.james.mime4j.*, \
+  !org.eclipse.microprofile.config.*, \
+  !org.jboss.resteasy.plugins.providers.jaxb, \
+  !org.jboss.resteasy.plugins.providers.validator, \
+  !sun.misc, \
+  *
+
+DynamicImport-Package: \
+  jakarta.json.bind, \
+  jakarta.json.bind.spi, \
+  com.ibm.websphere.security, \
+  com.ibm.websphere.security.auth, \
+  com.ibm.websphere.security.web, \
+  com.sun.xml.bind.marshaller, \
+  org.jboss.resteasy.plugins.providers.jaxb, \
+  org.jboss.resteasy.plugins.providers.validator, \
+  sun.misc, \
+  *
+
+Private-Package: \
+  org.apache.james.*
+
+instrument.ffdc: false
+instrument.classesExcludes: \
+  io/openliberty/restfulWS/utils/RestfulWSUtils.class, \
+  org/jboss/resteasy/client/jaxrs/internal/ClientConfiguration.class, \
+  org/jboss/resteasy/client/jaxrs/internal/ClientInvocationBuilder.class, \
+  org/jboss/resteasy/client/jaxrs/internal/ClientWebTarget.class, \
+  org/jboss/resteasy/client/jaxrs/internal/ResteasyClientBuilderImpl.class, \
+  org/jboss/resteasy/client/jaxrs/internal/ResteasyClientImpl.class, \
+  org/jboss/resteasy/core/interception/jaxrs/ContainerResponseContextImpl.class, \
+  org/jboss/resteasy/core/providerfactory/ResteasyProviderFactoryImpl.class, \
+  org/jboss/resteasy/core/ResteasyContext.class, \
+  org/jboss/resteasy/plugins/delegates/CookieHeaderDelegate.class, \
+  org/jboss/resteasy/plugins/delegates/MediaTypeHeaderDelegate.class, \
+  org/jboss/resteasy/plugins/providers/multipart/IAttachmentImpl.class, \
+  org/jboss/resteasy/specimpl/MultivaluedTreeMap.class, \
+  org/jboss/resteasy/spi/EntityOutputStream.class, \
+  org/jboss/resteasy/util/snapshot/SnapshotMap.class, \
+  org/jboss/resteasy/util/ThreadLocalStack.class
+
+Include-Resource:\
+  @${repo;org.jboss.resteasy:resteasy-client;${resteasy-version};EXACT}, \
+  @${repo;org.jboss.resteasy:resteasy-client-api;${resteasy-version};EXACT}, \
+  @${repo;org.jboss.resteasy:resteasy-core;${resteasy-version};EXACT}, \
+  @${repo;org.jboss.resteasy:resteasy-core-spi;${resteasy-version};EXACT}, \
+  @${repo;org.jboss.resteasy:resteasy-multipart-provider;${resteasy-version};EXACT}, \
+  @${repo;org.jboss.resteasy:resteasy-tracing-api;${resteasy-tracing-api-version};EXACT}, \
+  @${repo;org.apache.james:apache-mime4j-core;${apache-mime4j-version};EXACT}, \
+  @${repo;org.apache.james:apache-mime4j-dom;${apache-mime4j-version};EXACT}, \
+  @${repo;org.apache.james:apache-mime4j-storage;${apache-mime4j-version};EXACT}, \
+  @${repo;com.ibm.async:asyncutil;0.1.0;EXACT}, \
+  io/openliberty=${bin}/io/openliberty, \
+  org/jboss/resteasy=${bin}/org/jboss/resteasy, \
+  META-INF=resources/META-INF
+
+-buildpath: \
+  org.jboss.resteasy:resteasy-client-api;strategy=exact;version='${resteasy-version}',\
+  org.jboss.resteasy:resteasy-client;strategy=exact;version='${resteasy-version}',\
+  org.jboss.resteasy:resteasy-core-spi;strategy=exact;version='${resteasy-version}',\
+  org.jboss.resteasy:resteasy-core;strategy=exact;version='${resteasy-version}',\
+  org.jboss.resteasy:resteasy-multipart-provider;strategy=exact;version='${resteasy-version}',\
+  org.jboss.resteasy:resteasy-tracing-api;strategy=exact;version='${resteasy-tracing-api-version}',\
+  org.apache.james:apache-mime4j-core;strategy=exact;version='${apache-mime4j-version}',\
+  org.apache.james:apache-mime4j-dom;strategy=exact;version='${apache-mime4j-version}',\
+  org.apache.james:apache-mime4j-storage;strategy=exact;version='${apache-mime4j-version}',\
+  io.openliberty.jakarta.restfulWS.4.0,\
+  io.openliberty.jakarta.activation.2.1,\
+  io.openliberty.jakarta.servlet.6.1,\
+  io.openliberty.jakarta.annotation.3.0,\
+  io.openliberty.jakarta.jsonp.2.1,\
+  io.openliberty.jakarta.cdi.4.1,\
+  com.ibm.ws.org.apache.commons.io,\
+  com.ibm.ws.org.apache.httpcomponents,\
+  io.openliberty.org.eclipse.microprofile.config.3.0;version=latest,\
+  com.ibm.websphere.org.osgi.service.component;version=latest,\
+  com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest,\
+  com.ibm.ws.adaptable.module;version=latest,\
+  com.ibm.ws.classloading;version=latest,\
+  com.ibm.ws.container.service;version=latest,\
+  com.ibm.ws.container.service.compat;version=latest,\
+  com.ibm.ws.logging.core,\
+  com.ibm.ws.threading,\
+  io.openliberty.org.jboss.logging35,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+  com.ibm.websphere.org.osgi.core;version=latest,\
+  com.ibm.ws.kernel.service,\
+  io.openliberty.webcontainer.security.internal,\
+  com.ibm.websphere.security,\
+  com.ibm.ws.org.jboss.jandex
+
+-testpath: \
+  ../build.sharedResources/lib/junit/old/junit.jar;version=file,\
+  com.ibm.ws.org.apache.commons.io,\
+  io.openliberty.org.apache.commons.logging,\
+  com.ibm.ws.org.apache.httpcomponents,\
+  io.openliberty.org.eclipse.parsson.1.1

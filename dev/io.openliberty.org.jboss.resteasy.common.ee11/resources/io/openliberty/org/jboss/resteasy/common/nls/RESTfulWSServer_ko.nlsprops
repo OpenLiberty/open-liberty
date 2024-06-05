@@ -1,0 +1,97 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWWKW
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers start with '0' and are filled to a width of 4 digits.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME io.openliberty.org.jboss.resteasy.common.ee10/resources/io/openliberty/org/jboss/resteasy/common/nls/RESTfulWS.nlsprops
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW io.openliberty.restfulWS-3.1
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#RANGE 1300 - 1399
+#Message range shared with io.openliberty.org.jboss.resteasy.server
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI=CWMGQ1xxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.useraction=User action text for the message
+#
+#-------------------------------------------------------------------------------
+
+INVALID_INT_PROPERTY_CWWKW1303W=CWWKW1303W: {0} \ud074\ub77c\uc774\uc5b8\ud2b8 \ud2b9\uc131\uc740 \uc815\uc218\uc5ec\uc57c \ud558\uc9c0\ub9cc {1}(\uc73c)\ub85c \uc798\ubabb \uad6c\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc774 \uc124\uc815\uc740 \ubb34\uc2dc\ub429\ub2c8\ub2e4.
+INVALID_INT_PROPERTY_CWWKW1303W.explanation=\ud504\ub85d\uc2dc \ud3ec\ud2b8 \uc124\uc815\uacfc \uac19\uc740 \ud074\ub77c\uc774\uc5b8\ud2b8 \ud2b9\uc131\uc740 \uc591\uc758 \uc815\uc218 \ub610\ub294 \uc815\uc218\ub85c \ubcc0\ud658\ud560 \uc218 \uc788\ub294 \ubb38\uc790\uc5f4\ub85c \uad6c\uc131\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4. \uc774 \uba54\uc2dc\uc9c0\ub294 \ud074\ub77c\uc774\uc5b8\ud2b8 \ud2b9\uc131\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uac12\uc73c\ub85c \uad6c\uc131\ub418\uc5c8\uc74c\uc744 \ud45c\uc2dc\ud569\ub2c8\ub2e4. \uc774 \ud2b9\uc131\uc740 \ubb34\uc2dc\ub429\ub2c8\ub2e4.
+INVALID_INT_PROPERTY_CWWKW1303W.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc \ubc0f \uc11c\ubc84 \uad6c\uc131\uc744 \uac80\ud1a0\ud558\uc5ec \uc774 \ud2b9\uc131\uc774 \uc798\ubabb \uc124\uc815\ub41c \uc704\uce58\ub97c \ud310\ubcc4\ud558\uace0 \ud2b9\uc131\uc744 \uc81c\uac70\ud558\uac70\ub098 \uc62c\ubc14\ub978 \uc815\uc218 \uac12\uc73c\ub85c \ubcc0\uacbd\ud558\uc2ed\uc2dc\uc624.
+
+INVALID_BOOLEAN_PROPERTY_CWWKW1304W=CWWKW1304W: {0} \ud074\ub77c\uc774\uc5b8\ud2b8 \ud2b9\uc131\uc740 \ubd80\uc6b8\uc774\uc5b4\uc57c \ud558\uc9c0\ub9cc {1}(\uc73c)\ub85c \uc798\ubabb \uad6c\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc774 \uc124\uc815\uc740 \ubb34\uc2dc\ub429\ub2c8\ub2e4.
+INVALID_BOOLEAN_PROPERTY_CWWKW1304W.explanation=\uc790\ub3d9\uc73c\ub85c \uacbd\ub85c \uc7ac\uc9c0\uc815\uc744 \ub530\ub97c\uc9c0 \uc5ec\ubd80\uc640 \uac19\uc740 \ud074\ub77c\uc774\uc5b8\ud2b8 \ud2b9\uc131\uc740 \ubd80\uc6b8 \ub610\ub294 \ubd80\uc6b8\ub85c \ubcc0\ud658\ud560 \uc218 \uc788\ub294 \ubb38\uc790\uc5f4\ub85c \uad6c\uc131\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4. \uc774 \uba54\uc2dc\uc9c0\ub294 \ud074\ub77c\uc774\uc5b8\ud2b8 \ud2b9\uc131\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uac12\uc73c\ub85c \uc124\uc815\ub418\uc5c8\uc74c\uc744 \ud45c\uc2dc\ud569\ub2c8\ub2e4. \uc774 \ud2b9\uc131\uc740 \ubb34\uc2dc\ub429\ub2c8\ub2e4.
+INVALID_BOOLEAN_PROPERTY_CWWKW1304W.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc \ubc0f \uc11c\ubc84 \uad6c\uc131\uc744 \uac80\ud1a0\ud558\uc5ec \uc774 \ud2b9\uc131\uc774 \uc798\ubabb \uc124\uc815\ub41c \uc704\uce58\ub97c \ud310\ubcc4\ud558\uace0 \ud2b9\uc131\uc744 \uc81c\uac70\ud558\uac70\ub098 \uc62c\ubc14\ub978 \ubd80\uc6b8 \uac12\uc73c\ub85c \ubcc0\uacbd\ud558\uc2ed\uc2dc\uc624.
+
+INVALID_PROVIDER_CWWKW1305W=CWWKW1305W: {0} \uc81c\uacf5\uc790\uac00 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc544 \uc11c\ubc84\uc5d0\uc11c \ubb34\uc2dc\ud569\ub2c8\ub2e4.
+INVALID_PROVIDER_CWWKW1305W.explanation=\uc9c0\uc815\ub41c \uc81c\uacf5\uc790 \ud074\ub798\uc2a4\uc5d0 \uc720\ud6a8\ud55c \uacf5\uc6a9 \uc0dd\uc131\uc790\uac00 \uc5c6\uac70\ub098 Jakarta REST \uc81c\uacf5\uc790 \uc778\ud130\ud398\uc774\uc2a4\ub97c \uad6c\ud604\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc720\ud6a8\ud55c \uc81c\uacf5\uc790 \uad6c\ud604\uc758 \uc694\uad6c\uc0ac\ud56d\uc740 Jakarta RESTful \uc6f9 \uc11c\ube44\uc2a4 \uc2a4\ud399\uc758 \uc139\uc158 4\uc5d0 \ubb38\uc11c\ud654\ub418\uc5b4 \uc788\uc2b5\ub2c8\ub2e4.
+INVALID_PROVIDER_CWWKW1305W.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc\ub97c \uac80\ud1a0\ud558\uc5ec \uc9c0\uc815\ub41c \uc81c\uacf5\uc790\uc5d0\uc11c \uc81c\uacf5\uc790 \uc778\ud130\ud398\uc774\uc2a4\ub97c \uc62c\ubc14\ub974\uac8c \uad6c\ud604\ud558\ub294\uc9c0 \ub610\ud55c \uc2a4\ud399 \uc694\uad6c\uc0ac\ud56d\uc5d0 \ub530\ub978 \uc720\ud6a8\ud55c \uacf5\uc6a9 \uc0dd\uc131\uc790\uac00 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+INVALID_LONG_PROPERTY_CWWKW1306W=CWWKW1306W: {0} \ud074\ub77c\uc774\uc5b8\ud2b8 \ud2b9\uc131\uc740 \uc815\uc218(Long)\uc5ec\uc57c \ud558\uc9c0\ub9cc {1}(\uc73c)\ub85c \uc798\ubabb \uad6c\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc774 \uc124\uc815\uc740 \ubb34\uc2dc\ub429\ub2c8\ub2e4.
+INVALID_LONG_PROPERTY_CWWKW1306W.explanation=\uc81c\ud55c\uc2dc\uac04 \uc124\uc815\uacfc \uac19\uc740 \ud074\ub77c\uc774\uc5b8\ud2b8 \ud2b9\uc131\uc740 \uc591\uc758 \uc815\uc218(Long) \ub610\ub294 \uc815\uc218(Long)\ub85c \ubcc0\ud658\ud560 \uc218 \uc788\ub294 \ubb38\uc790\uc5f4\ub85c \uad6c\uc131\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4. \uc774 \uba54\uc2dc\uc9c0\ub294 \ud074\ub77c\uc774\uc5b8\ud2b8 \ud2b9\uc131\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uac12\uc73c\ub85c \uad6c\uc131\ub418\uc5c8\uc74c\uc744 \ud45c\uc2dc\ud569\ub2c8\ub2e4. \ub530\ub77c\uc11c \uc774 \ud2b9\uc131\uc740 \ubb34\uc2dc\ub429\ub2c8\ub2e4.
+INVALID_LONG_PROPERTY_CWWKW1306W.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc \ubc0f \uc11c\ubc84 \uad6c\uc131\uc744 \uac80\ud1a0\ud558\uc5ec \uc774 \ud2b9\uc131\uc774 \uc798\ubabb \uc124\uc815\ub41c \uc704\uce58\ub97c \ud310\ubcc4\ud558\uace0 \ud2b9\uc131\uc744 \uc81c\uac70\ud558\uac70\ub098 \uc62c\ubc14\ub978 \uc815\uc218(Long) \uac12\uc73c\ub85c \ubcc0\uacbd\ud558\uc2ed\uc2dc\uc624.
+
+# Same message as in /com.ibm.ws.jaxrs.2.0.common/resources/com/ibm/ws/jaxrs20/common/internal/resources/JaxRsCommonMessages.nlsprops
+
+warn.invalid.authorization.token.type=CWWKW0061W: \uc11c\ubc84 \uad6c\uc131\uc5d0 \uc9c0\uc815\ub41c {0} \uc778\uc99d \ud1a0\ud070 \uc720\ud615\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc73c\uba70 \ubb34\uc2dc\ub429\ub2c8\ub2e4.
+warn.invalid.authorization.token.type.explanation=\uc11c\ubc84 \uad6c\uc131\uc5d0 \uc9c0\uc815\ub41c \uc778\uc99d \ud1a0\ud070 \uc720\ud615\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+warn.invalid.authorization.token.type.useraction=\uc62c\ubc14\ub978 \uc778\uc99d \ud1a0\ud070 \uc720\ud615\uc744 \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# Same messages as in /com.ibm.ws.jaxrs.2.0.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+
+failed_to_extract_saml_token_from_subject=CWWKW0705W: SAML PropagationHelper API\ub97c \uc0ac\uc6a9\ud558\ub294 \ub3d9\uc548 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=\uc8fc\uc81c\uc5d0\uc11c SAML \ud1a0\ud070\uc744 \uac80\uc0c9\ud558\uae30 \uc704\ud574 PropagationHelper API\ub97c \ud638\ucd9c\ud558\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+failed_to_extract_saml_token_from_subject.useraction=server.xml\uc5d0 \uc9c0\uc815\ud55c samlWeb-2.0 \uae30\ub2a5\uc774 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \ub610\ud55c \uc608\uc678\uc5d0 \ub300\ud55c \ucd94\uac00 \uc815\ubcf4\ub294 \uc11c\ubc84 \ub85c\uadf8\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+failed_run_as_subject=CWWKW0706E: RunAsSubject\ub97c \uac00\uc838\uc624\ub294 \uc911 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678: [{0}].
+failed_run_as_subject.explanation=RunAsSubject\ub97c \uac00\uc838\uc624\ub294 \uc911 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+failed_run_as_subject.useraction=\uc11c\ubc84\uac00 \uad6c\uc131\ub418\uc5b4 \uc801\uc808\ud788 \uc2dc\uc791\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+warn_missing_mpjwt_token=CWWKW0707W: [{1}] \uad6c\uc131\uc5d0\uc11c [{0}] \uc18d\uc131\uc774 [{2}](\uc73c)\ub85c \uc124\uc815\ub418\uc5c8\uc9c0\ub9cc MicroProfile JSON Web Token(JWT)\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc694\uccad\uc5d0 \ud1a0\ud070\uc774 \uc788\ub294 \uad8c\ud55c \ubd80\uc5ec \ud5e4\ub354\uac00 \ud3ec\ud568\ub418\uc5b4 \uc788\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+warn_missing_mpjwt_token.explanation=\ub7f0\ud0c0\uc784\uc774 runAs \uc8fc\uc81c\uc5d0\uc11c MicroProfile JWT\ub97c \ucc3e\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. \uc774 \uc624\ub958\ub294 \uc77c\ubc18\uc801\uc73c\ub85c \uc778\uc99d \ubb38\uc81c\uc810\uc744 \ub098\ud0c0\ub0c5\ub2c8\ub2e4. MicroProfile JWT \uae30\ub2a5\uc5d0\uc11c \uc0ac\uc6a9\uc790\ub97c \uc778\uc99d\ud558\ub294 \ub3d9\uc548 \uc624\ub958\uac00 \ubc1c\uc0dd\ud558\uc9c0 \uc54a\uc558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+warn_missing_mpjwt_token.useraction=\uc11c\ubc84\uac00 \ub85c\uadf8\ud55c \uc774\uc804 \uc624\ub958\ub294 \uc0ac\uc6a9\uc790 \uc870\uce58\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+warn_mpjwt_prop_service_notavail=CWWKW0708W: MicroProfile JWT \uc804\ud30c \uc11c\ube44\uc2a4\ub97c \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \ub7f0\ud0c0\uc784\uc740 \uad8c\ud55c \ubd80\uc5ec \ud5e4\ub354\uc5d0 \ud1a0\ud070\uc744 \ud3ec\ud568\ud558\uae30 \uc704\ud574 \ud1a0\ud070\uc5d0 \uc561\uc138\uc2a4\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+warn_mpjwt_prop_service_notavail.explanation=MicroProfile JWT \uc804\ud30c \uc11c\ube44\uc2a4\uc5d0 mpJwt-1.0 \uae30\ub2a5\uc774 \ud544\uc694\ud569\ub2c8\ub2e4.
+warn_mpjwt_prop_service_notavail.useraction=\uc11c\ubc84\uc5d0\uc11c \ud544\uc218 \uae30\ub2a5\uc774 \uc0ac\uc6a9\ub418\uc5b4 \uc2e4\ud589 \uc911\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.

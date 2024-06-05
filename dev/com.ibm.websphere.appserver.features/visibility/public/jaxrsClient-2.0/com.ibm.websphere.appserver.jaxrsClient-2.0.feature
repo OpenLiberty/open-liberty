@@ -30,3 +30,4 @@ Subsystem-Name: Java RESTful Services Client 2.0
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-Platform: javaee-7.0

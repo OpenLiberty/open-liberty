@@ -281,6 +281,8 @@ public class EE9Features {
         // Remove logAnalysis-1.0, which depends on hpel.
         features.remove("logAnalysis-1.0");
 
+        features.remove("audit-2.0");
+
         // Conditionally remove features which have java dependencies:
 
         features.remove(JavaInfo.JAVA_VERSION < 9 ? "jdbc-4.3" : "jdbc-4.2");

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -853,7 +853,7 @@ public abstract class KdcHelper {
      */
     public void deleteRemoteFileFromRemoteMachine(Machine remoteMachine, String remoteFile) throws Exception {
 
-        RemoteFile rFile = new RemoteFile(remoteMachine, SPNEGOConstants.CYGWIN_HOME_REALM_1 + remoteFile);
+        RemoteFile rFile = remoteMachine.getFile(SPNEGOConstants.CYGWIN_HOME_REALM_1 + remoteFile);
         removeRemoteFileFromRemoteMachine(rFile);
     }
 

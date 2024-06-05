@@ -52,3 +52,4 @@ Subsystem-Name: JavaServer Faces 2.2
  com.ibm.websphere.appserver.thirdparty.jsf-2.2; location:="dev/api/third-party/"
 kind=ga
 edition=core
+WLP-Platform: javaee-7.0

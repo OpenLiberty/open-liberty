@@ -774,6 +774,14 @@ warning.timeoutWaitingForServerProcessToStop=CWWKE0968W: Se ha excedido el tiemp
 warning.timeoutWaitingForServerProcessToStop.explanation=El servidor no se ha detenido dentro del tiempo permitido por el valor de tiempo de espera. Esto puede deberse a una conclusi\u00f3n lenta del servidor o a un bloqueo del servidor.   
 warning.timeoutWaitingForServerProcessToStop.useraction=Si el servidor sigue en ejecuci\u00f3n, considere la posibilidad de aumentar el valor de tiempo de espera para el mandato 'server stop'. En sistemas similares a UNIX, el mandato de detenci\u00f3n del servidor espera a que se detenga el proceso del servidor. En Windows, el mandato espera para obtener un bloqueo en el archivo console.log . Utilice las herramientas de supervisi\u00f3n de archivos para comprobar si otro programa, como un editor, ha bloqueado el archivo console.log .
 
+warning.manual.PPV.env.var=CWWKE0969W: Se ha especificado una variable de entorno PREFERRED_PLATFORM_VERSION manual durante el empaquetado del servidor.
+warning.manual.PPV.env.var.explanation=Se ha establecido una variable de entorno PREFERRED_PLATFORM_VERSION manual en el entorno, pero no se incluir\u00e1 en el paquete de servidor.
+warning.manual.PPV.env.var.useraction=Para conservar la variable de entorno PREFERRED_PLATFORM_VERSION, especif\u00edquela en el archivo de configuraci\u00f3n server.env .
+
+error.read.server.env=CWWKE0970E: No se puede leer el archivo server.env en la ubicaci\u00f3n {}.
+error.read.server.env.explanation=No se ha podido leer el archivo server.env .
+error.read.server.env.useraction=No se puede leer el archivo server.env .  Compruebe los permisos de archivo y vuelva a intentar la operaci\u00f3n.
+
 info.serverStarting=Se est\u00e1 iniciando el servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=Servidor {0} iniciado con ID de proceso {1}.

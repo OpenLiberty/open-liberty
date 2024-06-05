@@ -9,29 +9,26 @@
  *******************************************************************************/
 package com.ibm.ws.feature.tests;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.io.File;
-import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.ibm.ws.feature.utils.FeatureFileList;
 import com.ibm.ws.feature.utils.FeatureInfo;
 import com.ibm.ws.feature.utils.FeatureMapFactory;
-import com.ibm.ws.feature.utils.VersionlessFeatureDefinition;
 import com.ibm.ws.feature.utils.VersionlessFeatureCreator;
-
+import com.ibm.ws.feature.utils.VersionlessFeatureDefinition;
 
 //Generating reports on EE and MP features as well as creating versionless features
 public class VersionlessTest {
@@ -51,12 +48,13 @@ public class VersionlessTest {
 
     /**
      * features and a list of their versions
+     *
      * @return
      */
     private static Map<String, List<String>> computeCohorts() {
         Map<String, List<String>> useCohorts = new LinkedHashMap<>();
 
-        for(FeatureInfo featureInfo : featureRepo.values()){
+        for (FeatureInfo featureInfo : featureRepo.values()) {
             if (!featureInfo.isPublic()) {
                 continue;
             }
@@ -80,6 +78,30 @@ public class VersionlessTest {
         return useCohorts;
     }
 
+    private static Set<FeatureInfo> getAllPublicDependentFeatures(FeatureInfo featureInfo) {
+        Set<FeatureInfo> publicDepFeatures = new HashSet<>();
+        Set<String> processedDepFeatures = new HashSet<>();
+        processFeatureInfo(featureInfo, publicDepFeatures, processedDepFeatures);
+        return publicDepFeatures;
+    }
+
+    private static void processFeatureInfo(FeatureInfo featureInfo, Set<FeatureInfo> publicDepFeatures, Set<String> processedDepFeatures) {
+        // if already processed just return
+        if (!processedDepFeatures.add(featureInfo.getName())) {
+            return;
+        }
+        featureInfo.forEachSortedDepName((String depName) -> {
+            FeatureInfo depInfo = getFeature(depName);
+            if (depInfo == null) {
+                System.out.println("        [ " + depName + " ** NOT FOUND ** ]");
+            } else {
+                if (depInfo.isPublic()) {
+                    publicDepFeatures.add(depInfo);
+                }
+                processFeatureInfo(depInfo, publicDepFeatures, processedDepFeatures);
+            }
+        });
+    }
 
     /**
      * List all features and their versions
@@ -116,12 +138,12 @@ public class VersionlessTest {
      * Generate report of all EE features and their platforms
      */
     @Test
-    public void listEECohorts(){
+    public void listEECohorts() {
         System.out.println("EE Cohorts!!");
-        Set<String> allCohortsSet = new HashSet<String> (); 
+        Set<String> allCohortsSet = new HashSet<String>();
         Map<String, List<String>> featuresMPDependencies = new HashMap<>();
         getSelectorCohorts().forEach((String baseName, List<String> featureBaseNames) -> {
-            if(baseName.equals("javaee") || baseName.equals("jakartaee") || baseName.equals("webProfile")){
+            if (baseName.equals("javaee") || baseName.equals("jakartaee")) {
                 for (String featureBaseName : featureBaseNames) {
                     List<String> cohort = cohorts.get(featureBaseName);
                     allCohortsSet.addAll(cohort);
@@ -137,31 +159,25 @@ public class VersionlessTest {
                             System.out.println("      [ " + featureInfo.getName() + " ]");
                         }
 
-                        featureInfo.forEachSortedDepName((String depName) -> {
-                            FeatureInfo depInfo = getFeature(depName);
-                            if (depInfo == null) {
-                                System.out.println("        [ " + depName + " ** NOT FOUND ** ]");
-                            } else if (depInfo.isPublic()) {
-                                System.out.println("        [ " + depInfo.getBaseName() + " - " + depInfo.getVersion() + " ]");
-                            }
-                            if(depInfo.getShortName() != null){
-                                if(featuresMPDependencies.containsKey(depInfo.getShortName())){
+                        Set<FeatureInfo> publicDepFeatures = getAllPublicDependentFeatures(featureInfo);
+                        for (FeatureInfo depInfo : publicDepFeatures) {
+                            System.out.println("        [ " + depInfo.getBaseName() + " - " + depInfo.getVersion() + " ]");
+                            if (depInfo.getShortName() != null) {
+                                if (featuresMPDependencies.containsKey(depInfo.getShortName())) {
                                     featuresMPDependencies.get(depInfo.getShortName()).add(version);
-                                }
-                                else{
+                                } else {
                                     List<String> mpVersions = new ArrayList<String>();
                                     mpVersions.add(version);
                                     featuresMPDependencies.put(depInfo.getShortName(), mpVersions);
                                 }
                             }
-                        });
+                        }
                     }
                 }
             }
         });
         System.out.println(allCohortsSet);
         ArrayList<String> allCohorts = new ArrayList<>(allCohortsSet);
-        
 
         System.out.println("Features EE Deps:");
 
@@ -171,8 +187,8 @@ public class VersionlessTest {
         ArrayList<String> missingCohorts = (ArrayList<String>) allCohorts.clone();
         String current = "";
 
-        for(String feature : sortedFeatures){
-            if(!current.equals("") && !current.equals(feature.split("-")[0])){
+        for (String feature : sortedFeatures) {
+            if (!current.equals("") && !current.equals(feature.split("-")[0])) {
                 System.out.println("        " + current + " missing cohorts: " + missingCohorts);
                 missingCohorts = (ArrayList<String>) allCohorts.clone();
             }
@@ -187,12 +203,12 @@ public class VersionlessTest {
      * Generate report on all MP features and its platforms
      */
     @Test
-    public void listMicroProfileCohorts(){
+    public void listMicroProfileCohorts() {
         System.out.println("MP Cohorts!!");
         ArrayList<String> allCohorts = new ArrayList<>();
         Map<String, List<String>> featuresMPDependencies = new HashMap<>();
         getSelectorCohorts().forEach((String baseName, List<String> featureBaseNames) -> {
-            if(baseName.equals("microProfile")){
+            if (baseName.equals("microProfile")) {
                 for (String featureBaseName : featureBaseNames) {
                     List<String> cohort = cohorts.get(featureBaseName);
                     allCohorts.addAll(cohort);
@@ -207,26 +223,21 @@ public class VersionlessTest {
                             System.out.println("      [ " + featureInfo.getName() + " ]");
                         }
 
-                        featureInfo.forEachSortedDepName((String depName) -> {
-                            FeatureInfo depInfo = getFeature(depName);
-                            if (depInfo == null) {
-                                System.out.println("        [ " + depName + " ** NOT FOUND ** ]");
-                            } else if (depInfo.isPublic()) {
-                                System.out.println("        [ " + depInfo.getBaseName() + " - " + depInfo.getVersion() + " ]");
-                            }
-                            if(depInfo.getShortName() != null){
-                                if(depInfo.getShortName().startsWith("mp")){
-                                    if(featuresMPDependencies.containsKey(depInfo.getShortName())){
+                        Set<FeatureInfo> publicDepFeatures = getAllPublicDependentFeatures(featureInfo);
+                        for (FeatureInfo depInfo : publicDepFeatures) {
+                            System.out.println("        [ " + depInfo.getBaseName() + " - " + depInfo.getVersion() + " ]");
+                            if (depInfo.getShortName() != null) {
+                                if (depInfo.getShortName().startsWith("mp")) {
+                                    if (featuresMPDependencies.containsKey(depInfo.getShortName())) {
                                         featuresMPDependencies.get(depInfo.getShortName()).add(version);
-                                    }
-                                    else{
+                                    } else {
                                         List<String> mpVersions = new ArrayList<String>();
                                         mpVersions.add(version);
                                         featuresMPDependencies.put(depInfo.getShortName(), mpVersions);
                                     }
                                 }
                             }
-                        });
+                        }
                     }
                 }
             }
@@ -240,8 +251,8 @@ public class VersionlessTest {
         ArrayList<String> missingCohorts = (ArrayList<String>) allCohorts.clone();
         String current = "";
 
-        for(String feature : sortedFeatures){
-            if(!current.equals("") && !current.equals(feature.split("-")[0])){
+        for (String feature : sortedFeatures) {
+            if (!current.equals("") && !current.equals(feature.split("-")[0])) {
                 System.out.println("        " + current + " missing cohorts: " + missingCohorts);
                 missingCohorts = (ArrayList<String>) allCohorts.clone();
             }
@@ -259,6 +270,7 @@ public class VersionlessTest {
      */
     @Test
     public void listSelectorDetails() {
+        StringBuilder errorMessage = new StringBuilder();
         Map<String, VersionlessFeatureDefinition> versionlessFeatures = new HashMap<String, VersionlessFeatureDefinition>();
 
         System.out.println("Selectors:");
@@ -270,6 +282,7 @@ public class VersionlessTest {
 
                 //loops through each version of a platform
                 for (String version : cohort) {
+
                     String featureName = featureBaseName + "-" + version;
                     FeatureInfo featureInfo = getFeature(featureName);
                     if (featureInfo == null) {
@@ -280,44 +293,47 @@ public class VersionlessTest {
                     }
 
                     //each feature dependency of the platform
-                    featureInfo.forEachSortedDepName((String depName) -> {
-                        FeatureInfo depInfo = getFeature(depName);
-                        if (depInfo == null) {
-                            System.out.println("        [ " + depName + " ** NOT FOUND ** ]");
-                        } else if (depInfo.isPublic()) {
-                            System.out.println("        [ " + depInfo.getBaseName() + " - " + depInfo.getVersion() + " ]");
+                    Set<FeatureInfo> publicDepFeatures = getAllPublicDependentFeatures(featureInfo);
+                    for (FeatureInfo depInfo : publicDepFeatures) {
+                        System.out.println("        [ " + depInfo.getBaseName() + " - " + depInfo.getVersion() + " ]");
 
-                            if (depInfo.isAlsoKnownAsSet()){
-                                System.out.println("            [ AKA: " + depInfo.getAlsoKnownAs() + " ]");
-                            }
-                            //
-                            if(!!!depInfo.getKind().equals("noship")){
-                                String featureTitle = depInfo.getShortName().split("-")[0]; //Just the name not the version
-                                //add features to our map and add data on its platform-version link
-                                if(versionlessFeatures.containsKey(featureTitle)){
-                                    versionlessFeatures.get(featureTitle).addFeaturePlatform(new String[] { depInfo.getShortName(), baseName.replace("javaee", "jakartaee") + "-" + version, depInfo.getName()});
-                                }
-                                else {
-                                    versionlessFeatures.put(featureTitle, new VersionlessFeatureDefinition(featureTitle, featureTitle, new String[] { depInfo.getShortName(), baseName.replace("javaee", "jakartaee") + "-" + version, depInfo.getName()}));
-                                }
-
-                                //Keep track of features with updated names via the alsoknownas metadata
-                                if(depInfo.isAlsoKnownAsSet()){
-                                    String aka = depInfo.getAlsoKnownAs().split("-")[0];
-                                    if(!aka.equals(featureTitle)){
-                                        if(versionlessFeatures.get(featureTitle).getAlsoKnownAs() == null){
-                                            versionlessFeatures.get(featureTitle).setAlsoKnownAs(aka);
-                                        }
-                                        if(versionlessFeatures.containsKey(aka)){
-                                            versionlessFeatures.get(aka).setAKAFutureFeature(featureTitle);
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            // Ignore
+                        if (depInfo.isAlsoKnownAsSet()) {
+                            System.out.println("            [ AKA: " + depInfo.getAlsoKnownAs() + " ]");
                         }
-                    });
+
+                        //
+                        String featureTitle = depInfo.getShortName().split("-")[0]; //Just the name not the version
+
+                        if (!skipFeatures.contains(featureTitle) && depInfo.getPlatforms().isEmpty()) {
+                            errorMessage.append(depInfo.getName()).append('\n');
+                        }
+
+                        //add features to our map and add data on its platform-version link
+                        if (versionlessFeatures.containsKey(featureTitle)) {
+                            versionlessFeatures.get(featureTitle)
+                                               .addFeaturePlatform(new String[] { depInfo.getShortName(), baseName.replace("javaee", "jakartaee") + "-" + version,
+                                                                                  depInfo.getName() });
+                        } else {
+                            versionlessFeatures.put(featureTitle,
+                                                    new VersionlessFeatureDefinition(featureTitle, featureTitle,
+                                                                                     new String[] { depInfo.getShortName(),
+                                                                                                    baseName.replace("javaee", "jakartaee") + "-" + version,
+                                                                                                    depInfo.getName() }));
+                        }
+
+                        //Keep track of features with updated names via the alsoknownas metadata
+                        if (depInfo.isAlsoKnownAsSet()) {
+                            String aka = depInfo.getAlsoKnownAs().split("-")[0];
+                            if (!aka.equals(featureTitle)) {
+                                if (versionlessFeatures.get(featureTitle).getAlsoKnownAs() == null) {
+                                    versionlessFeatures.get(featureTitle).setAlsoKnownAs(aka);
+                                }
+                                if (versionlessFeatures.containsKey(aka)) {
+                                    versionlessFeatures.get(aka).setAKAFutureFeature(featureTitle);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -326,44 +342,45 @@ public class VersionlessTest {
 
         String createdFeatures = "";
 
-        for(String title : versionlessFeatures.keySet()) {
+        for (String title : versionlessFeatures.keySet()) {
             //We don't want to have versionless features of other convenience features, so skip them
-            if(skipFeatures.contains(title)){
+            if (skipFeatures.contains(title)) {
                 continue;
             }
             boolean createdFile = false;
             VersionlessFeatureDefinition feat = versionlessFeatures.get(title);
-			try {
-                if(feat.getAlsoKnownAs() != null){
+            try {
+                if (feat.getAlsoKnownAs() != null) {
                     createdFile = creator.createFeatureFiles(feat, versionlessFeatures.get(feat.getAlsoKnownAs()));
-                }
-                else if(feat.getAKAFutureFeature() != null){
+                } else if (feat.getAKAFutureFeature() != null) {
                     createdFile = creator.createFeatureFiles(feat, versionlessFeatures.get(feat.getAKAFutureFeature()));
-                }
-                else{
+                } else {
                     createdFile = creator.createFeatureFiles(feat, null);
                 }
-                if(createdFile){
-                    if(createdFeatures.isEmpty()){
+                if (createdFile) {
+                    if (createdFeatures.isEmpty()) {
                         createdFeatures += "Versionless feature files were created for feature(s): " + title;
-                    }
-                    else{
+                    } else {
                         createdFeatures += ", " + title;
                     }
                 }
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
 
-        String errorOutput =    "There are versionless features that need to be created. " +
-                                "Templates for the needed features have been created in the 'build/versionless' directory.\n" + 
-                                "Keep in mind the templates are not guarenteed to be correct and are solely meant to " + 
-                                "act as a helpful starting point for creating a versionless feature.\n" + 
-                                "Verify the data inside the feature files are correct, then copy the features from 'build/versionless' into 'visibility'.\n" + createdFeatures;
+        String errorOutput = "There are versionless features that need to be created. " +
+                             "Templates for the needed features have been created in the 'build/versionless' directory.\n" +
+                             "Keep in mind the templates are not guarenteed to be correct and are solely meant to " +
+                             "act as a helpful starting point for creating a versionless feature.\n" +
+                             "Verify the data inside the feature files are correct, then copy the features from 'build/versionless' into 'visibility'.\n" + createdFeatures;
 
         Assert.assertEquals(errorOutput, "", createdFeatures);
+
+        if (errorMessage.length() != 0) {
+            Assert.fail("Found features that are missing WLP-Platform settings:\n" + errorMessage.toString());
+        }
     }
 
     private static final Map<String, List<String>> selectorCohorts;
@@ -391,9 +408,6 @@ public class VersionlessTest {
         put(useCohorts, "microProfile",
             "com.ibm.websphere.appserver.microProfile", "io.openliberty.microProfile");
 
-        put(useCohorts, "webProfile",
-            "com.ibm.websphere.appserver.webProfile", "io.openliberty.webProfile");
-
         selectorCohorts = useCohorts;
     }
 
@@ -401,7 +415,23 @@ public class VersionlessTest {
         return selectorCohorts;
     }
 
-    public static List<String> skipFeatures = new ArrayList<String>(Arrays.asList("webProfile"));
+    /**
+     * Presently the Jakarta Container features (jsonbContainer, jsonpContainer, [jsf|faces]Container and [jpa|persistence]Container
+     * are not created as versionless features. To be determined if they should.
+     */
+    public static List<String> skipFeatures = new ArrayList<String>(Arrays.asList("webProfile",
+                                                                                  "noShip",
+                                                                                  "monitor",
+                                                                                  "json",
+                                                                                  "distributedMap",
+                                                                                  "ssl",
+                                                                                  "jwt",
+                                                                                  "opentracing",
+                                                                                  "jndi",
+                                                                                  "restConnector", // restConnector-2.0 was erroneously added to jakartaee-9.1
+                                                                                  "jpaContainer", // jpa depends on jpaContainer
+                                                                                  "persistenceContainer" // persistence depends on persistenceContainer.
+    ));
 
     private static Map<String, int[]> versions = new HashMap<>();
 

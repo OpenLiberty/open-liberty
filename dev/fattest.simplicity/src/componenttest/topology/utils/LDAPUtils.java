@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,9 @@
  *******************************************************************************/
 package componenttest.topology.utils;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -34,7 +34,6 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
 import com.ibm.websphere.simplicity.OperatingSystem;
-import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.common.apiservices.LocalMachine;
@@ -675,72 +674,33 @@ public class LDAPUtils {
      * @throws Exception
      */
     public static void addLDAPVariables(LibertyServer server) throws Exception {
-        addLDAPVariables(server, true);
+        addLDAPVariables(server, false);
     }
 
-    /**
-     * Adds LDAP variables for various servers and ports to the bootstrap.properties file for use in server.xml.
-     *
-     * @param  server
-     * @param  isInMemoryAllowed If false, physical LDAP servers and ports will be used as the property values.
-     * @throws Exception
-     */
-    public static void addLDAPVariables(LibertyServer server, boolean isInMemoryAllowed) throws Exception {
+    public static void addLDAPVariables(LibertyServer server, boolean asEnv) throws Exception {
         String method = "addLDAPVariables";
-        Log.entering(c, method, new Object[] { server, isInMemoryAllowed });
+        Log.entering(c, method, new Object[] { server });
 
         Properties props = new Properties();
 
-        // Get bootstrap properties file from server
-        RemoteFile bootstrapPropFile = null;
-        try {
-            bootstrapPropFile = server.getServerBootstrapPropertiesFile();
-        } catch (Exception e) {
-            Log.error(c, method, e, "Error while getting the bootstrap properties file from liberty server");
-            throw new Exception("Error while getting the bootstrap properties file from liberty server");
-        }
-
-        // Open the remote file for reading
-        FileInputStream in = null;
-        try {
-            in = (FileInputStream) bootstrapPropFile.openForReading();
-        } catch (Exception e) {
-            Log.error(c, method, e, "Error while reading the remote bootstrap properties file");
-            throw new Exception("Error while reading the remote bootstrap properties file");
-        }
-
-        // Load properties from bootstrap
-        try {
-            props.load(in);
-        } catch (IOException e) {
-            Log.error(c, method, e, "Error while loading properties from file input stream");
-            throw new IOException("Error while loading properties from file input stream");
-        } finally {
-            //Close the input stream
-            try {
-                in.close();
-            } catch (IOException e1) {
-                Log.error(c, method, e1, "Error while closing the input stream");
-                throw new IOException("Error while closing the input stream");
+        if (!asEnv) {
+            // Load properties from bootstrap
+            try (InputStream in = server.getServerBootstrapPropertiesFile().openForReading()) {
+                props.load(in);
+            } catch (IOException e) {
+                Log.error(c, method, e, "Error while loading properties from file input stream");
+                throw new IOException("Error while loading properties from file input stream");
             }
-        }
-
-        // Open the remote file for writing with append as false
-        FileOutputStream out = null;
-        try {
-            out = (FileOutputStream) bootstrapPropFile.openForWriting(false);
-        } catch (Exception e) {
-            Log.error(c, method, e, "Error while writing to remote bootstrap properties file");
-            throw new Exception("Error while writing to remote bootstrap properties file");
+        } else {
+            props.putAll(server.getServerEnv());
         }
 
         Log.info(c, "addLDAPVariables", "USE_LOCAL_LDAP_SERVER=" + USE_LOCAL_LDAP_SERVER);
-        Log.info(c, "addLDAPVariables", "isInMemoryAllowed=" + isInMemoryAllowed);
 
         /*
          * Create a Properties instance with the remote or the local server properties.
          */
-        if (USE_LOCAL_LDAP_SERVER && isInMemoryAllowed) {
+        if (USE_LOCAL_LDAP_SERVER) {
             Log.info(c, "addLDAPVariables", "Setting in-memory LDAP server properties");
         } else {
             /*
@@ -754,25 +714,18 @@ public class LDAPUtils {
             Log.info(c, "addLDAPVariables", "Setting physical LDAP server properties");
         }
         for (int idx = 1; idx < remoteServers.length; idx++) {
-            setServerProperties(idx, props, isInMemoryAllowed);
+            setServerProperties(idx, props, asEnv);
         }
 
         // Write above LDAP variables to remote bootstrap properties file
-        try {
+        try (OutputStream out = asEnv ? //
+                        server.getFileFromLibertyServerRoot("server.env").openForWriting(false) : //
+                        server.getServerBootstrapPropertiesFile().openForWriting(false)) {
             props.store(out, null);
             Log.info(c, method, "added ldap variables to bootstrap file");
         } catch (IOException e) {
             Log.error(c, method, e, "Error while reading the remote bootstrap properties file");
             throw new Exception("Error while reading the remote bootstrap properties file");
-        } finally {
-            //Close the output stream
-            try {
-                out.close();
-                Log.info(c, method, "closed output stream");
-            } catch (IOException e) {
-                Log.error(c, method, e, "Error while closing the output stream");
-                throw new IOException("Error while closing the output stream");
-            }
         }
         Log.info(c, method, "about to exit routine");
 
@@ -782,22 +735,23 @@ public class LDAPUtils {
     /**
      * Set the server bootstrap properties for a specified LDAP server.
      *
-     * @param serverNumber      The LDAP server number.
+     * @param serverNumber The LDAP server number.
      * @param props
-     * @param isInMemoryAllowed
      */
-    private static void setServerProperties(int serverNumber, Properties props, boolean isInMemoryAllowed) {
+    private static void setServerProperties(int serverNumber, Properties props, boolean asEnv) {
         /*
          * Determine whether we should use the local or remote server.
          */
-        LdapServer server = (USE_LOCAL_LDAP_SERVER && isInMemoryAllowed) ? localServers[serverNumber] : remoteServers[serverNumber];
+        LdapServer server = (USE_LOCAL_LDAP_SERVER) ? localServers[serverNumber] : remoteServers[serverNumber];
 
+        char sep = asEnv ? '_' : '.';
+        String prefix = "ldap" + sep + "server" + sep;
         if (server != null) {
-            setProp(props, "ldap.server." + serverNumber + ".name", server.serverName);
-            setProp(props, "ldap.server." + serverNumber + ".port", server.ldapPort);
-            setProp(props, "ldap.server." + serverNumber + ".ssl.port", server.ldapsPort);
-            setProp(props, "ldap.server." + serverNumber + ".bindDN", server.bindDn);
-            setProp(props, "ldap.server." + serverNumber + ".bindPassword", server.bindPwd);
+            setProp(props, prefix + serverNumber + sep + "name", server.serverName);
+            setProp(props, prefix + serverNumber + sep + "port", server.ldapPort);
+            setProp(props, prefix + serverNumber + sep + "ssl" + sep + "port", server.ldapsPort);
+            setProp(props, prefix + serverNumber + sep + "bindDN", server.bindDn);
+            setProp(props, prefix + serverNumber + sep + "bindPassword", server.bindPwd);
         }
     }
 

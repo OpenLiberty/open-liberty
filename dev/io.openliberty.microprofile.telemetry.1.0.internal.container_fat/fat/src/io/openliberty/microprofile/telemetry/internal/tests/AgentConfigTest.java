@@ -57,7 +57,6 @@ import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
-
 import io.jaegertracing.api_v2.Model.Span;
 import io.openliberty.microprofile.telemetry.internal.apps.agentconfig.AgentConfigTestResource;
 import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
@@ -345,7 +344,7 @@ public class AgentConfigTest {
 
     private void copyToServer(String src, String dst) throws Exception {
         RemoteFile serverRoot = server.getFileFromLibertyServerRoot("");
-        RemoteFile dstFile = new RemoteFile(serverRoot, dst);
+        RemoteFile dstFile = server.getMachine().getFile(serverRoot, dst);
         LocalFile srcFile = new LocalFile(server.pathToAutoFVTTestFiles + "/TelemetryAgentConfig/" + src);
         boolean result = dstFile.copyFromSource(srcFile);
         assertTrue("Failed to copy " + src + " to " + dst, result);
@@ -353,7 +352,7 @@ public class AgentConfigTest {
 
     private void deleteFromServer(String filename) throws Exception {
         RemoteFile serverRoot = server.getFileFromLibertyServerRoot("");
-        RemoteFile file = new RemoteFile(serverRoot, filename);
+        RemoteFile file = server.getMachine().getFile(serverRoot, filename);
         boolean result = file.delete();
         assertTrue("Failed to delete " + filename, result);
     }
