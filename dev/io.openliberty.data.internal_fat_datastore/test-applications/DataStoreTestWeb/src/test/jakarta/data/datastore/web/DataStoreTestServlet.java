@@ -13,8 +13,10 @@
 package test.jakarta.data.datastore.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -56,15 +58,29 @@ public class DataStoreTestServlet extends FATServlet {
     ServerDSJNDIRepo serverDSJNDIRepo;
 
     /**
-     * Use a repository that specifies the Jakarta EE default data source by its JNDI name: java:comp/DefaultDataSource
+     * Use a repository that specifies the Jakarta EE default data source by its JNDI name: java:comp/DefaultDataSource.
+     * Verifies that the Table(name=...) JPA annotation can be used to specify the table name, and that no prefix is added
+     * because a databaseStore is not explicitly used.
      */
     @Test
-    public void testDefaultDataSourceByJNDIName() {
+    public void testDefaultDataSourceByJNDIName() throws SQLException {
         assertEquals(false, defaultDSRepo.existsByIdAndValue(25L, "twenty-five"));
 
         defaultDSRepo.insert(DefaultDSEntity.of(25L, "twenty-five"));
 
         assertEquals(true, defaultDSRepo.existsByIdAndValue(25L, "twenty-five"));
+
+        try (Connection con = defaultDSRepo.connect()) {
+            assertEquals("defaultuser1",
+                         con.getMetaData().getUserName().toLowerCase());
+
+            String sql = "SELECT value FROM DefDSEntity WHERE id = 25";
+            ResultSet result = con
+                            .createStatement()
+                            .executeQuery(sql);
+            assertEquals(true, result.next());
+            assertEquals("twenty-five", result.getString(1));
+        }
     }
 
     /**
@@ -80,6 +96,9 @@ public class DataStoreTestServlet extends FATServlet {
     /**
      * Use a repository that specifies the a persistence unit reference, persistence/MyPersistenceUnitRef,
      * without explicitly including java:comp.
+     *
+     * Verify that a resource accessor method can return an EntityManager that can operate on the
+     * same data that was inserted by the repository.
      */
     @Test
     public void testPersistenceUnitRefWithoutJavaComp() {
@@ -96,6 +115,25 @@ public class DataStoreTestServlet extends FATServlet {
 
         List<PersistenceUnitEntity> updated = persistenceUnitRepo.save(List.of(e52, e56));
         assertEquals(updated.toString(), 2, updated.size());
+
+        try {
+            persistenceUnitRepo.connection();
+            fail("TODO write better test if EclipseLink ever adds this capability.");
+        } catch (UnsupportedOperationException x) {
+            // expected - EclipseLink does not allow unwrap as Connection
+        }
+
+        try {
+            persistenceUnitRepo.dataSource();
+            fail("TODO write better test if EclipseLink ever adds this capability.");
+        } catch (UnsupportedOperationException x) {
+            // expected - EclipseLink does not allow unwrap as DataSource
+        }
+
+        try (EntityManager em = persistenceUnitRepo.entityManager()) {
+            PersistenceUnitEntity e = em.find(PersistenceUnitEntity.class, "TestPersistenceUnit-fifty-two");
+            assertEquals(Integer.valueOf(152), e.value);
+        }
     }
 
     /**
@@ -168,29 +206,61 @@ public class DataStoreTestServlet extends FATServlet {
     }
 
     /**
-     * Use a repository that specifies a data source from server.xml by its id: ServerDataSource
+     * Use a repository that specifies a data source from server.xml by its id: ServerDataSource.
+     * Use a resource accessor method to obtain the same data source
+     * and verify the user name matches what is configured in server.xml and that
+     * the connection to the data source can access the data that was inserted
+     * via the repository.
      */
     @Test
-    public void testServerDataSourceById() {
+    public void testServerDataSourceById() throws SQLException {
         ServerDSEntity eighty_seven = ServerDSEntity.of("eighty-seven", 87);
 
         assertEquals(false, serverDSIdRepo.existsById("eighty-seven"));
 
         serverDSJNDIRepo.insert(eighty_seven); // other repository with same data source used for the insert
 
+        DataSource ds = serverDSIdRepo.findById();
+        try (Connection con = ds.getConnection()) {
+            assertEquals("serveruser1",
+                         con.getMetaData().getUserName().toLowerCase());
+
+            String sql = "SELECT value FROM ServerDSEntity WHERE id = 'eighty-seven'";
+            ResultSet result = con
+                            .createStatement()
+                            .executeQuery(sql);
+            assertEquals(true, result.next());
+            assertEquals(87, result.getInt(1));
+        }
+
         serverDSIdRepo.remove(ServerDSEntity.of("eighty-seven", 87)); // raises an error if not found
     }
 
     /**
-     * Use a repository that specifies a data source from server.xml by its JNDI name: jdbc/ServerDataSource
+     * Use a repository that specifies a data source from server.xml by its JNDI name: jdbc/ServerDataSource.
+     * Use a resource accessor method to create a connection to the same data source
+     * and verify the user name matches what is configured in server.xml and that
+     * the connection can access the data that was inserted via the repository.
      */
     @Test
-    public void testServerDataSourceByJNDIName() {
+    public void testServerDataSourceByJNDIName() throws SQLException {
 
         assertEquals(0, serverDSJNDIRepo.countById("forty-one"));
 
         serverDSJNDIRepo.insert(ServerDSEntity.of("forty-one", 41));
 
         assertEquals(1, serverDSJNDIRepo.countById("forty-one"));
+
+        try (Connection con = serverDSJNDIRepo.createConnection()) {
+            assertEquals("serveruser1",
+                         con.getMetaData().getUserName().toLowerCase());
+
+            String sql = "SELECT value FROM ServerDSEntity WHERE id = 'forty-one'";
+            ResultSet result = con
+                            .createStatement()
+                            .executeQuery(sql);
+            assertEquals(true, result.next());
+            assertEquals(41, result.getInt(1));
+        }
     }
 }
