@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import com.ibm.ws.kernel.feature.internal.FeatureResolverImpl;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
@@ -913,7 +914,7 @@ public class RepositoryResolver {
                     for (AppliesToFilterInfo atfi : ((EsaResource) esa).getAppliesToFilterInfo()) {
                         if (!atfi.getEditions().toString().isEmpty()) {
                             StringBuffer sb = new StringBuffer("; editions=\"");
-                            sb.append(atfi.getEditions().toString().replace("[", "").replace("]", "").replace(" ", ""));
+                            sb.append(atfi.getEditions().stream().map(String::trim).collect(Collectors.joining(",")));
                             sb.append("\"");
                             appliesTo = appliesTo.concat(sb.toString());
                         }
