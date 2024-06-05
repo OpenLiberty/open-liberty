@@ -342,7 +342,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Connection must be already closed since vc is null");
             }
-            if (!usingNetty) {
+           // if (!usingNetty) {
                 // closeCompleted check is for the close, destroy, close order scenario.
                 // Without this check, this second close (after the destroy) would decrement the connection again and produce a quiesce error.
                 if (this.decrementNeeded.compareAndSet(true, false) & !closeCompleted.get()) {
@@ -352,7 +352,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                     }
                     this.myChannel.decrementActiveConns();
                 }
-            }
+           // }
 
             return;
         }
@@ -573,37 +573,14 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             return;
         }
 
-        boolean completed;
-
         try {
-//            completed = isc.parseMessage();
-//            this.isc.setNettyRequest(this.nettyRequest);
             NettyRequestMessage.verifyRequest(isc.getRequest());
-//        } catch (UnsupportedMethodException meth) {
-//            // no FFDC required
-//            sendResponse(StatusCodes.NOT_IMPLEMENTED, null, false);
-//            return;
-//        } catch (UnsupportedProtocolVersionException ver) {
-//            // no FFDC required
-//            sendResponse(StatusCodes.UNSUPPORTED_VERSION, null, false);
-//            return;
-//        } catch (MessageTooLargeException mtle) {
-//            // no FFDC required
-//            sendResponse(StatusCodes.ENTITY_TOO_LARGE, null, false);
-//            return;
-//        } catch (MalformedMessageException mme) {
-//            //no FFDC required
-//            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                Tr.debug(tc, "parseMessage encountered a MalformedMessageException : " + mme);
-//            }
-//            sendResponse(StatusCodes.BAD_REQUEST, null, false);
-//            return;
+
         } catch (IllegalArgumentException iae) {
             //no FFDC required
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "parseMessage encountered an IllegalArgumentException : " + iae);
             }
-//            sendResponse(StatusCodes.BAD_REQUEST, null, false);
             isc.setHeadersParsed();
             try {
                 isc.sendError(StatusCodes.BAD_REQUEST.getHttpError());
@@ -612,19 +589,11 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 finish(new Exception("HTTP Message failure"));
             }
             return;
-//        } catch (Http2Exception h2e) {
-//            //no FFDC required
-//            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                Tr.debug(tc, "parseMessage encountered an Http2Exception : " + h2e);
-//            }
-////            close(vc, h2e);
-//            finish(h2e);
-//            return;
+
         } catch (Throwable t) {
             FFDCFilter.processException(t,
                                         "HttpInboundLink.handleNewInformation",
                                         "2", this);
-//            sendResponse(StatusCodes.BAD_REQUEST, null, false);
             isc.setHeadersParsed();
             try {
                 isc.sendError(StatusCodes.BAD_REQUEST.getHttpError());
@@ -636,7 +605,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         // Try to find a virtual host for the requested host/port..
-        //VirtualHostImpl vhost = VirtualHostMap.findVirtualHost(this.myChannel.getEndpointPid(), this);
         VirtualHostImpl vhost = VirtualHostMap.findVirtualHost(nettyContext.channel().attr(NettyHttpConstants.ENDPOINT_PID).get(), this);
         if (vhost == null) {
             String url = this.isc.getRequest().getRequestURI();
@@ -817,9 +785,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         TCPConnectionContext tcc = null;
         if (isc != null) {
             tcc = isc.getTSC();
-        } else {
-            // TODO: does it make sense to get the TCP conn context ourselves, if there is no isc?
-        }
+        } 
 
         return tcc;
     }
@@ -1860,5 +1826,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         return connectionId;
     }
 
-    // </since Servlet 6.0>
+
+
 }

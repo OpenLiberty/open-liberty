@@ -15,7 +15,7 @@ package com.ibm.ws.http.netty;
 public final class MSP {
 
     static long counter = 0;
-    static boolean enabled = false;
+    static boolean enabled = true;
 
     public static void log(String msg) {
         if (enabled)
@@ -26,6 +26,18 @@ public final class MSP {
         counter++;
         if (enabled)
             System.out.println("MSP: " + probe + "-" + counter);
+    }
+
+    public static void stack() {
+
+        if (!enabled)
+            return;
+
+        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+        System.out.println(" MSP -> Current Stack:");
+        for (int i = 2; i < stack.length; i++) {
+            System.out.println(stack[i]);
+        }
     }
 
 }
