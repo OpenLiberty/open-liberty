@@ -126,7 +126,11 @@
             name="internal" 
             description="internal use only"
             ibmui:group="cookies"
-            required="false" type="Boolean" default="false" /> 
+            required="false" type="String" default="Defer">
+            <Option label="%cookie.partitioned.defer" value="Defer"/>
+            <Option label="%cookie.partitioned.true" value="True"/>
+            <Option label="%cookie.partitioned.false" value="False"/>
+        </AD> 
 
         <!-- ibmui:group=url.rewriting -->
         <AD id="rewriteId" 

@@ -2939,7 +2939,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
                 }
             }
             
-            // If SameSite=None is set programmatically, but partitioned is set via server.xml, then add the parititioned attribute
+            // If SameSite=None is set programmatically, but partitioned is set via server.xml, then add the partitioned attribute
             if (getServiceContext().getHttpConfig().useSameSiteConfig() && cookie.getAttribute("samesite") != null) {
                 boolean sameSiteNoneUsed = cookie.getAttribute("samesite").equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName());
                 if(getServiceContext().getHttpConfig().getPartitioned() && sameSiteNoneUsed) {
@@ -2949,6 +2949,24 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
                         }
                         cookie.setAttribute("partitioned", "");
                     }
+                }
+            }
+
+            String partitionedValue = cookie.getAttribute("partitioned");
+            // cookie contains the paritioned keyword (set via session / security)
+            if(partitionedValue != null && !partitionedValue.equalsIgnoreCase("false")) {
+                boolean sameSiteIsNotNone = true;
+                if(cookie.getAttribute("samesite") != null) {
+                    sameSiteIsNotNone = !cookie.getAttribute("samesite").equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName());
+                }
+                // webAppSecurity or httpSession can set partitioned independently in case channel sets samesite=none. 
+                // if samesite=none is NOT set in channel, then we'll override partitioned to false so it isn't rendered in the cookie. 
+                // our goal is to not render paritioned on disabled/lax/strict cookies
+                if(sameSiteIsNotNone) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Overriding Partitioned to false for SameSite=" + cookie.getAttribute("samesite"));
+                    }
+                    cookie.setAttribute("partitioned", "false");
                 }
             }
 
