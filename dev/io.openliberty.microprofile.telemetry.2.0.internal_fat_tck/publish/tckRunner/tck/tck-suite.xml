@@ -11,10 +11,19 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
 <suite name="microprofile-telemetry-1.0-tck" verbose="2" configfailurepolicy="continue">
-    <test name="tck-package-org.eclipse.microprofile.telemetry.tracing.tck">
-        
+    <!-- <test name="tck-package-org.eclipse.microprofile.telemetry.tracing.tck">
         <packages>
-            <package name="org.eclipse.microprofile.telemetry.tracing.tck.*"></package>
+            <package name="org.eclipse.microprofile.telemetry.tracing.*"></package>
+        </packages>
+    </test>
+    <test name="tck-package-org.eclipse.microprofile.telemetry.metrics.tck">
+        <packages>
+            <package name="org.eclipse.microprofile.telemetry.metrics.*"></package>
+        </packages>
+    </test> -->
+    <test name="tck-package-org.eclipse.microprofile.telemetry.logs.tck">
+        <packages>
+            <package name="org.eclipse.microprofile.telemetry.logs.*"></package>
         </packages>
     </test>
 </suite>
