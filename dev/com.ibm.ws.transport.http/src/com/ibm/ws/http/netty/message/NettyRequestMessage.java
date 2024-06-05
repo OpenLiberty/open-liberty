@@ -121,6 +121,18 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         super.init(request, isc, config);
         setAndGetIsGrpc();
 //        verifyRequest();
+
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("HTTP Request:");
+        System.out.println("Method: " + request.method());
+        System.out.println("URI: " + request.uri());
+        System.out.println("Headers: ");
+        request.headers().forEach(header -> System.out.println(header.getKey() + ": " + header.getValue()));
+        System.out.println("Cookies: ");
+        this.getAllCookies().forEach(cookie -> System.out.println(cookie.toString()));
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     }
 
     /**
@@ -567,8 +579,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         }
         boolean canPush = handler.connection().remote().allowPushTo();
         System.out.println("Can I push remote? " + canPush);
-//        canPush = handler.connection().local().allowPushTo();
-//        System.out.println("Can I push local? " + canPush);
         return canPush;
     }
 
@@ -763,15 +773,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         List<HttpCookie> list = new LinkedList<HttpCookie>();
         String cookieString = headers.get(HttpHeaders.Names.COOKIE);
         System.out.println("MSP getAllCookies -> " + cookieString);
-//        if (Objects.nonNull(cookieString)) {
-//            Set<Cookie> cookies = CookieDecoder.decode(cookieString);
-//            if (!cookies.isEmpty()) {
-//                for (Cookie cookie : cookies) {
-//                    list.add(new HttpCookie(cookie.getName(), cookie.getValue()));
-//                }
-//
-//            }
-//        }
 
         return com.ibm.ws.http.netty.cookie.CookieDecoder.decode(cookieString);
 
@@ -786,7 +787,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         if (null == cookie) {
             cookie = getCookie(name, HttpHeaderKeys.HDR_COOKIE2);
         }
-        // Note: return a clone to avoid corruption by the caller
         return (null == cookie) ? null : cookie.clone();
     }
 
