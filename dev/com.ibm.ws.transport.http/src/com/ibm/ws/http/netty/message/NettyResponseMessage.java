@@ -9,6 +9,9 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.message;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -47,6 +50,7 @@ import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -95,9 +99,15 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     }
 
+    public void update(HttpResponse response) {
+        this.nettyResponse = response;
+    }
+
     @Override
     public void clear() {
         super.clear();
+        this.setStatusCode(HttpResponseStatus.OK.code());
+        this.nettyResponse.setProtocolVersion(HttpVersion.HTTP_1_1);
 
     }
 
@@ -110,45 +120,34 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     @Override
     public boolean isBodyExpected() {
 
-        if (HttpVersion.HTTP_1_0.equals(getVersionValue())) {
+        if (VersionValues.V10.equals(getVersionValue())) {
             return isBodyAllowed();
         }
 
-//        // sending a body with the response is not valid for a HEAD request
-//        if (getServiceContext().getRequestMethod().equals(MethodValues.HEAD)) {
-//            return false;
-//        }
-//
-//        // base layer checks explicit length markers (chunked, content-length);
-//        boolean rc = super.isBodyExpected();
-//        if (!rc) {
-//            // if content-length or chunked encoding don't explicitly mark a body
-//            // we could still have one if certain content headers are present since
-//            // a response can be sent until socket closure with no length delimiters
-//            rc = containsHeader(HttpHeaderKeys.HDR_CONTENT_ENCODING) || containsHeader(HttpHeaderKeys.HDR_CONTENT_RANGE);
-//        }
-//        if (rc) {
-//            // if we think a body exists, then check the status code flag
-//            rc = this.myStatusCode.isBodyAllowed();
-//        }
-//
-//        return rc;
-        return super.isBodyExpected();
+        if (HttpMethod.HEAD.toString().equals(getServiceContext().getRequest().getMethod())) {
+            return false;
+        }
+
+        boolean bodyExpected = super.isBodyExpected();
+
+        if (!bodyExpected) {
+            bodyExpected = containsHeader(HttpHeaderNames.CONTENT_ENCODING.array()) || containsHeader(HttpHeaderNames.CONTENT_RANGE.array());
+        }
+
+        return bodyExpected && isBodyAllowedForStatusCode();
+
     }
 
     @Override
     public boolean isBodyAllowed() {
         if (super.isBodyAllowed()) {
 
-            // sending a body with the response is not valid for a HEAD request
-            //TODO:Set false if request is HEAD
-
-            // if that worked, then check the status code flag
-            //can status code send body?
+            if (HttpMethod.HEAD.toString().equals(getServiceContext().getRequest().getMethod())) {
+                return false;
+            }
+            return isBodyAllowedForStatusCode();
         }
-
-        // no body allowed on this message
-        return true;
+        return false;
     }
 
     @Override
@@ -759,8 +758,7 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public byte[] getReasonPhraseBytes() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.nettyResponse.status().reasonPhrase().getBytes();
     }
 
     @Override
@@ -810,6 +808,66 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     @Override
     public long getBytesWritten() {
         return this.getServiceContext().getNumBytesWritten();
+    }
+
+    private boolean isBodyAllowedForStatusCode() {
+        //ixx (except 101), 204 and 304 responses must not include a message body
+        int statusCode = getStatusCodeAsInt();
+        if ((statusCode >= 100 && statusCode < 200) || statusCode == 204 || statusCode == 304) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Read an instance of this object from the input stream.
+     *
+     * @param input
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    @Override
+    public void readExternal(ObjectInput input) throws IOException, ClassNotFoundException {
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "De-serializing into: " + this);
+        }
+        super.readExternal(input);
+        if (SERIALIZATION_V2 == deserializationVersion) {
+            setStatusCode(input.readShort());
+        } else {
+            setStatusCode(input.readInt());
+        }
+        setReasonPhrase(readByteArray(input));
+    }
+
+    /**
+     * Write this object instance to the output stream.
+     *
+     * @param output
+     * @throws IOException
+     */
+    @Override
+    public void writeExternal(ObjectOutput output) throws IOException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(tc, "Serializing: " + this);
+        }
+        super.writeExternal(output);
+        output.writeShort(getStatusCodeAsInt());
+        writeByteArray(output, this.getReasonPhraseBytes());
+    }
+
+    public void logHttpResponse() {
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        System.out.println("HTTP Response:");
+        System.out.println("Status: " + this.nettyResponse.status());
+        System.out.println("Headers: ");
+        nettyResponse.headers().forEach(header -> System.out.println(header.getKey() + ": " + header.getValue()));
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    }
+
+    public HttpResponse getResponse() {
+        return nettyResponse;
     }
 
 }

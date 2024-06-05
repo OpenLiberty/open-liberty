@@ -24,6 +24,7 @@ import com.ibm.ws.http.channel.internal.HttpObjectFactory;
 import com.ibm.ws.http.channel.internal.HttpRequestMessageImpl;
 import com.ibm.ws.http.channel.internal.HttpResponseMessageImpl;
 import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
+import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.InterChannelCallback;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -550,7 +551,7 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
         setAppReadCallback(cb);
 
         // check for an existing final response
-        if (headersParsed() && !getResponseImpl().isTemporaryStatusCode()) {
+        if (headersParsed() && !isTemporaryStatusCode()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "earlyRead: Final response already received.");
             }
@@ -727,7 +728,7 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
                 // this scenario means we just need a "handshake" so continue
                 return;
             }
-            if (!getResponseImpl().isTemporaryStatusCode()) {
+            if (!isTemporaryStatusCode()) {
                 // received a final response
                 return;
             }
@@ -1173,7 +1174,7 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Response headers already parsed");
             }
-            if (this.bTempResponsesUsed || !getResponseImpl().isTemporaryStatusCode()) {
+            if (this.bTempResponsesUsed || !isTemporaryStatusCode()) {
                 // app channel wants to see all the responses
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                     Tr.exit(tc, "finishRequestMessage(sync): already parsed");
@@ -1271,7 +1272,12 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
             // if a temp response and using temps, return out. If temp and not
             // using temps, keep reading for final
             if (headersParsed()) {
-                if (this.bTempResponsesUsed || !getResponseImpl().isTemporaryStatusCode()) {
+                
+                
+                
+                
+                
+                if (this.bTempResponsesUsed || !isTemporaryStatusCode()) {
                     // app channel wants to see all the responses
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                         Tr.exit(tc, "finishRequestMessage(async): already parsed");
@@ -1401,7 +1407,7 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
         VirtualConnection vc = null;
         do {
             this.numResponsesReceived++;
-            if (!getResponseImpl().isTemporaryStatusCode()) {
+            if (!isTemporaryStatusCode()) {
                 // a final response message was received
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Notifying app channel of final response.");
@@ -2704,4 +2710,7 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
         return retBuf;
 
     }
+    
+    
+    
 }

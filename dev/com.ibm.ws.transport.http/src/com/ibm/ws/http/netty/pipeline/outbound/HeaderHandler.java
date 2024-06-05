@@ -149,34 +149,41 @@ public class HeaderHandler {
             return;
         }
 
-        if (headers.contains(HttpHeaderKeys.HDR_EXPIRES.toString())) {
+        if (!headers.contains(HttpHeaderKeys.HDR_EXPIRES.getName())) {
             headers.set(HttpHeaderKeys.HDR_EXPIRES.getName(), LONG_AGO);
         }
 
         if (headers.contains(HttpHeaderKeys.HDR_CACHE_CONTROL.getName())) {
-            StringBuilder builder = new StringBuilder();
-            String header;
-            if (hasCookiev1) {
-                builder.append("set-cookie");
-            }
-            if (hasCookiev1 && hasCookiev2) {
-                builder.append(", ");
-            }
-            if (hasCookiev2) {
-                builder.append("set-cookie2");
-            }
-            header = builder.toString();
+            // Update the existing Cache-Control header
+            String currentCacheControl = headers.get(HttpHeaderKeys.HDR_CACHE_CONTROL.getName());
 
-            if (!header.isEmpty()) {
+            if (!currentCacheControl.contains("no-cache")) {
+                StringBuilder builder = new StringBuilder(currentCacheControl);
+                boolean updated = false;
 
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-
-                    Tr.event(tc, "Updating Cache-Control for Set-Cookie");
+                if (hasCookiev1) {
+                    if (builder.length() > 0) {
+                        builder.append(", ");
+                    }
+                    builder.append("no-cache=\"set-cookie\"");
+                    updated = true;
                 }
-                headers.set(HttpHeaderKeys.HDR_CACHE_CONTROL.getName(), header);
-            }
 
+                if (hasCookiev2) {
+                    if (builder.length() > 0) {
+                        builder.append(", ");
+                    }
+                    builder.append("no-cache=\"set-cookie2\"");
+                    updated = true;
+                }
+
+                if (updated) {
+                    MSP.log("Updating Cache-Control for Set-Cookie");
+                    headers.set(HttpHeaderKeys.HDR_CACHE_CONTROL.getName(), builder.toString());
+                }
+            }
         } else {
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Adding Cache-Control due to Set-Cookie");
             }

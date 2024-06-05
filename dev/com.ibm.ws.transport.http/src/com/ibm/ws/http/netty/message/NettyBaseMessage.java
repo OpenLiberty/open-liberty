@@ -9,6 +9,10 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.message;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -16,6 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
@@ -55,9 +60,16 @@ import io.openliberty.http.constants.HttpGenerics;
 /**
  *
  */
-public class NettyBaseMessage implements HttpBaseMessage {
+public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     private static final TraceComponent tc = Tr.register(NettyBaseMessage.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
+
+    /** Serialization format for v6.0 and v6.1 */
+    protected static final int SERIALIZATION_V1 = 0xBEEF0001;
+    /** Serialization format for v7 and higher */
+    protected static final int SERIALIZATION_V2 = 0xBEEF0002;
+    /** Version used during deserialization step (if msg came that path) */
+    protected transient int deserializationVersion = SERIALIZATION_V1;
 
     private boolean inbound = Boolean.FALSE;
     private boolean committed = Boolean.FALSE;
@@ -85,6 +97,8 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     private int limitOfTokenSize;
 
+    private Map<String, String> headersMap = new HashMap<>();
+
     public NettyBaseMessage() {
     }
 
@@ -101,6 +115,120 @@ public class NettyBaseMessage implements HttpBaseMessage {
             this.limitOfTokenSize = config.getLimitOfFieldSize();
 
         }
+    }
+
+    /*
+     * @see
+     * com.ibm.ws.genericbnf.internal.GenericMessageImpl#readExternal(java.io.
+     * ObjectInput)
+     */
+    @Override
+    public void readExternal(ObjectInput input) throws IOException, ClassNotFoundException {
+        MSP.log("READ EXTERNAL");
+        MSP.stack();
+        // recreate the local header storage
+        int len = input.readInt();
+        if (SERIALIZATION_V2 == len) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Deserializing a V2 object");
+            }
+            this.deserializationVersion = SERIALIZATION_V2;
+            len = input.readInt();
+        }
+        this.headersMap = new HashMap<>();
+
+        // now read all of the headers
+        int number = input.readInt();
+        if (SERIALIZATION_V2 == this.deserializationVersion) {
+            // this is the new format
+            for (int i = 0; i < number; i++) {
+                appendHeader(readByteArray(input), readByteArray(input));
+            }
+        } else {
+            // this is the old format
+            for (int i = 0; i < number; i++) {
+                appendHeader((String) input.readObject(), (String) input.readObject());
+            }
+        }
+        // BNFHeaders reading of the headers will trigger all the parsed/temp
+        // values at this layer
+        try {
+            if (SERIALIZATION_V2 == this.deserializationVersion) {
+                setVersion(readByteArray(input));
+            } else {
+                setVersion((String) input.readObject());
+            }
+        } catch (UnsupportedProtocolVersionException exc) {
+            // no FFDC required
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Unknown HTTP version");
+            }
+            // malformed version, can't make an "undefined" version
+            IOException ioe = new IOException("Failed deserialization of version");
+            ioe.initCause(exc);
+            throw ioe;
+        }
+        // V2 uses a boolean, while V1 used a byte... SHOULD be the same, but...
+        boolean isTrailer = (SERIALIZATION_V2 == this.deserializationVersion) ? input.readBoolean() : (1 == input.readByte());
+        if (isTrailer) {
+            //TODO update with Netty Trailers
+            //this.myTrailers = (HttpTrailersImpl) input.readObject();
+        }
+    }
+
+    /*
+     * @see
+     * com.ibm.ws.genericbnf.internal.GenericMessageImpl#writeExternal(java.io
+     * .ObjectOutput)
+     */
+    @Override
+    public void writeExternal(ObjectOutput output) throws IOException {
+
+        MSP.log("WRITE EXTERNAL");
+        MSP.stack();
+
+        // convert any temporary Cookies into header storage
+        marshallCookieCache(this.cookieCache);
+        marshallCookieCache(this.cookie2Cache);
+        marshallCookieCache(this.setCookieCache);
+        marshallCookieCache(this.setCookie2Cache);
+
+        output.writeInt(SERIALIZATION_V2);
+        output.writeInt(this.headersMap.size());
+        //TODO can increment decrement using the add/remove API
+        output.writeInt(this.headersMap.size());
+
+        for (Map.Entry<String, String> entry : headersMap.entrySet()) {
+            writeByteArray(output, entry.getKey().getBytes());
+            writeByteArray(output, entry.getValue().getBytes());
+        }
+        // BNFHeaders will write out headers, so don't do hdr specifics here
+        writeByteArray(output, getVersionValue().getByteArray());
+        //TODO: add trailer support for serialization.
+//        if (null != this.myTrailers) {
+//            output.writeBoolean(true);
+//            if (output instanceof ObjectOutputStream) {
+//                ((ObjectOutputStream) output).writeUnshared(this.myTrailers);
+//            } else {
+//                output.writeObject(this.myTrailers);
+//            }
+//        } else {
+//            // save a marker that the trailers don't exist
+//            output.writeBoolean(false);
+//        }
+    }
+
+    protected byte[] readByteArray(ObjectInput input) throws IOException {
+        int length = input.readInt();
+        byte[] data = new byte[length];
+        input.readFully(data);
+        return data;
+
+    }
+
+    protected void writeByteArray(ObjectOutput output, byte[] data) throws IOException {
+        output.writeInt(data.length);
+        output.write(data);
     }
 
     @Override
@@ -282,6 +410,10 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public void removeHeader(String header) {
+        if (header.equalsIgnoreCase("set-Cookie")) {
+            MSP.log("not removing set-cookie for now");
+            return;
+        }
         headers.remove(header);
 
     }
@@ -510,8 +642,12 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public boolean setCookie(HttpCookie cookie, HttpHeaderKeys cookieType) {
+        MSP.log("SETTING COOKIE -> " + cookie.getName());
+        MSP.stack();
+
         boolean result = Boolean.FALSE;
-        if (isCommitted()) {
+        // if (isCommitted()) {
+        if (result) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Not adding cookie to committed message: " + cookie.getName() + " " + cookieType.getName());
             }
@@ -599,6 +735,7 @@ public class NettyBaseMessage implements HttpBaseMessage {
             return this.cookie2Cache;
 
         } else if (header.equals(HttpHeaderKeys.HDR_SET_COOKIE)) {
+            MSP.log("Processing set cookie header");
             if (null == this.setCookieCache) {
                 this.setCookieCache = new CookieCacheData(header);
                 if (!isIncoming()) {
@@ -631,6 +768,9 @@ public class NettyBaseMessage implements HttpBaseMessage {
             Tr.debug(tc, "Parsing all cookies for " + header.getName());
         }
 
+        MSP.log("parsingSetCookieHeaders! ");
+        System.out.println("present headers: ");
+        this.message.headers().forEach(h -> System.out.println(h.getKey() + ": " + h.getValue()));
         // Iterate through the unparsed cookie header instances
         // in storage and add them to the list to be returned
         List<HeaderField> vals = getHeaders(header);
@@ -666,16 +806,21 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public boolean isCommitted() {
+        MSP.log("is Committed called with value of [" + this.committed + "]");
+        //MSP.stack();
         return this.committed;
+
     }
 
     @Override
     public void setCommitted() {
         this.committed = Boolean.TRUE;
+        //MSP.stack();
     }
 
     public void setCommitted(boolean committed) {
         this.committed = committed;
+        // MSP.stack();
     }
 
     @Override
@@ -686,6 +831,9 @@ public class NettyBaseMessage implements HttpBaseMessage {
         this.setCookieCache = null;
         this.setCookie2Cache = null;
         this.committed = false;
+
+        MSP.log("clear called");
+        MSP.stack();
 
     }
 
@@ -918,8 +1066,11 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     public void processCookies() {
 
+        System.out.println("process cookie cache");
         marshallCookieCache(this.cookieCache);
+        System.out.println("process cookie 2 cache");
         marshallCookieCache(this.cookie2Cache);
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Checking to see if we should mark the cookie cache as dirty - samesite is " + config.useSameSiteConfig()
                          + " doNotAllowDuplicateSetCookie is " + config.doNotAllowDuplicateSetCookies());
@@ -942,11 +1093,26 @@ public class NettyBaseMessage implements HttpBaseMessage {
             }
 
         }
+        //Do we have set cookies?
+        System.out.println("process set-cookie cache");
         marshallCookieCache(this.setCookieCache);
+        System.out.println("process set-cookie2 cache");
         marshallCookieCache(this.setCookie2Cache);
+
+        System.out.println("after processing, what are my headers?");
+        message.headers().forEach(headers -> System.out.println(headers.getKey() + ": " + headers.getValue()));
+
+        System.out.println("and what are my baseMessage headers?");
+        this.getAllHeaders().forEach(headers -> System.out.println(headers.getName() + ": " + headers.asString()));
+
+        System.out.println("and what are my message cookies?");
+        this.getAllCookies().forEach(headers -> System.out.println(headers.getName() + ": " + headers.getValue()));
+
     }
 
     private void marshallCookieCache(CookieCacheData cache) {
+
+        System.out.println("Is cache dirty for");
 
         if (null != cache && cache.isDirty()) {
             HttpHeaderKeys type = cache.getHeaderType();
@@ -964,6 +1130,8 @@ public class NettyBaseMessage implements HttpBaseMessage {
         }
 
         HashMap<String, String> setCookieNames = null; //PI31734
+
+        MSP.log("marshalling cookie list: " + list);
 
         // convert each individual cookie into it's own header for clarity
         // Note: Set-Cookie header has comma separated cookies instead of semi-
@@ -1065,11 +1233,8 @@ public class NettyBaseMessage implements HttpBaseMessage {
         }
 
         if (config.doNotAllowDuplicateSetCookies() && setCookieNames != null) {
-            //Loop here to append all the cookies from the HashMap
-            Iterator<String> keyIt = setCookieNames.keySet().iterator();
-            while (keyIt.hasNext()) {
-                appendHeader(header, setCookieNames.get(keyIt.next()));
-            }
+            setCookieNames.values().forEach(value -> appendHeader(header, value));
+
         }
         //PI31734 end
 
