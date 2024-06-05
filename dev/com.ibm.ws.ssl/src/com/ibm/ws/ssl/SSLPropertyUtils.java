@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.ssl;
 
+import java.net.InetAddress;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -153,7 +154,11 @@ public class SSLPropertyUtils {
         if (properties != null) {
             // get the cipher suites
             String[] ciphers = SSLConfigManager.getInstance().getCipherList(properties, socket);
-            String remoteHostname = socket.getInetAddress().getHostName();
+            String remoteHostname = null;
+            InetAddress inetAddr = socket.getInetAddress();
+            if (inetAddr != null) {
+                remoteHostname = inetAddr.getHostName();
+            }
             sslParameters = createSSLParameters(properties, sslParameters, ciphers, remoteHostname);
             socket.setSSLParameters(sslParameters);
         }
@@ -172,7 +177,11 @@ public class SSLPropertyUtils {
         if (properties != null) {
             // get the cipher suites
             String[] ciphers = SSLConfigManager.getInstance().getCipherList(properties, socket);
-            String remoteHostname = socket.getInetAddress().getHostName();
+            String remoteHostname = null;
+            InetAddress inetAddr = socket.getInetAddress();
+            if (inetAddr != null) {
+                remoteHostname = inetAddr.getHostName();
+            }
             sslParameters = createSSLParameters(properties, sslParameters, ciphers, remoteHostname);
             socket.setSSLParameters(sslParameters);
         }
