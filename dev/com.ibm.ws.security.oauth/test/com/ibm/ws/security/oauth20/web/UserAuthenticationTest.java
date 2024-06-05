@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -308,6 +308,8 @@ public class UserAuthenticationTest {
                     will(returnValue(false));
                     allowing(config).getSameSiteCookie();
                     will(returnValue("Disabled"));
+                    allowing(config).getPartitionedCookie();
+                    will(returnValue(null));
                 }
             });
             sendForLoginExpectations(requestUri, contextPath, loginUrl);
@@ -444,6 +446,8 @@ public class UserAuthenticationTest {
                     will(returnValue(null));
                     allowing(config).getSameSiteCookie();
                     will(returnValue("Disabled"));
+                    allowing(config).getPartitionedCookie();
+                    will(returnValue(null));
                 }
             });
             sendForLoginExpectations(requestUri, contextPath, loginUrl);
@@ -486,6 +490,8 @@ public class UserAuthenticationTest {
                     one(request).logout();
                     allowing(config).getSameSiteCookie();
                     will(returnValue("Disabled"));
+                    allowing(config).getPartitionedCookie();
+                    will(returnValue(null));
                 }
             });
             sendForLoginExpectations(requestUri, contextPath, loginUrl);
@@ -1106,6 +1112,8 @@ public class UserAuthenticationTest {
                     will(returnValue(false));
                     allowing(config).getSameSiteCookie();
                     will(returnValue("Disabled"));
+                    allowing(config).getPartitionedCookie();
+                    will(returnValue(null));
                 }
             });
             sendForLoginExpectations(requestUri, contextPath, loginUrl);
@@ -1148,6 +1156,8 @@ public class UserAuthenticationTest {
                     will(returnValue(false));
                     allowing(config).getSameSiteCookie();
                     will(returnValue("Disabled"));
+                    allowing(config).getPartitionedCookie();
+                    will(returnValue(null));
                 }
             });
             sendForLoginExpectations(requestUri, contextPath, loginUrl);

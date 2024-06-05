@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.security;
 
@@ -174,6 +171,24 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
 
             if (sameSite.equals("None")) {
                 ssoCookie.setSecure(true);
+                Boolean partitioned = config.getPartitionedCookie();
+                if (partitioned!=null) {
+                    //web container wants the value as a n/v pair
+                    requestState.setCookieAttributes(cookieName, "Partitioned="+partitioned.toString());
+                }
+            }
+        } else {
+            Boolean partitioned = config.getPartitionedCookie();
+            if (partitioned!=null) {
+                WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
+                // if SS has no value, then the WC wants us to pass on our partitioned value if
+                // one was specified by the user.  Even though Partitioned is an attribute and not a N/V pair,
+                // the WC wants us to set the attribute true/false and they'll translate it.
+                // 
+                // We could end up with Partitioned=true on a cookie with no SS setting.  This happens when:
+                // SS is disabled in WebAppSecurity.  SS is disabled in channel.  Partitioned=true in WebAppSecurity
+                // This behavior is expected at this time.
+                requestState.setCookieAttributes(cookieName, "Partitioned="+partitioned.toString());
             }
         }
 

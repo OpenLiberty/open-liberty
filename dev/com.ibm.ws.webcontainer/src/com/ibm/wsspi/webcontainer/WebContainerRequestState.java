@@ -246,6 +246,13 @@ public class WebContainerRequestState {
             }
         }
 
+       logger.logp(Level.FINE, CLASS_NAME, methodName, "Num Attr values: " + attribute.length) ;
+       String attrValue = null; 
+	   
+       if (attribute.length > 1) {
+           attrValue = attribute[1] ; 
+        } 
+
         if (cookieAttributesMap == null || cookieAttributesMap.isEmpty()) {
             cookieAttributesMap = new HashMap<String,HashMap<String,String>>();
         }
@@ -254,7 +261,7 @@ public class WebContainerRequestState {
         if(existingAttributesMap == null) {
             existingAttributesMap = new HashMap<String,String>();
         }
-        existingAttributesMap.put(attribute[0], attribute[1]);
+        existingAttributesMap.put(attribute[0], attrValue);
         cookieAttributesMap.put(cookieName, existingAttributesMap);
     }
     

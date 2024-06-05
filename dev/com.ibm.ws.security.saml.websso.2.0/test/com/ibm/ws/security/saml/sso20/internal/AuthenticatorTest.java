@@ -159,6 +159,8 @@ public class AuthenticatorTest {
                 will(returnValue(true));
                 atMost(3).of(webAppSecConfig).getSameSiteCookie();
                 will(returnValue(null));
+                atMost(3).of(webAppSecConfig).getPartitionedCookie();
+                will(returnValue(null));
                 atMost(3).of(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(true));
                 allowing(webAppSecConfig).createReferrerURLCookieHandler();
