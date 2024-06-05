@@ -117,11 +117,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         }
     }
 
-    /*
-     * @see
-     * com.ibm.ws.genericbnf.internal.GenericMessageImpl#readExternal(java.io.
-     * ObjectInput)
-     */
     @Override
     public void readExternal(ObjectInput input) throws IOException, ClassNotFoundException {
         MSP.log("READ EXTERNAL");
@@ -172,7 +167,7 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         boolean isTrailer = (SERIALIZATION_V2 == this.deserializationVersion) ? input.readBoolean() : (1 == input.readByte());
         if (isTrailer) {
             //TODO update with Netty Trailers
-            //this.myTrailers = (HttpTrailersImpl) input.readObject();
+
         }
     }
 
@@ -195,27 +190,15 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
         output.writeInt(SERIALIZATION_V2);
         output.writeInt(this.headersMap.size());
-        //TODO can increment decrement using the add/remove API
         output.writeInt(this.headersMap.size());
 
         for (Map.Entry<String, String> entry : headersMap.entrySet()) {
             writeByteArray(output, entry.getKey().getBytes());
             writeByteArray(output, entry.getValue().getBytes());
         }
-        // BNFHeaders will write out headers, so don't do hdr specifics here
+
         writeByteArray(output, getVersionValue().getByteArray());
-        //TODO: add trailer support for serialization.
-//        if (null != this.myTrailers) {
-//            output.writeBoolean(true);
-//            if (output instanceof ObjectOutputStream) {
-//                ((ObjectOutputStream) output).writeUnshared(this.myTrailers);
-//            } else {
-//                output.writeObject(this.myTrailers);
-//            }
-//        } else {
-//            // save a marker that the trailers don't exist
-//            output.writeBoolean(false);
-//        }
+
     }
 
     protected byte[] readByteArray(ObjectInput input) throws IOException {
@@ -410,10 +393,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void removeHeader(String header) {
-        if (header.equalsIgnoreCase("set-Cookie")) {
-            MSP.log("not removing set-cookie for now");
-            return;
-        }
         headers.remove(header);
 
     }
