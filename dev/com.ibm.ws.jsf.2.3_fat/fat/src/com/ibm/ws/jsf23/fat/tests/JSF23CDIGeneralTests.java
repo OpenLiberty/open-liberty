@@ -514,8 +514,14 @@ public class JSF23CDIGeneralTests {
         input.sendKeys("Hello World");
 
         page.findElement(By.id("form1:submitButton")).click();
+
+        // Dismiss alert that is used in testFacesBehaviorBeanInjection as it prevents Selenium from reading page
         driver.switchTo().alert().dismiss();
+
         page.waitForCondition(webDriver -> page.isInPage("Hello Earth"));
+
+        // Log the page for debugging if necessary in the future.
+        Log.info(c, name.getMethodName(), driver.getPageTextReduced());
 
         assertTrue(page.isInPage("Hello Earth"));
     }
@@ -546,6 +552,7 @@ public class JSF23CDIGeneralTests {
 
         page.findElement(By.id("form1:submitButton")).click();
 
+        // Dismiss alert that is used in testFacesBehaviorBeanInjection as it prevents Selenium from reading page
         driver.switchTo().alert().dismiss();
 
         // Log the page for debugging if necessary in the future.
