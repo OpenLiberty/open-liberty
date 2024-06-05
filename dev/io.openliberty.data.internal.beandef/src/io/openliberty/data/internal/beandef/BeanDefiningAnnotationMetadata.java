@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data.internal.cdi;
+package io.openliberty.data.internal.beandef;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
@@ -19,7 +19,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
-import jakarta.data.metamodel.StaticMetamodel;
 import jakarta.data.repository.Repository;
 
 /**
@@ -27,10 +26,9 @@ import jakarta.data.repository.Repository;
  */
 @Component(configurationPid = "io.openliberty.data.internal.cdi.BeanDefiningAnnotationMetadata",
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           service = { CDIExtensionMetadata.class, BeanDefiningAnnotationMetadata.class },
-           immediate = true)
+           service = { CDIExtensionMetadata.class, BeanDefiningAnnotationMetadata.class })
 public class BeanDefiningAnnotationMetadata implements CDIExtensionMetadata {
-    private static final Set<Class<? extends Annotation>> beanDefiningAnnos = Set.of(Repository.class, StaticMetamodel.class);
+    private static final Set<Class<? extends Annotation>> beanDefiningAnnos = Set.of(Repository.class);
 
     @Override
     public Set<Class<? extends Annotation>> getBeanDefiningAnnotationClasses() {
