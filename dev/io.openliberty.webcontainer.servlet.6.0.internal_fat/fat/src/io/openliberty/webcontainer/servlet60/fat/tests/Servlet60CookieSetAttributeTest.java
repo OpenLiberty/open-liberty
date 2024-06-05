@@ -141,7 +141,7 @@ public class Servlet60CookieSetAttributeTest {
     /*
      * Test Set-Cookie via addHeader and setHeader behavior do not change in Servlet 6.0..i.e it generates 2 Set-Cookie headers
      *
-     * From EE11, Set-Cookie is not splitted for arbitrary attributes (see PR#28362)
+     * For EE11+, Set-Cookie is not split for arbitrary attributes (see PR#28362)
      */
     @Test
     @SkipForRepeat(EE11_OR_LATER_FEATURES)
