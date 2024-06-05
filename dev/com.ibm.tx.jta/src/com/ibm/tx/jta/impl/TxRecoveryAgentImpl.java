@@ -256,7 +256,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     try {
                         fsc = createFailureScopeController(fs);
                     } catch (Exception exc) {
-                        FFDCFilter.processException(exc, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "1177", this);
+                        FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.TxRecoveryAgentImpl.initiateRecovery", "259", this);
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Exception caught whist creating FailureScopeController", exc);
                         throw new RecoveryFailedException(exc);
@@ -580,34 +580,14 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     }
                 }
             }
-
-        } catch (
-
-        InvalidFailureScopeException e) {
-            FFDCFilter.processException(e, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "1599", this);
+        } catch (InvalidFailureScopeException | InvalidLogPropertiesException | URISyntaxException | PrivilegedActionException e) {
+            if (!_serverStopping)
+                FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TxRecoveryAgentImpl.initiateRecovery", "586", this);
             Tr.error(tc, "WTRN0016_EXC_DURING_RECOVERY", e);
 
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "initiateRecovery", e);
-            throw new RecoveryFailedException(e); // 171598
-        } catch (InvalidLogPropertiesException e) {
-            FFDCFilter.processException(e, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "1599", this);
-            Tr.error(tc, "WTRN0016_EXC_DURING_RECOVERY", e);
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "initiateRecovery", e);
-            throw new RecoveryFailedException(e); // 171598
-        } catch (URISyntaxException e) {
-            FFDCFilter.processException(e, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "1599", this);
-            Tr.error(tc, "WTRN0016_EXC_DURING_RECOVERY", e);
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "initiateRecovery", e);
-            throw new RecoveryFailedException(e); // 171598
-        } catch (PrivilegedActionException e) {
-            FFDCFilter.processException(e, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "463", this);
-            Tr.error(tc, "WTRN0016_EXC_DURING_RECOVERY", e);
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "initiateRecovery", e);
-            throw new RecoveryFailedException(e); // 171598
+            throw new RecoveryFailedException(e);
         }
 
         if (tc.isEntryEnabled())
@@ -667,7 +647,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         try {
             recoveryDirector = RecoveryDirectorFactory.recoveryDirector();
         } catch (InternalLogException exc) {
-            FFDCFilter.processException(exc, "com.ibm.ws.runtime.component.TxServiceImpl.terminateRecovery", "1274", this);
+            FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.TxRecoveryAgentImpl.terminateRecovery", "650", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "terminateRecovery");
             throw new TerminationFailedException(exc);
@@ -700,7 +680,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             // and if this occurs then this indicates that there is a defect in the code. This exception is
             // raised by the RLS in the event that ot does not recognize this failure scope and recovery agent
             // conbindation.
-            FFDCFilter.processException(exc, "com.ibm.ws.runtime.component.TxServiceImpl.terminateRecovery", "1308", this);
+            FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.TxRecoveryAgentImpl.terminateRecovery", "683", this);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Unable to indicate termination completion to recovery director: " + exc);
             if (tc.isEntryEnabled())
