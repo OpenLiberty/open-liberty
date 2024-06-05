@@ -256,7 +256,7 @@ public class MicroProfileActions {
                                                                "mpOpenAPI-4.0",
                                                                "mpMetrics-5.1",
                                                                "mpTelemetry-2.0",
-                                                               "mpRestClient-3.1" };
+                                                               "mpRestClient-4.0" };
 
     private static final String[] MP70_EE11_FEATURES_ARRAY = { "microProfile-7.0",
                                                                "cdi-4.1",
@@ -271,7 +271,7 @@ public class MicroProfileActions {
                                                                "mpOpenAPI-4.0",
                                                                "mpMetrics-5.1",
                                                                "mpTelemetry-2.0",
-                                                               "mpRestClient-3.1" };
+                                                               "mpRestClient-4.0" };
 
     private static final Set<String> MP10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP10_FEATURES_ARRAY)));
     private static final Set<String> MP12_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP12_FEATURES_ARRAY)));

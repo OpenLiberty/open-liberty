@@ -18,7 +18,7 @@ Subsystem-Name: MicroProfile 7.0
   io.openliberty.mpOpenAPI-4.0, \
   io.openliberty.mpFaultTolerance-4.1, \
   io.openliberty.mpJwt-2.1, \
-  io.openliberty.mpRestClient-3.1, \
+  io.openliberty.mpRestClient-4.0, \
   io.openliberty.mpTelemetry-2.0
 kind=noship
 edition=full

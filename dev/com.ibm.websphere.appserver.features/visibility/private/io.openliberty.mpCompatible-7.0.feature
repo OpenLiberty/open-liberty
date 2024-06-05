@@ -4,6 +4,6 @@ visibility=private
 singleton=true
 -features=com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0",\
   io.openliberty.internal.mpVersion-7.0
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
