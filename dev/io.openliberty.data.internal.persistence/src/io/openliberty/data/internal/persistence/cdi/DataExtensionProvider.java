@@ -46,6 +46,7 @@ import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.container.service.metadata.ModuleMetaDataListener;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
+import com.ibm.wsspi.resource.ResourceConfigFactory;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
@@ -90,6 +91,8 @@ public class DataExtensionProvider implements CDIExtensionMetadata, CDIExtension
 
     @Reference
     public LocalTransactionCurrent localTranCurrent;
+
+    public @Reference ResourceConfigFactory resourceConfigFactory;
 
     @Reference
     public EmbeddableWebSphereTransactionManager tranMgr;
