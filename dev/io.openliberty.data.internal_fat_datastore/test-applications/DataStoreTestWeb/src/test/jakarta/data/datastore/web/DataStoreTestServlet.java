@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import jakarta.annotation.Resource;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
@@ -56,6 +57,13 @@ public class DataStoreTestServlet extends FATServlet {
 
     @Inject
     ServerDSJNDIRepo serverDSJNDIRepo;
+
+    @Resource(name = "java:app/env/jdbc/ServerDataSourceRef",
+              lookup = "jdbc/ServerDataSource")
+    DataSource serverDSResRef;
+
+    @Inject
+    ServerDSResRefRepo serverDSResRefRepo;
 
     /**
      * Use a repository that specifies the Jakarta EE default data source by its JNDI name: java:comp/DefaultDataSource.
@@ -262,5 +270,40 @@ public class DataStoreTestServlet extends FATServlet {
             assertEquals(true, result.next());
             assertEquals(41, result.getInt(1));
         }
+    }
+
+    /**
+     * Use a repository that specifies a resource reference to a data source,
+     * where the resource reference has a container managed authentication alias
+     * that is defined in server.xml, ResRefAuth1, with user resrefuser1.
+     * Use a resource accessor method to obtain the same data source
+     * and verify the user name matches what is configured in server.xml and that
+     * the connection to the data source can access the data that was inserted
+     * via the repository.
+     */
+    @Test
+    public void testServerDataSourceByResRef() throws SQLException {
+        ServerDSEntity ninety_three = ServerDSEntity.of("ninety-three", 93);
+
+        assertEquals(false, serverDSResRefRepo.read("ninety-three").isPresent());
+
+        ninety_three = serverDSResRefRepo.write(ninety_three);
+
+        DataSource ds = serverDSResRefRepo.getDataStore();
+        try (Connection con = ds.getConnection()) {
+            assertEquals("resrefuser1",
+                         con.getMetaData().getUserName().toLowerCase());
+
+            String sql = "SELECT value FROM ServerDSEntity WHERE id='ninety-three'";
+            ResultSet result = con
+                            .createStatement()
+                            .executeQuery(sql);
+            assertEquals(true, result.next());
+            assertEquals(93, result.getInt(1));
+        }
+
+        ninety_three = serverDSResRefRepo.read("ninety-three").orElseThrow();
+        assertEquals(93, ninety_three.value);
+        assertEquals("ninety-three", ninety_three.id);
     }
 }
