@@ -12,6 +12,8 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.org.eclipse.microprofile.faulttolerance.4.1; singleton:=true
 
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
 Export-Package: \
   org.eclipse.microprofile.faulttolerance;version=1.2.1, \
   org.eclipse.microprofile.faulttolerance.exceptions;version=1.0

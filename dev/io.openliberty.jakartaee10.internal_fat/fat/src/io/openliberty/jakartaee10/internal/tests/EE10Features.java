@@ -253,7 +253,7 @@ public class EE10Features {
         features.remove("passwordUtilities-1.1");
         features.remove("persistenceContainer-3.1");
 
-        //remove MP 6.0 features which would conflict with MP 7.0 features
+        //remove MP 6.0 features which would conflict with MP 6.1 and 7.0 features
         features.remove("microProfile-6.0");
         features.remove("mpConfig-3.0");
         features.remove("mpTelemetry-1.0");
@@ -264,9 +264,7 @@ public class EE10Features {
 
         //remove MP 6.1 features which would conflict with MP 7.0 features
         features.remove("microProfile-6.1");
-        features.remove("mpConfig-3.1");
         features.remove("mpTelemetry-1.1");
-        features.remove("mpMetrics-5.1");
 
         // remove client features
         features.remove("jakartaeeClient-10.0");
