@@ -5,3 +5,4 @@ singleton=true
 kind=beta
 edition=core
 WLP-Activation-Type: parallel
+WLP-Platform: microProfile-7.0
