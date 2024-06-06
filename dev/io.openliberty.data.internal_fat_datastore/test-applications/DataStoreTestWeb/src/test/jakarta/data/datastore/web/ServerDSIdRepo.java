@@ -15,8 +15,12 @@ package test.jakarta.data.datastore.web;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Repository;
 
+import javax.sql.DataSource;
+
 @Repository(dataStore = "ServerDataSource") // id of dataSource in server.xml
 public interface ServerDSIdRepo {
+
+    DataSource findById();
 
     boolean existsById(String id);
 

@@ -542,8 +542,9 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
                 if (dbStoreRefs.isEmpty())
                     throw new IllegalStateException("The " + dbStoreFilter + " resource that is used by the repository is not available."); // TODO NLS
 
-                String authDataFilter = (String) dbStoreRefs.iterator().next().getProperty("AuthData.target");
-                if (authDataFilter != null) {
+                ServiceReference<DatabaseStore> ref = dbStoreRefs.iterator().next();
+                if (ref.getProperty("authDataRef") != null) {
+                    String authDataFilter = (String) ref.getProperty("AuthData.target");
                     ServiceReference<?>[] authDataRefs = bc.getServiceReferences("com.ibm.websphere.security.auth.data.AuthData",
                                                                                  authDataFilter);
                     if (authDataRefs == null)
