@@ -97,6 +97,9 @@ public class WADLTest {
         RemoteFile wadl2javaBat = server.getFileFromLibertyInstallRoot(wadl2javaBatPath);
         String wadl2javaArgs = new StringBuilder().append("-d ").append(WADL2JAVASrcDir.getAbsolutePath()).append(" -p ").append(TEST_PACKAGE).append(" ").append(TEST_WADL_LOCATION).toString();
 
+
+        Log.info(WADLTest.class, "calling wadl2jjava with these args", wadl2javaArgs);
+
         assertTrue("The file bin/jaxrs/wadl2java does not exist.", wadl2java.exists());
         assertTrue("The file bin/jaxrs/wadl2java.bat does not exist.", wadl2javaBat.exists());
 
