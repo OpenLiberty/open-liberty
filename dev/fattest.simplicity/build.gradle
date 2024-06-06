@@ -25,6 +25,7 @@ task assembleBinaryDependencies() {
     dependsOn ':com.ibm.websphere.javaee.jaxb.2.2:jar'
     dependsOn ':com.ibm.websphere.javaee.jsonp.1.0:jar'
     dependsOn ':com.ibm.ws.common.encoder:jar'
+    dependsOn ':com.ibm.ws.componenttest:jar'
     dependsOn ':com.ibm.ws.jaxb.tools:jar'
     dependsOn ':com.ibm.ws.junit.extensions:jar'
     dependsOn ':com.ibm.ws.logging.core:jar'
