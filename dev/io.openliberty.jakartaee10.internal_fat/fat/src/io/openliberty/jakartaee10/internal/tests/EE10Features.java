@@ -289,6 +289,7 @@ public class EE10Features {
         if (JavaInfo.JAVA_VERSION < 17) {
             features.remove("springBoot-3.0");
             features.remove("data-1.0");
+            features.remove("dataContainer-1.0");
             features.remove("nosql-1.0");
         }
 
