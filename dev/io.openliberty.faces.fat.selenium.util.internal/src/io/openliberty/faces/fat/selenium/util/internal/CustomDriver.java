@@ -13,7 +13,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 or Apache-2.0
  */
-package io.openliberty.org.apache.myfaces40.fat.selenium_util;
+package io.openliberty.faces.fat.selenium.util.internal;
 
 import java.net.URI;
 import java.net.URLDecoder;
@@ -62,8 +62,8 @@ public class CustomDriver implements ExtendedWebDriver {
 
     @Override
     public String getPageText() {
-        String head = this.driver.findElement(By.tagName("head")).getAttribute("innerText").replaceAll("[\\s\\n ]", " ");
-        String body = this.driver.findElement(By.tagName("body")).getAttribute("innerText").replaceAll("[\\s\\n ]", " ");
+        String head = this.driver.findElement(By.tagName("head")).getAttribute("innerText").replaceAll("[\\s\\n ]", " ");
+        String body = this.driver.findElement(By.tagName("body")).getAttribute("innerText").replaceAll("[\\s\\n ]", " ");
         return head + " " + body;
     }
 

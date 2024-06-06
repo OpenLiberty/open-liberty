@@ -35,9 +35,9 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf.container.fat.FATSuite;
 import com.ibm.ws.jsf.container.fat.utils.JSFUtils;
-import com.ibm.ws.jsf.container.fat.selenium_util.CustomDriver;
-import com.ibm.ws.jsf.container.fat.selenium_util.ExtendedWebDriver;
-import com.ibm.ws.jsf.container.fat.selenium_util.WebPage;
+import io.openliberty.faces.fat.selenium.util.internal.CustomDriver;
+import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
+import io.openliberty.faces.fat.selenium.util.internal.WebPage;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
