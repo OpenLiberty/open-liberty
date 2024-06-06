@@ -295,6 +295,9 @@ public class VersionlessTest {
                     //each feature dependency of the platform
                     Set<FeatureInfo> publicDepFeatures = getAllPublicDependentFeatures(featureInfo);
                     for (FeatureInfo depInfo : publicDepFeatures) {
+                        if (depInfo.getKind().equals("noship")){
+                            continue;
+                        }
                         System.out.println("        [ " + depInfo.getBaseName() + " - " + depInfo.getVersion() + " ]");
 
                         if (depInfo.isAlsoKnownAsSet()) {

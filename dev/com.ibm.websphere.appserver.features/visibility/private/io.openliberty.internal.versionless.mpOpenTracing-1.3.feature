@@ -3,13 +3,7 @@ symbolicName=io.openliberty.internal.versionless.mpOpenTracing-1.3
 visibility=private
 singleton=true
 -features= \
-    io.openliberty.noShip-1.0, \
     io.openliberty.internal.mpVersion-2.2; ibm.tolerates:="3.0,3.2,3.3", \
     com.ibm.websphere.appserver.mpOpenTracing-1.3
-<<<<<<< HEAD
-kind=noship
-edition=full
-=======
 kind=beta
 edition=core
->>>>>>> 6d1ae1ddd5 (features have correct edition)

@@ -3,7 +3,6 @@ symbolicName=io.openliberty.internal.versionless.cdi-4.0
 visibility=private
 singleton=true
 -features= \
-    io.openliberty.noShip-1.0, \
     io.openliberty.cdi-4.0
 kind=beta
 edition=core

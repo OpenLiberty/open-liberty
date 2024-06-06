@@ -4,10 +4,5 @@ visibility=public
 IBM-ShortName: restfulWSClient
 Subsystem-Name: restfulWSClient
 -features=io.openliberty.internal.versionless.jaxrsClient-2.0; ibm.tolerates:="2.1,3.0,3.1,4.0"
-<<<<<<< HEAD
-kind=noship
-edition=full
-=======
 kind=beta
 edition=core
->>>>>>> 6d1ae1ddd5 (features have correct edition)

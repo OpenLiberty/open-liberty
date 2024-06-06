@@ -105,15 +105,13 @@ public class VersionlessFeatureCreator {
         writer.newLine();
         writer.append("-features= \\");
         writer.newLine();
-        writer.append("    io.openliberty.noShip-1.0, \\");
-        writer.newLine();
         if (x != null && y != null) {
             writer.append("    " + x + "-" + y + ", \\");
             writer.newLine();
         }
         writer.append("    " + fullName);
         writer.newLine();
-        writer.append("kind=noship");
+        writer.append("kind=beta");
         writer.newLine();
         writer.append("edition=" + edition);
         writer.newLine();
@@ -170,7 +168,6 @@ public class VersionlessFeatureCreator {
             }
             allVersions.addAll(existingVersions);
             versions = feature.getPreferredAndTolerates(allVersions);
-            System.out.println("Existing plus new feature versions: " + Arrays.toString(versions));
         }
         else{
             versions = feature.getPreferredAndTolerates();
@@ -182,7 +179,7 @@ public class VersionlessFeatureCreator {
             writer.append("-features=io.openliberty.internal.versionless." + toleratesFeature + "-" + versions[0] + "; ibm.tolerates:=\"" + versions[1] + "\"");
         }
         writer.newLine();
-        writer.append("kind=noship");
+        writer.append("kind=beta");
         writer.newLine();
         writer.append("edition=" + feature.getEdition());
         writer.newLine();
