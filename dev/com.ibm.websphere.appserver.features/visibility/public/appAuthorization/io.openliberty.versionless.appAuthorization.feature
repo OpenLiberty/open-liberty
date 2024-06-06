@@ -4,5 +4,10 @@ visibility=public
 IBM-ShortName: appAuthorization
 Subsystem-Name: appAuthorization
 -features=io.openliberty.internal.versionless.jacc-1.5; ibm.tolerates:="2.0,2.1,3.0"
+<<<<<<< HEAD
 kind=noship
 edition=full
+=======
+kind=beta
+edition=core
+>>>>>>> 6d1ae1ddd5 (features have correct edition)

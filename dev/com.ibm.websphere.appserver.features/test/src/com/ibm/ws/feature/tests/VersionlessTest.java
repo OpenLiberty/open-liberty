@@ -318,7 +318,8 @@ public class VersionlessTest {
                                                     new VersionlessFeatureDefinition(featureTitle, featureTitle,
                                                                                      new String[] { depInfo.getShortName(),
                                                                                                     baseName.replace("javaee", "jakartaee") + "-" + version,
-                                                                                                    depInfo.getName() }));
+                                                                                                    depInfo.getName()},
+                                                                                                    depInfo.getEdition()));
                         }
 
                         //Keep track of features with updated names via the alsoknownas metadata

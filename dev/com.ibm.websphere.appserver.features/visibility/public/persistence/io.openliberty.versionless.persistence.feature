@@ -4,5 +4,10 @@ visibility=public
 IBM-ShortName: persistence
 Subsystem-Name: persistence
 -features=io.openliberty.internal.versionless.jpa-2.0; ibm.tolerates:="2.1,2.2,3.0,3.1,3.2"
+<<<<<<< HEAD
 kind=noship
 edition=full
+=======
+kind=beta
+edition=core
+>>>>>>> 6d1ae1ddd5 (features have correct edition)

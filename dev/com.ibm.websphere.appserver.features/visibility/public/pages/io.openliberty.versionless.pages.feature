@@ -4,5 +4,10 @@ visibility=public
 IBM-ShortName: pages
 Subsystem-Name: pages
 -features=io.openliberty.internal.versionless.jsp-2.2; ibm.tolerates:="2.3,3.0,3.1,4.0"
+<<<<<<< HEAD
 kind=noship
 edition=full
+=======
+kind=beta
+edition=core
+>>>>>>> 6d1ae1ddd5 (features have correct edition)

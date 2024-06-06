@@ -4,5 +4,10 @@ visibility=public
 IBM-ShortName: mpJwt
 Subsystem-Name: mpJwt
 -features=io.openliberty.internal.versionless.mpJwt-1.0; ibm.tolerates:="1.1,1.2,2.0,2.1"
+<<<<<<< HEAD
 kind=noship
 edition=full
+=======
+kind=beta
+edition=core
+>>>>>>> 6d1ae1ddd5 (features have correct edition)

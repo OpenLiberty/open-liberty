@@ -5,5 +5,5 @@ singleton=true
 -features= \
     io.openliberty.noShip-1.0, \
     io.openliberty.websocket-2.1
-kind=noship
-edition=full
+kind=beta
+edition=core

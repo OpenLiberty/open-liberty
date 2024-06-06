@@ -4,5 +4,10 @@ visibility=public
 IBM-ShortName: beanValidation
 Subsystem-Name: beanValidation
 -features=io.openliberty.internal.versionless.beanValidation-1.0; ibm.tolerates:="1.1,2.0,3.0,3.1"
+<<<<<<< HEAD
 kind=noship
 edition=full
+=======
+kind=beta
+edition=core
+>>>>>>> 6d1ae1ddd5 (features have correct edition)

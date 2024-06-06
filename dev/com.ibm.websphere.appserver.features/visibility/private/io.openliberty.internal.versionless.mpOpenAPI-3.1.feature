@@ -6,5 +6,10 @@ singleton=true
     io.openliberty.noShip-1.0, \
     io.openliberty.internal.mpVersion-6.0; ibm.tolerates:="6.1", \
     io.openliberty.mpOpenAPI-3.1
+<<<<<<< HEAD
 kind=noship
 edition=full
+=======
+kind=beta
+edition=core
+>>>>>>> 6d1ae1ddd5 (features have correct edition)

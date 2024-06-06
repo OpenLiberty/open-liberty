@@ -12,18 +12,21 @@ public class VersionlessFeatureDefinition {
 	private ArrayList<String[]> featuresAndPlatform;
     private String alsoKnownAs;
     private String akaFutureFeature;
+    private String edition;
 
-	public VersionlessFeatureDefinition(String featureName, String subsystemName, ArrayList<String[]> featuresAndPlatform) {
+	public VersionlessFeatureDefinition(String featureName, String subsystemName, ArrayList<String[]> featuresAndPlatform, String editon) {
 		this.featureName = featureName;
 		this.subsystemName = subsystemName;
 		this.featuresAndPlatform = featuresAndPlatform;
+        this.edition = editon;
 	}
 
-	public VersionlessFeatureDefinition(String featureName, String subsystemName, String[] featureAndPlatform) {
+	public VersionlessFeatureDefinition(String featureName, String subsystemName, String[] featureAndPlatform, String edition) {
 		this.featureName = featureName;
 		this.subsystemName = subsystemName;
 		this.featuresAndPlatform = new ArrayList<String[]>();
         featuresAndPlatform.add(featureAndPlatform);
+        this.edition = edition;
 	}
 
     /**
@@ -33,6 +36,10 @@ public class VersionlessFeatureDefinition {
      */
     public String getFeatureName() {
     	return this.featureName;
+    }
+
+    public String getEdition(){
+        return this.edition;
     }
 
     /**
@@ -86,14 +93,18 @@ public class VersionlessFeatureDefinition {
      */
     public String[] getPreferredAndTolerates() {
     	ArrayList<String> versions = new ArrayList<String>();
-        String tolerates = "";
-        String first = "";
 
     	for(String[] featAndPlat : featuresAndPlatform) {
             if(!versions.contains(featAndPlat[0].split("-")[1])){
                 versions.add(featAndPlat[0].split("-")[1]);
             }
     	}
+        return getPreferredAndTolerates(versions);
+    }
+
+    public String[] getPreferredAndTolerates(ArrayList<String> versions){
+        String tolerates = "";
+        String first = "";
         versions.sort(VersionlessFeatureDefinition::compareVersions);
         for(String version : versions){
             if(first.equals("")){
