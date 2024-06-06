@@ -105,17 +105,15 @@ public class VersionlessFeatureCreator {
         writer.newLine();
         writer.append("-features= \\");
         writer.newLine();
-        writer.append("    io.openliberty.noShip-1.0, \\");
-        writer.newLine();
         if (x != null && y != null) {
             writer.append("    " + x + "-" + y + ", \\");
             writer.newLine();
         }
         writer.append("    " + fullName);
         writer.newLine();
-        writer.append("kind=noship");
+        writer.append("kind=beta");
         writer.newLine();
-        writer.append("edition=full");
+        writer.append("edition=base");
         writer.newLine();
 
         writer.close();
@@ -168,9 +166,9 @@ public class VersionlessFeatureCreator {
             writer.append("-features=io.openliberty.internal.versionless." + toleratesFeature + "-" + versions[0] + "; ibm.tolerates:=\"" + versions[1] + "\"");
         }
         writer.newLine();
-        writer.append("kind=noship");
+        writer.append("kind=beta");
         writer.newLine();
-        writer.append("edition=full");
+        writer.append("edition=base");
         writer.newLine();
 
         writer.close();

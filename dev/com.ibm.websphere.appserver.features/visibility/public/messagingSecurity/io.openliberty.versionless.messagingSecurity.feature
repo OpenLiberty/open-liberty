@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: messagingSecurity
 Subsystem-Name: messagingSecurity
 -features=io.openliberty.internal.versionless.wasJmsSecurity-1.0; ibm.tolerates:="3.0"
-kind=noship
-edition=full
+kind=beta
+edition=base
