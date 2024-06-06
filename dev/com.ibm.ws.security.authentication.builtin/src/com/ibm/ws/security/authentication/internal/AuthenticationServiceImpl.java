@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -55,6 +55,8 @@ import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
+
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @TraceOptions(messageBundle = "com.ibm.ws.security.authentication.internal.resources.AuthenticationMessages")
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -218,12 +220,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             if (isBasicAuthLogin(authenticationData)) {
                 return createBasicAuthSubject(authenticationData, subject);
             } else {
-                Subject authenticatedSubject = findSubjectInAuthCache(authenticationData, subject, hashtableAuthData);
-                if (authenticatedSubject == null) {
-                    authenticatedSubject = performJAASLogin(jaasEntryName, authenticationData, subject);
-                    insertSubjectInAuthCache(authenticationData, authenticatedSubject);
+                Subject cachedAuthenticatedSubject = findSubjectInAuthCache(authenticationData, subject, hashtableAuthData);
+                if (cachedAuthenticatedSubject != null) {
+                    return cachedAuthenticatedSubject;
                 }
+
+                Subject authenticatedSubject = performJAASLogin(jaasEntryName, authenticationData, subject);
+                CheckpointPhase.onRestore(() -> insertSubjectInAuthCache(authenticationData, authenticatedSubject));
+                // Could instead skip the caching altogether.
+                //if (!CheckpointPhase.getPhase().restored()) {
+                //    insertSubjectInAuthCache(authenticationData, authenticatedSubject);
+                //}
                 return authenticatedSubject;
+
+                //Subject authenticatedSubject = findSubjectInAuthCache(authenticationData, subject, hashtableAuthData);
+                //if (authenticatedSubject == null) {
+                //    authenticatedSubject = performJAASLogin(jaasEntryName, authenticationData, subject);
+                //    insertSubjectInAuthCache(authenticationData, authenticatedSubject);
+                //}
+                //return authenticatedSubject;
             }
         } finally {
             releaseLock(authenticationData, hashtableAuthData, currentLock);
@@ -298,12 +313,26 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             if (isBasicAuthLogin(authenticationData)) {
                 return createBasicAuthSubject(authenticationData, subject);
             } else {
-                Subject authenticatedSubject = findSubjectInAuthCache(authenticationData, subject, hashtableAuthData);
-                if (authenticatedSubject == null) {
-                    authenticatedSubject = performJAASLogin(jaasEntryName, callbackHandler, subject);
-                    insertSubjectInAuthCache(authenticationData, authenticatedSubject);
+                Subject cachedAuthenticatedSubject = findSubjectInAuthCache(authenticationData, subject, hashtableAuthData);
+                if (cachedAuthenticatedSubject != null) {
+                    return cachedAuthenticatedSubject;
                 }
+
+                Subject authenticatedSubject = performJAASLogin(jaasEntryName, callbackHandler, subject);
+                final AuthenticationData fAuthenticationData = authenticationData;
+                CheckpointPhase.onRestore(() -> insertSubjectInAuthCache(fAuthenticationData, authenticatedSubject));
+                // Could instead skip the caching altogether
+                //if (!CheckpointPhase.getPhase().restored()) {
+                //    insertSubjectInAuthCache(authenticationData, authenticatedSubject);
+                //}
                 return authenticatedSubject;
+
+                //Subject authenticatedSubject = findSubjectInAuthCache(authenticationData, subject, hashtableAuthData);
+                //if (authenticatedSubject == null) {
+                //    authenticatedSubject = performJAASLogin(jaasEntryName, callbackHandler, subject);
+                //    insertSubjectInAuthCache(authenticationData, authenticatedSubject);
+                //}
+                //return authenticatedSubject;
             }
         } finally {
             releaseLock(authenticationData, hashtableAuthData, currentLock);
@@ -658,5 +687,5 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public Boolean isUseDisplayNameForSecurityName() {
         return useDisplayNameForSecurityName;
     }
-    
+
 }
