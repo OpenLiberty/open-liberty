@@ -656,6 +656,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                     if(current.size() == 0 || current.size() > 1){
                         //need a more descriptive solution, blank list of chains doesn't cut it
                         //selectionContext.addConflict(key, new ArrayList<Chain>());
+                        throw new IllegalStateException("Incompatible versions of features with versionless features");
                     }
                     else{
                         //add the corresponding compatibility feature to the config
