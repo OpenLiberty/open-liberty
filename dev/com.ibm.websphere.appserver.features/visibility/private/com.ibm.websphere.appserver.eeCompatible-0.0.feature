@@ -2,6 +2,6 @@
 symbolicName=com.ibm.websphere.appserver.eeCompatible-0.0
 visibility=private
 singleton=true
-kind=beta
-edition=core
+kind=noship
+edition=full
 WLP-Activation-Type: parallel

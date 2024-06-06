@@ -3,6 +3,7 @@ symbolicName=io.openliberty.internal.versionless.jaxrs-3.0
 visibility=private
 singleton=true
 -features= \
+    io.openliberty.noShip-1.0, \
     io.openliberty.restfulWS-3.0
-kind=beta
-edition=base
+kind=noship
+edition=full
