@@ -1,0 +1,47 @@
+<!--
+    Copyright (c) 2024 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+  <featureManager>
+    <!-- Do not add JDBC or Jakarta Persistence/JPA features to this test bucket -->
+    <!-- This test bucket is for testing with Jakarta NoSQL only -->
+    <feature>componenttest-2.0</feature>
+    <feature>dataContainer-1.0</feature>
+    <feature>nosql-1.0</feature>
+    <feature>servlet-6.0</feature>
+    <feature>mpConfig-3.0</feature>
+    <feature>jsonb-3.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+
+  <application location="DataNoSQLApp.war">
+  	<classloader commonLibraryRef="jnosql" />
+  </application>
+
+
+  <library id="jnosql">
+    <fileset dir="${shared.resource.dir}/jnosql" includes="*.jar" />
+  </library>
+  
+  
+  
+  <variable name="jnosql.document.database" value="${MONGO_DBNAME}"/>
+  <variable name="jnosql.mongodb.host" value="${MONGO_HOST}"/>
+
+  
+  <!-- TODO: Should we still be testing with Java Security on Java 17+ since it's being deprecated? -->
+  <javaPermission codeBase="${shared.resource.dir}/jnosql/classgraph-4.8.151.jar" className="java.security.AllPermission"/>
+
+</server>

@@ -14,8 +14,8 @@ IBM-API-Package: \
   jakarta.data.spi; type="spec"
 Subsystem-Name: Jakarta Data 1.0 Container
 -features=\
-  com.ibm.websphere.appserver.eeCompatible-11.0,\
-  io.openliberty.cdi-4.1,\
+  com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0",\
+  io.openliberty.cdi-4.0; ibm.tolerates:="4.1",\
   io.openliberty.jakarta.data-1.0,\
   io.openliberty.noShip-1.0
 -bundles=\
