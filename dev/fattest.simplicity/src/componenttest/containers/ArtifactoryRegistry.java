@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -97,6 +97,22 @@ public class ArtifactoryRegistry {
 
     public boolean isArtifactoryAvailable() {
         return isArtifactoryAvailable;
+    }
+
+    /**
+     * Generates a temporary copy of the config.json file and returns the file.
+     */
+    public File generateTempDockerConfig(String registry) throws Exception {
+        if (authToken == null) {
+            throw new IllegalStateException("Auth token was not available", setupException);
+        }
+
+        File configDir = new File(System.getProperty("java.io.tmpdir"), ".docker");
+        File configFile = generateDockerConfig(registry, authToken, configDir);
+
+        Log.info(c, "generateTempDockerConfig", "Creating a temporary docker configuration file at: " + configFile.getAbsolutePath());
+
+        return configFile;
     }
 
     //  SETUP METHODS

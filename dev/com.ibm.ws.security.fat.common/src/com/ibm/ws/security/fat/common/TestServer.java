@@ -785,7 +785,7 @@ public class TestServer extends ExternalResource {
         logDirectoryName = server.getPathToAutoFVTOutputServersFolder() + "/" + server.getServerNameWithRepeatAction().replace("shibboleth", "shibboleth-idp") + "-" + sdf.format(d);
         LocalFile logFolder = new LocalFile(logDirectoryName);
         String shibbolethDir = new File(".").getAbsoluteFile().getCanonicalPath().replace("\\", "/") + "/shibboleth-idp";
-        RemoteFile serverFolder = new RemoteFile(server.getMachine(), shibbolethDir);
+        RemoteFile serverFolder = server.getMachine().getFile(shibbolethDir);
 
         // Copy the log files: try to move them instead if we can
         server.recursivelyCopyDirectory(serverFolder, logFolder, false, false, true);

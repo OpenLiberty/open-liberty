@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.annotation.MinimumJavaLevel;
 
 @RunWith(FATRunner.class)
 public class VersionlessServletToMicroProfileTest extends VersionlessTestBase {
@@ -153,6 +154,7 @@ public class VersionlessServletToMicroProfileTest extends VersionlessTestBase {
     public static final String SERVER_NAME_SERVLET6_METRICS = "Servlet6toMetrics";
 
     @Test
+    @MinimumJavaLevel(javaLevel = 11)
     public void servlet6MetricsMaxTest() throws Exception {
         String preferredVersions = PlatformConstants.MICROPROFILE_DESCENDING;
         String expectedResolved[] = { "mpMetrics-5.1" };
@@ -161,6 +163,7 @@ public class VersionlessServletToMicroProfileTest extends VersionlessTestBase {
     }
 
     @Test
+    @MinimumJavaLevel(javaLevel = 11)
     public void servlet6MetricsMinTest() throws Exception {
         String preferredVersions = PlatformConstants.MICROPROFILE_ASCENDING;
         String expectedResolved[] = { "mpMetrics-5.0" };

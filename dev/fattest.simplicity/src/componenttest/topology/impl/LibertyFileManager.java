@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -372,7 +372,7 @@ public class LibertyFileManager {
      * @return         A remote file which encapsulates the machine and path.
      */
     public static RemoteFile createRemoteFile(Machine machine, String absPath) {
-        return new RemoteFile(machine, LibertyServerUtils.makeJavaCompatible(absPath, machine));
+        return machine.getFile(LibertyServerUtils.makeJavaCompatible(absPath, machine));
     }
 
     // Delete operations ...
@@ -442,7 +442,7 @@ public class LibertyFileManager {
         RemoteFile source = createRemoteFile(machine, oldFilePath);
         RemoteFile target = createRemoteFile(machine, newFilePath);
 
-        RemoteFile targetFile = target.isDirectory() ? new RemoteFile(target, source.getName()) : target;
+        RemoteFile targetFile = target.isDirectory() ? target.getMachine().getFile(target, source.getName()) : target;
         RemoteFile targetDir = target.isDirectory() ? target : targetFile.getParentFile();
 
         if (source.exists()) {
@@ -536,8 +536,8 @@ public class LibertyFileManager {
                                              boolean recursivelyCopy,
                                              String tmpDir) throws Exception {
         LocalFile src = new LocalFile(LibertyServerUtils.makeJavaCompatible(relPathTolocalFile));
-        RemoteFile dest = new RemoteFile(machine, path + "/" + destinationFileName);
-        RemoteFile destFile = dest.isDirectory() ? new RemoteFile(dest, src.getName()) : dest;
+        RemoteFile dest = machine.getFile(path + "/" + destinationFileName);
+        RemoteFile destFile = dest.isDirectory() ? dest.getMachine().getFile(dest, src.getName()) : dest;
         RemoteFile destDir = dest.isDirectory() ? dest : destFile.getParentFile();
 
         // If possible, we would like to create the destination file atomically
@@ -552,7 +552,7 @@ public class LibertyFileManager {
             // Machine.getTempDir as that could be /tmp, which could be in a
             // different file system (e.g., tmpfs on Linux), which would cause
             // rename to fail.
-            RemoteFile tmpFile = new RemoteFile(machine, tmpDir + "/" + destFile.getName() + '.' + System.currentTimeMillis());
+            RemoteFile tmpFile = machine.getFile(tmpDir + "/" + destFile.getName() + '.' + System.currentTimeMillis());
             Log.info(CLASS, "copyFileIntoLiberty", "Copying: " + src.getAbsolutePath() + " to " + dest.getAbsolutePath() + " via " + tmpFile.getAbsolutePath());
             if (!src.copyToDest(tmpFile, recursivelyCopy, true)) {
                 throw new TopologyException("Failed to copy " + src.getAbsolutePath() + " to " + tmpFile.getAbsolutePath());
@@ -592,8 +592,8 @@ public class LibertyFileManager {
 
     public static String moveFileIntoLiberty(Machine machine, String path, String destinationFileName, String relPathTolocalFile) throws Exception {
         LocalFile localFile = new LocalFile(LibertyServerUtils.makeJavaCompatible(relPathTolocalFile));
-        RemoteFile remoteFileTmp = new RemoteFile(machine, path + "/" + destinationFileName + ".tmp");
-        RemoteFile remoteFile = new RemoteFile(machine, path + "/" + destinationFileName);
+        RemoteFile remoteFileTmp = machine.getFile(path + "/" + destinationFileName + ".tmp");
+        RemoteFile remoteFile = machine.getFile(path + "/" + destinationFileName);
 
         Log.info(CLASS, "moveFileIntoLiberty", "Copying " + localFile.getAbsolutePath() + " to " + remoteFileTmp.getAbsolutePath());
 

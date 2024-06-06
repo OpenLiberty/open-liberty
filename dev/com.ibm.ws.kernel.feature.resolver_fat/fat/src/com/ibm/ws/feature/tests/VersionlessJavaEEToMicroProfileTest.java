@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.annotation.MinimumJavaLevel;
 
 @RunWith(FATRunner.class)
 public class VersionlessJavaEEToMicroProfileTest extends VersionlessTestBase {
@@ -25,6 +26,7 @@ public class VersionlessJavaEEToMicroProfileTest extends VersionlessTestBase {
     public static final String[] ALLOWED_ERRORS = { "CWWKF0001E", "CWWKF0048E" };
 
     @Test
+    @MinimumJavaLevel(javaLevel = 11)
     public void ee10toHealthAndMetricsMaxTest() throws Exception {
         String preferredVersions = PlatformConstants.MICROPROFILE_DESCENDING;
 
@@ -34,6 +36,7 @@ public class VersionlessJavaEEToMicroProfileTest extends VersionlessTestBase {
     }
 
     @Test
+    @MinimumJavaLevel(javaLevel = 11)
     public void ee10toHealthAndMetricsMinTest() throws Exception {
         String preferredVersions = PlatformConstants.MICROPROFILE_ASCENDING;
 

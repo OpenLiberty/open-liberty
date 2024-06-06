@@ -12,7 +12,6 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.config.fat;
 
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -22,7 +21,7 @@ import com.ibm.ws.rest.handler.config.fat.audit.ConfigRestHandlerAuditFeatureTes
 
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.HttpUtils;
+import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -37,11 +36,8 @@ import componenttest.topology.utils.HttpUtils;
 
 public class FATSuite {
 
-    @BeforeClass
-    public static void setup() throws Exception {
-        HttpUtils.trustAllCertificates();
-        HttpUtils.trustAllHostnames();
-        HttpUtils.setDefaultAuth("adminuser", "adminpwd");
+    public static HttpsRequest createHttpsRequestWithAdminUser(LibertyServer server, String path) {
+        return new HttpsRequest(server, path).allowInsecure().basicAuth("adminuser", "adminpwd");
     }
 
     public static void setupServerSideAnnotations(LibertyServer server) {

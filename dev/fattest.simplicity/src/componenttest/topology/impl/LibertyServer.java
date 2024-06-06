@@ -97,7 +97,6 @@ import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.PortType;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
-import com.ibm.websphere.simplicity.application.ApplicationType;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.ServerConfigurationFactory;
 import com.ibm.websphere.simplicity.log.Log;
@@ -275,7 +274,7 @@ public class LibertyServer implements LogMonitorClient {
     protected static final String EBCDIC_CHARSET_NAME = "IBM1047";
 
     protected volatile boolean isStarted = false;
-    protected volatile boolean startedWithJavaSecurity = false;
+    public volatile boolean startedWithJavaSecurity = false;
     protected boolean isStartedConsoleLogLevelOff = false;
 
     protected int osgiConsolePort = 5678; // The port number of the OSGi Console
@@ -310,13 +309,6 @@ public class LibertyServer implements LogMonitorClient {
     // used by the saveServerConfiguration / restoreServerConfiguration methods to save the current server
     // configuration at a specific point in time and then be able to restore it back in the future
     protected RemoteFile savedServerXml = null;
-
-    //list of servers exempt from log error and failure checking
-    protected HashMap<String, String> serversExemptFromChecking = null;
-
-    protected Set<String> serversExemptFromJava2SecurityTesting = null;
-
-    public static final String DISABLE_FAILURE_CHECKING = "DISABLE_CHECKING";
 
     private boolean isTidy = false;
 
@@ -493,7 +485,11 @@ public class LibertyServer implements LogMonitorClient {
     /**
      * Shared LogMonitor class is used to encapsulate some basic log search/wait logic
      */
-    private final LogMonitor logMonitor;
+    protected final LogMonitor logMonitor;
+
+    public LogMonitor getLogMonitor() {
+        return logMonitor;
+    }
 
     private boolean newLogsOnStart = FileLogHolder.NEW_LOGS_ON_START_DEFAULT;
 
@@ -857,7 +853,7 @@ public class LibertyServer implements LogMonitorClient {
 
         // delete existing server directory if requested:
         if (deleteServerDirIfExist) {
-            RemoteFile serverDir = new RemoteFile(machine, serverRoot);
+            RemoteFile serverDir = machine.getFile(serverRoot);
             if (serverDir.exists() && !serverDir.delete()) {
                 Exception ex = new TopologyException("Unable to delete pre-existing server directory: " + serverRoot);
                 Log.error(c, "setup - User requested that we delete pre-existing server directory, but this operation failed - " + serverRoot, ex);
@@ -879,12 +875,12 @@ public class LibertyServer implements LogMonitorClient {
             jar += ".exe";
             java += ".exe";
         }
-        RemoteFile testJar = new RemoteFile(machine, machineJava + "/bin/" + jar);
-        RemoteFile testJava = new RemoteFile(machine, machineJava + "/bin/" + java);
+        RemoteFile testJar = machine.getFile(machineJava + "/bin/" + jar);
+        RemoteFile testJava = machine.getFile(machineJava + "/bin/" + java);
         machineJarPath = testJar.getAbsolutePath();
         if (!!!testJar.exists()) {
             //if we come in here we might be pointing at a JRE instead of a JDK so we'll go up a level in hope it's there
-            testJar = new RemoteFile(machine, machineJava + "/../bin/" + jar);
+            testJar = machine.getFile(machineJava + "/../bin/" + jar);
             machineJarPath = testJar.getAbsolutePath();
             if (!!!testJar.exists()) {
                 throw new TopologyException("cannot find a " + jar + " file in " + machineJava + "/bin. Please ensure you have set the machine javaHome to point to a JDK");
@@ -920,7 +916,7 @@ public class LibertyServer implements LogMonitorClient {
             // Ignore if doesn't exist
         }
         try {
-            RemoteFile applicationsFolder = new RemoteFile(machine, userDir + "/shared/apps");
+            RemoteFile applicationsFolder = machine.getFile(userDir + "/shared/apps");
             applicationsFolder.delete();
             applicationsFolder.mkdir();
         } catch (Exception e) {
@@ -937,7 +933,7 @@ public class LibertyServer implements LogMonitorClient {
      * @throws Exception
      */
     public void changeFeatures(List<String> newFeatures) throws Exception {
-        RemoteFile serverXML = new RemoteFile(machine, serverRoot + "/" + SERVER_CONFIG_FILE_NAME);
+        RemoteFile serverXML = machine.getFile(serverRoot + "/" + SERVER_CONFIG_FILE_NAME);
         LocalFile tempServerXML = new LocalFile(SERVER_CONFIG_FILE_NAME);
         boolean createOriginalList;
         if (originalFeatureSet == null) {
@@ -993,7 +989,7 @@ public class LibertyServer implements LogMonitorClient {
      * @throws Exception
      */
     public void refreshServerXMLFromPublish() throws Exception {
-        RemoteFile serverXML = new RemoteFile(machine, serverRoot + "/" + SERVER_CONFIG_FILE_NAME);
+        RemoteFile serverXML = machine.getFile(serverRoot + "/" + SERVER_CONFIG_FILE_NAME);
         LocalFile publishServerXML = new LocalFile(PATH_TO_AUTOFVT_SERVERS + "/" + getServerName() + "/" + SERVER_CONFIG_FILE_NAME);
 
         publishServerXML.copyToDest(serverXML, false, true);
@@ -1006,7 +1002,7 @@ public class LibertyServer implements LogMonitorClient {
      * @throws Exception
      */
     public void swapInServerXMLFromPublish(String fileName) throws Exception {
-        RemoteFile serverXML = new RemoteFile(machine, serverRoot + "/" + SERVER_CONFIG_FILE_NAME);
+        RemoteFile serverXML = machine.getFile(serverRoot + "/" + SERVER_CONFIG_FILE_NAME);
         LocalFile publishServerXML = new LocalFile(PATH_TO_AUTOFVT_SERVERS + "/" + getServerName() + "/" + fileName);
 
         Log.info(c, "swapInServerXMLFromPublish", "Reconfiguring server to use config file: " + publishServerXML);
@@ -1591,7 +1587,7 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         // if we have java 2 security enabled, add java.security.manager and java.security.policy
-        if (isJava2SecurityEnabled() && !isEE11Enabled()) {
+        if (isJava2SecurityEnabled() && !isEE11OrLaterEnabled()) {
             RemoteFile f = getServerBootstrapPropertiesFile();
             addJava2SecurityPropertiesToBootstrapFile(f, GLOBAL_DEBUG_JAVA2SECURITY);
             String reason = GLOBAL_JAVA2SECURITY ? "GLOBAL_JAVA2SECURITY" : "GLOBAL_DEBUG_JAVA2SECURITY";
@@ -1631,7 +1627,7 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         //FIPS 140-3
-        // if we have FIPS 140-3 enabled, and the matched java/platform,  add JVM Arg
+        // if we have FIPS 140-3 enabled, and the matched java/platform, add JVM Arg
         if (isFIPS140_3EnabledAndSupported()) {
             Log.info(c, "startServerWithArgs", "Liberty server is running JDK version: " + info.majorVersion() + " and vendor: " + info.VENDOR);
             Log.info(c, "startServerWithArgs", "FIPS 140-3 global build properties is set for server " + getServerName()
@@ -1676,7 +1672,7 @@ public class LibertyServer implements LogMonitorClient {
                 if (includeFiles != null) {
                     String[] files = includeFiles.split("\\s*,\\s*");
                     for (String fileName : files) {
-                        RemoteFile x = new RemoteFile(machine, serverRoot + "/" + fileName);
+                        RemoteFile x = machine.getFile(serverRoot + "/" + fileName);
                         if (x.exists()) {
                             props.clear();
                             InputStream is = null;
@@ -2057,7 +2053,6 @@ public class LibertyServer implements LogMonitorClient {
      * @throws Exception
      */
     public void assertCheckpointDirAsExpected(boolean log) throws Exception {
-        String METHOD = "assertCheckpointDirAsExpected";
         StringBuilder sb = new StringBuilder();
         Formatter fm = new Formatter(sb, Locale.US);
         String fmt = "%3$10d %2$tD-%2$tT %1$s";
@@ -2073,7 +2068,7 @@ public class LibertyServer implements LogMonitorClient {
                 sb.setLength(0);
             }
         }
-        RemoteFile cpDir = new RemoteFile(machine, workarea, "checkpoint");
+        RemoteFile cpDir = machine.getFile(workarea, "checkpoint");
         assertTrue("Missing checkpoint dir", cpDir.isDirectory());
         if (log) {
             for (RemoteFile rf : cpDir.list(false)) {
@@ -2082,11 +2077,11 @@ public class LibertyServer implements LogMonitorClient {
                 sb.setLength(0);
             }
         }
-        RemoteFile workareaCheckpoint = new RemoteFile(machine, cpDir, "workarea");
+        RemoteFile workareaCheckpoint = machine.getFile(cpDir, "workarea");
         assertTrue("Missing workarea backup dir", workareaCheckpoint.isDirectory());
         assertTrue("checkpoint workarea dir has no files",
                    workareaCheckpoint.list(false).length > 1 /* a somewhat arbitrary min count */);
-        RemoteFile imgDir = new RemoteFile(machine, cpDir, "image");
+        RemoteFile imgDir = machine.getFile(cpDir, "image");
         assertTrue("checkpoint image dir has no files",
                    imgDir.list(false).length > 2 /* a somewhat arbitrary min count */);
         if (log) {
@@ -2111,7 +2106,7 @@ public class LibertyServer implements LogMonitorClient {
         if (!logToCheck.exists()) {
             // try the messages log
             Log.info(c, method, "WARNING: console.log does not exist-- trying app verification step with messages.log");
-            logToCheck = new RemoteFile(machine, messageAbsPath);
+            logToCheck = machine.getFile(messageAbsPath);
         }
 
         String found = waitForStringInLog(RESTORE_MESSAGE_CODE, logToCheck);
@@ -2718,7 +2713,6 @@ public class LibertyServer implements LogMonitorClient {
                 }
             }
         }
-
     }
 
     protected static String findAppNameInTokens(Map<String, Pattern> unstartedApps, String[] tokens) {
@@ -2747,7 +2741,7 @@ public class LibertyServer implements LogMonitorClient {
                             + " seconds for server confirmation:  "
                             + START_MESSAGE_CODE + " to be found in " + consoleAbsPath);
 
-        RemoteFile messagesLog = new RemoteFile(machine, messageAbsPath);
+        RemoteFile messagesLog = machine.getFile(messageAbsPath);
         RemoteFile consoleLog = getConsoleLogFile();
 
         try {
@@ -2792,7 +2786,6 @@ public class LibertyServer implements LogMonitorClient {
                 assertNotNull("The JMX REST connector message was not found", waitForStringInLogUsingMark("CWWKX0103I"));
 
                 //backup the key file
-
                 try {
                     copyFileToTempDir("resources/security/key.jks", "key.jks");
                 } catch (Exception e) {
@@ -2885,7 +2878,7 @@ public class LibertyServer implements LogMonitorClient {
         final String method = "validatePortStarted";
 
         // App validation needs the info messages in messages.log
-        RemoteFile messagesLog = new RemoteFile(machine, messageAbsPath);
+        RemoteFile messagesLog = machine.getFile(messageAbsPath);
         if (!messagesLog.exists()) {
             String message = waitForStringInLog("CWWKO0219I", serverStartTimeout, messagesLog);
             if (message == null || message.isEmpty()) {
@@ -2987,7 +2980,7 @@ public class LibertyServer implements LogMonitorClient {
                 final String dumpPath = m.group(1);
                 Log.info(c, method, "Dump file on server: " + dumpPath);
                 if (dumpPath != null) {
-                    final RemoteFile dumpFile = new RemoteFile(machine, dumpPath);
+                    final RemoteFile dumpFile = machine.getFile(dumpPath);
                     Log.info(c, method, "Copying RemoteFile " + dumpFile + " to " + pathToAutoFVTTestFiles + "/tmp/" + destination);
                     lf = copyFileToTempDir(dumpFile, destination);
                 }
@@ -3168,7 +3161,7 @@ public class LibertyServer implements LogMonitorClient {
                 throw new RuntimeException("Cannot stop server because command port is disabled.");
             }
 
-            RemoteFile log = isStartedConsoleLogLevelOff ? new RemoteFile(machine, messageAbsPath) : getConsoleLogFile();
+            RemoteFile log = isStartedConsoleLogLevelOff ? machine.getFile(messageAbsPath) : getConsoleLogFile();
             // Actually waits for the stop message
             waitForStringInLog("CWWKE0036I:", SERVER_STOP_TIMEOUT, log);
 
@@ -3226,7 +3219,6 @@ public class LibertyServer implements LogMonitorClient {
             }
 
             return output;
-
         } finally {
             // Issue 4363: If !newLogsOnStart, no longer reset the log offsets because if the
             // server starts again, logs will roll into the existing logs. We also don't clear
@@ -3581,7 +3573,7 @@ public class LibertyServer implements LogMonitorClient {
         String logDirectoryName = "";
         logDirectoryName = pathToAutoFVTOutputServersFolder + "/" + getServerNameWithRepeatAction() + "-" + sdf.format(d);
         LocalFile logFolder = new LocalFile(logDirectoryName);
-        RemoteFile serverFolder = new RemoteFile(machine, serverRoot);
+        RemoteFile serverFolder = machine.getFile(serverRoot);
 
         runJextract(serverFolder);
 
@@ -3721,7 +3713,7 @@ public class LibertyServer implements LogMonitorClient {
                 continue;
             }
 
-            RemoteFile remoteSrcFile = new RemoteFile(machine, remoteSrcDir, remoteSrcFileName);
+            RemoteFile remoteSrcFile = machine.getFile(remoteSrcDir, remoteSrcFileName);
             LocalFile localDstFile = new LocalFile(localDstDir, remoteSrcFileName);
 
             if (remoteSrcFile.isDirectory()) {
@@ -3806,7 +3798,7 @@ public class LibertyServer implements LogMonitorClient {
      * @throws Exception
      */
     public LocalFile copyFileToTempDir(String pathInServerRoot, String destination) throws Exception {
-        return copyFileToTempDir(new RemoteFile(machine, serverRoot + "/" + pathInServerRoot), destination);
+        return copyFileToTempDir(machine.getFile(serverRoot + "/" + pathInServerRoot), destination);
     }
 
     /**
@@ -3822,7 +3814,7 @@ public class LibertyServer implements LogMonitorClient {
      * @throws Exception
      */
     public LocalFile copyInstallRootFileToTempDir(String pathInInstallRoot, String destination) throws Exception {
-        return copyFileToTempDir(new RemoteFile(machine, installRoot + "/" + pathInInstallRoot), destination);
+        return copyFileToTempDir(machine.getFile(installRoot + "/" + pathInInstallRoot), destination);
     }
 
     protected LocalFile copyFileToTempDir(RemoteFile remoteToCopy, String destination) throws Exception {
@@ -4050,7 +4042,7 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public RemoteFile getServerBootstrapPropertiesFile() throws Exception {
-        return new RemoteFile(machine, serverRoot + "/bootstrap.properties");
+        return machine.getFile(serverRoot + "/bootstrap.properties");
     }
 
     /**
@@ -4110,7 +4102,7 @@ public class LibertyServer implements LogMonitorClient {
 
         path = LibertyServerUtils.makeJavaCompatible(path, useMachine);
 
-        RemoteFile serverDir = new RemoteFile(useMachine, path);
+        RemoteFile serverDir = useMachine.getFile(path);
         return listDirectoryContents(serverDir, filter);
     }
 
@@ -4128,7 +4120,7 @@ public class LibertyServer implements LogMonitorClient {
 
     protected ArrayList<String> listDirectoryContents(String path, String fileName) throws Exception {
 
-        RemoteFile serverDir = new RemoteFile(machine, path);
+        RemoteFile serverDir = machine.getFile(path);
         return listDirectoryContents(serverDir, fileName);
 
     }
@@ -4610,7 +4602,7 @@ public class LibertyServer implements LogMonitorClient {
         LibertyFileManager.copyFileIntoLiberty(machine, getServerRoot(), "server.xml", "productSampleServer.xml");
 
         //Move the test server bootstrap.properties into sample.properties if it exists
-        RemoteFile serverBootStrapProps = new RemoteFile(machine, getServerRoot() + "/bootstrap.properties");
+        RemoteFile serverBootStrapProps = machine.getFile(getServerRoot() + "/bootstrap.properties");
         if (serverBootStrapProps.exists()) {
             //This is optional
             RemoteFile samplePropertiesFile = LibertyFileManager.createRemoteFile(machine, getServerRoot() + "/sample.properties");
@@ -4790,7 +4782,7 @@ public class LibertyServer implements LogMonitorClient {
         // extract it over this server.
         if (jarName != null) {
             String jarPath = LibertyFileManager.copyFileIntoLiberty(machine, installRoot + "/tmp", "publish/images/" + jarName);
-            RemoteFile jarFile = new RemoteFile(machine, jarPath);
+            RemoteFile jarFile = machine.getFile(jarPath);
 
             Log.info(c, "installExtendedImage", "Issuing the command to install the extended content.");
             ProgramOutput po = machine.execute(machineJava + "/bin/java", new String[] { "-jar", jarFile.getAbsolutePath(), "--acceptLicense", "install", installRoot });
@@ -4805,30 +4797,6 @@ public class LibertyServer implements LogMonitorClient {
 
     public String getHostname() {
         return hostName;
-    }
-
-    protected ApplicationType getApplictionType(String appName) throws Exception {
-        ApplicationType type = null;
-        if (appName.endsWith("zip") || appName.endsWith("ZIP")) {
-            type = ApplicationType.ZIP;
-        } else if (appName.endsWith("ear") || appName.endsWith("EAR")) {
-            type = ApplicationType.EAR;
-        } else if (appName.endsWith("war") || appName.endsWith("WAR")) {
-            type = ApplicationType.WAR;
-        } else if (appName.endsWith("eba") || appName.endsWith("EBA")) {
-            type = ApplicationType.EBA;
-        } else if (appName.endsWith("js") || appName.endsWith("js")) {
-            type = ApplicationType.JS;
-        } else if (appName.endsWith("e") || appName.endsWith("jsar")) {
-            type = ApplicationType.JS;
-        }
-
-        if (type == null) {
-            //Application type not recognised
-            throw new TopologyException("Can't install the application " + appName
-                                        + " as the application type is not recognised.  We only support WAR, EAR, ZIP or EBA");
-        }
-        return type;
     }
 
     protected String getJvmOptionsFilePath() {
@@ -4942,7 +4910,6 @@ public class LibertyServer implements LogMonitorClient {
                 optionList.add(option.toString());
             }
         }
-
         setJvmOptions(optionList);
     }
 
@@ -5223,7 +5190,7 @@ public class LibertyServer implements LogMonitorClient {
      */
     public void saveServerConfiguration() throws Exception {
         try {
-            savedServerXml = new RemoteFile(machine, serverRoot + "/savedServerXml" + System.currentTimeMillis() + ".xml");
+            savedServerXml = machine.getFile(serverRoot + "/savedServerXml" + System.currentTimeMillis() + ".xml");
             getServerConfigurationFile().copyToDest(savedServerXml);
         } catch (Exception e) {
             savedServerXml = null;
@@ -5392,9 +5359,9 @@ public class LibertyServer implements LogMonitorClient {
             return null;
         }
         if (machineOS == OperatingSystem.ZOS) {
-            remoteFile = new RemoteFile(machine, consoleAbsPath, Charset.forName(EBCDIC_CHARSET_NAME));
+            remoteFile = machine.getFile(consoleAbsPath, Charset.forName(EBCDIC_CHARSET_NAME));
         } else {
-            remoteFile = new RemoteFile(machine, consoleAbsPath);
+            remoteFile = machine.getFile(consoleAbsPath);
         }
         return remoteFile;
     }
@@ -5503,7 +5470,7 @@ public class LibertyServer implements LogMonitorClient {
         final RemoteFile remoteFile;
         String absolutePath = serverRoot + "/" + filePath;
         if (machineOS == OperatingSystem.ZOS && absolutePath.equalsIgnoreCase(consoleAbsPath)) {
-            remoteFile = new RemoteFile(machine, absolutePath, Charset.forName(EBCDIC_CHARSET_NAME));
+            remoteFile = machine.getFile(absolutePath, Charset.forName(EBCDIC_CHARSET_NAME));
         } else {
             remoteFile = LibertyFileManager.getLibertyFile(machine, absolutePath);
         }
@@ -5674,7 +5641,7 @@ public class LibertyServer implements LogMonitorClient {
         final RemoteFile remoteFile;
         String absolutePath = serverRoot + "/" + filePath;
         if (machineOS == OperatingSystem.ZOS && absolutePath.equalsIgnoreCase(consoleAbsPath)) {
-            remoteFile = new RemoteFile(machine, absolutePath, Charset.forName(EBCDIC_CHARSET_NAME));
+            remoteFile = machine.getFile(absolutePath, Charset.forName(EBCDIC_CHARSET_NAME));
         } else {
             remoteFile = LibertyFileManager.getLibertyFile(machine, absolutePath);
         }
@@ -6308,7 +6275,7 @@ public class LibertyServer implements LogMonitorClient {
      * @param  outputFile file to check
      * @return            line that matched the regexp
      */
-    protected String waitForStringInLogUsingLastOffset(String regexp, long intendedTimeout, RemoteFile outputFile) {
+    public String waitForStringInLogUsingLastOffset(String regexp, long intendedTimeout, RemoteFile outputFile) {
         return waitForStringInLogUsingLastOffset(regexp, intendedTimeout, 2 * intendedTimeout, outputFile);
     }
 
@@ -6564,10 +6531,19 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         if (currentState != state) {
-            throw new RuntimeException("Timed out waiting for " + appName + " to be in state " + state + ". Actual state: " + currentState + ", Last log message:" + lastMessage);
+            if (throwExceptionOnAppStateError()) {
+                throw new RuntimeException("Timed out waiting for " + appName + " to be in state " + state + ". Actual state: " + currentState + ", Last log message:"
+                                           + lastMessage);
+            } else {
+                Log.info(c, "waitForAppState", "Application " + appName + " did not reach " + state + " in " + waited + "ms");
+            }
         } else {
             Log.info(c, "waitForAppState", "Application " + appName + " reached " + state + " in " + waited + "ms");
         }
+    }
+
+    protected boolean throwExceptionOnAppStateError() {
+        return true;
     }
 
     public void addInstalledAppForValidation(String app) {
@@ -7055,11 +7031,11 @@ public class LibertyServer implements LogMonitorClient {
         //copy it back to the server...
         LocalFile keyFile = new LocalFile(pathToAutoFVTTestFiles + "/tmp/key.jks");
         if (keyFile.exists())
-            keyFile.copyToDest(new RemoteFile(getMachine(), getServerRoot() + "/resources/security/key.jks"));
+            keyFile.copyToDest(getMachine().getFile(getServerRoot() + "/resources/security/key.jks"));
         else {
             keyFile = new LocalFile(pathToAutoFVTTestFiles + "/tmp/key.p12");
             if (keyFile.exists())
-                keyFile.copyToDest(new RemoteFile(getMachine(), getServerRoot() + "/resources/security/key.p12"));
+                keyFile.copyToDest(getMachine().getFile(getServerRoot() + "/resources/security/key.p12"));
         }
 
         // Set up the trust store
@@ -7340,13 +7316,19 @@ public class LibertyServer implements LogMonitorClient {
         if (!globalEnabled)
             return false;
 
-        // Allow servers to opt-out of j2sec by setting websphere.java.security.exempt=true in their ${server.config.dir}/bootstrap.properties
-        boolean isJava2SecExempt = "true".equalsIgnoreCase(getBootstrapProperties().getProperty("websphere.java.security.exempt"));
+        boolean isJava2SecExempt = !serverNeedsToRunWithJava2Security();
         Log.info(c, "isJava2SecurityEnabled", "Is server " + getServerName() + " Java 2 Security exempt?  " + isJava2SecExempt);
         return !isJava2SecExempt;
     }
 
-    private boolean isEE11Enabled() throws Exception {
+    protected boolean serverNeedsToRunWithJava2Security() {
+        // Allow servers to opt-out of j2sec by setting
+        // websphere.java.security.exempt=true
+        // in their ${server.config.dir}/bootstrap.properties
+        return !"true".equalsIgnoreCase(getBootstrapProperties().getProperty("websphere.java.security.exempt"));
+    }
+
+    private boolean isEE11OrLaterEnabled() throws Exception {
         if (JakartaEEAction.isEE11OrLaterActive()) {
             return true;
         }
@@ -7358,7 +7340,7 @@ public class LibertyServer implements LogMonitorClient {
         // EE 11 which doesn't support Java security manager can run with Java 17.  As such we need to return false even if we are running
         // with Java security enabled in the build.
 
-        RemoteFile serverXML = new RemoteFile(machine, serverRoot + "/" + SERVER_CONFIG_FILE_NAME);
+        RemoteFile serverXML = machine.getFile(serverRoot + "/" + SERVER_CONFIG_FILE_NAME);
         InputStreamReader in = new InputStreamReader(serverXML.openForReading());
         try (Scanner s = new Scanner(in)) {
             while (s.hasNextLine()) {
@@ -7372,7 +7354,10 @@ public class LibertyServer implements LogMonitorClient {
                         line = line.replaceAll("<feature>", "");
                         line = line.replaceAll("</feature>", "");
                         line = line.trim();
-                        if (JakartaEE11Action.EE11_ONLY_FEATURE_SET_LOWERCASE.contains(line.toLowerCase())) {
+                        String lowerCaseFeatureName = line.toLowerCase();
+
+                        // special case data-1.1 until JakartaEE12Action is created when EE 12 is more of a thing.
+                        if (JakartaEE11Action.EE11_ONLY_FEATURE_SET_LOWERCASE.contains(lowerCaseFeatureName) || "data-1.1".equals(lowerCaseFeatureName)) {
                             return true;
                         }
                     }

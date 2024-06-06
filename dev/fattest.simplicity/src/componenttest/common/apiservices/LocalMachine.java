@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,6 +23,7 @@ import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.common.apiservices.cmdline.LocalProvider;
 
 public class LocalMachine extends Machine {
@@ -85,7 +86,7 @@ public class LocalMachine extends Machine {
 
     @Override
     public RemoteFile getTempDir() throws Exception {
-        return new RemoteFile(this, System.getProperty("java.io.tmpdir"));
+        return super.getFile(System.getProperty("java.io.tmpdir"));
     }
 
     @Override
@@ -108,7 +109,7 @@ public class LocalMachine extends Machine {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see componenttest.common.apiservices.Machine#killProcess(int)
      */
     @Override
@@ -133,7 +134,7 @@ public class LocalMachine extends Machine {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see componenttest.common.apiservices.Machine#getDate()
      */
     @Override

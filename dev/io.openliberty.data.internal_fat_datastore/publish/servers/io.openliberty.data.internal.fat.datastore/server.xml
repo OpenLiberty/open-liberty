@@ -30,6 +30,8 @@
     <file name="${shared.resource.dir}/derby/derby.jar"/>
   </library>
 
+  <authData id="ResRefAuth1" user="resrefuser1" password="resrefpwd1"/>
+
   <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="DerbyLib"/>
     <properties.derby.embedded createDatabase="create" databaseName="memory:defaultdb" user="defaultuser1" password="defaultpwd1"/>

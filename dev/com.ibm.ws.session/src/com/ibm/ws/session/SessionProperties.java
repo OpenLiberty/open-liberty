@@ -759,14 +759,14 @@ final public class SessionProperties {
             smc.setSessionCookieSameSite(SameSiteCookie.get(sValue));  
         }
 
-        if (ProductInfo.getBetaEdition()) {
-            s = "cookiePartitioned";
-            bValue = propertyToBoolean(xtpProperties.get(s));
-            if (bValue != null) {
-                smc.setSessionCookiePartitioned(bValue);
-            }
+        s = "cookiePartitioned";
+        sValue = propertyToString(xtpProperties.get(s));
+        // if it's not defered then it's true or false which we can parse to a boolean
+        if(!sValue.equalsIgnoreCase("defer")){
+            bValue = propertyToBoolean(sValue);
+            smc.setSessionCookiePartitioned(bValue);
         }
-
+        
         s = "maxInMemorySessionCount";
         iValue = propertyToInteger(xtpProperties.get(s));
         if (iValue != null) {

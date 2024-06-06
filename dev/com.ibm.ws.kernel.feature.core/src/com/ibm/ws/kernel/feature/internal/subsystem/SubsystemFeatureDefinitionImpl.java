@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,6 +25,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
@@ -216,6 +217,11 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
     @Override
     public Visibility getVisibility() {
         return iAttr.visibility;
+    }
+
+    @Override
+    public List<String> getPlatforms() {
+        return iAttr.platforms;
     }
 
     @Override
@@ -541,5 +547,29 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
         }
 
         return bundles;
+    }
+
+    @Override
+    public boolean isVersionless() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean isConvenience() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean isCompatibility() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public String getPlatformValue() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

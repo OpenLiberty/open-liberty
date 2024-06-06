@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,6 @@ import java.util.Map;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonString;
-import javax.json.JsonStructure;
 import javax.json.JsonValue;
 
 import org.junit.AfterClass;
@@ -79,7 +78,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         // Lacking this fix, transaction manager will experience an auth failure and log FFDC for it.
         // The following line causes an XA-capable data source to be used for the first time outside of a test method execution,
         // so that the FFDC is not considered a test failure.
-        new HttpsRequest(server, "/ibm/api/validation/dataSource/DefaultDataSource").run(JsonObject.class);
+        FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/dataSource/DefaultDataSource").run(JsonObject.class);
     }
 
     @AfterClass
@@ -98,12 +97,12 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     // Invoke /ibm/api/config REST API to display information for all configured instances.
     @Test
     public void testConfig() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config").run(JsonArray.class);
+        JsonArray json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config").run(JsonArray.class);
         String err = "unexpected response: " + json;
         int count = json.size();
         assertTrue(err, count > 10);
 
-        JsonArray json2 = new HttpsRequest(server, "/ibm/api/config/").run(JsonArray.class);
+        JsonArray json2 = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/").run(JsonArray.class);
         int count2 = json2.size();
         assertEquals(count, count2);
 
@@ -143,7 +142,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     // Test configuration that is child-first
     @Test
     public void testConfigChildFirst() throws Exception {
-        JsonObject app = new HttpsRequest(server, "/ibm/api/config/application/bogus").run(JsonObject.class);
+        JsonObject app = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/application/bogus").run(JsonObject.class);
         String err = "unexpected response: " + app;
         assertEquals(err, "bogus", app.getString("uid"));
         assertEquals(err, "bogus", app.getString("id"));
@@ -176,8 +175,8 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     //Test the config api when a configuration element's feature is not enabled
     @Test
     public void testConfigMongoNotEnabled() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config/mongo").run(JsonArray.class);
-        JsonArray json2 = new HttpsRequest(server, "/ibm/api/config/mongoDB").run(JsonArray.class);
+        JsonArray json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/mongo").run(JsonArray.class);
+        JsonArray json2 = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/mongoDB").run(JsonArray.class);
         String err = "unexpected response: " + json;
         assertEquals(err, 1, json.size());
         assertEquals(err, 1, json2.size());
@@ -213,11 +212,11 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     // Verify that directly referenced configurations and indirectly referenced configurations are included.
     @Test
     public void testConfigDataSource() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config/dataSource").run(JsonArray.class);
+        JsonArray json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/dataSource").run(JsonArray.class);
         String err = "unexpected response: " + json;
         assertEquals(err, 7, json.size());
 
-        JsonArray json2 = new HttpsRequest(server, "/ibm/api/config/dataSource/").run(JsonArray.class);
+        JsonArray json2 = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/dataSource/").run(JsonArray.class);
         assertEquals(json, json2);
 
         JsonObject j, jj;
@@ -569,7 +568,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     // Invoke /ibm/api/config/dataSource with jndiName to filter for a specific dataSource instance.
     @Test
     public void testConfigDataSourceByJNDIName() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config/dataSource?jndiName=jdbc%2FwithoutJDBCDriver").run(JsonArray.class);
+        JsonArray json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/dataSource?jndiName=jdbc%2FwithoutJDBCDriver").run(JsonArray.class);
         String err = "unexpected response: " + json;
         assertEquals(err, 1, json.size());
 
@@ -597,7 +596,8 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     // and verify information for both dataSource instances (and no others) is returned.
     @Test
     public void testConfigDataSourceByJNDINames() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config/dataSource?jndiName=jdbc/defaultauth&jndiName=jdbc/wrongdefaultauth").run(JsonArray.class);
+        JsonArray json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/dataSource?jndiName=jdbc/defaultauth&jndiName=jdbc/wrongdefaultauth")
+                        .run(JsonArray.class);
         String err = "unexpected response: " + json;
         assertEquals(err, 2, json.size());
 
@@ -627,11 +627,11 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     // Invoke /ibm/api/config/dataSource/{uid} REST API and filter on attributes. This is redundant, but should still work.
     @Test
     public void testConfigDataSourceFilterSingleInstance() throws Exception {
-        JsonObject j = new HttpsRequest(server, "/ibm/api/config/dataSource/WrongDefaultAuth?" +
-                                                "id=WrongDefaultAuth&jndiName=jdbc/wrongdefaultauth&beginTranForVendorAPIs=true&" +
-                                                "commitOrRollbackOnCleanup=rollback&invalidProperty=The+property's+value.&" +
-                                                "queryTimeout=130&statementCacheSize=15&validationTimeout=20")
-                                                                .run(JsonObject.class);
+        JsonObject j = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/dataSource/WrongDefaultAuth?" +
+                                                                        "id=WrongDefaultAuth&jndiName=jdbc/wrongdefaultauth&beginTranForVendorAPIs=true&" +
+                                                                        "commitOrRollbackOnCleanup=rollback&invalidProperty=The+property's+value.&" +
+                                                                        "queryTimeout=130&statementCacheSize=15&validationTimeout=20")
+                        .run(JsonObject.class);
         String err = "unexpected response: " + j;
         assertEquals(err, "dataSource", j.getString("configElementName"));
         assertEquals(err, "WrongDefaultAuth", j.getString("uid"));
@@ -645,7 +645,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     // Invoke /ibm/api/config/dataSource/{uid} REST API to display information for a single data source.
     @Test
     public void testConfigDefaultDataSource() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/config/dataSource/DefaultDataSource").run(JsonObject.class);
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/dataSource/DefaultDataSource").run(JsonObject.class);
         String err = "unexpected response: " + json;
 
         assertEquals(err, "DefaultDataSource", json.getString("uid"));
@@ -657,13 +657,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     // Invoke REST endpoint with uid present, but the config element parameter missing. Expect an error.
     @Test
     public void testConfigDefaultDataSourceMissingElementName() throws Exception {
-        try {
-            JsonStructure json = new HttpsRequest(server, "/ibm/api/config/dataSource[DefaultDataSource]").run(JsonStructure.class);
-            String err = "unexpected response: " + json;
-            fail(err);
-        } catch (Exception ex) {
-            assertTrue("Expected 404 response", ex.getMessage().contains("404"));
-        }
+        FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/dataSource%5BDefaultDataSource%5D").expectCode(404).run(String.class);
     }
 
     // Ensure that the requested element type matches the returned config.
@@ -671,7 +665,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     // not 'applicationManager' or 'enterpriseApplication' because they contain the substring 'application'
     @Test
     public void testConfigElementSubStrings() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config/application").run(JsonArray.class);
+        JsonArray json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/application").run(JsonArray.class);
         String err = "unexpected response: " + json;
         assertEquals(err, 1, json.size());
 
@@ -686,7 +680,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     // Verify that a multiple cardinality attribute is displayed properly in the /ibm/api/config JSON response.
     @Test
     public void testConfigFeatureManager() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config/featureManager").run(JsonArray.class);
+        JsonArray json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/featureManager").run(JsonArray.class);
         String err = "unexpected response: " + json;
         assertEquals(err, 1, json.size());
 
@@ -718,7 +712,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     // Verify that grandfathered attribute names containing '.' are included in the /ibm/api/config JSON response.
     @Test
     public void testConfigHttpEncoding() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config/httpEncoding").run(JsonArray.class);
+        JsonArray json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/httpEncoding").run(JsonArray.class);
         String err = "unexpected response: " + json;
 
         JsonObject j = json.getJsonObject(0);
@@ -732,7 +726,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     //Test that internal config attributes are not returned
     @Test
     public void testConfigInternalAttributes() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/config/dataSource/DefaultDataSource").run(JsonObject.class);
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/dataSource/DefaultDataSource").run(JsonObject.class);
         String err = "unexpected response: " + json;
 
         assertEquals(err, "DefaultDataSource", json.getString("id"));
@@ -744,7 +738,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     //Test that a config element with name=internal is not returned
     @Test
     public void testConfigInternalElement() throws Exception {
-        String response = new HttpsRequest(server, "/ibm/api/config/udpOptions").expectCode(404).run(String.class);
+        String response = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/udpOptions").expectCode(404).run(String.class);
 
         String err = "unexpected response: " + response;
         assertTrue(err, response.contains("CWWKO1500E"));
@@ -754,7 +748,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     // <usr_parent id="a" name="one"> <child value="two"> <grandchild value="three"/> </child> </usr_parent>
     @Test
     public void testNestedFlat() throws Exception {
-        JsonObject parent = new HttpsRequest(server, "/ibm/api/config/usr_parent/a").run(JsonObject.class);
+        JsonObject parent = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/usr_parent/a").run(JsonObject.class);
         String err = "unexpected response: " + parent;
 
         assertEquals(err, "a", parent.getString("uid"));
@@ -794,7 +788,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
      */
     @Test
     public void testConfigDefaultInstances() throws Exception {
-        JsonObject parent = new HttpsRequest(server, "/ibm/api/config/usr_parent/dflt").run(JsonObject.class);
+        JsonObject parent = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/usr_parent/dflt").run(JsonObject.class);
         String err = "unexpected response: " + parent;
 
         assertEquals(err, "dflt", parent.getString("uid"));
@@ -853,17 +847,19 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     public void testConfigNoMatch() throws Exception {
         // Server configuration has a dataSource with jndiName jdbc/defaultauth and another with connectionSharing of MatchCurrentState,
         // but no single dataSource has both.
-        String response = new HttpsRequest(server, "/ibm/api/config/dataSource?jndiName=jdbc/defaultauth&connectionSharing=MatchCurrentState").expectCode(404).run(String.class);
+        String response = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/dataSource?jndiName=jdbc/defaultauth&connectionSharing=MatchCurrentState")
+                        .expectCode(404)
+                        .run(String.class);
         String err = "unexpected response: " + response;
         assertTrue(err, response.contains("CWWKO1500E"));
 
         // Attribute does not exist on any dataSource instance
-        response = new HttpsRequest(server, "/ibm/api/config/dataSource?cancellationTimeout=60").expectCode(404).run(String.class);
+        response = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/dataSource?cancellationTimeout=60").expectCode(404).run(String.class);
         err = "unexpected response: " + response;
         assertTrue(err, response.contains("CWWKO1500E"));
 
         // Attribute does not match on specific dataSource instance
-        response = new HttpsRequest(server, "/ibm/api/config/dataSource/DefaultDataSource?queryTimeout=130").expectCode(404).run(String.class);
+        response = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/dataSource/DefaultDataSource?queryTimeout=130").expectCode(404).run(String.class);
         err = "unexpected response: " + response;
         assertTrue(err, response.contains("CWWKO1500E") && response.contains("dataSource") && response.contains("uid: DefaultDataSource"));
     }
@@ -871,18 +867,18 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     // Invoke /ibm/api/config/ REST API for configuration element that is not present in the configuration. Ensure a CWWKO1500E response.
     @Test
     public void testConfigNotPresent() throws Exception {
-        String response = new HttpsRequest(server, "/ibm/api/config/connectionFactory").expectCode(404).run(String.class);
+        String response = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/connectionFactory").expectCode(404).run(String.class);
         String err = "unexpected response: " + response;
         assertTrue(err, response.contains("CWWKO1500E"));
 
-        String response2 = new HttpsRequest(server, "/ibm/api/config/connectionFactory/").expectCode(404).run(String.class);
+        String response2 = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/connectionFactory/").expectCode(404).run(String.class);
         assertEquals(response, response2);
     }
 
     // Invoke /ibm/api/config/ REST API with query parameter to filter across multiple configuration element types.
     @Test
     public void testConfigOnError() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config?onError=FAIL").run(JsonArray.class);
+        JsonArray json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config?onError=FAIL").run(JsonArray.class);
         String err = "unexpected response: " + json;
         assertEquals(err, 3, json.size()); // Increase the expected value if new configuration is added which has the onError attribute
 
@@ -944,7 +940,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
      */
     @Test
     public void testConfigJDBCDriverCase() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config/JdBcDrIvEr").run(JsonArray.class);
+        JsonArray json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/JdBcDrIvEr").run(JsonArray.class);
         String err = "unexpected response: " + json;
         assertEquals(err, 1, json.size());
         JsonObject j = json.getJsonObject(0);
@@ -967,11 +963,14 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     @Test
     public void testSingleInstanceJDBCDriverCase() throws Exception {
         //This should not return a value since the incorrect case is used for the element name
-        String response = new HttpsRequest(server, "/ibm/api/config/jdbcDriver/dataSource[NestedElementCase]/JdBcDrIvEr[default-0]").expectCode(404).run(String.class);
+        String response = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/jdbcDriver/dataSource%5BNestedElementCase%5D/JdBcDrIvEr%5Bdefault-0%5D")
+                        .expectCode(404)
+                        .run(String.class);
         String err = "unexpected response: " + response;
         assertTrue(err, response.contains("CWWKO1500E") && response.contains("jdbcDriver") && response.contains("uid: dataSource[NestedElementCase]/JdBcDrIvEr[default-0]"));
 
-        JsonObject json = new HttpsRequest(server, "/ibm/api/config/JdBcDrIvEr/dataSource[NestedElementCase]/JdBcDrIvEr[default-0]").run(JsonObject.class);
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/JdBcDrIvEr/dataSource%5BNestedElementCase%5D/JdBcDrIvEr%5Bdefault-0%5D")
+                        .run(JsonObject.class);
         err = "unexpected response: " + json;
         assertNotNull(err, json);
         assertEquals(err, "JdBcDrIvEr", json.getString("configElementName"));
@@ -991,7 +990,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
      */
     @Test
     public void testConnectionManagerCase() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config/CONNECTIONMANAGER").run(JsonArray.class);
+        JsonArray json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/CONNECTIONMANAGER").run(JsonArray.class);
         String err = "unexpected response: " + json;
 
         assertEquals(err, 1, json.size());
@@ -1013,7 +1012,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
      */
     @Test
     public void testConfigReaderRole() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config/dataSource").basicAuth("reader", "readerpwd").run(JsonArray.class);
+        JsonArray json = new HttpsRequest(server, "/ibm/api/config/dataSource").basicAuth("reader", "readerpwd").allowInsecure().run(JsonArray.class);
         String err = "unexpected response: " + json;
         assertTrue(err, json.size() > 1);
 
@@ -1034,14 +1033,14 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     @Test
     public void testConfigUserWithoutRoles() throws Exception {
         try {
-            JsonArray json = new HttpsRequest(server, "/ibm/api/config/dataSource").basicAuth("user", "userpwd").run(JsonArray.class);
+            JsonArray json = new HttpsRequest(server, "/ibm/api/config/dataSource").basicAuth("user", "userpwd").allowInsecure().run(JsonArray.class);
             fail("unexpected response: " + json);
         } catch (Exception ex) {
             assertTrue("Expected 403 response", ex.getMessage().contains("403"));
         }
 
         try {
-            JsonArray json = new HttpsRequest(server, "/ibm/api/config/doesnotexist").basicAuth("user", "userpwd").run(JsonArray.class);
+            JsonArray json = new HttpsRequest(server, "/ibm/api/config/doesnotexist").basicAuth("user", "userpwd").allowInsecure().run(JsonArray.class);
             fail("unexpected response: " + json);
         } catch (Exception ex) {
             assertTrue("Expected 403 response", ex.getMessage().contains("403"));
@@ -1053,11 +1052,11 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     // and verify that no results are returned.
     @Test
     public void testElementNameUsesEscapedCharacters() throws Exception {
-        String response = new HttpsRequest(server, "/ibm/api/config/abc(d)\\k*m").expectCode(404).run(String.class);
+        String response = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/abc(d)%5Ck*m").expectCode(404).run(String.class);
         String err = "unexpected response: " + response;
         assertTrue(err, response.contains("CWWKO1500E"));
 
-        response = new HttpsRequest(server, "/ibm/api/config/uvw)(id=DefaultDataSource)(id=xyz").expectCode(404).run(String.class);
+        response = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/uvw)(id=DefaultDataSource)(id=xyz").expectCode(404).run(String.class);
         err = "unexpected response: " + response;
         assertTrue(err, response.contains("CWWKO1500E"));
     }
@@ -1065,7 +1064,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     // Invoke /ibm/api/config/dataSource/{uid} with HTTP POST (should not be allowed)
     @Test
     public void testPOSTRejected() throws Exception {
-        String response = new HttpsRequest(server, "/ibm/api/config/dataSource/DefaultDataSource")
+        String response = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/dataSource/DefaultDataSource")
                         .method("POST")
                         .expectCode(405) // Method Not Allowed
                         .run(String.class);

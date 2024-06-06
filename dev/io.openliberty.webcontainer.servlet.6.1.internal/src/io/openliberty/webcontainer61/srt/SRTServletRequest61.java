@@ -85,7 +85,7 @@ public class SRTServletRequest61 extends SRTServletRequest60 implements HttpServ
      */
     @Override
     public void setCharacterEncoding(Charset charset) {
-        String encoding = charset.name();
+        String encoding = (charset == null ? null : charset.name());
         if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
             logger.logp(Level.FINE, CLASS_NAME, "setCharacterEncoding", "Charset name [" + encoding + "] [" + this + "]");
         }

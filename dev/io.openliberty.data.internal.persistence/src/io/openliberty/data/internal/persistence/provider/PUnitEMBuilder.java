@@ -14,8 +14,11 @@ package io.openliberty.data.internal.persistence.provider;
 
 import java.util.Objects;
 
+import javax.sql.DataSource;
+
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
@@ -23,6 +26,7 @@ import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceException;
 
 /**
  * This builder is used when a persistence unit reference JNDI name is configured as the repository dataStore.
@@ -94,6 +98,23 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
                             && Objects.equals(module, b.module)
                             && Objects.equals(component, b.component)
                             && Objects.equals(getRepositoryClassLoader(), b.getRepositoryClassLoader());
+    }
+
+    @FFDCIgnore(PersistenceException.class)
+    @Override
+    public DataSource getDataSource() {
+        try {
+            return emf.unwrap(DataSource.class);
+        } catch (PersistenceException x) {
+            try {
+                EntityManager em = emf.createEntityManager();
+                return em.unwrap(DataSource.class);
+            } catch (PersistenceException xx) {
+                throw new UnsupportedOperationException("DataSource and Connection resources are not available" +
+                                                        " from the EntityManagerFactory or EntityManager of the" +
+                                                        " Jakarta Persistence provider.", x); // TODO NLS
+            }
+        }
     }
 
     @Override
