@@ -289,18 +289,21 @@ task autoFVT {
 
     // Copy the component test libs
     // TODO: It looks like the componenttest.app.jar got combined into something else, so this is now way more source in the jar than was there before. This might need changing then.
-    copy {
+    /*copy {
       from project(':com.ibm.ws.componenttest').buildDir
       include 'com.ibm.ws.componenttest.jar'
       rename 'com.ibm.ws.componenttest.jar', 'componenttest.app.jar'
       into new File(autoFvtDir, 'lib')
-    }
+    }*/
 
     // Copy the fattest libs
-    copy {
-      from project(':fattest.simplicity').buildDir
-      include 'fattest*.*'
-      into new File(autoFvtDir, 'lib')
+    // TCK project's depend on the fattest.simplicity.jar being in the autoFVT/lib directory for their pom.xml files
+    if (project.name.contains('tck')) {
+      copy {
+        from project(':fattest.simplicity').buildDir
+        include 'fattest.simplicity.jar'
+        into new File(autoFvtDir, 'lib')
+      }
     }
 
     // TODO: This is to compensate for the fact that the ant build of fattest.simplicity produced this jar but the gradle build doesn't
