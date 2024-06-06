@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: ejb
 Subsystem-Name: ejb
 -features=io.openliberty.internal.versionless.ejb-3.2; ibm.tolerates:="4.0"
-kind=beta
-edition=base
+kind=noship
+edition=full

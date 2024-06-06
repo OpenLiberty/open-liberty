@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: websocket
 Subsystem-Name: websocket
 -features=io.openliberty.internal.versionless.websocket-1.1; ibm.tolerates:="2.0,2.1,2.2"
-kind=beta
-edition=base
+kind=noship
+edition=full

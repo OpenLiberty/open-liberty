@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: messaging
 Subsystem-Name: messaging
 -features=io.openliberty.internal.versionless.jms-1.1; ibm.tolerates:="2.0,3.0,3.1"
-kind=beta
-edition=base
+kind=noship
+edition=full

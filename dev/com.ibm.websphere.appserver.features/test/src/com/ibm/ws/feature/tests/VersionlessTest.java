@@ -295,10 +295,8 @@ public class VersionlessTest {
                     //each feature dependency of the platform
                     Set<FeatureInfo> publicDepFeatures = getAllPublicDependentFeatures(featureInfo);
                     for (FeatureInfo depInfo : publicDepFeatures) {
-                        if (depInfo.getKind().equals("noship")){
-                            continue;
-                        }
                         System.out.println("        [ " + depInfo.getBaseName() + " - " + depInfo.getVersion() + " ]");
+
                         if (depInfo.isAlsoKnownAsSet()) {
                             System.out.println("            [ AKA: " + depInfo.getAlsoKnownAs() + " ]");
                         }
@@ -346,9 +344,7 @@ public class VersionlessTest {
 
         for (String title : versionlessFeatures.keySet()) {
             //We don't want to have versionless features of other convenience features, so skip them
-            System.out.println(title);
             if (skipFeatures.contains(title)) {
-                System.out.println("true");
                 continue;
             }
             boolean createdFile = false;

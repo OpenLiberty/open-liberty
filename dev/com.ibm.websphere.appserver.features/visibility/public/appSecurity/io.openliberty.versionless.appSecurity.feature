@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: appSecurity
 Subsystem-Name: appSecurity
 -features=io.openliberty.internal.versionless.appSecurity-2.0; ibm.tolerates:="3.0,4.0,5.0,6.0"
-kind=beta
-edition=base
+kind=noship
+edition=full
