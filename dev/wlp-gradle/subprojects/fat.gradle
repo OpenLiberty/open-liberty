@@ -40,7 +40,7 @@ task cleanBeforeRun(type: Delete) {
 }
 
 configurations {
-  requiredLibs
+  requiredLibs { transitive = false; }
   jdbcDrivers { transitive = false; }
   testcontainers { transitive = false; }
   derby
