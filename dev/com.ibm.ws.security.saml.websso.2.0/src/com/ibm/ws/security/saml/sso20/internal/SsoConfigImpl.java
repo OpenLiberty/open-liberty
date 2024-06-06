@@ -261,7 +261,7 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
                 CryptoMessageUtils.logUnsecureAlgorithmReplaced(KEY_signatureMethodAlgorithm, signatureMethodAlgorithm, alternative);
                 signatureMethodAlgorithm = alternative;
             } else {
-                // No alternative so log the unsecure algorithm in use
+                // No alternative so log the unsecure algorithm in use but otherwise keep original behavior
                 CryptoMessageUtils.logUnsecureAlgorithm(KEY_signatureMethodAlgorithm, signatureMethodAlgorithm);
             }
         }
@@ -595,16 +595,24 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
      *
      * @see com.ibm.ws.security.saml.SsoConfig#getSignatureMethodAlgorithm()
      */
+    // TODO move this to new SamlSignatureUtils class in crypto.common
+    // @Override
+    // public String getSignatureMethodAlgorithm() {
+    //     if (!FipsUtils.isFips140_3Enabled() ) {
+    //         if ("SHA256".equalsIgnoreCase(signatureMethodAlgorithm)) {
+    //             return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
+    //         } else if ("SHA1".equalsIgnoreCase(signatureMethodAlgorithm)) {
+    //             return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1;
+    //         } else {
+    //             return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
+    //         }
+    //     }
+    //     return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
+    // }
+
     @Override
     public String getSignatureMethodAlgorithm() {
-        if (false /* TODO !FipsUtils.isFIPSEnabled() */ ) {
-            if ("SHA256".equalsIgnoreCase(signatureMethodAlgorithm)) {
-                return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
-            } else if ("SHA1".equalsIgnoreCase(signatureMethodAlgorithm)) {
-                return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1;
-            }
-        }
-        return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
+        return SamlSignatureUtils.getSignatureMethodAlgorithm(KEY_signatureMethodAlgorithm, signatureMethodAlgorithm);
     }
 
     /*
