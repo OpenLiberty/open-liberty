@@ -152,6 +152,7 @@ task autoFVT {
   dependsOn ':cnf:copyMavenLibs'
   dependsOn addRequiredLibraries
   dependsOn copyFeatureBundles
+  dependsOn ':fattest.simplicity:assemble'
   enabled project.file('fat').exists()
 
   ext.getFeature = { line ->
