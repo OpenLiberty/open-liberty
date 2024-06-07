@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,8 @@
 package com.ibm.ws.security.saml.sso20.acs;
 
 import java.util.List;
+
+import javax.xml.validation.Validator;
 
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.messaging.handler.MessageHandlerException;
@@ -35,9 +37,9 @@ import org.opensaml.xmlsec.signature.support.impl.BaseSignatureTrustEngine;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.crypto.common.SamlSignatureMethods;
 import com.ibm.ws.security.saml.TraceConstants;
 import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
-import com.ibm.ws.security.saml.sso20.internal.utils.SignatureMethods;
 
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import net.shibboleth.utilities.java.support.resolver.ResolverException;
@@ -73,17 +75,17 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
 
     /**
      * Constructor.
-     * 
+     *
      * Signature prevalidator defaults to {@link SAMLSignatureProfileValidator}.
-     * 
+     *
      */
     public SAMLMessageXMLSignatureSecurityPolicyRule() {
         setSignaturePrevalidator(new SAMLSignatureProfileValidator());
     }
-    
+
     /**
      * Set the prevalidator for XML Signature instances.
-     * 
+     *
      * @param validator The prevalidator to set.
      */
     public void setSignaturePrevalidator(final SignaturePrevalidator validator) {
@@ -91,7 +93,6 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
         signaturePrevalidator = validator;
     }
 
-    
     /** {@inheritDoc} */
     @Override
     public void doInvoke(final MessageContext messageContext) throws MessageHandlerException {
@@ -111,7 +112,6 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
             return;
         }
     }
-    
 
     // @FFDCIgnore({SecurityPolicyException.class}) //TODO: ignore new exception type
     public void evaluateProfile(BasicMessageContext<?, ?> samlMsgCtx) throws MessageHandlerException {
@@ -140,7 +140,7 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
             }
         }
     }
-    
+
     public void evaluateAssertion(BasicMessageContext<?, ?> samlMsgCtx, Assertion assertion) throws MessageHandlerException {
         processType = "Profile";
 
@@ -151,7 +151,7 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
         evaluate(samlMsgCtx, assertion);
 
     }
-    
+
     public void evaluateProtocol(BasicMessageContext<?, ?> samlMsgCtx) throws MessageHandlerException {
         processType = "Protocol";
         SAMLObject samlMsg = samlMsgCtx.getMessageContext().getMessage();
@@ -204,17 +204,18 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
         @SuppressWarnings("rawtypes")
         String configMethod = ((BasicMessageContext) samlMsgCtx).getSsoConfig().getSignatureMethodAlgorithm();
         String messageMethod = signature.getSignatureAlgorithm();
-        if (SignatureMethods.toInteger(messageMethod) < SignatureMethods.toInteger(configMethod)) {
+        if (SamlSignatureMethods.toInteger(messageMethod) < SamlSignatureMethods.toInteger(configMethod)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Required signature method from configuration is " + configMethod);
                 Tr.debug(tc, "Received signature method is " + messageMethod);
             }
-              throw new MessageHandlerException("The server is configured with the signature method " + configMethod
-          + " but the received SAML assertion is signed with the signature method "
-          + messageMethod + ", the signature method provided is weaker than the required.");
-        
+            throw new MessageHandlerException("The server is configured with the signature method " + configMethod
+                                              + " but the received SAML assertion is signed with the signature method "
+                                              + messageMethod + ", the signature method provided is weaker than the required.");
+
         }
     }
+
     protected SAMLPeerEntityContext getPeerContext() {
         return getSAMLPeerEntityContext();
     }
@@ -228,16 +229,16 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
      * @param samlMsgCtx     the SAML message context being processed
      * @throws SecurityPolicyException thrown if the signature fails validation
      */
-    
+
     protected void doEvaluate(Signature signature, SignableSAMLObject signableObject, BasicMessageContext<?, ?> samlMsgCtx) throws MessageHandlerException {
         //String contextIssuer = samlMsgCtx.getInboundMessageIssuer(); //v2
         String contextIssuer = samlMsgCtx.getInboundSamlMessageIssuer();
         MessageContext<SAMLObject> messageContext = samlMsgCtx.getMessageContext();
         SAMLPeerEntityContext peerContext = getSAMLPeerEntityContext();
-        
+
         //String contextIssuer = peerContext.getEntityId(); // v3 this will not work in rs saml flow
         //SAMLObject samlMsg = messageContext.getMessage();
-        
+
         if (contextIssuer != null) {
             String msgType = signableObject.getElementQName().toString();
             if (tc.isDebugEnabled()) {
@@ -267,10 +268,10 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
                     }
                     throw new MessageHandlerException("Validation of " + processType + " message signature failed");
                 }
-            }catch (Exception e){
-                throw new MessageHandlerException("Validation of " + processType + " message signature failed");           
+            } catch (Exception e) {
+                throw new MessageHandlerException("Validation of " + processType + " message signature failed");
             } finally {
-                Thread.currentThread().setContextClassLoader(originalClassLoader); 
+                Thread.currentThread().setContextClassLoader(originalClassLoader);
             }
 
         } else {
@@ -293,19 +294,19 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
             try {
                 final KeyInfoCriterion keyInfoCriteria = new KeyInfoCriterion(signature.getKeyInfo());
                 final CriteriaSet keyInfoCriteriaSet = new CriteriaSet(keyInfoCriteria);
-                Iterable<Credential> kiCredIter = ((BaseSignatureTrustEngine)getTrustEngine()).getKeyInfoResolver().resolve(keyInfoCriteriaSet);
+                Iterable<Credential> kiCredIter = ((BaseSignatureTrustEngine) getTrustEngine()).getKeyInfoResolver().resolve(keyInfoCriteriaSet);
                 //return getTrustEngine().validate(signature, criteriaSet);
                 Credential kiCred = kiCredIter.iterator().next();
                 //evaluateTrust(kiCred, trustBasis);
                 return getTrustEngine().validate(signature, criteriaSet);
-               
+
             } catch (ResolverException e) {
-               
+
             } catch (SecurityException e) {
-               
+
             }
         } catch (MessageHandlerException e) {
-       
+
         }
         return false;
     }

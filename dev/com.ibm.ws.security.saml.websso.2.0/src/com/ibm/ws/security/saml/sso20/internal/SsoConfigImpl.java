@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2023 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.opensaml.xmlsec.signature.support.SignatureConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -35,6 +34,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.crypto.common.CryptoMessageUtils;
 import com.ibm.ws.crypto.common.CryptoUtils;
 import com.ibm.ws.crypto.common.FipsUtils;
+import com.ibm.ws.crypto.common.SamlSignatureUtils;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.filemonitor.FileBasedActionable;
@@ -253,7 +253,9 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
         wantAssertionsSigned = (Boolean) props.get(KEY_wantAssertionsSigned);
         signatureMethodAlgorithm = trim((String) props.get(KEY_signatureMethodAlgorithm));
 
-        // In enhanced security mode try to replace an unsecure algorithm (SHA1) with a secure one (SHA256)
+        // In FIPS 140-3 mode try to replace an unsecure algorithm with a secure one.
+        // Even though the unsecure algorithm might be needed for some IdP, it won't be
+        // available in this mode and would fail so we go ahead and replace it.
         if (FipsUtils.isFips140_3Enabled() && CryptoUtils.isUnsecureAlgorithm(signatureMethodAlgorithm)) {
             String alternative = CryptoUtils.getSecureAlternative(signatureMethodAlgorithm);
             if (alternative != null) {
@@ -265,7 +267,6 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
                 CryptoMessageUtils.logUnsecureAlgorithm(KEY_signatureMethodAlgorithm, signatureMethodAlgorithm);
             }
         }
-
 
         authnRequestsSigned = (Boolean) props.get(KEY_authnRequestsSigned);
         includeX509InSPMetadata = (Boolean) props.get(KEY_includeX509InSPMetadata);
@@ -595,21 +596,6 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
      *
      * @see com.ibm.ws.security.saml.SsoConfig#getSignatureMethodAlgorithm()
      */
-    // TODO move this to new SamlSignatureUtils class in crypto.common
-    // @Override
-    // public String getSignatureMethodAlgorithm() {
-    //     if (!FipsUtils.isFips140_3Enabled() ) {
-    //         if ("SHA256".equalsIgnoreCase(signatureMethodAlgorithm)) {
-    //             return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
-    //         } else if ("SHA1".equalsIgnoreCase(signatureMethodAlgorithm)) {
-    //             return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1;
-    //         } else {
-    //             return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
-    //         }
-    //     }
-    //     return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
-    // }
-
     @Override
     public String getSignatureMethodAlgorithm() {
         return SamlSignatureUtils.getSignatureMethodAlgorithm(KEY_signatureMethodAlgorithm, signatureMethodAlgorithm);

@@ -159,11 +159,8 @@ Service-Component: \
 	com.ibm.websphere.appserver.spi.saml20;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	io.openliberty.org.apache.commons.codec;version=latest, \
-	com.ibm.ws.com.google.guava;version=latest
-	
-	# TODO
-	# com.ibm.ws.com.google.guava;version=latest, \
-	# com.ibm.ws.crypto.common;version=latest
+	com.ibm.ws.com.google.guava;version=latest, \
+	com.ibm.ws.crypto.common;version=latest
 
 instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/SamlSso20Messages*.class
 

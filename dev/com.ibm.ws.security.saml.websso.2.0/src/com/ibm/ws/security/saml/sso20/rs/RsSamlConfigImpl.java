@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.opensaml.xmlsec.signature.support.SignatureConstants;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
@@ -30,7 +29,10 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-// TODO import com.ibm.ws.crypto.common.FipsUtils;
+import com.ibm.ws.crypto.common.CryptoMessageUtils;
+import com.ibm.ws.crypto.common.CryptoUtils;
+import com.ibm.ws.crypto.common.FipsUtils;
+import com.ibm.ws.crypto.common.SamlSignatureUtils;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.saml.Constants;
 import com.ibm.ws.security.saml.SsoConfig;
@@ -190,6 +192,22 @@ public class RsSamlConfigImpl extends PkixTrustEngineConfig implements SsoConfig
 
         clockSkewMilliSeconds = (Long) props.get(KEY_clockSkew); // milliseconds
         signatureMethodAlgorithm = trim((String) props.get(KEY_signatureMethodAlgorithm));
+
+        // In FIPS 140-3 mode try to replace an unsecure algorithm with a secure one.
+        // Even though the unsecure algorithm might be needed for some IdP, it won't be
+        // available in this mode and would fail so we go ahead and replace it.
+        if (FipsUtils.isFips140_3Enabled() && CryptoUtils.isUnsecureAlgorithm(signatureMethodAlgorithm)) {
+            String alternative = CryptoUtils.getSecureAlternative(signatureMethodAlgorithm);
+            if (alternative != null) {
+                // Use the alternative and log that we're replacing the configured algorithm
+                CryptoMessageUtils.logUnsecureAlgorithmReplaced(KEY_signatureMethodAlgorithm, signatureMethodAlgorithm, alternative);
+                signatureMethodAlgorithm = alternative;
+            } else {
+                // No alternative so log the unsecure algorithm in use but otherwise keep original behavior
+                CryptoMessageUtils.logUnsecureAlgorithm(KEY_signatureMethodAlgorithm, signatureMethodAlgorithm);
+            }
+        }
+
         userIdentifier = trim((String) props.get(KEY_userIdentifier));
         groupIdentifier = trim((String) props.get(KEY_groupIdentifier));
         userUniqueIdentifier = trim((String) props.get(KEY_userUniqueIdentifier));
@@ -308,16 +326,7 @@ public class RsSamlConfigImpl extends PkixTrustEngineConfig implements SsoConfig
      */
     @Override
     public String getSignatureMethodAlgorithm() {
-        if (false /* TODO !FipsUtils.isFIPSEnabled() */) {
-            if ("SHA256".equalsIgnoreCase(signatureMethodAlgorithm)) {
-                return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
-            } else if ("SHA128".equalsIgnoreCase(signatureMethodAlgorithm)) {
-                return SignatureConstants.MORE_ALGO_NS + "rsa-sha128"; //???????
-            } else if ("SHA1".equalsIgnoreCase(signatureMethodAlgorithm)) {
-                return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1;
-            }
-        }
-        return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
+        return SamlSignatureUtils.getSignatureMethodAlgorithm(KEY_signatureMethodAlgorithm, signatureMethodAlgorithm);
     }
 
     /*
