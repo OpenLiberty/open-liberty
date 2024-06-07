@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest;
 
@@ -43,6 +43,7 @@ public class SameSiteTestTools {
     public static CommonValidationTools validationTools = new CommonValidationTools();
 
     public static final String SameSiteCookieKey = "mySameSiteCookie";
+    public static final String PartitionedCookieKey = "myPartitionedCookie";
     public static final String SsoRequiresSSL = "mySsoRequiresSSL";
     public static final String HttpsRequiredKey = "myHttpsRequired";
     public static final String RedirectHostKey = "redirectHost";
@@ -60,7 +61,7 @@ public class SameSiteTestTools {
     protected static List<String> configUpdateMsgs = Arrays.asList(MessageConstants.CWWKG0017I_CONFIG_UPDATE_COMPLETE);
 
     private TestServer testOPServer = null;
-    private TestServer testRPServer = null;
+    private TestServer testClientServer = null;
     private TestServer genericTestServer = null;
     private List<TestServer> serverRefList = null;
 
@@ -71,10 +72,10 @@ public class SameSiteTestTools {
     // We can't just extend the CommonTests class as too many classes that don't need these tools
     // will be polluted with them, so, keep a local instance of the server refs for use by the methods
     // in this class
-    public SameSiteTestTools(TestServer opServer, TestServer rpServer, TestServer rsServer, List<TestServer> servers) {
+    public SameSiteTestTools(TestServer opServer, TestServer clientServer, TestServer rsServer, List<TestServer> servers) {
 
         testOPServer = opServer;
-        testRPServer = rpServer;
+        testClientServer = clientServer;
         genericTestServer = rsServer;
         serverRefList = servers;
     }
@@ -166,9 +167,10 @@ public class SameSiteTestTools {
         variablesToSet.put(CookiesEnabledKey, "true");
         variablesToSet.put(CookieHttpOnlyKey, "true");
         variablesToSet.put(SameSiteCookieKey, Constants.SAMESITE_DISABLED);
+        variablesToSet.put(PartitionedCookieKey, "false");
         variablesToSet.put(SsoRequiresSSL, "false");
         variablesToSet.put(HttpsRequiredKey, "false");
-        variablesToSet.put(RedirectHostKey, testRPServer.getServerHttpsString());
+        variablesToSet.put(RedirectHostKey, testClientServer.getServerHttpsString());
 
         return variablesToSet;
 
@@ -199,37 +201,38 @@ public class SameSiteTestTools {
     }
 
     /**
-     * Create a map of the default settings for an RP server
+     * Create a map of the default settings for an RP/Social server
      *
-     * @return - map of default RP variables
+     * @return - map of default client variables
      * @throws Exception
      */
-    public Map<String, String> setDefaultRPConfigSettingsMap() throws Exception {
+    public Map<String, String> setDefaultClientConfigSettingsMap() throws Exception {
 
         Map<String, String> variablesToSet = new HashMap<String, String>();
         variablesToSet.put(CookieSecureKey, "true");
         variablesToSet.put(CookiesEnabledKey, "true");
         variablesToSet.put(CookieHttpOnlyKey, "true");
         variablesToSet.put(SameSiteCookieKey, Constants.SAMESITE_DISABLED);
+        variablesToSet.put(PartitionedCookieKey, "false");
         variablesToSet.put(SsoRequiresSSL, "false");
         variablesToSet.put(HttpsRequiredKey, "false");
         variablesToSet.put(AuthorizationHostKey, testOPServer.getServerHttpsString());
         variablesToSet.put(TokenHostKey, testOPServer.getServerHttpsString());
         variablesToSet.put(IntrospectHostKey, testOPServer.getServerHttpsString());
-        variablesToSet.put(RedirectHostKey, testRPServer.getServerHttpsString());
+        variablesToSet.put(RedirectHostKey, testClientServer.getServerHttpsString());
         //        variablesToSet.put(RedirectHostKey, testRPServer.getServerHttpsCanonicalString());
 
         return variablesToSet;
 
     }
 
-    // updates the RP server with the default config values (could also say restores the default values)
-    public Map<String, String> setRPConfigSettings() throws Exception {
-        return setRPConfigSettings(new HashMap<String, String>());
+    // updates the Client server with the default config values (could also say restores the default values)
+    public Map<String, String> setClientConfigSettings() throws Exception {
+        return setConfigConfigSettings(new HashMap<String, String>());
     }
 
     /**
-     * Creates a map of the default settings for the RP plus
+     * Creates a map of the default settings for the Client plus
      * any values to override or add to those settings
      *
      * @param updates
@@ -237,13 +240,13 @@ public class SameSiteTestTools {
      * @return - updated map of variable settings
      * @throws Exception
      */
-    public Map<String, String> setRPConfigSettings(Map<String, String> updates) throws Exception {
+    public Map<String, String> setConfigConfigSettings(Map<String, String> updates) throws Exception {
 
-        Map<String, String> variables = setDefaultRPConfigSettingsMap();
+        Map<String, String> variables = setDefaultClientConfigSettingsMap();
         for (Entry<String, String> update : updates.entrySet()) {
             variables.put(update.getKey(), update.getValue());
         }
-        updateServerSettings(testRPServer, variables);
+        updateServerSettings(testClientServer, variables);
         return variables;
     }
 
@@ -260,12 +263,13 @@ public class SameSiteTestTools {
         variablesToSet.put(CookiesEnabledKey, "true");
         variablesToSet.put(CookieHttpOnlyKey, "true");
         variablesToSet.put(SameSiteCookieKey, Constants.SAMESITE_DISABLED);
+        variablesToSet.put(PartitionedCookieKey, "false");
         variablesToSet.put(SsoRequiresSSL, "false");
         variablesToSet.put(HttpsRequiredKey, "false");
         variablesToSet.put(AuthorizationHostKey, testOPServer.getServerHttpsString());
         variablesToSet.put(TokenHostKey, testOPServer.getServerHttpsString());
         variablesToSet.put(IntrospectHostKey, testOPServer.getServerHttpsString());
-        variablesToSet.put(RedirectHostKey, testRPServer.getServerHttpsString());
+        variablesToSet.put(RedirectHostKey, testClientServer.getServerHttpsString());
         variablesToSet.put(ValidationHostKey, testOPServer.getServerHttpsString());
 
         return variablesToSet;
