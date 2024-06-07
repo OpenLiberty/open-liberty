@@ -240,7 +240,7 @@
 
         // Obtain content to save
         var contentToSave = null;
-        if(! $("#editorDesignView").hasClass("hidden")) {
+        if(!$("#editorDesignView").hasClass("hidden")) {
             contentToSave = serializeConfigurationFile();
         } else if(!$("#editorSourceView").hasClass("hidden")) {
             contentToSave = source.orionEditor.editor.getText();
