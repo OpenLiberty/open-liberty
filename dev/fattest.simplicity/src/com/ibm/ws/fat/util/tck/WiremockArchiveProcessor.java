@@ -23,7 +23,7 @@ import java.util.Set;
 public class WiremockArchiveProcessor extends AbstractArchiveWeaver {
 
     @Override
-    protected Set<File> getFilesToWeave() {
+    protected Set<File> getJarsToWeave() {
         File[] wiremockFiles = new File(System.getProperty("wlp"), "/usr/servers/FATServer").listFiles((dir, name) -> name.startsWith("wiremock-standalone-"));
         return new HashSet<>(Arrays.asList(wiremockFiles));
     }

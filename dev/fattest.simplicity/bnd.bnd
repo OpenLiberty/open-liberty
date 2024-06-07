@@ -115,4 +115,6 @@ fat.test.container.images: testcontainers/ryuk:0.6.0, testcontainers/sshd:1.1.0,
     org.seleniumhq.selenium:selenium-support;version=4.8.3,\
     io.openliberty.org.bouncycastle.bcpkix-jdk18on;version=latest,\
     io.openliberty.org.bouncycastle.bcprov-jdk18on;version=latest,\
-    io.openliberty.org.bouncycastle.bcutil-jdk18on;version=latest
+    io.openliberty.org.bouncycastle.bcutil-jdk18on;version=latest,\
+    io.openliberty.jakarta.concurrency.3.1;version=latest,\
+    io.openliberty.jakarta.annotation.3.0;version=latest
