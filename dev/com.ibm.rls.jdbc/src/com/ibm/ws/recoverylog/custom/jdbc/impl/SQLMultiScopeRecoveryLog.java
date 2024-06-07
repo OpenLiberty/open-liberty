@@ -2877,6 +2877,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 createTableStmt.executeUpdate(oracleIndexString);
             } else if (_isDB2) {
                 String db2TableString = genericTableCreatePreString + fullTableName + db2TablePostString;
+                String dbName = ConfigurationProviderManager.getConfigurationProvider().getTransactionLogDBName();
+                if (!dbName.isEmpty()) {
+                    db2TableString = db2TableString + " IN DATABASE " + dbName;
+                }
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Create DB2 Table using: " + db2TableString);
 

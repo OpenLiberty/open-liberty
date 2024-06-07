@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-// comment
 package com.ibm.tx.config;
 
 import java.util.List;
@@ -356,4 +355,11 @@ public interface ConfigurationProvider {
      * @return
      */
     public boolean peerRecoveryPrecedence();
+
+    /**
+     * The optional database-name where tables are created in DB2
+     *
+     * @return
+     */
+    public String getTransactionLogDBName();
 }
