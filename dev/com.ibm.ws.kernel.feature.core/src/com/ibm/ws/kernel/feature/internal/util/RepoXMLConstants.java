@@ -69,4 +69,5 @@ public interface RepoXMLConstants {
     String VERSION_RANGE_TAG = "version-range";
 
     String TOLERATE_TAG = "tolerate";
+    String WLP_PLATFORM_TAG = "WLP-Platform";
 }

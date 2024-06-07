@@ -14,10 +14,6 @@ package com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
-import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.isolation.IsolationServlet;
-import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.isolation.PullExporterAutoConfigurationCustomizerProvider;
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -26,6 +22,10 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.isolation.IsolationServlet;
+import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.isolation.PullExporterAutoConfigurationCustomizerProvider;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -48,7 +48,7 @@ public class TelemetryMetricIsolationTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP70);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP70_EE10);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -73,7 +73,7 @@ public class TelemetryMetricIsolationTest {
     @Test
     public void metricIsolationTest() throws Exception {
         //Test one ensures we don't have any metrics exported from FT into Telemetry before calling a method with a FT annotation
-        //Test two ensures that we do have metrics after the method 
+        //Test two ensures that we do have metrics after the method
         HttpUtils.findStringInUrl(server, "IsolationTestAppOne/isolationtest", "Test one passed Test two passed");
         HttpUtils.findStringInUrl(server, "IsolationTestAppTwo/isolationtest", "Test one passed Test two passed");
 

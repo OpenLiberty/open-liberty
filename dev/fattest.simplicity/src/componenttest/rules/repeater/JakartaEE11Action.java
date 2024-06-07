@@ -27,6 +27,8 @@ import componenttest.rules.repeater.RepeatActions.SEVersion;
  * </ol>
  */
 public class JakartaEE11Action extends JakartaEEAction {
+    public static final String ID = EE11_ACTION_ID;
+
     private static final Map<String, String> DEFAULT_TRANSFORMATION_RULES = new HashMap<>();
     private static final Map<String, String> TRANSFORMATION_RULES_APPEND = new HashMap<>();
     private static boolean WIDEN = false;

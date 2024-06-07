@@ -250,6 +250,7 @@ public class XAResourceImpl implements XAResource, Serializable {
         private int commitRepeatCount;
         private int rollbackRepeatCount;
         private int forgetRepeatCount;
+        private int recoverDelay = 120;
         private int recoverRepeatCount;
         private int statusDuringCommit;
         private int statusDuringRollback;
@@ -447,6 +448,15 @@ public class XAResourceImpl implements XAResource, Serializable {
 
         public void setCommitRepeatCount(int commitRepeatCount) {
             this.commitRepeatCount = commitRepeatCount;
+        }
+
+        public int getRecoverDelay() {
+            return recoverDelay;
+        }
+
+        public void setRecoverDelay(int recoverDelay) {
+            System.out.println("setRecoverDelay(" + _key + ", " + recoverDelay + ")");
+            this.recoverDelay = recoverDelay;
         }
 
         public int getRecoverRepeatCount() {
@@ -936,8 +946,9 @@ public class XAResourceImpl implements XAResource, Serializable {
                 System.out.println("scupperRecovery is " + scupperRecovery);
                 if(scupperRecovery) {
                 	try {
-                		System.out.println("Sleeping in RECOVER");
-                		Thread.sleep(120 * 1000);
+                        final int recoverDelay = self().getRecoverDelay();
+                		System.out.println("Sleeping for " + recoverDelay + " seconds in RECOVER");
+                		Thread.sleep(recoverDelay * 1000);
                 	} catch (InterruptedException e) {
                 		e.printStackTrace();
                 	} finally {
@@ -1149,6 +1160,12 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     public XAResourceImpl setForgetAction(int action) {
         self().setForgetAction(action);
+
+        return this;
+    }
+
+    public XAResourceImpl setRecoverDelay(int seconds) {
+        self().setRecoverDelay(seconds);
 
         return this;
     }

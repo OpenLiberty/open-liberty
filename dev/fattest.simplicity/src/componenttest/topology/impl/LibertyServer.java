@@ -1587,7 +1587,7 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         // if we have java 2 security enabled, add java.security.manager and java.security.policy
-        if (isJava2SecurityEnabled() && !isEE11Enabled()) {
+        if (isJava2SecurityEnabled() && !isEE11OrLaterEnabled()) {
             RemoteFile f = getServerBootstrapPropertiesFile();
             addJava2SecurityPropertiesToBootstrapFile(f, GLOBAL_DEBUG_JAVA2SECURITY);
             String reason = GLOBAL_JAVA2SECURITY ? "GLOBAL_JAVA2SECURITY" : "GLOBAL_DEBUG_JAVA2SECURITY";
@@ -6532,7 +6532,8 @@ public class LibertyServer implements LogMonitorClient {
 
         if (currentState != state) {
             if (throwExceptionOnAppStateError()) {
-                throw new RuntimeException("Timed out waiting for " + appName + " to be in state " + state + ". Actual state: " + currentState + ", Last log message:" + lastMessage);
+                throw new RuntimeException("Timed out waiting for " + appName + " to be in state " + state + ". Actual state: " + currentState + ", Last log message:"
+                                           + lastMessage);
             } else {
                 Log.info(c, "waitForAppState", "Application " + appName + " did not reach " + state + " in " + waited + "ms");
             }
@@ -7327,7 +7328,7 @@ public class LibertyServer implements LogMonitorClient {
         return !"true".equalsIgnoreCase(getBootstrapProperties().getProperty("websphere.java.security.exempt"));
     }
 
-    private boolean isEE11Enabled() throws Exception {
+    private boolean isEE11OrLaterEnabled() throws Exception {
         if (JakartaEEAction.isEE11OrLaterActive()) {
             return true;
         }
@@ -7353,7 +7354,10 @@ public class LibertyServer implements LogMonitorClient {
                         line = line.replaceAll("<feature>", "");
                         line = line.replaceAll("</feature>", "");
                         line = line.trim();
-                        if (JakartaEE11Action.EE11_ONLY_FEATURE_SET_LOWERCASE.contains(line.toLowerCase())) {
+                        String lowerCaseFeatureName = line.toLowerCase();
+
+                        // special case data-1.1 until JakartaEE12Action is created when EE 12 is more of a thing.
+                        if (JakartaEE11Action.EE11_ONLY_FEATURE_SET_LOWERCASE.contains(lowerCaseFeatureName) || "data-1.1".equals(lowerCaseFeatureName)) {
                             return true;
                         }
                     }
