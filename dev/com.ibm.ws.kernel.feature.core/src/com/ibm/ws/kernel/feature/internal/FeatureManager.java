@@ -757,7 +757,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                     break;
                 case REFRESH:
                     // Get all the installed features.
-                    for (String featureName : featureRepository.getInstalledFeatures()) {
+                    for (String featureName : featureRepository.getResolvedFeatures()) {
                         ProvisioningFeatureDefinition feature = featureRepository.getFeature(featureName);
                         // If the feature is not null and is an AutoFeature store it away.
                         if (feature != null && feature.isAutoFeature()) {
@@ -786,7 +786,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                 Tr.info(tc, "STARTING_AUDIT");
             }
 
-            preInstalledFeatures = new HashSet<>(featureRepository.getInstalledFeatures());
+            preInstalledFeatures = new HashSet<>(featureRepository.getResolvedFeatures());
 
             String pkgs = bundleContext.getProperty("com.ibm.ws.kernel.classloading.apiPackagesToHide");
             Set<String> apiPkgsToIgnore = pkgs == null ? null : new HashSet<String>(Arrays.asList(pkgs.split(",")));
@@ -968,7 +968,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                                      Set<String> deletedPublicAutoFeatures) {
         writeServiceMessages();
 
-        Set<String> postInstalledFeatures = new HashSet<>(featureRepository.getInstalledFeatures());
+        Set<String> postInstalledFeatures = new HashSet<>(featureRepository.getResolvedFeatures());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "all installed features " + postInstalledFeatures);
         }
@@ -989,16 +989,16 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             if (!installedPublicFeatures.isEmpty() && !preInstalledFeatures.isEmpty()) {
                 Tr.audit(tc, "FEATURES_ADDED_CLIENT_DELTA", installedPublicFeatures);
             }
-            Tr.audit(tc, "FEATURES_ADDED_CLIENT", getPublicFeatures(featureRepository.getInstalledFeatures(), true));
+            Tr.audit(tc, "FEATURES_ADDED_CLIENT", getPublicFeatures(featureRepository.getResolvedFeatures(), true));
         } else {
 
             if (!!!installedPublicFeatures.isEmpty() && !preInstalledFeatures.isEmpty()) {
                 Tr.audit(tc, "FEATURES_ADDED_DELTA", installedPublicFeatures);
             }
-            Tr.audit(tc, "FEATURES_ADDED", getPublicFeatures(featureRepository.getInstalledFeatures(), true));
+            Tr.audit(tc, "FEATURES_ADDED", getPublicFeatures(featureRepository.getResolvedFeatures(), true));
         }
 
-        featureRepository.copyInstalledFeaturesTo(postInstalledFeatures);
+        featureRepository.copyResolvedFeaturesTo(postInstalledFeatures);
         preInstalledFeatures.removeAll(postInstalledFeatures);
 
         // Add in any deleted autofeatures to the trace.
@@ -1535,12 +1535,12 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                         bundleCache.addAllNoReplace(newBundleList);
 
                         // Update installedFeatures with the features that were successfully added
-                        featureRepository.setInstalledFeatures(goodFeatures, newConfiguredFeatures, reportedConfigurationErrors);
+                        featureRepository.setResolvedFeatures(goodFeatures, newConfiguredFeatures, reportedConfigurationErrors);
                     }
                 }
             }
             if (featureChange.appForceRestart != null) {
-                final Set<String> featureSet = featureRepository.getInstalledFeatures();
+                final Set<String> featureSet = featureRepository.getResolvedFeatures();
                 if (featureChangesRequireRestart(preInstalledFeatures, featureSet)) {
                     featureChange.appForceRestart.setResult(true);
                     appForceRestartSet = true;
@@ -1648,7 +1648,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         //post the updated feature list to EventAdmin
         if (eventAdminService != null) {
             Map<String, Object> eventProps = new HashMap<String, Object>(2);
-            final Set<String> featureSet = featureRepository.getInstalledFeatures();
+            final Set<String> featureSet = featureRepository.getResolvedFeatures();
             eventProps.put("features", featureSet.toArray(new String[featureSet.size()]));
             eventProps.put("sequenceNumber", Long.valueOf(sequenceNumber));
             Event e = new Event("com/ibm/ws/kernel/feature/internal/FeatureManager/FEATURE_CHANGE", eventProps);
@@ -1697,8 +1697,8 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             && featureRepository.getConfiguredFeatures().equals(newConfiguredFeatures)
             && featureRepository.getPlatforms().equals(newConfiguredPlatforms)) {
             // check that all installed features are still installed
-            for (String installedFeature : featureRepository.getInstalledFeatures()) {
-                if (featureRepository.getFeature(installedFeature) == null) {
+            for (String resolvedFeature : featureRepository.getResolvedFeatures()) {
+                if (featureRepository.getFeature(resolvedFeature) == null) {
                     return false;
                 }
             }
@@ -1761,7 +1761,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         for (Entry<String, Set<String>> javaSEEntry : javaVersiontoFeatureMap.entrySet()) {
             for (String feature : javaSEEntry.getValue()) {
                 Tr.error(tc, "FEATURE_JAVA_LEVEL_NOT_MET_ERROR", feature, javaSEEntry.getKey());
-                featureRepository.removeInstalledFeature(feature);
+                featureRepository.removeResolvedFeature(feature);
             }
         }
 
@@ -2556,7 +2556,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
 
     @Override
     public Set<String> getInstalledFeatures() {
-        return featureRepository.getInstalledFeatures();
+        return featureRepository.getResolvedFeatures();
     }
 
     public Collection<ProvisioningFeatureDefinition> getInstalledFeatureDefinitions() {
