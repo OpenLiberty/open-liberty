@@ -21,9 +21,11 @@ task assembleBootstrap(type: Copy) {
 }
 
 task assembleBinaryDependencies() {
+    dependsOn jar
     dependsOn ':com.ibm.websphere.javaee.jaxb.2.2:jar'
     dependsOn ':com.ibm.websphere.javaee.jsonp.1.0:jar'
     dependsOn ':com.ibm.ws.common.encoder:jar'
+    dependsOn ':com.ibm.ws.componenttest:jar'
     dependsOn ':com.ibm.ws.jaxb.tools:jar'
     dependsOn ':com.ibm.ws.junit.extensions:jar'
     dependsOn ':com.ibm.ws.logging.core:jar'
@@ -54,6 +56,7 @@ task assembleBinaryDependencies() {
         copy {
             from new File(project(':com.ibm.websphere.javaee.jaxb.2.2').buildDir, 'com.ibm.websphere.javaee.jaxb.2.2.jar')
             from new File(project(':com.ibm.websphere.javaee.jsonp.1.0').buildDir, 'com.ibm.websphere.javaee.jsonp.1.0.jar')
+            from new File(project(':com.ibm.ws.componenttest').buildDir, 'com.ibm.ws.componenttest.jar')
             from new File(project(':com.ibm.ws.jaxb.tools').buildDir, 'com.ibm.ws.jaxb.tools.jar')
             from new File(project(':com.ibm.ws.junit.extensions').buildDir, 'com.ibm.ws.junit.extensions.jar')
             from new File(project(':com.ibm.ws.logging.core').buildDir, 'com.ibm.ws.logging.core.jar')
@@ -66,6 +69,7 @@ task assembleBinaryDependencies() {
             from new File(project(':io.openliberty.org.bouncycastle.bcprov-jdk18on').buildDir, 'io.openliberty.org.bouncycastle.bcprov-jdk18on.jar')
             from new File(project(':io.openliberty.org.bouncycastle.bcutil-jdk18on').buildDir, 'io.openliberty.org.bouncycastle.bcutil-jdk18on.jar')
             from new File(project(':io.openliberty.org.testcontainers').buildDir, 'io.openliberty.org.testcontainers.jar')
+            from new File(buildDir, 'fattest.simplicity.jar')
             into buildDirLib
         }
         copy {
@@ -127,7 +131,6 @@ task extractArquillianSupportJakartaFeature21(type:Sync) {
 
 jar {
     dependsOn assembleBootstrap
-    dependsOn assembleBinaryDependencies
     dependsOn extractArquillianSupportFeature
     dependsOn extractArquillianSupportJakartaFeature21
 }
@@ -141,4 +144,7 @@ task publishArquillianSupportFeature(type:Copy) {
     into(buildImage.file('wlp'))
 }
 
-assemble.dependsOn publishArquillianSupportFeature
+assemble {
+    dependsOn assembleBinaryDependencies
+    dependsOn publishArquillianSupportFeature
+}

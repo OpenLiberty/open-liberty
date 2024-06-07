@@ -200,10 +200,6 @@ public class EE10Features {
         features.remove("springBoot-1.5"); // springBoot 3.0 only supports EE10
         features.remove("springBoot-2.0");
 
-        features.remove("mpReactiveMessaging-3.0"); //still in development
-        features.remove("mpTelemetry-2.0"); //Not yet assigned to an MPXX_FEATURES_ARRAY
-        features.remove("mpFaultTolerance-4.1"); //MP70 is just a placeholder for now
-
         features.remove("mpHealth"); //versionless features in development
         features.remove("mpMetrics");
 
@@ -257,11 +253,18 @@ public class EE10Features {
         features.remove("passwordUtilities-1.1");
         features.remove("persistenceContainer-3.1");
 
-        //remove MP 6.0 features which would conflict with MP 6.1 features
+        //remove MP 6.0 features which would conflict with MP 6.1 and 7.0 features
         features.remove("microProfile-6.0");
         features.remove("mpConfig-3.0");
         features.remove("mpTelemetry-1.0");
         features.remove("mpMetrics-5.0");
+        features.remove("mpFaultTolerance-4.0");
+        features.remove("mpRestClient-3.0");
+        features.remove("mpOpenAPI-3.1");
+
+        //remove MP 6.1 features which would conflict with MP 7.0 features
+        features.remove("microProfile-6.1");
+        features.remove("mpTelemetry-1.1");
 
         // remove client features
         features.remove("jakartaeeClient-10.0");
@@ -275,10 +278,6 @@ public class EE10Features {
         features.remove("netty-1.0");
         features.remove("noShip-1.0");
         features.remove("scim-2.0");
-
-        // noship, still in development
-        features.remove("mpReactiveStreams-3.0");
-        features.remove("mpReactiveMessaging-3.0");
 
         // remove logAnalysis-1.0.  It depends on hpel being configured
         features.remove("logAnalysis-1.0");
@@ -301,10 +300,6 @@ public class EE10Features {
         Set<String> features = new HashSet<>(versionedFeatures);
 
         features.removeAll(compatibleFeatures);
-
-        features.remove("mpReactiveMessaging-3.0"); //still in development
-        features.remove("mpTelemetry-2.0"); //Not yet assigned to an MPXX_FEATURES_ARRAY
-        features.remove("mpFaultTolerance-4.1"); //MP70 is just a placeholder for now
 
         // Test features may or may not be compatible, we don't want to assert either way
         features.removeAll(getTestFeatures());

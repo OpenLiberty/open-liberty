@@ -1277,19 +1277,33 @@ public class Base2PCCloudServlet extends FATServlet {
         }
     }
 
+    public void checkRecAggressiveTakeover(HttpServletRequest request,
+                                           HttpServletResponse response) throws Exception {
+        try {
+            if (XAResourceImpl.resourceCount() != 2) {
+                throw new Exception("Aggressive takeover failed: "
+                                    + XAResourceImpl.resourceCount() + " resources");
+            }
+
+            if (!XAResourceImpl.allInState(XAResourceImpl.RECOVERED)) {
+                throw new Exception("Aggressive takeover failed: not all recovered");
+            }
+
+            if (!XAResourceImpl.allInState(XAResourceImpl.COMMITTED)) {
+                throw new Exception("Aggressive takeover failed: not all committed");
+            }
+        } finally {
+            XAResourceImpl.clear();
+        }
+    }
+
+    /**
+     * Sleep on recover to give original server chance to get its logs back
+     * Peer recovery will fail after the sleep
+     */
     public void setupRecForAggressiveTakeover1(HttpServletRequest request,
                                                HttpServletResponse response) throws Exception {
-        setupRecForAggressiveTakeover(request, response, XAResourceImpl.SLEEP_RECOVER);
-    }
 
-    public void setupRecForAggressiveTakeover2(HttpServletRequest request,
-                                               HttpServletResponse response) throws Exception {
-        setupRecForAggressiveTakeover(request, response, XAResourceImpl.CONDITIONAL_RUNTIME_EXCEPTION);
-    }
-
-    public void setupRecForAggressiveTakeover(HttpServletRequest request,
-                                              HttpServletResponse response,
-                                              int recoveryAction) throws Exception {
         final ExtendedTransactionManager tm = TransactionManagerFactory.getTransactionManager();
         XAResourceImpl.clear();
         final Serializable xaResInfo1 = XAResourceInfoFactory.getXAResourceInfo();
@@ -1300,8 +1314,40 @@ public class Base2PCCloudServlet extends FATServlet {
             final XAResource xaRes1 = XAResourceFactoryImpl.instance()
                             .getXAResourceImpl(xaResInfo1)
                             .setCommitAction(XAResourceImpl.DIE)
-                            .setRecoverAction(recoveryAction)
-                            .setRecoverRepeatCount(2);
+                            .setRecoverAction(XAResourceImpl.SLEEP_RECOVER)
+                            .setRecoverDelay(240);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
+            tm.enlist(xaRes1, recoveryId1);
+
+            final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
+            tm.enlist(xaRes2, recoveryId2);
+
+            tm.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Fail on recover to give original server chance to get its logs back
+     * Logs will be reclaimed during the peer recovery retry loop which will end when the peer server is shutdown
+     */
+    public void setupRecForAggressiveTakeover2(HttpServletRequest request,
+                                               HttpServletResponse response) throws Exception {
+
+        final ExtendedTransactionManager tm = TransactionManagerFactory.getTransactionManager();
+        XAResourceImpl.clear();
+        final Serializable xaResInfo1 = XAResourceInfoFactory.getXAResourceInfo();
+        final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo();
+
+        try {
+            tm.begin();
+            final XAResource xaRes1 = XAResourceFactoryImpl.instance()
+                            .getXAResourceImpl(xaResInfo1)
+                            .setCommitAction(XAResourceImpl.DIE)
+                            .setRecoverAction(XAResourceImpl.CONDITIONAL_RUNTIME_EXCEPTION)
+                            .setRecoverRepeatCount(20);
             final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 

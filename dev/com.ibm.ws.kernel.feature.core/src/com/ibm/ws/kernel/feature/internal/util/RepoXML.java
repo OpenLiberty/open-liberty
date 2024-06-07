@@ -32,6 +32,7 @@ import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.TYPE_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.VERSION_RANGE_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.VERSION_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.VISIBILITY_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.WLP_PLATFORM_TAG;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -233,9 +234,31 @@ public class RepoXML extends BaseXML {
             for (FeatureResource resource : def.getConstituents(null)) {
                 write(resource);
             }
+            String platforms = listOfStringsToCsvString(def.getPlatforms());
+            printElement(WLP_PLATFORM_TAG, platforms);
 
             downIndent();
             closeElement(FEATURE_TAG);
+        }
+
+        /**
+         * Convert a list of Strings to a String of comma-separated-values.
+         *
+         * @param strings
+         * @return
+         */
+        private String listOfStringsToCsvString(List<String> strings) {
+            if (strings == null) {
+                return "";
+            }
+            StringBuffer sb = new StringBuffer();
+            for (String s : strings) {
+                if (sb.length() != 0) {
+                    sb.append(",");
+                }
+                sb.append(s);
+            }
+            return sb.toString();
         }
 
         public void write(FeatureResource resource) {

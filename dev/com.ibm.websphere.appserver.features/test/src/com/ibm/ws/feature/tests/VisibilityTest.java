@@ -796,10 +796,13 @@ public class VisibilityTest {
             // MicroProfile features do not currently follow this convention.  They may need to in the future.
             // openapi features are stabilized and were not updated to support EE 9.
             // opentracing is also now stabilized and does not support running with EE 10+
-            if (featureInfo.getVisibility().equals("public") && (featureName.startsWith("io.openliberty.mp") || featureName.startsWith("com.ibm.websphere.appserver.mp")
-                                                                || featureName.startsWith("com.ibm.websphere.appserver.opentracing")
-                                                                || featureName.startsWith("com.ibm.websphere.appserver.openapi")
-                                                                || featureName.startsWith("com.ibm.websphere.appserver.microProfile-1."))) {
+            // MicroProfile 7.0 tolerates both EE10 and EE11
+            if (featureInfo.getVisibility().equals("public") && (featureName.startsWith("io.openliberty.mp")
+                                                                 || featureName.startsWith("com.ibm.websphere.appserver.mp")
+                                                                 || featureName.startsWith("com.ibm.websphere.appserver.opentracing")
+                                                                 || featureName.startsWith("com.ibm.websphere.appserver.openapi")
+                                                                 || featureName.startsWith("com.ibm.websphere.appserver.microProfile-1.")
+                                                                 || featureName.startsWith("io.openliberty.microProfile-7."))) {
                 continue;
             }
 
