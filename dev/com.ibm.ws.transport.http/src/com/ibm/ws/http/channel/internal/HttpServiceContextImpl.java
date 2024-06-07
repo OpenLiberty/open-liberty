@@ -487,6 +487,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      */
     final public void setHeadersParsed() {
         this.msgParsedState = STATE_FULL_HEADERS;
+        
     }
 
     /**
@@ -1476,7 +1477,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
         //Start PI35277
         if (getHttpConfig().shouldRemoveCLHeaderInTempStatusRespRFC7230compat() && msg instanceof HttpResponseMessageImpl) {
-            if (((HttpResponseMessageImpl) msg).isTemporaryStatusCode() || ((HttpResponseMessageImpl) msg).getStatusCode() == StatusCodes.NO_CONTENT) {
+            if (isTemporaryStatusCode() || ((HttpResponseMessageImpl) msg).getStatusCode() == StatusCodes.NO_CONTENT) {
 
                 msg.removeHeader(HttpHeaderKeys.HDR_CONTENT_LENGTH);
 
@@ -1485,6 +1486,13 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
             }
         } //End PI35277
+    }
+    
+    public boolean isTemporaryStatusCode() {
+        int code = this.getResponse().getStatusCodeAsInt();
+        if (HttpDispatcher.useEE7Streams() && (code == 101))
+            return false;
+        return (100 <= code && 200 > code);
     }
 
     /**
@@ -2259,6 +2267,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         setupCompressionHandler(msg);
         formatHeaders(msg, false);
         synchWrite();
+        
+        if(msg instanceof HttpResponseMessageImpl) {
+            ((HttpResponseMessageImpl)msg).logHttpResponse();
+        }
     }
 
     final protected void sendHeaders(HttpResponse response) throws IOException {
@@ -2266,20 +2278,39 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             Tr.event(tc, "Invalid call to sendHeaders after already sent");
             return;
         }
+        
+        
+        System.out.println("&&& SEND HEADERS &&&");
+        
+
 
         if (getResponse() instanceof NettyResponseMessage) {
+            
+            response = ((NettyResponseMessage)getResponse()).getResponse();
+            
+            System.out.println("&&& SEND HEADERS &&&");
+            System.out.println("Headers: ");
+            getResponse().getAllHeaders().forEach(header -> System.out.println(header.getName() + ": " + header.asString()));
+            System.out.println("pre process cookie objects");
+            getResponse().getAllCookies().forEach(header -> System.out.println(header.getName() + ": " + header.getValue()));
+            
 
             ((NettyResponseMessage) getResponse()).processCookies();
             HeaderHandler headerHandler = new HeaderHandler(myChannelConfig, response);
             headerHandler.complianceCheck();
 
-//            if(getResponse().getStatusCode().getIntCode() == 302) {
-//                getResponse().setContentLength(0);
-//            }
-
             if (HttpUtil.isContentLengthSet(response)) {
                 this.nettyContext.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(HttpUtil.getContentLength(response));
             }
+            MSP.log("SENDING HEADERS");
+
+            System.out.println("Headers: ");
+            getResponse().getAllHeaders().forEach(header -> System.out.println(header.getName() + ": " + header.asString()));
+            
+            getResponse().getAllCookies().forEach(header -> System.out.println(header.getName() + ": " + header.getValue()));
+            System.out.println("&&& END of processing, should be all in message.");
+
+            ((NettyResponseMessage)getResponse()).logHttpResponse();
 
         }
         final boolean isSwitching = response.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS);
@@ -2287,13 +2318,12 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if (isSwitching && "websocket".equalsIgnoreCase(response.headers().get(HttpHeaderNames.UPGRADE))) {
             nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).set("WebSocket");
         }
-        this.nettyContext.channel().writeAndFlush(this.nettyResponse);
+        this.nettyContext.channel().writeAndFlush(response);
+        
+        System.out.println("After flush Headers: ");
+        response.headers().forEach(header -> System.out.println(header.getKey() + ": " + header.getValue()));
 
         this.setHeadersSent();
-
-        try {
-        } catch (Exception e) {
-        }
 
     }
 

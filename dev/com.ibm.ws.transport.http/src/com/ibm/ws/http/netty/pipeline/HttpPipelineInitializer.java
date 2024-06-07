@@ -162,7 +162,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         channel.attr(NettyHttpConstants.ENDPOINT_PID).set(chain.getEndpointPID());
 
         //TODO:Uncomment for debug
-        //pipeline.addLast(new DebugHandler());
+        pipeline.addLast(new DebugHandler());
 
         if (chain.isHttps()) {
             if (chain.isHttp2Enabled()) { // h2 setup starts here
@@ -308,7 +308,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                         ctx.pipeline().addLast(upgradeHandler);
                     }
                     MSP.log("Names before direct dispatcher call: " + ctx.pipeline().names().toString());
-                   
 
                 } else {
 
@@ -317,7 +316,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                     pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, null,
                                       new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
                     MSP.log("Names: " + ctx.pipeline().names().toString());
-
 
                     ctx.pipeline().remove(this);
                     MSP.log("Names after remove: " + ctx.pipeline().names().toString());
