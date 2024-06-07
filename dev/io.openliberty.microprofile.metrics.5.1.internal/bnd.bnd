@@ -29,7 +29,7 @@ Import-Package: \
 	!io.openliberty.http.monitor.metrics,\
 	jakarta.enterprise.inject; version="[4.0,5)",\
 	jakarta.enterprise.util; version="[4.0,5)",\
-	jakarta.annotation; version="[2.1,3)",\
+	jakarta.annotation; version="[2.1,4)",\
 	jakarta.interceptor; version="[2.1,3)",\
 	jakarta.enterprise.context.spi; version="[4.0,5)",\
 	org.eclipse.microprofile.config; version="[3.0,4)",\

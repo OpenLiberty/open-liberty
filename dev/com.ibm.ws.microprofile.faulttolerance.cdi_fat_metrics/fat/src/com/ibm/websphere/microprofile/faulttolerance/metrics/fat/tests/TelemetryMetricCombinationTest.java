@@ -20,10 +20,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
-import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.isolation.IsolationServlet;
-import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.isolation.PullExporterAutoConfigurationCustomizerProvider;
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -32,6 +28,10 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.isolation.IsolationServlet;
+import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.isolation.PullExporterAutoConfigurationCustomizerProvider;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -53,7 +53,7 @@ public class TelemetryMetricCombinationTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP70);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP70_EE10);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -77,7 +77,8 @@ public class TelemetryMetricCombinationTest {
         HttpUtils.findStringInUrl(server, "CombinationTestAppOne/isolationtest", "Test one passed Test two passed");
 
         //This line tests that FT also exported to MPMetrics. Because we've called the method in the first test we just check the results.
-        assertThat(getMetricsPage(), containsString("ft_retry_calls_total{method=\"com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.isolation.IsolationBean.doWorkWithRetry\",mp_scope=\"base\",retried=\"false\",retryResult=\"valueReturned\",} 1.0"));
+        assertThat(getMetricsPage(),
+                   containsString("ft_retry_calls_total{method=\"com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.isolation.IsolationBean.doWorkWithRetry\",mp_scope=\"base\",retried=\"false\",retryResult=\"valueReturned\",} 1.0"));
     }
 
     /**

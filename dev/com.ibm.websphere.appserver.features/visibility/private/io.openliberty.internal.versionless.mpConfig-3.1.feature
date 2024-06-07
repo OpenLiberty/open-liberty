@@ -4,7 +4,7 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.noShip-1.0, \
-    io.openliberty.internal.mpVersion-6.1, \
+    io.openliberty.internal.mpVersion-6.1; ibm.tolerates:="7.0", \
     io.openliberty.mpConfig-3.1
 kind=noship
 edition=full

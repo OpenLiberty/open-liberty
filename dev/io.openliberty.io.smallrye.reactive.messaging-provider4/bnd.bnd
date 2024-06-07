@@ -36,6 +36,7 @@ Import-Package: \
   !io.opentelemetry.*,\
   org.eclipse.microprofile.metrics.*; version="[4.0,6)",\
   jakarta.enterprise.*; version="[3.0,5)",\
+  jakarta.annotation;version="[2.0,4)",\
   *
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
