@@ -951,6 +951,7 @@ public class InstallKernelMap implements Map {
                 }
                 data.put(InstallConstants.UPGRADE_COMPLETE, true);
             }
+
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
 
             if (!isInstallServerFeature) {
@@ -995,8 +996,9 @@ public class InstallKernelMap implements Map {
                         if (repoResrc.getRepositoryConnection() instanceof DirectoryRepositoryConnection) {
                             featuresResolved.add(repoResrc.getId());
                         } else {
-                            String featurePath = repoResrc.getMavenCoordinates();
-                            if (featurePath == null) { //if user specified ESA file path
+                            String featureCoord = repoResrc.getMavenCoordinates();
+                            String featurePath = null;
+                            if (featureCoord == null) { //if user specified ESA file path
                                 if (repoResrc instanceof EsaResourceImpl) {
                                     String name = ((EsaResourceImpl) repoResrc).getShortName() == null ? repoResrc.getName() : ((EsaResourceImpl) repoResrc).getShortName();
                                     for (String k : shortNameMap.keySet()) {
@@ -1007,12 +1009,13 @@ public class InstallKernelMap implements Map {
                                     }
                                 }
                             } else {
-                                featuresResolved.add(featurePath);
-                                featurePath = ArtifactDownloaderUtils.getfilename(repoResrc.getMavenCoordinates()).toLowerCase() + ".esa";
+                                featuresResolved.add(featureCoord);
+                                featurePath = ArtifactDownloaderUtils.getfilename(featureCoord).toLowerCase() + ".esa";
                             }
 
-                            if (ibmInstallTo == null || ibmInstallTo.equals("usr")) {
+                            if (ibmInstallTo == null || ibmInstallTo.equals("usr")) { //add both featurePath and featureCoord to consider install of   local esa features and features available in Maven repository.
                                 usrFeatures.add(featurePath);
+                                usrFeatures.add(featureCoord);
                             }
                         }
                     }
@@ -1200,16 +1203,16 @@ public class InstallKernelMap implements Map {
             for (MavenRepository repo : repos) {
                 try {
                     if (!copyFeatureList.isEmpty()) {
-                        Set<String> missingFeatures = artifactDownloader.getMissingFeaturesFromRepo(copyFeatureList, repo, verifyOption, false);
+                        Set<String> missingFeatures = artifactDownloader.getMissingFeaturesFromRepo(copyFeatureList, usrFeatures, repo, verifyOption, false);
                         copyFeatureList.removeAll(missingFeatures);
-                        artifactDownloader.synthesizeAndDownloadFeatures(copyFeatureList, downloadDir, repo, verifyOption, false);
+                        artifactDownloader.synthesizeAndDownloadFeatures(copyFeatureList, usrFeatures, downloadDir, repo, verifyOption, false);
                         //Try downloading missing features from next repo
                         copyFeatureList = new ArrayList<>(missingFeatures);
                     }
                     if (!copySignatureList.isEmpty()) {
-                        Set<String> missingSignatures = artifactDownloader.getMissingFeaturesFromRepo(copySignatureList, repo, verifyOption, true);
+                        Set<String> missingSignatures = artifactDownloader.getMissingFeaturesFromRepo(copySignatureList, usrFeatures, repo, verifyOption, true);
                         copySignatureList.removeAll(missingSignatures);
-                        artifactDownloader.synthesizeAndDownloadFeatures(copySignatureList, downloadDir, repo, verifyOption, true);
+                        artifactDownloader.synthesizeAndDownloadFeatures(copySignatureList, usrFeatures, downloadDir, repo, verifyOption, true);
                         //Try downloading missing signatures from next repo
                         copySignatureList = new ArrayList<>(missingSignatures);
                     }
@@ -1673,9 +1676,6 @@ public class InstallKernelMap implements Map {
             Path signaturePath = null;
             if (isValidEsa(artifact)) {
                 artifactPath = Paths.get(artifact);
-                if (verify != null && verify != VerifyOption.skip) {
-                    signaturePath = Paths.get(artifactPath.toString() + sigExtension);
-                }
             } else {
                 String[] coord = artifact.split(":");
                 String groupId = coord[0];
@@ -1702,7 +1702,7 @@ public class InstallKernelMap implements Map {
                 foundArtifacts.add(artifactPath.toFile());
                 artifactsClone.remove(artifact);
                 //if verify is set, check if the signatures are downloaded.
-                if (verify != null && verify != VerifyOption.skip) {
+                if (verify != null && verify != VerifyOption.skip && signaturePath != null) {
                     if (Files.isRegularFile(signaturePath)) {
                         fine("Found signature at path: " + signaturePath.toString());
                     } else {
@@ -2320,7 +2320,7 @@ public class InstallKernelMap implements Map {
                     boolean libertyFeatureFailure = false;
                     //check if the failed feature is user feature
                     for (File f : failedFeatures) {
-                        if (!usrFeatures.contains(f.getName().toLowerCase())) {
+                        if (!(usrFeatures.contains(f.getName().toLowerCase()) || usrFeatures.contains(f.getAbsolutePath()))) {
                             libertyFeatureFailure = true;
                         }
                     }
