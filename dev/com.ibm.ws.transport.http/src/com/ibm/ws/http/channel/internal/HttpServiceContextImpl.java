@@ -2267,10 +2267,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         setupCompressionHandler(msg);
         formatHeaders(msg, false);
         synchWrite();
-        
-        if(msg instanceof HttpResponseMessageImpl) {
-            ((HttpResponseMessageImpl)msg).logHttpResponse();
-        }
+       
     }
 
     final protected void sendHeaders(HttpResponse response) throws IOException {
