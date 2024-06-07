@@ -23,6 +23,7 @@ Export-Package: \
 -buildpath: \
   com.ibm.ws.logging;version=latest,\
   com.ibm.ws.kernel.boot;version=latest,\
+  com.ibm.ws.org.opensaml.opensaml.core.3.4.5;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \

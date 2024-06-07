@@ -17,11 +17,11 @@ public class CryptoMessageUtils {
     private static TraceComponent tc = Tr.register(CryptoMessageUtils.class);
 
     
-    public void logUnsecureAlgorithm(String configProperty, String unsecureAlgorithm) {
-        Tr.warning(tc, "CRYPTO_UNSECURE", configProperty, unsecureAlgorithm);
+    public static void logUnsecureAlgorithm(String configProperty, String unsecureAlgorithm) {
+        Tr.warning(tc, "CRYPTO_UNSECURE", new Object[] { configProperty, unsecureAlgorithm });
     }
 
-    public void logUnsecureAlgorithmReplaced(String configProperty, String unsecureAlgorithm, String secureAlgorithm) {
-        Tr.warning(tc, "CRYPTO_UNSECURE_REPLACED", configProperty, unsecureAlgorithm, secureAlgorithm);
+    public static void logUnsecureAlgorithmReplaced(String configProperty, String unsecureAlgorithm, String secureAlgorithm) {
+        Tr.warning(tc, "CRYPTO_UNSECURE_REPLACED", new Object[] { configProperty, unsecureAlgorithm, secureAlgorithm });
     }
 }

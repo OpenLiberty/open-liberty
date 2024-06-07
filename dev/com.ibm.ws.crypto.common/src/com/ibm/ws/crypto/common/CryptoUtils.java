@@ -18,6 +18,7 @@ public class CryptoUtils {
     static {
         secureAlternative.put("SHA", "SHA256");
         secureAlternative.put("SHA1", "SHA256");
+        secureAlternative.put("SHA-1", "SHA256");
         secureAlternative.put("SHA128", "SHA256");
         secureAlternative.put("MD5", "SHA256");
     }
@@ -28,7 +29,7 @@ public class CryptoUtils {
      * @param algorithm   The algorithm to check.
      * @return            True if the algorithm is considered unsecure, false otherwise.
      */
-    public boolean isUnsecureAlgorithm(String algorithm) {
+    public static boolean isUnsecureAlgorithm(String algorithm) {
         return secureAlternative.containsKey(algorithm);
     }
 
@@ -38,7 +39,7 @@ public class CryptoUtils {
      * @param algorithm   The unsecure algorithm to be replaced.
      * @return            A secure replacement algorithm.  If there is none a null is returned.
      */
-    public String getSecureAlternative(String algorithm) {
+    public static String getSecureAlternative(String algorithm) {
         return secureAlternative.get(algorithm);
     }
 }
