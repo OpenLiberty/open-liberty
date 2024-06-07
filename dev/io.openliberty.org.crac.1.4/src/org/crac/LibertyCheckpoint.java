@@ -51,9 +51,18 @@ class LibertyCheckpoint implements CheckpointHook {
     }
 
     @Override
+    public void checkpointFailed() {
+        // CRaC says to call the afterRestore on each resource when checkpoint fails;
+        // simply doing the restore calls for this case.
+        restore();
+    }
+
+    @Override
     public void restore() {
         // call in register order on restore
         callHooks(hooks.iterator(), CheckpointHook::restore, () -> new RestoreException(Tr.formatMessage(tc, "CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552")));
+        // after restore we can clear the hooks because they are no longer needed.
+        hooks.clear();
     }
 
     @FFDCIgnore(Exception.class)
