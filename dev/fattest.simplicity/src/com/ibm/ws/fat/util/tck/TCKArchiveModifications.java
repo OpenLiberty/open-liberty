@@ -68,6 +68,13 @@ public enum TCKArchiveModifications implements ArchiveModification {
             LOG.log(Level.INFO, "WLP: Adding Extension com.ibm.ws.fat.util.tck.WiremockArchiveProcessor");
             extensionBuilder.service(ApplicationArchiveProcessor.class, WiremockArchiveProcessor.class);
         }
+    },
+    TELEMETRY_PORTING {
+        @Override
+        public void applyModification(ExtensionBuilder extensionBuilder) {
+            LOG.log(Level.INFO, "WLP: Adding Extension com.ibm.ws.fat.util.tck.TelemetryPortingArchiveProcessor");
+            extensionBuilder.service(ApplicationArchiveProcessor.class, TelemetryPortingArchiveProcessor.class);
+        }
     };
 
     private static final Logger LOG = Logger.getLogger(TCKArchiveModifications.class.getName());
