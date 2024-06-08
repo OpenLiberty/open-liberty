@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,7 +18,9 @@ import java.util.Set;
 
 /**
  * We weave in the hamcrest jar that is used by some of the microprofile config tck tests.
- * The build.gradle file pull the hamcrest jar from maven and puts it in the lib directory
+ * The tck's build.gradle file pulls the hamcrest jar from maven central as a requiredLibs dependency.
+ * The gradle FAT build logic copies requiredLibs archives to the autoFVT/lib directory and from there we
+ * acquire it and add it to the test archive.
  */
 public class HamcrestArchiveProcessor extends AbstractArchiveWeaver {
 
