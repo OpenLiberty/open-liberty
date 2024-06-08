@@ -41,27 +41,27 @@ public abstract class AbstractArchiveWeaver implements ApplicationArchiveProcess
     public void process(Archive<?> applicationArchive, TestClass testClass) {
 
         if (getJarsToWeave().isEmpty() && getClassesToWeave().isEmpty() && getStringFilesToWeave().isEmpty()) {
-            throw new IllegalStateException("Trying to weave into " + applicationArchive + " but had nothing to add");
+            LOG.log(Level.INFO, getWeaverName() + ", Trying to weave into " + applicationArchive + " but had nothing to add");
         }
 
         if (applicationArchive instanceof WebArchive) {
             for (File file : getJarsToWeave()) {
                 //File file = new File(WLP_DIR, "/usr/servers/FATServer/" + fileName);
-                LOG.log(Level.INFO, "WLP: Adding Jar: {0} to {1}", new String[] { file.getAbsolutePath(), applicationArchive.getName() });
+                LOG.log(Level.INFO, getWeaverName() + ", WLP: Adding Jar: {0} to {1}", new String[] { file.getAbsolutePath(), applicationArchive.getName() });
                 ((WebArchive) applicationArchive).addAsLibraries(file);
             }
 
             for (Class clazz : getClassesToWeave()) {
-                LOG.log(Level.INFO, "WLP: Adding Class: {0} to {1}", new String[] { clazz.getName(), applicationArchive.getName() });
+                LOG.log(Level.INFO, getWeaverName() + ", WLP: Adding Class: {0} to {1}", new String[] { clazz.getName(), applicationArchive.getName() });
                 ((WebArchive) applicationArchive).addClass(clazz);
             }
 
             for (String path : getStringFilesToWeave().keySet()) {
-                LOG.log(Level.INFO, "WLP: Adding asset: {0} to {1}", new String[] { path, applicationArchive.getName() });
+                LOG.log(Level.INFO, getWeaverName() + ", WLP: Adding asset: {0} to {1}", new String[] { path, applicationArchive.getName() });
                 ((WebArchive) applicationArchive).addAsResource(getStringFilesToWeave().get(path), path);
             }
         } else {
-            LOG.log(Level.INFO, "Attempted to add org.json jar(s) but {0} was not a WebArchive", applicationArchive);
+            LOG.log(Level.INFO, getWeaverName() + ", Attempted to add org.json jar(s) but {0} was not a WebArchive", applicationArchive);
         }
     }
 
@@ -75,5 +75,9 @@ public abstract class AbstractArchiveWeaver implements ApplicationArchiveProcess
 
     protected Set<Class<?>> getClassesToWeave() {
         return Collections.emptySet();
+    }
+
+    protected String getWeaverName() {
+        return getClass().getName();
     }
 }
