@@ -37,6 +37,7 @@ fat.minimum.java.level: 17
 -buildpath: \
     com.ibm.ws.jpa_testframework;version=latest,\
     com.ibm.ws.jpa.tests.eclipselink.query_31_fat.common;version=latest,\
+    com.ibm.ws.jpa.tests.eclipselink.query_32_fat.common;version=latest,\
     com.ibm.ws.jpa.tests.eclipselink.query_fat.common;version=latest,\
     fattest.simplicity;version=latest,\
     io.openliberty.jakarta.annotation.3.0;version=latest,\

@@ -51,6 +51,11 @@ io.openliberty.org.codehaus.jackson:jackson-core-asl:1.9.13.1
 io.openliberty.org.codehaus.jackson:jackson-jaxrs:1.9.13.1
 io.openliberty.org.codehaus.jackson:jackson-mapper-asl:1.9.13.1
 io.openliberty.org.codehaus.jackson:jackson-xc:1.9.13.1
+io.openliberty.org.eclipse.persistence:org.eclipse.persistence.core:5.0.0-B02
+io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:5.0.0-B02
+io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:5.0.0-B02
+io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa:5.0.0-B02
+io.openliberty.org.eclipse.persistence:org.eclipse.persistence.json:5.0.0-B02
 io.openliberty.yoko:yoko-core:1.5.0.db1c134d1f
 io.openliberty.yoko:yoko-osgi:1.5.0.db1c134d1f
 io.openliberty.yoko:yoko-rmi-impl:1.5.0.db1c134d1f

@@ -13,35 +13,34 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-src: \
-    fat/src
+test.project: true
+publish.wlp.jar.disabled: true
+instrument.disabled: true
 
-fat.project: true
-fat.test.databases: true
-tested.features: persistence-3.2, persistencecontainer-3.2, enterpriseBeansLite-4.0, servlet-6.1, jdbc-4.2, jndi-1.0, xmlbinding-4.0
+# To define a global minimum java level for the FAT, use the following property.
+# If unspecified, the default value is ${javac.source}
+#fat.minimum.java.level: 17
 
 javac.source: 17
 javac.target: 17
 
-fat.minimum.java.level: 17
-
-# Uncomment to test against alternative databases
-# Options: Derby, Postgres, DB2, Oracle, SQLServer
-#fat.bucket.db.type: Postgres
-
-# Uncomment to use remote docker host to simulate continuous build behavior.
-#fat.test.use.remote.docker: true
+src: \
+    test-applications/common/src
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \
     com.ibm.ws.jpa_testframework;version=latest,\
     com.ibm.ws.jpa.tests.eclipselink_fat.common;version=latest,\
-    com.ibm.ws.jpa.tests.eclipselink_32_fat.common;version=latest,\
-    fattest.simplicity;version=latest,\
-    io.openliberty.jakarta.annotation.3.0;version=latest,\
-    io.openliberty.jakarta.enterpriseBeans.4.0;version=latest,\
-    io.openliberty.jakarta.servlet.6.1;version=latest,\
+    com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+    com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+    com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+    com.ibm.websphere.javaee.jms.2.0;version=latest,\
+    com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+    com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+    com.ibm.websphere.appserver.thirdparty.eclipselink;version=latest,\
     io.openliberty.jakarta.persistence.3.2;version=latest,\
-    io.openliberty.jakarta.transaction.2.0;version=latest,\
-    io.openliberty.org.testcontainers;version=latest
+    io.openliberty.persistence.3.2.thirdparty;version=latest,\
+    io.openliberty.org.testcontainers;version=latest,\
+    org.jboss.shrinkwrap:shrinkwrap-impl-base;version=latest,\
+    org.jboss.shrinkwrap:shrinkwrap-spi;version=latest

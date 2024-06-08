@@ -47,3 +47,5 @@
 
 3009=Unable to set {0} properties [{1}] into [{2}].
 
+3010=Incorrect date value [YYYY-MM-DD]: [{0}].
+
