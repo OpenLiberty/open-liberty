@@ -15,8 +15,6 @@ package com.ibm.ws.security.saml.sso20.acs;
 
 import java.util.List;
 
-import javax.xml.validation.Validator;
-
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.messaging.handler.MessageHandlerException;
 import org.opensaml.saml.common.SAMLObject;
