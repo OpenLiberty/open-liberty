@@ -364,7 +364,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                     // nonwhitespace found [q=1 q] invalid
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Invalid char after trailing whitespace (1) ["
-                                        + data[index] + "]");
+                                     + data[index] + "]");
                     }
                     rc.setBooleanValue(false);
                 }
@@ -411,7 +411,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                     if (index < len && ',' != data[index]) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "Invalid char after trailing whitespace (2) ["
-                                            + data[index] + "]");
+                                         + data[index] + "]");
                         }
                         rc.setBooleanValue(false);
                     }
@@ -691,8 +691,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         }
 
         int status = getResponse().getStatusCodeAsInt();
-        boolean isTemporaryStatus = HttpDispatcher.useEE7Streams() && status == 101 ? false: (100<=status && 200 > status);
-
+        boolean isTemporaryStatus = HttpDispatcher.useEE7Streams() && status == 101 ? false : (100 <= status && 200 > status);
 
         if (isTemporaryStatus) {
             // allow multiple temporary responses to be sent out
@@ -753,10 +752,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             // Note: if forcequeue is true, then we will not get a VC object as
             // the lower layer will use the callback and return null
             int status = getResponse().getStatusCodeAsInt();
-            boolean isTemporaryStatus = HttpDispatcher.useEE7Streams() && status == 101 ? false: (100<=status && 200 > status);
-
-
-
+            boolean isTemporaryStatus = HttpDispatcher.useEE7Streams() && status == 101 ? false : (100 <= status && 200 > status);
 
             if (isTemporaryStatus) {
                 // allow multiple temporary responses to be sent
@@ -1065,7 +1061,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         // if headers haven't been sent and chunked encoding is not explicitly
         // configured, then set this up for Content-Length
 
-
         if (!headersSent()) {
             boolean shouldContentLengthBeSet = Boolean.TRUE;
 
@@ -1111,11 +1106,12 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             logFinalResponse(getNumBytesWritten());
         }
 
-        if (!getHttpConfig().useNetty()) {
-            HttpInvalidMessageException inv = checkResponseValidity();
-            if (null != inv) {
-                throw inv;
+        HttpInvalidMessageException inv = checkResponseValidity();
+        if (null != inv) {
+            if (getHttpConfig().useNetty()) {
+                nettyContext.close();
             }
+            throw inv;
         }
     }
 
@@ -2132,7 +2128,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             if (getHttpConfig().isAccessLoggingEnabled()) {
 
                 if (Objects.nonNull(nettyContext) &&
-                                nettyContext.channel().hasAttr(NettyHttpConstants.REQUEST_START_TIME)) {
+                    nettyContext.channel().hasAttr(NettyHttpConstants.REQUEST_START_TIME)) {
                     this.startTime = nettyContext.channel().attr(NettyHttpConstants.REQUEST_START_TIME).get();
                 } else {
                     this.startTime = System.nanoTime();
