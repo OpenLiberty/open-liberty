@@ -968,6 +968,6 @@ org.testng:testng:7.5.1
 org.yaml:snakeyaml:2.0
 software.amazon.jdbc:aws-advanced-jdbc-wrapper:2.2.3
 wsdl4j:wsdl4j:1.6.2
-xalan:xalan:2.7.2
+xalan:xalan:2.7.3
 xerces:xercesImpl:2.12.2
 xml-apis:xml-apis:1.4.01
