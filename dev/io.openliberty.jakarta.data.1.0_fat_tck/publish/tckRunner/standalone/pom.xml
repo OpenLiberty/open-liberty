@@ -74,7 +74,7 @@
 			<artifactId>junit-jupiter</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.netbeans.tools</groupId>
+			<groupId>jakarta.tck</groupId>
 			<artifactId>sigtest-maven-plugin</artifactId>
 			<version>${sigtest.version}</version>
 		</dependency>
@@ -89,26 +89,24 @@
 		<dependency>
 			<groupId>org.jboss.shrinkwrap</groupId>
 			<artifactId>shrinkwrap-api</artifactId>
-			<version>1.2.6</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.jboss.arquillian.junit5</groupId>
 		    <artifactId>arquillian-junit5-core</artifactId>
-		    <version>1.7.0.Alpha13</version>
 		</dependency>
 		<dependency>
 			<groupId>jakarta.servlet</groupId>
 			<artifactId>jakarta.servlet-api</artifactId>
-			<version>6.0</version>
+			<version>6.1</version>
 			<scope>system</scope>
-			<systemPath>${io.openliberty.jakarta.servlet.6.0}</systemPath>
+			<systemPath>${io.openliberty.jakarta.servlet.6.1}</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>jakarta.enterprise</groupId>
 			<artifactId>jakarta.enterprise.cdi-api</artifactId>
-			<version>4.0</version>
+			<version>4.1</version>
 			<scope>system</scope>
-			<systemPath>${io.openliberty.jakarta.cdi.4.0}</systemPath>
+			<systemPath>${io.openliberty.jakarta.cdi.4.1}</systemPath>
 		</dependency>
 	</dependencies>
 
