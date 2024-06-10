@@ -26,6 +26,7 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 ColocatedDynamicPolicyAttachmentsTest.class,
                 EJBServiceRefBndTest.class,
+                EnableSchemaValidationTest.class,
                 EncodingTest.class,
                 HandlerChainTest.class,
                 HandlerChainWithWebServiceClientTest.class,

@@ -111,7 +111,7 @@ public class ConfigHolder {
         } else {
             
             if(getDebugEnabled()) {
-                Tr.debug(tc, "getIgnoreUnexpectedElements is returning null because no properties exist for name - " + name);
+                Tr.debug(tc, "getEnableSchemaValidation is returning null because no properties exist for name - " + name);
             }
             return null; // No properties exist so return null
             
@@ -244,7 +244,7 @@ public class ConfigHolder {
                 return null; // We found neither properties for the serviceName/portName or any default properties
             }
             if (debug) {
-                Tr.debug(tc, "getNameProps final result for nameame: " + name + " values: " + mergedProps);
+                Tr.debug(tc, "getNameProps final result for name: " + name + " values: " + mergedProps);
             }
 
             return mergedProps;
