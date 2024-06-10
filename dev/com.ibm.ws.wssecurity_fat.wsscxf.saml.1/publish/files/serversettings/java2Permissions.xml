@@ -36,6 +36,7 @@
         <javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
         <javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get"/>     
         <javaPermission className="java.security.SecurityPermission" name="org.apache.xml.security.register"/>
+        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
 	
 </server>
         

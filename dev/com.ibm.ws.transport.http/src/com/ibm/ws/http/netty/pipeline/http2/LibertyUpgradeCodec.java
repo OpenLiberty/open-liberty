@@ -76,14 +76,7 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
      * Helper method for creating H2C Upgrade handler
      */
     public static CleartextHttp2ServerUpgradeHandler createCleartextUpgradeHandler(HttpChannelConfig httpConfig, Channel channel) {
-//        HttpServerCodec sourceCodec = new HttpServerCodec();
-//        long maxHeaderSize = httpConfig.getLimitOfFieldSize() * httpConfig.getLimitOnNumberOfHeaders() * 1L;
-//        if (maxHeaderSize > Integer.MAX_VALUE)
-//            maxHeaderSize = Integer.MAX_VALUE;
-//        HttpServerCodec sourceCodec = new HttpServerCodec(HttpObjectDecoder.DEFAULT_MAX_INITIAL_LINE_LENGTH, (int) maxHeaderSize, httpConfig.getIncomingBodyBufferSize());
-        // Proposed codec with custom checks?
-//        HttpServerCodec sourceCodec = new HttpServerCodec(HttpObjectDecoder.DEFAULT_MAX_INITIAL_LINE_LENGTH, HttpObjectDecoder.DEFAULT_MAX_HEADER_SIZE, httpConfig.getIncomingBodyBufferSize(), httpConfig.getLimitOfFieldSize(), httpConfig.getLimitOnNumberOfHeaders());
-        HttpServerCodec sourceCodec = new HttpServerCodec(HttpObjectDecoder.DEFAULT_MAX_INITIAL_LINE_LENGTH, Integer.MAX_VALUE, httpConfig.getIncomingBodyBufferSize());
+        HttpServerCodec sourceCodec = new HttpServerCodec(HttpObjectDecoder.DEFAULT_MAX_INITIAL_LINE_LENGTH*2, Integer.MAX_VALUE, httpConfig.getIncomingBodyBufferSize());
         LibertyUpgradeCodec codec = new LibertyUpgradeCodec(httpConfig, channel);
         final HttpServerUpgradeHandler upgradeHandler = new HttpServerUpgradeHandler(sourceCodec, codec);
         return new CleartextHttp2ServerUpgradeHandler(sourceCodec, upgradeHandler, codec.buildHttp2ConnectionHandler(httpConfig, channel));
