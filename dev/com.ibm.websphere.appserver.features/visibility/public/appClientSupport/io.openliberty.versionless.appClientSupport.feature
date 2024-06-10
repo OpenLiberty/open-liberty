@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: appClientSupport
 Subsystem-Name: appClientSupport
 -features=io.openliberty.internal.versionless.appClientSupport-1.0; ibm.tolerates:="2.0"
-kind=noship
-edition=full
+kind=beta
+edition=base
