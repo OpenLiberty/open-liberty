@@ -74,7 +74,7 @@ public class ThirdPartyJAXBFromAppTestServlet extends FATServlet {
      */
     @Test
     @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
-    public void testJaxbAPILoadedFromAppEE10() throws Exception {
+    public void testJaxbAPILoadedFromAppEE8AndEE10() throws Exception {
         // Verify JAX-B API came from the application dependencies
         ClassLoader apiLoader = JAXBContext.class.getClassLoader();
         CodeSource apiSrc = JAXBContext.class.getProtectionDomain().getCodeSource();
