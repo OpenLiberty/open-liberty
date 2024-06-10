@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import com.ibm.ws.kernel.feature.internal.FeatureResolverImpl;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
@@ -48,6 +49,7 @@ import com.ibm.ws.repository.resources.ApplicableToProduct;
 import com.ibm.ws.repository.resources.EsaResource;
 import com.ibm.ws.repository.resources.RepositoryResource;
 import com.ibm.ws.repository.resources.SampleResource;
+import com.ibm.ws.repository.transport.model.AppliesToFilterInfo;
 
 /**
  * Resolves a list of names into lists of {@link RepositoryResource} to be installed
@@ -906,7 +908,21 @@ public class RepositoryResolver {
         Set<ProductRequirementInformation> missingProductInformation = new HashSet<>();
 
         for (ApplicableToProduct esa : resourcesWrongProduct) {
-            missingRequirements.add(new MissingRequirement(esa.getAppliesTo(), (RepositoryResource) esa));
+            String appliesTo = esa.getAppliesTo();
+            if (appliesTo.contains("productEdition=Open")) { //Check if there are WebSphere editions and add
+                if (esa instanceof EsaResource && ((EsaResource) esa).getAppliesToFilterInfo() != null) {
+                    for (AppliesToFilterInfo atfi : ((EsaResource) esa).getAppliesToFilterInfo()) {
+                        if (!atfi.getEditions().toString().isEmpty()) {
+                            StringBuffer sb = new StringBuffer("; editions=\"");
+                            sb.append(atfi.getEditions().stream().map(String::trim).collect(Collectors.joining(",")));
+                            sb.append("\"");
+                            appliesTo = appliesTo.concat(sb.toString());
+                        }
+                    }
+                }
+            }
+
+            missingRequirements.add(new MissingRequirement(appliesTo, (RepositoryResource) esa));
             missingProductInformation.addAll(ProductRequirementInformation.createFromAppliesTo(esa.getAppliesTo()));
         }
 
