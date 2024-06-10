@@ -764,6 +764,7 @@ public class VisibilityTest {
         // restfulWSLogging-3.0 hopefully never will see the light of day and will be done differently.
         Set<String> expectedFailingFeatures = new HashSet<>();
         expectedFailingFeatures.add("io.openliberty.data-1.0");
+        expectedFailingFeatures.add("io.openliberty.dataContainer-1.0");
         expectedFailingFeatures.add("io.openliberty.restfulWSLogging-3.0");
         Map<String, String> visibilityMap = new HashMap<>();
         for (Entry<String, FeatureInfo> entry : features.entrySet()) {
