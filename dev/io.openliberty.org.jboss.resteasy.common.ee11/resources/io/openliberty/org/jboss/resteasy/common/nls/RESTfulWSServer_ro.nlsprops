@@ -1,0 +1,97 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWWKW
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers start with '0' and are filled to a width of 4 digits.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME io.openliberty.org.jboss.resteasy.common.ee10/resources/io/openliberty/org/jboss/resteasy/common/nls/RESTfulWS.nlsprops
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW io.openliberty.restfulWS-3.1
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#RANGE 1300 - 1399
+#Message range shared with io.openliberty.org.jboss.resteasy.server
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI=CWMGQ1xxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.useraction=User action text for the message
+#
+#-------------------------------------------------------------------------------
+
+INVALID_INT_PROPERTY_CWWKW1303W=CWWKW1303W: Proprietatea de client {0} trebuie s\u0103 fie un \u00eentreg, dar a fost configurat\u0103 incorect, cu {1}. Aceast\u0103 setare va fi ignorat\u0103.
+INVALID_INT_PROPERTY_CWWKW1303W.explanation=Propriet\u0103\u0163ile de client, cum ar fi set\u0103rile portului proxy, trebuie s\u0103 fie configurate ca un \u00eentreg pozitiv sau un \u015fir care poate fi convertit la un \u00eentreg. Acest mesaj indic\u0103 faptul c\u0103 o proprietate de client a fost configurat\u0103 cu o valoare invalid\u0103. Aceast\u0103 proprietate va fi ignorat\u0103.
+INVALID_INT_PROPERTY_CWWKW1303W.useraction=Examina\u0163i codul aplica\u0163iei \u015fi configura\u0163ia serverului pentru a determina unde a fost setat\u0103 incorect aceast\u0103 proprietate \u015fi apoi fie \u00eenl\u0103tura\u0163i proprietatea, fie o modifica\u0163i la o valoare valid\u0103, de tip \u00eentreg.
+
+INVALID_BOOLEAN_PROPERTY_CWWKW1304W=CWWKW1304W: Proprietatea de client {0} trebuie s\u0103 fie booleean\u0103, dar a fost configurat\u0103 incorect cu {1}. Aceast\u0103 setare va fi ignorat\u0103.
+INVALID_BOOLEAN_PROPERTY_CWWKW1304W.explanation=Propriet\u0103\u0163ile de client, cum ar fi dac\u0103 s\u0103 se urmeze automat redirec\u0163ion\u0103rile, trebuie configurate ca un booleean sau un \u015fir care poate fi convertit la un booleean. Acest mesaj arat\u0103 c\u0103 o proprietate client a fost setat\u0103 la o valoare invalid\u0103. Aceast\u0103 proprietate va fi ignorat\u0103.
+INVALID_BOOLEAN_PROPERTY_CWWKW1304W.useraction=Examina\u0163i codul aplica\u0163iei \u015fi configura\u0163ia serverului pentru a determina dac\u0103 aceast\u0103 proprietate a fost setat\u0103 incorect, \u015fi fie \u00eenl\u0103tura\u0163i proprietatea, fie modifica\u0163i-o la o valoare booleean\u0103 valid\u0103.
+
+INVALID_PROVIDER_CWWKW1305W=CWWKW1305W: Serverul ignor\u0103 furnizorul {0}, deoarece nu este valid.
+INVALID_PROVIDER_CWWKW1305W.explanation=Clasa de furnizor specificat\u0103 probabil c\u0103 nu con\u0163ine un constructor public valid sau nu implementeaz\u0103 o interfa\u0163\u0103 de furnizor REST Jakarta. Cerin\u0163ele pentru implementarea unui furnizor valid sunt prezentate \u00een sec\u0163iunea a 4-a din specifica\u0163ia Jakarta RESTful Web Services.
+INVALID_PROVIDER_CWWKW1305W.useraction=Examina\u0163i codul aplica\u0163iei \u015fi asigura\u0163i-v\u0103 c\u0103 furnizorul specificat implementeaz\u0103 corect interfa\u0163a de furnizor \u015fi con\u0163ine un constructor public valid, conform cerin\u0163elor specifica\u0163iei.
+
+INVALID_LONG_PROPERTY_CWWKW1306W=CWWKW1306W: Proprietatea de client {0} trebuie s\u0103 fie un \u00eentreg lung, dar a fost configurat\u0103 incorect cu {1}. Aceast\u0103 setare este ignorat\u0103.
+INVALID_LONG_PROPERTY_CWWKW1306W.explanation=Propriet\u0103\u0163ile de client, cum ar fi set\u0103rile de timeout, trebuie s\u0103 fie configurate ca un \u00eentreg lung pozitiv sau un \u015fir care poate fi convertit la un \u00eentreg lung. Acest mesaj indic\u0103 faptul c\u0103 o proprietate de client a fost configurat\u0103 cu o valoare invalid\u0103. Ca urmare, aceast\u0103 proprietate este ignorat\u0103.
+INVALID_LONG_PROPERTY_CWWKW1306W.useraction=Examina\u0163i codul aplica\u0163iei \u015fi configura\u0163ia serverului pentru a determina unde a fost setat\u0103 incorect aceast\u0103 proprietate \u015fi apoi fie \u00eenl\u0103tura\u0163i proprietatea, fie o modifica\u0163i la o valoare valid\u0103, de tip \u00eentreg lung.
+
+# Same message as in /com.ibm.ws.jaxrs.2.0.common/resources/com/ibm/ws/jaxrs20/common/internal/resources/JaxRsCommonMessages.nlsprops
+
+warn.invalid.authorization.token.type=CWWKW0061W: Tipul de jeton de autorizare {0} specificat \u00een configura\u0163ia de server este invalid \u015fi va fi ignorat.
+warn.invalid.authorization.token.type.explanation=Tipul de jeton de autorizare specificat \u00een configura\u0163ia de server este invalid.
+warn.invalid.authorization.token.type.useraction=Specifica\u0163i un tip de jeton de autorizare valid.
+
+# Same messages as in /com.ibm.ws.jaxrs.2.0.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+
+failed_to_extract_saml_token_from_subject=CWWKW0705W: A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a utiliza API-ul SAML PropagationHelper. Excep\u0163ia a fost: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=A ap\u0103rut o excep\u0163ie la invocarea API-ului PropagationHelper pentru a extrage jetonul SAML din subiect.
+failed_to_extract_saml_token_from_subject.useraction=Asigura\u0163i-v\u0103 c\u0103 server.xml are caracteristica samlWeb-2.0 specificat\u0103. De asemenea, verifica\u0163i istoricele serverului pentru informa\u0163ii suplimentare despre excep\u0163ie.
+
+failed_run_as_subject=CWWKW0706E: A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a ob\u0163ine RunAsSubject. Excep\u0163ia a fost: [{0}].
+failed_run_as_subject.explanation=A survenit o excep\u0163ie la ob\u0163inerea RunAsSubject.
+failed_run_as_subject.useraction=Asigura\u0163i-v\u0103 c\u0103 serverul este configurat \u015fi porne\u015fte corespunz\u0103tor.
+
+warn_missing_mpjwt_token=CWWKW0707W: Atributul [{0}] din configura\u0163ia [{1}] este setat la [{2}], JWT-ul (JSON Web Token) MicroProfile nu este disponibil. Cererea nu con\u0163ine un antet de autorizare cu jetonul.
+warn_missing_mpjwt_token.explanation=Runtime-ul a e\u015fuat s\u0103 g\u0103seasc\u0103 JWT-ul MicroProfile \u00een subiectul runAs. Aceast\u0103 eroare de obicei indic\u0103 o problem\u0103 cu autentificarea. Asigura\u0163i-v\u0103 c\u0103 nu au ap\u0103rut erori \u00een timp ce caracteristica MicroProfile JWT autentic\u0103 un utilizator.
+warn_missing_mpjwt_token.useraction=Verifica\u0163i ac\u0163iunea utilizatorului pentru orice erori anterioare pe care le-a jurnalizat serverul.
+
+warn_mpjwt_prop_service_notavail=CWWKW0708W: Serviciul de propagare MicroProfile JWT nu este disponibil. Runtime-ul nu poate accesa jetonul pentru a-l include \u00een antetul de autorizare.
+warn_mpjwt_prop_service_notavail.explanation=Serviciul de propagare MicroProfile JWT necesit\u0103 caracteristica mpJwt-1.0.
+warn_mpjwt_prop_service_notavail.useraction=Asigura\u0163i-v\u0103 c\u0103 serverul ruleaz\u0103 cu caracteristica cerut\u0103.

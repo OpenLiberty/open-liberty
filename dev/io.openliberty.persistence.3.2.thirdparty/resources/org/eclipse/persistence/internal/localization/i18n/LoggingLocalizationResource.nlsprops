@@ -117,7 +117,7 @@ connected_user_database_driver=Connected: {0}{6}User: {1}{6}Database: {2}  Versi
 
 corrupt_object=corrupt object: {0}
 
-corrupt_object_referenced_through_mapping=The following corrupt object is referenced through mapping: {0}.
+corrupt_object_referenced_through_mapping=The following corrupt object is referenced through mapping: {0}
 
 corrupted_session_announcement=SessionID: {0}  Discovery manager received corrupted session announcement - ignoring.
 
@@ -169,6 +169,14 @@ elements={0}{1} elements
 
 enable_batch_operations_as_true_not_supported=WLS native CMP setting "enable-batch-operations-as-true" is not directly supported in EclipseLink CMP. See migration doc for details.
 
+encryptor_script_description=This application has an old encrypted password that was used by a previous version of EclipseLink. Reencrypt it with the latest algorithm.
+
+encryptor_script_output=The reencrypted password is: {0}
+
+encryptor_script_usage=Usage is `passwordUpdate.sh|.cmd -ip <old encrypted password>`
+
+entity_manager_has_multiple_connections=Persistence unit has multiple connections, returning the first one from the list.
+
 entity_manager_ignores_jta_data_source=Persistence unit does not use JTA, therefore the EntityManager ignores jta data source. 
 
 entity_manager_ignores_nonjta_data_source=Persistence unit uses JTA, therefore the EntityManager ignores non jta data source. 
@@ -192,6 +200,8 @@ error_in_create=Error in create.
 error_in_remove=Error in remove.
 
 error_loading_xml_file=Exception while loading ORM xml file: {0}: {1}
+
+error_queryTimeoutParse=Cannot parse the {0} jakarta.persistence.query.timeout property value: {1}
 
 exception_loading_entity_class=An exception while trying to initialize persistence.  {1} occurred while trying to load entity class: {0}.
 
@@ -647,6 +657,18 @@ retreived_null_message=Retreived null message from topic: {0}; ignoring
 
 retreived_unknown_message_type=Retreived unknown message type: {0} from topic: {1}; ignoring
 
+schema_default_create_tables_failed=Failed to create tables in the default table schema: {0}
+
+schema_default_drop_tables_failed=Failed to drop tables in the default table schema: {0}
+
+schema_default_extend_tables_failed=Failed to extend tables in the default table schema: {0}
+
+schema_default_replace_tables_failed=Failed to replace tables in the default table schema: {0}
+
+schema_default_truncate_tables_failed=Failed to truncate tables in the default table schema: {0}
+
+schema_drop_object_failed=Failed to drop object in the default table schema: {0}
+
 sdo_classgenerator_exception={2} A [{0}] Exception occurred - message is [{1}]
 
 sdo_error_deserialization=Unauthorized deserialization attempt with class {0}.
@@ -716,6 +738,8 @@ Current thread (id: {3} name: {4}) stack trace:
 {5}
 
 unitofwork_identity_hashcode={0}UnitOfWork identity hashcode: {1}
+
+unknown_property_type=Unknown {0} type of {1} persistence property
 
 update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery cannot use binding on this database platform. Changed query setting to execute without binding.
 

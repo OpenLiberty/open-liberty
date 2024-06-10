@@ -32,7 +32,6 @@ Subsystem-Name: Application Security 5.0 (Jakarta Security 3.0)
   io.openliberty.jsonp-2.1, \
   io.openliberty.webAppSecurity-2.0
 -bundles=\
-  com.ibm.json4j, \
   com.ibm.ws.org.apache.commons.lang3, \
   com.ibm.ws.org.apache.httpcomponents, \
   com.ibm.ws.org.jose4j, \
@@ -54,3 +53,4 @@ edition=core
 -jars=io.openliberty.jaspic.spi; location:=dev/spi/ibm/
 -files=dev/spi/ibm/javadoc/io.openliberty.jaspic.spi_1.1-javadoc.zip
 WLP-InstantOn-Enabled: true
+WLP-Platform: jakartaee-10.0

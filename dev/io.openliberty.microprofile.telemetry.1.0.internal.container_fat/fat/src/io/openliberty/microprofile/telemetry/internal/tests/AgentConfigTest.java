@@ -57,7 +57,6 @@ import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
-
 import io.jaegertracing.api_v2.Model.Span;
 import io.openliberty.microprofile.telemetry.internal.apps.agentconfig.AgentConfigTestResource;
 import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
@@ -238,7 +237,7 @@ public class AgentConfigTest {
      * Skipping for 1.4 and 4.1 as JavaAgent 1.29 currently will not return a span for methods annotated with @withSpan
      * (https://github.com/open-telemetry/opentelemetry-java-instrumentation/issues/10159)
      */
-    @SkipForRepeat({ TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID })
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID, TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID})
     public void testEnableSpecificInstrumentation() throws Exception {
         // Enable only @WithSpan instrumentation
         server.addEnvVar("OTEL_INSTRUMENTATION_COMMON_DEFAULT_ENABLED", "false");
@@ -345,7 +344,7 @@ public class AgentConfigTest {
 
     private void copyToServer(String src, String dst) throws Exception {
         RemoteFile serverRoot = server.getFileFromLibertyServerRoot("");
-        RemoteFile dstFile = new RemoteFile(serverRoot, dst);
+        RemoteFile dstFile = server.getMachine().getFile(serverRoot, dst);
         LocalFile srcFile = new LocalFile(server.pathToAutoFVTTestFiles + "/TelemetryAgentConfig/" + src);
         boolean result = dstFile.copyFromSource(srcFile);
         assertTrue("Failed to copy " + src + " to " + dst, result);
@@ -353,7 +352,7 @@ public class AgentConfigTest {
 
     private void deleteFromServer(String filename) throws Exception {
         RemoteFile serverRoot = server.getFileFromLibertyServerRoot("");
-        RemoteFile file = new RemoteFile(serverRoot, filename);
+        RemoteFile file = server.getMachine().getFile(serverRoot, filename);
         boolean result = file.delete();
         assertTrue("Failed to delete " + filename, result);
     }

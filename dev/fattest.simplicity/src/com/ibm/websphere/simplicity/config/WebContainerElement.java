@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -82,6 +82,7 @@ public class WebContainerElement extends ConfigElement {
     private Boolean checkForceWorkRejected; // only for testing purposes
     private Boolean enablePartialURLtoExtendedDocumentRoot;
     private Boolean checkedRingetRealPath;
+    private Boolean getrealpathreturnsqualifiedpath;
     private Boolean disableServletContainerInitializersOnPreV8Apps;
     private Boolean ignoreInvalidQueryString;
 
@@ -523,6 +524,13 @@ public class WebContainerElement extends ConfigElement {
     }
 
     /**
+     * @return the getrealpathreturnsqualifiedpath
+     */
+    public Boolean getGetRealPathReturnsQualifiedPath() {
+        return this.getrealpathreturnsqualifiedpath;
+    }
+
+    /**
      * @return the disableServletContainerInitializersOnPreV8Apps
      */
     public Boolean getdisableServletContainerInitializersOnPreV8Apps() {
@@ -927,6 +935,11 @@ public class WebContainerElement extends ConfigElement {
         this.checkedRingetRealPath = e;
     }
 
+    @XmlAttribute(name = "com.ibm.ws.webcontainer.getrealpathreturnsqualifiedpath")
+    public void setGetRealPathReturnsQualifiedPath(Boolean e) {
+        this.getrealpathreturnsqualifiedpath = e;
+    }
+
     @XmlAttribute(name = "com.ibm.ws.webcontainer.disableServletContainerInitializersOnPreV8Apps")
     public void setdisableServletContainerInitializersOnPreV8Apps(Boolean e) {
         this.disableServletContainerInitializersOnPreV8Apps = e;
@@ -1248,6 +1261,8 @@ public class WebContainerElement extends ConfigElement {
             buf.append("enablePartialURLtoExtendedDocumentRoot=\"" + enablePartialURLtoExtendedDocumentRoot + "\" ");
         if (checkedRingetRealPath != null)
             buf.append("checkedRingetRealPath=\"" + checkedRingetRealPath + "\" ");
+        if (getrealpathreturnsqualifiedpath != null)
+            buf.append("getrealpathreturnsqualifiedpath=\"" + getrealpathreturnsqualifiedpath + "\" ");
         if (disableServletContainerInitializersOnPreV8Apps != null)
             buf.append("disableServletContainerInitializersOnPreV8Apps=\"" + disableServletContainerInitializersOnPreV8Apps + "\" ");
         if (ignoreInvalidQueryString != null)

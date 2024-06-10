@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Timer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -29,6 +30,7 @@ import javax.resource.spi.ActivationSpec;
 import javax.resource.spi.BootstrapContext;
 import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterInternalException;
+import javax.resource.spi.UnavailableException;
 import javax.resource.spi.endpoint.MessageEndpointFactory;
 import javax.resource.spi.work.HintsContext;
 import javax.resource.spi.work.SecurityContext;
@@ -168,6 +170,8 @@ public class DerbyResourceAdapter implements ResourceAdapter {
         } catch (Exception x) {
             throw new ResourceAdapterInternalException(x);
         }
+
+        doCheckpointUnsupportedActions();
     }
 
     /** {@inheritDoc} */
@@ -194,6 +198,20 @@ public class DerbyResourceAdapter implements ResourceAdapter {
             throw x;
         } catch (Exception x) {
             throw new RuntimeException(x);
+        }
+    }
+
+    void doCheckpointUnsupportedActions() {
+        System.out.println("--- DerbyRA start ---");
+        // No need to check checkpoint phase
+        final String action = System.getProperty("unsupported.action", "unknown").toLowerCase();
+        if ("derbyra.start.create.timer".equals(action)) {
+            try {
+                Timer timer = bootstrapContext.createTimer();
+                System.out.println("--- DerbyRA start createTimer: " + timer + " ---");
+            } catch (NullPointerException | UnavailableException e) {
+                System.out.println("--- DerbyRA start createTimer failed with exception: " + e + " ---");
+            }
         }
     }
 }

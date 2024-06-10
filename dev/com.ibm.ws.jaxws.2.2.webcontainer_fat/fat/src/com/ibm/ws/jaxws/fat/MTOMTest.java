@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -41,6 +41,9 @@ import componenttest.topology.utils.HttpUtils;
  * When MTOM is enabled on service provider, if client use Service.create(QName serviceName)
  * to create service and there is no need to add
  * service.addPort(portName, SOAPBinding.SOAP11HTTP_MTOM_BINDING, mtom11URL) statement.
+ *
+ * Additional tests have been added for testing SOAPAction headers when set on the request and the ability for an MTOM enabled
+ * Web Service Endpoint to handle them depending on if allowing for mismatching Actions are set in the server.xml configuration
  */
 @RunWith(FATRunner.class)
 public class MTOMTest {
@@ -48,6 +51,9 @@ public class MTOMTest {
 
     @Server("MTOMTestServer")
     public static LibertyServer server;
+
+    @Server("MTOMClientTestServer")
+    public static LibertyServer clientServer;
 
     protected String SERVLET_PATH = "/testMTOMClient/MTOMClientServlet";
     protected String SERVLET_PATH2 = "/testMTOMClient_withDD/MTOMDDClient";
@@ -57,10 +63,12 @@ public class MTOMTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        server.setHttpDefaultPort(9988);
+        clientServer.setHttpDefaultPort(9888);
 
-        ShrinkHelper.defaultDropinApp(server, "testMTOM", "com.ibm.jaxws.MTOM");
+        ShrinkHelper.defaultApp(server, "testMTOM", "com.ibm.jaxws.MTOM");
 
-        ShrinkHelper.defaultDropinApp(server, "testMTOMClient", "com.ibm.jaxws.MTOM.servlet",
+        ShrinkHelper.defaultDropinApp(clientServer, "testMTOMClient", "com.ibm.jaxws.MTOM.servlet",
                                       "mtomservice");
 
         ShrinkHelper.defaultDropinApp(server, "testMTOMClient_withDD", "com.ibm.jaxws.MTOM.dd.servlet",
@@ -68,14 +76,21 @@ public class MTOMTest {
 
         server.startServer("MTOMTest.log");
         // Pause for application to start successfully
-        server.waitForStringInLog("CWWKZ0001I.*testMTOMClient");
         server.waitForStringInLog("CWWKZ0001I.*testMTOM");
+
+        clientServer.startServer("MTOMTest.log");
+
+        clientServer.waitForStringInLog("CWWKZ0001I.*testMTOMClient");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("SRVE0777E", "SRVE0315E");
+        }
+
+        if (clientServer != null && clientServer.isStarted()) {
+            clientServer.stopServer("SRVE0777E", "SRVE0315E");
         }
     }
 
@@ -89,14 +104,14 @@ public class MTOMTest {
      * @throws IOException
      */
     @Test
-    public void testMTOMWithoutAddPort() throws IOException {
-        String host = server.getHostname();
+    public void testMTOMWithoutAddPort() throws Exception {
+
         int port = server.getHttpDefaultPort();
-        StringBuilder urlBuilder = new StringBuilder("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append(SERVLET_PATH).append("?service=MTOMService").append("&port=").append(port);
+        StringBuilder urlBuilder = new StringBuilder("http://").append(clientServer.getHostname()).append(":").append(clientServer.getHttpDefaultPort()).append(SERVLET_PATH).append("?service=MTOMService").append("&port=").append(port);
 
         List<String> expectedResponses = new ArrayList<String>(1);
         expectedResponses.add("getAttachment() returned");
-        assertTrue(printExpectedResponses(expectedResponses, false), checkExpectedResponses(urlBuilder.toString(), expectedResponses, false));
+        assertTrue(printExpectedResponses(expectedResponses, false), checkExpectedResponses(urlBuilder.toString(), expectedResponses, false, HttpURLConnection.HTTP_OK));
     }
 
     /**
@@ -106,52 +121,65 @@ public class MTOMTest {
      * @throws IOException
      */
     @Test
-    public void testMTOMEnabledInPortComponentRef() throws IOException {
+    public void testMTOMEnabledInPortComponentRef() throws Exception {
+
         int port = server.getHttpDefaultPort();
-        StringBuilder urlBuilder = new StringBuilder("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append(SERVLET_PATH2);
+        StringBuilder urlBuilder = new StringBuilder("http://").append(clientServer.getHostname()).append(":").append(server.getHttpDefaultPort()).append(SERVLET_PATH2);
 
         List<String> expectedResponse = new ArrayList<String>(3);
         expectedResponse.add("Expected value is in Content-Type header.");
         expectedResponse.add("Successfully received attachment!");
         expectedResponse.add("MTOM enabled? true");
-        assertTrue(printExpectedResponses(expectedResponse, true), checkExpectedResponses(urlBuilder.toString(), expectedResponse, true));
+        assertTrue(printExpectedResponses(expectedResponse, true), checkExpectedResponses(urlBuilder.toString(), expectedResponse, true, HttpURLConnection.HTTP_OK));
     }
 
-    private boolean checkExpectedResponses(String servletUrl, List<String> expectedResponses, boolean exact) throws IOException {
+    private boolean checkExpectedResponses(String servletUrl, List<String> expectedResponses, boolean exact, int responseCode) throws IOException {
         Log.info(this.getClass(), testName.getMethodName(), "Calling Application with URL=" + servletUrl);
 
-        HttpURLConnection con = HttpUtils.getHttpConnection(new URL(servletUrl), HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
-        StringBuilder sb = new StringBuilder();
-        BufferedReader br = null;
         try {
-            br = HttpUtils.getConnectionStream(con);
-            String line = br.readLine();
-            while (line != null) {
-                sb.append(line);
-                line = br.readLine();
+            HttpURLConnection con = HttpUtils.getHttpConnection(new URL(servletUrl), responseCode, REQUEST_TIMEOUT);
+            StringBuilder sb = new StringBuilder();
+            BufferedReader br = null;
+            try {
+                br = HttpUtils.getConnectionStream(con);
+                String line = br.readLine();
+                while (line != null) {
+                    sb.append(line);
+                    line = br.readLine();
+                }
+            } finally {
+                if (br != null) {
+                    br.close();
+                }
             }
-        } finally {
-            if (br != null) {
-                br.close();
+
+            String responseContent = sb.toString();
+
+            Log.info(MTOMTest.class, "checkExpectedResponses", "responseContent = " + responseContent);
+            if (exact) { //the response content must contain all the expect strings
+                for (String expectStr : expectedResponses) {
+                    if (!responseContent.contains(expectStr)) {
+                        return false;
+                    }
+                }
+                return true;
+            } else { //the response content could contain one of the expect strings
+                for (String expectStr : expectedResponses) {
+                    if (responseContent.contains(expectStr)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        } catch (IOException e) {
+            // Return true if the exception contains the expected response code
+            if (e.getMessage().contains(Integer.toString(responseCode))) {
+                return true;
             }
         }
 
-        String responseContent = sb.toString();
-        if (exact) { //the response content must contain all the expect strings
-            for (String expectStr : expectedResponses) {
-                if (!responseContent.contains(expectStr)) {
-                    return false;
-                }
-            }
-            return true;
-        } else { //the response content could contain one of the expect strings
-            for (String expectStr : expectedResponses) {
-                if (responseContent.contains(expectStr)) {
-                    return true;
-                }
-            }
-            return false;
-        }
+        return false;
+
     }
 
     private String printExpectedResponses(List<String> expectedResponses, boolean exact) {

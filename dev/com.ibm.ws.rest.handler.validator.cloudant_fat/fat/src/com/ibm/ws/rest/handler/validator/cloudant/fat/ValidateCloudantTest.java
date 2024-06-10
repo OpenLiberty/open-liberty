@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -110,7 +110,7 @@ public class ValidateCloudantTest extends FATServletClient {
      */
     @Test
     public void testCloudantDBProps() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase/dbAuthProps");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/cloudantDatabase/dbAuthProps");
 
         JsonObject json = request.run(JsonObject.class);
         String err = "Unexpected json response: " + json.toString();
@@ -125,7 +125,7 @@ public class ValidateCloudantTest extends FATServletClient {
     @Test
     @ExpectedFFDC({ "com.cloudant.client.org.lightcouch.CouchDbException" })
     public void testCloudantDBPropsOverride() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase/dbAuthProps?auth=container&authAlias=invalidAuthData");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/cloudantDatabase/dbAuthProps?auth=container&authAlias=invalidAuthData");
 
         JsonObject json = request.run(JsonObject.class);
         String err = "Unexpected json response: " + json.toString();
@@ -148,7 +148,7 @@ public class ValidateCloudantTest extends FATServletClient {
     @Test
     @ExpectedFFDC({ "com.cloudant.client.org.lightcouch.CouchDbException" })
     public void testCloudantDBNoAuth() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase/cloudantDatabase[default-0]");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/cloudantDatabase/cloudantDatabase%5Bdefault-0%5D");
 
         JsonObject json = request.run(JsonObject.class);
         String err = "Unexpected json response: " + json.toString();
@@ -171,7 +171,7 @@ public class ValidateCloudantTest extends FATServletClient {
      */
     @Test
     public void testCloudantDBContainerAuth() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase/dbCtrAuth?auth=container");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/cloudantDatabase/dbCtrAuth?auth=container");
 
         JsonObject json = request.run(JsonObject.class);
         String err = "Unexpected json response: " + json.toString();
@@ -186,7 +186,7 @@ public class ValidateCloudantTest extends FATServletClient {
     @Test
     @ExpectedFFDC({ "com.cloudant.client.org.lightcouch.CouchDbException" })
     public void testCloudantDBContainerAuthOverride() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase/dbCtrAuth?auth=container&authAlias=invalidAuthData");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/cloudantDatabase/dbCtrAuth?auth=container&authAlias=invalidAuthData");
 
         JsonObject json = request.run(JsonObject.class);
         String err = "Unexpected json response: " + json.toString();
@@ -210,7 +210,7 @@ public class ValidateCloudantTest extends FATServletClient {
     @Test
     @ExpectedFFDC({ "com.cloudant.client.org.lightcouch.CouchDbException" })
     public void testCloudantDBContainerAuthNoAuthSpecified() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase/dbCtrAuth");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/cloudantDatabase/dbCtrAuth");
 
         JsonObject json = request.run(JsonObject.class);
         String err = "Unexpected json response: " + json.toString();
@@ -232,7 +232,7 @@ public class ValidateCloudantTest extends FATServletClient {
      */
     @Test
     public void testCloudantDBNotConfigured() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase/doesntExist");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/cloudantDatabase/doesntExist");
         String response = request.expectCode(404).run(String.class);
         String err = "unexpected response: " + response;
         assertTrue(err, response.contains("CWWKO1500E") && response.contains("cloudantDatabase") && response.contains("doesntExist"));
@@ -246,7 +246,7 @@ public class ValidateCloudantTest extends FATServletClient {
     @Test
     @ExpectedFFDC(value = { "javax.security.auth.login.LoginException" })
     public void testCloudantDBInvalidAuthAlais() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase/dbCtrAuth?auth=container&authAlias=doesntExist");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/cloudantDatabase/dbCtrAuth?auth=container&authAlias=doesntExist");
         JsonObject json = request.run(JsonObject.class);
         String err = "unexpected response: " + json;
         assertEquals(err, "dbCtrAuth", json.getString("uid"));
@@ -267,7 +267,7 @@ public class ValidateCloudantTest extends FATServletClient {
     @Test
     @ExpectedFFDC({ "com.cloudant.client.org.lightcouch.CouchDbException" })
     public void testCloudantDBApplicationAuth() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase/dbCtrAuth?auth=Application");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/cloudantDatabase/dbCtrAuth?auth=Application");
 
         JsonObject json = request.run(JsonObject.class);
         String err = "Unexpected json response: " + json.toString();
@@ -290,7 +290,7 @@ public class ValidateCloudantTest extends FATServletClient {
     @Test
     @ExpectedFFDC({ "com.cloudant.client.org.lightcouch.CouchDbException" })
     public void testCloudantDBApplicationAuthWithAlias() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase/dbCtrAuth?auth=Application&authAlias=cloudantAuthData");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/cloudantDatabase/dbCtrAuth?auth=Application&authAlias=cloudantAuthData");
 
         JsonObject json = request.run(JsonObject.class);
         String err = "Unexpected json response: " + json.toString();
@@ -313,7 +313,7 @@ public class ValidateCloudantTest extends FATServletClient {
      */
     @Test
     public void testCloudantDBOldClient() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase/dbCloudantOld?auth=container");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/cloudantDatabase/dbCloudantOld?auth=container");
 
         JsonObject json = request.run(JsonObject.class);
         String err = "Unexpected json response: " + json.toString();
@@ -336,7 +336,7 @@ public class ValidateCloudantTest extends FATServletClient {
      */
     @Test
     public void testCantValidateCloudant() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/cloudant/cloudantNoAuth").run(JsonObject.class);
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/cloudant/cloudantNoAuth").run(JsonObject.class);
         String err = "unexpected response: " + json;
         assertEquals(err, "cloudantNoAuth", json.getString("uid"));
         assertEquals(err, "cloudantNoAuth", json.getString("id"));
@@ -354,7 +354,7 @@ public class ValidateCloudantTest extends FATServletClient {
     @Test
     @ExpectedFFDC({ "java.lang.reflect.InvocationTargetException" })
     public void testMultiple() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase?auth=container&authAlias=cloudantAuthData");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/cloudantDatabase?auth=container&authAlias=cloudantAuthData");
         JsonArray json = request.run(JsonArray.class);
         String err = "unexpected response: " + json;
 
@@ -481,7 +481,7 @@ public class ValidateCloudantTest extends FATServletClient {
         assertEquals("Unexpected response received from database: " + getResponse(http), 200, http.getResponseCode());
 
         //Test that validation succeeds for travis and testauthdb
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase/dbTestAuth?auth=container&authAlias=travisAuthData");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/cloudantDatabase/dbTestAuth?auth=container&authAlias=travisAuthData");
         JsonObject json = request.run(JsonObject.class);
 
         String err = "Unexpected json response: " + json.toString();
@@ -498,7 +498,7 @@ public class ValidateCloudantTest extends FATServletClient {
         assertEquals(err, "local", json.getString("vendorVariant"));
 
         //Test that validation fails for kevin and testauthdb
-        request = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase/dbTestAuth?auth=container&authAlias=kevinAuthData");
+        request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/cloudantDatabase/dbTestAuth?auth=container&authAlias=kevinAuthData");
         json = request.run(JsonObject.class);
 
         err = "Unexpected json response: " + json.toString();

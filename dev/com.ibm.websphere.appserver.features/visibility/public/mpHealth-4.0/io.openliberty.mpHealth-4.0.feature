@@ -9,9 +9,9 @@ IBM-API-Package: \
   org.eclipse.microprofile.health.spi;  type="stable"
 IBM-ShortName: mpHealth-4.0
 Subsystem-Name: MicroProfile Health 4.0
-# io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0,6.1" comes from io.openliberty.mpConfig features
+# io.openliberty.mpCompatible-x.x comes from io.openliberty.mpConfig features
 -features=io.openliberty.org.eclipse.microprofile.health-4.0,\
- io.openliberty.cdi-3.0; ibm.tolerates:="4.0",\
+ io.openliberty.cdi-3.0; ibm.tolerates:="4.0,4.1",\
  com.ibm.websphere.appserver.jndi-1.0,\
  com.ibm.websphere.appserver.json-1.0,\
  io.openliberty.mpConfig-3.0; ibm.tolerates:="3.1",\
@@ -23,3 +23,4 @@ kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
+WLP-Platform: microProfile-5.0,microProfile-6.0,microProfile-6.1,microProfile-7.0

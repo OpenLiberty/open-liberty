@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -197,7 +197,7 @@ public class CommonSecurityFat {
         Machine machine = server.getMachine();
 
         Log.info(thisClass, "transformAppsInDefaultDirs", "Processing " + appDirName + " for serverName: " + server.getServerName());
-        RemoteFile appDir = new RemoteFile(machine, LibertyServerUtils.makeJavaCompatible(server.getServerRoot() + File.separatorChar + appDirName, machine));
+        RemoteFile appDir = machine.getFile(LibertyServerUtils.makeJavaCompatible(server.getServerRoot() + File.separatorChar + appDirName, machine));
 
         RemoteFile[] list = null;
         try {

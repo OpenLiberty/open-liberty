@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,8 @@ import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryCl
 public class JaegerLegacyTest extends JaegerBaseTest {
 
     public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
-    public static RepeatTests repeat = FATSuite.allMPRepeats(SERVER_NAME);
+    //The native Jaeger exporter has been discontinued and is not supported in MpTelemetry-2.0. OTLP is used for Jaeger instead
+    public static RepeatTests repeat = FATSuite.telemetry10and11Repeats(SERVER_NAME);
 
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(jaegerContainer).around(repeat);

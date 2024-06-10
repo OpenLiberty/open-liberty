@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package com.ibm.ws.config.xml.internal.variables;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.config.xml.internal.XMLConfigParser.MergeBehavior;
 
 /**
@@ -57,6 +58,7 @@ public class ConfigVariable extends AbstractLibertyVariable {
         return this.mergeBehavior;
     }
 
+    @Trivial
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("ConfigVariable[");

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,11 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.springboot.fat30.app;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,8 +24,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TestApplication {
 
+	@Value("${sprigboot.test.failstart:false}")
+	private boolean failStart=false;
+
 	public static void main(String[] args) {
 		SpringApplication.run(TestApplication.class, args);
+	}
+
+	@Bean
+	public CommandLineRunner run() {
+		return (String[] args) -> {
+			if (failStart) {
+				throw new RuntimeException("Fail on start");
+			}
+		};
 	}
 
 	@RequestMapping("/")

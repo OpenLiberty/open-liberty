@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -188,7 +189,7 @@ public abstract class FeatureUtilityToolTest {
         OutputStream os = null;
         featureUtilityProps = new Properties();
         try {
-            RemoteFile rf = new RemoteFile(server.getMachine(), remoteFileName);
+            RemoteFile rf = server.getMachine().getFile(remoteFileName);
             os = rf.openForWriting(true);
             featureUtilityProps.setProperty(property, value);
             Log.info(c, "writeToProps", "Set the " + property + " to : " + value);
@@ -318,7 +319,7 @@ public abstract class FeatureUtilityToolTest {
         OutputStream os = null;
         featureUtilityProps = new Properties();
         try {
-            RemoteFile rf = new RemoteFile(server.getMachine(), remoteFileName);
+            RemoteFile rf = server.getMachine().getFile(remoteFileName);
             os = rf.openForWriting(false);
             Set<String> keyset = map.keySet();
             for (String key: keyset) {
@@ -339,25 +340,27 @@ public abstract class FeatureUtilityToolTest {
 
 
     protected static void replaceWlpProperties(String version) throws Exception {
-        OutputStream os = null;
-        try {
-            RemoteFile rf = new RemoteFile(server.getMachine(), minifiedRoot+ "/lib/versions/openliberty.properties");
-//            RemoteFile rf = server.getFileFromLibertyInstallRoot("lib/versions/openliberty.properties");
-            os = rf.openForWriting(false);
-            wlpVersionProps.setProperty("com.ibm.websphere.productVersion", version);
-            Log.info(c, "replaceWlpProperties", "Set the version to : " + version);
-	    // beta
-	    wlpVersionProps.setProperty("com.ibm.websphere.productPublicKeyId", "0xBD9FD5BE9E68CA00");
-	    Log.info(c, "replaceWlpProperties", "Set product Key ID to : " + "0xBD9FD5BE9E68CA00");
-            wlpVersionProps.store(os, null);
-            os.close();
-        } finally {
-            try {
-                os.close();
-            } catch (IOException e) {
-                // ignore we are trying to close.
-            }
-        }
+            RemoteFile rf = server.getMachine().getFile(minifiedRoot+ "/lib/versions/openliberty.properties");
+	    try (OutputStream os = rf.openForWriting(false)) {
+		wlpVersionProps.setProperty("com.ibm.websphere.productVersion", version);
+		Log.info(c, "replaceWlpProperties", "Set the version to : " + version);
+		wlpVersionProps.store(os, null);
+	    }
+	    // replace cl properties version if it exits
+	    rf = server.getMachine().getFile(minifiedRoot + "/lib/versions/WebSphereApplicationServer.properties");
+	    if (rf.exists()) {
+		Properties wlProps = new Properties();
+		try (InputStream is = rf.openForReading();) {
+		    wlProps.load(is);
+		    wlProps.setProperty("com.ibm.websphere.productVersion", version);
+		    Log.info(c, "replaceWlpProperties - closed ", "Set the version to : " + version);
+		}
+
+		try (OutputStream os = rf.openForWriting(false)) {
+		    wlProps.store(os, null);
+		}
+	    }
+
     }
     protected static void resetOriginalWlpProps() throws Exception {
         replaceWlpProperties(originalWlpVersion);

@@ -9,6 +9,7 @@ com.ibm.ws.concurrent.persistent_fat_locking
 com.ibm.ws.concurrent.persistent_fat_multiple
 com.ibm.ws.concurrent.persistent_fat_timers
 com.ibm.ws.couchdb_fat
+com.ibm.ws.gvt.rest_fat
 com.ibm.ws.install.featureUtility_fat
 com.ibm.ws.jdbc_fat
 com.ibm.ws.jdbc_fat_db2
@@ -120,6 +121,7 @@ com.ibm.ws.jpa.tests.spec20_jpa_3.1_fat
 com.ibm.ws.jpa.tests.spec20_jpa_3.2_fat
 com.ibm.ws.jsf.2.2_fat
 com.ibm.ws.jsf.2.3_fat
+com.ibm.ws.jsfContainer_fat_2.3
 com.ibm.ws.logstash.collector_fat
 com.ibm.ws.microprofile.health.2.0_fat
 com.ibm.ws.microprofile.reactive.messaging_fat
@@ -127,6 +129,7 @@ com.ibm.ws.openapi.ui_fat
 com.ibm.ws.rest.handler.validator.cloudant_fat
 com.ibm.ws.security.acme_fat
 com.ibm.ws.security.spnego_fat
+com.ibm.ws.security.wim.adapter.ldap_fat.krb5.1
 com.ibm.ws.session.cache_fat_infinispan_container
 com.ibm.ws.transaction.cloud_fat.base
 com.ibm.ws.transaction.cloud_fat.db2.0
@@ -170,6 +173,7 @@ com.ibm.ws.wsat.recovery_fat.multi.6
 fattest.simplicity
 io.openliberty.checkpoint_fat_persistence
 io.openliberty.checkpoint_fat_session_cache_infinispan_container
+io.openliberty.checkpoint_fat_springboot_data
 io.openliberty.data.internal_fat
 io.openliberty.data.internal_fat_jpa
 io.openliberty.data.internal_fat_nosql
@@ -180,4 +184,5 @@ io.openliberty.microprofile.health.3.1.internal_fat
 io.openliberty.microprofile.openapi.ui.internal_fat
 io.openliberty.microprofile.reactive.messaging.internal_fat
 io.openliberty.microprofile.telemetry.1.0.internal.container_fat
+io.openliberty.org.apache.myfaces.4.0_fat
 io.openliberty.org.apache.myfaces.4.1_fat

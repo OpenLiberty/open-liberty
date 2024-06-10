@@ -25,3 +25,4 @@ kind=ga
 edition=core
 
 WLP-Activation-Type: parallel
+WLP-Platform: microProfile-1.3

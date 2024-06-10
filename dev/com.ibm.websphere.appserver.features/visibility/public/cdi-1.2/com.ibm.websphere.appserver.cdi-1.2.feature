@@ -65,3 +65,4 @@ Subsystem-Name: Contexts and Dependency Injection 1.2
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-Platform: javaee-7.0

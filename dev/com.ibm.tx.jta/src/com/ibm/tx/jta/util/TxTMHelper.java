@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2023 IBM Corporation and others.
+ * Copyright (c) 2002, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -688,12 +688,12 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
     @Override
     public void checkTMState() throws NotSupportedException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "checkTMState");
+            Tr.entry(tc, "checkTMState", _state);
 
         if (_state != TMService.TMStates.ACTIVE) {
             if (_state == TMService.TMStates.RECOVERING) {
                 // A noop
-            } else if (_state == TMService.TMStates.INACTIVE) {
+            } else if (_state == TMService.TMStates.INACTIVE || _state == TMService.TMStates.STOPPED) {
                 try {
                     TMHelper.start();
                 } catch (Exception e) {
@@ -701,23 +701,21 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                     nse.initCause(e);
                     throw nse;
                 }
-            } else if (_state == TMService.TMStates.STOPPED &&
-                       CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && CheckpointPhase.getPhase().restored()) {
-                // A new state transition for InstantOn. Enable recovery logging to restart
-                // during restore whenever initial local recovery fails during checkpoint.
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "checkTMState", "TMService was shutdown during checkpoint. Restarting the TMService during restore");
-                try {
-                    TMHelper.start();
-                } catch (Exception e) {
-                    final NotSupportedException nse = new NotSupportedException();
-                    nse.initCause(e);
-                    throw nse;
-                }
+//            } else if (_state == TMService.TMStates.STOPPED &&
+//                       CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && CheckpointPhase.getPhase().restored()) {
+//                // A new state transition for InstantOn. Enable recovery logging to restart
+//                // during restore whenever initial local recovery fails during checkpoint.
+//                if (tc.isDebugEnabled())
+//                    Tr.debug(tc, "checkTMState", "TMService was shutdown during checkpoint. Restarting the TMService during restore");
+//                try {
+//                    TMHelper.start();
+//                } catch (Exception e) {
+//                    final NotSupportedException nse = new NotSupportedException();
+//                    nse.initCause(e);
+//                    throw nse;
+//                }
             } else if (_state == TMService.TMStates.STOPPING) {
                 throw new NotSupportedException("JTM is stopping");
-            } else if (_state == TMService.TMStates.STOPPED) {
-                throw new NotSupportedException("JTM is stopped");
             }
         }
         if (tc.isEntryEnabled())

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -132,9 +132,9 @@ public class MinifyIconsTest {
             RemoteFile testPortsProps = server.getFileFromLibertyServerRoot("/../testports.properties");
 
             // Put the required test files into the right place for new server..
-            fatTestCommon.copyToDest(new RemoteFile(minifiedServer.getMachine(), minifiedServer.getServerRoot() + "/../fatTestCommon.xml"));
-            fatTestPorts.copyToDest(new RemoteFile(minifiedServer.getMachine(), minifiedServer.getServerRoot() + "/../fatTestPorts.xml"));
-            testPortsProps.copyToDest(new RemoteFile(minifiedServer.getMachine(), minifiedServer.getServerRoot() + "/../testports.properties"));
+            fatTestCommon.copyToDest(minifiedServer.getMachine().getFile(minifiedServer.getServerRoot() + "/../fatTestCommon.xml"));
+            fatTestPorts.copyToDest(minifiedServer.getMachine().getFile(minifiedServer.getServerRoot() + "/../fatTestPorts.xml"));
+            testPortsProps.copyToDest(minifiedServer.getMachine().getFile(minifiedServer.getServerRoot() + "/../testports.properties"));
 
             // We should start the server again and make sure all our features are available
             minifiedServer.startServer();

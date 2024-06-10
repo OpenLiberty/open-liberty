@@ -31,13 +31,14 @@ import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.sql.DataSource;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import io.openliberty.data.internal.persistence.model.Model;
-import jakarta.data.repository.Query;
+import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.Attribute;
 import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
@@ -56,10 +57,21 @@ import jakarta.persistence.metamodel.Type;
 public abstract class EntityManagerBuilder implements Runnable {
     private static final TraceComponent tc = Tr.register(EntityManagerBuilder.class);
 
+    /**
+     * Entity classes as seen by the user, not generated entity classes for records.
+     */
     protected final Set<Class<?>> entities = new HashSet<>();
 
-    // Mapping of JPA entity class (not record class) to entity information.
+    /**
+     * Mapping of entity class (as seen by the user, not a generated record entity class)
+     * to entity information.
+     */
     final ConcurrentHashMap<Class<?>, CompletableFuture<EntityInfo>> entityInfoMap = new ConcurrentHashMap<>();
+
+    /**
+     * OSGi service component that provides the CDI extension for Data.
+     */
+    public final DataExtensionProvider provider;
 
     /**
      * The class loader for repository classes.
@@ -67,7 +79,8 @@ public abstract class EntityManagerBuilder implements Runnable {
     private final ClassLoader repositoryClassLoader;
 
     @Trivial
-    protected EntityManagerBuilder(ClassLoader repositoryClassLoader) {
+    protected EntityManagerBuilder(DataExtensionProvider provider, ClassLoader repositoryClassLoader) {
+        this.provider = provider;
         this.repositoryClassLoader = repositoryClassLoader;
     }
 
@@ -90,6 +103,14 @@ public abstract class EntityManagerBuilder implements Runnable {
      * @return a new EntityManager instance.
      */
     public abstract EntityManager createEntityManager();
+
+    /**
+     * Obtains the DataSource that is used by the EntityManager.
+     *
+     * @return the DataSource that is used by the EntityManager.
+     * @throws UnsupportedOperationException if the DataSource cannot be obtained from the EntityManager.
+     */
+    public abstract DataSource getDataSource();
 
     /**
      * Returns the record class that corresponds to the specified generated entity class.
@@ -146,25 +167,6 @@ public abstract class EntityManagerBuilder implements Runnable {
      */
     @Trivial
     protected abstract void initialize() throws Exception;
-
-    /**
-     * Assigns the public static volatile fields of @StaticMetamodel classes
-     * to be the corresponding entity attribute name from the metamodel.
-     *
-     * @param staticMetamodels static metamodel class(es) per entity class.
-     */
-    public void populateStaticMetamodelClasses(Map<Class<?>, List<Class<?>>> staticMetamodels) {
-        for (Class<?> entityClass : entities)
-            if (!Query.class.equals(entityClass)) {
-                List<Class<?>> metamodelClasses = staticMetamodels.get(entityClass);
-                if (metamodelClasses != null) {
-                    CompletableFuture<EntityInfo> entityInfoFuture = entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
-                    EntityInfo entityInfo = entityInfoFuture.join();
-                    for (Class<?> metamodelClass : metamodelClasses)
-                        Model.initialize(metamodelClass, entityInfo.attributeNames);
-                }
-            }
-    }
 
     /**
      * Initializes the builder once before using it.
@@ -316,12 +318,13 @@ public abstract class EntityManagerBuilder implements Runnable {
                     }
                 }
 
-                Class<?> entityClass = entityType.getJavaType();
+                Class<?> jpaEntityClass = entityType.getJavaType();
+                Class<?> userEntityClass = recordClass == null ? jpaEntityClass : recordClass;
 
                 EntityInfo entityInfo = new EntityInfo( //
                                 entityType.getName(), //
-                                entityClass, //
-                                getRecordClass(entityClass), //
+                                jpaEntityClass, //
+                                recordClass, //
                                 attributeAccessors, //
                                 attributeNames, //
                                 attributeTypes, //
@@ -332,7 +335,7 @@ public abstract class EntityManagerBuilder implements Runnable {
                                 versionAttrName, //
                                 this);
 
-                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).complete(entityInfo);
+                entityInfoMap.computeIfAbsent(userEntityClass, EntityInfo::newFuture).complete(entityInfo);
             }
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run: define entities");

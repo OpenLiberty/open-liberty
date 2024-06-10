@@ -613,7 +613,7 @@
 
 7345={0} file specified for XMLMetadataSource is not found
 
-7346=The multitenant context property [{0}] has not been provided. When the persistence unit property (eclipselink.multitenant.tenants-share-emf) is set to false, all multitenant context properties must be provided up front. This can be done through the persistence unit definition directly or by passing a properties map containing all the multitenant context properties on the create EntityManagerFactory call.
+7346=The multitenant context property [{0}] has not been provided. When the persistence unit property ({1}) is set to false, all multitenant context properties must be provided up front. This can be done through the persistence unit definition directly or by passing a properties map containing all the multitenant context properties on the create EntityManagerFactory call.
 
 7347=The class [{0}] specifies type level convert metadata without specifying an attribute name for each. An attribute name must be provided for all type level convert metadata to ensure the correct application to a super class attribute.
 
@@ -633,9 +633,12 @@
 
 7356=Procedure: [{1}] cannot be executed because {0} does not currently support multiple out parameters
 
-7357=The [{0}] URL for the [{1}] resource does not belong to a valid persistence root, as defined by the JPA Specification.
+7357=The "[{0}]" URL for the "[{1}]" resource does not belong to a valid persistence root, as defined by the Jakarta Persistence specification.
 
 7358=Incorrect ASM service name provided.
 
 7359=No any ASM service available.
+
+7360=Database password was encrypted by deprecated algorithm.
+Reencrypt it by `passwordUpdate.sh` from eclipselink.zip bundle.
 

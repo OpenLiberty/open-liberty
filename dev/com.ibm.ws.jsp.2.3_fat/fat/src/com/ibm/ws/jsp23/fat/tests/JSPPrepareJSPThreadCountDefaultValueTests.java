@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -67,7 +67,7 @@ public class JSPPrepareJSPThreadCountDefaultValueTests {
      * @throws Exception
      */
     @Test
-    public void testPrepareJSPThreadCountDeault() throws Exception {
+    public void testPrepareJSPThreadCountDefault() throws Exception {
         // We need to wait for the server to finish processing before looking for the files to ensure we don't hit intermittent timing issues.
         assertNotNull("The JSPs were not processed during server startup.", server
                         .waitForStringInLog("PrepareJspHelper in group \\[SimpleJSPApp\\]: All 1 jsp files have been processed."));

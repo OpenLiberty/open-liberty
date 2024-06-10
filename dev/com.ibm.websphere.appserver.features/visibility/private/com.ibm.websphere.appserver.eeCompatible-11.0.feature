@@ -8,3 +8,4 @@ Subsystem-Version: 11.0.0
 kind=beta
 edition=core
 WLP-Activation-Type: parallel
+WLP-Platform: jakartaee-11.0

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,17 +29,17 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
 
-import org.junit.After;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
-import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -52,7 +52,6 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
 
     private FileLock fLock;
     private FileChannel fChannel;
-    private static final String APP_PATH = "../com.ibm.ws.transaction.cloud_fat.base/";
     protected static final int FScloud2ServerPort = 9992;
     private static final String v1Length = "v1Length";
 
@@ -62,13 +61,17 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
     @Server("FSCLOUD002")
     public static LibertyServer s2;
 
-    @Server("longLeaseLengthFSServer1")
-    public static LibertyServer longLeaseLengthFSServer1;
+    @Server("FSCLOUD001.longleasecompete")
+    public static LibertyServer s3;
+
+    @Server("FSCLOUD002.fastcheck")
+    public static LibertyServer s4;
 
     public static String[] serverNames = new String[] {
                                                         "FSCLOUD001",
                                                         "FSCLOUD002",
-                                                        "longLeaseLengthFSServer1",
+                                                        "FSCLOUD001.longleasecompete",
+                                                        "FSCLOUD002.fastcheck",
     };
 
     @Override
@@ -87,20 +90,20 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
     public static void setUp() throws Exception {
         initialize(s1, s2, "transaction", "/SimpleFS2PCCloudServlet");
 
-        TxShrinkHelper.buildDefaultApp(server1, APP_NAME, APP_PATH, "servlets.*");
-        TxShrinkHelper.buildDefaultApp(server2, APP_NAME, APP_PATH, "servlets.*");
-        TxShrinkHelper.buildDefaultApp(longLeaseLengthFSServer1, APP_NAME, APP_PATH, "servlets.*");
+        longLeaseCompeteServer1 = s3;
+        server2fastcheck = s4;
+
+        final WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME, "servlets.*");
+        final DeployOptions[] dO = new DeployOptions[0];
+
+        ShrinkHelper.exportAppToServer(server1, app, dO);
+        ShrinkHelper.exportAppToServer(server2, app, dO);
+        ShrinkHelper.exportAppToServer(longLeaseCompeteServer1, app, dO);
 
         server1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         server2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         server2.setHttpDefaultPort(server2.getHttpSecondaryPort());
-        longLeaseLengthFSServer1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
-    }
-
-    @After
-    public void cleanup() throws Exception {
-        // Clean up XA resource file
-        server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
+        longLeaseCompeteServer1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
     }
 
     /**
@@ -114,15 +117,12 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testFSBaseRecovery() throws Exception {
+        serversToCleanup = new LibertyServer[] { server1 };
+
         // Start Server1
         FATUtils.startServers(server1);
 
-        try {
-            FATUtils.recoveryTest(server1, SERVLET_NAME, "Core");
-        } finally {
-            // Lastly stop server1
-            FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W" }, server1); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
-        }
+        FATUtils.recoveryTest(server1, SERVLET_NAME, "Core");
     }
 
     /**
@@ -139,9 +139,7 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
         final String method = "testFSRecoveryTakeover";
         StringBuilder sb = null;
         String id = "Core";
-
-        final String tranlog = "tranlog/tranlog";
-        final String partnerlog = "tranlog/partnerlog";
+        serversToCleanup = new LibertyServer[] { server1, server2 };
 
         // Start Server1
         FATUtils.startServers(server1);
@@ -199,6 +197,8 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
         StringBuilder sb = null;
         String id = "Core";
 
+        serversToCleanup = new LibertyServer[] { server1, longLeaseCompeteServer1, server2 };
+
         // Start Server1
         FATUtils.startServers(server1);
 
@@ -218,10 +218,10 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
         // for the lease, otherwise we may decide that we CAN delete and renew our own lease.
 
         // Now re-start cloud1
-        longLeaseLengthFSServer1.startServerExpectFailure("recovery-log-fail.log", false, true);
+        longLeaseCompeteServer1.startServerExpectFailure("recovery-log-fail.log", false, true);
 
         // Server appears to have failed as expected. Check for log failure string
-        assertNotNull("Recovery logs should have failed", longLeaseLengthFSServer1.waitForStringInLog("RECOVERY_LOG_FAILED"));
+        assertNotNull("Recovery logs should have failed", longLeaseCompeteServer1.waitForStringInLog("RECOVERY_LOG_FAILED"));
 
         // defect 210055: Now we need to tidy up the environment, start by releasing the lock.
         releaseServerLease("FSCLOUD001");
@@ -236,13 +236,9 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
             fail("Could not restart " + server2.getServerName());
         }
 
-        try {
-            // Server appears to have started ok. Check for 2 key strings to see whether peer recovery has succeeded
-            assertNotNull(server2.getServerName() + " did not recover for " + server1.getServerName(),
-                          server2.waitForStringInTrace("Performed recovery for " + server1.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
-        } finally {
-            FATUtils.stopServers(server2, longLeaseLengthFSServer1);
-        }
+        // Server appears to have started ok. Check for 2 key strings to see whether peer recovery has succeeded
+        assertNotNull(server2.getServerName() + " did not recover for " + server1.getServerName(),
+                      server2.waitForStringInTrace("Performed recovery for " + server1.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
     }
 
     // Check that we can now:
@@ -254,8 +250,7 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
 
         final String defaultBackendURL = "\nhttp://localhost:9080";
 
-        // Ensure servers are stopped
-        FATUtils.stopServers(server1, server2);
+        serversToCleanup = new LibertyServer[] { server1 };
 
         // Edit the lease files
         setupV1LeaseLogs(server1, server2);
@@ -281,8 +276,6 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
         // Check for key string to see whether the peer lease has been updated with the owner/backendURL combo.
         assertNotNull("Peer lease not updated",
                       server1.waitForStringInTraceUsingMark("On writing " + server2.getServerName() + " lease file length " + newLength, FATUtils.LOG_SEARCH_TIMEOUT));
-
-        FATUtils.stopServers(server1);
     }
 
     private void setupV1LeaseLogs(LibertyServer... servers) throws Exception {
@@ -431,5 +424,17 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
 
         Log.info(this.getClass(), method, "releaseServerLease processing complete");
         return true;
+    }
+
+    // Remove this method when aggressive takeover works on FS
+    @Override
+    public void testAggressiveTakeover1() throws Exception {
+        Log.info(this.getClass(), "testAggressiveTakeover1", "Aggressive takeover doesn't yet work for FS logs");
+    }
+
+    // Remove this method when aggressive takeover works on FS
+    @Override
+    public void testAggressiveTakeover2() throws Exception {
+        Log.info(this.getClass(), "testAggressiveTakeover2", "Aggressive takeover doesn't yet work for FS logs");
     }
 }

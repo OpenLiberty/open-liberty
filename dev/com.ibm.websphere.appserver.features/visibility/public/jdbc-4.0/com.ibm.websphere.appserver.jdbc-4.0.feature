@@ -18,3 +18,4 @@ Subsystem-Name: Java Database Connectivity 4.0
  com.ibm.ws.jdbc.metatype
 kind=ga
 edition=core
+WLP-Platform: javaee-6.0

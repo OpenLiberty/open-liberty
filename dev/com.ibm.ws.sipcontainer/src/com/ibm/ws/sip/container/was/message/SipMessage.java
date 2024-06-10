@@ -1485,7 +1485,7 @@ public class SipMessage implements IRequestExtended, IResponse, Queueable
 	/**
 	 *  @see com.ibm.ws.sip.container.util.Queueable#getQueueIndex()
 	 */
-    public long getQueueIndex() {
+    public int getQueueIndex() {
 		TransactionUserWrapper tu = null;
     	if(_request != null){
 			tu = ((SipServletMessageImpl)_request).getTransactionUser();

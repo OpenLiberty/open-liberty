@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2023 IBM Corporation and others.
+# Copyright (c) 2016, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -655,3 +655,9 @@ BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.useraction=Utilice el punto final de ci
 CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD=CWWKS2351E: El cliente de {0} OpenID Connect utiliza el m\u00e9todo de autenticaci\u00f3n de punto final de se\u00f1al {1}. Este m\u00e9todo de autenticaci\u00f3n requiere un secreto de cliente, pero no se ha configurado un secreto de cliente.
 CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.explanation=El m\u00e9todo de autenticaci\u00f3n de punto final de se\u00f1al que se especifica en el mensaje requiere un secreto de cliente para autenticarse con el punto final de se\u00f1al del proveedor de OpenID Connect.
 CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.useraction=Configure un secreto de cliente para el cliente de OpenID Connect, o cambie el m\u00e9todo de autenticaci\u00f3n de punto final de se\u00f1al del cliente a uno que no requiera un secreto de cliente.
+
+# do not translate hostname, sameSiteCookie, webAppSecurity, Strict, Lax, None
+# used by client
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS2352E: Una solicitud a [{0}] no es v\u00e1lida. Falta una cookie obligatoria con un nombre que empieza por WASReqURLOidc. Es posible que el nombre de host que se utiliza para acceder al cliente no coincida con el nombre registrado en el proveedor.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=El cliente ha recibido una solicitud que no inclu\u00eda una cookie necesaria.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Verifique el proveedor de OpenID Connect y las configuraciones del cliente. La cookie que falta puede deberse a que se accede al cliente con un nombre de host que difiere del nombre de host de la redirecci\u00f3n que est\u00e1 registrada con el proveedor. Si el atributo sameSiteCookie del elemento webAppSecurity de la configuraci\u00f3n del servidor est\u00e1 establecido en Estrict, intente establecer el valor en Lax o None.

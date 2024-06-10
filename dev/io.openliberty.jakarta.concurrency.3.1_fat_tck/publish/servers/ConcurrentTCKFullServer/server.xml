@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2022, 2023 IBM Corporation and others.
+    Copyright (c) 2022, 2024 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -12,15 +12,12 @@
  -->
 <server>
     <featureManager>
-        <!-- Features being tested -->
-        <feature>jakartaee-11.0</feature>
-		
-        <!-- Minimum features required 
+
         <feature>concurrent-3.1</feature>
         <feature>enterpriseBeans-4.0</feature>
+        <feature>jdbc-4.3</feature>
         <feature>appSecurity-6.0</feature>
         <feature>pages-4.0</feature>
-        -->
 		 
         <!-- Features needed for arquillan support -->
         <feature>localConnector-1.0</feature>

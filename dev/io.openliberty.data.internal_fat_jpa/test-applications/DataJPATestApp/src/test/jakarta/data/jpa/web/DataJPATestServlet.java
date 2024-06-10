@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,8 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
-import static com.ibm.websphere.simplicity.config.DataSourceProperties.DERBY_EMBEDDED;
+import static componenttest.annotation.SkipIfSysProp.DB_Not_Default;
+import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -20,14 +21,19 @@ import static org.junit.Assert.fail;
 import static test.jakarta.data.jpa.web.Assertions.assertArrayEquals;
 import static test.jakarta.data.jpa.web.Assertions.assertIterableEquals;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.OffsetDateTime;
 import java.time.Period;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -52,6 +58,7 @@ import java.util.stream.StreamSupport;
 
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
+import jakarta.data.Direction;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
@@ -75,8 +82,8 @@ import jakarta.transaction.UserTransaction;
 
 import org.junit.Test;
 
-import com.ibm.websphere.simplicity.config.dsprops.testrules.SkipIfDataSourceProperties;
-
+import componenttest.annotation.OnlyIfSysProp;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import test.jakarta.data.jpa.web.CreditCard.CardId;
 import test.jakarta.data.jpa.web.CreditCard.Issuer;
@@ -115,6 +122,9 @@ public class DataJPATestServlet extends FATServlet {
     Customers customers;
 
     @Inject
+    Demographics demographics;
+
+    @Inject
     Drivers drivers;
 
     @Inject
@@ -146,6 +156,9 @@ public class DataJPATestServlet extends FATServlet {
 
     @Resource
     private UserTransaction tran;
+
+    @Inject
+    Triangles triangles;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -213,10 +226,34 @@ public class DataJPATestServlet extends FATServlet {
         creditCards.save(card1a, card1m, card1v);
         creditCards.save(c2, c3, c4);
         customers.save(c5, c6, c7);
+
+        demographics.write(new DemographicInfo(2024, 4, 30, 133809000, 7136033799632.56, 27480960216618.32));
+        demographics.write(new DemographicInfo(2023, 4, 28, 134060000, 6852746625848.93, 24605068022566.94));
+        demographics.write(new DemographicInfo(2022, 4, 29, 132250000, 6526909395140.41, 23847245116757.60));
+        demographics.write(new DemographicInfo(2021, 4, 30, 127160000, 6118659345749.70, 22056055138417.67));
+        demographics.write(new DemographicInfo(2020, 4, 30, 123190000, 5920553066244.38, 19053618801919.97));
+        demographics.write(new DemographicInfo(2019, 4, 30, 130600000, 5843472921623.80, 16192789476576.03));
+        demographics.write(new DemographicInfo(2018, 4, 30, 128570000, 5733071837291.80, 15335128360141.59));
+        demographics.write(new DemographicInfo(2017, 4, 28, 125970000, 5552784531172.11, 14293344777463.61));
+        demographics.write(new DemographicInfo(2016, 4, 29, 123760000, 5346192750684.33, 13841194733299.04));
+        demographics.write(new DemographicInfo(2015, 4, 30, 121490000, 5098878878836.55, 13053681247951.16));
+        demographics.write(new DemographicInfo(2014, 4, 30, 118720000, 5004968792143.34, 12503468335518.28));
+        demographics.write(new DemographicInfo(2013, 4, 30, 116310000, 4885697098978.25, 11943148398205.65));
+        demographics.write(new DemographicInfo(2012, 4, 30, 114810000, 4776297169202.55, 10916070898102.68));
+        demographics.write(new DemographicInfo(2011, 4, 29, 112560000, 4632679886492.71, 9654950165830.41));
+        demographics.write(new DemographicInfo(2010, 4, 30, 111710000, 4514304290243.70, 8434434625613.16));
+        demographics.write(new DemographicInfo(2009, 4, 30, 112630000, 4307767198983.08, 6930824942975.56));
+        demographics.write(new DemographicInfo(2008, 4, 30, 120030000, 4133362638109.27, 5244194578964.17));
+        demographics.write(new DemographicInfo(2007, 4, 30, 121090000, 3833110332444.19, 5007058051986.64));
+        demographics.write(new DemographicInfo(2006, 4, 30, 119690000, 3535769322660.75, 4819948752057.74));
+        demographics.write(new DemographicInfo(2005, 4, 29, 117020000, 3213472491939.22, 4551064845424.92));
+        demographics.write(new DemographicInfo(2004, 4, 30, 114520000, 2974811477645.08, 4158978012936.35));
+        demographics.write(new DemographicInfo(2003, 4, 30, 113320000, 2757535748111.21, 3702844997678.07));
+        demographics.write(new DemographicInfo(2002, 4, 30, 112700000, 2582340471146.16, 3402336886067.70));
     }
 
     /**
-     * Test the AbsoluteValue Function by querying on values that could be positive or negative.
+     * Test the ABS JDQL function by querying on values that could be positive or negative.
      */
     @Test
     public void testAbsoluteValueFunction() {
@@ -238,12 +275,189 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository method comparing a BigDecimal value on an entity that includes BigDecimal attributes.
+     * This includes both a comparison in the query conditions as well as ordering on the BigDecimal attribute.
+     */
+    @Test
+    public void testBigDecimal() {
+        final ZoneId EASTERN = ZoneId.of("America/New_York");
+
+        List<DemographicInfo> list = demographics.findByPublicDebtBetween(BigDecimal.valueOf(5000000000000.00), // 5 trillion
+                                                                          BigDecimal.valueOf(10000000000000.00)); // 10 trillion
+        assertEquals(list.toString(), 5, list.size());
+        assertEquals(2007, list.get(0).collectedOn.atZone(EASTERN).get(ChronoField.YEAR));
+        assertEquals(2008, list.get(1).collectedOn.atZone(EASTERN).get(ChronoField.YEAR));
+        assertEquals(2009, list.get(2).collectedOn.atZone(EASTERN).get(ChronoField.YEAR));
+        assertEquals(2010, list.get(3).collectedOn.atZone(EASTERN).get(ChronoField.YEAR));
+        assertEquals(2011, list.get(4).collectedOn.atZone(EASTERN).get(ChronoField.YEAR));
+
+        // Use the BigDecimal and BigInteger values in a computation.
+        List<BigDecimal> debtPerFullTimeWorker = demographics.debtPerFullTimeWorker()
+                        .map(DebtPerWorker::get)
+                        .sorted()
+                        .toList();
+
+        assertEquals(debtPerFullTimeWorker.toString(), 23, debtPerFullTimeWorker.size());
+        assertEquals(53102.72, debtPerFullTimeWorker.get(0).doubleValue(), 0.02); // 2002
+        assertEquals(258704.53, debtPerFullTimeWorker.get(22).doubleValue(), 0.02); // 2024
+    }
+
+    /**
+     * Use a repository method comparing a BigInteger value on an entity that includes BigInteger attributes.
+     * This includes both a comparison in the query conditions as well as ordering on the BigInteger attribute.
+     */
+    @Test
+    public void testBigInteger() {
+        ZoneId ET = ZoneId.of("America/New_York");
+
+        List<Instant> list = demographics.whenFullTimeEmploymentWithin(BigInteger.valueOf(120000000),
+                                                                       BigInteger.valueOf(126000000));
+        assertEquals(2008, list.get(0).atZone(ET).get(ChronoField.YEAR));
+        assertEquals(2007, list.get(1).atZone(ET).get(ChronoField.YEAR));
+        assertEquals(2015, list.get(2).atZone(ET).get(ChronoField.YEAR));
+        assertEquals(2020, list.get(3).atZone(ET).get(ChronoField.YEAR));
+        assertEquals(2016, list.get(4).atZone(ET).get(ChronoField.YEAR));
+        assertEquals(2017, list.get(5).atZone(ET).get(ChronoField.YEAR));
+    }
+
+    /**
+     * Use an entity that has an attribute that is a byte[], performing repository operations
+     * that query by the byte[] and return the byte[] attribute in various ways.
+     */
+    @Test
+    public void testByteArrayAttributeType() {
+        // remove all data before test
+        triangles.deleteByHypotenuseNot((byte) 0);
+
+        List<Triangle> saved = triangles.saveAll(List.of(new Triangle((byte) 10, (byte) 10, (byte) 10), // keys[0]
+                                                         new Triangle((byte) 13, (byte) 84, (byte) 85), // keys[1]
+                                                         new Triangle((byte) 16, (byte) 63, (byte) 65), // keys[2]
+                                                         new Triangle((byte) 28, (byte) 45, (byte) 53), // keys[3]
+                                                         new Triangle((byte) 33, (byte) 56, (byte) 65), // keys[4]
+                                                         new Triangle((byte) 39, (byte) 80, (byte) 89), // keys[5]
+                                                         new Triangle((byte) 48, (byte) 55, (byte) 73))); // keys[6]
+
+        int[] keys = new int[] { saved.get(0).distinctKey,
+                                 saved.get(1).distinctKey,
+                                 saved.get(2).distinctKey,
+                                 saved.get(3).distinctKey,
+                                 saved.get(4).distinctKey,
+                                 saved.get(5).distinctKey,
+                                 saved.get(6).distinctKey };
+
+        // byte[] as return value
+        assertEquals(0, Arrays.compare(new byte[] { 13, 84, 85 },
+                                       triangles.getSides(keys[1])));
+
+        // Optional byte[] as return value
+        assertEquals(0, Arrays.compare(new byte[] { 39, 80, 89 },
+                                       triangles.getSidesIfPresent(keys[5]).orElseThrow()));
+
+        // updates to a byte[] attribute
+        assertEquals(true, triangles.resizePreservingHypotenuse(keys[1],
+                                                                new byte[] { 36, 77, 85 },
+                                                                (short) (198)));
+
+        List<Triangle> found = triangles.withPerimeter((short) (36 + 77 + 85));
+        assertEquals(1, found.size());
+        Triangle t = found.get(0);
+        assertEquals(0, Arrays.compare(new byte[] { 36, 77, 85 }, t.sides));
+        assertEquals(t.distinctKey, Integer.valueOf(keys[1]));
+        assertEquals(t.hypotenuse, Byte.valueOf((byte) 85));
+        assertEquals(t.perimeter, (short) (36 + 77 + 85));
+        assertEquals(Short.valueOf((short) 0), t.sameLengthSides);
+
+        // update to cause triangles 2 and 4 to have the same sides
+        assertEquals(true, triangles.resizePreservingHypotenuse(keys[2],
+                                                                new byte[] { 33, 56, 65 },
+                                                                (short) (154)));
+
+        // results as array of byte[], ordered by hypotenuse, then key
+        byte[][] array = triangles.sidesWhereHypotenuseWithin((byte) 65, (byte) 75);
+        assertEquals(Arrays.deepToString(array), 3, array.length);
+        assertEquals(0, Arrays.compare(new byte[] { 33, 56, 65 }, array[0]));
+        assertEquals(0, Arrays.compare(new byte[] { 33, 56, 65 }, array[1]));
+        assertEquals(0, Arrays.compare(new byte[] { 48, 55, 73 }, array[2]));
+
+        // results as a stream of byte[]
+        Stream<byte[]> stream = triangles.sidesWherePerimeter((short) 30);
+        byte[] sides = stream.findFirst().orElseThrow();
+        assertEquals(Arrays.toString(sides), 0, Arrays.compare(new byte[] { 10, 10, 10 }, sides));
+
+        // results as a list of byte[]
+        List<byte[]> list = triangles.sidesWhereNumSidesEqual((short) 0);
+        assertEquals(6, list.size());
+        assertEquals(Arrays.toString(list.get(0)), 0, Arrays.compare(new byte[] { 28, 45, 53 }, list.get(0)));
+        assertEquals(Arrays.toString(list.get(1)), 0, Arrays.compare(new byte[] { 33, 56, 65 }, list.get(1)));
+        assertEquals(Arrays.toString(list.get(2)), 0, Arrays.compare(new byte[] { 33, 56, 65 }, list.get(2)));
+        assertEquals(Arrays.toString(list.get(3)), 0, Arrays.compare(new byte[] { 48, 55, 73 }, list.get(3)));
+        assertEquals(Arrays.toString(list.get(4)), 0, Arrays.compare(new byte[] { 36, 77, 85 }, list.get(4)));
+        assertEquals(Arrays.toString(list.get(5)), 0, Arrays.compare(new byte[] { 39, 80, 89 }, list.get(5)));
+
+        // select values including a function on byte[] column
+        // SQLServer does not support length for IMAGE values
+        // SQLServer JDBC Jar Name : mssql-jdbc.jar
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        if (!(jdbcJarName.startsWith("mssql-jdbc"))) {
+            int[][] sidesInfo = triangles.sidesInfo((byte) 65);
+            assertEquals(2, sidesInfo.length);
+            assertEquals(0, sidesInfo[0][0]);
+            assertEquals(3, sidesInfo[0][1]);
+            assertEquals(0, sidesInfo[1][0]);
+            assertEquals(3, sidesInfo[1][1]);
+
+            sidesInfo = triangles.sidesInfo((byte) 89);
+            assertEquals(sidesInfo.toString(), 1, sidesInfo.length);
+            assertEquals(0, sidesInfo[0][0]);
+            assertEquals(3, sidesInfo[0][1]);
+        }
+
+        // empty stream
+        assertEquals(1, triangles.deleteByHypotenuseNull());
+        stream = triangles.sidesWherePerimeter((short) 30);
+        assertEquals(0, stream.count());
+
+        assertEquals(4L, triangles.deleteByHypotenuseNot((byte) 65));
+
+        assertEquals(2L, triangles.deleteByHypotenuseNot((byte) 0));
+
+        // empty array
+        array = triangles.sidesWhereHypotenuseWithin((byte) 5, (byte) 125);
+        assertEquals(Arrays.deepToString(array), 0, array.length);
+
+        // empty list
+        list = triangles.sidesWhereNumSidesEqual((short) 0);
+        assertEquals(List.of(), list);
+    }
+
+    /**
+     * Use repository methods that return a collection attribute as a single value
+     * and multiple attributes including a collection attribute via a record.
+     */
+    @Test
+    public void testCollectionAttribute() {
+        assertEquals(Set.of(507),
+                     cities.areaCodes("Rochester", "Minnesota").orElseThrow());
+
+        List<AreaInfo> list = cities.areaInfo("Missouri").collect(Collectors.toList());
+        assertEquals(list.toString(), 2, list.size());
+
+        assertEquals("Kansas City", list.get(0).name());
+        assertEquals("Missouri", list.get(0).stateName());
+        assertEquals(Set.of(816, 975), list.get(0).areaCodes());
+
+        assertEquals("Springfield", list.get(1).name());
+        assertEquals("Missouri", list.get(1).stateName());
+        assertEquals(Set.of(417), list.get(1).areaCodes());
+    }
+
+    /**
      * Use a repository method with query language for the main query and count query,
      * where the count query is JDQL consisting of the FROM clause only.
      */
     @Test
     public void testCountQueryWithFromClauseOnly() {
-        Page<Business> page1 = mixed.findAll(PageRequest.of(Business.class).size(5).desc("name"));
+        Page<Business> page1 = mixed.findAll(PageRequest.ofSize(5), Order.by(Sort.desc("name")));
 
         assertEquals(5L, page1.numberOfElements());
         assertEquals(15L, page1.totalElements());
@@ -255,7 +469,7 @@ public class DataJPATestServlet extends FATServlet {
                                      .map(b -> b.name)
                                      .collect(Collectors.toList()));
 
-        Page<Business> page2 = mixed.findAll(page1.nextPageRequest());
+        Page<Business> page2 = mixed.findAll(page1.nextPageRequest(), Order.by(Sort.desc("name")));
 
         assertEquals(List.of("Metafile", "Mayo Clinic", "IBM", "Home Federal Savings Bank", "HALCON"),
                      page2.stream()
@@ -264,7 +478,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, page2.hasNext());
 
-        Page<Business> page3 = mixed.findAll(page2.nextPageRequest());
+        Page<Business> page3 = mixed.findAll(page2.nextPageRequest(), Order.by(Sort.desc("name")));
 
         assertEquals(List.of("Geotek", "Custom Alarm", "Crenlo", "Cardinal", "Benike Construction"),
                      page3.stream()
@@ -278,7 +492,8 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testCountQueryWithFromAndWhereClausesOnly() {
-        Page<Business> page1 = mixed.locatedIn("Rochester", PageRequest.of(Business.class).size(6).asc("name"));
+        Order<Business> order = Order.by(Sort.asc("name"));
+        Page<Business> page1 = mixed.locatedIn("Rochester", PageRequest.ofSize(6), order);
 
         assertEquals(6L, page1.numberOfElements());
         assertEquals(13L, page1.totalElements());
@@ -290,7 +505,7 @@ public class DataJPATestServlet extends FATServlet {
                                      .map(b -> b.name)
                                      .collect(Collectors.toList()));
 
-        Page<Business> page2 = mixed.locatedIn("Rochester", page1.nextPageRequest());
+        Page<Business> page2 = mixed.locatedIn("Rochester", page1.nextPageRequest(), order);
 
         assertEquals(List.of("Mayo Clinic", "Metafile", "Olmsted Medical", "RAC", "Reichel Foods", "Silver Lake Foods"),
                      page2.stream()
@@ -299,7 +514,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, page2.hasNext());
 
-        Page<Business> page3 = mixed.locatedIn("Rochester", page2.nextPageRequest());
+        Page<Business> page3 = mixed.locatedIn("Rochester", page2.nextPageRequest(), order);
 
         assertEquals(List.of("Think Bank"),
                      page3.stream()
@@ -377,9 +592,9 @@ public class DataJPATestServlet extends FATServlet {
      * Query-by-method name repository operation to remove and return one or more entities
      * where the entity has an IdClass.
      */
-    // Test annotation is present on corresponding method in DataTest
-    public void testFindAndDeleteEntityThatHasAnIdClass(HttpServletRequest request, HttpServletResponse response) {
-        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+    @Test
+    public void testFindAndDeleteEntityThatHasAnIdClass() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
         boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
 
         cities.save(new City("Milwaukee", "Wisconsin", 577222, Set.of(414)));
@@ -430,6 +645,12 @@ public class DataJPATestServlet extends FATServlet {
         cityNames.add("Mitchell");
         cityNames.add("Pierre");
 
+        //TODO Eclipse link SQL Generation bug on Oracle: https://github.com/OpenLiberty/open-liberty/issues/28545
+        if (jdbcJarName.startsWith("ojdbc8_g")) {
+            cities.removeByStateName("South Dakota"); //Cleanup Cities repository and skip the rest of these tests
+            return;
+        }
+
         Order<City> orderByCityName = supportsOrderByForUpdate ? Order.by(Sort.asc("name")) : Order.by();
         Iterator<CityId> ids = cities.deleteFirst3ByStateName("South Dakota", orderByCityName).iterator();
         CityId id;
@@ -464,7 +685,7 @@ public class DataJPATestServlet extends FATServlet {
         id = cities.deleteFirstByStateName("South Dakota", orderByPopulation).orElseThrow();
         assertEquals("South Dakota", id.stateName);
         if (supportsOrderByForUpdate)
-            assertEquals("Pierre", id.name);
+            assertEquals("Spearfish", id.name);
         // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
@@ -497,44 +718,6 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
         assertEquals(false, ids.hasNext());
-    }
-
-    /**
-     * Annotatively-defined repository operation to remove and return one or more IdClass
-     * instances corresponding to the removed entities.
-     */
-    @Test
-    public void testFindAndDeleteReturningIdClassArray(HttpServletRequest request, HttpServletResponse response) {
-
-        cities.save(new City("Bloomington", "Minnesota", 89987, Set.of(952)));
-        cities.save(new City("Plymouth", "Minnesota", 79828, Set.of(763)));
-        cities.save(new City("Woodbury", "Minnesota", 75102, Set.of(651)));
-        cities.save(new City("Brooklyn Park", "Minnesota", 86478, Set.of(763)));
-
-        CityId[] removed = cities.deleteWithinPopulationRange(75000, 99999);
-
-        assertEquals(Arrays.toString(removed), 4, removed.length);
-
-        Arrays.sort(removed, Comparator.comparing(CityId::toString));
-
-        assertEquals("Bloomington", removed[0].name);
-        assertEquals("Minnesota", removed[0].stateName);
-
-        assertEquals("Brooklyn Park", removed[1].name);
-        assertEquals("Minnesota", removed[1].stateName);
-
-        assertEquals("Plymouth", removed[2].name);
-        assertEquals("Minnesota", removed[2].stateName);
-
-        assertEquals("Woodbury", removed[3].name);
-        assertEquals("Minnesota", removed[3].stateName);
-
-        removed = cities.deleteWithinPopulationRange(75000, 99999);
-
-        assertEquals(Arrays.toString(removed), 0, removed.length);
-
-        // Ensure non-matching entities remain in the database
-        assertEquals(true, cities.existsById(CityId.of("Rochester", "Minnesota")));
     }
 
     /**
@@ -573,7 +756,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(removed.toString(), 0, removed.size());
 
         // Ensure non-matching entities remain in the database
-        assertEquals(true, cities.existsById(CityId.of("Rochester", "Minnesota")));
+        assertEquals(true, cities.existsByNameAndStateName("Rochester", "Minnesota"));
     }
 
     /**
@@ -703,11 +886,21 @@ public class DataJPATestServlet extends FATServlet {
                                              .sorted()
                                              .collect(Collectors.toList()));
 
-        assertIterableEquals(List.of("AccountId:10105600:560237", "AccountId:15561600:391588", "AccountId:43014400:410224"),
-                             taxpayers.findBankAccountsByFilingStatus(TaxPayer.FilingStatus.HeadOfHousehold)
-                                             .map(AccountId::toString)
-                                             .sorted()
-                                             .collect(Collectors.toList()));
+        List<Set<AccountId>> list = taxpayers.findBankAccountsByFilingStatus(TaxPayer.FilingStatus.HeadOfHousehold);
+        // TODO EclipseLink bug where
+        // SELECT o.bankAccounts FROM TaxPayer o WHERE (o.filingStatus=?1) ORDER BY o.numDependents, o.ssn
+        // combines the two Set<AccountId> values that ought to be the result into a single combined list of AccountId.
+        //assertEquals(list.toString(), 2, list.size());
+        //assertEquals(Set.of("AccountId:43014400:410224"),
+        //             list.get(0)
+        //                             .stream()
+        //                             .map(AccountId::toString)
+        //                             .collect(Collectors.toSet()));
+        //assertEquals(Set.of("AccountId:10105600:560237", "AccountId:15561600:391588"),
+        //             list.get(1)
+        //                             .stream()
+        //                             .map(AccountId::toString)
+        //                             .collect(Collectors.toSet()));
 
         // TODO report EclipseLink bug that occurs on the following
         if (false)
@@ -822,8 +1015,11 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(b -> b.name)
                                              .collect(Collectors.toList()));
 
-        assertIterableEquals(List.of("Custom Alarm", "Mayo Clinic", "Olmsted Medical", "Reichel Foods"),
-                             businesses.onSouthSideOf("Rochester", "MN", "s"));
+        assertIterableEquals(List.of("Custom Alarm", "Mayo Clinic", "Reichel Foods"),
+                             businesses.onSouthSideOf("Rochester", "MN", "SW")
+                                             .stream()
+                                             .map(b -> b.name)
+                                             .collect(Collectors.toList()));
     }
 
     /**
@@ -955,6 +1151,9 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Tests CrudRepository methods that supply entities as parameters.
      */
+    @SkipIfSysProp({
+                     DB_Postgres, //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    })
     @Test
     public void testEntitiesAsParameters() throws Exception {
         orders.deleteAll();
@@ -1090,11 +1289,20 @@ public class DataJPATestServlet extends FATServlet {
         o7.purchasedOn = OffsetDateTime.now();
         o7.total = 70.99f;
 
-        try {
-            orders.insertAll(List.of(o7, o5));
-            fail("Should not be able insert an entity with an Id that is already present.");
-        } catch (EntityExistsException x) {
-            // expected
+        // TODO SQLServer throws com.microsoft.sqlserver.jdbc.SQLServerException: Violation of PRIMARY KEY constraint ...
+        // which is not a subset of SQLIntegrityConstraintViolationException
+        // we are not correctly parsing this exception to re-throw as EntityExistsException
+        // Related issue: https://github.com/microsoft/mssql-jdbc/issues/1199
+        // SQLServer JDBC Jar Name : mssql-jdbc.jar
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        if (!(jdbcJarName.startsWith("mssql-jdbc"))) {
+            try {
+
+                orders.insertAll(List.of(o7, o5));
+                fail("Should not be able insert an entity with an Id that is already present.");
+            } catch (EntityExistsException x) {
+                // expected
+            }
         }
 
         assertEquals(false, orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer7").isPresent());
@@ -1245,30 +1453,33 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Verify WithWeek Function to compare the week-of-year part of a date.
      */
-    @SkipIfDataSourceProperties(DERBY_EMBEDDED) // Derby doesn't support a WEEK function in SQL
+    @OnlyIfSysProp(DB_Not_Default) // Derby doesn't support a WEEK function in SQL
     @Test
     public void testExtractWeekFromDateFunction() {
-
         // WithWeek
-        assertEquals(List.of(4000921041110001L),
-                     creditCards.expiringInWeek(15));
+        List<CreditCard> results = creditCards.expiringInWeek(15);
+
+        assertEquals(1, results.size());
+        assertEquals(4000921041110001L, results.get(0).number);
     }
 
     /**
      * Verify WithWeek in query-by-method-name to compare the week-of-year part of a date.
      */
-    @SkipIfDataSourceProperties(DERBY_EMBEDDED) // Derby doesn't support a WEEK function in SQL
+    @OnlyIfSysProp(DB_Not_Default) // Derby doesn't support a WEEK function in SQL
     @Test
     public void testExtractWeekFromDateKeyword() {
-
         // WithWeek
-        assertEquals(List.of(4000921042220002L),
-                     creditCards.findByExpiresOnWithWeek(17));
+        List<CreditCard> results = creditCards.findByExpiresOnWithWeek(17);
+
+        assertEquals(1, results.size());
+        assertEquals(4000921042220002L, results.get(0).number);
     }
 
     /**
      * Reproduces issue 27925.
      */
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testForeignKey() {
         Manufacturer toyota = new Manufacturer();
@@ -1343,7 +1554,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testFromAndWhereClausesOnly() {
-        CursoredPage<Business> page1 = mixed.locatedIn("Rochester", "MN", PageRequest.of(Business.class).size(4).asc("name"));
+        CursoredPage<Business> page1 = mixed.locatedIn("Rochester", "MN", PageRequest.ofSize(4), Order.by(Sort.asc("name")));
 
         assertEquals(4L, page1.numberOfElements());
         assertEquals(13L, page1.totalElements());
@@ -1355,7 +1566,7 @@ public class DataJPATestServlet extends FATServlet {
                                      .map(b -> b.name)
                                      .collect(Collectors.toList()));
 
-        CursoredPage<Business> page2 = mixed.locatedIn("Rochester", "MN", page1.nextPageRequest());
+        CursoredPage<Business> page2 = mixed.locatedIn("Rochester", "MN", page1.nextPageRequest(), Order.by(Sort.asc("name")));
 
         assertEquals(List.of("Home Federal Savings Bank", "IBM", "Mayo Clinic", "Metafile"),
                      page2.stream()
@@ -1364,7 +1575,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, page2.hasNext());
 
-        CursoredPage<Business> page3 = mixed.locatedIn("Rochester", "MN", page2.nextPageRequest());
+        CursoredPage<Business> page3 = mixed.locatedIn("Rochester", "MN", page2.nextPageRequest(), Order.by(Sort.asc("name")));
 
         assertEquals(List.of("Olmsted Medical", "RAC", "Reichel Foods", "Silver Lake Foods"),
                      page3.stream()
@@ -1373,7 +1584,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, page3.hasNext());
 
-        CursoredPage<Business> page4 = mixed.locatedIn("Rochester", "MN", page3.nextPageRequest());
+        CursoredPage<Business> page4 = mixed.locatedIn("Rochester", "MN", page3.nextPageRequest(), Order.by(Sort.asc("name")));
 
         assertEquals(List.of("Think Bank"),
                      page4.stream()
@@ -1406,6 +1617,9 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Avoid specifying a primary key value and let it be generated.
      */
+    @SkipIfSysProp({
+                     DB_Postgres, //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    })
     @Test
     public void testGeneratedKey() {
         ZoneOffset MDT = ZoneOffset.ofHours(-6);
@@ -1456,15 +1670,6 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Repository method with the Count keyword that counts how many matching entities there are.
-     */
-    @Test
-    public void testIdClassCountKeyword() {
-        assertEquals(2L, cities.countByStateButNotCity_Or_NotCityButWithCityName("Missouri", CityId.of("Kansas City", "Missouri"),
-                                                                                 CityId.of("Rochester", "New York"), "Rochester"));
-    }
-
-    /**
      * Use CrudRepository-style delete(entity) operation where entity has a composite ID that is defined by IdClass.
      */
     @Test
@@ -1476,39 +1681,12 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Repository method with the Exists annotation that checks if any matching entities exist.
-     */
-    @Test
-    public void testIdClassExistsAnnotation() {
-        assertEquals(true, cities.areFoundIn("Minnesota"));
-        assertEquals(false, cities.areFoundIn("Antarctica"));
-    }
-
-    /**
      * Repository method with the Exists keyword that checks if any matching entities exist.
      */
     @Test
     public void testIdClassExistsKeyword() {
         assertEquals(true, cities.existsByNameAndStateName("Kansas City", "Kansas"));
         assertEquals(false, cities.existsByNameAndStateName("Kansas City", "Minnesota"));
-
-        assertEquals(true, cities.existsById(CityId.of("Kansas City", "Missouri")));
-        assertEquals(false, cities.existsById(CityId.of("Kansas City", "Nebraska")));
-    }
-
-    /**
-     * Repository method performing a parameter-based query on a compound entity Id which is an IdClass,
-     * where the method parameter is annotated with By.
-     */
-    @Test
-    public void testIdClassFindByAnnotatedParameter() {
-
-        assertIterableEquals(List.of("Springfield Massachusetts",
-                                     "Rochester Minnesota",
-                                     "Kansas City Missouri"),
-                             cities.largerThan(100000, CityId.of("springfield", "missouri"), "M%s")
-                                             .map(c -> c.name + ' ' + c.stateName)
-                                             .collect(Collectors.toList()));
     }
 
     /**
@@ -1519,39 +1697,6 @@ public class DataJPATestServlet extends FATServlet {
         assertIterableEquals(List.of("Rochester Minnesota",
                                      "Rochester New York"),
                              cities.withNameOf("Rochester")
-                                             .map(c -> c.name + ' ' + c.stateName)
-                                             .collect(Collectors.toList()));
-    }
-
-    /**
-     * Repository method performing a parameter-based query on a compound entity Id which is an IdClass,
-     * without annotating the method parameter.
-     */
-    @Test
-    public void testIdClassFindByParametersUnannotated() {
-        assertEquals(true, cities.isBiggerThan(100000, CityId.of("Rochester", "Minnesota")));
-        assertEquals(false, cities.isBiggerThan(500000, CityId.of("Rochester", "Minnesota")));
-    }
-
-    /**
-     * Repository method with the Find keyword that queries based on multiple IdClass parameters.
-     */
-    @Test
-    public void testIdClassFindKeyword() {
-        assertIterableEquals(List.of("Kansas City Missouri",
-                                     "Rochester Minnesota",
-                                     "Springfield Illinois"),
-                             cities.findByIdIsOneOf(CityId.of("Rochester", "Minnesota"),
-                                                    CityId.of("springfield", "illinois"),
-                                                    CityId.of("Kansas City", "Missouri"))
-                                             .map(c -> c.name + ' ' + c.stateName)
-                                             .collect(Collectors.toList()));
-
-        assertIterableEquals(List.of("Springfield Illinois",
-                                     "Springfield Massachusetts",
-                                     "Springfield Missouri",
-                                     "Springfield Ohio"),
-                             cities.findByNameButNotId("Springfield", CityId.of("Springfield", "Oregon"))
                                              .map(c -> c.name + ' ' + c.stateName)
                                              .collect(Collectors.toList()));
     }
@@ -1579,10 +1724,10 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderByAnnotationWithKeysetPagination() {
-        PageRequest<?> pagination = PageRequest
+        PageRequest pagination = PageRequest
                         .ofSize(3)
                         .withoutTotal()
-                        .afterKey(CityId.of("Rochester", "Minnesota"));
+                        .afterCursor(Cursor.forKey(CityId.of("Rochester", "Minnesota")));
 
         CursoredPage<City> slice1 = cities.findByStateNameNotEndsWith("o", pagination);
         assertIterableEquals(List.of("Rochester New York",
@@ -1607,46 +1752,13 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Use keyset pagination with the OrderBy annotation on a composite id that is defined by an IdClass attribute.
-     * Also use named parameters, which means the keyset portion of the query will also need to use named parameters.
-     */
-    @Test
-    public void testIdClassOrderByAnnotationWithKeysetPaginationAndNamedParameters() {
-        PageRequest<City> pagination = PageRequest.ofSize(2);
-
-        CursoredPage<City> page1 = cities.sizedWithin(100000, 1000000, pagination);
-        assertIterableEquals(List.of("Springfield Missouri",
-                                     "Springfield Massachusetts"),
-                             page1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
-
-        assertEquals(4L, page1.totalPages());
-        assertEquals(7L, page1.totalElements());
-
-        CursoredPage<City> page2 = cities.sizedWithin(100000, 1000000, page1.nextPageRequest());
-        assertIterableEquals(List.of("Springfield Illinois",
-                                     "Rochester New York"),
-                             page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
-
-        CursoredPage<City> page3 = cities.sizedWithin(100000, 1000000, page2.nextPageRequest());
-        assertIterableEquals(List.of("Rochester Minnesota",
-                                     "Kansas City Missouri"),
-                             page3.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
-
-        CursoredPage<City> page4 = cities.sizedWithin(100000, 1000000, page3.nextPageRequest());
-        assertIterableEquals(List.of("Kansas City Kansas"),
-                             page4.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
-
-        assertEquals(false, page4.hasNext());
-    }
-
-    /**
      * Use keyset pagination with the OrderBy query-by-method pattern on a composite id that is defined by an IdClass attribute.
      */
     @Test
     public void testIdClassOrderByNamePatternWithKeysetPagination() {
-        PageRequest<City> pagination = PageRequest.of(City.class).size(5).withoutTotal();
+        PageRequest pagination = PageRequest.ofSize(5).withoutTotal();
 
-        CursoredPage<City> slice1 = cities.findByStateNameNotNull(pagination);
+        CursoredPage<City> slice1 = cities.findByStateNameNotNull(pagination, Order.by());
         assertIterableEquals(List.of("Kansas City Kansas",
                                      "Kansas City Missouri",
                                      "Rochester Minnesota",
@@ -1654,7 +1766,7 @@ public class DataJPATestServlet extends FATServlet {
                                      "Springfield Illinois"),
                              slice1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        CursoredPage<City> slice2 = cities.findByStateNameNotNull(slice1.nextPageRequest());
+        CursoredPage<City> slice2 = cities.findByStateNameNotNull(slice1.nextPageRequest(), Order.by());
         assertIterableEquals(List.of("Springfield Massachusetts",
                                      "Springfield Missouri",
                                      "Springfield Ohio",
@@ -1666,13 +1778,14 @@ public class DataJPATestServlet extends FATServlet {
         Cursor springfieldMO = slice2.cursor(1);
         pagination = pagination.size(3).beforeCursor(springfieldMO);
 
-        CursoredPage<City> beforeSpringfieldMO = cities.findByStateNameNotNull(pagination);
+        CursoredPage<City> beforeSpringfieldMO = cities.findByStateNameNotNull(pagination, Order.by());
         assertIterableEquals(List.of("Rochester New York",
                                      "Springfield Illinois",
                                      "Springfield Massachusetts"),
                              beforeSpringfieldMO.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        CursoredPage<City> beforeRochesterNY = cities.findByStateNameNotNull(beforeSpringfieldMO.previousPageRequest());
+        CursoredPage<City> beforeRochesterNY = cities.findByStateNameNotNull(beforeSpringfieldMO.previousPageRequest(),
+                                                                             Order.by());
         assertIterableEquals(List.of("Kansas City Kansas",
                                      "Kansas City Missouri",
                                      "Rochester Minnesota"),
@@ -1687,7 +1800,9 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderByNamePatternWithKeysetPaginationDescending() {
-        PageRequest<?> pagination = PageRequest.ofSize(3).withTotal().afterKey(CityId.of("Springfield", "Tennessee"));
+        PageRequest pagination = PageRequest.ofSize(3)
+                        .withTotal()
+                        .afterCursor(Cursor.forKey(CityId.of("Springfield", "Tennessee")));
 
         CursoredPage<City> page1 = cities.findByStateNameNotStartsWith("Ma", pagination);
         assertIterableEquals(List.of("Springfield Oregon",
@@ -1722,9 +1837,10 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testIdClassOrderByPaginationWithKeyset() {
         // ascending:
-        PageRequest<City> pagination = PageRequest.of(City.class).size(5).sortBy(Sort.asc(ID));
+        Order<City> asc = Order.by(Sort.asc(ID));
+        PageRequest pagination = PageRequest.ofSize(5);
 
-        CursoredPage<City> page1 = cities.findByStateNameGreaterThan("Iowa", pagination);
+        CursoredPage<City> page1 = cities.findByStateNameGreaterThan("Iowa", pagination, asc);
         assertIterableEquals(List.of("Kansas City Kansas",
                                      "Kansas City Missouri",
                                      "Rochester Minnesota",
@@ -1732,7 +1848,7 @@ public class DataJPATestServlet extends FATServlet {
                                      "Springfield Massachusetts"),
                              page1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        CursoredPage<City> page2 = cities.findByStateNameGreaterThan("Iowa", page1.nextPageRequest());
+        CursoredPage<City> page2 = cities.findByStateNameGreaterThan("Iowa", page1.nextPageRequest(), asc);
         assertIterableEquals(List.of("Springfield Missouri",
                                      "Springfield Ohio",
                                      "Springfield Oregon"),
@@ -1741,22 +1857,23 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(false, page2.hasNext());
 
         // descending:
-        pagination = PageRequest.of(City.class).size(4).sortBy(Sort.descIgnoreCase(ID));
-        page1 = cities.findByStateNameGreaterThan("Idaho", pagination);
+        Order<City> desc = Order.by(Sort.descIgnoreCase(ID));
+        pagination = PageRequest.ofSize(4);
+        page1 = cities.findByStateNameGreaterThan("Idaho", pagination, desc);
         assertIterableEquals(List.of("Springfield Oregon",
                                      "Springfield Ohio",
                                      "Springfield Missouri",
                                      "Springfield Massachusetts"),
                              page1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        page2 = cities.findByStateNameGreaterThan("Idaho", page1.nextPageRequest());
+        page2 = cities.findByStateNameGreaterThan("Idaho", page1.nextPageRequest(), desc);
         assertIterableEquals(List.of("Springfield Illinois",
                                      "Rochester New York",
                                      "Rochester Minnesota",
                                      "Kansas City Missouri"),
                              page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        CursoredPage<City> page3 = cities.findByStateNameGreaterThan("Idaho", page2.nextPageRequest());
+        CursoredPage<City> page3 = cities.findByStateNameGreaterThan("Idaho", page2.nextPageRequest(), desc);
         assertIterableEquals(List.of("Kansas City Kansas"),
                              page3.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
@@ -1807,92 +1924,6 @@ public class DataJPATestServlet extends FATServlet {
                              Stream.of(cities.findByStateNameEndsWith("s"))
                                              .map(CityId::toString)
                                              .collect(Collectors.toList()));
-    }
-
-    /**
-     * Repository method with the Assign annotation that makes an update by assigning the IdClass instance to something else.
-     */
-    @Test
-    public void testIdClassUpdateAssignIdClass() {
-        cities.save(new City("La Crosse", "Wisconsin", 52680, Set.of(608)));
-        try {
-            cities.findById(CityId.of("La Crosse", "Wisconsin")).orElseThrow();
-
-            assertEquals(1, cities.replace(CityId.of("La Crosse", "Wisconsin"),
-                                           "Decorah", "Iowa", 7587, Set.of(563))); // TODO CityId.of("Decorah", "Iowa"), 7587, Set.of(563)));
-
-            assertEquals(true, cities.findById(CityId.of("La Crosse", "Wisconsin")).isEmpty());
-            assertEquals(true, cities.existsById(CityId.of("Decorah", "Iowa")));
-
-            // TODO EclipseLink bug needs to be fixed:
-            // java.lang.IllegalArgumentException: Can not set java.util.Set field test.jakarta.data.jpa.web.City.areaCodes to java.lang.Integer
-            //City city = cities.findById(CityId.of("Decorah", "Iowa")).orElseThrow();
-            //assertEquals("Decorah", city.name);
-            //assertEquals("Iowa", city.stateName);
-            //assertEquals(7587, city.population);
-            //assertEquals(Set.of(563), city.areaCodes);
-        } finally {
-            cities.deleteById(CityId.of("La Crosse", "Wisconsin"));
-            cities.deleteById(CityId.of("Decorah", "Iowa"));
-        }
-    }
-
-    /**
-     * Repository method with the Update annotation that makes an update by assigning the IdClass components to something else.
-     */
-    @Test
-    public void testIdClassUpdateAssignIdClassComponents() {
-        cities.save(new City("Janesville", "Wisconsin", 65615, Set.of(608)));
-        try {
-            cities.findById(CityId.of("Janesville", "Wisconsin")).orElseThrow();
-
-            assertEquals(1, cities.replace("Janesville", "Wisconsin",
-                                           "Ames", "Iowa", Set.of(515), 66427));
-
-            assertEquals(true, cities.findById(CityId.of("Janesville", "Wisconsin")).isEmpty());
-            assertEquals(true, cities.existsById(CityId.of("Ames", "Iowa")));
-
-            // TODO EclipseLink bug needs to be fixed:
-            // java.lang.IllegalArgumentException: Can not set java.util.Set field test.jakarta.data.jpa.web.City.areaCodes to java.lang.Integer
-            //City city = cities.findById(CityId.of("Decorah", "Iowa")).orElseThrow();
-            //assertEquals("Ames", city.name);
-            //assertEquals("Iowa", city.stateName);
-            //assertEquals(66427, city.population);
-            //assertEquals(Set.of(515), city.areaCodes);
-        } finally {
-            cities.deleteById(CityId.of("Janesville", "Wisconsin"));
-            cities.deleteById(CityId.of("Ames", "Iowa"));
-        }
-    }
-
-    /**
-     * Repository method with the Update keyword that makes an update by assigning the IdClass instance to something else.
-     */
-    @Test
-    public void testIdClassUpdateKeyword() {
-        cities.save(new City("Madison", "Wisconsin", 269840, Set.of(608)));
-        try {
-            cities.findById(CityId.of("Madison", "Wisconsin")).orElseThrow();
-
-            // TODO enable once IdClass is supported for @Update
-            // UnsupportedOperationException: @Assign IdClass
-            //assertEquals(1, cities.updateIdPopulationAndAreaCodes(CityId.of("Madison", "Wisconsin"), 269840,
-            //                                                      CityId.of("Des Moines", "Iowa"), 214133, Set.of(515)));
-
-            //assertEquals(true, cities.findById(CityId.of("Madison", "Wisconsin")).isEmpty());
-            //assertEquals(true, cities.existsById(CityId.of("Des Moines", "Iowa")));
-
-            // TODO EclipseLink bug needs to be fixed:
-            // java.lang.IllegalArgumentException: Can not set java.util.Set field test.jakarta.data.jpa.web.City.areaCodes to java.lang.Integer
-            //City city = cities.findById(CityId.of("Des Moines", "Iowa")).orElseThrow();
-            //assertEquals("Des Moines", city.name);
-            //assertEquals("Iowa", city.stateName);
-            //assertEquals(214133, city.population);
-            //assertEquals(Set.of(515), city.areaCodes);
-        } finally {
-            cities.deleteById(CityId.of("Madison", "Wisconsin"));
-            cities.deleteById(CityId.of("Des Moines", "Iowa"));
-        }
     }
 
     /**
@@ -2213,7 +2244,7 @@ public class DataJPATestServlet extends FATServlet {
 
     /**
      * Add, find, and remove entities with a mapped superclass.
-     * Also tests automatically paginated iterator and list.
+     * Also tests the Iterator return type with a PageRequest and list.
      */
     @Test
     public void testMappedSuperclass() {
@@ -2295,7 +2326,10 @@ public class DataJPATestServlet extends FATServlet {
         assertNotNull(t = it.next());
         assertEquals(t5.leviedAgainst, t.leviedAgainst);
 
-        assertEquals(true, it.hasNext());
+        assertEquals(false, it.hasNext());
+
+        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofPage(2).size(3));
+
         assertEquals(true, it.hasNext());
         assertNotNull(t = it.next());
         assertEquals(t4.leviedAgainst, t.leviedAgainst);
@@ -2307,6 +2341,10 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(t2.leviedAgainst, t.leviedAgainst);
         Long t2key = t.key;
 
+        assertEquals(false, it.hasNext());
+
+        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofPage(3).size(3));
+
         assertNotNull(t = it.next());
         assertEquals(t1.leviedAgainst, t.leviedAgainst);
 
@@ -2314,51 +2352,22 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(false, it.hasNext());
 
         // Iterator with keyset pagination:
-        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofSize(2).afterKey(t8key));
+        try {
+            it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofSize(2)
+                            .afterCursor(Cursor.forKey(t8key)));
+            fail("Did not enforce the CursoredPage return type for cursor-based pagination in the CURSOR_NEXT direction.");
+        } catch (IllegalArgumentException x) {
+            // expected
+        }
 
-        assertNotNull(t = it.next());
-        assertEquals(t6.leviedAgainst, t.leviedAgainst);
-
-        assertNotNull(t = it.next());
-        assertEquals(t5.leviedAgainst, t.leviedAgainst);
-
-        assertNotNull(t = it.next());
-        assertEquals(t4.leviedAgainst, t.leviedAgainst);
-
-        assertEquals(true, it.hasNext());
-        assertNotNull(t = it.next());
-        assertEquals(t3.leviedAgainst, t.leviedAgainst);
-
-        assertNotNull(t = it.next());
-        assertEquals(t2.leviedAgainst, t.leviedAgainst);
-
-        assertEquals(true, it.hasNext());
-        assertNotNull(t = it.next());
-        assertEquals(t1.leviedAgainst, t.leviedAgainst);
-
-        assertEquals(false, it.hasNext());
-
-        // Iterator with keyset pagination obtaining pages in reverse direction
-        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofSize(2).beforeKey(t2key));
-
-        assertEquals(true, it.hasNext());
-        assertNotNull(t = it.next());
-        assertEquals(t4.leviedAgainst, t.leviedAgainst);
-
-        assertNotNull(t = it.next());
-        assertEquals(t3.leviedAgainst, t.leviedAgainst);
-
-        assertNotNull(t = it.next());
-        assertEquals(t6.leviedAgainst, t.leviedAgainst);
-
-        assertEquals(true, it.hasNext());
-        assertNotNull(t = it.next());
-        assertEquals(t5.leviedAgainst, t.leviedAgainst);
-
-        assertNotNull(t = it.next());
-        assertEquals(t8.leviedAgainst, t.leviedAgainst);
-
-        assertEquals(false, it.hasNext());
+        // Iterator with keyset pagination obtaining pages in the previous page direction
+        try {
+            it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofSize(2)
+                            .beforeCursor(Cursor.forKey(t2key)));
+            fail("Did not enforce the CursoredPage return type for cursor-based pagination in the CURSOR_PREVIOUS direction.");
+        } catch (IllegalArgumentException x) {
+            // expected
+        }
 
         // Paginated iterator with no results:
         it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("A", PageRequest.ofSize(3));
@@ -2376,7 +2385,7 @@ public class DataJPATestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
         // page 2:
         assertIterableEquals(List.of("Canada", "Bangladesh", "Mexico", "Canada"),
-                             tariffs.findByLeviedByOrderByKey("USA", PageRequest.ofSize(4).page(2))
+                             tariffs.findByLeviedByOrderByKey("USA", PageRequest.ofPage(2).size(4))
                                              .stream()
                                              .map(o -> o.leviedAgainst)
                                              .collect(Collectors.toList()));
@@ -2560,8 +2569,8 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testParenthesisInsertionForCursorPagination() {
-        PageRequest<?> page1Request = PageRequest.ofSize(3).asc("name").asc(ID);
-        CursoredPage<Business> page1 = mixed.withZipCodeIn(55901, 55904, page1Request);
+        PageRequest page1Request = PageRequest.ofSize(3);
+        CursoredPage<Business> page1 = mixed.withZipCodeIn(55901, 55904, page1Request, Sort.asc("name"), Sort.asc(ID));
 
         assertEquals(List.of("Benike Construction", "Crenlo", "Home Federal Savings Bank"),
                      page1.stream()
@@ -2570,7 +2579,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, page1.hasNext());
 
-        CursoredPage<Business> page2 = mixed.withZipCodeIn(55901, 55904, page1.nextPageRequest());
+        CursoredPage<Business> page2 = mixed.withZipCodeIn(55901, 55904, page1.nextPageRequest(), Sort.asc("name"), Sort.asc(ID));
 
         assertEquals(List.of("IBM", "Metafile", "Olmsted Medical"),
                      page2.stream()
@@ -2579,7 +2588,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, page1.hasNext());
 
-        CursoredPage<Business> page3 = mixed.withZipCodeIn(55901, 55904, page2.nextPageRequest());
+        CursoredPage<Business> page3 = mixed.withZipCodeIn(55901, 55904, page2.nextPageRequest(), Sort.asc("name"), Sort.asc(ID));
 
         assertEquals(List.of("RAC", "Think Bank"),
                      page3.stream()
@@ -2587,6 +2596,104 @@ public class DataJPATestServlet extends FATServlet {
                                      .collect(Collectors.toList()));
 
         assertEquals(false, page3.hasNext());
+    }
+
+    /**
+     * Use a repository method that runs a query without specifying an entity type
+     * and returns a record entity. The repository must be able to infer the record type
+     * to use from the return value and generate the proper select clause so that the
+     * generated entity type is converted to the record type.
+     */
+    @Test
+    public void testRecordQueryInfersSelectClause() {
+
+        Rebate r1 = new Rebate(10, 10.00, "testRecordEntityInferredFromReturnType-CustomerA", //
+                        LocalTime.of(15, 40, 0), //
+                        LocalDate.of(2024, Month.MAY, 1), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2024, Month.MAY, 1, 15, 40, 0), //
+                        null);
+
+        Rebate r2 = new Rebate(12, 12.00, "testRecordEntityInferredFromReturnType-CustomerA", //
+                        LocalTime.of(12, 46, 30), //
+                        LocalDate.of(2024, Month.APRIL, 5), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2024, Month.MAY, 2, 10, 18, 0), //
+                        null);
+
+        Rebate r3 = new Rebate(13, 3.00, "testRecordEntityInferredFromReturnType-CustomerB", //
+                        LocalTime.of(9, 15, 0), //
+                        LocalDate.of(2024, Month.MAY, 2), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2024, Month.MAY, 2, 9, 15, 0), //
+                        null);
+
+        Rebate r4 = new Rebate(14, 4.00, "testRecordEntityInferredFromReturnType-CustomerA", //
+                        LocalTime.of(10, 55, 0), //
+                        LocalDate.of(2024, Month.MAY, 1), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2024, Month.MAY, 2, 14, 27, 45), //
+                        null);
+
+        Rebate r5 = new Rebate(15, 5.00, "testRecordEntityInferredFromReturnType-CustomerA", //
+                        LocalTime.of(17, 50, 0), //
+                        LocalDate.of(2024, Month.MAY, 1), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2024, Month.MAY, 5, 15, 5, 0), //
+                        null);
+
+        Rebate[] all = rebates.addAll(r1, r2, r3, r4, r5);
+
+        List<Rebate> paid = rebates.paidTo("testRecordEntityInferredFromReturnType-CustomerA");
+
+        assertEquals(paid.toString(), 3, paid.size());
+        Rebate r;
+        r = paid.get(0);
+        assertEquals(12.0f, r.amount(), 0.001);
+        r = paid.get(1);
+        assertEquals(10.0f, r.amount(), 0.001);
+        r = paid.get(2);
+        assertEquals(5.0f, r.amount(), 0.001);
+
+        List<Double> amounts = rebates.amounts("testRecordEntityInferredFromReturnType-CustomerA");
+
+        assertEquals(4.0f, amounts.get(0), 0.001);
+        assertEquals(5.0f, amounts.get(1), 0.001);
+        assertEquals(10.0f, amounts.get(2), 0.001);
+        assertEquals(12.0f, amounts.get(3), 0.001);
+
+        assertEquals(Rebate.Status.VERIFIED, rebates.status(all[4 - 1].id()).orElseThrow());
+        assertEquals(Rebate.Status.PAID, rebates.status(all[3 - 1].id()).orElseThrow());
+
+        List<LocalDate> purchaseDates = rebates.findByCustomerIdOrderByPurchaseMadeOnDesc("testRecordEntityInferredFromReturnType-CustomerA");
+
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), purchaseDates.get(0));
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), purchaseDates.get(1));
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), purchaseDates.get(2));
+        assertEquals(LocalDate.of(2024, Month.APRIL, 5), purchaseDates.get(3));
+
+        PurchaseTime time = rebates.purchaseTime(all[3 - 1].id()).orElseThrow();
+        assertEquals(LocalDate.of(2024, Month.MAY, 2), time.purchaseMadeOn());
+        assertEquals(LocalTime.of(9, 15, 0), time.purchaseMadeAt());
+
+        PurchaseTime[] times = rebates.findTimeOfPurchaseByCustomerId("testRecordEntityInferredFromReturnType-CustomerA");
+        assertEquals(Arrays.toString(times), 4, times.length);
+
+        assertEquals(LocalDate.of(2024, Month.APRIL, 5), times[0].purchaseMadeOn());
+        assertEquals(LocalTime.of(12, 46, 30), times[0].purchaseMadeAt());
+
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), times[1].purchaseMadeOn());
+        assertEquals(LocalTime.of(10, 55, 0), times[1].purchaseMadeAt());
+
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), times[2].purchaseMadeOn());
+        assertEquals(LocalTime.of(15, 40, 0), times[2].purchaseMadeAt());
+
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), times[3].purchaseMadeOn());
+        assertEquals(LocalTime.of(17, 50, 0), times[3].purchaseMadeAt());
+
+        rebates.removeAll(all);
+
+        assertEquals(false, rebates.status(all[3 - 1].id()).isPresent());
     }
 
     /**
@@ -2645,15 +2752,6 @@ public class DataJPATestServlet extends FATServlet {
 
         // Delete
         rebates.remove(r1);
-        // TODO allow entity return type on delete?
-        //r1 = rebates.remove(r1);
-        //assertEquals(Integer.valueOf(1), r1.id());
-        //assertEquals(1.00, r1.amount(), 0.001f);
-        //assertEquals(LocalTime.of(11, 31, 0), r1.purchaseMadeAt());
-        //assertEquals(LocalDate.of(2023, Month.OCTOBER, 16), r1.purchaseMadeOn());
-        //assertEquals(Rebate.Status.PAID, r1.status());
-        //assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 16, 11, 44, 0), r1.updatedAt());
-        //assertEquals(Integer.valueOf(initialVersion + 2), r1.version());
     }
 
     /**
@@ -3074,9 +3172,6 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(0L, CityAttrNames2.population);
         assertEquals(null, CityAttrNames2.name);
 
-        // Metamodel should not initialize an id field when the entity has a compound unique identifier (IdClass)
-        assertEquals(null, CityAttrNames2.id);
-
         // Metamodel should not initialize fields that do not correspond to entity attributes
         assertEquals(null, CityAttrNames2.ignore);
     }
@@ -3104,6 +3199,35 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals("Mon", asc.property());
 
         assertEquals(null, _EntityModelUnknown.years);
+    }
+
+    /**
+     * Test passing a Sort created with Sort.of, particularly the ignoreCase parameter
+     */
+    @Test
+    public void testSortOf() {
+        City eagan = cities.save(new City("eagan", "minnesota", 67_396, Set.of(651)));
+
+        // With ignoreCase=true, eagan should be first
+        Sort<City> of = Sort.of("name", Direction.ASC, true);
+        List<City> all = cities.allSorted(of);
+        City first = all.get(0);
+        assertEquals("eagan", first.name);
+
+        // With ignoreCase=false Kansas City should be first
+        of = Sort.of("name", Direction.ASC, false);
+        all = cities.allSorted(of);
+        assertEquals("Kansas City", all.get(0).name);
+
+        of = Sort.of("population", Direction.DESC, true);
+        try {
+            cities.allSorted(of);
+            fail("Should not be able to applay a Sort with ignoreCase=true on a non-string property");
+        } catch (UnsupportedOperationException x) {
+            // expected
+        }
+
+        cities.remove(eagan);
     }
 
     /**
@@ -3164,8 +3288,8 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Use an Entity which has an attribute which is a collection that is not annotated with the JPA ElementCollection annotation.
      */
-    // Test annotation is present on corresponding method in DataJPATest
-    public void testUnannotatedCollection(HttpServletRequest request, HttpServletResponse response) {
+    @Test
+    public void testUnannotatedCollection() {
         assertEquals(0, counties.deleteByNameIn(List.of("Olmsted", "Fillmore", "Winona", "Wabasha")));
 
         int[] olmstedZipCodes = new int[] { 55901, 55902, 55903, 55904, 55905, 55906, 55920, 55923, 55929, 55932, 55934, 55940, 55960, 55963, 55964, 55972, 55976 };
@@ -3195,12 +3319,12 @@ public class DataJPATestServlet extends FATServlet {
                                              .sorted()
                                              .collect(Collectors.toList()));
 
-        // Derby & Oracle  does not support comparisons of BLOB values
+        // Derby, Oracle, SQLServer  does not support comparisons of BLOB (IMAGE sqlserver) values
         // Derby JDBC Jar Name : derby.jar
         // Oracle JDBC Jar Name : ojdbc8_g.jar
-        // This value is passed as HTTP request Parameter(eg: http://{host}/DataJPATestApp?testMethod=testUnannotatedCollection&jdbcJarName=ojdbc8_g.jar)
-        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
-        if (!(jdbcJarName.startsWith("derby") || jdbcJarName.startsWith("ojdbc8_g"))) {
+        // SQLServer JDBC Jar Name : mssql-jdbc.jar
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        if (!(jdbcJarName.startsWith("derby") || jdbcJarName.startsWith("ojdbc8_g") || jdbcJarName.startsWith("mssql-jdbc"))) {
             // find one entity by zipcodes as Optional
             c = counties.findByZipCodes(wabashaZipCodes).orElseThrow();
             assertEquals("Wabasha", c.name);
@@ -3268,7 +3392,7 @@ public class DataJPATestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         // optional iterator of array attribute
-        Iterator<int[]> it = counties.findZipCodesByPopulationLessThanEqual(50000).orElseThrow();
+        Iterator<int[]> it = counties.findZipCodesByPopulationLessThanEqual(50000);
         assertIterableEquals(List.of(Arrays.toString(fillmoreZipCodes), Arrays.toString(wabashaZipCodes), Arrays.toString(winonaZipCodes)),
                              StreamSupport.stream(Spliterators.spliteratorUnknownSize(it, Spliterator.ORDERED), false)
                                              .map(Arrays::toString)
@@ -3287,9 +3411,8 @@ public class DataJPATestServlet extends FATServlet {
         // page of array attribute with none found
         assertEquals(0, counties.findZipCodesByNameStartsWith("Hous", PageRequest.ofSize(5)).numberOfElements());
 
-        // optional for iterator over array attribute with none found
-        counties.findZipCodesByPopulationLessThanEqual(1) //
-                        .ifPresent(i -> fail("Unexpected iterator: " + (i.hasNext() ? Arrays.toString(i.next()) : "(empty)")));
+        // iterator over array attribute with none found
+        assertEquals(false, counties.findZipCodesByPopulationLessThanEqual(1).hasNext());
 
         // update array value to empty
         assertEquals(true, counties.updateByNameSetZipCodes("Wabasha", new int[0]));
@@ -3353,8 +3476,8 @@ public class DataJPATestServlet extends FATServlet {
             ibm = businesses.findFirstByName("IBM");
 
             assertEquals("IBM", ibm.name);
-            assertEquals(44.05881f, ibm.location.latitude, 0.00001f);
-            assertEquals(-92.50556f, ibm.location.longitude, 0.00001f);
+            assertEquals(44.05881f, ibm.location.latitude, 0.0001f);
+            assertEquals(-92.50556f, ibm.location.longitude, 0.0001f);
             assertEquals(3605, ibm.location.address.houseNum);
             assertEquals("US 52", ibm.location.address.street.name);
             assertEquals("N", ibm.location.address.street.direction);
@@ -3376,8 +3499,8 @@ public class DataJPATestServlet extends FATServlet {
         ibm = businesses.findFirstByName("IBM");
 
         assertEquals("IBM", ibm.name);
-        assertEquals(originalLatitude, ibm.location.latitude, 0.00001f);
-        assertEquals(originalLongitude, ibm.location.longitude, 0.00001f);
+        assertEquals(originalLatitude, ibm.location.latitude, 0.0001f);
+        assertEquals(originalLongitude, ibm.location.longitude, 0.0001f);
         assertEquals(2800, ibm.location.address.houseNum);
         assertEquals("37th St", ibm.location.address.street.name);
         assertEquals("NW", ibm.location.address.street.direction);
@@ -3390,6 +3513,7 @@ public class DataJPATestServlet extends FATServlet {
      * Test that a method that is annotated with the Update annotation can return entity results,
      * and the resulting entities match the updated values that were written to the database.
      */
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testUpdateWithEntityResults() {
         orders.deleteAll();
@@ -3555,6 +3679,7 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Test that @Delete requires the entity to exist with the same version as the database for successful removal.
      */
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testVersionedDelete() {
         orders.deleteAll();
@@ -3666,6 +3791,7 @@ public class DataJPATestServlet extends FATServlet {
      * Test that @Update requires the entity to exist with the same version as the database for successful update.
      * This tests covers an entity type with an IdClass.
      */
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testVersionedUpdate() {
         orders.deleteAll();

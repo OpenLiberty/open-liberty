@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2023 IBM Corporation and others.
+ * Copyright (c) 2009, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -205,7 +205,7 @@ public class AsyncWarnTest extends FATServletClient {
                 runTest("initRecoveryLog");
 
                 if (warnTraceLog == null)
-                    warnTraceLog = new RemoteFile(server.getMachine(), server.getLogsRoot() + "trace.log");
+                    warnTraceLog = server.getMachine().getFile(server.getLogsRoot() + "trace.log");
 
                 isCheckFalse = false;
                 isCheckTrue = false;
@@ -224,7 +224,7 @@ public class AsyncWarnTest extends FATServletClient {
                 runTest("initRecoveryLog");
 
                 if (warnTraceLog == null)
-                    warnTraceLog = new RemoteFile(server.getMachine(), server.getLogsRoot() + "trace.log");
+                    warnTraceLog = server.getMachine().getFile(server.getLogsRoot() + "trace.log");
 
                 isCheckFalse = false;
                 isCheckTrue = false;

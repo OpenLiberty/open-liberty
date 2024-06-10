@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,9 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.MicroProfileActions;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
@@ -58,6 +60,9 @@ import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinQueryCl
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpan;
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpanMatcher;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
+// In MpTelemetry-2.0 SemanticAttributes was moved to a new package, so we use import static to allow both versions to coexist
+import static io.opentelemetry.semconv.SemanticAttributes.HTTP_ROUTE;
+import static io.opentelemetry.semconv.SemanticAttributes.HTTP_REQUEST_METHOD;
 
 /**
  * Test exporting traces to a Zipkin server with the OpenTelemetry Collector
@@ -114,7 +119,8 @@ public class ZipkinOtelCollectorTest {
     }
 
     @Test
-    public void testBasic() throws Exception {
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP60_MPTEL20_ID, TelemetryActions.MP61_MPTEL20_ID})
+    public void testBasicTelemetry1() throws Exception {
         HttpRequest request = new HttpRequest(server, "/spanTest");
 
         String traceId = request.run(String.class);
@@ -128,6 +134,24 @@ public class ZipkinOtelCollectorTest {
         assertThat(span, span().withTraceId(traceId)
                                .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/spanTest/")
                                .withTag(SemanticAttributes.HTTP_METHOD.getKey(), "GET"));
+    }
+
+    @Test
+    @SkipForRepeat({MicroProfileActions.MP60_ID, TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID, TelemetryActions.MP50_MPTEL11_ID, MicroProfileActions.MP61_ID})
+    public void testBasicTelemetry2() throws Exception {
+        HttpRequest request = new HttpRequest(server, "/spanTest");
+
+        String traceId = request.run(String.class);
+        Log.info(c, "testBasic", "TraceId is " + traceId);
+
+        List<ZipkinSpan> spans = client.waitForSpansForTraceId(traceId, hasSize(1));
+        Log.info(c, "testBasic", "Spans returned: " + spans);
+
+        ZipkinSpan span = spans.get(0);
+
+        assertThat(span, span().withTraceId(traceId)
+                               .withTag(HTTP_ROUTE.getKey(), "/spanTest/")
+                               .withTag(HTTP_REQUEST_METHOD.getKey(), "GET"));
     }
 
     @Test

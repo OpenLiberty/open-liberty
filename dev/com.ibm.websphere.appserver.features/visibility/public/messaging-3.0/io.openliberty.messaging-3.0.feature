@@ -22,4 +22,5 @@ Subsystem-Name: Jakarta Messaging 3.0
 kind=ga
 edition=base
 WLP-Activation-Type: parallel
-WLP-InstantOn-Enabled: true; type:=beta
+WLP-InstantOn-Enabled: true
+WLP-Platform: jakartaee-9.1

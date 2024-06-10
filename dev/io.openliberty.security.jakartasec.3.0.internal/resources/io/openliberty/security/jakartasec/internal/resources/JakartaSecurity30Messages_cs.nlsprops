@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -52,3 +52,7 @@ JAKARTASEC_CLAIMS_PROCESSING_ERROR.useraction=Dal\u0161\u00ed informace viz chyb
 JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT=CWWKS2507W: Hodnota atributu {0} anotace definice mechanismu ov\u011b\u0159ov\u00e1n\u00ed OpenID nesm\u00ed b\u00fdt z\u00e1porn\u00e9 cel\u00e9 \u010d\u00edslo. Je-li hodnotou atributu v\u00fdraz jazyka v\u00fdrazu (EL), nesm\u00ed se interpretovat do z\u00e1porn\u00e9ho cel\u00e9ho \u010d\u00edsla. Poskytnut\u00e1 hodnota byla ''{1}''. M\u00edsto toho bude pou\u017eita v\u00fdchoz\u00ed hodnota atributu ''{2}''.
 JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.explanation=Hodnota atributu nesm\u00ed b\u00fdt z\u00e1porn\u00e9 cel\u00e9 \u010d\u00edslo. Je-li hodnotou atributu v\u00fdraz EL, nesm\u00ed se hodnota interpretovat do z\u00e1porn\u00e9ho cel\u00e9ho \u010d\u00edsla.
 JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.useraction=Aktualizujte atribut tak, aby pou\u017e\u00edval nez\u00e1porn\u00e9 cel\u00e9 \u010d\u00edslo. Je-li hodnotou atributu v\u00fdraz EL, aktualizujte odkazovan\u00fd objekt typu bean tak, aby byl interpretov\u00e1n do nez\u00e1porn\u00e9ho cel\u00e9ho \u010d\u00edsla.
+
+CREDENTIAL_VALIDATION_CALLER_MISSING=CWWKS2508E: Pov\u011b\u0159en\u00ed nelze ov\u011b\u0159it, proto\u017ee hodnota volaj\u00edc\u00edho nen\u00ed nastavena. N\u00e1rok na n\u00e1zev volaj\u00edc\u00edho [{0}] m\u00e1 hodnotu null nebo je pr\u00e1zdn\u00fd, nebo n\u00e1rok s t\u00edmto n\u00e1zvem nelze nal\u00e9zt v p\u0159\u00edstupov\u00e9m tokenu, tokenu ID nebo datech UserInfo pro u\u017eivatele.
+CREDENTIAL_VALIDATION_CALLER_MISSING.explanation=Ov\u011b\u0159en\u00ed pov\u011b\u0159en\u00ed vy\u017eaduje hodnotu volaj\u00edc\u00edho, kter\u00e1 nen\u00ed nastavena.
+CREDENTIAL_VALIDATION_CALLER_MISSING.useraction=Ov\u011b\u0159te, \u017ee n\u00e1rok na n\u00e1zev volaj\u00edc\u00edho nem\u00e1 hodnotu null nebo nen\u00ed pr\u00e1zdn\u00fd. Ov\u011b\u0159te, \u017ee n\u00e1rok na jm\u00e9no volaj\u00edc\u00edho je n\u00e1rok, kter\u00fd je obsa\u017een bu\u010f v p\u0159\u00edstupov\u00e9m tokenu, tokenu ID, nebo v datech UserInfo pro u\u017eivatele.

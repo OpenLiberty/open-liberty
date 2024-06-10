@@ -52,7 +52,7 @@ public class TraceConfigClassVisitor extends ClassVisitor {
     }
     
     public TraceConfigClassVisitor() {
-        super(Opcodes.ASM9);
+        super(ASMHelper.getCurrentASM());
     }    
 
     @Override

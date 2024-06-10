@@ -18,7 +18,7 @@ configurations {
 dependencies {
   jpaFatTools project(':com.ibm.ws.jpa_testframework')
   requiredLibs project(":com.ibm.ws.jpa.tests.eclipselink.query_fat.common")
-  requiredLibs project(":com.ibm.ws.jpa.tests.eclipselink.query_31_fat.common")
+  requiredLibs project(":com.ibm.ws.jpa.tests.eclipselink.query_32_fat.common")
 }
 
 task addJPAFATTools (type: Copy) {
@@ -40,6 +40,7 @@ task copyFAT {
     from project(':com.ibm.ws.jpa.tests.eclipselink.query_31_fat.common').file('fat/src/com/ibm/ws/jpa/tests/eclipselink/query/tests/jpa31')
     into new File('fat/src/com/ibm/ws/jpa/tests/eclipselink/query/tests/jpa31')
   }
+  
 }
 
 task copyCommonFiles {
@@ -64,6 +65,14 @@ task copyCommonFiles {
     copy {
       from project(':com.ibm.ws.jpa.tests.eclipselink.query_31_fat.common').file('publish')
       into new File('publish')
+    }
+  }
+  
+  dependsOn ':com.ibm.ws.jpa.tests.eclipselink.query_32_fat.common:build'
+  doLast {
+    copy {
+      from project(':com.ibm.ws.jpa.tests.eclipselink.query_32_fat.common').file('test-applications')
+      into new File('test-applications')
     }
   }
 }

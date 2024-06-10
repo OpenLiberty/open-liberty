@@ -20,10 +20,13 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
@@ -49,6 +52,7 @@ import javax.transaction.UserTransaction;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -62,6 +66,7 @@ import com.ibm.wsspi.library.Library;
 import com.ibm.wsspi.logging.Introspector;
 import com.ibm.wsspi.session.IStore;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.jcache.CacheManagerService;
 import io.openliberty.jcache.utils.CacheConfigUtil;
 
@@ -75,10 +80,19 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     private static final String CONFIG_KEY_URI = "uri";
     private static final String CONFIG_KEY_LIBRARY_REF = "libraryRef";
     private static final String CONFIG_KEY_PROPERTIES = "properties";
+    private static final Set<String> sessionCacheAttributes = new HashSet<>(Arrays.asList("appInCacheName",
+                                                                                          "cacheSeparator",
+                                                                                          "scheduleInvalidationFirstHour",
+                                                                                          "scheduleInvalidationSecondHour",
+                                                                                          "writeContents",
+                                                                                          "writeFrequency",
+                                                                                          "writeInterval"));
 
     Map<String, Object> configurationProperties;
     private static final int BASE_PREFIX_LENGTH = CONFIG_KEY_PROPERTIES.length();
     private static final int TOTAL_PREFIX_LENGTH = BASE_PREFIX_LENGTH + 3; //3 is the length of .0.
+    
+    private static final CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
 
     volatile CacheManager cacheManager; // requires lazy activation
     volatile CachingProvider cachingProvider; // requires lazy activation
@@ -111,6 +125,8 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     private volatile String tcCachingProvider; // requires lazy activation
 
     volatile UserTransaction userTransaction;
+    
+    private Condition runningCondition;
 
     /**
      * Declarative Services method to activate this component.
@@ -120,6 +136,10 @@ public class CacheStoreService implements Introspector, SessionStoreService {
      * @param props   service properties
      */
     protected void activate(ComponentContext context, Map<String, Object> props) {
+        processConfiguration(props);       
+    }
+
+    private void processConfiguration(Map<String, Object> props) {
         configurationProperties = new HashMap<String, Object>(props);
 
         Object scheduleInvalidationFirstHour = configurationProperties.get("scheduleInvalidationFirstHour");
@@ -143,6 +163,20 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         isLibraryRefSet = props.containsKey(CONFIG_KEY_LIBRARY_REF);
     }
 
+    protected void modified(Map<String, Object> config) {
+        if (checkpointPhase != CheckpointPhase.INACTIVE && runningCondition == null) {
+            for (Map.Entry<String, Object> entry: config.entrySet()) {
+                String key = entry.getKey();
+                Object newValue = entry.getValue();
+                
+                Object oldValue = configurationProperties.get(key);
+                if (sessionCacheAttributes.contains(key) && !Objects.deepEquals(newValue, oldValue)) {
+                    Tr.warning(tc, "UPDATED_CONFIG_NOT_USED_AT_RESTORE", key);
+                }       
+            }
+            processConfiguration(config);    
+        }      
+    }
     /**
      * Performs deferred activation/initialization.
      */
@@ -555,6 +589,14 @@ public class CacheStoreService implements Introspector, SessionStoreService {
             });
     }
 
+    protected void setConfigCondition(Condition configCondition) {
+        // do nothing; this is just a reference that we use to force the component to recycle
+    }
+    
+    protected void setRunningCondition(Condition runningCondition) {
+        this.runningCondition = runningCondition;
+    }
+
     protected void setSerializationService(SerializationService serializationService) {
         this.serializationService = serializationService;
     }
@@ -574,6 +616,10 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                     configureMonitoring(cacheName);
                 return null;
             });
+    }
+    
+    protected void unsetRunningCondition(Condition runningCondition) {
+        this.runningCondition = null;
     }
 
     protected void unsetSerializationService(SerializationService serializationService) {

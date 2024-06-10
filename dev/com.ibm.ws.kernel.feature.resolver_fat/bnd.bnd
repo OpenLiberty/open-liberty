@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -13,20 +13,25 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-# Define the bundle for this FAT
-
-src: \
-	fat/src
+src: fat/src
 
 fat.project: true
 
-tested.features: mphealth-2.2, jndi-1.0, cdi-2.0, json-1.0,\
-	mpconfig-3.0, mphealth-4.0, cdi-3.0, mpmetrics-2.3, ssl-1.0,\
-	monitor-1.0, mpconfig-1.4, mpmetrics-5.0, cdi-4.0, mpmetrics-4.0,\
-	javaee-7.0, javaee-8.0, jakartaee-9.1, jakartaee-10.0,\
-	mpconfig-1.2, mpmetrics-1.1, mphealth-1.0, mpconfig-2.0, mpmetrics-3.0,\
-	mpconfig-3.1, mpmetrics-5.1, mphealth-3.1
+# This FAT tests *all* public features!
+#
+# The tests are only of feature metadata.  The *function* of the
+# features is not tested.
+#
+# However, from a dependency perspective, this is sufficient to
+# mark that the feature is being tested: All features must be
+# built and their feature metadata pushed to the server image.
+# before running this FAT.
+
+tested.features: all_features
 
 -buildpath: \
-	io.openliberty.org.apache.commons.logging;version=latest,\
-	com.ibm.ws.kernel.feature.core;version=latest
+    io.openliberty.org.apache.commons.logging;version=latest, \
+    com.ibm.ws.kernel.boot.cmdline;version=latest, \
+    com.ibm.ws.kernel.boot.core;version=latest, \
+    com.ibm.ws.kernel.feature.core;version=latest
+

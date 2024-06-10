@@ -18,19 +18,17 @@ javac.target: 17
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
-Bundle-Name: Jakarta Data Bean Defining Annotations
+Bundle-Name: Jakarta Data Version-dependent Function
 Bundle-SymbolicName: io.openliberty.data.internal
-Bundle-Description: Declares bean defining annotations for Jakarta Data; version=${bVersion}
+Bundle-Description: Coordinates differences between versions of Jakarta Data; version=${bVersion}
 
 WS-TraceGroup: data
 
+Export-Package: \
+  io.openliberty.data.internal.version.*
+
 Private-Package: \
-  io.openliberty.data.internal.cdi.*,\
   io.openliberty.data.internal.resources.*
-
--cdiannotations:
-
--dsannotations: io.openliberty.data.internal.cdi.BeanDefiningAnnotationMetadata
 
 instrument.classesExcludes: io/openliberty/data/internal/resources/*.class
 
@@ -41,6 +39,4 @@ instrument.classesExcludes: io/openliberty/data/internal/resources/*.class
   com.ibm.websphere.org.osgi.service.component,\
   com.ibm.wsspi.org.osgi.service.component.annotations,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-  com.ibm.ws.cdi.interfaces.jakarta;version=latest, \
-  io.openliberty.jakarta.cdi.4.0,\
   io.openliberty.jakarta.data.1.0

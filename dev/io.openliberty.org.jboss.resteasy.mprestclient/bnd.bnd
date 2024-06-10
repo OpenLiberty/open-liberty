@@ -50,7 +50,7 @@ Import-Package: \
   javax.inject,\
   javax.ws.rs.core,\
   org.eclipse.microprofile.rest.client.*;version='!',\
-  org.jboss.resteasy.*; version="[4.7.0,7.0)",\
+  org.jboss.resteasy.*; version="[4.7.0,8.0)",\
   *
 
 DynamicImport-Package: \

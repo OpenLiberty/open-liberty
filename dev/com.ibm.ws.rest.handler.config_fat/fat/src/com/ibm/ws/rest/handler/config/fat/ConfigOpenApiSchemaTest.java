@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -99,7 +99,7 @@ public class ConfigOpenApiSchemaTest extends FATServletClient {
      * honors both the "format=json" query parameter and "Accept application/json" http header.
      */
     private void testConfigOpenAPIAsJSON(String contextRoot) throws Exception {
-        HttpsRequest request = new HttpsRequest(server, contextRoot + "/platform/config?format=json");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, contextRoot + "/platform/config?format=json");
         JsonObject json = request.run(JsonObject.class);
         String err = "Unexpected json response: " + json.toString();
         JsonObject paths = json.getJsonObject("paths");
@@ -111,7 +111,7 @@ public class ConfigOpenApiSchemaTest extends FATServletClient {
         assertTrue(err, paths.size() == 3);
 
         //test again with json specified in the header
-        request = new HttpsRequest(server, contextRoot + "/platform/config");
+        request = FATSuite.createHttpsRequestWithAdminUser(server, contextRoot + "/platform/config");
         json = request.requestProp("Accept", "application/json").run(JsonObject.class);
         err = "Unexpected json response: " + json.toString();
         paths = json.getJsonObject("paths");
@@ -146,7 +146,7 @@ public class ConfigOpenApiSchemaTest extends FATServletClient {
      * is returned as YAML by default.
      */
     private void testConfigOpenAPIAsYAML(String contextRoot) throws Exception {
-        HttpsRequest request = new HttpsRequest(server, contextRoot + "/platform/config");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, contextRoot + "/platform/config");
         String yaml = request.run(String.class);
         SwaggerParseResult result = new OpenAPIParser().readContents(yaml, null, null, null);
         assertNotNull(result);

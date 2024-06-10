@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -213,7 +213,7 @@ public class CommonTest {
      * @param pause          the maximum wait time in seconds prior to invoke init() method of the ORB object.
      *                           This can be used in order to make sure that a SSL certificate is being genereated.
      *                           At the worst case, it took more than 20 seconds to generate. So putting 30 seconds.
-     *                           When this value is set, the calc application will check whether key.jks file exists
+     *                           When this value is set, the calc application will check whether key.p12 file exists
      *                           in the default location for every two seconds, and if it's not there, wait up to specified wait time.
      *                           When it reaches the maximum wait time, the program resumes.
      * @param ignoreErrors
@@ -232,7 +232,7 @@ public class CommonTest {
      * @param pause          the maximum wait time in seconds prior to invoke init() method of the ORB object.
      *                           This can be used in order to make sure that a SSL certificate is being genereated.
      *                           At the worst case, it took more than 20 seconds to genereate. So putting 30 seconds.
-     *                           When this value is set, the calc application will check whether key.jks file exists
+     *                           When this value is set, the calc application will check whether key.p12 file exists
      *                           in the default location for every two seconds, and if it's not there, wait up to specified wait time.
      *                           When it reaches the maximum wait time, the program resumes.
      * @param ignoreErrors
@@ -266,7 +266,7 @@ public class CommonTest {
         if (waitTime > 0) {
             startParms.add(Integer.toString(waitTime));
             String clientRoot = testClient.getClientRoot();
-            String keyLocation = clientRoot + "/resources/security/key.jks";
+            String keyLocation = clientRoot + "/resources/security/key.p12";
             Log.info(c, thisMethod, "wait Time is " + waitTime + " seconds. keyLocation is" + keyLocation);
             startParms.add(keyLocation);
         }
@@ -580,8 +580,8 @@ public class CommonTest {
                 if (includeFiles != null) {
                     String[] files = includeFiles.split("\\s*,\\s*");
                     for (String fileName : files) {
-                        RemoteFile x = new RemoteFile(machine, clientRoot + "/"
-                                                               + fileName);
+                        RemoteFile x = machine.getFile(clientRoot + "/"
+                                                       + fileName);
                         if (x.exists()) {
                             props.clear();
                             InputStream is = null;
@@ -638,7 +638,7 @@ public class CommonTest {
 
     public static RemoteFile getClientBootstrapPropertiesFile(Machine machine,
                                                               String clientRoot) throws Exception {
-        return new RemoteFile(machine, clientRoot + "/bootstrap.properties");
+        return machine.getFile(clientRoot + "/bootstrap.properties");
     }
 
     /**

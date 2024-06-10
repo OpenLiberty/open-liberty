@@ -4875,7 +4875,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
                 index = contextPath.length();
             }
 
-            partialUri = fullUri.substring(index); // .trim()
+	    partialUri = (index > fullUri.length())? "" : fullUri.substring(index); // 28652: add length check
 
             // BEGIN PK27974
 

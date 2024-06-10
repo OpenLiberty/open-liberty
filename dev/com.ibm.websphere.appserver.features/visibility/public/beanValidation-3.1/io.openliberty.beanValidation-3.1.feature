@@ -37,7 +37,6 @@ IBM-SPI-Package: \
 -features=com.ibm.websphere.appserver.eeCompatible-11.0, \
   io.openliberty.jakarta.validation-3.1, \
   io.openliberty.beanValidationCore-2.0, \
-  com.ibm.websphere.appserver.transaction-2.0, \
   io.openliberty.expressionLanguage-6.0, \
   io.openliberty.jakarta.cdi-4.1
 -bundles=\
@@ -45,7 +44,8 @@ IBM-SPI-Package: \
   com.ibm.ws.org.jboss.logging, \
   com.ibm.ws.com.fasterxml.classmate, \
   io.openliberty.org.hibernate.validator.7.0
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
+WLP-Platform: jakartaee-11.0

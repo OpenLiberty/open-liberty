@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.internal.utils;
 
@@ -31,6 +28,8 @@ import com.ibm.ws.security.common.structures.Cache;
 import com.ibm.ws.security.saml.Constants;
 import com.ibm.ws.security.saml.SsoRequest;
 import com.ibm.ws.security.saml.error.SamlException;
+import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
+import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 import com.ibm.wsspi.webcontainer.servlet.IServletRequest;
 
@@ -96,25 +95,34 @@ public class HttpRequestInfo implements Serializable {
             // let's save the parameters for restore
             IServletRequest extRequest = (IServletRequest) request;
             try {
-                this.savedPostParams = extRequest.getInputStreamData();
+                this.savedPostParams = getInputStreamData(extRequest);
             } catch (IOException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "An exception getting InputStreamData : ", new Object[] { e });
                 }
                 // this should not happen. Let the SamlException handle it
-                throw new SamlException(e);   
+                throw new SamlException(e);
             }
         }
-
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Request: method (" + this.method + ") savedParams:" + this.savedPostParams);
         }
     }
 
+    @SuppressWarnings("rawtypes")
+    private HashMap getInputStreamData(IServletRequest extRequest) throws IOException {
+        long maxAllowedLength = 1024 * 1024 * 128L;
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null) {
+            maxAllowedLength = globalConfig.postParamMaxRequestBodySize();
+        }
+        return extRequest.getInputStreamData(maxAllowedLength);
+    }
+
     /**
      * @param request
-     * @return 
+     * @return
      */
     private boolean processDelegatedLogoutRequest(HttpServletRequest request) {
         boolean isDelegatedLogout = false;
@@ -164,7 +172,7 @@ public class HttpRequestInfo implements Serializable {
     public String getRedirectAfterSPLogout() {
         return this.redirectAfterSPLogout;
     }
-    
+
     public String getRedirectPageAfterSPLogout() {
         return this.redirectPageAfterSPLogout;
     }
@@ -226,7 +234,7 @@ public class HttpRequestInfo implements Serializable {
      *
      * @param request
      * @param response
-     * @param cookieName  --
+     * @param cookieName --
      * @param cookieValue --
      * @throws SamlException
      */
@@ -289,7 +297,7 @@ public class HttpRequestInfo implements Serializable {
                 this.requestURLWithFragments = URLDecoder.decode(encodedUrl, Constants.UTF8);
             } else {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc,  "OLGH23567, url with encoded query string = ", this.requestURL);
+                    Tr.debug(tc, "OLGH23567, url with encoded query string = ", this.requestURL);
                 }
                 this.requestURLWithFragments = getRequestUrlWithDecodedQueryString();
             }

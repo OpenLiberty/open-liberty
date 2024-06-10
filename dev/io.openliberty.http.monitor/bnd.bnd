@@ -1,0 +1,61 @@
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+Bundle-Name: io.openliberty.http.monitor
+Bundle-SymbolicName: io.openliberty.http.monitor
+Bundle-Description: io.openliberty.http.monitor; version=${bVersion}
+
+src: src
+
+-dsannotations: \
+  io.openliberty.http.monitor.ServletContainerInitializer,\
+  io.openliberty.http.monitor.metrics.RestMetricManager,\
+  io.openliberty.http.monitor.MonitorAppStateListener
+
+WS-TraceGroup: 
+
+Import-Package: \
+    !com.ibm.ws.http.*,\
+    *
+
+Export-Package: \
+  io.openliberty.http.monitor;thread-context=true,\
+  io.openliberty.http.monitor.metrics,\
+  io.openliberty.http.monitor.mbean
+
+Liberty-Monitoring-Components: \
+			io.openliberty.http.monitor.HttpStatsMonitor
+
+DynamicImport-Package: \
+  com.ibm.ws.http.*
+
+-buildpath: \
+    com.ibm.ws.logging;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.wsspi.org.osgi.service.event;version=latest,\
+	io.openliberty.webcontainer.servlet.6.0.internal,\
+	com.ibm.ws.transport.http,\
+	com.ibm.ws.webcontainer.servlet.4.0.jakarta,\
+	com.ibm.ws.monitor,\
+	io.openliberty.jakarta.servlet.6.0;version=latest,\
+	com.ibm.ws.webcontainer.jakarta;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.channelfw;version=latest,\
+	com.ibm.ws.container.service,\
+	com.ibm.ws.kernel.boot.core;version=latest

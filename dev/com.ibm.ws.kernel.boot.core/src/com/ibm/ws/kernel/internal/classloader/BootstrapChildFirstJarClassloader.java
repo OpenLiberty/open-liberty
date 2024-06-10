@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011,2020 IBM Corporation and others.
+ * Copyright (c) 2011,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -51,8 +51,6 @@ public final class BootstrapChildFirstJarClassloader extends JarFileClassLoader 
         return Collections.enumeration(compoundResults);
     }
 
-    private final ClassLoader parent;
-
     /**
      * Delegates to constructor of superclass (JarFileClassLoader)
      *
@@ -68,7 +66,6 @@ public final class BootstrapChildFirstJarClassloader extends JarFileClassLoader 
      */
     public BootstrapChildFirstJarClassloader(URL[] urls, ClassLoader parent) {
         super(urls, false, parent);
-        this.parent = parent;
     }
 
     // NOTE that the rest of the methods in this class are duplicated in
@@ -79,25 +76,11 @@ public final class BootstrapChildFirstJarClassloader extends JarFileClassLoader 
         if (name == null || name.length() == 0)
             return null;
 
-        if (name.regionMatches(0, KERNEL_BOOT_CLASS_PREFIX, 0, KERNEL_BOOT_PREFIX_LENGTH) ||
-            name.regionMatches(0, CHECKPOINT_CLASS_PREFIX, 0, CHECKPOINT_CLASS_LENGTH)) {
-            return super.loadClass(name, resolve);
-        }
+        // If it is a kernel boot class or a checkpoint class, then do parent first so that it loads it from the system classloader
+        boolean parentFirst = name.regionMatches(0, KERNEL_BOOT_CLASS_PREFIX, 0, KERNEL_BOOT_PREFIX_LENGTH) ||
+                              name.regionMatches(0, CHECKPOINT_CLASS_PREFIX, 0, CHECKPOINT_CLASS_LENGTH);
 
-        Class<?> result = null;
-        synchronized (getClassLoadingLock(name)) {
-            result = findLoadedClass(name);
-            if (result == null) {
-                // Try to load the class from this classpath
-                result = findClass(name, true);
-            }
-        }
-
-        if (result == null) {
-            result = parent.loadClass(name);
-        }
-
-        return result;
+        return _loadClass(name, parentFirst);
     }
 
     @Override

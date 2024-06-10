@@ -50,6 +50,7 @@ public class ExternalTestService {
     private final String address;
     private final String serviceName;
     private final int port;
+    private final String hostname;
     private final Map<String, ServiceProperty> props;
     private static Random rand = new Random();
     private static Map<String, Collection<String>> unhealthyServiceInstances = new HashMap<String, Collection<String>>();
@@ -81,7 +82,7 @@ public class ExternalTestService {
             //No Service address so use the node address
             address = nodeData.getString("Address");
         }
-
+        this.hostname = nodeData.getString("Node");
         this.address = address;
         this.serviceName = serviceData.getString("Service");
         this.port = serviceData.getInt("Port", -1);
@@ -482,8 +483,8 @@ public class ExternalTestService {
 
         /**
          * @param sleepMsecs initial sleep time in msecs (doubles on each retry)
-         * @param numSleeps number of times to do a sleep before it becomes non-retryable
-         * @param capMsecs maximum number of msecs to sleep
+         * @param numSleeps  number of times to do a sleep before it becomes non-retryable
+         * @param capMsecs   maximum number of msecs to sleep
          */
         public CappedExponentialSleeps(int sleepMsecs, int numSleeps, int capMsecs) {
             this.sleepMsecs = sleepMsecs;
@@ -539,12 +540,12 @@ public class ExternalTestService {
             while (propertiesDecrypter == null) {
                 try {
                     propertiesDecrypter = ExternalTestService.getService("liberty-properties-decrypter");
-                } catch(Exception e) {
+                } catch (Exception e) {
                     if (retry.retryable()) {
                         continue;
-                     } else {
+                    } else {
                         throw e;
-                     }
+                    }
                 }
             }
 
@@ -620,6 +621,13 @@ public class ExternalTestService {
      */
     public String getAddress() {
         return address;
+    }
+
+    /**
+     * @return the hostname
+     */
+    public String getHostname() {
+        return hostname;
     }
 
     /**

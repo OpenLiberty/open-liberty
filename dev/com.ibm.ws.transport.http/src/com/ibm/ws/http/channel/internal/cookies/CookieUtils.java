@@ -4,11 +4,8 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.cookies;
 
@@ -45,6 +42,7 @@ public class CookieUtils {
     private static final String longAgo = "; Expires=Thu, 01-Dec-94 16:00:00 GMT";
     private static final String longAgoRFC1123 = "; Expires=Thu, 01 Dec 1994 16:00:00 GMT";
     private static boolean skipCookiePathQuotes = false;
+    private static boolean isEE11 = HttpDispatcher.isEE11();
 
     /**
      * Default constructor for the utility class.
@@ -391,9 +389,9 @@ public class CookieUtils {
             buffer.append(value);
         }
 
-        if(ProductInfo.getBetaEdition()) {
+        if (ProductInfo.getBetaEdition()) {
             value = cookie.getAttribute("partitioned");
-            if (null != value) {
+            if (null != value && !value.equalsIgnoreCase("false")) {
                 buffer.append("; Partitioned");
             }
         }
@@ -474,9 +472,9 @@ public class CookieUtils {
             buffer.append(value);
         }
 
-        if(ProductInfo.getBetaEdition()) {
+        if (ProductInfo.getBetaEdition()) {
             value = cookie.getAttribute("partitioned");
-            if (null != value) {
+            if (null != value && !value.equalsIgnoreCase("false")) {
                 buffer.append("; Partitioned");
             }
         }
@@ -573,9 +571,9 @@ public class CookieUtils {
             buffer.append(value);
         }
 
-        if(ProductInfo.getBetaEdition()) {
+        if (ProductInfo.getBetaEdition()) {
             value = cookie.getAttribute("partitioned");
-            if (null != value) {
+            if (null != value && !value.equalsIgnoreCase("false")) {
                 buffer.append("; Partitioned");
             }
         }
@@ -593,6 +591,10 @@ public class CookieUtils {
     /*
      * since Servlet 6.0 - Support Cookie's setAttribute
      * exclude "samesite", "port", "commenturl" attribute since they already set
+     *
+     * Updated Servlet 6.1:
+     * - handle empty and null value;
+     * - handle invalid character in attribute name;
      */
     private static void setAttributes(HttpCookie cookie, StringBuilder buffer) {
         Map<String, String> cookieAttrs = cookie.getAttributes();
@@ -602,18 +604,49 @@ public class CookieUtils {
                 key = entry.getKey();
                 // add partitioned if not in beta.
                 // skip if in beta since it's added above already
-                if((key.equals("partitioned") && ProductInfo.getBetaEdition())){
+                if ((key.equals("partitioned") && ProductInfo.getBetaEdition())) {
                     continue;
                 }
-                if (!(key.equals("samesite") || key.equals("port") || key.equals("commenturl")) ) {
+                if (!(key.equals("samesite") || key.equals("port") || key.equals("commenturl"))) {
                     value = entry.getValue();
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "setAttribute (" + key + " , " + value + ")");
                     }
-                    buffer.append("; " + key + "=");
-                    buffer.append(value);
+                    if (isEE11) {
+                        if (hasReservedCharacters(key)) { //entire cookie is discarded. Flow continues
+                            String message = Tr.formatMessage(tc, "cookie.attribute.name.invalid", key);
+                            Tr.error(tc, message);
+                            throw new IllegalArgumentException(message);
+                        }
+
+                        if (value == null || value.trim().equalsIgnoreCase("null")) {
+                            continue;
+                        } else if (value.isEmpty() || value.contentEquals("=")) { // i.e the specified value is just the "="; Cookie.setAttribute("Cookie_NAME_ONLY_SIGN", "=");
+                            buffer.append("; " + key);
+                            continue;
+                        }
+
+                        buffer.append("; " + key + "=" + value);
+                    }
+                    // EE10
+                    else {
+                        buffer.append("; " + key + "=");
+                        buffer.append(value);
+                    }
                 }
             }
         }
+    }
+
+    private static boolean hasReservedCharacters(String value) {
+        int len = value.length();
+        for (int i = 0; i < len; i++) {
+            char c = value.charAt(i);
+            if (c < 0x20 || c >= 0x7f || TSPECIALS.indexOf(c) != -1) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

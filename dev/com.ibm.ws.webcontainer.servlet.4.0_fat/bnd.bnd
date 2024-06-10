@@ -27,14 +27,11 @@ src: \
     test-applications/SCIFilterServletNameMapping.jar/src,\
     test-applications/SameContextRootTestApp1.war/src,\
     test-applications/SameContextRootTestApp2.war/src,\
-    test-applications/SameSiteTest.war/src,\
-    test-applications/SameSiteSecurityTest.war/src,\
     test-applications/Servlet5TestApp.war/src,\
     test-applications/TestHandlesTypesClasses.war/src,\
     test-applications/TrailersTest.war/src,\
     test-applications/TestServlet40Clarifications.war/src,\
     test-applications/TestPushBuilderAPI.war/src,\
-    test-applications/ResponseHeadersTest.war/src,\
     test-applications/DeferServletRequestListenerDestroyOnErrorTest.war/src,\
     test-applications/TestX590EncodedCert.war/src,\
     test-applications/TestProgrammaticListenerAddition.jar/src,\
@@ -43,14 +40,13 @@ src: \
 fat.project: true
 
 tested.features:\
-    servlet-5.0,\
-    pages-3.0,\
     appsecurity-4.0,\
     cdi-3.0,\
     expressionlanguage-5.0,\
     pages-3.1,\
     servlet-6.0,\
     appsecurity-5.0,\
+    jsonp-2.1,\
     cdi-4.0,\
     expressionlanguage-6.0,\
     pages-4.0,\

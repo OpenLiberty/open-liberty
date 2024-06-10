@@ -14,10 +14,11 @@ package tests;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.ListIterator;
 
-import org.junit.After;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +27,7 @@ import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.Fileset;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
@@ -36,24 +38,20 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-public class Simple2PCCloudTest extends FATServletClient {
+public class Simple2PCCloudTest extends CloudTestBase {
 
     public static final String APP_NAME = "transaction";
     public static final String SERVLET_NAME = APP_NAME + "/Simple2PCCloudServlet";
     protected static final int cloud2ServerPort = 9992;
-    private static final long LOG_SEARCH_TIMEOUT = 300000;
 
     @Server("com.ibm.ws.transaction_CLOUD001")
-    public static LibertyServer server1;
+    public static LibertyServer s1;
 
     @Server("com.ibm.ws.transaction_CLOUD002")
-    public static LibertyServer server2;
+    public static LibertyServer s2;
 
     @Server("longLeaseLengthServer1")
     public static LibertyServer longLeaseLengthServer1;
@@ -64,25 +62,21 @@ public class Simple2PCCloudTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        ShrinkHelper.defaultApp(server1, APP_NAME, "servlets.*");
-        ShrinkHelper.defaultApp(server2, APP_NAME, "servlets.*");
-        ShrinkHelper.defaultApp(longLeaseLengthServer1, APP_NAME, "servlets.*");
-        ShrinkHelper.defaultApp(peerPrecedenceServer1, APP_NAME, "servlets.*");
+        server1 = s1;
+        server2 = s2;
 
-        server1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-        server2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-        longLeaseLengthServer1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-        peerPrecedenceServer1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-    }
+        final WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME, "servlets.*");
+        final DeployOptions[] dO = new DeployOptions[0];
 
-    @After
-    public void cleanup() throws Exception {
+        ShrinkHelper.exportAppToServer(server1, app, dO);
+        ShrinkHelper.exportAppToServer(server2, app, dO);
+        ShrinkHelper.exportAppToServer(longLeaseLengthServer1, app, dO);
+        ShrinkHelper.exportAppToServer(peerPrecedenceServer1, app, dO);
 
-        // Clean up XA resource files
-        server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
-
-        // Remove tranlog DB
-        server1.deleteDirectoryFromLibertyInstallRoot("/usr/shared/resources/data");
+        server1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        server2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        longLeaseLengthServer1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        peerPrecedenceServer1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
     }
 
     /**
@@ -356,10 +350,59 @@ public class Simple2PCCloudTest extends FATServletClient {
     }
 
     @Test
-    @Mode(TestMode.LITE)
-    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "java.sql.SQLNonTransientConnectionException", "javax.resource.ResourceException" })
+    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "java.sql.SQLNonTransientConnectionException", "javax.resource.ResourceException",
+                           "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
     public void datasourceChangeTest() throws Exception {
         final String method = "datasourceChangeTest";
+
+        serversToCleanup = new LibertyServer[] { server1 };
+
+        // Start Server1
+        FATUtils.startServers(server1);
+        // Update the server configuration on the fly to force the invalidation of the DataSource
+        ServerConfiguration config = server1.getServerConfiguration();
+        ConfigElementList<Fileset> fsConfig = config.getFilesets();
+        Log.info(this.getClass(), method, "retrieved fileset config " + fsConfig);
+        String sfDirOrig = "";
+
+        Fileset fs = null;
+        ListIterator<Fileset> lItr = fsConfig.listIterator();
+        while (lItr.hasNext()) {
+            fs = lItr.next();
+            Log.info(this.getClass(), method, "retrieved fileset " + fs);
+            sfDirOrig = fs.getDir();
+
+            Log.info(this.getClass(), method, "retrieved Dir " + sfDirOrig);
+            fs.setDir(sfDirOrig + "2");
+        }
+
+        server1.setMarkToEndOfLog();
+        server1.updateServerConfiguration(config);
+        server1.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        Log.info(this.getClass(), method, "Reset the config back the way it originally was");
+        // Now reset the config back to the way it was
+        if (fs != null)
+            fs.setDir(sfDirOrig);
+
+        server1.setMarkToEndOfLog();
+        server1.updateServerConfiguration(config);
+        server1.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        // Should see a message like
+        // WTRN0108I: Have recovered from ResourceAllocationException in SQL RecoveryLog partnerlog for server recovery.dblog
+        assertNotNull("No warning message signifying failover", server1.waitForStringInLog("Have recovered from ResourceAllocationException"));
+    }
+
+    @Test
+    @ExpectedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
+    @AllowedFFDC(value = { "java.sql.SQLNonTransientConnectionException",
+                           "javax.resource.ResourceException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
+    public void datasourceChangeTest2() throws Exception {
+        final String method = "datasourceChangeTest2";
+
+        serversToCleanup = new LibertyServer[] { server1 };
+
         // Start Server1
         FATUtils.startServers(server1);
         // Update the server configuration on the fly to force the invalidation of the DataSource
@@ -396,9 +439,87 @@ public class Simple2PCCloudTest extends FATServletClient {
         // WTRN0108I: Have recovered from ResourceAllocationException in SQL RecoveryLog partnerlog for server recovery.dblog
         assertNotNull("No warning message signifying failover", server1.waitForStringInLog("Have recovered from ResourceAllocationException"));
 
-        FATUtils.stopServers(new String[] { "CWWKE0701E" }, server1);
+        StringBuilder sb = null;
+        String id = "007";
 
-        // Lastly, clean up XA resource files
-        server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
+        try {
+            // We expect this to fail since it is gonna crash the server
+            sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
+        } catch (IOException e) {
+        }
+        Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
+
+        server1.waitForStringInLog(XAResourceImpl.DUMP_STATE);
+        server1.resetStarted();
+
+        // Now re-start cloud1
+        FATUtils.startServers(server1);
+
+        // Server appears to have started ok. Check for key string to see whether recovery has succeeded
+        server1.waitForStringInTrace("Performed recovery for cloud0011");
+
+        sb = runTestWithResponse(server1, SERVLET_NAME, "checkRec" + id);
+        Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
+    }
+
+    @Test
+    @ExpectedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
+    @AllowedFFDC(value = { "java.sql.SQLNonTransientConnectionException",
+                           "javax.resource.ResourceException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
+    public void datasourceChangeTest3() throws Exception {
+        final String method = "datasourceChangeTest2";
+
+        serversToCleanup = new LibertyServer[] { server1 };
+
+        // Start Server1
+        FATUtils.startServers(server1);
+        // Update the server configuration on the fly to force the invalidation of the DataSource
+        ServerConfiguration config = server1.getServerConfiguration();
+        ConfigElementList<Fileset> fsConfig = config.getFilesets();
+        Log.info(this.getClass(), method, "retrieved fileset config " + fsConfig);
+        String sfDirOrig = "";
+
+        Fileset fs = null;
+        ListIterator<Fileset> lItr = fsConfig.listIterator();
+        while (lItr.hasNext()) {
+            fs = lItr.next();
+            Log.info(this.getClass(), method, "retrieved fileset " + fs);
+            sfDirOrig = fs.getDir();
+
+            Log.info(this.getClass(), method, "retrieved Dir " + sfDirOrig);
+            fs.setDir(sfDirOrig + "2");
+        }
+
+        server1.setMarkToEndOfLog();
+        server1.updateServerConfiguration(config);
+        server1.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        Log.info(this.getClass(), method, "Reset the config back the way it originally was");
+
+        // Should see a message like
+        // WTRN0108I: Have recovered from ResourceAllocationException in SQL RecoveryLog partnerlog for server recovery.dblog
+        assertNotNull("No warning message signifying failover", server1.waitForStringInLog("Have recovered from ResourceAllocationException"));
+
+        StringBuilder sb = null;
+        String id = "007";
+
+        try {
+            // We expect this to fail since it is gonna crash the server
+            sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
+        } catch (IOException e) {
+        }
+        Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
+
+        server1.waitForStringInLog(XAResourceImpl.DUMP_STATE);
+        server1.resetStarted();
+
+        // Now re-start cloud1
+        FATUtils.startServers(server1);
+
+        // Server appears to have started ok. Check for key string to see whether recovery has succeeded
+        server1.waitForStringInTrace("Performed recovery for cloud0011");
+
+        sb = runTestWithResponse(server1, SERVLET_NAME, "checkRec" + id);
+        Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,16 +13,16 @@
 package test.jakarta.data.jpa.web;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
-
-import io.openliberty.data.repository.Select;
 
 /**
  * Repository for the TaxPayer entity.
@@ -32,10 +32,12 @@ public interface TaxPayers extends DataRepository<TaxPayer, Long> {
     @Delete
     long delete();
 
-    @Select("bankAccounts")
+    @Query("SELECT bankAccounts WHERE ssn=?1")
     Set<AccountId> findAccountsBySSN(long ssn);
 
-    Stream<AccountId> findBankAccountsByFilingStatus(TaxPayer.FilingStatus status);
+    @OrderBy("numDependents")
+    @OrderBy("ssn")
+    List<Set<AccountId>> findBankAccountsByFilingStatus(TaxPayer.FilingStatus status);
 
     @OrderBy("income")
     @OrderBy("ssn")

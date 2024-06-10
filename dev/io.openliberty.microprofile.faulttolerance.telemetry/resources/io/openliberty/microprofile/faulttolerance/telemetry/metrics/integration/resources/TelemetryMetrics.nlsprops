@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Descriptions of metrics used by Fault Tolerance. 
+# See https://download.eclipse.org/microprofile/microprofile-fault-tolerance-4.0.2/microprofile-fault-tolerance-spec-4.0.2.html#_integration_with_microprofile_metrics
+#-----------------------------------------------------------------------------------------------------------------------------
+
+ft.invocations.total.description=The number of times the method was called.
+
+ft.retry.calls.total.description=The number of times the retry logic was run. This will always be once per method call.
+
+ft.retry.retries.total.description=The number of times the method was retried.
+
+ft.timeout.calls.total.description=The number of times the timeout logic was run. This will usually be once per method call, but may be zero times if the circuit breaker prevents execution or more than once if the method is retried.
+
+ft.timeout.executionDuration.description=Histogram of execution times for the method.
+
+ft.circuitbreaker.calls.total.description=The number of times the circuit breaker logic was run. This will usually be once per method call, but may be more than once if the method call is retried.
+
+ft.circuitbreaker.state.total.description=Amount of time the circuit breaker has spent in each state.
+
+ft.circuitbreaker.opened.total.description=Number of times the circuit breaker has moved from closed state to open state.
+
+ft.bulkhead.calls.total.description=The number of times the bulkhead logic was run. This will usually be once per method call, but may be zero times if the circuit breaker prevented execution or more than once if the method call is retried.
+
+ft.bulkhead.executionsRunning.description=Number of currently running executions.
+
+ft.bulkhead.executionsWaiting.description=Number of executions currently waiting in the queue.
+
+ft.bulkhead.runningDuration.description=Histogram of the time that method executions spent running.
+
+ft.bulkhead.waitingDuration.description=Histogram of the time that method executions spent waiting in the queue.

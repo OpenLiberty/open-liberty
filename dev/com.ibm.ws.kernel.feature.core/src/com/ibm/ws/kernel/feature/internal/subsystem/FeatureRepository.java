@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -56,6 +56,7 @@ import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils.Provi
 import com.ibm.ws.kernel.feature.provisioning.ActivationType;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Selector;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry.BundleRepositoryHolder;
 import com.ibm.wsspi.kernel.feature.LibertyFeature;
@@ -69,6 +70,7 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
  */
 public final class FeatureRepository implements FeatureResolver.Repository {
     private static final TraceComponent tc = Tr.register(FeatureRepository.class);
+
     private static final int FEATURE_CACHE_VERSION = 3;
     private static final String EMPTY = "";
 
@@ -82,12 +84,14 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     /** Cache file is reachable/working */
     private boolean cacheOk = true;
 
-    private final WsResource cacheRes;
+    private final WsResource cacheResource;
 
     private final BundleContext bundleContext;
 
-    /** List of currently installed features */
-    private volatile Set<String> installedFeatures = Collections.emptySet();
+    /** List of currently resolved features */
+    private volatile Set<String> resolvedFeatures = Collections.emptySet();
+
+    private volatile Set<String> platforms = Collections.emptySet();
 
     /** List of currently configured features */
     private volatile Set<String> configuredFeatures = Collections.emptySet();
@@ -96,7 +100,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     private volatile boolean configurationError = true;
 
     /** Map of symbolic name to subsystem feature definition */
-    private final Map<String, SubsystemFeatureDefinitionImpl> cachedFeatures = new HashMap<String, SubsystemFeatureDefinitionImpl>();
+    private final Map<String, SubsystemFeatureDefinitionImpl> installedFeatures = new HashMap<String, SubsystemFeatureDefinitionImpl>();
 
     /** Map of public features to short names */
     private final Map<String, String> publicFeatureNameToSymbolicName = new HashMap<String, String>();
@@ -106,21 +110,18 @@ public final class FeatureRepository implements FeatureResolver.Repository {
 
     private final ConcurrentMap<String, LibertyFeatureServiceFactory> featureServiceFactories = new ConcurrentHashMap<String, LibertyFeatureServiceFactory>();
 
-    /** PROVISIONING:Map of symbolic name to autoFeature */
-    private ArrayList<SubsystemFeatureDefinitionImpl> autoFeatures;
-    /** PROVISIONING:Map of file to subystem definition */
-    Map<File, SubsystemFeatureDefinitionImpl> knownFeatures;
-    /** PROVISIONING:Map of file to subystem definition */
-    Map<File, BadFeature> knownBadFeatures;
+    private Map<File, SubsystemFeatureDefinitionImpl> knownGoodFeatureFiles;
+    private Map<File, BadFeature> knownBadFeatureFiles;
+    private List<SubsystemFeatureDefinitionImpl> autoFeatures;
 
     public FeatureRepository() {
-        cacheRes = null;
+        cacheResource = null;
         isDirty = true;
         bundleContext = null;
     }
 
     public FeatureRepository(WsResource res, BundleContext bundleContext) {
-        cacheRes = res;
+        cacheResource = res;
         this.bundleContext = bundleContext;
     }
 
@@ -146,18 +147,18 @@ public final class FeatureRepository implements FeatureResolver.Repository {
      * This is called at the beginning of a provisioning operation. It re-initializes
      * or refreshes the cache against what is known in the filesystem.
      * <p>
-     * Note that for update operations (rather than initial provisioning), cachedFeatures will
+     * Note that for update operations (rather than initial provisioning), cachedInstalledFeatures will
      * be pre-populated..
      */
     public void init() {
         isDirty = false;
 
         // If we haven't looked at anything from the cache or the filesystem, this is bootstrap time
-        boolean firstInit = cachedFeatures.isEmpty();
+        boolean firstInit = installedFeatures.isEmpty();
 
         autoFeatures = new ArrayList<SubsystemFeatureDefinitionImpl>();
-        knownFeatures = new HashMap<File, SubsystemFeatureDefinitionImpl>();
-        knownBadFeatures = new HashMap<File, BadFeature>();
+        knownGoodFeatureFiles = new HashMap<File, SubsystemFeatureDefinitionImpl>();
+        knownBadFeatureFiles = new HashMap<File, BadFeature>();
 
         // Read feature cache, this will only toss files that no longer exist
         // stale will be marked true if feature definitions were discarded.
@@ -167,11 +168,12 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         readFeatureManifests();
 
         // If something was out of sync with the filesystem and this is the first pass,
-        // reset the installed features list so we re-figure out what should be installed.
+        // reset the resolved features list so we re-figure out what should be resolved.
         if (isDirty && firstInit) {
             // If stale, reset to empty list as we'll be rebuilding....
-            installedFeatures = Collections.emptySet();
+            resolvedFeatures = Collections.emptySet();
             configuredFeatures = Collections.emptySet();
+            platforms = Collections.emptySet();
         }
     }
 
@@ -183,10 +185,10 @@ public final class FeatureRepository implements FeatureResolver.Repository {
 
         // PURGE provisioning data! BYE-BYE!!
         autoFeatures = null;
-        knownFeatures = null;
-        knownBadFeatures = null;
+        knownGoodFeatureFiles = null;
+        knownBadFeatureFiles = null;
 
-        for (SubsystemFeatureDefinitionImpl def : cachedFeatures.values()) {
+        for (SubsystemFeatureDefinitionImpl def : installedFeatures.values()) {
             def.setProvisioningDetails(null);
         }
     }
@@ -195,176 +197,176 @@ public final class FeatureRepository implements FeatureResolver.Repository {
      * This is called at the beginning of a provisioning operation. It re-initializes
      * or refreshes the cache against what is known in the filesystem.
      * <p>
-     * Note that for update operations (rather than initial provisioning), cachedFeatures will
+     * Note that for update operations (rather than initial provisioning), cachedInstalledFeatures will
      * be pre-populated..
-     *
-     * @see #storeCache()
      */
     private void readCache(boolean firstInit) {
-        if (cacheOk && cacheRes != null && cacheRes.exists()) {
+        if (!cacheOk || (cacheResource == null) || !cacheResource.exists()) {
+            return;
+        }
 
-            List<SubsystemFeatureDefinitionImpl> cachedEntries = new ArrayList<>();
-            Set<String> installed = new HashSet<>();
-            Set<String> configured = new HashSet<>();
-            Map<File, BadFeature> knownBad = new HashMap<>();
-            boolean configError = false;
-            try (DataInputStream in = new DataInputStream(new BufferedInputStream(cacheRes.get()))) {
-                if (in.readInt() != FEATURE_CACHE_VERSION) {
-                    return; // not a version we understand; ignore the cache
+        List<SubsystemFeatureDefinitionImpl> cachedInstalledFeatures = new ArrayList<>();
+        Set<String> resolved = new HashSet<>();
+        Set<String> configured = new HashSet<>();
+        Map<File, BadFeature> knownBad = new HashMap<>();
+        boolean configError = false;
+        try (DataInputStream in = new DataInputStream(new BufferedInputStream(cacheResource.get()))) {
+            if (in.readInt() != FEATURE_CACHE_VERSION) {
+                return; // not a version we understand; ignore the cache
+            }
+            int numFeatures = in.readInt();
+            for (int i = 0; i < numFeatures; i++) {
+                ImmutableAttributes cachedAttr = loadFeatureAttributes(in);
+                ProvisioningDetails cachedDetails = loadProvisioningDetails(in, cachedAttr);
+                String symbolicName = cachedAttr.symbolicName;
+
+                SubsystemFeatureDefinitionImpl installedFeature = installedFeatures.get(symbolicName);
+
+                // Get the immutable attributes from the cached feature element..
+                ImmutableAttributes installedAttr = installedFeature == null ? null : installedFeature.getImmutableAttributes();
+
+                if (!cachedAttr.featureFile.exists()) {
+                    // feature file no longer exists; throw away the value
+                    cachedAttr = null;
+                } else if (installedAttr != null) {
+                    // we had this value already; use it
+                    cachedAttr = installedAttr;
                 }
-                int numFeatures = in.readInt();
-                for (int i = 0; i < numFeatures; i++) {
-                    ImmutableAttributes newAttr = loadFeatureAttributes(in);
-                    ProvisioningDetails details = loadProvisioningDetails(in, newAttr);
-                    String symbolicName = newAttr.symbolicName;
+                // loadAttributes will return new attributes (didn't exist before),
+                // the cachedAttributes (unchanged), or null (file no longer present OR invalid cache line )
 
-                    SubsystemFeatureDefinitionImpl cachedEntry = cachedFeatures.get(symbolicName);
-
-                    // Get the immutable attributes from the cached feature element..
-                    ImmutableAttributes cachedAttr = cachedEntry == null ? null : cachedEntry.getImmutableAttributes();
-
-                    if (!newAttr.featureFile.exists()) {
-                        // feature file no longer exists; throw away the value
-                        newAttr = null;
-                    } else if (cachedAttr != null) {
-                        // we had this value already; use it
-                        newAttr = cachedAttr;
-                    }
-                    // loadAttributes will return new attributes (didn't exist before),
-                    // the cachedAttributes (unchanged), or null (file no longer present OR invalid cache line )
-
-                    if (newAttr != null) {
-                        // New shiny attributes...
-                        if (cachedAttr == newAttr) {
-                            // woo-hoo!! cache hit!
-                            // the provisioning details need to be reconstituted
-                            cachedEntry.setProvisioningDetails(details);
-                        } else {
-                            // Only set to is dirty if not firstInit.
-                            // On firstInit we are creating the definitions from cache for the first time here
-                            if (!!!firstInit)
-                                isDirty = true;
-                            cachedEntry = new SubsystemFeatureDefinitionImpl(newAttr, details);
-                        }
-                    } else if (cachedAttr != null) {
-                        // so sad! the file went away or something is askew with the cache
-                        isDirty = true;
-                        cachedFeatures.remove(symbolicName);
-                        cachedEntry = null;
+                if (cachedAttr != null) {
+                    // New shiny attributes...
+                    if (installedAttr == cachedAttr) {
+                        // woo-hoo!! cache hit!
+                        // the provisioning details need to be reconstituted
+                        installedFeature.setProvisioningDetails(cachedDetails);
                     } else {
-                        // I know this happens: null cachedAttr, null newAttr..
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "cacheAttr and newAttr BOTH null while reading cache", symbolicName);
+                        // Only set to is dirty if not firstInit.
+                        // On firstInit we are creating the definitions from cache for the first time here
+                        if (!!!firstInit) {
+                            isDirty = true;
                         }
-                        isDirty = true;
-                        cachedEntry = null;
+                        installedFeature = new SubsystemFeatureDefinitionImpl(cachedAttr, cachedDetails);
                     }
-
-                    cachedEntries.add(cachedEntry);
+                } else if (installedAttr != null) {
+                    // so sad! the file went away or something is askew with the cache
+                    isDirty = true;
+                    installedFeatures.remove(symbolicName);
+                    installedFeature = null;
+                } else {
+                    // I know this happens: null cachedAttr, null newAttr..
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "cacheAttr and newAttr BOTH null while reading cache", symbolicName);
+                    }
+                    isDirty = true;
+                    installedFeature = null;
                 }
 
-                int numInstalled = in.readInt();
-                for (int i = 0; i < numInstalled; i++) {
-                    installed.add(in.readUTF());
-                }
-
-                int numConfigured = in.readInt();
-                for (int i = 0; i < numConfigured; i++) {
-                    configured.add(in.readUTF());
-                }
-
-                configError = in.readBoolean();
-
-                int numBad = in.readInt();
-                for (int i = 0; i < numBad; i++) {
-                    File f = new File(in.readUTF());
-                    long lastModified = in.readLong();
-                    long length = in.readLong();
-
-                    // If the file still exists, add it to our list. We'll check if anything
-                    // changed in readFeatureManifests
-                    if (f.isFile())
-                        knownBad.put(f, new BadFeature(lastModified, length));
-                }
-            } catch (IOException e) {
-                cacheWarning(e);
-                return;
+                cachedInstalledFeatures.add(installedFeature);
             }
 
-            installedFeatures = Collections.unmodifiableSet(installed);
-            configuredFeatures = Collections.unmodifiableSet(configured);
-            configurationError = configError;
-            knownBadFeatures.putAll(knownBad);
-
-            // Update the associated maps we need for provisioning
-            for (SubsystemFeatureDefinitionImpl cachedEntry : cachedEntries) {
-                updateMaps(cachedEntry);
+            int numResolved = in.readInt();
+            for (int i = 0; i < numResolved; i++) {
+                resolved.add(in.readUTF());
             }
+
+            int numConfigured = in.readInt();
+            for (int i = 0; i < numConfigured; i++) {
+                configured.add(in.readUTF());
+            }
+
+            configError = in.readBoolean();
+
+            int numBad = in.readInt();
+            for (int i = 0; i < numBad; i++) {
+                File f = new File(in.readUTF());
+                long lastModified = in.readLong();
+                long length = in.readLong();
+
+                // If the file still exists, add it to our list. We'll check if anything
+                // changed in readFeatureManifests
+                if (f.isFile()) {
+                    knownBad.put(f, new BadFeature(lastModified, length));
+                }
+            }
+        } catch (IOException e) {
+            cacheWarning(e);
+            return;
+        }
+
+        resolvedFeatures = Collections.unmodifiableSet(resolved);
+        configuredFeatures = Collections.unmodifiableSet(configured);
+        configurationError = configError;
+        knownBadFeatureFiles.putAll(knownBad);
+
+        for (SubsystemFeatureDefinitionImpl cachedInstalledFeature : cachedInstalledFeatures) {
+            updateMaps(cachedInstalledFeature);
         }
     }
 
     /**
      * Write the feature cache file
-     *
-     * @see #readCache()
      */
     public void storeCache() {
-        if (cacheOk && cacheRes != null && isDirty) {
-            try (DataOutputStream out = new DataOutputStream(new BufferedOutputStream(cacheRes.putStream()))) {
-                Collection<Entry<ImmutableAttributes, ProvisioningDetails>> features = new ArrayList<>();
-                for (SubsystemFeatureDefinitionImpl entry : cachedFeatures.values()) {
-                    ImmutableAttributes imAttrs = entry.getImmutableAttributes();
-                    ProvisioningDetails provDetails = entry.getProvisioningDetails();
-                    if (imAttrs != null && provDetails != null) {
-                        features.add(new SimpleEntry<>(imAttrs, provDetails));
-                    } else {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Unable to write out " + entry.getFeatureName() + " to cache because the provisioning "
-                                         + "detail: " + provDetails + " or imAttrs: " + imAttrs + " is null");
-                        }
+        if (!cacheOk || (cacheResource == null) || !isDirty) {
+            return;
+        }
+
+        try (DataOutputStream out = new DataOutputStream(new BufferedOutputStream(cacheResource.putStream()))) {
+            Collection<Entry<ImmutableAttributes, ProvisioningDetails>> features = new ArrayList<>();
+            for (SubsystemFeatureDefinitionImpl entry : installedFeatures.values()) {
+                ImmutableAttributes imAttrs = entry.getImmutableAttributes();
+                ProvisioningDetails provDetails = entry.getProvisioningDetails();
+                if ((imAttrs != null) && (provDetails != null)) {
+                    features.add(new SimpleEntry<>(imAttrs, provDetails));
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Unable to write out " + entry.getFeatureName() + " to cache because the provisioning "
+                                     + "detail: " + provDetails + " or imAttrs: " + imAttrs + " is null");
                     }
                 }
-                out.writeInt(FEATURE_CACHE_VERSION);
-                out.writeInt(features.size());
-                for (Entry<ImmutableAttributes, ProvisioningDetails> entry : features) {
-                    writeFeatureAttributes(entry.getKey(),
-                                           entry.getValue(),
-                                           out);
-                }
-
-                Collection<String> curInstalled = installedFeatures;
-                out.writeInt(curInstalled.size());
-                for (String installed : curInstalled) {
-                    out.writeUTF(installed);
-                }
-
-                Collection<String> curConfigured = configuredFeatures;
-                out.writeInt(curConfigured.size());
-                for (String configured : curConfigured) {
-                    out.writeUTF(configured);
-                }
-
-                out.writeBoolean(configurationError);
-
-                Map<File, BadFeature> curKnownBad = knownBadFeatures;
-                out.writeInt(curKnownBad.size());
-                for (Map.Entry<File, BadFeature> entry : knownBadFeatures.entrySet()) {
-                    out.writeUTF(entry.getKey().getAbsolutePath());
-                    out.writeLong(entry.getValue().lastModified);
-                    out.writeLong(entry.getValue().length);
-                }
-
-                isDirty = false;
-            } catch (IOException e) {
-                cacheWarning(e);
+            }
+            out.writeInt(FEATURE_CACHE_VERSION);
+            out.writeInt(features.size());
+            for (Entry<ImmutableAttributes, ProvisioningDetails> entry : features) {
+                writeFeatureAttributes(entry.getKey(),
+                                       entry.getValue(),
+                                       out);
             }
 
+            Collection<String> curResolved = resolvedFeatures;
+            out.writeInt(curResolved.size());
+            for (String resolved : curResolved) {
+                out.writeUTF(resolved);
+            }
+
+            Collection<String> curConfigured = configuredFeatures;
+            out.writeInt(curConfigured.size());
+            for (String configured : curConfigured) {
+                out.writeUTF(configured);
+            }
+
+            out.writeBoolean(configurationError);
+
+            Map<File, BadFeature> curKnownBad = knownBadFeatureFiles;
+            out.writeInt(curKnownBad.size());
+            for (Map.Entry<File, BadFeature> entry : knownBadFeatureFiles.entrySet()) {
+                out.writeUTF(entry.getKey().getAbsolutePath());
+                out.writeLong(entry.getValue().lastModified);
+                out.writeLong(entry.getValue().length);
+            }
+
+            isDirty = false;
+        } catch (IOException e) {
+            cacheWarning(e);
         }
     }
 
     static void writeFeatureAttributes(ImmutableAttributes iAttr, ProvisioningDetails details, DataOutputStream out) throws IOException {
-        if (iAttr == null || details == null) // programmer error
+        if ((iAttr == null) || (details == null)) {
             throw new NullPointerException("Both attributes and details are required for caching: attr=" + iAttr + ", details=" + details);
+        }
 
         out.writeUTF(iAttr.bundleRepositoryType == null ? EMPTY : iAttr.bundleRepositoryType);
         out.writeUTF(iAttr.symbolicName);
@@ -398,6 +400,11 @@ public final class FeatureRepository implements FeatureResolver.Repository {
 
         out.writeInt(iAttr.alternateNames.size());
         for (String s : iAttr.alternateNames) {
+            out.writeUTF(s);
+        }
+
+        out.writeInt(iAttr.platforms.size());
+        for (String s : iAttr.platforms) {
             out.writeUTF(s);
         }
 
@@ -473,22 +480,26 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         for (int i = 0; i < processTypeNum; i++) {
             processTypes.add(valueOf(in.readUTF(), ProcessType.SERVER));
         }
+
         ActivationType activationType = valueOf(in.readUTF(), ActivationType.SEQUENTIAL);
+
         int altNamesCount = in.readInt();
         List<String> altNames = new ArrayList<>(altNamesCount);
         for (int x = 0; x < altNamesCount; x++) {
             altNames.add(in.readUTF());
         }
+
+        int platformsCount = in.readInt();
+        List<String> platforms = new ArrayList<>(platformsCount);
+        for (int i = 0; i < platformsCount; i++) {
+            platforms.add(in.readUTF());
+        }
+
         return new ImmutableAttributes(repositoryType, symbolicName, shortName, altNames, featureVersion, visibility, appRestart,
                                        version, featureFile, lastModified, fileSize, isAutoFeature, hasApiServices, hasApiPackages,
-                                       hasSpiPackages, isSingleton, disableOnConflict, processTypes, activationType);
+                                       hasSpiPackages, isSingleton, disableOnConflict, processTypes, activationType, platforms);
     }
 
-    /**
-     * @param in
-     * @return
-     * @throws IOException
-     */
     static ProvisioningDetails loadProvisioningDetails(DataInputStream in, ImmutableAttributes iAttr) throws IOException {
         String autoFeatureCapability = iAttr.isAutoFeature ? readLongString(in) : null;
         String apiServices = iAttr.hasApiServices ? readLongString(in) : null;
@@ -527,64 +538,71 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                         // Note: we always return false. We do the work as we see the files,
                         // instead of iterating to build a list that we then have to iterate over again...
 
-                        if (file == null)
+                        if (file == null) {
                             return false; // NEXT!
+                        }
 
-                        // Pessimistic test first: Is this a file we know is bad?
-                        BadFeature bad = knownBadFeatures.get(file);
-                        if (isFeatureStillBad(file, bad))
+                        if (!file.isFile()) {
                             return false; // NEXT!
-
-                        // Test: if we've seen this file before, is it the same as what we saw last time?
-                        SubsystemFeatureDefinitionImpl def = knownFeatures.get(file);
-                        if (isCachedEntryValid(file, def))
-                            return false; // NEXT!
-
-                        if (!file.isFile())
-                            return false; // NEXT!
+                        }
 
                         String name = file.getName();
                         int pos = name.lastIndexOf('.');
-                        if (pos < 0)
+                        if (pos < 0) {
                             return false; // NEXT!
-                        // Look only at the file extension, case insensitively
-                        if (name.regionMatches(true, pos, ".mf", 0, 3)) {
-                            // Either we haven't seen it, or it changed, so we need to build a new
-                            // definition for it. We also know the cache is dirty
-                            isDirty = true;
-
-                            try {
-                                // We need to start with the details, as we'll have to read the information from the manifest
-                                ProvisioningDetails details = new ProvisioningDetails(file, null);
-
-                                // Now build the immutables
-                                ImmutableAttributes attr = FeatureDefinitionUtils.loadAttributes(holder.getFeatureType(),
-                                                                                                 file,
-                                                                                                 details);
-
-                                if (!attr.isSupportedFeatureVersion()) {
-                                    // this feature should be ignored (perhaps backlevel version)
-                                    // add it to list of files to skip
-                                    knownBadFeatures.put(file, new BadFeature(file.lastModified(), file.length()));
-                                    return false; // NEXT
-                                }
-
-                                // we're good to go: basic attributes read and a good feature version!
-                                def = new SubsystemFeatureDefinitionImpl(attr, details);
-
-                                // update cache(s) with new definition
-                                updateMaps(def);
-
-                            } catch (IOException e) {
-                                // TODO: NLS MESSAGE
-                                // We have no message for "An exception occurred reading the feature manifest"
-                                if (tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "An exception occurred while reading the feature manifest", e.toString());
-                                }
-                                knownBadFeatures.put(file, new BadFeature(file.lastModified(), file.length()));
-                            }
                         }
 
+                        // Look only at the file extension, case insensitively
+                        if (!name.regionMatches(true, pos, ".mf", 0, 3)) {
+                            return false; // NEXT!
+                        }
+
+                        // Pessimistic test first: Is this a file we know is bad?
+                        BadFeature bad = knownBadFeatureFiles.get(file);
+                        if (isFeatureStillBad(file, bad)) {
+                            return false; // NEXT!
+                        }
+
+                        // Test: if we've seen this file before, is it the same as what we saw last time?
+                        SubsystemFeatureDefinitionImpl def = knownGoodFeatureFiles.get(file);
+                        if (isCachedEntryValid(file, def)) {
+                            return false; // NEXT!
+                        }
+
+                        // Either we haven't seen it, or it changed, so we need to build a new
+                        // definition for it. We also know the cache is dirty
+                        isDirty = true;
+
+                        try {
+                            // We need to start with the details, as we'll have to read the information from the manifest
+                            ProvisioningDetails details = new ProvisioningDetails(file, null);
+
+                            // Now build the immutables
+                            ImmutableAttributes attr = FeatureDefinitionUtils.loadAttributes(holder.getFeatureType(),
+                                                                                             file,
+                                                                                             details);
+
+                            if (!attr.isSupportedFeatureVersion()) {
+                                // this feature should be ignored (perhaps backlevel version)
+                                // add it to list of files to skip
+                                knownBadFeatureFiles.put(file, new BadFeature(file.lastModified(), file.length()));
+                                return false; // NEXT
+                            }
+
+                            // we're good to go: basic attributes read and a good feature version!
+                            def = new SubsystemFeatureDefinitionImpl(attr, details);
+
+                            // update cache(s) with new definition
+                            updateMaps(def);
+
+                        } catch (IOException e) {
+                            // TODO: NLS MESSAGE
+                            // We have no message for "An exception occurred reading the feature manifest"
+                            if (tc.isDebugEnabled()) {
+                                Tr.debug(tc, "An exception occurred while reading the feature manifest", e.toString());
+                            }
+                            knownBadFeatureFiles.put(file, new BadFeature(file.lastModified(), file.length()));
+                        }
                         return false; // NEXT!
                     }
                 });
@@ -593,9 +611,9 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     }
 
     boolean isFeatureStillBad(File f, BadFeature bf) {
-        return bf != null
-               && f.lastModified() == bf.lastModified
-               && f.length() == bf.length;
+        return (bf != null)
+               && (f.lastModified() == bf.lastModified)
+               && (f.length() == bf.length);
     }
 
     // Remove milliseconds from timestamp values to address inconsistencies in container file systems
@@ -609,110 +627,138 @@ public final class FeatureRepository implements FeatureResolver.Repository {
 
             // See if the file has changed: if it has, we need to start over
             if (reduceTimestampPrecision(cachedAttr.lastModified) == reduceTimestampPrecision(f.lastModified())) {
-                if (cachedAttr.length == f.length())
+                if (cachedAttr.length == f.length()) {
                     return true;
+                }
             }
 
             // If we got here, something changed with the entry we had:
             // could be anything inside the file, so be thorough
             // -- knownFeature entry will be replaced by caller
-            cachedFeatures.remove(cachedAttr.symbolicName);
+            installedFeatures.remove(cachedAttr.symbolicName);
             publicFeatureNameToSymbolicName.remove(lowerFeature(cachedAttr.featureName));
-            if (cachedAttr.isAutoFeature)
+            if (cachedAttr.isAutoFeature) {
                 autoFeatures.remove(def);
+            }
         }
 
         return false;
     }
 
     private void updateMaps(SubsystemFeatureDefinitionImpl def) {
-        if (def != null) {
-            ImmutableAttributes cachedAttr = def.getImmutableAttributes();
+        if (def == null) {
+            return;
+        }
 
-            // Update the feature cache: symbolic name to definition
-            SubsystemFeatureDefinitionImpl previousValue = cachedFeatures.put(cachedAttr.symbolicName, def);
-            if (previousValue != null && !previousValue.equals(def)) {
-                // UH-OH!! we have a symbolic name collision, which is just not supposed to happen.
-                // a) keep the first one
-                // b) Create an FFDC record indicating this happened
-                // c) TODO: NLS message
-                cachedFeatures.put(cachedAttr.symbolicName, previousValue);
-                FeatureManifestException fme = new FeatureManifestException("Duplicate symbolic name: " + cachedAttr.symbolicName
-                                                                            + ", " + def.getFeatureDefinitionFile().getAbsolutePath()
-                                                                            + " will be ignored. The file " + previousValue.getFeatureDefinitionFile().getAbsolutePath()
-                                                                            + " will be used instead.",
-                                                                            (String) null); // TODO: nls message here..
+        ImmutableAttributes attr = def.getImmutableAttributes();
 
-                FFDCFilter.processException(fme, this.getClass().getName(), "updateMaps",
-                                            this, new Object[] { previousValue, def });
+        // Update the feature cache: symbolic name to definition
+        SubsystemFeatureDefinitionImpl oldDef = installedFeatures.put(attr.symbolicName, def);
 
-                // Ignore this definition...
-                File file = cachedAttr.featureFile;
-                knownBadFeatures.put(file, new BadFeature(file.lastModified(), file.length()));
-                return;
-            }
+        if ((oldDef != null) && !oldDef.equals(def)) {
+            // UH-OH!! we have a symbolic name collision, which is just not supposed to happen.
+            // a) keep the first one
+            // b) Create an FFDC record indicating this happened
+            // c) TODO: NLS message
+            installedFeatures.put(attr.symbolicName, oldDef);
+            FeatureManifestException fme = new FeatureManifestException("Duplicate symbolic name: " + attr.symbolicName
+                                                                        + ", " + def.getFeatureDefinitionFile().getAbsolutePath()
+                                                                        + " will be ignored. The file " + oldDef.getFeatureDefinitionFile().getAbsolutePath()
+                                                                        + " will be used instead.",
+                                                                        (String) null); // TODO: nls message here..
 
-            // Remember that we've seen this file: file to definition
-            knownFeatures.put(cachedAttr.featureFile, def);
+            FFDCFilter.processException(fme, this.getClass().getName(), "updateMaps",
+                                        this, new Object[] { oldDef, def });
 
-            // If there is a public feature name,
-            // populate the map with down-case featureName to real symbolic name
-            // populate the map with down-case symbolicName to real symbolic name
-            // Note: we only ignore case when looking up public feature names!
-            if (!cachedAttr.featureName.equals(cachedAttr.symbolicName))
-                publicFeatureNameToSymbolicName.put(lowerFeature(cachedAttr.featureName), cachedAttr.symbolicName);
-            if (def.getVisibility() == Visibility.PUBLIC)
-                publicFeatureNameToSymbolicName.put(lowerFeature(cachedAttr.symbolicName), cachedAttr.symbolicName);
+            // Ignore this definition...
+            File file = attr.featureFile;
+            knownBadFeatureFiles.put(file, new BadFeature(file.lastModified(), file.length()));
+            return;
+        }
 
-            // populate mapping from known, commonly used alternative names to allow hints when the wrong feature
-            // name is specified in a server config.
-            for (String s : cachedAttr.alternateNames) {
-                alternateFeatureNameToPublicName.put(s, cachedAttr.featureName);
-            }
+        // Remember that we've seen this file: file to definition
+        knownGoodFeatureFiles.put(attr.featureFile, def);
 
-            // If this is an auto-feature, add it to that collection
-            // we're going with the bold assertion that
-            if (cachedAttr.isAutoFeature)
-                autoFeatures.add(def);
+        // If there is a public feature name,
+        // populate the map with down-case featureName to real symbolic name
+        // populate the map with down-case symbolicName to real symbolic name
+        // Note: we only ignore case when looking up public feature names!
+        if (!attr.featureName.equals(attr.symbolicName)) {
+            publicFeatureNameToSymbolicName.put(lowerFeature(attr.featureName), attr.symbolicName);
+        }
+        if (def.getVisibility() == Visibility.PUBLIC) {
+            publicFeatureNameToSymbolicName.put(lowerFeature(attr.symbolicName), attr.symbolicName);
+        }
+
+        // populate mapping from known, commonly used alternative names to allow hints when the wrong feature
+        // name is specified in a server config.
+        for (String s : attr.alternateNames) {
+            alternateFeatureNameToPublicName.put(s, attr.featureName);
+        }
+
+        // If this is an auto-feature, add it to that collection
+        // we're going with the bold assertion that
+        if (attr.isAutoFeature) {
+            autoFeatures.add(def);
         }
     }
 
     private void cacheWarning(IOException ioe) {
         if (cacheOk) {
             cacheOk = false;
-            Tr.warning(tc, "UPDATE_BUNDLE_CACHE_WARNING", new Object[] { cacheRes.toExternalURI(), ioe.toString() });
+            Tr.warning(tc, "UPDATE_BUNDLE_CACHE_WARNING", new Object[] { cacheResource.toExternalURI(), ioe.toString() });
         }
     }
 
+    public void setPlatforms(Set<String> platforms) {
+        this.platforms = platforms;
+    }
+
+    public Set<String> getPlatforms() {
+        return platforms;
+    }
+
+    @Deprecated
+    public void setInstalledFeatures(Set<String> newResolvedFeatures, Set<String> newConfiguredFeatures, boolean configurationError) {
+        setResolvedFeatures(newResolvedFeatures, newConfiguredFeatures, configurationError);
+    }
+
+    @Deprecated
+    public Set<String> getInstalledFeatures() {
+        return getResolvedFeatures();
+    }
+
     /**
-     * Change the active list of installed features
+     * Change the active list of resolved features
      *
-     * @param newInstalledFeatures new set of installed features. Replaces the previous set.
+     * @param newResolvedFeatures new set of resolved features. Replaces the previous set.
      */
-    public void setInstalledFeatures(Set<String> newInstalledFeatures, Set<String> newConfiguredFeatures, boolean configurationError) {
-        Set<String> current = installedFeatures;
-        if (!current.equals(newInstalledFeatures)) {
+    public void setResolvedFeatures(Set<String> newResolvedFeatures, Set<String> newConfiguredFeatures, boolean configurationError) {
+        Set<String> current = resolvedFeatures;
+        if (!current.equals(newResolvedFeatures)) {
             isDirty = true;
         }
-        if (newInstalledFeatures.isEmpty())
-            installedFeatures = Collections.emptySet();
-        else
-            installedFeatures = Collections.unmodifiableSet(new HashSet<String>(newInstalledFeatures));
+        if (newResolvedFeatures.isEmpty()) {
+            resolvedFeatures = Collections.emptySet();
+        } else {
+            resolvedFeatures = Collections.unmodifiableSet(new HashSet<String>(newResolvedFeatures));
+        }
 
         current = configuredFeatures;
         if (!current.equals(newConfiguredFeatures)) {
             isDirty = true;
         }
-        if (newConfiguredFeatures.isEmpty())
+        if (newConfiguredFeatures.isEmpty()) {
             configuredFeatures = Collections.emptySet();
-        else
+        } else {
             configuredFeatures = Collections.unmodifiableSet(new HashSet<String>(newConfiguredFeatures));
+        }
 
         this.configurationError = configurationError;
     }
 
-    public Set<String> getInstalledFeatures() {
-        return installedFeatures;
+    public Set<String> getResolvedFeatures() {
+        return resolvedFeatures;
     }
 
     public Set<String> getConfiguredFeatures() {
@@ -723,36 +769,35 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         return configurationError;
     }
 
-    /**
-     * Copies the active list of installed features into the given set.
-     *
-     * @param features the set to copy to.
-     */
+    @Deprecated
     public void copyInstalledFeaturesTo(Set<String> features) {
-        features.addAll(installedFeatures);
+        copyResolvedFeaturesTo(features);
     }
 
     /**
-     * @return
+     * Copies the active list of resolved features into the given set.
      */
+    public void copyResolvedFeaturesTo(Set<String> features) {
+        features.addAll(resolvedFeatures);
+    }
+
     public boolean emptyFeatures() {
-        return installedFeatures.isEmpty();
+        return resolvedFeatures.isEmpty();
     }
 
     public boolean featureSetEquals(Set<String> newFeatureSet) {
-        if (newFeatureSet == null)
+        if (newFeatureSet == null) {
             return false;
+        }
 
-        return !isDirty && newFeatureSet.equals(installedFeatures);
+        return !isDirty && newFeatureSet.equals(resolvedFeatures);
     }
 
-    /**
-     * @return
-     */
     @Override
     public Collection<ProvisioningFeatureDefinition> getAutoFeatures() {
-        if (autoFeatures == null)
+        if (autoFeatures == null) {
             throw new IllegalStateException("Method called outside of provisioining operation");
+        }
 
         return asProvisioningFeatureDefinitionCollection(Collections.unmodifiableCollection(autoFeatures));
     }
@@ -777,18 +822,38 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         return builder.toString();
     }
 
-    /**
-     * @param featureName
-     * @return
-     */
+    // @Override
+    public List<ProvisioningFeatureDefinition> select(Selector<ProvisioningFeatureDefinition> selector) {
+        if (selector == null) {
+            return new ArrayList<>(installedFeatures.values());
+        } else {
+            List<ProvisioningFeatureDefinition> selected = new ArrayList<>(installedFeatures.size());
+            installedFeatures.values().forEach((ProvisioningFeatureDefinition def) -> {
+                if (selector.test(def)) {
+                    selected.add(def);
+                }
+            });
+            return selected;
+        }
+    }
+
+    @Override
+    public List<ProvisioningFeatureDefinition> getFeatures() {
+        return new ArrayList<>(installedFeatures.values());
+    }
+
     @Override
     public ProvisioningFeatureDefinition getFeature(String featureName) {
-        SubsystemFeatureDefinitionImpl result = cachedFeatures.get(featureName);
+        SubsystemFeatureDefinitionImpl result = installedFeatures.get(featureName);
         if (result == null) {
             String name = publicFeatureNameToSymbolicName.get(lowerFeature(featureName));
-            result = cachedFeatures.get(name);
+            result = installedFeatures.get(name);
         }
         return result;
+    }
+
+    public Map<String, SubsystemFeatureDefinitionImpl> getAllFeatures() {
+        return installedFeatures;
     }
 
     private static final String TOLERATE_PREFIX = "tolerates.";
@@ -827,13 +892,14 @@ public final class FeatureRepository implements FeatureResolver.Repository {
      */
     @Trivial
     public static String lowerFeature(String inFeature) {
-        if (inFeature == null || inFeature.isEmpty())
+        if ((inFeature == null) || inFeature.isEmpty()) {
             return inFeature;
+        }
 
         // Preserve the prefix (no case shift)
         int colonIndex = inFeature.indexOf(":");
 
-        if (colonIndex > -1 && inFeature.length() > colonIndex) {
+        if ((colonIndex > -1) && (inFeature.length() > colonIndex)) {
             // Put together preserved extension name with the downcased feature name
             return inFeature.substring(0, colonIndex).trim() + ':' + inFeature.substring(colonIndex + 1).trim().toLowerCase(Locale.ENGLISH);
         } else {
@@ -851,23 +917,20 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         }
     }
 
-    /**
-     * @param bundleContext
-     */
     public void updateServices() {
         if (bundleContext == null) {
             // do nothing; not really in a running system (unit tests etc.)
             return;
         }
-        Set<String> installedSymbolicNames = new HashSet<String>();
-        for (String featureName : installedFeatures) {
+        Set<String> resolvedSymbolicNames = new HashSet<String>();
+        for (String featureName : resolvedFeatures) {
             String symbolicName = publicFeatureNameToSymbolicName.get(lowerFeature(featureName));
             if (symbolicName != null) {
-                installedSymbolicNames.add(symbolicName);
+                resolvedSymbolicNames.add(symbolicName);
             }
         }
         Set<String> removedFactories = new HashSet<String>(featureServiceFactories.keySet());
-        removedFactories.removeAll(installedSymbolicNames);
+        removedFactories.removeAll(resolvedSymbolicNames);
         for (String currentFactorySymbolicName : removedFactories) {
             LibertyFeatureServiceFactory factory = featureServiceFactories.remove(currentFactorySymbolicName);
             if (factory != null) {
@@ -875,8 +938,8 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             }
         }
 
-        for (String currentFactorySymbolicName : installedSymbolicNames) {
-            SubsystemFeatureDefinitionImpl featureDef = cachedFeatures.get(currentFactorySymbolicName);
+        for (String currentFactorySymbolicName : resolvedSymbolicNames) {
+            SubsystemFeatureDefinitionImpl featureDef = installedFeatures.get(currentFactorySymbolicName);
             if (featureDef != null) {
                 LibertyFeatureServiceFactory factory = new LibertyFeatureServiceFactory();
                 LibertyFeatureServiceFactory previous = featureServiceFactories.putIfAbsent(currentFactorySymbolicName, factory);
@@ -963,26 +1026,28 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         }
     }
 
-    /**
-     * @return
-     */
     public boolean isDirty() {
         return isDirty;
     }
 
+    @Deprecated
+    public void removeInstalledFeature(String feature) {
+        removeResolvedFeature(feature);
+    }
+
     /**
-     * Remove an installed feature from the list. This is intended to be used to remove features that failed during
+     * Remove an resolved feature from the list. This is intended to be used to remove features that failed during
      * bundle resolution because of java version restrictions.
      *
      * It will also set configurationError to true, as this should only be called in an error scenario.
      *
      * @param feature The feature to remove
      */
-    public void removeInstalledFeature(String feature) {
+    public void removeResolvedFeature(String feature) {
         this.configurationError = true;
-        HashSet<String> newInstalledFeatures = new HashSet<>(installedFeatures);
-        if (newInstalledFeatures.remove(feature)) {
-            installedFeatures = newInstalledFeatures.isEmpty() ? Collections.<String> emptySet() : Collections.unmodifiableSet(newInstalledFeatures);
+        HashSet<String> newResolvedFeatures = new HashSet<>(resolvedFeatures);
+        if (newResolvedFeatures.remove(feature)) {
+            resolvedFeatures = newResolvedFeatures.isEmpty() ? Collections.<String> emptySet() : Collections.unmodifiableSet(newResolvedFeatures);
         }
     }
 }

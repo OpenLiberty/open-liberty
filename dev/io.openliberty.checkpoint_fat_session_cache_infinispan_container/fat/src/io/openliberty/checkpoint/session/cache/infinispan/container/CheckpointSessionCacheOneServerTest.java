@@ -16,6 +16,7 @@ import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static io.openliberty.checkpoint.session.cache.infinispan.container.FATSuite.infinispan;
 import static io.openliberty.checkpoint.session.cache.infinispan.container.FATSuite.updateVariableConfig;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,16 +91,26 @@ public class CheckpointSessionCacheOneServerTest extends FATServletClient {
         Map<String, String> options = server.getJvmOptionsAsMap();
         options.put("-Dsession.cache.config.file", sessionCacheConfigFile);
         server.setJvmOptions(options);
-        updateVariableConfig(server, "INF_SERVERLIST", infinispan.getHost() + ":" + infinispan.getMappedPort(11222));
-        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, null);
+
+        //Checkpoint/Restore. Save the server config to update it after checkpoint before restore.
+        server.saveServerConfiguration();
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer();
+        updateVariableConfig(server, "INF_SERVERLIST", infinispan.getHost() + ":" + infinispan.getMappedPort(11222));
+        server.checkpointRestore();
+        assertNotNull("'CWWKG0017I: The server configuration was successfully updated' not found in log.",
+                      server.waitForStringInLogUsingMark("CWWKG0017I"));
 
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        executor.shutdownNow();
-        server.stopServer();
+        try {
+            executor.shutdownNow();
+            server.stopServer("SESN0312W");
+        } finally {
+            server.restoreServerConfiguration();
+        }
     }
 
     /**

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2006 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.wsspi.webcontainer.servlet;
 
@@ -174,6 +171,10 @@ public interface IExtendedRequest extends HttpServletRequest {
 
     //used by the security component to get at information on the request
     public HashMap getInputStreamData() throws IOException;
+
+    //used by the security component to get at information on the request
+    public HashMap getInputStreamData(long maxAllowedLength) throws IOException;
+
     public void setInputStreamData(HashMap inStreamInfo) throws IOException;
 
     // the following methods are used by the security component to serialize/deserialize the input stream data.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ package io.openliberty.restfulWS30.client.fat;
 import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -25,18 +24,19 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
+import annotation.test.rest.RestApplication;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import annotation.test.rest.RestApplication;
 
 /**
  * Tests that @RegisterRestClient does not cause an UnsatisfiedResolutionException, see https://github.com/OpenLiberty/open-liberty/issues/21547
  */
 @AllowedFFDC
+@SkipForRepeat("EE11") // Skip until MicroProfile supports Jakarta EE 11
 @RunWith(FATRunner.class)
 public class RegisterRestClientTest extends FATServletClient {
 

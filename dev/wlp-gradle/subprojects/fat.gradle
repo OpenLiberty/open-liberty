@@ -16,7 +16,7 @@
  */
 // Global vars
 ext.autoFvtDir = new File(project.buildDir, 'autoFVT')
-ext.distsDirectory= new File(project.buildDir, 'distributions')
+ext.distsDirectory = new File(project.buildDir, 'distributions')
 
 // Local vars
 File publishDir = new File(autoFvtDir, 'publish')
@@ -100,17 +100,17 @@ task addJakartaTransformerRules(type: Copy) {
 task addJakartaTransformer(type: Copy) {
   mustRunAfter jar
   dependsOn addJakartaTransformerRules
-  from configurations.jakartaTransformer
+/*  from configurations.jakartaTransformer
   from configurations.jakartaTransformerPreJava17
   from configurations.jakartaTransformerJava17Plus
-  into new File(autoFvtDir, 'lib')
+  into new File(autoFvtDir, 'lib')*/
 }
 
 task copyTestContainers(type: Copy) {
   dependsOn ':io.openliberty.org.testcontainers:assembleTestContainerData'
   mustRunAfter jar
-  from configurations.testcontainers
-  into new File(autoFvtDir, 'lib')
+/*  from configurations.testcontainers
+  into new File(autoFvtDir, 'lib')*/
 }
 
 task addDerby(type: Copy) {
@@ -152,7 +152,19 @@ task autoFVT {
   dependsOn ':cnf:copyMavenLibs'
   dependsOn addRequiredLibraries
   dependsOn copyFeatureBundles
+  dependsOn ':fattest.simplicity:assemble'
   enabled project.file('fat').exists()
+
+  ext.getFeature = { line ->
+    def fStart = line.indexOf('<feature>')
+    if (fStart == -1)
+      return null
+    fStart = fStart + '<feature>'.length()
+    def fEnd = line.indexOf('</feature>')
+    if ( fEnd == -1 )
+      return null
+    return line.substring(fStart, fEnd).trim().toLowerCase()
+  }
 
   // For now we are just forcing the autoFVT create every time, this will be fixed
   // TODO: Be smart about when to recreate the autoFVT.zip
@@ -164,7 +176,7 @@ task autoFVT {
     }
 
     // Copy the buildtask jars
-    copy {
+    /*copy {
       from cnf.file('mavenlibs')
       into new File(autoFvtDir, 'build/lib')
       include 'asm-all-5.2.jar'
@@ -192,7 +204,7 @@ task autoFVT {
     copy {
       from cnf.file('mavenlibs/infra.buildtasks-core-7.0.2.jar')
       into new File(autoFvtDir, 'build/lib')
-    }
+    }*/
 
     // Copy the bundle jar
     copy {
@@ -202,11 +214,11 @@ task autoFVT {
     }
 
     // Include JSON-P processor implementation
-    copy {
+    /*copy {
       from project(':com.ibm.ws.org.glassfish.json').buildDir
       include '*.jar'
       into new File(autoFvtDir, 'lib')
-    }
+    }*/
 
     // Copy the DDL files
     // TODO: Consider if this can be removed, it looks like there's only a single project for this rule
@@ -278,27 +290,30 @@ task autoFVT {
 
     // Copy the component test libs
     // TODO: It looks like the componenttest.app.jar got combined into something else, so this is now way more source in the jar than was there before. This might need changing then.
-    copy {
+    /*copy {
       from project(':com.ibm.ws.componenttest').buildDir
       include 'com.ibm.ws.componenttest.jar'
       rename 'com.ibm.ws.componenttest.jar', 'componenttest.app.jar'
       into new File(autoFvtDir, 'lib')
-    }
+    }*/
 
     // Copy the fattest libs
-    copy {
-      from project(':fattest.simplicity').buildDir
-      include 'fattest*.*'
-      into new File(autoFvtDir, 'lib')
+    // TCK project's depend on the fattest.simplicity.jar being in the autoFVT/lib directory for their pom.xml files
+    if (project.name.contains('tck')) {
+      copy {
+        from project(':fattest.simplicity').buildDir
+        include 'fattest.simplicity.jar'
+        into new File(autoFvtDir, 'lib')
+      }
     }
 
     // TODO: This is to compensate for the fact that the ant build of fattest.simplicity produced this jar but the gradle build doesn't
-    copy {
+    /*copy {
       from project(':com.ibm.ws.common.encoder').buildDir
       include 'com.ibm.ws.common.encoder.jar'
       rename 'com.ibm.ws.common.encoder.jar', 'fattest.encoder.jar'
       into new File(autoFvtDir, 'lib')
-    }
+    }*/
 
     // Copy the published files
     copy {
@@ -317,11 +332,11 @@ task autoFVT {
     }
 
     // Copy the logging libraries over for use while running FATs
-    copy {
+    /*copy {
       from project(':com.ibm.ws.logging.core').buildDir
       include 'com.ibm.ws.logging.core.jar'
       into new File(autoFvtDir, 'lib')
-    }
+    }*/
 
     // Copy all non-java app resources, such as *.html or *.jsp
     copy {
@@ -343,36 +358,42 @@ task autoFVT {
 
     // Produce a list of features tested by this FAT
     def featureDeps = [] as Set
+
     // Include features added explictly via bnd.bnd
     def testedFeatures = bnd.get('tested.features')
     if(testedFeatures != null)
       testedFeatures.split(',').each{ featureDeps.add(it.trim().toLowerCase()) }
+
     // Scan publish/ dir for features
     if(publishDir.exists()) {
       publishDir.eachFileRecurse(groovy.io.FileType.FILES) {
         if(it.name.endsWith('.xml')) {
           file(it).eachLine { line ->
-            if(line.contains("<feature>")) {
-              def feature = (line =~ /.*<feature>(.*)<\/feature>.*/)[0][1]
-              featureDeps.add(feature.trim().toLowerCase())
+            def feature = getFeature(line)
+            if ( feature != null ) {
+              // println "Recording feature [ " + feature + " ]"
+              featureDeps.add(feature)
             }
           }
         }
       }
     }
+
     // Scan FAT files dir for features
     if(new File(autoFvtDir, 'lib/LibertyFATTestFiles').exists()){
       new File(autoFvtDir, 'lib/LibertyFATTestFiles').eachFileRecurse(groovy.io.FileType.FILES) {
         if(it.name.endsWith('.xml')) {
           file(it).eachLine { line ->
-            if(line.contains("<feature>")) {
-              def feature = (line =~ /.*<feature>(.*)<\/feature>.*/)[0][1]
-              featureDeps.add(feature.trim().toLowerCase())
+            def feature = getFeature(line)
+            if ( feature != null ) {
+              // println "Recording feature [ " + feature + " ]"
+              featureDeps.add(feature)
             }
           }
         }
       }
     }
+
     if(featureDeps.size() > 0) {
       println "This FAT tests the following features: " + featureDeps
       def fatDeps = new groovy.json.JsonBuilder()

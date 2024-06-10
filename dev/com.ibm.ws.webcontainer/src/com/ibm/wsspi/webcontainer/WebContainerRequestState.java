@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.wsspi.webcontainer;
 
@@ -17,6 +14,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.util.WSThreadLocal;
 import com.ibm.wsspi.webcontainer.servlet.AsyncContext;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
@@ -40,7 +38,8 @@ public class WebContainerRequestState {
     private boolean startAsync;
     private IExtendedRequest currentThreadsIExtendedRequest;
     private IExtendedResponse currentThreadsIExtendedResponse;
-    private Map<String,String> cookieAttributesMap = null;
+    // Each cookie has a Map of attributes
+    private Map<String,HashMap<String,String>> cookieAttributesMap = null;
 
     public IExtendedResponse getCurrentThreadsIExtendedResponse() {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
@@ -216,7 +215,7 @@ public class WebContainerRequestState {
      *
      * Currently the only Cookie attribute that is supported by the runtime here
      * is the SameSite Cookie attribute.  All other existing Cookie attributes must 
-     * be added via the Cookie API.  Using this API to add anything but the SameSite attribute
+     * be added via the Cookie API. Using this API to add anything but the SameSite attribute
      * will be ignored.
      *
      * The cookieAttribute should be in the form: attributeName=attributeValue.
@@ -231,19 +230,39 @@ public class WebContainerRequestState {
             logger.logp(Level.FINE, CLASS_NAME, methodName, " cookieName --> " + cookieName + " cookieAttribute --> " + cookieAttributes);
         }
 
-        //future cookieAttributes can be further separated with semicolon delimiter:  attributeName=attributeValue;attributeName2=attributeValue2;singleAttributeNameNoValue
-        //Currently ignore all but SameSite 
         String[] attribute = cookieAttributes.split("=");
-        if (!attribute[0].equals("SameSite")) {
+        /*
+         * Beta: This method will start accepting "Parititioned" as a new attribute. It will need to be in the form "partitioned=true/false".
+         */
+        if (ProductInfo.getBetaEdition()) { 
+            if (!(attribute[0].equals("SameSite") || attribute[0].equals("Partitioned"))) {
+                logger.logp(Level.FINE, CLASS_NAME, methodName, " Only SameSite attribute and Partitioned attribute are supported at this time.");
+                return;
+            }
+        } else {
+            if (!attribute[0].equals("SameSite")) {
                 logger.logp(Level.FINE, CLASS_NAME, methodName, " Only SameSite attribute is supported at this time.");
                 return;
-        }
-        
-        if (cookieAttributesMap == null) {
-            cookieAttributesMap = new HashMap<String,String>();
+            }
         }
 
-        cookieAttributesMap.put(cookieName, cookieAttributes);
+       logger.logp(Level.FINE, CLASS_NAME, methodName, "Num Attr values: " + attribute.length) ;
+       String attrValue = null; 
+	   
+       if (attribute.length > 1) {
+           attrValue = attribute[1] ; 
+        } 
+
+        if (cookieAttributesMap == null || cookieAttributesMap.isEmpty()) {
+            cookieAttributesMap = new HashMap<String,HashMap<String,String>>();
+        }
+
+        HashMap<String,String> existingAttributesMap = cookieAttributesMap.get(cookieName);
+        if(existingAttributesMap == null) {
+            existingAttributesMap = new HashMap<String,String>();
+        }
+        existingAttributesMap.put(attribute[0], attrValue);
+        cookieAttributesMap.put(cookieName, existingAttributesMap);
     }
     
     /**
@@ -256,7 +275,7 @@ public class WebContainerRequestState {
     public String getCookieAttributes(String cookieName) {
         String methodName = "getCookieAttributes";
 
-        if (cookieAttributesMap == null) {
+        if (cookieAttributesMap == null || cookieAttributesMap.get(cookieName) == null) {
                 return null;
         }
 
@@ -264,7 +283,15 @@ public class WebContainerRequestState {
             logger.logp(Level.FINE, CLASS_NAME, methodName, " cookieName --> " + cookieName);
         }
 
-        String cookieAttributes = cookieAttributesMap.get(cookieName);
+        /*
+        * If multiple attributes exist for a cookie, then they will be returned semi-colon delimited key value pairs.
+        * For example: attributeName1=attributeValue1;attributeName2=attributeValue2
+        * 
+        * If no cookie attributes exist, null is returned;
+        */
+        String cookieAttributes = cookieAttributesMap.get(cookieName).entrySet()
+                                                     .stream().map(e->e.getKey() + "=" + e.getValue())
+                                                     .collect(java.util.stream.Collectors.joining(";"));
 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
             logger.logp(Level.FINE, CLASS_NAME, methodName, " cookieAttribute --> " + cookieAttributes);
@@ -291,7 +318,7 @@ public class WebContainerRequestState {
             logger.logp(Level.FINE, CLASS_NAME, methodName, " cookieName --> " + cookieName);
         }
 
-        String removedAttributes = cookieAttributesMap.remove(cookieName);
+        HashMap<String,String> removedAttributes = cookieAttributesMap.remove(cookieName);
 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
             logger.logp(Level.FINE, CLASS_NAME, methodName, "removedAttribute --> " + removedAttributes);

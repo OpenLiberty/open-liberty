@@ -93,4 +93,5 @@ Subsystem-Category: JavaEE7Application
 Subsystem-Name: Message-Driven Beans 3.2
 kind=ga
 edition=base
-WLP-InstantOn-Enabled: true; type:=beta
+WLP-InstantOn-Enabled: true
+WLP-Platform: javaee-7.0,javaee-8.0

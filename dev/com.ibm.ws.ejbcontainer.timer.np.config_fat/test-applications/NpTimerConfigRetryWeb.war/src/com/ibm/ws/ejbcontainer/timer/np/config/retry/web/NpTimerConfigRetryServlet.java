@@ -20,6 +20,7 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import javax.ejb.EJB;
@@ -126,7 +127,7 @@ public class NpTimerConfigRetryServlet extends FATServlet {
 
         // TimerRetryDriver driverBean = getDriverBean();
 
-        svLogger.info("MHD: Calling my bean to force retry scenario...");
+        svLogger.info("Calling BeanA to force retry scenario...");
         driverBean.forceOneFailure("testForceImmediateRetry");
 
         svLogger.info("Waiting for timer to fail and immediate retry to occur...");
@@ -363,8 +364,8 @@ public class NpTimerConfigRetryServlet extends FATServlet {
 
         // TimerRetryDriver driverBean = getDriverBean();
 
-        svLogger.info("Calling BeanB to force retry, which should get skipped because we explicitly configured to never retry...");
-        driverBean.forceEverythingToFailIntervalTimer("testConfiguredForZeroRetriesTimerReschedules", 6);
+        svLogger.info("Calling BeanE to force retry, which should get skipped because we explicitly configured to never retry...");
+        driverBean.forceEverythingToFailIntervalTimer("testConfiguredForTwoRetriesTimerReschedules", 6);
 
         svLogger.info("Waiting for timer to fail and expected retries to occur...");
         driverBean.waitForTimersAndCancel(0);
@@ -374,10 +375,22 @@ public class NpTimerConfigRetryServlet extends FATServlet {
         int count = ((Integer) props.get(TimerRetryDriverBean.COUNT_KEY)).intValue();
         @SuppressWarnings("unchecked")
         ArrayList<Long> timestamps = (ArrayList<Long>) props.get(TimerRetryDriverBean.TIMESTAMP_KEY);
+        @SuppressWarnings("unchecked")
+        ArrayList<Long> nextTimes = (ArrayList<Long>) props.get(TimerRetryDriverBean.NEXTTIMEOUT_KEY);
         boolean timerExists = ((Boolean) props.get(TimerRetryDriverBean.TIMER_EXISTS)).booleanValue();
-        assertEquals("Timeout count **" + count + "** was not the expected value of 6. Interval Timer not resetting number of retries", 6, count);
-        assertEquals("Timestamps size **" + timestamps.size() + "** was not the expected value of 6.", 6, timestamps.size());
+
+        // Slow systems may result in catch-up timers, so at least 6, but as many as 9; tolerate up to 9
+        assertTrue("Timeout count **" + count + "** was not in the expected range of 6 to 9. Interval Timer not resetting number of retries", 6 <= count && count <= 9);
+        assertTrue("Timestamps size **" + timestamps.size() + "** was not in the expected range of 6 to 9.", 6 <= timestamps.size() && timestamps.size() <= 9);
+        assertTrue("NextTimes size **" + nextTimes.size() + "** was not in the expected range of 6 to 9.", 6 <= nextTimes.size() && nextTimes.size() <= 9);
         assertTrue("Timer did not exist after max retries", timerExists);
+
+        // Every 3 NextTime should match (initial + 2 retries); then move on to next interval
+        assertEquals("NextTime [0] and [1] not equal", nextTimes.get(0), nextTimes.get(1));
+        assertEquals("NextTime [1] and [2] not equal", nextTimes.get(1), nextTimes.get(2));
+        assertFalse("NextTime [2] and [3] equal", nextTimes.get(2) == nextTimes.get(3));
+        assertEquals("NextTime [3] and [4] not equal", nextTimes.get(3), nextTimes.get(4));
+        assertEquals("NextTime [4] and [5] not equal", nextTimes.get(4), nextTimes.get(5));
     }
 
     /**
@@ -566,13 +579,13 @@ public class NpTimerConfigRetryServlet extends FATServlet {
     public void testOverlappingRetriesAndRegularlyScheduled() throws Exception {
         //We are trying to verify the following 'rules' are obeyed:
         //    1) All normally scheduled executions that are missed because we are waiting on a retry from a previously
-        //       failed execution get "made up"...ie, they are eventually run (as oppossed to never getting run)
+        //       failed execution get "made up"...ie, they are eventually run (as opposed to never getting run)
         //
-        //    2) All of these "make ups" occur as soon as possible (as oppossed to running them at the configured interval
+        //    2) All of these "make ups" occur as soon as possible (as opposed to running them at the configured interval
         //       that we normally wait for between normally scheduled executions)
         //
-        //    3) After completing the "make ups", we resuming the normally scheduled exections based on the original
-        //      schedule (as oppossed to re-calculating the scheduled based on the current time).
+        //    3) After completing the "make ups", we resuming the normally scheduled executions based on the original
+        //      schedule (as opposed to re-calculating the scheduled based on the current time).
         //
         //
         //So, the execution flow in this test is:
@@ -591,7 +604,7 @@ public class NpTimerConfigRetryServlet extends FATServlet {
         //
         //
         //So, in words, the flow is this:
-        //    We do our intial attempt and fail, then immeidately retry and fail again, and then wait 10 seconds...while waiting,
+        //    We do our initial attempt and fail, then immediately retry and fail again, and then wait 10 seconds...while waiting,
         //    two normally scheduled executions are skipped (4.5 & 9)...then our 10 second wait interval is done, and we wake up and
         //    retry again and pass...and now we "make up" the two skipped executions as soon as we can...which should take us
         //    right up to the next normally scheduled execution at the 13.5 second mark...so we do that one at the 13.5 second
@@ -604,6 +617,7 @@ public class NpTimerConfigRetryServlet extends FATServlet {
 
         svLogger.info("Calling BeanD to create situation where retries and regularly scheduled timeouts overlap...");
         driverBean.forceRetrysAndRegularSchedulesToOverlap("testOverlappingRetriesAndRegularlyScheduled", 7);
+        long startTime = System.nanoTime();
 
         svLogger.info("Waiting for timer to fail and expected retries to occur...");
         driverBean.waitForTimersAndCancel(NO_CANCEL_DELAY);
@@ -616,7 +630,16 @@ public class NpTimerConfigRetryServlet extends FATServlet {
         ArrayList<Long> timestamps = (ArrayList<Long>) props.get(TimerRetryDriverBean.TIMESTAMP_KEY);
         @SuppressWarnings("unchecked")
         ArrayList<Long> nextTimes = (ArrayList<Long>) props.get(TimerRetryDriverBean.NEXTTIMEOUT_KEY);
-        assertEquals("Attempt count **" + count + "** was not the expected value of 7.", 7, count);
+
+        // Tolerate a slow system; allow multiple "catch-up" attempts based on actual time
+        long actualDuration = TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
+        svLogger.info("Actual duration = " + actualDuration);
+        long expectedCount = Math.max(7, 3 + actualDuration / TIMER_INTERVAL);
+        if (expectedCount == 7) {
+            assertEquals("Attempt count **" + count + "** was not the expected value of 7.", expectedCount, count);
+        } else {
+            assertTrue("Attempt count **" + count + "** was not in expected range of 7 to " + expectedCount + ".", count >= 7 && count <= expectedCount);
+        }
         boolean validIntervalForImmediateRetry = verifyImmediateRetryAcceptable(timestamps.get(0).longValue(), timestamps.get(1).longValue());
         boolean validIntervalForDelayedRetry = verifyRetryIntervalAcceptable(timestamps.get(1).longValue(), timestamps.get(2).longValue(), 10000);
         boolean validIntervalForFirstMakeUp = verifyImmediateRetryAcceptable(timestamps.get(2).longValue(), timestamps.get(3).longValue());

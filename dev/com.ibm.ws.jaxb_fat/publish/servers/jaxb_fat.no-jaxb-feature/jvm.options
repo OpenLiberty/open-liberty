@@ -1,0 +1,2 @@
+# Reenable this JVM property for RI logging
+#-Djaxb.debug=true 

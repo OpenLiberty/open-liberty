@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -147,6 +147,22 @@ public class FATSuite {
         bootStrapProperties.putAll(properties);
         try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
             bootStrapProperties.store(out, "");
+        }
+    }
+
+    static public void removeBootStrapProperties(LibertyServer server, String... keys) throws Exception, IOException, FileNotFoundException {
+        File bootStrapPropertiesFile = new File(server.getFileFromLibertyServerRoot("bootstrap.properties").getAbsolutePath());
+        if (bootStrapPropertiesFile.isFile()) {
+            Properties bootStrapProperties = new Properties();
+            try (InputStream in = new FileInputStream(bootStrapPropertiesFile)) {
+                bootStrapProperties.load(in);
+            }
+            for (String key : keys) {
+                bootStrapProperties.remove(key);
+            }
+            try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
+                bootStrapProperties.store(out, "");
+            }
         }
     }
 

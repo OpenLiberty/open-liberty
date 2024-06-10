@@ -20,8 +20,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -29,7 +27,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -53,13 +50,12 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.QueryInfo;
 import io.openliberty.data.internal.persistence.provider.PUnitEMBuilder;
 import io.openliberty.data.internal.persistence.service.DBStoreEMBuilder;
-import jakarta.annotation.Generated;
 import jakarta.data.exceptions.MappingException;
-import jakarta.data.metamodel.StaticMetamodel;
 import jakarta.data.repository.By;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Delete;
@@ -68,12 +64,12 @@ import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
+import jakarta.data.spi.EntityDefining;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.Bean;
-import jakarta.enterprise.inject.spi.BeanAttributes;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.Extension;
@@ -88,13 +84,8 @@ import jakarta.persistence.EntityManagerFactory;
  * CDI extension to handle the injection of repository implementations
  * that this Jakarta Data provider can supply.
  */
-public class DataExtension implements Extension, PrivilegedAction<DataExtensionProvider> {
+public class DataExtension implements Extension {
     private static final TraceComponent tc = Tr.register(DataExtension.class);
-
-    /**
-     * OSGi service that registers this extension.
-     */
-    private final DataExtensionProvider provider = AccessController.doPrivileged(this);
 
     /**
      * Map of repository annotated type to Repository annotation.
@@ -102,11 +93,6 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
      * for different applications or the same application being restarted.
      */
     private final ConcurrentHashMap<AnnotatedType<?>, Repository> repositoryAnnos = new ConcurrentHashMap<>();
-
-    /**
-     * Map of entity class to list of static metamodel class.
-     */
-    private final Map<Class<?>, List<Class<?>>> staticMetamodels = new HashMap<>();
 
     @Trivial
     public <T> void annotatedRepository(@Observes @WithAnnotations(Repository.class) ProcessAnnotatedType<T> event) {
@@ -126,33 +112,14 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
             repositoryAnnos.put(type, repository);
     }
 
-    @Trivial
-    public <T> void annotatedStaticMetamodel(@Observes @WithAnnotations(StaticMetamodel.class) ProcessAnnotatedType<T> event) {
-        AnnotatedType<T> type = event.getAnnotatedType();
-
-        if (type.isAnnotationPresent(Generated.class)) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(this, tc, "annotatedStaticMetamodel ignoring generated " + type.getJavaClass().getName());
-        } else {
-            StaticMetamodel staticMetamodel = type.getAnnotation(StaticMetamodel.class);
-
-            Class<?> entityClass = staticMetamodel.value();
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(this, tc, "annotatedStaticMetamodel for " + entityClass.getName(),
-                         type.getJavaClass().getName());
-
-            List<Class<?>> newList = new LinkedList<>();
-            newList.add(type.getJavaClass());
-            List<Class<?>> existingList = staticMetamodels.putIfAbsent(entityClass, newList);
-            if (existingList != null)
-                existingList.add(type.getJavaClass());
-        }
-    }
-
     @FFDCIgnore(NamingException.class)
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanMgr) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        // Obtain the service that informed CDI of this extension.
+        BundleContext bundleContext = FrameworkUtil.getBundle(DataExtensionProvider.class).getBundleContext();
+        ServiceReference<DataExtensionProvider> ref = bundleContext.getServiceReference(DataExtensionProvider.class);
+        DataExtensionProvider provider = bundleContext.getService(ref);
 
         // Group entities by data access provider and class loader
         Map<EntityManagerBuilder, EntityManagerBuilder> entityGroups = new HashMap<>();
@@ -237,7 +204,7 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                                     EntityManagerFactory emf = instance.get();
 
                                     if (emBuilder == null)
-                                        emBuilder = new PUnitEMBuilder(emf, loader);
+                                        emBuilder = new PUnitEMBuilder(emf, loader, provider);
                                     else
                                         throw new UnsupportedOperationException//
                                         ("The " + method.getName() + " resource accessor method of the " +
@@ -258,7 +225,7 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                     try {
                         Object resource = InitialContext.doLookup(dataStore);
                         if (resource instanceof EntityManagerFactory)
-                            emBuilder = new PUnitEMBuilder((EntityManagerFactory) resource, dataStore, loader);
+                            emBuilder = new PUnitEMBuilder((EntityManagerFactory) resource, dataStore, loader, provider);
 
                         if (trace && tc.isDebugEnabled())
                             Tr.debug(this, tc, dataStore + " is the JNDI name for " + resource);
@@ -271,7 +238,7 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                         Object resource = InitialContext.doLookup(javaCompName);
 
                         if (resource instanceof EntityManagerFactory)
-                            emBuilder = new PUnitEMBuilder((EntityManagerFactory) resource, javaCompName, loader);
+                            emBuilder = new PUnitEMBuilder((EntityManagerFactory) resource, javaCompName, loader, provider);
 
                         if (emBuilder != null || resource instanceof DataSource) {
                             isJNDIName = true;
@@ -298,20 +265,27 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                     if (!Query.class.equals(entityClass))
                         emBuilder.add(entityClass);
 
-                BeanAttributes<?> attrs = beanMgr.createBeanAttributes(repositoryType);
-                Bean<?> bean = beanMgr.createBean(attrs, repositoryInterface, new RepositoryProducer.Factory<>( //
+                RepositoryProducer<Object> producer = new RepositoryProducer<>( //
                                 repositoryInterface, beanMgr, provider, this, //
-                                emBuilder, primaryEntityClassReturnValue[0], queriesPerEntityClass));
+                                emBuilder, primaryEntityClassReturnValue[0], queriesPerEntityClass);
+                @SuppressWarnings("unchecked")
+                Bean<Object> bean = beanMgr.createBean(producer, (Class<Object>) repositoryInterface, producer);
                 event.addBean(bean);
             }
         }
 
+        boolean beforeCheckpoint = !CheckpointPhase.getPhase().restored();
         for (EntityManagerBuilder builder : entityGroups.values()) {
-            provider.executor.submit(builder);
-        }
-
-        for (EntityManagerBuilder builder : entityGroups.values()) {
-            builder.populateStaticMetamodelClasses(staticMetamodels);
+            if (beforeCheckpoint) {
+                // Run the task in the foreground if before a checkpoint.
+                // This is necessary to ensure this task completes before the checkpoint.
+                // Application startup performance is not as important before checkpoint
+                // and this ensures we don't do this work on restore side which will make
+                // restore faster.
+                builder.run();
+            } else {
+                provider.executor.submit(builder);
+            }
         }
     }
 
@@ -569,17 +543,6 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
     }
 
     /**
-     * Obtain the service that informed CDI of this extension.
-     */
-    @Override
-    @Trivial
-    public DataExtensionProvider run() {
-        BundleContext bundleContext = FrameworkUtil.getBundle(DataExtensionProvider.class).getBundleContext();
-        ServiceReference<DataExtensionProvider> ref = bundleContext.getServiceReference(DataExtensionProvider.class);
-        return bundleContext.getService(ref);
-    }
-
-    /**
      * Determine if the entity is supported by this provider based on
      * it having the JPA Entity annotation or having no entity annotations.
      *
@@ -595,7 +558,8 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
             Class<? extends Annotation> annoClass = anno.annotationType();
             if (annoClass.equals(Entity.class))
                 return true;
-            else if (annoClass.getSimpleName().endsWith("Entity"))
+            else if (annoClass.getSimpleName().endsWith("Entity") // also covers Jakarta NoSQL entity
+                     || annoClass.isAnnotationPresent(EntityDefining.class))
                 hasEntityAnnos = true;
         }
 

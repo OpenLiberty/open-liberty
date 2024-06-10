@@ -11,7 +11,8 @@ IBM-ShortName: websocket-2.2
 Subsystem-Name: Jakarta WebSocket 2.2
 -features=io.openliberty.jakarta.websocket-2.2, \
   com.ibm.websphere.appserver.servlet-6.1, \
-  com.ibm.websphere.appserver.eeCompatible-11.0
+  com.ibm.websphere.appserver.eeCompatible-11.0, \
+  io.openliberty.noShip-1.0
 -bundles=com.ibm.ws.wsoc.jakarta, \
  com.ibm.ws.wsoc.2.1.jakarta, \
  io.openliberty.wsoc.2.1.internal, \
@@ -22,3 +23,4 @@ kind=noship
 edition=full
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
+WLP-Platform: jakartaee-11.0

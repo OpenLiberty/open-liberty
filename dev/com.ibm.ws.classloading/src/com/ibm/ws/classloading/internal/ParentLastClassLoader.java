@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2022 IBM Corporation and others.
+ * Copyright (c) 2010, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -78,30 +78,30 @@ class ParentLastClassLoader extends AppClassLoader {
     protected Class<?> findOrDelegateLoadClass(String className, boolean onlySearchSelf, boolean returnNull) throws ClassNotFoundException {
         ClassNotFoundException findClassException = null;
         // search order: 1) my class path 2) parent loader
-        Class<?> rc;
+        Class<?> rc = null;
 
-        // first check whether we already loaded this class
-        rc = findLoadedClass(className);
+        synchronized (getClassLoadingLock(className)) {
+            // first check whether we already loaded this class
+            rc = findLoadedClass(className);
+
+            if (rc == null) {
+                // first check our classpath
+                try {
+                    rc = findClass(className, returnNull);
+                } catch (ClassNotFoundException cnfe) {
+                    findClassException = cnfe;
+                }
+                if (rc == null) {
+                    // See if we can generate the class here before
+                    // checking the parent:
+                    rc = generateClass(className);
+                }
+            }
+        }
 
         if (rc != null) {
             return rc;
         }
-
-        try {
-            // first check our classpath
-            rc = findClass(className, returnNull);
-            if (rc != null) {
-                return rc;
-            }
-        } catch (ClassNotFoundException cnfe) {
-            findClassException = cnfe;
-        }
-
-        // See if we can generate the class here before
-        // checking the parent:
-        Class<?> generatedClass = generateClass(className);
-        if (generatedClass != null)
-            return generatedClass;
 
         // no luck? try the parent next unless we are only checking ourself
         if (onlySearchSelf) {

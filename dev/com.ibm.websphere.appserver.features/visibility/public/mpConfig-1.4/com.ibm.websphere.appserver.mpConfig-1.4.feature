@@ -28,3 +28,4 @@ Subsystem-Name: MicroProfile Config 1.4
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-Platform: microProfile-3.3

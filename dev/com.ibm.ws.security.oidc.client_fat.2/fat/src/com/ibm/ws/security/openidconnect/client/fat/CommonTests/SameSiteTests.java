@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.openidconnect.client.fat.CommonTests;
@@ -115,7 +115,40 @@ public class SameSiteTests extends CommonTest {
 
     }
 
-    public void mainPathTest(SameSiteTestExpectations.TestServerExpectations testExpectation, TestSettings settings,
+    public List<validationData> addHeaderCookiesExpectations(List<validationData> expectations, SameSiteTestExpectations.TestServerExpectations testExpectation, String samesiteSetting, boolean partitionedCookie) throws Exception {
+
+        String[] cookies = null;
+        if (testExpectation.equals(SameSiteTestExpectations.TestServerExpectations.CLIENT_REDIRECT_FAILURE) && samesiteSetting.equals(Constants.SAMESITE_NONE)) {
+            cookies = new String[] { "WASReqURL" };
+        } else {
+            if (testExpectation.equals(SameSiteTestExpectations.TestServerExpectations.CLIENT_GENERIC_FAILURE) && samesiteSetting.equals(Constants.SAMESITE_NONE)) {
+                //            if (testExpectation.equals(SameSiteTestExpectations.TestServerExpectations.RP_REDIRECT_FAILURE) || testExpectation.equals(SameSiteTestExpectations.TestServerExpectations.RP_GENERIC_FAILURE)) {
+                cookies = new String[] { "WASOidcCode", "WASOidcState" };
+            } else {
+                cookies = new String[] { "WASOidcCode", "WASOidcState", "WASOidcSession", "WASOidcNonce", "WAS_" };
+            }
+        }
+        for (String cookie : cookies) {
+            if (samesiteSetting.equals(Constants.SAMESITE_DISABLED)) {
+                expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_HEADER, Constants.STRING_DOES_NOT_MATCH, "Was expecting SameSite to NOT be included in the cookie setting for: " + cookie, null, cookie + ".*" + Constants.SAMESITE_KEY);
+                expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_HEADER, Constants.STRING_DOES_NOT_MATCH, "Was expecting that Partitioned is NOT included in the cookie setting for: " + cookie + " and it was there.", null, cookie + ".*" + Constants.PARTITIONEDCOOKIE_KEY);
+            } else {
+                expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_HEADER, Constants.STRING_MATCHES, "Was expecting SameSite=" + samesiteSetting + " be included in the cookie setting for: " + cookie + " and it was NOT there.", null, cookie + ".*" + Constants.SAMESITE_KEY + "=" + samesiteSetting);
+                if (samesiteSetting.equals(Constants.SAMESITE_NONE)) {
+                    if (partitionedCookie) {
+                        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_HEADER, Constants.STRING_MATCHES, "Was expecting that Partitioned be included in the cookie setting for: " + cookie + " and it was NOT there.", null, cookie + ".*" + Constants.PARTITIONEDCOOKIE_KEY);
+                    } else {
+                        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_HEADER, Constants.STRING_DOES_NOT_MATCH, "Was expecting that Partitioned is NOT included in the cookie setting for: " + cookie + " and it was there.", null, cookie + ".*" + Constants.PARTITIONEDCOOKIE_KEY);
+                    }
+                } else {
+                    expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_HEADER, Constants.STRING_DOES_NOT_MATCH, "Was expecting that Partitioned is NOT included in the cookie setting for: " + cookie + " and it was there.", null, cookie + ".*" + Constants.PARTITIONEDCOOKIE_KEY);
+                }
+            }
+        }
+        return expectations;
+    }
+
+    public void mainPathTest(SameSiteTestExpectations.TestServerExpectations testExpectation, String samesiteSetting, boolean partitionedCookie, TestSettings settings,
             String subTestPrefix) throws Exception {
 
         WebClient webClient = getAndSaveWebClient(true);
@@ -136,16 +169,18 @@ public class SameSiteTests extends CommonTest {
         case OP_GENERIC_FAILURE:
             expectations = badExpectations(testOPServer, subTestPrefix);
             break;
-        case RP_GENERIC_FAILURE:
+        case CLIENT_GENERIC_FAILURE:
             expectations = badExpectations(testRPServer, subTestPrefix);
             break;
-        case RP_REDIRECT_FAILURE:
+        case CLIENT_REDIRECT_FAILURE:
             expectations = badRedirectExpectations(testRPServer, subTestPrefix);
             break;
         default:
             expectations = setGoodExpectations(settings, subTestPrefix);
             break;
         }
+
+        expectations = addHeaderCookiesExpectations(expectations, testExpectation, samesiteSetting, partitionedCookie);
 
         genericRP(_testName, webClient, settings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
 
@@ -166,7 +201,7 @@ public class SameSiteTests extends CommonTest {
         Map<String, String> opSettings = samesiteTestTools.createOrRestoreConfigSettings(inOPSettings);
         Map<String, String> rpSettings = samesiteTestTools.createOrRestoreConfigSettings(inRPSettings);
 
-        mainPathTest(testExpectations.getBaseTestResult(), testSettings, "Base Tests");
+        mainPathTest(testExpectations.getBaseTestResult(), testExpectations.getSamesiteSetting(), testExpectations.getPartitionedCookie(), testSettings, "Base Tests");
 
         /*********************************************************/
         /* test using http with the request to the app on the RP */
@@ -176,7 +211,7 @@ public class SameSiteTests extends CommonTest {
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setTestURL(
                 testRPServer.getServerHttpString() + "/" + Constants.OPENID_APP + "/" + Constants.DEFAULT_SERVLET);
-        mainPathTest(testExpectations.getHttpRPAppUrlTestResult(), updatedTestSettings, "Http RP App request");
+        mainPathTest(testExpectations.getHttpClientAppUrlTestResult(), testExpectations.getSamesiteSetting(), testExpectations.getPartitionedCookie(), updatedTestSettings, "Http RP App request");
         // No server config's were updated in the previous test, so, nothing has to be restored
 
         /*********************************************************/
@@ -186,7 +221,7 @@ public class SameSiteTests extends CommonTest {
         /*********************************************************/
         rpSettings.put(SameSiteTestTools.RedirectHostKey, testRPServer.getServerHttpString());
         samesiteTestTools.updateServerSettings(testRPServer, rpSettings);
-        mainPathTest(testExpectations.getHttpRedirectUrlTestResult(), testSettings, "Http RP Redirect");
+        mainPathTest(testExpectations.getHttpRedirectUrlTestResult(), testExpectations.getSamesiteSetting(), testExpectations.getPartitionedCookie(), testSettings, "Http RP Redirect");
 
         /*********************************************************/
         /*
@@ -198,8 +233,7 @@ public class SameSiteTests extends CommonTest {
         rpSettings.put(SameSiteTestTools.AuthorizationHostKey, testOPServer.getServerHttpString());
         samesiteTestTools.updateServerSettings(testOPServer, opSettings);
         samesiteTestTools.updateServerSettings(testRPServer, rpSettings);
-        mainPathTest(testExpectations.getHttpAuthEndpointUrlTestResult(), testSettings,
-                "Http RP Authorization Endpoint");
+        mainPathTest(testExpectations.getHttpAuthEndpointUrlTestResult(), testExpectations.getSamesiteSetting(), testExpectations.getPartitionedCookie(), testSettings, "Http RP Authorization Endpoint");
 
         /*********************************************************/
         /*
@@ -211,7 +245,7 @@ public class SameSiteTests extends CommonTest {
         rpSettings.put(SameSiteTestTools.TokenHostKey, testOPServer.getServerHttpString());
         samesiteTestTools.updateServerSettings(testOPServer, opSettings);
         samesiteTestTools.updateServerSettings(testRPServer, rpSettings);
-        mainPathTest(testExpectations.getHttpTokenEndpointUrlTestResult(), testSettings, "Http RP Token Endpoint");
+        mainPathTest(testExpectations.getHttpTokenEndpointUrlTestResult(), testExpectations.getSamesiteSetting(), testExpectations.getPartitionedCookie(), testSettings, "Http RP Token Endpoint");
 
     }
 
@@ -220,7 +254,7 @@ public class SameSiteTests extends CommonTest {
     public void SameSiteTests_OPdisabledRPdisabled() throws Exception {
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(); // use defaults
-        Map<String, String> rpSettings = samesiteTestTools.setRPConfigSettings(); // use defaults
+        Map<String, String> rpSettings = samesiteTestTools.setClientConfigSettings(); // use defaults
 
         runVariations(opSettings, rpSettings);
     }
@@ -235,12 +269,12 @@ public class SameSiteTests extends CommonTest {
         rpUpdates.put(SameSiteTestTools.SsoRequiresSSL, "true");
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
-        Map<String, String> rpSettings = samesiteTestTools.setRPConfigSettings(rpUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
 
         SameSiteTestExpectations testExpectations = new SameSiteTestExpectations();
-        testExpectations.setHttpRPAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_GENERIC_FAILURE);
+        testExpectations.setHttpClientAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_GENERIC_FAILURE);
         testExpectations
-                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_REDIRECT_FAILURE);
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_REDIRECT_FAILURE);
         runVariations(testExpectations, opSettings, rpSettings);
 
     }
@@ -252,9 +286,9 @@ public class SameSiteTests extends CommonTest {
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_LAX);
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings();
-        Map<String, String> rpSettings = samesiteTestTools.setRPConfigSettings(rpUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
 
-        runVariations(opSettings, rpSettings);
+        runVariations(new SameSiteTestExpectations(Constants.SAMESITE_LAX, false), opSettings, rpSettings);
     }
 
     @Test
@@ -264,12 +298,12 @@ public class SameSiteTests extends CommonTest {
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings();
-        Map<String, String> rpSettings = samesiteTestTools.setRPConfigSettings(rpUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
 
-        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations();
-        testExpectations.setHttpRPAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_GENERIC_FAILURE);
+        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations(Constants.SAMESITE_NONE, false);
+        testExpectations.setHttpClientAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_GENERIC_FAILURE);
         testExpectations
-                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_REDIRECT_FAILURE);
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_REDIRECT_FAILURE);
         runVariations(testExpectations, opSettings, rpSettings);
     }
 
@@ -280,9 +314,9 @@ public class SameSiteTests extends CommonTest {
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_STRICT);
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings();
-        Map<String, String> rpSettings = samesiteTestTools.setRPConfigSettings(rpUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
 
-        runVariations(opSettings, rpSettings);
+        runVariations(new SameSiteTestExpectations(Constants.SAMESITE_STRICT, false), opSettings, rpSettings);
     }
 
     /*****/
@@ -295,7 +329,7 @@ public class SameSiteTests extends CommonTest {
         opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_LAX);
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
-        Map<String, String> rpSettings = samesiteTestTools.setRPConfigSettings();
+        Map<String, String> rpSettings = samesiteTestTools.setClientConfigSettings();
 
         runVariations(opSettings, rpSettings);
     }
@@ -309,9 +343,9 @@ public class SameSiteTests extends CommonTest {
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_LAX);
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
-        Map<String, String> rpSettings = samesiteTestTools.setRPConfigSettings(rpUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
 
-        runVariations(opSettings, rpSettings);
+        runVariations(new SameSiteTestExpectations(Constants.SAMESITE_LAX, false), opSettings, rpSettings);
     }
 
     @Test
@@ -323,12 +357,12 @@ public class SameSiteTests extends CommonTest {
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
-        Map<String, String> rpSettings = samesiteTestTools.setRPConfigSettings(rpUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
 
-        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations();
-        testExpectations.setHttpRPAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_GENERIC_FAILURE);
+        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations(Constants.SAMESITE_NONE, false);
+        testExpectations.setHttpClientAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_GENERIC_FAILURE);
         testExpectations
-                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_REDIRECT_FAILURE);
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_REDIRECT_FAILURE);
         runVariations(testExpectations, opSettings, rpSettings);
     }
 
@@ -341,9 +375,9 @@ public class SameSiteTests extends CommonTest {
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_STRICT);
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
-        Map<String, String> rpSettings = samesiteTestTools.setRPConfigSettings(rpUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
 
-        runVariations(opSettings, rpSettings);
+        runVariations(new SameSiteTestExpectations(Constants.SAMESITE_STRICT, false), opSettings, rpSettings);
     }
 
     /*****/
@@ -356,7 +390,7 @@ public class SameSiteTests extends CommonTest {
         opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
-        Map<String, String> rpSettings = samesiteTestTools.setRPConfigSettings();
+        Map<String, String> rpSettings = samesiteTestTools.setClientConfigSettings();
 
         runVariations(opSettings, rpSettings);
 
@@ -371,9 +405,9 @@ public class SameSiteTests extends CommonTest {
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_LAX);
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
-        Map<String, String> rpSettings = samesiteTestTools.setRPConfigSettings(rpUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
 
-        runVariations(opSettings, rpSettings);
+        runVariations(new SameSiteTestExpectations(Constants.SAMESITE_LAX, false), opSettings, rpSettings);
     }
 
     @Mode(TestMode.LITE)
@@ -386,12 +420,12 @@ public class SameSiteTests extends CommonTest {
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
-        Map<String, String> rpSettings = samesiteTestTools.setRPConfigSettings(rpUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
 
-        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations();
-        testExpectations.setHttpRPAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_GENERIC_FAILURE);
+        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations(Constants.SAMESITE_NONE, false);
+        testExpectations.setHttpClientAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_GENERIC_FAILURE);
         testExpectations
-                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_REDIRECT_FAILURE);
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_REDIRECT_FAILURE);
         runVariations(testExpectations, opSettings, rpSettings);
     }
 
@@ -407,12 +441,12 @@ public class SameSiteTests extends CommonTest {
         rpUpdates.put(SameSiteTestTools.SsoRequiresSSL, "true");
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
-        Map<String, String> rpSettings = samesiteTestTools.setRPConfigSettings(rpUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
 
-        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations();
-        testExpectations.setHttpRPAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_GENERIC_FAILURE);
+        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations(Constants.SAMESITE_NONE, false);
+        testExpectations.setHttpClientAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_GENERIC_FAILURE);
         testExpectations
-                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_REDIRECT_FAILURE);
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_REDIRECT_FAILURE);
         runVariations(testExpectations, opSettings, rpSettings);
 
     }
@@ -426,9 +460,9 @@ public class SameSiteTests extends CommonTest {
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_STRICT);
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
-        Map<String, String> rpSettings = samesiteTestTools.setRPConfigSettings(rpUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
 
-        runVariations(opSettings, rpSettings);
+        runVariations(new SameSiteTestExpectations(Constants.SAMESITE_STRICT, false), opSettings, rpSettings);
     }
 
     /*****/
@@ -441,7 +475,7 @@ public class SameSiteTests extends CommonTest {
         opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_STRICT);
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
-        Map<String, String> rpSettings = samesiteTestTools.setRPConfigSettings();
+        Map<String, String> rpSettings = samesiteTestTools.setClientConfigSettings();
 
         runVariations(opSettings, rpSettings);
     }
@@ -455,9 +489,9 @@ public class SameSiteTests extends CommonTest {
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_LAX);
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
-        Map<String, String> rpSettings = samesiteTestTools.setRPConfigSettings(rpUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
 
-        runVariations(opSettings, rpSettings);
+        runVariations(new SameSiteTestExpectations(Constants.SAMESITE_LAX, false), opSettings, rpSettings);
     }
 
     @Test
@@ -469,12 +503,12 @@ public class SameSiteTests extends CommonTest {
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
-        Map<String, String> rpSettings = samesiteTestTools.setRPConfigSettings(rpUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
 
-        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations();
-        testExpectations.setHttpRPAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_GENERIC_FAILURE);
+        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations(Constants.SAMESITE_NONE, false);
+        testExpectations.setHttpClientAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_GENERIC_FAILURE);
         testExpectations
-                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_REDIRECT_FAILURE);
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_REDIRECT_FAILURE);
         runVariations(testExpectations, opSettings, rpSettings);
     }
 
@@ -487,9 +521,357 @@ public class SameSiteTests extends CommonTest {
         rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_STRICT);
 
         Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
-        Map<String, String> rpSettings = samesiteTestTools.setRPConfigSettings(rpUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
+
+        runVariations(new SameSiteTestExpectations(Constants.SAMESITE_STRICT, false), opSettings, rpSettings);
+    }
+
+    @Test
+    public void SameSiteTests_OPdisabledRPdisabledPartitionedTrue() throws Exception {
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(); // use defaults
+        Map<String, String> rpUpdates = new HashMap<String, String>();
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates); // use defaults
 
         runVariations(opSettings, rpSettings);
+    }
+
+    @Test
+    public void SameSiteTests_OPdisabledRPnonePartitionedFalse() throws Exception {
+
+        Map<String, String> rpUpdates = new HashMap<String, String>();
+        rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "False");
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings();
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
+
+        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations(Constants.SAMESITE_NONE, false);
+        testExpectations.setHttpClientAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_GENERIC_FAILURE);
+        testExpectations
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_REDIRECT_FAILURE);
+        runVariations(testExpectations, opSettings, rpSettings);
+    }
+
+    @Test
+    public void SameSiteTests_OPdisabledRPnonePartitionedTrue() throws Exception {
+
+        Map<String, String> rpUpdates = new HashMap<String, String>();
+        rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings();
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
+
+        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations(Constants.SAMESITE_NONE, true);
+        testExpectations.setHttpClientAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_GENERIC_FAILURE);
+        testExpectations
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_REDIRECT_FAILURE);
+        runVariations(testExpectations, opSettings, rpSettings);
+    }
+
+    @Test
+    public void SameSiteTests_OPlaxRPdisabledPartitionedTrue() throws Exception {
+
+        Map<String, String> opUpdates = new HashMap<String, String>();
+        opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_LAX);
+        Map<String, String> rpUpdates = new HashMap<String, String>();
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
+
+        runVariations(opSettings, rpSettings);
+    }
+
+    @Test
+    public void SameSiteTests_OPlaxRPnonePartitionedFalse() throws Exception {
+
+        Map<String, String> opUpdates = new HashMap<String, String>();
+        opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_LAX);
+        Map<String, String> rpUpdates = new HashMap<String, String>();
+        rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "False");
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
+
+        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations(Constants.SAMESITE_NONE, false);
+        testExpectations.setHttpClientAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_GENERIC_FAILURE);
+        testExpectations
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_REDIRECT_FAILURE);
+        runVariations(testExpectations, opSettings, rpSettings);
+    }
+
+    @Test
+    public void SameSiteTests_OPlaxRPnonePartitionedTrue() throws Exception {
+
+        Map<String, String> opUpdates = new HashMap<String, String>();
+        opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_LAX);
+        Map<String, String> rpUpdates = new HashMap<String, String>();
+        rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
+
+        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations(Constants.SAMESITE_NONE, true);
+        testExpectations.setHttpClientAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_GENERIC_FAILURE);
+        testExpectations
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_REDIRECT_FAILURE);
+        runVariations(testExpectations, opSettings, rpSettings);
+    }
+
+    /*****/
+    /*****/
+
+    @Test
+    public void SameSiteTests_OPnonePartitionedFalseRPdisabled() throws Exception {
+
+        Map<String, String> opUpdates = new HashMap<String, String>();
+        opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "False");
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setClientConfigSettings();
+
+        runVariations(opSettings, rpSettings);
+
+    }
+
+    @Test
+    public void SameSiteTests_OPnonePartitionedTruRPdisabled() throws Exception {
+
+        Map<String, String> opUpdates = new HashMap<String, String>();
+        opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setClientConfigSettings();
+
+        runVariations(opSettings, rpSettings);
+
+    }
+
+    @Test
+    public void SameSiteTests_OPnonePartitionedFalseRPlax() throws Exception {
+
+        Map<String, String> opUpdates = new HashMap<String, String>();
+        opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "False");
+        Map<String, String> rpUpdates = new HashMap<String, String>();
+        rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_LAX);
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
+
+        runVariations(new SameSiteTestExpectations(Constants.SAMESITE_LAX, false), opSettings, rpSettings);
+    }
+
+    @Test
+    public void SameSiteTests_OPnonePartitionedTrueRPlax() throws Exception {
+
+        Map<String, String> opUpdates = new HashMap<String, String>();
+        opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
+        Map<String, String> rpUpdates = new HashMap<String, String>();
+        rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_LAX);
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
+
+        runVariations(new SameSiteTestExpectations(Constants.SAMESITE_LAX, false), opSettings, rpSettings);
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void SameSiteTests_OPnonePartitionedFalseRPnonePartitionedFalse() throws Exception {
+
+        Map<String, String> opUpdates = new HashMap<String, String>();
+        opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "False");
+        Map<String, String> rpUpdates = new HashMap<String, String>();
+        rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "False");
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
+
+        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations(Constants.SAMESITE_NONE, false);
+        testExpectations.setHttpClientAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_GENERIC_FAILURE);
+        testExpectations
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_REDIRECT_FAILURE);
+        runVariations(testExpectations, opSettings, rpSettings);
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void SameSiteTests_OPnonePartitionedFalseRPnonePartitionedTrue() throws Exception {
+
+        Map<String, String> opUpdates = new HashMap<String, String>();
+        opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "False");
+        Map<String, String> rpUpdates = new HashMap<String, String>();
+        rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
+
+        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations(Constants.SAMESITE_NONE, true);
+        testExpectations.setHttpClientAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_GENERIC_FAILURE);
+        testExpectations
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_REDIRECT_FAILURE);
+        runVariations(testExpectations, opSettings, rpSettings);
+    }
+
+    @Test
+    public void SameSiteTests_OPnonePartitionedTrueRPnonePartitionedFalse() throws Exception {
+
+        Map<String, String> opUpdates = new HashMap<String, String>();
+        opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
+        Map<String, String> rpUpdates = new HashMap<String, String>();
+        rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "False");
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
+
+        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations(Constants.SAMESITE_NONE, false);
+        testExpectations.setHttpClientAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_GENERIC_FAILURE);
+        testExpectations
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_REDIRECT_FAILURE);
+        runVariations(testExpectations, opSettings, rpSettings);
+    }
+
+    @Test
+    public void SameSiteTests_OPnonePartitionedTrueRPnonePartitionedTrue() throws Exception {
+
+        Map<String, String> opUpdates = new HashMap<String, String>();
+        opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
+        Map<String, String> rpUpdates = new HashMap<String, String>();
+        rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
+
+        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations(Constants.SAMESITE_NONE, true);
+        testExpectations.setHttpClientAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_GENERIC_FAILURE);
+        testExpectations
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_REDIRECT_FAILURE);
+        runVariations(testExpectations, opSettings, rpSettings);
+    }
+
+    @Test
+    public void SameSiteTests_OPnonePartitionedFalseRPstrict() throws Exception {
+
+        Map<String, String> opUpdates = new HashMap<String, String>();
+        opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "False");
+        Map<String, String> rpUpdates = new HashMap<String, String>();
+        rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_STRICT);
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
+
+        runVariations(new SameSiteTestExpectations(Constants.SAMESITE_STRICT, false), opSettings, rpSettings);
+    }
+
+    @Test
+    public void SameSiteTests_OPnonePartitionedTrueRPstrict() throws Exception {
+
+        Map<String, String> opUpdates = new HashMap<String, String>();
+        opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
+        Map<String, String> rpUpdates = new HashMap<String, String>();
+        rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_STRICT);
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
+
+        runVariations(new SameSiteTestExpectations(Constants.SAMESITE_STRICT, true), opSettings, rpSettings);
+    }
+
+    /*****/
+    /*****/
+
+    @Test
+    public void SameSiteTests_OPstrictRPnonePartitionedFalse() throws Exception {
+
+        Map<String, String> opUpdates = new HashMap<String, String>();
+        opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_STRICT);
+        Map<String, String> rpUpdates = new HashMap<String, String>();
+        rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "False");
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
+
+        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations(Constants.SAMESITE_NONE, false);
+        testExpectations.setHttpClientAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_GENERIC_FAILURE);
+        testExpectations
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_REDIRECT_FAILURE);
+        runVariations(testExpectations, opSettings, rpSettings);
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void SameSiteTests_OPstrictRPnonePartitionedTrue() throws Exception {
+
+        Map<String, String> opUpdates = new HashMap<String, String>();
+        opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_STRICT);
+        Map<String, String> rpUpdates = new HashMap<String, String>();
+        rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
+
+        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations(Constants.SAMESITE_NONE, true);
+        testExpectations.setHttpClientAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_GENERIC_FAILURE);
+        testExpectations
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_REDIRECT_FAILURE);
+        runVariations(testExpectations, opSettings, rpSettings);
+    }
+
+    @Test
+    public void SameSiteTests_OPstrictRPstrictPartitionedTrue() throws Exception {
+
+        Map<String, String> opUpdates = new HashMap<String, String>();
+        opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_STRICT);
+        Map<String, String> rpUpdates = new HashMap<String, String>();
+        rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_STRICT);
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "True");
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
+
+        runVariations(new SameSiteTestExpectations(Constants.SAMESITE_STRICT, false), opSettings, rpSettings);
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void SameSiteTests_OPnonePartitionedDeferRPnonePartitionedDefer() throws Exception {
+
+        Map<String, String> opUpdates = new HashMap<String, String>();
+        opUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        opUpdates.put(SameSiteTestTools.PartitionedCookieKey, "Defer");
+        Map<String, String> rpUpdates = new HashMap<String, String>();
+        rpUpdates.put(SameSiteTestTools.SameSiteCookieKey, Constants.SAMESITE_NONE);
+        rpUpdates.put(SameSiteTestTools.PartitionedCookieKey, "Defer");
+
+        Map<String, String> opSettings = samesiteTestTools.setOPConfigSettings(opUpdates);
+        Map<String, String> rpSettings = samesiteTestTools.setConfigConfigSettings(rpUpdates);
+
+        SameSiteTestExpectations testExpectations = new SameSiteTestExpectations(Constants.SAMESITE_NONE, false);
+        testExpectations.setHttpClientAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_GENERIC_FAILURE);
+        testExpectations
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.CLIENT_REDIRECT_FAILURE);
+        runVariations(testExpectations, opSettings, rpSettings);
     }
 
 }

@@ -531,8 +531,9 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     }
 
                     // If Recovery Failed, then by default, if this is the home server, we shall bring down the Liberty Server
-                    if (fsc != null && fsc.getRecoveryManager() != null) {
-                        if (fsc.getRecoveryManager().recoveryFailed()) {
+                    RecoveryManager rm; // RecoverManager might be removed on another thread
+                    if (fsc != null && (rm = fsc.getRecoveryManager()) != null) {
+                        if (rm.recoveryFailed()) {
                             // Check the system property but by default we want the server to be shutdown if we, the server
                             // that owns the logs is not able to recover them. The System Property supports the tWAS style
                             // of processing.
@@ -1106,12 +1107,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
         // The optional SQL Peer Lock parameters
         int peerLockTimeBeforeStale = cp.getPeerTimeBeforeStale();
-        if (tc.isEntryEnabled())
-            Tr.debug(tc, "peerLockTimeBeforeStale - ", peerLockTimeBeforeStale);
         heartbeatLog.setTimeBeforeLogStale(peerLockTimeBeforeStale);
         int timeBetweenHeartbeats = cp.getTimeBetweenHeartbeats();
-        if (tc.isEntryEnabled())
-            Tr.debug(tc, "timeBetweenHeartbeats - ", timeBetweenHeartbeats);
         heartbeatLog.setTimeBetweenHeartbeats(timeBetweenHeartbeats);
         if (tc.isEntryEnabled())
             Tr.exit(tc, "configureSQLPeerLockParameters");
@@ -1129,12 +1126,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
         // The optional SQL HADB Retry parameters
         int logRetryInterval = cp.getLogRetryInterval();
-        if (tc.isEntryEnabled())
-            Tr.debug(tc, "logRetryInterval - ", logRetryInterval);
         heartbeatLog.setLogRetryInterval(logRetryInterval);
         int logRetryLimit = cp.getLogRetryLimit();
-        if (tc.isEntryEnabled())
-            Tr.debug(tc, "logRetryLimit - ", logRetryLimit);
         heartbeatLog.setLogRetryLimit(logRetryLimit);
         if (tc.isEntryEnabled())
             Tr.exit(tc, "configureSQLHADBRetryParameters");
@@ -1152,12 +1145,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
         // The optional SQL HADB Retry parameters
         int lightweightLogRetryInterval = cp.getLightweightLogRetryInterval();
-        if (tc.isEntryEnabled())
-            Tr.debug(tc, "lightweightLogRetryInterval - ", lightweightLogRetryInterval);
         heartbeatLog.setLightweightLogRetryInterval(lightweightLogRetryInterval);
         int lightweightLogRetryLimit = cp.getLightweightLogRetryLimit();
-        if (tc.isEntryEnabled())
-            Tr.debug(tc, "lightweightLogRetryLimit - ", lightweightLogRetryLimit);
         heartbeatLog.setLightweightLogRetryLimit(lightweightLogRetryLimit);
         if (tc.isEntryEnabled())
             Tr.exit(tc, "configureSQLHADBLightweightRetryParameters");

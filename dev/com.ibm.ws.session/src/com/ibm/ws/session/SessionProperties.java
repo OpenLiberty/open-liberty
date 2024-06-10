@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.session;
@@ -17,7 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.session.utils.LoggingUtil;
+
 
 final public class SessionProperties {
 
@@ -760,6 +759,14 @@ final public class SessionProperties {
             smc.setSessionCookieSameSite(SameSiteCookie.get(sValue));  
         }
 
+        s = "cookiePartitioned";
+        sValue = propertyToString(xtpProperties.get(s));
+        // if it's not defered then it's true or false which we can parse to a boolean
+        if(!sValue.equalsIgnoreCase("defer")){
+            bValue = propertyToBoolean(sValue);
+            smc.setSessionCookiePartitioned(bValue);
+        }
+        
         s = "maxInMemorySessionCount";
         iValue = propertyToInteger(xtpProperties.get(s));
         if (iValue != null) {

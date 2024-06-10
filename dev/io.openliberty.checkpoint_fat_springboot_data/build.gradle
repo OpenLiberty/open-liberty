@@ -1,0 +1,67 @@
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+repositories {
+  mavenCentral()
+}
+
+configurations {
+  postgres
+}
+
+dependencies {
+  postgres 'org.postgresql:postgresql:42.7.2'
+}
+
+// NOTE: placing the postgresql.jar in shared/resources places
+// the driver on the classpath of the FAT test
+task copySharedPostgres(type: Copy) {
+  mustRunAfter jar
+  from configurations.postgres
+  into new File(autoFvtDir, 'publish/shared/resources/postgres')
+  rename 'postgresql-.*.jar', 'postgresql.jar'
+}
+
+addRequiredLibraries {
+  dependsOn copySharedPostgres
+  dependsOn copyTestContainers
+}
+
+def appDefs =
+  [ [ 'io.openliberty.checkpoint.springboot.fat30.data.app', '.war' ] ]
+
+appDefs.each { appDef ->
+  autoFVT.dependsOn ':' + appDef[0] + ':build'
+}
+
+autoFVT.doLast {
+  
+  def server = 'checkpointSpringBootData'
+  def appsDir = new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+
+  println 'Auto FVT directory [ ' + autoFvtDir + ' ]'
+  println 'FAT server [ ' + server + ' ]'
+  println 'Auto FVT applications [ ' + appsDir + ' ]'
+
+  appDefs.each { appDef ->
+    def appName = appDef[0]
+    def appExt = appDef[1]
+
+    println 'FAT application [ ' + appName + ' ] [ ' + appExt + ' ]'
+
+    copy {
+      from new File( '../' + appDef[0] + '/build/libs/' + appDef[0] + '-1.0.0' + appDef[1] )
+      into appsDir
+    }
+  }
+}

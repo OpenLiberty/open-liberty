@@ -53,6 +53,9 @@ public class BatchRoot implements RESTHandler {
 		
         String path = BatchRequestUtil.normalizeURLPath(request.getPath());
         if ("/batch".equals(path)) {
+        	
+        	//Add additional security headers
+        	BatchRequestUtil.addExtraResponseHeaders(response);
 
             JsonObjectBuilder jsonObjBuilder = builderFactory.createObjectBuilder();
 

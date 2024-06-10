@@ -1,0 +1,43 @@
+
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+bVersion= 1.0
+
+Bundle-Name: Security Audit Request Probe Rest
+Bundle-SymbolicName: io.openliberty.request.probe.audit.rest
+Bundle-Description: RequestProbeRest: Security Audit Request Probe Rest; version=${bVersion}
+
+
+instrument.disabled: true
+
+Import-Package: \
+ com.ibm.wsspi.security.wim.model; version="[1.1,11)", \
+ *
+
+-dsannotations: \
+   io.openliberty.request.probe.audit.rest.service.internal.AuditPERestServiceImpl
+
+-buildpath: \
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.websphere.rest.handler;version=latest,\
+	com.ibm.websphere.security.wim.base;version=latest,\
+	com.ibm.ws.webcontainer.security;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.request.probes;version=latest,\
+	com.ibm.ws.security.audit.source;version=latest,\
+	com.ibm.ws.request.probe.audit.servlet;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

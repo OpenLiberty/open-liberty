@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,7 +18,7 @@ import java.io.InputStream;
 import java.util.Set;
 
 import org.jboss.jandex.DotName;
-import org.jboss.jandex.IndexView;
+import org.jboss.jandex.Index;
 import org.jboss.jandex.Indexer;
 
 import com.ibm.websphere.ras.Tr;
@@ -42,9 +42,8 @@ public class IndexUtils {
     private static final TraceComponent tc = Tr.register(IndexUtils.class);
 
     /**
-     * The getIndexView method generates an org.jboss.jandex.IndexView that contains all of the classes that need to be
-     * scanned for OpenAPI/JAX-RS annotations. This IndexView is passes to the SmallRye OpenAPI implementation which
-     * performs the scanning.
+     * Generates an {@code org.jboss.jandex.Index} that contains all of the classes that need to be scanned for OpenAPI/JAX-RS annotations. This {@code Index} is passed to the
+     * SmallRye OpenAPI implementation which performs the scanning.
      *
      * @param webModuleInfo
      *     The module info for the web module
@@ -52,10 +51,9 @@ public class IndexUtils {
      *     The module classes container info for the web module
      * @param config
      *     The configuration that may specify which classes/packages/JARs to include/exclude.
-     * @return IndexView
-     * The org.jboss.jandex.IndexView instance.
+     * @return The {@code org.jboss.jandex.Index} instance.
      */
-    public static IndexView getIndexView(WebModuleInfo webModuleInfo, ModuleClassesContainerInfo moduleClassesContainerInfo, OpenApiConfig config) {
+    public static Index getIndex(WebModuleInfo webModuleInfo, ModuleClassesContainerInfo moduleClassesContainerInfo, OpenApiConfig config) {
 
         long startTime = System.currentTimeMillis();
 
@@ -73,14 +71,14 @@ public class IndexUtils {
         }
 
         // Complete the index
-        IndexView view = indexer.complete();
+        Index index = indexer.complete();
         long endTime = System.currentTimeMillis();
         if (LoggingUtils.isEventEnabled(tc)) {
-            Tr.event(tc, "Index size: " + view.getKnownClasses().size());
+            Tr.event(tc, "Index size: " + index.getKnownClasses().size());
             Tr.event(tc, "Indexing elapsed time: " + (endTime - startTime));
         }
 
-        return view;
+        return index;
     }
 
     private static void indexContainer(Container container, String packageName, Indexer indexer, FilteredIndexView filter) {
@@ -123,18 +121,18 @@ public class IndexUtils {
      * The acceptClassForScanning method determines whether the specified class should be scanned for MicroProfile
      * OpenAPI annotations based on the configuration specified in the following proeprties:
      *
+     * <pre>
      * mp.openapi.scan.classes
      * mp.openapi.scan.packages
      * mp.openapi.scan.exclude.classes
      * mp.openapi.scan.exclude.packages
+     * </pre>
      *
      * @param filter
-     *     The SmallRye {@link FilterIndexView} class which wraps an {@link IndexView} instance and filters the
-     *     contents based on the settings provided via {@link OpenApiConfig}.
+     *     The SmallRye {@link FilterIndexView} class which filters the contents based on the settings provided via {@link OpenApiConfig}.
      * @param className
      *     The name of the class
-     * @return boolean
-     * True if the class should be accepted for scanning, false otherwise
+     * @return {@code true} if the class should be accepted for scanning, {@code false} otherwise
      */
     private static boolean acceptClassForScanning(final FilteredIndexView filter, final String className) {
 
@@ -161,8 +159,7 @@ public class IndexUtils {
      *     The OpenAPIConfig representation of the configuration
      * @param jarFileName
      *     The full name of the JAR file, including the path
-     * @return boolean
-     * True if the contents of the JAR file should be accepted for scanning, false otherwise
+     * @return {@code true} if the contents of the JAR file should be accepted for scanning, {@code false} otherwise
      */
     private static boolean acceptJarForScanning(final OpenApiConfig config, final String jarFileName) {
 

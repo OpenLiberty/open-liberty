@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,12 +23,13 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.rules.RuleChain;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -37,6 +38,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
+import componenttest.rules.repeater.FeatureReplacementAction;
 
 @RunWith(FATRunner.class)
 @CheckpointTest
@@ -49,10 +51,18 @@ public class AuditTest extends FATServletClient {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly())
                     .andWith(new JakartaEE10Action().forServers(SERVER_NAME).fullFATOnly());
+
+    /**
+     * Need the first repeat to make sure that audit-2.0 from a previous repeat gets put back to audit-1.0
+     */
+    public static RepeatTests auditRepeat = RepeatTests.with(new FeatureReplacementAction("audit-2.0", "audit-1.0").forServers(SERVER_NAME).fullFATOnly())
+                    .andWith(new FeatureReplacementAction("audit-1.0", "audit-2.0").forServers(SERVER_NAME));
+
+    @ClassRule
+    public static RuleChain chain = RuleChain.outerRule(r).around(auditRepeat);
 
     @BeforeClass
     public static void copyAppToDropins() throws Exception {
@@ -99,7 +109,7 @@ public class AuditTest extends FATServletClient {
     }
 
     private void assertAuditLogsCount(int expectedAuditLogFilesCount) throws Exception {
-        RemoteFile logsDirectory = new RemoteFile(server.getMachine(), server.getLogsRoot());
+        RemoteFile logsDirectory = server.getMachine().getFile(server.getLogsRoot());
 
         RemoteFile[] logs = logsDirectory.list(false);
         int actualAuditLogFilesCount = 0;

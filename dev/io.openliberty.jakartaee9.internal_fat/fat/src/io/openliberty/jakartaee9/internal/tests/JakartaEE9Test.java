@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -32,97 +33,97 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.jakartaee9.internal.apps.jakartaee9.web.WebProfile9TestServlet;
+import io.openliberty.jakartaee9.internal.tests.util.FATFeatureResolver;
 
+/**
+ * Test startup of the EE9 convenience features.
+ *
+ * Run up to four tests:
+ *
+ * <ul>
+ * <li>Run with "webProfile-9.1".</li>
+ * <li>Run with "jakartaee-9.1".</li>
+ * <li>Run with all EE 9 compatible features (for open-liberty).</li>
+ * <li>Run with all EE 9 compatible features (for WAS liberty).</li>
+ * </ul>
+ *
+ * Skip the fourth case if WAS liberty has the same compatible
+ * features as open liberty.
+ */
 @RunWith(FATRunner.class)
 public class JakartaEE9Test extends FATServletClient {
 
-    private static Set<String> getCompatFeatures(boolean openLibertyOnly) {
-        Set<String> compatFeatures = EE9FeatureCompatibilityTest.getAllCompatibleFeatures(openLibertyOnly);
-        // remove features so that they don't cause feature conflicts.
-        compatFeatures.remove("jdbc-4.0");
-        compatFeatures.remove("jdbc-4.1");
-        compatFeatures.remove(JavaInfo.JAVA_VERSION < 9 ? "jdbc-4.3" : "jdbc-4.2");
-        compatFeatures.remove("sessionCache-1.0");
-        compatFeatures.remove("facesContainer-3.0");
-        compatFeatures.remove("jsonbContainer-2.0");
-        compatFeatures.remove("jsonpContainer-2.0");
-        compatFeatures.remove("passwordUtilities-1.1");
-        compatFeatures.remove("persistenceContainer-3.0");
-        compatFeatures.remove("mpOpenAPI-3.1");
+    public static EE9Features ee9Features;
 
-        // remove client features
-        compatFeatures.remove("jakartaeeClient-9.1");
-        compatFeatures.remove("appSecurityClient-1.0");
-
-        // remove acmeCA-2.0 since it requires additional resources and configuration
-        compatFeatures.remove("acmeCA-2.0");
-
-        // remove noship features
-        compatFeatures.remove("jcacheContainer-1.1");
-        compatFeatures.remove("netty-1.0");
-        compatFeatures.remove("noShip-1.0");
-        compatFeatures.remove("scim-2.0");
-
-        if (JavaInfo.JAVA_VERSION < 11) {
-            compatFeatures.remove("mpReactiveStreams-3.0");
-            compatFeatures.remove("mpReactiveMessaging-3.0");
-            compatFeatures.remove("mpTelemetry-1.1");
+    static {
+        try {
+            ee9Features = new EE9Features(FATFeatureResolver.getInstallRoot());
+        } catch (Exception e) {
+            Assert.fail("Feature initialization error: " + e);
         }
-
-        // remove logAnalysis-1.0.  It depends on hpel being configured
-        compatFeatures.remove("logAnalysis-1.0");
-
-        // data-1.0 and nosql-1.0 require Java 17 so if we are currently not using Java 17 or later, remove it from the list of features.
-        if (JavaInfo.JAVA_VERSION < 17) {
-            compatFeatures.remove("data-1.0");
-            compatFeatures.remove("nosql-1.0");
-        }
-
-        return compatFeatures;
     }
 
-    private static final String ALL_COMPAT_OL_FEATURES = "AllEE9CompatFeatures_OL_ONLY";
-    private static final String ALL_COMPAT_FEATURES = "AllEE9CompatFeatures";
+    public static EE9Features getFeatures() {
+        return ee9Features;
+    }
+
+    //
+
+    private static final String COMPAT_OL_FEATURES = "EE9CompatFeatures_OL";
+    private static final String COMPAT_WL_FEATURES = "EE9CompatFeatures_WL";
 
     @ClassRule
     public static RepeatTests repeat;
 
     static {
-        Set<String> olCompatFeatures = getCompatFeatures(true);
-        Set<String> allCompatFeatures = getCompatFeatures(false);
-        repeat = RepeatTests
+        Set<String> olCompatFeatures = getFeatures().getExtendedCompatibleFeatures(EE9Features.OPEN_LIBERTY_ONLY);
+        Set<String> wlCompatFeatures = getFeatures().getExtendedCompatibleFeatures(!EE9Features.OPEN_LIBERTY_ONLY);
+
+        RepeatTests useRepeat = RepeatTests
                         .with(new FeatureReplacementAction()
                                         .removeFeature("webProfile-9.1")
                                         .addFeature("jakartaee-9.1")
                                         .withID("jakartaee91")
-                                        .fullFATOnly())
+                                        .fullFATOnly()) // FULL
                         .andWith(new FeatureReplacementAction()
                                         .removeFeature("jakartaee-9.1")
                                         .addFeature("webProfile-9.1")
                                         .withID("webProfile91")
-                                        .fullFATOnly())
+                                        .fullFATOnly()) // FULL
                         .andWith(new FeatureReplacementAction()
                                         .removeFeature("webProfile-9.1")
                                         .removeFeature("jakartaee-9.1")
                                         .addFeatures(olCompatFeatures)
-                                        .withID(ALL_COMPAT_OL_FEATURES)); //LITE
-        if (!olCompatFeatures.equals(allCompatFeatures)) {
-            Set<String> featuresToAdd = new HashSet<>();
-            for (String feature : allCompatFeatures) {
-                if (!olCompatFeatures.contains(feature)) {
-                    featuresToAdd.add(feature);
-                }
+                                        .withID(COMPAT_OL_FEATURES)); // LITE
+
+        Set<String> featuresToAdd = new HashSet<>();
+        for (String feature : wlCompatFeatures) {
+            if (!olCompatFeatures.contains(feature)) {
+                featuresToAdd.add(feature);
             }
-            repeat = repeat.andWith(new FeatureReplacementAction()
+        }
+        if (!featuresToAdd.isEmpty()) {
+            useRepeat = useRepeat.andWith(new FeatureReplacementAction()
                             .addFeatures(featuresToAdd)
-                            .withID(ALL_COMPAT_FEATURES)
+                            .withID(COMPAT_WL_FEATURES)
                             .fullFATOnly());
         }
+
+        repeat = useRepeat;
     }
+
+    static {
+        try {
+            FATFeatureResolver.setup();
+        } catch (Exception e) {
+            Assert.fail("Feature initialization error: " + e);
+        }
+    }
+
+    //
 
     public static final String APP_NAME = "webProfile9App";
 
@@ -142,24 +143,25 @@ public class JakartaEE9Test extends FATServletClient {
         ShrinkHelper.exportDropinAppToServer(server, earApp, DeployOptions.SERVER_ONLY);
 
         String consoleName = JakartaEE9Test.class.getSimpleName() + RepeatTestFilter.getRepeatActionsAsString();
-        if (RepeatTestFilter.isRepeatActionActive(ALL_COMPAT_FEATURES)) {
-            // set it to 15 minutes.
-            server.setServerStartTimeout(15 * 60 * 1000L);
+        if (RepeatTestFilter.isRepeatActionActive(COMPAT_WL_FEATURES)) {
+            server.setServerStartTimeout(15 * 60 * 1000L); // 15 MIN
         }
         server.startServer(consoleName + ".log");
+        server.waitForSSLStart();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         String[] toleratedWarnErrors;
-        if (RepeatTestFilter.isRepeatActionActive(ALL_COMPAT_OL_FEATURES)) {
+        if (RepeatTestFilter.isRepeatActionActive(COMPAT_OL_FEATURES)) {
             toleratedWarnErrors = new String[] { "SRVE0280E", // TODO: SRVE0280E tracked by OpenLiberty issue #4857
                                                  "CWWKS5207W", // The remaining ones relate to config not done for the server / app
                                                  "CWWWC0002W",
                                                  "CWMOT0010W",
                                                  "TRAS4352W" // Only happens when running with WebSphere Liberty image due to an auto feature
             };
-        } else if (RepeatTestFilter.isRepeatActionActive(ALL_COMPAT_FEATURES)) {
+
+        } else if (RepeatTestFilter.isRepeatActionActive(COMPAT_WL_FEATURES)) {
             toleratedWarnErrors = new String[] { "SRVE0280E", // TODO: SRVE0280E tracked by OpenLiberty issue #4857
                                                  "CWWKS5207W", // The remaining ones relate to config not done for the server / app
                                                  "CWWWC0002W",
@@ -170,9 +172,11 @@ public class JakartaEE9Test extends FATServletClient {
                                                  "TRAS4352W", // Only happens when running with WebSphere Liberty image due to an auto feature
                                                  "CWWKB0758E" // zosAutomaticRestartManager-1.0 error due to missing SAF configuration
             };
+
         } else {
             toleratedWarnErrors = new String[] { "SRVE0280E" };// TODO: SRVE0280E tracked by OpenLiberty issue #4857
         }
+
         server.stopServer(toleratedWarnErrors);
     }
 }

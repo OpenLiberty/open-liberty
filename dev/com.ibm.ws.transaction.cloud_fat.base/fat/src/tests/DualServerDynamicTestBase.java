@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.RemoteFile;
-import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
 import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
@@ -33,21 +32,17 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
 
 /*
  * These tests are based on the original JTAREC recovery tests.
  * Test plan is attached to RTC WI 213854
  */
 @Mode
-public class DualServerDynamicTestBase extends FATServletClient {
+public class DualServerDynamicTestBase extends CloudTestBase {
 
     protected static LibertyServer serverTemplate;
     public static final String APP_NAME = "transaction";
     protected static final String APP_PATH = "../com.ibm.ws.transaction.cloud_fat.base/";
-
-    public static LibertyServer server1;
-    public static LibertyServer server2;
 
     protected LibertyServer[] serversUsedInTest;
 
@@ -159,11 +154,5 @@ public class DualServerDynamicTestBase extends FATServletClient {
         server2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
 
         server2.setHttpDefaultPort(server2.getHttpSecondaryPort());
-    }
-
-    public static void dropTables() {
-        Log.info(DualServerDynamicTestBase.class, "dropTables", "WAS_PARTNER_LOGcloud0011, WAS_LEASES_LOG, WAS_TRAN_LOGcloud0011, WAS_PARTNER_LOGcloud0021, WAS_TRAN_LOGcloud0021");
-        TxTestContainerSuite.dropTables("WAS_PARTNER_LOGcloud0011", "WAS_LEASES_LOG", "WAS_TRAN_LOGcloud0011", "WAS_PARTNER_LOGcloud0021",
-                                        "WAS_TRAN_LOGcloud0021");
     }
 }

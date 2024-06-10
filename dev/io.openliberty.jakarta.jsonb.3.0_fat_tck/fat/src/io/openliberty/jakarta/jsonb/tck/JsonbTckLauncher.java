@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,10 +22,12 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.PrivHelper;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
 
@@ -38,6 +40,7 @@ import componenttest.topology.utils.tck.TCKRunner;
  */
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 11)
+@MaximumJavaLevel(javaLevel = 21) //Fails on Java 23 due to updates to CLDR https://jdk.java.net/23/release-notes#JDK-8319990
 public class JsonbTckLauncher {
 
     final static Map<String, String> additionalProps = new HashMap<>();
@@ -66,6 +69,12 @@ public class JsonbTckLauncher {
             Log.info(JsonbTckLauncher.class, "setUp", "Skipping JSONB Signature Test on Windows");
             additionalProps.put("exclude.tests", "ee.jakarta.tck.json.bind.signaturetest.jsonb.JSONBSigTest.java");
         }
+
+        // Since the signature tests are run in standalone mode (not inside the container)
+        // we need to ensure that the temporary file location the signature tests
+        // use to read/write files to is accessible to the maven wrapper (.mvnw)
+        additionalProps.put("java.io.tmpdir", PrivHelper.getProperty("java.io.tmpdir", "/tmp"));
+
     }
 
     /**

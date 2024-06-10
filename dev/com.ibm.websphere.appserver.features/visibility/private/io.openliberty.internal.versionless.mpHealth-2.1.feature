@@ -3,7 +3,7 @@ symbolicName=io.openliberty.internal.versionless.mpHealth-2.1
 visibility=private
 singleton=true
 -features= \
-    com.ibm.websphere.appserver.eeCompatible-7.0; ibm.tolerates:="8.0", \
+    io.openliberty.internal.mpVersion-3.2, \
     com.ibm.websphere.appserver.mpHealth-2.1
 kind=beta
 edition=core

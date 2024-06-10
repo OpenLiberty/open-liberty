@@ -9,20 +9,27 @@
  -->
 <project name="standard.launch.tasks">
 
+	<target name="initBootstrapProperties">
+		<property name="bootstrapping.properties" value="${dir.component.root}/bootstrapping.properties" />
+		<property file="${bootstrapping.properties}" />
+	</target>
+
 	<!-- This is needed for Moonstone autowas to work -->
-	<target name="init-test-tasks-autowas" unless="inited-test-tasks">
+	<target name="init-test-tasks-autowas" unless="inited-test-tasks" depends="initBootstrapProperties">
 		<property name="inited-test-tasks" value="true" />
+		<condition property="local.java.dir" value="lib" else="build/libs/lib">
+			<available file="${local.java}/lib"/>
+		</condition>
 		<path id="test-buildtasks-autowas">
-			<fileset dir="./build/lib/" includes="infra.buildtasks*.jar" />
-			<fileset dir="./build/lib/" includes="asm*.jar" />
-			<fileset dir="./build/lib/" includes="jsch*.jar" />
+			<fileset dir="${local.java}/${local.java.dir}/" includes="infra.buildtasks*.jar" />
+			<fileset dir="${local.java}/${local.java.dir}/" includes="asm*.jar" />
+			<fileset dir="${local.java}/${local.java.dir}/" includes="jsch*.jar" />
 		</path>
 		<taskdef resource="com/ibm/aries/componenttest/buildtasks/buildtasks.properties" classpathref="test-buildtasks-autowas" loaderref="test-buildtasks-autowas_ldr" />
 		<taskdef resource="com/ibm/aries/buildtasks/buildtasks.properties" classpathref="test-buildtasks-autowas" loaderref="test-buildtasks-autowas_ldr" />
 	</target>
 
-	<target name="initProperties" depends="init-test-tasks-autowas">
-		<property name="bootstrapping.properties" value="${dir.component.root}/bootstrapping.properties" />
+	<target name="initProperties" depends="initBootstrapProperties,init-test-tasks-autowas">
 		<property name="configuration.properties" value="${dir.component.root}/configuration.properties" />
 		<property name="logging.properties" value="${dir.component.root}/logging.properties" />
 		<property name="gen.logging.properties" value="${dir.log}/logging.properties" />
@@ -266,9 +273,20 @@
 			</fileset>
 
 			<!-- We want our doctored simplicity high on the classpath -->
-			<fileset dir="${basedir}/lib/">
+			<fileset dir="${basedir}/lib/" erroronmissingdir="false">
 				<include name="*.jar" />
 				<exclude name="${bnd.transform.jar.to.exclude}" />
+			</fileset>
+
+			<!-- fattest.simplicity -->
+			<fileset dir="${local.java}/lib/" erroronmissingdir="false">
+				<include name="fattest.simplicity.jar" />
+				<include name="com.ibm.ws.componenttest.jar" />
+			</fileset>
+
+			<fileset dir="${local.java}/build/libs/lib/" erroronmissingdir="false">
+				<include name="fattest.simplicity.jar" />
+				<include name="com.ibm.ws.componenttest.jar" />
 			</fileset>
 
 			<!-- shared libraries from bootstrapping.properties -->
@@ -279,11 +297,13 @@
 			<!-- java libraries for secure SSH authentication -->
 			<fileset dir="${local.java}/lib/" erroronmissingdir="false">
 				<include name="*.jar" />
+				<exclude name="${bnd.transform.jar.to.exclude}" />
 			</fileset>
 
 			<!-- The maven dependencies of fattest.simplicity -->
 			<fileset dir="${local.java}/build/libs/lib" erroronmissingdir="false">
 				<include name="*.jar" />
+				<exclude name="${bnd.transform.jar.to.exclude}" />
 			</fileset>
 
 			<fileset dir="${ant.home}/lib/" includes="ant-junit*.jar, ant.jar" />

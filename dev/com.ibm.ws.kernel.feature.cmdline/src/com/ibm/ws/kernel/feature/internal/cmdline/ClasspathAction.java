@@ -112,7 +112,7 @@ public class ClasspathAction implements ActionHandler {
         FeatureRepository repo = new FeatureRepository();
         repo.init();
         FeatureResolver resolver = new FeatureResolverImpl();
-        Result r = resolver.resolveFeatures(repo, Collections.<ProvisioningFeatureDefinition> emptySet(), Arrays.asList(features), Collections.<String> emptySet(), false);
+        Result r = resolver.resolve(repo, Collections.<ProvisioningFeatureDefinition> emptySet(), Arrays.asList(features), Collections.<String> emptySet(), false, Collections.<String> emptySet());
 
         Map<String, FeatureInfo> featuresToCheck = new HashMap<String, FeatureInfo>();
 

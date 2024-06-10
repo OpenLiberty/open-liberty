@@ -36,7 +36,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.csi.J2EEName;
@@ -48,11 +47,11 @@ import com.ibm.ws.concurrent.cdi.MTFBeanResourceInfo;
 import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
 import com.ibm.ws.container.service.metadata.extended.IdentifiableComponentMetaData;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
-import com.ibm.ws.threading.VirtualThreadOps;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -60,6 +59,8 @@ import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.resource.ResourceInfo;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
+
+import io.openliberty.threading.virtual.VirtualThreadOps;
 
 /**
  * Resource factory for ManagedThreadFactory.
@@ -150,12 +151,10 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     private ThreadGroupTracker threadGroupTracker;
 
     /**
-     * Virtual thread operations that are only available when a Java 21+ feature includes the io.openliberty.threading.internal.java21 bundle.
+     * Virtual thread operations that were introduced in Java 21
      */
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.DYNAMIC,
-               policyOption = ReferencePolicyOption.GREEDY)
-    protected volatile VirtualThreadOps virtualThreadOps;
+    @Reference
+    protected VirtualThreadOps virtualThreadOps;
 
     /**
      * Factory that creates virtual threads. Null if not configured to create virtual threads.
@@ -204,7 +203,8 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
         threadGroup = AccessController.doPrivileged(new CreateThreadGroupAction(name + " Thread Group", maxPriority),
                                                     threadGroupTracker.serverAccessControlContext);
 
-        boolean virtual = Boolean.TRUE.equals(properties.get(VIRTUAL));
+        //Ignore virtual configuration unless Java 21+
+        boolean virtual = JavaInfo.majorVersion() >= 21 ? Boolean.TRUE.equals(properties.get(VIRTUAL)) : false;
 
         // TODO check the SPI to override virtual=true for CICS
 

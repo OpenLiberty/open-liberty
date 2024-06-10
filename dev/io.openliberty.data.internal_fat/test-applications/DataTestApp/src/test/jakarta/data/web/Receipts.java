@@ -13,20 +13,33 @@
 package test.jakarta.data.web;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
+import jakarta.data.Order;
+import jakarta.data.Sort;
+import jakarta.data.page.CursoredPage;
+import jakarta.data.page.Page;
+import jakarta.data.page.PageRequest;
 import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.enterprise.concurrent.Asynchronous;
 
 /**
  * Repository interface for the Receipt entity which is a record
  */
 @Repository
 public interface Receipts extends CrudRepository<Receipt, Long> {
-    @Query("SELECT COUNT(o) FROM ReceiptEntity o") // TODO JDQL with only "SELECT COUNT(*)"
+    @Query("UPDATE Receipt SET total = total * (1.0 + :taxRate) WHERE purchaseId = :id")
+    boolean addTax(long id, float taxRate);
+
+    @Query("SELECT COUNT(this)")
     long count();
 
     boolean deleteByTotalLessThan(float max);
@@ -40,5 +53,34 @@ public interface Receipts extends CrudRepository<Receipt, Long> {
 
     boolean existsByPurchaseId(long id);
 
+    @Asynchronous
+    CompletableFuture<Receipt> findByPurchaseId(long purchaseId);
+
+    @Asynchronous
+    CompletionStage<Optional<Receipt>> findByPurchaseIdIfPresent(long purchaseId);
+
     Stream<Receipt> findByPurchaseIdIn(Iterable<Long> ids);
+
+    @OrderBy("purchaseId")
+    Receipt[] forCustomer(String customer);
+
+    @Asynchronous
+    CompletableFuture<List<Receipt>> forCustomer(String customer, Order<Receipt> sorts);
+
+    Page<Receipt> forCustomer(String customer, PageRequest req, Order<Receipt> sorts);
+
+    CursoredPage<Receipt> forCustomer(String customer, PageRequest req, Sort<?>... sorts);
+
+    long removeByPurchaseId(long purchaseId);
+
+    @OrderBy("purchaseId")
+    List<Long> removeByTotalBetween(float min, float max);
+
+    @Query("DELETE FROM Receipt WHERE total < :max")
+    int removeIfTotalUnder(float max);
+
+    @Query("SELECT total FROM Receipt WHERE purchaseId=:id")
+    float totalOf(long id);
+
+    Receipt withPurchaseNum(long purchaseId);
 }

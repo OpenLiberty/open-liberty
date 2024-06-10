@@ -27,6 +27,8 @@ import componenttest.rules.repeater.RepeatActions.SEVersion;
  * </ol>
  */
 public class JakartaEE11Action extends JakartaEEAction {
+    public static final String ID = EE11_ACTION_ID;
+
     private static final Map<String, String> DEFAULT_TRANSFORMATION_RULES = new HashMap<>();
     private static final Map<String, String> TRANSFORMATION_RULES_APPEND = new HashMap<>();
     private static boolean WIDEN = false;
@@ -70,6 +72,7 @@ public class JakartaEE11Action extends JakartaEEAction {
                                                   "concurrent-3.1",
                                                   "connectors-2.1",
                                                   "data-1.0",
+                                                  "dataContainer-1.0",
                                                   "expressionLanguage-6.0",
                                                   "enterpriseBeans-4.0",
                                                   "enterpriseBeansHome-4.0",
@@ -112,6 +115,7 @@ public class JakartaEE11Action extends JakartaEEAction {
                                                                          "cdi-4.1",
                                                                          "concurrent-3.1",
                                                                          "data-1.0",
+                                                                         "datacontainer-1.0",
                                                                          "expressionlanguage-6.0",
                                                                          "persistence-3.2",
                                                                          "persistencecontainer-3.2",

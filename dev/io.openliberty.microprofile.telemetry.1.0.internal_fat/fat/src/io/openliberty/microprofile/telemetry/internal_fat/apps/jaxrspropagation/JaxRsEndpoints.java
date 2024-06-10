@@ -15,14 +15,6 @@ package io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation
 import static io.openliberty.microprofile.telemetry.internal_fat.common.SpanDataMatcher.isSpan;
 import static io.opentelemetry.api.trace.SpanKind.CLIENT;
 import static io.opentelemetry.api.trace.SpanKind.SERVER;
-import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.HTTP_METHOD;
-import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.HTTP_SCHEME;
-import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.HTTP_STATUS_CODE;
-import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.HTTP_URL;
-import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.NET_HOST_NAME;
-import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.NET_HOST_PORT;
-import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.NET_PEER_NAME;
-import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.NET_PEER_PORT;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.Matchers.containsString;
@@ -63,6 +55,15 @@ import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
+
+// In MpTelemetry-2.0 SemanticAttributes was moved to a new package, so we use import static to allow both versions to coexist
+import static io.opentelemetry.semconv.SemanticAttributes.HTTP_ROUTE;
+import static io.opentelemetry.semconv.SemanticAttributes.HTTP_RESPONSE_STATUS_CODE;
+import static io.opentelemetry.semconv.SemanticAttributes.HTTP_REQUEST_METHOD;
+import static io.opentelemetry.semconv.SemanticAttributes.URL_FULL;
+import static io.opentelemetry.semconv.SemanticAttributes.URL_SCHEME;
+import static io.opentelemetry.semconv.SemanticAttributes.SERVER_ADDRESS;
+import static io.opentelemetry.semconv.SemanticAttributes.SERVER_PORT;
 
 /**
  * Tests MP Telemetry integration with restfulWS and mpRestClient.
@@ -157,29 +158,30 @@ public class JaxRsEndpoints extends Application {
         assertEquals(firstURL.getSpanId(), httpGet.getParentSpanId());
         assertEquals(httpGet.getSpanId(), secondURL.getParentSpanId());
 
-        assertEquals(HTTP_OK, firstURL.getAttributes().get(HTTP_STATUS_CODE).intValue());
-        assertEquals(HttpMethod.GET, firstURL.getAttributes().get(HTTP_METHOD));
-        assertEquals("http", firstURL.getAttributes().get(HTTP_SCHEME));
-        assertThat(httpGet.getAttributes().get(HTTP_URL), containsString("endpoints")); //There are many different URLs that will end up here. But all should contain "endpoints"
+        assertEquals(HTTP_OK, firstURL.getAttributes().get(SemanticAttributes.HTTP_STATUS_CODE).intValue());
+        assertEquals(HttpMethod.GET, firstURL.getAttributes().get(SemanticAttributes.HTTP_METHOD));
+        assertEquals("http", firstURL.getAttributes().get(SemanticAttributes.HTTP_SCHEME));
+        assertThat(httpGet.getAttributes().get(SemanticAttributes.HTTP_URL), containsString("endpoints")); //There are many different URLs that will end up here. But all should contain "endpoints"
 
         // The request used to call /readspans should have the same hostname and port as the test request
         URI requestUri = uriInfo.getRequestUri();
-        assertEquals(requestUri.getHost(), firstURL.getAttributes().get(NET_HOST_NAME));
-        assertEquals(Long.valueOf(requestUri.getPort()), firstURL.getAttributes().get(NET_HOST_PORT));
+        assertEquals(requestUri.getHost(), firstURL.getAttributes().get(SemanticAttributes.NET_HOST_NAME));
+        assertEquals(Long.valueOf(requestUri.getPort()), firstURL.getAttributes().get(SemanticAttributes.NET_HOST_PORT));
 
         assertEquals(CLIENT, httpGet.getKind());
         assertEquals("HTTP GET", httpGet.getName());
-        assertEquals(HTTP_OK, httpGet.getAttributes().get(HTTP_STATUS_CODE).intValue());
-        assertEquals(HttpMethod.GET, httpGet.getAttributes().get(HTTP_METHOD));
-        assertEquals(requestUri.getHost(), httpGet.getAttributes().get(NET_PEER_NAME));
-        assertEquals(Long.valueOf(requestUri.getPort()), httpGet.getAttributes().get(NET_PEER_PORT));
-        assertThat(httpGet.getAttributes().get(HTTP_URL), containsString("endpoints"));
+        assertEquals(HTTP_OK, httpGet.getAttributes().get(SemanticAttributes.HTTP_STATUS_CODE).intValue());
+        assertEquals(HttpMethod.GET, httpGet.getAttributes().get(SemanticAttributes.HTTP_METHOD));
+        assertEquals(requestUri.getHost(), httpGet.getAttributes().get(SemanticAttributes.NET_PEER_NAME));
+        assertEquals(Long.valueOf(requestUri.getPort()), httpGet.getAttributes().get(SemanticAttributes.NET_PEER_PORT));
+        assertThat(httpGet.getAttributes().get(SemanticAttributes.HTTP_URL), containsString("endpoints"));
 
         return Response.ok(TEST_PASSED).build();
     }
 
     //Gets a list of spans created by open telemetry when a test was running and confirms the spans are what we expected and IDs are propagated correctly
     //spanExporter.reset() should be called at the start of each new test.
+    //For MpTelemetry-1.1
     @GET
     @Path("/readspansmptel11/{traceId}")
     public Response readSpansMpTel11(@Context UriInfo uriInfo, @PathParam("traceId") String traceId) {
@@ -196,23 +198,63 @@ public class JaxRsEndpoints extends Application {
         assertEquals(firstURL.getSpanId(), httpGet.getParentSpanId());
         assertEquals(httpGet.getSpanId(), secondURL.getParentSpanId());
 
-        assertEquals(HTTP_OK, firstURL.getAttributes().get(HTTP_STATUS_CODE).intValue());
-        assertEquals(HttpMethod.GET, firstURL.getAttributes().get(HTTP_METHOD));
-        assertEquals("http", firstURL.getAttributes().get(HTTP_SCHEME));
-        assertThat(httpGet.getAttributes().get(HTTP_URL), containsString("endpoints")); //There are many different URLs that will end up here. But all should contain "endpoints"
+        assertEquals(HTTP_OK, firstURL.getAttributes().get(SemanticAttributes.HTTP_STATUS_CODE).intValue());
+        assertEquals(HttpMethod.GET, firstURL.getAttributes().get(SemanticAttributes.HTTP_METHOD));
+        assertEquals("http", firstURL.getAttributes().get(SemanticAttributes.HTTP_SCHEME));
+        assertThat(httpGet.getAttributes().get(SemanticAttributes.HTTP_URL), containsString("endpoints")); //There are many different URLs that will end up here. But all should contain "endpoints"
 
         // The request used to call /readspans should have the same hostname and port as the test request
         URI requestUri = uriInfo.getRequestUri();
-        assertEquals(requestUri.getHost(), firstURL.getAttributes().get(NET_HOST_NAME));
-        assertEquals(Long.valueOf(requestUri.getPort()), firstURL.getAttributes().get(NET_HOST_PORT));
+        assertEquals(requestUri.getHost(), firstURL.getAttributes().get(SemanticAttributes.NET_HOST_NAME));
+        assertEquals(Long.valueOf(requestUri.getPort()), firstURL.getAttributes().get(SemanticAttributes.NET_HOST_PORT));
 
         assertEquals(CLIENT, httpGet.getKind());
         assertEquals("GET", httpGet.getName());
-        assertEquals(HTTP_OK, httpGet.getAttributes().get(HTTP_STATUS_CODE).intValue());
-        assertEquals(HttpMethod.GET, httpGet.getAttributes().get(HTTP_METHOD));
-        assertEquals(requestUri.getHost(), httpGet.getAttributes().get(NET_PEER_NAME));
-        assertEquals(Long.valueOf(requestUri.getPort()), httpGet.getAttributes().get(NET_PEER_PORT));
-        assertThat(httpGet.getAttributes().get(HTTP_URL), containsString("endpoints"));
+        assertEquals(HTTP_OK, httpGet.getAttributes().get(SemanticAttributes.HTTP_STATUS_CODE).intValue());
+        assertEquals(HttpMethod.GET, httpGet.getAttributes().get(SemanticAttributes.HTTP_METHOD));
+        assertEquals(requestUri.getHost(), httpGet.getAttributes().get(SemanticAttributes.NET_PEER_NAME));
+        assertEquals(Long.valueOf(requestUri.getPort()), httpGet.getAttributes().get(SemanticAttributes.NET_PEER_PORT));
+        assertThat(httpGet.getAttributes().get(SemanticAttributes.HTTP_URL), containsString("endpoints"));
+
+        return Response.ok(TEST_PASSED).build();
+    }
+
+    //Gets a list of spans created by open telemetry when a test was running and confirms the spans are what we expected and IDs are propagated correctly
+    //spanExporter.reset() should be called at the start of each new test.
+    //For MpTelemetry-2.0
+    @GET
+    @Path("/readspansmptel20/{traceId}")
+    public Response readSpansMpTel20(@Context UriInfo uriInfo, @PathParam("traceId") String traceId) {
+        List<SpanData> spanData = spanExporter.getFinishedSpanItems(3, traceId);
+
+        SpanData firstURL = spanData.get(0);
+        SpanData httpGet = spanData.get(1);
+        SpanData secondURL = spanData.get(2);
+
+        assertEquals(SERVER, firstURL.getKind());
+        assertEquals(CLIENT, httpGet.getKind());
+        assertEquals(SERVER, secondURL.getKind());
+
+        assertEquals(firstURL.getSpanId(), httpGet.getParentSpanId());
+        assertEquals(httpGet.getSpanId(), secondURL.getParentSpanId());
+
+        assertEquals(HTTP_OK, firstURL.getAttributes().get(HTTP_RESPONSE_STATUS_CODE).intValue());
+        assertEquals(HttpMethod.GET, firstURL.getAttributes().get(HTTP_REQUEST_METHOD));
+        assertEquals("http", firstURL.getAttributes().get(URL_SCHEME));
+        assertThat(httpGet.getAttributes().get(URL_FULL), containsString("endpoints")); //There are many different URLs that will end up here. But all should contain "endpoints"
+
+        // The request used to call /readspans should have the same hostname and port as the test request
+        URI requestUri = uriInfo.getRequestUri();
+        assertEquals(requestUri.getHost(), firstURL.getAttributes().get(SERVER_ADDRESS));
+        assertEquals(Long.valueOf(requestUri.getPort()), firstURL.getAttributes().get(SERVER_PORT));
+
+        assertEquals(CLIENT, httpGet.getKind());
+        assertEquals("GET", httpGet.getName());
+        assertEquals(HTTP_OK, httpGet.getAttributes().get(HTTP_RESPONSE_STATUS_CODE).intValue());
+        assertEquals(HttpMethod.GET, httpGet.getAttributes().get(HTTP_REQUEST_METHOD));
+        assertEquals(requestUri.getHost(), httpGet.getAttributes().get(SERVER_ADDRESS));
+        assertEquals(Long.valueOf(requestUri.getPort()), httpGet.getAttributes().get(SERVER_PORT));
+        assertThat(httpGet.getAttributes().get(URL_FULL), containsString("endpoints"));
 
         return Response.ok(TEST_PASSED).build();
     }
@@ -232,6 +274,30 @@ public class JaxRsEndpoints extends Application {
                         .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
                         .withAttribute(SemanticAttributes.HTTP_SCHEME, "http")
                         .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L));
+
+        assertThat(withSpan, isSpan()
+                        .withKind(SpanKind.INTERNAL)
+                        .withParentSpanId(firstURL.getSpanId()));
+
+        return Response.ok(TEST_PASSED).build();
+    }
+
+    //Gets a list of spans created by open telemetry when a test was running and confirms the spans are what we expected and IDs are propagated correctly
+    //spanExporter.reset() should be called at the start of each new test.
+    //For MpTelemetry-2.0
+    @GET
+    @Path("/readspanswithspanmptel20/{traceId}")
+    public Response readSpansWithSpanMpTel20(@Context UriInfo uriInfo, @PathParam("traceId") String traceId) {
+        List<SpanData> spanData = spanExporter.getFinishedSpanItems(2, traceId);
+
+        SpanData firstURL = spanData.get(0);
+        SpanData withSpan = spanData.get(1);
+
+        assertThat(firstURL, isSpan()
+                        .withKind(SpanKind.SERVER)
+                        .withAttribute(HTTP_REQUEST_METHOD, "GET")
+                        .withAttribute(URL_SCHEME, "http")
+                        .withAttribute(HTTP_RESPONSE_STATUS_CODE, 200L));
 
         assertThat(withSpan, isSpan()
                         .withKind(SpanKind.INTERNAL)

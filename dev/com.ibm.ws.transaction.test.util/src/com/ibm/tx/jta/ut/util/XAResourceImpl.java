@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -124,7 +125,10 @@ public class XAResourceImpl implements XAResource, Serializable {
     }
 
     static {
-        stateKeeper = new StateKeeperImpl();
+    	if (stateKeeper == null) {
+	    	System.out.println("Setting regular state keeper");
+    		stateKeeper = new StateKeeperImpl();
+    	}
     }
 
     private static List<XAEvent> _XAEvents = Collections.synchronizedList(new ArrayList<XAEvent>());
@@ -140,6 +144,7 @@ public class XAResourceImpl implements XAResource, Serializable {
     public static final int RETURN_TRUE = -5000;
     public static final int RETURN_FALSE = -6000;
     public static final int SLEEP_RECOVER = -7000;
+    public static final int CONDITIONAL_RUNTIME_EXCEPTION = -8000;
 
     public static final int NOT_STARTED = 1;
     public static final int COMMITTED = 2;
@@ -157,7 +162,11 @@ public class XAResourceImpl implements XAResource, Serializable {
     // This variable may be set to true to allow more chatty output.
     protected static boolean DEBUG_OUTPUT = true;
 
-    private static boolean _stateLoaded;
+    protected static boolean _stateLoaded;
+    
+    public static boolean isStateLoaded() {
+    	return _stateLoaded;
+    }
 
     public static final int DIRECTION_COMMIT = 0, DIRECTION_ROLLBACK = 1, DIRECTION_EITHER = 2;
 
@@ -241,6 +250,7 @@ public class XAResourceImpl implements XAResource, Serializable {
         private int commitRepeatCount;
         private int rollbackRepeatCount;
         private int forgetRepeatCount;
+        private int recoverDelay = 120;
         private int recoverRepeatCount;
         private int statusDuringCommit;
         private int statusDuringRollback;
@@ -249,7 +259,7 @@ public class XAResourceImpl implements XAResource, Serializable {
         private int forgetCount;
         private boolean heuristic;
         private int _sleepTime;
-        private Xid _xid;
+        private HashSet<XID> _xids;
         private int _state = NOT_STARTED;
         private boolean busyInLongRunningQuery;
         private boolean queryAborted;
@@ -305,14 +315,20 @@ public class XAResourceImpl implements XAResource, Serializable {
             return _sleepTime;
         }
 
-        public Xid getXid() {
-            return _xid;
+        public HashSet<XID> getXids() {
+            return _xids;
         }
 
         public void setXid(Xid xid) {
             System.out.println("setXid(" + _key + ", " + xid + ")");
+            
+            if (_xids != null) {
+                System.out.println("_xid was already set: " + _xids.size());
+            } else {
+            	_xids = new HashSet<XID>();
+            }
 
-            _xid = new TestXidImpl(xid);
+            _xids.add(new XID(xid.getFormatId(), xid.getGlobalTransactionId(), xid.getBranchQualifier()));;
         }
 
         public int getState() {
@@ -329,11 +345,13 @@ public class XAResourceImpl implements XAResource, Serializable {
         }
 
         public int getCommitAction() {
+            System.out.println("getCommitAction(" + _key + ") = " + actionFormatter(commitAction));
             return commitAction;
         }
 
         public void setCommitAction(int commitAction) {
             System.out.println("setCommitAction(" + _key + ", " + actionFormatter(commitAction) + ")");
+            this.commitRepeatCount = 0;
             this.commitAction = commitAction;
         }
 
@@ -432,6 +450,15 @@ public class XAResourceImpl implements XAResource, Serializable {
             this.commitRepeatCount = commitRepeatCount;
         }
 
+        public int getRecoverDelay() {
+            return recoverDelay;
+        }
+
+        public void setRecoverDelay(int recoverDelay) {
+            System.out.println("setRecoverDelay(" + _key + ", " + recoverDelay + ")");
+            this.recoverDelay = recoverDelay;
+        }
+
         public int getRecoverRepeatCount() {
             return recoverRepeatCount;
         }
@@ -514,7 +541,7 @@ public class XAResourceImpl implements XAResource, Serializable {
             StringBuffer sb = new StringBuffer("Resource: " + key + "\n");
             sb.append("RM: " + RM);
             sb.append("\nState: " + stateFormatter());
-            sb.append("\nXid: " + _xid);
+            sb.append("\nXid: " + _xids);
             sb.append("\nCommit order: " + _commitOrder);
             sb.append("\nRecover action: " + actionFormatter(recoverAction));
 
@@ -671,7 +698,6 @@ public class XAResourceImpl implements XAResource, Serializable {
                                          TransactionManagerFactory.getTransactionManager()
                                                          .getStatus());
         } catch (SystemException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -699,7 +725,6 @@ public class XAResourceImpl implements XAResource, Serializable {
                         try {
                             Thread.sleep(self().getSleepTime());
                         } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
                         break;
@@ -820,7 +845,6 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     @Override
     public int getTransactionTimeout() throws XAException {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -849,7 +873,6 @@ public class XAResourceImpl implements XAResource, Serializable {
                                           TransactionManagerFactory.getTransactionManager()
                                                           .getStatus());
         } catch (SystemException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -912,34 +935,37 @@ public class XAResourceImpl implements XAResource, Serializable {
         if (recoverAction != XAResource.XA_OK) {
             final int repeatCount = self().getRecoverRepeatCount();
             System.out.println("recoverRepeatCount = "+repeatCount+", recoverAction = "+actionFormatter(recoverAction));
-            if(recoverAction == SLEEP_RECOVER) {
-                // Check property
-                final String sleepflagStr = java.security.AccessController.doPrivileged(new PrivilegedAction<String>() {
-                    @Override
-                    public String run() {
-                        return System.getProperty("com.ibm.tx.sleepInRecover");
-                    }
-                });
-                boolean sleepFlag = false;
-                if (sleepflagStr != null) {
-                    sleepFlag =  Boolean.parseBoolean(sleepflagStr);
+            boolean scupperRecovery = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+                @Override
+                public Boolean run() {
+                    return Boolean.getBoolean("com.ibm.tx.scupperRecovery");
                 }
-                System.out.println("sleepFlag is " + sleepFlag);
-                if(sleepFlag) {
+            });
+            
+            if(recoverAction == SLEEP_RECOVER) {
+                System.out.println("scupperRecovery is " + scupperRecovery);
+                if(scupperRecovery) {
                 	try {
-                		System.out.println("Sleeping in RECOVER");
-                		Thread.sleep(120 * 1000);
+                        final int recoverDelay = self().getRecoverDelay();
+                		System.out.println("Sleeping for " + recoverDelay + " seconds in RECOVER");
+                		Thread.sleep(recoverDelay * 1000);
                 	} catch (InterruptedException e) {
-                		// TODO Auto-generated catch block
                 		e.printStackTrace();
-                	}            	
+                	} finally {
+                		System.out.println("Awoken in RECOVER");
+                	}
                 }
             } else {
             	self().setRecoverRepeatCount(repeatCount - 1);
             	if (repeatCount > 0) {
             		switch (recoverAction) {
-            		    case RUNTIME_EXCEPTION:
-            		    	throw new RuntimeException();
+        		    case CONDITIONAL_RUNTIME_EXCEPTION:
+        		    	if (scupperRecovery)
+        		    		throw new RuntimeException();
+        		    	break;
+
+        		    case RUNTIME_EXCEPTION:
+        		    	throw new RuntimeException();
 
             		    case DIE:
             		    	killDoomedServers(true);
@@ -956,14 +982,18 @@ public class XAResourceImpl implements XAResource, Serializable {
 
         if (self().inState(PREPARED) && !self().inState(COMMITTED)
             && !self().inState(ROLLEDBACK)) {
-            return new Xid[] { getXid() };
+        	final HashSet<XID> xidSet = getXids();
+        	if (xidSet != null) {
+        		final XID[] xids = new XID[xidSet.size()];
+        		return xidSet.toArray(xids);
+        	}
         }
 
         return null;
     }
 
-    private Xid getXid() {
-        return self().getXid();
+    private HashSet<XID> getXids() {
+        return self().getXids();
     }
 
     @Override
@@ -984,7 +1014,6 @@ public class XAResourceImpl implements XAResource, Serializable {
                                            TransactionManagerFactory.getTransactionManager()
                                                            .getStatus());
         } catch (SystemException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -1131,6 +1160,12 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     public XAResourceImpl setForgetAction(int action) {
         self().setForgetAction(action);
+
+        return this;
+    }
+
+    public XAResourceImpl setRecoverDelay(int seconds) {
+        self().setRecoverDelay(seconds);
 
         return this;
     }
@@ -1344,7 +1379,7 @@ public class XAResourceImpl implements XAResource, Serializable {
 //        _resources.entrySet().stream().forEach(e -> sb.append(e.getValue()).append("\n"));
 
         for (XAResourceData res : _resources.values()) {
-        	if (null != res.getXid()) {
+        	if (null != res.getXids()) {
         		numResources++;
         		if (res.inState(COMMITTED)) {
         			committed++;
@@ -1567,6 +1602,8 @@ public class XAResourceImpl implements XAResource, Serializable {
         	return "READONLY";
         case RUNTIME_EXCEPTION:
         	return "RUNTIME_EXCEPTION";
+        case CONDITIONAL_RUNTIME_EXCEPTION:
+        	return "CONDITIONAL_RUNTIME_EXCEPTION";
         case DIE:
         	return "DIE";
         case SLEEP_COMMIT:
@@ -1577,6 +1614,8 @@ public class XAResourceImpl implements XAResource, Serializable {
         	return "RETURN_TRUE";
         case RETURN_FALSE:
         	return "RETURN_FALSE";
+        case SLEEP_RECOVER:
+        	return "SLEEP_RECOVER";
         default:
         	return "NO ACTION (" + action +")";
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,14 @@
  *******************************************************************************/
 package test.jakarta.data.datastore.web;
 
+import java.sql.Connection;
 import java.util.List;
 
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
+import jakarta.persistence.EntityManager;
+
+import javax.sql.DataSource;
 
 /**
  * This repository has its dataStore set to a PersistenceUnit reference from DataStoreTestServlet
@@ -23,6 +27,12 @@ import jakarta.data.repository.Save;
  */
 @Repository(dataStore = "persistence/MyPersistenceUnitRef") // java:comp/env/ is implied
 public interface PersistenceUnitRepo {
+
+    Connection connection();
+
+    DataSource dataSource();
+
+    EntityManager entityManager();
 
     // Entity type is inferred from the Insert annotation.
     // Do not add other methods or inheritance to this class.
