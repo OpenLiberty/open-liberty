@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.ibm.websphere.channelfw.EndPointInfo;
@@ -22,7 +21,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.internal.HttpChain;
-import com.ibm.ws.http.internal.HttpChain.ChainState;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
 import com.ibm.ws.http.internal.HttpServiceConstants;
 import com.ibm.ws.http.internal.VirtualHostMap;
@@ -94,14 +92,14 @@ public class NettyChain extends HttpChain {
     @Override
     public synchronized void stop() {
         stopCount++;
-        MSP.log("Attempting to stop NettyChain. Attempt count: " + stopCount + " Current state: " + state.get());
+        MSP.log("Attempting to stop NettyChain: " + endpointName + " Attempt count: " + stopCount + " Current state: " + state.get());
 
         if (state.get() != ChainState.STOPPING) {
             endpointMgr.removeEndPoint(endpointName);
             ChainState previousState = state.getAndSet(ChainState.STOPPING);
 
             if (Objects.nonNull(channelFuture)) {
-
+                System.out.println("Canceling future");
                 channelFuture.cancel(true);
                 channelFuture = null;
             }
@@ -153,7 +151,7 @@ public class NettyChain extends HttpChain {
 
         updateCount++;
 
-        MSP.log("Update count: " + updateCount + "Current state: " + state.get());
+        MSP.log("Updating NettyChain: " + endpointName + " Update count: " + updateCount + " Current state: " + state.get());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.entry(this, tc, "update chain " + this);
@@ -188,13 +186,13 @@ public class NettyChain extends HttpChain {
             stopAndWait();
             startNettyChannel();
             MSP.log("Channel restarted with new configuration.");
-        }       
+        }
     }
 
     public synchronized void startNettyChannel() {
 
         startCount++;
-        MSP.log("Starting NettyChannel. Attempt count: " + startCount);
+        MSP.log("Starting NettyChannel: " + endpointName + " Attempt count: " + startCount);
 
         if (state.get() != ChainState.STOPPED) {
             MSP.log("NettyChain is not in STOPPED state. Current state: " + state.get());
@@ -243,7 +241,6 @@ public class NettyChain extends HttpChain {
                                                                                                                                                                                                                                       owner.getSamesiteConfig()).build();
 
                 bootstrap.childHandler(httpPipeline);
-
 
                 channelFuture = nettyFramework.start(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
 

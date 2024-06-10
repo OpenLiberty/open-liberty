@@ -2977,8 +2977,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
             if (complete) {
                 System.out.println("Complete! Setting as full http response");
+                // TODO Change this to use getResponse API instead of Netty response object directly
                 DefaultFullHttpResponse resp = new DefaultFullHttpResponse(nettyResponse.protocolVersion(), nettyResponse.status());
-                resp.headers().setAll(nettyResponse.headers());
+                resp.headers().add(nettyResponse.headers());
                 nettyResponse = resp;
                 System.out.println("Is readable? " + resp.content().isReadable());
             }
@@ -3316,7 +3317,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
             if (complete) {
                 DefaultFullHttpResponse resp = new DefaultFullHttpResponse(nettyResponse.protocolVersion(), nettyResponse.status());
-                resp.headers().setAll(nettyResponse.headers());
+                resp.headers().add(nettyResponse.headers());
                 nettyResponse = resp;
             }
             sendHeaders(nettyResponse);
@@ -3391,11 +3392,17 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 lastContent = new LastStreamSpecificHttpContent(Integer.valueOf(nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(),
                                                                                                             "-1")), trailers);
             }
+            System.out.println("Writing last http content: " + lastContent);
+            System.out.println("Pipeline: " + nettyContext.pipeline());
             this.nettyContext.channel().write(lastContent);
+        } else {
+            System.out.println("SendfullOutgoing not doing anything!?!");
         }
         ChannelFuture flushFuture = this.nettyContext.channel().writeAndFlush(Unpooled.EMPTY_BUFFER);
         //TODO: sync write
+        System.out.println("Before await");
         flushFuture.awaitUninterruptibly();
+        System.out.println("After await");
         MSP.log("set message sent");
         setMessageSent();
     }
