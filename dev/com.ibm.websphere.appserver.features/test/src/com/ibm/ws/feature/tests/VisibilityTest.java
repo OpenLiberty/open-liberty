@@ -43,7 +43,7 @@ public class VisibilityTest {
 
     /**
      * Tests to see if a feature has a dependency on an auto feature.
-    */
+     */
     @Test
     public void testDependingOnAutoFeature() {
         StringBuilder errorMessage = new StringBuilder();
@@ -117,9 +117,9 @@ public class VisibilityTest {
     }
 
     /**
-    * Confirms if disable all feature on conflict is not enabled, dependent
-    * features also have the same settings.
-    */
+     * Confirms if disable all feature on conflict is not enabled, dependent
+     * features also have the same settings.
+     */
     @Test
     public void testDisableAllFeaturesOnConflict() {
         StringBuilder errorMessage = new StringBuilder();
@@ -157,10 +157,10 @@ public class VisibilityTest {
     }
 
     /**
-    * Features that are marked ga or beta should be in core or base edition in open liberty.
-    * Features that are marked noship should be in full edition. This test validates
-    * that the edition is marked correctly.
-    */
+     * Features that are marked ga or beta should be in core or base edition in open liberty.
+     * Features that are marked noship should be in full edition. This test validates
+     * that the edition is marked correctly.
+     */
     @Test
     public void testEdition() {
         Set<String> possibleEditions = new HashSet<>();
@@ -255,12 +255,12 @@ public class VisibilityTest {
     }
 
     /**
-    * Validates that features are in the right directory, public features in public
-    * directory, protected in protected, auto in auto and others in private.
-    *
-    * Also validates that public features are in their short name directory and that non public features do not
-    * have a "short name" or "also known as" property set and that auto features do not set "disable on conflict".
-    */
+     * Validates that features are in the right directory, public features in public
+     * directory, protected in protected, auto in auto and others in private.
+     *
+     * Also validates that public features are in their short name directory and that non public features do not
+     * have a "short name" or "also known as" property set and that auto features do not set "disable on conflict".
+     */
     @Test
     public void testVisibility2() {
         StringBuilder errorMessage = new StringBuilder();
@@ -322,8 +322,8 @@ public class VisibilityTest {
     }
 
     /**
-    * Tests that all features with the same base name have the same visibility
-    */
+     * Tests that all features with the same base name have the same visibility
+     */
     @Test
     public void testMatchingVisibilitySingletonFeatures() {
         StringBuilder errorMessage = new StringBuilder();
@@ -370,8 +370,8 @@ public class VisibilityTest {
     }
 
     /**
-    * Tests that all features with the same base name have the same edition
-    */
+     * Tests that all features with the same base name have the same edition
+     */
     @Test
     public void testMatchingEditionSingletonFeatures() {
         StringBuilder errorMessage = new StringBuilder();
@@ -420,7 +420,7 @@ public class VisibilityTest {
                 for (Iterator<FeatureInfo> it = featureInfos.iterator(); it.hasNext();) {
                     FeatureInfo featureInfo = it.next();
                     if ((featureInfo.getName().equals("com.ibm.websphere.appserver.org.eclipse.persistence-2.6") ||
-                        featureInfo.getName().equals("com.ibm.websphere.appserver.org.eclipse.persistence-2.7"))
+                         featureInfo.getName().equals("com.ibm.websphere.appserver.org.eclipse.persistence-2.7"))
                         && featureInfo.getEdition().equals("core")) {
                         it.remove();
                     }
@@ -458,9 +458,9 @@ public class VisibilityTest {
     }
 
     /**
-    * Tests that all features with the same base short name have the same edition.
-    * This includes both versioned and versionless features
-    */
+     * Tests that all features with the same base short name have the same edition.
+     * This includes both versioned and versionless features
+     */
     @Test
     public void testMatchingEditionShortNames() {
         StringBuilder errorMessage = new StringBuilder();
@@ -522,8 +522,8 @@ public class VisibilityTest {
     }
 
     /**
-    * Tests that an auto feature has more than one feature in its filter.
-    */
+     * Tests that an auto feature has more than one feature in its filter.
+     */
     @Test
     public void testAutoFeatures() {
         StringBuilder errorMessage = new StringBuilder();
@@ -553,11 +553,11 @@ public class VisibilityTest {
     }
 
     /**
-    * This test makes sure that public features have properties files that match the long
-    * feature name. When moving features to the io.openliberty prefix from com.ibm.websphere.appserver
-    * and vice versa, the properties file renames were missed a few times. This unit test
-    * makes sure that it is found in the build instead of having to be detected by hand.
-    */
+     * This test makes sure that public features have properties files that match the long
+     * feature name. When moving features to the io.openliberty prefix from com.ibm.websphere.appserver
+     * and vice versa, the properties file renames were missed a few times. This unit test
+     * makes sure that it is found in the build instead of having to be detected by hand.
+     */
     @Test
     public void testLocalizationResources() {
         StringBuilder errorMessage = new StringBuilder();
@@ -642,9 +642,67 @@ public class VisibilityTest {
     }
 
     /**
-    * Tests to make sure that public and protected features are correctly referenced in a feature
-    * when a dependent feature includes a public or protected feature with a tolerates attribute.
-    */
+     * This is similar to the testMissingBetaFeatures test except specific to versionless features to make sure that
+     * if the private versionless feature is marked noship or beta, but its dependent features are marked
+     * beta or ga, that it should fail to say that the versionless private features should be updated to have a different kind.
+     */
+    @Test
+    public void testMissingBetaOrGAVersionlessFeatures() {
+        StringBuilder errorMessage = new StringBuilder();
+        for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+            String featureName = entry.getKey();
+            FeatureInfo featureInfo = entry.getValue();
+            if (!featureInfo.isAutoFeature() && featureName.startsWith("io.openliberty.internal.versionless") && featureName.contains("-")) {
+                String kind = featureInfo.getKind();
+                if ("ga".equals(kind)) {
+                    continue;
+                }
+
+                boolean containsNoShipFeature = false;
+                boolean containsBetaFeature = false;
+                for (String depFeatureName : featureInfo.getDependentFeatures().keySet()) {
+                    FeatureInfo depFeature = features.get(depFeatureName);
+                    if (depFeature == null) {
+                        continue;
+                    }
+                    if ("noship".equals(depFeature.getKind()) && !depFeatureName.equals("io.openliberty.noShip-1.0")) {
+                        containsNoShipFeature = true;
+                        break;
+                    }
+                    if ("beta".equals(depFeature.getKind())) {
+                        containsBetaFeature = true;
+                    }
+                }
+
+                if (!containsNoShipFeature) {
+                    if ("noship".equals(kind)) {
+                        errorMessage.append("Found issues with " + featureName + '\n');
+                        errorMessage.append("     The feature is marked noship, but all dependencies are beta or ga\n");
+                    } else if (!containsBetaFeature) {
+                        String publicVersionlessFeatureName = featureName.replace(".internal", "");
+                        publicVersionlessFeatureName = publicVersionlessFeatureName.substring(0, publicVersionlessFeatureName.indexOf('-'));
+                        FeatureInfo publicFeatureInfo = features.get(publicVersionlessFeatureName);
+                        String publicVersionlessFeatureKind = publicFeatureInfo.getKind();
+                        if ("ga".equals(publicVersionlessFeatureKind)) {
+                            errorMessage.append("Found issues with " + featureName + '\n');
+                            errorMessage.append("     The feature is marked beta, but all dependencies are ga and the public feature is ga\n");
+                        }
+                    }
+                }
+            }
+        }
+        if (errorMessage.length() != 0) {
+            Assert.fail("Found versionless features that are marked noship or beta, but contain only beta/ga features: " + '\n' +
+                        "If you recently marked a feature beta, you may need to update the versionless feature to not depend on the noShip-1.0 feature and update the kind to beta or ga.\n"
+                        +
+                        errorMessage.toString());
+        }
+    }
+
+    /**
+     * Tests to make sure that public and protected features are correctly referenced in a feature
+     * when a dependent feature includes a public or protected feature with a tolerates attribute.
+     */
     @Test
     public void testNonTransitiveTolerates() {
         StringBuilder errorMessage = new StringBuilder();
@@ -696,9 +754,9 @@ public class VisibilityTest {
                             continue;
                         }
                         Map<String, Set<String>> tolFeatures = processIncludedFeature(featureName, rootDepFeatureWithoutTolerates,
-                                                                                    depEntry2.getKey(), featureName + " -> " + depFeatureName, featureErrors, processedFeatures,
-                                                                                    isTolerates,
-                                                                                    depFeature.getValue().containsKey("ibm.tolerates:"), false);
+                                                                                      depEntry2.getKey(), featureName + " -> " + depFeatureName, featureErrors, processedFeatures,
+                                                                                      isTolerates,
+                                                                                      depFeature.getValue().containsKey("ibm.tolerates:"), false);
                         if (tolFeatures != null) {
                             for (Entry<String, Set<String>> entry2 : tolFeatures.entrySet()) {
                                 String key = entry2.getKey();
@@ -743,10 +801,10 @@ public class VisibilityTest {
     }
 
     /**
-    * This test validates that jakarta and value-add features do not have public or protected tolerated features so that versionless
-    * features and product extension / user features that have tolerates in their features for all ee levels can do so and avoid
-    * having to do an auto feature.
-    */
+     * This test validates that jakarta and value-add features do not have public or protected tolerated features so that versionless
+     * features and product extension / user features that have tolerates in their features for all ee levels can do so and avoid
+     * having to do an auto feature.
+     */
     @Test
     public void testTolerates() {
         StringBuilder errorMessage = new StringBuilder();
@@ -835,10 +893,10 @@ public class VisibilityTest {
     }
 
     /**
-    * Finds private and protected dependent features that are redundant because other dependent features already bring them in.
-    * Public features are not included in this test since those features may be explicitly included just to show
-    * which public features are enabled by a feature.
-    */
+     * Finds private and protected dependent features that are redundant because other dependent features already bring them in.
+     * Public features are not included in this test since those features may be explicitly included just to show
+     * which public features are enabled by a feature.
+     */
     @Test
     public void testFeatureDependenciesRedundancy() {
         StringBuilder errorMessage = new StringBuilder();
@@ -886,10 +944,10 @@ public class VisibilityTest {
                     for (Map.Entry<String, Attrs> depEntry2 : depFeatureInfo.getDependentFeatures().entrySet()) {
                         boolean isApiJarFalse = "false".equals(depFeature.getValue().get("apiJar")) || "false".equals(depEntry2.getValue().get("apiJar"));
                         Map<String, Set<String>> tolFeatures = processIncludedFeatureAndChildren(featureName, rootDepFeatureWithoutTolerates,
-                                                                                                depEntry2.getKey(), featureName + " -> " + depFeatureName, featureErrors,
-                                                                                                processedFeatures,
-                                                                                                depEntry2.getValue().containsKey("ibm.tolerates:"),
-                                                                                                depFeature.getValue().containsKey("ibm.tolerates:"), isApiJarFalse);
+                                                                                                 depEntry2.getKey(), featureName + " -> " + depFeatureName, featureErrors,
+                                                                                                 processedFeatures,
+                                                                                                 depEntry2.getValue().containsKey("ibm.tolerates:"),
+                                                                                                 depFeature.getValue().containsKey("ibm.tolerates:"), isApiJarFalse);
                         if (tolFeatures != null) {
                             toleratedFeatures.addAll(tolFeatures.keySet());
                         }
@@ -917,8 +975,8 @@ public class VisibilityTest {
     }
 
     private Map<String, Set<String>> processIncludedFeatureAndChildren(String rootFeature, Set<String> rootDepFeatures, String feature,
-                                                                    String parentFeature, Map<String, Set<String>> featureErrors, Set<String> processedFeatures,
-                                                                    boolean isTolerates, boolean hasToleratesAncestor, boolean isApiJarFalse) {
+                                                                       String parentFeature, Map<String, Set<String>> featureErrors, Set<String> processedFeatures,
+                                                                       boolean isTolerates, boolean hasToleratesAncestor, boolean isApiJarFalse) {
         Map<String, Set<String>> toleratedFeatures = processIncludedFeature(rootFeature, rootDepFeatures, feature, parentFeature, featureErrors,
                                                                             processedFeatures, isTolerates, hasToleratesAncestor, isApiJarFalse);
         FeatureInfo featureInfo = features.get(feature);
@@ -926,9 +984,9 @@ public class VisibilityTest {
             for (Map.Entry<String, Attrs> depEntry : featureInfo.getDependentFeatures().entrySet()) {
                 boolean depApiJarFalse = "false".equals(depEntry.getValue().get("apiJar"));
                 Map<String, Set<String>> includeTolerates = processIncludedFeatureAndChildren(rootFeature, rootDepFeatures, depEntry.getKey(),
-                                                                                            parentFeature + " -> " + feature, featureErrors, processedFeatures,
-                                                                                            depEntry.getValue().containsKey("ibm.tolerates:"),
-                                                                                            isTolerates || hasToleratesAncestor, isApiJarFalse || depApiJarFalse);
+                                                                                              parentFeature + " -> " + feature, featureErrors, processedFeatures,
+                                                                                              depEntry.getValue().containsKey("ibm.tolerates:"),
+                                                                                              isTolerates || hasToleratesAncestor, isApiJarFalse || depApiJarFalse);
                 if (includeTolerates != null) {
                     if (toleratedFeatures == null) {
                         toleratedFeatures = new HashMap<>(includeTolerates);
@@ -960,7 +1018,7 @@ public class VisibilityTest {
             toleratedFeatures.put(feature.substring(0, feature.lastIndexOf('-') + 1), depFeatureWithTolerate);
             processedFeatures.add(feature);
         } else if (!hasToleratesAncestor && rootDepFeatures.contains(feature) && !feature.startsWith("com.ibm.websphere.appserver.eeCompatible-")
-                && !feature.startsWith("io.openliberty.mpCompatible-") && !feature.startsWith("io.openliberty.servlet.internal-")) {
+                   && !feature.startsWith("io.openliberty.mpCompatible-") && !feature.startsWith("io.openliberty.servlet.internal-")) {
             if (!isApiJarFalse) {
                 Set<String> errors = featureErrors.get(feature);
                 if (errors == null) {
@@ -988,13 +1046,13 @@ public class VisibilityTest {
     }
 
     /**
-    * For documentation features APIs and SPIs need to be in a public feature for them to be exposed in the documentation for that public feature.
-    * If the APIs and SPIs are listed in a private feature the documentation auto gen logic will not add them to the public feature even when
-    * the public feature depends on the private feature. This test makes sure that APIs and SPIs listed in private features are also included
-    * in the public features that depend on those private features.
-    *
-    * To help keep ibm-api, spec, stable, third-party, and spi separated, there is a test for each one of them.
-    */
+     * For documentation features APIs and SPIs need to be in a public feature for them to be exposed in the documentation for that public feature.
+     * If the APIs and SPIs are listed in a private feature the documentation auto gen logic will not add them to the public feature even when
+     * the public feature depends on the private feature. This test makes sure that APIs and SPIs listed in private features are also included
+     * in the public features that depend on those private features.
+     *
+     * To help keep ibm-api, spec, stable, third-party, and spi separated, there is a test for each one of them.
+     */
     @Test
     public void testIBMAPIsInPublicFeatures() {
         Map<String, Set<MissingExternalPackageInfo>> missingExternalPackages = testAPIandSPIsInPublicFeatures(ExternalPackageType.IBM_API);
@@ -1153,10 +1211,10 @@ public class VisibilityTest {
                 }
                 Set<ExternalPackageInfo> featureExternalPackages = null;
                 /*
-                * For the feature dependences with tolerates, only include the APIs that are common in all of
-                * the tolerated features. If one of the tolerated features doesn't include an API or SPI do not include
-                * it in the list of missing features.
-                */
+                 * For the feature dependences with tolerates, only include the APIs that are common in all of
+                 * the tolerated features. If one of the tolerated features doesn't include an API or SPI do not include
+                 * it in the list of missing features.
+                 */
                 for (FeatureInfo tolerateFeature : key) {
                     Set<ExternalPackageInfo> tolerateFeatureExtPackages = cumulativeExtPackageInfo.get(Collections.singleton(tolerateFeature));
                     if (tolerateFeatureExtPackages == null) {
@@ -1319,8 +1377,8 @@ public class VisibilityTest {
     }
 
     private void findMissingPackages(Map<Set<FeatureInfo>, Set<FeatureInfo>> ancestors, Map<String, Set<MissingExternalPackageInfo>> missingExternalPackages,
-                                    ExternalPackageType type, Set<ExternalPackageInfo> featureExternalPackages,
-                                    Set<FeatureInfo> featureAncestors, String privateFeatureName) {
+                                     ExternalPackageType type, Set<ExternalPackageInfo> featureExternalPackages,
+                                     Set<FeatureInfo> featureAncestors, String privateFeatureName) {
         Set<FeatureInfo> publicAncestors = getPublicFeatureAncestors(featureAncestors, ancestors);
         for (FeatureInfo publicAncestor : publicAncestors) {
             Set<MissingExternalPackageInfo> missingExtPackages = new LinkedHashSet<>();
@@ -1352,13 +1410,13 @@ public class VisibilityTest {
     }
 
     /**
-    * Get the public features in the dependency chain that depend on the Set of feature supplied.
-    * If the dependency chain stops at a protected or public feature, no other ancestors are gotten past that feature.
-    *
-    * @param ancestors
-    * @param ancestorsMap
-    * @return
-    */
+     * Get the public features in the dependency chain that depend on the Set of feature supplied.
+     * If the dependency chain stops at a protected or public feature, no other ancestors are gotten past that feature.
+     *
+     * @param ancestors
+     * @param ancestorsMap
+     * @return
+     */
     private Set<FeatureInfo> getPublicFeatureAncestors(Set<FeatureInfo> ancestors, Map<Set<FeatureInfo>, Set<FeatureInfo>> ancestorsMap) {
         Set<FeatureInfo> publicFeatures = new HashSet<>();
         if (ancestors != null) {
@@ -1374,13 +1432,13 @@ public class VisibilityTest {
     }
 
     /**
-    * Get the features in the dependency chain that depend on the Set of features supplied.
-    * If the dependency chain stops at a protected or public feature, no other ancestors are gotten past that feature.
-    *
-    * @param ancestors
-    * @param ancestorsMap
-    * @return
-    */
+     * Get the features in the dependency chain that depend on the Set of features supplied.
+     * If the dependency chain stops at a protected or public feature, no other ancestors are gotten past that feature.
+     *
+     * @param ancestors
+     * @param ancestorsMap
+     * @return
+     */
     private Set<FeatureInfo> getFeatureAncestors(Set<FeatureInfo> feature, Map<Set<FeatureInfo>, Set<FeatureInfo>> ancestorsMap) {
         Set<FeatureInfo> featureAncestors = new HashSet<>();
         Set<FeatureInfo> ancestors = ancestorsMap.get(feature);
