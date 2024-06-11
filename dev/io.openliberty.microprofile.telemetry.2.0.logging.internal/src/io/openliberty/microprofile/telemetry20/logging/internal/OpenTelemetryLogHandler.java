@@ -45,6 +45,7 @@ import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
 import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.logs.LogRecordBuilder;
 import io.opentelemetry.api.logs.Severity;

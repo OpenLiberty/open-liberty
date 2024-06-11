@@ -687,6 +687,11 @@
       <version>2.1.0</version>
     </dependency>
     <dependency>
+      <groupId>io.opentelemetry.instrumentation</groupId>
+      <artifactId>opentelemetry-runtime-telemetry-java8</artifactId>
+      <version>2.4.0-alpha</version>
+    </dependency>
+    <dependency>
       <groupId>io.opentelemetry.semconv</groupId>
       <artifactId>opentelemetry-semconv</artifactId>
       <version>1.23.1-alpha</version>

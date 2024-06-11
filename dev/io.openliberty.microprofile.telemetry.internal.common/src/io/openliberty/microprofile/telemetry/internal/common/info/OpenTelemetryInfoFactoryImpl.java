@@ -147,10 +147,8 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
             //Builds tracer provider if user has enabled tracing aspects with config properties
             if (!checkDisabled(telemetryProperties)) {
                 OpenTelemetry openTelemetry = AccessController.doPrivileged((PrivilegedAction<OpenTelemetry>) () -> {
-                    return openTelemetryVersionedConfiguration.getPartiallyConfiguredOpenTelemetrySDKBuilder().addPropertiesCustomizer(x -> telemetryProperties) //Overrides OpenTelemetry's property order
-                                                              .addResourceCustomizer(OpenTelemetryInfoFactoryImpl::customizeResource) //Defaults service name to application nam
-                                                              .setServiceClassLoader(Thread.currentThread().getContextClassLoader())
-                                                              .build().getOpenTelemetrySdk();
+                    return openTelemetryVersionedConfiguration.buildOpenTelemetry(telemetryProperties,
+                                                                                  OpenTelemetryInfoFactoryImpl::customizeResource, Thread.currentThread().getContextClassLoader());
                 });
 
                 otelMap.put(appName, openTelemetry);
@@ -226,8 +224,6 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
 
                 }
             }
-
-            telemetryProperties.putAll(openTelemetryVersionedConfiguration.getTelemetryPropertyDefaults());
 
             return telemetryProperties;
         } catch (Exception e) {

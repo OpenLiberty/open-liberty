@@ -11,13 +11,16 @@ package io.openliberty.microprofile.telemetry10.internal.config;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 import org.osgi.service.component.annotations.Component;
 
-import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfoFactoryImpl;
 import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
+import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfoFactoryImpl;
+import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk;
-import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdkBuilder;
+import io.opentelemetry.sdk.autoconfigure.spi.ConfigProperties;
+import io.opentelemetry.sdk.resources.Resource;
 
 /**
  * This class contains version specific configuration for OpenTelemetryInfoFactory
@@ -25,16 +28,24 @@ import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdkBuilder;
 @Component
 public class OpenTelemetryVersionedConfigurationImpl implements OpenTelemetryInfoFactoryImpl.OpenTelemetryVersionedConfiguration {
 
-    // Version specific API calls to AutoConfiguredOpenTelemetrySdk.builder()
     @Override
-    public AutoConfiguredOpenTelemetrySdkBuilder getPartiallyConfiguredOpenTelemetrySDKBuilder() {
+    public OpenTelemetry buildOpenTelemetry(Map<String, String> openTelemetryProperties,
+                                            BiFunction<? super Resource, ConfigProperties, ? extends Resource> resourceCustomiser, ClassLoader classLoader) {
+
+        openTelemetryProperties.putAll(getTelemetryPropertyDefaults());
+
         return AutoConfiguredOpenTelemetrySdk.builder()
-                        .setResultAsGlobal(false);
+                        .addPropertiesCustomizer(x -> openTelemetryProperties) //Overrides OpenTelemetry's property order
+                        .addResourceCustomizer(resourceCustomiser) //Defaults service name to application name
+                        .setServiceClassLoader(classLoader)
+                        .setResultAsGlobal(false)
+                        .build()
+                        .getOpenTelemetrySdk();
+
     }
 
     // Version specific default properties
-    @Override
-    public Map<String, String> getTelemetryPropertyDefaults() {
+    private Map<String, String> getTelemetryPropertyDefaults() {
         Map<String, String> telemetryProperties = new HashMap<String, String>();
         //Metrics and logs are disabled by default
         telemetryProperties.put(OpenTelemetryConstants.CONFIG_METRICS_EXPORTER_PROPERTY, "none");
