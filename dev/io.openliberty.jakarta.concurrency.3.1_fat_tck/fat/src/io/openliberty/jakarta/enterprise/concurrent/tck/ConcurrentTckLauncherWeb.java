@@ -48,18 +48,15 @@ public class ConcurrentTckLauncherWeb {
     public static void setUp() throws Exception {
         //Comment out to use snapshot version
         additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
-        additionalProps.put("jakarta.concurrent.tck.version", "3.1.0-RC2");
+        additionalProps.put("jakarta.concurrent.tck.version", "3.1.1");
 
         //Jakarta TCK platform
         additionalProps.put("jakarta.tck.platform", "web");
+        additionalProps.put("jimage.dir", server.getServerSharedPath() + "jimage/output/");
 
         if (!FATSuite.shouldRunSignatureTests(ConcurrentTckLauncherWeb.class)) {
             additionalProps.put("jakarta.tck.platform", "web & !signature");
         }
-
-        Map<String, String> opts = server.getJvmOptionsAsMap();
-        opts.put("-Djimage.dir", server.getServerSharedPath() + "jimage/output/");
-        server.setJvmOptions(opts);
 
         //Finally start the server
         server.startServer();
