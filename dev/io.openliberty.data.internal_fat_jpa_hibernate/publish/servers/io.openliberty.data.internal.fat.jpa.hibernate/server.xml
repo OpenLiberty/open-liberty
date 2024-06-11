@@ -51,13 +51,18 @@
   <!-- Java 2 Security issue with ANTLR: https://github.com/antlr/antlr4/issues/3720 -->
   <javaPermission className="java.lang.RuntimePermission" name="getenv.TURN_OFF_LR_LOOP_ENTRY_BRANCH_OPT"/>
 
-  <!-- TODO update these to the 6.6.0.Alpha1 dependencies -->
+  <!-- TODO update these to hibernate-core final dependencies -->
+  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/angus-activation-2.0.0.jar" className="java.security.AllPermission"/>
   <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/antlr4-runtime-4.13.0.jar" className="java.security.AllPermission"/>
   <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/byte-buddy-1.14.12.jar" className="java.security.AllPermission"/>
   <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/classmate-1.5.1.jar" className="java.security.AllPermission"/>
-  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/hibernate-commons-annotations-6.0.6.Final.jar" className="java.security.AllPermission"/>
-  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/hibernate-core-6.6.0.Alpha1.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/hibernate-core-7.0.0.Alpha2.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/hibernate-models-0.8.3.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/istack-commons-runtime-4.1.1.jar" className="java.security.AllPermission"/>
   <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/jandex-3.1.2.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/jaxb-core-4.0.2.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/jaxb-runtime-4.0.2.jar" className="java.security.AllPermission"/>
   <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/jboss-logging-3.5.0.Final.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/txw2-4.0.2.jar" className="java.security.AllPermission"/>
 
 </server>

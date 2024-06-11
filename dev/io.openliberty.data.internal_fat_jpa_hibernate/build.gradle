@@ -13,18 +13,22 @@
  // Always pull from Maven Central so we don't have to upload transitive dependencies to artifactory
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
+ext {
+  hibernateVersion = '7.0.0.Alpha2' //TODO update to final
+}
+
 configurations {
   hibernateJPA32
 }
 
 dependencies {
-  hibernateJPA32 'org.hibernate.orm:hibernate-core:6.6.0.Alpha1'        //TODO update to final
-  hibernateJPA32 'jakarta.data:jakarta.data-api:1.0.0-RC1'              //TODO remove once we have container feature
+  hibernateJPA32 "org.hibernate.orm:hibernate-core:${hibernateVersion}"
+  hibernateJPA32 'jakarta.data:jakarta.data-api:1.0.0' //TODO remove once we have container feature
 
   //Annotation processor - generages .java files in build/libs/generated/sources
   //Some generated .java files import hibernate dependencies, need this compileOnly dependency
-  annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen:6.6.0.Alpha1' //TODO update to final
-  compileOnly 'org.hibernate.orm:hibernate-core:6.6.0.Alpha1'                //TODO update to final
+  annotationProcessor "org.hibernate.orm:hibernate-jpamodelgen:${hibernateVersion}"
+  compileOnly "org.hibernate.orm:hibernate-core:${hibernateVersion}"
 }
 
 task addhibernateJPA32(type: Copy) {
