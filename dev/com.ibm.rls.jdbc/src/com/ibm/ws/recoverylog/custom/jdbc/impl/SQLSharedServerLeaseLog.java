@@ -116,7 +116,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
     private Statement _claimPeerlockingStmt;
     private PreparedStatement _claimPeerUpdateStmt;
     private ResultSet _claimPeerLockingRS;
-    private boolean _noLockOnLeaseScans = false;
+    private boolean _noLockOnLeaseScans;
 
     public SQLSharedServerLeaseLog(CustomLogProperties logProperties) {
         if (tc.isEntryEnabled())
@@ -319,6 +319,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                     queryString = "SELECT SERVER_IDENTITY, LEASE_TIME" +
                                   " FROM " + _leaseTableName +
                                   (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                                  " WHERE RECOVERY_GROUP = '" + recoveryGroup + "'" +
                                   ((_isSQLServer) ? "" : " FOR UPDATE") +
                                   ((_isPostgreSQL || _isSQLServer) ? "" : " OF LEASE_TIME");
                     if (tc.isDebugEnabled())
