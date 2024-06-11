@@ -7,7 +7,6 @@
         <!-- Various features get added dynamically during the test -->
     </featureManager>
     <webApplication name="thirdPartyJaxbApp" location="thirdPartyJaxbApp.war" context-root="thirdPartyJaxbApp">
-    	<classLoader delegation="parentLast" />
     </webApplication>
     
     <include location="../fatTestPorts.xml"/>
