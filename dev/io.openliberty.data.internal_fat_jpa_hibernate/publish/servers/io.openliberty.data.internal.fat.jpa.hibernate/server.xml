@@ -30,7 +30,6 @@
     <classloader commonLibraryRef="HibernateLib, JDBCLibrary"/>
   </application>
 
-  <!-- For all other repositories: -->
   <dataSource id="DefaultDataSource" fat.modify="true">
     <jdbcDriver libraryRef="JDBCLibrary"/>
     <properties.derby.embedded createDatabase="create" databaseName="memory:testdb" user="dbuser1" password="dbpwd1"/>

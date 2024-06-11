@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
+import jakarta.annotation.Resource;
 import jakarta.data.Order;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
@@ -31,6 +32,7 @@ import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.transaction.UserTransaction;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -43,6 +45,9 @@ public class DataJPAHibernateTestServlet extends FATServlet {
 
     @Inject
     Cities cities;
+
+    @Resource
+    UserTransaction tran;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -62,19 +67,19 @@ public class DataJPAHibernateTestServlet extends FATServlet {
         try {
             Class.forName("test.jakarta.data.jpa.hibernate.web._City");
         } catch (ClassNotFoundException e) {
-            fail("Static metamodel class _City (for Data) was not generated or available at runtime.");
+            fail("Static metamodel class _City (for Persistence) was not generated or available at runtime.");
         }
 
         try {
             Class.forName("test.jakarta.data.jpa.hibernate.web.City_");
         } catch (ClassNotFoundException e) {
-            fail("Static metamodel class City_ (for Persistence) was not generated or available at runtime.");
+            fail("Static metamodel class City_ (for Data) was not generated or available at runtime.");
         }
 
         try {
             Class.forName("test.jakarta.data.jpa.hibernate.web.Cities_");
         } catch (ClassNotFoundException e) {
-            fail("Static repository class Cities_ (for Persistence) was not generated or available at runtime.");
+            fail("Static repository class Cities_ (for Data) was not generated or available at runtime.");
         }
     }
 
@@ -105,12 +110,17 @@ public class DataJPAHibernateTestServlet extends FATServlet {
                         });
     }
 
-    @Ignore("Hibernate requires a transaction for deleteById even though the PersistenceUnit is using a non-transactional DataSource?")
+    //TODO deleteById always fails with jakarta.persistence.TransactionRequiredException: Executing an update/delete query
+    @Ignore("https://hibernate.atlassian.net/browse/HHH-18260")
     @Test
-    public void testBasicRepositoryDeleteById() {
+    public void testBasicRepositoryDeleteById() throws Exception {
         City GreenBay = new City("Green Bay", "Wisconsin", 107395, Set.of(920));
         cities.save(GreenBay);
+
+        tran.begin();
         cities.deleteById(GreenBay.id);
+        tran.commit();
+
         cities.findById(GreenBay.id).ifPresent(city -> {
             throw new AssertionError("Found entity after it was deleted: " + city.toString());
         });
