@@ -23,6 +23,7 @@ import java.util.Set;
 import org.osgi.framework.Version;
 
 import com.ibm.ws.kernel.feature.ProcessType;
+import com.ibm.ws.kernel.feature.internal.subsystem.SubsystemFeatureDefinitionImpl;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 
 /**
@@ -90,6 +91,8 @@ public interface FeatureResolver {
          * @return The additional versions of the feature that can be tolerated.
          */
         List<String> getConfiguredTolerates(String baseSymbolicName);
+
+        public Map<String, SubsystemFeatureDefinitionImpl> getCompatibilityFeatures();
     }
 
     /**

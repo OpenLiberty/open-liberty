@@ -86,6 +86,11 @@ public class FeatureResolverTest {
             // }
 
             @Override
+            public Map<String, SubsystemFeatureDefinitionImpl> getCompatibilityFeatures() {
+                return repoImpl.getCompatibilityFeatures();
+            }
+
+            @Override
             public ProvisioningFeatureDefinition getFeature(String featureName) {
                 return repoImpl.getFeature(featureName);
             }

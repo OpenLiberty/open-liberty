@@ -43,6 +43,8 @@ import org.osgi.framework.VersionRange;
 import com.ibm.ws.kernel.feature.AppForceRestart;
 import com.ibm.ws.kernel.feature.ProcessType;
 import com.ibm.ws.kernel.feature.Visibility;
+import com.ibm.ws.kernel.feature.internal.FeatureResolverInterfacesTest.TestFeature;
+import com.ibm.ws.kernel.feature.internal.subsystem.SubsystemFeatureDefinitionImpl;
 import com.ibm.ws.kernel.feature.provisioning.ActivationType;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.HeaderElementDefinition;
@@ -237,6 +239,11 @@ public class FeatureResolverInterfacesTest {
         // public List<ProvisioningFeatureDefinition> select(FeatureResolver.Selector<ProvisioningFeatureDefinition> selector) {
         //     throw new UnsupportedOperationException("Unimplemented method 'select'");
         // }
+
+        @Override
+        public Map<String, SubsystemFeatureDefinitionImpl> getCompatibilityFeatures() {
+            return new HashMap<String, SubsystemFeatureDefinitionImpl>();
+        }
 
         @Override
         public Collection<ProvisioningFeatureDefinition> getAutoFeatures() {

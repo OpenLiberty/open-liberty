@@ -39,6 +39,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ProcessType;
 import com.ibm.ws.kernel.feature.Visibility;
+import com.ibm.ws.kernel.feature.internal.subsystem.SubsystemFeatureDefinitionImpl;
 import com.ibm.ws.kernel.feature.internal.util.VerifyEnv;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
@@ -257,33 +258,16 @@ public class FeatureResolverImpl implements FeatureResolver {
         Set<String> compatibilityFeatures = new HashSet<String>();
 
         for (String plat : rootPlatforms) {
+            //needs check for duplicate platforms with different versions, ex. can't have javaee7.0 and javaee8.0
             plat = plat.trim();
 
-            String[] nameAndVersion = parseNameAndVersion(plat);
-            String platBase = nameAndVersion[0];
-            String platVersion = nameAndVersion[1];
-            if (platVersion == null) {
-                trace("Platform element [ " + plat + " ] does not contain a valid version.");
-                continue;
-            }
+            SubsystemFeatureDefinitionImpl platformFeature = repo.getCompatibilityFeatures().get(plat);
 
-            String compatibilityFeature;
-            if (platBase.startsWith("jakartaee") || platBase.startsWith("javaee")) {
-                compatibilityFeature = "com.ibm.websphere.appserver.eeCompatible-" + platVersion;
-            } else if (platBase.startsWith("microprofile")) {
-                compatibilityFeature = "io.openliberty.internal.mpVersion-" + platVersion;
-
-            } else {
+            if(platformFeature == null){
                 trace("Platform element [ " + plat + " ] is not a known platform.");
                 continue;
             }
-
-            if (repo.getFeature(compatibilityFeature) != null) {
-                compatibilityFeatures.add(compatibilityFeature);
-            } else {
-                trace("Platform element [ " + plat + " ] is not a known platform version.");
-                continue;
-            }
+            compatibilityFeatures.add(platformFeature.getSymbolicName());
         }
 
         return compatibilityFeatures;
@@ -312,6 +296,16 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
     }
 
+    private String compatibleBaseNameToVersionlessCompatible(String compatibleBaseName){
+        if(compatibleBaseName.equals("com.ibm.websphere.appserver.eeCompatible")){
+            return EE_COMPATIBLE_FEATURE_NAME;
+        }
+        else if(compatibleBaseName.equals("io.openliberty.internal.mpVersion")){
+            return MP_COMPATIBLE_FEATURE_NAME;
+        }
+        return null;
+    }
+
     /**
      * Process the platforms which were specified within the server configuration
      * or from the command line.
@@ -327,64 +321,44 @@ public class FeatureResolverImpl implements FeatureResolver {
      * @return The versioned compatibility feature names obtained from the
      *         platform values.
      */
-    private Set<String> collectEnvironmentPlatforms(Repository repo, Collection<String> rootPlatforms) {
+    private Set<String> collectEnvironmentPlatforms(Repository repo, Collection<String> rootPlatforms, SelectionContext selectionContext) {
         if (preferredPlatformVersions == null) {
             return Collections.emptySet();
         }
 
-        boolean containsEE = false;
-        boolean containsMP = false;
+        Set<String> allPlatformBaseNames = selectionContext.compatibilityFeaturesBaseNames();
 
-
-        if(featureListContainsFeatureBaseName(rootPlatforms, "io.openliberty.internal.mpVersion")){
-            containsMP = true;
-        }
-        if(featureListContainsFeatureBaseName(rootPlatforms, "com.ibm.websphere.appserver.eeCompatible")){
-            containsEE = true;
-        }
-
-        if(containsEE && containsMP) {
+        if(allPlatformBaseNames.size() == rootPlatforms.size()){
             return Collections.emptySet();
         }
 
         String[] preferredPlatforms = preferredPlatformVersions.split(",");
 
-        List<String> eeCompatibleVersions = new ArrayList<String>();
-        List<String> mpCompatibleVersions = new ArrayList<String>();
+        Map<String, List<String>> compatibleVersions = new HashMap<String, List<String>>();
+        for(String platformBaseName : allPlatformBaseNames){
+            compatibleVersions.put(platformBaseName, new ArrayList<>());
+        }
 
         Set<String> compatibilityFeatures = new HashSet<String>();
 
         for (String plat : preferredPlatforms) {
             plat = plat.trim().toLowerCase();
 
-            String[] nameAndVersion = parseNameAndVersion(plat);
-            String platBase = nameAndVersion[0];
-            String platVersion = nameAndVersion[1];
-
-            if (platVersion == null) {
-                trace("Platform environment variable [ " + PREFERRED_PLATFORM_VERSIONS_ENV_VAR + " ]" +
-                      " platform value [ " + plat + " ] does not contain a valid version.");
-                continue;
-            }
-
-            if (platBase.startsWith("jakartaee") || platBase.startsWith("javaee")) {
-                eeCompatibleVersions.add(platVersion);
-            } else if (plat.startsWith("microprofile")) {
-                mpCompatibleVersions.add(platVersion);
+            SubsystemFeatureDefinitionImpl platformFeature = repo.getCompatibilityFeatures().get(plat);
+            if (platformFeature != null) {
+                String[] nav = parseNameAndVersion(platformFeature.getSymbolicName());
+                compatibleVersions.get(nav[0]).add(nav[1]);
             } else {
                 trace("Platform environment variable [ " + PREFERRED_PLATFORM_VERSIONS_ENV_VAR + " ]" +
                       " platform value [ " + plat + " ] is not a valid platform.");
             }
         }
 
-        if (!eeCompatibleVersions.isEmpty() && !containsEE) {
-            updateTolerates(repo, EE_COMPATIBLE_FEATURE_NAME, eeCompatibleVersions);
-            compatibilityFeatures.add(EE_COMPATIBLE_FEATURE_NAME);
-        }
-
-        if (!mpCompatibleVersions.isEmpty() && !containsMP) {
-            updateTolerates(repo, MP_COMPATIBLE_FEATURE_NAME, mpCompatibleVersions);
-            compatibilityFeatures.add(MP_COMPATIBLE_FEATURE_NAME);
+        for(String key : compatibleVersions.keySet()){
+            if(!featureListContainsFeatureBaseName(rootPlatforms, key)){
+                updateTolerates(repo, compatibleBaseNameToVersionlessCompatible(key), compatibleVersions.get(key));
+                compatibilityFeatures.add(compatibleBaseNameToVersionlessCompatible(key));
+            }
         }
 
         return compatibilityFeatures;
@@ -544,12 +518,12 @@ public class FeatureResolverImpl implements FeatureResolver {
                             EnumSet<ProcessType> supportedProcessTypes,
                             Collection<String> rootPlatforms) {
 
+        SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
+
         if (isBeta) {
             rootPlatforms = collectConfiguredPlatforms(repository, rootPlatforms);
-            rootPlatforms.addAll(collectEnvironmentPlatforms(repository, rootPlatforms));
+            rootPlatforms.addAll(collectEnvironmentPlatforms(repository, rootPlatforms, selectionContext));
         }
-
-        SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
 
         // this checks if the pre-resolved exists in the repo;
         // if one does not exist then we start over with an empty set of pre-resolved
@@ -572,6 +546,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             filteredVersionless = filterVersionless(rootFeaturesList, selectionContext);
         }
 
+        System.out.println(rootFeaturesList);
         selectionContext.primeSelected(preResolved);
         selectionContext.primeSelected(rootFeaturesList);
 
@@ -618,11 +593,9 @@ public class FeatureResolverImpl implements FeatureResolver {
                 iRootFeatures.remove();
                 continue;
             }
-            // if(rootFeatureDef.isVersionless()){
-            //     //set some value to remember we have versionless features in our configuration
-            // }
 
-            if(rootFeatureDef.getSymbolicName().startsWith("io.openliberty.versionless.")){
+            if(rootFeatureDef.isVersionless()){
+                //Still needs to be fixed
                 if(rootFeatureDef.getIbmShortName().startsWith("mp")){
                     mp = true;
                 }
@@ -630,15 +603,14 @@ public class FeatureResolverImpl implements FeatureResolver {
                     ee = true;
                 }
             }
-
-            if(rootFeatureDef.getHeader("WLP-Platform") != null){
-                String[] s = rootFeatureDef.getHeader("WLP-Platform").split(",");
-                String[] nav = parseNameAndVersion(s[0]);
+            List<String> wlpPlatform = rootFeatureDef.getPlatforms();
+            if(wlpPlatform != null && wlpPlatform.size() > 0){
+                String[] nav = parseNameAndVersion(wlpPlatform.get(0));
                 if(map.containsKey(nav[0])){
-                    map.get(nav[0]).retainAll(Arrays.asList(s));
+                    map.get(nav[0]).retainAll(wlpPlatform);
                 }
                 else{
-                    map.put(nav[0], new HashSet<String>(Arrays.asList(s)));
+                    map.put(nav[0], new HashSet<String>(wlpPlatform));
                 }
             }
             String symbolicName = rootFeatureDef.getSymbolicName();
@@ -655,7 +627,6 @@ public class FeatureResolverImpl implements FeatureResolver {
             }
         }
         //check if we have versionless features in our config,
-        //we don't want to do the below code if we don't have versionless features
         //we need some way to capture platform equivalency, ex javaee and jakartaee
         //can be possibly be done by checking if the platforms compatibility features are the same.
         if(ee || mp){
@@ -667,35 +638,22 @@ public class FeatureResolverImpl implements FeatureResolver {
                 System.out.println("Has EE: " + ee + "  -  Has MP: " + mp);
                 if((key.equals("microProfile") && mp) || (key.contains("aee") && ee)){
                     if(current.size() == 1){
-                        //add the corresponding compatibility feature to the config
-                        //api for getting the compatability feature of a version.
-                        //
-                        // rootFeatures.add(repo.getCompatabilityFeature(current.toArray()[0].toString()));
-                        //
-                        String version = current.toArray()[0].toString().split("-")[1];
-                        String feature = "";
-                        if(key.equals("microProfile")){
-                            resolvedMP = true;
-                            feature = "io.openliberty.internal.mpVersion";
-                        }
-                        else{
-                            resolvedEE = true;
-                            feature = "com.ibm.websphere.appserver.eeCompatible";
-                        }
-                        String symbolicCompatible = feature + "-" + version;
-                        selectionContext._current._selected.put(feature, new Chain(symbolicCompatible, version, symbolicCompatible));
-                        rootFeatures.add(feature + "-" + version);
+                        ProvisioningFeatureDefinition comp = selectionContext.getRepository().getCompatibilityFeatures().get((current.toArray()[0].toString()));
+                        String[] nav = parseNameAndVersion(comp.getSymbolicName());
+
+                        selectionContext._current._selected.put(nav[0], new Chain(comp.getSymbolicName(), nav[1], comp.getSymbolicName()));
+                        rootFeatures.add(comp.getSymbolicName());
                     }
                 }
             }
             if(!resolvedEE){
                 if(!featureListContainsFeatureBaseName(rootPlatforms, "com.ibm.websphere.appserver.eeCompatible")){
-                    error("Incompatible versions of features with versionless features");
+                    error("Incompatible versions of features with versionless EE features");
                 }
             }
             if(!resolvedMP){
                 if(!featureListContainsFeatureBaseName(rootPlatforms, "io.openliberty.internal.mpVersion")){
-                    error("Incompatible versions of features with versionless features");
+                    error("Incompatible versions of features with versionless MP features");
                 }
             }
         }
@@ -1283,6 +1241,27 @@ public class FeatureResolverImpl implements FeatureResolver {
             return _current._result;
         }
 
+        Set<String> compatibilityFeaturesBaseNames(){
+            Collection<SubsystemFeatureDefinitionImpl> values = _repository.getCompatibilityFeatures().values();
+            Set<String> baseNames = new HashSet<>();
+            for(SubsystemFeatureDefinitionImpl value : values){
+                baseNames.add(parseNameAndVersion(value.getSymbolicName())[0]);
+            }
+            return baseNames;
+        }
+
+        Map<String, String> platformToCompatibilityBaseName(){
+            Set<String> keys = _repository.getCompatibilityFeatures().keySet();
+            Map<String, String> platToCompat = new HashMap<>();
+            for(String key : keys){
+                String baseKey = parseNameAndVersion(key)[0];
+                if(!platToCompat.containsKey(baseKey)){
+                    platToCompat.put(baseKey, parseName(_repository.getCompatibilityFeatures().get(key).getSymbolicName()));
+                }
+            }
+            return platToCompat;
+        }
+
         //These need to be replaced with calls to some repo api
 
         /** The name of the EE compatibility feature. */
@@ -1438,9 +1417,22 @@ public class FeatureResolverImpl implements FeatureResolver {
             return false;
         }
 
+        boolean hasAtLeastOneSelected(Set<String> baseNames){
+            for(String feature : baseNames){
+                if(getSelected(feature) != null){
+                    return true;
+                }
+            }
+            return false;
+        }
+
         void processPostponed() {
             if (_current._postponed.isEmpty() && _current._postponedVersionless.isEmpty()) {
                 return;
+            }
+
+            if(!_current._postponedVersionless.isEmpty()){
+                System.out.println("Postponed Versionless: " + _current._postponedVersionless);
             }
 
             // Only process the first postponed and try again;
@@ -1451,9 +1443,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
             //if a versionless feature is postponed, process that first
             if (true) {
-                if (!!!_current._postponedVersionless.isEmpty() &&
-                    ((getSelected(COMPATIBILITY_MP) != null) ||
-                     (getSelected(COMPATIBILITY_EE) != null))) {
+                if (!!!_current._postponedVersionless.isEmpty() && hasAtLeastOneSelected(compatibilityFeaturesBaseNames())) {
 
                     Set<String> entries = _current._postponedVersionless.keySet();
                     Iterator<Map.Entry<String, Chains>> postponedVersionlessIterator = _current._postponedVersionless.entrySet().iterator();
@@ -1463,15 +1453,14 @@ public class FeatureResolverImpl implements FeatureResolver {
                     //If we do, choose the first one we see
                     while (postponedVersionlessIterator.hasNext()) {
                         firstPostponedVersionless = postponedVersionlessIterator.next();
-
+                        String plat = "";
                         if (isVersionlessMP(firstPostponedVersionless.getKey())) {
-                            if (getSelected(COMPATIBILITY_MP) != null) {
-                                break;
-                            }
+                            plat = "microprofile";
                         } else {
-                            if (getSelected(COMPATIBILITY_EE) != null) {
-                                break;
-                            }
+                            plat = "jakartaee";
+                        }
+                        if(getSelected(platformToCompatibilityBaseName().get(plat)) != null){
+                            break;
                         }
                         firstPostponedVersionless = null;
                     }
