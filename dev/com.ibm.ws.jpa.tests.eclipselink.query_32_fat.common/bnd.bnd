@@ -35,6 +35,10 @@ javac.target: 17
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
 
+# Included projects must be built first
+-dependson: \
+    com.ibm.ws.jpa.tests.eclipselink.query_31_fat.common
+
 -includeresource: \
     @${repo;com.ibm.ws.jpa.tests.eclipselink.query_31_fat.common}, \
     ${bin}
