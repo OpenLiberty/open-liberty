@@ -23,7 +23,6 @@ configurations {
 
 dependencies {
   hibernateJPA32 "org.hibernate.orm:hibernate-core:${hibernateVersion}"
-  hibernateJPA32 'jakarta.data:jakarta.data-api:1.0.0' //TODO remove once we have container feature
 
   //Annotation processor - generages .java files in build/libs/generated/sources
   //Some generated .java files import hibernate dependencies, need this compileOnly dependency
@@ -41,9 +40,10 @@ task addhibernateJPA32(type: Copy) {
 // This bundle is required both at compiletime and runtime.
 addRequiredLibraries.dependsOn copyTestContainers
 
-// If you are preforming database testing use the copyJdbcDrivers
-// task to copy the common JDBC drivers into the
-// publish/shared/resources/jdbc directory
+//TODO Hibernate does not support the current version of Derby we use for DatabaseRotation
+//HHH000511: The 10.11.1 version for [org.hibernate.dialect.DerbyDialect] is no longer supported, hence certain features may not work properly.
+//The minimum supported version is 10.15.2. Check the community dialects project for available legacy versions.
+//Nothing is currently failing, but something might fail in the future.
 addRequiredLibraries.dependsOn copyJdbcDrivers
 
 addRequiredLibraries.dependsOn addhibernateJPA32

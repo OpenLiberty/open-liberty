@@ -24,8 +24,7 @@ fat.minimum.java.level: 17
 fat.project: true
 fat.test.databases: true
 
-tested.features: \
-  checkpoint, cdi-4.1
+tested.features: cdi-4.1
 
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true

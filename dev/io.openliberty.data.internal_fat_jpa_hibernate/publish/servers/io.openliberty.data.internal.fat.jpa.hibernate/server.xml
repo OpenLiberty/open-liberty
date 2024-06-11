@@ -16,8 +16,7 @@
     <feature>componenttest-2.0</feature>
     <feature>jndi-1.0</feature>
     
-    <!-- <feature>dataContainer-1.0</feature> TODO enable this when available-->
-    
+    <feature>dataContainer-1.0</feature>
     <feature>persistenceContainer-3.2</feature>
     <feature>xmlBinding-4.0</feature>
     <feature>cdi-4.1</feature>
