@@ -149,7 +149,7 @@ public abstract class BaseTestClass {
     }
 
     protected String getVendorMetrics(LibertyServer server) throws Exception {
-        String vendorMetricsOutput = requestHttpSecureServlet("/metrics?scope=vendor", server, HttpMethod.GET);
+        String vendorMetricsOutput = requestHttpServlet("/metrics?scope=vendor", server, HttpMethod.GET);
         Log.info(c, "getVendorMetrics", vendorMetricsOutput);
         return vendorMetricsOutput;
     }
