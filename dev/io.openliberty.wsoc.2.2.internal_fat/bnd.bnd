@@ -11,7 +11,8 @@
 bVersion=1.0
 
 src: \
-    fat/src
+    fat/src,\
+    test-applications/session.war/src
 
 fat.project: true
 
@@ -21,3 +22,8 @@ javac.target: 17
 fat.minimum.java.level: 17
 
 -buildpath: \
+    org.asynchttpclient:async-http-client;version=2.12.3,\
+    io.openliberty.io.netty;version=latest,\
+    io.openliberty.jakarta.websocket.2.2;version=latest,\
+    io.openliberty.jakarta.websocket.client.2.2;version=latest,\
+
