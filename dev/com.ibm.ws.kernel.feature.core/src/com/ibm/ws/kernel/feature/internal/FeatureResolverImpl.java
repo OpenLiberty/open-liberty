@@ -546,7 +546,6 @@ public class FeatureResolverImpl implements FeatureResolver {
             filteredVersionless = filterVersionless(rootFeaturesList, selectionContext);
         }
 
-        System.out.println(rootFeaturesList);
         selectionContext.primeSelected(preResolved);
         selectionContext.primeSelected(rootFeaturesList);
 
@@ -634,8 +633,6 @@ public class FeatureResolverImpl implements FeatureResolver {
             boolean resolvedMP = !mp;
             for(String key : map.keySet()){
                 Set<String> current = map.get(key);
-                System.out.println(key + " - " + current);
-                System.out.println("Has EE: " + ee + "  -  Has MP: " + mp);
                 if((key.equals("microProfile") && mp) || (key.contains("aee") && ee)){
                     if(current.size() == 1){
                         ProvisioningFeatureDefinition comp = selectionContext.getRepository().getCompatibilityFeatures().get((current.toArray()[0].toString()));
@@ -1429,10 +1426,6 @@ public class FeatureResolverImpl implements FeatureResolver {
         void processPostponed() {
             if (_current._postponed.isEmpty() && _current._postponedVersionless.isEmpty()) {
                 return;
-            }
-
-            if(!_current._postponedVersionless.isEmpty()){
-                System.out.println("Postponed Versionless: " + _current._postponedVersionless);
             }
 
             // Only process the first postponed and try again;
