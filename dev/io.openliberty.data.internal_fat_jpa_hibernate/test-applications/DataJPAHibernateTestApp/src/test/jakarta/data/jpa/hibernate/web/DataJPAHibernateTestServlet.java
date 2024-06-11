@@ -67,7 +67,7 @@ public class DataJPAHibernateTestServlet extends FATServlet {
         try {
             Class.forName("test.jakarta.data.jpa.hibernate.web._City");
         } catch (ClassNotFoundException e) {
-            fail("Static metamodel class _City (for Persistence) was not generated or available at runtime.");
+            fail("Static metamodel class _City (for Data) was not generated or available at runtime.");
         }
 
         try {
