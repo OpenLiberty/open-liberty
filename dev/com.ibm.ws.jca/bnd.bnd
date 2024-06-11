@@ -54,6 +54,7 @@ Private-Package: \
 	com.ibm.ws.jca.internal.resources
 
 -dsannotations: com.ibm.ws.jca.service.JCAQuiesceListener, \
+  com.ibm.ws.jca.internal.BootstrapContextImpl, \
   com.ibm.ws.jca.internal.ConnectorModuleRuntimeContainer
 
 Include-Resource: \
@@ -121,29 +122,6 @@ Service-Component: \
     classLoadingService=com.ibm.wsspi.classloading.ClassLoadingService;\
     resourceAdapterBundleService=com.ibm.ws.jca.rar.ResourceAdapterBundleService;\
     properties:="resourceAdapterBundleService.target=(id=unbound)",\
-  com.ibm.ws.jca.resourceAdapter.properties;\
-    implementation:=com.ibm.ws.jca.internal.BootstrapContextImpl;\
-    provide:='javax.resource.spi.BootstrapContext,com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext';\
-    appRecycleService='com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator';\
-    beanValidationService='com.ibm.ws.beanvalidation.service.BeanValidationUsingClassLoader';\
-    classLoadingService='com.ibm.wsspi.classloading.ClassLoadingService';\
-    connectorService='com.ibm.ws.jca.cm.ConnectorService';\
-    contextProvider='com.ibm.wsspi.threadcontext.jca.JCAContextProvider';\
-    contextService='com.ibm.wsspi.threadcontext.WSContextService';\
-    eEVersion='com.ibm.ws.javaee.version.JavaEEVersion';\
-    executorService='java.util.concurrent.ExecutorService';\
-    futureMonitor='com.ibm.ws.threading.FutureMonitor';\
-    requiredContextProvider='com.ibm.wsspi.threadcontext.jca.JCAContextProvider';\
-    resourceAdapterService='com.ibm.ws.jca.internal.ResourceAdapterService';\
-    tranInflowManager='com.ibm.tx.jta.TransactionInflowManager';\
-    tranSyncRegistry='javax.transaction.TransactionSynchronizationRegistry';\
-    jcaSecurityContextService=com.ibm.ws.jca.security.JCASecurityContext;\
-    configuration-policy:=require;\
-    dynamic:='eEVersion';\
-    greedy:='beanValidationService,contextProvider,eEVersion,jcaSecurityContextService';\
-    multiple:='contextProvider,requiredContextProvider';\
-    optional:='beanValidationService,contextProvider,eEVersion,requiredContextProvider,jcaSecurityContextService';\
-    properties:="contextService.target=(id=unbound),executorService.target=(id=unbound),requiredContextProvider.target=(id=unbound),resourceAdapterService.target=(id=unbound)",\
   com.ibm.ws.jca.sslHelper;\
     implementation:=com.ibm.ws.jca.internal.SSLHelperImpl;\
     provide:='com.ibm.ws.jca.internal.SSLHelper',\

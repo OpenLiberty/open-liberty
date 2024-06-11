@@ -4,13 +4,19 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jca.internal;
+
+import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
+import static org.osgi.service.component.annotations.ReferenceCardinality.MULTIPLE;
+import static org.osgi.service.component.annotations.ReferenceCardinality.OPTIONAL;
+import static org.osgi.service.component.annotations.ReferencePolicy.DYNAMIC;
+import static org.osgi.service.component.annotations.ReferencePolicyOption.GREEDY;
 
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -59,6 +65,9 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.tx.jta.TransactionInflowManager;
 import com.ibm.websphere.crypto.PasswordUtil;
@@ -66,6 +75,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.beanvalidation.service.BeanValidationUsingClassLoader;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.version.JavaEEVersion;
@@ -81,6 +91,7 @@ import com.ibm.ws.threading.FutureMonitor;
 import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext;
+import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
@@ -96,8 +107,11 @@ import com.ibm.wsspi.threading.WSExecutorService;
 /**
  * Bootstrap context for a resource adapter
  */
-//as documentation only at this point:
-//@Component(pid="com.ibm.ws.jca.resourceAdapter.properties")
+@Component(name = "com.ibm.ws.jca.resourceAdapter.properties", configurationPolicy = REQUIRE,
+           property = { "contextService.target=(id=unbound)",
+                        "executorService.target=(id=unbound)",
+                        "requiredContextProvider.target=(id=unbound)",
+                        "resourceAdapterService.target=(id=unbound)" })
 public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycleContext {
     private static final TraceComponent tc = Tr.register(BootstrapContextImpl.class);
 
@@ -262,7 +276,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
     /**
      * Reference to the BeanValidation service.
      */
-    private final AtomicServiceReference<Object> bvalRef = new AtomicServiceReference<Object>("beanValidationService");
+    private final AtomicServiceReference<BeanValidationUsingClassLoader> bvalRef = new AtomicServiceReference<>("beanValidationService");
 
     /**
      * Reference to the JCASecurityContext service.
@@ -281,6 +295,10 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
 
     private BeanValidationHelper bvalHelper = null;
 
+    @Reference(name = "appRecycleService")
+    protected void waitForAppRecycleService(ApplicationRecycleCoordinator svc) {
+    }
+
     /**
      * DS method to activate this component.
      * Best practice: this should be a protected method, not public or private
@@ -289,6 +307,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      * @throws Exception if unable to start the resource adapter
      */
     @Trivial
+    @Activate
     protected void activate(ComponentContext context) throws Exception {
         Dictionary<String, ?> props = context.getProperties();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -367,12 +386,12 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      * Resource adapter config properties are also configured on the instance
      * if they are valid for the type of object and haven't already been configured.
      *
-     * @param instance managed connection factory, admin object, or activation spec instance.
-     * @param id name identifying the resource.
-     * @param configProps config properties.
+     * @param instance        managed connection factory, admin object, or activation spec instance.
+     * @param id              name identifying the resource.
+     * @param configProps     config properties.
      * @param activationProps activation config properties from the container. Null if not configuring an activation spec.
-     * @param adminObjSvc from the MEF may be passed when activation spec is to be configured, otherwise null.
-     * @param destinationRef reference to the AdminObjectService for the destination that is configured on the activation spec. Otherwise null.
+     * @param adminObjSvc     from the MEF may be passed when activation spec is to be configured, otherwise null.
+     * @param destinationRef  reference to the AdminObjectService for the destination that is configured on the activation spec. Otherwise null.
      * @throws Exception if an error occurs.
      */
     @FFDCIgnore(value = { NumberFormatException.class, Throwable.class })
@@ -687,12 +706,12 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
     /**
      * Returns a queue name or topic name (if the specified type is String) or a destination.
      *
-     * @param value destination id, if any, specified in the activation config.
-     * @param type interface required for the destination setter method.
+     * @param value           destination id, if any, specified in the activation config.
+     * @param type            interface required for the destination setter method.
      * @param destinationType destination interface type (according to the activation spec config properties)
-     * @param destinationRef reference to the AdminObjectService for the destination that is configured on the activation spec. Otherwise null.
+     * @param destinationRef  reference to the AdminObjectService for the destination that is configured on the activation spec. Otherwise null.
      * @param activationProps endpoint activation properties.
-     * @param adminObjSvc admin object service from MEF, or null
+     * @param adminObjSvc     admin object service from MEF, or null
      * @return queue name or topic name (if the specified type is String) or a destination.
      * @throws Exception if unable to get the destination.
      */
@@ -814,7 +833,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      * Returns the name of the queue or topic.
      *
      * @param destinationType type of destination (javax.jms.Queue or javax.jms.Topic).
-     * @param value instance of the above type.
+     * @param value           instance of the above type.
      * @return name of the queue or topic.
      * @throws Exception if unable to obtain the destination name.
      */
@@ -985,6 +1004,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      *
      * @param the service
      */
+    @Reference(name = "classLoadingService")
     protected void setClassLoadingService(ClassLoadingService svc) {
         classLoadingSvc = svc;
     }
@@ -997,6 +1017,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      *
      * @param svc the service
      */
+    @Reference(name = "connectorService")
     protected void setConnectorService(ConnectorService svc) {
         connectorSvc = svc;
     }
@@ -1006,6 +1027,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      *
      * @param ref reference to the service
      */
+    @Reference(name = "contextProvider", cardinality = MULTIPLE, policyOption = GREEDY)
     protected void setContextProvider(ServiceReference<JCAContextProvider> ref) {
         contextProviders.putReference((String) ref.getProperty(JCAContextProvider.TYPE), ref);
     }
@@ -1015,6 +1037,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      *
      * @param ref reference to the service
      */
+    @Reference(name = "contextService")
     protected void setContextService(ServiceReference<WSContextService> ref) {
         contextSvcRef = ref;
     }
@@ -1024,6 +1047,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      *
      * @param ref reference to the service
      */
+    @Reference(name = "eEVersion", cardinality = OPTIONAL, policyOption = GREEDY, policy = DYNAMIC)
     protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
         String version = (String) ref.getProperty("version");
         if (version == null) {
@@ -1041,6 +1065,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      *
      * @param svc the service
      */
+    @Reference(name = "executorService")
     protected void setExecutorService(ExecutorService svc) {
         execSvc = (WSExecutorService) svc;
     }
@@ -1050,6 +1075,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      *
      * @param ref reference to the service
      */
+    @Reference(name = "requiredContextProvider", cardinality = MULTIPLE)
     protected void setRequiredContextProvider(ServiceReference<JCAContextProvider> ref) {
         // The set of required context providers overlaps the set of available context providers
         contextProviders.putReference((String) ref.getProperty(JCAContextProvider.TYPE), ref);
@@ -1060,6 +1086,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      *
      * @param the service
      */
+    @Reference(name = "resourceAdapterService")
     protected void setResourceAdapterService(ResourceAdapterService svc) {
         resourceAdapterSvc = svc;
     }
@@ -1069,7 +1096,8 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      *
      * @param the service
      */
-    protected void setBeanValidationService(ServiceReference<Object> ref) throws Exception {
+    @Reference(name = "beanValidationService", cardinality = OPTIONAL, policyOption = GREEDY)
+    protected void setBeanValidationService(ServiceReference<BeanValidationUsingClassLoader> ref) throws Exception {
         bvalRef.setReference(ref);
     }
 
@@ -1078,6 +1106,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      *
      * @param ref reference to the service
      */
+    @Reference(name = "tranInflowManager")
     protected void setTranInflowManager(ServiceReference<TransactionInflowManager> ref) {
         tranInflowManagerRef.setReference(ref);
     }
@@ -1087,6 +1116,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      *
      * @param ref reference to the service
      */
+    @Reference(name = "tranSyncRegistry")
     protected void setTranSyncRegistry(ServiceReference<TransactionSynchronizationRegistry> ref) {
         tranSyncRegistryRef.setReference(ref);
     }
@@ -1096,6 +1126,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      *
      * @param ref reference to the service
      */
+    @Reference(name = "jcaSecurityContextService", cardinality = OPTIONAL, policyOption = GREEDY)
     protected void setJcaSecurityContextService(ServiceReference<JCASecurityContext> ref) {
         jcaSecurityContextRef.setReference(ref);
     }
@@ -1258,7 +1289,8 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      *
      * @param ref reference the service
      */
-    protected void unsetContextService(ServiceReference<WSContextService> ref) {}
+    protected void unsetContextService(ServiceReference<WSContextService> ref) {
+    }
 
     /**
      * Declarative Services method for unsetting the Jakarta/Java EE version
@@ -1305,7 +1337,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      *
      * @param the service
      */
-    protected void unsetBeanValidationService(ServiceReference<Object> ref) {
+    protected void unsetBeanValidationService(ServiceReference<BeanValidationUsingClassLoader> ref) {
         bvalRef.unsetReference(ref);
     }
 
@@ -1341,6 +1373,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      *
      * @param svc the service
      */
+    @Reference(name = "futureMonitor")
     protected void setFutureMonitor(FutureMonitor svc) {
         futureMonitorSvc = svc;
     }
