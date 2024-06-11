@@ -9,6 +9,8 @@
  *******************************************************************************/
 package com.ibm.ws.wsoc.link;
 
+import java.util.logging.Logger;
+
 import javax.websocket.SendResult;
 
 import com.ibm.websphere.ras.Tr;
@@ -18,6 +20,7 @@ import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 public class LinkWriteExt10 extends LinkWrite {
 
         private static final TraceComponent tc = Tr.register(LinkWriteExt10.class);
+        private static final Logger LOG = Logger.getLogger(LinkWriteExt10.class.getName());
     
         public void processWrite(TCPWriteRequestContext wsc) {
 
@@ -31,7 +34,7 @@ public class LinkWriteExt10 extends LinkWrite {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "calling onResult on SendHandler: " + wsocSendHandler);
                 }
-                System.out.println("SESSION TO USE " + connLink.getWsocSession());
+                LOG.info("SESSION TO USE " + connLink.getWsocSession());
                 wsocSendHandler.onResult(SendResultGood);
             }
         }

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2024co IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.wsoc;
 
@@ -34,6 +31,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 import com.ibm.ws.wsoc.link.LinkWriteFactory;
 import com.ibm.ws.wsoc.link.LinkWriteFactory10;
+
 /**
  * Provides various services for differnet features.
  */
@@ -164,7 +162,7 @@ public class WebSocketVersionServiceManager {
 
 
     protected static LinkWriteFactory getLinkWriteFactory() {
-        // if websocket 2.2 is enabled, use XXX, else use default (XXX)
+        // if websocket 2.2 is enabled, use LinkFactory22, else use default LinkFactory10
         LinkWriteFactory linkWriteFactory = linkWriteFactorySRRef.getService();
         if (linkWriteFactory != null) {
             return linkWriteFactory;

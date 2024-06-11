@@ -53,12 +53,12 @@ Private-Package: \
 
 
 -buildpath: \
- 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.wsoc.jakarta;version=latest,\
   io.openliberty.wsoc.2.1.internal,\
   io.openliberty.jakarta.websocket.client.2.2;version=latest,\
   com.ibm.ws.kernel.service;version=latest,\
- 	io.openliberty.jakarta.websocket.2.2;version=latest,\
+  io.openliberty.jakarta.websocket.2.2;version=latest,\
   com.ibm.ws.channelfw;version=latest,\
   com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.transport.http;version=latest,\
+  com.ibm.ws.transport.http;version=latest

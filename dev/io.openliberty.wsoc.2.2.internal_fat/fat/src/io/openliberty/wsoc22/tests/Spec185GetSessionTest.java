@@ -1,6 +1,6 @@
 
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
@@ -36,19 +35,22 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
-import org.asynchttpclient.ws.*;
-import org.asynchttpclient.*;
-import io.netty.util.concurrent.*;
+import org.asynchttpclient.Dsl;
+import org.asynchttpclient.ws.WebSocketUpgradeHandler;
+import org.asynchttpclient.ws.WebSocketListener;
+import org.asynchttpclient.ws.WebSocket;
+
 /**
- * WebSocket 2.2 Test
+ * Verifies SendResult#getSession works per Spec #185
+ * https://github.com/jakartaee/websocket/issues/185
  */
 @RunWith(FATRunner.class)
-public class SendRequestSession {
+public class Spec185GetSessionTest {
 
     @Server("sessionTestServer")
     public static LibertyServer LS;
 
-    private static final Logger LOG = Logger.getLogger(SendRequestSession.class.getName());
+    private static final Logger LOG = Logger.getLogger(Spec185GetSessionTest.class.getName());
 
     private static final String SESSION_WAR_NAME = "session";
 
@@ -56,27 +58,14 @@ public class SendRequestSession {
     public static void setUp() throws Exception {
 
         // Build the war app and add the dependencies
-        WebArchive SessionApp = ShrinkHelper.buildDefaultApp(SESSION_WAR_NAME + ".war",
-                "session.war",
-                "session.war.*");
+        ShrinkHelper.defaultDropinApp(LS, SESSION_WAR_NAME + ".war", "io.openliberty.wsoc.spec185");
 
-        SessionApp = (WebArchive) ShrinkHelper.addDirectory(SessionApp,
-                "test-applications/" + SESSION_WAR_NAME + ".war/resources");
-        ShrinkHelper.exportDropinAppToServer(LS, SessionApp);
-
-        LS.startServer();
+        LS.startServer(Spec185GetSessionTest.class.getSimpleName() + ".log");
         LS.waitForStringInLog("CWWKZ0001I.* " + SESSION_WAR_NAME);
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-
-        // give the system .5 seconds to settle down before stopping
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException x) {
-
-        }
 
         if (LS != null && LS.isStarted()) {
             LS.stopServer();
@@ -88,7 +77,6 @@ public class SendRequestSession {
      * Tests that the session after the message is sent is not null
      * by comparing IDs before and after the message
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testSession() throws Exception {
         WebSocketUpgradeHandler.Builder upgradeHandlerBuilder = new WebSocketUpgradeHandler.Builder();
@@ -97,37 +85,40 @@ public class SendRequestSession {
                     @Override
                     public void onOpen(WebSocket websocket) {
                         // WebSocket connection opened
-                        System.out.println("Opened Websocket");
+                        LOG.info("Opened Websocket");
                     }
 
                     @Override
                     public void onClose(WebSocket websocket, int code, String reason) {
-                        // WebSocket connection closed                        
+                        // WebSocket connection closed
+                        LOG.info("Closed Websocket");                       
                     }
 
                     @Override
                     public void onError(Throwable t) {
                         // WebSocket connection error
+                        LOG.info("Session Error Occurred: " + t);
                     }
 
                     @Override
                     public void onTextFrame(String payload, boolean finalFragment, int rsv){
                         // Log message
-                        System.out.println("Debugging: " + payload);
+                        LOG.info("Debugging: " + payload);
                     }
                 }).build();
 
         WebSocket webSocketClient = Dsl.asyncHttpClient()
                 .prepareGet("ws://" + 
                             LS.getHostname() + ":" + 
-                            LS.getHttpDefaultPort() + 
-                            "/session/echo")
+                            LS.getHttpDefaultPort() + "/" +
+                            SESSION_WAR_NAME +
+                            "/echo")
                 .setRequestTimeout(5000)
                 .execute(wsHandler)
                 .get();
         
         if (webSocketClient.isOpen()) {
-            System.out.println("sending message");
+            LOG.info("sending message");
             webSocketClient.sendTextFrame("test message");
         }
 
@@ -135,8 +126,8 @@ public class SendRequestSession {
         String resultSession = LS.waitForStringInLog("RESULT SESSION: ", LS.getConsoleLogFile());
         assertNotNull("The following String was not found in the log: ", msgSession);
         assertNotNull("The following String was not found in the log: ", resultSession);
-        System.out.println(msgSession);
-        System.out.println(resultSession);
+        LOG.info(msgSession);
+        LOG.info(resultSession);
         assertTrue("The Session ID's were not the same.", msgSession.substring(msgSession.indexOf(": ")).equals(resultSession.substring(resultSession.indexOf(": "))));
     }
 

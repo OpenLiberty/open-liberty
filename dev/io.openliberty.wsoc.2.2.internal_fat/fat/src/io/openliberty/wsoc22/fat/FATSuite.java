@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,11 +17,11 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.fat.util.FatLogHandler;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import io.openliberty.wsoc22.tests.SendRequestSession;
+import io.openliberty.wsoc22.tests.Spec185GetSessionTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                SendRequestSession.class
+                Spec185GetSessionTest.class
 })
 public class FATSuite {
 

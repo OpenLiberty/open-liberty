@@ -6,11 +6,8 @@
     http://www.eclipse.org/legal/epl-2.0/
     
     SPDX-License-Identifier: EPL-2.0
-   
-    Contributors:
-        IBM Corporation - initial API and implementation
- -->
- 
+-->
+
  <!-- Copied over from basicTestServer (io.openliberty.wsoc.internal_fat/publish/servers) -->
  <server>
     <featureManager>
@@ -38,6 +35,4 @@
     <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
 
     <webContainer deferServletLoad="false"/>
-
-    <logging maxFileSize="50" maxFiles="10" traceSpecification="*=info:com.ibm.ws.webcontainer.*=all:com.ibm.wsspi.webcontainer.*=all:com.ibm.ws.webcontainer31.*=all:ChannelFramework=all:HTTPChannel=all:TCPChannel=all:HttpTransport=all:websockets=all:com.ibm.ws.runtime.update.*=all:HTTPDispatcher=all"/>
 </server>

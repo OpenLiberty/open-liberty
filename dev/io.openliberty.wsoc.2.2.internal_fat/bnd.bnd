@@ -25,5 +25,5 @@ fat.minimum.java.level: 17
     org.asynchttpclient:async-http-client;version=2.12.3,\
     io.openliberty.io.netty;version=latest,\
     io.openliberty.jakarta.websocket.2.2;version=latest,\
-    io.openliberty.jakarta.websocket.client.2.2;version=latest,\
+    io.openliberty.jakarta.websocket.client.2.2;version=latest
 
