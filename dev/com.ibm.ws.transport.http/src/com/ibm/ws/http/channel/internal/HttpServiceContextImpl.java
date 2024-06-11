@@ -478,7 +478,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @return boolean
      */
     final public boolean headersParsed() {
-        return STATE_FULL_HEADERS <= this.msgParsedState;
+        return getHttpConfig().useNetty() ? Boolean.TRUE:STATE_FULL_HEADERS <= this.msgParsedState;
     }
 
     /**
@@ -2099,7 +2099,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
 
         // save the amount of data written inside actual body
-        addBytesWritten(length);
+        if(Objects.isNull(nettyContext)) {
+            addBytesWritten(length);
+        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "formatBody: total bytes now : " + getNumBytesWritten());
@@ -3002,16 +3004,19 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
         }
 
-        addBytesWritten(GenericUtils.sizeOf(buffers));
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Number of bytes to write: " + getNumBytesWritten());
-        }
+        
 
         boolean shouldSkipWriteOnUpgrade = nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)
                                            && !nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).get().equals("HTTP2");
         if (!shouldSkipWriteOnUpgrade && Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
             MSP.log("sendOutgoing are buffers good? " + GenericUtils.sizeOf(buffers));
+            
+            addBytesWritten(GenericUtils.sizeOf(buffers));
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Number of bytes to write: " + getNumBytesWritten());
+            }
+            
             String streamId = nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), "-1");
             if (this.getTSC() instanceof NettyTCPConnectionContext) {
                 ((NettyTCPWriteRequestContext) (getTSC().getWriteInterface())).setStreamId(streamId);
@@ -3283,13 +3288,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
         }
 
-        this.addBytesWritten(GenericUtils.sizeOf(buffers));
-        // TODO check this as I believe it is not longer required
-        this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_BYTES_WRITTEN).set(numBytesWritten);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Number of bytes to write: " + getNumBytesWritten());
-        }
+        
 
         if (!headersSent()) {
             boolean complete = false;
@@ -3343,6 +3342,13 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         boolean shouldSkipWriteOnUpgrade = nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)
                                            && !nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).get().equals("HTTP2");
         if (!shouldSkipWriteOnUpgrade && Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
+            this.addBytesWritten(GenericUtils.sizeOf(buffers));
+            // TODO check this as I believe it is not longer required
+            this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_BYTES_WRITTEN).set(numBytesWritten);
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Number of bytes to write: " + getNumBytesWritten());
+            }
             for (WsByteBuffer buffer : buffers) {
                 if (Objects.nonNull(buffer)) {
                     if (buffer.remaining() == 0) {
