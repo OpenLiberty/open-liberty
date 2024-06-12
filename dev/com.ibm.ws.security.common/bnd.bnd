@@ -50,6 +50,7 @@ Private-Package: \
 instrument.classesExcludes: com/ibm/ws/security/common/internal/resources/*.class
 
 -buildpath: \
+    com.ibm.ws.kernel.boot;version=latest,\
     com.ibm.ws.kernel.service;version=latest, \
     com.ibm.ws.logging;version=latest, \
     com.ibm.ws.logging.core;version=latest, \

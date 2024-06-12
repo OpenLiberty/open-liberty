@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.crypto.common;
+package com.ibm.ws.security.crypto.common;
 
 import java.util.HashMap;
 import java.util.Map;
