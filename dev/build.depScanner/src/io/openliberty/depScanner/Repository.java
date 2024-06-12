@@ -53,7 +53,9 @@ public class Repository {
                                                          "com.ibm.ws:org.apache.wink:1.0.1",
                                                          "com.ibm.ws:xmlpull:1.1.3.1",
                                                          "com.ibm.ws:xalan:2.7.1",
-                                                         "com.ibm.ws:xalan:1.0.2");
+                                                         "com.ibm.ws:xalan:1.0.2",
+                                                         "io.netty:netty-codec-http:4.1.107.Final",
+                                                         "org.bouncycastle:bcprov-jdk18on:1.77");
 
     private final Map<String, List<Module>> moduleMap = new HashMap<>();
 
