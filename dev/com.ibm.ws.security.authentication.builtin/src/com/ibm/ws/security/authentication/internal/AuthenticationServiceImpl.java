@@ -226,19 +226,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 }
 
                 Subject authenticatedSubject = performJAASLogin(jaasEntryName, authenticationData, subject);
-                CheckpointPhase.onRestore(() -> insertSubjectInAuthCache(authenticationData, authenticatedSubject));
-                // Could instead skip the caching altogether.
-                //if (!CheckpointPhase.getPhase().restored()) {
-                //    insertSubjectInAuthCache(authenticationData, authenticatedSubject);
-                //}
+                //Initializing the cache should happen first which is located inside io.openliberty.jcache.internal.CacheServiceImpl.activate(Map<String, Object>)
+                //Therefore ranking 3 is given here.
+                CheckpointPhase.onRestore(3, () -> insertSubjectInAuthCache(authenticationData, authenticatedSubject));
                 return authenticatedSubject;
-
-                //Subject authenticatedSubject = findSubjectInAuthCache(authenticationData, subject, hashtableAuthData);
-                //if (authenticatedSubject == null) {
-                //    authenticatedSubject = performJAASLogin(jaasEntryName, authenticationData, subject);
-                //    insertSubjectInAuthCache(authenticationData, authenticatedSubject);
-                //}
-                //return authenticatedSubject;
             }
         } finally {
             releaseLock(authenticationData, hashtableAuthData, currentLock);
@@ -320,19 +311,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
                 Subject authenticatedSubject = performJAASLogin(jaasEntryName, callbackHandler, subject);
                 final AuthenticationData fAuthenticationData = authenticationData;
-                CheckpointPhase.onRestore(() -> insertSubjectInAuthCache(fAuthenticationData, authenticatedSubject));
-                // Could instead skip the caching altogether
-                //if (!CheckpointPhase.getPhase().restored()) {
-                //    insertSubjectInAuthCache(authenticationData, authenticatedSubject);
-                //}
+                //Initializing the cache should happen first which is located inside io.openliberty.jcache.internal.CacheServiceImpl.activate(Map<String, Object>)
+                //Therefore ranking 3 is given here.
+                CheckpointPhase.onRestore(3, () -> insertSubjectInAuthCache(fAuthenticationData, authenticatedSubject));
                 return authenticatedSubject;
-
-                //Subject authenticatedSubject = findSubjectInAuthCache(authenticationData, subject, hashtableAuthData);
-                //if (authenticatedSubject == null) {
-                //    authenticatedSubject = performJAASLogin(jaasEntryName, callbackHandler, subject);
-                //    insertSubjectInAuthCache(authenticationData, authenticatedSubject);
-                //}
-                //return authenticatedSubject;
             }
         } finally {
             releaseLock(authenticationData, hashtableAuthData, currentLock);
