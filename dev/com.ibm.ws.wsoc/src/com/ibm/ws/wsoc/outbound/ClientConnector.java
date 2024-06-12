@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,7 +17,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import javax.websocket.ClientEndpoint; 
+import javax.websocket.ClientEndpoint;
 import javax.websocket.ClientEndpointConfig;
 import javax.websocket.ClientEndpointConfig.Builder;
 import javax.websocket.Decoder;
@@ -60,38 +60,62 @@ public class ClientConnector {
         aep.initialize(annotatedClass.getClass(), endpointConfig, false);
 
         aep.setAppInstance(annotatedClass);
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "about to call connectClass");
+        }
+
         return connectClass(aep, path, (ClientEndpointConfig) endpointConfig, wsc);
 
     }
 
     public Session connectClass(Object clazz, URI path, ClientEndpointConfig config, WebSocketContainer wsc) throws DeploymentException, IOException {
-       
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "entered connectClass");
+        }
+
         WsocAddress endpointAddress;
 
-        if(WebSocketVersionServiceManager.isWsoc21OrHigher()){
-            endpointAddress  = new Wsoc21Address(path);
+        if (WebSocketVersionServiceManager.isWsoc21OrHigher()) {
+            endpointAddress = new Wsoc21Address(path);
         } else {
             endpointAddress = new Wsoc10Address(path);
         }
-        
-        
+
         endpointAddress.validateURI();
 
         ParametersOfInterest things = new ParametersOfInterest();
 
-        if(WebSocketVersionServiceManager.isWsoc21OrHigher()){
+        if (WebSocketVersionServiceManager.isWsoc21OrHigher()) {
             config = WebSocketVersionServiceManager.getClientEndpointConfigCopyFactory().getClientEndpointConfig(config);
             things.setUserProperties(config.getUserProperties());
         }
 
-        HttpRequestor requestor = WebSocketVersionServiceManager.getHttpRequestorFactory().getHttpRequestor(endpointAddress, config, things);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "about to call getHttpRequestor");
+        }
+        HttpRequestor requestor = (WebSocketVersionServiceManager.getHttpRequestorFactory().getHttpRequestor(endpointAddress, config, things));
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "returned from getHttpRequestor");
+        }
         WsByteBuffer remainingBuf = null;
 
         try {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "calling Requestor.connect");
+            }
             requestor.connect();
-
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "returned from Requestor.connect");
+            }
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "calling Requestor.sendRequest");
+            }
             // PH10279 - pass things to get populated with request parameters
             requestor.sendRequest(things);
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "returned from Requestor.sendRequest");
+            }
 
         } catch (InvalidChainNameException ice) {
             String msg = Tr.formatMessage(tc, "client.connection.nossl", endpointAddress.toString(), ice);
@@ -109,7 +133,13 @@ public class ClientConnector {
         }
 
         try {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "calling Requestor.completeResponse");
+            }
             remainingBuf = requestor.completeResponse();
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "reutrning from Requestor.completeResponse");
+            }
         } catch (IOException up) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "requestor.completeResponse threw IOException of: " + up);

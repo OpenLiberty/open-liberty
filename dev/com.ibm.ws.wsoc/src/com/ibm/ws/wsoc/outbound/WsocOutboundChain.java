@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.wsoc.outbound;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.osgi.framework.ServiceReference;
@@ -33,6 +34,10 @@ import com.ibm.wsspi.channelfw.exception.ChannelException;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
+import io.openliberty.netty.internal.BootstrapExtended;
+import io.openliberty.netty.internal.NettyFramework;
+import io.openliberty.netty.internal.exception.NettyException;
+
 public class WsocOutboundChain {
 
     private static final TraceComponent tc = Tr.register(WsocOutboundChain.class);
@@ -52,20 +57,61 @@ public class WsocOutboundChain {
     /** Required, static Channel framework reference */
     private static CHFWBundle chfw = null;
 
-    private final WsocChain wsocChain = new WsocChain(this, false);
-    private final WsocChain wsocSecureChain = new WsocChain(this, true);
+    private WsocChain wsocChain = null;
+    private WsocChain wsocSecureChain = null;
 
     private volatile boolean outboundCalled = true;
 
     public static final String WS_CHAIN_NAME = "WsocOutboundHttp";
     public static final String WSS_CHAIN_NAME = "WsocOutboundHttpSecure";
 
+    /** Required, static Netty framework reference */
+    private static NettyFramework nettyBundle;
+    private static BootstrapExtended bootstrap;
+
+    private boolean useNettyTransport = false;
+
+    public WsocOutboundChain() {
+        //Map<String, Object> options = new HashMap<String, Object>(tcpOptions.getConfiguration());
+        // LLA TODO
+        //if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+        //    Tr.debug(this, tc, "tcp options = " + options.toString());
+
+        //useNettyTransport = ProductInfo.getBetaEdition() &&
+        //                    MetatypeUtils.parseBoolean(WS_CHAIN_NAME, "useNettyTransport", options.get("useNettyTransport"), true);
+        useNettyTransport = true;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "useNettyTransport = " + useNettyTransport);
+        if (!useNetty()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "Creating cfw chains");
+
+            wsocChain = new WsocChain(this, false);
+            wsocSecureChain = new WsocChain(this, true);
+
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "Creating netty chains");
+            wsocChain = new NettyWsocChain(this, false);
+            wsocSecureChain = new NettyWsocChain(this, true);
+        }
+    }
+
+    //public static Channel getChannelFactory(WsocAddress addr) throws  ChainException, ChannelException {
+
+    //    if (addr.isSecure()) {
+    //        return getCfw().getOutboundVCFactory(WSS_CHAIN_NAME).createConnection();
+    //    } else {
+    //        return getCfw().getOutboundVCFactory(WS_CHAIN_NAME).createConnection();
+    //    }
+
+    //}
+
     public static VirtualConnection getVCFactory(WsocAddress addr) throws ChainException, ChannelException {
 
         if (addr.isSecure()) {
             return getCfw().getOutboundVCFactory(WSS_CHAIN_NAME).createConnection();
-        }
-        else {
+        } else {
             return getCfw().getOutboundVCFactory(WS_CHAIN_NAME).createConnection();
         }
 
@@ -74,11 +120,24 @@ public class WsocOutboundChain {
     /**
      * DS method to activate this component.
      * Best practice: this should be a protected method, not public or private
-     * 
+     *
      * @param properties : Map containing service & config properties
-     *            populated/provided by config admin
+     *                       populated/provided by config admin
      */
     protected void activate(Map<String, Object> properties, ComponentContext context) {
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "Activate useNettyTransport = " + useNettyTransport);
+        if (useNettyTransport) {
+            try {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "Creating Netty bundle TCP Bootstrap Outbound");
+                Map<String, Object> options = new HashMap<String, Object>(tcpOptions.getConfiguration());
+                bootstrap = nettyBundle.createTCPBootstrapOutbound(options);
+            } catch (NettyException e) {
+                Tr.error(tc, "<init>: Failure initializing Netty Bootstrap", e.toString());
+            }
+        }
 
         sslOptions.activate(context);
         sslFactoryProvider.activate(context);
@@ -122,7 +181,8 @@ public class WsocOutboundChain {
     }
 
     @Trivial
-    protected void unsetTcpOptions(ServiceReference<ChannelConfiguration> service) {}
+    protected void unsetTcpOptions(ServiceReference<ChannelConfiguration> service) {
+    }
 
     @Trivial
     public Map<String, Object> getTcpOptions() {
@@ -139,7 +199,8 @@ public class WsocOutboundChain {
     }
 
     @Trivial
-    protected void unsetHttpOptions(ServiceReference<ChannelConfiguration> service) {}
+    protected void unsetHttpOptions(ServiceReference<ChannelConfiguration> service) {
+    }
 
     public Map<String, Object> getHttpOptions() {
 
@@ -177,24 +238,66 @@ public class WsocOutboundChain {
 
     /**
      * DS method for setting the required channel framework service.
-     * 
+     *
      * @param bundle
      */
     @Reference(name = "chfwBundle")
     protected void setChfwBundle(CHFWBundle bundle) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, " Setting cfwBundle " + bundle.toString());
         chfw = bundle;
     }
 
     /**
      * This is a required static reference, this won't
      * be called until the component has been deactivated
-     * 
+     *
      * @param bundle CHFWBundle instance to unset
      */
-    protected void unsetChfwBundle(CHFWBundle bundle) {}
+    protected void unsetChfwBundle(CHFWBundle bundle) {
+    }
 
     protected CHFWBundle getChfwBundle() {
         return chfw;
+    }
+
+    /**
+     * DS method for setting the required netty service.
+     *
+     * @param bundle
+     */
+    @Reference(name = "nettyBundle")
+    protected void setNettyBundle(NettyFramework bundle) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "Setting nettyBundle " + bundle.toString());
+
+        nettyBundle = bundle;
+    }
+
+    /**
+     * This is a required static reference, this won't
+     * be called until the component has been deactivated
+     *
+     * @param bundle NettyBundle instance to unset
+     */
+    protected void unsetNettyBundle(NettyFramework bundle) {
+    }
+
+    protected static NettyFramework getNettyBundle() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "Getting nettyBundle" + nettyBundle.toString());
+
+        return nettyBundle;
+    }
+
+    /**
+     * @return NettyFramework associated with the NettyBundle service.
+     */
+    public static BootstrapExtended getOutboundBootstrap() {
+        Tr.entry(tc, "getOutboundBootstrap");
+
+        return bootstrap;
+
     }
 
     /**
@@ -208,11 +311,21 @@ public class WsocOutboundChain {
 
     }
 
+    /**
+     * Query if Netty has been enabled for this endpoint
+     *
+     * @return true if Netty should be used for this endpoint
+     */
+    public boolean useNetty() {
+        return useNettyTransport;
+    }
+
     private void performAction(Runnable action) {
         action.run();
     }
 
-    private final Object actionLock = new Object() {};
+    private final Object actionLock = new Object() {
+    };
 
     private final Runnable stopAction = new Runnable() {
         @Override
