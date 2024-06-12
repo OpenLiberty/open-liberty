@@ -15,6 +15,8 @@ package com.ibm.ws.security.saml.sso20.acs;
 
 import java.util.List;
 
+import javax.xml.validation.Validator;
+
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.messaging.handler.MessageHandlerException;
 import org.opensaml.saml.common.SAMLObject;
@@ -35,7 +37,7 @@ import org.opensaml.xmlsec.signature.support.impl.BaseSignatureTrustEngine;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.crypto.common.SamlSignatureMethods;
+import com.ibm.ws.security.common.crypto.SamlSignatureMethods;
 import com.ibm.ws.security.saml.TraceConstants;
 import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
 

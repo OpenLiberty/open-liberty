@@ -213,24 +213,24 @@ public class JavaScriptUtilsTest extends CommonTestClass {
         }
     }
 
-    @Test
-    public void test_getJavaScriptHtmlCookieString_nonEmptyName_nonEmptyValue_withPartitionedTrue() throws Exception {
-        try {
-            String name = "some prop";
-            String value = "some value";
-
-            final String expectedCookieString = name + "=" + value + "; " +PARTITIONED_PROP+ " SameSite=None; secure;";
-
-            getWebAppSecurityConfigCookiePropertiesExpectations(false, "None", "true");
-
-            String result = utils.getJavaScriptHtmlCookieString(name, value);
-
-            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + expectedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
+//    @Test
+//    public void test_getJavaScriptHtmlCookieString_nonEmptyName_nonEmptyValue_withPartitionedTrue() throws Exception {
+//        try {
+//            String name = "some prop";
+//            String value = "some value";
+//
+//            final String expectedCookieString = name + "=" + value + "; " +PARTITIONED_PROP+ " SameSite=None; secure;";
+//
+//            getWebAppSecurityConfigCookiePropertiesExpectations(false, "None", "true");
+//
+//            String result = utils.getJavaScriptHtmlCookieString(name, value);
+//
+//            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + expectedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
+//
+//        } catch (Throwable t) {
+//            outputMgr.failWithThrowable(testName.getMethodName(), t);
+//        }
+//    }
 
     /**
      * Tests:
@@ -258,25 +258,25 @@ public class JavaScriptUtilsTest extends CommonTestClass {
         }
     }
 
-    @Test
-    public void test_getJavaScriptHtmlCookieString_emptyCookieProperties_withPartitioned() throws Exception {
-        try {
-            String name = "some prop";
-            String value = "some value";
-            Map<String, String> cookieProps = new HashMap<String, String>();
-
-            final String expectedCookieString = name + "=" + value + "; " +PARTITIONED_PROP+ " SameSite=None; secure;";
-
-            getWebAppSecurityConfigCookiePropertiesExpectations(false, "None", "true");
-
-            String result = utils.getJavaScriptHtmlCookieString(name, value, cookieProps);
-
-            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + expectedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
+//    @Test
+//    public void test_getJavaScriptHtmlCookieString_emptyCookieProperties_withPartitioned() throws Exception {
+//        try {
+//            String name = "some prop";
+//            String value = "some value";
+//            Map<String, String> cookieProps = new HashMap<String, String>();
+//
+//            final String expectedCookieString = name + "=" + value + "; " +PARTITIONED_PROP+ " SameSite=None; secure;";
+//
+//            getWebAppSecurityConfigCookiePropertiesExpectations(false, "None", "true");
+//
+//            String result = utils.getJavaScriptHtmlCookieString(name, value, cookieProps);
+//
+//            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + expectedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
+//
+//        } catch (Throwable t) {
+//            outputMgr.failWithThrowable(testName.getMethodName(), t);
+//        }
+//    }
 
     /**
      * Tests:

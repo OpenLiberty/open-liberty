@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.security.crypto.common;
+package com.ibm.ws.security.common.crypto;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
