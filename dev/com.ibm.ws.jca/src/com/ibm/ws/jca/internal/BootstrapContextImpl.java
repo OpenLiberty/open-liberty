@@ -68,6 +68,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.tx.jta.TransactionInflowManager;
@@ -87,7 +88,6 @@ import com.ibm.ws.jca.security.JCASecurityContext;
 import com.ibm.ws.jca.service.AdminObjectService;
 import com.ibm.ws.jca.service.EndpointActivationService;
 import com.ibm.ws.jca.utils.metagen.MetatypeGenerator;
-import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.threading.FutureMonitor;
 import com.ibm.ws.threading.listeners.CompletionListener;
@@ -148,10 +148,197 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      */
     private static final String WMQJMS = "wmqJms";
 
-    /**
-     * The name of the application that this resource adapter is provided by.
-     */
-    private final String myAppName;
+    private static class RAInfo {
+        final BundleContext bundleContext;
+        final Dictionary<String, ?> properties;
+        final String id;
+        final ResourceAdapterService service;
+        final ResourceAdapterMetaData metadata;
+        final String appName;
+        final String configElementName;
+        final Map<String, PropertyDescriptor> propertyDescriptors = new HashMap<String, PropertyDescriptor>();
+        final BeanValidationHelper bValHelper;
+
+        RAInfo(ComponentContext cCtx, ResourceAdapterService ras, BeanValidationUsingClassLoader bv) throws Exception {
+            this.bundleContext = cCtx.getBundleContext();
+            this.properties = cCtx.getProperties();
+            this.id = (String) properties.get("id");
+            this.service = ras;
+            this.metadata = ras.getResourceAdapterMetaData();
+            this.appName = Optional.ofNullable(metadata).map(ResourceAdapterMetaData::getJ2EEName).map(J2EEName::getApplication).orElse(null);
+            this.configElementName = "wmqJms".equals(id) ? "wmqJmsClient" : "wasJms".equals(id) ? id : ("properties." + id);
+            if (bv != null) {
+                // Load BeanValidationHelperImpl reflectively to avoid javax.validation dependency if beanValidation is not configured
+                this.bValHelper = (BeanValidationHelper) Class.forName("com.ibm.ws.jca.internal.BeanValidationHelperImpl").newInstance();
+                bValHelper.setBeanValidationSvc(bv);
+            } else {
+                this.bValHelper = null;
+            }
+
+        }
+
+        private void beginContext() {
+            if (metadata == null)
+                return;
+            ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().beginContext(metadata);
+        }
+
+        private void endContext() {
+            if (metadata == null)
+                return;
+            ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().endContext();
+        }
+
+        /**
+         * Instantiate a new ResourceAdapter and set each <config-property> on it.
+         *
+         * @return configured resource adapter.
+         * @throws Exception if an error occurs during configuration and onError=FAIL
+         */
+        @FFDCIgnore({ NumberFormatException.class, Throwable.class })
+        private ResourceAdapter configureResourceAdapter() throws Exception {
+            final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+            String resourceAdapterClassName = (String) properties.get(RESOURCE_ADAPTER_CLASS);
+            if (resourceAdapterClassName == null)
+                return null;
+            ResourceAdapter instance = (ResourceAdapter) loadClass(resourceAdapterClassName).newInstance();
+
+            // Assume all configured properties are invalid until we find them
+            Set<String> invalidPropNames = new HashSet<String>();
+            for (Enumeration<String> names = properties.keys(); names.hasMoreElements();) {
+                String name = names.nextElement();
+                if (!INTERNAL_PROPS.contains(name) && !Constants.OBJECTCLASS.equals(name) && name.indexOf('.') < 0 && name.indexOf('-') < 0 && !name.endsWith("Ref"))
+                    invalidPropNames.add(name);
+            }
+
+            Class<?> objectClass = instance.getClass();
+            for (PropertyDescriptor descriptor : Introspector.getBeanInfo(objectClass).getPropertyDescriptors()) {
+                String name = MetatypeGenerator.toCamelCase(descriptor.getName());
+                Object value = properties.get(name);
+                propertyDescriptors.put(name, descriptor);
+
+                if (value != null)
+                    try {
+                        invalidPropNames.remove(name);
+
+                        boolean isProtectedString = value instanceof SerializableProtectedString;
+                        if (isProtectedString)
+                            value = new String(((SerializableProtectedString) value).getChars());
+                        if (value instanceof String && name.toUpperCase().indexOf("PASSWORD") >= 0) {
+                            value = PasswordUtil.getCryptoAlgorithm((String) value) == null ? value : PasswordUtil.decode((String) value);
+                            isProtectedString = true;
+                        }
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(tc, "set " + name + '=' + (isProtectedString ? "***" : value));
+
+                        Class<?> type = descriptor.getPropertyType();
+                        Method writeMethod = descriptor.getWriteMethod();
+
+                        // Some ra.xml files specify everything as String even when that's not true. If so, try to convert it:
+                        if (value instanceof String) {
+                            if (!type.isAssignableFrom(value.getClass()))
+                                try {
+                                    value = Utils.convert((String) value, type);
+                                } catch (NumberFormatException numFormatX) {
+                                    // If the property type can't be converted to what the bean info wants,
+                                    // then go looking for a matching method of the proper type (that isn't on the bean info).
+                                    try {
+                                        writeMethod = objectClass.getMethod(writeMethod.getName(), String.class);
+                                    } catch (NoSuchMethodException x) {
+                                        throw numFormatX;
+                                    }
+                                }
+                        }
+                        // Allow the metatype to use primitive types instead of String, in which case we can easily convert to String:
+                        else if (String.class.equals(type))
+                            value = value.toString();
+                        // When ibm:type="duration" is used, we always get Long. If necessary, convert to another numeric type:
+                        else if (value instanceof Number && !type.isAssignableFrom(value.getClass()))
+                            value = Utils.convert((Number) value, type);
+
+                        writeMethod.invoke(instance, value);
+                    } catch (Throwable x) {
+                        x = x instanceof InvocationTargetException ? x.getCause() : x;
+                        x = Utils.ignoreWarnOrFail(tc, x, x.getClass(), "J2CA8500.config.prop.error", name, configElementName, objectClass.getName(), x);
+                        if (x != null) {
+                            InvalidPropertyException propX = new InvalidPropertyException(name, x);
+                            propX.setInvalidPropertyDescriptors(new PropertyDescriptor[] { descriptor });
+                            FFDCFilter.processException(propX, getClass().getName(), "239");
+                            throw propX;
+                        }
+                    }
+            }
+
+            // Invalid properties
+            for (String name : invalidPropNames) {
+                InvalidPropertyException x = Utils.ignoreWarnOrFail(tc, null, InvalidPropertyException.class, "J2CA8501.config.prop.unknown",
+                                                                    name, configElementName, objectClass.getName());
+                if (x != null) {
+                    FFDCFilter.processException(x, Utils.class.getName(), "249");
+                    throw x;
+                }
+            }
+            if (null != bValHelper) {
+                if (null != metadata) {
+                    bValHelper.validateInstance(metadata.getModuleMetaData(), service.getClassLoader(), instance);
+                }
+            }
+            return instance;
+        }
+
+        Class<?> loadClass(final String className) throws ClassNotFoundException, UnableToAdaptException, MalformedURLException {
+            ClassLoader raClassLoader = service.getClassLoader();
+            if (null != raClassLoader) {
+                return Utils.priv.loadClass(raClassLoader, className);
+            }
+            // TODO when SIB has converted from bundle to real rar file, then this can be removed
+            // and if the rar file does not exist, then a Tr.error should be issued
+            try {
+                Bundle bundle = Stream.of(bundleContext.getBundles()).filter(this::resourceAdapterIdMatchesBundle).findFirst().orElseThrow(() -> new ClassNotFoundException(className));
+                if (System.getSecurityManager() == null)
+                    return bundle.loadClass(className);
+                try {
+                    return AccessController.doPrivileged((PrivilegedExceptionAction<Class<?>>) () -> bundle.loadClass(className));
+                } catch (PrivilegedActionException e) {
+                    throw (ClassNotFoundException) e.getCause();
+                }
+            } catch (ClassNotFoundException cnf) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Could not find adapter file and bundle does not have the class either. Possible cause is incorrectly specified file path.", cnf);
+                }
+                throw cnf;
+            }
+        }
+
+        private boolean resourceAdapterIdMatchesBundle(Bundle bundle) {
+            switch (id) {
+                case WASJMS:
+                    switch (bundle.getSymbolicName()) {
+                        case "com.ibm.ws.messaging.jms.1.1":
+                        case "com.ibm.ws.messaging.jms.2.0":
+                        case "com.ibm.ws.messaging.jms.2.0.jakarta":
+                            return true;
+                    }
+                case WMQJMS:
+                    switch (bundle.getSymbolicName()) {
+                        case "com.ibm.ws.messaging.jms.wmq":
+                            return true;
+                    }
+            }
+            return false;
+        }
+
+        public void validateInstance(Object instance) throws MalformedURLException, UnableToAdaptException {
+            if (null == bValHelper || null == metadata)
+                return;
+            // Use raMetaData.getModuleMetaData() to make sure we get the RA's MMD when the RA is embedded.
+            bValHelper.validateInstance(metadata.getModuleMetaData(), service.getClassLoader(), instance);
+        }
+
+    }
+
+    private final RAInfo raInfo;
 
     /**
      * Future that will be completed when the apps with dependents have stopped
@@ -224,16 +411,6 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
     final boolean propagateThreadContext;
 
     /**
-     * Service properties, including the config properties for the resource adapter.
-     */
-    private final Dictionary<String, ?> properties;
-
-    /**
-     * Map of property name to property descriptor.
-     */
-    private final Map<String, PropertyDescriptor> propertyDescriptors = new HashMap<String, PropertyDescriptor>();
-
-    /**
      * JCA service utilities.
      */
     private final JcaServiceUtilities jcasu;
@@ -244,66 +421,26 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
     private final ClassLoader raClassLoader;
 
     /**
-     * Meta data to apply when starting/stopping the resource adapter.
-     */
-    private final ResourceAdapterMetaData raMetaData;
-
-    /**
      * Thread context to apply when starting/stopping the resource adapter.
      */
     private final ThreadContextDescriptor raThreadContextDescriptor;
 
-    /**
-     * The resource adapter instance.
-     */
     public final ResourceAdapter resourceAdapter;
 
-    /**
-     * id of the resourceAdapter
-     */
-    final String resourceAdapterID;
-
-    /**
-     * The RAR install service for this resource adapter.
-     */
-    private final ResourceAdapterService resourceAdapterSvc;
-
-    /**
-     * Reference to the TransactionInflowManager service.
-     */
     private final AtomicServiceReference<TransactionInflowManager> tranInflowManagerRef = new AtomicServiceReference<TransactionInflowManager>("tranInflowManager");
 
-    /**
-     * Reference to the TransactionSynchronizationRegistry service.
-     */
     private final AtomicServiceReference<TransactionSynchronizationRegistry> tranSyncRegistryRef = new AtomicServiceReference<TransactionSynchronizationRegistry>("tranSyncRegistry");
 
-    /**
-     * Reference to the BeanValidation service.
-     */
-    private final AtomicServiceReference<BeanValidationUsingClassLoader> bvalRef = new AtomicServiceReference<>("beanValidationService");
-
-    /**
-     * Reference to the JCASecurityContext service.
-     */
     private final AtomicServiceReference<JCASecurityContext> jcaSecurityContextRef = new AtomicServiceReference<JCASecurityContext>("jcaSecurityContextService");
 
-    /**
-     * List of timers.
-     */
     final ConcurrentLinkedQueue<Timer> timers = new ConcurrentLinkedQueue<Timer>();
 
-    /**
-     * The work manager.
-     */
     private final WorkManagerImpl workManager;
-
-    private final BeanValidationHelper bvalHelper;
 
     @Trivial
     @Activate
     public BootstrapContextImpl(@Reference(name = "appRecycleService") ApplicationRecycleCoordinator arc,
-                                @Reference(name = "beanValidationService", cardinality = OPTIONAL, policyOption = GREEDY) ServiceReference<BeanValidationUsingClassLoader> bvs,
+                                @Reference(name = "beanValidationService", cardinality = OPTIONAL, policyOption = GREEDY) BeanValidationUsingClassLoader bv,
                                 @Reference(name = "classLoadingService") ClassLoadingService cls,
                                 @Reference(name = "connectorService") ConnectorService cs,
                                 @Reference(name = "contextProvider", policyOption = GREEDY) List<ServiceReference<JCAContextProvider>> cpList,
@@ -320,7 +457,6 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "activate", props);
         this.componentContext = cCtx;
-        Optional.ofNullable(bvs).ifPresent(this.bvalRef::setReference);
         this.classLoadingSvc = cls;
         this.connectorSvc = cs;
         cpList.forEach(ref -> contextProviders.putReference((String) ref.getProperty(JCAContextProvider.TYPE), ref));
@@ -328,39 +464,26 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
         this.execSvc = (WSExecutorService) xs;
         this.futureMonitorSvc = fm;
         Stream.concat(cpList.stream(), reqcpList.stream()).forEach(ref -> this.contextProviders.putReference((String) ref.getProperty(JCAContextProvider.TYPE), ref));
-        this.resourceAdapterSvc = ras;
         this.tranInflowManagerRef.setReference(tim);
         this.tranSyncRegistryRef.setReference(tsr);
         Optional.ofNullable(jscs).ifPresent(this.jcaSecurityContextRef::setReference);
 
-        this.resourceAdapterID = (String) props.get("id");
         this.contextProviders.activate(cCtx);
-        this.bvalRef.activate(cCtx);
         this.tranInflowManagerRef.activate(cCtx);
         this.tranSyncRegistryRef.activate(cCtx);
         this.jcaSecurityContextRef.activate(cCtx);
-        this.properties = props;
-        this.raMetaData = resourceAdapterSvc.getResourceAdapterMetaData();
-        this.myAppName = Optional.ofNullable(raMetaData).map(ResourceAdapterMetaData::getJ2EEName).map(J2EEName::getApplication).orElse(null);
 
-        Object svc = bvalRef.getService();
-        if (svc != null) {
-            // Load BeanValidationHelperImpl reflectively to avoid javax.validation dependency if beanValidation is not configured
-            this.bvalHelper = (BeanValidationHelper) Class.forName("com.ibm.ws.jca.internal.BeanValidationHelperImpl").newInstance();
-            bvalHelper.setBeanValidationSvc(svc);
-        } else {
-            this.bvalHelper = null;
-        }
+        this.raInfo = new RAInfo(cCtx, ras, bv);
 
         try {
-            beginContext(raMetaData);
-            this.resourceAdapter = configureResourceAdapter();
+            raInfo.beginContext();
+            this.resourceAdapter = raInfo.configureResourceAdapter();
         } finally {
-            endContext(raMetaData);
+            raInfo.endContext();
         }
 
         if (resourceAdapter != null) {
-            this.propagateThreadContext = !"(service.pid=com.ibm.ws.context.manager)".equals(properties.get("contextService.target"));
+            this.propagateThreadContext = !"(service.pid=com.ibm.ws.context.manager)".equals(cCtx.getProperties().get("contextService.target"));
             this.workManager = new WorkManagerImpl(this);
 
             // Normally it's a bad practice to do this in activate. But here we have a requirement to keep the
@@ -369,11 +492,11 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
 
             this.jcasu = new JcaServiceUtilities();
             this.raThreadContextDescriptor = captureRaThreadContext(contextSvc);
-            this.raClassLoader = Optional.ofNullable(resourceAdapterSvc.getClassLoader()).map(classLoadingSvc::createThreadContextClassLoader).orElse(null);
+            this.raClassLoader = Optional.ofNullable(raInfo.service.getClassLoader()).map(classLoadingSvc::createThreadContextClassLoader).orElse(null);
 
             ArrayList<ThreadContext> threadContext = startTask(raThreadContextDescriptor);
             try {
-                beginContext(raMetaData);
+                raInfo.beginContext();
                 try {
                     ClassLoader previousClassLoader = jcasu.beginContextClassLoader(raClassLoader);
                     try {
@@ -382,7 +505,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
                         jcasu.endContextClassLoader(raClassLoader, previousClassLoader);
                     }
                 } finally {
-                    endContext(raMetaData);
+                    raInfo.endContext();
                 }
             } finally {
                 stopTask(raThreadContextDescriptor, threadContext);
@@ -396,7 +519,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
             this.raClassLoader = null;
         }
 
-        latches.put(resourceAdapterID, latch); // only add latch if activate is successful
+        latches.put(raInfo.id, latch); // only add latch if activate is successful
     }
 
     /**
@@ -449,9 +572,9 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
                 if (value == null) {
                     value = configProps.get(name);
                     if (value == null && writeMethod != null) {
-                        PropertyDescriptor raPropDescriptor = propertyDescriptors.get(name);
+                        PropertyDescriptor raPropDescriptor = raInfo.propertyDescriptors.get(name);
                         Method getter = raPropDescriptor == null ? null : raPropDescriptor.getReadMethod();
-                        value = getter == null ? properties.get(name) : getter.invoke(resourceAdapter);
+                        value = getter == null ? raInfo.properties.get(name) : getter.invoke(resourceAdapter);
                     }
                 }
                 if (value != null)
@@ -540,115 +663,11 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
                 throw x;
             }
         }
-        if (bvalHelper != null) {
-            ResourceAdapterMetaData raMetaData = resourceAdapterSvc.getResourceAdapterMetaData();
-            if (raMetaData != null) {
-                // Use raMetaData.getModuleMetaData() to make sure we get the RA's MMD when the RA is embedded.
-                bvalHelper.validateInstance(raMetaData.getModuleMetaData(), resourceAdapterSvc.getClassLoader(), instance);
-            }
-        }
+
+        raInfo.validateInstance(instance);
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, methodName);
-    }
-
-    /**
-     * Instantiate a new ResourceAdapter and set each <config-property> on it.
-     *
-     * @return configured resource adapter.
-     * @throws Exception if an error occurs during configuration and onError=FAIL
-     */
-    @FFDCIgnore(value = { NumberFormatException.class, Throwable.class })
-    private ResourceAdapter configureResourceAdapter() throws Exception {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-
-        String resourceAdapterClassName = (String) properties.get(RESOURCE_ADAPTER_CLASS);
-        if (resourceAdapterClassName == null)
-            return null;
-        ResourceAdapter instance = (ResourceAdapter) loadClass(resourceAdapterClassName).newInstance();
-
-        // Assume all configured properties are invalid until we find them
-        Set<String> invalidPropNames = new HashSet<String>();
-        for (Enumeration<String> names = properties.keys(); names.hasMoreElements();) {
-            String name = names.nextElement();
-            if (!INTERNAL_PROPS.contains(name) && !Constants.OBJECTCLASS.equals(name) && name.indexOf('.') < 0 && name.indexOf('-') < 0 && !name.endsWith("Ref"))
-                invalidPropNames.add(name);
-        }
-
-        Class<?> objectClass = instance.getClass();
-        for (PropertyDescriptor descriptor : Introspector.getBeanInfo(objectClass).getPropertyDescriptors()) {
-            String name = MetatypeGenerator.toCamelCase(descriptor.getName());
-            Object value = properties.get(name);
-            propertyDescriptors.put(name, descriptor);
-
-            if (value != null)
-                try {
-                    invalidPropNames.remove(name);
-
-                    boolean isProtectedString = value instanceof SerializableProtectedString;
-                    if (isProtectedString)
-                        value = new String(((SerializableProtectedString) value).getChars());
-                    if (value instanceof String && name.toUpperCase().indexOf("PASSWORD") >= 0) {
-                        value = PasswordUtil.getCryptoAlgorithm((String) value) == null ? value : PasswordUtil.decode((String) value);
-                        isProtectedString = true;
-                    }
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(tc, "set " + name + '=' + (isProtectedString ? "***" : value));
-
-                    Class<?> type = descriptor.getPropertyType();
-                    Method writeMethod = descriptor.getWriteMethod();
-
-                    // Some ra.xml files specify everything as String even when that's not true. If so, try to convert it:
-                    if (value instanceof String) {
-                        if (!type.isAssignableFrom(value.getClass()))
-                            try {
-                                value = Utils.convert((String) value, type);
-                            } catch (NumberFormatException numFormatX) {
-                                // If the property type can't be converted to what the bean info wants,
-                                // then go looking for a matching method of the proper type (that isn't on the bean info).
-                                try {
-                                    writeMethod = objectClass.getMethod(writeMethod.getName(), String.class);
-                                } catch (NoSuchMethodException x) {
-                                    throw numFormatX;
-                                }
-                            }
-                    }
-                    // Allow the metatype to use primitive types instead of String, in which case we can easily convert to String:
-                    else if (String.class.equals(type))
-                        value = value.toString();
-                    // When ibm:type="duration" is used, we always get Long. If necessary, convert to another numeric type:
-                    else if (value instanceof Number && !type.isAssignableFrom(value.getClass()))
-                        value = Utils.convert((Number) value, type);
-
-                    writeMethod.invoke(instance, value);
-                } catch (Throwable x) {
-                    x = x instanceof InvocationTargetException ? x.getCause() : x;
-                    x = Utils.ignoreWarnOrFail(tc, x, x.getClass(), "J2CA8500.config.prop.error", name, getConfigElementName(), objectClass.getName(), x);
-                    if (x != null) {
-                        InvalidPropertyException propX = new InvalidPropertyException(name, x);
-                        propX.setInvalidPropertyDescriptors(new PropertyDescriptor[] { descriptor });
-                        FFDCFilter.processException(propX, getClass().getName(), "239");
-                        throw propX;
-                    }
-                }
-        }
-
-        // Invalid properties
-        for (String name : invalidPropNames) {
-            InvalidPropertyException x = Utils.ignoreWarnOrFail(tc, null, InvalidPropertyException.class, "J2CA8501.config.prop.unknown",
-                                                                name, getConfigElementName(), objectClass.getName());
-            if (x != null) {
-                FFDCFilter.processException(x, Utils.class.getName(), "249");
-                throw x;
-            }
-        }
-        if (bvalHelper != null) {
-            ResourceAdapterMetaData raMetaData = resourceAdapterSvc.getResourceAdapterMetaData();
-            if (raMetaData != null) {
-                bvalHelper.validateInstance(raMetaData.getModuleMetaData(), resourceAdapterSvc.getClassLoader(), instance);
-            }
-        }
-        return instance;
     }
 
     @Override
@@ -667,51 +686,32 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
         }
     }
 
-    /**
-     * DS method to deactivate this component.
-     * Best practice: this should be a protected method, not public or private
-     *
-     * @param context for this component instance
-     * @throws Exception if the attempt to stop the resource adapter fails
-     */
+    @Deactivate
     protected void deactivate(ComponentContext context) throws Exception {
-
         contextProviders.deactivate(context);
-        bvalRef.deactivate(context);
         tranInflowManagerRef.deactivate(context);
         tranSyncRegistryRef.deactivate(context);
         jcaSecurityContextRef.deactivate(context);
 
         latch.countDown();
-        latches.remove(resourceAdapterID, latch);
+        latches.remove(raInfo.id, latch);
 
-        FutureMonitor futureMonitor = futureMonitorSvc;
         Future<Boolean> future = appsStoppedFuture.getAndSet(null);
-        if (futureMonitor != null && future != null) {
-            futureMonitor.onCompletion(future, new CompletionListener<Boolean>() {
-                @Override
-                public void successfulCompletion(Future<Boolean> future, Boolean result) {
-                    stopResourceAdapter();
-                }
-
-                @Override
-                public void failedCompletion(Future<Boolean> future, Throwable t) {
-                    stopResourceAdapter();
-                }
-            });
-        } else {
+        if (future == null) {
             stopResourceAdapter();
+            return;
         }
-    }
+        futureMonitorSvc.onCompletion(future, new CompletionListener<Boolean>() {
+            @Override
+            public void successfulCompletion(Future<Boolean> future, Boolean result) {
+                stopResourceAdapter();
+            }
 
-    /**
-     * Returns the name of the config element. For example, properties.ims
-     *
-     * @return the name of the config element. For example, properties.ims
-     */
-    @Trivial
-    private final String getConfigElementName() {
-        return "wmqJms".equals(resourceAdapterID) ? "wmqJmsClient" : "wasJms".equals(resourceAdapterID) ? resourceAdapterID : ("properties." + resourceAdapterID);
+            @Override
+            public void failedCompletion(Future<Boolean> future, Throwable t) {
+                stopResourceAdapter();
+            }
+        });
     }
 
     /**
@@ -745,12 +745,12 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
         if (trace && tc.isEntryEnabled())
             Tr.entry(tc, methodName, value, type, destinationType, destinationRef, activationProps, adminObjSvc);
         if (trace && tc.isDebugEnabled())
-            Tr.debug(tc, "Resource adapter id", resourceAdapterID);
+            Tr.debug(tc, "Resource adapter id", raInfo.id);
 
         // Special case for WMQ: useJNDI=true activation config property
         boolean isString = String.class.equals(type);
         String savedValue = isString ? (String) value : null;
-        boolean isJNDIName = resourceAdapterID.equals(WMQJMS)
+        boolean isJNDIName = raInfo.id.equals(WMQJMS)
                              && isString
                              && activationProps != null
                              && Boolean.parseBoolean((String) activationProps.get("useJNDI"));
@@ -820,14 +820,14 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
         if (trace && tc.isDebugEnabled())
             Tr.debug(this, tc, "value, savedValue", value, savedValue);
         // Skip this processing for third party resource adapters
-        if (resourceAdapterID.equals(WASJMS) || resourceAdapterID.equals(WMQJMS)) {
+        if (raInfo.id.equals(WASJMS) || raInfo.id.equals(WMQJMS)) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(tc, "Extra processing");
             if (isString && !isJNDIName) {
                 String activationPropsDestinationType = activationProps == null ? null : (String) activationProps.get("destinationType");
                 destinationType = activationPropsDestinationType == null ? destinationType : activationPropsDestinationType;
                 if (destinationType == null)
-                    destinationType = (String) properties.get("destinationType");
+                    destinationType = (String) raInfo.properties.get("destinationType");
                 if (destinationType != null)
                     value = getDestinationName(destinationType, value);
             }
@@ -915,7 +915,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      */
     @Trivial
     public final ResourceAdapterMetaData getResourceAdapterMetaData() {
-        return resourceAdapterSvc.getResourceAdapterMetaData();
+        return raInfo.metadata;
     }
 
     /**
@@ -925,7 +925,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      */
     @Trivial
     public final String getResourceAdapterName() {
-        return resourceAdapterID;
+        return raInfo.id;
     }
 
     @Trivial
@@ -945,7 +945,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
 
     @Override
     public XATerminator getXATerminator() {
-        return tranInflowManagerRef.getServiceWithException().getXATerminator(resourceAdapterID);
+        return tranInflowManagerRef.getServiceWithException().getXATerminator(raInfo.id);
     }
 
     @Override
@@ -969,48 +969,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      * @throws MalformedURLException
      */
     public Class<?> loadClass(final String className) throws ClassNotFoundException, UnableToAdaptException, MalformedURLException {
-        ClassLoader raClassLoader = resourceAdapterSvc.getClassLoader();
-        if (null != raClassLoader) {
-            return Utils.priv.loadClass(raClassLoader, className);
-        }
-        // TODO when SIB has converted from bundle to real rar file, then this can be removed
-        // and if the rar file does not exist, then a Tr.error should be issued
-        try {
-            for (Bundle bundle : componentContext.getBundleContext().getBundles()) {
-                switch (resourceAdapterID) {
-                    case "wasJms":
-                        switch (bundle.getSymbolicName()) {
-                            case "com.ibm.ws.messaging.jms.1.1":
-                            case "com.ibm.ws.messaging.jms.2.0":
-                            case "com.ibm.ws.messaging.jms.2.0.jakarta":
-                                break;
-                            default:
-                                continue;
-                        }
-                    case "wmqJms":
-                        switch (bundle.getSymbolicName()) {
-                            case "com.ibm.ws.messaging.jms.wmq":
-                                break;
-                            default:
-                                continue;
-                        }
-                }
-                if (System.getSecurityManager() == null) {
-                    return bundle.loadClass(className);
-                }
-                try {
-                    return AccessController.doPrivileged((PrivilegedExceptionAction<Class<?>>) () -> bundle.loadClass(className));
-                } catch (PrivilegedActionException e) {
-                    throw (ClassNotFoundException) e.getCause();
-                }
-            }
-            throw new ClassNotFoundException(className);
-        } catch (ClassNotFoundException cnf) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "Could not find adapter file and bundle does not have the class either. Possible cause is incorrectly specified file path.", cnf);
-            }
-            throw cnf;
-        }
+        return raInfo.loadClass(className);
     }
 
     /**
@@ -1041,7 +1000,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
                     Tr.debug(this, tc, "stop", resourceAdapter);
                 ArrayList<ThreadContext> threadContext = startTask(raThreadContextDescriptor);
                 try {
-                    beginContext(raMetaData);
+                    raInfo.beginContext();
                     try {
                         ClassLoader previousClassLoader = jcasu.beginContextClassLoader(raClassLoader);
                         try {
@@ -1053,7 +1012,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
                             }
                         }
                     } finally {
-                        endContext(raMetaData);
+                        raInfo.endContext();
                     }
                 } finally {
                     stopTask(raThreadContextDescriptor, threadContext);
@@ -1089,7 +1048,6 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
         Map<String, String> execProps = new HashMap<String, String>();
         execProps.put(WSContextService.DEFAULT_CONTEXT, WSContextService.ALL_CONTEXT_TYPES);
         execProps.put(WSContextService.REQUIRE_AVAILABLE_APP, "false");
-
         return contextSvc.captureThreadContext(execProps);
     }
 
@@ -1114,29 +1072,9 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
             raThreadContextDescriptor.taskStopping(threadContext);
     }
 
-    /**
-     * Begin context if there is resource adapter metadata.
-     *
-     * @param raMetaData
-     */
-    private void beginContext(ComponentMetaData raMetaData) {
-        if (raMetaData != null)
-            ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().beginContext(raMetaData);
-    }
-
-    /**
-     * End context if there was resource adapter metadata.
-     *
-     * @param raMetaData
-     */
-    private void endContext(ComponentMetaData raMetaData) {
-        if (raMetaData != null)
-            ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().endContext();
-    }
-
     @Override
     public String getAppName() {
-        return myAppName;
+        return raInfo.appName;
     }
 
     @Override
