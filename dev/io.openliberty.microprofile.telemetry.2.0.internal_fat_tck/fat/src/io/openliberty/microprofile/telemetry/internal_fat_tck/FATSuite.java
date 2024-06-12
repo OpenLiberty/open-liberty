@@ -31,8 +31,8 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 @MinimumJavaLevel(javaLevel = 11)
 public class FATSuite {
 
-    public static RepeatTests aboveMP50Repeats(String serverName) {
+    public static RepeatTests allMPTel20Repeats(String serverName) {
         return TelemetryActions
-            .repeat(serverName, MicroProfileActions.MP61.removeFeature("mpTelemetry-1.1").addFeature("mpTelemetry-2.0").build("MP61-Tel2.0"),TelemetryActions.MP50_MPTEL11.removeFeature("mpTelemetry-1.1").addFeature("mpTelemetry-2.0").build("MP50-Tel2.0"));
+            .repeat(serverName, MicroProfileActions.MP70_EE10, MicroProfileActions.MP70_EE11);
     }
 }
