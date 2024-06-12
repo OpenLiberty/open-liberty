@@ -25,7 +25,6 @@ import static org.objectweb.asm.Opcodes.V17;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -68,12 +67,9 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.Configuration;
 
-import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.runtime.metadata.ComponentMetaData;
-import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.persistence.InMemoryMappingFile;
@@ -86,7 +82,6 @@ import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
-import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
@@ -123,75 +118,80 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
      * The persistence service unit is obtained from the persistence service during the
      * initialization that is performed by the run method.
      */
-    private PersistenceServiceUnit persistenceServiceUnit;
+    private final PersistenceServiceUnit persistenceServiceUnit;
 
     /**
      * Locates an existing databaseStore or creates a new one corresponding to the
      * dataStore name that is specified on the Repository annotation.
      *
+     * @param provider              OSGi service that provides the CDI extension.
+     * @param repositoryClassLoader class loader of the repository interface.
      * @param dataStore             dataStore name specified on the Repository annotation, or
      *                                  if obtained from CDI then the config.displayId of a dataSource.
-     * @param isConfigDisplayId     indicates if the dataStore name is a config.displayId unique identifier of a dataSource.
      * @param isJNDIName            indicates if the dataStore name is a JNDI name (begins with java: or is inferred to be java:comp/env/...)
-     * @param type                  AnnotatedType for the interface that is annotated with the Repository annotation.
-     * @param repositoryClassLoader class loader for repositories.
-     * @param provider              OSGi service that provides the CDI extension.
+     * @param metaDataIdentifier    metadata identifier for the class loader of the repository interface.
+     * @param appModComp            application/module/component in which the repository interface is defined.
+     *                                  Module and component might be null or absent.
+     * @param entityTypes           entity classes as known by the user, not generated.
      */
-    public DBStoreEMBuilder(String dataStore, boolean isConfigDisplayId, boolean isJNDIName,
-                            AnnotatedType<?> type, ClassLoader repositoryClassLoader,
-                            DataExtensionProvider provider) {
+    public DBStoreEMBuilder(DataExtensionProvider provider, ClassLoader repositoryClassLoader,
+                            String dataStore, boolean isJNDIName,
+                            String metadataIdentifier, String[] appModComp,
+                            Set<Class<?>> entityTypes) {
         super(provider, repositoryClassLoader);
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        J2EEName jeeName = cData == null ? null : cData.getJ2EEName();
-        String application = jeeName == null ? null : jeeName.getApplication();
-        String module = jeeName == null ? null : jeeName.getModule();
-        String component = jeeName == null ? null : jeeName.getComponent();
-        String qualifiedName = null;
-        boolean javaApp = false, javaModule = false, javaComp = false;
+        try {
+            String qualifiedName = null;
+            boolean javaApp = false, javaModule = false, javaComp = false;
+            String application = appModComp.length < 1 ? null : appModComp[0];
+            String module = appModComp.length < 2 ? null : appModComp[1];
+            String component = appModComp.length < 3 ? null : appModComp[2];
 
-        // Qualify resource reference and DataSourceDefinition JNDI names with the application/module/component name to make them unique
-        if (isJNDIName) {
-            javaApp = dataStore.regionMatches(5, "app", 0, 3);
-            javaModule = !javaApp && dataStore.regionMatches(5, "module", 0, 6);
-            // TODO detect web module metadata to avoid including component
-            javaComp = !javaApp && !javaModule && dataStore.regionMatches(5, "comp", 0, 4);
-            StringBuilder s = new StringBuilder(dataStore.length() + 80);
-            if (application != null && (javaApp || javaModule || javaComp)) {
-                s.append("application[").append(application).append(']').append('/');
-                if (module != null && (javaModule || javaComp)) {
-                    s.append("module[").append(module).append(']').append('/');
-                    if (component != null && javaComp)
-                        s.append("component[").append(component).append(']').append('/');
+            // Qualify resource reference and DataSourceDefinition JNDI names with the application/module/component name to make them unique
+            if (isJNDIName) {
+                javaApp = dataStore.regionMatches(5, "app", 0, 3);
+                javaModule = !javaApp && dataStore.regionMatches(5, "module", 0, 6);
+                // TODO detect web module metadata to avoid including component
+                javaComp = !javaApp && !javaModule && dataStore.regionMatches(5, "comp", 0, 4);
+                StringBuilder s = new StringBuilder(dataStore.length() + 80);
+                if (application != null && (javaApp || javaModule || javaComp)) {
+                    s.append("application[").append(application).append(']').append('/');
+                    if (module != null && (javaModule || javaComp)) {
+                        s.append("module[").append(module).append(']').append('/');
+                        if (component != null && javaComp)
+                            s.append("component[").append(component).append(']').append('/');
+                    }
                 }
+                qualifiedName = s.append("databaseStore[").append(dataStore).append(']').toString();
+
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "computed qualified dataStore name from JNDI name as " + qualifiedName);
             }
-            qualifiedName = s.append("databaseStore[").append(dataStore).append(']').toString();
 
-            if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, "computed qualified dataStore name from JNDI name as " + qualifiedName);
-        }
-
-        Map<String, Configuration> dbStoreConfigurations = provider.dbStoreConfigAllApps.get(application);
-        Configuration dbStoreConfig = dbStoreConfigurations == null ? null : dbStoreConfigurations.get(isJNDIName ? qualifiedName : dataStore);
-        Dictionary<String, Object> dbStoreConfigProps = dbStoreConfig == null ? null : dbStoreConfig.getProperties();
-        String dbStoreId = dbStoreConfigProps == null ? null : (String) dbStoreConfigProps.get("id");
-        if (dbStoreId == null)
-            try {
+            Map<String, Configuration> dbStoreConfigurations = provider.dbStoreConfigAllApps.get(application);
+            Configuration dbStoreConfig = dbStoreConfigurations == null ? null : dbStoreConfigurations.get(isJNDIName ? qualifiedName : dataStore);
+            Dictionary<String, Object> dbStoreConfigProps = dbStoreConfig == null ? null : dbStoreConfig.getProperties();
+            String dbStoreId = dbStoreConfigProps == null ? null : (String) dbStoreConfigProps.get("id");
+            if (dbStoreId == null) {
                 String dsFactoryFilter = null;
                 BundleContext bc = FrameworkUtil.getBundle(DatabaseStore.class).getBundleContext();
                 ServiceReference<ResourceFactory> dsRef = null;
-                if (isConfigDisplayId) {
-                    dbStoreId = dataStore + "/databaseStore"; // {data source config.displayId}/databaseStore
-                    dsFactoryFilter = "(config.displayId=" + dataStore + ')';
-                } else if (isJNDIName) {
+                if (isJNDIName) {
                     // Look for DataSourceDefinition with jndiName and application/module/component matching
-                    String filter = "(&(service.factoryPid=com.ibm.ws.jdbc.dataSource)" + //
-                                    (javaApp || javaModule || javaComp ? FilterUtils.createPropertyFilter("application", application) : "") + //
-                                    (javaModule || javaComp ? FilterUtils.createPropertyFilter("module", module) : "") + //
-                                    (javaComp ? FilterUtils.createPropertyFilter("component", component) : "") + //
-                                    FilterUtils.createPropertyFilter("jndiName", dataStore) + ')';
-                    Collection<ServiceReference<ResourceFactory>> dsRefs = bc.getServiceReferences(ResourceFactory.class, filter);
+                    StringBuilder filter = new StringBuilder(200) //
+                                    .append("(&(service.factoryPid=com.ibm.ws.jdbc.dataSource)");
+                    if (application != null && (javaApp || javaModule || javaComp))
+                        filter.append(FilterUtils.createPropertyFilter("application", application));
+                    if (module != null && javaModule || javaComp)
+                        filter.append(FilterUtils.createPropertyFilter("module", module));
+                    if (component != null && javaComp)
+                        filter.append(FilterUtils.createPropertyFilter("jndiName", dataStore));
+                    filter.append(FilterUtils.createPropertyFilter("jndiName", dataStore)) //
+                                    .append(')');
+
+                    Collection<ServiceReference<ResourceFactory>> dsRefs = bc.getServiceReferences(ResourceFactory.class,
+                                                                                                   filter.toString());
                     if (!dsRefs.isEmpty()) {
                         dbStoreId = qualifiedName;
                         dsRef = dsRefs.iterator().next();
@@ -223,7 +223,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
                 }
                 if (dbStoreId == null) {
                     // Create a ResourceFactory that can delegate back to a resource reference lookup
-                    ResourceFactory delegator = new DelegatingResourceFactory(dataStore, cData);
+                    ResourceFactory delegator = new DelegatingResourceFactory(dataStore, metadataIdentifier, provider);
                     Hashtable<String, Object> svcProps = new Hashtable<String, Object>();
                     dbStoreId = isJNDIName ? qualifiedName : ("application[" + application + "]/databaseStore[" + dataStore + ']');
                     String id = dbStoreId + "/ResourceFactory";
@@ -258,9 +258,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
                     svcProps.put("id", dbStoreId);
                     svcProps.put("config.displayId", dbStoreId);
 
-                    if (isConfigDisplayId)
-                        dsFactoryFilter = "(config.displayId=" + dataStore + ')';
-                    else if (dataSourceId == null)
+                    if (dataSourceId == null)
                         dsFactoryFilter = "(jndiName=" + dsRef.getProperty("jndiName") + ')';
                     else
                         dsFactoryFilter = "(id=" + dataSourceId + ')';
@@ -290,15 +288,153 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
                     dsFactoryFilter = "(config.displayId=" + dsRef.getProperty("config.displayId") + ')';
                 }
                 dataSourceFactoryFilter = dsFactoryFilter;
-            } catch (InvalidSyntaxException | IOException x) {
-                throw new RuntimeException(x);
-            } catch (Error | RuntimeException x) {
-                throw x;
+            } else {
+                dataSourceFactoryFilter = (String) dbStoreConfigProps.get("DataSourceFactory.target");
             }
-        else
-            dataSourceFactoryFilter = (String) dbStoreConfigProps.get("DataSourceFactory.target");
 
-        databaseStoreId = dbStoreId;
+            databaseStoreId = dbStoreId;
+
+            BundleContext bc = FrameworkUtil.getBundle(DatabaseStore.class).getBundleContext();
+
+            ServiceReference<DatabaseStore> ref = null;
+            for (long start = System.nanoTime(), poll_ms = 125L; ref == null; poll_ms = poll_ms < 1000L ? poll_ms * 2 : 1000L) {
+                Collection<ServiceReference<DatabaseStore>> refs = bc.getServiceReferences(DatabaseStore.class,
+                                                                                           FilterUtils.createPropertyFilter("id", databaseStoreId));
+                if (refs.isEmpty()) {
+                    if (System.nanoTime() - start < MAX_WAIT_FOR_SERVICE_NS) {
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "Wait " + poll_ms + " ms for service reference to become available...");
+                        TimeUnit.MILLISECONDS.sleep(poll_ms);
+                    } else {
+                        throw new IllegalStateException("The " + databaseStoreId + " service component did not become available within " +
+                                                        TimeUnit.NANOSECONDS.toSeconds(MAX_WAIT_FOR_SERVICE_NS) + " seconds.");
+                    }
+                } else {
+                    ref = refs.iterator().next();
+                }
+            }
+
+            String tablePrefix = (String) ref.getProperty("tablePrefix");
+
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, databaseStoreId + " databaseStore reference", ref);
+
+            // Classes explicitly annotated with JPA @Entity:
+            Set<String> entityClassNames = new LinkedHashSet<>(entityTypes.size() * 2);
+            Set<String> entityTableNames = new LinkedHashSet<>(entityClassNames.size());
+
+            ArrayList<InMemoryMappingFile> generatedEntities = new ArrayList<InMemoryMappingFile>();
+
+            // List of classes to inspect for the above
+            Queue<Class<?>> annotatedEntityClassQueue = new LinkedList<>();
+
+            // XML to make all other classes into JPA entities:
+            ArrayList<String> entityClassInfo = new ArrayList<>(entityTypes.size());
+
+            Queue<Class<?>> embeddableTypesQueue = new LinkedList<>();
+
+            Set<Class<?>> converterTypes = new HashSet<>(); // TODO why do we need to write converters to orm.xml at all?
+
+            for (Class<?> c : entityTypes) {
+                if (c.isAnnotationPresent(Entity.class)) {
+                    annotatedEntityClassQueue.add(c);
+
+                    for (Field field : c.getFields()) {
+                        Convert convert = field.getAnnotation(Convert.class);
+                        if (convert != null)
+                            converterTypes.add(convert.converter());
+                    }
+
+                    for (Method method : c.getMethods()) {
+                        Convert convert = method.getAnnotation(Convert.class);
+                        if (convert != null)
+                            converterTypes.add(convert.converter());
+                    }
+                } else {
+                    if (c.isRecord()) {
+                        String entityClassName = c.getName() + EntityInfo.RECORD_ENTITY_SUFFIX; // an entity class is generated for the record
+                        byte[] generatedEntityBytes = generateEntityClassBytes(c, entityClassName);
+                        generatedEntities.add(new InMemoryMappingFile(generatedEntityBytes, entityClassName.replace('.', '/') + ".class"));
+                        Class<?> generatedEntity = classDefiner.findLoadedOrDefineClass(getRepositoryClassLoader(), entityClassName, generatedEntityBytes);
+                        generatedToRecordClass.put(generatedEntity, c);
+                        c = generatedEntity;
+                    }
+
+                    StringBuilder xml = new StringBuilder(500).append(" <entity class=\"").append(c.getName()).append("\">").append(EOLN);
+
+                    xml.append("  <table name=\"").append(tablePrefix).append(c.getSimpleName()).append("\"/>").append(EOLN);
+
+                    writeAttributes(xml, c, false, embeddableTypesQueue);
+
+                    xml.append(" </entity>").append(EOLN);
+
+                    entityClassInfo.add(xml.toString());
+                }
+            }
+
+            Set<Class<?>> embeddableTypes = new HashSet<>();
+            for (Class<?> type; (type = embeddableTypesQueue.poll()) != null;)
+                // TODO what if the embeddable type is a record?
+                if (embeddableTypes.add(type)) { // only write each type once
+                    StringBuilder xml = new StringBuilder(500).append(" <embeddable class=\"").append(type.getName()).append("\">").append(EOLN);
+                    writeAttributes(xml, type, true, embeddableTypesQueue);
+                    xml.append(" </embeddable>").append(EOLN);
+                    entityClassInfo.add(xml.toString());
+                }
+
+            for (Class<?> type : converterTypes) {
+                StringBuilder xml = new StringBuilder(500).append(" <converter class=\"").append(type.getName()).append("\"></converter>").append(EOLN);
+                entityClassInfo.add(xml.toString());
+            }
+
+            // Discover entities that are indirectly referenced via OneToOne, ManyToMany, and so forth
+            for (Class<?> c; (c = annotatedEntityClassQueue.poll()) != null;)
+                if (entityClassNames.add(c.getName())) {
+                    Table table = c.getAnnotation(Table.class);
+                    entityTableNames.add(table == null || table.name().length() == 0 ? c.getSimpleName() : table.name());
+                    Class<?> e;
+                    for (Field f : c.getFields())
+                        if (f.getType().isAnnotationPresent(Entity.class))
+                            annotatedEntityClassQueue.add(f.getType());
+                        else if ((e = getEntityClass(f.getGenericType())) != null)
+                            annotatedEntityClassQueue.add(e);
+                    for (Method m : c.getMethods())
+                        if (m.getReturnType().isAnnotationPresent(Entity.class))
+                            annotatedEntityClassQueue.add(m.getReturnType());
+                        else if ((e = getEntityClass(m.getGenericReturnType())) != null)
+                            annotatedEntityClassQueue.add(e);
+                }
+
+            Map<String, Object> properties = new HashMap<>();
+
+            properties.put("io.openliberty.persistence.internal.entityClassInfo",
+                           entityClassInfo.toArray(new String[entityClassInfo.size()]));
+
+            properties.put("io.openliberty.persistence.internal.tableNames", entityTableNames);
+
+            if (!generatedEntities.isEmpty())
+                properties.put("io.openliberty.persistence.internal.generatedEntities", generatedEntities);
+
+            DatabaseStore dbstore = bc.getService(ref);
+            persistenceServiceUnit = dbstore.createPersistenceServiceUnit(getRepositoryClassLoader(),
+                                                                          properties,
+                                                                          entityClassNames.toArray(new String[entityClassNames.size()]));
+
+            collectEntityInfo(entityTypes);
+
+        } catch (RuntimeException x) {
+            for (Class<?> entityClass : entityTypes)
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
+            throw x;
+        } catch (Exception x) {
+            for (Class<?> entityClass : entityTypes)
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
+            throw new RuntimeException(x);
+        } catch (Error x) {
+            for (Class<?> entityClass : entityTypes)
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
+            throw x;
+        }
     }
 
     /**
@@ -598,140 +734,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
     @Trivial
     public int hashCode() {
         return databaseStoreId.hashCode();
-    }
 
-    /**
-     * Initializes the builder before using it.
-     */
-    @Override
-    protected void initialize() throws Exception {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-
-        BundleContext bc = FrameworkUtil.getBundle(DatabaseStore.class).getBundleContext();
-
-        ServiceReference<DatabaseStore> ref = null;
-        for (long start = System.nanoTime(), poll_ms = 125L; ref == null; poll_ms = poll_ms < 1000L ? poll_ms * 2 : 1000L) {
-            Collection<ServiceReference<DatabaseStore>> refs = bc.getServiceReferences(DatabaseStore.class,
-                                                                                       FilterUtils.createPropertyFilter("id", databaseStoreId));
-            if (refs.isEmpty()) {
-                if (System.nanoTime() - start < MAX_WAIT_FOR_SERVICE_NS) {
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "Wait " + poll_ms + " ms for service reference to become available...");
-                    TimeUnit.MILLISECONDS.sleep(poll_ms);
-                } else {
-                    throw new IllegalStateException("The " + databaseStoreId + " service component did not become available within " +
-                                                    TimeUnit.NANOSECONDS.toSeconds(MAX_WAIT_FOR_SERVICE_NS) + " seconds.");
-                }
-            } else {
-                ref = refs.iterator().next();
-            }
-        }
-
-        String tablePrefix = (String) ref.getProperty("tablePrefix");
-
-        if (trace && tc.isDebugEnabled())
-            Tr.debug(this, tc, databaseStoreId + " databaseStore reference", ref);
-
-        // Classes explicitly annotated with JPA @Entity:
-        Set<String> entityClassNames = new LinkedHashSet<>(entities.size() * 2);
-        Set<String> entityTableNames = new LinkedHashSet<>(entityClassNames.size());
-
-        ArrayList<InMemoryMappingFile> generatedEntities = new ArrayList<InMemoryMappingFile>();
-
-        // List of classes to inspect for the above
-        Queue<Class<?>> annotatedEntityClassQueue = new LinkedList<>();
-
-        // XML to make all other classes into JPA entities:
-        ArrayList<String> entityClassInfo = new ArrayList<>(entities.size());
-
-        Queue<Class<?>> embeddableTypesQueue = new LinkedList<>();
-
-        Set<Class<?>> converterTypes = new HashSet<>(); // TODO why do we need to write converters to orm.xml at all?
-
-        for (Class<?> c : entities) {
-            if (c.isAnnotationPresent(Entity.class)) {
-                annotatedEntityClassQueue.add(c);
-
-                for (Field field : c.getFields()) {
-                    Convert convert = field.getAnnotation(Convert.class);
-                    if (convert != null)
-                        converterTypes.add(convert.converter());
-                }
-
-                for (Method method : c.getMethods()) {
-                    Convert convert = method.getAnnotation(Convert.class);
-                    if (convert != null)
-                        converterTypes.add(convert.converter());
-                }
-            } else {
-                if (c.isRecord()) {
-                    String entityClassName = c.getName() + EntityInfo.RECORD_ENTITY_SUFFIX; // an entity class is generated for the record
-                    byte[] generatedEntityBytes = generateEntityClassBytes(c, entityClassName);
-                    generatedEntities.add(new InMemoryMappingFile(generatedEntityBytes, entityClassName.replace('.', '/') + ".class"));
-                    Class<?> generatedEntity = classDefiner.findLoadedOrDefineClass(getRepositoryClassLoader(), entityClassName, generatedEntityBytes);
-                    generatedToRecordClass.put(generatedEntity, c);
-                    c = generatedEntity;
-                }
-
-                StringBuilder xml = new StringBuilder(500).append(" <entity class=\"").append(c.getName()).append("\">").append(EOLN);
-
-                xml.append("  <table name=\"").append(tablePrefix).append(c.getSimpleName()).append("\"/>").append(EOLN);
-
-                writeAttributes(xml, c, false, embeddableTypesQueue);
-
-                xml.append(" </entity>").append(EOLN);
-
-                entityClassInfo.add(xml.toString());
-            }
-        }
-
-        Set<Class<?>> embeddableTypes = new HashSet<>();
-        for (Class<?> type; (type = embeddableTypesQueue.poll()) != null;)
-            // TODO what if the embeddable type is a record?
-            if (embeddableTypes.add(type)) { // only write each type once
-                StringBuilder xml = new StringBuilder(500).append(" <embeddable class=\"").append(type.getName()).append("\">").append(EOLN);
-                writeAttributes(xml, type, true, embeddableTypesQueue);
-                xml.append(" </embeddable>").append(EOLN);
-                entityClassInfo.add(xml.toString());
-            }
-
-        for (Class<?> type : converterTypes) {
-            StringBuilder xml = new StringBuilder(500).append(" <converter class=\"").append(type.getName()).append("\"></converter>").append(EOLN);
-            entityClassInfo.add(xml.toString());
-        }
-
-        // Discover entities that are indirectly referenced via OneToOne, ManyToMany, and so forth
-        for (Class<?> c; (c = annotatedEntityClassQueue.poll()) != null;)
-            if (entityClassNames.add(c.getName())) {
-                Table table = c.getAnnotation(Table.class);
-                entityTableNames.add(table == null || table.name().length() == 0 ? c.getSimpleName() : table.name());
-                Class<?> e;
-                for (Field f : c.getFields())
-                    if (f.getType().isAnnotationPresent(Entity.class))
-                        annotatedEntityClassQueue.add(f.getType());
-                    else if ((e = getEntityClass(f.getGenericType())) != null)
-                        annotatedEntityClassQueue.add(e);
-                for (Method m : c.getMethods())
-                    if (m.getReturnType().isAnnotationPresent(Entity.class))
-                        annotatedEntityClassQueue.add(m.getReturnType());
-                    else if ((e = getEntityClass(m.getGenericReturnType())) != null)
-                        annotatedEntityClassQueue.add(e);
-            }
-
-        Map<String, Object> properties = new HashMap<>();
-
-        properties.put("io.openliberty.persistence.internal.entityClassInfo",
-                       entityClassInfo.toArray(new String[entityClassInfo.size()]));
-
-        properties.put("io.openliberty.persistence.internal.tableNames", entityTableNames);
-
-        if (!generatedEntities.isEmpty())
-            properties.put("io.openliberty.persistence.internal.generatedEntities", generatedEntities);
-
-        DatabaseStore dbstore = bc.getService(ref);
-        persistenceServiceUnit = dbstore.createPersistenceServiceUnit(getRepositoryClassLoader(),
-                                                                      properties,
-                                                                      entityClassNames.toArray(new String[entityClassNames.size()]));
     }
 
     @Override

@@ -13,15 +13,16 @@
 package io.openliberty.data.internal.persistence.provider;
 
 import java.util.Objects;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
-import com.ibm.websphere.csi.J2EEName;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.runtime.metadata.ComponentMetaData;
-import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
+import io.openliberty.data.internal.persistence.EntityInfo;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import jakarta.persistence.EntityManager;
@@ -32,6 +33,8 @@ import jakarta.persistence.PersistenceException;
  * This builder is used when a persistence unit reference JNDI name is configured as the repository dataStore.
  */
 public class PUnitEMBuilder extends EntityManagerBuilder {
+    private static final TraceComponent tc = Tr.register(PUnitEMBuilder.class);
+
     /**
      * These are present only if needed to disambiguate a persistence unit reference JNDI name
      * that is in java:app, java:module, or java:comp
@@ -42,7 +45,12 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
 
     private final String persistenceUnitRef;
 
-    public PUnitEMBuilder(EntityManagerFactory emf, ClassLoader repositoryClassLoader, DataExtensionProvider provider) {
+    // TODO this should be removed because the spec did not add the ability to use
+    // a resource access method with a qualifier to configure the EntityManager.
+    public PUnitEMBuilder(DataExtensionProvider provider,
+                          ClassLoader repositoryClassLoader,
+                          EntityManagerFactory emf,
+                          Set<Class<?>> entityTypes) {
         super(provider, repositoryClassLoader);
         this.emf = emf;
         this.persistenceUnitRef = emf.toString();
@@ -51,35 +59,67 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
         this.module = null;
         this.component = null;
 
-        // TODO For EntityManagerFactory managed by Open Liberty, the persistence unit and app/module/component are known
-        // Example of emf.toString():
-        // com.ibm.ws.jpa.container.v31.JPAEMFactoryV31@ed2fe703[PuId=DataStoreTestApp#DataStoreTestWeb.war#MyPersistenceUnit,
-        // DataStoreTestApp#DataStoreTestWeb.war, org.eclipse.persistence.internal.jpa.EntityManagerFactoryImpl@3708cabf]
+        try {
+            collectEntityInfo(entityTypes);
+        } catch (RuntimeException x) {
+            for (Class<?> entityClass : entityTypes)
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
+            throw x;
+        } catch (Exception x) {
+            for (Class<?> entityClass : entityTypes)
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
+            throw new RuntimeException(x);
+        } catch (Error x) {
+            for (Class<?> entityClass : entityTypes)
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
+            throw x;
+        }
     }
 
-    public PUnitEMBuilder(EntityManagerFactory emf, String persistenceUnitRef,
-                          ClassLoader repositoryClassLoader, DataExtensionProvider provider) {
+    /**
+     * Obtains entity manager instances from a persistence unit reference /
+     * EntityManagerFactory.
+     *
+     * @param provider              OSGi service that provides the CDI extension.
+     * @param repositoryClassLoader class loader of the repository interface.
+     * @param emf                   entity manager factory.
+     * @param pesistenceUnitRef     persistence unit reference.
+     * @param metaDataIdentifier    metadata identifier for the class loader of the repository interface.
+     * @param application           application in which the repository interface is defined.
+     * @param module                module in which the repository interface is defined. Null if not in a module.
+     * @param component             component in which the repository interface is defined. Null if not in a component or in web module.
+     * @param entityTypes           entity classes as known by the user, not generated.
+     */
+    public PUnitEMBuilder(DataExtensionProvider provider,
+                          ClassLoader repositoryClassLoader,
+                          EntityManagerFactory emf,
+                          String persistenceUnitRef,
+                          String metadataIdentifier,
+                          String application,
+                          String module,
+                          String component,
+                          Set<Class<?>> entityTypes) {
         super(provider, repositoryClassLoader);
         this.emf = emf;
         this.persistenceUnitRef = persistenceUnitRef;
+        this.application = application;
+        this.module = module;
+        this.component = component;
 
-        boolean javaApp = persistenceUnitRef.regionMatches(5, "app", 0, 3);
-        boolean javaModule = !javaApp && persistenceUnitRef.regionMatches(5, "module", 0, 6);
-        boolean javaComp = !javaApp && !javaModule && persistenceUnitRef.regionMatches(5, "comp", 0, 4);
-
-        // TODO it might not be predictable which module this thread runs from. If so, module and component cannot be used.
-        if (javaApp || javaModule || javaComp) {
-            ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-            J2EEName jeeName = cData == null ? null : cData.getJ2EEName();
-
-            application = jeeName == null ? null : jeeName.getApplication();
-            module = jeeName == null || javaApp ? null : jeeName.getModule();
-            component = jeeName == null || javaApp || javaModule ? null : jeeName.getComponent();
-            // TODO how do we know if running in the web module so component should be omitted? Can we look for a ModuleMetadata subclass?
-        } else {
-            application = null;
-            module = null;
-            component = null;
+        try {
+            collectEntityInfo(entityTypes);
+        } catch (RuntimeException x) {
+            for (Class<?> entityClass : entityTypes)
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
+            throw x;
+        } catch (Exception x) {
+            for (Class<?> entityClass : entityTypes)
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
+            throw new RuntimeException(x);
+        } catch (Error x) {
+            for (Class<?> entityClass : entityTypes)
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
+            throw x;
         }
     }
 
@@ -120,12 +160,11 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
     @Override
     @Trivial
     public int hashCode() {
-        return persistenceUnitRef.hashCode();
-    }
+        return persistenceUnitRef.hashCode() +
+               (application == null ? 0 : application.hashCode()) +
+               (module == null ? 0 : module.hashCode()) +
+               (component == null ? 0 : component.hashCode());
 
-    @Override
-    @Trivial
-    protected void initialize() throws Exception {
     }
 
     @Override

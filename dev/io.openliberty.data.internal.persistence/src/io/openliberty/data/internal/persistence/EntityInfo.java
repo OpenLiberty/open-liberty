@@ -289,7 +289,7 @@ public class EntityInfo {
      * @return new CompletableFuture.
      */
     @Trivial
-    static CompletableFuture<EntityInfo> newFuture(Class<?> entityClass) {
+    public static CompletableFuture<EntityInfo> newFuture(Class<?> entityClass) {
         // It's okay to use Java SE's CompletableFuture here given that *Async methods are never invoked on it
         return new CompletableFuture<>();
     }

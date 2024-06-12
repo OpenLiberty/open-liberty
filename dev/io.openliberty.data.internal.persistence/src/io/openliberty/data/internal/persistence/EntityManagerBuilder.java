@@ -52,21 +52,15 @@ import jakarta.persistence.metamodel.Type;
 /**
  * Creates EntityManager instances from an EntityManagerFactory (from a persistence unit reference)
  * or from a PersistenceServiceUnit of a databaseStore.
- * Implementations must provide an equals method to identify when repositories have matching dataStore configuration.
  */
-public abstract class EntityManagerBuilder implements Runnable {
+public abstract class EntityManagerBuilder {
     private static final TraceComponent tc = Tr.register(EntityManagerBuilder.class);
-
-    /**
-     * Entity classes as seen by the user, not generated entity classes for records.
-     */
-    protected final Set<Class<?>> entities = new HashSet<>();
 
     /**
      * Mapping of entity class (as seen by the user, not a generated record entity class)
      * to entity information.
      */
-    final ConcurrentHashMap<Class<?>, CompletableFuture<EntityInfo>> entityInfoMap = new ConcurrentHashMap<>();
+    protected final ConcurrentHashMap<Class<?>, CompletableFuture<EntityInfo>> entityInfoMap = new ConcurrentHashMap<>();
 
     /**
      * OSGi service component that provides the CDI extension for Data.
@@ -76,8 +70,15 @@ public abstract class EntityManagerBuilder implements Runnable {
     /**
      * The class loader for repository classes.
      */
-    private final ClassLoader repositoryClassLoader;
+    protected final ClassLoader repositoryClassLoader;
 
+    /**
+     * Common constructor for subclasses.
+     *
+     * @param provider
+     * @param repositoryClassLoader
+     * @param entityTypes
+     */
     @Trivial
     protected EntityManagerBuilder(DataExtensionProvider provider, ClassLoader repositoryClassLoader) {
         this.provider = provider;
@@ -85,105 +86,15 @@ public abstract class EntityManagerBuilder implements Runnable {
     }
 
     /**
-     * Adds an entity class to be handled.
+     * Invoked by subclass constructors to obtain the EntityInfo for each entity type.
+     * After this method completes successfully, the entityInfoMap is populated.
      *
-     * @param entityClass entity class.
-     */
-    @Trivial
-    public void add(Class<?> entityClass) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "add: " + entityClass.getName());
-
-        entities.add(entityClass);
-    }
-
-    /**
-     * Creates a new EntityManager instance.
-     *
-     * @return a new EntityManager instance.
-     */
-    public abstract EntityManager createEntityManager();
-
-    /**
-     * Obtains the DataSource that is used by the EntityManager.
-     *
-     * @return the DataSource that is used by the EntityManager.
-     * @throws UnsupportedOperationException if the DataSource cannot be obtained from the EntityManager.
-     */
-    public abstract DataSource getDataSource();
-
-    /**
-     * Returns the record class that corresponds to the specified generated entity class.
-     * If the specified class is not a generated entity class for a record, then this method returns null.
-     *
-     * @param generatedEntityClass entity class that might be generated from a record.
-     * @return corresponding record class for a generated entity class. Otherwise null.
-     */
-    @Trivial
-    protected Class<?> getRecordClass(Class<?> generatedEntityClass) {
-        return null;
-    }
-
-    /**
-     * Request the Id type, allowing for an EclipseLink extension that lets the
-     * Id to be located on an attribute of an Embeddable of the entity.
-     *
-     * @param entityType
-     * @return the Id type. Null if the type of Id cannot be determined.
-     */
-    @FFDCIgnore(RuntimeException.class)
-    @Trivial
-    private static Type<?> getIdType(EntityType<?> entityType) {
-        Type<?> idType;
-        try {
-            idType = entityType.getIdType();
-        } catch (RuntimeException x) {
-            // occurs with EclipseLink extension to JPA that allows @Id on an embeddable attribute
-            if ("ConversionException".equals(x.getClass().getSimpleName()))
-                idType = null;
-            else
-                throw x;
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, entityType.getName() + " getIdType: " + idType);
-        return idType;
-    }
-
-    /**
-     * Returns the class loader for repository classes.
-     *
-     * @return the class loader for repository classes.
-     */
-    @Trivial
-    protected ClassLoader getRepositoryClassLoader() {
-        return repositoryClassLoader;
-    }
-
-    /**
-     * Initializes the builder before using it.
-     *
+     * @param entityTypes entity classes as known by the user, not generated.
      * @throws Exception if an error occurs.
      */
-    @Trivial
-    protected abstract void initialize() throws Exception;
-
-    /**
-     * Initializes the builder once before using it.
-     */
-    @Override
-    @Trivial
-    public void run() {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "run: define entities", entities);
-
-        EntityManager em = null;
+    protected void collectEntityInfo(Set<Class<?>> entityTypes) throws Exception {
+        EntityManager em = createEntityManager();
         try {
-            initialize();
-
-            em = createEntityManager();
-
             Metamodel model = em.getMetamodel();
             for (EntityType<?> entityType : model.getEntities()) {
                 Map<String, String> attributeNames = new HashMap<>();
@@ -337,29 +248,72 @@ public abstract class EntityManagerBuilder implements Runnable {
 
                 entityInfoMap.computeIfAbsent(userEntityClass, EntityInfo::newFuture).complete(entityInfo);
             }
-            if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "run: define entities");
-        } catch (RuntimeException x) {
-            for (Class<?> entityClass : entities)
-                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
-            if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "run: define entities", x);
-            throw x;
-        } catch (Exception x) {
-            for (Class<?> entityClass : entities)
-                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
-            if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "run: define entities", x);
-            throw new RuntimeException(x);
-        } catch (Error x) {
-            for (Class<?> entityClass : entities)
-                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
-            if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "run: define entities", x);
-            throw x;
         } finally {
             if (em != null)
                 em.close();
         }
+    }
+
+    /**
+     * Creates a new EntityManager instance.
+     *
+     * @return a new EntityManager instance.
+     */
+    public abstract EntityManager createEntityManager();
+
+    /**
+     * Obtains the DataSource that is used by the EntityManager.
+     *
+     * @return the DataSource that is used by the EntityManager.
+     * @throws UnsupportedOperationException if the DataSource cannot be obtained from the EntityManager.
+     */
+    public abstract DataSource getDataSource();
+
+    /**
+     * Returns the record class that corresponds to the specified generated entity class.
+     * If the specified class is not a generated entity class for a record, then this method returns null.
+     *
+     * @param generatedEntityClass entity class that might be generated from a record.
+     * @return corresponding record class for a generated entity class. Otherwise null.
+     */
+    @Trivial
+    protected Class<?> getRecordClass(Class<?> generatedEntityClass) {
+        return null;
+    }
+
+    /**
+     * Request the Id type, allowing for an EclipseLink extension that lets the
+     * Id to be located on an attribute of an Embeddable of the entity.
+     *
+     * @param entityType
+     * @return the Id type. Null if the type of Id cannot be determined.
+     */
+    @FFDCIgnore(RuntimeException.class)
+    @Trivial
+    private static Type<?> getIdType(EntityType<?> entityType) {
+        Type<?> idType;
+        try {
+            idType = entityType.getIdType();
+        } catch (RuntimeException x) {
+            // occurs with EclipseLink extension to JPA that allows @Id on an embeddable attribute
+            if ("ConversionException".equals(x.getClass().getSimpleName()))
+                idType = null;
+            else
+                throw x;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, entityType.getName() + " getIdType: " + idType);
+        return idType;
+    }
+
+    /**
+     * Returns the class loader for repository classes.
+     *
+     * @return the class loader for repository classes.
+     */
+    @Trivial
+    protected ClassLoader getRepositoryClassLoader() {
+        return repositoryClassLoader;
     }
 }
