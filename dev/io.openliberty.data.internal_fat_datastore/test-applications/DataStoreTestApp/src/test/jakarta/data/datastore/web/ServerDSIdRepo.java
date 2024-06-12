@@ -17,6 +17,8 @@ import jakarta.data.repository.Repository;
 
 import javax.sql.DataSource;
 
+import test.jakarta.data.datastore.lib.ServerDSEntity;
+
 @Repository(dataStore = "ServerDataSource") // id of dataSource in server.xml
 public interface ServerDSIdRepo {
 

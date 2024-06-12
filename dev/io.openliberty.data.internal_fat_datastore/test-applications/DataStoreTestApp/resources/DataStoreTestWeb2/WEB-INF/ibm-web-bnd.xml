@@ -16,8 +16,8 @@
          xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd"
          version="1.0">
     
-  	<resource-ref name="java:app/env/jdbc/ServerDataSourceRef">
-		<authentication-alias name="ResRefAuth1"/>
+  	<resource-ref name="java:module/env/jdbc/ServerDataSourceRef">
+		<authentication-alias name="ResRefAuth2"/>
 	</resource-ref>
 
 </web-bnd>

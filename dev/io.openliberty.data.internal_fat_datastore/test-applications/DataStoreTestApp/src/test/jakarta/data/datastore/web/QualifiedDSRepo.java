@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,18 +12,31 @@
  *******************************************************************************/
 package test.jakarta.data.datastore.web;
 
-import java.sql.Connection;
+import java.util.List;
 
+import jakarta.data.repository.By;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
+import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
 
-@Repository(dataStore = "jdbc/ServerDataSource") // jndiName of dataSource in server.xml
-public interface ServerDSJNDIRepo {
+import javax.sql.DataSource;
 
-    Connection createConnection();
+import test.jakarta.data.datastore.lib.ServerDSEntity;
+
+/**
+ * TODO enable this repository if we find a way to support qualified resource accessor methods
+ * that are used to supply the data source.
+ */
+//@Repository
+public interface QualifiedDSRepo {
+    @ResourceQualifier
+    DataSource dataSource();
 
     @Insert
-    Void insert(ServerDSEntity e);
+    void add(List<ServerDSEntity> entities);
 
-    int countById(String id);
+    @Find
+    @OrderBy("id")
+    List<ServerDSEntity> getAll(@By("value") int val);
 }

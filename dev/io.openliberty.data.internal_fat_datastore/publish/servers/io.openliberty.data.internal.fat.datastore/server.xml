@@ -31,6 +31,7 @@
   </library>
 
   <authData id="ResRefAuth1" user="resrefuser1" password="resrefpwd1"/>
+  <authData id="ResRefAuth2" user="resrefuser2" password="resrefpwd2"/>
 
   <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="DerbyLib"/>

@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import jakarta.annotation.Resource;
+import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
@@ -34,13 +35,25 @@ import javax.sql.DataSource;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import test.jakarta.data.datastore.lib.DSDEntity;
+import test.jakarta.data.datastore.lib.DSDRepo;
+import test.jakarta.data.datastore.lib.ServerDSEntity;
 
+@DataSourceDefinition(name = "java:app/jdbc/DataSourceDef",
+                      className = "org.apache.derby.jdbc.EmbeddedXADataSource",
+                      databaseName = "memory:testdb",
+                      user = "servletuser1",
+                      password = "servletpwd1",
+                      properties = "createDatabase=create")
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataStoreTestServlet extends FATServlet {
 
     @Inject
     DefaultDSRepo defaultDSRepo;
+
+    @Inject
+    DSDRepo dsdRepo;
 
     @Inject
     PersistenceUnitRepo persistenceUnitRepo;
@@ -58,12 +71,25 @@ public class DataStoreTestServlet extends FATServlet {
     @Inject
     ServerDSJNDIRepo serverDSJNDIRepo;
 
-    @Resource(name = "java:app/env/jdbc/ServerDataSourceRef",
+    // also exists in other web module, but with different
+    // container managed auth alias user id
+    @Resource(name = "java:module/env/jdbc/ServerDataSourceRef",
               lookup = "jdbc/ServerDataSource")
     DataSource serverDSResRef;
 
     @Inject
     ServerDSResRefRepo serverDSResRefRepo;
+
+    /**
+     * Use a repository defined in a library of the application that uses
+     * a java:app scoped DataSourceDefinition.
+     */
+    @Test
+    public void testDataSourceDefinition1() throws SQLException {
+        dsdRepo.put(DSDEntity.of(15, "fifteen"));
+
+        assertEquals("servletuser1", dsdRepo.getUser());
+    }
 
     /**
      * Use a repository that specifies the Jakarta EE default data source by its JNDI name: java:comp/DefaultDataSource.

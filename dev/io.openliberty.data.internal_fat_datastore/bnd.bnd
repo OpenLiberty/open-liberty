@@ -15,7 +15,7 @@ bVersion=1.0
 
 src: \
   fat/src,\
-  test-applications/DataStoreTestWeb/src
+  test-applications/DataStoreTestApp/src
 
 javac.source: 17
 javac.target: 17

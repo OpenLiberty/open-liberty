@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.datastore.web;
+package test.jakarta.data.datastore.lib;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -23,7 +23,7 @@ public class ServerDSEntity {
 
     public int value;
 
-    static ServerDSEntity of(String id, int value) {
+    public static ServerDSEntity of(String id, int value) {
         ServerDSEntity entity = new ServerDSEntity();
         entity.id = id;
         entity.value = value;
