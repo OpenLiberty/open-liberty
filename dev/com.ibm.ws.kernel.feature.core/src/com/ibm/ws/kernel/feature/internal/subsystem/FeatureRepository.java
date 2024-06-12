@@ -93,6 +93,8 @@ public final class FeatureRepository implements FeatureResolver.Repository {
 
     private volatile Set<String> platforms = Collections.emptySet();
 
+    private volatile String platformEnvVar = null;
+
     /** List of currently configured features */
     private volatile Set<String> configuredFeatures = Collections.emptySet();
 
@@ -174,6 +176,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             resolvedFeatures = Collections.emptySet();
             configuredFeatures = Collections.emptySet();
             platforms = Collections.emptySet();
+            platformEnvVar = null;
         }
     }
 
@@ -210,6 +213,8 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         Set<String> configured = new HashSet<>();
         Map<File, BadFeature> knownBad = new HashMap<>();
         boolean configError = false;
+        Set<String> cachedPlatforms = new HashSet<>();
+        String envVar = null;
         try (DataInputStream in = new DataInputStream(new BufferedInputStream(cacheResource.get()))) {
             if (in.readInt() != FEATURE_CACHE_VERSION) {
                 return; // not a version we understand; ignore the cache
@@ -290,6 +295,18 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                     knownBad.put(f, new BadFeature(lastModified, length));
                 }
             }
+
+            //read in previous configured platforms
+            int numPlatforms = in.readInt();
+            for(int i = 0; i < numPlatforms; i++){
+                cachedPlatforms.add(in.readUTF());
+            }
+            
+            //read previous platform environment variable from cache
+            boolean hasPlatformEnv = in.readBoolean();
+            if(hasPlatformEnv){
+                envVar = in.readUTF();
+            }
         } catch (IOException e) {
             cacheWarning(e);
             return;
@@ -297,8 +314,10 @@ public final class FeatureRepository implements FeatureResolver.Repository {
 
         resolvedFeatures = Collections.unmodifiableSet(resolved);
         configuredFeatures = Collections.unmodifiableSet(configured);
+        platforms = Collections.unmodifiableSet(cachedPlatforms);
         configurationError = configError;
         knownBadFeatureFiles.putAll(knownBad);
+        platformEnvVar = envVar;
 
         for (SubsystemFeatureDefinitionImpl cachedInstalledFeature : cachedInstalledFeatures) {
             updateMaps(cachedInstalledFeature);
@@ -355,6 +374,19 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                 out.writeUTF(entry.getKey().getAbsolutePath());
                 out.writeLong(entry.getValue().lastModified);
                 out.writeLong(entry.getValue().length);
+            }
+
+            out.writeInt(platforms.size());
+            for(String plat : platforms){
+                out.writeUTF(plat);
+            }
+
+            if(platformEnvVar == null){
+                out.writeBoolean(false);
+            }
+            else{
+                out.writeBoolean(true);
+                out.writeUTF(platformEnvVar);
             }
 
             isDirty = false;
@@ -718,9 +750,17 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         return platforms;
     }
 
+    public void setPlatformEnvVar(String platformEnvVar){
+        this.platformEnvVar = platformEnvVar;
+    }
+
+    public String getPlatformEnvVar(){
+        return platformEnvVar;
+    }
+
     @Deprecated
     public void setInstalledFeatures(Set<String> newResolvedFeatures, Set<String> newConfiguredFeatures, boolean configurationError) {
-        setResolvedFeatures(newResolvedFeatures, newConfiguredFeatures, configurationError);
+        setResolvedFeatures(newResolvedFeatures, newConfiguredFeatures, configurationError, Collections.emptySet(), null);
     }
 
     @Deprecated
@@ -733,7 +773,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
      *
      * @param newResolvedFeatures new set of resolved features. Replaces the previous set.
      */
-    public void setResolvedFeatures(Set<String> newResolvedFeatures, Set<String> newConfiguredFeatures, boolean configurationError) {
+    public void setResolvedFeatures(Set<String> newResolvedFeatures, Set<String> newConfiguredFeatures, boolean configurationError, Set<String> newConfiguredPlatforms, String platformEnv) {
         Set<String> current = resolvedFeatures;
         if (!current.equals(newResolvedFeatures)) {
             isDirty = true;
@@ -752,6 +792,23 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             configuredFeatures = Collections.emptySet();
         } else {
             configuredFeatures = Collections.unmodifiableSet(new HashSet<String>(newConfiguredFeatures));
+        }
+
+        current = platforms;
+        if (!current.equals(newConfiguredPlatforms)) {
+            isDirty = true;
+        }
+        if (newConfiguredPlatforms.isEmpty()) {
+            platforms = Collections.emptySet();
+        } else {
+            platforms = Collections.unmodifiableSet(new HashSet<String>(newConfiguredPlatforms));
+        }
+
+        if(platformEnv == null || platformEnv.isEmpty()){
+            platformEnvVar = null;
+        }
+        else{
+            platformEnvVar = platformEnv;
         }
 
         this.configurationError = configurationError;
