@@ -178,6 +178,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
     final static String PRODUCT_INFO_STRING_OPEN_LIBERTY = "Open Liberty";
     private static String platformEnvironmentVariable = System.getenv("PREFERRED_PLATFORM_VERSIONS");
     final static FeatureResolver featureResolver = new FeatureResolverImpl();
+    private static final boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
 
     private static Version JAVA_MAJOR_VERSION = new Version(JavaInfo.majorVersion(), 0, 0);
 
@@ -1695,17 +1696,19 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
     private boolean areConfiguredFeaturesGood(Set<String> newConfiguredFeatures, Set<String> newConfiguredPlatforms) {
         if (!!!featureRepository.isDirty()
             && !!!featureRepository.hasConfigurationError()
-            && featureRepository.getConfiguredFeatures().equals(newConfiguredFeatures)
-            && featureRepository.getPlatforms().equals(newConfiguredPlatforms)
-            && ((featureRepository.getPlatformEnvVar() == null && platformEnvironmentVariable == null) ||
-                (featureRepository.getPlatformEnvVar() != null && featureRepository.getPlatformEnvVar().equals(platformEnvironmentVariable)))) {
-            // check that all installed features are still installed
-            for (String resolvedFeature : featureRepository.getResolvedFeatures()) {
-                if (featureRepository.getFeature(resolvedFeature) == null) {
-                    return false;
+            && featureRepository.getConfiguredFeatures().equals(newConfiguredFeatures)){
+            if( !isBeta || 
+                (isBeta && featureRepository.getPlatforms().equals(newConfiguredPlatforms) 
+                && ((featureRepository.getPlatformEnvVar() == null && platformEnvironmentVariable == null) ||
+                (featureRepository.getPlatformEnvVar() != null && featureRepository.getPlatformEnvVar().equals(platformEnvironmentVariable))))) {
+                    
+                // check that all installed features are still installed
+                for (String resolvedFeature : featureRepository.getResolvedFeatures()) {
+                    if (featureRepository.getFeature(resolvedFeature) == null) {
+                        return false;
+                    }
                 }
-            }
-            return true;
+                return true;
         }
         return false;
     }
