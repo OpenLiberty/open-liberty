@@ -1,0 +1,66 @@
+<!--
+    Copyright (c) 2024 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+  <featureManager>
+    <feature>componenttest-2.0</feature>
+    <feature>jndi-1.0</feature>
+    
+    <feature>dataContainer-1.0</feature>
+    <feature>persistenceContainer-3.2</feature>
+    <feature>xmlBinding-4.0</feature>
+    <feature>cdi-4.1</feature>
+        
+    <feature>servlet-6.1</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="DataJPAHibernateTestApp.war">
+    <classloader commonLibraryRef="HibernateLib, JDBCLibrary"/>
+  </application>
+
+  <dataSource id="DefaultDataSource" fat.modify="true">
+    <jdbcDriver libraryRef="JDBCLibrary"/>
+    <properties.derby.embedded createDatabase="create" databaseName="memory:testdb" user="dbuser1" password="dbpwd1"/>
+  </dataSource>
+
+  <library id="JDBCLibrary">
+    <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
+  </library>
+  
+  <library id="HibernateLib">
+      <fileset dir="${shared.resource.dir}/jpa32_hibernate" includes="*.jar"/>
+  </library>
+
+  <!-- JDBC driver permissions -->
+  <javaPermission codeBase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
+  
+  <!-- Java 2 Security issue with ANTLR: https://github.com/antlr/antlr4/issues/3720 -->
+  <javaPermission className="java.lang.RuntimePermission" name="getenv.TURN_OFF_LR_LOOP_ENTRY_BRANCH_OPT"/>
+
+  <!-- TODO update these to hibernate-core final dependencies -->
+  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/angus-activation-2.0.0.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/antlr4-runtime-4.13.0.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/byte-buddy-1.14.12.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/classmate-1.5.1.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/hibernate-core-7.0.0.Alpha2.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/hibernate-models-0.8.3.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/istack-commons-runtime-4.1.1.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/jandex-3.1.2.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/jaxb-core-4.0.2.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/jaxb-runtime-4.0.2.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/jboss-logging-3.5.0.Final.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa32_hibernate/txw2-4.0.2.jar" className="java.security.AllPermission"/>
+
+</server>

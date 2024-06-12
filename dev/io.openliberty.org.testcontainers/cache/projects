@@ -176,6 +176,7 @@ io.openliberty.checkpoint_fat_session_cache_infinispan_container
 io.openliberty.checkpoint_fat_springboot_data
 io.openliberty.data.internal_fat
 io.openliberty.data.internal_fat_jpa
+io.openliberty.data.internal_fat_jpa_hibernate
 io.openliberty.data.internal_fat_nosql
 io.openliberty.jakarta.data.1.0_fat_tck
 io.openliberty.jcache.internal_fat.hazelcast
