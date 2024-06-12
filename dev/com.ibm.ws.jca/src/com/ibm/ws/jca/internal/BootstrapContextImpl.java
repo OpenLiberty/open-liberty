@@ -151,7 +151,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
     /**
      * The name of the application that this resource adapter is provided by.
      */
-    private volatile String myAppName;
+    private final String myAppName;
 
     /**
      * Future that will be completed when the apps with dependents have stopped
@@ -181,7 +181,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
     /**
      * The context service for this resource adapter.
      */
-    WSContextService contextSvc;
+    final WSContextService contextSvc;
 
     /**
      * Service reference to the context service.
@@ -221,7 +221,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
     /**
      * Indicates whether or not we should propagate thread context to work and timers from the submitter thread.
      */
-    boolean propagateThreadContext;
+    final boolean propagateThreadContext;
 
     /**
      * Service properties, including the config properties for the resource adapter.
@@ -236,12 +236,12 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
     /**
      * JCA service utilities.
      */
-    private JcaServiceUtilities jcasu;
+    private final JcaServiceUtilities jcasu;
 
     /**
      * Thread context classloader to apply when starting/stopping the resource adapter.
      */
-    private ClassLoader raClassLoader;
+    private final ClassLoader raClassLoader;
 
     /**
      * Meta data to apply when starting/stopping the resource adapter.
@@ -251,12 +251,12 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
     /**
      * Thread context to apply when starting/stopping the resource adapter.
      */
-    private ThreadContextDescriptor raThreadContextDescriptor;
+    private final ThreadContextDescriptor raThreadContextDescriptor;
 
     /**
      * The resource adapter instance.
      */
-    public ResourceAdapter resourceAdapter;
+    public final ResourceAdapter resourceAdapter;
 
     /**
      * id of the resourceAdapter
@@ -296,22 +296,12 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
     /**
      * The work manager.
      */
-    private WorkManagerImpl workManager;
+    private final WorkManagerImpl workManager;
 
-    private BeanValidationHelper bvalHelper = null;
+    private final BeanValidationHelper bvalHelper;
 
-    /**
-     * DS method to activate this component.
-     * Best practice: this should be a protected method, not public or private
-     *
-     * @param cCtx DeclarativeService defined/populated component context
-     * @throws Exception if unable to start the resource adapter
-     */
     @Trivial
     @Activate
-    /**
-     *
-     */
     public BootstrapContextImpl(@Reference(name = "appRecycleService") ApplicationRecycleCoordinator arc,
                                 @Reference(name = "beanValidationService", cardinality = OPTIONAL, policyOption = GREEDY) ServiceReference<BeanValidationUsingClassLoader> bvs,
                                 @Reference(name = "classLoadingService") ClassLoadingService cls,
@@ -325,7 +315,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
                                 @Reference(name = "tranInflowManager") ServiceReference<TransactionInflowManager> tim,
                                 @Reference(name = "tranSyncRegistry") ServiceReference<TransactionSynchronizationRegistry> tsr,
                                 @Reference(name = "jcaSecurityContextService", cardinality = OPTIONAL, policyOption = GREEDY) ServiceReference<JCASecurityContext> jscs,
-                                ComponentContext cCtx, BundleContext bCtx) throws Exception {
+                                ComponentContext cCtx) throws Exception {
         Dictionary<String, ?> props = cCtx.getProperties();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "activate", props);
@@ -355,32 +345,31 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
 
         Object svc = bvalRef.getService();
         if (svc != null) {
-            // Isolate and dynamic load BeanValidationHelperImpl class to avoid javax.validation bundle dependency
-            //  when beanValidation feature is not deployed.
-            PrivilegedExceptionAction<BeanValidationHelper> action = () -> (BeanValidationHelper) bCtx.getBundle().loadClass("com.ibm.ws.jca.internal.BeanValidationHelperImpl").newInstance();
-            this.bvalHelper = System.getSecurityManager() == null ? action.run() : AccessController.doPrivileged(action);
+            // Load BeanValidationHelperImpl reflectively to avoid javax.validation dependency if beanValidation is not configured
+            this.bvalHelper = (BeanValidationHelper) Class.forName("com.ibm.ws.jca.internal.BeanValidationHelperImpl").newInstance();
             bvalHelper.setBeanValidationSvc(svc);
+        } else {
+            this.bvalHelper = null;
         }
 
         try {
             beginContext(raMetaData);
-            resourceAdapter = configureResourceAdapter();
+            this.resourceAdapter = configureResourceAdapter();
         } finally {
             endContext(raMetaData);
         }
 
         if (resourceAdapter != null) {
-            propagateThreadContext = !"(service.pid=com.ibm.ws.context.manager)".equals(properties.get("contextService.target"));
-            workManager = new WorkManagerImpl(this);
+            this.propagateThreadContext = !"(service.pid=com.ibm.ws.context.manager)".equals(properties.get("contextService.target"));
+            this.workManager = new WorkManagerImpl(this);
 
             // Normally it's a bad practice to do this in activate. But here we have a requirement to keep the
             // reference count until some subsequent processing occurs after deactivate.
-            contextSvc = Utils.priv.getService(componentContext, contextSvcRef);
+            this.contextSvc = Utils.priv.getService(componentContext, contextSvcRef);
 
-            jcasu = new JcaServiceUtilities();
-            raThreadContextDescriptor = captureRaThreadContext(contextSvc);
-            raClassLoader = resourceAdapterSvc.getClassLoader();
-            raClassLoader = raClassLoader == null ? null : classLoadingSvc.createThreadContextClassLoader(raClassLoader);
+            this.jcasu = new JcaServiceUtilities();
+            this.raThreadContextDescriptor = captureRaThreadContext(contextSvc);
+            this.raClassLoader = Optional.ofNullable(resourceAdapterSvc.getClassLoader()).map(classLoadingSvc::createThreadContextClassLoader).orElse(null);
 
             ArrayList<ThreadContext> threadContext = startTask(raThreadContextDescriptor);
             try {
@@ -398,6 +387,13 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
             } finally {
                 stopTask(raThreadContextDescriptor, threadContext);
             }
+        } else {
+            this.propagateThreadContext = false;
+            this.workManager = null;
+            this.contextSvc = null;
+            this.jcasu = null;
+            this.raThreadContextDescriptor = null;
+            this.raClassLoader = null;
         }
 
         latches.put(resourceAdapterID, latch); // only add latch if activate is successful
