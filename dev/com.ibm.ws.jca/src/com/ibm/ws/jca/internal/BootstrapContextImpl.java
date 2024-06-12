@@ -970,50 +970,46 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      */
     public Class<?> loadClass(final String className) throws ClassNotFoundException, UnableToAdaptException, MalformedURLException {
         ClassLoader raClassLoader = resourceAdapterSvc.getClassLoader();
-        if (raClassLoader != null) {
+        if (null != raClassLoader) {
             return Utils.priv.loadClass(raClassLoader, className);
-        } else {
-            // TODO when SIB has converted from bundle to real rar file, then this can be removed
-            // and if the rar file does not exist, then a Tr.error should be issued
-            try {
+        }
+        // TODO when SIB has converted from bundle to real rar file, then this can be removed
+        // and if the rar file does not exist, then a Tr.error should be issued
+        try {
+            for (Bundle bundle : componentContext.getBundleContext().getBundles()) {
+                switch (resourceAdapterID) {
+                    case "wasJms":
+                        switch (bundle.getSymbolicName()) {
+                            case "com.ibm.ws.messaging.jms.1.1":
+                            case "com.ibm.ws.messaging.jms.2.0":
+                            case "com.ibm.ws.messaging.jms.2.0.jakarta":
+                                break;
+                            default:
+                                continue;
+                        }
+                    case "wmqJms":
+                        switch (bundle.getSymbolicName()) {
+                            case "com.ibm.ws.messaging.jms.wmq":
+                                break;
+                            default:
+                                continue;
+                        }
+                }
                 if (System.getSecurityManager() == null) {
-                    for (Bundle bundle : componentContext.getBundleContext().getBundles()) {
-                        if (resourceAdapterID.equals("wasJms") &&
-                            ("com.ibm.ws.messaging.jms.1.1".equals(bundle.getSymbolicName()) ||
-                             "com.ibm.ws.messaging.jms.2.0".equals(bundle.getSymbolicName()) ||
-                             "com.ibm.ws.messaging.jms.2.0.jakarta".equals(bundle.getSymbolicName())))
-                            return bundle.loadClass(className);
-                        else if (resourceAdapterID.equals("wmqJms") && "com.ibm.ws.messaging.jms.wmq".equals(bundle.getSymbolicName()))
-                            return bundle.loadClass(className);
-                    }
-                    throw new ClassNotFoundException(className);
-                } else {
-                    try {
-                        return AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
-                            @Override
-                            public Class<?> run() throws ClassNotFoundException {
-                                for (Bundle bundle : componentContext.getBundleContext().getBundles()) {
-                                    if (resourceAdapterID.equals("wasJms") &&
-                                        ("com.ibm.ws.messaging.jms.1.1".equals(bundle.getSymbolicName()) ||
-                                         "com.ibm.ws.messaging.jms.2.0".equals(bundle.getSymbolicName()) ||
-                                         "com.ibm.ws.messaging.jms.2.0.jakarta".equals(bundle.getSymbolicName())))
-                                        return bundle.loadClass(className);
-                                    else if (resourceAdapterID.equals("wmqJms") && "com.ibm.ws.messaging.jms.wmq".equals(bundle.getSymbolicName()))
-                                        return bundle.loadClass(className);
-                                }
-                                throw new ClassNotFoundException(className);
-                            }
-                        });
-                    } catch (PrivilegedActionException e) {
-                        throw (ClassNotFoundException) e.getCause();
-                    }
+                    return bundle.loadClass(className);
                 }
-            } catch (ClassNotFoundException cnf) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Could not find adapter file and bundle does not have the class either. Possible cause is incorrectly specified file path.", cnf);
+                try {
+                    return AccessController.doPrivileged((PrivilegedExceptionAction<Class<?>>) () -> bundle.loadClass(className));
+                } catch (PrivilegedActionException e) {
+                    throw (ClassNotFoundException) e.getCause();
                 }
-                throw cnf;
             }
+            throw new ClassNotFoundException(className);
+        } catch (ClassNotFoundException cnf) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Could not find adapter file and bundle does not have the class either. Possible cause is incorrectly specified file path.", cnf);
+            }
+            throw cnf;
         }
     }
 
