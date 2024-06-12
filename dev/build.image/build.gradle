@@ -375,6 +375,7 @@ def jakartaee10Features() { project.file("profiles/jakartaee10/features.xml").re
 def jakartaee11Features() { project.file("profiles/jakartaee11/features.xml").readLines() }
 def microProfile4Features() { project.file("profiles/microProfile4/features.xml").readLines() }
 def microProfile6Features() { project.file("profiles/microProfile6/features.xml").readLines() }
+def microProfile7Features() { project.file("profiles/microProfile7/features.xml").readLines() }
 
 def getFeaturePath(feature) {
     def file = getFeaturePath(feature, "")
@@ -636,6 +637,21 @@ if (isAutomatedBuild && !isIFIXBuild) {
             }
         }
     }
+    
+    //currently noship
+    task packageOpenLibertyMicroProfile7(type: PackageLibertyWithFeatures) {
+        dependsOn parent.subprojects.assemble
+        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+        withFeatures this.&microProfile7Features
+        packageServerConflict = "io.openliberty.microProfile,io.openliberty.mpConfig,io.openliberty.mpTelemetry,io.openliberty.org.eclipse.microprofile.config,io.openliberty.mpCompatible,io.openliberty.internal.mpVersion"
+        outputTo new File(packageDir, "microProfile7")
+        doLast {
+            copy {
+                from "$packageDir/microProfile7/wlp/templates/servers/microProfile7/server.xml"
+                into "$packageDir/microProfile7/wlp/templates/servers/defaultServer"
+            }
+        }
+    }
 }
 
 // Generate checksums
@@ -884,6 +900,26 @@ if (isAutomatedBuild && !isIFIXBuild) {
         delete(packageOpenLibertyMicroProfile6)
     }
     publish.dependsOn cleanupOpenLibertyMicroProfile6Package
+    
+    // Currently no-ship: Includes only features listed in profiles/microProfile7/features.xml
+    task zipOpenLibertyMicroProfile7(type: Zip) {
+        dependsOn packageOpenLibertyMicroProfile7
+        dependsOn genChecksums
+        archiveBaseName = 'openliberty-microProfile7'
+        from(packageOpenLibertyMicroProfile7)
+        destinationDirectory = distsDirectory
+        archiveVersion = releaseVersion
+        doLast {
+            rootProject.userProps.setProperty('zipopenliberty.microprofile7.archivename', archivePath.toString())
+            rootProject.storeProps()
+        }
+    }
+
+    task cleanupOpenLibertyMicroProfile7Package(type: Delete) {
+        dependsOn zipOpenLibertyMicroProfile7
+        delete(packageOpenLibertyMicroProfile7)
+    }
+    publish.dependsOn cleanupOpenLibertyMicroProfile7Package
 
     //BETA: Includes both kind=ga and kind=beta features.
     task zipOpenLibertyBeta(type: Zip) {
@@ -919,6 +955,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn cleanupOpenLibertyWebProfile11Package
         dependsOn cleanupOpenLibertyMicroProfile4Package
         dependsOn cleanupOpenLibertyMicroProfile6Package
+        dependsOn cleanupOpenLibertyMicroProfile7Package
         dependsOn cleanupOpenLibertyBetaPackage
         doLast {
           generateZipChecksums(ant)
