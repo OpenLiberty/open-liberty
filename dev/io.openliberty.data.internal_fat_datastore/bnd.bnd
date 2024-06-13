@@ -23,24 +23,16 @@ javac.target: 17
 fat.minimum.java.level: 17
 fat.project: true
 
+tested.features=connectors-2.1
+
 -buildpath: \
-  com.ibm.tx.jta.jakarta;version=latest,\
-  com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
-  com.ibm.websphere.appserver.spi.logging,\
-  com.ibm.websphere.org.osgi.core,\
-  com.ibm.websphere.org.osgi.service.component,\
-  com.ibm.wsspi.org.osgi.service.component.annotations,\
-  com.ibm.ws.cdi.interfaces.jakarta;version=latest, \
   com.ibm.ws.componenttest.2.0;version=latest,\
-  com.ibm.ws.kernel.service;version=latest,\
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-  com.ibm.ws.persistence.jakarta;version=latest,\
-  com.ibm.ws.tx.embeddable.jakarta;version=latest,\
   fattest.simplicity;version=latest,\
   io.openliberty.data,\
   io.openliberty.jakarta.annotation.2.1,\
   io.openliberty.jakarta.cdi.4.0,\
   io.openliberty.jakarta.data.1.0,\
+  io.openliberty.jakarta.enterpriseBeans.4.0;version=latest,\
   io.openliberty.jakarta.interceptor.2.1,\
   io.openliberty.jakarta.persistence.3.1,\
   io.openliberty.jakarta.servlet.6.0;version=latest,\

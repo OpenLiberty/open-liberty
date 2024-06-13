@@ -22,6 +22,7 @@ import java.util.List;
 
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
+import jakarta.ejb.EJB;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
@@ -35,6 +36,7 @@ import javax.sql.DataSource;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import test.jakarta.data.datastore.ejb.DataStoreTestEJB;
 import test.jakarta.data.datastore.lib.DSDEntity;
 import test.jakarta.data.datastore.lib.DSDRepo;
 import test.jakarta.data.datastore.lib.ServerDSEntity;
@@ -79,6 +81,9 @@ public class DataStoreTestServlet extends FATServlet {
 
     @Inject
     ServerDSResRefRepo serverDSResRefRepo;
+
+    @EJB
+    DataStoreTestEJB testEJB;
 
     /**
      * Use a repository defined in a library of the application that uses
@@ -331,5 +336,20 @@ public class DataStoreTestServlet extends FATServlet {
         ninety_three = serverDSResRefRepo.read("ninety-three").orElseThrow();
         assertEquals(93, ninety_three.value);
         assertEquals("ninety-three", ninety_three.id);
+    }
+
+    /**
+     * Use a repository, defined in an EJB, that specifies a resource reference
+     * to a data source, defined in server.xml,
+     * where the resource reference has a container managed authentication alias
+     * that is defined in server.xml, ResRefAuth3, with user resrefuser3.
+     * Use a resource accessor method to obtain the same data source
+     * and verify the user name matches what is configured in server.xml and that
+     * the connection to the data source can access the data that was inserted
+     * via the repository.
+     */
+    @Test
+    public void testServerDataSourceByResRefInEJBModule() throws SQLException {
+        testEJB.testServerDataSourceByResRefInEJBModule();
     }
 }

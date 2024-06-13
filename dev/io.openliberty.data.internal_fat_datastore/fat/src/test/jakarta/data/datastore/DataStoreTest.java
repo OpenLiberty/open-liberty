@@ -63,12 +63,18 @@ public class DataStoreTest extends FATServletClient {
                         .addPackage("test.jakarta.data.datastore.web2")
                         .addAsWebInfResource(new File("test-applications/DataStoreTestApp/resources/DataStoreTestWeb2/WEB-INF/ibm-web-bnd.xml"));
 
+        JavaArchive DataStoreTestEJB = ShrinkWrap.create(JavaArchive.class,
+                                                         "DataStoreTestEJB.jar")
+                        .addPackage("test.jakarta.data.datastore.ejb")
+                        .addAsManifestResource(new File("test-applications/DataStoreTestApp/resources/DataStoreTestEJB/META-INF/ejb-jar.xml"))
+                        .addAsManifestResource(new File("test-applications/DataStoreTestApp/resources/DataStoreTestEJB/META-INF/ibm-ejb-jar-bnd.xml"));
+
         EnterpriseArchive DataStoreTestApp = ShrinkWrap.create(EnterpriseArchive.class,
                                                                "DataStoreTestApp.ear")
                         .addAsLibrary(DataStoreTestLib)
                         .addAsModule(DataStoreTestWeb1)
-                        .addAsModule(DataStoreTestWeb2);
-        //                .addAsModule(DataStoreTestEJB);
+                        .addAsModule(DataStoreTestWeb2)
+                        .addAsModule(DataStoreTestEJB);
         //ShrinkHelper.addDirectory(DataStoreTestApp, "test-applications/DataStoreTestApp/resources");
         ShrinkHelper.exportAppToServer(server, DataStoreTestApp);
 
