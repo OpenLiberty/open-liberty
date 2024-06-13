@@ -692,6 +692,11 @@
       <version>1.23.1-alpha</version>
     </dependency>
     <dependency>
+      <groupId>io.opentelemetry.semconv</groupId>
+      <artifactId>opentelemetry-semconv</artifactId>
+      <version>1.25.0-alpha</version>
+    </dependency>
+    <dependency>
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-api-events</artifactId>
       <version>1.29.0-alpha</version>

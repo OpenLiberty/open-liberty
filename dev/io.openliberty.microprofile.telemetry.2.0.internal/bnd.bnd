@@ -76,6 +76,7 @@ Import-Package: \
 	io.openliberty.org.jboss.resteasy.common;version=latest,\
 	io.openliberty.microprofile.telemetry.internal.common;version=latest,\
 	io.openliberty.io.opentelemetry.2.0;version=latest,\
+	io.opentelemetry.semconv:opentelemetry-semconv;version='1.25.0.alpha';strategy=exact,\
 	com.ibm.ws.kernel.boot.common;version=latest
 
 WS-TraceGroup: TELEMETRY

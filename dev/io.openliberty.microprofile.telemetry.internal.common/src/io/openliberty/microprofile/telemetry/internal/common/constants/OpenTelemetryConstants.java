@@ -12,7 +12,6 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.common.constants;
 
-
 public class OpenTelemetryConstants {
 
     public static final String ENV_DISABLE_PROPERTY = "OTEL_SDK_DISABLED";
@@ -23,5 +22,6 @@ public class OpenTelemetryConstants {
     public static final String CONFIG_LOGS_EXPORTER_PROPERTY = "otel.logs.exporter";
     public static final String SERVICE_NAME_PROPERTY = "otel.service.name";
     public static final String INSTRUMENTATION_NAME = "io.openliberty.microprofile.telemetry";
+    public static final String OTEL_RUNTIME_INSTANCE_NAME = "io.openliberty.microprofile.telemetry.runtime";
 
 }

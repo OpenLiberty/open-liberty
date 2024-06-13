@@ -10,6 +10,8 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+alphaSemconvOpenTelemetryVersion=1.25.0.alpha
+
 -sub: *.bnd
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
@@ -71,6 +73,8 @@ Import-Package: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	io.openliberty.io.opentelemetry;version=latest,\
-	io.openliberty.org.jboss.resteasy.common;version=latest
+	io.openliberty.org.jboss.resteasy.common;version=latest,\
+	io.opentelemetry.semconv:opentelemetry-semconv;version='${alphaSemconvOpenTelemetryVersion}';strategy=exact
+	
 
 WS-TraceGroup: TELEMETRY

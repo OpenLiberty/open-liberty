@@ -43,4 +43,11 @@ public class OpenTelemetryVersionedConfigurationImpl implements OpenTelemetryInf
         telemetryProperties.put(OpenTelemetryConstants.ENV_LOGS_EXPORTER_PROPERTY, "none");
         return telemetryProperties;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public OpenTelemetry createServerOpenTelemetryInfo(HashMap<String, String> telemetryProperties) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
