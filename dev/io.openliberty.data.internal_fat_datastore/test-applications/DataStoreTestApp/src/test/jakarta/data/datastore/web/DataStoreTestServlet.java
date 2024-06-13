@@ -339,6 +339,18 @@ public class DataStoreTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository, defined in an EJB, that specifies the JNDI name of a
+     * DataSourceDefinition, also defined in the EJB, which has user id ejbuser1.
+     * Use a resource accessor method to obtain a connection to the data source
+     * and verify the user name matches and that the connection can access the
+     * data that was inserted via the repository.
+     */
+    @Test
+    public void testDataSourceDefinitionInEJBModule() throws SQLException {
+        testEJB.testDataSourceDefinitionInEJBModule();
+    }
+
+    /**
      * Use a repository, defined in an EJB, that specifies a resource reference
      * to a data source, defined in server.xml,
      * where the resource reference has a container managed authentication alias

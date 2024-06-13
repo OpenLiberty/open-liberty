@@ -28,7 +28,7 @@ import javax.sql.DataSource;
 
 import test.jakarta.data.datastore.lib.ServerDSEntity;
 
-@DataSourceDefinition(name = "java:module/jdbc/DataSourceDef",
+@DataSourceDefinition(name = "java:global/jdbc/DataSourceDef", // TODO java:module
                       className = "org.apache.derby.jdbc.EmbeddedXADataSource",
                       databaseName = "memory:testdb",
                       user = "ejbuser1",
@@ -36,6 +36,9 @@ import test.jakarta.data.datastore.lib.ServerDSEntity;
                       properties = "createDatabase=create")
 @Stateless
 public class DataStoreTestEJB {
+
+    @Inject
+    EJBModuleDSDRepo dsdRepo;
 
     // also exists in both web modules, but with different
     // container managed auth alias user id
@@ -47,6 +50,45 @@ public class DataStoreTestEJB {
     @Inject
     EJBModuleDSResRefRepo serverDSResRefRepo;
 
+    /**
+     * Use a repository, defined in an EJB, that specifies the JNDI name of a
+     * DataSourceDefinition, also defined in the EJB, which has user id ejbuser1.
+     * Use a resource accessor method to obtain a connection to the data source
+     * and verify the user name matches and that the connection can access the
+     * data that was inserted via the repository.
+     */
+    public void testDataSourceDefinitionInEJBModule() {
+        assertEquals(false, dsdRepo.acquire(64).isPresent());
+
+        dsdRepo.store(EJBModuleDSDEntity.of(64, "sixty-four"));
+
+        assertEquals(true, dsdRepo.acquire(64).isPresent());
+
+        try (Connection con = dsdRepo.acquireConnection()) {
+            assertEquals("ejbuser1",
+                         con.getMetaData().getUserName().toLowerCase());
+
+            String sql = "SELECT value FROM EJBModuleDSDEntity WHERE id=64";
+            ResultSet result = con
+                            .createStatement()
+                            .executeQuery(sql);
+            assertEquals(true, result.next());
+            assertEquals("sixty-four", result.getString(1));
+        } catch (SQLException x) {
+            throw new EJBException(x);
+        }
+    }
+
+    /**
+     * Use a repository, defined in an EJB, that specifies a resource reference
+     * to a data source, defined in server.xml,
+     * where the resource reference has a container managed authentication alias
+     * that is defined in server.xml, ResRefAuth3, with user resrefuser3.
+     * Use a resource accessor method to obtain the same data source
+     * and verify the user name matches what is configured in server.xml and that
+     * the connection to the data source can access the data that was inserted
+     * via the repository.
+     */
     public void testServerDataSourceByResRefInEJBModule() {
         ServerDSEntity ninety_seven = ServerDSEntity.of("ninety-seven", 97);
 
