@@ -12,8 +12,10 @@
  *******************************************************************************/
 package com.ibm.ws.crypto.util.custom;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -39,26 +41,26 @@ import com.ibm.ws.kernel.provisioning.ProductExtensionInfo;
  * The URL for the WI is as follows:
  * https://wasrtc.hursley.ibm.com:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/179580
  *
- * The extension manifest file can be located underneath wlp/bin/tools/extensions/ws-customPasswordEncryption, or 
+ * The extension manifest file can be located underneath wlp/bin/tools/extensions/ws-customPasswordEncryption, or
  * The underneath bin/tools/extensions/ws-customPasswordEncryption directory of any product extension directories.
  * An example location of the extension manifest file is:
- *    C:/liberty/wlp/bin/tools/extensions/ws-customPasswordEncryption/customEncryption.jar
+ * C:/liberty/wlp/bin/tools/extensions/ws-customPasswordEncryption/customEncryption.jar
  * An example contents of the extension manifest file:
  * -------------------------
- *  Require-Bundle: com.ibm.websphere.crypto.sample.customencryption; version="[1,1.0.100)"; location="usr/extension/lib"
- *  IBM-ImplementationClass: com.ibm.websphere.crypto.sample.customencryption.CustomEncryptionImpl
+ * Require-Bundle: com.ibm.websphere.crypto.sample.customencryption; version="[1,1.0.100)"; location="usr/extension/lib"
+ * IBM-ImplementationClass: com.ibm.websphere.crypto.sample.customencryption.CustomEncryptionImpl
  * -------------------------
  *
  * An example of feature manifest file:
- * -------------------------           
- *  Manifest-Version: 1.0
- *  IBM-Feature-Version: 2
- *  IBM-ShortName: customEncryption-1.0
- *  Subsystem-SymbolicName: customEncryption-1.0;visibility:=public
- *  Subsystem-Content: 
- *   com.ibm.websphere.crypto.sample.customencryption; version="[1,1.0.100)"; start-phase:="SERVICE_EARLY",
- *   customEncryption.jar; location:="bin/tools/extensions/ws-customPasswordEncryption/customEncryption.jar"; type=file
- *  Subsystem-Description: %description
+ * -------------------------
+ * Manifest-Version: 1.0
+ * IBM-Feature-Version: 2
+ * IBM-ShortName: customEncryption-1.0
+ * Subsystem-SymbolicName: customEncryption-1.0;visibility:=public
+ * Subsystem-Content:
+ * com.ibm.websphere.crypto.sample.customencryption; version="[1,1.0.100)"; start-phase:="SERVICE_EARLY",
+ * customEncryption.jar; location:="bin/tools/extensions/ws-customPasswordEncryption/customEncryption.jar"; type=file
+ * Subsystem-Description: %description
  * -------------------------
  *
  * The location of the extension manifest file (in the above example, bin/tools/extensions/ws-customPasswordEncryption/customEncryption.jar)
@@ -113,7 +115,7 @@ public class CustomManifest {
 
     /**
      * constructor.
-     * 
+     *
      * @param file the location of the extension manifest file.
      * @throws IOException if a file operation is failed.
      * @throws IllegalArgumentException when the required attribute is not found.
@@ -187,7 +189,7 @@ public class CustomManifest {
      * file as Subsystem-Content.
      * the directories which are searched are: wlp/user/extensions/lib/features and all
      * of the product extension directories.
-     * 
+     *
      * @throws IOException
      */
     protected File findFeatureManifest() throws IOException {
@@ -264,6 +266,7 @@ public class CustomManifest {
      * returns the contents of manifest file (.mf) as the Attribute object.
      */
     protected Attributes getAttributes(final File file) throws IOException {
+        System.out.println("File: " + file.getAbsolutePath());
         FileInputStream fis = null;
         try {
             fis = AccessController.doPrivileged(new PrivilegedExceptionAction<FileInputStream>() {
@@ -275,6 +278,11 @@ public class CustomManifest {
         } catch (PrivilegedActionException pae) {
             throw (IOException) pae.getException();
         }
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String line;
+        while ((line = br.readLine()) != null) {
+            System.out.println(line);
+        }
         return new Manifest(fis).getMainAttributes();
     }
 
@@ -284,7 +292,7 @@ public class CustomManifest {
      * find the parent of lib directory, and compare the location information of the ProductionExtension
      * objects, and if they match, get the corresponding feature id from the ProductExtension object
      * and return it. If there is no matching id, return null.
-     * 
+     *
      * @throws IOException
      */
     protected static String getFeatureId(File featureManifest) throws IOException {
