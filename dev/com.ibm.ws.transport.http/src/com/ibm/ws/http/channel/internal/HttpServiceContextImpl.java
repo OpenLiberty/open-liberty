@@ -3346,6 +3346,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             // TODO check this as I believe it is not longer required
             this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_BYTES_WRITTEN).set(numBytesWritten);
 
+            MSP.log("Butffer bytes: " + GenericUtils.sizeOf(buffers));
+            MSP.log("Bytes to write: " + getNumBytesWritten());
+            
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Number of bytes to write: " + getNumBytesWritten());
             }
@@ -3359,13 +3362,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                     }
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Writing buffer from sendFullOutgoing: " + buffer);
-                        //TODO Remove this as it generates too much tracing
-//                        Tr.debug(tc, "Content: " + WsByteBufferUtils.asString(buffer));
                     }
                     String streamId = nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), "-1");
-//                    AbstractMap.SimpleEntry<Integer, WsByteBuffer> entry = new AbstractMap.SimpleEntry<Integer, WsByteBuffer>(Integer.valueOf(streamId), buffer.duplicate());
-//                    AbstractMap.SimpleEntry<Integer, WsByteBuffer> entry = new AbstractMap.SimpleEntry<Integer, WsByteBuffer>(Integer.valueOf(streamId), HttpDispatcher.getBufferManager().wrap(WsByteBufferUtils.asByteArray(buffer)));
-//                    this.nettyContext.channel().write(entry);
                     this.nettyContext.channel().write(new StreamSpecificHttpContent(Integer.valueOf(streamId), Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer))));
                 }
             }
@@ -3411,6 +3409,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         System.out.println("After await");
         MSP.log("set message sent");
         setMessageSent();
+        
+        MSP.log("END OF FINISH RESPONSE -> bytes are: " + getNumBytesWritten());
     }
 
     /**
