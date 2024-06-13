@@ -473,7 +473,10 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
                     //else report warning, keep using provider from rs: change to use RuntimeType.POJO
                     else {
                         p.setRuntimeType(RuntimeType.POJO);
-                        resourcesManagedbyCDI.remove(p.getProviderResourceClass());
+                        // if CDI Scope is REQUEST_SCOPE, report warning and no action: get provider from JAXRS
+                        if (!(scopeName.contains(JAXRSCDIConstants.REQUEST_SCOPE))) {
+                            resourcesManagedbyCDI.remove(p.getProviderResourceClass());
+                        }
                         logProviderMismatch(clazz, scopeName, "JAXRS");
                     }
                 } else {
