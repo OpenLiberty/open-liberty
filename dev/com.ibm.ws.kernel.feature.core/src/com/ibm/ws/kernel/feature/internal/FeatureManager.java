@@ -84,6 +84,7 @@ import org.osgi.service.event.EventAdmin;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.AppForceRestart;
@@ -1697,10 +1698,8 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         if (!!!featureRepository.isDirty()
             && !!!featureRepository.hasConfigurationError()
             && featureRepository.getConfiguredFeatures().equals(newConfiguredFeatures)){
-            if( !isBeta || 
-                (isBeta && featureRepository.getPlatforms().equals(newConfiguredPlatforms) 
-                && ((featureRepository.getPlatformEnvVar() == null && platformEnvironmentVariable == null) ||
-                (featureRepository.getPlatformEnvVar() != null && featureRepository.getPlatformEnvVar().equals(platformEnvironmentVariable))))) {
+            if( !isBeta || (isBeta && featureRepository.getPlatforms().equals(newConfiguredPlatforms) 
+                && equals(featureRepository.getPlatformEnvVar(), platformEnvironmentVariable))) {
                     
                 // check that all installed features are still installed
                 for (String resolvedFeature : featureRepository.getResolvedFeatures()) {
@@ -1709,6 +1708,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                     }
                 }
                 return true;
+            }
         }
         return false;
     }
@@ -2598,4 +2598,16 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         return range == null ? true : range.includes(JAVA_MAJOR_VERSION);
     }
 
+    @Trivial
+    private static boolean equals(String s0, String s1) {
+        if (s0 == null) {
+            return (s1 == null);
+        } else {
+            if (s1 == null) {
+                return false;
+            } else {
+                return s0.equals(s1);
+            }
+        }
+    }
 }

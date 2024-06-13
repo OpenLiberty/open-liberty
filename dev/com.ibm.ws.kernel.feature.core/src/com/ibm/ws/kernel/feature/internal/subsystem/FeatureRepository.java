@@ -72,9 +72,14 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     private static final TraceComponent tc = Tr.register(FeatureRepository.class);
 
     private static final int FEATURE_CACHE_VERSION = 3;
+
     private static final String EMPTY = "";
 
     private static final boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
+
+    public static int getCacheVersion() {
+        return (isBeta ? (FEATURE_CACHE_VERSION + 1) : FEATURE_CACHE_VERSION);
+    }
 
     /**
      * Whether or not any elements in the cache are stale:
@@ -218,7 +223,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         Set<String> cachedPlatforms = new HashSet<>();
         String envVar = null;
         try (DataInputStream in = new DataInputStream(new BufferedInputStream(cacheResource.get()))) {
-            if (in.readInt() != FEATURE_CACHE_VERSION) {
+            if (in.readInt() != getCacheVersion()) {
                 return; // not a version we understand; ignore the cache
             }
             int numFeatures = in.readInt();
@@ -350,7 +355,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                     }
                 }
             }
-            out.writeInt(FEATURE_CACHE_VERSION);
+            out.writeInt(getCacheVersion());
             out.writeInt(features.size());
             for (Entry<ImmutableAttributes, ProvisioningDetails> entry : features) {
                 writeFeatureAttributes(entry.getKey(),
@@ -757,7 +762,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     }
 
     public void setPlatformEnvVar(String platformEnvVar){
-        this.platformEnvVar = platformEnvVar;
+        this.platformEnvVar = consumeEmpty(platformEnvVar);
     }
 
     public String getPlatformEnvVar(){
@@ -766,7 +771,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
 
     @Deprecated
     public void setInstalledFeatures(Set<String> newResolvedFeatures, Set<String> newConfiguredFeatures, boolean configurationError) {
-        setResolvedFeatures(newResolvedFeatures, newConfiguredFeatures, configurationError, Collections.emptySet(), null);
+        setResolvedFeatures(newResolvedFeatures, newConfiguredFeatures, configurationError, platforms, platformEnvVar);
     }
 
     @Deprecated
@@ -811,12 +816,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                 platforms = Collections.unmodifiableSet(new HashSet<String>(newConfiguredPlatforms));
             }
     
-            if(platformEnv == null || platformEnv.isEmpty()){
-                platformEnvVar = null;
-            }
-            else{
-                platformEnvVar = platformEnv;
-            }
+            platformEnvVar = consumeEmpty(platformEnv);
         }
 
         this.configurationError = configurationError;
@@ -1089,6 +1089,11 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                 serviceProps.put(FEATURE_SERVICE_CATEGORY, category.split("\\s*,\\s*"));
             }
         }
+    }
+
+    @Trivial
+    private static String consumeEmpty(String s) {
+        return (((s != null) && s.isEmpty()) ? null : s);
     }
 
     public boolean isDirty() {
