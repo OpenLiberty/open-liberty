@@ -14,6 +14,7 @@ package test.jakarta.data.jpa.web;
 
 import static componenttest.annotation.SkipIfSysProp.DB_Not_Default;
 import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
+import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -3204,6 +3205,7 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Test passing a Sort created with Sort.of, particularly the ignoreCase parameter
      */
+    @SkipIfSysProp(DB_SQLServer) //SQLServer does not sort by case by default, thus ignoreCase=false will produce the same result as ignoreCase=true
     @Test
     public void testSortOf() {
         City eagan = cities.save(new City("eagan", "minnesota", 67_396, Set.of(651)));
