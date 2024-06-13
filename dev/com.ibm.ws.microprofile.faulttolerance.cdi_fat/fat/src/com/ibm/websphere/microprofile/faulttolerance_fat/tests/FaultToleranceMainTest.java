@@ -92,7 +92,7 @@ public class FaultToleranceMainTest extends FATServletClient {
     @Rule
     public AnnotationFilter filter = AnnotationFilter
                     .requireAnnotations(BasicTest.class)
-                    .forAllRepeatsExcept(MicroProfileActions.MP61_ID)
+                    .forAllRepeatsExcept(RepeatFaultTolerance.MP70_EE10_METRICS51_ID)
                     .inModes(TestMode.LITE);
 
     @BeforeClass
@@ -214,7 +214,9 @@ public class FaultToleranceMainTest extends FATServletClient {
                      MicroProfileActions.MP41_ID,
                      MicroProfileActions.MP50_ID,
                      MicroProfileActions.MP60_ID,
-                     MicroProfileActions.MP61_ID }) // FT 3.0+ does not close executors until the application shuts down
+                     MicroProfileActions.MP61_ID,
+                     RepeatFaultTolerance.MP70_EE10_METRICS51_ID,
+                     RepeatFaultTolerance.MP70_EE11_METRICS51_ID }) // FT 3.0+ does not close executors until the application shuts down
     @Test
     public void testExecutorsClose() throws Exception {
 

@@ -32,10 +32,10 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.isolation.IsolationServlet;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.isolation.PullExporterAutoConfigurationCustomizerProvider;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -53,7 +53,7 @@ public class TelemetryMetricCombinationTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP70_EE10);
+    public static RepeatTests r = RepeatFaultTolerance.repeat(SERVER_NAME, RepeatFaultTolerance.MP70_EE10_METRICS51, RepeatFaultTolerance.MP70_EE11_METRICS51);
 
     @BeforeClass
     public static void setup() throws Exception {

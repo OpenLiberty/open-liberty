@@ -62,6 +62,8 @@ public class TestMultiModuleConfigLoad extends FATServletClient {
     //run against EE10, EE9, EE8 and EE7 features
     @ClassRule
     public static RepeatTests r = RepeatFaultTolerance.repeat(SERVER_NAME, TestMode.FULL,
+                                                              RepeatFaultTolerance.MP70_EE10_METRICS51,
+                                                              RepeatFaultTolerance.MP70_EE11_METRICS51,
                                                               MicroProfileActions.MP61,
                                                               MicroProfileActions.MP13,
                                                               RepeatFaultTolerance.MP21_METRICS20,

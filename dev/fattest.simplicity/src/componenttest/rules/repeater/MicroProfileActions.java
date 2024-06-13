@@ -254,7 +254,6 @@ public class MicroProfileActions {
                                                                "mpHealth-4.0",
                                                                "mpJwt-2.1",
                                                                "mpOpenAPI-4.0",
-                                                               "mpMetrics-5.1",
                                                                "mpTelemetry-2.0",
                                                                "mpRestClient-4.0" };
 
@@ -269,7 +268,6 @@ public class MicroProfileActions {
                                                                "mpHealth-4.0",
                                                                "mpJwt-2.1",
                                                                "mpOpenAPI-4.0",
-                                                               "mpMetrics-5.1",
                                                                "mpTelemetry-2.0",
                                                                "mpRestClient-4.0" };
 
@@ -350,11 +348,13 @@ public class MicroProfileActions {
 
     private static final String[] STANDALONE10_FEATURES_ARRAY = { "mpContextPropagation-1.3",
                                                                   "mpGraphQL-2.0",
+                                                                  "mpMetrics-5.1",
                                                                   "mpReactiveMessaging-3.0",
                                                                   "mpReactiveStreams-3.0" };
 
     private static final String[] STANDALONE11_FEATURES_ARRAY = { "mpContextPropagation-1.3",
                                                                   "mpGraphQL-2.0",
+                                                                  "mpMetrics-5.1",
                                                                   "mpReactiveMessaging-3.0",
                                                                   "mpReactiveStreams-3.0" };
 
