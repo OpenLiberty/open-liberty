@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="com.ibm.ws.kernel.feature.common" 
+	                    including="com/ibm/ws/kernel/feature/AppForceRestart.java|com/ibm/ws/kernel/feature/FeatureDefinition.java|com/ibm/ws/kernel/feature/ProcessType.java|com/ibm/ws/kernel/feature/Visibility.java|com/ibm/ws/kernel/feature/package-info.java"/>
 	<classpathentry kind="src" path="com.ibm.ws.kernel.feature.core" 
-	                    including="com/ibm/ws/kernel/feature/AppForceRestart.java|com/ibm/ws/kernel/feature/FeatureDefinition.java|com/ibm/ws/kernel/feature/ProcessType.java|com/ibm/ws/kernel/feature/Visibility.java|com/ibm/ws/kernel/feature/internal/FeatureResolverImpl.java|com/ibm/ws/kernel/feature/internal/ProvisionerConstants.java|com/ibm/ws/kernel/feature/internal/FeatureResolverResultImpl.java|com/ibm/ws/kernel/feature/internal/FeatureResolverBaseline.java|com/ibm/ws/kernel/feature/provisioning/|com/ibm/ws/kernel/feature/resolver/|com/ibm/ws/kernel/feature/internal/util/"/>
+	                    including="com/ibm/ws/kernel/feature/internal/FeatureResolverImpl.java|com/ibm/ws/kernel/feature/internal/ProvisionerConstants.java|com/ibm/ws/kernel/feature/internal/FeatureResolverResultImpl.java|com/ibm/ws/kernel/feature/internal/FeatureResolverBaseline.java|com/ibm/ws/kernel/feature/provisioning/|com/ibm/ws/kernel/feature/resolver/|com/ibm/ws/kernel/feature/internal/util/"/>
 	<classpathentry kind="src" path="com.ibm.ws.kernel.boot.core"
 	                    including="com/ibm/ws/kernel/provisioning/ExtensionConstants.java|com/ibm/ws/kernel/provisioning/package-info.java"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>

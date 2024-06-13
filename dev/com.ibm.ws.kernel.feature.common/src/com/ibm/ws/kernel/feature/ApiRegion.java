@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -71,8 +71,8 @@ public enum ApiRegion {
      */
     THREAD_CONTEXT("thread-context", "liberty.thread.context.api", false);
 
-    private static final TraceComponent tc = Tr.register(ApiRegion.class, com.ibm.ws.kernel.feature.internal.ProvisionerConstants.TR_GROUP,
-                                                         com.ibm.ws.kernel.feature.internal.ProvisionerConstants.NLS_PROPS);
+    private static final TraceComponent tc = Tr.register(ApiRegion.class, "featureManager",
+                                                         "com.ibm.ws.kernel.feature.internal.resources.ProvisionerMessages");
     private static final ApiRegion[] values = ApiRegion.values();
     private final String apiType;
     private final String regionName;
