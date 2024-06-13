@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2023 IBM Corporation and others.
+# Copyright (c) 2009, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -100,6 +100,21 @@ missingDependencyClasses.error.CWMMC0013E.useraction=Provide the necessary depen
 libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: The MicroProfile Metrics feature is configured to use the following libraryRef: [{0}]
 libraryRefConfigured.info.CWMMC0014I.explanation=The MicroProfile Metrics feature is configured to use a libraryRef. This referenced library must contain the Micrometer core library, target Micrometer libraries and dependencies.
 libraryRefConfigured.info.CWMMC0014I.useraction=No action is required.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidHistogramValueConfigured.warning.CWMMC0015W=CWMMC0015W: The value {0} is invalid for the {1} property. Only integer and decimal values are accepted.
+invalidHistogramValueConfigured.warning.CWMMC0015W.explanation=The configured histogram values are invalid.
+invalidHistogramValueConfigured.warning.CWMMC0015W.useraction=Only configure the values with integers and decimals.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidTimerValueConfigured.warning.CWMMC0016W=CWMMC0016W: The value {0} is invalid for the {1} property. Only integer values with an optional time unit (e.g. ms,s,m,h) are accepted.
+invalidTimerValueConfigured.warning.CWMMC0016W.explanation=The configured timer values are invalid.
+invalidTimerValueConfigured.warning.CWMMC0016W.useraction=Only configure the values with integer values and optional time units (e.g. ms,s,m,h
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidPercentileValueConfigured.warning.CWMMC0017W=CWMMC0017W: The value {0} is invalid for the {1} property. Only values 0.0-1.0 inclusively are accepted.
+invalidPercentileValueConfigured.warning.CWMMC0017W.explanation=The configured percentile values are invalid.
+invalidPercentileValueConfigured.warning.CWMMC0017W.useraction=Only configure the values between 0.0-1.0
 
 #Memory usedHeap message
 memory.usedHeap.description=Displays the amount of used heap memory in bytes.
