@@ -63,7 +63,7 @@ public class CRaCResourceRequestPhaseBeforeAppStartTest {
         // BEFORE_APP_START is the wrong phase, for app initiated checkpoint must use APP_REQUESTED
         server.setCheckpoint(CheckpointPhase.BEFORE_APP_START, true,
                              server -> {
-                                 assertNotNull("'SRVE0169I: ' message not found in log before rerstore",
+                                 assertNotNull("'SRVE0169I: ' message not found in log before restore",
                                                server.waitForStringInLogUsingMark("SRVE0169I: Loading Web Module: " + APP_NAME, 0));
                              });
     }
