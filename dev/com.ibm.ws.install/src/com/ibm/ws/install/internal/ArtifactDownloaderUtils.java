@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,8 +22,6 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.security.MessageDigest;
@@ -114,20 +112,14 @@ public class ArtifactDownloaderUtils {
     public static int exists(String URLName, Map<String, Object> envMap, MavenRepository repository) throws IOException {
         try {
             URL url = new URL(URLName);
-
-            Proxy proxy;
             String proxyEncodedAuth = "";
-            if (envMap.get("https.proxyHost") != null) {
-                proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
+            if (url.getProtocol().equals("https") && envMap.get("https.proxyHost") != null) {
                 proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("https.proxyUser"), (String) envMap.get("https.proxyPassword"));
             } else if (envMap.get("http.proxyHost") != null) {
-                proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("http.proxyHost"), Integer.parseInt((String) envMap.get("http.proxyPort"))));
                 proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("http.proxyUser"), (String) envMap.get("http.proxyPassword"));
-            } else {
-                proxy = Proxy.NO_PROXY;
             }
 
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection(proxy);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             String repoEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication(repository.getUserId(), repository.getPassword());
             if (!repoEncodedAuth.isEmpty()) {
                 conn.setRequestProperty("Authorization", repoEncodedAuth);
@@ -139,6 +131,7 @@ public class ArtifactDownloaderUtils {
             conn.setConnectTimeout(10000);
             conn.setInstanceFollowRedirects(true);
             conn.connect();
+
             return conn.getResponseCode();
 
         } catch (ConnectException e) {
@@ -318,32 +311,6 @@ public class ArtifactDownloaderUtils {
             return Base64.getEncoder().encodeToString(userInfo.getBytes("UTF-8"));
         } catch (UnsupportedEncodingException encodingException) {
             throw new RuntimeException("Failed to get bytes for user info using UTF-8.", encodingException);
-        }
-    }
-
-    public static void checkValidProxy(Map<String, Object> envMap) throws InstallException {
-        //set up basic auth HTTP tunnel
-        System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
-
-        String protocol = null;
-        if (envMap.get("https.proxyUser") != null) {
-            protocol = "https";
-        } else if (envMap.get("http.proxyUser") != null) {
-            protocol = "http";
-        }
-
-        String proxyPort = (String) envMap.get(protocol + ".proxyPort");
-        if (protocol != null) {
-            int proxyPortnum = Integer.parseInt(proxyPort);
-            if (((String) envMap.get(protocol + ".proxyHost")).isEmpty()) {
-                throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_HOST_MISSING");
-            } else if (proxyPortnum < 0 || proxyPortnum > 65535) {
-                throw ExceptionUtils.createByKey("ERROR_TOOL_INVALID_PROXY_PORT", proxyPort);
-            } else if (((String) envMap.get(protocol + ".proxyPassword")).isEmpty() ||
-                       envMap.get(protocol + ".proxyPassword") == null) {
-                throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_PWD_MISSING");
-            }
-            verifyPassword((String) envMap.get(protocol) + ".proxyPassword");
         }
     }
 
