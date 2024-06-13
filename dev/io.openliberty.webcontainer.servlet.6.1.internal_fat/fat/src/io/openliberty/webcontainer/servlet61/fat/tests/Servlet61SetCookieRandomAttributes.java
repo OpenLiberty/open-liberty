@@ -36,7 +36,7 @@ import componenttest.topology.impl.LibertyServer;
 
 /**
  * Test ServletResponse addHeader and setHeader to add "Set-Cookie" with arbitrary attributes.
- * Verify that the response Set-Cookie at client is not splitted up into multiple Set-Cookie headers
+ * Verify that the response Set-Cookie at client is not split up into multiple Set-Cookie headers
  * Verify that attribute name with EMPTY value will show up with just the attribute name (there is no = trailing)
  * Verify that attribute name with NULL value will : (1) remove the existing attribute with same name. (2) remove itself
  *
@@ -84,7 +84,7 @@ public class Servlet61SetCookieRandomAttributes {
     }
 
     /*
-     * Set-Cookie using Cookie() API - test : arbitrary attribute name and value - Expected no splitted Set-Cookie headers
+     * Set-Cookie using Cookie() API - test : arbitrary attribute name and value - Expecting no split Set-Cookie headers
      *
      * Expected response cookies:
      * [set-cookie: cookie_att_test=cookie_value; httponly; cookie_att_name=cookie_att_value]

@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Set-Cookie servlet using Cookie API, reponse setHeader() and addHeader() to verify that the Set-Cookie is not splitted for arbitrary attributes
+ * Set-Cookie servlet using Cookie API, reponse setHeader() and addHeader() to verify that the Set-Cookie is not split for arbitrary attributes
  * Also verify: Attribute name with EMPTY value does not have trailing equal sign
  *              Attribute name with NULL value removes the existing attribute name and itself.
  */
