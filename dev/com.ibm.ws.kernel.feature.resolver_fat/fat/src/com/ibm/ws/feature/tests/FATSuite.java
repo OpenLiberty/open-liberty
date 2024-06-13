@@ -18,17 +18,22 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                BaselineSingletonUnitTest.class,
-                //BaselineServletUnitTest.class, // fix unit tests
-                //MicroProfileCrossPlatformUnitTest.class, // fix unit tests
+                ReportFeaturesUnitTest.class,
+                ReportImagesUnitTest.class,
 
-                //VersionlessEnvVarErrorTest.class, // fix error tests
+                FeatureDetailsUnitTest.class,
 
-                //VersionlessResolutionTest.class, // needs servlet-3.0 cases
+                BaselineResolutionSingletonUnitTest.class,
+                BaselineResolutionServletUnitTest.class,
+                BaselineResolutionMicroProfileUnitTest.class,
 
-                VersionlessServletToMicroProfileTest.class,
-                VersionlessJavaEEToMicroProfileTest.class,
+                BaselineResolutionGenerationTest.class,
+
+// VersionlessServletToMicroProfileTest.class,
+// VersionlessJavaEEToMicroProfileTest.class,
+// VersionlessEnvVarErrorTest.class
 })
+
 public class FATSuite {
     // EMPTY
 }

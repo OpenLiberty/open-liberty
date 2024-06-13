@@ -348,7 +348,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         private volatile Collection<ProvisioningFeatureDefinition> kernelFeatures;
 
         private final FeatureManager featureManager;
-
+       
         private final ProvisioningMode initialMode;
 
         KernelFeaturesHolder(FeatureManager featureManager, ProvisioningMode initialMode) {

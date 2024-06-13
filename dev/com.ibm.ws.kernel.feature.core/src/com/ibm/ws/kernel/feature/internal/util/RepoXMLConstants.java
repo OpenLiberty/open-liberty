@@ -50,6 +50,8 @@ public interface RepoXMLConstants {
     String VERSION_TAG = "version";
     String IBM_VERSION_TAG = "ibm-version";
 
+    String PLATFORMS_TAG = "platforms";
+
     String AUTO_TAG = "auto";
     String SINGLETON_TAG = "singleton";
     String VISIBILITY_TAG = "visibility";

@@ -1,6 +1,6 @@
 Subsystem-ManifestVersion: 1
 IBM-ShortName:featureE-1.0
-Subsystem-SymbolicName: com.ibm.websphere.appserver.featureE-1.0; visibility:=public
+Subsystem-SymbolicName: com.ibm.websphere.appserver.featureE-1.0; visibility:=private
 Subsystem-Version: 1.0.0
 Subsystem-Content: bundle5;  version="[1,2)"
 IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.featureA-1.0))",

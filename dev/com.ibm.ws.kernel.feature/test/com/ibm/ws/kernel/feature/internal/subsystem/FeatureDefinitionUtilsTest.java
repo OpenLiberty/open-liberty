@@ -35,19 +35,18 @@ import org.junit.rules.TestRule;
 import com.ibm.ws.kernel.feature.Visibility;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils.ImmutableAttributes;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils.ProvisioningDetails;
+import com.ibm.ws.kernel.feature.internal.util.FeatureTestConstants;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 
 import junit.framework.Assert;
 import test.common.SharedOutputManager;
-import test.utils.SharedConstants;
 
-/**
- *
- */
+//@formatter:off
 public class FeatureDefinitionUtilsTest {
+    static final SharedOutputManager outputMgr =
+        SharedOutputManager.getInstance().trace("*=audit=enabled:featureManager=all=enabled");
 
-    static final SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=audit=enabled:featureManager=all=enabled");
     static WsLocationAdmin locSvc;
 
     @Rule
@@ -58,7 +57,7 @@ public class FeatureDefinitionUtilsTest {
 
     @Test
     public void testSimpleReadManifestWriteCache() throws Exception {
-        File featureFile = new File(SharedConstants.TEST_DATA_DIR, "com.ibm.websphere.supersededA.mf");
+        File featureFile = new File(FeatureTestConstants.TEST_DATA_DIR, "com.ibm.websphere.supersededA.mf");
 
         ProvisioningDetails details = new ProvisioningDetails(featureFile, null);
         ImmutableAttributes iAttr = FeatureDefinitionUtils.loadAttributes("", featureFile, details);
@@ -294,7 +293,7 @@ public class FeatureDefinitionUtilsTest {
     public void testImmutableAttributeFlags() throws Exception {
         // Round-trip through the cache will convert to absolute path. We need the input file to
         // have also been constructed from an absolute path so it will match..
-        File featureFile = new File(SharedConstants.TEST_DATA_DIR, "com.ibm.websphere.supersededA.mf").getAbsoluteFile();
+        File featureFile = new File(FeatureTestConstants.TEST_DATA_DIR, "com.ibm.websphere.supersededA.mf").getAbsoluteFile();
 
         // Intentional extra trailing whitespace...
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -319,6 +318,7 @@ public class FeatureDefinitionUtilsTest {
         Assert.assertFalse("SPI-package flag should be false", iAttr.hasSpiPackages);
 
         List<String> platforms = iAttr.platforms;
+
         List<String> expectedPlatforms = Arrays.asList("javaee-6.0", "javaee-7.0", "javaee-8.0", "jakartaee-9.1");
         int i = 0;
         for (String platform : platforms) {
@@ -350,7 +350,7 @@ public class FeatureDefinitionUtilsTest {
     public void testProvisioningDetailsExtraLines() throws Exception {
         // Round-trip through the cache will convert to absolute path. We need the input file to
         // have also been constructed from an absolute path so it will match..
-        File featureFile = new File(SharedConstants.TEST_DATA_DIR, "com.ibm.websphere.supersededA.mf").getAbsoluteFile();
+        File featureFile = new File(FeatureTestConstants.TEST_DATA_DIR, "com.ibm.websphere.supersededA.mf").getAbsoluteFile();
 
         // Intentional extra trailing whitespace...
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -468,3 +468,4 @@ public class FeatureDefinitionUtilsTest {
         }
     }
 }
+//@formatter:on

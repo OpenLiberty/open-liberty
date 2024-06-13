@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,8 @@ import org.junit.rules.TestRule;
 import com.ibm.ws.kernel.feature.Visibility;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils.ImmutableAttributes;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils.ProvisioningDetails;
+import com.ibm.ws.kernel.feature.internal.util.FeatureTestConstants;
+import com.ibm.ws.kernel.feature.internal.util.TestUtils;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 import com.ibm.ws.kernel.provisioning.ExtensionConstants;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
@@ -43,12 +46,7 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 import junit.framework.AssertionFailedError;
 import test.common.SharedLocationManager;
 import test.common.SharedOutputManager;
-import test.utils.SharedConstants;
-import test.utils.TestUtils;
 
-/**
- *
- */
 public class FeatureRepositoryTest {
 
     static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=audit=enabled:featureManager=all=enabled");
@@ -59,9 +57,12 @@ public class FeatureRepositoryTest {
     static Field isDirty;
 
     enum CacheField {
-        publicFeatureNameToSymbolicName(false),
         installedFeatures(false),
-        autoFeatures(true),
+
+        publicFeatureNameToSymbolicName(false),
+        autoFeatures(false),
+        compatibilityFeatures(false),
+
         knownGoodFeatureFiles(true),
         knownBadFeatureFiles(true);
 
@@ -92,19 +93,16 @@ public class FeatureRepositoryTest {
         }
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        File root = SharedConstants.TEST_DATA_FILE.getCanonicalFile();
+        File root = FeatureTestConstants.TEST_DATA_FILE.getCanonicalFile();
         File lib = new File(root, "lib");
 
         TestUtils.setUtilsInstallDir(root);
         TestUtils.setKernelUtilsBootstrapLibDir(lib);
         TestUtils.clearBundleRepositoryRegistry();
 
-        locSvc = (WsLocationAdmin) SharedLocationManager.createLocations(SharedConstants.TEST_DATA_DIR, serverName);
+        locSvc = (WsLocationAdmin) SharedLocationManager.createLocations(FeatureTestConstants.TEST_DATA_DIR, serverName);
         TestUtils.recursiveClean(locSvc.getServerResource(null));
 
         BundleRepositoryRegistry.initializeDefaults(serverName, true);
@@ -145,13 +143,28 @@ public class FeatureRepositoryTest {
         repo.init();
         assertInitializedProvisioningCaches(repo);
 
-        int numInstalledFeatures = CacheField.installedFeatures.getMap(repo).size();
-        int numKnownFeatures = CacheField.knownGoodFeatureFiles.getMap(repo).size();
+//        for (ProvisioningFeatureDefinition featureDef : repo.getAllFeatures().values()) {
+//            System.out.println("Feature [ " + featureDef.getSymbolicName() + " ]" +
+//                               " Visibility [ " + featureDef.getVisibility() + " ]" +
+//                               " IsAuto [ " + (featureDef.isAutoFeature() ? "True" : "False") + " ]");
+//            String shortName = featureDef.getFeatureName();
+//            if (shortName != null) {
+//                System.out.println("  Short [" + shortName + " ]");
+//            }
+//            String ibmShortName = featureDef.getIbmShortName();
+//            if (ibmShortName != null) {
+//                System.out.println("  IBM short [" + shortName + " ]");
+//            }
+//        }
 
-        Assert.assertTrue("There should be cached features: " + numInstalledFeatures, numInstalledFeatures > 0);
-        Assert.assertEquals("There should be the same number of known features", numInstalledFeatures, numKnownFeatures);
-        Assert.assertEquals("There should be one known bad manifest", 1, CacheField.knownBadFeatureFiles.getMap(repo).size());
-        Assert.assertEquals("There should be one known autofeature", 1, CacheField.autoFeatures.getList(repo).size());
+        int numCachedFeatures = CacheField.installedFeatures.getMap(repo).size();
+        int numGoodFeatures = CacheField.knownGoodFeatureFiles.getMap(repo).size();
+
+        Assert.assertTrue("There should be cached features: " + numCachedFeatures, numCachedFeatures > 0);
+        Assert.assertEquals("There should be the same number of known features", numCachedFeatures, numGoodFeatures);
+        Assert.assertEquals("There should be one bad manifest", 1, CacheField.knownBadFeatureFiles.getMap(repo).size());
+        Assert.assertEquals("There should be one auto feature", 1, CacheField.autoFeatures.getList(repo).size());
+        Assert.assertEquals("There should be no compatibility features", 0, CacheField.compatibilityFeatures.getMap(repo).size());
         Assert.assertTrue("isDirty should be true", (Boolean) isDirty.get(repo));
 
         // Write to file...
@@ -166,10 +179,11 @@ public class FeatureRepositoryTest {
         repo.init();
         assertInitializedProvisioningCaches(repo);
 
-        Assert.assertEquals("There should be the same number of cached features as previously", numInstalledFeatures, CacheField.installedFeatures.getMap(repo).size());
-        Assert.assertEquals("There should be the same number of known features", numInstalledFeatures, CacheField.knownGoodFeatureFiles.getMap(repo).size());
-        Assert.assertEquals("There should be one known bad manifest", 1, CacheField.knownBadFeatureFiles.getMap(repo).size());
-        Assert.assertEquals("There should be one known autofeature", 1, CacheField.autoFeatures.getList(repo).size());
+        Assert.assertEquals("There should be the same number of cached features as previously", numCachedFeatures, CacheField.installedFeatures.getMap(repo).size());
+        Assert.assertEquals("There should be the same number of known features", numCachedFeatures, CacheField.knownGoodFeatureFiles.getMap(repo).size());
+        Assert.assertEquals("There should be one bad manifest", 1, CacheField.knownBadFeatureFiles.getMap(repo).size());
+        Assert.assertEquals("There should be one auto feature", 1, CacheField.autoFeatures.getList(repo).size());
+        Assert.assertEquals("There should be no compatibility features", 0, CacheField.compatibilityFeatures.getMap(repo).size());
         Assert.assertFalse("isDirty should be false after the cache is re-read", (Boolean) isDirty.get(repo));
 
         // now try a fresh repo as if we are in firstInit startup
@@ -178,8 +192,9 @@ public class FeatureRepositoryTest {
         repo.init();
         assertInitializedProvisioningCaches(repo);
 
-        Assert.assertEquals("There should be the same number of cached features as previously", numInstalledFeatures, CacheField.installedFeatures.getMap(repo).size());
-        Assert.assertEquals("There should be the same number of known features", numInstalledFeatures, CacheField.knownGoodFeatureFiles.getMap(repo).size());
+        Assert.assertEquals("There should be the same number of cached features as previously", numCachedFeatures, CacheField.installedFeatures.getMap(repo).size());
+        Assert.assertEquals("There should be the same number of known features", numCachedFeatures, CacheField.knownGoodFeatureFiles.getMap(repo).size());
+
         Assert.assertEquals("There should be one known bad manifest", 1, CacheField.knownBadFeatureFiles.getMap(repo).size());
         Assert.assertEquals("There should be one known autofeature", 1, CacheField.autoFeatures.getList(repo).size());
         Assert.assertFalse("isDirty should be false after the cache is re-read", (Boolean) isDirty.get(repo));
@@ -264,7 +279,7 @@ public class FeatureRepositoryTest {
         }
 
         // Store the installedFeatures
-        repo.setInstalledFeatures(installedFeatures, installedFeatures, false);
+        repo.setResolvedFeatures(installedFeatures, installedFeatures, false, Collections.emptySet(), null);
 
         // Update the services, which will register the OSGi Services.
         repo.updateServices();
@@ -296,7 +311,7 @@ public class FeatureRepositoryTest {
     }
 
     /*
-     * A method to generate a SubsystemFeatureDefinition object from a subset of feature info.
+     * Generate a SubsystemFeatureDefinition object from a subset of feature info.
      */
     public static SubsystemFeatureDefinitionImpl createSubsystemFeatureDef(String shortName, String symbolicName, String visibility,
                                                                            String subsystemContentString) throws Exception {
