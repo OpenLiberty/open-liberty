@@ -27,6 +27,7 @@ tested.features:\
   mprestclient-2.0,\
   mprestclient-4.0,\
   concurrent-1.0,\
+  concurrent-3.1,\
   jaxrs-2.0,\
   jaxrsclient-2.1,\
   jaxrs-2.1,\
