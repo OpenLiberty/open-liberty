@@ -13,6 +13,7 @@
 package io.openliberty.data.internal.persistence.cdi;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
@@ -35,21 +36,34 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
 import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
+import com.ibm.ws.classloading.ClassLoaderIdentifierService;
+import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.metadata.ApplicationMetaDataListener;
 import com.ibm.ws.container.service.metadata.MetaDataEvent;
 import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.container.service.metadata.ModuleMetaDataListener;
+import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
+import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
+import com.ibm.ws.container.service.state.ApplicationStateListener;
+import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.MetaData;
+import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.wsspi.resource.ResourceConfigFactory;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+import io.openliberty.data.internal.persistence.service.DataComponentMetaData;
+import io.openliberty.data.internal.persistence.service.DataModuleMetaData;
 import io.openliberty.data.internal.version.DataVersionCompatibility;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.persistence.EntityManagerFactory;
@@ -60,13 +74,26 @@ import jakarta.persistence.EntityManagerFactory;
  */
 @Component(configurationPid = "io.openliberty.data.internal.persistence.cdi.DataExtensionProvider",
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           service = { CDIExtensionMetadata.class, DataExtensionProvider.class, ApplicationMetaDataListener.class })
-public class DataExtensionProvider implements CDIExtensionMetadata, CDIExtensionMetadataInternal, ApplicationMetaDataListener {
+           service = { CDIExtensionMetadata.class,
+                       DataExtensionProvider.class,
+                       DeferredMetaDataFactory.class,
+                       ApplicationMetaDataListener.class,
+                       ApplicationStateListener.class },
+           property = { "deferredMetaData=DATA" })
+public class DataExtensionProvider implements //
+                CDIExtensionMetadata, //
+                CDIExtensionMetadataInternal, //
+                DeferredMetaDataFactory, //
+                ApplicationMetaDataListener, // TODO remove this? and use the following instead?
+                ApplicationStateListener {
     private static final TraceComponent tc = Tr.register(DataExtensionProvider.class);
 
     private static final Set<Class<?>> beanClasses = Set.of(DataSource.class, EntityManagerFactory.class);
 
     private static final Set<Class<? extends Extension>> extensions = Collections.singleton(DataExtension.class);
+
+    @Reference
+    public ClassLoaderIdentifierService classloaderIdSvc;
 
     @Reference
     public DataVersionCompatibility compat;
@@ -86,11 +113,21 @@ public class DataExtensionProvider implements CDIExtensionMetadata, CDIExtension
      */
     public final Map<String, Queue<ServiceRegistration<ResourceFactory>>> delegatorsAllApps = new ConcurrentHashMap<>();
 
+    /**
+     * EntityManagerBuilder futures per application, to complete once the application starts.
+     */
+    private final ConcurrentHashMap<String, Collection<FutureEMBuilder>> futureEMBuilders = new ConcurrentHashMap<>();
+
     @Reference(target = "(component.name=com.ibm.ws.threading)")
     protected ExecutorService executor;
 
     @Reference
     public LocalTransactionCurrent localTranCurrent;
+
+    @Reference
+    public MetaDataIdentifierService metadataIdSvc;
+
+    private final ConcurrentHashMap<String, DataComponentMetaData> metadatas = new ConcurrentHashMap<>();
 
     public @Reference ResourceConfigFactory resourceConfigFactory;
 
@@ -120,12 +157,14 @@ public class DataExtensionProvider implements CDIExtensionMetadata, CDIExtension
 
     @Override
     public void applicationMetaDataDestroyed(MetaDataEvent<ApplicationMetaData> event) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         String appName = event.getMetaData().getName();
         Map<String, Configuration> configurations = dbStoreConfigAllApps.remove(appName);
         if (configurations != null)
             for (Configuration config : configurations.values())
                 try {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    if (trace && tc.isDebugEnabled())
                         Tr.debug(this, tc, "deleting " + config);
                     config.delete();
                 } catch (IOException x) {
@@ -136,6 +175,95 @@ public class DataExtensionProvider implements CDIExtensionMetadata, CDIExtension
         if (registrations != null)
             for (ServiceRegistration<ResourceFactory> reg; (reg = registrations.poll()) != null;)
                 reg.unregister();
+
+        // Remove references to component metadata that we created for this application
+        for (Iterator<DataComponentMetaData> it = metadatas.values().iterator(); it.hasNext();) {
+            DataComponentMetaData cdata = it.next();
+            if (appName.equals(cdata.getJ2EEName().getApplication())) {
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "removing " + cdata);
+                it.remove();
+            }
+        }
+    }
+
+    @Override
+    public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
+    }
+
+    @Override
+    public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
+        Collection<FutureEMBuilder> futures = futureEMBuilders.remove(appInfo.getName());
+        if (futures != null) {
+            boolean beforeCheckpoint = !CheckpointPhase.getPhase().restored();
+            for (FutureEMBuilder futureEMBuilder : futures) {
+                if (beforeCheckpoint)
+                    try {
+                        // Run the task in the foreground if before a checkpoint.
+                        // This is necessary to ensure this task completes before the checkpoint.
+                        // Application startup performance is not as important before checkpoint
+                        // and this ensures we don't do this work on restore side which will make
+                        // restore faster.
+                        futureEMBuilder.complete(futureEMBuilder.createEMBuilder());
+                    } catch (Throwable x) {
+                        futureEMBuilder.completeExceptionally(x);
+                    }
+                else
+                    futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor);
+            }
+        }
+    }
+
+    @Override
+    public void applicationStopping(ApplicationInfo appInfo) {
+        futureEMBuilders.remove(appInfo.getName());
+    }
+
+    @Override
+    public void applicationStopped(ApplicationInfo appInfo) {
+        futureEMBuilders.remove(appInfo.getName());
+    }
+
+    /**
+     * Create or obtain DataComponentMetaData for an application artifact,
+     * such as when the repository is defined in a library of the application
+     * rather than in a web component or enterprise bean.
+     *
+     * @param metadata    ApplicatonMetaData to include in the metadata hierarchy.
+     * @param classloader class loader of the repository interface.
+     * @return component metadata.
+     */
+    public ComponentMetaData createComponentMetadata(MetaData metadata,
+                                                     ClassLoader classloader) {
+        J2EEName jeeName;
+        ModuleMetaData moduleMetadata;
+
+        if (metadata instanceof ApplicationMetaData) {
+            ApplicationMetaData adata = (ApplicationMetaData) metadata;
+            jeeName = adata.getJ2EEName();
+            moduleMetadata = new DataModuleMetaData(jeeName, adata);
+        } else {
+            throw new IllegalArgumentException(metadata == null //
+                            ? null //
+                            : metadata.getClass().getName());
+        }
+
+        String identifier = "DATA#" + jeeName;
+
+        DataComponentMetaData componentMetadata = new DataComponentMetaData(identifier, moduleMetadata, classloader);
+        DataComponentMetaData existing = metadatas.putIfAbsent(identifier, componentMetadata);
+        return existing == null ? componentMetadata : existing;
+    }
+
+    /**
+     * Obtain metadata for the specified identifier.
+     *
+     * @param identifier the metadata identifier, of the form DATA#AppName
+     * @return the metadata if found, otherwise null.
+     */
+    @Override
+    public ComponentMetaData createComponentMetaData(String identifier) {
+        return metadatas.get(identifier);
     }
 
     @Deactivate
@@ -169,10 +297,68 @@ public class DataExtensionProvider implements CDIExtensionMetadata, CDIExtension
         return beanClasses;
     }
 
+    /**
+     * Obtain the classloader of DataComponentMetaData that is created
+     * for an application artifact, such as when the repository is
+     * defined in a library of the application rather than in a
+     * web component or enterprise bean.
+     *
+     * @param metadata DataComponentMetaData.
+     * @return the class loader, otherwise null.
+     */
+    @Override
+    public ClassLoader getClassLoader(ComponentMetaData metadata) {
+        return metadata instanceof DataComponentMetaData //
+                        ? ((DataComponentMetaData) metadata).classLoader //
+                        : null;
+    }
+
     @Override
     @Trivial
     public Set<Class<? extends Extension>> getExtensions() {
         return extensions;
+    }
+
+    /**
+     * Create an indentifier for metadata that is constructed by this
+     * DeferredMetaDataFactory.
+     *
+     * @param appName       application name
+     * @param moduleName    always null
+     * @param componentName always null
+     * @return metadata identifier.
+     */
+    @Override
+    public String getMetaDataIdentifier(String appName,
+                                        String moduleName,
+                                        String componentName) {
+        StringBuilder b = new StringBuilder("DATA#").append(appName);
+        if (moduleName != null)
+            b.append('#').append(moduleName);
+        if (componentName != null)
+            b.append('#').append(componentName);
+        return b.toString();
+    }
+
+    /**
+     * Unused because this DeferredMetaDataFactory does not opt in to
+     * deferred metadata creation.
+     */
+    @Override
+    @Trivial
+    public void initialize(ComponentMetaData metadata) throws IllegalStateException {
+    }
+
+    /**
+     * Arrange for the specified EntityManagerBuilders to initialize once the application is started.
+     *
+     * @param appName  application name.
+     * @param builders list of EntityManagerBuilder.
+     */
+    void onAppStarted(String appName, Collection<FutureEMBuilder> builders) {
+        Collection<FutureEMBuilder> previous = futureEMBuilders.putIfAbsent(appName, builders);
+        if (previous != null)
+            previous.addAll(builders);
     }
 
     @Reference(service = ModuleMetaDataListener.class, // also a BeanValidation.class, but that class might not be available to this bundle

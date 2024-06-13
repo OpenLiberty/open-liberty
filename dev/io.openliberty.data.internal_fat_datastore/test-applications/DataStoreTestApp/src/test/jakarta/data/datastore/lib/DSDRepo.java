@@ -10,8 +10,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.datastore.web;
+package test.jakarta.data.datastore.lib;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Optional;
 
 import jakarta.data.repository.By;
@@ -19,21 +21,22 @@ import jakarta.data.repository.Find;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 
-import javax.sql.DataSource;
-
 /**
- * A repository that uses a resource reference to a dataSource in server.xml.
- * The resource reference has container managed authentication with
- * auth data where the user name is resrefuser1.
+ * A repository that uses a DataSourceDefinition that is defined in
+ * both servlets, each with a different database user.
  */
-@Repository(dataStore = "java:app/env/jdbc/ServerDataSourceRef")
-public interface ServerDSResRefRepo {
-
-    DataSource getDataStore();
+@Repository(dataStore = "java:app/jdbc/DataSourceDef")
+public interface DSDRepo {
 
     @Find
-    Optional<ServerDSEntity> read(@By("id") String id);
+    Optional<DSDEntity> get(@By("id") int id);
+
+    Connection getConnection();
+
+    default String getUser() throws SQLException {
+        return getConnection().getMetaData().getUserName().toLowerCase();
+    }
 
     @Save
-    ServerDSEntity write(ServerDSEntity e);
+    void put(DSDEntity e);
 }

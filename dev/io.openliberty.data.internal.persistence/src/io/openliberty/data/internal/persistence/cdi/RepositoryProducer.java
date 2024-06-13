@@ -25,7 +25,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.QueryInfo;
 import io.openliberty.data.internal.persistence.RepositoryImpl;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -54,7 +53,7 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
 
     private final BeanManager beanMgr;
     private final Set<Type> beanTypes;
-    private final EntityManagerBuilder entityManagerBuilder;
+    private final FutureEMBuilder futureEMBuilder;
     private final DataExtension extension;
     private final Map<R, R> intercepted = new ConcurrentHashMap<>();
     private final Class<?> primaryEntityClass;
@@ -63,11 +62,11 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
     private final Class<?> repositoryInterface;
 
     RepositoryProducer(Class<?> repositoryInterface, BeanManager beanMgr, DataExtensionProvider provider, DataExtension extension,
-                       EntityManagerBuilder entityManagerBuilder, Class<?> primaryEntityClass, Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
+                       FutureEMBuilder futureEMBuilder, Class<?> primaryEntityClass, Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
         this.beanMgr = beanMgr;
         this.beanTypes = Set.of(repositoryInterface);
-        this.entityManagerBuilder = entityManagerBuilder;
         this.extension = extension;
+        this.futureEMBuilder = futureEMBuilder;
         this.primaryEntityClass = primaryEntityClass;
         this.provider = provider;
         this.queriesPerEntityClass = queriesPerEntityClass;
@@ -163,7 +162,7 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
                         Tr.debug(this, tc, "add " + anno + " for " + method.getAnnotated().getJavaMember());
                 }
 
-        RepositoryImpl<?> handler = new RepositoryImpl<>(provider, extension, entityManagerBuilder, //
+        RepositoryImpl<?> handler = new RepositoryImpl<>(provider, extension, futureEMBuilder, //
                         repositoryInterface, primaryEntityClass, queriesPerEntityClass);
 
         R instance = repositoryInterface.cast(Proxy.newProxyInstance(repositoryInterface.getClassLoader(),

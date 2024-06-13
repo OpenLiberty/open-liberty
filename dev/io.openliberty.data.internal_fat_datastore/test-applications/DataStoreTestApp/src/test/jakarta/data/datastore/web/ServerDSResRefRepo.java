@@ -12,29 +12,30 @@
  *******************************************************************************/
 package test.jakarta.data.datastore.web;
 
-import java.util.List;
+import java.util.Optional;
 
 import jakarta.data.repository.By;
 import jakarta.data.repository.Find;
-import jakarta.data.repository.Insert;
-import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
 
 import javax.sql.DataSource;
 
-/**
- * TODO enable this repository if we find a way to support qualified resource accessor methods
- * that are used to supply the data source.
- */
-//@Repository
-public interface QualifiedDSRepo {
-    @ResourceQualifier
-    DataSource dataSource();
+import test.jakarta.data.datastore.lib.ServerDSEntity;
 
-    @Insert
-    void add(List<ServerDSEntity> entities);
+/**
+ * A repository that uses a resource reference to a dataSource in server.xml.
+ * The resource reference has container managed authentication with
+ * auth data where the user name is resrefuser1.
+ */
+@Repository(dataStore = "java:module/env/jdbc/ServerDataSourceRef")
+public interface ServerDSResRefRepo {
+
+    DataSource getDataStore();
 
     @Find
-    @OrderBy("id")
-    List<ServerDSEntity> getAll(@By("value") int val);
+    Optional<ServerDSEntity> read(@By("id") String id);
+
+    @Save
+    ServerDSEntity write(ServerDSEntity e);
 }

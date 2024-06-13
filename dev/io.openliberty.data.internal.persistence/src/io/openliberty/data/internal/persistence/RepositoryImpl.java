@@ -64,6 +64,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.data.internal.persistence.cdi.DataExtension;
 import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
+import io.openliberty.data.internal.persistence.cdi.FutureEMBuilder;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
@@ -99,10 +100,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
     final Class<R> repositoryInterface;
     final EntityValidator validator;
 
-    public RepositoryImpl(DataExtensionProvider provider, DataExtension extension, EntityManagerBuilder builder,
+    public RepositoryImpl(DataExtensionProvider provider, DataExtension extension, FutureEMBuilder futureEMBuilder,
                           Class<R> repositoryInterface, Class<?> primaryEntityClass,
                           Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
-        // EntityManagerBuilder.run guarantees that the future added to the following map will be completed even if an error occurs
+        EntityManagerBuilder builder = futureEMBuilder.join();
+        // EntityManagerBuilder implementations guarantee that the future
+        // in the following map will be completed even if an error occurs
         this.primaryEntityInfoFuture = primaryEntityClass == null ? null : builder.entityInfoMap.computeIfAbsent(primaryEntityClass, EntityInfo::newFuture);
         this.provider = provider;
         this.repositoryInterface = repositoryInterface;
