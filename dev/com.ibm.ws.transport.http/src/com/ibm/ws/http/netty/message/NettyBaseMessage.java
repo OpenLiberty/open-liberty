@@ -117,11 +117,8 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         }
     }
 
-
     @Override
     public void readExternal(ObjectInput input) throws IOException, ClassNotFoundException {
-        MSP.log("READ EXTERNAL");
-        MSP.stack();
         // recreate the local header storage
         int len = input.readInt();
         if (SERIALIZATION_V2 == len) {
@@ -179,9 +176,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
      */
     @Override
     public void writeExternal(ObjectOutput output) throws IOException {
-
-        MSP.log("WRITE EXTERNAL");
-        MSP.stack();
 
         // convert any temporary Cookies into header storage
         marshallCookieCache(this.cookieCache);
@@ -809,9 +803,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         this.setCookie2Cache = null;
         this.committed = false;
 
-        MSP.log("clear called");
-        MSP.stack();
-
     }
 
     @Override
@@ -1055,7 +1046,7 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         if (config.useSameSiteConfig() || config.doNotAllowDuplicateSetCookies()) {
             //If there are set-cookie and set-cookie2 headers and the respective cache hasn't been initialized,
             //do so and set it as dirty so the cookie parsing logic is run.
-            if (this.containsHeader(HttpHeaderKeys.HDR_SET_COOKIE) ) {
+            if (this.containsHeader(HttpHeaderKeys.HDR_SET_COOKIE)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Marking set-cookie cache dirty");
                 }
