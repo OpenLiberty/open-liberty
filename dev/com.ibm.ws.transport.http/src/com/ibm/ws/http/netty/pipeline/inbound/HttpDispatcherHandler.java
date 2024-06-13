@@ -135,7 +135,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
                 System.out.println("Closing link because channel was closed!! " + arg0.channel() + " future: " + arg0 + " done? " + arg0.isDone() + " cancelled? "
                                    + arg0.isCancelled() + " success? "
                                    + arg0.isSuccess());
-                link.close(null, null);
+                //link.close(null, null);
             }
         });
         link.init(context, request, config);

@@ -193,6 +193,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     public void setNettyResponse(HttpResponse response) {
         this.nettyResponse = response;
         super.setNettyResponse(response);
+        this.response = new NettyResponseMessage(nettyResponse, this, nettyRequest);
     }
 
     public FullHttpRequest getNettyRequest() {
@@ -952,6 +953,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * @return HttpInvalidMessageException (null if valid)
      */
     protected HttpInvalidMessageException checkResponseValidity() {
+        
         // if this wasn't a HEAD request, then check to make sure we sent the
         // same amount of bytes that were in the content-length header
         if (!MethodValues.HEAD.equals(getRequest().getMethodValue())) {
