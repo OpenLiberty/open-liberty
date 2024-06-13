@@ -1,16 +1,28 @@
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package io.openliberty.microprofile.metrics30.setup.config;
 
 import java.time.Duration;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 public class TimerBucketConfiguration extends PropertyArrayConfiguration<Duration> {
 
-    private static final String CLASS_NAME = TimerBucketConfiguration.class.getName();
-    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+    private static final TraceComponent tc = Tr.register(TimerBucketConfiguration.class);
 
     public TimerBucketConfiguration(String metricName, Duration[] values) {
         super(metricName, values);
@@ -58,10 +70,7 @@ public class TimerBucketConfiguration extends PropertyArrayConfiguration<Duratio
                     } else if (s.matches("[0-9]+")) {
                         return Duration.ofMillis(Long.parseLong(s));
                     } else {
-                        LOGGER.logp(Level.WARNING, CLASS_NAME, null,
-                                    "The value \"{0}\" is invalid for the \"{1}\" property. Only integer values with an "
-                                                                     + "optional time unit (e.g. ms,s,m,h) are accepted.",
-                                    new Object[] { s, MetricsConfigurationManager.MP_TIMER_BUCKET_PROP });
+                        Tr.warning(tc, "invalidTimerValueConfigured.warning.CWMMC0016W", new Object[] { s, MetricsConfigurationManager.MP_TIMER_BUCKET_PROP });
                         return null;
                     }
                 }).filter(s -> s != null).toArray(Duration[]::new);
