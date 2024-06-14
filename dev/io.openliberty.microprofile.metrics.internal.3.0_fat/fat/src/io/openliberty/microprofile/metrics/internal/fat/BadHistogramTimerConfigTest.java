@@ -140,7 +140,8 @@ public class BadHistogramTimerConfigTest {
 		// catch if a server is still running.
 		if (server != null && server.isStarted()) {
 			server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E",
-					"CWMCG5003E", "CWPMI2006W", "CWMMC0013E", "CWWKG0033W");
+					"CWMCG5003E", "CWPMI2006W", "CWMMC0013E", "CWWKG0033W",
+					"CWMMC0015W", "CWMMC0016W", "CWMMC0017W");
 		}
 		server.removeAllInstalledAppsForValidation();
 
