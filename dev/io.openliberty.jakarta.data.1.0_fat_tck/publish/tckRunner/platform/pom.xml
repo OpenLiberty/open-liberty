@@ -193,6 +193,8 @@
 						<java.util.logging.config.file>${basedir}/../logging.properties</java.util.logging.config.file>
 						<jimage.dir>${jimage.dir}</jimage.dir>
 						<jakarta.tck.skip.deployment>false</jakarta.tck.skip.deployment>
+						<jakarta.tck.database.type>${jakarta.tck.database.type}</jakarta.tck.database.type>
+						<jakarta.tck.database.name>${jakarta.tck.database.name}</jakarta.tck.database.name>
 					</systemPropertyVariables>
 					<excludes>
 						<exclude>${excluded.tests}</exclude>

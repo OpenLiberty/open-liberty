@@ -68,6 +68,8 @@ public class DataCoreTckLauncher {
         additionalProps.put("jimage.dir", persistenceServer.getServerSharedPath() + "jimage/output/");
         additionalProps.put("tck_protocol", "rest");
         additionalProps.put("jakarta.profile", "core");
+        additionalProps.put("jakarta.tck.database.type", "relational");
+        additionalProps.put("jakarta.tck.database.name", FATSuite.relationalDatabase.getClass().getSimpleName());
 
         if (FATSuite.shouldRunSignatureTests()) {
             additionalProps.put("included.groups", "core & persistence");
@@ -78,8 +80,8 @@ public class DataCoreTckLauncher {
         additionalProps.put("excluded.tests", FATSuite.getExcludedTestByDatabase(DatabaseContainerType.valueOf(FATSuite.relationalDatabase)));
 
         //Comment out to use SNAPSHOT
-        additionalProps.put("jakarta.data.groupid", "jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.1");
+//        additionalProps.put("jakarta.data.groupid", "jakarta.data");
+//        additionalProps.put("jakarta.data.tck.version", "1.0.1");
 
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckCorePersistence";
@@ -107,6 +109,8 @@ public class DataCoreTckLauncher {
         additionalProps.put("jimage.dir", noSQLServer.getServerSharedPath() + "jimage/output/");
         additionalProps.put("tck_protocol", "rest");
         additionalProps.put("jakarta.profile", "core");
+        additionalProps.put("jakarta.tck.database.type", "document");
+        additionalProps.put("jakarta.tck.database.name", FATSuite.noSQLDatabase.getClass().getSimpleName());
 
         if (FATSuite.shouldRunSignatureTests()) {
             additionalProps.put("included.groups", "core & nosql");

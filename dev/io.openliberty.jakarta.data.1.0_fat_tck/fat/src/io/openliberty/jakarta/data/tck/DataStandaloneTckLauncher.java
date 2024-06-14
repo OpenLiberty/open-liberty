@@ -53,7 +53,8 @@ public class DataStandaloneTckLauncher {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("jimage.dir", "/jimage/output/");
         additionalProps.put("jakarta.profile", "none");
-
+        additionalProps.put("jakarta.tck.database.type", "document");
+        additionalProps.put("jakarta.tck.database.name", FATSuite.noSQLDatabase.getClass().getSimpleName());
         additionalProps.put("included.groups", "standalone & nosql");
 
         //Comment out to use SNAPSHOT
