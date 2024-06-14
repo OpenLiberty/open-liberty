@@ -48,6 +48,7 @@ import componenttest.rules.repeater.RepeatTests;
  * Left in here commented out in case it helps someone running manually.
  */
 @SuiteClasses({
+        BasicJDBCPersistenceTestCheckpoint.class,
         BatchUserTranTest.class,
         BatchNoSecurityTest.class,
         BatchTransactionalMiscTest.class,
@@ -66,8 +67,8 @@ import componenttest.rules.repeater.RepeatTests;
         JPAPersistenceBatchJobOperatorApiTest.class
 })
 public class FATSuite {
-//    @ClassRule
-//    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
-//        .andWith(new JakartaEE9Action().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-//        .andWith(new JakartaEE10Action()); 
+    @ClassRule
+    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
+        .andWith(new JakartaEE9Action().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+        .andWith(new JakartaEE10Action()); 
 }
