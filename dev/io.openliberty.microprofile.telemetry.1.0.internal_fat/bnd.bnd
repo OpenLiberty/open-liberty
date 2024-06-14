@@ -25,11 +25,14 @@ tested.features:\
   mprestclient-1.2,\
   mprestclient-1.1,\
   mprestclient-2.0,\
+  mprestclient-4.0,\
   concurrent-1.0,\
+  concurrent-3.1,\
   jaxrs-2.0,\
   jaxrsclient-2.1,\
   jaxrs-2.1,\
   jsonb-2.0,\
+  noship-1.0,\
   mpTelemetry-1.0,\
   mpTelemetry-1.1,\
   mpTelemetry-2.0,\
@@ -38,10 +41,14 @@ tested.features:\
   mpConfig-3.1,\
   cdi-1.2,\
   cdi-2.0,\
+  cdi-4.1,\
   restfulWS-3.0,\
   restfulWS-3.1,\
+  restfulwsclient-4.0,\
+  restfulws-4.0,\
   servlet-4.0,\
   servlet-6.0,\
+  servlet-6.1,\
   expressionlanguage-4.0,\
   pages-3.0,\
   jsp-2.3,\
