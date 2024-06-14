@@ -19,24 +19,19 @@ import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.ws.fat.util.FatLogHandler;
-import com.ibm.ws.jsf22.fat.tests.JSFServerTest;
-import com.ibm.ws.jsf22.fat.tests.JSF22ResourceLibraryContractHtmlUnit;
-import com.ibm.ws.jsf22.fat.tests.JSF22MiscLifecycleTests;
-import com.ibm.ws.jsf22.fat.tests.JSFHtml5Tests;
-import com.ibm.ws.jsf22.fat.tests.JSF22FlashEventsTests;
-import com.ibm.ws.jsf22.fat.tests.JSFSimpleHtmlUnit;
-import com.ibm.ws.jsf22.fat.tests.JSF22ViewActionAndPhaseIdTests;
-
-import com.ibm.ws.jsf22.fat.tests.JSF22ViewPoolingTests;
-import com.ibm.ws.jsf22.fat.tests.JSF22ComponentTesterTests;
-import com.ibm.ws.jsf22.fat.tests.JSFHtmlUnit;
-import com.ibm.ws.jsf22.fat.tests.JSFCompELTests;
-import com.ibm.ws.jsf22.fat.tests.JSF22AppConfigPopTests;
-import com.ibm.ws.jsf22.fat.tests.JSF22ComponentRendererTests;
-import com.ibm.ws.jsf22.fat.tests.JSF22IncludeTest;
-import com.ibm.ws.jsf22.fat.tests.JSF22InputFileTests;
-import com.ibm.ws.jsf22.fat.tests.JSF22LocalizationTesterTests;
-import com.ibm.ws.jsf22.fat.tests.JSF22ClientWindowTests;
+import com.ibm.ws.jsf22.fat.tests.CDIConfigByACPTests;
+import com.ibm.ws.jsf22.fat.tests.CDIFacesInMetaInfTests;
+import com.ibm.ws.jsf22.fat.tests.CDIFacesInWebXMLTests;
+import com.ibm.ws.jsf22.fat.tests.CDIFlowsTests;
+import com.ibm.ws.jsf22.fat.tests.CDITests;
+import com.ibm.ws.jsf22.fat.tests.JSF22APARSeleniumTests;
+import com.ibm.ws.jsf22.fat.tests.JSF22AparTests;
+import com.ibm.ws.jsf22.fat.tests.JSF22BeanValidationTests;
+import com.ibm.ws.jsf22.fat.tests.JSF22FlowsTests;
+import com.ibm.ws.jsf22.fat.tests.JSF22MiscellaneousTests;
+import com.ibm.ws.jsf22.fat.tests.JSF22ResetValuesAndAjaxDelayTests;
+import com.ibm.ws.jsf22.fat.tests.JSF22StatelessViewTests;
+import com.ibm.ws.jsf22.fat.tests.JSF22ThirdPartyApiTests;
 
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
@@ -59,28 +54,19 @@ import componenttest.rules.repeater.RepeatTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                //jsfServer1
-                JSFServerTest.class,
-                JSF22ResourceLibraryContractHtmlUnit.class,
-                JSF22MiscLifecycleTests.class,
-                JSFHtml5Tests.class,
-                JSF22FlashEventsTests.class,
-                JSFSimpleHtmlUnit.class,
-                JSF22ViewActionAndPhaseIdTests.class,
-
-                //jsfServer2
-                JSF22ViewPoolingTests.class,
-                JSF22ComponentTesterTests.class,
-                JSFHtmlUnit.class,
-                JSFCompELTests.class,
-                JSF22AppConfigPopTests.class,
-                JSF22ComponentRendererTests.class,
-                JSF22InputFileTests.class,
-                JSF22LocalizationTesterTests.class,
-                JSF22ClientWindowTests.class,
-
-                //jsf22IncludeTestServer
-                JSF22IncludeTest.class
+                JSF22StatelessViewTests.class,
+                JSF22FlowsTests.class,
+                CDIFlowsTests.class,
+                JSF22MiscellaneousTests.class,
+                JSF22ResetValuesAndAjaxDelayTests.class,
+                CDIConfigByACPTests.class,
+                CDIFacesInMetaInfTests.class,
+                CDIFacesInWebXMLTests.class,
+                CDITests.class,
+                JSF22BeanValidationTests.class,
+                JSF22AparTests.class,
+                JSF22ThirdPartyApiTests.class,
+                JSF22APARSeleniumTests.class
 })
 public class FATSuite extends TestContainerSuite {
 

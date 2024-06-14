@@ -63,7 +63,7 @@ public class JSFServerTest {
         ShrinkHelper.defaultDropinApp(jsfTestServer1, "TestJSF2.2.war", "com.ibm.ws.fat.jsf22.basic.*");
         ShrinkHelper.defaultDropinApp(jsfTestServer1, "JSF22FaceletsResourceResolverAnnotation.war", "com.ibm.ws.jsf22.resourceresolver");
 
-        jsfTestServer1.startServer(c.getSimpleName() + ".log");
+        jsfTestServer1.startServer(c.getSimpleName() + ".log"); 
 
     }
 
