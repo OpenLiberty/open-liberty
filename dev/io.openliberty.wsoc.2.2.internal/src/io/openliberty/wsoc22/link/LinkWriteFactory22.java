@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -7,14 +7,14 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
+package io.openliberty.wsoc22.link;
 
-addRequiredLibraries.dependsOn addJakartaTransformer
+import com.ibm.ws.wsoc.link.LinkWrite;
+import com.ibm.ws.wsoc.link.LinkWriteFactory;
 
-dependencies {
-    requiredLibs "org.asynchttpclient:async-http-client:2.12.3",
-    "org.asynchttpclient:async-http-client-netty-utils:2.12.3",
-    "com.typesafe.netty:netty-reactive-streams:2.0.4",
-    "org.reactivestreams:reactive-streams:1.0.4",
-    'junit:junit:4.12',
-    project(":io.openliberty.io.netty")
+public class LinkWriteFactory22 implements LinkWriteFactory {
+    
+    public LinkWrite getLinkWrite() {
+        return new LinkWriteExt22();
+    }
 }

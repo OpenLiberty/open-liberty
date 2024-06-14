@@ -1,0 +1,64 @@
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props,
+
+bVersion=1.0
+bSymbolicName=io.openliberty.wsoc.2.2.internal
+
+Bundle-Name: WebSocket
+Bundle-SymbolicName: io.openliberty.wsoc.2.2.internal
+Bundle-Description: WebSocket, version ${bVersion}
+
+Service-Component: \
+  io.openliberty.wsoc.link; \
+    implementation:=io.openliberty.wsoc22.link.LinkWriteFactory22; \
+    provide:=com.ibm.ws.wsoc.link.LinkWriteFactory; \
+    configuration-policy:=ignore;\
+    immediate:=true;\
+    properties:="service.vendor=IBM",\
+  io.openliberty.wsoc.httprequestor; \
+    implementation:= io.openliberty.wsoc.httprequestor.HttpRequestorWsoc21FactoryImpl; \
+    provide:=com.ibm.ws.wsoc.outbound.HttpRequestorFactory; \
+    configuration-policy:=ignore;\
+    immediate:=true;\
+    properties:="service.vendor=IBM",\
+  io.openliberty.wsoc.clientconfig; \
+    implementation:= io.openliberty.wsoc.clientconfig.ClientEndpointConfigCopyWsoc21FactoryImpl; \
+    provide:=com.ibm.ws.wsoc.ClientEndpointConfigCopyFactory; \
+    configuration-policy:=ignore;\
+    immediate:=true;\
+    properties:="service.vendor=IBM",\
+  io.openliberty.wsoc.servercontainer21; \
+    implementation:=io.openliberty.wsoc.servercontainer21.ServerContainerImplFactory21; \
+    provide:=com.ibm.ws.wsoc.servercontainer.ServletContainerFactory; \
+    configuration-policy:=ignore;\
+    immediate:=true;\
+    properties:="service.vendor=IBM"
+
+Export-Package: \
+ io.openliberty.wsoc.speclevel
+
+Private-Package: \
+  io.openliberty.wsoc.httprequestor, \
+  io.openliberty.wsoc.clientconfig, \
+  io.openliberty.wsoc.servercontainer21, \
+  io.openliberty.wsoc22.link
+
+
+-buildpath: \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.wsoc.jakarta;version=latest,\
+  io.openliberty.wsoc.2.1.internal,\
+  io.openliberty.jakarta.websocket.client.2.2;version=latest,\
+  com.ibm.ws.kernel.service;version=latest,\
+  io.openliberty.jakarta.websocket.2.2;version=latest,\
+  com.ibm.ws.channelfw;version=latest,\
+  com.ibm.ws.logging;version=latest,\
+  com.ibm.ws.transport.http;version=latest

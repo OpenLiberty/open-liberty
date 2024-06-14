@@ -1,16 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.wsoc;
+package com.ibm.ws.wsoc.link;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,7 +33,11 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.wsoc.MessageWriter;
 import com.ibm.ws.wsoc.MessageWriter.WRITE_TYPE;
+import com.ibm.ws.wsoc.OpcodeType;
+import com.ibm.ws.wsoc.WsocConnLink;
+import com.ibm.ws.wsoc.WsocWriteCallback;
 import com.ibm.ws.wsoc.util.Utils;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.tcpchannel.TCPRequestContext;
@@ -45,7 +46,7 @@ import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 /**
  *
  */
-public class LinkWrite {
+public abstract class LinkWrite {
 
     private static final TraceComponent tc = Tr.register(LinkWrite.class);
 
@@ -55,14 +56,14 @@ public class LinkWrite {
     private HashMap<Class<?>, Encoder> textStreamEncoders = null;
 
     private TCPWriteRequestContext tcpWriteContext = null;
-    private MessageWriter messageWriter = null;
-    private boolean wsocSendOutstanding = false;
-    private SendHandler wsocSendHandler = null;
-    private final SendResult SendResultGood = new SendResult();
+    protected MessageWriter messageWriter = null;
+    protected boolean wsocSendOutstanding = false;
+    protected SendHandler wsocSendHandler = null;
+    protected final SendResult SendResultGood = new SendResult();
     private EndpointConfig endpointConfig = null;
     private boolean shouldMaskData = false;
 
-    private WsocConnLink connLink = null;
+    protected WsocConnLink connLink = null;
 
     public void initialize(TCPWriteRequestContext _wrc, EndpointConfig _epc, WsocConnLink _link, boolean _shouldMaskData) {
         tcpWriteContext = _wrc;
@@ -76,48 +77,9 @@ public class LinkWrite {
         messageWriter.frameCleanup();
     }
 
-    public void processWrite(TCPWriteRequestContext wsc) {
+    public abstract void processWrite(TCPWriteRequestContext wsc);
 
-        // write completed successfully - call sendHandler if this was the result of websocket async write.
-        // if a Send with a Future is being used, then we are using our future send handler here.
-
-        if (wsocSendOutstanding == true) {
-
-            wsocSendOutstanding = false;
-            if (wsocSendHandler != null) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "calling onResult on SendHandler: " + wsocSendHandler);
-                }
-                wsocSendHandler.onResult(SendResultGood);
-            }
-        }
-
-    }
-
-    public void processError(TCPWriteRequestContext wsc, Throwable ioe) {
-        // write completed with an error - call sendHandler if this was the result of websocket async write
-        // if a Send with a Future is being used, then we are using our future send handler here.
-
-        // cleanup up before calling onResult, since onResult, or an async user thread, may want to oddly write data right away
-        // no cleanup if exception occurred before trying to write on the wire
-        if (wsc != null) {
-            messageWriter.frameCleanup();
-        }
-
-        if (wsocSendOutstanding == true) {
-
-            wsocSendOutstanding = false;
-            if (wsocSendHandler != null) {
-
-                SendResult result = new SendResult(ioe);
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "calling onResult on SendHandler: " + wsocSendHandler);
-                }
-                wsocSendHandler.onResult(result);
-            }
-        }
-
-    }
+    public abstract void processError(TCPWriteRequestContext wsc, Throwable ioe);
 
     public void destroy(Exception e) {
 
@@ -475,6 +437,7 @@ public class LinkWrite {
         }
 
         if (textStreamEncoders != null) {
+            
             Encoder.TextStream en = (Encoder.TextStream) textStreamEncoders.get(encoderClass);
             if (en != null) {
                 return writeUsingEncoderTextStream(objectToWrite, encoderClass, writeType, en, false);
