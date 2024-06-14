@@ -12,7 +12,7 @@
  *******************************************************************************/
 apply from: '../com.ibm.ws.security.fat.common.SSO.clientTests/CommonTests.gradle'
 
-addRequiredLibraries.dependsOn copyPKCEOPServer, copyPrivateKeyJwtOPServer, copyPKCEAndPrivateKeyJwtOPServer
+addRequiredLibraries.dependsOn copyPKCEOPServer, copyPrivateKeyJwtOPServer, copyPKCEAndPrivateKeyJwtOPServer, copyWasReqUrlOPServer
 
 repositories {
   if (isUsingArtifactory) {
@@ -77,7 +77,8 @@ autoFVT.doFirst {
   def servers = [
 	'com.ibm.ws.security.social_fat.LibertyOP.social.pkce',
 	'com.ibm.ws.security.social_fat.LibertyOP.social.privateKeyJwt',
-	'com.ibm.ws.security.social_fat.LibertyOP.social.pkceAndPrivateKeyJwt'
+	'com.ibm.ws.security.social_fat.LibertyOP.social.pkceAndPrivateKeyJwt',
+	'com.ibm.ws.security.social_fat.LibertyOP.social.wasReqUrl'
   ]
   servers.each { server ->
     /* copy shared key/trust stores from the common security fat project */
@@ -150,4 +151,24 @@ autoFVT.doFirst {
   
   }
 
+  servers = [
+    'com.ibm.ws.security.social_fat.LibertyOP.social.wasReqUrl'
+  ]
+  servers.each { server ->  
+     /* copy shared key/trust stores from the common security fat project */
+     println "Copy keys for:  ${server}"
+      copy { 
+        from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
+        into new File(autoFvtDir, "publish/servers/${server}/")
+        include 'commonBasicKeyStore.jks'
+        include 'commonTrustStore.jks'
+      }
+     
+     copy { 
+        from project(':com.ibm.ws.security.fat.common.SSO.clientTests').file('publish/shared/config/')
+        into new File(autoFvtDir, "publish/servers/${server}/imports")
+        include 'goodSSLSettings.xml'
+     }
+                 
+  }
 }
