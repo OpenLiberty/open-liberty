@@ -14,11 +14,9 @@ import com.ibm.ws.jbatch.test.FatUtils;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
-@CheckpointTest
 public class BasicJDBCPersistenceTest extends BatchFATHelper {
 
     @BeforeClass
