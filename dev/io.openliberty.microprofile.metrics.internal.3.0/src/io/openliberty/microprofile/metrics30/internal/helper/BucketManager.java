@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.Snapshot;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -201,6 +202,10 @@ public class BucketManager {
 
     public Map<String, Map<Double, BucketValue>> getBuckets() {
         return allBuckets;
+    }
+
+    public Snapshot getBucketsSnap() {
+        return (Snapshot) buckets;
     }
 
 }
