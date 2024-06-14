@@ -129,7 +129,7 @@ public class DataExtension implements Extension {
 
             Class<?> repositoryInterface = repositoryType.getJavaClass();
             ClassLoader loader = repositoryInterface.getClassLoader();
-            Map.Entry<String, String[]> metadataInfo = getMetadata(loader, provider);
+            Map.Entry<String, String[]> metadataInfo = getMetadata(repositoryInterface, loader, provider);
             String metadataIdentifier = metadataInfo.getKey();
             String[] appModComp = metadataInfo.getValue();
 
@@ -468,13 +468,16 @@ public class DataExtension implements Extension {
      * Obtains the metadata identifier and application/module/component based on
      * the class loader identifier of the repository's class loader.
      *
+     * @param repositoryInterface   the repository interface.
      * @param repositoryClassLoader class loader of the repository interface.
      * @param provider              OSGi service that provides the CDI extension.
      * @return metadata identifier as the key, and application/module/component
      *         as the value. Module and component might be null or might not be
      *         present at all.
      */
-    private Map.Entry<String, String[]> getMetadata(ClassLoader repositoryClassLoader, DataExtensionProvider provider) {
+    private Map.Entry<String, String[]> getMetadata(Class<?> repositoryInterface, // include for tracing
+                                                    ClassLoader repositoryClassLoader,
+                                                    DataExtensionProvider provider) {
         String mdIdentifier;
         String clIdentifier = provider.classloaderIdSvc.getClassLoaderIdentifier(repositoryClassLoader);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())

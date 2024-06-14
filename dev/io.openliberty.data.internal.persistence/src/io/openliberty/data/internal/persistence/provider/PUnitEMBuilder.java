@@ -14,6 +14,7 @@ package io.openliberty.data.internal.persistence.provider;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CompletionException;
 
 import javax.sql.DataSource;
 
@@ -115,7 +116,7 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
         } catch (Exception x) {
             for (Class<?> entityClass : entityTypes)
                 entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
-            throw new RuntimeException(x);
+            throw new CompletionException(x);
         } catch (Error x) {
             for (Class<?> entityClass : entityTypes)
                 entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);

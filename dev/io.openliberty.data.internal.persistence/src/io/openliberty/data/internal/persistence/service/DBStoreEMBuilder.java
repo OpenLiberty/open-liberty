@@ -47,6 +47,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
@@ -429,7 +430,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
         } catch (Exception x) {
             for (Class<?> entityClass : entityTypes)
                 entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
-            throw new RuntimeException(x);
+            throw new CompletionException(x);
         } catch (Error x) {
             for (Class<?> entityClass : entityTypes)
                 entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);

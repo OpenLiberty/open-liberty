@@ -10,8 +10,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.datastore.web2;
+package test.jakarta.data.datastore.ejb;
 
+import java.sql.Connection;
 import java.util.Optional;
 
 import jakarta.data.repository.By;
@@ -19,24 +20,18 @@ import jakarta.data.repository.Find;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 
-import javax.sql.DataSource;
-
-import test.jakarta.data.datastore.lib.ServerDSEntity;
-
 /**
- * A repository that uses the same resource reference JNDI name
- * as exists in the other web module and the EJB module,
- * except with a different container managed authentication alias,
- * which has auth data where the user name is resrefuser2.
+ * A repository that uses a DataSourceDefinition that is defined in
+ * the EJB module.
  */
-@Repository(dataStore = "java:module/env/jdbc/ServerDataSourceRef")
-public interface WebModule2DSResRefRepo {
-
-    DataSource getDataStore();
+@Repository(dataStore = "java:global/jdbc/DataSourceDef") // TODO java:module
+public interface EJBModuleDSDRepo {
 
     @Find
-    Optional<ServerDSEntity> read(@By("id") String id);
+    Optional<EJBModuleDSDEntity> acquire(@By("id") int id);
+
+    Connection acquireConnection();
 
     @Save
-    ServerDSEntity write(ServerDSEntity e);
+    void store(EJBModuleDSDEntity e);
 }

@@ -38,8 +38,8 @@ public class DataStoreSecondServlet extends FATServlet {
     @Inject
     DSDRepo dsdRepo;
 
-    // also exists in other web module, but with different
-    // container managed auth alias user id
+    // also exists in other web module and EJB module,
+    // but with different container managed auth alias user id
     @Resource(name = "java:module/env/jdbc/ServerDataSourceRef",
               lookup = "jdbc/ServerDataSource")
     DataSource serverDSResRef;
