@@ -104,17 +104,17 @@ libraryRefConfigured.info.CWMMC0014I.useraction=No action is required.
 #MicroProfile Metrics 3.0/4.0 configuration errors
 invalidHistogramValueConfigured.warning.CWMMC0015W=CWMMC0015W: The value {0} is invalid for the {1} property. Only integer and decimal values are accepted.
 invalidHistogramValueConfigured.warning.CWMMC0015W.explanation=The configured histogram values are invalid.
-invalidHistogramValueConfigured.warning.CWMMC0015W.useraction=Only configure the values with integers and decimals.
+invalidHistogramValueConfigured.warning.CWMMC0015W.useraction=Configure the values with integers and decimals only.
 
 #MicroProfile Metrics 3.0/4.0 configuration errors
-invalidTimerValueConfigured.warning.CWMMC0016W=CWMMC0016W: The value {0} is invalid for the {1} property. Only integer values with an optional time unit (e.g. ms,s,m,h) are accepted.
+invalidTimerValueConfigured.warning.CWMMC0016W=CWMMC0016W: The value {0} is invalid for the {1} property. Only integer values with a time unit (for example ms,s,m,h) are accepted.
 invalidTimerValueConfigured.warning.CWMMC0016W.explanation=The configured timer values are invalid.
-invalidTimerValueConfigured.warning.CWMMC0016W.useraction=Only configure the values with integer values and optional time units (e.g. ms,s,m,h
+invalidTimerValueConfigured.warning.CWMMC0016W.useraction=Configure with integer values and time units (for example ms,s,m,h).
 
 #MicroProfile Metrics 3.0/4.0 configuration errors
-invalidPercentileValueConfigured.warning.CWMMC0017W=CWMMC0017W: The value {0} is invalid for the {1} property. Only values 0.0-1.0 inclusively are accepted.
+invalidPercentileValueConfigured.warning.CWMMC0017W=CWMMC0017W: The value {0} is invalid for the {1} property. Values must be in the range of 0.0 to 1.0 inclusive to be accepted.
 invalidPercentileValueConfigured.warning.CWMMC0017W.explanation=The configured percentile values are invalid.
-invalidPercentileValueConfigured.warning.CWMMC0017W.useraction=Only configure the values between 0.0-1.0
+invalidPercentileValueConfigured.warning.CWMMC0017W.useraction=Configure the values in the 0.0 to 1.0 inclusive range to be accepted.
 
 #Memory usedHeap message
 memory.usedHeap.description=Displays the amount of used heap memory in bytes.
