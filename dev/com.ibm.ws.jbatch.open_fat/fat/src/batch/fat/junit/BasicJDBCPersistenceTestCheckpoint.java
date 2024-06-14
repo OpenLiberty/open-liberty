@@ -35,6 +35,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 public class BasicJDBCPersistenceTestCheckpoint extends BatchFATHelper {
 
     @BeforeClass
+    @CheckpointTest
     public static void setup() throws Exception {
 
         BatchFATHelper.setConfig("commonCheckpoint/server.xml", BasicJDBCPersistenceTestCheckpoint.class);
