@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -313,11 +313,6 @@ public class FeatureUtility {
 
 		}
 
-		// override no_proxy settings
-		if (System.getProperty("featureUtility.beta").equals("true") && FeatureUtilityProperties.getNoProxySetting() != null) {
-		    overrideMap.put("http.nonProxyHosts", FeatureUtilityProperties.getNoProxySetting());
-		}
-
         // override the local feature repo
         if(FeatureUtilityProperties.getFeatureLocalRepo() != null){
             overrideMap.put("FEATURE_LOCAL_REPO", FeatureUtilityProperties.getFeatureLocalRepo());
@@ -352,13 +347,6 @@ public class FeatureUtility {
         }
 
 	map.put(InstallConstants.OVERRIDE_ENVIRONMENT_VARIABLES, overrideMap);
-
-	if (map.get(InstallConstants.ACTION_ERROR_MESSAGE) != null) {
-	    // error with installation
-	    fine("action.exception.stacktrace: " + map.get(InstallConstants.ACTION_EXCEPTION_STACKTRACE));
-	    String exceptionMessage = (String) map.get(InstallConstants.ACTION_ERROR_MESSAGE);
-	    throw new InstallException(exceptionMessage);
-	}
     }
 
     /**
