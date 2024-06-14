@@ -27,6 +27,10 @@
     <classloader commonLibraryRef="DerbyLib"/>
   </application>
 
+  <application location="DataStoreWebApp.war">
+    <!-- implicitly has access to libraries in lib/global -->
+  </application>
+
   <library id="DerbyLib">
     <file name="${shared.resource.dir}/derby/derby.jar"/>
   </library>
@@ -34,6 +38,7 @@
   <authData id="ResRefAuth1" user="resrefuser1" password="resrefpwd1"/> <!-- for web module 1 -->
   <authData id="ResRefAuth2" user="resrefuser2" password="resrefpwd2"/> <!-- for web module 2 -->
   <authData id="ResRefAuth3" user="resrefuser3" password="resrefpwd3"/> <!-- for EJB -->
+  <authData id="ResRefAuth4" user="resrefuser4" password="resrefpwd4"/> <!-- for global library -->
 
   <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="DerbyLib"/>
