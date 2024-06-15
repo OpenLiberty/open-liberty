@@ -1,18 +1,30 @@
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package io.openliberty.microprofile.metrics30.setup.config;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.eclipse.microprofile.config.ConfigProvider;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 public class MetricsConfigurationManager {
 
-    private static final String CLASS_NAME = MetricsConfigurationManager.class.getName();
-    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+    private static final TraceComponent tc = Tr.register(MetricsConfigurationManager.class);
 
     static final String MP_PERCENTILES_PROP = "mp.metrics.distribution.percentiles";
     static final String MP_HISTOGRAM_BUCKET_PROP = "mp.metrics.distribution.histogram.buckets";
@@ -68,10 +80,9 @@ public class MetricsConfigurationManager {
 
         if (computedValues != null && computedValues.size() != 0) {
             MetricPercentileConfiguration retVal = MetricPercentileConfiguration.matches(computedValues, metricName);
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.logp(Level.FINEST, CLASS_NAME, null,
-                            "Returning \"{0}\" configuration for metric:\"{0}\" with values: {1} ",
-                            new Object[] { MP_PERCENTILES_PROP, metricName, retVal });
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Returning \"{0}\" configuration for metric:\"{1}\" with values: {2} ",
+                         new Object[] { MP_PERCENTILES_PROP, metricName, retVal });
             }
             return retVal;
         }
@@ -100,10 +111,9 @@ public class MetricsConfigurationManager {
 
         if (computedValues != null && computedValues.size() != 0) {
             HistogramBucketConfiguration retVal = HistogramBucketConfiguration.matches(computedValues, metricName);
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.logp(Level.FINEST, CLASS_NAME, null,
-                            "Returning \"{0}\" configuration for metric:\"{1}\" with values: {2} ",
-                            new Object[] { MP_HISTOGRAM_BUCKET_PROP, metricName, retVal });
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Returning \"{0}\" configuration for metric:\"{1}\" with values: {2} ",
+                         new Object[] { MP_HISTOGRAM_BUCKET_PROP, metricName, retVal });
             }
             return retVal;
         }
@@ -130,10 +140,9 @@ public class MetricsConfigurationManager {
 
         if (computedValues != null && computedValues.size() != 0) {
             TimerBucketConfiguration retVal = TimerBucketConfiguration.matches(computedValues, metricName);
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.logp(Level.FINEST, CLASS_NAME, null,
-                            "Returning \"{0}\" configuration for metric:\"{1}\" with values: {2} ",
-                            new Object[] { MP_TIMER_BUCKET_PROP, metricName, retVal });
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Returning \"{0}\" configuration for metric:\"{1}\" with values: {2} ",
+                         new Object[] { MP_TIMER_BUCKET_PROP, metricName, retVal });
             }
             return retVal;
         }
@@ -160,10 +169,9 @@ public class MetricsConfigurationManager {
 
         if (computedValues != null && computedValues.size() != 0) {
             DefaultBucketConfiguration retVal = DefaultBucketConfiguration.matches(computedValues, metricName);
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.logp(Level.FINEST, CLASS_NAME, null,
-                            "Returning \"{0}\" configuration for metric:\"{1}\" with values: {2} ",
-                            new Object[] { MP_DEFAULT_BUCKET_PROP, metricName, retVal });
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Returning \"{0}\" configuration for metric:\"{1}\" with values: {2} ",
+                         new Object[] { MP_DEFAULT_BUCKET_PROP, metricName, retVal });
             }
             return retVal;
         }
@@ -193,10 +201,9 @@ public class MetricsConfigurationManager {
         if (computedValues != null && computedValues.size() != 0) {
             HistogramBucketMaxConfiguration retVal = HistogramBucketMaxConfiguration.matches(computedValues,
                                                                                              metricName);
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.logp(Level.FINEST, CLASS_NAME, null,
-                            "Returning \"{0}\" configuration for metric:\"{1}\" with values: {2} ",
-                            new Object[] { MP_HISTOGRAM_MAX_CONFIG, metricName, retVal });
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Returning \"{0}\" configuration for metric:\"{1}\" with values: {2} ",
+                         new Object[] { MP_HISTOGRAM_MAX_CONFIG, metricName, retVal });
             }
             return retVal;
         }
@@ -225,10 +232,9 @@ public class MetricsConfigurationManager {
         if (computedValues != null && computedValues.size() != 0) {
             HistogramBucketMinConfiguration retVal = HistogramBucketMinConfiguration.matches(computedValues,
                                                                                              metricName);
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.logp(Level.FINEST, CLASS_NAME, null,
-                            "Returning \"{0}\" configuration for metric:\"{1}\" with values: {2} ",
-                            new Object[] { MP_HISTOGRAM_MIN_CONFIG, metricName, retVal });
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Returning \"{0}\" configuration for metric:\"{1}\" with values: {2} ",
+                         new Object[] { MP_HISTOGRAM_MIN_CONFIG, metricName, retVal });
             }
             return retVal;
         }
@@ -257,10 +263,9 @@ public class MetricsConfigurationManager {
 
         if (computedValues != null && computedValues.size() != 0) {
             TimerBucketMaxConfiguration retVal = TimerBucketMaxConfiguration.matches(computedValues, metricName);
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.logp(Level.FINEST, CLASS_NAME, null,
-                            "Returning \"{0}\" configuration for metric:\"{1}\" with values: {2} ",
-                            new Object[] { MP_TIMER_MAX_CONFIG, metricName, retVal });
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Returning \"{0}\" configuration for metric:\"{1}\" with values: {2} ",
+                         new Object[] { MP_TIMER_MAX_CONFIG, metricName, retVal });
             }
             return retVal;
         }
@@ -289,10 +294,9 @@ public class MetricsConfigurationManager {
 
         if (computedValues != null && computedValues.size() != 0) {
             TimerBucketMinConfiguration retVal = TimerBucketMinConfiguration.matches(computedValues, metricName);
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.logp(Level.FINEST, CLASS_NAME, null,
-                            "Returning \"{0}\" configuration for metric:\"{1}\" with values: {2} ",
-                            new Object[] { MP_TIMER_MIN_CONFIG, metricName, retVal });
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Returning \"{0}\" configuration for metric:\"{1}\" with values: {2} ",
+                         new Object[] { MP_TIMER_MIN_CONFIG, metricName, retVal });
             }
             return retVal;
         }

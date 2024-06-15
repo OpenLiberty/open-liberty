@@ -10,18 +10,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+/**
+ *
+ */
+@org.osgi.annotation.versioning.Version("1.0")
+@TraceOptions(traceGroup = "METRICS", messageBundle = "com.ibm.ws.microprofile.metrics.resources.Metrics")
 package io.openliberty.microprofile.metrics30.setup.config;
 
-public abstract class PropertyBooleanConfiguration extends PropertyConfiguration {
-    protected boolean isEnabled = false;
-
-    @Override
-    public String toString() {
-        return String.format(this.getClass().getName() + "metric name: [%s]; isEnabled: [%s]", metricName,
-                             isEnabled);
-    }
-
-    public boolean isEnabled() {
-        return isEnabled;
-    }
-}
+import com.ibm.websphere.ras.annotation.TraceOptions;
