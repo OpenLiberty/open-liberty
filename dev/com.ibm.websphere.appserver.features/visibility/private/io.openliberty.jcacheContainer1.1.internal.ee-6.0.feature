@@ -6,5 +6,5 @@ visibility = private
   com.ibm.websphere.appserver.eeCompatible-8.0; ibm.tolerates:="6.0,7.0"
 -bundles=\
   com.ibm.websphere.javaee.jcache.1.1.core; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.cache:cache-api:1.1.0"
-kind=noship
+kind=ga
 edition=full

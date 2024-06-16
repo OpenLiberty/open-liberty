@@ -42,7 +42,7 @@ Subsystem-Name: Jakarta Concurrency 3.1
   com.ibm.ws.resource, \
   io.openliberty.concurrent.internal,\
   io.openliberty.concurrent.internal.compat31
-kind=beta
+ kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

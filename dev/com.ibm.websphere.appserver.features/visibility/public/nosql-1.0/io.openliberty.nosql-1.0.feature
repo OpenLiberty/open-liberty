@@ -17,6 +17,6 @@ Subsystem-Name: Jakarta NoSQL 1.0
 -bundles=\
   io.openliberty.java17.internal, \
 
-kind=noship
+kind=ga
 edition=full
 WLP-Activation-Type: parallel

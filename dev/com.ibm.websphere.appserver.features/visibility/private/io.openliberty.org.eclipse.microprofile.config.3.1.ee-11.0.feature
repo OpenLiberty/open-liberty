@@ -3,6 +3,6 @@ symbolicName=io.openliberty.org.eclipse.microprofile.config.3.1.ee-11.0
 singleton=true
 -features=io.openliberty.mpCompatible-7.0, \
   io.openliberty.jakarta.cdi-4.1
-kind=beta
+ kind=ga
 edition=core
 WLP-Activation-Type: parallel

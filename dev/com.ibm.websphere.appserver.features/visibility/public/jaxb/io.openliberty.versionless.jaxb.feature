@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: jaxb
 Subsystem-Name: jaxb
 -features=io.openliberty.internal.versionless.jaxb-2.2; ibm.tolerates:="3.0,4.0"
-kind=beta
+ kind=ga
 edition=core

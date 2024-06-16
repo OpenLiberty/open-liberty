@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.appAuthentication-2.0
-kind=beta
+ kind=ga
 edition=core

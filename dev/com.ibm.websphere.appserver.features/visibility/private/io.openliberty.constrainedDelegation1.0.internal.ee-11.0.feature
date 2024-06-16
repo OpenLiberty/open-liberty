@@ -4,5 +4,5 @@ singleton=true
 visibility = private
 -features=io.openliberty.appSecurity-6.0, \
   com.ibm.websphere.appserver.eeCompatible-11.0
-kind=beta
+ kind=ga
 edition=core

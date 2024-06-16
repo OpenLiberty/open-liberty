@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.enterpriseBeansLite-4.0
-kind=beta
+ kind=ga
 edition=core

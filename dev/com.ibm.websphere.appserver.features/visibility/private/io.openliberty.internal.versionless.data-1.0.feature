@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.data-1.0
-kind=beta
+ kind=ga
 edition=base

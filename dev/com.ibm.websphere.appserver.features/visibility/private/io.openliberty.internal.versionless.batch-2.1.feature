@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.batch-2.1
-kind=beta
+ kind=ga
 edition=base

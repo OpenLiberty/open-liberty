@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: jpa
 Subsystem-Name: jpa
 -features=io.openliberty.internal.versionless.jpa-2.0; ibm.tolerates:="2.1,2.2,3.0,3.1"
-kind=beta
+ kind=ga
 edition=core

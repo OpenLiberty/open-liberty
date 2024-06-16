@@ -18,5 +18,5 @@ IBM-API-Package: \
  io.openliberty.jcacheContainer1.1.internal.ee-6.0; ibm.tolerates:="9.0",\
  com.ibm.websphere.appserver.eeCompatible-8.0; ibm.tolerates:="6.0,7.0,9.0,10.0,11.0",\
  com.ibm.websphere.appserver.classloading-1.0
-kind=noship
+kind=ga
 edition=full

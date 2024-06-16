@@ -22,7 +22,7 @@ Subsystem-Name: Jakarta Data 1.0
   io.openliberty.data.internal,\
   io.openliberty.data.internal.beandef,\
   io.openliberty.data.1.0.internal
-kind=beta
+ kind=ga
 edition=base
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

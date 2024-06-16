@@ -6,5 +6,5 @@ IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.jcacheContainer-1.1))"
 -bundles=com.ibm.ws.jcache.cdi
 IBM-Install-Policy: when-satisfied
-kind=noship
+kind=ga
 edition=full

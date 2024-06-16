@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.appSecurity-5.0
-kind=beta
+ kind=ga
 edition=core

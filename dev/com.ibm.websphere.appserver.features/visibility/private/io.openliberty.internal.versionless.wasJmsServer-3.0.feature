@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.messagingServer-3.0
-kind=beta
+ kind=ga
 edition=base

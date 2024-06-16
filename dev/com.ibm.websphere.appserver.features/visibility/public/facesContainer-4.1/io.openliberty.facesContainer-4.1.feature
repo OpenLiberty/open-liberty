@@ -21,6 +21,6 @@ IBM-API-Package: org.jboss.weld;type="internal",\
   com.ibm.websphere.appserver.jndi-1.0, \
   io.openliberty.websocket-2.2
 -jars=com.ibm.ws.jsfContainer.jakarta; location:=lib/
-kind=noship
+kind=ga
 edition=full
 WLP-Activation-Type: parallel

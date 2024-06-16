@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     com.ibm.websphere.appserver.mdb-3.2
-kind=beta
+ kind=ga
 edition=base

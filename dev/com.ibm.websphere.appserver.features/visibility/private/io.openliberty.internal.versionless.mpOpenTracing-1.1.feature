@@ -5,5 +5,5 @@ singleton=true
 -features= \
     io.openliberty.internal.mpVersion-1.4; ibm.tolerates:="2.0", \
     com.ibm.websphere.appserver.mpOpenTracing-1.1
-kind=beta
+ kind=ga
 edition=core

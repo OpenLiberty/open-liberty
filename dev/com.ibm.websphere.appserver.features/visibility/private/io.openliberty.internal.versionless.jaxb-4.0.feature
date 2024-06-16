@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.xmlBinding-4.0
-kind=beta
+ kind=ga
 edition=core

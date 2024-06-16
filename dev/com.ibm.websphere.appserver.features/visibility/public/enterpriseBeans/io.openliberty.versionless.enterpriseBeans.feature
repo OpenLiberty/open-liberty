@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: enterpriseBeans
 Subsystem-Name: enterpriseBeans
 -features=io.openliberty.internal.versionless.ejb-3.2; ibm.tolerates:="4.0"
-kind=beta
+ kind=ga
 edition=base

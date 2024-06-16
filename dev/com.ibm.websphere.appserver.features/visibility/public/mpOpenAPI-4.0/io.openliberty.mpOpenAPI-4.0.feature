@@ -50,7 +50,7 @@ IBM-API-Package: \
     io.openliberty.microprofile.openapi.internal.common,\
     io.openliberty.com.fasterxml.jackson, \
     com.ibm.ws.org.jboss.logging
-kind=noship
+kind=ga
 edition=full
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

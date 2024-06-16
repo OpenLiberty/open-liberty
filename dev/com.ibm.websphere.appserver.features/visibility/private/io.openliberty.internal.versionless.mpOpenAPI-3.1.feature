@@ -5,5 +5,5 @@ singleton=true
 -features= \
     io.openliberty.internal.mpVersion-6.0; ibm.tolerates:="6.1", \
     io.openliberty.mpOpenAPI-3.1
-kind=beta
+ kind=ga
 edition=core

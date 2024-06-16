@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: jdbc
 Subsystem-Name: jdbc
 -features=io.openliberty.internal.versionless.jdbc-4.0; ibm.tolerates:="4.1,4.2"
-kind=beta
+ kind=ga
 edition=core

@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     com.ibm.websphere.appserver.servlet-6.0
-kind=beta
+ kind=ga
 edition=core

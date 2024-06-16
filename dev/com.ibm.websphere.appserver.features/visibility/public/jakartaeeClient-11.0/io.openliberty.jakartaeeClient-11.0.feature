@@ -108,5 +108,5 @@ Subsystem-Name: Jakarta EE 11.0 Application Client
   io.openliberty.jsonp-2.1
 -jars=io.openliberty.ejbcontainer; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/io.openliberty.ejbcontainer_1.0-javadoc.zip
-kind=noship
+kind=ga
 edition=full

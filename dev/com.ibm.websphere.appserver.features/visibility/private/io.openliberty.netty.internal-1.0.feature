@@ -10,6 +10,6 @@ singleton=true
   io.openliberty.endpoint, \
   io.openliberty.netty.internal, \
   io.openliberty.netty.internal.impl
-kind=noship
+kind=ga
 edition=full
 WLP-Activation-Type: parallel

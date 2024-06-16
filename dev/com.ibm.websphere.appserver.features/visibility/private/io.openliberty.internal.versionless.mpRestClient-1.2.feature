@@ -5,5 +5,5 @@ singleton=true
 -features= \
     io.openliberty.internal.mpVersion-2.2, \
     com.ibm.websphere.appserver.mpRestClient-1.2
-kind=beta
+ kind=ga
 edition=core

@@ -6,11 +6,10 @@ visibility = private
   com.ibm.websphere.appserver.servlet-6.1, \
   io.openliberty.appSecurity-6.0, \
   io.openliberty.jsonp-2.1, \
-  io.openliberty.org.eclipse.microprofile.jwt-2.1, \
-  io.openliberty.noShip-1.0
+  io.openliberty.org.eclipse.microprofile.jwt-2.1 
 -bundles=\
   io.openliberty.security.common.internal, \
   io.openliberty.security.jwtsso.internal, \
   io.openliberty.security.mp.jwt.internal
-kind=noship
+kind=ga
 edition=full

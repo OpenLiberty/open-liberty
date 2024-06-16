@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     com.ibm.websphere.appserver.javaMail-1.6
-kind=beta
+ kind=ga
 edition=core

@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     com.ibm.websphere.appserver.beanValidation-1.1
-kind=beta
+ kind=ga
 edition=core

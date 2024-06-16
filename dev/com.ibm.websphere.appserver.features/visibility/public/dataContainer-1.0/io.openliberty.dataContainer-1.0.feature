@@ -16,11 +16,10 @@ Subsystem-Name: Jakarta Data 1.0 Container
 -features=\
   com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0",\
   io.openliberty.cdi-4.0; ibm.tolerates:="4.1",\
-  io.openliberty.jakarta.data-1.0,\
-  io.openliberty.noShip-1.0
+  io.openliberty.jakarta.data-1.0
 -bundles=\
   io.openliberty.data.internal.beandef
-kind=noship
+kind=ga
 edition=full
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: managedBeans
 Subsystem-Name: managedBeans
 -features=io.openliberty.internal.versionless.managedBeans-1.0; ibm.tolerates:="2.0"
-kind=beta
+ kind=ga
 edition=core

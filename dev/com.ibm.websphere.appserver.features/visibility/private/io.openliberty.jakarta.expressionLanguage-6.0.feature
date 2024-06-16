@@ -4,6 +4,6 @@ singleton=true
 -features=com.ibm.websphere.appserver.eeCompatible-11.0
 -bundles=io.openliberty.el.internal.cdi.jakarta, \
  io.openliberty.jakarta.expressionLanguage.6.0; location:="dev/api/spec/,lib/"; mavenCoordinates="org.apache.tomcat:tomcat-el-api:11.0.0"
-kind=beta
+ kind=ga
 edition=core
 WLP-Activation-Type: parallel

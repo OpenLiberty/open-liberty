@@ -5,5 +5,5 @@ singleton=true
 -features= \
     io.openliberty.internal.mpVersion-7.0, \
     io.openliberty.mpTelemetry-2.0
-kind=beta
+ kind=ga
 edition=core

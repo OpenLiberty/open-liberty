@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     com.ibm.websphere.appserver.jsp-2.3
-kind=beta
+ kind=ga
 edition=core

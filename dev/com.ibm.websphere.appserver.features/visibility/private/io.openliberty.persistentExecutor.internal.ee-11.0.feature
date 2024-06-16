@@ -5,8 +5,7 @@ singleton=true
   com.ibm.websphere.appserver.eeCompatible-11.0, \
   io.openliberty.concurrent-3.1, \
   com.ibm.websphere.appserver.transaction-2.0, \
-  io.openliberty.persistentExecutorSubset-2.0,\
-  io.openliberty.noShip-1.0
-kind=noship
+  io.openliberty.persistentExecutorSubset-2.0,
+kind=ga
 edition=full
 WLP-Activation-Type: parallel

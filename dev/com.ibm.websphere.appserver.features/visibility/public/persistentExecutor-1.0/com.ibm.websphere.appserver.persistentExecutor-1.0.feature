@@ -13,5 +13,5 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.jdbc-4.1; ibm.tolerates:="4.2,4.3", \
   com.ibm.websphere.appserver.eeCompatible-7.0; ibm.tolerates:="8.0, 9.0, 10.0, 11.0", \
   io.openliberty.persistentExecutor.internal.ee-7.0; ibm.tolerates:="9.0, 10.0, 11.0"
-kind=noship
+kind=ga
 edition=full

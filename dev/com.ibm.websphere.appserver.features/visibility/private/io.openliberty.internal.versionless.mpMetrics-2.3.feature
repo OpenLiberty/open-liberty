@@ -5,5 +5,5 @@ singleton=true
 -features= \
     io.openliberty.internal.mpVersion-3.3, \
     com.ibm.websphere.appserver.mpMetrics-2.3
-kind=beta
+ kind=ga
 edition=core

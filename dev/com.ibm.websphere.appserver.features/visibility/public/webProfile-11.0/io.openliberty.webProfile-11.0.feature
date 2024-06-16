@@ -26,6 +26,6 @@ Subsystem-Name: Jakarta EE Web Profile 11.0
   io.openliberty.expressionLanguage-6.0, \
   io.openliberty.jsonp-2.1, \
   io.openliberty.data-1.0
-kind=noship
+kind=ga
 edition=full
 WLP-InstantOn-Enabled: true

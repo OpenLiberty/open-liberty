@@ -6,5 +6,5 @@ singleton=true
   com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
   com.ibm.websphere.appserver.transaction-2.0, \
   io.openliberty.persistence-3.2
-kind=noship
+kind=ga
 edition=full

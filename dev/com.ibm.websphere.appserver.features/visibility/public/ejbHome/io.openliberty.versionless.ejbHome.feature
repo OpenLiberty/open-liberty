@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: ejbHome
 Subsystem-Name: ejbHome
 -features=io.openliberty.internal.versionless.ejbHome-3.2; ibm.tolerates:="4.0"
-kind=beta
+ kind=ga
 edition=base

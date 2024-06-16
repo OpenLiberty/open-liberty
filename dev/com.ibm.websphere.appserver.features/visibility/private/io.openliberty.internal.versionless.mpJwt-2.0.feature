@@ -5,5 +5,5 @@ singleton=true
 -features= \
     io.openliberty.internal.mpVersion-5.0, \
     io.openliberty.mpJwt-2.0
-kind=beta
+ kind=ga
 edition=core

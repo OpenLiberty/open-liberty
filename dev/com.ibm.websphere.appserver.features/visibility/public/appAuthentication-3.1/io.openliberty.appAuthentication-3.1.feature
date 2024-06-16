@@ -15,13 +15,12 @@ Subsystem-Name: Jakarta Authentication 3.1
 -features=io.openliberty.xmlBinding.internal-4.0, \
   io.openliberty.appSecurity-6.0, \
   com.ibm.websphere.appserver.servlet-6.1, \
-  com.ibm.websphere.appserver.eeCompatible-11.0, \
-  io.openliberty.noShip-1.0
+  com.ibm.websphere.appserver.eeCompatible-11.0 
 -bundles=\
   io.openliberty.security.jaspic.2.0.internal
 -jars=io.openliberty.jaspic.spi; location:=dev/spi/ibm/
 -files=dev/spi/ibm/javadoc/io.openliberty.jaspic.spi_1.1-javadoc.zip
-kind=noship
+kind=ga
 edition=full
 WLP-InstantOn-Enabled: true
 WLP-Platform: jakartaee-11.0

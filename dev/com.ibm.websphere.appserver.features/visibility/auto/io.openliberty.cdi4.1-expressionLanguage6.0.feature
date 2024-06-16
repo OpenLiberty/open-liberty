@@ -6,5 +6,5 @@ IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.cdi-4.1))", \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.expressionLanguage-6.0))"
 IBM-Install-Policy: when-satisfied
-kind=beta
+ kind=ga
 edition=core

@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.mdb-4.0
-kind=beta
+ kind=ga
 edition=base

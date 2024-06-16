@@ -15,7 +15,7 @@ Subsystem-Name: Jakarta Authorization 3.0
   io.openliberty.jakarta.authorization-3.0
 -bundles=\
   io.openliberty.security.authorization.internal.jacc
-kind=noship
+kind=ga
 edition=full
 -jars=io.openliberty.jacc; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/io.openliberty.jacc_1.0-javadoc.zip

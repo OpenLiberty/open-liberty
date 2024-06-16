@@ -14,7 +14,7 @@ Subsystem-Name: Jakarta RESTful Web Services 4.0
 -bundles=\
  io.openliberty.org.jboss.resteasy.cdi.ee11, \
  io.openliberty.org.jboss.resteasy.server.ee11
-kind=beta
+ kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

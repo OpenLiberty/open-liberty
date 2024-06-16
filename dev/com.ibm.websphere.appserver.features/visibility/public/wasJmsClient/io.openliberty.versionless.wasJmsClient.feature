@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: wasJmsClient
 Subsystem-Name: wasJmsClient
 -features=io.openliberty.internal.versionless.wasJmsClient-1.1; ibm.tolerates:="2.0,3.0"
-kind=beta
+ kind=ga
 edition=base

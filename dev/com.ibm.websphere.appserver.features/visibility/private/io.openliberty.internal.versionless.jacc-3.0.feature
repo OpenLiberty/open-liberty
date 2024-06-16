@@ -3,7 +3,6 @@ symbolicName=io.openliberty.internal.versionless.jacc-3.0
 visibility=private
 singleton=true
 -features= \
-    io.openliberty.noShip-1.0, \
     io.openliberty.appAuthorization-3.0
-kind=noship
+kind=ga
 edition=full

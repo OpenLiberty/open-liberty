@@ -5,5 +5,5 @@ singleton=true
 -features= \
     io.openliberty.internal.mpVersion-1.2; ibm.tolerates:="1.3,1.4,2.0,2.1,2.2", \
     com.ibm.websphere.appserver.mpHealth-1.0
-kind=beta
+ kind=ga
 edition=core

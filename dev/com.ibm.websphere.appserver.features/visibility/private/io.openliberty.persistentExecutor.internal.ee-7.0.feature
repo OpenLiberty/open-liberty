@@ -7,6 +7,6 @@ WLP-DisableAllFeatures-OnConflict: false
   com.ibm.websphere.appserver.jdbc-4.1; ibm.tolerates:="4.2,4.3", \
   com.ibm.websphere.appserver.concurrent-1.0, \
   com.ibm.websphere.appserver.persistentExecutorSubset-1.0
-kind=noship
+kind=ga
 edition=full
 WLP-Activation-Type: parallel
