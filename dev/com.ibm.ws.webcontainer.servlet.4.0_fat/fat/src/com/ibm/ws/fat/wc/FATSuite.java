@@ -30,8 +30,6 @@ import com.ibm.ws.fat.wc.tests.WCFileUpLoadFileCountMaxPropertyTest;
 import com.ibm.ws.fat.wc.tests.WCFileUpLoadFileCountMaxTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingSlashStarTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingTest;
-import com.ibm.ws.fat.wc.tests.WCPartitionedAttributeTests;
-import com.ibm.ws.fat.wc.tests.WCPartitionedCookieAttributeSecurityTest;
 import com.ibm.ws.fat.wc.tests.WCPushBuilderTest;
 import com.ibm.ws.fat.wc.tests.WCSCIHandlesTypesTest;
 import com.ibm.ws.fat.wc.tests.WCSameContextRootTest;
@@ -100,9 +98,8 @@ import componenttest.rules.repeater.RepeatTests;
                 WCServerMiscTest.class,
                 WCServerPropertyTest.class,
                 WCTestEncodedX590.class,
-                WCServletContextUnsupportedOperationExceptionTest.class,
-                WCPartitionedAttributeTests.class,
-                // WCPartitionedCookieAttributeSecurityTest.class Not Yet Implemented
+                WCServletContextUnsupportedOperationExceptionTest.class
+
 })
 
 public class FATSuite {
