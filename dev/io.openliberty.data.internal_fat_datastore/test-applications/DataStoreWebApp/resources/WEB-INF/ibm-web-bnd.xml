@@ -11,9 +11,13 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<ejb-jar version="4.0" metadata-complete="false"
-         xmlns="https://jakarta.ee/xml/ns/jakartaee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/ejb-jar_4_0.xsd">
+<web-bnd xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://websphere.ibm.com/xml/ns/javaee"
+         xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd"
+         version="1.0">
+    
+  	<resource-ref name="java:global/env/jdbc/ServerDataSourceRef">
+		<authentication-alias name="ResRefAuth4"/>
+	</resource-ref>
 
-</ejb-jar>
+</web-bnd>

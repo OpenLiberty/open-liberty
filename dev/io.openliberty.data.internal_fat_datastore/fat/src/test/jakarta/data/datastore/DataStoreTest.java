@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import test.jakarta.data.datastore.web.DataStoreTestServlet;
 import test.jakarta.data.datastore.web2.DataStoreSecondServlet;
+import test.jakarta.data.datastore.webapp.DataStoreWebAppServlet;
 
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
@@ -42,11 +43,24 @@ public class DataStoreTest extends FATServletClient {
     @TestServlets({
                     @TestServlet(servlet = DataStoreTestServlet.class, contextRoot = "DataStoreTestWeb1"),
                     @TestServlet(servlet = DataStoreSecondServlet.class, contextRoot = "DataStoreTestWeb2"),
+                    @TestServlet(servlet = DataStoreWebAppServlet.class, contextRoot = "DataStoreWebApp")
     })
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        JavaArchive DataRepoGlobalLib = ShrinkWrap.create(JavaArchive.class,
+                                                          "DataRepoGlobalLib.jar")
+                        .addPackage("test.jakarta.data.datastore.global.lib");
+        ShrinkHelper.exportToServer(server, "lib/global", DataRepoGlobalLib);
+
+        WebArchive DataStoreWebApp = ShrinkWrap.create(WebArchive.class,
+                                                       "DataStoreWebApp.war")
+                        .addPackage("test.jakarta.data.datastore.webapp")
+                        .addAsWebInfResource(new File("test-applications/DataStoreWebApp/resources/WEB-INF/ibm-web-bnd.xml"));
+        ShrinkHelper.exportAppToServer(server, DataStoreWebApp);
+
         JavaArchive DataStoreTestLib = ShrinkWrap.create(JavaArchive.class,
                                                          "DataStoreTestLib.jar")
                         .addPackage("test.jakarta.data.datastore.lib");
