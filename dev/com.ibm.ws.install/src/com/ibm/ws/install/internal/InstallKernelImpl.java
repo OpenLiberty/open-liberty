@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -38,6 +38,7 @@ import com.ibm.ws.install.InstalledFeatureCollection;
 import com.ibm.ws.install.ReapplyFixException;
 import com.ibm.ws.install.RepositoryConfigUtils;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
+import com.ibm.ws.install.internal.InstallUtils.FeaturesPlatforms;
 import com.ibm.ws.install.internal.asset.ServerAsset;
 import com.ibm.ws.install.internal.asset.ServerPackageAsset;
 import com.ibm.ws.repository.common.enums.ResourceType;
@@ -262,7 +263,7 @@ public class InstallKernelImpl implements InstallKernel, InstallKernelInteractiv
     }
 
     @Override
-    public Collection<String> getServerFeaturesToInstall(Set<ServerAsset> servers, boolean offlineOnly) throws InstallException, IOException {
+    public FeaturesPlatforms getServerFeaturesToInstall(Set<ServerAsset> servers, boolean offlineOnly) throws InstallException, IOException {
         this.director.fireProgressEvent(InstallProgressEvent.RESOLVE, 0,
                                         Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CHECKING_MISSING_SERVER_FEATURES"));
         return this.director.getServerFeaturesToInstall(servers, offlineOnly);

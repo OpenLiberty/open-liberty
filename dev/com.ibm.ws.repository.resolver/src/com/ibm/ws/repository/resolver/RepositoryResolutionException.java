@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -45,9 +45,9 @@ public class RepositoryResolutionException extends RepositoryException {
      * @param cause
      * @param topLevelFeaturesNotResolved
      * @param allRequirementsNotFound
-     * @param missingProductInformation all the product information requirements that could not be found. Can be empty but must not be <code>null</code>
+     * @param missingProductInformation        all the product information requirements that could not be found. Can be empty but must not be <code>null</code>
      * @param allRequirementsResourcesNotFound The {@link MissingRequirement} objects that were not found. Must not be <code>null</code>.
-     * @param featureConflicts the details of any feature conflicts which occurred during feature resolution, as returned from {@link Result#getConflicts()}
+     * @param featureConflicts                 the details of any feature conflicts which occurred during feature resolution, as returned from {@link Result#getConflicts()}
      */
     public RepositoryResolutionException(ResolutionException cause, Collection<String> topLevelFeaturesNotResolved, Collection<String> allRequirementsNotFound,
                                          Collection<ProductRequirementInformation> missingProductInformation, Collection<MissingRequirement> allRequirementsResourcesNotFound,
@@ -106,9 +106,9 @@ public class RepositoryResolutionException extends RepositoryException {
      * on a {@link ProductRequirementInformation} is not in the form digit.digit.digit.digit then it will be ignored.
      *
      * @param productId The product ID to find the minimum missing version for or <code>null</code> to match to all products
-     * @param version The version to find the minimum missing version for by matching the first three parts so if you supply "9.0.0.0" and this item applies to version "8.5.5.3"
-     *            and "9.0.0.1" then "9.0.0.1" will be returned. Supply <code>null</code> to match all versions
-     * @param edition The edition to find the minimum missing version for or <code>null</code> to match to all products
+     * @param version   The version to find the minimum missing version for by matching the first three parts so if you supply "9.0.0.0" and this item applies to version "8.5.5.3"
+     *                      and "9.0.0.1" then "9.0.0.1" will be returned. Supply <code>null</code> to match all versions
+     * @param edition   The edition to find the minimum missing version for or <code>null</code> to match to all products
      * @return The minimum missing version or <code>null</code> if there were no relevant matches
      */
     public String getMinimumVersionForMissingProduct(String productId, String version, String edition) {
@@ -152,7 +152,7 @@ public class RepositoryResolutionException extends RepositoryException {
      * This method will iterate through the missingProductInformation and returned a filtered collection of all the {@link ProductRequirementInformation#versionRange}s.
      *
      * @param productId The product ID to find the version for or <code>null</code> to match to all products
-     * @param edition The edition to find the version for or <code>null</code> to match to all editions
+     * @param edition   The edition to find the version for or <code>null</code> to match to all editions
      *
      * @return the version ranges which apply to the given product ID and edition
      */
@@ -185,9 +185,9 @@ public class RepositoryResolutionException extends RepositoryException {
      * indicate a fairly odd repository setup.</p>
      *
      * @param productId The product ID to find the maximum missing version for or <code>null</code> to match to all products
-     * @param version The version to find the maximum missing version for by matching the first three parts so if you supply "8.5.5.2" and this item applies to version "8.5.5.3"
-     *            and "9.0.0.1" then "8.5.5.3" will be returned. Supply <code>null</code> to match all versions
-     * @param edition The edition to find the maximum missing version for or <code>null</code> to match to all products
+     * @param version   The version to find the maximum missing version for by matching the first three parts so if you supply "8.5.5.2" and this item applies to version "8.5.5.3"
+     *                      and "9.0.0.1" then "8.5.5.3" will be returned. Supply <code>null</code> to match all versions
+     * @param edition   The edition to find the maximum missing version for or <code>null</code> to match to all products
      * @return The maximum missing version or <code>null</code> if there were no relevant matches or the maximum version is unbounded
      */
     public String getMaximumVersionForMissingProduct(String productId, String version, String edition) {

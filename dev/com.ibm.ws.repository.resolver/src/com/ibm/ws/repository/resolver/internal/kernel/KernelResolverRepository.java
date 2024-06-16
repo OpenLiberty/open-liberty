@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 import org.osgi.framework.Version;
 
@@ -98,7 +97,7 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
      *
      * If the feature is an auto-feature, add it to the collection of
      * auto-features.
-     * 
+     *
      * Clear the preferred features collection. It must be recomputed.
      *
      * @param feature The feature which is to be added.
@@ -106,9 +105,8 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
     public void addFeature(ProvisioningFeatureDefinition feature) {
         String symbolicName = feature.getSymbolicName();
 
-        List<ProvisioningFeatureDefinition> features =
-            symbolicNameToFeature.computeIfAbsent(symbolicName,
-                                                  (String useName) -> new ArrayList<>());
+        List<ProvisioningFeatureDefinition> features = symbolicNameToFeature.computeIfAbsent(symbolicName,
+                                                                                             (String useName) -> new ArrayList<>());
 
         // Don't add the feature if an installed feature is already present
         // with the symbolic name.
@@ -403,11 +401,10 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
      * @return The preferred versions of all features in the repository.
      */
     public Collection<ProvisioningFeatureDefinition> getAllFeatures() {
-        if ( allFeatureCache == null ) {
+        if (allFeatureCache == null) {
             List<ProvisioningFeatureDefinition> preferred = new ArrayList<>();
             symbolicNameToFeature.forEach(
-                (String symbolicName, List<ProvisioningFeatureDefinition> features) ->
-                    preferred.add(getPreferredVersion(symbolicName, features)));
+                                          (String symbolicName, List<ProvisioningFeatureDefinition> features) -> preferred.add(getPreferredVersion(symbolicName, features)));
             allFeatureCache = preferred;
         }
         return allFeatureCache;

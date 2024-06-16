@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import com.ibm.ws.install.internal.InstallUtils.FeaturesPlatforms;
 import com.ibm.ws.install.internal.asset.ServerAsset;
 import com.ibm.ws.install.internal.asset.ServerPackageAsset;
 import com.ibm.ws.repository.connections.RepositoryConnectionList;
@@ -190,11 +191,11 @@ public interface InstallKernelInteractive {
      *
      * @param servers     set of ServerAssets
      * @param offlineOnly if features should only be acquired offline
-     * @return Collection of server features as Strings
+     * @return FeaturesPlatforms Collections of server features and platforms as Strings
      * @throws InstallException
      * @throws IOException
      */
-    public Collection<String> getServerFeaturesToInstall(Set<ServerAsset> servers, boolean offlineOnly) throws InstallException, IOException;
+    public FeaturesPlatforms getServerFeaturesToInstall(Set<ServerAsset> servers, boolean offlineOnly) throws InstallException, IOException;
 
     /**
      * Deploys the server package given by an archive file
