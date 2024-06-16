@@ -510,6 +510,12 @@ public class InstallKernelMap implements Map {
             } else {
                 throw new IllegalArgumentException();
             }
+        } else if (InstallConstants.PLATFORMS.equals(key)) {
+            if (value instanceof Collection) {
+                data.put(InstallConstants.PLATFORMS, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
         } else if (InstallConstants.VERIFY_OPTION.equals(key)) {
             if (value instanceof VerifyOption) {
                 data.put(InstallConstants.VERIFY_OPTION, value);
@@ -956,7 +962,8 @@ public class InstallKernelMap implements Map {
             if (!isInstallServerFeature) {
                 resolveResult = resolver.resolve((Collection<String>) data.get(InstallConstants.FEATURES_TO_RESOLVE));
             } else {
-                resolveResult = resolver.resolveAsSet((Collection<String>) data.get(InstallConstants.FEATURES_TO_RESOLVE));
+                resolveResult = resolver.resolveAsSet((Collection<String>) data.get(InstallConstants.FEATURES_TO_RESOLVE),
+                                                      (Collection<String>) data.get(InstallConstants.PLATFORMS));
             }
 
             if (!resolveResult.isEmpty()) {

@@ -155,6 +155,27 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 	checkCommandOutput(po, 21, "CWWKF1405E", null);
 	Log.exiting(c, METHOD_NAME);
     }
+    
+    /**
+     * Test the install of versionless servlet from maven central. Multi-version is not
+     * supported with installServerFeature as it cannot be installed to same
+     * resource.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testVersionlessWithPlatformFeatures() throws Exception {
+	final String METHOD_NAME = "testInvalidMultiVersionFeatures";
+	Log.entering(c, METHOD_NAME);
+
+	copyFileToMinifiedRoot("usr/servers/serverX", "publish/tmp/versionlessWPlatform/server.xml");
+
+	String[] param1s = { "installServerFeatures", "serverX", "--verbose" };
+	ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+
+	checkCommandOutput(po, 21, "CWWKF1405E", null);
+	Log.exiting(c, METHOD_NAME);
+    }
 
     /**
      * Install an user feature with the "--featuresBom" parameters

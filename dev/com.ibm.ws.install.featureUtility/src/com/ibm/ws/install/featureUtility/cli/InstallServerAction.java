@@ -35,6 +35,7 @@ import com.ibm.ws.install.featureUtility.FeatureUtility;
 import com.ibm.ws.install.featureUtility.FeatureUtilityExecutor;
 import com.ibm.ws.install.internal.InstallLogUtils;
 import com.ibm.ws.install.internal.InstallUtils;
+import com.ibm.ws.install.internal.InstallUtils.FeaturesPlatforms;
 import com.ibm.ws.install.internal.ProgressBar;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.install.internal.asset.ServerAsset;
@@ -59,6 +60,7 @@ public class InstallServerAction implements ActionHandler {
         private Logger logger;
         private List<String> argList;
         private List<String> featureNames;
+        private List<String> platformNames;
         private String fromDir;
         private String toDir;
         private String featuresBom;
@@ -92,6 +94,7 @@ public class InstallServerAction implements ActionHandler {
                 this.logger = InstallLogUtils.getInstallLogger();
                 this.installKernel = InstallKernelFactory.getInteractiveInstance();
                 this.featureNames = new ArrayList<String>();
+                this.platformNames = new ArrayList<String>();
                 this.servers = new HashSet<>();
 
                 this.argList = args.getPositionalArguments();
@@ -218,7 +221,9 @@ public class InstallServerAction implements ActionHandler {
 
                 try {
 					// get original server features now
-					featuresToInstall.addAll(installKernel.getServerFeaturesToInstall(servers, false));
+                    			FeaturesPlatforms fp = installKernel.getServerFeaturesToInstall(servers, false);
+					featuresToInstall.addAll(fp.getFeatures());
+					platformNames.addAll(fp.getPlatforms());
                         logger.fine("all server features: " + featuresToInstall);
                 } catch (InstallException ie) {
                         logger.log(Level.SEVERE, ie.getMessage(), ie);
@@ -259,7 +264,7 @@ public class InstallServerAction implements ActionHandler {
         private ExitCode install() {
                 try {
                         featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
-				.setFeaturesToInstall(featureNames).setNoCache(noCache)
+				.setFeaturesToInstall(featureNames).setNoCache(noCache).setPlatforms(platformNames)
 				.setlicenseAccepted(acceptLicense).setAdditionalJsons(additionalJsons).setVerify(verify)
 				.build();
                         featureUtility.setFeatureToExt(featureToExt);

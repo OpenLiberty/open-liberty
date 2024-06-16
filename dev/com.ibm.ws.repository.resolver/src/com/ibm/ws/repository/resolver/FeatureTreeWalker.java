@@ -205,7 +205,6 @@ public class FeatureTreeWalker {
         if (tolerates != null) {
             for (String toleratedVersion : tolerates) {
                 String featureName = baseName + toleratedVersion;
-
                 feature = getFeatureByNameFunction.apply(featureName);
                 if (feature != null) {
                     result.add(feature);

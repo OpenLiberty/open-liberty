@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -47,6 +47,7 @@ import com.ibm.ws.install.InstalledFeature;
 import com.ibm.ws.install.InstalledFeatureCollection;
 import com.ibm.ws.install.ReapplyFixException;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
+import com.ibm.ws.install.internal.InstallUtils.FeaturesPlatforms;
 import com.ibm.ws.install.internal.asset.ESAAsset;
 import com.ibm.ws.install.internal.asset.FixAsset;
 import com.ibm.ws.install.internal.asset.InstallAsset;
@@ -467,13 +468,16 @@ public class Director extends AbstractDirector {
      * @throws InstallException
      * @throws IOException
      */
-    public Collection<String> getServerFeaturesToInstall(Set<ServerAsset> servers, boolean offlineOnly) throws InstallException, IOException {
+    public FeaturesPlatforms getServerFeaturesToInstall(Set<ServerAsset> servers, boolean offlineOnly) throws InstallException, IOException {
         Set<String> features = new TreeSet<String>();
         Set<String> serverNames = new HashSet<String>(servers.size());
+        Set<String> platforms = new TreeSet<String>();
 
         for (ServerAsset sa : servers) {
             File serverXmlFile = sa.getServerXmlFile();
-            Collection<String> requiredFeatures = InstallUtils.getFeatures(serverXmlFile.getAbsolutePath(), serverXmlFile.getName(), new HashSet<String>());
+            FeaturesPlatforms fp = InstallUtils.getFeatures(serverXmlFile.getAbsolutePath(), serverXmlFile.getName(), new HashSet<String>());
+            Set<String> requiredFeatures = fp.getFeatures();
+            Set<String> requiredPlatforms = fp.getPlatforms();
 
             // process the configDropins folders (Defaults and overrides)
             File serverDirectory = sa.getServerDirectory();
@@ -486,8 +490,11 @@ public class Director extends AbstractDirector {
                     logger.fine("Processing " + folder);
                     Files.newDirectoryStream(Paths.get(folder.toURI()),
                                              path -> path.toString().endsWith(".xml")).forEach(path -> {
+                                                 FeaturesPlatforms fep;
                                                  try {
-                                                     requiredFeatures.addAll(InstallUtils.getFeatures(path.toString(), path.getFileName().toString(), new HashSet<String>()));
+                                                     fep = InstallUtils.getFeatures(path.toString(), path.getFileName().toString(), new HashSet<String>());
+                                                     requiredFeatures.addAll(fep.getFeatures());
+                                                     requiredPlatforms.addAll(fep.getPlatforms());
                                                  } catch (IOException e) {
                                                      logger.fine("Could not process " + path);
                                                  }
@@ -502,6 +509,7 @@ public class Director extends AbstractDirector {
                                                                                         sa.getServerName(),
                                                                                         InstallUtils.getFeatureListOutput(requiredFeatures)));
                 features.addAll(requiredFeatures);
+                platforms.addAll(requiredPlatforms);
                 serverNames.add(sa.getServerName());
 
             }
@@ -509,7 +517,7 @@ public class Director extends AbstractDirector {
 
         InstallUtils.setServerXmlInstallTrue();
 
-        return features;
+        return new FeaturesPlatforms(features, platforms);
     }
 
     /**

@@ -83,6 +83,11 @@ public class RepositoryResolver {
     Set<String> requestedFeatureNames;
 
     /**
+     * The platforms passed to {@link #resolve(Collection)} which will help resolve versionless features
+     */
+    Collection<String> requestedPlatformNames;
+
+    /**
      * The list of samples the user has requested to install
      */
     List<SampleResource> samplesToInstall;
@@ -240,6 +245,7 @@ public class RepositoryResolver {
         resolverRepository = new KernelResolverRepository(installDefintion, repoConnections);
         resolverRepository.addInstalledFeatures(installedFeatures);
         resolverRepository.addFeatures(repoFeatures);
+
     }
 
     Collection<ProvisioningFeatureDefinition> getKernelFeatures(Collection<ProvisioningFeatureDefinition> installedFeatures) {
@@ -308,7 +314,7 @@ public class RepositoryResolver {
      * @throws RepositoryResolutionException If the resource cannot be resolved
      */
     public Collection<List<RepositoryResource>> resolve(Collection<String> toResolve) throws RepositoryResolutionException {
-        return resolve(toResolve, ResolutionMode.IGNORE_CONFLICTS);
+        return resolve(toResolve, null, ResolutionMode.IGNORE_CONFLICTS);
     }
 
     /**
@@ -370,14 +376,63 @@ public class RepositoryResolver {
      * @throws RepositoryResolutionException If the resource cannot be resolved
      */
     public Collection<List<RepositoryResource>> resolveAsSet(Collection<String> toResolve) throws RepositoryResolutionException {
-        return resolve(toResolve, ResolutionMode.DETECT_CONFLICTS);
+        return resolve(toResolve, null, ResolutionMode.DETECT_CONFLICTS);
     }
 
-    Collection<List<RepositoryResource>> resolve(Collection<String> toResolve, ResolutionMode resolutionMode) throws RepositoryResolutionException {
+    /**
+     * Takes a list of feature names that the user wants to install and returns a minimal set of the {@link RepositoryResource}s that should be installed to allow those features to
+     * start together in one server.
+     * <p>
+     * This method uses the same resolution logic that is used by the kernel at server startup to decide which features to start. Therefore calling this method with a list of
+     * feature names and installing the resources returned will guarantee that a server which has the same list of feature names in its server.xml will start.
+     * <p>
+     * The caller must provide the full set of features from the server.xml, including those that are already installed, so that tolerated dependencies and auto-features can be
+     * resolved correctly.
+     * <p>
+     * This method will fail if there's no valid set of dependencies for the required features that doesn't include conflicting versions of singleton features.
+     * <p>
+     * For example, {@code resolve(Arrays.asList("javaee-7.0", "javaee-8.0"))} would work but {@code resolveAsSet(Arrays.asList("javaee-7.0", "javaee-8.0"))} would fail because
+     * javaee-7.0 and javaee-8.0 contain features which conflict with each other (and other versions are not tolerated).
+     * <p>
+     * This method guarantees that it will return all the features required to start the requested features but will not ensure that the requested features will work with features
+     * which were already installed but were not requested in the call to this method.
+     * <p>
+     * For example, if {@code ejbLite-3.2} is already installed and {@code resolve(Arrays.asList("cdi-2.0"))} is called, it will not return the autofeature which would be required
+     * for {@code cdi-2.0} and {@code ejbLite-3.2} to work together.
+     *
+     * @param toResolve A collection of the identifiers of the resources to resolve. It should be in the form:</br>
+     *                      <code>{name}/{version}</code></br>
+     *                      <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is
+     *                      optional. The collection may contain a mixture of symbolic names and short names. Must not be <code>null</code> or empty.</p>
+     * @param platforms A collection of the identifiers of the platforms used for resolving versionless features
+     *
+     * @return <p>A collection of ordered lists of {@link RepositoryResource}s to install. Each list represents a collection of resources that must be installed together or not
+     *         at all. They should be installed in the iteration order of the list(s). Note that if a resource is required by multiple different resources then it will appear in
+     *         multiple lists. For instance if you have requested to install A and B and A requires N which requires M and O whereas B requires Z that requires O then the returned
+     *         collection will be (represented in JSON):</p>
+     *         <code>
+     *         [[M, O, N, A],[O, Z, B]]
+     *         </code>
+     *         <p>This will not return <code>null</code> although it may return an empty collection if there isn't anything to install (i.e. it resolves to resources that are
+     *         already installed)</p>
+     *         <p>Every auto-feature will have it's own list in the collection, this is to stop the failure to install either an auto feature or one of it's dependencies from
+     *         stopping everything from installing. Therefore if you have features A and B that are required to provision auto feature C and you ask to resolve A and B then this
+     *         method will return:</p>
+     *         <code>
+     *         [[A],[B],[A,B,C]]
+     *         </code>
+     *
+     * @throws RepositoryResolutionException If the resource cannot be resolved
+     */
+    public Collection<List<RepositoryResource>> resolveAsSet(Collection<String> toResolve, Collection<String> platforms) throws RepositoryResolutionException {
+        return resolve(toResolve, platforms, ResolutionMode.DETECT_CONFLICTS);
+    }
+
+    Collection<List<RepositoryResource>> resolve(Collection<String> toResolve, Collection<String> platforms, ResolutionMode resolutionMode) throws RepositoryResolutionException {
         initResolve();
         initializeResolverRepository(installDefinition);
 
-        processNames(toResolve);
+        processNames(toResolve, platforms);
 
         if (resolutionMode == ResolutionMode.DETECT_CONFLICTS) {
             // Call the kernel resolver to determine the features needed
@@ -409,6 +464,7 @@ public class RepositoryResolver {
         samplesToInstall = new ArrayList<>();
         resolvedFeatures = new HashMap<>();
         requestedFeatureNames = new HashSet<>();
+        requestedPlatformNames = new HashSet<>();
         featuresMissing = new ArrayList<>();
         resourcesWrongProduct = new ArrayList<>();
         requirementsFoundForOtherProducts = new HashSet<>();
@@ -422,8 +478,21 @@ public class RepositoryResolver {
      * Populates {@link #samplesToInstall} and {@link #featureNamesToResolve} by processing the list of names to resolve and identifying which are samples.
      *
      * @param namesToResolve the list of names to resolve
+     *
      */
     void processNames(Collection<String> namesToResolve) {
+        processNames(namesToResolve, null);
+    }
+
+    /**
+     * Populates {@link #samplesToInstall} and {@link #featureNamesToResolve} by processing the list of names to resolve and identifying which are samples.
+     *
+     * @param namesToResolve the list of names to resolve
+     * @param platforms
+     */
+    void processNames(Collection<String> namesToResolve, Collection<String> platforms) {
+        if (platforms != null)
+            requestedPlatformNames = platforms;
         for (String name : namesToResolve) {
             SampleResource sample = sampleIndex.get(name.toLowerCase());
             if (sample != null) {
@@ -477,8 +546,7 @@ public class RepositoryResolver {
      */
     void resolveFeaturesAsSet() {
         FeatureResolver resolver = new FeatureResolverImpl();
-        Result result = resolver.resolve(resolverRepository, kernelFeatures, featureNamesToResolve, Collections.<String> emptySet(), false, Collections.<String> emptySet());
-
+        Result result = resolver.resolve(resolverRepository, kernelFeatures, featureNamesToResolve, Collections.<String> emptySet(), false, requestedPlatformNames);
         featureConflicts.putAll(result.getConflicts());
 
         for (String name : result.getResolvedFeatures()) {
@@ -802,6 +870,7 @@ public class RepositoryResolver {
      * @return the install list
      */
     private List<RepositoryResource> createInstallList(Collection<ProvisioningFeatureDefinition> featureRoots, SampleResource sampleRoot) {
+
         Map<ProvisioningFeatureDefinition, List<ProvisioningFeatureDefinition>> reverseDependencyMap = new HashMap<>();
         List<ProvisioningFeatureDefinition> dependentFeatures = new ArrayList<>();
 
@@ -838,7 +907,7 @@ public class RepositoryResolver {
         if (sampleRoot != null) {
             installList.add(sampleRoot);
         }
-
+        System.out.println("OK here is the install List: " + installList);
         return installList;
     }
 
@@ -928,9 +997,10 @@ public class RepositoryResolver {
 
         List<String> missingRequirementNames = new ArrayList<>();
         for (MissingRequirement req : missingRequirements) {
+            System.out.println("HELP!!! missreq:  " + req);
             missingRequirementNames.add(req.getRequirementName());
         }
-
+        System.out.println("HELP!!!   Missing: " + missingTopLevelRequirements);
         throw new RepositoryResolutionException(null, missingTopLevelRequirements, missingRequirementNames, missingProductInformation, missingRequirements, featureConflicts);
     }
 

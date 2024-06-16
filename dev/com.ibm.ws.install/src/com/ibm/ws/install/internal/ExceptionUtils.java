@@ -423,12 +423,14 @@ public class ExceptionUtils {
         }
 
         Collection<MissingRequirement> dependants = new ArrayList<MissingRequirement>(allRequirementsNotFound.size());
+        System.out.println("Dependants: " + dependants);
         for (MissingRequirement f : allRequirementsNotFound) {
             /**
              * make sure it's not invalid asset names entered
              */
             if (!assetNames.contains(f.getRequirementName())) {
                 dependants.add(f);
+                System.out.println("Adding Dependant: " + f);
             }
         }
 
@@ -624,51 +626,60 @@ public class ExceptionUtils {
          * missing dependent case, keep the current message
          */
         if (dependants.size() > 0) {
-            String missingRequirement = missingRequirementWithMaxVersion.getRequirementName();
-            if (!missingRequirement.contains(";")
-                && !missingRequirement.contains("productInstallType")
-                && !missingRequirement.contains("productEdition")
-                && !missingRequirement.contains("productVersion")) {
-                String assetsStr = "";
-                String feature = missingRequirement;
-                InstallException ie = null;
-                if (assetNames.size() == 1) {
-                    assetsStr = assetNames.iterator().next();
-                    ie = create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_MISSING_DEPENDENT" : "ERROR_MISSING_DEPENDENT",
-                                                                               assetsStr,
-                                                                               feature),
-                                e);
-                } else if (assetNames.size() > 1) {
-                    assetsStr = assetNames.toString();
-                    ie = create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT" : "ERROR_MISSING_MULTIPLE_DEPENDENT",
-                                                                               assetsStr,
-                                                                               feature),
-                                e);
+            if (missingRequirementWithMaxVersion == null) {
+                System.out.println("Dependant with null missingRequirement: " + dependants);
+            } else {
+                String missingRequirement = missingRequirementWithMaxVersion.getRequirementName();
+                if (!missingRequirement.contains(";")
+                    && !missingRequirement.contains("productInstallType")
+                    && !missingRequirement.contains("productEdition")
+                    && !missingRequirement.contains("productVersion")) {
+                    String assetsStr = "";
+                    String feature = missingRequirement;
+                    InstallException ie = null;
+                    if (assetNames.size() == 1) {
+                        assetsStr = assetNames.iterator().next();
+                        ie = create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_MISSING_DEPENDENT" : "ERROR_MISSING_DEPENDENT",
+                                                                                   assetsStr,
+                                                                                   feature),
+                                    e);
+                    } else if (assetNames.size() > 1) {
+                        assetsStr = assetNames.toString();
+                        ie = create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT" : "ERROR_MISSING_MULTIPLE_DEPENDENT",
+                                                                                   assetsStr,
+                                                                                   feature),
+                                    e);
+                    }
+
+                    ie.setData(assetsStr, feature);
+
+                    return ie;
                 }
-
-                ie.setData(assetsStr, feature);
-
-                return ie;
 
             }
         }
 
-        if (missingRequirementWithMaxVersion.getRequirementName().contains("productInstallType") ||
-            missingRequirementWithMaxVersion.getRequirementName().contains("productEdition") ||
-            missingRequirementWithMaxVersion.getRequirementName().contains("productVersion")) {
-            @SuppressWarnings("rawtypes")
-            List productMatchers = SelfExtractor.parseAppliesTo(missingRequirementWithMaxVersion.getRequirementName());
-            String feature = RepositoryDownloadUtil.getAssetNameFromMassiveResource(missingRequirementWithMaxVersion.getOwningResource());
-            String errMsg = "";
-            if (InstallUtils.containsIgnoreCase(assetNames, feature)) {
-                errMsg = validateProductMatches(feature, productMatchers, installDir, installingAsset);
+        if (missingRequirementWithMaxVersion == null) {
+            System.out.println("HELP!!!!!!   Dependant with null missingRequirement: " + dependants);
+        } else {
 
-            } else {
-                String assetsStr = assetNames.size() == 1 ? assetNames.iterator().next() : InstallUtils.getFeatureListOutput(assetNames);
-                errMsg = validateProductMatches(assetsStr, feature, productMatchers, installDir, installingAsset);
-            }
-            if (!errMsg.isEmpty()) {
-                return create(errMsg, e, InstallException.NOT_VALID_FOR_CURRENT_PRODUCT);
+            if (missingRequirementWithMaxVersion.getRequirementName().contains("productInstallType") ||
+                missingRequirementWithMaxVersion.getRequirementName().contains("productEdition") ||
+                missingRequirementWithMaxVersion.getRequirementName().contains("productVersion")) {
+                @SuppressWarnings("rawtypes")
+                List productMatchers = SelfExtractor.parseAppliesTo(missingRequirementWithMaxVersion.getRequirementName());
+                String feature = RepositoryDownloadUtil.getAssetNameFromMassiveResource(missingRequirementWithMaxVersion.getOwningResource());
+                String errMsg = "";
+                if (InstallUtils.containsIgnoreCase(assetNames, feature)) {
+                    errMsg = validateProductMatches(feature, productMatchers, installDir, installingAsset);
+
+                } else {
+                    String assetsStr = assetNames.size() == 1 ? assetNames.iterator().next() : InstallUtils.getFeatureListOutput(assetNames);
+                    errMsg = validateProductMatches(assetsStr, feature, productMatchers, installDir, installingAsset);
+                }
+                if (!errMsg.isEmpty()) {
+                    return create(errMsg, e, InstallException.NOT_VALID_FOR_CURRENT_PRODUCT);
+                }
             }
         }
 

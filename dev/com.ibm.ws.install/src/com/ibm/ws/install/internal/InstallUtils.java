@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -115,6 +115,50 @@ public class InstallUtils {
 
     private static boolean isServerXmlInstallation = false;
     private static Set<String> serverFeatures = new HashSet<>();
+
+    public static class FeaturesPlatforms {
+
+        /**
+         * @param features
+         * @param platforms
+         */
+        public FeaturesPlatforms(Set<String> features, Set<String> platforms) {
+            super();
+            this.features = features;
+            this.platforms = platforms;
+        }
+
+        private Set<String> features;
+        private Set<String> platforms;
+
+        /**
+         * @return the features
+         */
+        public Set<String> getFeatures() {
+            return features;
+        }
+
+        /**
+         * @param features the features to set
+         */
+        public void setFeatures(Set<String> features) {
+            this.features = features;
+        }
+
+        /**
+         * @return the platforms
+         */
+        public Set<String> getPlatforms() {
+            return platforms;
+        }
+
+        /**
+         * @param platforms the platforms to set
+         */
+        public void setPlatforms(Set<String> platforms) {
+            this.platforms = platforms;
+        }
+    }
 
     public static final File getServersDir() {
         return new File(Utils.getUserDir(), SERVER_DIR_NAME);
@@ -669,8 +713,9 @@ public class InstallUtils {
         return null;
     }
 
-    public static Set<String> getFeatures(String serverXml, String xml, Set<String> visitedServerXmls) throws IOException {
+    public static FeaturesPlatforms getFeatures(String serverXml, String xml, Set<String> visitedServerXmls) throws IOException {
         Set<String> features = new HashSet<String>();
+        Set<String> platforms = new HashSet<String>();
         List<String> newLocations = new ArrayList<>();
         boolean isUrl = false;
         HttpURLConnection conn = null;
@@ -684,7 +729,7 @@ public class InstallUtils {
         } catch (MalformedURLException malf) {
             realServerXml = Paths.get(serverXml).normalize();
             if (visitedServerXmls.contains(realServerXml.toString())) {
-                return features;
+                return new FeaturesPlatforms(features, platforms);
             }
         }
 
@@ -744,6 +789,11 @@ public class InstallUtils {
                     Node f = fList.item(j);
                     features.add(f.getTextContent().trim());
                 }
+                NodeList pList = fmElement.getElementsByTagName("platform");
+                for (int j = 0; j < pList.getLength(); j++) {
+                    Node f = pList.item(j);
+                    platforms.add(f.getTextContent().trim());
+                }
             }
         } catch (Exception e) {
             if (isOptional == false) {
@@ -757,7 +807,9 @@ public class InstallUtils {
         for (String filepath : newLocations) {
             Path path = Paths.get(filepath);
             if (Files.exists(path)) {
-                features.addAll(getFeatures(path.toString(), path.getFileName().toString(), visitedServerXmls));
+                FeaturesPlatforms fp = getFeatures(path.toString(), path.getFileName().toString(), visitedServerXmls);
+                features.addAll(fp.getFeatures());
+                platforms.addAll(fp.getPlatforms());
             } else if (isOptional == true) {
                 logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", path));
             } else {
@@ -766,7 +818,7 @@ public class InstallUtils {
 
         }
 
-        return features;
+        return new FeaturesPlatforms(features, platforms);
     }
 
     /**
