@@ -1990,7 +1990,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
     public void forceSections(boolean throttle) throws InternalLogException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "forceSections", new java.lang.Object[] { this });
+            Tr.entry(tc, "forceSections", this, throttle);
 
         // PH22988 introduces "throttle" code to improve concurrent access to the cache of inserts, updates and removes at runtime.
         // _throttleWaiters counts the number of threads attempting to forceSections(). If that number passes a threshold, then throttling is enabled.
@@ -2021,6 +2021,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         } else {
             internalForceSections();
         }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "forceSections");
     }
 
     // Must NOT be called when holding intrinsic lock unless already holding _DBAccessIntentLock
