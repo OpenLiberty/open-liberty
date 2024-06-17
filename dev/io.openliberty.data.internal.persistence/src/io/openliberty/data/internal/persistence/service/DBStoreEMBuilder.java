@@ -41,7 +41,6 @@ import java.util.Hashtable;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.SortedMap;
@@ -275,12 +274,10 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
                     else
                         svcProps.put("NonJTADataSourceFactory.target", "(&(service.pid=${nonTransactionalDataSourceRef})(transactional=false))");
 
-                    // TODO should the databaseStore properties be configurable somehow when DataSourceDefinition is used?
-                    // The following would allow them in the annotation's properties list, as "data.createTables=true", "data.tablePrefix=TEST"
-                    svcProps.put("createTables", !"FALSE".equalsIgnoreCase((String) dsRef.getProperty("properties.0.data.createTables")));
-                    svcProps.put("dropTables", !"TRUE".equalsIgnoreCase((String) dsRef.getProperty("properties.0.data.dropTables")));
-                    svcProps.put("tablePrefix", Objects.requireNonNullElse((String) dsRef.getProperty("properties.0.data.tablePrefix"), ""));
-                    svcProps.put("keyGenerationStrategy", Objects.requireNonNullElse((String) dsRef.getProperty("properties.0.data.keyGenerationStrategy"), "AUTO"));
+                    svcProps.put("createTables", provider.createTables);
+                    svcProps.put("dropTables", provider.dropTables);
+                    svcProps.put("tablePrefix", "");
+                    svcProps.put("keyGenerationStrategy", "AUTO");
 
                     dbStoreConfig = provider.configAdmin.createFactoryConfiguration("com.ibm.ws.persistence.databaseStore", bc.getBundle().getLocation());
                     dbStoreConfig.update(svcProps);
