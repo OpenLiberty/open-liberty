@@ -10,6 +10,6 @@ Subsystem-Name: Audit 2.0
   io.openliberty.auditCollector1.0.internal.ee-6.0; ibm.tolerates:="9.0"
 -bundles=com.ibm.ws.security.audit.utils, \
   com.ibm.ws.security.audit.file
-kind=beta
+kind=ga
 edition=core
 WLP-InstantOn-Enabled: true

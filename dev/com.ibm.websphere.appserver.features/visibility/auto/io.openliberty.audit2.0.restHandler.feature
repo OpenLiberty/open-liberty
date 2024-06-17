@@ -10,5 +10,5 @@ IBM-Install-Policy: when-satisfied
 
 -bundles=io.openliberty.request.probe.audit.rest
 WLP-Activation-Type: parallel
-kind=beta
+kind=ga
 edition=core
