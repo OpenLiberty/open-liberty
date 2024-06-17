@@ -84,6 +84,7 @@ import org.osgi.service.event.EventAdmin;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.AppForceRestart;
@@ -176,7 +177,9 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
     final static String FEATURE_PRODUCT_EXTENSIONS_INSTALL = "com.ibm.websphere.productInstall";
     final static String FEATURE_PRODUCT_EXTENSIONS_FILE_EXTENSION = ".properties";
     final static String PRODUCT_INFO_STRING_OPEN_LIBERTY = "Open Liberty";
+    private static String platformEnvironmentVariable = System.getenv("PREFERRED_PLATFORM_VERSIONS");
     final static FeatureResolver featureResolver = new FeatureResolverImpl();
+    private static final boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
 
     private static Version JAVA_MAJOR_VERSION = new Version(JavaInfo.majorVersion(), 0, 0);
 
@@ -1535,7 +1538,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                         bundleCache.addAllNoReplace(newBundleList);
 
                         // Update installedFeatures with the features that were successfully added
-                        featureRepository.setResolvedFeatures(goodFeatures, newConfiguredFeatures, reportedConfigurationErrors);
+                        featureRepository.setResolvedFeatures(goodFeatures, newConfiguredFeatures, reportedConfigurationErrors, newConfiguredPlatforms, platformEnvironmentVariable);
                     }
                 }
             }
@@ -1694,15 +1697,18 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
     private boolean areConfiguredFeaturesGood(Set<String> newConfiguredFeatures, Set<String> newConfiguredPlatforms) {
         if (!!!featureRepository.isDirty()
             && !!!featureRepository.hasConfigurationError()
-            && featureRepository.getConfiguredFeatures().equals(newConfiguredFeatures)
-            && featureRepository.getPlatforms().equals(newConfiguredPlatforms)) {
-            // check that all installed features are still installed
-            for (String resolvedFeature : featureRepository.getResolvedFeatures()) {
-                if (featureRepository.getFeature(resolvedFeature) == null) {
-                    return false;
+            && featureRepository.getConfiguredFeatures().equals(newConfiguredFeatures)){
+            if( !isBeta || (isBeta && featureRepository.getPlatforms().equals(newConfiguredPlatforms) 
+                && equals(featureRepository.getPlatformEnvVar(), platformEnvironmentVariable))) {
+                    
+                // check that all installed features are still installed
+                for (String resolvedFeature : featureRepository.getResolvedFeatures()) {
+                    if (featureRepository.getFeature(resolvedFeature) == null) {
+                        return false;
+                    }
                 }
+                return true;
             }
-            return true;
         }
         return false;
     }
@@ -2592,4 +2598,16 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         return range == null ? true : range.includes(JAVA_MAJOR_VERSION);
     }
 
+    @Trivial
+    private static boolean equals(String s0, String s1) {
+        if (s0 == null) {
+            return (s1 == null);
+        } else {
+            if (s1 == null) {
+                return false;
+            } else {
+                return s0.equals(s1);
+            }
+        }
+    }
 }
