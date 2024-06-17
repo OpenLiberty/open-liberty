@@ -121,5 +121,5 @@ missing.zip.file.useraction=Check that the specified file exits and has permissi
 
 # # {0} A jar: URL.
 CWWKM0129W.missing.dir.entry=CWWKM0129W: The archive {0} does not have the expected directory entry path: {1}
-CWWKM0129W.missing.dir.entry.explanation=The archive used in the resource URL has entries contained within the directory, but the archive is missing an entry for the directory itself. The directory URL is not returned. This may cause some applications that scan for resources to fail to find some resources in the archive file.
-CWWKM0129W.missing.dir.entry.useraction=The archive file should be built to include all the directory entries.
+CWWKM0129W.missing.dir.entry.explanation=The archive that is used in the resource URL has entries that are contained within the directory, but the archive is missing an entry for the directory itself. The directory URL is not returned. This omission can cause some applications that scan for resources to fail to find some resources in the archive file.
+CWWKM0129W.missing.dir.entry.useraction=The archive file must be built to include all the directory entries.
