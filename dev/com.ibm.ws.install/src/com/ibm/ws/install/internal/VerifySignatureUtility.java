@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,9 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.Instant;
@@ -146,20 +144,15 @@ public class VerifySignatureUtility {
             URLConnection conn;
             try {
                 logger.fine("Downloading key... " + key.getValue());
-                ArtifactDownloaderUtils.checkValidProxy(envMap);
                 URL keyUrl = new URL(key.getValue());
-                Proxy proxy;
                 String proxyEncodedAuth = "";
-                if (envMap.get("https.proxyHost") != null) {
-                    proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
+                if (keyUrl.getProtocol().equals("https") && envMap.get("https.proxyHost") != null) {
                     proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("https.proxyUser"), (String) envMap.get("https.proxyPassword"));
                 } else if (envMap.get("http.proxyHost") != null) {
-                    proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("http.proxyHost"), Integer.parseInt((String) envMap.get("http.proxyPort"))));
                     proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("http.proxyUser"), (String) envMap.get("http.proxyPassword"));
-                } else {
-                    proxy = Proxy.NO_PROXY;
                 }
-                conn = keyUrl.openConnection(proxy);
+
+                conn = keyUrl.openConnection();
                 conn.setConnectTimeout(10000);
 
                 if (!proxyEncodedAuth.isEmpty()) {
