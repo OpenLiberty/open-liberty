@@ -37,9 +37,6 @@
   <variable name="repository.database.name" value="memory:testdb"/>
   <variable name="repository.database.user" value="dbuser1"/>
   <variable name="repository.database.password" value="dbpwd1"/>
-  <variable name="repository.database.tables.create" value="true"/>
-  <variable name="repository.database.tables.drop" value="false"/>
-  <variable name="repository.database.tables.prefix" value="TEST"/>
 
   <!-- For all other repositories: -->
   <dataSource id="DefaultDataSource" fat.modify="true">
