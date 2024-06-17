@@ -20,7 +20,7 @@ import jakarta.data.repository.Repository;
 /**
  *
  */
-@Repository
+@Repository(dataStore = "MyDataStore")
 public interface Students extends BasicRepository<Student, Integer> {
     Connection getConnection();
 }
