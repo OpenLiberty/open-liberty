@@ -65,4 +65,5 @@ javac.target: 11
 	org.seleniumhq.selenium:selenium-chrome-driver;version=4.8.3,\
 	org.seleniumhq.selenium:selenium-chromium-driver;version=4.8.3,\
 	org.seleniumhq.selenium:selenium-remote-driver;version=4.8.3,\
-	org.seleniumhq.selenium:selenium-support;version=4.8.3
+	org.seleniumhq.selenium:selenium-support;version=4.8.3,\
+	io.openliberty.faces.fat.selenium.util.internal;version=latest

@@ -28,11 +28,12 @@ import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.BrowserWebDriverContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.FATSuite;
 import com.ibm.ws.jsf22.fat.JSFUtils;
-import com.ibm.ws.jsf22.fat.selenium_util.CustomDriver;
-import com.ibm.ws.jsf22.fat.selenium_util.ExtendedWebDriver;
-import com.ibm.ws.jsf22.fat.selenium_util.WebPage;
+import io.openliberty.faces.fat.selenium.util.internal.CustomDriver;
+import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
+import io.openliberty.faces.fat.selenium.util.internal.WebPage;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -71,6 +72,7 @@ public class JSF22APARSeleniumTests {
         Testcontainers.exposeHostPorts(jsf22APARSeleniumServer.getHttpDefaultPort(), jsf22APARSeleniumServer.getHttpDefaultSecurePort());
 
         driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
+        Log.info(c, "Setup", driver.getCurrentUrl());
     }
 
     @AfterClass
@@ -79,6 +81,7 @@ public class JSF22APARSeleniumTests {
         if (jsf22APARSeleniumServer != null && jsf22APARSeleniumServer.isStarted()) {
             jsf22APARSeleniumServer.stopServer();
         }
+        Log.info(c, "Tear Down", driver.getCurrentUrl());
         driver.quit(); // closes all sessions and terminutes the webdriver
 
     }
@@ -89,6 +92,7 @@ public class JSF22APARSeleniumTests {
     @After
     public void clearCookies()
     {
+        Log.info(c, "Clear Cookies", driver.getCurrentUrl());
         driver.getRemoteWebDriver().manage().deleteAllCookies();
     }
 

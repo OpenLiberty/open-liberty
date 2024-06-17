@@ -13,7 +13,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 or Apache-2.0
  */
-package io.openliberty.org.apache.myfaces40.fat.selenium_util;
+package io.openliberty.faces.fat.selenium.util.internal;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;

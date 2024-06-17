@@ -13,7 +13,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 or Apache-2.0
  */
-package com.ibm.ws.jsf23.fat.selenium_util;
+package io.openliberty.faces.fat.selenium.util.internal;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.By;
@@ -290,9 +290,19 @@ public class WebPage {
         return webDriver.findElements(By.cssSelector("a[href]"));
     }
 
-        private String getInputValues() {
-        return webDriver.findElements(By.cssSelector("input, textarea, select")).stream()
+    private String getInputValues() {
+        int maxAttempts = 3;
+        int currentAttempt = 0;
+        
+        while(currentAttempt < maxAttempts) {
+            try {
+                return webDriver.findElements(By.cssSelector("input, textarea, select")).stream()
                 .map(webElement -> webElement.getAttribute("value")).reduce("", (str1, str2) -> str1 + " " + str2);
+            } catch(org.openqa.selenium.StaleElementReferenceException e) {
+                currentAttempt++;
+            }
+        }
+       throw new IllegalStateException("StaleElementReferenceException occurred more than 3 times!");
     }
 
 }

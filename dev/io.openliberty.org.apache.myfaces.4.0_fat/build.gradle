@@ -70,6 +70,12 @@ dependencies {
             strictly '9.4.9.v20180320'
         }
     }
+    // transitive = false makes it so that io.openliberty.faces.fat.selenium.util.internal dependencies are not imported
+    // it is required to keep from guava-android being imported
+    // guava-android is missing the toImmutableSortedSet method which is required so guava-android cannot be included
+    requiredLibs( project(':io.openliberty.faces.fat.selenium.util.internal') ) {
+        transitive = false
+    }
     requiredLibs 'org.brotli:dec:0.1.2'
     requiredLibs 'xalan:xalan:2.7.2'
     requiredLibs 'xml-apis:xml-apis:1.4.01'
