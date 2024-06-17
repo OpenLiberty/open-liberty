@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -21,7 +18,10 @@ fat.project: true
 
 tested.features:\
   mpTelemetry-2.0,\
-  mpFaultTolerance-4.1
+  mpFaultTolerance-4.1,\
+  restfulwsclient-4.0,\
+  restfulws-4.0,\
+  cdi-4.1
 
 fat.minimum.java.level: 11
 
