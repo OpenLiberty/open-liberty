@@ -3534,8 +3534,6 @@ public class DataTestServlet extends FATServlet {
             fail("Inserted an entity with an Id that already exists.");
         } catch (EntityExistsException x) {
             // expected
-        } catch (Exception x) {
-
         }
 
         // Ensure that the entity that already exists was not modified by insert
