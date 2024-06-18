@@ -9,5 +9,5 @@ singleton=true
 -bundles=\
   io.openliberty.jakarta.data.1.0; location:="dev/api/spec/,lib/"
 kind=beta
-edition=base
+edition=core
 WLP-Activation-Type: parallel
