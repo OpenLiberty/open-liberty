@@ -12,7 +12,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.internal.validation;
 
-import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
+import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult.ValidationEvent;
 
 /**
  *

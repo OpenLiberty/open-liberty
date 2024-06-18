@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,7 +22,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 /**
  * Tracks the names in use and the renames that occur during the model merge process
  * <p>
- * An instance of this class is held by the {@link MergeProcessor}, which creates an instance of {@link DocumentNameProcessor} for each document which is to be merged.
+ * An instance of this class is held by the {@link MergeProcessorImpl}, which creates an instance of {@link DocumentNameProcessor} for each document which is to be merged.
  */
 public class NameProcessor {
 

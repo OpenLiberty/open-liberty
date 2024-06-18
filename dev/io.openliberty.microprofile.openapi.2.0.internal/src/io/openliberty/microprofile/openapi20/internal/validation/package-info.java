@@ -14,7 +14,7 @@
 /**
  * Handles validation of OpenAPI documents.
  * <p>
- * {@link OASValidator#validate(OpenAPI)} is the entry point to validate an OpenAPI document.
+ * {@link OASValidatorImpl#validate(OpenAPI)} is the entry point to validate an OpenAPI document.
  */
 @Version(Constants.OSGI_VERSION)
 @TraceOptions(traceGroup = Constants.TRACE_GROUP, messageBundle = Constants.TRACE_VALIDATION)

@@ -14,7 +14,7 @@
 /**
  * Handles merging together multiple OpenAPI documents. This is used to allow us to serve OpenAPI documentation for more than one web module.
  * <p>
- * {@link MergeProcessor#mergeDocuments(java.util.List)} is the entry point for merging and that class contains most of the documentation and code for doing the merge.
+ * {@link MergeProcessorImpl#mergeDocuments(java.util.List)} is the entry point for merging and that class contains most of the documentation and code for doing the merge.
  */
 @Version(Constants.OSGI_VERSION)
 @TraceOptions(traceGroup = Constants.TRACE_GROUP, messageBundle = Constants.TRACE_OPENAPI)
