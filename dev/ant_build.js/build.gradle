@@ -57,7 +57,7 @@ dependencies {
     library "com.fasterxml.jackson.core:jackson-core:2.15.2"
     library "com.fasterxml.jackson.core:jackson-databind:2.15.2"
     library "com.google.javascript:closure-compiler:v20160315"
-    library "com.jcraft:jsch:0.1.54"
+    library "com.github.mwiede:jsch:0.2.18"
     library "com.sun.xml.bind:jaxb-impl:2.3.9"
     library "commons-beanutils:commons-beanutils:1.9.2"
     library "commons-collections:commons-collections:3.2.1"
