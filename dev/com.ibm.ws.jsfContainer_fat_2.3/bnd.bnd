@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -25,18 +22,24 @@ tested.features: \
   enterprisebeanslite-5.0, \
   facesContainer-3.0, \
   facesContainer-4.0, \
+  facesContainer-4.1, \
   cdi-3.0, \
   cdi-4.0, \
+  cdi-4.1, \
   xmlBinding-3.0, \
   xmlBinding-4.0, \
   concurrent-2.0, \
   concurrent-3.0, \
+  concurrent-3.1, \
   persistenceContainer-3.0, \
   persistenceContainer-3.1, \
+  persistenceContainer-3.2, \
   beanvalidation-3.0, \
+  beanvalidation-3.1, \
   beanvalidation-4.0, \
   faces-3.0, \
-  faces-4.0
+  faces-4.0, \
+  faces-4.1
 
 src: \
     fat/src,\
