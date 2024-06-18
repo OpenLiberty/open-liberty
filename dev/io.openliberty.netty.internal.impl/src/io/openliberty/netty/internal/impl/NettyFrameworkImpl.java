@@ -428,13 +428,15 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     
     @Override
     public void registerEndpointQuiesce(Channel chan, Callable quiesce) {
-    	if(chan != null && getActiveChannelsMap().containsKey(chan)) {
-    		ChannelHandler quiesceHandler = new QuiesceHandler(quiesce);
-        	chan.pipeline().addLast(quiesceHandler);
-    	}else {
-    		if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                Tr.warning(tc, "Attempted to add a Quiesce Task to a channel which is not an endpoint. Quiesce will not be added and will be ignored.");
-            }
+    	synchronized (activeChannelMap) {
+    		if(chan != null && getActiveChannelsMap().containsKey(chan)) {
+        		ChannelHandler quiesceHandler = new QuiesceHandler(quiesce);
+            	chan.pipeline().addLast(quiesceHandler);
+        	}else {
+        		if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                    Tr.warning(tc, "Attempted to add a Quiesce Task to a channel which is not an endpoint. Quiesce will not be added and will be ignored.");
+                }
+        	} 		
     	}
     }
 
@@ -493,16 +495,18 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     @Override
     public ChannelFuture stop(Channel channel) {
-    	ChannelGroup group = activeChannelMap.get(channel);
-    	if(group != null) {
-    		group.close().addListener(innerFuture -> {
-    			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "channel group" + group + " has closed...");
-                }
-    		});
-    		activeChannelMap.remove(channel);
+    	synchronized (activeChannelMap) {
+	    	ChannelGroup group = activeChannelMap.get(channel);
+	    	if(group != null) {
+	    		group.close().addListener(innerFuture -> {
+	    			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	                    Tr.debug(tc, "channel group" + group + " has closed...");
+	                }
+	    		});
+	    		activeChannelMap.remove(channel);
+	    	}
+	    	return channel.close();
     	}
-    	return channel.close();
     }
 
     @Override
@@ -510,7 +514,11 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     	if (timeout == -1) {
     		timeout = getDefaultChainQuiesceTimeout();
     	}
-    	ChannelFuture future = stop(channel);
+    	ChannelFuture future;
+    	
+    	synchronized(activeChannelMap) {
+    		future = stop(channel);
+    	}
     	if (future != null) {
     		future.awaitUninterruptibly(timeout, TimeUnit.MILLISECONDS);
     	}
