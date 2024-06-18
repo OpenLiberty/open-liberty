@@ -15,6 +15,7 @@ package com.ibm.websphere.ssl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -450,5 +451,62 @@ public class Constants {
                                                                                         PROTOCOL_TLSV1_2,
                                                                                         PROTOCOL_TLSV1_3
     });
+
+    public boolean resolveDisableHostnameVerification(String targetHostname, String disabledVerifyHostname, Properties sslProps) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "resolveDisableHostnameVerification:  ", targetHostname, disabledVerifyHostname, sslProps);
+        }
+        boolean result = false;
+        if (targetHostname != null && disabledVerifyHostname != null && sslProps != null) {
+            if ("false".equalsIgnoreCase(disabledVerifyHostname) && sslProps != null) {
+                String skipHostList = sslProps.getProperty("com.ibm.ws.ssl.skipHostnameVerificationForHosts");
+                if (isSkipHostnameVerificationForHosts(targetHostname, skipHostList))
+                    result = true;
+            }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "resolveDisableHostnameVerification:  " + result);
+        }
+        return result;
+    }
+
+    /**
+     * https://datatracker.ietf.org/doc/html/rfc2830#section-3.6
+     * The "*" wildcard character is allowed. If present, it applies only to the left-most name component.
+     *
+     * @param String host - target host
+     * @param String skipHostList - comma separated list of hostnames with hostname verification disabled, e.g. "hello.com, world.com"
+     */
+    public static boolean isSkipHostnameVerificationForHosts(String remoteHost, String skipHostList) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "isSkipHostnameVerificationForHosts", new Object[] { remoteHost, skipHostList });
+        boolean skipHostnameVerification = false;
+        if (remoteHost != null && skipHostList != null && !!!skipHostList.isEmpty()) {
+            List<String> skipHosts = Arrays.asList(skipHostList.split("\\s*,\\s*"));
+
+            for (String host : skipHosts) {
+                if (host.startsWith("*.")) {
+                    // escapes special characters for regex notation
+                    String regex = host.replaceAll("([\\[\\]().+?^${}|\\\\])", "\\\\$1");
+                    regex = "^" + regex.replace("*", ".+") + "$";
+                    if (remoteHost.matches(regex)) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Hostname verification is disabled as remote host [" + remoteHost + "] matches pattern [" + host + "]");
+                        skipHostnameVerification = true;
+                    }
+                } else {
+                    if (remoteHost.equalsIgnoreCase(host)) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Hostname verification is disabled as remote host [" + remoteHost + "] matches [" + host + "]");
+                        skipHostnameVerification = true;
+                    }
+                }
+            }
+        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "isSkipHostnameVerificationForHosts", new Object[] { skipHostnameVerification });
+        return skipHostnameVerification;
+    }
 
 }

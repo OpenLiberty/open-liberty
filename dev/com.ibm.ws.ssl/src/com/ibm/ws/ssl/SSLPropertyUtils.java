@@ -13,9 +13,7 @@ import java.net.InetAddress;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -215,7 +213,7 @@ public class SSLPropertyUtils {
                 Tr.debug(tc, "verifyHostname = " + verifyHostname);
             if (verifyHostname != null && verifyHostname.equalsIgnoreCase("true")) {
                 String skipHostList = properties.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS);
-                if (!isSkipHostnameVerificationForHosts(remoteHostname, skipHostList)) {
+                if (!Constants.isSkipHostnameVerificationForHosts(remoteHostname, skipHostList)) {
                     sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Hostname verification is enabled");
@@ -233,44 +231,5 @@ public class SSLPropertyUtils {
             Tr.exit(tc, "createSSLParameters sslParameters=" + sslParameters);
 
         return sslParameters;
-    }
-
-    /**
-     * https://datatracker.ietf.org/doc/html/rfc2830#section-3.6
-     * The "*" wildcard character is allowed. If present, it applies only to the left-most name component.
-     *
-     * @param String host - target host
-     * @param String skipHostList - comma separated list of hostnames with hostname verification disabled, e.g. "hello.com, world.com"
-     */
-    public static boolean isSkipHostnameVerificationForHosts(String remoteHost, String skipHostList) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "isSkipHostnameVerificationForHosts", new Object[] { remoteHost, skipHostList });
-        boolean skipHostnameVerification = false;
-        if (remoteHost != null && skipHostList != null && !!!skipHostList.isEmpty()) {
-            List<String> skipHosts = Arrays.asList(skipHostList.split("\\s*,\\s*"));
-
-            for (String template : skipHosts) {
-                if (template.startsWith("*.")) {
-                    // escapes special characters for regex notation
-                    String regex = template.replaceAll("([\\[\\]().+?^${}|\\\\])", "\\\\$1");
-                    regex = "^" + regex.replace("*", ".+") + "$";
-                    if (remoteHost.matches(regex)) {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Hostname verification is disabled as remote host [" + remoteHost + "] matches pattern [" + template + "]");
-                        skipHostnameVerification = true;
-                    }
-                } else {
-                    if (remoteHost.equalsIgnoreCase(template)) {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Hostname verification is disabled as remote host [" + remoteHost + "] matches [" + template + "]");
-                        skipHostnameVerification = true;
-                    }
-                }
-            }
-        }
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "isSkipHostnameVerificationForHosts", new Object[] { skipHostnameVerification });
-        return skipHostnameVerification;
     }
 }
