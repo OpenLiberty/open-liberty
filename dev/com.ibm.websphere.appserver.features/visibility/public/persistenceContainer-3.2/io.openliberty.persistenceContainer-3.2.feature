@@ -2,8 +2,8 @@
 symbolicName=io.openliberty.persistenceContainer-3.2
 visibility=public
 singleton=true
-kind=noship
-edition=full
+kind=beta
+edition=core
 Subsystem-Name: Jakarta Persistence 3.2 Container
 IBM-ShortName: persistenceContainer-3.2
 WLP-AlsoKnownAs: jpaContainer-3.2
@@ -19,8 +19,7 @@ IBM-App-ForceRestart: uninstall, \
   com.ibm.websphere.appserver.eeCompatible-11.0, \
   com.ibm.websphere.appserver.jndi-1.0, \
   io.openliberty.jakarta.persistence-3.2, \
-  com.ibm.websphere.appserver.transaction-2.0, \
-  io.openliberty.noShip-1.0
+  com.ibm.websphere.appserver.transaction-2.0
 -bundles=com.ibm.ws.jpa.container.v32, \
  com.ibm.ws.jpa.container.jakarta, \
  com.ibm.ws.jpa.container.thirdparty.jakarta
