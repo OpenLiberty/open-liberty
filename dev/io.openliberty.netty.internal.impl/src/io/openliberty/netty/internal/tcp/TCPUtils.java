@@ -127,14 +127,18 @@ public class TCPUtils {
 				// This should just log that the channel stopped
 				channel.closeFuture().addListener(innerFuture -> logChannelStopped(channel));
 
-				if(config.isInbound()) {
-					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-						Tr.debug(tc, "Adding new channel group for " + channel);
-					}
-					framework.getActiveChannelsMap().put(channel, new DefaultChannelGroup(GlobalEventExecutor.INSTANCE));
-				}else {
-					framework.getOutboundConnections().add(channel);
-				}
+                if(config.isInbound()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Adding new channel group for " + channel);
+                    }
+                    synchronized (framework.getActiveChannelsMap()) {
+                    	framework.getActiveChannelsMap().put(channel, new DefaultChannelGroup(GlobalEventExecutor.INSTANCE));
+                    }
+                }else {
+                	synchronized (framework.getOutboundConnections()) {
+                		framework.getOutboundConnections().add(channel);
+                	}
+                }
 
 				// set up a helpful log message
 				String hostLogString = newHost;
