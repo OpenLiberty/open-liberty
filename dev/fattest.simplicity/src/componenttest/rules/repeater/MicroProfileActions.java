@@ -82,7 +82,6 @@ public class MicroProfileActions {
                                                           "mpOpenTracing-1.1",
                                                           "mpRestClient-1.1",
                                                           "mpContextPropagation-1.0", //standalone
-                                                          "mpGraphQL-1.0", //standalone
                                                           "mpLRA-1.0", //standalone
                                                           "mpLRACoordinator-1.0", //standalone
                                                           "mpReactiveMessaging-1.0", //standalone
@@ -104,7 +103,6 @@ public class MicroProfileActions {
                                                           "mpOpenTracing-1.2",
                                                           "mpRestClient-1.1",
                                                           "mpContextPropagation-1.0", //standalone
-                                                          "mpGraphQL-1.0", //standalone
                                                           "mpLRA-1.0", //standalone
                                                           "mpLRACoordinator-1.0", //standalone
                                                           "mpReactiveMessaging-1.0", //standalone
@@ -126,7 +124,6 @@ public class MicroProfileActions {
                                                           "mpOpenTracing-1.3",
                                                           "mpRestClient-1.2",
                                                           "mpContextPropagation-1.0", //standalone
-                                                          "mpGraphQL-1.0", //standalone
                                                           "mpLRA-1.0", //standalone
                                                           "mpLRACoordinator-1.0", //standalone
                                                           "mpReactiveMessaging-1.0", //standalone
@@ -148,7 +145,6 @@ public class MicroProfileActions {
                                                           "mpOpenTracing-1.3",
                                                           "mpRestClient-1.3",
                                                           "mpContextPropagation-1.0", //standalone
-                                                          "mpGraphQL-1.0", //standalone
                                                           "mpLRA-1.0", //standalone
                                                           "mpLRACoordinator-1.0", //standalone
                                                           "mpReactiveMessaging-1.0", //standalone
@@ -170,7 +166,6 @@ public class MicroProfileActions {
                                                           "mpOpenTracing-1.3",
                                                           "mpRestClient-1.3",
                                                           "mpContextPropagation-1.0", //standalone
-                                                          "mpGraphQL-1.0", //standalone
                                                           "mpLRA-1.0", //standalone
                                                           "mpLRACoordinator-1.0", //standalone
                                                           "mpReactiveMessaging-1.0", //standalone
@@ -216,9 +211,7 @@ public class MicroProfileActions {
                                                           "mpContextPropagation-1.2", //standalone
                                                           "mpGraphQL-1.0", //standalone
                                                           "mpLRA-1.0", //standalone
-                                                          "mpLRACoordinator-1.0", //standalone
-                                                          "mpReactiveMessaging-1.0", //standalone
-                                                          "mpReactiveStreams-1.0" }; //standalone
+                                                          "mpLRACoordinator-1.0" }; //standalone
 
     private static final String[] MP41_FEATURES_ARRAY = { "microProfile-4.1",
                                                           "servlet-4.0", //ee8
@@ -238,9 +231,7 @@ public class MicroProfileActions {
                                                           "mpContextPropagation-1.2", //standalone
                                                           "mpGraphQL-1.0", //standalone
                                                           "mpLRA-1.0", //standalone
-                                                          "mpLRACoordinator-1.0", //standalone
-                                                          "mpReactiveMessaging-1.0", //standalone
-                                                          "mpReactiveStreams-1.0" }; //standalone
+                                                          "mpLRACoordinator-1.0" }; //standalone
 
     private static final String[] MP50_FEATURES_ARRAY = { "microProfile-5.0",
                                                           "servlet-5.0", //ee9
