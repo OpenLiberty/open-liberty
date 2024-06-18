@@ -27,6 +27,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.ws.AsyncHandler;
 import javax.xml.ws.Provider;
@@ -38,6 +40,7 @@ import javax.xml.ws.soap.SOAPFaultException;
 import org.apache.cxf.annotations.UseAsyncMethod;
 import org.apache.cxf.binding.soap.SoapFault;
 import org.apache.cxf.binding.soap.SoapMessage;
+import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.continuations.Continuation;
 import org.apache.cxf.continuations.ContinuationProvider;
 import org.apache.cxf.endpoint.Endpoint;
@@ -62,6 +65,8 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
     private static final String PARTIAL_RESPONSE_SENT_PROPERTY =
         "org.apache.cxf.ws.addressing.partial.response.sent";
 
+    private static final Logger LOG = LogUtils.getLogger(AbstractJAXWSMethodInvoker.class);    // Liberty Change issue #26529
+
     public AbstractJAXWSMethodInvoker(final Object bean) {
         super(new SingletonFactory(bean));
     }
@@ -70,6 +75,8 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
         super(factory);
     }
 
+    // Recursive method looking deep into exception to find the root cause 
+    // unless it's not an instance of SOAPFaultException
     protected SOAPFaultException findSoapFaultException(Throwable ex) {
         if (ex instanceof SOAPFaultException) {
             return (SOAPFaultException)ex;
@@ -83,31 +90,51 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
     @Override
     protected Method adjustMethodAndParams(Method mOriginal, Exchange ex, List<Object> params,
                                            Class<?> serviceObjectClass) {
-        // If class implements Provider<T> interface, use overriden method from service object class
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
+        // If class implements Provider<T> interface, use overridden method from service object class
         // to check UseAsyncMethod annotation
         Method mso = getProviderServiceObjectMethod(mOriginal, serviceObjectClass);
 
         UseAsyncMethod uam = mso.getAnnotation(UseAsyncMethod.class);
+        if (isFinestEnabled) {
+            LOG.finest("Annotation of UseAsyncMethod class from provider service object: " + uam); // Liberty Change issue #26529
+        }
         if (uam != null) {
             BindingOperationInfo bop = ex.getBindingOperationInfo();
             Method ret = bop.getProperty(ASYNC_METHOD, Method.class);
+            if (isFinestEnabled) {
+                LOG.finest("Method that is that is obtained BindingOperationInfo: " + ret); // Liberty Change issue #26529
+            }
             if (ret == null) {
                 Class<?>[] ptypes = new Class<?>[mso.getParameterTypes().length + 1];
                 System.arraycopy(mso.getParameterTypes(), 0, ptypes, 0, mso.getParameterTypes().length);
                 ptypes[mso.getParameterTypes().length] = AsyncHandler.class;
+                if (isFinestEnabled) {
+                    LOG.finest("Method parameters that is that is obtained BindingOperationInfo: " + ptypes); // Liberty Change issue #26529
+                }
                 try {
                     ret = mso.getDeclaringClass().getMethod(mso.getName() + "Async", ptypes);
                     bop.setProperty(ASYNC_METHOD, ret);
+                    if (isFinestEnabled) {
+                        LOG.finest("Asnc version of the method is set to BindingOperationInfo: " + ret); // Liberty Change issue #26529
+                    }
                 } catch (Throwable t) {
                     //ignore
+                    if (isFinestEnabled) {
+                        LOG.finest("Async version of the method is not found in the declaring class"); // Liberty Change issue #26529
+                    }
                 }
-            }
-            if (ret != null) {
+            } else {
                 JaxwsServerHandler h = ex.get(JaxwsServerHandler.class);
                 if (h != null) {
+
                     return ret;
                 }
+
                 ContinuationProvider cp = ex.getInMessage().get(ContinuationProvider.class);
+                if (isFinestEnabled) {
+                    LOG.finest("ContinuationProvider that is that is obtained from inbound message: " + cp); // Liberty Change issue #26529
+                }
                 // Check for decoupled endpoints: if partial response already was sent, ignore continuation
                 boolean decoupledEndpoints = MessageUtils
                     .getContextualBoolean(ex.getInMessage(), PARTIAL_RESPONSE_SENT_PROPERTY, false);
@@ -115,13 +142,22 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
                     JaxwsServerHandler handler = new JaxwsServerHandler(null);
                     ex.put(JaxwsServerHandler.class, handler);
                     params.add(handler);
+                    if (isFinestEnabled) {
+                        LOG.finest("New empty JaxwsServerHandler is created and added in exchange and invoke parameters."); // Liberty Change issue #26529
+                    }
                     return ret;
                 } else if (cp != null && cp.getContinuation() != null) {
                     final Continuation c = cp.getContinuation();
+                    if (isFinestEnabled) {
+                        LOG.finest("Continuation: " + c); // Liberty Change issue #26529
+                    }
                     c.suspend(0);
                     JaxwsServerHandler handler = new JaxwsServerHandler(c);
                     ex.put(JaxwsServerHandler.class, handler);
                     params.add(handler);
+                    if (isFinestEnabled) {
+                        LOG.finest("Suspend value of continuation that that is obtained from ContinuationProvider is set to 0. New empty JaxwsServerHandler is created and added in exchange and invoke parameters."); // Liberty Change issue #26529
+                    }
                     return ret;
                 }
             }
@@ -130,7 +166,13 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
     }
 
     private Method getProviderServiceObjectMethod(Method m, Class<?> serviceObjectClass) {
+        
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
+        
         if (!Provider.class.isAssignableFrom(serviceObjectClass)) {
+            if (isFinestEnabled) {
+                LOG.finest("Method is returned: " + m + " since provider class is NOT assignable to service object"); // Liberty Change issue #26529
+            }
             return m;
         }
         Class<?> currentSvcClass = serviceObjectClass;
@@ -144,8 +186,14 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
             // Check superclass until top
             currentSvcClass = currentSvcClass.getSuperclass();
         }
+        if (isFinestEnabled) {
+            LOG.finest("First service superclass after passing generic classes: " + currentSvcClass); // Liberty Change issue #26529
+        }
         // Should never happens
         if (genericType == null) {
+            if (isFinestEnabled) {
+                LOG.finest("Return method: " + m + ". No non-generic class found."); // Liberty Change issue #26529
+            }
             return m;
         }
         try {
@@ -214,39 +262,49 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
                             final Object serviceObject, Method m,
                             List<Object> params) {
         JaxwsServerHandler h = exchange.get(JaxwsServerHandler.class);
+        
         if (h != null && h.isDone()) {
-            BindingOperationInfo bop = exchange.getBindingOperationInfo();
-            if (bop.isUnwrapped()) {
-                exchange.put(BindingOperationInfo.class, bop.getWrappedOperation());
-            }
-            try {
-                return new MessageContentsList(h.getObject());
-            } catch (ExecutionException ex) {
-                exchange.getInMessage().put(FaultMode.class,
-                                            FaultMode.CHECKED_APPLICATION_FAULT);
-                throw createFault(ex.getCause(), m, params, true);
-            } catch (Exception ex) {
-                throw createFault(ex.getCause(), m, params, false);
-            }
+            return getMessageContentsList(exchange, h, m, params);
         }
+
         Object o = super.invoke(exchange, serviceObject, m, params);
+
         if (h != null && !h.hasContinuation()) {
             h.waitForDone();
-            BindingOperationInfo bop = exchange.getBindingOperationInfo();
-            if (bop.isUnwrapped()) {
-                exchange.put(BindingOperationInfo.class, bop.getWrappedOperation());
-            }
-            try {
-                return new MessageContentsList(h.getObject());
-            } catch (ExecutionException ex) {
-                exchange.getInMessage().put(FaultMode.class,
-                                            FaultMode.CHECKED_APPLICATION_FAULT);
-                throw createFault(ex.getCause(), m, params, true);
-            } catch (Exception ex) {
-                throw createFault(ex.getCause(), m, params, false);
-            }
+            return getMessageContentsList(exchange, h, m, params);
         }
         return o;
+    }
+
+    //  Liberty Change issue #26529: Collected repeated code in one place to increase readability
+    private Object getMessageContentsList(Exchange exchange, JaxwsServerHandler h, Method m, List<Object> params) {
+        
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
+        BindingOperationInfo bop = exchange.getBindingOperationInfo();
+        if (bop.isUnwrapped()) {
+            exchange.put(BindingOperationInfo.class, bop.getWrappedOperation());
+            if (isFinestEnabled) {
+                LOG.finest("BindingOperationInfo which was unwrapped, is replaced with wrapped BindingOperationInfo in exchange: " + bop.getWrappedOperation()); // Liberty Change issue #26529
+            }
+        }
+        try {
+            if (isFinestEnabled) {
+                LOG.finest("Response field of JaxwsServerHandler returned as MessageContentList(Derived from ArrayList): " + h.getObject()); // Liberty Change issue #26529
+            }
+            return new MessageContentsList(h.getObject());
+        } catch (ExecutionException ex) {
+            exchange.getInMessage().put(FaultMode.class,
+                                        FaultMode.CHECKED_APPLICATION_FAULT);
+            if (isFinestEnabled) {
+                LOG.finest("Fault will be related with ExecutionException: " + ex.getStackTrace()); // Liberty Change issue #26529
+            }
+            throw createFault(ex.getCause(), m, params, true);
+        } catch (Exception ex) {
+            if (isFinestEnabled) {
+                LOG.finest("Fault will be created with Exception: " + ex.getStackTrace()); // Liberty Change issue #26529
+            }
+            throw createFault(ex.getCause(), m, params, false);
+        }
     }
 
     @Override
@@ -268,6 +326,7 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
     }
 
     protected Map<String, Object> removeHandlerProperties(WrappedMessageContext ctx) {
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
         Map<String, Scope> scopes = CastUtils.cast((Map<?, ?>)ctx.get(WrappedMessageContext.SCOPES));
         Map<String, Object> handlerScopedStuff = new HashMap<>();
         if (scopes != null) {
@@ -278,6 +337,9 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
             }
             for (String key : handlerScopedStuff.keySet()) {
                 ctx.remove(key);
+                if (isFinestEnabled) {
+                    LOG.finest("Removed handler property from WrappedMessageContext with handler scope; key: " + key + " ,value: " + handlerScopedStuff.get(key)); // Liberty Change issue #26529
+                }
             }
         }
         return handlerScopedStuff;
@@ -285,13 +347,22 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
 
     protected void addHandlerProperties(WrappedMessageContext ctx,
                                         Map<String, Object> handlerScopedStuff) {
+        
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
+        
         for (Map.Entry<String, Object> key : handlerScopedStuff.entrySet()) {
             ctx.put(key.getKey(), key.getValue(), Scope.HANDLER);
+            if (isFinestEnabled) {
+                LOG.finest("Added handler property to WrappedMessageContext with handler scope; key: " + key.getKey() + " ,value: " + key.getValue()); // Liberty Change issue #26529
+            }
         }
     }
 
     private Message createResponseMessage(Exchange exchange) {
         if (exchange == null) {
+            if (LOG.isLoggable(Level.FINEST)) {
+                LOG.finest("Exchange is null, can not create response message!"); // Liberty Change issue #26529
+            }
             return null;
         }
         Message m = exchange.getOutMessage();
@@ -301,11 +372,16 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
             m.setExchange(exchange);
             m = ep.getBinding().createMessage(m);
             exchange.setOutMessage(m);
+            if (LOG.isLoggable(Level.FINEST)) {
+                LOG.finest("Out message can not be found in exchange and it's not one way. New our message is created and added to exchange: " + m); // Liberty Change issue #26529
+            }
         }
         return m;
     }
 
     protected void updateWebServiceContext(Exchange exchange, MessageContext ctx) {
+        
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
         // Guard against wrong type associated with header list.
         // Need to copy header only if the message is going out.
         if (ctx.containsKey(Header.HEADER_LIST)
@@ -313,10 +389,17 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
             List<?> list = (List<?>) ctx.get(Header.HEADER_LIST);
             if (list != null && !list.isEmpty()) {
                 SoapMessage sm = (SoapMessage) createResponseMessage(exchange);
+                if (isFinestEnabled) {
+                    LOG.finest("MessageContext contains headers. Response SOAP message is been created. "); // Liberty Change issue #26529
+                }
                 if (sm != null) {
                     Iterator<?> iter = list.iterator();
                     while (iter.hasNext()) {
                         sm.getHeaders().add((Header) iter.next());
+                        if (isFinestEnabled) {
+                            LOG.finest("Header found in MessageContext: " + sm.getHeaders().get(sm.getHeaders().size() - 1) + " is added to response SOAP message"); // Liberty Change issue #26529
+                        }
+
                     }
                 }
             }
@@ -329,6 +412,9 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
                 if (heads.containsKey("Content-Type")) {
                     List<String> ct = heads.get("Content-Type");
                     exchange.getOutMessage().put(Message.CONTENT_TYPE, ct.get(0));
+                    if (isFinestEnabled) {
+                        LOG.finest("Content type value that is that is obtained from protocol headers in out message is set in content type in out message: " + ct.get(0)); // Liberty Change issue #26529
+                    }
                     heads.remove("Content-Type");
                 }
             }
@@ -336,11 +422,16 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
     }
 
     protected void updateHeader(Exchange exchange, MessageContext ctx) {
+        
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
         if (ctx.containsKey(Header.HEADER_LIST)
                 && ctx.get(Header.HEADER_LIST) instanceof List<?>) {
             List<?> list = (List<?>) ctx.get(Header.HEADER_LIST);
             if (list != null && !list.isEmpty()) {
                 SoapMessage sm = (SoapMessage) createResponseMessage(exchange);
+                if (isFinestEnabled) {
+                    LOG.finest("MessageContext contains headers. Response SOAP message is been created. "); // Liberty Change issue #26529
+                }
                 if (sm != null) {
                     Iterator<?> iter = list.iterator();
                     while (iter.hasNext()) {
@@ -354,6 +445,9 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
                                               + "wss/oasis-wss-wssecurity-secext-1.1.xsd")) {
                             //don't copy over security header, out interceptor chain will take care of it.
                             sm.getHeaders().add(header);
+                            if (isFinestEnabled) {
+                                LOG.finest("Header is copied over reponse SOAP message from message context:" + header); // Liberty Change issue #26529
+                            }
                         }
                     }
                 }

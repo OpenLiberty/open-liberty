@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.activation.DataSource;
 import javax.xml.namespace.QName;
@@ -42,7 +44,6 @@ import javax.xml.validation.Schema;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
 import com.ibm.websphere.ras.annotation.Sensitive;
 
 import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
@@ -55,6 +56,7 @@ import org.apache.cxf.binding.soap.saaj.SAAJOutInterceptor;
 import org.apache.cxf.binding.soap.saaj.SAAJOutInterceptor.SAAJOutEndingInterceptor;
 import org.apache.cxf.binding.soap.saaj.SAAJStreamWriter;
 import org.apache.cxf.binding.soap.saaj.SAAJUtils;
+import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.common.util.PropertyUtils;
 import org.apache.cxf.helpers.DOMUtils;
 import org.apache.cxf.helpers.IOUtils;
@@ -85,6 +87,7 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
     Class<?> type;
     QName bindingName;
 
+    private static final Logger LOG = LogUtils.getLogger(MessageModeOutInterceptor.class); // Liberty Change issue #26529
     public MessageModeOutInterceptor(SAAJOutInterceptor saajOut, QName bname) {
         super(Phase.PREPARE_SEND);
         this.saajOut = saajOut;
@@ -97,8 +100,13 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
         this.bindingName = bname;
     }
     public void handleMessage(@Sensitive Message message) throws Fault { // Liberty Change
+        
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);  // Liberty Change issue #26529
         BindingOperationInfo bop = message.getExchange().getBindingOperationInfo();
         if (bop != null && !bindingName.equals(bop.getBinding().getName())) {
+            if(isFinestEnabled)  {
+                LOG.finest("BindingOperationInfo is null or binding qname is different than the one provided in constructor. Returning.");   // Liberty Change issue #26529
+            } 
             return;
         }
         if (saajOut != null) {
@@ -107,6 +115,9 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
             //datasource stuff, must check if multi-source
             MessageContentsList list = (MessageContentsList)message.getContent(List.class);
             DataSource ds = (DataSource)list.get(0);
+            if(isFinestEnabled)  {
+                LOG.finest("First element of messageContentsList that is obtained from message that will be cast to DataSource: " + list.get(0));   // Liberty Change issue #26529
+            } 
             String ct = ds.getContentType();
             if (ct.toLowerCase().contains("multipart/related")) {
                 Message msg = new MessageImpl();
@@ -152,6 +163,9 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
                     in.close();
                     out.flush();
                     out.close();
+                    if(isFinestEnabled)  {
+                        LOG.finest("The InputStream that is obtained from DataSource is copied over to OutputStream that is obtained from message content.");   // Liberty Change issue #26529
+                    }
                 } catch (IOException e) {
                     throw new Fault(e);
                 }
@@ -167,23 +181,35 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
             //let's convert and check for a fault
             MessageContentsList list = (MessageContentsList)message.getContent(List.class);
             Source ds = (Source)list.get(0);
+            if(isFinestEnabled)  {
+                LOG.finest("Source that is obtained from message content: " + ds);   // Liberty Change issue #26529z
+            }
             if (!(ds instanceof DOMSource)) {
                 try {
                     ds = new DOMSource(StaxUtils.read(ds));
+                    if(isFinestEnabled)  {
+                        LOG.finest("Source is an instance of DOMSource. A new DOMSource will be constructed with it: " + ds);   // Liberty Change issue #26529z
+                    }
                 } catch (XMLStreamException e) {
                     throw new Fault(e);
                 }
                 list.set(0,  ds);
+                if(isFinestEnabled)  {
+                    LOG.finest("MessageContentsList(list): " + list);   // Liberty Change issue #26529z
+                }
                 validatePossibleFault(message, bop, ((DOMSource)ds).getNode());
             }
         }
-
     }
 
 
     private void validatePossibleFault(@Sensitive Message message, BindingOperationInfo bop, Node ds) { // Liberty Change Start
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);  // Liberty Change issue #26529
         Element el = DOMUtils.getFirstElement(ds);
         if (!"Fault".equals(el.getLocalName())) {
+            if(isFinestEnabled)  {
+                LOG.finest("Node already contains a fault. No extra validation required. Returning. " + ds);   // Liberty Change issue #26529z
+            }
             return;
         }
         message.put(Message.RESPONSE_CODE, 500);
@@ -192,10 +218,16 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
         while (el != null && !"detail".equals(el.getLocalName())) {
             el = DOMUtils.getNextElement(el);
         }
+        if(isFinestEnabled)  {
+            LOG.finest("Detail sub section of the fault" + el);   // Liberty Change issue #26529z
+        }
         if (el != null) {
             Schema schema = EndpointReferenceUtils.getSchema(message.getExchange().getService()
                                                              .getServiceInfos().get(0),
                                                          message.getExchange().getBus());
+            if(isFinestEnabled)  {
+                LOG.finest("Schema that is obtained from EndpointReferenceUtils" + schema);   // Liberty Change issue #26529z
+            }
             try {
                 validateFaultDetail(el, schema, bop);
             } catch (Exception e) {
@@ -240,16 +272,28 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
 
 
     private void doSoap(@Sensitive Message message) { // Liberty Change
+        
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);  // Liberty Change issue #26529
+        
         MessageContentsList list = (MessageContentsList)message.getContent(List.class);
         if (list == null || list.isEmpty()) {
+            if(isFinestEnabled)  {
+                LOG.finest("MessageContentsList is null or empty. Returning.");   // Liberty Change issue #26529z
+            }
             return;
         }
         Object o = list.get(0);
+        if(isFinestEnabled)  {
+            LOG.finest("First element of MessageContentsList that is obtained from message: " + o);   // Liberty Change issue #26529z
+        }
         if (o instanceof SOAPMessage) {
             SOAPMessage soapMessage = (SOAPMessage)o;
 
             if (soapMessage.countAttachments() > 0) {
                 message.put("write.attachments", Boolean.TRUE);
+                if(isFinestEnabled)  {
+                    LOG.finest("write.attachments is set t true in message.");   // Liberty Change issue #26529z
+                }
             }
             try {
                 if (message instanceof org.apache.cxf.binding.soap.SoapMessage) {
@@ -261,18 +305,31 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
                     if (Soap12.SOAP_NAMESPACE.equals(namespace) && !namespace.equals(cxfNamespace)) {
                         cxfSoapMessage.setVersion(Soap12.getInstance());
                         cxfSoapMessage.put(Message.CONTENT_TYPE, cxfSoapMessage.getVersion().getContentType());
+                        if(isFinestEnabled)  {
+                            LOG.finest("Message version is set to Soap12 version: " + cxfSoapMessage.getVersion());   // Liberty Change issue #26529
+                            LOG.finest("Message content type is set to cxfSoapMessage version's content type: " + cxfSoapMessage.get(Message.CONTENT_TYPE));   // Liberty Change issue #26529
+                        }
                     }
                 }
             } catch (SOAPException e) {
                 //ignore
+                if(isFinestEnabled)  {
+                    LOG.finest("Ignored SOAPException(message): " + e.getMessage());   // Liberty Change issue #26529z
+                }
             }
             try {
                 Object enc = soapMessage.getProperty(SOAPMessage.CHARACTER_SET_ENCODING);
                 if (enc instanceof String) {
                     message.put(Message.ENCODING, enc);
+                    if(isFinestEnabled)  {
+                        LOG.finest("Message encoding is set to : " + enc);   // Liberty Change issue #26529z
+                    }
                 }
             } catch (SOAPException e) {
                 //ignore
+                if(isFinestEnabled)  {
+                    LOG.finest("Ignored SOAPException(message): " + e.getMessage());   // Liberty Change issue #26529z
+                }
             }
             try {
                 Object xmlDec = soapMessage.getProperty(SOAPMessage.WRITE_XML_DECLARATION);
@@ -282,6 +339,9 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
                 }
             } catch (SOAPException e) {
                 //ignore
+                if(isFinestEnabled)  {
+                    LOG.finest("Ignored SOAPException(message): " + e.getMessage());   // Liberty Change issue #26529z
+                }
             }
         }
         message.getInterceptorChain().add(internal);
@@ -294,6 +354,9 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
         }
 
         public void handleMessage(@Sensitive SoapMessage message) throws Fault { // Liberty Change
+            
+            boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);  // Liberty Change issue #26529
+            
             MessageContentsList list = (MessageContentsList)message.getContent(List.class);
             Object o = list.remove(0);
             SOAPMessage soapMessage = null; // Liberty Change
@@ -302,6 +365,9 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
                 soapMessage = (SOAPMessage)o;
                 if (soapMessage.countAttachments() > 0) {
                     message.put("write.attachments", Boolean.TRUE);
+                    if(isFinestEnabled)  {
+                        LOG.finest("write.attachments is set to true in message.");   // Liberty Change issue #26529
+                    }
                 }
             } else {
                 try {
@@ -310,6 +376,9 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
                     SOAPPart part = soapMessage.getSOAPPart();
                     if (o instanceof Source) {
                         StaxUtils.copy((Source)o, new SAAJStreamWriter(part));
+                        if(isFinestEnabled)  {
+                            LOG.finest("Source that is obtained from message content is copied over SAAJStreamWriter instance with the parameter SOAPPart: " + o);   // Liberty Change issue #26529z
+                        }
                     }
                 } catch (SOAPException | XMLStreamException e) {
                     throw new SoapFault("Error creating SOAPMessage", e,
@@ -331,6 +400,9 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
                     nd = DOMUtils.getDomElement(nd);
                     frag.appendChild(nd);
                     nd = SAAJUtils.getBody(soapMessage).getFirstChild();
+                }
+                if(isFinestEnabled)  {
+                    LOG.finest("Nodes are removed from body and added to newly instantiated DocumentFragment: " + frag);   // Liberty Change issue #26529z
                 }
 
                 message.setContent(SOAPMessage.class, soapMessage);
@@ -360,6 +432,9 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
                 }
 
                 list.set(index, frag);
+                if(isFinestEnabled)  {
+                    LOG.finest("DocumentFragment is set in MessageContentsList: " + frag + ",  with index: " + index);   // Liberty Change issue #26529z
+                }
 
 
                 //No need to buffer this as we're already a DOM,
@@ -368,6 +443,9 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
                     .getContextualProperty(AbstractOutDatabindingInterceptor.OUT_BUFFERING);
                 if (buffer == null) {
                     message.put(AbstractOutDatabindingInterceptor.OUT_BUFFERING, Boolean.FALSE);
+                    if(isFinestEnabled)  {
+                        LOG.finest("org.apache.cxf.output.buffering is set to false.");   // Liberty Change issue #26529z
+                    }
                 }
 
             } catch (Exception ex) {
@@ -376,6 +454,9 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
             if (bop != null && bop.isUnwrapped()) {
                 bop = bop.getWrappedOperation();
                 message.getExchange().put(BindingOperationInfo.class, bop);
+                if(isFinestEnabled)  {
+                    LOG.finest("BindingOperationInfo is switched to wrapped version in exchange.");   // Liberty Change issue #26529z
+                }
             }
 
             // Add a final interceptor to write the message

@@ -24,7 +24,6 @@ import java.net.URI;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -133,13 +132,25 @@ public class ServiceImpl extends ServiceDelegate {
     }
 
     final void initialize(Bus b, URL url, WebServiceFeature ... f) {
+        
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
         if (b == null) {
             b = BusFactory.getThreadDefaultBus(true);
+            if (isFinestEnabled) {
+                LOG.finest("Bus is not provided as initialization parameter. It's obtained from default bus on the thread: " + b); // Liberty Change issue #26529
+            }
+        } else {
+            if (isFinestEnabled) {
+                LOG.finest("Bus is provided as initialization parameter: " + b); // Liberty Change issue #26529
+            }
         }
         serviceFeatures = f;
         bus = b;
         handlerResolver = new HandlerResolverImpl(bus, serviceName, clazz);
 
+        if(isFinestEnabled)  {
+            LOG.finest("URL passed as parameter: " + url);   // Liberty Change issue #26529
+        }
         if (null == url && null != bus) {
             ServiceContractResolverRegistry registry =
                 bus.getExtension(ServiceContractResolverRegistry.class);
@@ -149,7 +160,9 @@ public class ServiceImpl extends ServiceDelegate {
                     try {
                         url = uri.toURL();
                     } catch (MalformedURLException e) {
-                        LOG.log(Level.FINE, "resolve qname failed", serviceName);
+                        if(LOG.isLoggable(Level.FINE))  {
+                            LOG.fine("resolve qname failed: " + serviceName); // Liberty Change issue #26529
+                        }
                         throw new WebServiceException(e);
                     }
                 }
@@ -168,6 +181,8 @@ public class ServiceImpl extends ServiceDelegate {
     }
 
     private void initializePorts() {
+        
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
         try {
             Definition def = bus.getExtension(WSDLManager.class).getDefinition(wsdlURL);
             javax.wsdl.Service serv = def.getService(serviceName);
@@ -177,6 +192,9 @@ public class ServiceImpl extends ServiceDelegate {
             }
 
             Map<String, Port> wsdlports = CastUtils.cast(serv.getPorts());
+            if(isFinestEnabled)  {
+                LOG.finest("WSDL ports size: " + wsdlports.size());
+            }
             for (Port port : wsdlports.values()) {
                 QName name = new QName(serviceName.getNamespaceURI(), port.getName());
 
@@ -184,6 +202,7 @@ public class ServiceImpl extends ServiceDelegate {
                 String bindingID = null;
                 List<? extends ExtensibilityElement> extensions
                     = CastUtils.cast(port.getBinding().getExtensibilityElements());
+                
                 if (!extensions.isEmpty()) {
                     ExtensibilityElement e = extensions.get(0);
                     if (e instanceof SoapBinding) {
@@ -193,6 +212,13 @@ public class ServiceImpl extends ServiceDelegate {
                     } else if (e instanceof javax.wsdl.extensions.soap.SOAPBinding) {
                         bindingID = SOAPBinding.SOAP11HTTP_BINDING;
                     }
+                } else {
+                    if(isFinestEnabled)  {
+                        LOG.finest("Extensibility element list that is obtained from port binding is empty. Binding id won't be set.");  // Liberty Change issue #26529
+                    }
+                }
+                if(isFinestEnabled)  {
+                    LOG.finest("Binding id: " + bindingID);  // Liberty Change issue #26529
                 }
                 extensions = CastUtils.cast(port.getExtensibilityElements());
                 if (!extensions.isEmpty()) {
@@ -208,6 +234,13 @@ public class ServiceImpl extends ServiceDelegate {
                     } else if (e instanceof HTTPAddress) {
                         address = ((HTTPAddress)e).getLocationURI();
                     }
+                } else {
+                    if (isFinestEnabled) {
+                        LOG.finest("Extensibility element list that is obtained from port is empty. Address won't be set.");  // Liberty Change issue #26529
+                    }
+                }
+                if(isFinestEnabled)  {
+                    LOG.finest("Address: " + address);  // Liberty Change issue #26529
                 }
                 addPort(name, bindingID, address);
             }
@@ -247,19 +280,33 @@ public class ServiceImpl extends ServiceDelegate {
 
     private JaxWsClientEndpointImpl getJaxwsEndpoint(QName portName, AbstractServiceFactoryBean sf,
                                       WebServiceFeature...features) {
+        
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
         Service service = sf.getService();
         EndpointInfo ei;
         if (portName == null) {
             ei = service.getServiceInfos().get(0).getEndpoints().iterator().next();
+            if (isFinestEnabled) {
+                LOG.finest("Jaxws endpoint that is obtained from service > ServiceInfo(0) since portname is null: " + ei);  // Liberty Change issue #26529
+            }
         } else {
             ei = service.getEndpointInfo(portName);
+            if (isFinestEnabled) {
+                LOG.finest("Jaxws endpoint that is obtained from service using portname: " + ei);  // Liberty Change issue #26529
+            }
             if (ei == null) {
                 PortInfoImpl portInfo = getPortInfo(portName);
+                if (isFinestEnabled) {
+                    LOG.finest("PortInfoImpl that is obtained from ServiceInpl.portInfos with key portname: " + portInfo);  // Liberty Change issue #26529
+                }
                 if (null != portInfo) {
                     try {
                         ei = createEndpointInfo(sf, portName, portInfo);
                     } catch (BusException e) {
                         throw new WebServiceException(e);
+                    }
+                    if (isFinestEnabled) {
+                        LOG.finest("Endpoint was null, it's created instead of obtained: " + ei);  // Liberty Change issue #26529
                     }
                 }
             }
@@ -276,6 +323,9 @@ public class ServiceImpl extends ServiceDelegate {
             && portInfo.getAddress() != null
             && !portInfo.getAddress().equals(ei.getAddress())) {
             ei.setAddress(portInfo.getAddress());
+            if (isFinestEnabled) {
+                LOG.finest("Address: " + portInfo.getAddress() + " is set into EndpointInfo: " + ei);  // Liberty Change issue #26529
+            }
         }
 
         try {
@@ -287,6 +337,8 @@ public class ServiceImpl extends ServiceDelegate {
     }
 
     private AbstractServiceFactoryBean createDispatchService(DataBinding db) {
+        
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
         AbstractServiceFactoryBean serviceFactory;
 
         final Service dispatchService;
@@ -296,6 +348,9 @@ public class ServiceImpl extends ServiceDelegate {
             dispatchService = sf.create();
             dispatchService.setDataBinding(db);
             serviceFactory = sf;
+            if (isFinestEnabled) {
+                LOG.finest("ServiceFactory is created using WSDL URL with WSDLServiceFactory: " + sf);  // Liberty Change issue #26529
+            }
         } else {
             ReflectionServiceFactoryBean sf = new JaxWsServiceFactoryBean();
             sf.setBus(bus);
@@ -305,6 +360,9 @@ public class ServiceImpl extends ServiceDelegate {
             sf.setDataBinding(db);
             dispatchService = sf.create();
             serviceFactory = sf;
+            if (isFinestEnabled) {
+                LOG.finest("ServiceFactory is created trough ReflectionServiceFactoryBean: " + sf);  // Liberty Change issue #26529
+            }
         }
         configureObject(dispatchService);
         for (ServiceInfo si : dispatchService.getServiceInfos()) {
@@ -371,10 +429,16 @@ public class ServiceImpl extends ServiceDelegate {
 
     public <T> T getPort(EndpointReferenceType endpointReference, Class<T> type,
                          WebServiceFeature... features) {
+        
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
         endpointReference = EndpointReferenceUtils.resolve(endpointReference, bus);
         QName serviceQName = EndpointReferenceUtils.getServiceName(endpointReference, bus);
         String portName = EndpointReferenceUtils.getPortName(endpointReference);
-
+        if (isFinestEnabled) {
+            LOG.finest("Service QName(serviceQName): " + serviceQName);  // Liberty Change issue #26529
+            LOG.finest("Port Name(portName): " + portName);  // Liberty Change issue #26529
+        }
+        
         QName portQName = null;
         if (portName != null && serviceQName != null) {
             String ns = serviceQName.getNamespaceURI();
@@ -429,9 +493,13 @@ public class ServiceImpl extends ServiceDelegate {
 
     protected <T> T createPort(QName portName, EndpointReferenceType epr, Class<T> serviceEndpointInterface,
                                WebServiceFeature... features) {
-        LOG.log(Level.FINE, "creating port for portName", portName);
-        LOG.log(Level.FINE, "endpoint reference:", epr);
-        LOG.log(Level.FINE, "endpoint interface:", serviceEndpointInterface);
+        
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
+        if (LOG.isLoggable(Level.FINE)) {   // Liberty Change issue #26529
+            LOG.fine("creating port for portName" + portName);
+            LOG.fine("endpoint reference:" + epr);
+            LOG.fine("endpoint interface:" + serviceEndpointInterface);
+        }
 
         final JaxWsProxyFactoryBean proxyFac = new JaxWsProxyFactoryBean(); // Liberty Change
         JaxWsClientFactoryBean clientFac = (JaxWsClientFactoryBean) proxyFac.getClientFactoryBean();
@@ -450,10 +518,16 @@ public class ServiceImpl extends ServiceDelegate {
             && epr.getAddress() != null
             && epr.getAddress().getValue() != null) {
             clientFac.setAddress(epr.getAddress().getValue());
+            if (isFinestEnabled) {   // Liberty Change issue #26529
+                LOG.finest("Address is set to JaxWsClientFactoryBean with the address that is obtained from EndpointReferenceType: " + clientFac.getAddress());
+            }
         }
 
         if (wsdlURL != null) {
             proxyFac.setWsdlURL(wsdlURL);
+            if (isFinestEnabled) {   // Liberty Change issue #26529
+                LOG.finest("WSDL URL(wsdlURL) is set to JaxWsProxyFactoryBean with the value that is obtained from ServivceImpl: " + wsdlURL);
+            }
         }
 
         configureObject(proxyFac);
@@ -463,10 +537,14 @@ public class ServiceImpl extends ServiceDelegate {
             QName portTypeName = getPortTypeName(serviceEndpointInterface);
 
             Service service = serviceFactory.getService();
+            
             if (service == null) {
                 serviceFactory.setServiceClass(serviceEndpointInterface);
                 serviceFactory.setBus(getBus());
                 service = serviceFactory.create();
+                if (isFinestEnabled) {   // Liberty Change issue #26529
+                    LOG.finest("Service object was null. It's created from JaxWsServiceFactoryBean: " + service);
+                }
             }
 
             EndpointInfo ei = ServiceModelUtil.findBestEndpointInfo(portTypeName, service.getServiceInfos());
@@ -486,6 +564,10 @@ public class ServiceImpl extends ServiceDelegate {
         if (portInfo != null) {
             clientFac.setBindingId(portInfo.getBindingID());
             clientFac.setAddress(portInfo.getAddress());
+            if (isFinestEnabled) {   // Liberty Change issue #26529
+                LOG.finest("Binding id is set into JaxWsClientFactoryBean(clientFac): " + clientFac.getBindingId());
+                LOG.finest("Address is  set into JaxWsClientFactoryBean(clientFac): " + clientFac.getBindingId());
+            }
         }
         //configureObject(portName.toString() + ".jaxws-client.proxyFactory", proxyFac);
         if (clazz != ServiceImpl.class) {
@@ -518,9 +600,14 @@ public class ServiceImpl extends ServiceDelegate {
 
         hc.addAll(handlerResolver.getHandlerChain(portInfos.get(portName)));
         jaxwsEndpoint.getJaxwsBinding().setHandlerChain(hc);
-        LOG.log(Level.FINE, "created proxy", obj);
+        if(LOG.isLoggable(Level.FINE))  {   // Liberty Change issue #26529
+            LOG.log(Level.FINE, "created proxy", obj);
+        }
         if (portInfo == null) {
             addPort(portName, clientFac.getBindingId(), clientFac.getAddress());
+            if (isFinestEnabled) {   // Liberty Change issue #26529
+                LOG.finest("PortInfoImpl was null. A port is added with name: " + portName + ", binding id: " + clientFac.getBindingId() + ", address: " + clientFac.getAddress());
+            }
         }
         return serviceEndpointInterface.cast(obj);
     }
@@ -528,6 +615,8 @@ public class ServiceImpl extends ServiceDelegate {
     private EndpointInfo createEndpointInfo(AbstractServiceFactoryBean serviceFactory,
                                             QName portName,
                                             PortInfoImpl portInfo) throws BusException {
+        
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
         String address = portInfo.getAddress();
         String bindingID = BindingID.getBindingID(portInfo.getBindingID());
 
@@ -540,12 +629,20 @@ public class ServiceImpl extends ServiceDelegate {
             //ignore
         }
         DestinationFactory df = dfm.getDestinationFactoryForUri(address);
-
+        if (isFinestEnabled) {   // Liberty Change issue #26529
+            LOG.finest("DestinationFactory that is obtained from DestinationFactoryManager: " + df + ", with address: " + address);
+        }
         final String transportId;
         if (df != null && df.getTransportIds() != null && !df.getTransportIds().isEmpty()) {
             transportId = df.getTransportIds().get(0);
+            if (isFinestEnabled) {   // Liberty Change issue #26529
+                LOG.finest("transportId that is obtained from DestinationFactoryManager: " + transportId);
+            }
         } else {
             transportId = bindingID;
+            if (isFinestEnabled) {   // Liberty Change issue #26529
+                LOG.finest("bindingID that is assigned to transportId : " + transportId);
+            }
         }
 
         Object config = null;
@@ -554,6 +651,9 @@ public class ServiceImpl extends ServiceDelegate {
         }
         BindingInfo bindingInfo = bus.getExtension(BindingFactoryManager.class).getBindingFactory(bindingID)
                 .createBindingInfo(serviceFactory.getService(), bindingID, config);
+        if (isFinestEnabled) {   // Liberty Change issue #26529
+            LOG.finest("BindingInfo that is created from BindingFactory: " + bindingInfo + ", with service: " + serviceFactory.getService() + ", BindingID: " + bindingID + " and config: " + config);
+        }
 
 
         Service service = serviceFactory.getService();
@@ -563,7 +663,10 @@ public class ServiceImpl extends ServiceDelegate {
         ei.setName(portName);
         ei.setAddress(address);
         ei.setBinding(bindingInfo);
-
+        if (isFinestEnabled) {   // Liberty Change issue #26529
+            LOG.finest("Newly instantiated EndpointInfo : " + ei + ", with service info: " + service.getServiceInfos().get(0) + " and with transport id: " + transportId);
+        }
+        
         service.getServiceInfos().get(0).addEndpoint(ei);
         return ei;
     }
@@ -609,6 +712,10 @@ public class ServiceImpl extends ServiceDelegate {
                                               seiClass.getCanonicalName());
                     throw new WebServiceException(msg.toString());
                 }
+            } else {    // Liberty Change issue #26529
+                if (LOG.isLoggable(Level.FINEST)) {   // Liberty Change issue #26529
+                    LOG.finest("Fully qualified name of WebService Endpoint Interface(epi) is empty.");
+                }
             }
         }
 
@@ -621,6 +728,9 @@ public class ServiceImpl extends ServiceDelegate {
         String tns = webService.targetNamespace();
         if (tns.isEmpty()) {
             tns = PackageUtils.getNamespace(PackageUtils.getPackageName(seiClass));
+            if (LOG.isLoggable(Level.FINEST)) {   // Liberty Change issue #26529
+                LOG.finest("Target namespace is not defined in WebService annotation. It will be obtained from SEI class package name.");
+            }
         }
 
         return new QName(tns, name);
@@ -643,6 +753,8 @@ public class ServiceImpl extends ServiceDelegate {
                                           JAXBContext context,
                                           Mode mode,
                                           WebServiceFeature... features) {
+        
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
         //using this instead of JaxWsClientFactoryBean so that handlers are configured
         JaxWsProxyFactoryBean clientFac = new JaxWsProxyFactoryBean();
 
@@ -685,6 +797,9 @@ public class ServiceImpl extends ServiceDelegate {
         Client client = new ClientImpl(clientBus, endpoint, clientFac.getConduitSelector());
         for (Feature af : endpoint.getFeatures()) {
             af.initialize(client, clientBus);
+            if (isFinestEnabled) {   // Liberty Change issue #26529
+                LOG.finest("Initialized feature that is obtained from JaxWsEndpointImpl(endpoint): " + af);
+            }
         }
         //CXF-2822
         initIntercepors(client, clientFac);

@@ -24,9 +24,12 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
@@ -95,6 +98,7 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
         if (client == null) {
             throw new IllegalStateException("The client has been closed.");
         }
@@ -146,6 +150,9 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
         } finally {
             if (addressChanged(address)) {
                 setupEndpointAddressContext(getClient().getEndpoint());
+                if(isFinestEnabled)  {
+                    LOG.finest("Endpoint address is changed. Context is updated with the new address: " + getRequestContext().get(BindingProvider.ENDPOINT_ADDRESS_PROPERTY));   // Liberty Change issue #26529
+                } 
             }
         }
 
@@ -160,10 +167,16 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
         }
         return adjustObject(result);
     }
+    
     Exception mapException(Method method, BindingOperationInfo boi, Exception ex) {
+        
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
         if (method != null) {
             for (Class<?> excls : method.getExceptionTypes()) {
                 if (excls.isInstance(ex)) {
+                    if(isFinestEnabled)  {
+                        LOG.finest("Exception: " + excls + " is instance of " + ex + ". Returning.");   // Liberty Change issue #26529
+                    } 
                     return ex;
                 }
             }
@@ -171,10 +184,16 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
             for (BindingFaultInfo fi : boi.getFaults()) {
                 Class<?> c = fi.getFaultInfo().getProperty(Class.class.getName(), Class.class);
                 if (c != null && c.isInstance(ex)) {
+                    if(isFinestEnabled)  {
+                        LOG.finest("Exception class: " + c + " is instance of " + ex + ". Returning.");   // Liberty Change issue #26529
+                    } 
                     return ex;
                 }
             }
             if (ex instanceof IOException) {
+                if(isFinestEnabled)  {
+                    LOG.finest("Exception: " + ex + " is instance of IOException. Returning.");   // Liberty Change issue #26529
+                } 
                 return ex;
             }
         }
@@ -185,6 +204,9 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
         if (getBinding() instanceof HTTPBinding) {
             HTTPException exception = new HTTPException(HttpURLConnection.HTTP_INTERNAL_ERROR);
             exception.initCause(ex);
+            if(isFinestEnabled)  {
+                LOG.finest("Binding is instance of HTTPBinding. HTTPException is initialized with exception cause: " + ex);   // Liberty Change issue #26529
+            } 
             return exception;
         } else if (getBinding() instanceof SOAPBinding) {
             try {
@@ -198,6 +220,9 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
                 } else {
                     exception.initCause(ex);
                 }
+                if(isFinestEnabled)  {
+                    LOG.finest("Binding is instance of SOAPBinding. SOAPBinding is initialized with exception cause: " + ex);   // Liberty Change issue #26529
+                } 
                 return exception;
             } catch (SOAPException e) {
                 return new WebServiceException(ex);
@@ -213,17 +238,28 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
     }
 
     static SOAPFault createSoapFault(SOAPBinding binding, Exception ex) throws SOAPException {
+        
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
         SOAPFault soapFault;
         try {
             soapFault = binding.getSOAPFactory().createFault();
+            if(isFinestEnabled)  {
+                LOG.finest("SOAPFault is created trough SOAPBinding SOAPFactory: " + soapFault);   // Liberty Change issue #26529
+            } 
         } catch (Throwable t) {
             //probably an old version of saaj or something that is not allowing createFault
             //method to work.  Try the saaj 1.2 method of doing this.
             try {
                 soapFault = binding.getMessageFactory().createMessage()
                     .getSOAPPart().getEnvelope().getBody().addFault();
+                if(isFinestEnabled)  {
+                    LOG.finest("SOAPFault is created trough SOAPBinding > message > SOAP part > Envelope > body: " + soapFault);   // Liberty Change issue #26529
+                } 
             } catch (Throwable t2) {
                 //still didn't work, we'll just throw what we have
+                if(isFinestEnabled)  {
+                    LOG.finest("SOAPFault is failed to be created. Returning.");   // Liberty Change issue #26529
+                } 
                 return null;
             }
         }
@@ -235,15 +271,26 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
                 //change to 1.1
                 try {
                     soapFault = SAAJFactoryResolver.createSOAPFactory(null).createFault();
+                    if(isFinestEnabled)  {
+                        LOG.finest("SoapFault created once more with SAAJFactoryResolver: " + soapFault);   // Liberty Change issue #26529
+                    } 
                 } catch (Throwable t) {
                     //ignore
                 }
             }
             final boolean isSoap11 = SOAPConstants.URI_NS_SOAP_1_1_ENVELOPE.equals(soapFault.getNamespaceURI());
-
+            if(isFinestEnabled)  {
+                LOG.finest("Is this SOAP 11: " + isSoap11);   // Liberty Change issue #26529
+            } 
             if (StringUtils.isEmpty(((SoapFault)ex).getLang())) {
+                if(isFinestEnabled)  {
+                    LOG.finest("Any specific language is not specified in SOAPFault. Fault String will be set with default.");   // Liberty Change issue #26529
+                } 
                 soapFault.setFaultString(((SoapFault)ex).getReason());
             } else {
+                if(isFinestEnabled)  {
+                    LOG.finest("A language is specified in SOAPFault. Fault String willl be set with language: " + ((SoapFault)ex).getLang());   // Liberty Change issue #26529
+                } 
                 soapFault.setFaultString(((SoapFault)ex).getReason(), stringToLocale(((SoapFault)ex).getLang()));
             }
 
@@ -254,9 +301,14 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
             }
             if (((SoapFault)ex).getSubCodes() != null && !isSoap11) {
                 // set the subcode only if it is supported (e.g, 1.2)
+                List<QName> lsc = new ArrayList<QName>();     // Liberty Change issue #26529
                 for (QName fsc : ((SoapFault)ex).getSubCodes()) {
                     soapFault.appendFaultSubcode(fsc);
+                    lsc.add(fsc);       // Liberty Change issue #26529
                 }
+                if(isFinestEnabled)  {
+                    LOG.finest("FaultSubcodes that are added to SoapFault: " + lsc);   // Liberty Change issue #26529
+                } 
             }
 
             if (((SoapFault)ex).hasDetails()) {
@@ -264,16 +316,24 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
                                                                   true);
                 nd = nd.getFirstChild();
                 soapFault.addDetail();
+                List<Node> ln = new ArrayList<Node>();   // Liberty Change issue #26529
                 while (nd != null) {
                     Node next = nd.getNextSibling();
                     soapFault.getDetail().appendChild(nd);
+                    ln.add(nd);   // Liberty Change issue #26529
                     nd = next;
                 }
+                if(isFinestEnabled)  {
+                    LOG.finest("Nodes that are added to Soap fault details: " + ln);   // Liberty Change issue #26529
+                } 
             }
         } else {
             String msg = ex.getMessage();
             if (msg != null) {
                 soapFault.setFaultString(msg);
+                if(isFinestEnabled)  {
+                    LOG.finest("Exception is not an instance of SoapFault. Fault string is set into SoapFault using Message: " + msg);   // Liberty Change issue #26529
+                } 
             }
         }
         return soapFault;
@@ -300,6 +360,7 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
     @SuppressWarnings("unchecked")
     private Object invokeAsync(Method method, final BindingOperationInfo oi, Object[] params) throws Exception {
 
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
         client.setExecutor(getClient().getEndpoint().getExecutor());
 
         AsyncHandler<Object> handler;
@@ -308,8 +369,14 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
             Object[] newParams = new Object[params.length - 1];
             System.arraycopy(params, 0, newParams, 0, newParams.length);
             params = newParams;
+            if(isFinestEnabled)  {
+                LOG.finest("AsyncHandler: " + handler + " and parameters: " + params + " provided in parameters will be used for invocation.");   // Liberty Change issue #26529
+            } 
         } else {
             handler = null;
+            if(isFinestEnabled)  {
+                LOG.finest("AsyncHandler is not provided in parameters. It's set to null.");   // Liberty Change issue #26529
+            } 
         }
         ClientCallback callback = new JaxwsClientCallback<Object>(handler, this) {
             @Override

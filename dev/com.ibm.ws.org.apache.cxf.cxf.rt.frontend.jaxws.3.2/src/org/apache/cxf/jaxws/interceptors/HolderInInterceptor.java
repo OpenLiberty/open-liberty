@@ -20,9 +20,12 @@
 package org.apache.cxf.jaxws.interceptors;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.ws.Holder;
 
+import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Exchange;
@@ -38,26 +41,41 @@ public class HolderInInterceptor extends AbstractPhaseInterceptor<Message> {
 
     public static final String CLIENT_HOLDERS = "client.holders";
 
+    private static final Logger LOG = LogUtils.getLogger(HolderInInterceptor.class); // Liberty Change issue #26529
     public HolderInInterceptor() {
         super(Phase.PRE_INVOKE);
     }
 
     public void handleMessage(Message message) throws Fault {
+        
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
         MessageContentsList inObjects = MessageContentsList.getContentsList(message);
 
+        if(isFinestEnabled)  {
+            LOG.finest("MessageContentsList that is obtained from message: " + inObjects);   // Liberty Change issue #26529
+        }        
         Exchange exchange = message.getExchange();
         BindingOperationInfo bop = exchange.getBindingOperationInfo();
         if (bop == null) {
+            if(isFinestEnabled)  {
+                LOG.finest("BindingOperationInfo is null. handleMessage won't be executing.");   // Liberty Change issue #26529
+            } 
             return;
         }
         OperationInfo op = bop.getOperationInfo();
         if (op == null || !op.hasOutput() || op.getOutput().size() == 0) {
+            if(isFinestEnabled)  {
+                LOG.finest("OperationInfo is null or empty. handleMessage won't be executing.");   // Liberty Change issue #26529
+            } 
             return;
         }
 
         List<MessagePartInfo> parts = op.getOutput().getMessageParts();
 
-        boolean client = Boolean.TRUE.equals(message.get(Message.REQUESTOR_ROLE));
+        boolean client = isRequestor(message);
+        if(isFinestEnabled)  {
+            LOG.finest("Is requestor: " + client);   // Liberty Change issue #26529
+        } 
         if (client) {
             List<Holder<?>> outHolders = CastUtils.cast((List<?>)message.getExchange()
                 .getOutMessage().get(CLIENT_HOLDERS));
@@ -68,6 +86,9 @@ public class HolderInInterceptor extends AbstractPhaseInterceptor<Message> {
                     if (holder != null) {
                         holder.value = inObjects.get(part);
                         inObjects.put(part, holder);
+                        if(isFinestEnabled)  {
+                            LOG.finest("Holder added to message content list for client side: " + holder);   // Liberty Change issue #26529
+                        } 
                     }
                 }
             }
@@ -81,12 +102,21 @@ public class HolderInInterceptor extends AbstractPhaseInterceptor<Message> {
                         //the holders for the outgoing parts (CXF-4031)
                         inObjects = new MessageContentsList();
                         message.setContent(List.class, inObjects);
+                        if(isFinestEnabled)  {
+                            LOG.finest("Null message contents list is replaced with an empty one for server side.");   // Liberty Change issue #26529
+                        }
                     }
                     if (idx >= inObjects.size()) {
                         inObjects.set(idx, new Holder<Object>());
+                        if(isFinestEnabled)  {
+                            LOG.finest("Message contents list is enlarged to match message parts size for server side with new empty Holder<Object>().");   // Liberty Change issue #26529
+                        }
                     } else {
                         Object o = inObjects.get(idx);
                         inObjects.set(idx, new Holder<Object>(o));
+                        if(isFinestEnabled)  {
+                            LOG.finest("The object in message contents list is wrapped in a holder:" + inObjects.get(idx));   // Liberty Change issue #26529
+                        }
                     }
                 }
             }

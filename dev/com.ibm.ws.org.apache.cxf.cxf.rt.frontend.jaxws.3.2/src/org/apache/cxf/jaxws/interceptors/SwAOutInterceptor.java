@@ -80,8 +80,8 @@ import org.apache.cxf.staxutils.StaxUtils;
 import com.ibm.websphere.ras.annotation.Sensitive;
 
 public class SwAOutInterceptor extends AbstractSoapInterceptor {
-    private static final Logger LOG = LogUtils.getL7dLogger(SwAOutInterceptor.class);
-
+ // Liberty Change issue #26529
+    private static final Logger LOG = LogUtils.getL7dLogger(SwAOutInterceptor.class);   // Liberty Change issue #26529
     private static final Map<String, Method> SWA_REF_METHOD
         = new ConcurrentHashMap<>(4, 0.75f, 2);
     private static final Set<String> SWA_REF_NO_METHOD
@@ -93,8 +93,9 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
     static {
 
         String skipSwaRef = System.getProperty("cxf.multipart.attachment");
-        LOG.log(Level.FINE, "cxf.multipart.attachment property is set to " + skipSwaRef);
-
+        if(LOG.isLoggable(Level.FINE))  {   // Liberty Change issue #26529
+            LOG.fine("cxf.multipart.attachment property value: " + skipSwaRef);
+        }
         if (skipSwaRef != null 
             && skipSwaRef.trim().length() > 0
             && skipSwaRef.trim().equalsIgnoreCase("false")) {
@@ -111,11 +112,19 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
         super(Phase.PRE_LOGICAL);
         addAfter(HolderOutInterceptor.class.getName());
         addBefore(WrapperClassOutInterceptor.class.getName());
+        if(LOG.isLoggable(Level.FINE))  {   // Liberty Change issue #26529
+            LOG.fine("WrapperClassOutInterceptor is added before and HolderOutInterceptor is added after SwAOutInterceptor.");
+        }
     }
 
     private boolean callSWARefMethod(final JAXBContext ctx) {
+        
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
         String cname = ctx.getClass().getName();
         Method m = SWA_REF_METHOD.get(cname);
+        if(isFinestEnabled)  {
+            LOG.finest("Method that is obtained from SWA_REF_METHOD with JAXBContext class name: " + cname + "  is : " + m);   // Liberty Change issue #26529
+        } 
         if (m == null && !SWA_REF_NO_METHOD.contains(cname)) {
             try {
                 m = AccessController.doPrivileged(new PrivilegedExceptionAction<Method>() {
@@ -128,13 +137,25 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
                         return hasSwaRefMethod;
                     }
                 });
+                if(isFinestEnabled)  {
+                    LOG.finest("Method that is obtained from SWA_REF_METHOD with JAXBContext class name: " + cname + " using privileged access: " + m);   // Liberty Change issue #26529
+                } 
                 if (m == null) {
                     SWA_REF_NO_METHOD.add(cname);
+                    if(isFinestEnabled)  {
+                        LOG.finest("JAXBContext class name: " + cname + " is added to SWA_REF_NO_METHOD.");   // Liberty Change issue #26529
+                    } 
                 } else {
                     SWA_REF_METHOD.put(cname, m);
+                    if(isFinestEnabled)  {
+                        LOG.finest("Method : " + m + " is added to SWA_REF_METHOD with JAXBContext class name: " + cname);   // Liberty Change issue #26529
+                    } 
                 }
             } catch (Exception e) {
                 //ignore
+                if(isFinestEnabled)  {
+                    LOG.finest("Exception stacktrace while calling SWARefMethod: " + e.getStackTrace());   // Liberty Change issue #26529
+                } 
             }
         }
         try {
@@ -143,25 +164,39 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
             }
         } catch (Exception e) {
             //ignore
+            if(isFinestEnabled)  {
+                LOG.finest("Exception invoking method with JAXBContext: " + e.getStackTrace() );   // Liberty Change issue #26529
+            } 
         }
         return false;
     }
 
     public void handleMessage(@Sensitive SoapMessage message) throws Fault { // Liberty Change
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
+        boolean isFineEnabled = LOG.isLoggable(Level.FINE);   // Liberty Change issue #26529
         Exchange ex = message.getExchange();
         BindingOperationInfo bop = ex.getBindingOperationInfo();
         if (bop == null) {
+            if(isFinestEnabled)  {
+                LOG.finest("BindingOperationInfo is null. Returning.");   // Liberty Change issue #26529
+            } 
             return;
         }
 
         if (bop.isUnwrapped()) {
             bop = bop.getWrappedOperation();
+            if(isFinestEnabled)  {
+                LOG.finest("BindingOperationInfo is switched to wrapped version.");   // Liberty Change issue #26529
+            }
         }
 
         boolean client = isRequestor(message);
         BindingMessageInfo bmi = client ? bop.getInput() : bop.getOutput();
 
         if (bmi == null) {
+            if(isFinestEnabled)  {
+                LOG.finest("BindingMessageInfo is null. Returning.");   // Liberty Change issue #26529
+            }
             return;
         }
 		// Liberty Change Start - Migration of behaviour from CXF 2.6.2
@@ -169,7 +204,9 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
         Message exOutMsg = ex.getOutMessage();
         if (exOutMsg != null) {
             newAttachment = MessageUtils.isTrue(exOutMsg.getContextualProperty("cxf.add.attachments"));
-            LOG.log(Level.FINE, "Request context attachment property: cxf.add.attachments is set to: " + newAttachment);
+            if(isFineEnabled)  {
+                LOG.fine("Request context attachment property: cxf.add.attachments is set to: " + newAttachment);
+            }
         } // Liberty change end
         
         SoapBodyInfo sbi = bmi.getExtensor(SoapBodyInfo.class);
@@ -182,11 +219,15 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
             	// Liberty Change Start - Migration of behaviour from CXF 2.6.2
                 Boolean includeAttachs = false;
                 Message exInpMsg = ex.getInMessage();
-                LOG.log(Level.FINE, "Exchange Input message: " + exInpMsg);
+                if(isFineEnabled)  {    // Liberty Change issue #26529
+                    LOG.log(Level.FINE, "Exchange Input message: " + exInpMsg);
+                }
                 if (exInpMsg != null) {
                     includeAttachs = MessageUtils.isTrue(exInpMsg.getContextualProperty("cxf.add.attachments"));
                 }   
-                LOG.log(Level.FINE, "Add attachments message property: cxf.add.attachments value is " + includeAttachs);
+                if(isFineEnabled)  {    // Liberty Change issue #26529
+                    LOG.log(Level.FINE, "Add attachments message property: cxf.add.attachments value is " + includeAttachs);
+                }
                 if (!skipHasSwaRef || includeAttachs || newAttachment) {
                     setupAttachmentOutput(message);
                 } else {
@@ -198,6 +239,7 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
         processAttachments(message, sbi);
     }
     protected void processAttachments(@Sensitive SoapMessage message, SoapBodyInfo sbi) { // Liberty Change
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
         Collection<Attachment> atts = setupAttachmentOutput(message);
         List<Object> outObjects = CastUtils.cast(message.getContent(List.class));
 
@@ -209,20 +251,31 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
                 .append('=')
                 .append(UUID.randomUUID())
                 .append("@apache.org").toString();
-
+            if(isFinestEnabled)  {
+                LOG.finest("Id created for MessagePartInfo: " + id);   // Liberty Change issue #26529
+            } 
             // this assumes things are in order...
             int idx = mpi.getIndex();
             Object o = outObjects.get(idx);
 
             if (o == null) {
+                if(isFinestEnabled)  {
+                    LOG.finest("MessagePartInfo with index: " + idx + " doesn't exist in message content.This MessagePartInfo will be skipped.");   // Liberty Change issue #26529
+                } 
                 continue;
             }
             outObjects.set(idx, null);
             DataHandler dh;
 
+            if(isFinestEnabled)  {
+                LOG.finest("Object that is obtained from message content with index: (" + idx + ") is : " + o);   // Liberty Change issue #26529
+            } 
             // This code could probably be refactored out somewhere...
             if (o instanceof Source) {
                 dh = new DataHandler(createDataSource((Source)o, ct));
+                if(isFinestEnabled)  {
+                    LOG.finest("DataHandler constructed by DataSource creation with Source parameter: " + dh);   // Liberty Change issue #26529
+                } 
             } else if (o instanceof Image) {
                 final Image img = (Image)o;
                 final String contentType = ct;
@@ -251,7 +304,9 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
                         }
                     }
                 };
-                
+                if(isFinestEnabled)  {
+                    LOG.finest("DataHandler constructed by Stream creation: " + dh);   // Liberty Change issue #26529
+                } 
             } else if (o instanceof DataHandler) {
                 dh = (DataHandler) o;
                 ct = dh.getContentType();
@@ -264,16 +319,25 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
                 } catch (IOException e) {
                     //ignore, use same dh
                 }
+                if(isFinestEnabled)  {
+                    LOG.finest("DataHandler constructed by DataSource creation with DataHandler content as Source parameter: " + dh);   // Liberty Change issue #26529
+                } 
             } else if (o instanceof byte[]) {
                 if (ct == null) {
                     ct = "application/octet-stream";
                 }
                 dh = new DataHandler(new ByteDataSource((byte[])o, ct));
+                if(isFinestEnabled)  {
+                    LOG.finest("DataHandler constructed from ByteDataSource by byte[] object: " + dh);   // Liberty Change issue #26529
+                } 
             } else if (o instanceof String) {
                 if (ct == null) {
                     ct = "text/plain; charset=\'UTF-8\'";
                 }
                 dh = new DataHandler(new ByteDataSource(((String)o).getBytes(StandardCharsets.UTF_8), ct));
+                if(isFinestEnabled)  {
+                    LOG.finest("DataHandler constructed with ByteDataSource by String object: " + dh);   // Liberty Change issue #26529
+                } 
             } else {
                 throw new Fault(new org.apache.cxf.common.i18n.Message("ATTACHMENT_NOT_SUPPORTED",
                                                                        LOG, o.getClass()));
@@ -284,6 +348,9 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
             att.setHeader("Content-Type", ct);
             att.setHeader("Content-ID", "<" + id + ">");
             atts.add(att);
+            if(isFinestEnabled)  {
+                LOG.finest("AttachmentImpl is added to attachment collection " + att + ", with DataHandler: " + dh + ", Content-Type: " + ct + ", Content-ID:" + id);   // Liberty Change issue #26529
+            } 
         }
     }
 
@@ -329,6 +396,9 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
 
     private BufferedImage convertToBufferedImage(Image image) throws IOException {
         if (image instanceof BufferedImage) {
+            if(LOG.isLoggable(Level.FINEST))  {
+                LOG.finest("Image is already a BufferedImage. Returning the cached image.");   // Liberty Change issue #26529
+            } 
             return (BufferedImage)image;
         }
 
@@ -362,12 +432,17 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
 
 
         Collection<Attachment> atts = message.getAttachments();
+        if(LOG.isLoggable(Level.FINEST))  {      // Liberty Change issue #26529
+            LOG.log(Level.FINE, "setupAttachmentOutput: getAttachments returned  " + atts);     // Liberty Change issue #26529
+        }
         
-        LOG.log(Level.FINE, "setupAttachmentOutput: getAttachments returned  " + atts); // Liberty change
         
         if (atts == null) {
             atts = new ArrayList<>();
             message.setAttachments(atts);
+            if(LOG.isLoggable(Level.FINEST))  { 
+                LOG.finest("There is no attachment in the message. An empty list is created and set in the message.");   // Liberty Change issue #26529
+            } 
         }
         return atts;
     }
@@ -375,19 +450,29 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
 	// Liberty Change Start - Migration of behaviour from CXF 2.6.2
     private Collection<Attachment> skipAttachmentOutput(SoapMessage message) {
 
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
+        
         Collection<Attachment> atts = message.getAttachments();
         
         // Please do not modify log message below, it's been used in PropertySettingTest
-        LOG.log(Level.FINE, "skipAttachmentOutput: getAttachments returned  " + atts);
+        if(LOG.isLoggable(Level.FINE))  {       // Liberty Change issue #26529
+            LOG.fine("skipAttachmentOutput: getAttachments returned  " + atts);
+        }
         
         if (atts != null) {
             // We have attachments, so add the interceptor
             message.getInterceptorChain().add(attachOut);
             // We should probably come up with another property for this
             message.put(AttachmentOutInterceptor.WRITE_ATTACHMENTS, Boolean.TRUE);
+            if(isFinestEnabled)  {
+                LOG.finest("AttachmentOutInterceptor is set into interceptor chain. write.attachments is set to true in message.");   // Liberty Change issue #26529
+            } 
         } else {    
             atts = new ArrayList<Attachment>();
             message.setAttachments(atts);
+            if(isFinestEnabled)  {
+                LOG.finest("A newly created empty list is set as attachements.");   // Liberty Change issue #26529
+            } 
         }               
         
         return atts;
