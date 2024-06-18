@@ -2,7 +2,7 @@
 symbolicName=io.openliberty.beanValidation-3.1
 visibility=public
 singleton=true
-IBM-ShortName: beanValidation-3.1
+IBM-ShortName: validation-3.1
 Subsystem-Name: Jakarta Validation 3.1
 IBM-App-ForceRestart: install, uninstall
 IBM-API-Package: \
