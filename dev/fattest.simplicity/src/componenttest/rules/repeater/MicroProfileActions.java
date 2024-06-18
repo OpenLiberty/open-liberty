@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package componenttest.rules.repeater;
 
@@ -70,12 +67,12 @@ public class MicroProfileActions {
                                                           "mpRestClient-1.1" };
 
     private static final String[] MP20_FEATURES_ARRAY = { "microProfile-2.0",
-                                                          "servlet-4.0",
-                                                          "cdi-2.0",
-                                                          "jaxrs-2.1",
-                                                          "jaxrsClient-2.1",
-                                                          "jsonb-1.0",
-                                                          "jsonp-1.1",
+                                                          "servlet-4.0", //ee8
+                                                          "cdi-2.0", //ee8
+                                                          "jaxrs-2.1", //ee8
+                                                          "jaxrsClient-2.1", //ee8
+                                                          "jsonb-1.0", //ee8
+                                                          "jsonp-1.1", //ee8
                                                           "mpConfig-1.3",
                                                           "mpFaultTolerance-1.1",
                                                           "mpHealth-1.0",
@@ -83,15 +80,20 @@ public class MicroProfileActions {
                                                           "mpMetrics-1.1",
                                                           "mpOpenAPI-1.0",
                                                           "mpOpenTracing-1.1",
-                                                          "mpRestClient-1.1" };
+                                                          "mpRestClient-1.1",
+                                                          "mpContextPropagation-1.0", //standalone
+                                                          "mpLRA-1.0", //standalone
+                                                          "mpLRACoordinator-1.0", //standalone
+                                                          "mpReactiveMessaging-1.0", //standalone
+                                                          "mpReactiveStreams-1.0" }; //standalone
 
     private static final String[] MP21_FEATURES_ARRAY = { "microProfile-2.1",
-                                                          "servlet-4.0",
-                                                          "cdi-2.0",
-                                                          "jaxrs-2.1",
-                                                          "jaxrsClient-2.1",
-                                                          "jsonb-1.0",
-                                                          "jsonp-1.1",
+                                                          "servlet-4.0", //ee8
+                                                          "cdi-2.0", //ee8
+                                                          "jaxrs-2.1", //ee8
+                                                          "jaxrsClient-2.1", //ee8
+                                                          "jsonb-1.0", //ee8
+                                                          "jsonp-1.1", //ee8
                                                           "mpConfig-1.3",
                                                           "mpFaultTolerance-1.1",
                                                           "mpHealth-1.0",
@@ -99,15 +101,20 @@ public class MicroProfileActions {
                                                           "mpMetrics-1.1",
                                                           "mpOpenAPI-1.0",
                                                           "mpOpenTracing-1.2",
-                                                          "mpRestClient-1.1" };
+                                                          "mpRestClient-1.1",
+                                                          "mpContextPropagation-1.0", //standalone
+                                                          "mpLRA-1.0", //standalone
+                                                          "mpLRACoordinator-1.0", //standalone
+                                                          "mpReactiveMessaging-1.0", //standalone
+                                                          "mpReactiveStreams-1.0" }; //standalone
 
     private static final String[] MP22_FEATURES_ARRAY = { "microProfile-2.2",
-                                                          "servlet-4.0",
-                                                          "cdi-2.0",
-                                                          "jaxrs-2.1",
-                                                          "jaxrsClient-2.1",
-                                                          "jsonb-1.0",
-                                                          "jsonp-1.1",
+                                                          "servlet-4.0", //ee8
+                                                          "cdi-2.0", //ee8
+                                                          "jaxrs-2.1", //ee8
+                                                          "jaxrsClient-2.1", //ee8
+                                                          "jsonb-1.0", //ee8
+                                                          "jsonp-1.1", //ee8
                                                           "mpConfig-1.3",
                                                           "mpFaultTolerance-2.0",
                                                           "mpHealth-1.0",
@@ -115,15 +122,20 @@ public class MicroProfileActions {
                                                           "mpMetrics-1.1",
                                                           "mpOpenAPI-1.0",
                                                           "mpOpenTracing-1.3",
-                                                          "mpRestClient-1.2" };
+                                                          "mpRestClient-1.2",
+                                                          "mpContextPropagation-1.0", //standalone
+                                                          "mpLRA-1.0", //standalone
+                                                          "mpLRACoordinator-1.0", //standalone
+                                                          "mpReactiveMessaging-1.0", //standalone
+                                                          "mpReactiveStreams-1.0" }; //standalone
 
     private static final String[] MP30_FEATURES_ARRAY = { "microProfile-3.0",
-                                                          "servlet-4.0",
-                                                          "cdi-2.0",
-                                                          "jaxrs-2.1",
-                                                          "jaxrsClient-2.1",
-                                                          "jsonb-1.0",
-                                                          "jsonp-1.1",
+                                                          "servlet-4.0", //ee8
+                                                          "cdi-2.0", //ee8
+                                                          "jaxrs-2.1", //ee8
+                                                          "jaxrsClient-2.1", //ee8
+                                                          "jsonb-1.0", //ee8
+                                                          "jsonp-1.1", //ee8
                                                           "mpConfig-1.3",
                                                           "mpFaultTolerance-2.0",
                                                           "mpHealth-2.0",
@@ -131,15 +143,20 @@ public class MicroProfileActions {
                                                           "mpMetrics-2.0",
                                                           "mpOpenAPI-1.1",
                                                           "mpOpenTracing-1.3",
-                                                          "mpRestClient-1.3" };
+                                                          "mpRestClient-1.3",
+                                                          "mpContextPropagation-1.0", //standalone
+                                                          "mpLRA-1.0", //standalone
+                                                          "mpLRACoordinator-1.0", //standalone
+                                                          "mpReactiveMessaging-1.0", //standalone
+                                                          "mpReactiveStreams-1.0" }; //standalone
 
     private static final String[] MP32_FEATURES_ARRAY = { "microProfile-3.2",
-                                                          "servlet-4.0",
-                                                          "cdi-2.0",
-                                                          "jaxrs-2.1",
-                                                          "jaxrsClient-2.1",
-                                                          "jsonb-1.0",
-                                                          "jsonp-1.1",
+                                                          "servlet-4.0", //ee8
+                                                          "cdi-2.0", //ee8
+                                                          "jaxrs-2.1", //ee8
+                                                          "jaxrsClient-2.1", //ee8
+                                                          "jsonb-1.0", //ee8
+                                                          "jsonp-1.1", //ee8
                                                           "mpConfig-1.3",
                                                           "mpFaultTolerance-2.0",
                                                           "mpHealth-2.1",
@@ -147,15 +164,20 @@ public class MicroProfileActions {
                                                           "mpMetrics-2.2",
                                                           "mpOpenAPI-1.1",
                                                           "mpOpenTracing-1.3",
-                                                          "mpRestClient-1.3" };
+                                                          "mpRestClient-1.3",
+                                                          "mpContextPropagation-1.0", //standalone
+                                                          "mpLRA-1.0", //standalone
+                                                          "mpLRACoordinator-1.0", //standalone
+                                                          "mpReactiveMessaging-1.0", //standalone
+                                                          "mpReactiveStreams-1.0" }; //standalone
 
     private static final String[] MP33_FEATURES_ARRAY = { "microProfile-3.3",
-                                                          "servlet-4.0",
-                                                          "cdi-2.0",
-                                                          "jaxrs-2.1",
-                                                          "jaxrsClient-2.1",
-                                                          "jsonb-1.0",
-                                                          "jsonp-1.1",
+                                                          "servlet-4.0", //ee8
+                                                          "cdi-2.0", //ee8
+                                                          "jaxrs-2.1", //ee8
+                                                          "jaxrsClient-2.1", //ee8
+                                                          "jsonb-1.0", //ee8
+                                                          "jsonp-1.1", //ee8
                                                           "mpConfig-1.4",
                                                           "mpFaultTolerance-2.1",
                                                           "mpHealth-2.2",
@@ -163,15 +185,21 @@ public class MicroProfileActions {
                                                           "mpMetrics-2.3",
                                                           "mpOpenAPI-1.1",
                                                           "mpOpenTracing-1.3",
-                                                          "mpRestClient-1.4" };
+                                                          "mpRestClient-1.4",
+                                                          "mpContextPropagation-1.0", //standalone
+                                                          "mpGraphQL-1.0", //standalone
+                                                          "mpLRA-1.0", //standalone
+                                                          "mpLRACoordinator-1.0", //standalone
+                                                          "mpReactiveMessaging-1.0", //standalone
+                                                          "mpReactiveStreams-1.0" }; //standalone
 
     private static final String[] MP40_FEATURES_ARRAY = { "microProfile-4.0",
-                                                          "servlet-4.0",
-                                                          "cdi-2.0",
-                                                          "jaxrs-2.1",
-                                                          "jaxrsClient-2.1",
-                                                          "jsonb-1.0",
-                                                          "jsonp-1.1",
+                                                          "servlet-4.0", //ee8
+                                                          "cdi-2.0", //ee8
+                                                          "jaxrs-2.1", //ee8
+                                                          "jaxrsClient-2.1", //ee8
+                                                          "jsonb-1.0", //ee8
+                                                          "jsonp-1.1", //ee8
                                                           "mpConfig-2.0",
                                                           "mpFaultTolerance-3.0",
                                                           "mpHealth-3.0",
@@ -179,15 +207,19 @@ public class MicroProfileActions {
                                                           "mpMetrics-3.0",
                                                           "mpOpenAPI-2.0",
                                                           "mpOpenTracing-2.0",
-                                                          "mpRestClient-2.0" };
+                                                          "mpRestClient-2.0",
+                                                          "mpContextPropagation-1.2", //standalone
+                                                          "mpGraphQL-1.0", //standalone
+                                                          "mpLRA-1.0", //standalone
+                                                          "mpLRACoordinator-1.0" }; //standalone
 
     private static final String[] MP41_FEATURES_ARRAY = { "microProfile-4.1",
-                                                          "servlet-4.0",
-                                                          "cdi-2.0",
-                                                          "jaxrs-2.1",
-                                                          "jaxrsClient-2.1",
-                                                          "jsonb-1.0",
-                                                          "jsonp-1.1",
+                                                          "servlet-4.0", //ee8
+                                                          "cdi-2.0", //ee8
+                                                          "jaxrs-2.1", //ee8
+                                                          "jaxrsClient-2.1", //ee8
+                                                          "jsonb-1.0", //ee8
+                                                          "jsonp-1.1", //ee8
                                                           "mpConfig-2.0",
                                                           "mpFaultTolerance-3.0",
                                                           "mpHealth-3.1",
@@ -195,15 +227,19 @@ public class MicroProfileActions {
                                                           "mpMetrics-3.0",
                                                           "mpOpenAPI-2.0",
                                                           "mpOpenTracing-2.0",
-                                                          "mpRestClient-2.0" };
+                                                          "mpRestClient-2.0",
+                                                          "mpContextPropagation-1.2", //standalone
+                                                          "mpGraphQL-1.0", //standalone
+                                                          "mpLRA-1.0", //standalone
+                                                          "mpLRACoordinator-1.0" }; //standalone
 
     private static final String[] MP50_FEATURES_ARRAY = { "microProfile-5.0",
-                                                          "servlet-5.0",
-                                                          "cdi-3.0",
-                                                          "restfulWS-3.0",
-                                                          "restfulWSClient-3.0",
-                                                          "jsonb-2.0",
-                                                          "jsonp-2.0",
+                                                          "servlet-5.0", //ee9
+                                                          "cdi-3.0", //ee9
+                                                          "restfulWS-3.0", //ee9
+                                                          "restfulWSClient-3.0", //ee9
+                                                          "jsonb-2.0", //ee9
+                                                          "jsonp-2.0", //ee9
                                                           "mpConfig-3.0",
                                                           "mpFaultTolerance-4.0",
                                                           "mpHealth-4.0",
@@ -211,14 +247,18 @@ public class MicroProfileActions {
                                                           "mpOpenAPI-3.0",
                                                           "mpMetrics-4.0",
                                                           "mpOpenTracing-3.0",
-                                                          "mpRestClient-3.0" };
+                                                          "mpRestClient-3.0",
+                                                          "mpContextPropagation-1.3", //standalone
+                                                          "mpGraphQL-2.0", //standalone
+                                                          "mpReactiveMessaging-3.0", //standalone
+                                                          "mpReactiveStreams-3.0" }; //standalone
 
     private static final String[] MP60_FEATURES_ARRAY = { "microProfile-6.0",
-                                                          "cdi-4.0",
-                                                          "restfulWS-3.1",
-                                                          "restfulWSClient-3.1",
-                                                          "jsonb-3.0",
-                                                          "jsonp-2.1",
+                                                          "cdi-4.0", //ee10
+                                                          "restfulWS-3.1", //ee10
+                                                          "restfulWSClient-3.1", //ee10
+                                                          "jsonb-3.0", //ee10
+                                                          "jsonp-2.1", //ee10
                                                           "mpConfig-3.0",
                                                           "mpFaultTolerance-4.0",
                                                           "mpHealth-4.0",
@@ -226,14 +266,18 @@ public class MicroProfileActions {
                                                           "mpOpenAPI-3.1",
                                                           "mpMetrics-5.0",
                                                           "mpTelemetry-1.0",
-                                                          "mpRestClient-3.0" };
+                                                          "mpRestClient-3.0",
+                                                          "mpContextPropagation-1.3", //standalone
+                                                          "mpGraphQL-2.0", //standalone
+                                                          "mpReactiveMessaging-3.0", //standalone
+                                                          "mpReactiveStreams-3.0" };//standalone
 
     private static final String[] MP61_FEATURES_ARRAY = { "microProfile-6.1",
-                                                          "cdi-4.0",
-                                                          "restfulWS-3.1",
-                                                          "restfulWSClient-3.1",
-                                                          "jsonb-3.0",
-                                                          "jsonp-2.1",
+                                                          "cdi-4.0", //ee10
+                                                          "restfulWS-3.1", //ee10
+                                                          "restfulWSClient-3.1", //ee10
+                                                          "jsonb-3.0", //ee10
+                                                          "jsonp-2.1", //ee10
                                                           "mpConfig-3.1",
                                                           "mpFaultTolerance-4.0",
                                                           "mpHealth-4.0",
@@ -241,37 +285,49 @@ public class MicroProfileActions {
                                                           "mpOpenAPI-3.1",
                                                           "mpMetrics-5.1",
                                                           "mpTelemetry-1.1",
-                                                          "mpRestClient-3.0" };
+                                                          "mpRestClient-3.0",
+                                                          "mpContextPropagation-1.3", //standalone
+                                                          "mpGraphQL-2.0", //standalone
+                                                          "mpReactiveMessaging-3.0", //standalone
+                                                          "mpReactiveStreams-3.0" };//standalone
 
     private static final String[] MP70_EE10_FEATURES_ARRAY = { "microProfile-7.0",
-                                                               "cdi-4.0",
-                                                               "restfulWS-3.1",
-                                                               "restfulWSClient-3.1",
-                                                               "jsonb-3.0",
-                                                               "jsonp-2.1",
+                                                               "cdi-4.0", //ee10
+                                                               "restfulWS-3.1", //ee10
+                                                               "restfulWSClient-3.1", //ee10
+                                                               "jsonb-3.0", //ee10
+                                                               "jsonp-2.1", //ee10
                                                                "mpConfig-3.1",
                                                                "mpFaultTolerance-4.1",
                                                                "mpHealth-4.0",
                                                                "mpJwt-2.1",
                                                                "mpOpenAPI-4.0",
-                                                               "mpMetrics-5.1",
                                                                "mpTelemetry-2.0",
-                                                               "mpRestClient-4.0" };
+                                                               "mpRestClient-4.0",
+                                                               "mpMetrics-5.1", //standalone
+                                                               "mpContextPropagation-1.3", //standalone
+                                                               "mpGraphQL-2.0", //standalone
+                                                               "mpReactiveMessaging-3.0", //standalone
+                                                               "mpReactiveStreams-3.0" };//standalone
 
     private static final String[] MP70_EE11_FEATURES_ARRAY = { "microProfile-7.0",
-                                                               "cdi-4.1",
-                                                               "restfulWS-4.0",
-                                                               "restfulWSClient-4.0",
-                                                               "jsonb-3.0",
-                                                               "jsonp-2.1",
+                                                               "cdi-4.1", //ee11
+                                                               "restfulWS-4.0", //ee11
+                                                               "restfulWSClient-4.0", //ee11
+                                                               "jsonb-3.0", //ee11
+                                                               "jsonp-2.1", //ee11
                                                                "mpConfig-3.1",
                                                                "mpFaultTolerance-4.1",
                                                                "mpHealth-4.0",
                                                                "mpJwt-2.1",
                                                                "mpOpenAPI-4.0",
-                                                               "mpMetrics-5.1",
                                                                "mpTelemetry-2.0",
-                                                               "mpRestClient-4.0" };
+                                                               "mpRestClient-4.0",
+                                                               "mpMetrics-5.1", //standalone
+                                                               "mpContextPropagation-1.3", //standalone
+                                                               "mpGraphQL-2.0", //standalone
+                                                               "mpReactiveMessaging-3.0", //standalone
+                                                               "mpReactiveStreams-3.0" };//standalone
 
     private static final Set<String> MP10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP10_FEATURES_ARRAY)));
     private static final Set<String> MP12_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP12_FEATURES_ARRAY)));
@@ -332,50 +388,6 @@ public class MicroProfileActions {
     //All MicroProfile FeatureSets - must be descending order
     private static final FeatureSet[] ALL_SETS_ARRAY = { MP70_EE11, MP70_EE10, MP61, MP60, MP50, MP41, MP40, MP33, MP32, MP30, MP22, MP21, MP20, MP14, MP13, MP12, MP10 };
     public static final List<FeatureSet> ALL = Collections.unmodifiableList(Arrays.asList(ALL_SETS_ARRAY));
-
-    //TODO: These feature sets are only used by the EE Compatibility Tests and don't make sense in other contexts. We should move them to those tests.
-
-    private static final String[] STANDALONE8_FEATURES_ARRAY = { "mpContextPropagation-1.0",
-                                                                 "mpContextPropagation-1.2",
-                                                                 "mpGraphQL-1.0",
-                                                                 "mpLRA-1.0",
-                                                                 "mpLRACoordinator-1.0",
-                                                                 "mpReactiveMessaging-1.0",
-                                                                 "mpReactiveStreams-1.0" };
-
-    private static final String[] STANDALONE9_FEATURES_ARRAY = { "mpContextPropagation-1.3",
-                                                                 "mpGraphQL-2.0",
-                                                                 "mpReactiveMessaging-3.0",
-                                                                 "mpReactiveStreams-3.0" };
-
-    private static final String[] STANDALONE10_FEATURES_ARRAY = { "mpContextPropagation-1.3",
-                                                                  "mpGraphQL-2.0",
-                                                                  "mpReactiveMessaging-3.0",
-                                                                  "mpReactiveStreams-3.0" };
-
-    private static final String[] STANDALONE11_FEATURES_ARRAY = { "mpContextPropagation-1.3",
-                                                                  "mpGraphQL-2.0",
-                                                                  "mpReactiveMessaging-3.0",
-                                                                  "mpReactiveStreams-3.0" };
-
-    private static final Set<String> STANDALONE8_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(STANDALONE8_FEATURES_ARRAY)));
-    private static final Set<String> STANDALONE9_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(STANDALONE9_FEATURES_ARRAY)));
-    private static final Set<String> STANDALONE10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(STANDALONE10_FEATURES_ARRAY)));
-    private static final Set<String> STANDALONE11_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(STANDALONE11_FEATURES_ARRAY)));
-
-    public static final String STANDALONE8_ID = EE8FeatureReplacementAction.ID + "_STANDALONE";
-    public static final String STANDALONE9_ID = JakartaEE9Action.ID + "_STANDALONE";
-    public static final String STANDALONE10_ID = JakartaEE10Action.ID + "_STANDALONE";
-    public static final String STANDALONE11_ID = JakartaEE11Action.ID + "_STANDALONE";
-
-    public static final FeatureSet MP_STANDALONE8 = new FeatureSet(STANDALONE8_ID, STANDALONE8_FEATURE_SET, EEVersion.EE8);
-    public static final FeatureSet MP_STANDALONE9 = new FeatureSet(STANDALONE9_ID, STANDALONE9_FEATURE_SET, EEVersion.EE9);
-    public static final FeatureSet MP_STANDALONE10 = new FeatureSet(STANDALONE10_ID, STANDALONE10_FEATURE_SET, EEVersion.EE10);
-    public static final FeatureSet MP_STANDALONE11 = new FeatureSet(STANDALONE11_ID, STANDALONE11_FEATURE_SET, EEVersion.EE11);
-
-    //All MicroProfile Standalone FeatureSets
-    private static final FeatureSet[] ALL_STANDALONE_SETS_ARRAY = { MP_STANDALONE11, MP_STANDALONE10, MP_STANDALONE9, MP_STANDALONE8 };
-    public static final List<FeatureSet> STANDALONE_ALL = Collections.unmodifiableList(Arrays.asList(ALL_STANDALONE_SETS_ARRAY));
 
     /**
      * Get a RepeatTests instance for the given FeatureSets. The first FeatureSet will be run in LITE mode. The others will be run in FULL.

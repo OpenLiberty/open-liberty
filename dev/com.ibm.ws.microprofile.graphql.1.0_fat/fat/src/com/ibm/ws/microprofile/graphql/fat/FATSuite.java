@@ -54,19 +54,19 @@ public class FATSuite {
                                              .andWith(new FeatureReplacementAction("mpConfig-1.4", "mpConfig-2.0")
                                                       .addFeature("mpMetrics-3.0").removeFeature("mpMetrics-2.3")
                                                       .addFeature("mpRestClient-2.0").removeFeature("mpRestClient-1.4")
-                                                      .withID("mp4.0").fullFATOnly())
+                                                      .withID(MicroProfileActions.MP40_ID+"_mpGraphQL10").fullFATOnly())
                                              .andWith(new JakartaEE9Action()
                                                       .removeFeatures(setOf("mpConfig-1.4", "mpConfig-2.0")).addFeature("mpConfig-3.0")
                                                       .removeFeatures(setOf("mpMetrics-3.0", "mpMetrics-2.3")).addFeature("mpMetrics-4.0")
                                                       .removeFeatures(setOf("mpRestClient-2.0", "mpRestClient-1.4")).addFeature("mpRestClient-3.0")
                                                       .removeFeature("mpGraphQL-1.0").addFeature("mpGraphQL-2.0")
-                                                      .withID(MicroProfileActions.STANDALONE9_ID).conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                                                      .withID(JakartaEE9Action.ID+"_mpGraphQL20").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
                                              .andWith(new JakartaEE10Action()
                                                       .removeFeatures(setOf("mpConfig-1.4", "mpConfig-2.0")).addFeature("mpConfig-3.0")
                                                       .removeFeatures(setOf("mpMetrics-3.0", "mpMetrics-2.3", "mpMetrics-4.0")).addFeature("mpMetrics-5.0")
                                                       .removeFeatures(setOf("mpRestClient-2.0", "mpRestClient-1.4")).addFeature("mpRestClient-3.0")
                                                       .removeFeature("mpGraphQL-1.0").addFeature("mpGraphQL-2.0").alwaysAddFeature("servlet-6.0")
-                                                      .withID(MicroProfileActions.STANDALONE10_ID));
+                                                      .withID(JakartaEE10Action.ID+"_mpGraphQL20"));
 
     private static Set<String> setOf(String... strings) {
         // basically does what Java 11's Set.of(...) does

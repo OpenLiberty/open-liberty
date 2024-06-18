@@ -6,21 +6,18 @@
     http://www.eclipse.org/legal/epl-2.0/
     
     SPDX-License-Identifier: EPL-2.0
-   
-    Contributors:
-        IBM Corporation - initial API and implementation
  -->
 <server>
 
 	<include location="../fatTestPorts.xml" />
 
 	<featureManager>
-		<feature>componenttest-1.0</feature>
+		<feature>componenttest-2.0</feature>
 		<feature>osgiconsole-1.0</feature>
 		<feature>localConnector-1.0</feature>
 		<feature>cdi-4.0</feature>
 		<feature>servlet-6.0</feature>
-		<feature>mpFaultTolerance-4.0</feature>
+		<feature>mpFaultTolerance-4.1</feature>
 		<feature>mpTelemetry-2.0</feature>
 		<feature>mpMetrics-5.1</feature>
 	</featureManager>
