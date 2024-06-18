@@ -530,7 +530,7 @@ public class JSF23CDIGeneralTests extends FATServletClient {
         // Dismiss alert that is used in testFacesBehaviorBeanInjection as it prevents Selenium from reading page
         driver.switchTo().alert().dismiss();
 
-        page.waitForCondition(webDriver -> page.isInPage("Hello Earth"));
+        page.waitForCondition(webDriver -> page.isInPage("Text validation failed."));
 
         // Log the page for debugging if necessary in the future.
         Log.info(c, name.getMethodName(), page.getPageSource());
