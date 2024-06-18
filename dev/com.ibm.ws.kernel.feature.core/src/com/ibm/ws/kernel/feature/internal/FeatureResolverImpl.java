@@ -582,8 +582,7 @@ public class FeatureResolverImpl implements FeatureResolver {
     private List<String> checkRootsAreAccessibleAndSetFullName(List<String> rootFeatures, SelectionContext selectionContext, Set<String> preResolved, Collection<String> rootPlatforms) {
         Map<String, Set<String>> map = new HashMap<>();
         ListIterator<String> iRootFeatures = rootFeatures.listIterator();
-        boolean mp = false;
-        boolean ee = false;
+        boolean hasVersionless = false;
         while (iRootFeatures.hasNext()) {
             String rootFeatureName = iRootFeatures.next();
             ProvisioningFeatureDefinition rootFeatureDef = selectionContext.getRepository().getFeature(rootFeatureName);
@@ -594,22 +593,18 @@ public class FeatureResolverImpl implements FeatureResolver {
             }
 
             if(rootFeatureDef.isVersionless()){
-                //Still needs to be fixed
-                if(rootFeatureDef.getIbmShortName().startsWith("mp")){
-                    mp = true;
-                }
-                else{
-                    ee = true;
-                }
+                hasVersionless = true;
             }
+
             List<String> wlpPlatform = rootFeatureDef.getPlatforms();
             if(wlpPlatform != null && wlpPlatform.size() > 0){
                 String[] nav = parseNameAndVersion(wlpPlatform.get(0));
-                if(map.containsKey(nav[0])){
-                    map.get(nav[0]).retainAll(wlpPlatform);
+                String compatibilityFeature = selectionContext.platformToCompatibilityBaseName().get(nav[0]);
+                if(map.containsKey(compatibilityFeature)){
+                    map.get(compatibilityFeature).retainAll(wlpPlatform);
                 }
                 else{
-                    map.put(nav[0], new HashSet<String>(wlpPlatform));
+                    map.put(compatibilityFeature, new HashSet<String>(wlpPlatform));
                 }
             }
             String symbolicName = rootFeatureDef.getSymbolicName();
@@ -628,6 +623,25 @@ public class FeatureResolverImpl implements FeatureResolver {
         //check if we have versionless features in our config,
         //we need some way to capture platform equivalency, ex javaee and jakartaee
         //can be possibly be done by checking if the platforms compatibility features are the same.
+        if(hasVersionless){
+            for(String key : map.keySet()){
+                Set<String> current = map.get(key);
+                if(current.size() == 1){
+                    ProvisioningFeatureDefinition comp = selectionContext.getRepository().getCompatibilityFeatures().get((current.toArray()[0].toString()));
+                    String[] nav = parseNameAndVersion(comp.getSymbolicName());
+
+                    selectionContext._current._selected.put(nav[0], new Chain(comp.getSymbolicName(), nav[1], comp.getSymbolicName()));
+                    rootFeatures.add(comp.getSymbolicName());
+                }
+                else if(!featureListContainsFeatureBaseName(rootPlatforms, key)){
+                    //still need something similar to below
+                    //we need to check if we have ee versionless features or mp versionless features
+                    //and have the corresponding compatibility feature.
+                }
+            }
+        }
+
+
         if(ee || mp){
             boolean resolvedEE = !ee;
             boolean resolvedMP = !mp;
