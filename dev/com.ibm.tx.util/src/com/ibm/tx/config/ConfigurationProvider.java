@@ -362,4 +362,9 @@ public interface ConfigurationProvider {
      * @return
      */
     public String getTransactionLogDBName();
+
+    /**
+     * @return
+     */
+    public String getUserDir();
 }

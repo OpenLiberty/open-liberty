@@ -32,6 +32,7 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
 import java.time.Instant;
 
+import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.util.Utils;
 import com.ibm.websphere.ras.Tr;
@@ -139,8 +140,9 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
 
         final Path leasesDir = logDirStem.getParent();
 
-        Path wlpUserDir = Paths.get(System.getenv("WLP_USER_DIR"));
-        Path serverOutputDir = wlpUserDir.resolve(Paths.get("servers", ConfigurationProviderManager.getConfigurationProvider().getServerName()));
+        final ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
+        final Path wlpUserDir = Paths.get(cp.getUserDir());
+        final Path serverOutputDir = wlpUserDir.resolve(Paths.get("servers", cp.getServerName()));
 
         if (tc.isDebugEnabled())
             Tr.debug(tc, "leasesDirCanonicalPath: {0}\nserverOutputDir: {1}\nwlpUserDir: {2}", leasesDir, serverOutputDir, wlpUserDir);
@@ -155,36 +157,34 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
             Tr.debug(tc, "_serverInstallLeaseLogDir: " + _serverInstallLeaseLogDir.toString());
 
         // Cache the supplied information
-        if (logDirStem != null) {
-            _tranRecoveryLogDirStem = logDirStem;
+        _tranRecoveryLogDirStem = logDirStem;
 
-            if (_leaseLogDirectory == null) {
-                _leaseLogDirectory = _serverInstallLeaseLogDir; // logDirectory = _multiScopeRecoveryLog.getLogDirectory()
+        if (_leaseLogDirectory == null) {
+            _leaseLogDirectory = _serverInstallLeaseLogDir; // logDirectory = _multiScopeRecoveryLog.getLogDirectory()
 
-                AccessController.doPrivileged(new PrivilegedAction<Void>() {
-                    @Override
-                    public Void run() {
-                        try {
-                            if (!Files.isDirectory(_leaseLogDirectory)) {
-                                Files.createDirectories(_leaseLogDirectory);
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Created: {0}", _leaseLogDirectory);
-                            }
-
-                            _controlFile = FileSystems.getDefault().getPath(_serverInstallLeaseLogDir.toString(), "control");
-
-                            if (!Files.exists(_controlFile)) {
-                                Files.createFile(_controlFile);
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Created: {0}", _controlFile);
-                            }
-                        } catch (IOException e) {
-                            FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.FileSharedServerLeaseLog.setLeaseLog", "191");
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                @Override
+                public Void run() {
+                    try {
+                        if (!Files.isDirectory(_leaseLogDirectory)) {
+                            Files.createDirectories(_leaseLogDirectory);
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Created: {0}", _leaseLogDirectory);
                         }
-                        return null;
+
+                        _controlFile = FileSystems.getDefault().getPath(_serverInstallLeaseLogDir.toString(), "control");
+
+                        if (!Files.exists(_controlFile)) {
+                            Files.createFile(_controlFile);
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Created: {0}", _controlFile);
+                        }
+                    } catch (IOException e) {
+                        FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.FileSharedServerLeaseLog.setLeaseLog", "191");
                     }
-                });
-            }
+                    return null;
+                }
+            });
         }
 
         _localRecoveryIdentity = localRecoveryIdentity;
