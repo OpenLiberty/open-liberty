@@ -231,7 +231,8 @@ public class FeatureResolverImpl implements FeatureResolver {
      *
      * @param preferredPlatformVersions The list of preferred platform versions.
      */
-    public static void setPreferredPlatforms(String preferredPlatformVersions) {
+    @Override
+    public void setPreferredPlatforms(String preferredPlatformVersions) {
         FeatureResolverImpl.preferredPlatformVersions = preferredPlatformVersions;
     }
 
@@ -787,6 +788,10 @@ public class FeatureResolverImpl implements FeatureResolver {
         } while (selectionContext.hasPostponed() ||
                  (numBlocked != selectionContext.getBlockedCount()) ||
                  selectionContext.hasTriedVersionlessResolution());
+
+        if(selectionContext.hasPostponedVersionless()){
+            selectionContext.addVersionlessConflicts();
+        }
 
         selectionContext._current._result.setResolvedFeatures(result);
         selectionContext.checkForBestSolution();
@@ -1344,6 +1349,17 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         boolean hasPostponed() {
             return !!!_current._postponed.isEmpty();
+        }
+
+        boolean hasPostponedVersionless() {
+            return !!!_current._postponedVersionless.isEmpty();
+        }
+
+        void addVersionlessConflicts() {
+            for(String s : _current._postponedVersionless.keySet()){
+                System.out.println(_current._postponedVersionless.get(s).getChains().get(0).getChain().get(0));
+                _current._result.addUnresolvedVersionless(_current._postponedVersionless.get(s).getChains().get(0).getChain().get(0));
+            }
         }
 
         // Versionless features require eeCompatible to be resolved. In rare cases, eeCompatible will be resolved after

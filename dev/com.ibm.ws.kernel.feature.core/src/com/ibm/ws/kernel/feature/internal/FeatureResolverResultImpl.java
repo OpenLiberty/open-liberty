@@ -44,6 +44,8 @@ public class FeatureResolverResultImpl implements Result {
 
         this._conflicts = new HashMap<>(0);
 
+        this._unresolvedVersionless = new HashSet<>();
+
         this._resolved = new LinkedHashSet<>();
     }
 
@@ -313,6 +315,18 @@ public class FeatureResolverResultImpl implements Result {
     }
 
     //
+
+    protected final Set<String> _unresolvedVersionless;
+
+    @Override
+    public Set<String> getUnresolvedVersionless(){
+        return _unresolvedVersionless;
+    }
+
+    protected void addUnresolvedVersionless(String versionlessFeature){
+        trace("Unresolvable versionless feature  [ " + versionlessFeature + "]");
+        _unresolvedVersionless.add(versionlessFeature);
+    }
 
     // Remember the resolved in resolution order.
     // This used to be necessary, but is now less necessary

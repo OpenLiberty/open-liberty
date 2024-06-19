@@ -976,6 +976,30 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             Tr.debug(tc, "all installed features " + postInstalledFeatures);
         }
 
+        for(String feature : postInstalledFeatures){
+            if(feature.indexOf("internal.versionless") == -1){
+                continue;
+            }
+            String featureName = feature.substring(36);
+            String alternateName = featureRepository.matchesAlternate(featureName);
+            if(postInstalledFeatures.contains(featureName)){
+                if(postInstalledFeatures.contains(featureName.split("-")[0])){
+                    System.out.println("Versionless " + featureName.split("-")[0] + " resolved to " + featureName);
+                }
+                else if(alternateName != null && postInstalledFeatures.contains(alternateName.split("-")[0])){
+                    System.out.println("Versionless " + alternateName.split("-")[0] + " resolved to " + featureName);
+                }
+            }
+            else if(alternateName != null && postInstalledFeatures.contains(alternateName)){
+                if(postInstalledFeatures.contains(featureName.split("-")[0])){
+                    System.out.println("Versionless " + featureName.split("-")[0] + " resolved to " + alternateName);
+                }
+                else if(postInstalledFeatures.contains(alternateName.split("-")[0])){
+                    System.out.println("Versionless " + alternateName.split("-")[0] + " resolved to " + alternateName);
+                }
+            }
+        }
+
         //remove the pre-installed features from all installed features to show just the added features
         postInstalledFeatures.removeAll(preInstalledFeatures);
         Set<String> installedPublicFeatures = Collections.emptySet();
@@ -1457,6 +1481,11 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             @Override
             public Map<String, Collection<Chain>> getConflicts() {
                 return Collections.emptyMap();
+            }
+
+            @Override
+            public Set<String> getUnresolvedVersionless() {
+                return Collections.emptySet();
             }
         };
     }
@@ -1950,6 +1979,12 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             }
         }
 
+        Set<String> unresolvedVersionlessFeatures = result.getUnresolvedVersionless();
+        for(String versionlessFeature : unresolvedVersionlessFeatures){
+            reportedErrors = true;
+            System.out.println("Versionless Feature " + versionlessFeature + " was unable to be resolved");
+        }
+
         List<Entry<String, Collection<Chain>>> sortedConflicts = new ArrayList<Entry<String, Collection<Chain>>>(result.getConflicts().entrySet());
         sortedConflicts.sort(new ConflictComparator()); // order by importance
         List<Entry<String, String>> reportedConfigured = new ArrayList<Entry<String, String>>(); // pairs of configured features
@@ -1964,6 +1999,8 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             ConflictRecord conflictRecord1 = null;
             ConflictRecord conflictRecord2 = null;
             for (Chain chain : inConflictChains) {
+                System.out.println(chain.getChain().get(0));
+                
                 if (conflictRecord1 == null) {
                     conflictRecord1 = getConflictRecord(chain, inConflictChains, compatibleFeatureBase);
                 } else if (!!!conflictRecord1.conflict.equals(chain.getCandidates().get(0))) {
@@ -1971,6 +2008,9 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                     break;
                 }
             }
+
+            System.out.println("conflict1 sym name" + conflictRecord1.conflict);
+            System.out.println("conflict2 sym name" + conflictRecord2.conflict);
 
             // Report only the most important conflict caused by two configured features
             if (!!!configuredAlreadyReported(conflictRecord1.configured, conflictRecord2.configured, reportedConfigured)) {
