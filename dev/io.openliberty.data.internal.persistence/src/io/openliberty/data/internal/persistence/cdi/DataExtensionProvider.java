@@ -13,13 +13,17 @@
 package io.openliberty.data.internal.persistence.cdi;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
@@ -68,6 +72,11 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.data.internal.persistence.service.DataComponentMetaData;
 import io.openliberty.data.internal.persistence.service.DataModuleMetaData;
 import io.openliberty.data.internal.version.DataVersionCompatibility;
+import jakarta.data.Limit;
+import jakarta.data.Order;
+import jakarta.data.Sort;
+import jakarta.data.page.Page;
+import jakarta.data.page.PageRequest;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -140,7 +149,7 @@ public class DataExtensionProvider implements //
     /**
      * Configured interface/method/package names for logValues.
      */
-    public volatile Set<String> logValues;
+    private volatile Set<String> logValues = Set.of();
 
     @Reference
     public MetaDataIdentifierService metadataIdSvc;
@@ -384,6 +393,133 @@ public class DataExtensionProvider implements //
     @Override
     @Trivial
     public void initialize(ComponentMetaData metadata) throws IllegalStateException {
+    }
+
+    /**
+     * Prepare values, which might include customer data, for logging.
+     * If the repository class/package/method is not considered loggable
+     * then return a copy of the values for logging where customer data
+     * is replaced with a placeholder.
+     *
+     * @param repoClass repository class.
+     * @param method    repository method.
+     * @param values    values.
+     * @return loggable values.
+     */
+    @Trivial
+    public Object[] loggable(Class<?> repoClass, Method method, Object... values) {
+        if (values == null ||
+            values.length == 0 ||
+            !logValues.isEmpty() &&
+                                  (logValues.contains(method.getName()) ||
+                                   logValues.contains(repoClass.getPackageName()) ||
+                                   logValues.contains(repoClass.getName())))
+            return values;
+
+        Object[] loggable = new Object[values.length];
+        for (int i = 0; i < values.length; i++)
+            if (values[i] == null ||
+                values[i] instanceof PageRequest ||
+                values[i] instanceof Order ||
+                values[i] instanceof Sort ||
+                values[i] instanceof Sort[] ||
+                values[i] instanceof Limit)
+                loggable[i] = values[i];
+            else // obscure customer data
+                loggable[i] = loggable(values[i]);
+
+        return loggable;
+    }
+
+    /**
+     * Prepare a value, which might include customer data, for logging.
+     * If the repository class/package/method is not considered loggable
+     * then return a copy of the value for logging where customer data
+     * is replaced with a placeholder.
+     *
+     * @param repoClass repository class.
+     * @param method    repository method.
+     * @param value     value.
+     * @return loggable value.
+     */
+    @Trivial
+    public Object loggable(Class<?> repoClass, Method method, Object value) {
+        if (value == null ||
+            !logValues.isEmpty() &&
+                             (logValues.contains(method.getName()) ||
+                              logValues.contains(repoClass.getPackageName()) ||
+                              logValues.contains(repoClass.getName())))
+            return value;
+
+        return loggable(value);
+    }
+
+    /**
+     * Obscures a value from customer data while including some useful,
+     * non-sensitive data.
+     *
+     * @param value customer data. Must not be null.
+     * @return loggable value that does not include customer data.
+     */
+    @Trivial
+    private Object loggable(Object value) {
+        Object loggable;
+        Class<?> c = value.getClass();
+        Class<?> a = c.getComponentType();
+        if (a != null) {
+            StringBuilder s = new StringBuilder();
+            int len = Array.getLength(value);
+            int maxOutput = len <= 20 ? len : 20;
+            s.append(a.getName()).append('[').append(len).append("]: {");
+            for (int i = 0; i < maxOutput; i++) {
+                Object v = loggable(Array.get(value, i));
+                s.append(i == 0 ? " " : ", ").append(v);
+            }
+            if (len > maxOutput)
+                s.append(", ...");
+            s.append(" }");
+            loggable = s.toString();
+        } else if (value instanceof Optional) {
+            StringBuilder s = new StringBuilder();
+            Optional<?> opt = (Optional<?>) value;
+            s.append("Optional ");
+            if (opt.isPresent())
+                s.append("{ ").append(loggable(opt.get())).append(" }");
+            else
+                s.append("EMPTY");
+            loggable = s.toString();
+        } else if (value instanceof Page) {
+            loggable = value; // customer values already obscured
+        } else if (value instanceof CompletionStage) {
+            loggable = value; // customer values already obscured
+        } else if (value instanceof Iterable) {
+            StringBuilder s = new StringBuilder();
+            int len = value instanceof Collection ? ((Collection<?>) value).size() : -1;
+            int maxOutput = 20;
+            s.append(c.getName());
+            if (len >= 0)
+                s.append('(').append(len).append("): {");
+            else
+                s.append(": {");
+            Iterator<?> it = ((Iterable<?>) value).iterator();
+            for (int size = 0; size < maxOutput && it.hasNext(); size++) {
+                Object v = loggable(it.next());
+                s.append(size == 0 ? " " : ", ").append(v);
+            }
+            if (it.hasNext())
+                s.append(", ...");
+            s.append(" }");
+            loggable = s.toString();
+        } else {
+            String name = c.getName();
+            loggable = c.isPrimitive() || value instanceof Number ? //
+                            name : //
+                            new StringBuilder(name.length() + 9) //
+                                            .append(name) //
+                                            .append('@') //
+                                            .append(Integer.toHexString(value.hashCode()));
+        }
+        return loggable;
     }
 
     /**
