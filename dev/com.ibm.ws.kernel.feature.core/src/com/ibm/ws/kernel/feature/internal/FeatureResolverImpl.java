@@ -528,11 +528,13 @@ public class FeatureResolverImpl implements FeatureResolver {
                             Collection<String> rootPlatforms) {
 
         if (isBeta) {
-            Collection<String> serverPlatforms = collectPlatformCompatibilityFeatures(repository, rootPlatforms);
-            if (serverPlatforms != null) {
-                rootPlatforms = serverPlatforms;
-            } else {
-                rootPlatforms = collectPlatformCompatibilityFeatures(repository);
+            if(hasVersionlessFeatures(repository, rootFeatures)){
+                Collection<String> serverPlatforms = collectPlatformCompatibilityFeatures(repository, rootPlatforms);
+                if (serverPlatforms != null) {
+                    rootPlatforms = serverPlatforms;
+                } else {
+                    rootPlatforms = collectPlatformCompatibilityFeatures(repository);
+                }
             }
         }
 
@@ -591,6 +593,20 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         // Finally return the selected result
         return selectionContext.getResult();
+    }
+
+    private boolean hasVersionlessFeatures(Repository repo, Collection<String> featureList){
+        for(String s : featureList){
+            ProvisioningFeatureDefinition feature = repo.getFeature(s);
+            if(feature.getSymbolicName().startsWith("io.openliberty.versionless.")){
+                return true;
+            }
+            // after apis are implemented
+            // if(feature.isVersionless()){
+            //     return true;
+            // }
+        }
+        return false;
     }
 
     private List<String> checkRootsAreAccessibleAndSetFullName(List<String> rootFeatures, SelectionContext selectionContext, Set<String> preResolved) {
