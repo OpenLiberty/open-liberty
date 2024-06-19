@@ -38,8 +38,7 @@ public class ConfigRepeatActions {
      * Return a rule to repeat tests for MicroProfile 7.0, 6.0, 4.1 and 3.3.
      * This translates to Config 3.1, 3.0, 2.0 and 1.4 respectively.
      *
-     * This is the default set of repeats for most Config tests.
-     * It provides good coverage of most code paths.
+     * Covers the latest version plus most of the other major versions.
      *
      * @param server the server name
      * @return the RepeatTests rule
@@ -57,8 +56,7 @@ public class ConfigRepeatActions {
      * Return a rule to repeat tests for MicroProfile 7.0, 6.0 and 4.1.
      * This translates to Config 3.1, 3.0 and 2.0 respectively.
      *
-     * This is the default set of repeats for most Config tests.
-     * It provides good coverage of most code paths.
+     * Covers the latest version plus most of the other major versions, up to Config 2.0.
      *
      * @param server the server name
      * @return the RepeatTests rule
@@ -75,8 +73,7 @@ public class ConfigRepeatActions {
      * Return a rule to repeat tests for MicroProfile 7.0 and 6.0.
      * This translates to Config 3.1 and 3.0.
      *
-     * This is the default set of repeats for most Config tests.
-     * It provides good coverage of most code paths.
+     * Covers the latest version plus most of the other major versions, up to Config 3.0.
      *
      * @param server the server name
      * @return the RepeatTests rule
@@ -92,8 +89,7 @@ public class ConfigRepeatActions {
      * Return a rule to repeat tests for MicroProfile 7.0 and 6.1.
      * This translates to all versions which contain Config 3.1.
      *
-     * This is the default set of repeats for most Config tests.
-     * It provides good coverage of most code paths.
+     * Covers only Config 3.1. May wish to add newer versions in future.
      *
      * @param server the server name
      * @return the RepeatTests rule
@@ -108,7 +104,7 @@ public class ConfigRepeatActions {
     /**
      * Return a rule to repeat tests for all MP versions which contain Config
      * <p>
-     * We run a few tests using this rule so that we have some coverage of all implementations
+     * We run a few tests using this rule so that we have some coverage of all implementations and all MP versions.
      *
      * @param server the server name
      * @return the RepeatTests rule
