@@ -14,15 +14,15 @@
 
   <featureManager>
     <!-- Core profile features (no super feature that contains these) -->
-    <feature>cdi-4.0</feature> <!-- Includes Annotations 2.1, Dependency Injection 2.0, and Interceptors 2.1 -->
-    <feature>restfulWS-3.1</feature>
+    <feature>cdi-4.1</feature> <!-- Includes Annotations 2.1, Dependency Injection 2.0, and Interceptors 2.1 -->
+    <feature>restfulWS-4.0</feature>
     
     <!-- Features being tested -->
     <feature>data-1.0</feature>
     <feature>nosql-1.0</feature>
     
     <!-- JNoSQL Provided Dependences -->
-    <feature>mpConfig-3.0</feature>
+    <feature>mpConfig-3.1</feature>
     <feature>jsonb-3.0</feature>
     
     <!-- Features needed for arquillan support -->
