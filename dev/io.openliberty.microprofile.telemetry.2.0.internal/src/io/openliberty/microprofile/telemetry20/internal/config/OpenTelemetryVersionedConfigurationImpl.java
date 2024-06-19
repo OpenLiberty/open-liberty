@@ -15,10 +15,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import org.osgi.service.component.annotations.Component;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+
+import org.osgi.service.component.annotations.Component;
 
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
@@ -45,6 +46,9 @@ public class OpenTelemetryVersionedConfigurationImpl implements OpenTelemetryInf
 
     private static final TraceComponent tc = Tr.register(OpenTelemetryVersionedConfigurationImpl.class);
 
+    private static final String OS_BEAN_J9 = "com.ibm.lang.management.OperatingSystemMXBean";
+    private static final String OS_BEAN_HOTSPOT = "com.sun.management.OperatingSystemMXBean";
+
     // Version specific API calls to AutoConfiguredOpenTelemetrySdk.builder()
     @Override
     public OpenTelemetry buildOpenTelemetry(Map<String, String> openTelemetryProperties,
@@ -59,13 +63,6 @@ public class OpenTelemetryVersionedConfigurationImpl implements OpenTelemetryInf
                         .disableShutdownHook()
                         .build()
                         .getOpenTelemetrySdk();
-
-        // Register observers for runtime metrics
-        Classes.registerObservers(openTelemetry);
-        Cpu.registerObservers(openTelemetry);
-        MemoryPools.registerObservers(openTelemetry);
-        Threads.registerObservers(openTelemetry);
-        GarbageCollector.registerObservers(openTelemetry);
 
         return openTelemetry;
 
@@ -97,6 +94,16 @@ public class OpenTelemetryVersionedConfigurationImpl implements OpenTelemetryInf
                 });
 
                 if (openTelemetry != null) {
+
+                    if (runningOnJ9OrHotspot()) {
+                        // Register observers for runtime metrics
+                        Classes.registerObservers(openTelemetry);
+                        Cpu.registerObservers(openTelemetry);
+                        MemoryPools.registerObservers(openTelemetry);
+                        Threads.registerObservers(openTelemetry);
+                        GarbageCollector.registerObservers(openTelemetry);
+                    }
+
                     return openTelemetry;
                 }
             }
@@ -130,6 +137,25 @@ public class OpenTelemetryVersionedConfigurationImpl implements OpenTelemetryInf
             return Boolean.valueOf(oTelConfigs.get(OpenTelemetryConstants.CONFIG_DISABLE_PROPERTY));
         }
         return true;
+    }
+
+    @FFDCIgnore(ClassNotFoundException.class)
+    private boolean runningOnJ9OrHotspot() {
+
+        Class<?> j9BeanClass = null;
+        Class<?> hotspotBeanClass = null;
+
+        try {
+            j9BeanClass = Class.forName(OS_BEAN_J9);
+        } catch (ClassNotFoundException ignored) {
+        }
+
+        try {
+            hotspotBeanClass = Class.forName(OS_BEAN_HOTSPOT);
+        } catch (ClassNotFoundException ignored) {
+        }
+
+        return j9BeanClass != null || hotspotBeanClass != null;
     }
 
 }
