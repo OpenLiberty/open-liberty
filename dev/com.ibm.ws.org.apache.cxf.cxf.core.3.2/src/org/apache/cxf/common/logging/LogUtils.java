@@ -272,9 +272,9 @@ public final class LogUtils {
                 try {
                     b = BundleUtils.getBundle(cls, bundleName);
                 } catch (MissingResourceException rex) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {  // Liberty change begin
                         Tr.debug(tc, "Exception occured finding the bundle: " + rex.getMessage());
-                    }
+                    }   // Liberty change end
                 }
             }
             if (b != null) {
@@ -354,12 +354,12 @@ public final class LogUtils {
                         throw ite;
                     }
                 } catch (Exception e) {
-                    if (e.getMessage().equals(CXFLOGGERFAILED)) {
+                    if (e.getMessage().equals(CXFLOGGERFAILED)) { // Liberty change begin
                         // Ignore the exception. Logger will be created with the code below
                         // This is the exception created to skip execution till this point
-                    } else {
+                    } else { // Liberty change end
                         throw new RuntimeException(e);
-                    }
+                    }   // Liberty change 
                 }
             }
 
@@ -642,7 +642,6 @@ public final class LogUtils {
     private static void throwFallBackToOriginalLoggerException() throws Exception       {
         throw new Exception(CXFLOGGERFAILED);
     }
-    // Liberty change end
 
     /**
      * @return the loggerClassbackup
@@ -692,4 +691,5 @@ public final class LogUtils {
     private static Class<?> getLoggerClass() {
         return loggerClass;
     }
+    // Liberty change end
 }
