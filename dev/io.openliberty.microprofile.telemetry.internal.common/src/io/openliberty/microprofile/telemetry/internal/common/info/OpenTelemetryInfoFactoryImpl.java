@@ -16,12 +16,14 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 
 import org.apache.commons.lang3.concurrent.LazyInitializer;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -215,16 +217,17 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
             Config config = ConfigProvider.getConfig();
 
             HashMap<String, String> telemetryProperties = new HashMap<>();
-            for (String propertyName : config.getPropertyNames()) {
-                if (propertyName.startsWith("otel") || propertyName.startsWith("OTEL")) {
-                    String normalizedName = propertyName.toLowerCase().replace('_', '.');
-
-                    config.getOptionalValue(normalizedName, String.class)
-                          .ifPresent(value -> telemetryProperties.put(normalizedName, value));
-
+            
+            for (ConfigSource configSource : config.getConfigSources()) {
+                for ( Entry<String, String> entry : configSource.getProperties().entrySet()) {
+                    if (entry.getKey().startsWith("otel") || entry.getKey().startsWith("OTEL")) {
+                        String normalizedName = entry.getKey().toLowerCase().replace('_', '.');
+                        config.getOptionalValue(normalizedName, String.class)
+                        .ifPresent(value -> telemetryProperties.putIfAbsent(normalizedName, value));
+                    }
                 }
             }
-
+            
             return telemetryProperties;
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
