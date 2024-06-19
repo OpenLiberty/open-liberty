@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.metrics51.internal.tck.launcher;
 
@@ -20,6 +17,7 @@ import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -28,6 +26,8 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
@@ -40,8 +40,16 @@ import componenttest.topology.utils.tck.TCKRunner;
 @RunWith(FATRunner.class)
 public class MetricsTCKLauncher {
 
-    @Server("MetricsTCKServer")
+    private static final String SERVER_NAME = "MetricsTCKServer";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+                                                             MicroProfileActions.MP61,
+                                                             MicroProfileActions.MP70_EE10,
+                                                             MicroProfileActions.MP70_EE11);
 
     /*
      * Java 11.0.14 known to cause issues.

@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 	
 configurations {
@@ -86,7 +83,7 @@ task copySimpleClient(type: Copy) {
   into new File(autoFvtDir, 'publish/shared/resources/prometheuslib/')
 }
 
- addRequiredLibraries {
+addRequiredLibraries {
   dependsOn copyMicrometerCore
   dependsOn copyPrometheus
   dependsOn copyHdrHistogramPrometheus
@@ -96,4 +93,5 @@ task copySimpleClient(type: Copy) {
   dependsOn copySimpleClientTracerOtelAgent
   dependsOn copySimpleClientTracerOtel
   dependsOn copySimpleClient
+  dependsOn addJakartaTransformer
 }
