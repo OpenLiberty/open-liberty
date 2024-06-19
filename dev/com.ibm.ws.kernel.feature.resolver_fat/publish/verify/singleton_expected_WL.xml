@@ -8771,7 +8771,7 @@
         <resolved>expressionLanguage-6.0</resolved>
         <resolved>io.openliberty.jakarta.interceptor-2.2</resolved>
         <resolved>io.openliberty.jakarta.cdi-4.1</resolved>
-        <resolved>beanValidation-3.1</resolved>
+        <resolved>validation-3.1</resolved>
     </output>
 </case>
 
@@ -9565,7 +9565,7 @@
         <resolved>enterpriseBeansLite-4.0</resolved>
         <resolved>websocket-2.2</resolved>
         <resolved>io.openliberty.beanValidationCore-2.0</resolved>
-        <resolved>beanValidation-3.1</resolved>
+        <resolved>validation-3.1</resolved>
         <resolved>io.openliberty.jakarta.restfulWS-4.0</resolved>
         <resolved>com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0</resolved>
         <resolved>restfulWSClient-4.0</resolved>
@@ -12511,7 +12511,7 @@
         <resolved>persistenceContainer-3.2</resolved>
         <resolved>persistence-3.2</resolved>
         <resolved>io.openliberty.beanValidationCore-2.0</resolved>
-        <resolved>beanValidation-3.1</resolved>
+        <resolved>validation-3.1</resolved>
         <resolved>io.openliberty.jakarta.mail-2.1</resolved>
         <resolved>io.openliberty.jakarta.restfulWS-4.0</resolved>
         <resolved>com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0</resolved>
@@ -26417,7 +26417,7 @@
         <resolved>expressionLanguage-6.0</resolved>
         <resolved>io.openliberty.jakarta.interceptor-2.2</resolved>
         <resolved>io.openliberty.jakarta.cdi-4.1</resolved>
-        <resolved>beanValidation-3.1</resolved>
+        <resolved>validation-3.1</resolved>
         <resolved>io.openliberty.internal.versionless.beanValidation-3.1</resolved>
         <resolved>beanValidation</resolved>
         <resolved>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved>

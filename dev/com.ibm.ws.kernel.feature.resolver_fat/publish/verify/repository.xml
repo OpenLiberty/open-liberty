@@ -29002,7 +29002,7 @@
         <file>io.openliberty.beanValidation-3.1.mf</file>
         <name>beanValidation-3.1</name>
         <symbolic-name>io.openliberty.beanValidation-3.1</symbolic-name>
-        <short-name>beanValidation-3.1</short-name>
+        <short-name>validation-3.1</short-name>
         <version>1.0.0</version>
         <ibm-version>2</ibm-version>
         <supported-version/>
