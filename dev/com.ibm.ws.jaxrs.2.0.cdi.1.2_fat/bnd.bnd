@@ -37,7 +37,7 @@ tested.features: \
   jaxrs-2.1,\
   cdi-2.0,\
   beanvalidation-2.0, \
-  beanvalidation-3.1, \
+  validation-3.1, \
   restfulws-3.0, \
   restfulws-3.1, \
   restfulws-4.0, \

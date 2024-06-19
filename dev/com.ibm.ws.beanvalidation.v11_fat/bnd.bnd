@@ -32,7 +32,7 @@ fat.project: true
 # Declare additional tested features not present in the original server.xml's
 tested.features: \
   beanvalidation-3.0, cdi-3.0, enterpriseBeansLite-4.0, expressionLanguage-4.0, servlet-5.0, expressionlanguage-5.0, cdi-4.0, servlet-6.0,\
-  expressionlanguage-6.0, cdi-4.1, beanvalidation-3.1, servlet-6.1 
+  expressionlanguage-6.0, cdi-4.1, validation-3.1, servlet-6.1 
   
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)

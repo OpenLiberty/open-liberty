@@ -67,7 +67,7 @@ tested.features: \
         expressionlanguage-6.0,\
         faces-4.1,\
         websocket-2.2,\
-        beanvalidation-3.1,\
+        validation-3.1,\
         pages-4.0
 
 # To define a global minimum java level for the FAT, use the following property.

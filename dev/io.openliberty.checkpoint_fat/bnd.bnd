@@ -61,7 +61,7 @@ tested.features: \
         appauthentication-3.1,\
         appSecurity-1.0,\
         appsecurity-6.0,\
-        beanvalidation-3.1,\
+        validation-3.1,\
         cdi-4.1,\
         checkpoint,\
         concurrent-3.1,\

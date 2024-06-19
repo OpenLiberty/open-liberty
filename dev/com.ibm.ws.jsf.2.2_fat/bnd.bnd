@@ -92,7 +92,7 @@ tested.features: \
     noship-1.0,\
     cdi-4.1,\
     servlet-6.1,\
-    beanvalidation-3.1
+    validation-3.1
 
 
 -buildpath: \
