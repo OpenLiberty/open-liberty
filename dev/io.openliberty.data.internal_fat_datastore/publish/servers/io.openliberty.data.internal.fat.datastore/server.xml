@@ -17,8 +17,8 @@
     <feature>data-1.0</feature>
     <feature>enterpriseBeans-4.0</feature>
     <feature>jndi-1.0</feature>
-    <feature>persistence-3.1</feature>
-    <feature>servlet-6.0</feature>
+    <feature>persistence-3.2</feature>
+    <feature>servlet-6.1</feature>
   </featureManager>
 
   <include location="../fatTestPorts.xml"/>

@@ -13,11 +13,11 @@ IBM-API-Package: \
   jakarta.data.repository; type="spec",\
   jakarta.data.spi; type="spec"
 Subsystem-Name: Jakarta Data 1.0
-#TODO io.openliberty.jakartaeePlatform-11.0 and stop tolerating EE 10
 -features=\
-  com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0",\
-  io.openliberty.cdi-4.0; ibm.tolerates:="4.1",\
-  io.openliberty.jakarta.data-1.0
+  com.ibm.websphere.appserver.eeCompatible-11.0,\
+  io.openliberty.cdi-4.1,\
+  io.openliberty.jakarta.data-1.0,\
+  io.openliberty.jakartaeePlatform-11.0
 -bundles=\
   io.openliberty.data.internal,\
   io.openliberty.data.internal.beandef,\
