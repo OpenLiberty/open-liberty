@@ -231,8 +231,7 @@ public class FeatureResolverImpl implements FeatureResolver {
      *
      * @param preferredPlatformVersions The list of preferred platform versions.
      */
-    @Override
-    public void setPreferredPlatforms(String preferredPlatformVersions) {
+    public static void setPreferredPlatforms(String preferredPlatformVersions) {
         FeatureResolverImpl.preferredPlatformVersions = preferredPlatformVersions;
     }
 
@@ -1357,7 +1356,6 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         void addVersionlessConflicts() {
             for(String s : _current._postponedVersionless.keySet()){
-                System.out.println(_current._postponedVersionless.get(s).getChains().get(0).getChain().get(0));
                 _current._result.addUnresolvedVersionless(_current._postponedVersionless.get(s).getChains().get(0).getChain().get(0));
             }
         }

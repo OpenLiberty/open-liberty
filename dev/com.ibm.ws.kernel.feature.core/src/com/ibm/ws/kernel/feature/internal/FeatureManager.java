@@ -976,26 +976,28 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             Tr.debug(tc, "all installed features " + postInstalledFeatures);
         }
 
-        for(String feature : postInstalledFeatures){
-            if(feature.indexOf("internal.versionless") == -1){
-                continue;
-            }
-            String featureName = feature.substring(36);
-            String alternateName = featureRepository.matchesAlternate(featureName);
-            if(postInstalledFeatures.contains(featureName)){
-                if(postInstalledFeatures.contains(featureName.split("-")[0])){
-                    System.out.println("Versionless " + featureName.split("-")[0] + " resolved to " + featureName);
+        if(isBeta){
+            for(String feature : postInstalledFeatures){
+                if(feature.indexOf("internal.versionless") == -1){
+                    continue;
                 }
-                else if(alternateName != null && postInstalledFeatures.contains(alternateName.split("-")[0])){
-                    System.out.println("Versionless " + alternateName.split("-")[0] + " resolved to " + featureName);
+                String featureName = feature.substring(36);
+                String alternateName = featureRepository.matchesAlternate(featureName);
+                if(postInstalledFeatures.contains(featureName)){
+                    if(postInstalledFeatures.contains(featureName.split("-")[0])){
+                        Tr.audit("VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", featureName.split("-")[0], featureName);
+                    }
+                    else if(alternateName != null && postInstalledFeatures.contains(alternateName.split("-")[0])){
+                        Tr.audit("VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", alternateName.split("-")[0], featureName);
+                    }
                 }
-            }
-            else if(alternateName != null && postInstalledFeatures.contains(alternateName)){
-                if(postInstalledFeatures.contains(featureName.split("-")[0])){
-                    System.out.println("Versionless " + featureName.split("-")[0] + " resolved to " + alternateName);
-                }
-                else if(postInstalledFeatures.contains(alternateName.split("-")[0])){
-                    System.out.println("Versionless " + alternateName.split("-")[0] + " resolved to " + alternateName);
+                else if(alternateName != null && postInstalledFeatures.contains(alternateName)){
+                    if(postInstalledFeatures.contains(featureName.split("-")[0])){
+                        Tr.audit("VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", featureName.split("-")[0], alternateName);
+                    }
+                    else if(postInstalledFeatures.contains(alternateName.split("-")[0])){
+                        Tr.audit("VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", alternateName.split("-")[0], alternateName);
+                    }
                 }
             }
         }
@@ -1979,10 +1981,11 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             }
         }
 
-        Set<String> unresolvedVersionlessFeatures = result.getUnresolvedVersionless();
-        for(String versionlessFeature : unresolvedVersionlessFeatures){
-            reportedErrors = true;
-            System.out.println("Versionless Feature " + versionlessFeature + " was unable to be resolved");
+        if(isBeta){
+            for(String versionlessFeature : result.getUnresolvedVersionless()){
+                reportedErrors = true;
+                Tr.error(tc, "UNRESOLVED_VERSIONLESS_FEATURE", getFeatureName(versionlessFeature));
+            }
         }
 
         List<Entry<String, Collection<Chain>>> sortedConflicts = new ArrayList<Entry<String, Collection<Chain>>>(result.getConflicts().entrySet());
@@ -1999,8 +2002,6 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             ConflictRecord conflictRecord1 = null;
             ConflictRecord conflictRecord2 = null;
             for (Chain chain : inConflictChains) {
-                System.out.println(chain.getChain().get(0));
-                
                 if (conflictRecord1 == null) {
                     conflictRecord1 = getConflictRecord(chain, inConflictChains, compatibleFeatureBase);
                 } else if (!!!conflictRecord1.conflict.equals(chain.getCandidates().get(0))) {
@@ -2008,9 +2009,6 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                     break;
                 }
             }
-
-            System.out.println("conflict1 sym name" + conflictRecord1.conflict);
-            System.out.println("conflict2 sym name" + conflictRecord2.conflict);
 
             // Report only the most important conflict caused by two configured features
             if (!!!configuredAlreadyReported(conflictRecord1.configured, conflictRecord2.configured, reportedConfigured)) {

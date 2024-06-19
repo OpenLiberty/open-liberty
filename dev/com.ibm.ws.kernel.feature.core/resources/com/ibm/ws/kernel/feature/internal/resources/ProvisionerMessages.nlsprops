@@ -242,6 +242,16 @@ UPDATE_MISSING_VERSIONLESS_FEATURE_VAL=CWWKF0049E: The environment variable, PRE
 UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.explanation=For each versionless feature in your configuration, there must be a preferred version value for it within PREFERRED_FEATURE_VERSIONS
 UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.useraction=Add a value in PREFERRED_FEATURE_VERSIONS for the feature
 
+# CWWKF0050E  {0} = the versionless feature that cannot be resolved
+UNRESOLVED_VERSIONLESS_FEATURE=CWWKF0050E: The versionless feature, {0}, could not be resolved
+UNRESOLVED_VERSIONLESS_FEATURE.explanation=Versionless features need a platform to be designated before they can be resolved.
+UNRESOLVED_VERSIONLESS_FEATURE.useraction=Make sure there is a platform element specified for your feature.
+
+# CWWKF0051I  {0} = the versionless feature: {1} = the feature that was resolved from the versionless feature
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE=CWWKF0051I: The versionless feature, {0}, resolved to {1}
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.explanation=The versioned feature resolved from the versionless feature.
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.useraction=No action is required.
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: The feature {0} already exists. It will not be reinstalled. To modify an existing feature, you need to manually uninstall it first.

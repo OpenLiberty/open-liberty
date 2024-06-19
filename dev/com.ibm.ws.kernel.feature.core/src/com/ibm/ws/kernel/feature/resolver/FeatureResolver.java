@@ -218,8 +218,6 @@ public interface FeatureResolver {
 
     //
 
-    public void setPreferredPlatforms(String preferredPlatformVersions);
-
     /**
      * Resolve with an empty collection of kernel features.
      */
