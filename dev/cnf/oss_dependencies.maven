@@ -708,6 +708,7 @@ org.glassfish:javax.json:1.1.4
 org.hamcrest:hamcrest-all:1.3
 org.hdrhistogram:HdrHistogram:2.1.12
 org.hibernate.common:hibernate-commons-annotations:5.1.0.Final
+org.hibernate.orm:hibernate-core:7.0.0.Alpha2
 org.hibernate.validator:hibernate-validator-cdi:6.2.5.Final
 org.hibernate.validator:hibernate-validator-cdi:7.0.4.Final
 org.hibernate.validator:hibernate-validator:6.2.5.Final
