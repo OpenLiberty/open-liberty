@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -74,6 +74,7 @@ import com.ibm.ws.jpa.JPAExPcBindingContextAccessor;
 import com.ibm.ws.jpa.JPAProviderIntegration;
 import com.ibm.ws.jpa.JPAPuId;
 import com.ibm.ws.jpa.JPAVersion;
+import com.ibm.ws.jpa.app.ApplicationComponentMetaData;
 import com.ibm.ws.jpa.container.osgi.jndi.JPAJndiLookupInfo;
 import com.ibm.ws.jpa.container.osgi.jndi.JPAJndiLookupInfoRefAddr;
 import com.ibm.ws.jpa.container.osgi.jndi.JPAJndiLookupObjectFactory;
