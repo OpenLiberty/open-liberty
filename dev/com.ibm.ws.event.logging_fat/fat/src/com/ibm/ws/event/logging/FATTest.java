@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -51,6 +51,7 @@ public class FATTest {
     private static final String TRACE_LOG = "logs/trace.log";
     private static final String MESSAGES_LOG = "logs/messages.log";
     private static final String APP_NAME = "jdbcTestPrj_1";
+    private static final String END_LINE = "END requestID*";
     private static final Class<?> c = FATTest.class;
     private static URL url;
 
@@ -85,7 +86,7 @@ public class FATTest {
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLogging", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
 
-        server.waitForStringInLogUsingMark("END", 30000);
+        server.waitForStringInLogUsingMark(END_LINE, 30000);
         // Checking if the event logging messages are present or not
 
         List<String> lines = server.findStringsInLogsAndTraceUsingMark("END requestID=");
@@ -116,7 +117,7 @@ public class FATTest {
         Log.info(c, "testEventLoggingWithNoPattern", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
         server.waitForStringInLog("END", 30000);
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END* | eventType=websphere.servlet.service | duration=*",
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE + " | eventType=websphere.servlet.service | duration=*",
                                                                          TRACE_LOG);
         server.setMarkToEndOfLog();
 
@@ -143,7 +144,7 @@ public class FATTest {
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingMinDuration", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
 
         for (int i = 1; i < lines.size(); i++) {
             String line = lines.get(i);
@@ -183,7 +184,7 @@ public class FATTest {
         Log.info(c, "testEventLoggingLogModeExit", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
         server.waitForStringInLog("END", 30000);
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END* | eventType=websphere.servlet.service", TRACE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE + " | eventType=websphere.servlet.service", TRACE_LOG);
 
         server.setMarkToEndOfLog();
 
@@ -211,7 +212,7 @@ public class FATTest {
         Log.info(c, "testEventLoggingLogModeEntry", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
         server.waitForStringInLog("BEGIN", 30000);
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot(" END ", TRACE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         server.setMarkToEndOfLog();
 
         assertTrue("END records found when logMode is Entry!", (lines.size() == 0));
@@ -237,7 +238,7 @@ public class FATTest {
         Log.info(c, "testEventLoggingLogModeEntryExit", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
         server.waitForStringInLog("END", 30000);
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END* | eventType=websphere.servlet.service",
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE + " | eventType=websphere.servlet.service",
                                                                          TRACE_LOG);
 
         server.setMarkToEndOfLog();
@@ -268,9 +269,9 @@ public class FATTest {
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingEventTypes", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        server.waitForStringInLog(END_LINE, 30000);
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         server.setMarkToEndOfLog();
 
         String types[] = new String[] { "eventType=websphere.datasource.executeUpdate", "eventType=websphere.datasource.execute", "eventType=websphere.servlet.service" };
@@ -303,7 +304,7 @@ public class FATTest {
         Log.info(c, "testEventLoggingDynamicUpdate", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
         server.waitForStringInLog("BEGIN", 30000);
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot(" END ", MESSAGES_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE, MESSAGES_LOG);
 
         assertTrue("END enteries found when logMode is entry.", (lines.size() == 0));
 
@@ -402,7 +403,7 @@ public class FATTest {
 
         server.setMarkToEndOfLog();
 
-        lines = server.findStringsInFileInLibertyServerRoot("END", MESSAGES_LOG);
+        lines = server.findStringsInFileInLibertyServerRoot(END_LINE, MESSAGES_LOG);
 
         assertTrue("Can still find BEGIN records, logMode functionality is at risk!", (begin == 0));
         assertTrue("No END records found, logMode functionality is at risk!", (lines.size() > 0));
@@ -434,7 +435,7 @@ public class FATTest {
         server.waitForStringInLog("CWWKG0017I", 90000);
 
         // Wait for the END Event to occur
-        String endLine = server.waitForStringInLog("END", 90000);
+        String endLine = server.waitForStringInLog(END_LINE, 90000);
         Log.info(c, "testEventLoggingRemoveFeature", " Waiting for END line : " + endLine);
 
         if (endLine == null) {
@@ -444,10 +445,10 @@ public class FATTest {
             Log.info(c, "testEventLoggingRemoveFeature", " Output of br for jdbcTestPrj_1 servlet again : " + br.readLine());
 
             // Wait for the END Event to occur again
-            server.waitForStringInLog("END", 90000);
+            server.waitForStringInLog(END_LINE, 90000);
         }
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END", MESSAGES_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE, MESSAGES_LOG);
 
         int end = lines.size();
         assertTrue("EventLogging feature is not enabled.. ", (lines.size() > 0));
@@ -463,7 +464,7 @@ public class FATTest {
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingRemoveFeature", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
 
-        lines = server.findStringsInFileInLibertyServerRoot("END", MESSAGES_LOG);
+        lines = server.findStringsInFileInLibertyServerRoot(END_LINE, MESSAGES_LOG);
         for (int i = end; i < lines.size(); i++) {
             String line = lines.get(i);
             Log.info(c, "testEventLoggingRemoveFeature", " ------> line : " + line);
@@ -484,7 +485,7 @@ public class FATTest {
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingAddFeature", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
 
-        List<String> lines = server.findStringsInLogsAndTraceUsingMark(" END ");
+        List<String> lines = server.findStringsInLogsAndTraceUsingMark(END_LINE);
         assertTrue("EventLogging feature is enabled.. ", (lines.size() == 0));
         Log.info(c, "testEventLoggingAddFeature", "-----> No eventLogging records..");
 
@@ -496,9 +497,9 @@ public class FATTest {
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingAddFeature", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
-        server.waitForStringInLogUsingMark("END", 30000);
+        server.waitForStringInLogUsingMark(END_LINE, 30000);
 
-        lines = server.findStringsInLogsAndTraceUsingMark("END");
+        lines = server.findStringsInLogsAndTraceUsingMark(END_LINE);
 
         assertTrue("EventLogging feature is not enabled.. ", (lines.size() > 0));
         Log.info(c, "testEventLoggingAddFeature", "-----> Found eventLogging records.. END records found: " + lines.size());
@@ -540,9 +541,9 @@ public class FATTest {
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingPatternUpdate", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        server.waitForStringInLog(END_LINE, 30000);
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END* | eventType=websphere.servlet.service | duration=*",
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE + " | eventType=websphere.servlet.service | duration=*",
                                                                          MESSAGES_LOG);
         server.setMarkToEndOfLog();
 
@@ -561,9 +562,9 @@ public class FATTest {
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeUpdate", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        server.waitForStringInLog(END_LINE, 30000);
 
-        lines = server.findStringsInFileInLibertyServerRoot("END* | eventType=websphere.servlet.service | contextInfo=*",
+        lines = server.findStringsInFileInLibertyServerRoot(END_LINE + " | eventType=websphere.servlet.service | contextInfo=*",
                                                             MESSAGES_LOG);
         for (String line : lines) {
             Log.info(c, "testEventLoggingPatternUpdate", "2 --------> END line : " + line);
@@ -594,9 +595,9 @@ public class FATTest {
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeUpdate1", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        server.waitForStringInLog(END_LINE, 30000);
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         server.setMarkToEndOfLog();
 
         int end = lines.size();
@@ -623,7 +624,7 @@ public class FATTest {
         Log.info(c, "testEventLoggingLogModeUpdate1", "--------> BEGIN 2 : " + (lines.size() - begin));
         assertTrue("BEGIN records NOT found for logMode Entry!", ((lines.size() - begin) > 0));
 
-        lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         Log.info(c, "testEventLoggingLogModeUpdate1", "--------> END 2 : " + (lines.size() - end));
         assertTrue("END records FOUND for logMode Entry!", ((lines.size() - end) == 0));
 
@@ -644,7 +645,7 @@ public class FATTest {
         Log.info(c, "testEventLoggingLogModeUpdate3", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
         server.waitForStringInLog("END", 30000);
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         int end = lines.size();
         Log.info(c, "testEventLoggingLogModeUpdate3", "--------> END 1 : " + end);
         assertTrue("END records not found for logMode EntryExit!", (end > 0));
@@ -665,7 +666,7 @@ public class FATTest {
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeUpdate3", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        server.waitForStringInLog(END_LINE, 30000);
         Log.info(c, "testEventLoggingLogModeUpdate3", "--------> Updated server configuration :  logMode = Exit");
 
         lines = server.findStringsInFileInLibertyServerRoot("BEGIN", TRACE_LOG);
@@ -690,9 +691,9 @@ public class FATTest {
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeUpdate2", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        server.waitForStringInLog(END_LINE, 30000);
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         int end = lines.size();
         Log.info(c, "testEventLoggingLogModeUpdate2", "--------> END 1 : " + end);
         assertTrue("END records not found for logMode Exit!", (end > 0));
@@ -720,7 +721,7 @@ public class FATTest {
         assertTrue("BEGIN records NOT found for logMode EntryExit!", ((lines.size() - begin) > 0));
 
         server.waitForStringInLog("END", 30000);
-        lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         Log.info(c, "testEventLoggingLogModeUpdate", "--------> END 2 : " + (lines.size() - end));
         assertTrue("END records NOT found for logMode EntryExit!", ((lines.size() - end) > 0));
 
@@ -740,7 +741,7 @@ public class FATTest {
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingMinDurationUpdate", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         int end = lines.size();
         for (int i = 1; i < lines.size(); i++) {
             String line = lines.get(i);
@@ -759,9 +760,9 @@ public class FATTest {
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingMinDurationUpdate", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        server.waitForStringInLog(END_LINE, 30000);
 
-        lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         Log.info(c, "testEventLoggingMinDurationUpdate", "------> size  : " + (lines.size() - end));
 
         if (!((lines.size() - end) == 0)) {
@@ -789,9 +790,9 @@ public class FATTest {
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingEventTypesUpdate", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        server.waitForStringInLog(END_LINE, 30000);
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         server.setMarkToEndOfLog();
 
         int previous = lines.size();
@@ -822,9 +823,9 @@ public class FATTest {
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingEventTypesUpdate", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        server.waitForStringInLog(END_LINE, 30000);
 
-        lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
 
         Log.info(c, "testEventLoggingEventTypesUpdate", "------> size : " + (lines.size() - previous));
 
@@ -868,7 +869,7 @@ public class FATTest {
         Log.info(c, "testEventLoggingPatternRemove", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
         server.waitForStringInLog("END", 30000);
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         server.setMarkToEndOfLog();
 
         int previous = lines.size();
@@ -886,9 +887,9 @@ public class FATTest {
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeUpdate", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        server.waitForStringInLog(END_LINE, 30000);
 
-        lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
 
         for (int index = previous; index < lines.size(); index++) {
             String line = lines.get(index);
@@ -914,9 +915,9 @@ public class FATTest {
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeRemove", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        server.waitForStringInLog(END_LINE, 30000);
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         server.setMarkToEndOfLog();
 
         int end = lines.size();
@@ -944,7 +945,7 @@ public class FATTest {
         Log.info(c, "testEventLoggingLogModeRemove", "--------> BEGIN 2 : " + (lines.size() - begin));
         assertTrue("BEGIN records Found for default logMode!", ((lines.size() - begin) == 0));
 
-        lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         Log.info(c, "testEventLoggingLogModeRemove", "--------> END 2 : " + (lines.size() - end));
         assertTrue("END records NOT found for logMode EntryExit!", ((lines.size() - end) > 0));
 
@@ -965,7 +966,7 @@ public class FATTest {
         Log.info(c, "testEventLoggingLogModeRemove2", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
         server.waitForStringInLog("END", 30000);
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         server.setMarkToEndOfLog();
 
         int end = lines.size();
@@ -987,13 +988,13 @@ public class FATTest {
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeRemove2", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        server.waitForStringInLog(END_LINE, 30000);
 
         lines = server.findStringsInFileInLibertyServerRoot("BEGIN", TRACE_LOG);
         Log.info(c, "testEventLoggingLogModeRemove2", "--------> BEGIN 2 : " + (lines.size() - begin));
         assertTrue("BEGIN records Found for default logMode!", ((lines.size() - begin) == 0));
 
-        lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         Log.info(c, "testEventLoggingLogModeRemove2", "--------> END 2 : " + (lines.size() - end));
         assertTrue("END records NOT found for logMode EntryExit!", ((lines.size() - end) > 0));
 
@@ -1013,7 +1014,7 @@ public class FATTest {
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingMinDurationRemove", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         server.setMarkToEndOfLog();
 
         for (String line : lines) {
@@ -1035,9 +1036,9 @@ public class FATTest {
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingMinDurationRemove", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        server.waitForStringInLog(END_LINE, 30000);
 
-        lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         Log.info(c, "testEventLoggingMinDurationRemove", "------> END size  : " + lines.size());
         assertTrue("Records not Found for default minDuration!", (lines.size() > 0));
 
@@ -1065,7 +1066,7 @@ public class FATTest {
         Log.info(c, "testEventLoggingEventTypesRemove", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
         server.waitForStringInLog("END", 30000);
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         server.setMarkToEndOfLog();
 
         int previous = lines.size();
@@ -1097,9 +1098,9 @@ public class FATTest {
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingEventTypesRemove", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        server.waitForStringInLog(END_LINE, 30000);
 
-        lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
 
         Log.info(c, "testEventLoggingEventTypesRemove", "------> size : " + (lines.size() - previous));
 
@@ -1149,7 +1150,7 @@ public class FATTest {
             }
             count++;
         }
-        lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         for (String line : lines) {
             Log.info(c, "testEventLoggingSampleRate", "------> line : " + line);
             if (line.contains("contextInfo=jdbcTestPrj_1 | com.ibm.ws.request.timing.TestJDBC")) {
@@ -1187,7 +1188,7 @@ public class FATTest {
             br = getConnectionStream(con);
             Log.info(c, "testEventLoggingEvenSampleRate_IDs", count + " : Output of br for jdbcTestPrj_1 servlet" + br.readLine());
             if (count % 3 == 0) {
-                lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+                lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
                 for (String line : lines) {
                     if (!line.contains("AC")) {
                         fail("No event logging record logged for Sample rate : 3");
@@ -1196,7 +1197,7 @@ public class FATTest {
             }
             count++;
         }
-        lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         for (String line : lines) {
             Log.info(c, "testEventLoggingSampleRate", "------> line : " + line);
             if (line.contains("contextInfo=jdbcTestPrj_1 | com.ibm.ws.request.timing.TestJDBC")) {
@@ -1224,7 +1225,7 @@ public class FATTest {
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingSampleRateUpdate", " : Output of br for jdbcTestPrj_1 servlet" + br.readLine());
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         Log.info(c, "testEventLoggingSampleRateUpdate", "*****  No of Warnings : " + lines.size());
         int warnings = 0;
         for (String line : lines) {
@@ -1257,7 +1258,7 @@ public class FATTest {
             count++;
         }
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         int previous = 0;
         for (String line : lines) {
             Log.info(c, "testEventLoggingSampleRateUpdate", "*****  line : " + line);
@@ -1280,7 +1281,7 @@ public class FATTest {
             Log.info(c, "testEventLoggingSampleRateUpdate", count + " : Output of br for jdbcTestPrj_1 servlet" + br.readLine());
             count++;
         }
-        lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         int current = 0;
         for (String line : lines) {
             Log.info(c, "testEventLoggingSampleRateUpdate", "*****  line : " + line);
@@ -1313,7 +1314,7 @@ public class FATTest {
             Log.info(c, "testEventLoggingSampleRateRemove", count + " : Output of br for jdbcTestPrj_1 servlet" + br.readLine());
             count++;
         }
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         int previous = 0;
         for (String line : lines) {
             Log.info(c, "testEventLoggingSampleRateUpdate", "*****  line : " + line);
@@ -1336,7 +1337,7 @@ public class FATTest {
             Log.info(c, "testEventLoggingMinDurationRemove", count + " : Output of br for jdbcTestPrj_1 servlet" + br.readLine());
             count++;
         }
-        lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
+        lines = server.findStringsInFileInLibertyServerRoot(END_LINE, TRACE_LOG);
         int current = 0;
         for (String line : lines) {
             Log.info(c, "testEventLoggingSampleRateUpdate", "*****  line : " + line);
