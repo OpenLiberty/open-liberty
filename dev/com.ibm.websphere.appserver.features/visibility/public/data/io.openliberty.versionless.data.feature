@@ -5,4 +5,4 @@ IBM-ShortName: data
 Subsystem-Name: data
 -features=io.openliberty.internal.versionless.data-1.0
 kind=beta
-edition=base
+edition=core

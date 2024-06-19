@@ -13,4 +13,4 @@ IBM-Provision-Capability: \
   io.openliberty.data.internal.persistence
 IBM-Install-Policy: when-satisfied
 kind=beta
-edition=base
+edition=core
