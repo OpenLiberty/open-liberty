@@ -18,6 +18,7 @@ openTelemetryVersion=1.35.0
 alphaOpenTelemetryVersion=1.35.0.alpha
 openTelemetryInstrumentationVersion=2.1.0
 alphaOpenTelemetryInstrumentationVersion=2.1.0.alpha
+alphaSemconvOpenTelemetryVersion=1.25.0.alpha
 
 javac.source: 11
 javac.target: 11
@@ -40,8 +41,10 @@ Import-Package: \
 	org.osgi.framework,\
 	com.ibm.websphere.ras,\
 	com.ibm.websphere.ras.annotation,\
-	io.openliberty.microprofile.telemetry.internal.common.resources
-
+	io.openliberty.microprofile.telemetry.internal.common.resources,\
+	javax.management,\
+	javax.management.openmbean
+	
 Export-Package: \
   io.opentelemetry.extension.trace.propagation;version=${openTelemetryVersion};thread-context=true,\
   io.opentelemetry.exporter.otlp.internal;version=${openTelemetryVersion};thread-context=true,\
@@ -61,7 +64,10 @@ Export-Package: \
   !io.opentelemetry.internal.shaded.*;version=${openTelemetryVersion},\
   io.opentelemetry.api.common;version=${openTelemetryVersion},\
   io.opentelemetry.instrumentation.api.instrumenter.util;version=${openTelemetryVersion};thread-context=true,\
-  io.opentelemetry.*;version=${openTelemetryVersion}
+  io.opentelemetry.exporter.otlp;version=${openTelemetryVersion};thread-context=true,\
+  io.opentelemetry.exporter.logging;version=${openTelemetryVersion};thread-context=true,\
+  io.opentelemetry.semconv;version=${alphaSemconvOpenTelemetryVersion};thread-context=true,\
+  io.opentelemetry.*;version=${openTelemetryVersion};thread-context=true
 
 Include-Resource: \
  META-INF=resources/META-INF
@@ -70,6 +76,7 @@ app-resources= \
   META-INF/services/io.opentelemetry.sdk.autoconfigure.spi.ConfigurablePropagatorProvider |\
   META-INF/services/io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider |\
   META-INF/services/io.opentelemetry.sdk.autoconfigure.spi.metrics.ConfigurableMetricExporterProvider |\
+  META-INF/services/io.opentelemetry.sdk.autoconfigure.spi.logs.ConfigurableLogRecordExporterProvider |\
   META-INF/services/io.opentelemetry.exporter.internal.grpc.GrpcSenderProvider |\
   META-INF/services/io.opentelemetry.exporter.internal.http.HttpSenderProvider |\
   META-INF/services/io.opentelemetry.sdk.autoconfigure.spi.ResourceProvider
@@ -92,6 +99,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 	io.opentelemetry.instrumentation:opentelemetry-instrumentation-api;version='${openTelemetryInstrumentationVersion}';strategy=exact,\
 	io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-incubator;version='${alphaOpenTelemetryInstrumentationVersion}';strategy=exact,\
 	io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-semconv;version='1.32.0.alpha';strategy=exact,\
+	io.opentelemetry.instrumentation:opentelemetry-runtime-telemetry-java8;version='2.4.0.alpha';strategy=exact,\
 	io.opentelemetry:opentelemetry-api;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-api-events;version='${alphaOpenTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-context;version='${openTelemetryVersion}';strategy=exact,\
@@ -110,7 +118,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 	io.opentelemetry:opentelemetry-sdk-logs;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-sdk-metrics;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-sdk-trace;version='${openTelemetryVersion}';strategy=exact,\
-	io.opentelemetry.semconv:opentelemetry-semconv;version='1.23.1.alpha';strategy=exact,\
+	io.opentelemetry.semconv:opentelemetry-semconv;version='${alphaSemconvOpenTelemetryVersion}';strategy=exact,\
 	com.ibm.ws.classloading;version=latest,\
 	org.eclipse.osgi;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\

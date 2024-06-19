@@ -133,7 +133,9 @@ io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-semconv:1.32.
 io.opentelemetry.instrumentation:opentelemetry-instrumentation-api:1.19.0
 io.opentelemetry.instrumentation:opentelemetry-instrumentation-api:1.29.0
 io.opentelemetry.instrumentation:opentelemetry-instrumentation-api:2.1.0
+io.opentelemetry.instrumentation:opentelemetry-runtime-telemetry-java8:2.4.0-alpha
 io.opentelemetry.semconv:opentelemetry-semconv:1.23.1-alpha
+io.opentelemetry.semconv:opentelemetry-semconv:1.25.0-alpha
 io.opentelemetry:opentelemetry-api-events:1.29.0-alpha
 io.opentelemetry:opentelemetry-api-events:1.35.0-alpha
 io.opentelemetry:opentelemetry-api-logs:1.19.0-alpha
