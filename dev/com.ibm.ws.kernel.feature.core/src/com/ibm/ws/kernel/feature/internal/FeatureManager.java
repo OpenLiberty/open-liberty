@@ -985,18 +985,18 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                 String alternateName = featureRepository.matchesAlternate(featureName);
                 if(postInstalledFeatures.contains(featureName)){
                     if(postInstalledFeatures.contains(featureName.split("-")[0])){
-                        Tr.audit("VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", featureName.split("-")[0], featureName);
+                        Tr.audit(tc, "VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", featureName.split("-")[0], featureName);
                     }
                     else if(alternateName != null && postInstalledFeatures.contains(alternateName.split("-")[0])){
-                        Tr.audit("VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", alternateName.split("-")[0], featureName);
+                        Tr.audit(tc, "VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", alternateName.split("-")[0], featureName);
                     }
                 }
                 else if(alternateName != null && postInstalledFeatures.contains(alternateName)){
                     if(postInstalledFeatures.contains(featureName.split("-")[0])){
-                        Tr.audit("VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", featureName.split("-")[0], alternateName);
+                        Tr.audit(tc, "VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", featureName.split("-")[0], alternateName);
                     }
                     else if(postInstalledFeatures.contains(alternateName.split("-")[0])){
-                        Tr.audit("VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", alternateName.split("-")[0], alternateName);
+                        Tr.audit(tc, "VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", alternateName.split("-")[0], alternateName);
                     }
                 }
             }
