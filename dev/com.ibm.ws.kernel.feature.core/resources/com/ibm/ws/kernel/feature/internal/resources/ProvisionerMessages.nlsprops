@@ -228,14 +228,15 @@ UPDATE_DISABLED_FEATURES_ON_CONFLICT=CWWKF0046W: The configuration includes an i
 UPDATE_DISABLED_FEATURES_ON_CONFLICT.explanation=The configuration includes an incompatible combination of features. To avoid invalid behavior, the feature manager disabled all features.
 UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Specify a different version of the configured features that caused the conflict.
 
-# CWWK0044E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2 {6} EePlaformCommonToProgModels
+# CWWK0047E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2 {6} EePlaformCommonToProgModels
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: The {2} and {3} features cannot be loaded at the same time. The {2} feature of {0} is incompatible with the {3} feature of {1}. The configuration includes an incompatible combination of {6} features that is not supported. The {4} and {5} configured features include an incompatible combination of features. Your configuration is not supported. Update the configuration to use compatible versions of the configured features that support the {0} or {1} programming models.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=The server configuration contains an incompatible combination of features for the indicated programming models. This conflict can happen if the two incompatible features are configured directly in the server configuration, or if the configured features include different versions of a feature that are incompatible.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Try to specify a compatible version of the configured features that caused the conflict in the server.xml file. If no other versions are available, then the configured features are not compatible with each other and cannot be configured at the same time.
 
-UPDATE_MISSING_VERSIONLESS_ENV_VAR=CWWKF0048E: A value could not be found for environment variable PREFERRED_FEATURE_VERSIONS
-UPDATE_MISSING_VERSIONLESS_ENV_VAR.explanation=You have versionless features in your configuration and the PREFERRED_FEATURE_VERSIONS environment variable could not be found
-UPDATE_MISSING_VERSIONLESS_ENV_VAR.useraction=Check that the environment variable, PREFERRED_FEATURE_VERSIONS, exists and is spelled correctly.
+# CWWKF0048E  {0} = the unknown platform value in the environment variable
+UNKNOWN_PLATFORM_VALUE_ENV_VAR=CWWKF0048E: Platform environment variable PREFERRED_PLATFORM_VERSIONS platform value {0} does not contain a valid version.
+UNKNOWN_PLATFORM_VALUE_ENV_VAR.explanation=Values in the platform environment variable must be a known platform. The known platforms are a version of javaee, jakartaee, or microProfile.
+UNKNOWN_PLATFORM_VALUE_ENV_VAR.useraction=Check that the environment variable contains only known platforms.
 
 # CWWKF0049E  {0} = the feature that needs to be specified within PREFERRED_FEATURE_VERSIONS
 UPDATE_MISSING_VERSIONLESS_FEATURE_VAL=CWWKF0049E: The environment variable, PREFERRED_FEATURE_VERSIONS, does not contain a value for {0}
@@ -251,6 +252,16 @@ UNRESOLVED_VERSIONLESS_FEATURE.useraction=Make sure there is a platform element 
 VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE=CWWKF0051I: The versionless feature, {0}, resolved to {1}
 VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.explanation=The versioned feature resolved from the versionless feature.
 VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.useraction=No action is required.
+
+# CWWKF0052E  {0} = the unknown platform element
+UNKNOWN_PLATFORM_ELEMENT=CWWKF0052E: Platform element {0} is not a known platform.
+UNKNOWN_PLATFORM_ELEMENT.explanation=The specified platform element is not a known platform. The known platforms are a version of javaee, jakartaee, or microProfile
+UNKNOWN_PLATFORM_ELEMENT.useraction=Make sure the configured platform is a known platform.
+
+# CWWKF0053E  {0} = the unknown platform element
+UNKNOWN_PLATFORM_VERSION=CWWKF0053E: Platform element {0} is not a known platform version.
+UNKNOWN_PLATFORM_VERSION.explanation=The platform is known, but the version of the platform does not exist.
+UNKNOWN_PLATFORM_VERSION.useraction=Specify a version of the platform that exists.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 

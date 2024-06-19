@@ -263,7 +263,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             String platBase = nameAndVersion[0];
             String platVersion = nameAndVersion[1];
             if (platVersion == null) {
-                trace("Platform element [ " + plat + " ] does not contain a valid version.");
+                Tr.error((TraceComponent) tc, "UNKNOWN_PLATFORM_VERSION", plat);
                 continue;
             }
 
@@ -274,14 +274,14 @@ public class FeatureResolverImpl implements FeatureResolver {
                 compatibilityFeature = "io.openliberty.internal.mpVersion-" + platVersion;
 
             } else {
-                trace("Platform element [ " + plat + " ] is not a known platform.");
+                Tr.error((TraceComponent) tc, "UNKNOWN_PLATFORM_ELEMENT", plat);
                 continue;
             }
 
             if (repo.getFeature(compatibilityFeature) != null) {
                 compatibilityFeatures.add(compatibilityFeature);
             } else {
-                trace("Platform element [ " + plat + " ] is not a known platform version.");
+                Tr.error((TraceComponent) tc, "UNKNOWN_PLATFORM_VERSION", plat);
                 continue;
             }
         }
@@ -347,8 +347,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             String platVersion = nameAndVersion[1];
 
             if (platVersion == null) {
-                trace("Platform environment variable [ " + PREFERRED_PLATFORM_VERSIONS_ENV_VAR + " ]" +
-                      " platform value [ " + plat + " ] does not contain a valid version.");
+                Tr.error((TraceComponent) tc, "UNKNOWN_PLATFORM_VALUE_ENV_VAR", plat);
                 continue;
             }
 
@@ -357,8 +356,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             } else if (plat.startsWith("microprofile")) {
                 mpCompatibleVersions.add(platVersion);
             } else {
-                trace("Platform environment variable [ " + PREFERRED_PLATFORM_VERSIONS_ENV_VAR + " ]" +
-                      " platform value [ " + plat + " ] is not a valid platform.");
+                Tr.error((TraceComponent) tc, "UNKNOWN_PLATFORM_VALUE_ENV_VAR", plat);
             }
         }
 
