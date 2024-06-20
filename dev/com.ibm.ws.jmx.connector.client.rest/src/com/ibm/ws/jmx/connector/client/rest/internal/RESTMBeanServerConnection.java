@@ -1958,6 +1958,36 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
     }
 
     /**
+     * Calling the thread to wait while another thread is doing the same connection recovery.
+     * This would avoid quick exit from the recoverConnection method and overflow in trace.
+     * The interrupt exception in this method can be safely ignored since the test will pass
+     * and interrupt happens when server is shutting down after tests.
+     *
+     * @param waitTime The maximum time that this thread will wait if not notified
+     * @param secondThread The thread that needs to waits
+     */
+
+    protected void callThreadWait(int waitTime, Object secondThread) {
+        final String methodName = "callThreadWait";
+
+        if (logger.isLoggable(Level.FINE)) {
+            logger.logp(Level.FINE, logger.getName(), methodName, "Calling sleep for " + waitTime + " milliseconds on thread");
+        }
+        try {
+            synchronized (secondThread) {
+                secondThread.wait(waitTime);
+                if (logger.isLoggable(Level.FINER)) {
+                    logger.logp(Level.FINER, logger.getName(), methodName, "thread woke up after wait time");
+                }
+            }
+        } catch (InterruptedException e) {
+            if (logger.isLoggable(Level.FINER)) {
+                logger.logp(Level.FINER, logger.getName(), methodName, "Interrupted wait in thread, this can be ignored because the server is shutting down");
+            }
+        }
+    }
+
+    /**
      * Attemps to recover the connection, either to the current endpoint or to other endpoints, depending
      * on the configuration of this connector and availability of endpoints.
      *
@@ -1975,6 +2005,10 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
 
     protected void recoverConnection(Throwable t, boolean skipCurrentEndpoint) {
         final String methodName = "recoverConnection";
+        final int serverStatusPollingInterval = connector.getServerStatusPollingInterval();
+        final int maxServerRestartTime = connector.getMaxServerWaitTime();
+        final class threadWaiting {};
+        Object secondThread = null;
 
         //We don't want to synchronize this method because we don't want a pile of threads
         //to queue up waiting to come in, each doing the same connection recovery.  Instead, we
@@ -1983,8 +2017,10 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
             if (logger.isLoggable(Level.FINER)) {
                 logger.logp(Level.FINER, logger.getName(), methodName, "Exiting.  Another thread is doing the recovery");
             }
+            secondThread = new threadWaiting();
 
-            //another thread is currently trying to recover the connection, so we can exit.
+            //ask the the current thread to wait because another thread is currently trying to recover the connection
+            callThreadWait(maxServerRestartTime, secondThread);
             return;
         }
 
@@ -2010,8 +2046,6 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
             //scenarios, users can set this time to 0 so that we don't retry the current endpoint and instead move onto the other endpoints
             //right away.  Alternatively, WLM users can set this time to be > 0 so that they retry the current endpoint first, if they wish.
 
-            final int maxServerRestartTime = connector.getMaxServerWaitTime();
-
             if (logger.isLoggable(Level.FINER)) {
                 logger.logp(Level.FINER, logger.getName(), methodName, "[" + RESTClientMessagesUtil.getObjID(this) + "] Waiting for current endpoint [" + originalEndpoint
                                                                        + "] to come up.  Max time: "
@@ -2019,7 +2053,6 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
             }
 
             if (!skipCurrentEndpoint && maxServerRestartTime > 0) {
-                final int serverStatusPollingInterval = connector.getServerStatusPollingInterval();
                 final long endTime = System.nanoTime() + maxServerRestartTime * NANOS_IN_A_MILLISECOND;
 
                 while (System.nanoTime() < endTime) {
@@ -2130,6 +2163,14 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
         } finally {
             //we're done with the recovery (either by return or by runtime exceptions), so restore atomic state
             isRecoveringConnection.set(false);
+            if (secondThread != null) {
+                synchronized (secondThread) {
+                    secondThread.notifyAll();
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.logp(Level.FINE, logger.getName(), methodName, "thread woke up after getting notified");
+                    }
+                }
+            }
         }
     }
 
