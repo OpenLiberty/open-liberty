@@ -6,13 +6,11 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package componenttest.annotation.processor;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
@@ -42,8 +40,7 @@ public class TestServletProcessorTests {
             TestServletProcessor.getServletTests(new TestClass(NonStaticServletTestClass.class));
             fail("Annotated field must be static");
         } catch (RuntimeException e) {
-            //pass
-            System.out.println("Caught: " + e.toString());
+            assertTrue(e.getMessage().endsWith("' must be static."));
         }
     }
 
@@ -58,8 +55,7 @@ public class TestServletProcessorTests {
             TestServletProcessor.getServletTests(new TestClass(PrivateServletTestClass.class));
             fail("Annotated field must be public");
         } catch (RuntimeException e) {
-            //pass
-            System.out.println("Caught: " + e.toString());
+            assertTrue(e.getMessage().endsWith("' must be public."));
         }
     }
 
@@ -74,8 +70,7 @@ public class TestServletProcessorTests {
             TestServletProcessor.getServletTests(new TestClass(NonServerServletTestClass.class));
             fail("Annotated field must be LibertyServer");
         } catch (RuntimeException e) {
-            //pass
-            System.out.println("Caught: " + e.toString());
+            assertTrue(e.getMessage().contains("' must be of type or subtype of "));
         }
     }
 

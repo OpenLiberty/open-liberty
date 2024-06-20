@@ -9,11 +9,11 @@
  *******************************************************************************/
 package componenttest.custom.junit.runner;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.Description;
-import org.junit.runner.RunWith;
 import org.junit.runner.manipulation.Filter;
 
 import componenttest.app.FATServlet;
@@ -21,48 +21,44 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import jakarta.servlet.annotation.WebServlet;
 
-/**
- *
- */
 public class CompoundFilterTests {
-    private static final Filter[] testFiltersToApply = new Filter[] {
-                                                                      new TestModeFilter(),
-                                                                      new TestNameFilter(),
-                                                                      new FeatureFilter(),
-                                                                      new SystemPropertyFilter(),
-                                                                      new JavaLevelFilter(),
-                                                                      new CheckpointSupportFilter()
-    };
 
-    @Mode(TestMode.FULL) //Should be superseeded by servlet or method annotation
-    @RunWith(FATRunner.class)
+    private static final CompoundFilter filter = new CompoundFilter(new Filter[] { new TestModeFilter() });
+
+    @Mode(TestMode.FULL) //Should be superseded by servlet or method annotation
     public static class TestClassFull {
         public static LibertyServer NOOP;
-
-        @Test
-        public void dummyTestForRunner() {}
     }
 
     @WebServlet("*/")
     public static class TestServletLiteMethod extends FATServlet {
 
         @Mode(TestMode.LITE)
-        public void testMethod() {}
+        public void liteTest() {}
+
+        public void defaultTest() {}
+
     }
 
     @Test
-    public void testMethodFilterSuperseedsTestClassFilter() throws Exception {
-        SyntheticServletTest testMethod = new SyntheticServletTest(TestServletLiteMethod.class, //
+    public void testMethodFilterSupersedesTestClassFilter() throws Exception {
+        SyntheticServletTest liteTest = new SyntheticServletTest(TestServletLiteMethod.class, //
                         TestClassFull.class.getField("NOOP"), //
                         "FAKE/QUERY", //
-                        TestServletLiteMethod.class.getMethod("testMethod"));
+                        TestServletLiteMethod.class.getMethod("liteTest"));
 
         //Replicate FATRunner.describeChild()
-        Description testDescription = Description.createTestDescription(TestClassFull.class, testMethod.getName(), testMethod.getAnnotations());
+        Description liteTestDescription = Description.createTestDescription(TestClassFull.class, liteTest.getName(), liteTest.getAnnotations());
+        assertTrue(filter.shouldRun(liteTestDescription));
 
-        CompoundFilter filter = new CompoundFilter(testFiltersToApply);
+        SyntheticServletTest defaultTest = new SyntheticServletTest(TestServletLiteMethod.class, //
+                        TestClassFull.class.getField("NOOP"), //
+                        "FAKE/QUERY", //
+                        TestServletLiteMethod.class.getMethod("defaultTest"));
 
-        assertTrue(filter.shouldRun(testDescription));
+        //Replicate FATRunner.describeChild()
+        Description defaultTestDescription = Description.createTestDescription(TestClassFull.class, defaultTest.getName(), defaultTest.getAnnotations());
+        assertFalse(filter.shouldRun(defaultTestDescription));
     }
 
     @Mode(TestMode.LITE)
@@ -70,10 +66,11 @@ public class CompoundFilterTests {
     public static class TestServletLite extends FATServlet {
 
         public void testMethod() {}
+
     }
 
     @Test
-    public void testServletFilterSuperseedsTestClassFilter() throws Exception {
+    public void testServletFilterSupersedesTestClassFilter() throws Exception {
         SyntheticServletTest testMethod = new SyntheticServletTest(TestServletLite.class, //
                         TestClassFull.class.getField("NOOP"), //
                         "FAKE/QUERY", //
@@ -81,41 +78,42 @@ public class CompoundFilterTests {
 
         //Replicate FATRunner.describeChild()
         Description testDescription = Description.createTestDescription(TestClassFull.class, testMethod.getName(), testMethod.getAnnotations());
-
-        CompoundFilter filter = new CompoundFilter(testFiltersToApply);
-
         assertTrue(filter.shouldRun(testDescription));
     }
 
-    @RunWith(FATRunner.class)
     public static class TestClass {
         public static LibertyServer NOOP;
-
-        @Test
-        public void dummyTestForRunner() {}
     }
 
-    @Mode(TestMode.FULL) //Should be superseeded by method annotation
+    @Mode(TestMode.FULL) //Should be superseded by method annotation
     @WebServlet("*/")
     public static class TestServletFullWithLiteMethod extends FATServlet {
 
         @Mode(TestMode.LITE)
-        public void testMethod() {}
+        public void liteMethod() {}
+
+        public void defaultMethod() {}
     }
 
     @Test
-    public void testServletMethodFilterSuperseedsTestServletFilter() throws Exception {
-        SyntheticServletTest testMethod = new SyntheticServletTest(TestServletFullWithLiteMethod.class, //
+    public void testServletMethodFilterSupersedesTestServletFilter() throws Exception {
+        SyntheticServletTest liteMethod = new SyntheticServletTest(TestServletFullWithLiteMethod.class, //
                         TestClass.class.getField("NOOP"), //
                         "FAKE/QUERY", //
-                        TestServletFullWithLiteMethod.class.getMethod("testMethod"));
+                        TestServletFullWithLiteMethod.class.getMethod("liteMethod"));
 
         //Replicate FATRunner.describeChild()
-        Description testDescription = Description.createTestDescription(TestClass.class, testMethod.getName(), testMethod.getAnnotations());
+        Description liteTestDescription = Description.createTestDescription(TestClass.class, liteMethod.getName(), liteMethod.getAnnotations());
+        assertTrue(filter.shouldRun(liteTestDescription));
 
-        CompoundFilter filter = new CompoundFilter(testFiltersToApply);
+        SyntheticServletTest defaultMethod = new SyntheticServletTest(TestServletFullWithLiteMethod.class, //
+                        TestClass.class.getField("NOOP"), //
+                        "FAKE/QUERY", //
+                        TestServletFullWithLiteMethod.class.getMethod("defaultMethod"));
 
-        assertTrue(filter.shouldRun(testDescription));
+        //Replicate FATRunner.describeChild()
+        Description defaultTestDescription = Description.createTestDescription(TestClass.class, defaultMethod.getName(), defaultMethod.getAnnotations());
+        assertFalse(filter.shouldRun(defaultTestDescription));
     }
 
 }
