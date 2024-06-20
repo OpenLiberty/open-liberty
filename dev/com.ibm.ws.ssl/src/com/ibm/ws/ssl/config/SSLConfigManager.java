@@ -383,10 +383,6 @@ public class SSLConfigManager {
         if (clientAuthenticationSupported != null && !clientAuthenticationSupported.equals(""))
             sslprops.setProperty(Constants.SSLPROP_CLIENT_AUTHENTICATION_SUPPORTED, clientAuthenticationSupported);
 
-        String securityLevel = getSystemProperty(Constants.SSLPROP_SECURITY_LEVEL);
-        if (securityLevel != null && !securityLevel.equals(""))
-            sslprops.setProperty(Constants.SSLPROP_SECURITY_LEVEL, securityLevel);
-
         String clientKeyAlias = getSystemProperty(Constants.SSLPROP_KEY_STORE_CLIENT_ALIAS);
         if (clientKeyAlias != null && !clientKeyAlias.equals(""))
             sslprops.setProperty(Constants.SSLPROP_KEY_STORE_CLIENT_ALIAS, clientKeyAlias);
@@ -510,12 +506,7 @@ public class SSLConfigManager {
             sslprops.setProperty(Constants.SSLPROP_CLIENT_AUTHENTICATION_SUPPORTED, clientAuthSup.toString());
         }
 
-        String prop = (String) map.get("securityLevel");
-        if (null != prop && !prop.isEmpty()) {
-            sslprops.setProperty(Constants.SSLPROP_SECURITY_LEVEL, prop);
-        }
-
-        prop = (String) map.get("clientKeyAlias");
+        String prop = (String) map.get("clientKeyAlias");
         if (null != prop && !prop.isEmpty()) {
             sslprops.setProperty(Constants.SSLPROP_KEY_STORE_CLIENT_ALIAS, prop);
         }
@@ -1396,14 +1387,9 @@ public class SSLConfigManager {
             if (cipherString != null) {
                 ciphers = cipherString.split("\\s+");
             } else {
-                String securityLevel = props.getProperty(Constants.SSLPROP_SECURITY_LEVEL);
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "securityLevel from properties is " + securityLevel);
-                if (securityLevel == null)
-                    securityLevel = "HIGH";
+                String securityLevel = "HIGH";
 
                 ciphers = adjustSupportedCiphersToSecurityLevel(socket.getSupportedCipherSuites(), securityLevel);
-
             }
         } catch (Exception e) {
             if (tc.isDebugEnabled())

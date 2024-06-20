@@ -101,15 +101,7 @@
             
         <AD id="clientAuthenticationSupported" name="%repertoire.clientAuthenticationSupported" description="%repertoire.clientAuthenticationSupported.desc" 
             required="false" type="Boolean" default="false" />
-            
-        <AD id="securityLevel" name="%repertoire.securityLevel" description="%repertoire.securityLevel.desc" 
-            required="false" type="String" default="HIGH" >
-            <Option label="%repertoire.HIGH" value="HIGH"/>
-            <Option label="%repertoire.MEDIUM" value="MEDIUM"/>
-            <Option label="%repertoire.LOW" value="LOW"/>
-            <Option label="%repertoire.CUSTOM" value="CUSTOM"/>
-        </AD> 
-            
+                        
         <AD id="clientKeyAlias" name="%repertoire.clientKeyAlias" description="%repertoire.clientKeyAlias.desc" 
             required="false" type="String" />
             
