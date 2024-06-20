@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -95,7 +95,7 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
      * PI52696 - Timeout value for which the SSL closing handshake loop will attempt to complete final handshake
      * write before giving up.
      */
-    private int timeoutValueInSSLClosingHandshake = 30;
+    private int timeoutValueInSSLClosingHandshake = 5;
 
     private static Boolean useH2ProtocolAttribute = null;
 
