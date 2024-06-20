@@ -20,6 +20,7 @@ import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.http.monitor.HttpStatAttributes;
 import io.openliberty.http.monitor.metrics.HTTPMetricAdapter;
+import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.common.Attributes;
@@ -37,13 +38,9 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
 
     private static final String INSTR_SCOPE = "io.openliberty.microprofile.telemetry20.internal.http";
 
-    private static final String METRIC_NAME = "http.server.request.duration";
-
-    private static final String RUNTIME_INSTANCE_STR = "io.openliberty.microprofile.telemetry.runtime";
-
     @Override
     public void updateHttpMetrics(HttpStatAttributes httpStatAttributes, Duration duration, String appName) {
-        OpenTelemetry otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo((appName == null) ? RUNTIME_INSTANCE_STR : appName).getOpenTelemetry();
+        OpenTelemetry otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo((appName == null) ? OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME : appName).getOpenTelemetry();
 
         /*
          * Even if the HTTP call is served by the server/runtime, the "appName" can be non null.
@@ -53,7 +50,7 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
          *
          */
         if (otelInstance == null) {
-            otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo(RUNTIME_INSTANCE_STR).getOpenTelemetry();
+            otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo(OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME).getOpenTelemetry();
             if (otelInstance == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc,
@@ -66,12 +63,12 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
         }
 
         //Use boundaries specified by Otel HTTP Metric semantic convention
-        DoubleHistogram dHistogram = otelInstance.getMeterProvider().get(INSTR_SCOPE).histogramBuilder(METRIC_NAME).setUnit("s")
-                        .setDescription("Duration of HTTP server requests")
+        DoubleHistogram dHistogram = otelInstance.getMeterProvider().get(INSTR_SCOPE).histogramBuilder(OpenTelemetryConstants.HTTP_SERVER_REQUEST_DURATION_NAME)
+                        .setUnit(OpenTelemetryConstants.OTEL_SECONDS_UNIT)
+                        .setDescription(OpenTelemetryConstants.HTTP_SERVER_REQUEST_DURATION_DESC)
                         .setExplicitBucketBoundariesAdvice(List.of(0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0, 2.5, 5.0, 7.5, 10.0)).build();
 
         Context ctx = Context.current();
-
         dHistogram.record(duration.toSeconds(), retrieveAttributes(httpStatAttributes), ctx);
 
     }
@@ -79,23 +76,22 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
     private Attributes retrieveAttributes(HttpStatAttributes httpStatAttributes) {
 
         AttributesBuilder attributesBuilder = Attributes.builder();
-
-        attributesBuilder.put("http.request.method", httpStatAttributes.getRequestMethod());
-        attributesBuilder.put("url.scheme", httpStatAttributes.getScheme());
+        attributesBuilder.put(OpenTelemetryConstants.HTTP_REQUEST_METHOD, httpStatAttributes.getRequestMethod());
+        attributesBuilder.put(OpenTelemetryConstants.URL_SCHEME, httpStatAttributes.getScheme());
 
         Integer status = httpStatAttributes.getResponseStatus().orElse(-1);
-        attributesBuilder.put("http.response.status_code", status == -1 ? "" : status.toString().trim());
+        attributesBuilder.put(OpenTelemetryConstants.HTTP_RESPONSE_STATUS_CODE, status == -1 ? "" : status.toString().trim());
 
-        attributesBuilder.put("http.route", httpStatAttributes.getHttpRoute().orElse(""));
+        attributesBuilder.put(OpenTelemetryConstants.HTTP_ROUTE, httpStatAttributes.getHttpRoute().orElse(""));
 
-        attributesBuilder.put("network.protocol.name", httpStatAttributes.getNetworkProtocolName());
-        attributesBuilder.put("network.protocol.version", httpStatAttributes.getNetworkProtocolVersion());
+        attributesBuilder.put(OpenTelemetryConstants.NETWORK_PROTOCOL_NAME, httpStatAttributes.getNetworkProtocolName());
+        attributesBuilder.put(OpenTelemetryConstants.NETWORK_PROTOCOL_VERSION, httpStatAttributes.getNetworkProtocolVersion());
 
-        attributesBuilder.put("server.address", httpStatAttributes.getServerName());
-        attributesBuilder.put("server.port", String.valueOf(httpStatAttributes.getServerPort()));
+        attributesBuilder.put(OpenTelemetryConstants.SERVER_ADDRESS, httpStatAttributes.getServerName());
+        attributesBuilder.put(OpenTelemetryConstants.SERVER_PORT, String.valueOf(httpStatAttributes.getServerPort()));
 
         if (httpStatAttributes.getErrorType().isPresent()) {
-            attributesBuilder.put("error.type", httpStatAttributes.getErrorType().get());
+            attributesBuilder.put(OpenTelemetryConstants.ERROR_TYPE, httpStatAttributes.getErrorType().get());
         }
 
         return attributesBuilder.build();

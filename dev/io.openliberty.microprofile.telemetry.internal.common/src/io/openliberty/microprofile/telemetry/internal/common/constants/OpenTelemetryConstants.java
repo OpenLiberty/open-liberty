@@ -24,4 +24,21 @@ public class OpenTelemetryConstants {
     public static final String INSTRUMENTATION_NAME = "io.openliberty.microprofile.telemetry";
     public static final String OTEL_RUNTIME_INSTANCE_NAME = "io.openliberty.microprofile.telemetry.runtime";
 
+    //HTTP Metric attributes
+    public static final String ERROR_TYPE = "error.type";
+    public static final String HTTP_REQUEST_METHOD = "http.request.method";
+    public static final String HTTP_RESPONSE_STATUS_CODE = "http.response.status_code";
+    public static final String HTTP_ROUTE = "http.route";
+    public static final String NETWORK_PROTOCOL_NAME = "network.protocol.name";
+    public static final String NETWORK_PROTOCOL_VERSION = "network.protocol.version";
+    public static final String SERVER_ADDRESS = "server.address";
+    public static final String SERVER_PORT = "server.port";
+    public static final String URL_SCHEME = "url.scheme";
+
+    //HTTP Metric name + desc
+    public static final String HTTP_SERVER_REQUEST_DURATION_NAME = "http.server.request.duration";
+    public static final String HTTP_SERVER_REQUEST_DURATION_DESC = "Duration of HTTP server requests";
+
+    //HTTP Metric units
+    public static final String OTEL_SECONDS_UNIT = "s";
 }
