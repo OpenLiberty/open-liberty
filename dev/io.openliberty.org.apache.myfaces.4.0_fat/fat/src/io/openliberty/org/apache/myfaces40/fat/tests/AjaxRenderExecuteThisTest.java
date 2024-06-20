@@ -20,16 +20,25 @@ import java.util.List;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.Keys;
+import org.testcontainers.Testcontainers;
+import org.testcontainers.containers.BrowserWebDriverContainer;
 
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
@@ -37,14 +46,22 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.org.apache.myfaces40.fat.FATSuite;
+import io.openliberty.org.apache.myfaces40.fat.JSFUtils;
+import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
+import io.openliberty.faces.fat.selenium.util.internal.WebPage;
+import io.openliberty.faces.fat.selenium.util.internal.CustomDriver;
+import java.time.Duration;
 
 /**
- * Tests for the execute="@this" and render="@this" within a nested composite component.
- * This is a bug that was fixed for Faces 4.0, but still has an outstanding spec interpretation to be resolved.
- * More tests might need to be added depending on the outcome of issue: https://github.com/jakartaee/faces/issues/1567
+ * Tests for the execute="@this" and render="@this" within a nested composite
+ * component.
+ * This is a bug that was fixed for Faces 4.0, but still has an outstanding spec
+ * interpretation to be resolved.
+ * More tests might need to be added depending on the outcome of issue:
+ * https://github.com/jakartaee/faces/issues/1567
+ * As of now it looks like the issue is resolved and tests pass
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat({SkipForRepeat.NO_MODIFICATION,SkipForRepeat.EE11_FEATURES}) // Skipped due to HTMLUnit / JavaScript incompatibility (New JS in RC5)
 public class AjaxRenderExecuteThisTest {
 
     protected static final Class<?> clazz = AjaxRenderExecuteThisTest.class;
@@ -57,18 +74,32 @@ public class AjaxRenderExecuteThisTest {
     @Rule
     public TestName name = new TestName();
 
+    @ClassRule
+    public static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage())
+            .withCapabilities(new ChromeOptions())
+            .withAccessToHost(true)
+            .withSharedMemorySize(214783648L);
+
+    private static ExtendedWebDriver driver;
+
     @BeforeClass
     public static void setUp() throws Exception {
 
-        WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME + ".war", "io.openliberty.org.apache.faces40.fat.ajax.beans");
+        WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME + ".war",
+                "io.openliberty.org.apache.faces40.fat.ajax.beans");
 
-//        //Test differences between myfaces and mojarra if needed
-//        app.addAsLibraries(new File("publish/files/mojarra40/").listFiles());
-//        app.addAsDirectories("publish/files/permissions");
+        // //Test differences between myfaces and mojarra if needed
+        // app.addAsLibraries(new File("publish/files/mojarra40/").listFiles());
+        // app.addAsDirectories("publish/files/permissions");
 
         ShrinkHelper.exportDropinAppToServer(server, app);
 
         server.startServer(AjaxRenderExecuteThisTest.class.getSimpleName() + ".log");
+
+        Testcontainers.exposeHostPorts(server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
+
+        driver = new CustomDriver(
+                new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
     }
 
     @AfterClass
@@ -79,201 +110,147 @@ public class AjaxRenderExecuteThisTest {
         }
     }
 
-    private void fillForm(HtmlPage page, String form, String input, String value) {
-        HtmlTextInput inputObj = (HtmlTextInput) page.getElementById(form + ":inputs:" + input);
-        inputObj.setValueAttribute(value);
-        inputObj.fireEvent("change");
-        FATSuite.logOutputForDebugging(server, page.asXml(), form + "." + input + ".html");
+    private void fillFormSelenium(WebPage page, String form, String input, String value) {
+        WebElement inputObj = page.findElement(By.id(form + ":inputs:" + input));
+        // Can't use inputObj.clear() because this triggers a onchange event before we
+        // have our desired values in the input leading to inputObj references being
+        // stale (results in Selenium error)
+        for (int i = 0; i < 20; i++) {
+            inputObj.sendKeys(Keys.BACK_SPACE);
+        }
+        inputObj.sendKeys(value);
+        // Click to trigger onchange event in Selenium by changing focus
+        page.findElement(By.id(form)).click();
     }
 
-    private void fillInputs(HtmlPage page, String form, List<HtmlTextInput> addressAttributes) {
-        addressAttributes.add(0, (HtmlTextInput) page.getElementById(form + ":inputs:street"));
-        addressAttributes.add(1, (HtmlTextInput) page.getElementById(form + ":inputs:city"));
-        addressAttributes.add(2, (HtmlTextInput) page.getElementById(form + ":inputs:state"));
+    private void fillInputsSelenium(WebPage page, String form, List<WebElement> addressAttributes) {
+        addressAttributes.clear();
+        addressAttributes.add(0, (WebElement) page.findElement(By.id(form + ":inputs:street")));
+        addressAttributes.add(1, (WebElement) page.findElement(By.id(form + ":inputs:city")));
+        addressAttributes.add(2, (WebElement) page.findElement(By.id(form + ":inputs:state")));
     }
 
-    private void replaceAllMessages(List<String> messageList, String... newMessages) {
+    private void replaceAllMessages(List<String> messageList, List<String> newMessages) {
         messageList.clear();
-        messageList.addAll(List.of(newMessages));
+        messageList.addAll(newMessages);
     }
 
-    private void assertListEqual(List<String> expectedMessages, List<String> actualMessages) {
+    private void assertListEqual(List<String> expectedMessages, String actualMessages) {
         for (String expectedMessage : expectedMessages) {
             try {
-                assertNotNull(actualMessages.remove(expectedMessage));
+                assertTrue(actualMessages.contains(expectedMessage));
+                int index = actualMessages.indexOf(expectedMessage);
+                // If expectedMessage is at front of actualMessage get all of string after it,
+                // create a new string without the expectedMessage
+                actualMessages = index == 0 ? actualMessages.substring(expectedMessage.length())
+                        : actualMessages.substring(0, index)
+                                // If the expectedMessage goes until the end of the file nothing more needs to
+                                // be done
+                                + (index + expectedMessage.length() < actualMessages.length()
+                                        ? actualMessages.substring(index + expectedMessage.length())
+                                        : "");
             } catch (AssertionError ae) {
-                throw new AssertionError("Expected message " + expectedMessage + " was was not in list of actual messages");
+                throw new AssertionError("Expected message " + expectedMessage + " was was not in actual messages");
             }
         }
 
         try {
-            assertTrue(actualMessages.isEmpty());
+            assertTrue(actualMessages.trim().equals(""));
         } catch (AssertionError ae) {
-            throw new AssertionError("Actual message(s) [" + String.join(",", actualMessages) + "] where not expected.");
+            throw new AssertionError("Actual message(s) [" + actualMessages + "] where not expected.");
         }
+    }
+
+    private void runAjaxTest(WebPage page, String form, String input, String value, String assertString1,
+            String assertString2, String assertString3, String... expMessages) {
+        // Address attributes: street, city, state
+        List<WebElement> addressAttributes = new ArrayList<>(3);
+        String actualMessages;
+        List<String> expectedMessages = new ArrayList<>();
+
+        // Test street
+        fillFormSelenium(page, form, input, value);
+        // Need to wait for the inputs to update
+        page.wait(Duration.ofMillis(4000));
+        fillInputsSelenium(page, form, addressAttributes);
+
+        Log.info(clazz, name.getMethodName(), "Attribute 0:" + addressAttributes.get(0).getAttribute("value"));
+        Log.info(clazz, name.getMethodName(), "Attribute 1:" + addressAttributes.get(1).getAttribute("value"));
+        Log.info(clazz, name.getMethodName(), "Attribute 2:" + addressAttributes.get(2).getAttribute("value"));
+
+        actualMessages = page.findElement(By.id(form + ":messages")).getText();
+        replaceAllMessages(expectedMessages, List.of(expMessages));
+
+        Log.info(clazz, name.getMethodName(), "Actual:" + actualMessages);
+        Log.info(clazz, name.getMethodName(), "Expected:" + expectedMessages);
+
+        assertEquals("street contained unexpected result", assertString1,
+                addressAttributes.get(0).getAttribute("value"));
+        assertEquals("city contained unexpected result", assertString2, addressAttributes.get(1).getAttribute("value"));
+        assertEquals("state contained unexpected result", assertString3,
+                addressAttributes.get(2).getAttribute("value"));
+        assertListEqual(expectedMessages, actualMessages);
+
+        // Here is an example of what one part looked like:
+        // https://github.com/OpenLiberty/open-liberty/blob/72ebaa8a218b5387acb57e05bac53cdfddf84894/dev/io.openliberty.org.apache.myfaces.4.0_fat/fat/src/io/openliberty/org/apache/myfaces40/fat/tests/AjaxRenderExecuteThisTest.java#L133
+        // These parts were abstracted into this function to lower repetition as each of
+        // the following tests had 3 parts that all ran the same
     }
 
     @Test
     public void testAjaxRender() throws Exception {
-        try (WebClient webClient = new WebClient()) {
-            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+        String url = JSFUtils.createSeleniumURLString(server, APP_NAME, "/ajaxRenderExecuteThis.xhtml");
+        WebPage page = new WebPage(driver);
+        page.get(url);
+        page.waitForPageToLoad();
 
-            URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/ajaxRenderExecuteThis.xhtml");
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
+        Log.info(clazz, name.getMethodName(), page.getPageSource());
 
-            //Address attributes: street, city, state
-            List<HtmlTextInput> addressAttributes = new ArrayList<>(3);
-            List<String> actualMessages = new ArrayList<>();
-            List<String> expectedMessages = new ArrayList<>();
+        // Test attributes
+        String form = "testRender";
 
-            //Test attributes
-            String form = "testRender";
-
-            // Test street
-            fillForm(page, form, "street", "aberdeen way");
-            fillInputs(page, form, addressAttributes);
-
-            replaceAllMessages(actualMessages, page.getElementById(form + ":messages").asText().split(System.lineSeparator()));
-            replaceAllMessages(expectedMessages, "setTestRenderStreet:aberdeen way", "setTestRenderCity:");
-
-            assertEquals("street contained unexpected result", "aberdeen way", addressAttributes.get(0).getValueAttribute());
-            assertEquals("city contained unexpected result", "", addressAttributes.get(1).getValueAttribute());
-            assertEquals("state contained unexpected result", "", addressAttributes.get(2).getValueAttribute());
-            assertListEqual(expectedMessages, actualMessages);
-
-            // Test city
-            fillForm(page, form, "city", "big lake");
-            fillInputs(page, form, addressAttributes);
-
-            replaceAllMessages(actualMessages, page.getElementById(form + ":messages").asText().split(System.lineSeparator()));
-            replaceAllMessages(expectedMessages, "setTestRenderStreet:aberdeen way", "setTestRenderCity:big lake");
-
-            assertEquals("street contained unexpected result", "aberdeen way", addressAttributes.get(0).getValueAttribute());
-            assertEquals("city contained unexpected result", "big lake", addressAttributes.get(1).getValueAttribute());
-            assertEquals("state contained unexpected result", "", addressAttributes.get(2).getValueAttribute());
-            assertListEqual(expectedMessages, actualMessages);
-
-            // Test state
-            fillForm(page, form, "state", "minnesota");
-            fillInputs(page, form, addressAttributes);
-
-            replaceAllMessages(actualMessages, page.getElementById(form + ":messages").asText().split(System.lineSeparator()));
-            replaceAllMessages(expectedMessages, "setTestRenderState:minnesota");
-
-            assertEquals("street contained unexpected result", "", addressAttributes.get(0).getValueAttribute());
-            assertEquals("city contained unexpected result", "", addressAttributes.get(1).getValueAttribute());
-            assertEquals("state contained unexpected result", "minnesota^", addressAttributes.get(2).getValueAttribute());
-            assertListEqual(expectedMessages, actualMessages);
-        }
+        runAjaxTest(page, form, "street", "aberdeen way", "aberdeen way", "", "", "setTestRenderStreet:aberdeen way",
+                "setTestRenderCity:");
+        runAjaxTest(page, form, "city", "big lake", "aberdeen way", "big lake", "", "setTestRenderStreet:aberdeen way",
+                "setTestRenderCity:big lake");
+        runAjaxTest(page, form, "state", "minnesota", "", "", "minnesota^", "setTestRenderState:minnesota");
     }
 
     @Test
     public void testAjaxExecuteThis() throws Exception {
-        try (WebClient webClient = new WebClient()) {
-            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+        String url = JSFUtils.createSeleniumURLString(server, APP_NAME, "/ajaxRenderExecuteThis.xhtml");
+        WebPage page = new WebPage(driver);
+        page.get(url);
+        page.waitForPageToLoad();
 
-            URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/ajaxRenderExecuteThis.xhtml");
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
+        Log.info(clazz, name.getMethodName(), page.getPageSource());
 
-            // Inputs / Outputs
-            List<HtmlTextInput> inputs = new ArrayList<>(3);
-            List<String> actualMessages = new ArrayList<>();
-            List<String> expectedMessages = new ArrayList<>();
+        // Test attributes
+        String form = "testExecuteThis";
 
-            //Test attributes
-            String form = "testExecuteThis";
-
-            // Test street
-            fillForm(page, form, "street", "w 4th street");
-            fillInputs(page, form, inputs);
-
-            replaceAllMessages(actualMessages, page.getElementById(form + ":messages").asText().split(System.lineSeparator()));
-            replaceAllMessages(expectedMessages, "setTestExecuteThisStreet:w 4th street", "setTestExecuteThisCity:");
-
-            assertEquals("street contained unexpected result", "w 4th street", inputs.get(0).getValueAttribute());
-            assertEquals("city contained unexpected result", "", inputs.get(1).getValueAttribute());
-            assertEquals("state contained unexpected result", "", inputs.get(2).getValueAttribute());
-            assertListEqual(expectedMessages, actualMessages);
-
-            // Test city
-            fillForm(page, form, "city", "red wing");
-            fillInputs(page, form, inputs);
-
-            replaceAllMessages(actualMessages, page.getElementById(form + ":messages").asText().split(System.lineSeparator()));
-            replaceAllMessages(expectedMessages, "setTestExecuteThisStreet:w 4th street", "setTestExecuteThisCity:red wing");
-
-            assertEquals("street contained unexpected result", "w 4th street", inputs.get(0).getValueAttribute());
-            assertEquals("city contained unexpected result", "red wing", inputs.get(1).getValueAttribute());
-            assertEquals("state contained unexpected result", "", inputs.get(2).getValueAttribute());
-            assertListEqual(expectedMessages, actualMessages);
-
-            // Test state
-            fillForm(page, form, "state", "minnesota");
-            fillInputs(page, form, inputs);
-
-            replaceAllMessages(actualMessages, page.getElementById(form + ":messages").asText().split(System.lineSeparator()));
-            replaceAllMessages(expectedMessages, "setTestExecuteThisState:minnesota");
-
-            assertEquals("street contained unexpected result", "", inputs.get(0).getValueAttribute());
-            assertEquals("city contained unexpected result", "", inputs.get(1).getValueAttribute());
-            assertEquals("state contained unexpected result", "minnesota^", inputs.get(2).getValueAttribute());
-            assertListEqual(expectedMessages, actualMessages);
-        }
-
+        runAjaxTest(page, form, "street", "w 4th street", "w 4th street", "", "",
+                "setTestExecuteThisStreet:w 4th street", "setTestExecuteThisCity:");
+        runAjaxTest(page, form, "city", "red wing", "w 4th street", "red wing", "",
+                "setTestExecuteThisStreet:w 4th street", "setTestExecuteThisCity:red wing");
+        runAjaxTest(page, form, "state", "minnesota", "", "", "minnesota^", "setTestExecuteThisState:minnesota");
     }
 
     @Test
     public void testAjaxRenderThis() throws Exception {
+        String url = JSFUtils.createSeleniumURLString(server, APP_NAME, "/ajaxRenderExecuteThis.xhtml");
+        WebPage page = new WebPage(driver);
+        page.get(url);
+        page.waitForPageToLoad();
 
-        try (WebClient webClient = new WebClient()) {
-            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+        Log.info(clazz, name.getMethodName(), page.getPageSource());
 
-            URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/ajaxRenderExecuteThis.xhtml");
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
+        // Test attributes
+        String form = "testRenderThis";
 
-            // Inputs / Outputs
-            List<HtmlTextInput> inputs = new ArrayList<>(3);
-            List<String> actualMessages = new ArrayList<>();
-            List<String> expectedMessages = new ArrayList<>();
-
-            //Test attributes
-            String form = "testRenderThis";
-
-            // Test street
-            fillForm(page, form, "street", "hilbert ave");
-            fillInputs(page, form, inputs);
-
-            replaceAllMessages(actualMessages, page.getElementById(form + ":messages").asText().split(System.lineSeparator()));
-            replaceAllMessages(expectedMessages, "setTestRenderThisStreet:hilbert ave", "setTestRenderThisCity:");
-
-            assertEquals("street contained unexpected result", "hilbert ave^", inputs.get(0).getValueAttribute());
-            assertEquals("city contained unexpected result", "^", inputs.get(1).getValueAttribute());
-            assertEquals("state contained unexpected result", "", inputs.get(2).getValueAttribute());
-            assertListEqual(expectedMessages, actualMessages);
-
-            // Test city
-            fillForm(page, form, "city", "winona");
-            fillInputs(page, form, inputs);
-
-            replaceAllMessages(actualMessages, page.getElementById(form + ":messages").asText().split(System.lineSeparator()));
-            replaceAllMessages(expectedMessages, "setTestRenderThisStreet:hilbert ave^", "setTestRenderThisCity:winona");
-
-            assertEquals("street contained unexpected result", "hilbert ave^^", inputs.get(0).getValueAttribute());
-            assertEquals("city contained unexpected result", "winona^", inputs.get(1).getValueAttribute());
-            assertEquals("state contained unexpected result", "", inputs.get(2).getValueAttribute());
-            assertListEqual(expectedMessages, actualMessages);
-
-            // Test state
-            fillForm(page, form, "state", "minnesota");
-            fillInputs(page, form, inputs);
-
-            replaceAllMessages(actualMessages, page.getElementById(form + ":messages").asText().split(System.lineSeparator()));
-            replaceAllMessages(expectedMessages, "setTestRenderThisState:minnesota");
-
-            assertEquals("street contained unexpected result", "", inputs.get(0).getValueAttribute());
-            assertEquals("city contained unexpected result", "", inputs.get(1).getValueAttribute());
-            assertEquals("state contained unexpected result", "minnesota^", inputs.get(2).getValueAttribute());
-            assertListEqual(expectedMessages, actualMessages);
-        }
+        runAjaxTest(page, form, "street", "hilbert ave", "hilbert ave^", "^", "", "setTestRenderThisStreet:hilbert ave",
+                "setTestRenderThisCity:");
+        runAjaxTest(page, form, "city", "winona", "hilbert ave^^", "winona^", "",
+                "setTestRenderThisStreet:hilbert ave^", "setTestRenderThisCity:winona");
+        runAjaxTest(page, form, "state", "minnesota", "", "", "minnesota^", "setTestRenderThisState:minnesota");
     }
 }
