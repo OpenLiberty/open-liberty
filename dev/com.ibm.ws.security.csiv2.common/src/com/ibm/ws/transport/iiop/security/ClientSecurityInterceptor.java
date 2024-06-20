@@ -149,24 +149,40 @@ final class ClientSecurityInterceptor extends LocalObject implements ClientReque
             }
 
             Iterator<CompatibleMechanisms> compatiblePoliciesIterator = compatibleMechanismsList.iterator();
-            CompatibleMechanisms compatibleMechanisms = compatiblePoliciesIterator.next();
-            CSSCompoundSecMechConfig clientMechConfig = compatibleMechanisms.getCSSCompoundSecMechConfig();
-            TSSCompoundSecMechConfig targetMechConfig = compatibleMechanisms.getTSSCompoundSecMechConfig();
-            ServiceContext context = clientMechConfig.generateServiceContext(codec, targetMechConfig, ri);
+            while (compatiblePoliciesIterator.hasNext()) {
+                try {
+                    CompatibleMechanisms compatibleMechanisms = compatiblePoliciesIterator.next();
+                    CSSCompoundSecMechConfig clientMechConfig = compatibleMechanisms.getCSSCompoundSecMechConfig();
+                    TSSCompoundSecMechConfig targetMechConfig = compatibleMechanisms.getTSSCompoundSecMechConfig();
+                    ServiceContext context = clientMechConfig.generateServiceContext(codec, targetMechConfig, ri);
 
-            /* For any reason, if the context failed to be created, we have to log a warning message. */
-            if (context != null) {
-                if (isDebug) {
-                    Tr.debug(tc, "Msg context id: " + context.context_id + " for request id: " + requestId + ".");
-                    Tr.debug(tc, "Encoded msg: 0x" + Util.byteToString(context.context_data) + " for request id: " + requestId + ".");
-                }
-                ri.add_request_service_context(context, true);
-            } else {
-                if (isDebug) {
-                    Tr.debug(tc, "No security service context found for request id " + requestId + ".");
+                    /* For any reason, if the context failed to be created, we have to log a warning message. */
+                    if (context != null) {
+                        if (isDebug) {
+                            Tr.debug(tc, "Msg context id: " + context.context_id + " for request id: " + requestId + ".");
+                            Tr.debug(tc, "Encoded msg: 0x" + Util.byteToString(context.context_data) + " for request id: " + requestId + ".");
+                        }
+                        ri.add_request_service_context(context, true);
+                    } else {
+                        if (isDebug) {
+                            Tr.debug(tc, "Could not establish a valid security service context for request id " + requestId
+                                         + " using the following client and target configs. We will look for additional compatible configs and retry.\n" +
+                                         "Client Config:\n" + clientMechConfig +
+                                         "Target Config:\n" + targetMechConfig);
+                        }
+                    }
+                    break; //If we are here we found an acceptable ServiceContext. Break the loop.
+                } catch (IllegalStateException ise) {
+                    buildPolicyErrorMessage("CSIv2_CLIENT_UNEXPECTED_EXCEPTION_ERROR",
+                                            "CWWKS9542E: There was an unexpected exception while attempting to send an outbound CSIv2 request for request id {0}. The exception message is {1}",
+                                            requestId, ise.getMessage());
+                    if (isDebug) {
+                        Tr.debug(tc,
+                                 "There was an unexpected exception while attempting to send an outbound CSIv2 request using the following client and target configs. We will look for additional compatible configs and retry.",
+                                 ise);
+                    }
                 }
             }
-
         } catch (BAD_PARAM bp) {
             if (isDebug) {
                 Tr.debug(tc, "No security service context found for request id: " + requestId + ".");
@@ -210,10 +226,10 @@ final class ClientSecurityInterceptor extends LocalObject implements ClientReque
      * Receives the message key like "CSIv2_COMMON_AUTH_LAYER_DISABLED"
      * from this key we extract the message from the NLS message bundle
      * which contains the message along with the CWWKS message code.
-     * 
+     *
      * Example:
      * CSIv2_CLIENT_POLICY_DOESNT_EXIST_FAILED=CWWKS9568E: The client security policy does not exist.
-     * 
+     *
      * @param msgCode
      */
     private void buildPolicyErrorMessage(String msgKey, String defaultMessage, Object... arg1) {
