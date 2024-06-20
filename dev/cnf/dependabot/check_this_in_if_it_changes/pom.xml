@@ -147,6 +147,11 @@
       <version>3.3.4</version>
     </dependency>
     <dependency>
+      <groupId>com.github.mwiede</groupId>
+      <artifactId>jsch</artifactId>
+      <version>0.2.18</version>
+    </dependency>
+    <dependency>
       <groupId>com.google.errorprone</groupId>
       <artifactId>error_prone_annotations</artifactId>
       <version>2.4.0</version>
@@ -230,11 +235,6 @@
       <groupId>com.icegreen</groupId>
       <artifactId>greenmail</artifactId>
       <version>1.5.10</version>
-    </dependency>
-    <dependency>
-      <groupId>com.github.mwiede</groupId>
-      <artifactId>jsch</artifactId>
-      <version>0.2.18</version>
     </dependency>
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
@@ -1329,7 +1329,7 @@
     <dependency>
       <groupId>jakarta.data</groupId>
       <artifactId>jakarta.data-api</artifactId>
-      <version>1.0.0-RC1</version>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>jakarta.ejb</groupId>
@@ -1349,7 +1349,7 @@
     <dependency>
       <groupId>jakarta.enterprise.concurrent</groupId>
       <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-      <version>3.1.0-RC2</version>
+      <version>3.1.0</version>
     </dependency>
     <dependency>
       <groupId>jakarta.enterprise</groupId>
