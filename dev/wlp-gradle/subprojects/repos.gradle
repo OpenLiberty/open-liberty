@@ -19,6 +19,11 @@
  * Do not fall back to Maven Central and IBM DHE when there are Artifactory outages.
  */
 repositories {
+    if(file("unzipped-open-liberty/wasliberty-open-liberty").exists()){
+        maven{
+            url("file://unzipped-open-liberty/wasliberty-open-liberty")
+        }
+    }
     if (isUsingArtifactory) {
         maven {
             credentials {

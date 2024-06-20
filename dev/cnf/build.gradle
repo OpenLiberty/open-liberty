@@ -83,8 +83,8 @@ task checkAlphabetical() {
 }
 
 task copyMavenLibs(type: Copy) {
-    from configurations.binaries
-    into project.file('mavenlibs')
+        from configurations.binaries
+        into project.file('mavenlibs')
 }
 
 task dependabotGenerate() {
@@ -175,6 +175,15 @@ task initialize {
         println "Gradle Initialized"
     }
 }
+
+task initializePersonalBuild{
+    dependsOn cleanRepos
+    dependsOn copyMavenLibs
+    dependsOn updatePluginClasses
+    doLast {
+        println "Gradle Initialized"
+    }
+}    
 
 clean {
     dependsOn cleanRepos
