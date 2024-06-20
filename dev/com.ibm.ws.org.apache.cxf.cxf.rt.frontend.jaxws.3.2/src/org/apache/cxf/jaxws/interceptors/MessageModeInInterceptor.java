@@ -130,7 +130,7 @@ public class MessageModeInInterceptor extends AbstractPhaseInterceptor<Message> 
                     xsw.close();
                     o = new StreamSource(out.getInputStream());
                     if (isFinestEnabled) {
-                        LOG.finest("SOAPPart of SOAPMessage is converted to StreamSource to be added to MessageContentsList"); // Liberty Change issue #26529
+                        LOG.finest("SOAPPart of SOAPMessage is converted to StreamSource"); // Liberty Change issue #26529
                     }
                 }
             } catch (Exception e) {
@@ -139,12 +139,12 @@ public class MessageModeInInterceptor extends AbstractPhaseInterceptor<Message> 
         } else if (SAXSource.class.isAssignableFrom(type)) {
             o = new StaxSource(new W3CDOMStreamReader(m.getSOAPPart()));
             if (isFinestEnabled) {
-                LOG.finest("SOAPPart of SOAPMessage is converted to StaxSource to be added to MessageContentsList"); // Liberty Change issue #26529
+                LOG.finest("SOAPPart of SOAPMessage is converted to StaxSource"); // Liberty Change issue #26529
             }
         } else if (Source.class.isAssignableFrom(type)) {
             o = new DOMSource(m.getSOAPPart());
             if (isFinestEnabled) {
-                LOG.finest("SOAPPart of SOAPMessage is converted to DOMSource to be added to MessageContentsList"); // Liberty Change issue #26529
+                LOG.finest("SOAPPart of SOAPMessage is converted to DOMSource"); // Liberty Change issue #26529
             }
         }
         list.set(0, o);

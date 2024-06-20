@@ -151,7 +151,7 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
             if (addressChanged(address)) {
                 setupEndpointAddressContext(getClient().getEndpoint());
                 if(isFinestEnabled)  {
-                    LOG.finest("Endpoint address is changed. Context is updated with the new address: " + getRequestContext().get(BindingProvider.ENDPOINT_ADDRESS_PROPERTY));   // Liberty Change issue #26529
+                    LOG.finest("Endpoint address has changed, Context is updated with the new address: " + getRequestContext().get(BindingProvider.ENDPOINT_ADDRESS_PROPERTY));   // Liberty Change issue #26529
                 } 
             }
         }
@@ -258,7 +258,7 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
             } catch (Throwable t2) {
                 //still didn't work, we'll just throw what we have
                 if(isFinestEnabled)  {
-                    LOG.finest("SOAPFault is failed to be created. Returning.");   // Liberty Change issue #26529
+                    LOG.finest("Failed to create the SOAPFault. Returning.");   // Liberty Change issue #26529
                 } 
                 return null;
             }
@@ -272,7 +272,7 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
                 try {
                     soapFault = SAAJFactoryResolver.createSOAPFactory(null).createFault();
                     if(isFinestEnabled)  {
-                        LOG.finest("SoapFault created once more with SAAJFactoryResolver: " + soapFault);   // Liberty Change issue #26529
+                        LOG.finest("SoapFault created with SAAJFactoryResolver: " + soapFault);   // Liberty Change issue #26529
                     } 
                 } catch (Throwable t) {
                     //ignore
@@ -332,7 +332,7 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
             if (msg != null) {
                 soapFault.setFaultString(msg);
                 if(isFinestEnabled)  {
-                    LOG.finest("Exception is not an instance of SoapFault. Fault string is set into SoapFault using Message: " + msg);   // Liberty Change issue #26529
+                    LOG.finest("Exception is not an instance of SoapFault. Fault string set to: " + msg);   // Liberty Change issue #26529
                 } 
             }
         }

@@ -103,20 +103,20 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
             BindingOperationInfo bop = ex.getBindingOperationInfo();
             Method ret = bop.getProperty(ASYNC_METHOD, Method.class);
             if (isFinestEnabled) {
-                LOG.finest("Method that is that is obtained BindingOperationInfo: " + ret); // Liberty Change issue #26529
+                LOG.finest("Method obtained from BindingOperationInfo is: " + ret); // Liberty Change issue #26529
             }
             if (ret == null) {
                 Class<?>[] ptypes = new Class<?>[mso.getParameterTypes().length + 1];
                 System.arraycopy(mso.getParameterTypes(), 0, ptypes, 0, mso.getParameterTypes().length);
                 ptypes[mso.getParameterTypes().length] = AsyncHandler.class;
                 if (isFinestEnabled) {
-                    LOG.finest("Method parameters that is that is obtained BindingOperationInfo: " + ptypes); // Liberty Change issue #26529
+                    LOG.finest("Method parameters obtained from BindingOperationInfo are: " + ptypes); // Liberty Change issue #26529
                 }
                 try {
                     ret = mso.getDeclaringClass().getMethod(mso.getName() + "Async", ptypes);
                     bop.setProperty(ASYNC_METHOD, ret);
                     if (isFinestEnabled) {
-                        LOG.finest("Asnc version of the method is set to BindingOperationInfo: " + ret); // Liberty Change issue #26529
+                        LOG.finest("Async Method obtained from BindingOperationInfo is: " + ret); // Liberty Change issue #26529
                     }
                 } catch (Throwable t) {
                     //ignore
@@ -133,7 +133,7 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
 
                 ContinuationProvider cp = ex.getInMessage().get(ContinuationProvider.class);
                 if (isFinestEnabled) {
-                    LOG.finest("ContinuationProvider that is that is obtained from inbound message: " + cp); // Liberty Change issue #26529
+                    LOG.finest("ContinuationProvider obtained from inbound message is: " + cp); // Liberty Change issue #26529
                 }
                 // Check for decoupled endpoints: if partial response already was sent, ignore continuation
                 boolean decoupledEndpoints = MessageUtils
@@ -143,7 +143,7 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
                     ex.put(JaxwsServerHandler.class, handler);
                     params.add(handler);
                     if (isFinestEnabled) {
-                        LOG.finest("New empty JaxwsServerHandler is created and added in exchange and invoke parameters."); // Liberty Change issue #26529
+                        LOG.finest("Empty JaxwsServerHandler created and added to exchange with invoked parameters."); // Liberty Change issue #26529
                     }
                     return ret;
                 } else if (cp != null && cp.getContinuation() != null) {
@@ -156,7 +156,7 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
                     ex.put(JaxwsServerHandler.class, handler);
                     params.add(handler);
                     if (isFinestEnabled) {
-                        LOG.finest("Suspend value of continuation that that is obtained from ContinuationProvider is set to 0. New empty JaxwsServerHandler is created and added in exchange and invoke parameters."); // Liberty Change issue #26529
+                        LOG.finest("Suspended Continuation. Empty JaxwsServerHandler created and added to exchange with invoked parameters.); // Liberty Change issue #26529
                     }
                     return ret;
                 }
@@ -171,7 +171,7 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
         
         if (!Provider.class.isAssignableFrom(serviceObjectClass)) {
             if (isFinestEnabled) {
-                LOG.finest("Method is returned: " + m + " since provider class is NOT assignable to service object"); // Liberty Change issue #26529
+                LOG.finest("Returning Method, " + m + ", because Provider is NOT assignable to service object"); // Liberty Change issue #26529
             }
             return m;
         }
@@ -192,7 +192,7 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
         // Should never happens
         if (genericType == null) {
             if (isFinestEnabled) {
-                LOG.finest("Return method: " + m + ". No non-generic class found."); // Liberty Change issue #26529
+                LOG.finest("Returning method, " + m + ", because the Service is not a generic type."); // Liberty Change issue #26529
             }
             return m;
         }
@@ -338,7 +338,7 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
             for (String key : handlerScopedStuff.keySet()) {
                 ctx.remove(key);
                 if (isFinestEnabled) {
-                    LOG.finest("Removed handler property from WrappedMessageContext with handler scope; key: " + key + " ,value: " + handlerScopedStuff.get(key)); // Liberty Change issue #26529
+                    LOG.finest("Removed handler property from WrappedMessageContext - key: " + key + "  and value: " + handlerScopedStuff.get(key)); // Liberty Change issue #26529
                 }
             }
         }
@@ -353,7 +353,7 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
         for (Map.Entry<String, Object> key : handlerScopedStuff.entrySet()) {
             ctx.put(key.getKey(), key.getValue(), Scope.HANDLER);
             if (isFinestEnabled) {
-                LOG.finest("Added handler property to WrappedMessageContext with handler scope; key: " + key.getKey() + " ,value: " + key.getValue()); // Liberty Change issue #26529
+                LOG.finest("Added handler property to WrappedMessageContext - key: " + key + "  and value: " + handlerScopedStuff.get(key)); // Liberty Change issue #26529
             }
         }
     }
@@ -373,7 +373,7 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
             m = ep.getBinding().createMessage(m);
             exchange.setOutMessage(m);
             if (LOG.isLoggable(Level.FINEST)) {
-                LOG.finest("Out message can not be found in exchange and it's not one way. New our message is created and added to exchange: " + m); // Liberty Change issue #26529
+                LOG.finest("Out message can not be found in the exchange and it's not one way. A new message is created and added to exchange: " + m); // Liberty Change issue #26529
             }
         }
         return m;
@@ -413,7 +413,7 @@ public abstract class AbstractJAXWSMethodInvoker extends FactoryInvoker {
                     List<String> ct = heads.get("Content-Type");
                     exchange.getOutMessage().put(Message.CONTENT_TYPE, ct.get(0));
                     if (isFinestEnabled) {
-                        LOG.finest("Content type value that is that is obtained from protocol headers in out message is set in content type in out message: " + ct.get(0)); // Liberty Change issue #26529
+                        LOG.finest("Protocol header on outbound message, Content-Type, has been set to: " + ct.get(0)); // Liberty Change issue #26529
                     }
                     heads.remove("Content-Type");
                 }

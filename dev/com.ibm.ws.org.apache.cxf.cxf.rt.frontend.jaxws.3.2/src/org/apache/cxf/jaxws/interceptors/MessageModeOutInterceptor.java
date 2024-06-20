@@ -306,7 +306,7 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
                         cxfSoapMessage.setVersion(Soap12.getInstance());
                         cxfSoapMessage.put(Message.CONTENT_TYPE, cxfSoapMessage.getVersion().getContentType());
                         if(isFinestEnabled)  {
-                            LOG.finest("Message version is set to Soap12 version: " + cxfSoapMessage.getVersion());   // Liberty Change issue #26529
+                            LOG.finest("Message version is SOAP 1.2 " + cxfSoapMessage.getVersion());   // Liberty Change issue #26529
                             LOG.finest("Message content type is set to cxfSoapMessage version's content type: " + cxfSoapMessage.get(Message.CONTENT_TYPE));   // Liberty Change issue #26529
                         }
                     }

@@ -334,7 +334,7 @@ public class SOAPHandlerInterceptor extends
                     }
                 }
                 if (isFinestEnabled) {
-                    LOG.finest("Reference parameters that is obtained from SOAP header: " + params); // Liberty Change issue #26529
+                    LOG.finest("Reference parameters obtained from SOAP header: " + params); // Liberty Change issue #26529
                 }
                 if (isRequestor(message) && msg.getSOAPPart().getEnvelope().getBody() != null
                         && msg.getSOAPPart().getEnvelope().getBody().hasFault()) {

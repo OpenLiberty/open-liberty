@@ -287,12 +287,12 @@ public class ServiceImpl extends ServiceDelegate {
         if (portName == null) {
             ei = service.getServiceInfos().get(0).getEndpoints().iterator().next();
             if (isFinestEnabled) {
-                LOG.finest("Jaxws endpoint that is obtained from service > ServiceInfo(0) since portname is null: " + ei);  // Liberty Change issue #26529
+                LOG.finest("EndpointInfo obtained from ServiceInfo because portname is null: " + ei);  // Liberty Change issue #26529
             }
         } else {
             ei = service.getEndpointInfo(portName);
             if (isFinestEnabled) {
-                LOG.finest("Jaxws endpoint that is obtained from service using portname: " + ei);  // Liberty Change issue #26529
+                LOG.finest("EndpointInfo obtained from Service using portname: " + ei);  // Liberty Change issue #26529
             }
             if (ei == null) {
                 PortInfoImpl portInfo = getPortInfo(portName);
@@ -324,7 +324,7 @@ public class ServiceImpl extends ServiceDelegate {
             && !portInfo.getAddress().equals(ei.getAddress())) {
             ei.setAddress(portInfo.getAddress());
             if (isFinestEnabled) {
-                LOG.finest("Address: " + portInfo.getAddress() + " is set into EndpointInfo: " + ei);  // Liberty Change issue #26529
+                LOG.finest(Setting EndpointInfo, " + ei + ", with Address: " + portInfo.getAddress());  // Liberty Change issue #26529
             }
         }
 

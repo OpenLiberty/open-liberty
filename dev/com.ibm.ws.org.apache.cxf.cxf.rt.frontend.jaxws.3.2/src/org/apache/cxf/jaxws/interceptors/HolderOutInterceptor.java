@@ -68,7 +68,7 @@ public class HolderOutInterceptor extends AbstractPhaseInterceptor<Message> {
 
         if (op == null || !op.hasOutput() || op.getOutput().size() == 0) {
             if (isFineEnabled) {
-                LOG.fine("OperationInfo is null or empty.Returning.");  // Liberty Change issue #26529
+                LOG.fine("OperationInfo is null or empty. Returning.");  // Liberty Change issue #26529
             }
             return;
         }

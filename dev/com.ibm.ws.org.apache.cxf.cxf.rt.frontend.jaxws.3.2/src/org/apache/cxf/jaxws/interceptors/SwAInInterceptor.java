@@ -110,14 +110,14 @@ public class SwAInInterceptor extends AbstractSoapInterceptor {
                     if (DataHandler.class.isAssignableFrom(typeClass)) {
                         o = dh;
                         if(isFinestEnabled)  {
-                            LOG.finest("DataHandler that is obtained from attachment is assigned to Object: " + o);   // Liberty Change issue #26529
+                            LOG.finest("DataHandler obtained from attachment assigned to Object: " + o);   // Liberty Change issue #26529
                         } 
                     } else if (String.class.isAssignableFrom(typeClass)) {
                         try {
                             //o = IOUtils.readBytesFromStream(dh.getInputStream());
                             o = dh.getContent();
                             if(isFinestEnabled)  {
-                                LOG.finest("Content of DataHandler that is obtained from attachment is assigned to Object: " + o);   // Liberty Change issue #26529
+                                LOG.finest("Content of DataHandler obtained from attachment assigned to Object: " + o);   // Liberty Change issue #26529
                             } 
                         } catch (IOException e) {
                             throw new Fault(e);
@@ -126,7 +126,7 @@ public class SwAInInterceptor extends AbstractSoapInterceptor {
                         try {
                             o = IOUtils.readBytesFromStream(dh.getInputStream());
                             if(isFinestEnabled)  {
-                                LOG.finest("InputStream read from DataHandler that is obtained from attachment is assigned to Object: " + o);   // Liberty Change issue #26529
+                                LOG.finest("InputStream read from DataHandler tobtained from attachment assigned to Object: " + o);   // Liberty Change issue #26529
                             } 
                         } catch (IOException e) {
                             throw new Fault(e);
@@ -135,7 +135,7 @@ public class SwAInInterceptor extends AbstractSoapInterceptor {
                         try {
                             o = ImageIO.read(dh.getInputStream());
                             if(isFinestEnabled)  {
-                                LOG.finest("InputStream read from DataHandler that is obtained from image attachment is assigned to Object: " + o);   // Liberty Change issue #26529
+                                LOG.finest("InputStream read from DataHandlerobtained from image attachment assigned Object: " + o);   // Liberty Change issue #26529
                             } 
                         } catch (IOException e) {
                             throw new Fault(e);
@@ -144,7 +144,7 @@ public class SwAInInterceptor extends AbstractSoapInterceptor {
                         try {
                             o = new StreamSource(dh.getInputStream());
                             if(isFinestEnabled)  {
-                                LOG.finest("StreamSource instantiated with InputStream that is obtained from DataHandler is assigned to Object: " + o);   // Liberty Change issue #26529
+                                LOG.finest("A StreeamSource created from the DataHandler is assigned to Object: " + o);   // Liberty Change issue #26529
                             } 
                         } catch (IOException e) {
                             throw new Fault(e);
