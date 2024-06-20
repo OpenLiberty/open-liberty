@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2023 IBM Corporation and others.
+# Copyright (c) 2009, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -100,6 +100,21 @@ missingDependencyClasses.error.CWMMC0013E.useraction=Forne\u00e7a as depend\u00e
 libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: O recurso MicroProfile Metrics \u00e9 configurado para usar a libraryRef: [{0}] a seguir
 libraryRefConfigured.info.CWMMC0014I.explanation=O recurso MicroProfile Metrics \u00e9 configurado para usar uma libraryRef. Esta biblioteca referenciada deve conter a biblioteca Micrometer principal, bibliotecas e depend\u00eancias Micrometer de destino.
 libraryRefConfigured.info.CWMMC0014I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidHistogramValueConfigured.warning.CWMMC0015W=CWMMC0015W: O valor {0} \u00e9 inv\u00e1lido para a propriedade {1} . Apenas valores inteiros e decimais s\u00e3o aceitos.
+invalidHistogramValueConfigured.warning.CWMMC0015W.explanation=Os valores de histograma configurados s\u00e3o inv\u00e1lidos
+invalidHistogramValueConfigured.warning.CWMMC0015W.useraction=Configure os valores apenas com n\u00fameros inteiros e decimais.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidTimerValueConfigured.warning.CWMMC0016W=CWMMC0016W: O valor {0} \u00e9 inv\u00e1lido para a propriedade {1} . Apenas valores inteiros com uma unidade de tempo (por exemplo, ms, s, m, h) s\u00e3o aceitos.
+invalidTimerValueConfigured.warning.CWMMC0016W.explanation=Os valores de cron\u00f4metro configurados s\u00e3o inv\u00e1lidos
+invalidTimerValueConfigured.warning.CWMMC0016W.useraction=Configure com valores inteiros e unidades de tempo (por exemplo, ms, s, m, h).
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidPercentileValueConfigured.warning.CWMMC0017W=CWMMC0017W: O valor {0} \u00e9 inv\u00e1lido para a propriedade {1} . Os valores devem estar no intervalo de 0.0 a 1.0 inclusive para serem aceitos.
+invalidPercentileValueConfigured.warning.CWMMC0017W.explanation=Os valores de percentil configurados s\u00e3o inv\u00e1lidos
+invalidPercentileValueConfigured.warning.CWMMC0017W.useraction=Configure os valores no intervalo inclusivo 0.0 para 1.0 para serem aceitos
 
 #Memory usedHeap message
 memory.usedHeap.description=Exibe a quantia de mem\u00f3ria heap usada em bytes.

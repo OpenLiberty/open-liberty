@@ -117,7 +117,7 @@ connected_user_database_driver=Conectado: {0}{6}Usuario: {1}{6}Base de datos: {2
 
 corrupt_object=objeto da\u00f1ado: {0}
 
-corrupt_object_referenced_through_mapping=Se hace referencia al siguiente objeto da\u00f1ado a trav\u00e9s de la correlaci\u00f3n: {0}.
+corrupt_object_referenced_through_mapping=Se hace referencia al siguiente objeto da\u00f1ado a trav\u00e9s de la correlaci\u00f3n: {0}
 
 corrupted_session_announcement=SessionID: {0}  El gestor de descubrimiento ha recibido un anuncio de sesi\u00f3n da\u00f1ado - ignorando.
 
@@ -169,6 +169,14 @@ elements={0}{1} elementos
 
 enable_batch_operations_as_true_not_supported=El valor CMP nativa de WLS "habilitar-operaciones-lotes-como-verdadero" no est\u00e1 soportado directamente en la CMP de EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
 
+encryptor_script_description=Esta aplicaci\u00f3n tiene una contrase\u00f1a cifrada antigua que ha utilizado una versi\u00f3n anterior de EclipseLink. Vuelva a cifrarlo con el algoritmo m\u00e1s reciente.
+
+encryptor_script_output=La contrase\u00f1a recifrada es: {0}
+
+encryptor_script_usage=El uso es `passwordUpdate.sh | .cmd -ip < contrase\u00f1a cifrada antigua> `
+
+entity_manager_has_multiple_connections=La unidad de persistencia tiene varias conexiones, devolviendo la primera de la lista.
+
 entity_manager_ignores_jta_data_source=La unidad de persistencia no utiliza JTA, por lo tanto, EntityManager ignora el origen de datos jta. 
 
 entity_manager_ignores_nonjta_data_source=La unidad de persistencia utiliza JTA, por lo tanto, EntityManager ignora los or\u00edgenes de datos no jta. 
@@ -192,6 +200,8 @@ error_in_create=Error en la creaci\u00f3n.
 error_in_remove=Error en la eliminaci\u00f3n.
 
 error_loading_xml_file=Excepci\u00f3n al cargar archivo xml ORM: {0}: {1}
+
+error_queryTimeoutParse=No se puede analizar el valor de la propiedad {0} jakarta.persistence.query.timeout : {1}
 
 exception_loading_entity_class=Una excepci\u00f3n al intentar inicializar la persistencia.  Se ha producido {1} al intentar cargar la clase de identidad: {0}.
 
@@ -647,6 +657,18 @@ retreived_null_message=Se ha recuperado un mensaje nulo del tema: {0}; se ignora
 
 retreived_unknown_message_type=Se ha recuperado un tipo de mensaje desconocido: {0} del tema: {1}; se ignora
 
+schema_default_create_tables_failed=No se han podido crear tablas en el esquema de tabla predeterminado: {0}
+
+schema_default_drop_tables_failed=No se han podido descartar las tablas en el esquema de tabla predeterminado: {0}
+
+schema_default_extend_tables_failed=No se han podido ampliar las tablas en el esquema de tabla predeterminado: {0}
+
+schema_default_replace_tables_failed=No se han podido sustituir las tablas en el esquema de tabla predeterminado: {0}
+
+schema_default_truncate_tables_failed=No se han podido truncar las tablas en el esquema de tabla predeterminado: {0}
+
+schema_drop_object_failed=No se ha podido descartar el objeto en el esquema de tabla predeterminado: {0}
+
 sdo_classgenerator_exception={2} Se ha producido una excepci\u00f3n [{0}] - el mensaje es [{1}]
 
 sdo_error_deserialization=Intento de deserializaci\u00f3n no autorizado con la clase {0}.
@@ -716,6 +738,8 @@ Current thread (id: {3} nombre: {4}) stack trace:
 #{5}
 
 unitofwork_identity_hashcode={0}C\u00f3digo hash de identidad de UnitOfWork: {1}
+
+unknown_property_type=Tipo {0} desconocido de la propiedad de persistencia {1}
 
 update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery no puede utilizar el enlace en esta plataforma de base de datos. Se ha cambiado el valor de consulta para ejecutar sin enlaces.
 

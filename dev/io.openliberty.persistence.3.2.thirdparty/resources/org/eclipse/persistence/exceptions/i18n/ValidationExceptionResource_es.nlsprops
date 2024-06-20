@@ -613,7 +613,7 @@
 
 7345=No se ha encontrado el archivo {0} especificado para XMLMetadataSource
 
-7346=No se ha proporcionado la propiedad de contexto de varios inquilinos [{0}]. Cuando la propiedad de unidad de persistencia (eclipselink.multitenant.tenants-share-emf) se establece en false, todas las propiedades de contexto de varios inquilinos deben proporcionarse por adelantado. Esto puede hacerse utilizando la definici\u00f3n de unidad de persistencia directamente o pasando una correlaci\u00f3n de propiedades que contiene todas las propiedades de contexto de varios inquilinos en la llamada a la creaci\u00f3n de EntityManagerFactory.
+7346=No se ha proporcionado la propiedad de contexto de varios inquilinos [{0}]. Cuando la propiedad de unidad de persistencia ({1}) se establece en false, se deben proporcionar todas las propiedades de contexto multiarrendatario por adelantado. Esto puede hacerse utilizando la definici\u00f3n de unidad de persistencia directamente o pasando una correlaci\u00f3n de propiedades que contiene todas las propiedades de contexto de varios inquilinos en la llamada a la creaci\u00f3n de EntityManagerFactory.
 
 7347=La clase [{0}] especifica los metadatos de conversi\u00f3n a nivel de tipo sin especificar un nombre de atributo para cada uno. Debe proporcionarse un nombre de atributo para todos los metadatos de conversi\u00f3n a nivel de tipo, para garantizar la aplicaci\u00f3n correcta de un atributo de superclase.
 
@@ -633,9 +633,12 @@
 
 7356=El procedimiento: [{1}] no puede ejecutarse porque {0} no da soporte actualmente a varios par\u00e1metros de salida
 
-7357=El URL [{0}] del recurso [{1}] no pertenece a una ra\u00edz de persistencia v\u00e1lida, tal como se define en la especificaci\u00f3n JPA.
+7357=El URL "[{0}]" para el recurso "[{1}]" no pertenece a una ra\u00edz de persistencia v\u00e1lida, tal como se define en la especificaci\u00f3n de Jakarta Persistence.
 
 7358=Se ha proporcionado un nombre de servicio ASM incorrecto.
 
 7359=No hay ning\u00fan servicio ASM disponible.
+
+7360=La contrase\u00f1a de base de datos se ha cifrado mediante un algoritmo en desuso.
+Reencrypt mediante `passwordUpdate.sh ` del paquete eclipselink.zip .
 

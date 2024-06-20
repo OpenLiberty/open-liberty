@@ -613,7 +613,7 @@
 
 7345=A(z) XMLMetadataSource tulajdons\u00e1ghoz megadott {0} f\u00e1jl nem tal\u00e1lhat\u00f3
 
-7346=Nem lett megadva a(z) [{0}] t\u00f6bb b\u00e9rl\u0151s kontextus tulajdons\u00e1g. Amikor a perzisztencia egys\u00e9g tulajdons\u00e1g (eclipselink.multitenant.tenants-share-emf) false \u00e9rt\u00e9kre van be\u00e1ll\u00edtva, az \u00f6sszes t\u00f6bb b\u00e9rl\u0151s kontextus tulajdons\u00e1got egy\u00e9rtelm\u0171en meg kell adni. Ez megtehet\u0151 k\u00f6zvetlen\u00fcl a perzisztencia egys\u00e9g meghat\u00e1roz\u00e1s\u00e1n kereszt\u00fcl, vagy az \u00f6sszes t\u00f6bb b\u00e9rl\u0151s kontextus tulajdons\u00e1got tartalmaz\u00f3 tulajdons\u00e1gt\u00e9rk\u00e9p \u00e1tad\u00e1s\u00e1val a create EntityManagerFactory h\u00edv\u00e1snak.
+7346=Nem lett megadva a(z) [{0}] t\u00f6bb b\u00e9rl\u0151s kontextus tulajdons\u00e1g. Ha a perzisztencia egys\u00e9g tulajdons\u00e1g ({1}) false \u00e9rt\u00e9kre van be\u00e1ll\u00edtva, akkor az \u00f6sszes t\u00f6bbtitenant kontextus tulajdons\u00e1got el\u0151re meg kell adni. Ez megtehet\u0151 k\u00f6zvetlen\u00fcl a perzisztencia egys\u00e9g meghat\u00e1roz\u00e1s\u00e1n kereszt\u00fcl, vagy az \u00f6sszes t\u00f6bb b\u00e9rl\u0151s kontextus tulajdons\u00e1got tartalmaz\u00f3 tulajdons\u00e1gt\u00e9rk\u00e9p \u00e1tad\u00e1s\u00e1val a create EntityManagerFactory h\u00edv\u00e1snak.
 
 7347=A(z) [{0}] oszt\u00e1ly a metaadatok t\u00edpus szint\u0171 \u00e1talak\u00edt\u00e1s\u00e1t adja meg an\u00e9lk\u00fcl, hogy mindegyikhez megadna egy attrib\u00fatumnevet. a metadatok minden t\u00edpus szint\u0171 \u00e1talak\u00edt\u00e1s\u00e1hoz meg kell adni egy attrib\u00fatumnevet, hogy a helyes alkalmaz\u00e1st biztos\u00edtsa egy \u0151soszt\u00e1ly attrib\u00fatumnak.
 
@@ -633,9 +633,12 @@
 
 7356=A(z) [{1}] elj\u00e1r\u00e1s nem hajthat\u00f3 v\u00e9gre, mert a(z) {0} jelenleg nem t\u00e1mogat t\u00f6bb kimeneti param\u00e9tert
 
-7357=A(z) [{1}] er\u0151forr\u00e1s [{0}] URL c\u00edme nem tartozik \u00e9rv\u00e9nyes perzisztencia gy\u00f6k\u00e9rhez, a JPA specifik\u00e1ci\u00f3 \u00e1ltal meghat\u00e1rozottak szerint.
+7357=A (z) "[{0}]" URL c\u00edme "[{1}]" er\u0151forr\u00e1s nem tartozik \u00e9rv\u00e9nyes perzisztencia gy\u00f6k\u00e9rhez, a Jakarta Persistence specifik\u00e1ci\u00f3 \u00e1ltal meghat\u00e1rozottak szerint.
 
 7358=Helytelen ASM szolg\u00e1ltat\u00e1sn\u00e9v van megadva.
 
 7359=Nincs el\u00e9rhet\u0151 ASM szolg\u00e1ltat\u00e1s.
+
+7360=Az adatb\u00e1zis jelsz\u00f3t az elavult algoritmus titkos\u00edtotta.
+Reencrypt A "passwordUpdate.sh" a eclipselink.zip k\u00f6tegb\u0151l.
 

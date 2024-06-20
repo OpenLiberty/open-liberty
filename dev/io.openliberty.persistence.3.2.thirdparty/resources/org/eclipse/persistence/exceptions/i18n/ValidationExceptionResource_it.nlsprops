@@ -613,7 +613,7 @@
 
 7345=File {0} specificato per XMLMetadataSource non trovato
 
-7346=La propriet\u00e0 di contesto multititolare [{0}] non \u00e8 stata fornita. Quando la propriet\u00e0 dell''unit\u00e0 permanente (eclipselink.multitenant.tenants-share-emf) \u00e8 impostata su false, devono essere fornite prima tutte le propriet\u00e0 di contesto multititolare. Questa operazione pu\u00f2 essere effettuata direttamente attraverso la definizione dell''unit\u00e0 permanente o tramite una mappa delle propriet\u00e0 contenente tutte le propriet\u00e0 di contesto multititolare sulla chiamata di creazione di EntityManagerFactory.
+7346=La propriet\u00e0 di contesto multititolare [{0}] non \u00e8 stata fornita. Quando la propriet\u00e0 dell''unit\u00e0 di persistenza ({1}) \u00e8 impostata su false, tutte le propriet\u00e0 di contesto multitenant devono essere fornite in anticipo. Questa operazione pu\u00f2 essere effettuata direttamente attraverso la definizione dell''unit\u00e0 permanente o tramite una mappa delle propriet\u00e0 contenente tutte le propriet\u00e0 di contesto multititolare sulla chiamata di creazione di EntityManagerFactory.
 
 7347=La classe [{0}] specifica metadati di conversione a livello di tipo senza specificare un nome attributo per ognuno. \u00c8 necessario fornire un nome attributo per tutti i metadati di conversione a livello di tipo per assicurare la corretta applicazione ad un attributo superclasse.
 
@@ -633,9 +633,12 @@
 
 7356=Procedura: [{1}] non pu\u00f2 essere eseguito perch\u00e9 {0} attualmente non supporta pi\u00f9 parametri out.
 
-7357=L''URL [{0}] per la risorsa [{1}] non appartiene a una root di persistenza valida, come definito dalla specifica JPA.
+7357=L''URL "[{0}]" per la risorsa "[{1}]" non appartiene a una root di persistenza valida, come definito dalla specifica di persistenza Jakarta.
 
 7358=\u00c8 stato fornito un nome servizio ASM errato.
 
 7359=Nessun servizio ASM disponibile.
+
+7360=La password del database \u00e8 stata crittografata dall''algoritmo obsoleto.
+Reencrypt da `passwordUpdate.sh ` dal bundle eclipselink.zip .
 

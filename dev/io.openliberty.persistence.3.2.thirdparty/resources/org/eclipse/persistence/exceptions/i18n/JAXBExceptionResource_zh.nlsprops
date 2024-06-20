@@ -85,7 +85,7 @@
 
 50028=\u672a\u80fd\u521b\u5efa [{0}] \u7684\u65b0\u5b9e\u4f8b\u3002
 
-50029=XmlCustomizer \u4e0a\u63d0\u4f9b\u7684\u7c7b [{0}] \u672a\u5b9e\u73b0 org.eclipse.persistence.config.DescriptorCustomizer \u63a5\u53e3\u3002
+50029=XmlCustomizer \u4e0a\u63d0\u4f9b\u7684\u7c7b [{0}] \u672a\u5b9e\u73b0 org.eclipse.persistence.descriptors.DescriptorCustomizer \u63a5\u53e3\u3002
 
 50030=\u5df2\u5c1d\u8bd5\u5728\u7c7b [{1}] \u4e0a\u8bbe\u7f6e\u591a\u4e2a XmlID \u5c5e\u6027\u3002\u5c5e\u6027 [{0}] \u65e0\u6cd5\u8bbe\u7f6e\u4e3a XmlID\uff0c\u56e0\u4e3a\u5c5e\u6027 [{2}] \u5df2\u8bbe\u7f6e\u4e3a XmlID\u3002
 

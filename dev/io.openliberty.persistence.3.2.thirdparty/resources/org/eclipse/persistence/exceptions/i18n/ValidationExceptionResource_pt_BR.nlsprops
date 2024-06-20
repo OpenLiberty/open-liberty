@@ -613,7 +613,7 @@
 
 7345=O arquivo {0} especificado para XMLMetadataSource n\u00e3o foi localizado
 
-7346=A propriedade de contexto [{0}] com diversos locat\u00e1rios n\u00e3o foi fornecida. Quando a propriedade de unidade de persist\u00eancia (eclipselink.multitenant.tenants-share-emf) \u00e9 configurada como false, todas as propriedades de contexto com diversos locat\u00e1rios devem ser fornecidas de antem\u00e3o. Isso pode ser feito por meio da defini\u00e7\u00e3o da unidade de persist\u00eancia diretamente ou transmitindo um mapa de propriedades contendo todas as propriedades de contexto com diversos locat\u00e1rios na chamada para criar EntityManagerFactory.
+7346=A propriedade de contexto [{0}] com diversos locat\u00e1rios n\u00e3o\nfoi fornecida. Quando a propriedade da unidade de persist\u00eancia ({1}) for configurada como false, todas as propriedades de contexto de diversos locat\u00e1rios dever\u00e3o ser fornecidas antecipadamente. Isso pode ser feito por meio da defini\u00e7\u00e3o da unidade de persist\u00eancia diretamente ou transmitindo um mapa de propriedades contendo todas as propriedades de contexto com diversos locat\u00e1rios na chamada para criar EntityManagerFactory.
 
 7347=A classe [{0}] especifica metadados conversores de n\u00edvel de tipo sem especificar um nome de atributo para cada um. Um nome de atributo deve ser fornecido para todos os metadados conversores de n\u00edvel de tipo para assegurar o aplicativo correto para um atributo de superclasse.
 
@@ -633,9 +633,12 @@
 
 7356=Procedimento: [{1}] n\u00e3o pode ser executado porque {0} n\u00e3o suporta atualmente v\u00e1rios par\u00e2metros de sa\u00edda
 
-7357=A URL [{0}] para o recurso [{1}] n\u00e3o pertence a uma raiz de persist\u00eancia v\u00e1lida, conforme definido pela especifica\u00e7\u00e3o JPA.
+7357=A URL "[{0}]" para o recurso "[{1}]" n\u00e3o pertence a uma raiz de persist\u00eancia v\u00e1lida, conforme definido pela especifica\u00e7\u00e3o Jakarta Persistence.
 
 7358=Nome do servi\u00e7o ASM incorreto fornecido.
 
 7359=Nenhum servi\u00e7o ASM dispon\u00edvel.
+
+7360=A senha do banco de dados foi criptografada pelo algoritmo descontinuado..
+Reencrypt por `passwordUpdate.sh ` do pacote configur\u00e1vel eclipselink.zip .
 

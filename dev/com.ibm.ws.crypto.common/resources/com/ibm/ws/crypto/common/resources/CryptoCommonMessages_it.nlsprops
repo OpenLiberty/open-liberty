@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWWKS0000=CWWKS0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.crypto.common/resources/com/ibm/ws/crypto/common/resources/CryptoCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Common Crypto Utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS5900 - CWWKS5910
+CRYPTO_UNSECURE=CWWKS5900W: L''elemento di configurazione {0} specifica l''algoritmo crittografico non sicuro {1} .  Utilizzare invece l''algoritmo sicuro {2} .
+CRYPTO_UNSECURE.explanation=L'algoritmo configurato non \u00e8 pi\u00f9 considerato crittograficamente sicuro.
+CRYPTO_UNSECURE.useraction=Utilizzare l'algoritmo sicuro suggerito.
+
+CRYPTO_UNSECURE_REPLACED=CWWKS5901W: L''elemento di configurazione {0} specifica l''algoritmo crittografico non sicuro {1} .  Viene utilizzato invece l''algoritmo protetto {2} .
+CRYPTO_UNSECURE_REPLACED.explanation=L'algoritmo crittografico non protetto \u00e8 stato sostituito con l'algoritmo sicuro.
+CRYPTO_UNSECURE_REPLACED.useraction=Non \u00e8 richiesta alcuna azione.

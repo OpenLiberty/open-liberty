@@ -341,7 +341,7 @@
 
 6174=Non \u00e8 stato fornito un valore per la propriet\u00e0 della sessione [{0}]. Questa eccezione pu\u00f2 verificarsi quando si utilizzano criteri supplementari o colonne discriminatore titolare senza specificare la propriet\u00e0 contestuale associata. Queste propriet\u00e0 devono essere impostate mediante EntityManager, EntityManagerFactory o le propriet\u00e0 unit\u00e0 permanente. Se si utilizza EclipseLink nativo, queste propriet\u00e0 devono essere impostate direttamente nella sessione.
 
-6175=Le query SQL native sono state disabilitate. Questa operazione viene effettuata impostando la propriet\u00e0 unit\u00e0 permanente "eclipselink.jdbc.allow-native-sql-queries" su false o disponendo di almeno una entit\u00e0 multititolare definita nell''unit\u00e0 permanente. Controllare la specifica dell''unit\u00e0 permanente. Per consentire le query SQL native, impostare questa propriet\u00e0 su true. In alternativa, le query individuali possono ignorare questa impostazione impostando il suggerimento di query "eclipselink.jdbc.allow-native-sql-query" su true.
+6175=Le query SQL native sono state disabilitate. Questa operazione viene eseguita impostando la propriet\u00e0 dell''unit\u00e0 di persistenza "{0}" su false o avendo almeno un''entit\u00e0 multitenant definita nell''unit\u00e0 di persistenza. Controllare la specifica dell''unit\u00e0 permanente. Per consentire le query SQL native, impostare questa propriet\u00e0 su true. In alternativa, le singole query possono ignorare questa impostazione impostando il suggerimento della query "{1}" su true.
 
 6176=\u00c8 stata generata un''eccezione durante l''inizializzazione del costruttore dalla classe [{0}]: [{1}]
 

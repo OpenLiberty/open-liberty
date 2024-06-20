@@ -117,7 +117,7 @@ connected_user_database_driver=Verbunden: {0}{6}Benutzer: {1}{6}Datenbank: {2}  
 
 corrupt_object=besch\u00e4digtes Objekt: {0}
 
-corrupt_object_referenced_through_mapping=Das folgende besch\u00e4digte Objekt wird \u00fcber die Zuordnung referenziert: {0}.
+corrupt_object_referenced_through_mapping=Das folgende besch\u00e4digte Objekt wird \u00fcber die Zuordnung referenziert: {0}
 
 corrupted_session_announcement=Sitzungs-ID: {0}  Discovery Manager hat eine fehlerhafte Sitzungsank\u00fcndigung empfangen. Wird ignoriert.
 
@@ -169,6 +169,14 @@ elements={0}{1}-Elemente
 
 enable_batch_operations_as_true_not_supported=Die native WLS-CMP-Einstellung "enable-batch-operations-as-true" wird in EclipseLink CMP nicht direkt unterst\u00fctzt. Weitere Einzelheiten finden Sie in der Ver\u00f6ffentlichung zur Migration.
 
+encryptor_script_description=Diese Anwendung hat ein altes verschl\u00fcsseltes Kennwort, das von einer fr\u00fcheren Version von EclipseLinkverwendet wurde. Verschl\u00fcsseln Sie sie mit dem neuesten Algorithmus erneut.
+
+encryptor_script_output=Das erneut verschl\u00fcsselte Kennwort lautet: {0}
+
+encryptor_script_usage=Syntax: `passwordUpdate.sh | .cmd -ip < altes verschl\u00fcsseltes Kennwort> `
+
+entity_manager_has_multiple_connections=Die Persistenzeinheit hat mehrere Verbindungen und gibt die erste aus der Liste zur\u00fcck.
+
 entity_manager_ignores_jta_data_source=Die Persistenzeinheit verwendet keine JTA, daher wird die JTA-Datenquelle vom EntityManager ignoriert. 
 
 entity_manager_ignores_nonjta_data_source=Die Persistenzeinheit verwendet JTA, daher werden Nicht-JTA-Datenquellen vom EntityManager ignoriert. 
@@ -192,6 +200,8 @@ error_in_create=Fehler beim Erstellen.
 error_in_remove=Fehler beim Entfernen.
 
 error_loading_xml_file=Ausnahme beim Laden der ORM-XML-Datei: {0}: {1}
+
+error_queryTimeoutParse=Parsing des Eigenschaftswerts {0} jakarta.persistence.query.timeout nicht m\u00f6glich: {1}
 
 exception_loading_entity_class=Bei dem Versuch, Persistenz zu initialisieren, ist eine Ausnahme eingetreten. {1} ist bei dem Versuch eingetreten, die Entit\u00e4tsklasse {0} zu laden.
 
@@ -647,6 +657,18 @@ retreived_null_message=Nullnachricht von Topic {0} abgerufen. Wird ignoriert.
 
 retreived_unknown_message_type=Unbekannten Nachrichtentyp abgerufen: {0} von Topic: {1}. Wird ignoriert.
 
+schema_default_create_tables_failed=Erstellen von Tabellen im Standardtabellenschema fehlgeschlagen: {0}
+
+schema_default_drop_tables_failed=L\u00f6schen der Tabellen im Standardtabellenschema fehlgeschlagen: {0}
+
+schema_default_extend_tables_failed=Erweitern der Tabellen im Standardtabellenschema fehlgeschlagen: {0}
+
+schema_default_replace_tables_failed=Fehler beim Ersetzen von Tabellen im Standardtabellenschema: {0}
+
+schema_default_truncate_tables_failed=Tabellen im Standardtabellenschema konnten nicht abgeschnitten werden: {0}
+
+schema_drop_object_failed=Fehler beim L\u00f6schen des Objekts im Standardtabellenschema: {0}
+
 sdo_classgenerator_exception={2} Eine [{0}]-Ausnahme ist eingetreten. Die Nachricht ist: [{1}]
 
 sdo_error_deserialization=Nicht autorisierter Deserialisierungsversuch mit der Klasse {0}.
@@ -716,6 +738,8 @@ Current Thread (ID: {3} Name: {4}) Stack-Trace:
 #{5}
 
 unitofwork_identity_hashcode={0}-Arbeitseinheits-ID-Hash-Code: {1}
+
+unknown_property_type=Unbekannter {0} Typ der Persistenzeigenschaft {1}
 
 update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery kann f\u00fcr diese Datenbankplattform keine Bindung verwenden. Die Abfrageeinstellung wurde ge\u00e4ndert, um eine Ausf\u00fchrung ohne Bindung zu erm\u00f6glichen.
 

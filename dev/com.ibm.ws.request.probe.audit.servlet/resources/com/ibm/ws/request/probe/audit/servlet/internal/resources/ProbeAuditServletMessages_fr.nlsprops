@@ -18,3 +18,7 @@
 #ISMESSAGEFILE FALSE
 #NLS_ENCODING=UNICODE
 # cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+AUDIT_EVENT_MISSING_REST_ENDPOINT=CWWKS5856E: Le nom d''\u00e9v\u00e9nement d''audit {0} n''est pas pris en charge car le noeud final REST n''est pas activ\u00e9.
+AUDIT_EVENT_MISSING_REST_ENDPOINT.explanation=Pour utiliser l'\u00e9v\u00e9nement d'audit sp\u00e9cifi\u00e9, le noeud final REST doit \u00eatre activ\u00e9.
+AUDIT_EVENT_MISSING_REST_ENDPOINT.useraction=Assurez-vous qu'une fonction qui active le noeud final REST est activ\u00e9e dans la configuration server.xml .

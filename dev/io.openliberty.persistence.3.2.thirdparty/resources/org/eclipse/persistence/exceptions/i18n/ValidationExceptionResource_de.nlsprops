@@ -613,7 +613,7 @@
 
 7345=Die f\u00fcr XMLMetadataSource angegebene Datei {0} wurde nicht gefunden.
 
-7346=Die Multitenantkontexteigenschaft [{0}] wurde nicht angegeben. Wenn Die Persistenzeinheiteneigenschaft (eclipselink.multitenant.tenants-share-emf) auf false gesetzt ist, m\u00fcssen alle Multitenantkontexteigenschaften vorneweg angegeben werden. Dies kann direkt \u00fcber die Persistenzeinheitendefinition oder durch \u00dcbergeben einer Eigenschaftenmap erfolgen, die alle Multitenantkontexteigenschaften f\u00fcr den Erstellungsaufruf von EntityManagerFactory enth\u00e4lt.
+7346=Die Multitenantkontexteigenschaft [{0}] wurde nicht angegeben. Wenn die Persistenzeinheiteneigenschaft ({1}) auf '' false'' gesetzt ist, m\u00fcssen alle Multi-Tenant-Kontexteigenschaften vorab bereitgestellt werden. Dies kann direkt \u00fcber die Persistenzeinheitendefinition oder durch \u00dcbergeben einer Eigenschaftenmap erfolgen, die alle Multitenantkontexteigenschaften f\u00fcr den Erstellungsaufruf von EntityManagerFactory enth\u00e4lt.
 
 7347=Die Klasse [{0}] gibt zu konvertierende Metadaten auf Typebene an, ohne f\u00fcr diese jeweils einen Attributnamen anzugeben. F\u00fcr alle zu konvertierenden Metadaten auf Typebene muss ein Attributname angegeben werden, um die richtige Anwendung f\u00fcr ein \u00fcbergeordnetes Klassenattribut sicherzustellen.
 
@@ -633,9 +633,12 @@
 
 7356=Vorgehensweise: [{1}] kann nicht ausgef\u00fchrt werden, weil {0} derzeit nicht mehrere OUT-Parameter unterst\u00fctzt.
 
-7357=Die URL [{0}] f\u00fcr die Ressource [{1}] geh\u00f6rt nicht zu einem g\u00fcltigen Persistenzstammverzeichnis, wie in der JPA-Spezifikation definiert.
+7357=Die URL "[{0}]" f\u00fcr die Ressource "[{1}]" geh\u00f6rt nicht zu einem g\u00fcltigen Persistenzstammverzeichnis, wie in der Jakarta Persistence-Spezifikation definiert.
 
 7358=Falscher ASM-Servicename angegeben.
 
 7359=Kein ASM-Service verf\u00fcgbar.
+
+7360=Das Datenbankkennwort wurde mit einem veralteten Algorithmus verschl\u00fcsselt.
+Reencrypt durch ''passwordUpdate.sh'' aus dem Paket eclipselink.zip .
 

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2023 IBM Corporation and others.
+# Copyright (c) 2009, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -100,6 +100,21 @@ missingDependencyClasses.error.CWMMC0013E.useraction=\u63d0\u4f9b\u8207 Micromet
 libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: MicroProfile Metrics \u914d\u7f6e\u6210\u4f7f\u7528\u4e0b\u5217 libraryRef: [{0}]
 libraryRefConfigured.info.CWMMC0014I.explanation=MicroProfile Metrics \u7279\u6027\u914d\u7f6e\u6210\u4f7f\u7528 libraryRef\u3002 \u9019\u500b\u53c3\u7167\u7684\u7a0b\u5f0f\u5eab\u5fc5\u9808\u5305\u542b Micrometer \u6838\u5fc3\u7a0b\u5f0f\u5eab\u3001\u76ee\u6a19 Micrometer \u7a0b\u5f0f\u5eab\u53ca\u76f8\u4f9d\u95dc\u4fc2\u3002
 libraryRefConfigured.info.CWMMC0014I.useraction=\u4e0d\u9700\u4efb\u4f55\u52d5\u4f5c\u3002
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidHistogramValueConfigured.warning.CWMMC0015W=CWMMC0015W: \u503c {0} \u5c0d {1} \u5167\u5bb9\u7121\u6548\u3002 \u53ea\u63a5\u53d7\u6574\u6578\u548c\u5c0f\u6578\u503c\u3002
+invalidHistogramValueConfigured.warning.CWMMC0015W.explanation=\u914d\u7f6e\u7684\u76f4\u65b9\u5716\u503c\u7121\u6548\u3002
+invalidHistogramValueConfigured.warning.CWMMC0015W.useraction=\u50c5\u4f7f\u7528\u6574\u6578\u548c\u5c0f\u6578\u4f86\u914d\u7f6e\u503c\u3002
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidTimerValueConfigured.warning.CWMMC0016W=CWMMC0016W: \u503c {0} \u5c0d {1} \u5167\u5bb9\u7121\u6548\u3002 \u50c5\u63a5\u53d7\u5177\u6709\u6642\u9593\u55ae\u4f4d (\u4f8b\u5982\u6beb\u79d2\u3001s\u3001m\u3001h) \u7684\u6574\u6578\u503c\u3002
+invalidTimerValueConfigured.warning.CWMMC0016W.explanation=\u914d\u7f6e\u7684\u8a08\u6642\u5668\u503c\u7121\u6548\u3002
+invalidTimerValueConfigured.warning.CWMMC0016W.useraction=\u4ee5\u6574\u6578\u503c\u548c\u6642\u9593\u55ae\u4f4d (\u4f8b\u5982\u6beb\u79d2\u3001s\u3001m\u3001h) \u4f86\u914d\u7f6e\u3002
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidPercentileValueConfigured.warning.CWMMC0017W=CWMMC0017W: \u503c {0} \u5c0d {1} \u5167\u5bb9\u7121\u6548\u3002 \u503c\u5fc5\u9808\u5728 0.0 \u81f3 1.0 (\u542b) \u7684\u7bc4\u570d\u5167\u624d\u80fd\u88ab\u63a5\u53d7\u3002
+invalidPercentileValueConfigured.warning.CWMMC0017W.explanation=\u914d\u7f6e\u7684\u767e\u5206\u4f4d\u6578\u503c\u7121\u6548\u3002
+invalidPercentileValueConfigured.warning.CWMMC0017W.useraction=\u914d\u7f6e\u8981\u63a5\u53d7\u7684 0.0 \u81f3 1.0 (\u542b) \u7bc4\u570d\u5167\u7684\u503c\u3002
 
 #Memory usedHeap message
 memory.usedHeap.description=\u986f\u793a\u5df2\u7528\u7684\u8cc7\u6599\u5806\u8a18\u61b6\u9ad4\u91cf\uff08\u4ee5\u4f4d\u5143\u7d44\u70ba\u55ae\u4f4d\uff09\u3002
