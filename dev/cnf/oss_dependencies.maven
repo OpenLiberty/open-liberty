@@ -25,6 +25,7 @@ com.fasterxml.woodstox:woodstox-core:6.5.1
 com.github.docker-java:docker-java-api:3.3.4
 com.github.docker-java:docker-java-transport-zerodep:3.3.4
 com.github.docker-java:docker-java-transport:3.3.4
+com.github.mwiede:jsch:0.2.18
 com.google.errorprone:error_prone_annotations:2.4.0
 com.google.guava:guava:32.0.1-android
 com.google.inject:guice:2.0
@@ -42,7 +43,6 @@ com.ibm.db2:jcc:11.1.4.4
 com.ibm.ws.componenttest:mantis-collections:2.5.0
 com.ibm.ws.componenttest:mantis-nls-standalone:2.5.0
 com.icegreen:greenmail:1.5.10
-com.jcraft:jsch:0.1.54
 com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8
 com.nimbusds:nimbus-jose-jwt:4.23
 com.oracle.database.jdbc.debug:ojdbc11_g:21.8.0.0
