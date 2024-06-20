@@ -39,9 +39,9 @@ public class ContainerNoAppTest extends BaseTestClass {
     public static LibertyServer server;
 
     @ClassRule //FileSystemBind, path is relative to AutoFVT folder.
-    public static GenericContainer<?> container = new GenericContainer<>("otel/opentelemetry-collector-contrib")
+    public static GenericContainer<?> container = new GenericContainer<>("otel/opentelemetry-collector-contrib:0.103.0")
                     .withLogConsumer(new SimpleLogConsumer(ContainerServletApplicationTest.class, "opentelemetry-collector-contrib"))
-                    .withFileSystemBind("config.yaml", "/etc/otelcol-contrib/config.yaml", BindMode.READ_WRITE)
+                    .withFileSystemBind("config.yaml", "/etc/otelcol-contrib/config.yaml", BindMode.READ_ONLY)
                     .withExposedPorts(8888, 8889, 4317);
 
     @BeforeClass

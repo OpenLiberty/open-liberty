@@ -275,7 +275,7 @@ public abstract class BaseTestClass {
          * and OTel Collector output (integer)
          */
         if (count == null) {
-            count = "[0-9]+[.]*[0-9]*";
+            count = "[0-9]+[.]?[0-9]*";
             isDefaultCountCheck = true;
         }
 
