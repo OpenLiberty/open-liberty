@@ -2,7 +2,6 @@
 <classpath>
     <classpathentry kind="src" path="fat/src/"/>
     <classpathentry kind="src" path="test-applications/CDITests.war/src"/>
-    <classpathentry kind="src" path="test-applications/TestJSFEL.war/src"/>
     <classpathentry kind="src" path="test-applications/JSF22StatelessView.war/src"/>
     <classpathentry kind="src" path="test-applications/CDICommon/src"/>
     <classpathentry kind="src" path="test-applications/CDIFacesFlows.war/src"/>
