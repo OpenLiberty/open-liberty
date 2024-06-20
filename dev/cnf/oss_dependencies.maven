@@ -255,7 +255,7 @@ jakarta.annotation:jakarta.annotation-api:2.1.1
 jakarta.annotation:jakarta.annotation-api:3.0.0
 jakarta.authentication:jakarta.authentication-api:2.0.0
 jakarta.authentication:jakarta.authentication-api:3.0.0
-jakarta.authentication:jakarta.authentication-api:3.1.0-M1
+jakarta.authentication:jakarta.authentication-api:3.1.0
 jakarta.authorization:jakarta.authorization-api:2.0.0
 jakarta.authorization:jakarta.authorization-api:2.1.0
 jakarta.authorization:jakarta.authorization-api:3.0.0
