@@ -75,7 +75,7 @@ public class DefaultOverallStartupStatusUpAppStartupTest {
         log("setupClass", testName + " - Deploying the Delayed App into the apps directory and starting the server.");
 
         WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME, "io.openliberty.microprofile.health31.delayed.health.check.app");
-        ShrinkHelper.exportAppToServer(server, app, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, app, DeployOptions.DISABLE_VALIDATION, DeployOptions.SERVER_ONLY);
 
         if (!server.isStarted())
             server.startServer(false, false);

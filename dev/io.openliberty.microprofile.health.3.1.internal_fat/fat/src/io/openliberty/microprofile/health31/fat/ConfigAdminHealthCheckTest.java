@@ -362,9 +362,9 @@ public class ConfigAdminHealthCheckTest {
                 server.copyFileToLibertyServerRoot(file.getParent(), "kafkaLib", file.getName());
             }
             //Don't validate that FAILS_TO_START_APP_NAME starts correctly.
-            ShrinkHelper.exportAppToServer(server, app, DeployOptions.DISABLE_VALIDATION);
+            ShrinkHelper.exportAppToServer(server, app, DeployOptions.DISABLE_VALIDATION, DeployOptions.SERVER_ONLY);
         } else {
-            ShrinkHelper.exportDropinAppToServer(server, app);
+            ShrinkHelper.exportDropinAppToServer(server, app, DeployOptions.SERVER_ONLY);
         }
     }
 
