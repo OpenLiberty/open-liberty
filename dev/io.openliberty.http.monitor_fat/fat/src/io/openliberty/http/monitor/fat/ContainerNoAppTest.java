@@ -11,12 +11,18 @@ package io.openliberty.http.monitor.fat;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.concurrent.TimeUnit;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.BindMode;
+import org.testcontainers.containers.GenericContainer;
 
 import componenttest.annotation.Server;
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import jakarta.ws.rs.HttpMethod;
@@ -25,17 +31,23 @@ import jakarta.ws.rs.HttpMethod;
  * This just tests hitting the splash page for the server.
  */
 @RunWith(FATRunner.class)
-public class NoAppTest extends BaseTestClass {
+public class ContainerNoAppTest extends BaseTestClass {
 
-    private static Class<?> c = NoAppTest.class;
+    private static Class<?> c = ContainerNoAppTest.class;
 
-    @Server("SimpleRestServer")
+    @Server("ContainerJustServer")
     public static LibertyServer server;
+
+    @ClassRule //FileSystemBind, path is relative to AutoFVT folder.
+    public static GenericContainer<?> container = new GenericContainer<>("otel/opentelemetry-collector-contrib")
+                    .withLogConsumer(new SimpleLogConsumer(ContainerServletApplicationTest.class, "opentelemetry-collector-contrib"))
+                    .withFileSystemBind("config.yaml", "/etc/otelcol-contrib/config.yaml", BindMode.READ_WRITE)
+                    .withExposedPorts(8888, 8889, 4317);
 
     @BeforeClass
     public static void beforeClass() throws Exception {
         trustAll();
-
+        server.addEnvVar("OTEL_EXPORTER_OTLP_METRICS_ENDPOINT", "http://" + container.getHost() + ":" + container.getMappedPort(4317));
         server.startServer();
 
         //Read to run a smarter planet
@@ -52,7 +64,7 @@ public class NoAppTest extends BaseTestClass {
     }
 
     @Test
-    public void noApp_splashPage() throws Exception {
+    public void c_noApp_splashPage() throws Exception {
 
         assertTrue(server.isStarted());
 
@@ -61,8 +73,9 @@ public class NoAppTest extends BaseTestClass {
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
-
-        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod));
+        //Allow time for the collector to receive and expose metrics
+        TimeUnit.SECONDS.sleep(4);
+        assertTrue(validateMpTelemetryHttp(Constants.RUNTIME_INSTANCE_SERVICE, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
 
     }
 

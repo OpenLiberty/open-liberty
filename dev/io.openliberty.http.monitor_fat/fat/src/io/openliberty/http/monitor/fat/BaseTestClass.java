@@ -32,6 +32,8 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.testcontainers.containers.GenericContainer;
+
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
@@ -148,35 +150,138 @@ public abstract class BaseTestClass {
 
     }
 
+    protected String requestContainerHttpServlet(String servletPath, String host, int port, String requestMethod, String query) {
+        HttpURLConnection con = null;
+        try {
+            String sURL = "http://" + host + ":"
+                          + port + servletPath
+                          + ((query != null) ? ("?" + query) : "");
+
+            Log.info(c, "requestContainerHttpServlet", sURL);
+
+            URL checkerServletURL = new URL(sURL);
+            con = (HttpURLConnection) checkerServletURL.openConnection();
+            con.setDoInput(true);
+            con.setDoOutput(true);
+            con.setUseCaches(false);
+            con.setRequestMethod(requestMethod);
+            String sep = System.getProperty("line.separator");
+            String line = null;
+            StringBuilder lines = new StringBuilder();
+            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+            while ((line = br.readLine()) != null && line.length() > 0) {
+                lines.append(line).append(sep);
+            }
+            return lines.toString();
+        } catch (IOException e) {
+            Log.info(c, "requestContainerHttpServlet", "Encountered IO exception " + e);
+            return null;
+        } catch (Exception e) {
+            Log.info(c, "requestContainerHttpServlet", "Encountered an exception " + e);
+            return null;
+        } finally {
+            if (con != null)
+                con.disconnect();
+        }
+
+    }
+
     protected String getVendorMetrics(LibertyServer server) throws Exception {
         String vendorMetricsOutput = requestHttpServlet("/metrics?scope=vendor", server, HttpMethod.GET);
         Log.info(c, "getVendorMetrics", vendorMetricsOutput);
         return vendorMetricsOutput;
     }
 
-    protected boolean validatePrometheusHTTPMetric(String vendorMetricsOutput, String route, String responseStatus, String requestMethod) {
-        return validatePrometheusHTTPMetric(vendorMetricsOutput, route, responseStatus, requestMethod, null, null);
+    protected String getContainerCollectorMetrics(GenericContainer<?> container) throws Exception {
+        String containerCollectorMetrics = requestContainerHttpServlet("/metrics", container.getHost(), container.getMappedPort(8889), HttpMethod.GET, null);
+        Log.info(c, "getContainerCollectorMetrics", containerCollectorMetrics);
+        return containerCollectorMetrics;
     }
 
-    protected boolean validatePrometheusHTTPMetricWithErrorType(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType) {
-        return validatePrometheusHTTPMetric(vendorMetricsOutput, route, responseStatus, requestMethod, null, errorType);
+    /*
+     * MP Metrics
+     */
+    protected boolean validateMpMetricsHttp(String vendorMetricsOutput, String route, String responseStatus, String requestMethod) {
+        return validateMpMetricsHttp(vendorMetricsOutput, route, responseStatus, requestMethod, null);
     }
 
-    protected boolean validatePrometheusHTTPMetric(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String count, String errorType) {
-        boolean isDefaultCountCheck = false;
+    protected boolean validateMpMetricsHttp(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType) {
+        return validateMpMetricsHttp(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, null);
+    }
 
-        if (count == null) {
-            count = "[0-9]+\\.[0-9]+";
-            isDefaultCountCheck = true;
-        }
-
+    protected boolean validateMpMetricsHttp(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType, String count) {
         if (errorType == null) {
             errorType = "";
         }
-        String matchString = "http_server_request_duration_seconds_count\\{error_type=\"" + errorType + "\",http_route=\"" + route
-                             + "\",http_scheme=\"http\",mp_scope=\"vendor\",network_name=\"HTTP\",network_version=\"1\\.[01]\",request_method=\"" + requestMethod
-                             + "\",response_status=\"" + responseStatus + "\",server_name=\"localhost\",server_port=\"[0-9]+\",\\} " + count;
 
+        String matchString = "http_server_request_duration_seconds_count\\{error_type=\"" + errorType
+                             + "\",http_request_method=\""
+                             + requestMethod
+                             + "\",http_response_status_code=\"" + responseStatus
+                             + "\",http_route=\"" + route
+                             + "\",mp_scope=\"vendor\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\",\\} ";
+
+        return validatePrometheusHTTPMetric(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, count, matchString);
+    }
+
+    /*
+     * MP Telemetry
+     */
+    protected boolean validateMpTelemetryHttp(String appName, String vendorMetricsOutput, String route, String responseStatus, String requestMethod) {
+        return validateMpTelemetryHttp(appName, vendorMetricsOutput, route, responseStatus, requestMethod, null);
+    }
+
+    protected boolean validateMpTelemetryHttp(String appName, String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType) {
+        return validateMpTelemetryHttp(appName, vendorMetricsOutput, route, responseStatus, requestMethod, errorType, null);
+    }
+
+    protected boolean validateMpTelemetryHttp(String appName, String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType,
+                                              String count) {
+        String matchString = null;
+
+        /*
+         * Otel Prometheus output not bound by the Prometheus client issue where same labels are needed
+         */
+        if (errorType == null) {
+            matchString = "http_server_request_duration_seconds_count\\{http_request_method=\""
+                          + requestMethod
+                          + "\",http_response_status_code=\"" + responseStatus
+                          + "\",http_route=\"" + route
+                          + "\",job=\"" + appName
+                          + "\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
+        } else {
+            matchString = "http_server_request_duration_seconds_count\\{error_type=\"" + errorType
+                          + "\",http_request_method=\""
+                          + requestMethod
+                          + "\",http_response_status_code=\"" + responseStatus
+                          + "\",http_route=\"" + route
+                          + "\",job=\"" + appName
+                          + "\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
+        }
+
+        return validatePrometheusHTTPMetric(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, count, matchString);
+    }
+
+    /*
+     * For all
+     */
+    private boolean validatePrometheusHTTPMetric(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType, String count,
+                                                 String matchString) {
+        boolean isDefaultCountCheck = false;
+
+        /*
+         * Account for both MP Metrics (double)
+         * and OTel Collector output (integer)
+         */
+        if (count == null) {
+            count = "[0-9]+[.]*[0-9]*";
+            isDefaultCountCheck = true;
+        }
+
+        matchString += count;
+
+        Log.info(c, "validatePrometheusHTTPMetric", "Trying to match: " + matchString);
         try (Scanner sc = new Scanner(vendorMetricsOutput)) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
@@ -186,16 +291,16 @@ public abstract class BaseTestClass {
                 if (!line.startsWith("http_server_request_duration_seconds_count")) {
                     continue;
                 }
-
+                Log.info(c, "validatePrometheusHTTPMetric", "Potential match with: " + line);
                 if (line.matches(matchString)) {
-                    Log.info(c, "validatePrometheusHTTPMetric", "Matched With line: " + line);
+                    Log.info(c, "validatePrometheusHTTPMetric", "Matched with: " + line);
 
                     /*
                      * If no custom count regex was supplied.
                      * We will check if value is greater than 0
                      */
                     if (isDefaultCountCheck) {
-                        String[] split = line.split("\\,\\}"); // matches with the ending ",}"
+                        String[] split = line.split(" "); // should be only one space at the very end.
                         assertEquals("Error. Expected 2 indexes from split " + Arrays.toString(split), split.length, 2);
 
                         double countVal = Double.parseDouble(split[1].trim());

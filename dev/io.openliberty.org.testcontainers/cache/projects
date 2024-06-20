@@ -179,6 +179,7 @@ io.openliberty.data.internal_fat
 io.openliberty.data.internal_fat_jpa
 io.openliberty.data.internal_fat_jpa_hibernate
 io.openliberty.data.internal_fat_nosql
+io.openliberty.http.monitor_fat
 io.openliberty.jakarta.data.1.0_fat_tck
 io.openliberty.jcache.internal_fat.hazelcast
 io.openliberty.jcache.internal_fat.infinispan

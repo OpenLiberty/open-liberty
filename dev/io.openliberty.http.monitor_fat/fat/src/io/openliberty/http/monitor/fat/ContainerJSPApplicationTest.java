@@ -12,30 +12,41 @@ package io.openliberty.http.monitor.fat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.BindMode;
+import org.testcontainers.containers.GenericContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import jakarta.ws.rs.HttpMethod;
 
 @RunWith(FATRunner.class)
-public class JSPApplicationTest extends BaseTestClass {
+public class ContainerJSPApplicationTest extends BaseTestClass {
 
-    private static Class<?> c = JSPApplicationTest.class;
+    private static Class<?> c = ContainerJSPApplicationTest.class;
 
-    @Server("JSPServer")
+    @Server("ContainerJSPServer")
     public static LibertyServer server;
+
+    @ClassRule //FileSystemBind, path is relative to AutoFVT folder .. we used build.gradle to copy config.yaml into it
+    public static GenericContainer<?> container = new GenericContainer<>("otel/opentelemetry-collector-contrib")
+                    .withLogConsumer(new SimpleLogConsumer(ContainerServletApplicationTest.class, "opentelemetry-collector-contrib"))
+                    .withFileSystemBind("config.yaml", "/etc/otelcol-contrib/config.yaml", BindMode.READ_WRITE)
+                    .withExposedPorts(8888, 8889, 4317);
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -48,12 +59,15 @@ public class JSPApplicationTest extends BaseTestClass {
                         .add(new FileAsset(new File("test-applications/JspApp/resource/default.html")), "/default.html")
                         .add(new FileAsset(new File("test-applications/JspApp/resource/Testhtml.html")), "Testhtml.html")
                         .addPackage(
-                                    "io.openliberty.http.monitor.fat.jspApp");
+                                    "io.openliberty.http.monitor.fat.jspApp")
+                        .addAsManifestResource(new File("publish/resources/META-INF/microprofile-config.properties"),
+                                               "microprofile-config.properties");
 
         // test-applications\JspApp\src\io\openliberty\http\monitor\fat\jspApp\resource
         ShrinkHelper.exportDropinAppToServer(server, testWAR,
                                              DeployOptions.SERVER_ONLY);
 
+        server.addEnvVar("OTEL_EXPORTER_OTLP_METRICS_ENDPOINT", "http://" + container.getHost() + ":" + container.getMappedPort(4317));
         server.startServer();
 
         //Read to run a smarter planet
@@ -80,8 +94,9 @@ public class JSPApplicationTest extends BaseTestClass {
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
-
-        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+        //Allow time for the collector to receive and expose metrics
+        TimeUnit.SECONDS.sleep(4);
+        assertTrue(validateMpTelemetryHttp(Constants.JSP_APP, getContainerCollectorMetrics(container), expectedRoute, responseStatus, requestMethod));
 
     }
 
@@ -95,8 +110,9 @@ public class JSPApplicationTest extends BaseTestClass {
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
-
-        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod));
+        //Allow time for the collector to receive and expose metrics
+        TimeUnit.SECONDS.sleep(4);
+        assertTrue(validateMpTelemetryHttp(Constants.JSP_APP, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
 
     }
 
@@ -111,15 +127,9 @@ public class JSPApplicationTest extends BaseTestClass {
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
-
-        /*
-         * If 200 isn't present. The server may have redirected the request to the default page
-         * and issued a 302.
-         */
-        if (!validateMpMetricsHttp(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod)) {
-            responseStatus = "302";
-            assertTrue(validateMpMetricsHttp(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
-        }
+        //Allow time for the collector to receive and expose metrics
+        TimeUnit.SECONDS.sleep(4);
+        assertTrue(validateMpTelemetryHttp(Constants.JSP_APP, getContainerCollectorMetrics(container), expectedRoute, responseStatus, requestMethod));
 
         route = Constants.JSP_CONTEXT_ROOT + "/Testhtml.html";
         expectedRoute = Constants.JSP_CONTEXT_ROOT + "/\\*";
@@ -127,16 +137,9 @@ public class JSPApplicationTest extends BaseTestClass {
         responseStatus = "200";
 
         res = requestHttpServlet(route, server, requestMethod);
-
-        /*
-         * If 200 isn't present. The server may have redirected the request to the default page
-         * and issued a 302.
-         */
-        if (!validateMpMetricsHttp(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod)) {
-            responseStatus = "302";
-            assertTrue(validateMpMetricsHttp(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
-        }
-
+        //Allow time for the collector to receive and expose metrics
+        TimeUnit.SECONDS.sleep(4);
+        assertTrue(validateMpTelemetryHttp(Constants.JSP_APP, getContainerCollectorMetrics(container), expectedRoute, responseStatus, requestMethod));
     }
 
 }

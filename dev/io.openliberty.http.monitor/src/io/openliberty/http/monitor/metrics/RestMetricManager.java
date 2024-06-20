@@ -62,9 +62,14 @@ public class RestMetricManager {
     	return null;
     }
     
-    
-	public void updateHttpMetrics(HttpStatAttributes httpStatAttributes, Duration duration) {
-		httpMetricRuntimes.stream().forEach(adapters -> adapters.updateHttpMetrics(httpStatAttributes,duration));	
+    /**
+     * 
+     * @param httpStatAttributes
+     * @param duration
+     * @param appName The appName, can be null to indicate server context
+     */
+	public void updateHttpMetrics(HttpStatAttributes httpStatAttributes, Duration duration, String appName) {
+		httpMetricRuntimes.stream().forEach(adapters -> adapters.updateHttpMetrics(httpStatAttributes,duration,appName));	
 	}
 	
 

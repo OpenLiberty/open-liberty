@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -16,6 +13,7 @@ bVersion=1.0
 
 src: \
 	fat/src,\
+	fat/resource,\
 	test-applications/RestApp/src,\
 	test-applications/ServletApp/src,\
 	test-applications/WildCardServletApp/src,\
@@ -33,4 +31,5 @@ javac.target: 11
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	io.openliberty.jakarta.annotation.2.1;version=latest,\
 	io.openliberty.jakarta.restfulWS.3.0;version=latest,\
-	io.openliberty.jakarta.cdi.4.0;version=latest
+	io.openliberty.jakarta.cdi.4.0;version=latest,\
+	io.openliberty.org.testcontainers;version=latest
