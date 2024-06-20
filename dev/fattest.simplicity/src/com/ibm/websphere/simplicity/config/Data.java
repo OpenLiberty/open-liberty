@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
- * Represents the <contextService> element in server.xml
+ * Represents the <data> element in server.xml
  */
 public class Data extends ConfigElement {
 
