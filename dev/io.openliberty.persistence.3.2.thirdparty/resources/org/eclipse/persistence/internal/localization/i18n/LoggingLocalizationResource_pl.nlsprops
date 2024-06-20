@@ -117,7 +117,7 @@ connected_user_database_driver=Nawi\u0105zano po\u0142\u0105czenie: {0}{6} U\u01
 
 corrupt_object=uszkodzony obiekt: {0}
 
-corrupt_object_referenced_through_mapping=Nast\u0119puj\u0105cy uszkodzony obiekt jest przywo\u0142ywany przez odwzorowanie: {0}.
+corrupt_object_referenced_through_mapping=Nast\u0119puj\u0105cy uszkodzony obiekt jest przywo\u0142ywany przez odwzorowanie: {0}
 
 corrupted_session_announcement=Identyfikator sesji: {0} mened\u017cer wykrywania odebra\u0142 uszkodzone og\u0142oszenie sesji \u2013 zignorowano.
 
@@ -169,6 +169,14 @@ elements=Liczba element\u00f3w: {0}{1}
 
 enable_batch_operations_as_true_not_supported=Ustawienie komponentu CMP rodzime dla produktu WLS enable-batch-operations-as-true nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
 
+encryptor_script_description=Ta aplikacja ma stare zaszyfrowane has\u0142o, kt\u00f3re by\u0142o u\u017cywane przez poprzedni\u0105 wersj\u0119 platformy EclipseLink. Ponownie zaszyfruj go przy u\u017cyciu najnowszego algorytmu.
+
+encryptor_script_output=Ponownie zaszyfrowane has\u0142o: {0}
+
+encryptor_script_usage=Sk\u0142adnia: `passwordUpdate.sh | .cmd -ip < stare zaszyfrowane has\u0142o> `
+
+entity_manager_has_multiple_connections=Jednostka trwa\u0142o\u015bci ma wiele po\u0142\u0105cze\u0144, zwracaj\u0105c pierwsz\u0105 z listy.
+
 entity_manager_ignores_jta_data_source=Jednostka trwa\u0142o\u015bci nie u\u017cywa interfejsu JTA, wi\u0119c interfejs EntityManager ignoruje \u017ar\u00f3d\u0142o danych JTA. 
 
 entity_manager_ignores_nonjta_data_source=Jednostka trwa\u0142o\u015bci u\u017cywa interfejsu JTA, wi\u0119c interfejs EntityManager ignoruje \u017ar\u00f3d\u0142o danych inne ni\u017c JTA. 
@@ -192,6 +200,8 @@ error_in_create=B\u0142\u0105d podczas tworzenia.
 error_in_remove=B\u0142\u0105d podczas usuwania.
 
 error_loading_xml_file=Wyj\u0105tek podczas \u0142adowania pliku XML ORM: {0}: {1}
+
+error_queryTimeoutParse=Nie mo\u017cna przeanalizowa\u0107 warto\u015bci w\u0142a\u015bciwo\u015bci {0} jakarta.persistence.query.timeout : {1}
 
 exception_loading_entity_class=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by zainicjowania trwa\u0142o\u015bci.  Wyj\u0105tek {1} wyst\u0105pi\u0142 podczas pr\u00f3by za\u0142adowania klasy jednostki: {0}.
 
@@ -647,6 +657,18 @@ retreived_null_message=Otrzymano komunikat o warto\u015bci NULL z tematu: {0}; z
 
 retreived_unknown_message_type=Otrzymano nieznany typ komunikatu: {0} z tematu: {1}; zostanie on zignorowany.
 
+schema_default_create_tables_failed=Nie powiod\u0142o si\u0119 utworzenie tabel w domy\u015blnym schemacie tabeli: {0}
+
+schema_default_drop_tables_failed=Nie powiod\u0142o si\u0119 usuni\u0119cie tabel w domy\u015blnym schemacie tabeli: {0}
+
+schema_default_extend_tables_failed=Nie powiod\u0142o si\u0119 rozszerzenie tabel w domy\u015blnym schemacie tabel: {0}
+
+schema_default_replace_tables_failed=Nie powiod\u0142o si\u0119 zast\u0105pienie tabel w domy\u015blnym schemacie tabeli: {0}
+
+schema_default_truncate_tables_failed=Nie powiod\u0142o si\u0119 obci\u0119cie tabel w domy\u015blnym schemacie tabel: {0}
+
+schema_drop_object_failed=Nie powiod\u0142o si\u0119 usuni\u0119cie obiektu z domy\u015blnego schematu tabeli: {0}
+
 sdo_classgenerator_exception={2} Wyst\u0105pi\u0142 wyj\u0105tek [{0}] \u2013 komunikat: [{1}]
 
 sdo_error_deserialization=Nieautoryzowana pr\u00f3ba deserializacji z klas\u0105 {0}.
@@ -716,6 +738,8 @@ Current w\u0105tek (identyfikator: {3} nazwa: {4}) stos wywo\u0142a\u0144:
 #{5}
 
 unitofwork_identity_hashcode={0} Kod mieszaj\u0105cy to\u017csamo\u015bci jednostki pracy: {1}
+
+unknown_property_type=Nieznany typ {0} w\u0142a\u015bciwo\u015bci trwa\u0142o\u015bci {1}
 
 update_all_query_cannot_use_binding_on_this_platform=Zapytanie UpdateAllQuery nie mo\u017ce u\u017cywa\u0107 powi\u0105zania na tej platformie bazy danych. Ustawienia zapytania zosta\u0142y zmienione tak, aby wykona\u0107 zapytanie bez powi\u0105zania.
 

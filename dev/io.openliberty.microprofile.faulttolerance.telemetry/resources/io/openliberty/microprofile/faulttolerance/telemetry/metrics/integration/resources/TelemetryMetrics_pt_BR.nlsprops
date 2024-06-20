@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Descriptions of metrics used by Fault Tolerance. 
+# See https://download.eclipse.org/microprofile/microprofile-fault-tolerance-4.0.2/microprofile-fault-tolerance-spec-4.0.2.html#_integration_with_microprofile_metrics
+#-----------------------------------------------------------------------------------------------------------------------------
+
+ft.invocations.total.description=O n\u00famero de vezes em que o m\u00e9todo foi chamado
+
+ft.retry.calls.total.description=O n\u00famero de vezes que a l\u00f3gica de repeti\u00e7\u00e3o foi executada. Isso sempre ser\u00e1 uma vez por chamada de m\u00e9todo.
+
+ft.retry.retries.total.description=O n\u00famero de vezes em que o m\u00e9todo foi tentado novamente
+
+ft.timeout.calls.total.description=O n\u00famero de vezes em que a l\u00f3gica de tempo limite foi executada Geralmente ser\u00e1 uma vez por chamada de m\u00e9todo, mas pode ser zero vezes se o disjuntor impedir a execu\u00e7\u00e3o ou mais de uma vez se o m\u00e9todo for tentado novamente.
+
+ft.timeout.executionDuration.description=Histograma de tempos de execu\u00e7\u00e3o para o m\u00e9todo
+
+ft.circuitbreaker.calls.total.description=O n\u00famero de vezes em que a l\u00f3gica do disjuntor foi executada Isso geralmente ser\u00e1 uma vez por chamada de m\u00e9todo, mas pode ser mais de uma vez se a chamada de m\u00e9todo for tentada novamente
+
+ft.circuitbreaker.state.total.description=Quantidade de tempo gasto pelo disjuntor em cada estado.
+
+ft.circuitbreaker.opened.total.description=N\u00famero de vezes que o disjuntor mudou do estado fechado para o estado aberto.
+
+ft.bulkhead.calls.total.description=O n\u00famero de vezes que a l\u00f3gica de anteparo foi executada Isso geralmente ser\u00e1 uma vez por chamada de m\u00e9todo, mas pode ser zero vezes se o disjuntor impediu a execu\u00e7\u00e3o ou mais de uma vez se a chamada de m\u00e9todo for tentada novamente.
+
+ft.bulkhead.executionsRunning.description=N\u00famero de execu\u00e7\u00f5es em execu\u00e7\u00e3o no momento
+
+ft.bulkhead.executionsWaiting.description=N\u00famero de execu\u00e7\u00f5es atualmente aguardando na fila.
+
+ft.bulkhead.runningDuration.description=Histograma do tempo que as execu\u00e7\u00f5es de m\u00e9todo gastaram executando.
+
+ft.bulkhead.waitingDuration.description=Histograma do tempo que as execu\u00e7\u00f5es de m\u00e9todo gastaram esperando na fila

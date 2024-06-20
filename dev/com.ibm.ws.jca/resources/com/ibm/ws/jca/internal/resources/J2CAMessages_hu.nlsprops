@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,9 +49,25 @@ J2CA8510.create.timed.out=J2CA8510E: Nem hozhat\u00f3 l\u00e9tre id\u0151m\u00e9
 J2CA8510.create.timed.out.explanation=Az id\u0151m\u00e9r\u0151 l\u00e9trehoz\u00e1sa a v\u00e1rtn\u00e1l hosszabb id\u0151t vesz ig\u00e9nybe.
 J2CA8510.create.timed.out.useraction=Ellen\u0151rizze, hogy nem magas-e a terhel\u00e9s a rendszeren, \u00e9s fontolja meg annak cs\u00f6kkent\u00e9s\u00e9t.
 
+J2CA8511.create.timer.failed.checkpoint=J2CA8511E: A kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9se meghi\u00fasult, mert a {0} er\u0151forr\u00e1s-illeszt\u0151 l\u00e9trehozott egy id\u0151z\u00edt\u0151t.
+J2CA8511.create.timer.failed.checkpoint.explanation=A Liberty nem t\u00e1mogatja az id\u0151m\u00e9r\u0151t l\u00e9trehoz\u00f3 er\u0151forr\u00e1s-illeszt\u0151ket, mik\u00f6zben az alkalmaz\u00e1sok egy kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9sekor indulnak el.
+J2CA8511.create.timer.failed.checkpoint.useraction=\u00c1ll\u00edtsa be az ellen\u0151rz\u00e9si pontot, miel\u0151tt az alkalmaz\u00e1s elindul a beforeAppInd\u00edt\u00e1s kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont be\u00e1ll\u00edt\u00e1sa lehet\u0151s\u00e9ggel.
+
+J2CA8512.create.timer.not.supported.checkpoint=J2CA8512E: Egy id\u0151m\u00e9r\u0151 nem hozhat\u00f3 l\u00e9tre a {0} er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1m\u00e1ra a kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9s sor\u00e1n.
+J2CA8512.create.timer.not.supported.checkpoint.explanation=A Liberty nem t\u00e1mogatja a id\u0151z\u00edt\u0151k er\u0151forr\u00e1s-illeszt\u0151k \u00e1ltali l\u00e9trehoz\u00e1s\u00e1t, mik\u00f6zben az alkalmaz\u00e1sok egy kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9sekor indulnak el.
+J2CA8512.create.timer.not.supported.checkpoint.useraction=\u00c1ll\u00edtsa be az ellen\u0151rz\u00e9si pontot, miel\u0151tt az alkalmaz\u00e1s elindul a beforeAppInd\u00edt\u00e1s kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont be\u00e1ll\u00edt\u00e1sa lehet\u0151s\u00e9ggel.
+
 J2CA8600.work.start.timeout=J2CA8600E: A(z) {1} er\u0151forr\u00e1s-illeszt\u0151 \u00e1ltal bek\u00fcld\u00f6tt {0} munka nem indult el {2} ezredm\u00e1sodpercen bel\u00fcl.
 J2CA8600.work.start.timeout.explanation=A munka ind\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet t\u00fall\u00e9pte az id\u0151korl\u00e1tot.
 J2CA8600.work.start.timeout.useraction=Ellen\u0151rizze, hogy nem magas-e a terhel\u00e9s a rendszeren, \u00e9s fontolja meg annak cs\u00f6kkent\u00e9s\u00e9t, vagy keresse meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3j\u00e1t, hogy fontolja meg a munka id\u0151korl\u00e1tj\u00e1nak n\u00f6vel\u00e9s\u00e9t, amikor a JCA munkakezel\u0151 sz\u00e1m\u00e1ra ker\u00fcl munka elk\u00fcld\u00e9sre.
+
+J2CA8601.work.submit.failed.checkpoint=J2CA8601E: A kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9se meghi\u00fasult, mert a {0} er\u0151forr\u00e1s-illeszt\u0151 elk\u00fcldte a k\u00f6vetkez\u0151t: {1}.
+J2CA8601.work.submit.failed.checkpoint.explanation=A Liberty nem t\u00e1mogatja a munk\u00e1t bek\u00fcld\u0151 er\u0151forr\u00e1s-illeszt\u0151ket, mik\u00f6zben az alkalmaz\u00e1sok egy kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9sekor indulnak el.
+J2CA8601.work.submit.failed.checkpoint.useraction=\u00c1ll\u00edtsa be az ellen\u0151rz\u00e9si pontot, miel\u0151tt az alkalmaz\u00e1s elindul a beforeAppInd\u00edt\u00e1s kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont be\u00e1ll\u00edt\u00e1sa lehet\u0151s\u00e9ggel.
+
+J2CA8602.work.submit.not.supported.checkpoint=J2CA8602E: A {1} er\u0151forr\u00e1s-illeszt\u0151 \u00e1ltal elk\u00fcld\u00f6tt {0} feladat visszautas\u00edt\u00e1sra ker\u00fclt a kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9s sor\u00e1n.
+J2CA8602.work.submit.not.supported.checkpoint.explanation=A Liberty nem t\u00e1mogatja az er\u0151forr\u00e1s-illeszt\u0151k \u00e1ltal v\u00e9gzett munk\u00e1t, mik\u00f6zben az alkalmaz\u00e1sok egy kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9sekor indulnak el.
+J2CA8602.work.submit.not.supported.checkpoint.useraction=\u00c1ll\u00edtsa be az ellen\u0151rz\u00e9si pontot, miel\u0151tt az alkalmaz\u00e1s elindul a beforeAppInd\u00edt\u00e1s kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont be\u00e1ll\u00edt\u00e1sa lehet\u0151s\u00e9ggel.
 
 # 8622 deleted
 
@@ -168,6 +184,3 @@ BEAN_VALIDATION_FAILED_J2CA0238.useraction=Olvassa el az er\u0151forr\u00e1s-ill
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241=J2CA0241W: Az er\u0151forr\u00e1s-illeszt\u0151 komponens arch\u00edvumok nem t\u00e1mogatottak.
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.explanation=A META-INF k\u00f6nyvt\u00e1rban l\u00e9v\u0151 beans.xml f\u00e1jl figyelmen k\u00edv\u00fcl marad, mivel a CDI fel\u00fcgyelt bean arch\u00edvum er\u0151forr\u00e1s-illeszt\u0151k nem t\u00e1mogatottak.
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.useraction=T\u00e1vol\u00edtsa el a beans.xml f\u00e1jlt a META-INF k\u00f6nyvt\u00e1rb\u00f3l, mivel a CDI fel\u00fcgyelt bean arch\u00edvum er\u0151forr\u00e1s-illeszt\u0151k nem t\u00e1mogatottak.
-
-
-

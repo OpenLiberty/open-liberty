@@ -18,3 +18,7 @@
 #ISMESSAGEFILE FALSE
 #NLS_ENCODING=UNICODE
 # cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+AUDIT_EVENT_MISSING_REST_ENDPOINT=CWWKS5856E: Nazwa zdarzenia kontroli {0} nie jest obs\u0142ugiwana, poniewa\u017c punkt ko\u0144cowy REST nie jest w\u0142\u0105czony.
+AUDIT_EVENT_MISSING_REST_ENDPOINT.explanation=Aby u\u017cy\u0107 okre\u015blonego zdarzenia kontroli, punkt ko\u0144cowy REST musi by\u0107 w\u0142\u0105czony.
+AUDIT_EVENT_MISSING_REST_ENDPOINT.useraction=Upewnij si\u0119, \u017ce sk\u0142adnik w\u0142\u0105czaj\u0105cy punkt ko\u0144cowy REST jest w\u0142\u0105czony w konfiguracji server.xml .

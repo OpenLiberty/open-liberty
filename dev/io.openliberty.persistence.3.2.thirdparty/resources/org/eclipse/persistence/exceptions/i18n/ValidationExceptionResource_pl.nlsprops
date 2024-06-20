@@ -613,7 +613,7 @@
 
 7345=Nie znaleziono pliku {0} okre\u015blonego dla \u017ar\u00f3d\u0142a danych XMLMetadataSource
 
-7346=Nie udost\u0119pniono w\u0142a\u015bciwo\u015bci kontekstu wielu klient\u00f3w [{0}]. Gdy w\u0142a\u015bciwo\u015b\u0107 jednostki trwa\u0142o\u015bci (eclipselink.multitenant.tenants-share-emf) jest ustawiona na warto\u015b\u0107 false, wszystkie w\u0142a\u015bciwo\u015bci kontekstu wielu klient\u00f3w musz\u0105 zosta\u0107 udost\u0119pnione na pocz\u0105tku. Mo\u017cna to zrobi\u0107 bezpo\u015brednio w definicji jednostki trwa\u0142o\u015bci lub przez przekazanie odwzorowania w\u0142a\u015bciwo\u015bci zawieraj\u0105cego wszystkie w\u0142a\u015bciwo\u015bci kontekstu wielu klient\u00f3w w wywo\u0142aniu tworz\u0105cym fabryk\u0119 EntityManagerFactory.
+7346=Nie udost\u0119pniono w\u0142a\u015bciwo\u015bci kontekstu wielu klient\u00f3w [{0}]. Je\u015bli w\u0142a\u015bciwo\u015b\u0107 jednostki trwa\u0142o\u015bci ({1}) jest ustawiona na warto\u015b\u0107 false, wszystkie w\u0142a\u015bciwo\u015bci kontekstu dla wielu podmiot\u00f3w u\u017cytkuj\u0105cych musz\u0105 by\u0107 udost\u0119pnione z przodu. Mo\u017cna to zrobi\u0107 bezpo\u015brednio w definicji jednostki trwa\u0142o\u015bci lub przez przekazanie odwzorowania w\u0142a\u015bciwo\u015bci zawieraj\u0105cego wszystkie w\u0142a\u015bciwo\u015bci kontekstu wielu klient\u00f3w w wywo\u0142aniu tworz\u0105cym fabryk\u0119 EntityManagerFactory.
 
 7347=Klasa [{0}] okre\u015bla metadane konwersji na poziomie typu bez okre\u015blenia nazwy atrybutu dla ka\u017cdego. Nazwa atrybutu musi by\u0107 okre\u015blona dla wszystkich metadanych konwersji na poziomie typu, aby zapewni\u0107 poprawne zastosowanie do atrybutu klasy nadrz\u0119dnej.
 
@@ -633,9 +633,12 @@
 
 7356=Nie mo\u017cna wykona\u0107 procedury [{1}], poniewa\u017c {0} nie obs\u0142uguje wielu parametr\u00f3w wyj\u015bciowych
 
-7357=Adres URL [{0}] dla zasobu [{1}] nie nale\u017cy do poprawnego elementu g\u0142\u00f3wnego trwa\u0142o\u015bci, zgodnie z definicj\u0105 specyfikacji JPA.
+7357=Adres URL "[{0}]" dla zasobu "[{1}]" nie nale\u017cy do poprawnego katalogu g\u0142\u00f3wnego trwa\u0142o\u015bci, zgodnie ze specyfikacj\u0105 Jakarta Persistence.
 
 7358=Podano niepoprawn\u0105 nazw\u0119 us\u0142ugi ASM.
 
 7359=Brak dost\u0119pnej us\u0142ugi ASM.
+
+7360=Has\u0142o bazy danych zosta\u0142o zaszyfrowane przy u\u017cyciu nieaktualnego algorytmu.
+Reencrypt przez `passwordUpdate.sh ` z pakunku eclipselink.zip .
 

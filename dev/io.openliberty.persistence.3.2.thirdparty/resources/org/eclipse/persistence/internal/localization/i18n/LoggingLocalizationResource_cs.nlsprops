@@ -117,7 +117,7 @@ connected_user_database_driver=P\u0159ipojeno: {0}{6}U\u017eivatel: {1}{6}Datab\
 
 corrupt_object=po\u0161kozen\u00fd objekt: {0}
 
-corrupt_object_referenced_through_mapping=Mapov\u00e1n\u00ed odkazuje na n\u00e1sleduj\u00edc\u00ed po\u0161kozen\u00fd objekt: {0}.
+corrupt_object_referenced_through_mapping=N\u00e1sleduj\u00edc\u00ed po\u0161kozen\u00fd objekt je odkazov\u00e1n prost\u0159ednictv\u00edm mapov\u00e1n\u00ed: {0}
 
 corrupted_session_announcement=ID relace: {0}  Spr\u00e1vce zji\u0161\u0165ov\u00e1n\u00ed p\u0159ijal ozn\u00e1men\u00ed o poru\u0161en\u00e9 relaci - ignoruje se.
 
@@ -169,6 +169,14 @@ elements={0}{1} prvk\u016f
 
 enable_batch_operations_as_true_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "enable-batch-operations-as-true" EclipseLink CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
 
+encryptor_script_description=Tato aplikace m\u00e1 star\u00e9 \u0161ifrovan\u00e9 heslo, kter\u00e9 pou\u017e\u00edvala p\u0159edchoz\u00ed verze EclipseLink. Znovu jej za\u0161ifrujte pomoc\u00ed nejnov\u011bj\u0161\u00edho algoritmu.
+
+encryptor_script_output=Znovu za\u0161ifrovan\u00e9 heslo je: {0}
+
+encryptor_script_usage=Pou\u017eit\u00ed je `passwordUpdate.sh | .cmd -ip < star\u00e9 \u0161ifrovan\u00e9 heslo> `
+
+entity_manager_has_multiple_connections=Jednotka perzistence m\u00e1 v\u00edce p\u0159ipojen\u00ed a vrac\u00ed prvn\u00ed ze seznamu.
+
 entity_manager_ignores_jta_data_source=Jednotka perzistence nepou\u017e\u00edv\u00e1 JTA, a proto bude spr\u00e1vce entit ignorovat zdroj dat JTA. 
 
 entity_manager_ignores_nonjta_data_source=Jednotka perzistence pou\u017e\u00edv\u00e1 JTA, a proto spr\u00e1vce entit bude ignorovat v\u0161echny ostatn\u00ed zdroje dat krom\u011b JTA. 
@@ -192,6 +200,8 @@ error_in_create=Chyba ve vytv\u00e1\u0159en\u00ed.
 error_in_remove=Chyba v odeb\u00edr\u00e1n\u00ed.
 
 error_loading_xml_file=V\u00fdjimka p\u0159i zav\u00e1d\u011bn\u00ed souboru ORM xml:  {0}: {1}
+
+error_queryTimeoutParse=Nelze analyzovat hodnotu vlastnosti {0} jakarta.persistence.query.timeout : {1}
 
 exception_loading_entity_class=V\u00fdjimka p\u0159i pokusu inicializovat perzistenci. Do\u0161lo k {1} p\u0159i pokusu na\u010d\u00edst t\u0159\u00eddu entit: {0}.
 
@@ -647,6 +657,18 @@ retreived_null_message=Na\u010dtena zpr\u00e1va s hodnotou null z t\u00e9matu: {
 
 retreived_unknown_message_type=Na\u010dten nezn\u00e1m\u00fd typ zpr\u00e1vy: {0} z t\u00e9matu: {1}; ignoruje se.
 
+schema_default_create_tables_failed=Nezda\u0159ilo se vytvo\u0159it tabulky ve v\u00fdchoz\u00edm sch\u00e9matu tabulky: {0}
+
+schema_default_drop_tables_failed=Zru\u0161en\u00ed tabulek ve v\u00fdchoz\u00edm sch\u00e9matu tabulky se nezda\u0159ilo: {0}
+
+schema_default_extend_tables_failed=Roz\u0161\u00ed\u0159en\u00ed tabulek ve v\u00fdchoz\u00edm sch\u00e9matu tabulky se nezda\u0159ilo: {0}
+
+schema_default_replace_tables_failed=Nepoda\u0159ilo se nahradit tabulky ve v\u00fdchoz\u00edm sch\u00e9matu tabulky: {0}
+
+schema_default_truncate_tables_failed=Nepoda\u0159ilo se o\u0159\u00edznout tabulky ve v\u00fdchoz\u00edm sch\u00e9matu tabulky: {0}
+
+schema_drop_object_failed=Nepoda\u0159ilo se zru\u0161it objekt ve v\u00fdchoz\u00edm sch\u00e9matu tabulky: {0}
+
 sdo_classgenerator_exception={2} Do\u0161lo k v\u00fdjimce [{0}] - zpr\u00e1va je [{1}]
 
 sdo_error_deserialization=Neopr\u00e1vn\u011bn\u00fd pokus o deserializaci se t\u0159\u00eddou {0}.
@@ -716,6 +738,8 @@ Current podproces (ID: {3} n\u00e1zev: {4}) trasov\u00e1n\u00ed z\u00e1sobn\u00e
 #{5}
 
 unitofwork_identity_hashcode={0}Ha\u0161ovac\u00ed k\u00f3d identity UnitOfWork: {1}
+
+unknown_property_type=Nezn\u00e1m\u00fd typ {0} vlastnosti perzistence {1}
 
 update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery nem\u016f\u017ee pou\u017e\u00edvat vazbu na t\u00e9to datab\u00e1zov\u00e9 platform\u011b. Zm\u011bn\u011bno nastaven\u00ed dotazu, aby ho bylo mo\u017en\u00e9 prov\u00e9st bez vazby.
 

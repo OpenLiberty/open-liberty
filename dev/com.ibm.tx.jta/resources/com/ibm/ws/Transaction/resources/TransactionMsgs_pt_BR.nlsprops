@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2023 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -875,7 +875,7 @@ WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Corrija quaisquer condi\u00e7\u00f5e
 
 WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: a solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o do servidor falhou porque o servi\u00e7o de transa\u00e7\u00f5es n\u00e3o pode iniciar uma transa\u00e7\u00e3o.
 WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=O Liberty n\u00e3o suporta aplicativos que iniciam ou requerem uma transa\u00e7\u00e3o enquanto o aplicativo inicia quando um ponto de verifica\u00e7\u00e3o do servidor \u00e9 solicitado.
-WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Use a op\u00e7\u00e3o at=deployment do ponto de verifica\u00e7\u00e3o do servidor ou modifique o aplicativo para iniciar transa\u00e7\u00f5es ap\u00f3s ele ter iniciado.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Configure o ponto de verifica\u00e7\u00e3o para ocorrer antes que o aplicativo seja iniciado usando a op\u00e7\u00e3o beforeAppIniciar ponto de verifica\u00e7\u00e3o do servidor ou modifique o aplicativo para iniciar as transa\u00e7\u00f5es ap\u00f3s ele ter iniciado.
 
 # 0 - Stack trace of call to create new tx
 WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: um aplicativo iniciou ou requereu uma transa\u00e7\u00e3o durante a solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o do servidor. O rastreio de pilha a seguir para este encadeamento foi capturado quando a transa\u00e7\u00e3o foi criada: {0}

@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWWKS0000=CWWKS0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.crypto.common/resources/com/ibm/ws/crypto/common/resources/CryptoCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Common Crypto Utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS5900 - CWWKS5910
+CRYPTO_UNSECURE=CWWKS5900W: Element konfiguracji {0} okre\u015bla niezabezpieczony algorytm szyfrowania {1} .  Zamiast niego nale\u017cy rozwa\u017cy\u0107 u\u017cycie bezpiecznego algorytmu {2} .
+CRYPTO_UNSECURE.explanation=Skonfigurowany algorytm nie jest ju\u017c uwa\u017cany za bezpieczny kryptograficznie.
+CRYPTO_UNSECURE.useraction=U\u017cyj sugerowanego algorytmu zabezpiecze\u0144.
+
+CRYPTO_UNSECURE_REPLACED=CWWKS5901W: Element konfiguracji {0} okre\u015bla niezabezpieczony algorytm szyfrowania {1} .  Zamiast niego u\u017cywany jest algorytm zabezpiecze\u0144 {2} .
+CRYPTO_UNSECURE_REPLACED.explanation=Algorytm szyfrowania niezabezpieczonego zosta\u0142 zast\u0105piony algorytmem zabezpieczonym.
+CRYPTO_UNSECURE_REPLACED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
