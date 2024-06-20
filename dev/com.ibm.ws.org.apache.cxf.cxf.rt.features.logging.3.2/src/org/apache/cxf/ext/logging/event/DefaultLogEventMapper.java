@@ -18,6 +18,9 @@
  */
 package org.apache.cxf.ext.logging.event;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.security.AccessController;
 import java.util.Arrays;
 import java.util.Collections;
@@ -46,7 +49,10 @@ import org.apache.cxf.service.model.ServiceInfo;
 import org.apache.cxf.ws.addressing.AddressingProperties;
 import org.apache.cxf.ws.addressing.ContextUtils;
 
+import com.ibm.ws.kernel.service.util.JavaInfo;
+
 public class DefaultLogEventMapper {
+    
     public static final String MASKED_HEADER_VALUE = "XXX";
     private static final Set<String> DEFAULT_BINARY_CONTENT_MEDIA_TYPES;
 
@@ -141,7 +147,7 @@ public class DefaultLogEventMapper {
     }
 
     private Iterator<? extends Object> getJAASPrincipals() {
-        Subject subject = Subject.getSubject(AccessController.getContext());
+        Subject subject = getCurrentSubject(); // Liberty Change
         return subject != null && subject.getPrincipals() != null
             ? subject.getPrincipals().iterator() : Collections.emptyIterator();
     }
@@ -352,5 +358,34 @@ public class DefaultLogEventMapper {
         Endpoint ep = message.getExchange().getEndpoint();
         return (ep == null) ? new EndpointInfo() : ep.getEndpointInfo();
     }
+    
+
+    // Liberty Change Start
+    /**
+     * In Java 23, the Subject.getSubject(...) method always throws an UnsupportedOperationException
+     * So for versions before Java 23, we can still use Subject.getSubject(), but for Java 23 and beyond,
+     * we need to switch to using Subject.current(), which was introduced in Java 18.
+     *
+     * So for Java 22 and earlier, this returns Subject.getSubject(...)
+     * For Java 23 and later, this method returns Subject.current()
+     *
+     * @return
+     */
+    public static Subject getCurrentSubject() {
+        if (JavaInfo.majorVersion() <= 22) {
+            // return Subject.getSubject(...)
+            return Subject.getSubject(AccessController.getContext());
+        } else {
+            // return Subject.current()
+            try {
+                final MethodType subjectMethodType = MethodType.methodType(Subject.class);
+                MethodHandle getCurrentMethodHandle = MethodHandles.lookup().findStatic(Subject.class, "current", subjectMethodType);
+                return (Subject) getCurrentMethodHandle.invoke();
+            } catch (Throwable e) {
+                return null;
+            }
+        }
+    }
+    // Liberty Change End
 
 }
