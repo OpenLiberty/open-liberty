@@ -10,7 +10,6 @@
 package io.openliberty.org.apache.myfaces40.fat.tests;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
@@ -33,18 +32,12 @@ import org.openqa.selenium.Keys;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.BrowserWebDriverContainer;
 
-import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.HttpUtils;
 import io.openliberty.org.apache.myfaces40.fat.FATSuite;
 import io.openliberty.org.apache.myfaces40.fat.JSFUtils;
 import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
