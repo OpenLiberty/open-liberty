@@ -1,0 +1,113 @@
+###############################################################################
+# Copyright (c) 2011, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.wlm/resources/com.ibm.ws.zos.wlm.internal.resources/ZWLMMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS WLM Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0151-0200: WLM Services
+# -------------------------------------------------------------------------------------------------
+
+#{0}
+NATIVE_SERVICE_OOM=CWWKB0151E: Native routine ({0}) encountered an out of memory condition.
+NATIVE_SERVICE_OOM.explanation=The server has driven a native method that encountered an out of memory condition.
+NATIVE_SERVICE_OOM.useraction=Examine the server logs and runtime environment to determine the reason for the native code failure.
+
+#{0}
+#{1}
+NATIVE_SERVICE_WLM_FAILURE=CWWKB0152E: Native routine ({0}) received a failing reason code ({1}) from WLM.
+NATIVE_SERVICE_WLM_FAILURE.explanation=The server has driven a native method that called the referenced WLM service.  The reason code from the WLM service indicates the reason for the failure.
+NATIVE_SERVICE_WLM_FAILURE.useraction=Use the WLM reason code to determine the reason for the failure.
+
+#{0}
+#{1}
+NATIVE_SERVICE_ERRNO=CWWKB0153E: Native routine ({0}) failed with the following errno ({1}).
+NATIVE_SERVICE_ERRNO.explanation=The server has driven a native method that called the referenced WLM service.  The errno from the WLM service indicates the reason of the failure.
+NATIVE_SERVICE_ERRNO.useraction=Use the errno value to determine the reason for the failure.
+
+#{0}
+#{1}
+#{2}
+#{3}
+#{4}
+NATIVE_SERVICE_FAILED_GENERIC=CWWKB0154E: Native routine failed, WebSphere Application Server service ({0}) RC({1}), WLM service ({2}) RC({3}) RSN({4}).
+NATIVE_SERVICE_FAILED_GENERIC.explanation=The server has driven a native method that failed.  The target WebSphere Application Server service and return code are provided.  The target WLM service with return and reason codes are also provided.
+NATIVE_SERVICE_FAILED_GENERIC.useraction=Use the return and reason codes to determine the reason for the failure.
+
+#{0}
+NATIVE_SERVICE_PC=CWWKB0155E: Native routine ({0}) received an unexpected return code ({1}) from its authorized PC service.
+NATIVE_SERVICE_PC.explanation=The server has driven a native method to perform an authorized service call.  It received a non-zero return code from the authorized Program Call (PC).
+NATIVE_SERVICE_PC.useraction=Examine the server logs and runtime environment to determine the reason for the native code failure.
+
+#{0} 
+NATIVE_SERVICE_FAILED_TO_REGISTER=CWWKB0156E: Native routine ({0}) failed to register WLM Enclave in the native registry.
+NATIVE_SERVICE_FAILED_TO_REGISTER.explanation=The server has driven a native method to perform an authorized service call.  It successfully completed the native WLM service invocation, but failed to register the WLM Enclave in the native registry.
+NATIVE_SERVICE_FAILED_TO_REGISTER.useraction=Examine the server logs and runtime environment to determine the reason for the native code failure.
+
+#{0} 
+NATIVE_SERVICE_REGISTRY_FAILED_VALIDATE=CWWKB0157E: Native routine ({0}) failed to validate the WLM Enclave in the native registry.
+NATIVE_SERVICE_REGISTRY_FAILED_VALIDATE.explanation=The supplied token representing a WLM Enclave failed validation in the native registry.  
+NATIVE_SERVICE_REGISTRY_FAILED_VALIDATE.useraction=Examine the server logs and runtime environment to determine the reason for the native code failure.
+
+#{0} 
+NATIVE_SERVICE_UNAUTH_SERVICE_NOTFOUND=CWWKB0158E: Native routine ({0}) failed to locate the native unauthorized stub routine.
+NATIVE_SERVICE_UNAUTH_SERVICE_NOTFOUND.explanation=A native service needed to process the service call was not found.  
+NATIVE_SERVICE_UNAUTH_SERVICE_NOTFOUND.useraction=Examine the server logs and runtime environment to determine the reason for the native code failure.
+
+#{0} 
+NATIVE_SERVICE_BPX4IPT_FAILED=CWWKB0159E: Native routine ({0}) received an unexpected result from BPX4IPT.
+NATIVE_SERVICE_BPX4IPT_FAILED.explanation=An attempt to drive a service call using the native service BPX4IPT failed.  
+NATIVE_SERVICE_BPX4IPT_FAILED.useraction=Examine the server logs and runtime environment to determine the reason for the native code failure.
+
+#{0} 
+CONFIG_INVALID_COLLECTIONNAME=CWWKB0160W: Workload Management configuration value for attribute collectionName ({0}) has been truncated.
+CONFIG_INVALID_COLLECTIONNAME.explanation=The value supplied for collectionName attribute has exceeded the maximum of eighteen characters.  The first eighteen characters will be used.
+CONFIG_INVALID_COLLECTIONNAME.useraction=Update the server configuration to specify a correct value for the collectionName attribute.
+
+#{0}
+CONFIG_NO_COLLECTIONNAME=CWWKB0161W: Workload Management configuration value for attribute collectionName is null or empty. The default value ({0}) will be used.
+CONFIG_NO_COLLECTIONNAME.explanation=The value supplied for collectionName attribute is either null or empty.  
+CONFIG_NO_COLLECTIONNAME.useraction=Update the server configuration to specify a value for the collectionName attribute.
+
+#{0}
+#{1}
+CLASSIFICATION_TRANCLASS_TRUNCATED=CWWKB0162W: WLM Classification Configuration value for attribute transactionClass has been truncated from ({0}) to ({1}).
+CLASSIFICATION_TRANCLASS_TRUNCATED.explanation=A classification rule was specified containing a transaction class of greater than 8 characters. It has been truncated to be only 8 characters.
+CLASSIFICATION_TRANCLASS_TRUNCATED.useraction=Update the associated classification rule to specify a correct value for the transactionClass attribute.
+
+#{0}
+CLASSIFICATION_DROPPED_TOO_MANY_WILDCARDS=CWWKB0163W: WLM Classification Configuration value for attribute resource uses incorrect wildcarding.  ({0}) contains too many consecutive wildcards.
+CLASSIFICATION_DROPPED_TOO_MANY_WILDCARDS.explanation=A classification rule was specified containing a resource string that uses too many consecutive wildcard characters.  The specified resource string contains too many consecutive wildcard characters. (Up to two may be used consecutively)
+CLASSIFICATION_DROPPED_TOO_MANY_WILDCARDS.useraction=Update the associated classification rule to specify a valid resource string by correcting the use of wildcarding.
+
+#{0}
+CLASSIFICATION_DROPPED_BAD_WILDCARD=CWWKB0164W: WLM Classification Configuration value for attribute resource uses incorrect wildcarding. ({0}) contains an incorrect use of double wildcards.
+CLASSIFICATION_DROPPED_BAD_WILDCARD.explanation=A classification rule was specified containing a resource string that uses double wildcards.
+CLASSIFICATION_DROPPED_BAD_WILDCARD.useraction=Update the associated classification rule to specify a valid resource string by eliminating the use of double wildcards.
+
+#{0}
+WLM_CURRENT_HEALTH_PERCENTAGE=CWWKB0165I: The server WLM health percentage is now {0}.
+WLM_CURRENT_HEALTH_PERCENTAGE.explanation=This message indicates that a new health factor is supplied to WLM for this server by using the IWM4HLTH API.
+WLM_CURRENT_HEALTH_PERCENTAGE.useraction=No action is required.

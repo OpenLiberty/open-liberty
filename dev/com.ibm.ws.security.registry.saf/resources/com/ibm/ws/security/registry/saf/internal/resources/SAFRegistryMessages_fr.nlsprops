@@ -1,0 +1,52 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry.saf/resources/com/ibm/ws/security/registry/saf/internal/resources/SAFRegistryMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security SAF Registry
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2930 - CWWKS2959
+
+PENALTY_BOX_FALLBACK=CWWKS2930W: Une tentative d''authentification SAF utilisant des services SAF autoris\u00e9s a \u00e9t\u00e9 rejet\u00e9e car le serveur n''est pas autoris\u00e9 \u00e0 acc\u00e9der \u00e0 la ressource APPL-ID {0}. L''authentification se poursuit en utilisant des services SAF non autoris\u00e9s.
+PENALTY_BOX_FALLBACK.explanation=Le serveur a tent\u00e9 d'utiliser des services SAF autoris\u00e9s pour effectuer l'authentification. La tentative a toutefois \u00e9chou\u00e9 car le serveur ne dispose pas des droits permettant d'acc\u00e9der \u00e0 la ressource APPL-ID indiqu\u00e9e, en fonction du domaine WZSSAD (WLP z/OS System Security Access Domain). Le serveur utilise \u00e0 nouveau les services SAF non autoris\u00e9s fournis par les service USS (Unix System Services) pour effectuer l'authentification.
+PENALTY_BOX_FALLBACK.useraction=Si l'utilisation des services SAF autoris\u00e9s est souhait\u00e9e, accordez \u00e0 l'utilisateur associ\u00e9 au serveur le droit d'acc\u00e8s appropri\u00e9 \u00e0 la ressource APPL-ID dans le domaine WZSSAD (WLP z/OS System Security Access Domain). Consultez le centre de documentation pour plus d'informations sur le domaine WZSSAD. Si l'utilisation des services SAF autoris\u00e9s n'est pas souhait\u00e9e, configurez le serveur afin qu'il utilise le registre SAF non autoris\u00e9 et non le registre SAF autoris\u00e9. Pour plus de d\u00e9tails, consultez le centre de documentation.
+
+PENALTY_BOX_RECOVERY=CWWKS2931I: Le serveur est maintenant autoris\u00e9 \u00e0 acc\u00e9der \u00e0 la ressource APPL-ID {0}. L''authentification se poursuit en utilisant les services SAF autoris\u00e9s.
+PENALTY_BOX_RECOVERY.explanation=Une tentative d'authentification pr\u00e9c\u00e9dente a \u00e9chou\u00e9 car le serveur n'a pas \u00e9t\u00e9 autoris\u00e9 \u00e0 acc\u00e9der \u00e0 la ressource indiqu\u00e9e (voir message CWWKS2930W). Le serveur est toutefois maintenant autoris\u00e9 \u00e0 acc\u00e9der \u00e0 la ressource APPL-ID. Des tentatives d'authentification suppl\u00e9mentaires utilisant les services SAF autoris\u00e9s auront lieu.
+PENALTY_BOX_RECOVERY.useraction=Aucune.
+
+ACTIVATION_MESSAGE=CWWKS2932I: La version {0} du registre d''utilisateurs SAF est activ\u00e9e. L''authentification se poursuit en utilisant des services natifs {0}.
+ACTIVATION_MESSAGE.explanation=Le message indique la version du registre d'utilisateurs SAF qui est utilis\u00e9e.  \
+Il y a deux versions : (1) la version non autoris\u00e9e, qui utilise des services UNIX System non autoris\u00e9s tels que __passwd ; (2) la version autoris\u00e9e, qui utilise des services SAF autoris\u00e9s tels que initACEE.  
+ACTIVATION_MESSAGE.useraction=Le serveur doit avoir acc\u00e8s aux ressources autoris\u00e9es SAFCRED et au domaine WZSSAD (WLP z/OS System Security Access Domain) pour pouvoir utiliser la version autoris\u00e9e du registre SAF.
+ 
+DAEMON_LOGIN_ERROR=CWWKS2933E: Le nom d'utilisateur et le mot de passe \
+n'ont pas pu \u00eatre v\u00e9rifi\u00e9s car le profil BPX.DAEMON est actif, et l'espace adresse n'est \
+pas contr\u00f4l\u00e9 par des programmes.
+DAEMON_LOGIN_ERROR.explanation=L'utilisation de la version non autoris\u00e9e \
+du registre SAF sur un syst\u00e8me sur lequel BPX.DAEMON est actif exige que toutes les \
+biblioth\u00e8ques utilis\u00e9es par Liberty soient contr\u00f4l\u00e9es par des programmes. A la place, vous pouvez utiliser la version autoris\u00e9e du registre SAF.
+DAEMON_LOGIN_ERROR.useraction=Si vous aviez l'intention d'utiliser la \
+version autoris\u00e9e du registre SAF, recherchez d'\u00e9ventuels messages d'erreur plus haut \
+dans le fichier message.log qui pourraient avoir emp\u00each\u00e9 le d\u00e9marrage du registre \
+autoris\u00e9. Sinon, envisagez de d\u00e9sactiver le profil BPX.DAEMON ou placez toutes les biblioth\u00e8ques \
+sous le contr\u00f4le de programmes.
+
+ENABLE_FAILOVER_MESSAGE=CWWKS2934E: Le serveur n'a pas le droit d'utiliser le registre SAF autoris\u00e9.
+ENABLE_FAILOVER_MESSAGE.explanation=Le serveur n'a pas le droit d'utiliser le registre SAF autoris\u00e9. La valeur de enableFailover emp\u00eache le serveur d'utiliser le registre SAF non autoris\u00e9. Toutes les tentatives d'authentification \u00e9choueront.
+ENABLE_FAILOVER_MESSAGE.useraction=Si vous voulez que le serveur puisse utiliser le registre SAF autoris\u00e9, v\u00e9rifiez que le processus ange est en cours d'ex\u00e9cution et que le serveur peut acc\u00e9der aux profils SAF n\u00e9cessaires pour utiliser le registre SAF autoris\u00e9. Si vous voulez que le serveur puisse utiliser le registre SAF non autoris\u00e9, associez le param\u00e8tre enableFailover \u00e0 la valeur true, qui est la valeur par d\u00e9faut.
+
+UNAUTH_INCLUDE_SAF=CWWKS2935W: L'attribut de serveur includeSafGroups est activ\u00e9 mais le serveur n'a pas acc\u00e8s aux fonctions autoris\u00e9es requises.
+UNAUTH_INCLUDE_SAF.explanation=L'attribut permettant d'obtenir les groupes non OMVS est activ\u00e9 ; toutefois, le serveur n'a pas acc\u00e8s aux fonctions autoris\u00e9es et ne peut pas obtenir les groupes SAF.
+UNAUTH_INCLUDE_SAF.useraction=L'utilisateur doit activer les fonctions autoris\u00e9es pour pouvoir acc\u00e9der aux groupes non OMVS. 

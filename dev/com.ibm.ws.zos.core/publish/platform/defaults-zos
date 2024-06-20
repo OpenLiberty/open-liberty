@@ -1,0 +1,5 @@
+# ------------------------------------------------------------------
+# Values in this file over-ride values in wlp/lib/platform/defaults.
+# ------------------------------------------------------------------
+# Set the z/OS kernel extension for authorized services
+WebSphere-DefaultExtension-zos: zosExtensions-1.0

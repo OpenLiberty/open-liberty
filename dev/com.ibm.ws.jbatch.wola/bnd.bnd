@@ -1,0 +1,26 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Batch Manager for z/OS Local Adapters
+Bundle-SymbolicName: com.ibm.ws.jbatch.wola
+Bundle-Description: Batch Manager for z/OS Local Adapters; version=${bVersion}
+
+WS-TraceGroup: wsbatch
+
+Private-Package: \
+    com.ibm.ws.jbatch.wola.internal.*
+
+-dsannotations: \
+    com.ibm.ws.jbatch.wola.internal.BatchWolaListener
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.javaee.batch.1.0;version=latest,\
+	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.jbatch.container;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.jbatch.rest;version=latest
+
+instrument.classesExcludes: com/ibm/ws/jbatch/wola/internal/resources/BatchWolaMessages*.class

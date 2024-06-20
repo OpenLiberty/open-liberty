@@ -1,0 +1,44 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.logging/resources/com/ibm/ws/zos/logging/internal/resources/ZosLoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Logging
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: Command processing (com.ibm.ws.zos.command.processing/resources/com.ibm.ws.zos.command.processing.internal.resources/CommandProcessingMessages.nlsprops)
+#0051-0100: Native code (com.ibm.zos.native/resources/com/ibm/ws/zos/native/native_messages.nlsprops)
+#0101-0150: core (com.ibm.ws.zos.core/resources/com/ibm/ws/zos/core/internal/resources/CoreMessages.nlsprops)
+#0251-0300: logging (here)
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the server name 
+KERNEL_SHUTDOWN_PRINT=CWWKB0251I: Rozszerzenie j\u0105dra systemu z/OS dla serwera {0} jest wy\u0142\u0105czane.
+KERNEL_SHUTDOWN_PRINT.explanation= Serwer przechodzi do ostatniego etapu przetwarzania operacji wy\u0142\u0105czania.
+KERNEL_SHUTDOWN_PRINT.useraction= Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika. W celu zautomatyzowania systemu mo\u017cna u\u017cy\u0107 tego komunikatu jako wyzwalacza, aby wskaza\u0107, \u017ce serwer jest zatrzymywany. Po tym komunikacie \u017cadne dalsze komunikaty nie b\u0119d\u0105 kierowane do makra WTO (komunikat do operatora).
+
+DDNAME_TOO_LONG=CWWKB0252W: Okre\u015blona d\u0142ugo\u015b\u0107 parametru DDNAME okre\u015blonego dziennika komunikat\u00f3w nie mie\u015bci si\u0119 w zakresie od 1 do 8 znak\u00f3w. Zostanie u\u017cyta domy\u015blna nazwa MSGLOG.
+DDNAME_TOO_LONG.explanation= Warto\u015b\u0107 parametru DDNAME musi mie\u0107 d\u0142ugo\u015b\u0107 od 1 do 8 znak\u00f3w. Je\u015bli podana nazwa nie jest dozwolona, zostanie u\u017cyta domy\u015blna nazwa MSGLOG.
+DDNAME_TOO_LONG.useraction= Podaj parametr DDNAME dziennika komunikat\u00f3w o d\u0142ugo\u015bci od 1 do 8 znak\u00f3w.

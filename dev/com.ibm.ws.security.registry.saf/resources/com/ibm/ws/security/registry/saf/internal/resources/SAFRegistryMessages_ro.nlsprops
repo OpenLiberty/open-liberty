@@ -1,0 +1,44 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry.saf/resources/com/ibm/ws/security/registry/saf/internal/resources/SAFRegistryMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security SAF Registry
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2930 - CWWKS2959
+
+PENALTY_BOX_FALLBACK=CWWKS2930W: O \u00eencercare de autentificare SAF utiliz\u00e2nd servicii autorizate SAF a fost respins\u0103 deoarece serverul nu este autorizat s\u0103 acceseze APPL-ID {0}. Autentificarea va continua utiliz\u00e2nd servicii neautorizate SAF.
+PENALTY_BOX_FALLBACK.explanation=Serverul a \u00eencercat s\u0103 utilizeze servicii autorizate SAF pentru a realiza autentificarea; totu\u015fi, \u00eencercarea a e\u015fuat deoarece acesta nu are autoritatea de a accesa resursa indicat\u0103 APPL-ID, \u00een conformitate cu WLP z/OS System Security Access Domain (WZSSAD). Serverul va regresa la utilizarea de servicii neautorizate SAF furnizate de Unix System Services pentru a realiza autentificarea.
+PENALTY_BOX_FALLBACK.useraction=Dac\u0103 este dorit\u0103 utilizarea de servicii autorizate SAF, acorda\u0163i utilizatorului asociat cu serverul autoritatea corespunz\u0103toare resursei APPL-ID \u00een WLP z/OS System Security Access Domain (WZSSAD). Vede\u0163i infocenter pentru informa\u0163ii suplimentare despre WZSSAD. Dac\u0103 nu este dorit\u0103 utilizarea de servicii autorizate SAF, configura\u0163i serverul s\u0103 utilizeze registrul neautorizat  SAF \u00een loc de registrul autorizat SAF. Apela\u0163i la centrul de informare pentru detalii.
+
+PENALTY_BOX_RECOVERY=CWWKS2931I: Serverul este acum autorizat pentru a accesa APPL-ID {0}. Autentificarea va continua utiliz\u00e2nd servicii autorizate SAF.
+PENALTY_BOX_RECOVERY.explanation=O \u00eencercare de autentificare anterioar\u0103 a e\u015fuat deoarece serverul nu a fost autorizat s\u0103 acceseze resursa indicat\u0103 APPL-ID (vede\u0163i mesajul CWWKS2930W); totu\u015fi, serverul este acum autorizat s\u0103 acceseze APPL-ID. \u00cencerc\u0103rile urm\u0103toare de autentificare vor continua utiliz\u00e2nd servicii autorizate SAF.
+PENALTY_BOX_RECOVERY.useraction=Niciuna.
+
+ACTIVATION_MESSAGE=CWWKS2932I: Versiunea {0} registrului de utilizatori SAF este activat\u0103. Autentificarea va continua cu utilizarea de servicii native {0}.
+ACTIVATION_MESSAGE.explanation=Mesajul indic\u0103 ce versiune de registru de utilizatori SAF este \u00een uz.  \
+Exist\u0103 dou\u0103 versiuni: (1) versiunea neautorizat\u0103, care utilizeaz\u0103 serviciile de sistem UNIX neautorizate, cum ar fi __passwd; (2) versiunea autorizat\u0103, care folose\u015fte serviciile SAF autorizate, cum ar fi initACEE.  
+ACTIVATION_MESSAGE.useraction=Serverul trebuie s\u0103 aib\u0103 acces la resursele autorizate SAFCRED \u015fi la WLP z/OS System Security Access Domain pentru a folosi versiunea autorizat\u0103 a registrului SAF.
+ 
+DAEMON_LOGIN_ERROR=CWWKS2933E: Numele de utilizator \u015fi parola nu au putut fi verificate deoarece profilul BPX.DAEMON este activ \u015fi spa\u0163iul de adrese nu este sub controlul programului.
+DAEMON_LOGIN_ERROR.explanation=Utilizarea unei versiunii neautorizate de registru SAF pe un sistem unde este activ BPX.DAEMON cere ca toate bibliotecile utilizate de Liberty s\u0103 fie sub controlul programului. O alternativ\u0103 ar fi s\u0103 folosi\u0163i versiunea autorizat\u0103 a registrului SAF.
+DAEMON_LOGIN_ERROR.useraction=Dac\u0103 inten\u0163ia este s\u0103 se foloseasc\u0103 versiunea autorizat\u0103 a registrului SAF, c\u0103uta\u0163i mesajele de eroare anterioare din fi\u015fierul message.log care ar indica ce a \u00eempiedicat pornirea registrului autorizat. Altfel, lua\u0163i \u00een considerare dezactivarea profilului BPX.DAEMON sau pune\u0163i toate bibliotecile sub controlul programului.
+
+ENABLE_FAILOVER_MESSAGE=CWWKS2934E: Serverului nu i se permite utilizarea registrului de autorizare SAF.
+ENABLE_FAILOVER_MESSAGE.explanation=Serverului nu i se permite utilizarea registrului de autorizare SAF. Valoarea lui enableFailover \u00eempiedic\u0103 serverul s\u0103 foloseasc\u0103 registrul SAF neautorizat. Toate \u00eencerc\u0103rile de autentificare viitoare vor e\u015fua.
+ENABLE_FAILOVER_MESSAGE.useraction=Dac\u0103 inten\u0163ia era ca serverul s\u0103 utilizeze registrul SAF autorizat, verifica\u0163i c\u0103 procesul angel ruleaz\u0103 \u015fi c\u0103 serverul poate accesa profilurile SAF necesare pentru a utiliza registrul SAF autorizat. Dac\u0103 inten\u0163ia era ca serverul s\u0103 utilizeze registrul SAF neautorizat, setarea enableFailover trebuie modificat\u0103 la true, care este valoarea implicit\u0103. 
+
+UNAUTH_INCLUDE_SAF=CWWKS2935W: Atributul de server includeSafGroups este activat, dar serverul nu are acces la func\u0163iile autorizate necesare.
+UNAUTH_INCLUDE_SAF.explanation=Atributul pentru ob\u0163inerea grupurilor non-OMVS este activat; \u00eens\u0103 serverul nu are acces la func\u0163iile autorizate \u015fi nu poate ob\u0163ine grupurile SAF.
+UNAUTH_INCLUDE_SAF.useraction=Utilizatorul trebuie s\u0103 activeze func\u0163iile autorizate pentru accesarea grupurilor non-OMVS. 

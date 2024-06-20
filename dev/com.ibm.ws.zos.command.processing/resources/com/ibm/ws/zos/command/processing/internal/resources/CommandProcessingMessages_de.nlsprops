@@ -1,0 +1,101 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.command.processing/resources/com.ibm.ws.zos.command.processing.internal.resources/CommandProcessingMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Command Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: command processing
+# -------------------------------------------------------------------------------------------------
+
+STOP_COMMAND_RECEIVED=CWWKB0001I: Es wurde ein Stoppbefehl f\u00fcr den Server {0} empfangen.
+STOP_COMMAND_RECEIVED.explanation=Der Server hat einen Stoppbefehl empfangen. Der Server leitet den Systemabschluss ein.
+STOP_COMMAND_RECEIVED.useraction=Es ist keine Aktion erforderlich.
+
+#{0} is target command
+#{1} is completion status
+MODIFY_COMMAND_COMPLETED=CWWKB0002I: \u00c4nderungsbefehl {0} abgeschlossen: {1}.
+MODIFY_COMMAND_COMPLETED.explanation=Der Server hat die Verarbeitung des angegebenen Befehls abgeschlossen. Wenn der Befehl nicht erfolgreich abgeschlossen wurde, geben die vorherigen Nachrichten die Ursache an.
+MODIFY_COMMAND_COMPLETED.useraction=Es ist keine Aktion erforderlich.
+
+#{0} is native error code
+NATIVE_ERROR_COMMAND_RECEIVED=CWWKB0003E: Bei der Befehlsverarbeitung wurde der Fehlercode {0} von einem nativen Aufruf empfangen.
+NATIVE_ERROR_COMMAND_RECEIVED.explanation=Der Server hat nativen Code f\u00fcr einen Befehlsverarbeitungsservice aufgerufen. Im nativen Code ist das mit dem angezeigten Fehlercode angegebene Problem aufgetreten.
+NATIVE_ERROR_COMMAND_RECEIVED.useraction=Untersuchen Sie die Serverprotokolle, um die Ursache f\u00fcr den Fehler im nativen Code zu bestimmen.
+
+#{0} is command response from the command handler
+MODIFY_COMMAND_HANDLER_MSG=CWWKB0004I: {0}
+MODIFY_COMMAND_HANDLER_MSG.explanation=Der Server hat einen zu verarbeitenden \u00c4nderungsbefehl empfangen. Dies ist die Befehlsantwort des Befehlshandler. Die Nachricht CWWKB0005I enth\u00e4lt den Befehlshandler.
+MODIFY_COMMAND_HANDLER_MSG.useraction=Es ist keine Aktion erforderlich.
+
+#{0} is the command handler completion status
+#{1} is the modify command handler name
+MODIFY_COMMAND_HANDLER_DONE=CWWKB0005I: Befehlsantworten {0} von {1} abgeschlossen. .
+MODIFY_COMMAND_HANDLER_DONE.explanation=Der Server hat einen zu verarbeitenden \u00c4nderungsbefehl empfangen. Diese Nachricht zeigt an, dass der Befehlshandler die Verarbeitung des Befehls abgeschlossen hat.
+MODIFY_COMMAND_HANDLER_DONE.useraction=Es ist keine Aktion erforderlich.
+
+#{0} is target command
+MODIFY_COMMAND_UNKNOWN=CWWKB0006W: \u00c4nderungsbefehl {0} ist keinem aktiven Befehlshandler bekannt.
+MODIFY_COMMAND_UNKNOWN.explanation=Der Server hat die Verarbeitung des angegebenen Befehls abgeschlossen. Keiner der aktiven Befehlshandler hat die Verarbeitung des Befehls berichtet. 
+MODIFY_COMMAND_UNKNOWN.useraction=Stellen Sie sicher, dass die Befehlssyntax korrekt ist, und setzen Sie dann den Befehl erneut ab.
+
+#{0} is the modify command handler name
+MODIFY_HANDLER_ERROR=CWWKB0007E: Es wurde ein Fehler vom Befehlshandler {0} empfangen.
+MODIFY_HANDLER_ERROR.explanation=Der Server hat einen zu verarbeitenden \u00c4nderungsbefehl empfangen. Diese Nachricht zeigt an, dass w\u00e4hrend die Verarbeitung ein Fehler im Befehlshandler aufgetreten ist.
+MODIFY_HANDLER_ERROR.useraction=Untersuchen Sie die Serverprotokolle, um die Ursache f\u00fcr den Fehler im Befehlshandler zu bestimmen.
+
+#{0} is command response related message 
+MODIFY_NLSBUILDMSG_FAILED=CWWKB0008E: {0}.
+MODIFY_NLSBUILDMSG_FAILED.explanation=Der Server hat versucht, eine Antwortnachricht auf den Befehl zu senden. Er konnte die Nachricht nicht anhand seines Nachrichtenbundles aufl\u00f6sen. 
+MODIFY_NLSBUILDMSG_FAILED.useraction=Untersuchen Sie die Serverprotokolle, um die Ursache f\u00fcr den Fehler im Befehlshandler zu bestimmen.
+
+
+MESSAGE_TRANSLATE_ERROR=CWWKB0009E: Eine Befehlsantwort konnte nicht in native Codierung \u00fcbersetzt werden.
+MESSAGE_TRANSLATE_ERROR.explanation=Der Server hat versucht, eine Befehlsantwortnachricht abzusetzen. Er konnte die Nachricht nicht in die native Codierung ("Cp1047") \u00fcbersetzen.
+MESSAGE_TRANSLATE_ERROR.useraction=Untersuchen Sie die Serverprotokolle, um die Ursache f\u00fcr den Fehler zu bestimmen.
+
+COMMAND_TRANSLATE_ERROR=CWWKB0010E: Der empfangene modify-Befehl hat ein ung\u00fcltiges Format. 
+COMMAND_TRANSLATE_ERROR.explanation=Der Server hat einen modify-Befehl empfangen. Er konnte den Befehlstext nicht aus der nativen Codierung ("Cp1047") \u00fcbersetzen.
+COMMAND_TRANSLATE_ERROR.useraction=Untersuchen Sie die Serverprotokolle, um die Ursache f\u00fcr den Fehler zu bestimmen.
+
+#{0} is the modify command handler name
+MODIFY_COMMAND_HANDLER_HELP_HDR=CWWKB0011I: Beginn der Hilfeinformationen f\u00fcr {0}.
+MODIFY_COMMAND_HANDLER_HELP_HDR.explanation=Diese Nachricht stellt den Beginn der Hilfeinformationen des angegebenen Befehlshandlers dar.
+MODIFY_COMMAND_HANDLER_HELP_HDR.useraction=Es ist keine Aktion erforderlich.
+
+#{0} is the help text from a command handler
+MODIFY_COMMAND_HANDLER_HELP_TXT=CWWKB0012I: {0}
+MODIFY_COMMAND_HANDLER_HELP_TXT.explanation=Hilfeinformationen des angegebenen Befehlshandlers werden angezeigt.
+MODIFY_COMMAND_HANDLER_HELP_TXT.useraction=Es ist keine Aktion erforderlich.
+
+#{0} is the modify command handler name
+MODIFY_COMMAND_HANDLER_HELP_END=CWWKB0013I: Ende der Hilfeinformationen f\u00fcr {0}.
+MODIFY_COMMAND_HANDLER_HELP_END.explanation=Diese Nachricht stellt das Ende der Hilfeinformationen des angegebenen Befehlshandlers dar.
+MODIFY_COMMAND_HANDLER_HELP_END.useraction=Es ist keine Aktion erforderlich.
+
+FILE_DELETE_UNSUCCESSFUL=CWWKB0014W: Die PID-Datei konnte nicht gel\u00f6scht werden.
+FILE_DELETE_UNSUCCESSFUL.explanation=Der Server hat versucht, die PID w\u00e4hrend des Serverstopps zu l\u00f6schen. Der Server konnte die mit {0} angegebene PID-Datei jedoch nicht l\u00f6schen.
+FILE_DELETE_UNSUCCESSFUL.useraction=Untersuchen Sie die Serverprotokolle, um festzustellen, ob der Server ordnungsgem\u00e4\u00df gestoppt wurde.

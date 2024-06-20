@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.connect/resources/com.ibm.ws.zos.connect.internal.resources/ZosConnectMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Connect
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0601-0650: CWWKB: z/OS WLM asynchronous servlet context propagation.
+# ------------------------------------------------------------------------------------------------- 
+
+DEACTIVATE_ENCLAVE_DELETED=CWWKB0601W: \u7576\u4f5c\u7528\u4e2d\u7684\u975e\u540c\u6b65\u5de5\u4f5c\u4ecd\u5728\u9032\u884c\u6642\uff0c\u975e\u540c\u6b65 Servlet \u7684\u74b0\u5883\u5b9a\u7fa9\u5ef6\u4f38\u670d\u52d9\u95dc\u9589\u3002\u5df2\u522a\u9664\u8b58\u5225\u8a18\u865f\u70ba {0} \u7684 WLM \u9694\u96e2\u5340\u3002
+DEACTIVATE_ENCLAVE_DELETED.explanation= \u975e\u540c\u6b65 Servlet \u7684\u74b0\u5883\u5b9a\u7fa9\u5ef6\u4f38\u670d\u52d9\u95dc\u9589\uff0c\u56e0\u70ba WLM \u7279\u6027\u3001Servlet \u7279\u6027\u6216\u9019\u5169\u500b\u7279\u6027\u7121\u6cd5\u4f7f\u7528\u3002
+DEACTIVATE_ENCLAVE_DELETED.useraction=\u8acb\u9a57\u8b49\u7576\u5de5\u4f5c\u4ecd\u5728\u9032\u884c\u6642\uff0c\u914d\u7f6e\u6a94\u4e2d\u4e26\u672a\u79fb\u9664 WLM \u7279\u6027\u3001Servlet \u7279\u6027\u6216\u9019\u5169\u500b\u7279\u6027\u3002

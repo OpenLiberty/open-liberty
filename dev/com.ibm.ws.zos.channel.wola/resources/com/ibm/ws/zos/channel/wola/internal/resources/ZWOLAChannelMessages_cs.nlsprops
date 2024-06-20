@@ -1,0 +1,116 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.channel.wola/resources/com.ibm.ws.zos.channel.wola.internal.resources/ZWOLAChannelMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS WOLA Channel Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0501-0550: WOLA Channel
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the first part of the WOLA group name.
+#{1} is the second part of the name.
+#{2} is the third part of the name.
+WOLA_SERVER_REGISTERED=CWWKB0501I: Kan\u00e1l WOLA (WebSphere Optimized Local Adapter) byl zaregistrov\u00e1n na serveru profilu Liberty pod n\u00e1sleduj\u00edc\u00edm n\u00e1zvem:  {0} {1} {2}
+WOLA_SERVER_REGISTERED.explanation=Server profilu Liberty zaregistroval adapt\u00e9r WOLA (WebSphere Optimized Local Adapter). Nyn\u00ed lze prov\u00e1d\u011bt vol\u00e1n\u00ed mezi aplikacemi s nativn\u00edmi jazyky a lok\u00e1ln\u00edm prost\u0159ed\u00edm serveru profilu Liberty.
+WOLA_SERVER_REGISTERED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} the key for part of the WOLA group name, for which the value contains at least one lowercase character
+#{1} the value for the part of the WOLA group name referred to by {0}, as given, containing at least one lowercase character
+#{2} the correct value referred to by {1}, now all uppercase
+WOLA_LOWERCASE_GROUP_NAME=CWWKB0502W: \u010c\u00e1st {0} n\u00e1zvu skupiny optimalizovan\u00fdch lok\u00e1ln\u00edch adapt\u00e9r\u016f WebSphere byla v konfiguraci zosLocalAdapters nastavena na hodnotu {1}, kter\u00e1 obsahuje minim\u00e1ln\u011b jedno mal\u00e9 p\u00edsmeno. Hodnota se zm\u011bn\u00ed na {2}.
+WOLA_LOWERCASE_GROUP_NAME.explanation=Subsyst\u00e9m zabezpe\u010den\u00ed syst\u00e9mu z/OS p\u0159ev\u00e1d\u00ed mal\u00e1 p\u00edsmena na velk\u00e1, co\u017e by mohlo zp\u016fsobit neshodu s va\u0161\u00ed konfigurac\u00ed.
+WOLA_LOWERCASE_GROUP_NAME.useraction=Nepou\u017e\u00edvejte mal\u00e1 p\u00edsmena v hodnot\u00e1ch v konfiguraci zosLocalAdapters pro wolaGroup, wolaName2 a wolaName3. Dal\u0161\u00ed informace o konvenc\u00edch pojmenov\u00e1n\u00ed najdete v dokumentaci System Authorization Facility (SAF).
+
+#{0} is the first part of the WOLA group name.
+#{1} is the second part of the name.
+#{2} is the third part of the name.
+WOLA_SERVER_UNAVAILABLE=CWWKB0503E: Lok\u00e1ln\u00ed kan\u00e1l adapt\u00e9ru optimalizovan\u00fd pro WebSphere(R), kter\u00fd pou\u017e\u00edv\u00e1 n\u00e1zev {0} {1} {2} nebyl k dispozici pro pou\u017eit\u00ed se serverem Liberty. Zkontrolujte, zda \u017e\u00e1dn\u00fd jin\u00fd server Liberty nepou\u017e\u00edv\u00e1 stejnou konfiguraci zosLocalAdapters, kter\u00e1 je na tomto serveru.
+WOLA_SERVER_UNAVAILABLE.explanation=Server Liberty nem\u016f\u017ee pou\u017e\u00edt n\u00e1zev uveden\u00fd v konfiguraci zosLocalAdapters pro registraci lok\u00e1ln\u00edch adapt\u00e9r\u016f optimalizovan\u00fdch pro WebSphere. Tento n\u00e1zev m\u016f\u017ee pou\u017e\u00edvat jin\u00fd server Liberty.
+WOLA_SERVER_UNAVAILABLE.useraction=Zkontrolujte, zda \u017e\u00e1dn\u00fd jin\u00fd server Liberty ve va\u0161em prost\u0159ed\u00ed nepou\u017e\u00edv\u00e1 stejnou konfiguraci zosLocalAdapters, kter\u00e1 je na tomto serveru. 
+
+# ------------------------------------------------------------------------------------------------
+# OTMA Message Parsing section for WOLA
+# ------------------------------------------------------------------------------------------------
+
+#{0} The segment number in question
+OTMA_RESP_MSG_PARSE_ERR=CWWKB0504E: D\u00e9lka segmentu zpr\u00e1vy odpov\u011bdi OTMA ur\u010den\u00e1 pro segment {0} neodpov\u00edd\u00e1 skute\u010dn\u00e9 velikosti segmentu.
+OTMA_RESP_MSG_PARSE_ERR.explanation=Do\u0161lo k chyb\u011b p\u0159i syntaktick\u00e9 anal\u00fdze zpr\u00e1vy odpov\u011bdi OTMA, kter\u00e1 je p\u0159ijata od IMS. Velikost ozna\u010den\u00e1 v z\u00e1hlav\u00ed neodpov\u00edd\u00e1 skute\u010dn\u00e9 velikosti dat zpr\u00e1vy.
+OTMA_RESP_MSG_PARSE_ERR.useraction=Zkontrolujte aplikaci, zda generuje platn\u00e9 zpr\u00e1vy form\u00e1tu OTMA.
+
+#{0} is the Total Message Length identified by headers
+#{1] is the actual header message length
+OTMA_RESP_HEADER_SHORT=CWWKB0505E: Ur\u010den\u00e1 d\u00e9lka zpr\u00e1vy odpov\u011bdi OTMA {0} je men\u0161\u00ed ne\u017e skute\u010dn\u00e1 d\u00e9lka vyrovn\u00e1vac\u00ed pam\u011bti zpr\u00e1v {1}.
+OTMA_RESP_HEADER_SHORT.explanation=Do\u0161lo k chyb\u011b p\u0159i syntaktick\u00e9 anal\u00fdze a od IMS byla p\u0159ijata zpr\u00e1va odpov\u011bdi OTMA. Velikost ozna\u010den\u00e1 v z\u00e1hlav\u00ed neodpov\u00edd\u00e1 skute\u010dn\u00e9 velikosti dat zpr\u00e1vy.
+OTMA_RESP_HEADER_SHORT.useraction=Zkontrolujte aplikaci a ujist\u011bte se, \u017ee d\u00e9lky ur\u010den\u00e9 v z\u00e1hlav\u00ed segmentu zpr\u00e1vy odpov\u00eddaj\u00ed d\u00e9lce dat zpr\u00e1vy.
+
+#{0} is the length specified by the OTMA Segment Header 
+#{1} is the segment number in this message
+OTMA_REQ_HEADER_INVALID=CWWKB0506E: D\u00e9lka segmentu po\u017eadavku OTMA {0} pro \u010d\u00edslo segmentu {1} nen\u00ed platn\u00e1.
+OTMA_REQ_HEADER_INVALID.explanation=Do\u0161lo k chyb\u011b p\u0159i syntaktick\u00e9 anal\u00fdze zpr\u00e1vy po\u017eadavku OTMA. Bu\u010f je d\u00e9lka zpr\u00e1vy ur\u010den\u00e1 v z\u00e1hlav\u00ed segmentu zpr\u00e1vy v\u011bt\u0161\u00ed ne\u017e 32768, nebo je men\u0161\u00ed ne\u017e minim\u00e1ln\u00ed d\u00e9lka. 
+OTMA_REQ_HEADER_INVALID.useraction=Zkontrolujte aplikaci a ujist\u011bte se, \u017ee d\u00e9lky ur\u010den\u00e9 v z\u00e1hlav\u00ed zpr\u00e1vy jsou platn\u00e9. Tak\u00e9 se ujist\u011bte, \u017ee se d\u00e9lka zpr\u00e1vy odpov\u011bdi OTMA rovn\u00e1 celkov\u00e9mu po\u010dtu bajt\u016f specifikovan\u00e9mu v z\u00e1hlav\u00ed.
+
+#{0} is the length specified by the OTMA Segment Header 
+#{1} is the actual number of bytes left in the buffer
+#{2} is the segment number being processed
+OTMA_REQ_HEADER_SHORT=CWWKB0507E: D\u00e9lka z\u00e1hlav\u00ed segmentu po\u017eadavku OTMA {0} p\u0159ekra\u010duje zb\u00fdvaj\u00edc\u00ed velikost vyrovn\u00e1vac\u00ed pam\u011bti {1} pro segment {2}.
+OTMA_REQ_HEADER_SHORT.explanation=Do\u0161lo k chyb\u011b p\u0159i syntaktick\u00e9 anal\u00fdze zpr\u00e1vy po\u017eadavku OTMA. D\u00e9lka ur\u010den\u00e1 v z\u00e1hlav\u00ed segmentu je v\u011bt\u0161\u00ed ne\u017e po\u010det bajt\u016f, kter\u00e9 je ponech\u00e1n ve vyrovn\u00e1vac\u00ed pam\u011bti. 
+OTMA_REQ_HEADER_SHORT.useraction=Zkontrolujte aplikaci a ujist\u011bte se, \u017ee d\u00e9lky ur\u010den\u00e9 v z\u00e1hlav\u00ed zpr\u00e1vy jsou platn\u00e9. Tak\u00e9 se ujist\u011bte, \u017ee se d\u00e9lka zpr\u00e1vy odpov\u011bdi OTMA rovn\u00e1 celkov\u00e9mu po\u010dtu bajt\u016f specifikovan\u00e9mu v z\u00e1hlav\u00ed.
+ 
+#{0} is the length specified by the OTMA Segment Header 
+#{1} is the segment number being processed
+OTMA_RESP_MSG_SEG_SMALL=CWWKB0508E: D\u00e9lka ur\u010den\u00e1 z\u00e1hlav\u00edm odezvy OTMA {0} p\u0159ekra\u010duje velikost vstupn\u00ed vyrovn\u00e1vac\u00ed pam\u011bti pro segment zpr\u00e1vy {1}. 
+OTMA_RESP_MSG_SEG_SMALL.explanation=Z\u00e1hlav\u00ed ur\u010den\u00e9 pro segment odezvy je v\u011bt\u0161\u00ed ne\u017e po\u010det bajt\u016f ve vyrovn\u00e1vac\u00ed pam\u011bti zpr\u00e1v. 
+OTMA_RESP_MSG_SEG_SMALL.useraction=Zkontrolujte aplikaci a ujist\u011bte se, \u017ee d\u00e9lky v z\u00e1hlav\u00ed zpr\u00e1vy odpov\u00eddaj\u00ed velikosti vyrovn\u00e1vac\u00ed pam\u011bti.
+
+#{0} is the segment count from the segment header array
+#{1} is the number of elements in the header array
+OTMA_RESP_COUNT_INVALID=CWWKB0509E: Ur\u010den\u00fd po\u010det zpr\u00e1v odezvy OTMA {0} neodpov\u00edd\u00e1 skute\u010dn\u00e9mu po\u010dtu segment\u016f {1}. 
+OTMA_RESP_COUNT_INVALID.explanation=Z\u00e1hlav\u00ed ur\u010den\u00e9 pro segment odezvy je v\u011bt\u0161\u00ed ne\u017e po\u010det bajt\u016f ve vyrovn\u00e1vac\u00ed pam\u011bti zpr\u00e1v. 
+OTMA_RESP_COUNT_INVALID.useraction=Zkontrolujte aplikaci a ujist\u011bte se, \u017ee d\u00e9lky v z\u00e1hlav\u00ed zpr\u00e1vy odpov\u00eddaj\u00ed velikosti vyrovn\u00e1vac\u00ed pam\u011bti.
+
+
+#{0} is the segment count from the segment header array
+#{1} is the max number of segments configured for the connection
+OTMA_MAX_REQ_SEGMENTS_EXCEEDED=CWWKB0510E: Po\u010det segment\u016f po\u017eadavku OTMA {0} p\u0159ekra\u010duje maxim\u00e1ln\u00ed povolen\u00fd po\u010det segment\u016f {1}. 
+OTMA_MAX_REQ_SEGMENTS_EXCEEDED.explanation=Po\u010det segment\u016f po\u017eadavku je v\u011bt\u0161\u00ed ne\u017e aktu\u00e1ln\u00ed nakonfigurovan\u00fd maxim\u00e1ln\u00ed povolen\u00fd po\u010det segment\u016f. 
+OTMA_MAX_REQ_SEGMENTS_EXCEEDED.useraction=Zkontrolujte konfiguraci specifikace p\u0159ipojen\u00ed a ujist\u011bte se, \u017ee maxim\u00e1ln\u00ed po\u010det segment\u016f je nastaven spr\u00e1vn\u011b.
+
+#{0} is the 3rd entry in the response code int array returned from the call to OTMA send receive when response code[1] = 44 and response code[0] = 0 this is the number of segments IMS actually returned
+#{1} is the 2nd entry in the response code int array returned from the call to OTMA send receive when response code[1] = 44 and response code[0] = 0 this is the number of segments IMS wanted to return
+OTMA_MAX_RESP_SEGMENTS_EXCEEDED=CWWKB0511E: Po\u010det segment\u016f odezvy OTMA {0} p\u0159ekra\u010duje maxim\u00e1ln\u00ed povolen\u00fd po\u010det segment\u016f {1}.
+OTMA_MAX_RESP_SEGMENTS_EXCEEDED.explanation=Po\u010det segment\u016f odezvy je vy\u0161\u0161\u00ed ne\u017e aktu\u00e1ln\u011b nakonfigurovan\u00fd maxim\u00e1ln\u00ed povolen\u00fd po\u010det segment\u016f. IMS ode\u0161le maxim\u00e1ln\u00ed po\u010det segment\u016f zp\u011bt a spoj\u00ed do posledn\u00edho segmentu ty segmenty odezvy, kter\u00e9 p\u0159ekro\u010dily povolen\u00fd maxim\u00e1ln\u00ed po\u010det. 
+OTMA_MAX_RESP_SEGMENTS_EXCEEDED.useraction=Zkontrolujte konfiguraci specifikace p\u0159ipojen\u00ed a ujist\u011bte se, \u017ee maxim\u00e1ln\u00ed po\u010det segment\u016f je nastaven spr\u00e1vn\u011b.
+
+# ------------------------------------------------------------------------------------------------
+# OK back to generic WOLA messages
+# ------------------------------------------------------------------------------------------------
+
+#{0} is the WOLA group name, a string of length 1-8
+#{1} is a registration count, an integer >= 500
+WOLA_GROUP_REGISTRATION_COUNT=CWWKB0512I: Skupina WOLA {0} obsahuje {1} registrac\u00ed.
+WOLA_GROUP_REGISTRATION_COUNT.explanation=Existuje v\u00edce ne\u017e 500 registrac\u00ed ve skupin\u011b WOLA. Po\u010det registrac\u00ed je uveden ve zpr\u00e1v\u011b.
+WOLA_GROUP_REGISTRATION_COUNT.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

@@ -1,0 +1,129 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.tx/resources/com.ibm.ws.zos.tx.internal.resources/NativeTransactionMessages.nlsprops
+#COMPONENTPREFIX CWLIB
+#COMPONENTNAMEFOR CWLIB zOS Native Transaction Manager Extension
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0101-0200: zOS Native Transaction Manager Extension
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the invoked service name
+#{1} is the service's return code.
+#{2} is the additional debug information relevant to the service call.
+INVALID_RRS_SERVICE_RC=CWLIB0101E: System service {0} failed with return code {1}. Relevant information: {2}
+INVALID_RRS_SERVICE_RC.explanation=The invocation of the indicated service failed. The return code is a hexadecimal integer.
+INVALID_RRS_SERVICE_RC.useraction=For additional information on the return code see the MVS Programming: Resource Recovery book. If the problem persists, contact your next level of support.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token
+#{2} is the number of outstanding transactions
+#{3} is the list of outstanding transaction global transaction IDs.
+OUTSTANDING_TRANS_RM_UNREGISTERED=CWLIB0102W: The resource manager with the name of {0} and token identifier of {1} was unregistered with the system. There were {2} outstanding transactions when the resource manager was unregistered. These transactions have the following global transaction IDs: {3}
+OUTSTANDING_TRANS_RM_UNREGISTERED.explanation=There were outstanding transactions at the time the resource manager was unregistered. All outstanding resources will go through recovery processing the next time the server is restarted.
+OUTSTANDING_TRANS_RM_UNREGISTERED.useraction=Make sure all required settings for performing transactional work with RRS capable resources is in place. Review the server logs for more information. If the problem persists, contact your next level of support.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token
+#{2} is the number of outstanding transactions
+RM_RESTART_COMPLETE=CWLIB0103I: Resource manager {0} with the corresponding token ID of {1} has successfully restarted with Resource Recovery Services (RRS). Number of unresolved units of recovery: {2}
+RM_RESTART_COMPLETE.explanation=The specified resource manager has restarted with RRS. All reported unresolved units of recovery will undergo recovery.
+RM_RESTART_COMPLETE.useraction=No action is required.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token 
+RM_RECOVERY_COMPLETE=CWLIB0104I: Recovery processing for resource manager {0} with the corresponding token ID of {1} has completed.
+RM_RECOVERY_COMPLETE.explanation=Recovery processing for the specified resource manager has completed. All reported unresolved units of recovery have been recovered.
+RM_RECOVERY_COMPLETE.useraction=No action is required.
+
+#{0} is the context token (hex bytes)
+#{1} is a unit of work identifier
+CTXMGR_WAIT_FOR_SUSPENDED_CTX=CWLIB0105I: The RRS native context manager is waiting for suspended context token {0} to complete the following unit of work: {1}
+CTXMGR_WAIT_FOR_SUSPENDED_CTX.explanation=The RRS native context manager is shutting down.  The context manager is waiting for all units of work with an associated native context to complete.
+CTXMGR_WAIT_FOR_SUSPENDED_CTX.useraction=No action is required.  The RRS native context manager will continue termination after all units of work have completed.
+
+#{0} is the context token (hex bytes)
+#{1} is a thread ID
+#{2} is a unit of work identifier
+CTXMGR_WAIT_FOR_ACTIVE_CTX=CWLIB0106I: The RRS native context manager is waiting for context token {0} on thread {1} to complete the following active unit of work: {2}
+CTXMGR_WAIT_FOR_ACTIVE_CTX.explanation=The RRS native context manager is shutting down.  The context manager is waiting for all units of work with an associated native context to complete.
+CTXMGR_WAIT_FOR_ACTIVE_CTX.useraction=No action is required.  The RRS native context manager will continue termination after all units of work have completed.
+
+#{0} is the context token (hex bytes)
+#{1} is a unit of work identifier
+CTXMGR_TERMINATING_CTX_WITH_WORK=CWLIB0107I: The RRS native context manager is terminating context token {0} which is currently associated with the following unit of work: {1}
+CTXMGR_TERMINATING_CTX_WITH_WORK.explanation=The RRS native context manager is shutting down, after waiting for active work to quiesce.  The context manager is terminating the context identified in this message.  The context is associated with a unit of work, and the unit of work will be backed out.
+CTXMGR_TERMINATING_CTX_WITH_WORK.useraction=No action is required.  One or more of your resource managers might report an error if they were processing work at the time the context ended.
+
+#{0} is the resource manager name
+#{1} is the number of non-restart transactions waiting to complete
+#{2} is the number of milliseconds to wait
+TM_DEACTIVATE_WAITING_FOR_TRANS=CWLIB0108I: Resource manager {0} is waiting for {1} transactions to complete.  It will wait for a maximum of {2} milliseconds.
+TM_DEACTIVATE_WAITING_FOR_TRANS.explanation=The RRS native resource manager is shutting down.  There are still active transactions that are using native RRS resources, such as type 2 database connections.  The native resource manager will wait for these transactions to complete before shutting down.
+TM_DEACTIVATE_WAITING_FOR_TRANS.useraction=No action is required.  The resource manager will resume shutdown after the transactions have completed, or after the specified wait time has elapsed.  If the maximum wait time has elapsed, message CWLIB0102W will indicate which transactions were still active.
+
+#{0} is the RRS unit of recovery identifier (URID).
+#{1} is an Xid
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE=CWLIB0109E: The transaction branch represented by RRS URID {0} cannot be resolved because the NativeTransactionManager instance which created the branch has been deactivated.  The server must be restarted to allow this transaction to complete.  The transaction branch Xid is: {1}
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE.explanation=The RRS native transaction manager service has stopped and is no longer connected to RRS.  The transaction branch cannot be completed because RRS cannot be notified of the outcome.  The server must be restarted to allow the transaction manger to resync with RRS and resolve the transaction.
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE.useraction=Restart the server.
+ 
+#{0} is a unit of work identifier
+#{1} is the context token (hex bytes)
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK=CWLIB0110W: Unit of work {0} is ending and the associated RRS unit of recovery operating under context token {1} has unresolved resource interests. The RRS unit of recovery is rolled back.
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK.explanation=A RRS unit of recovery was found to have outstanding resource interests at the end of the unit of work.
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK.useraction=Verify that the RRS capable resources being used are not operating outside of a transaction scope. If the problem persists, contact your next level of support.
+
+#{0} The configured resource manager prefix.
+INVALID_CONFIGURED_RMNAME_PREFIX=CWLIB0111W: The configured resource manager prefix of {0} is invalid. The default resource manager prefix is used.
+INVALID_CONFIGURED_RMNAME_PREFIX.explanation=The configured resource manager prefix must be 1 to 8 characters long, and it can only contain alphanumeric (a-z,A-Z,0-9) and national (@,$,#) characters.
+INVALID_CONFIGURED_RMNAME_PREFIX.useraction=Verify that the configured resource manager prefix follows the length and character requirements. If the problem persists, contact your next level of support.
+
+#{0} The configured resource manager prefix.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED=CWLIB0112W: The configuration update to set the resource manager name prefix to {0} is not allowed at run time. The update is ignored.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED.explanation=The configuration update to set the resource manager prefix at run time is ignored.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED.useraction=Configure the resource manager prefix prior to server startup or prior to configuring the zosTransaction-1.0 feature. If the problem persists, contact your next level of support.
+
+#{0} The configured resource manager prefix.
+#{1} The Internal authorization check return code.
+#{2} The SAF return code.
+#{3} The RACF return code.
+#{4} The RACF reason code.
+RMNAME_PREFIX_AUTH_CHECK_FAILED=CWLIB0113E: The authorization check that validates the user privileges against the configured resource manager prefix name of {0} has failed. INTERNAL_RC: {1} SAF_RC: {2}, RACF_RC: {3}, RACF_RSN: {4}
+RMNAME_PREFIX_AUTH_CHECK_FAILED.explanation=The authorization check that validates the user privileges against the configured resource manager prefix name has failed with the mentioned return codes.
+RMNAME_PREFIX_AUTH_CHECK_FAILED.useraction=Verify that the configured resource manager prefix follows the name, length, and character requirements. Verify that the prefix name was not configured in error. Verify that the user has been granted the appropriate privileges to utilize the prefix name. If the problem persists, contact your next level of support.
+
+#{0} The terminating thread.
+#{1} The context token (hex bytes) being ended.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR=CWLIB0114W: Thread {0} is terminating. The RRS unit of recovery associated with context token {1} has unresolved resource interests. The native context manager is terminating the context.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR.explanation=The specified thread is terminating and the RRS unit of recovery associated with the context has unresolved interests. Attempts to roll back the RRS unit of recovery have failed.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR.useraction=Verify that the RRS capable resource managers being used are not operating outside of a transaction scope. One or more of your resource managers may report an error if they were processing work at the time the context ended. If the problem persists, contact your next level of support.
+
+#{0} The terminating thread.
+#{1} The context token (hex bytes) associated with the UR whose outstanding interests were rolled back.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED=CWLIB0115W: Thread {0} is terminating. The RRS unit of recovery associated with context token {1} has unresolved resource interests. The RRS unit of recovery is rolled back and the context token is reused.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED.explanation=The specified thread is ending and the RRS unit of recovery was found to have outstanding resource interests.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED.useraction=Verify that the RRS capable resource managers being used are not operating outside of a transaction scope. One or more of your resource managers may report an error if they were processing work at the time the unit of recovery was rolled back. If the problem persists, contact your next level of support.

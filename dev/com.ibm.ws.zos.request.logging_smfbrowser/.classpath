@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="test-applications/bbomsmfv.jar/src"/>
+	<classpathentry kind="src" path="test-applications/smfTest.jar/src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.annotation.1.1"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/fattest.simplicity"/>
+	<classpathentry kind="lib" path="/ant_build/lib/junit.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.junit.extensions"/>
+	<classpathentry kind="lib" path="jzosjar/ibmjzos.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.service.component"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wsspi.org.osgi.service.component.annotations"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.concurrent.1.0"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

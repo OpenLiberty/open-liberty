@@ -1,0 +1,68 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: SyncToOSThread Service 
+Bundle-SymbolicName: com.ibm.ws.security.thread.zos
+Bundle-Description: SyncToOSThread Service; version=${bVersion}
+
+Private-Package: \
+    com.ibm.ws.security.thread.zos.internal.*
+
+Include-Resource: \
+    OSGI-INF=resources/OSGI-INF
+
+Service-Component: \
+  com.ibm.ws.security.thread.zos.internal.ThreadIdentityServiceImpl; \
+    implementation:=com.ibm.ws.security.thread.zos.internal.ThreadIdentityServiceImpl; \
+    provide:='com.ibm.wsspi.kernel.security.thread.ThreadIdentityService,com.ibm.ws.kernel.security.thread.J2CIdentityService'; \
+    activate:=activate; \
+    deactivate:=deactivate; \
+    modified:=modify; \
+    configuration-policy:=require; \
+    nativeMethodManager=com.ibm.ws.zos.jni.NativeMethodManager; \
+    safCredentialsService=com.ibm.ws.security.credentials.saf.SAFCredentialsService; \
+    properties:="service.vendor=IBM"
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.javaee.connector.1.6;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.ws.security.credentials;version=latest,\
+	com.ibm.ws.security.credentials.saf;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.javaee.dd;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.zos.core;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	cglib:cglib-nodep;version=3.3.0, \
+	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
+	com.ibm.ws.adaptable.module;version=latest, \
+	com.ibm.ws.injection.core;version=latest, \
+	com.ibm.ws.junit.extensions;version=latest, \
+	com.ibm.ws.kernel.boot;version=latest, \
+	com.ibm.ws.logging;version=latest, \
+	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
+	com.ibm.ws.resource;version=latest, \
+	com.ibm.ws.session;version=latest, \
+	com.ibm.ws.threading;version=latest, \
+	com.ibm.ws.transport.http;version=latest, \
+	org.hamcrest:hamcrest-all;version=1.3, \
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+	org.jmock:jmock;strategy=exact;version=2.5.1, \
+	org.jmock:jmock-legacy;version=2.5.0

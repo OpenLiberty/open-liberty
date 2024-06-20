@@ -1,0 +1,116 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.channel.wola/resources/com.ibm.ws.zos.channel.wola.internal.resources/ZWOLAChannelMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS WOLA Channel Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0501-0550: WOLA Channel
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the first part of the WOLA group name.
+#{1} is the second part of the name.
+#{2} is the third part of the name.
+WOLA_SERVER_REGISTERED=CWWKB0501I: El canal del adaptador local optimizado para WebSphere registrado con el servidor de perfiles Liberty utilizando el nombre siguiente: {0} {1} {2}
+WOLA_SERVER_REGISTERED.explanation=El servidor de perfiles Liberty ha registrado el adaptador local optimizado para WebSphere. Las llamadas ahora se realizar\u00e1n entre las aplicaciones de idioma nativo y el entorno del servidor de perfiles Liberty local.
+WOLA_SERVER_REGISTERED.useraction=No se requiere ninguna acci\u00f3n.
+
+#{0} the key for part of the WOLA group name, for which the value contains at least one lowercase character
+#{1} the value for the part of the WOLA group name referred to by {0}, as given, containing at least one lowercase character
+#{2} the correct value referred to by {1}, now all uppercase
+WOLA_LOWERCASE_GROUP_NAME=CWWKB0502W: La parte {0} del nombre de grupo de adaptador local optimizado de WebSphere en la configuraci\u00f3n de zosLocalAdapters est\u00e1 definido en {1}, que contiene al menos un car\u00e1cter en min\u00fascula. El valor se cambiar\u00e1 a {2}.
+WOLA_LOWERCASE_GROUP_NAME.explanation=El subsistema de seguridad de z/OS convierte los caracteres en min\u00fasculas a may\u00fasculas, lo que puede provocar una discrepancia con su configuraci\u00f3n.
+WOLA_LOWERCASE_GROUP_NAME.useraction=No utilice caracteres en min\u00fasculas en los valores para wolaGroup, wolaName2 y wolaName3 en la configuraci\u00f3n de zosLocalAdapters. Si desea m\u00e1s informaci\u00f3n sobre los convenios de denominaci\u00f3n, consulte la documentaci\u00f3n de System Authorization Facility (SAF).
+
+#{0} is the first part of the WOLA group name.
+#{1} is the second part of the name.
+#{2} is the third part of the name.
+WOLA_SERVER_UNAVAILABLE=CWWKB0503E: El canal del adaptador local optimizado de WebSphere(R) que utiliza el nombre de {0} {1} {2} no estaba disponible para utilizarse con el servidor Liberty. Compruebe que ning\u00fan otro servidor de Liberty est\u00e9 utilizando la misma configuraci\u00f3n zosLocalAdapters que la se encuentra en este servidor.
+WOLA_SERVER_UNAVAILABLE.explanation=El servidor de Liberty no ha podido utilizar el nombre especificado en la configuraci\u00f3n de zosLocalAdapters para registrar adaptadores locales optimizados de WebSphere. Es posible que otro servidor de Liberty est\u00e9 utilizando este nombre.
+WOLA_SERVER_UNAVAILABLE.useraction=Compruebe el entorno para asegurarse de que ning\u00fan otro servidor de Liberty est\u00e9 utilizando la misma configuraci\u00f3n de zosLocalAdapters que la que se encuentra en este servidor. 
+
+# ------------------------------------------------------------------------------------------------
+# OTMA Message Parsing section for WOLA
+# ------------------------------------------------------------------------------------------------
+
+#{0} The segment number in question
+OTMA_RESP_MSG_PARSE_ERR=CWWKB0504E: La longitud especificada para el segmento de mensaje de respuesta OTMA {0} no coincide con el tama\u00f1o real del segmento.
+OTMA_RESP_MSG_PARSE_ERR.explanation=Se ha producido un error al analizar un mensaje de respuesta OTMA recibido de IMS. El tama\u00f1o indicado en la cabecera no coincide con el tama\u00f1o real de los datos del mensaje.
+OTMA_RESP_MSG_PARSE_ERR.useraction=Compruebe la aplicaci\u00f3n y aseg\u00farese de que genera mensajes con el formato OTMA v\u00e1lido.
+
+#{0} is the Total Message Length identified by headers
+#{1] is the actual header message length
+OTMA_RESP_HEADER_SHORT=CWWKB0505E: La longitud especificada {0} para el mensaje de respuesta OTMA es menor que la longitud real {1} del almacenamiento intermedio de mensajes.
+OTMA_RESP_HEADER_SHORT.explanation=Se ha producido un error al analizar un mensaje de respuesta OTMA recibido de IMS. El tama\u00f1o indicado en la cabecera no coincide con el tama\u00f1o real de los datos del mensaje.
+OTMA_RESP_HEADER_SHORT.useraction=Compruebe la aplicaci\u00f3n y aseg\u00farese de que las longitudes especificadas de cabecera de segmento de mensaje coinciden con la longitud de los datos del mensaje.
+
+#{0} is the length specified by the OTMA Segment Header 
+#{1} is the segment number in this message
+OTMA_REQ_HEADER_INVALID=CWWKB0506E: La longitud de segmento de solicitud OTMA {0} para el n\u00famero de segmento {1} no es v\u00e1lida.
+OTMA_REQ_HEADER_INVALID.explanation=Se ha producido un error al analizar un mensaje de solicitud OTMA. La longitud de mensaje especificada en la cabecera de segmento de mensaje es mayor que 32768 o es menor que la longitud m\u00ednima. 
+OTMA_REQ_HEADER_INVALID.useraction=Compruebe la aplicaci\u00f3n y aseg\u00farese de que las longitudes de cabecera de mensaje especificadas sean v\u00e1lidas. Compruebe tambi\u00e9n que la longitud del mensaje de respuesta OTMA es igual al n\u00famero total de bytes que est\u00e1 especificado en las longitudes de cabecera.
+
+#{0} is the length specified by the OTMA Segment Header 
+#{1} is the actual number of bytes left in the buffer
+#{2} is the segment number being processed
+OTMA_REQ_HEADER_SHORT=CWWKB0507E: La longitud {0} de la cabecera del segmento de solicitud OTMA es mayor que la longitud de almacenamiento intermedio restante {1} para el segmento {2}.
+OTMA_REQ_HEADER_SHORT.explanation=Se ha producido un error al analizar un mensaje de solicitud OTMA. La longitud especificada en la cabecera de segmento es mayor que el n\u00famero de bytes restantes del almacenamiento intermedio de datos. 
+OTMA_REQ_HEADER_SHORT.useraction=Compruebe la aplicaci\u00f3n y aseg\u00farese de que las longitudes de cabecera de mensaje especificadas sean v\u00e1lidas. Compruebe tambi\u00e9n que la longitud del mensaje de respuesta OTMA es igual al n\u00famero total de bytes especificado en las longitudes de cabecera.
+ 
+#{0} is the length specified by the OTMA Segment Header 
+#{1} is the segment number being processed
+OTMA_RESP_MSG_SEG_SMALL=CWWKB0508E: La longitud especificada {0} de la cabecera de respuesta OTMA es mayor que el tama\u00f1o del almacenamiento intermedio de entrada para el segmento de mensaje {1}. 
+OTMA_RESP_MSG_SEG_SMALL.explanation=La cabecera especificada para el segmento de respuesta es mayor que el n\u00famero de bytes restantes del almacenamiento intermedio de mensaje. 
+OTMA_RESP_MSG_SEG_SMALL.useraction=Compruebe la aplicaci\u00f3n y aseg\u00farese de que las longitudes de mensaje de cabecera son iguales al tama\u00f1o del almacenamiento intermedio.
+
+#{0} is the segment count from the segment header array
+#{1} is the number of elements in the header array
+OTMA_RESP_COUNT_INVALID=CWWKB0509E: El recuento de mensajes de respuesta OTMA especificado {0} no coincide con el n\u00famero real de segmentos {1}. 
+OTMA_RESP_COUNT_INVALID.explanation=La cabecera especificada para el segmento de respuesta es mayor que el n\u00famero de bytes restantes del almacenamiento intermedio de mensaje. 
+OTMA_RESP_COUNT_INVALID.useraction=Compruebe la aplicaci\u00f3n y aseg\u00farese de que las longitudes de mensaje de cabecera son iguales al tama\u00f1o del almacenamiento intermedio.
+
+
+#{0} is the segment count from the segment header array
+#{1} is the max number of segments configured for the connection
+OTMA_MAX_REQ_SEGMENTS_EXCEEDED=CWWKB0510E: El recuento de segmentos de solicitud de OTMA de {0} supera el n\u00famero m\u00e1ximo permitido de segmentos {1}. 
+OTMA_MAX_REQ_SEGMENTS_EXCEEDED.explanation=El n\u00famero de segmentos de solicitud es mayor que el n\u00famero de segmentos m\u00e1ximo permitido configurado actualmente. 
+OTMA_MAX_REQ_SEGMENTS_EXCEEDED.useraction=Consulte la configuraci\u00f3n de la especificaci\u00f3n de conexi\u00f3n y aseg\u00farese de que el n\u00famero m\u00e1ximo de segmentos se ha establecido correctamente.
+
+#{0} is the 3rd entry in the response code int array returned from the call to OTMA send receive when response code[1] = 44 and response code[0] = 0 this is the number of segments IMS actually returned
+#{1} is the 2nd entry in the response code int array returned from the call to OTMA send receive when response code[1] = 44 and response code[0] = 0 this is the number of segments IMS wanted to return
+OTMA_MAX_RESP_SEGMENTS_EXCEEDED=CWWKB0511E: El recuento de segmentos de respuesta de OTMA de {0} supera el n\u00famero m\u00e1ximo permitido de segmentos {1}.
+OTMA_MAX_RESP_SEGMENTS_EXCEEDED.explanation=El n\u00famero de segmentos de respuesta es mayor que el n\u00famero de segmentos m\u00e1ximo permitido configurado actualmente. IMS devuelve el n\u00famero m\u00e1ximo de segmentos y concatena en el segmento final los segmentos de respuesta que superan el n\u00famero m\u00e1ximo permitido. 
+OTMA_MAX_RESP_SEGMENTS_EXCEEDED.useraction=Consulte la configuraci\u00f3n de la especificaci\u00f3n de conexi\u00f3n y aseg\u00farese de que el n\u00famero m\u00e1ximo de segmentos se ha establecido correctamente.
+
+# ------------------------------------------------------------------------------------------------
+# OK back to generic WOLA messages
+# ------------------------------------------------------------------------------------------------
+
+#{0} is the WOLA group name, a string of length 1-8
+#{1} is a registration count, an integer >= 500
+WOLA_GROUP_REGISTRATION_COUNT=CWWKB0512I: El grupo WOLA {0} contiene {1} registros.
+WOLA_GROUP_REGISTRATION_COUNT.explanation=Hay m\u00e1s de 500 registros en el grupo WOLA. El n\u00famero de registros se visualiza en el mensaje.
+WOLA_GROUP_REGISTRATION_COUNT.useraction=No se requiere ninguna acci\u00f3n.

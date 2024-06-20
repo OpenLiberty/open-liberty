@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.logging/resources/com/ibm/ws/zos/logging/internal/resources/CoreMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Logging
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: Command processing (com.ibm.ws.zos.command.processing/resources/com.ibm.ws.zos.command.processing.internal.resources/CommandProcessingMessages.nlsprops)
+#0051-0100: Native code (com.ibm.zos.native/resources/com/ibm/ws/zos/native/native_messages.nlsprops)
+#0101-0150: core (com.ibm.ws.zos.core/resources/com/ibm/ws/zos/core/internal/resources/CoreMessages.nlsprops)
+#0251-0300: logging (here)
+# -------------------------------------------------------------------------------------------------
+
+#The server is entering its final stage of shutdown processing. This message may be used by automation to indicate that the server is stopped. At this point no further messages will be routed to WTO (Write to operator).
+KERNAL_SHUTDOWN_PRINT=CWWKB0251I: z/OS \u30ab\u30fc\u30cd\u30eb\u30fb\u30a8\u30af\u30b9\u30c6\u30f3\u30b7\u30e7\u30f3\u304c\u30b7\u30e3\u30c3\u30c8\u30c0\u30a6\u30f3\u3057\u307e\u3059\u3002
+KERNAL_SHUTDOWN_PRINT.explanation= \u3053\u306e\u6642\u70b9\u3067\u306f\u3001\u3055\u3089\u306a\u308b\u30e1\u30c3\u30bb\u30fc\u30b8\u304c WTO (\u30aa\u30da\u30ec\u30fc\u30bf\u30fc\u5b9b\u30e1\u30c3\u30bb\u30fc\u30b8) \u306b\u30eb\u30fc\u30c6\u30a3\u30f3\u30b0\u3055\u308c\u308b\u3053\u3068\u306f\u3042\u308a\u307e\u305b\u3093\u3002
+KERNAL_SHUTDOWN_PRINT.useraction= \u30e6\u30fc\u30b6\u30fc\u51e6\u7f6e\u306f\u4e0d\u8981\u3067\u3059\u3002

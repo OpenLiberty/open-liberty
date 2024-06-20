@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.wlm.ejb/resources/com.ibm.ws.zos.wlm.ejb.internal.resources/ZosWlmEjbMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB  z/OS WLM EJB (MDB) classification
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0701-0750 z/OS WLM EJB (MDB) classification
+# -------------------------------------------------------------------------------------------------
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED=CWWKB0701W: Valoarea atributului transactionClass, {0}, asociat\u0103 cu specifica\u0163ia de activare {1} de sub elementul de configurare mdbClassification a fost trunchiat\u0103 la valoarea {2}. Valoarea a fost trunchiat\u0103 deoarece dep\u0103\u015fea m\u0103rimea maxim\u0103 permis\u0103, de {3} caractere.
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED.explanation=Valoarea atributului transactionClass configurat men\u0163ionat de sub elementul de configurare mdbClassification a fost trunchiat\u0103 la lungimea maxim\u0103 permis\u0103. Re\u0163ine\u0163i c\u0103 dac\u0103 specifica\u0163ia de activare afi\u015fat\u0103 este un metacaracter, fie a fost specificat\u0103 ca atare, fie nu a fost specificat\u0103 \u015fi este utilizat\u0103 valoarea implicit\u0103.
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED.useraction=Asigura\u0163i-v\u0103 c\u0103 atributul transactionClass de sub elementul de configurare mdbClassification valoare care nu dep\u0103\u015fe\u015fte lungimea maxim\u0103.
+
+MDB_CONFIG_INVALID_ACTIVATION_SPEC=CWWKB0702W: Valoarea atributului jmsActivationSpec, {0}, asociat\u0103 cu clasa de tranzac\u0163ii {1} de sub elementul de configurare mdbClassification nu este valid\u0103. Elementul mdbClassification este ignorat.
+MDB_CONFIG_INVALID_ACTIVATION_SPEC.explanation=Valoarea atributului jmsActivationSpec configurat men\u0163ionat de sub elementul de configurare mdbClassification nu poate fi un \u015fir gol sau o secven\u0163\u0103 de spa\u0163ii. Re\u0163ine\u0163i c\u0103 dac\u0103 clasa de tranzac\u0163ii afi\u015fat\u0103 este un \u015fir gol, fie a fost specificat\u0103 ca atare, fie nu a fost specificat\u0103 \u015fi este utilizat\u0103 valoarea implicit\u0103.
+MDB_CONFIG_INVALID_ACTIVATION_SPEC.useraction=Asigura\u0163i-v\u0103 c\u0103 atributul jmsActivationSpec de sub elementul de configurare mdbClassification con\u0163ine o valoare valid\u0103.
