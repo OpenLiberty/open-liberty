@@ -519,7 +519,7 @@ public class TestEnableDisableFeaturesTest {
     @After
     public void tearDown() throws Exception {
         if (currentServ != null && currentServ.isStarted()) {
-        	currentServ.stopServer("CWWKS4000E", "CWWKZ0014W", "CWNEN0049W");
+        	currentServ.stopServer("CWWKS4000E", "CWWKZ0014W", "CWNEN0049W", "CWWKE0701E", "CWWKL0084W");
         	currentServ.removeAllInstalledAppsForValidation();
         }
     }
