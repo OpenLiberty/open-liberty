@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,8 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.crypto.common.CryptoMessageUtils;
+import com.ibm.ws.crypto.common.CryptoUtils;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.wssecurity.cxf.interceptor.WSSecurityLibertyPluginInterceptor;
 import com.ibm.ws.wssecurity.cxf.validator.UsernameTokenValidator;
@@ -196,6 +198,15 @@ public class WSSecurityClientConfiguration implements ConfigurationListener {
                             sigProp = signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER) != null ? 
                                             signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER) : signaturePropertyMap.get(WSSecurityConstants.WSS4J_CRYPTO_PROVIDER);
                             Tr.debug(tc, "signature configuration provider = ", sigProp);
+                        }
+
+                        // Log a message if the signature algorithm is not secure
+                        String algorithm = (String) signaturePropertyMap.get("signatureAlgorithm");
+                        if (algorithm == null || algorithm.isEmpty()) {
+                            algorithm = WSSecurityConstants.WSSEC_DEFAULT_SIGNATURE_ALGORITHM;
+                        }
+                        if (CryptoUtils.isAlgorithmInsecure(algorithm)) {
+                            CryptoMessageUtils.logInsecureAlgorithm("wsSecurityClient.signatureProperties.signatureAlgorithm", algorithm);
                         }
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
