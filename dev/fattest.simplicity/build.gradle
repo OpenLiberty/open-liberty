@@ -90,6 +90,18 @@ task assembleBinaryDependencies() {
     }
 }
 
+// Ensure development changes to fattest.simplicity are copied to the lib directory
+// for use by FAT suites without having to assemble everytime.
+task assembleSimplicity() {
+  File buildDirLib = new File(buildDir, 'lib')
+  doLast {
+    copy {
+        from new File(buildDir, 'fattest.simplicity.jar')
+        into buildDirLib
+    }
+  }
+}
+
 configurations {
     arquillianFeature
     arquillianJakartaFeature21
@@ -133,6 +145,7 @@ jar {
     dependsOn assembleBootstrap
     dependsOn extractArquillianSupportFeature
     dependsOn extractArquillianSupportJakartaFeature21
+    finalizedBy assembleSimplicity
 }
 
 task publishArquillianSupportFeature(type:Copy) {
