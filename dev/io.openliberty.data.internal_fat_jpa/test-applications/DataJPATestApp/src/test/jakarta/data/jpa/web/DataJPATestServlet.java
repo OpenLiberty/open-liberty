@@ -95,7 +95,10 @@ import test.jakarta.data.jpa.web.CreditCard.Issuer;
                       user = "${repository.database.user}",
                       password = "${repository.database.password}",
                       properties = {
-                                     "createDatabase=create"
+                                     "createDatabase=create",
+                                     "data.createTables=${repository.database.tables.create}",
+                                     "data.dropTables=${repository.database.tables.drop}",
+                                     "data.tablePrefix=${repository.database.tables.prefix}"
                       })
 @SuppressWarnings("serial")
 @WebServlet("/*")

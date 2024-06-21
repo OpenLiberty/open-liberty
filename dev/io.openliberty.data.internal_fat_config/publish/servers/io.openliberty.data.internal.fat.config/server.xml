@@ -26,7 +26,7 @@
 
   <authData id="auth1" user="dbuser1" password="dbpwd1"/>
 
-  <databaseStore id="MyDataStore" authDataRef="auth1" createTables="true" dropTables="false" tablePrefix="TEST"/>
+  <databaseStore id="defaultDatabaseStore" authDataRef="auth1" createTables="true" dropTables="false" tablePrefix="TEST"/>
 
   <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="DerbyLib"/>

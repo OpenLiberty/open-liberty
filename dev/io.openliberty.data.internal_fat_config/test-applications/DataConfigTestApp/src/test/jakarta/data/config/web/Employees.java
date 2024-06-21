@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 /**
  *
  */
-@Repository(dataStore = "MyDataStore")
+@Repository
 public interface Employees extends BasicRepository<Employee, Integer> {
     DataSource getDataSource();
 }
