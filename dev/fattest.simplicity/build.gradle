@@ -21,7 +21,6 @@ task assembleBootstrap(type: Copy) {
 }
 
 task assembleBinaryDependencies() {
-    dependsOn jar
     dependsOn ':com.ibm.websphere.javaee.jaxb.2.2:jar'
     dependsOn ':com.ibm.websphere.javaee.jsonp.1.0:jar'
     dependsOn ':com.ibm.ws.common.encoder:jar'
@@ -90,18 +89,6 @@ task assembleBinaryDependencies() {
     }
 }
 
-// Ensure development changes to fattest.simplicity are copied to the lib directory
-// for use by FAT suites without having to assemble everytime.
-task assembleSimplicity() {
-  File buildDirLib = new File(buildDir, 'lib')
-  doLast {
-    copy {
-        from new File(buildDir, 'fattest.simplicity.jar')
-        into buildDirLib
-    }
-  }
-}
-
 configurations {
     arquillianFeature
     arquillianJakartaFeature21
@@ -145,7 +132,7 @@ jar {
     dependsOn assembleBootstrap
     dependsOn extractArquillianSupportFeature
     dependsOn extractArquillianSupportJakartaFeature21
-    finalizedBy assembleSimplicity
+    finalizedBy assembleBinaryDependencies
 }
 
 task publishArquillianSupportFeature(type:Copy) {
@@ -158,6 +145,5 @@ task publishArquillianSupportFeature(type:Copy) {
 }
 
 assemble {
-    dependsOn assembleBinaryDependencies
     dependsOn publishArquillianSupportFeature
 }
