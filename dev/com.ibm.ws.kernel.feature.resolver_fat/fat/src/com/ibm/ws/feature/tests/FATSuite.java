@@ -33,6 +33,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * BaselineResolutionGenerationTest.class,
  */
 
+        AlwaysPassTest.class
 // VersionlessServletToMicroProfileTest.class,
 // VersionlessJavaEEToMicroProfileTest.class,
 // VersionlessEnvVarErrorTest.class
