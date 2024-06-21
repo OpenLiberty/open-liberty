@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
@@ -205,6 +206,8 @@ public class DataExtensionProvider implements //
                         // and this ensures we don't do this work on restore side which will make
                         // restore faster.
                         futureEMBuilder.complete(futureEMBuilder.createEMBuilder());
+                    } catch (CompletionException x) {
+                        futureEMBuilder.completeExceptionally(x.getCause());
                     } catch (Throwable x) {
                         futureEMBuilder.completeExceptionally(x);
                     }

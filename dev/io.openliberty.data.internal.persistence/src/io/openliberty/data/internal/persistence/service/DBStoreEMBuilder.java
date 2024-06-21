@@ -95,7 +95,6 @@ import jakarta.persistence.Table;
  */
 public class DBStoreEMBuilder extends EntityManagerBuilder {
     static final String EOLN = String.format("%n");
-    private static final long MAX_WAIT_FOR_SERVICE_NS = TimeUnit.SECONDS.toNanos(60);
     private static final TraceComponent tc = Tr.register(DBStoreEMBuilder.class);
 
     private final ClassDefiner classDefiner = new ClassDefiner();
@@ -302,13 +301,13 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
                 Collection<ServiceReference<DatabaseStore>> refs = bc.getServiceReferences(DatabaseStore.class,
                                                                                            FilterUtils.createPropertyFilter("id", databaseStoreId));
                 if (refs.isEmpty()) {
-                    if (System.nanoTime() - start < MAX_WAIT_FOR_SERVICE_NS) {
+                    if (System.nanoTime() - start < MAX_WAIT_FOR_RESOURCE_NS) {
                         if (trace && tc.isDebugEnabled())
                             Tr.debug(this, tc, "Wait " + poll_ms + " ms for service reference to become available...");
                         TimeUnit.MILLISECONDS.sleep(poll_ms);
                     } else {
                         throw new IllegalStateException("The " + databaseStoreId + " service component did not become available within " +
-                                                        TimeUnit.NANOSECONDS.toSeconds(MAX_WAIT_FOR_SERVICE_NS) + " seconds.");
+                                                        TimeUnit.NANOSECONDS.toSeconds(MAX_WAIT_FOR_RESOURCE_NS) + " seconds."); // TODO NLS
                     }
                 } else {
                     ref = refs.iterator().next();

@@ -30,6 +30,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import javax.sql.DataSource;
 
@@ -54,6 +55,8 @@ import jakarta.persistence.metamodel.Type;
  * or from a PersistenceServiceUnit of a databaseStore.
  */
 public abstract class EntityManagerBuilder {
+    public static final long MAX_WAIT_FOR_RESOURCE_NS = TimeUnit.SECONDS.toNanos(60);
+
     private static final TraceComponent tc = Tr.register(EntityManagerBuilder.class);
 
     /**

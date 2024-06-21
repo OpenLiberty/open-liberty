@@ -16,6 +16,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.TimeUnit;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -123,10 +125,12 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
      *
      * @return PUnitEMBuilder (for persistence unit references) or
      *         DBStoreEMBuilder (data sources, databaseStore)
-     * @throws Exception if an error occurs.
+     * @throws CompletionException if an error occurs.
      */
     @FFDCIgnore(NamingException.class)
     EntityManagerBuilder createEMBuilder() {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         String resourceName = dataStore;
         boolean isJNDIName = resourceName.startsWith("java:");
 
@@ -139,18 +143,31 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
             accessor.beginContext(repoMetadata);
         try {
             if (isJNDIName) {
-                try {
-                    Object resource = InitialContext.doLookup(dataStore);
+                Object resource = null;
+                for (long start = System.nanoTime(), poll_ms = 125L; //
+                                resource == null; //
+                                poll_ms = poll_ms < 1000L ? poll_ms * 2 : 1000L)
+                    try {
+                        resource = InitialContext.doLookup(dataStore);
 
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(this, tc, dataStore + " is the JNDI name for " + resource);
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, dataStore + " is the JNDI name for " + resource);
 
-                    if (resource instanceof EntityManagerFactory)
-                        return new PUnitEMBuilder(provider, repositoryClassLoader, (EntityManagerFactory) resource, //
-                                        resourceName, metadataIdentifier, application, module, component, entityTypes);
+                        if (resource instanceof EntityManagerFactory)
+                            return new PUnitEMBuilder(provider, repositoryClassLoader, (EntityManagerFactory) resource, //
+                                            resourceName, metadataIdentifier, application, module, component, entityTypes);
 
-                } catch (NamingException x) {
-                }
+                    } catch (NamingException x) {
+                        // Work around intermittent issue where DataSourceDefinition
+                        // might not be available immediately upon application start.
+                        if (System.nanoTime() - start < EntityManagerBuilder.MAX_WAIT_FOR_RESOURCE_NS) {
+                            if (trace && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "Wait " + poll_ms + " ms for " + dataStore + " to become available...");
+                            TimeUnit.MILLISECONDS.sleep(poll_ms);
+                        } else {
+                            throw new CompletionException(x);
+                        }
+                    }
             } else if (!DataExtension.DEFAULT_DATA_STORE.equals(resourceName)) {
                 // Check for resource references and persistence unit references where java:comp/env/ is omitted:
                 String javaCompName = "java:comp/env/" + resourceName;
@@ -171,6 +188,8 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
                 } catch (NamingException x) {
                 }
             }
+        } catch (InterruptedException x) {
+            throw new CompletionException(x);
         } finally {
             if (switchMetadata)
                 accessor.endContext();
