@@ -15,4 +15,5 @@ addRequiredLibraries.dependsOn addJakartaTransformer
 dependencies {
   requiredLibs project(':io.openliberty.org.apache.commons.logging')
   requiredLibs project(path: ':io.openliberty.org.eclipse.microprofile', configuration: 'config30')
+  requiredLibs project(':io.openliberty.microprofile.config.internal_repeat_tests')
 }

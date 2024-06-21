@@ -17,7 +17,6 @@
     <classpathentry kind="src" path="test-applications/JSF22ClientWindow.war/src"/>
     <classpathentry kind="src" path="test-applications/JSF22ClientWindowFaces40.war/src"/>
     <classpathentry kind="src" path="test-applications/JSF22ComponentRenderer.war/src"/>
-    <classpathentry kind="src" path="test-applications/JSF22FacesFlows.war/src"/>
     <classpathentry kind="src" path="test-applications/JSF22AppConfigPop.jar/src"/>
     <classpathentry kind="src" path="test-applications/JSF22AppConfigPop.war/src"/>
     <classpathentry kind="src" path="test-applications/JSF22LocalizationTester.war/src"/>

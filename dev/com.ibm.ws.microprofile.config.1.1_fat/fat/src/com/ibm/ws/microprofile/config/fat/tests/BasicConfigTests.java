@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.fat.tests;
 
@@ -60,10 +57,10 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.microprofile.config.fat.repeat.ConfigRepeatActions;
 
 /**
  *
@@ -81,15 +78,7 @@ public class BasicConfigTests extends FATServletClient {
 
     //This is the basic test so repeat with all features
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-                                                             MicroProfileActions.MP61,
-                                                             MicroProfileActions.MP60,
-                                                             MicroProfileActions.MP12,
-                                                             MicroProfileActions.MP13,
-                                                             MicroProfileActions.MP14,
-                                                             MicroProfileActions.MP33,
-                                                             MicroProfileActions.MP41,
-                                                             MicroProfileActions.MP50);
+    public static RepeatTests r = ConfigRepeatActions.repeatAll(SERVER_NAME);
 
     @Server(SERVER_NAME)
     @TestServlets({
