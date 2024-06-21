@@ -16,10 +16,14 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+
 import org.junit.Test;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
+import componenttest.rules.repeater.MicroProfileActions;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.sdk.resources.Resource;
@@ -42,6 +46,8 @@ public class CustomizerTestServlet extends FATServlet {
     private InMemorySpanExporter exporter;
 
     @Test
+    @SkipForRepeat({ MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID,
+                     TelemetryActions.MP14_MPTEL20_ID })
     public void testCustomizer() {
         Span span = tracer.spanBuilder("span").startSpan();
         span.end();

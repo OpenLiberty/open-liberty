@@ -24,9 +24,12 @@ import java.util.List;
 
 import org.junit.Test;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
+import componenttest.rules.repeater.MicroProfileActions;
 import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Span;
@@ -66,6 +69,8 @@ public class PropagatorTestServlet extends FATServlet {
     private TestSpans testSpans;
 
     @Test
+    @SkipForRepeat({ MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID,
+                     TelemetryActions.MP14_MPTEL20_ID })
     public void testPropagator() {
         Span span = testSpans.withTestSpan(() -> {
             // Add a key to the baggage that we will look for later

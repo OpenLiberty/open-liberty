@@ -40,6 +40,13 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
+import org.apache.commons.lang3.concurrent.LazyInitializer;
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryInfoFactory;
@@ -112,6 +119,15 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
     //A shortcut method to avoid fetching metadata more than we need to.
     @Override
     public OpenTelemetryInfo getOpenTelemetryInfo(ApplicationMetaData metaData) {
+
+        //Return runtime instance if it exists, otherwise return the app instance.
+        if (otelMap.get(OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME) != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Returning {0} OTEL instance.", OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME);
+            }
+            return new EnabledOpenTelemetryInfo(true, otelMap.get(OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME), metaData.getJ2EEName().getApplication());
+        }
+
         try {
             OpenTelemetryInfoReference atomicRef = (OpenTelemetryInfoReference) metaData.getMetaData(slotForOpenTelemetryInfoHolder);
             if (atomicRef == null) {
@@ -298,6 +314,11 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
     @Override
     public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
         //We do not actually initilize on application starting, we do that lazily if this is needed.
+
+        //We don't use app scoped OpenTelemetry objects if the server scoped object exists
+        if (otelMap.get(OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME) != null) {
+            return;
+        }
 
         ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
         OpenTelemetryInfoReference oTelRef = (OpenTelemetryInfoReference) extAppInfo.getMetaData().getMetaData(slotForOpenTelemetryInfoHolder);
