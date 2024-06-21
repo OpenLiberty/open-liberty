@@ -58,11 +58,19 @@ public class DataJPATestCheckpoint extends FATServletClient {
         WebArchive war = ShrinkHelper.buildDefaultApp("DataJPATestApp", "test.jakarta.data.jpa.web");
         ShrinkHelper.exportAppToServer(server, war);
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, null);
+        server.addCheckpointRegexIgnoreMessage("DSRA8020E.*data.createTables");
+        server.addCheckpointRegexIgnoreMessage("DSRA8020E.*data.dropTables");
+        server.addCheckpointRegexIgnoreMessage("DSRA8020E.*data.tablePrefix");
         server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        // TODO if we decide to add the ability to put Jakarta Data properties onto DataSourceDefinition properties,
+        // then an update will be needed to com.ibm.ws.jdbc.internal.JDBCDriverService.create to ignore them for the data source:
+        // W DSRA8020E: Warning: The property 'data.createTables' does not exist on the DataSource class ...
+        server.stopServer("DSRA8020E.*data.createTables",
+                          "DSRA8020E.*data.dropTables",
+                          "DSRA8020E.*data.tablePrefix");
     }
 }
