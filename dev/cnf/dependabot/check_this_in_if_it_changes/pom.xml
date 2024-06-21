@@ -1504,7 +1504,7 @@
     <dependency>
       <groupId>jakarta.security.enterprise</groupId>
       <artifactId>jakarta.security.enterprise-api</artifactId>
-      <version>4.0.0-M1</version>
+      <version>4.0.0</version>
     </dependency>
     <dependency>
       <groupId>jakarta.servlet.jsp.jstl</groupId>
