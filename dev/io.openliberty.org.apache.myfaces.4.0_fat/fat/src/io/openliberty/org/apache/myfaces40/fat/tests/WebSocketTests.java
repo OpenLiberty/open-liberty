@@ -50,7 +50,7 @@ import io.openliberty.faces.fat.selenium.util.internal.WebPage;
  * in JSF 4.0 specification for <f:websocket> onerror="...".
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat({SkipForRepeat.NO_MODIFICATION,SkipForRepeat.EE11_FEATURES}) // https://github.com/OpenLiberty/open-liberty/issues/27598
+@SkipForRepeat({SkipForRepeat.EE11_FEATURES}) // Follow up https://github.com/OpenLiberty/open-liberty/issues/28844
 public class WebSocketTests {
 
     private static final String WEB_SOCKET_TEST_APP_NAME = "WebSocket";
@@ -118,12 +118,7 @@ public class WebSocketTests {
 
         page.findElement(By.id("form1:openButton")).click();
 
-        // Called onerror listener is not actually called. Parsing error occurs instead:
-        // onerror(t) {
-        //     var n, r;
-        //     let s = JSON.parse(t.data); Error:  SyntaxError: "undefined" is not valid JSON
-        // TODO FOLLOW UP : https://github.com/OpenLiberty/open-liberty/issues/27598
-        // page.waitForCondition(driver -> page.isInPage("Called onerror listener"));
+        page.waitForCondition(driver -> page.isInPage("Called onerror listener"));
         page.waitForCondition(driver -> page.isInPage("Called onclose listener"));
 
     }
