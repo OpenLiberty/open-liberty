@@ -100,7 +100,7 @@ public class TimerConfigFieldTest {
 		assertNotNull(
 				"The CWWKT0016I Web Application available message did not appear in messages.log",
 				line);
-		Thread.sleep(1000);
+		Thread.sleep(5000);
 	}
 
 	@Before
@@ -128,7 +128,7 @@ public class TimerConfigFieldTest {
 			assertNotNull(
 					"The CWWKT0016I Web Application available message did not appear in messages.log",
 					line);
-			Thread.sleep(1000);
+			Thread.sleep(5000);
 		}
 	}
 

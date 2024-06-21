@@ -102,7 +102,7 @@ public class BadHistogramTimerConfigTest {
 		assertNotNull(
 				"The CWWKT0016I Web Application available message did not appear in messages.log",
 				line);
-		Thread.sleep(1000);
+		Thread.sleep(5000);
 	}
 
 	@Before
@@ -130,7 +130,7 @@ public class BadHistogramTimerConfigTest {
 			assertNotNull(
 					"The CWWKT0016I Web Application available message did not appear in messages.log",
 					line);
-			Thread.sleep(1000);
+			Thread.sleep(5000);
 		}
 
 	}
