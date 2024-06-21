@@ -7,7 +7,7 @@ singleton=true
   io.openliberty.jakarta.annotation-2.1; ibm.tolerates:="3.0",\
   io.openliberty.jakarta.cdi-4.0; ibm.tolerates:="4.1"
 -bundles=\
-  io.openliberty.jakarta.data.1.0; location:="dev/api/spec/,lib/"
+  io.openliberty.jakarta.data.1.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.data:jakarta.data-api:1.0.0"
 kind=beta
 edition=core
 WLP-Activation-Type: parallel
