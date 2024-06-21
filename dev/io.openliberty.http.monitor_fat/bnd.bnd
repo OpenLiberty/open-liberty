@@ -13,7 +13,6 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	fat/resource,\
 	test-applications/RestApp/src,\
 	test-applications/ServletApp/src,\
 	test-applications/WildCardServletApp/src,\
@@ -23,6 +22,11 @@ fat.project: true
 
 javac.source: 11
 javac.target: 11
+
+# Uncomment to use remote docker host to simulate continuous build behavior.
+#fat.test.use.remote.docker: true
+
+fat.test.container.images: otel/opentelemetry-collector-contrib:0.103.0
 
 -buildpath: \
 	com.ibm.ws.webcontainer.servlet.4.0.jakarta,\

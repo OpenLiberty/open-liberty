@@ -13,17 +13,19 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.containers.TestContainerSuite;
+
 @RunWith(Suite.class)
 @SuiteClasses({
                 NoAppTest.class,
                 JSPApplicationTest.class,
                 RestApplicationTest.class,
-                ServletApplicationTest.class
-//                ContainerServletApplicationTest.class,
-//                ContainerJSPApplicationTest.class,
-//                ContainerRestApplicationTest.class,
-//                ContainerNoAppTest.class
+                ServletApplicationTest.class,
+                ContainerServletApplicationTest.class,
+                ContainerJSPApplicationTest.class,
+                ContainerRestApplicationTest.class,
+                ContainerNoAppTest.class
 })
 
-public class FATSuite {
+public class FATSuite extends TestContainerSuite {
 }

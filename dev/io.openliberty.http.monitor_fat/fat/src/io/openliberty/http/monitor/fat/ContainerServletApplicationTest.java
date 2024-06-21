@@ -21,8 +21,8 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
@@ -45,10 +45,12 @@ public class ContainerServletApplicationTest extends BaseTestClass {
     @Server("ContainerServletServer")
     public static LibertyServer server;
 
-    @ClassRule //FileSystemBind, path is relative to AutoFVT folder.
-    public static GenericContainer<?> container = new GenericContainer<>("otel/opentelemetry-collector-contrib:0.103.0")
+    @ClassRule
+    public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
+                    .withDockerfileFromBuilder(builder -> builder.from(IMAGE_NAME)
+                                    .copy("/etc/otelcol-contrib/config.yaml", "/etc/otelcol-contrib/config.yaml"))
+                    .withFileFromFile("/etc/otelcol-contrib/config.yaml", new File(PATH_TO_AUTOFVT_TESTFILES + "config.yaml")))
                     .withLogConsumer(new SimpleLogConsumer(ContainerServletApplicationTest.class, "opentelemetry-collector-contrib"))
-                    .withFileSystemBind("config.yaml", "/etc/otelcol-contrib/config.yaml", BindMode.READ_ONLY)
                     .withExposedPorts(8888, 8889, 4317);
 
     @BeforeClass

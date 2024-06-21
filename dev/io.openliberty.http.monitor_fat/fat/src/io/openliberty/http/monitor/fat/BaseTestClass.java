@@ -33,6 +33,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.ImageNameSubstitutor;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -45,6 +47,11 @@ import jakarta.ws.rs.HttpMethod;
 public abstract class BaseTestClass {
 
     protected Class<?> c = this.getClass();
+
+    protected static final String PATH_TO_AUTOFVT_TESTFILES = "lib/LibertyFATTestFiles/";
+
+    protected static final String IMAGE_NAME = ImageNameSubstitutor.instance() //
+                    .apply(DockerImageName.parse("otel/opentelemetry-collector-contrib:0.103.0")).asCanonicalNameString();
 
     protected static void trustAll() throws Exception {
         try {

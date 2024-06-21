@@ -8,9 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
- // Copy bundle io.openliberty.org.testcontainers to AutoFVT/lib/
- // This bundle is required both at compiletime and runtime.
- addRequiredLibraries.dependsOn copyTestContainers
+
 
 assemble.doLast {
     // update the generated-src dir with the new stubs that have been generated
@@ -19,3 +17,5 @@ assemble.doLast {
         into "build/libs/autoFVT"
     }
 }
+
+addRequiredLibraries.dependsOn copyTestContainers
