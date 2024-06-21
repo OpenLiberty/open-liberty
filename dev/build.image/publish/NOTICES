@@ -288,8 +288,9 @@ SmallRye: MicroProfile Config Core Implementation [smallrye-config-core],
 SmallRye: MicroProfile Metrics Implementation [smallrye-metrics],
 SmallRye: OpenAPI Core [smallrye-open-api-core],
 SmallRye: OpenAPI extension - JAX-RS [smallrye-open-api-jaxrs],
-SnakeYAML [snakeyaml], Web Services Metadata 2.0 [geronimo-ws-metadata_2.0_spec],
-Weld APIs [weld-api], Weld Core - JSF [weld-core-jsf], Weld EJB [weld-ejb],
+SnakeYAML [snakeyaml], Vert.x Core [vertx-core],
+Web Services Metadata 2.0 [geronimo-ws-metadata_2.0_spec], Weld APIs [weld-api],
+Weld Core - JSF [weld-core-jsf], Weld EJB [weld-ejb],
 Weld Environment Common [weld-environment-common],
 Weld Implementation (Core) [weld-core-impl], Weld JSF [weld-jsf],
 Weld JTA [weld-jta], Weld OSGi Bundle [weld-osgi-bundle],
@@ -305,6 +306,7 @@ acme4j Utils [acme4j-utils], asm, asm-analysis, asm-commons, asm-tree, asm-util,
 asyncutil, carbon-components [carbon-components-10.42.0-rc.0.min.js],
 carbon-components [carbon-components-10.58.3.tgz],
 classfilewriter [jboss-classfilewriter], detect-libc [detect-libc-2.0.3.tgz],
+dompurify [dompurify-3.1.2.tgz],
 error-prone annotations [error_prone_annotations], fastinfoset [FastInfoset],
 geronimo-annotation_1.1_spec, geronimo-ejb_3.1_spec-alt,
 geronimo-interceptor_1.1_spec, geronimo-validation, guice,
@@ -345,7 +347,8 @@ smallrye-reactive-messaging-provider, smallrye-reactive-streams-operators,
 snappy-java, swagger-client [swagger-client-3.27.9.tgz],
 swagger-ui [swagger-ui-5.17.9.tgz], tomcat-el-api, tomcat-jasper-el,
 ts-toolbelt [ts-toolbelt-9.6.0.tgz], tunnel-agent [tunnel-agent-0.6.0.tgz],
-yoko-core, yoko-osgi, yoko-rmi-impl, yoko-rmi-spec, yoko-spec-corba, yoko-util
+vertx-codegen, yoko-core, yoko-osgi, yoko-rmi-impl, yoko-rmi-spec,
+yoko-spec-corba, yoko-util
 
 
 Apache License
@@ -537,6 +540,7 @@ HdrHistogram (Copyright 2012-2013 2014, 2015, 2016 Gil Tene) (Copyright 2014 Mat
 Stax2 API [stax2-api] (Copyright 2008 FasterXML LLC <info@fasterxml.com>)
 Stax2 API [stax2-api](Copyright Not Found)
 apg-lite [apg-lite-1.0.3.tgz] (Copyright 2023 Lowell D. Thomas<br>)
+crac(Copyright Not Found)
 rc [rc-1.2.8.tgz] (Copyright 2011 Dominic Tarr) (Copyright 2013 Dominic Tarr)
 zstd-jni(Copyright Not Found)
 
@@ -618,16 +622,18 @@ Jakarta SOAP Implementation [saaj-impl] (Copyright 2011-2022 Oracle and/or its a
 Jakarta SOAP with Attachments API [jakarta.xml.soap-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2019 Oracle and/or its affiliates) (Copyright 2019-2020 Eclipse Foundation)
 Jakarta SOAP with Attachments API [jakarta.xml.soap-api] (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
 Jakarta SOAP with Attachments API [jakarta.xml.soap-api] (Copyright 2013-2022 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
+Jakarta SOAP with Attachments API [jakarta.xml.soap-api] (Copyright 2013-2024 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
 Jakarta Web Services Metadata API [jakarta.jws-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2019 Oracle and/or its affiliates) (Copyright 2019 Oracle and/or its affiliates) (Copyright 2019-2020 Eclipse Foundation)
 Jakarta Web Services Metadata API [jakarta.jws-api] (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
-Jakarta XML Binding API [jakarta.xml.bind-api] (Copyright 2017-2018 Oracle and) (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2020 Oracle and/or its affiliates)
+Jakarta XML Binding API [jakarta.xml.bind-api] (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2020 Oracle and/or its affiliates)
 Jakarta XML Binding API [jakarta.xml.bind-api] (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2021 Oracle and/or its affiliates)
 Jakarta XML Binding API [jakarta.xml.bind-api] (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2022 Oracle and/or its affiliates)
+Jakarta XML Binding API [jakarta.xml.bind-api] (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2023 Oracle and/or its affiliates)
 Jakarta XML Binding API [jakarta.xml.bind-api] (Copyright 2018 Oracle)
 Jakarta XML Binding API [jboss-jaxb-api_2.3_spec] (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2019 Oracle and/or its affiliates)
 Jakarta XML Web Services API [jakarta.xml.ws-api] (Copyright 1997-2020 Oracle and/or its affiliates) (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2019 Oracle and/or its affiliates) (Copyright 2019-2020 Eclipse Foundation)
 Jakarta XML Web Services API [jakarta.xml.ws-api] (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and) (Copyright 2017-2018 Oracle and/or its affiliates)
-Jakarta XML Web Services API [jakarta.xml.ws-api] (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and/or its affiliates)
+Jakarta XML Web Services API [jakarta.xml.ws-api] (Copyright 1997-2024 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and/or its affiliates)
 JavaBeans Activation Framework API jar [jakarta.activation-api] (Copyright 1997-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 JavaBeans Activation Framework [jakarta.activation] (Copyright 1997-2018 Oracle and/or its affiliates) (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2018 Oracle and/or its affiliates)
 MIME streaming extension [mimepull] (Copyright 2012-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
@@ -735,6 +741,7 @@ The Program includes some or all of the following that IBM obtained
 under the Bouncy Castle License:
 
 Bouncy Castle ASN.1 Extension and Utility APIs [bcutil-jdk18on],
+Bouncy Castle OpenPGP API [bcpg-jdk18on],
 Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs [bcpkix-jdk15on],
 Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs [bcpkix-jdk18on],
 Bouncy Castle Provider [bcprov-jdk15on], Bouncy Castle Provider [bcprov-jdk18on]
@@ -894,6 +901,7 @@ Expression Language 3.0 API [jboss-el-api_3.0_spec] https://projects.eclipse.org
 GlassFish High Availability APIs and SPI [ha-api] https://repo.maven.apache.org/maven2/org/glassfish/ha/ha-api/3.1.13
 JBoss Jakarta Annotations API [jboss-annotations-api_1.3_spec] https://github.com/jboss/jboss-jakarta-annotations-api_spec
 JSON-B API [jakarta.json.bind-api] https://eclipse-ee4j.github.io/jsonb-api
+JSON-B API [jakarta.json.bind-api] https://jakartaee.github.io/jsonb-api
 JSON-P Default Provider [jakarta.json] https://github.com/eclipse-ee4j/jsonp
 Jakarta Annotations API [jakarta.annotation-api] https://projects.eclipse.org/projects/ee4j.ca
 Jakarta Authentication [jakarta.authentication-api] https://github.com/eclipse-ee4j/authentication
@@ -905,11 +913,12 @@ Jakarta Enterprise Beans API [jakarta.ejb-api] https://github.com/eclipse-ee4j/e
 Jakarta Enterprise Beans API [jakarta.ejb-api] https://repo.maven.apache.org/maven2/jakarta/ejb/jakarta.ejb-api/4.0.1
 Jakarta Expression Language API [jakarta.el-api] https://projects.eclipse.org/projects/ee4j.el
 Jakarta Interceptors [jakarta.interceptor-api] https://github.com/eclipse-ee4j/interceptor-api
+Jakarta Interceptors [jakarta.interceptor-api] https://github.com/jakartaee/interceptors
 Jakarta Interceptors [jakarta.interceptor-api] https://repo.maven.apache.org/maven2/jakarta/interceptor/jakarta.interceptor-api/2.0.1
 Jakarta JSON Processing API [jakarta.json-api] https://github.com/eclipse-ee4j/jsonp
 Jakarta JSON Processing API [jakarta.json-api] https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/2.0.2
 Jakarta JSON Processing API [jakarta.json-api] https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/2.1.0
-Jakarta JSON Processing API [jakarta.json-api] https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/2.1.1
+Jakarta Mail API [jakarta.mail-api] http://nexus-importer-index-private.internal.whitesource.io:8081/nexus/service/local/repositories/index-importer-maven-central-mirror/content/jakarta/mail/jakarta.mail-api/2.1.2
 Jakarta Mail API [jakarta.mail-api] https://repo.maven.apache.org/maven2/jakarta/mail/jakarta.mail-api/2.1.1
 Jakarta Mail API [jakarta.mail] http://eclipse-ee4j.github.io/mail
 Jakarta Mail API jar [jakarta.mail-api] https://repo.maven.apache.org/maven2/jakarta/mail/jakarta.mail-api/2.0.1
@@ -1001,6 +1010,7 @@ SLF4J API Module [slf4j-api](Copyright Not Found)
 SLF4J JDK14 Binding [slf4j-jdk14](Copyright Not Found)
 argparse [argparse-1.0.10.tgz] (Copyright 2012 "Vitaly Puzrin" (https://github.com/puzrin)) (Copyright 2012 [Vitaly Puzrin](https://github.com/puzrin)) (Copyright 2012 by Vitaly Puzrin)
 autolinker [autolinker-3.16.2.tgz] (Copyright 2014 Gregory Jacobs (http://greg-jacobs.com))
+axios [axios-0.0.0.tgz](Copyright Not Found)
 balanced-match [balanced-match-1.0.2.tgz] (Copyright 2013 Julian Gruber <julian@juliangruber.com>)
 base64-js [base64-js-1.5.1.tgz] (Copyright 2014 Jameson Little)
 bl [bl-4.1.0.tgz] (Copyright 2013-2019 bl contributors)
@@ -1070,7 +1080,7 @@ nan [nan-2.19.0.tgz] (Copyright 2018 NAN WG Members / Collaborators (listed abov
 napi-build-utils [napi-build-utils-1.0.2.tgz] (Copyright 2018 inspiredware)
 node-abi [node-abi-3.62.0.tgz] (Copyright 2016 Lukas Geiger)
 node-abort-controller [node-abort-controller-3.1.1.tgz] (Copyright 2019 Steve Faulkner)
-node-domexception [node-domexception-1.0.0.tgz] (Copyright 2021 Jimmy Wärting)
+node-domexception [node-domexception-1.0.0.tgz] (Copyright 2021 Jimmy WÃ¤rting)
 node-fetch-commonjs [node-fetch-commonjs-3.3.2.tgz] (Copyright 2016-2020 Node Fetch Team)
 object-assign [object-assign-4.1.1.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
 object-inspect [object-inspect-1.13.1.tgz] (Copyright 2013 James Halliday)
