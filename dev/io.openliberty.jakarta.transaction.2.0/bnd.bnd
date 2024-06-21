@@ -1,25 +1,29 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2023 IBM Corporation and others.
+# Copyright (c) 2020, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion=1.0
+bVersion=2.0
 
 Bundle-SymbolicName: io.openliberty.jakarta.transaction.2.0; singleton:=true
 
 Export-Package: \
-	jakarta.transaction,\
+	jakarta.transaction;version="2.0.1",\
 	javax.transaction.xa;version="1.2"
 
-# Pull in the partial javax.transaction.xa package from the jre re-export them.
+Import-Package: \
+	!javax.transaction.xa, \
+	*
+
+# this pulls in the javax.transaction.xa package from the jre
 Require-Bundle: system.bundle
 
 instrument.disabled: true
@@ -27,10 +31,7 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -includeresource: \
-  @${repo;jakarta.transaction:jakarta.transaction-api;2.0.1;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @${repo;jakarta.transaction:jakarta.transaction-api;2.0.1;EXACT}!/!(META-INF/maven/*|module-info.class|javax/transaction/xa/*.*)
 
--buildpath: \
-  jakarta.transaction:jakarta.transaction-api;version=2.0.1;strategy=exact
-
-# If building with gradle include the javax.transaction.xa to the generated jar to maintain previous behavior.
--buildpath.extra: ${if;${driver;gradle};javax.transaction:javax.transaction-api\\;version=1.2}
+-maven-dependencies: \
+   dep1;groupId=jakarta.transaction;artifactId=jakarta.transaction-api;version=2.0.1;scope=runtime
