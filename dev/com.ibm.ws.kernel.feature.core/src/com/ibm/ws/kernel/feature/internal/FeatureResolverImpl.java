@@ -223,6 +223,8 @@ public class FeatureResolverImpl implements FeatureResolver {
 
     private static String preferredPlatformVersions = System.getenv(PREFERRED_PLATFORM_VERSIONS_ENV_VAR);
 
+    private static boolean hasVersionlessFeatures = false;
+
     /**
      * Override the environment defined preferred platform value.
      *
@@ -536,7 +538,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         // This will ensure that the root and pre-resolved features do not conflict
         Collection<String> rootFeaturesList = new ArrayList<String>(rootFeatures);
         //Implementation for platform element
-        if (isBeta && rootPlatforms != null) {
+        if (isBeta && rootPlatforms != null && hasVersionlessFeatures) {
             rootFeaturesList.addAll(rootPlatforms);
         }
 
@@ -582,7 +584,6 @@ public class FeatureResolverImpl implements FeatureResolver {
     private List<String> checkRootsAreAccessibleAndSetFullName(List<String> rootFeatures, SelectionContext selectionContext, Set<String> preResolved, Collection<String> rootPlatforms) {
         Map<String, Set<String>> map = new HashMap<>();
         ListIterator<String> iRootFeatures = rootFeatures.listIterator();
-        boolean hasVersionless = false;
         while (iRootFeatures.hasNext()) {
             String rootFeatureName = iRootFeatures.next();
             ProvisioningFeatureDefinition rootFeatureDef = selectionContext.getRepository().getFeature(rootFeatureName);
@@ -593,7 +594,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             }
 
             if(rootFeatureDef.isVersionless()){
-                hasVersionless = true;
+                hasVersionlessFeatures = true;
             }
 
             List<String> wlpPlatform = rootFeatureDef.getPlatforms();
@@ -623,48 +624,15 @@ public class FeatureResolverImpl implements FeatureResolver {
         //check if we have versionless features in our config,
         //we need some way to capture platform equivalency, ex javaee and jakartaee
         //can be possibly be done by checking if the platforms compatibility features are the same.
-        if(hasVersionless){
+        if(hasVersionlessFeatures){
             for(String key : map.keySet()){
                 Set<String> current = map.get(key);
                 if(current.size() == 1){
-                    ProvisioningFeatureDefinition comp = selectionContext.getRepository().getCompatibilityFeatures().get((current.toArray()[0].toString()));
+                    ProvisioningFeatureDefinition comp = selectionContext.getRepository().getCompatibilityFeatures().get(current.toArray()[0].toString().toLowerCase());
                     String[] nav = parseNameAndVersion(comp.getSymbolicName());
 
                     selectionContext._current._selected.put(nav[0], new Chain(comp.getSymbolicName(), nav[1], comp.getSymbolicName()));
-                    rootFeatures.add(comp.getSymbolicName());
-                }
-                else if(!featureListContainsFeatureBaseName(rootPlatforms, key)){
-                    //still need something similar to below
-                    //we need to check if we have ee versionless features or mp versionless features
-                    //and have the corresponding compatibility feature.
-                }
-            }
-        }
-
-
-        if(ee || mp){
-            boolean resolvedEE = !ee;
-            boolean resolvedMP = !mp;
-            for(String key : map.keySet()){
-                Set<String> current = map.get(key);
-                if((key.equals("microProfile") && mp) || (key.contains("aee") && ee)){
-                    if(current.size() == 1){
-                        ProvisioningFeatureDefinition comp = selectionContext.getRepository().getCompatibilityFeatures().get((current.toArray()[0].toString()));
-                        String[] nav = parseNameAndVersion(comp.getSymbolicName());
-
-                        selectionContext._current._selected.put(nav[0], new Chain(comp.getSymbolicName(), nav[1], comp.getSymbolicName()));
-                        rootFeatures.add(comp.getSymbolicName());
-                    }
-                }
-            }
-            if(!resolvedEE){
-                if(!featureListContainsFeatureBaseName(rootPlatforms, "com.ibm.websphere.appserver.eeCompatible")){
-                    error("Incompatible versions of features with versionless EE features");
-                }
-            }
-            if(!resolvedMP){
-                if(!featureListContainsFeatureBaseName(rootPlatforms, "io.openliberty.internal.mpVersion")){
-                    error("Incompatible versions of features with versionless MP features");
+                    rootPlatforms.add(comp.getSymbolicName());
                 }
             }
         }
@@ -1438,6 +1406,10 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         void processPostponed() {
+            System.out.println();
+            System.out.println("Resolved: " + _current._selected);
+            System.out.println("Resolved: " + _current._postponedVersionless);
+            System.out.println("Resolved: " + _current._postponed);
             if (_current._postponed.isEmpty() && _current._postponedVersionless.isEmpty()) {
                 return;
             }
@@ -1491,7 +1463,15 @@ public class FeatureResolverImpl implements FeatureResolver {
             if (!!!_current._postponed.isEmpty()) {
                 Map.Entry<String, Chains> firstPostponed = _current._postponed.entrySet().iterator().next();
                 // try to find a good selection
-                Chain selected = firstPostponed.getValue().select(firstPostponed.getKey(), this);
+
+                Chain selected = null;
+                if(hasVersionlessFeatures){
+                    selected = firstPostponed.getValue().selectTryFirst(firstPostponed.getKey(), this);
+                }
+                else{
+                    selected = firstPostponed.getValue().select(firstPostponed.getKey(), this);
+                }
+
                 if (selected != null) {
                     // found a good one, select it.
                     _current._selected.put(firstPostponed.getKey(), selected);
@@ -1657,6 +1637,31 @@ public class FeatureResolverImpl implements FeatureResolver {
         public int compare(Chain o1, Chain o2) {
             // We sort by preferred version where lowest sorts first
             return o1.getPreferredVersion().compareTo(o2.getPreferredVersion());
+        }
+
+        Chain selectTryFirst(String baseFeatureName, SelectionContext selectionContext) {
+            for (Chain selectedChain : _chains) {
+                for(String candidate : selectedChain.getCandidates()){
+                    ProvisioningFeatureDefinition feature = selectionContext.getRepository().getFeature(candidate);
+                    if(feature.getVisibility() != Visibility.PUBLIC || feature.getPlatforms() == null){
+                        continue;
+                    }
+                    for(String plat : feature.getPlatforms()){
+                        Chain c = selectionContext.getSelected(selectionContext.platformToCompatibilityBaseName().get(parseName(plat.toLowerCase())));
+                        if(c != null){
+                            if(c.getCandidates().size() == 1 && c.getCandidates().get(0).equals(selectionContext.getRepository().getCompatibilityFeatures().get(plat.toLowerCase()).getSymbolicName())){
+                                Chain match = match(candidate, selectedChain, selectionContext);
+                                if(match != null){
+                                    System.out.println("I FOUND A MATCH YAY - " + candidate + " : " + plat);
+                                    return new Chain(selectedChain.getChain(), Collections.singletonList(candidate), feature.getVersion().toString(), selectedChain.getFeatureRequirement());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return select(baseFeatureName, selectionContext);
         }
 
         Chain select(String baseFeatureName, SelectionContext selectionContext) {

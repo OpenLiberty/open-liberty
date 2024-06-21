@@ -2,6 +2,7 @@
 symbolicName=io.openliberty.internal.mpVersion-5.0
 visibility=private
 singleton=true
+-features=io.openliberty.mpCompatible-5.0
 kind=beta
 edition=core
 WLP-Activation-Type: parallel
