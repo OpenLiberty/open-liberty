@@ -234,7 +234,7 @@ UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=T
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Try to specify a compatible version of the configured features that caused the conflict in the server.xml file. If no other versions are available, then the configured features are not compatible with each other and cannot be configured at the same time.
 
 # CWWKF0048E  {0} = the unknown platform value in the environment variable
-UNKNOWN_PLATFORM_VALUE_ENV_VAR=CWWKF0048E: Platform environment variable PREFERRED_PLATFORM_VERSIONS platform value {0} does not contain a valid version.
+UNKNOWN_PLATFORM_VALUE_ENV_VAR=CWWKF0048E: The {0} value of the PREFERRED_PLATFORM_VERSIONS platform environment variable does not contain a valid version.
 UNKNOWN_PLATFORM_VALUE_ENV_VAR.explanation=Values in the platform environment variable must be a known platform. The known platforms are a version of javaee, jakartaee, or microProfile.
 UNKNOWN_PLATFORM_VALUE_ENV_VAR.useraction=Check that the environment variable contains only known platforms.
 
@@ -244,22 +244,22 @@ UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.explanation=For each versionless feature 
 UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.useraction=Add a value in PREFERRED_FEATURE_VERSIONS for the feature
 
 # CWWKF0050E  {0} = the versionless feature that cannot be resolved
-UNRESOLVED_VERSIONLESS_FEATURE=CWWKF0050E: The versionless feature, {0}, could not be resolved
-UNRESOLVED_VERSIONLESS_FEATURE.explanation=Versionless features need a platform to be designated before they can be resolved.
+UNRESOLVED_VERSIONLESS_FEATURE=CWWKF0050E: The {0} versionless feature cannot be resolved
+UNRESOLVED_VERSIONLESS_FEATURE.explanation=Versionless features need a designated platform before they can be resolved.
 UNRESOLVED_VERSIONLESS_FEATURE.useraction=Make sure there is a platform element specified for your feature.
 
 # CWWKF0051I  {0} = the versionless feature: {1} = the feature that was resolved from the versionless feature
-VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE=CWWKF0051I: The versionless feature, {0}, resolved to {1}
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE=CWWKF0051I: The {0} versionless feature resolved to {1}
 VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.explanation=The versioned feature resolved from the versionless feature.
 VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.useraction=No action is required.
 
 # CWWKF0052E  {0} = the unknown platform element
-UNKNOWN_PLATFORM_ELEMENT=CWWKF0052E: Platform element {0} is not a known platform.
+UNKNOWN_PLATFORM_ELEMENT=CWWKF0052E: The {0} platform element is not a known platform
 UNKNOWN_PLATFORM_ELEMENT.explanation=The specified platform element is not a known platform. The known platforms are a version of javaee, jakartaee, or microProfile
 UNKNOWN_PLATFORM_ELEMENT.useraction=Make sure the configured platform is a known platform.
 
 # CWWKF0053E  {0} = the unknown platform element
-UNKNOWN_PLATFORM_VERSION=CWWKF0053E: Platform element {0} is not a known platform version.
+UNKNOWN_PLATFORM_VERSION=CWWKF0053E: The {0} platform element is not a known platform version
 UNKNOWN_PLATFORM_VERSION.explanation=The platform is known, but the version of the platform does not exist.
 UNKNOWN_PLATFORM_VERSION.useraction=Specify a version of the platform that exists.
 
