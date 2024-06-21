@@ -22,6 +22,8 @@
 
   <include location="../fatTestPorts.xml"/>
 
+  <data logValues="test.jakarta.data.config.web.Employees, test.jakarta.data.config.web.Students"/>
+
   <application location="DataConfigTestApp.war"/>
 
   <authData id="auth1" user="dbuser1" password="dbpwd1"/>

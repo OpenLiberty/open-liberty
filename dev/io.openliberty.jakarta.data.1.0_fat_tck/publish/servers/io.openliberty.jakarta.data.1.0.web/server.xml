@@ -33,6 +33,8 @@
     <remoteFileAccess>
         <writeDir>${server.config.dir}/dropins</writeDir>
     </remoteFileAccess>
+
+    <data logValues="*"/>
     
     <library id="dbRotationLib">
       <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>

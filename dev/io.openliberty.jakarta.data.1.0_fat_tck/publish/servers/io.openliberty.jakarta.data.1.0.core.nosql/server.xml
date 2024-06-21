@@ -39,7 +39,9 @@
   <remoteFileAccess>
       <writeDir>${server.config.dir}/dropins</writeDir>
   </remoteFileAccess>
-  
+
+  <data logValues="*"/>
+
   <library id="jnosql">
     <fileset dir="${shared.resource.dir}/jnosql" includes="*.jar" />
   </library>

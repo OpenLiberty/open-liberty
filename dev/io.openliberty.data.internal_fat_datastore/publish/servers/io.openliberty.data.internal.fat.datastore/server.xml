@@ -23,6 +23,15 @@
 
   <include location="../fatTestPorts.xml"/>
 
+  <data>
+    <logValues>test.jakarta.data.datastore.ejb</logValues>
+    <logValues>test.jakarta.data.datastore.global.lib.GlobalLibRepo</logValues>
+    <logValues>test.jakarta.data.datastore.lib</logValues>
+    <logValues>test.jakarta.data.datastore.web</logValues>
+    <logValues>test.jakarta.data.datastore.web2</logValues>
+    <logValues>test.jakarta.data.datastore.webapp</logValues>
+  </data>
+
   <application location="DataStoreTestApp.ear">
     <classloader commonLibraryRef="DerbyLib"/>
   </application>

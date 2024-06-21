@@ -173,6 +173,33 @@ public class PageImpl<T> implements Page<T> {
         return content().stream();
     }
 
+    /**
+     * Convert to readable text of the form:
+     *
+     * Page 4/10 of MyEntity, size 10/10 @ff22b3c5
+     *
+     * @return textual representation of the page.
+     */
+    @Override
+    @Trivial
+    public String toString() {
+        int maxPageSize = pageRequest.size();
+        int size = Math.min(results.size(), maxPageSize);
+        StringBuilder s = new StringBuilder(80) //
+                        .append("Page ").append(pageRequest.page());
+        if (totalElements >= 0) {
+            s.append('/');
+            s.append(totalElements / maxPageSize + (totalElements % maxPageSize > 0 ? 1 : 0));
+        }
+        if (!results.isEmpty()) {
+            s.append(" of ").append(results.get(0).getClass().getSimpleName());
+        }
+        s.append(", size ").append(size);
+        s.append('/').append(maxPageSize);
+        s.append(" @").append(Integer.toHexString(hashCode()));
+        return s.toString();
+    }
+
     @Override
     public long totalElements() {
         if (totalElements == -1)

@@ -189,6 +189,47 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
         return pageRequest;
     }
 
+    /**
+     * Convert to readable text of the form:
+     *
+     * CursoredPage 4/10 of MyEntity, size 10/10, CURSOR_NEXT(name ASC IgnoreCase, id ASC) @ff22b3c5
+     *
+     * @return textual representation of the page.
+     */
+    @Override
+    @Trivial
+    public String toString() {
+        int maxPageSize = pageRequest.size();
+        int size = Math.min(results.size(), maxPageSize);
+        StringBuilder s = new StringBuilder(200) //
+                        .append("CursoredPage ").append(pageRequest.page());
+        if (totalElements >= 0) {
+            s.append('/');
+            s.append(totalElements / maxPageSize + (totalElements % maxPageSize > 0 ? 1 : 0));
+        }
+        if (!results.isEmpty()) {
+            s.append(" of ").append(results.get(0).getClass().getSimpleName());
+        }
+        s.append(", size ").append(size);
+        s.append('/').append(maxPageSize);
+        s.append(isForward ? ", CURSOR_NEXT(" : " CURSOR_PREVIOUS(");
+
+        boolean firstSort = true;
+        for (Sort<?> sort : queryInfo.sorts) {
+            if (firstSort)
+                firstSort = false;
+            else
+                s.append(", ");
+            s.append(sort.property()); //
+            s.append(sort.isAscending() //
+                            ? sort.ignoreCase() ? " ASC IgnoreCase" : " ASC" //
+                            : sort.ignoreCase() ? " DESC IgnoreCase" : " DESC");
+        }
+
+        s.append(") @").append(Integer.toHexString(hashCode()));
+        return s.toString();
+    }
+
     @Override
     public long totalElements() {
         if (totalElements == -1)

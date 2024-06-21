@@ -181,7 +181,8 @@ public class DataExtensionProvider implements //
         Collection<String> list = (Collection<String>) props.get("logValues");
         Set<String> names = list == null ? Set.of() : new HashSet<>(list.size());
         if (list != null)
-            names.addAll(list);
+            for (String item : list)
+                names.add(item.trim());
         logValues = names;
     }
 
@@ -408,12 +409,14 @@ public class DataExtensionProvider implements //
      */
     @Trivial
     public Object[] loggable(Class<?> repoClass, Method method, Object... values) {
+        String className;
         if (values == null ||
             values.length == 0 ||
             !logValues.isEmpty() &&
-                                  (logValues.contains(method.getName()) ||
+                                  (logValues.contains("*") ||
                                    logValues.contains(repoClass.getPackageName()) ||
-                                   logValues.contains(repoClass.getName())))
+                                   logValues.contains(className = repoClass.getName()) ||
+                                   logValues.contains(className + '.' + method.getName())))
             return values;
 
         Object[] loggable = new Object[values.length];
@@ -444,11 +447,13 @@ public class DataExtensionProvider implements //
      */
     @Trivial
     public Object loggable(Class<?> repoClass, Method method, Object value) {
+        String className;
         if (value == null ||
             !logValues.isEmpty() &&
-                             (logValues.contains(method.getName()) ||
+                             (logValues.contains("*") ||
                               logValues.contains(repoClass.getPackageName()) ||
-                              logValues.contains(repoClass.getName())))
+                              logValues.contains(className = repoClass.getName()) ||
+                              logValues.contains(className + '.' + method.getName())))
             return value;
 
         return loggable(value);
@@ -480,14 +485,13 @@ public class DataExtensionProvider implements //
             s.append(" }");
             loggable = s.toString();
         } else if (value instanceof Optional) {
-            StringBuilder s = new StringBuilder();
             Optional<?> opt = (Optional<?>) value;
-            s.append("Optional ");
             if (opt.isPresent())
-                s.append("{ ").append(loggable(opt.get())).append(" }");
+                loggable = new StringBuilder().append("Optional { ") //
+                                .append(loggable(opt.get())).append(" }") //
+                                .toString();
             else
-                s.append("EMPTY");
-            loggable = s.toString();
+                loggable = value;
         } else if (value instanceof Page) {
             loggable = value; // customer values already obscured
         } else if (value instanceof CompletionStage) {
@@ -537,7 +541,8 @@ public class DataExtensionProvider implements //
         Collection<String> list = (Collection<String>) props.get("logValues");
         Set<String> names = list == null ? Set.of() : new HashSet<>(list.size());
         if (list != null)
-            names.addAll(list);
+            for (String item : list)
+                names.add(item.trim());
         logValues = names;
     }
 

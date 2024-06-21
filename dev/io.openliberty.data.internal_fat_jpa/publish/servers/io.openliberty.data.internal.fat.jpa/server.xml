@@ -22,6 +22,11 @@
 
   <include location="../fatTestPorts.xml"/>
 
+  <data>
+    <logValues>test.jakarta.data.jpa.web</logValues>
+    <logValues>ee.jakarta.tck.data.framework.read.only</logValues> <!-- ignore packages that donn't exist -->
+  </data>
+
   <application location="DataJPATestApp.war">
     <classloader commonLibraryRef="DerbyLib"/>
   </application>

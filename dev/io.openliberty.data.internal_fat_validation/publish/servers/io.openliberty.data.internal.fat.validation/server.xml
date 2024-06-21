@@ -23,6 +23,12 @@
 
   <include location="../fatTestPorts.xml"/>
 
+  <data>
+    <logValues>test.jakarta.data.validation.web.Creatures</logValues>
+    <logValues>test.jakarta.data.validation.web.Entitlements.findById</logValues>
+    <logValues>test.jakarta.data.validation.web.Rectangles</logValues>
+  </data>
+
   <application location="DataValidationTestApp.war">
     <classloader commonLibraryRef="DerbyLib"/>
   </application>
