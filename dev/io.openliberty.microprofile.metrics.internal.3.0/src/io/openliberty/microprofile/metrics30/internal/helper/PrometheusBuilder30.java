@@ -30,7 +30,6 @@ import org.eclipse.microprofile.metrics.Timer;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.microprofile.metrics.Constants;
 import com.ibm.ws.microprofile.metrics.helper.Tag;
 import com.ibm.ws.microprofile.metrics23.helper.PrometheusBuilder23;
@@ -45,7 +44,6 @@ import io.openliberty.microprofile.metrics30.internal.impl.Timer30Impl;
 public class PrometheusBuilder30 extends PrometheusBuilder23 {
 
     private static final TraceComponent tc = Tr.register(PrometheusBuilder30.class);
-    private static Boolean isBetaEdition = false;
 
     /**
      * If there exists global tags then we will combine these tags with the provided
@@ -248,76 +246,74 @@ public class PrometheusBuilder30 extends PrometheusBuilder23 {
         for (MetricID mid : currentMetricMap.keySet()) {
             boolean typePrinted = false;
 
-            if (betaFenceCheck()) {
-                try {
-                    if (currentMetricMap.get(mid) instanceof Histogram30Impl) {
-                        Map<String, Map<Double, BucketValue>> histogramManager = ((Histogram30Impl) currentMetricMap.get(mid)).getBuckets();
+            try {
+                if (currentMetricMap.get(mid) instanceof Histogram30Impl) {
+                    Map<String, Map<Double, BucketValue>> histogramManager = ((Histogram30Impl) currentMetricMap.get(mid)).getBuckets();
 
-                        if (!histogramManager.isEmpty()) {
-                            typePrinted = true;
-                            String appName = name.replace("application_", "");
-                            getPromTypeLine(builder, appName, "histogram", appendUnit);
-                            getPromHelpLine(builder, appName, description, appendUnit);
-                        }
-
-                        for (String key : histogramManager.keySet()) {
-                            Map<Double, BucketValue> innerMap = histogramManager.get(key);
-
-                            for (Double innerKey : innerMap.keySet()) {
-                                double bucketKey = (!(Double.isNaN(conversionFactor))) ? innerKey * conversionFactor : innerKey;
-
-                                String applicationName;
-                                if (appendUnit == null)
-                                    applicationName = "application_" + key.replace(".", "_") + "_bucket";
-                                else
-                                    applicationName = "application_" + key.replace(".", "_") + "_" + appendUnit + "_bucket";
-
-                                String tagName = Double.isInfinite(bucketKey) ? "+Inf" : Double.toString(bucketKey);
-
-                                getPromValueLine(builder, applicationName, innerMap.get(innerKey).getValue(),
-                                                 resolveTagsAsStringWithGlobalTags(mid),
-                                                 new Tag("le", tagName),
-                                                 "");
-
-                            }
-
-                        }
+                    if (!histogramManager.isEmpty()) {
+                        typePrinted = true;
+                        String appName = name.replace("application_", "");
+                        getPromTypeLine(builder, appName, "histogram", appendUnit);
+                        getPromHelpLine(builder, appName, description, appendUnit);
                     }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                    for (String key : histogramManager.keySet()) {
+                        Map<Double, BucketValue> innerMap = histogramManager.get(key);
 
-                try {
-                    if (currentMetricMap.get(mid) instanceof Timer30Impl) {
-                        Map<String, Map<Double, BucketValue>> timerManager = ((Timer30Impl) currentMetricMap.get(mid)).getBuckets();
+                        for (Double innerKey : innerMap.keySet()) {
+                            double bucketKey = (!(Double.isNaN(conversionFactor))) ? innerKey * conversionFactor : innerKey;
 
-                        if (!timerManager.isEmpty()) {
-                            typePrinted = true;
-                            String appName = name.replace("application_", "");
-                            getPromTypeLine(builder, appName, "histogram", appendUnit);
-                            getPromHelpLine(builder, appName, description, appendUnit);
-                        }
+                            String applicationName;
+                            if (appendUnit == null)
+                                applicationName = "application_" + key.replace(".", "_") + "_bucket";
+                            else
+                                applicationName = "application_" + key.replace(".", "_") + "_" + appendUnit + "_bucket";
 
-                        for (String key : timerManager.keySet()) {
-                            Map<Double, BucketValue> innerMap = timerManager.get(key);
-                            for (Double innerKey : innerMap.keySet()) {
-                                String tagName = Double.isInfinite(innerKey) ? "+Inf" : Double.toString(innerKey);
+                            String tagName = Double.isInfinite(bucketKey) ? "+Inf" : Double.toString(bucketKey);
 
-                                getPromValueLine(builder, "application_" + key.replace(".", "_") + "_" + appendUnit + "_bucket", innerMap.get(innerKey).getValue(),
-                                                 resolveTagsAsStringWithGlobalTags(mid),
-                                                 new Tag("le", tagName),
-                                                 "");
-                            }
+                            getPromValueLine(builder, applicationName, innerMap.get(innerKey).getValue(),
+                                             resolveTagsAsStringWithGlobalTags(mid),
+                                             new Tag("le", tagName),
+                                             "");
 
                         }
+
                     }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
 
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
+            try {
+                if (currentMetricMap.get(mid) instanceof Timer30Impl) {
+                    Map<String, Map<Double, BucketValue>> timerManager = ((Timer30Impl) currentMetricMap.get(mid)).getBuckets();
+
+                    if (!timerManager.isEmpty()) {
+                        typePrinted = true;
+                        String appName = name.replace("application_", "");
+                        getPromTypeLine(builder, appName, "histogram", appendUnit);
+                        getPromHelpLine(builder, appName, description, appendUnit);
+                    }
+
+                    for (String key : timerManager.keySet()) {
+                        Map<Double, BucketValue> innerMap = timerManager.get(key);
+                        for (Double innerKey : innerMap.keySet()) {
+                            String tagName = Double.isInfinite(innerKey) ? "+Inf" : Double.toString(innerKey);
+
+                            getPromValueLine(builder, "application_" + key.replace(".", "_") + "_" + appendUnit + "_bucket", innerMap.get(innerKey).getValue(),
+                                             resolveTagsAsStringWithGlobalTags(mid),
+                                             new Tag("le", tagName),
+                                             "");
+                        }
+
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             if (!typePrinted) {
                 getPromTypeLine(builder, name, "summary", appendUnit);
                 getPromHelpLine(builder, name, description, appendUnit);
@@ -341,7 +337,7 @@ public class PrometheusBuilder30 extends PrometheusBuilder23 {
 
             double medianVal = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getMedian() * conversionFactor : sampling.getSnapshot().getMedian();
 
-            if (Histogram.class.isInstance(sampling) && ((Histogram30Impl) currentMetricMap.get(mid)).getConfiguredPercentiles() != null && betaFenceCheck()) {
+            if (Histogram.class.isInstance(sampling) && ((Histogram30Impl) currentMetricMap.get(mid)).getConfiguredPercentiles() != null) {
 
                 if (((Histogram30Impl) currentMetricMap.get(mid)).getConfiguredPercentiles() != null) {
 
@@ -354,7 +350,7 @@ public class PrometheusBuilder30 extends PrometheusBuilder23 {
                     }
                 }
 
-            } else if (Timer.class.isInstance(sampling) && ((Timer30Impl) currentMetricMap.get(mid)).getConfiguredPercentiles() != null && betaFenceCheck()) {
+            } else if (Timer.class.isInstance(sampling) && ((Timer30Impl) currentMetricMap.get(mid)).getConfiguredPercentiles() != null) {
 
                 if (((Timer30Impl) currentMetricMap.get(mid)).getConfiguredPercentiles() != null) {
 
@@ -427,13 +423,5 @@ public class PrometheusBuilder30 extends PrometheusBuilder23 {
             getPromValueLine(builder, lineName, ((Metered) map.get(mid)).getFifteenMinuteRate(), resolveTagsAsStringWithGlobalTags(mid));
         }
 
-    }
-
-    private static boolean betaFenceCheck() throws UnsupportedOperationException {
-        if (!isBetaEdition && ProductInfo.getBetaEdition()) {
-            isBetaEdition = true;
-        }
-
-        return isBetaEdition;
     }
 }
