@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import com.ibm.ws.beanvalidation.service.BeanValidation;
+import com.ibm.ws.jpa.management.ApplicationComponentMetaData;
 import com.ibm.ws.jpa.management.JPAEMFPropertyProvider;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -42,6 +43,10 @@ public class JPABVComponentImpl implements ValidatorFactoryLocator, JPAEMFProper
             throw new ValidationException("bean validation provider is not available");
         }
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        
+        //Using Application Component Meta Data should receive the default validator factory.
+        //Setting the ComponentMetaData to null will achieve this.
+        if (cmd instanceof ApplicationComponentMetaData) cmd = null; 
         return bvalService.getValidatorFactoryOrDefault(cmd);
     }
 
