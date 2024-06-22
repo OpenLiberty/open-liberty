@@ -13,6 +13,9 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.org.eclipse.microprofile.rest.client.4.0; singleton:=true
 
+javac.source: 11
+javac.target: 11
+
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 Export-Package: \
@@ -28,7 +31,7 @@ Import-Package: \
   *
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.rest.client:microprofile-rest-client-api;3.0.1;EXACT}
+  @${repo;org.eclipse.microprofile.rest.client:microprofile-rest-client-api;4.0.0.RC1;EXACT}
 
 -maven-dependencies: \
-   dep1;groupId=org.eclipse.microprofile.rest.client;artifactId=microprofile-rest-client-api;version=3.0.1;scope=runtime
+   dep1;groupId=org.eclipse.microprofile.rest.client;artifactId=microprofile-rest-client-api;version=4.0.RC1;scope=runtime
