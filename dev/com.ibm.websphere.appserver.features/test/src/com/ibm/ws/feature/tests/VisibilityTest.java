@@ -805,12 +805,8 @@ public class VisibilityTest {
         allowedToleratedFeatures.add("com.ibm.websphere.appserver.appSecurity-");
         allowedToleratedFeatures.add("com.ibm.websphere.appserver.jdbc-");
 
-        // data-1.0 will be updated to not tolerate EE 10 features when it ships with EE 11.0 and
-        // can depend on EE 11 features because they are also in beta.
         // restfulWSLogging-3.0 hopefully never will see the light of day and will be done differently.
         Set<String> expectedFailingFeatures = new HashSet<>();
-        expectedFailingFeatures.add("io.openliberty.data-1.0");
-        expectedFailingFeatures.add("io.openliberty.dataContainer-1.0");
         expectedFailingFeatures.add("io.openliberty.restfulWSLogging-3.0");
         Map<String, String> visibilityMap = new HashMap<>();
         for (Entry<String, FeatureInfo> entry : features.entrySet()) {

@@ -14,14 +14,13 @@ IBM-API-Package: \
   jakarta.data.spi; type="spec"
 Subsystem-Name: Jakarta Data 1.0 Container
 -features=\
-  com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0",\
-  io.openliberty.cdi-4.0; ibm.tolerates:="4.1",\
-  io.openliberty.jakarta.data-1.0,\
-  io.openliberty.noShip-1.0
+  com.ibm.websphere.appserver.eeCompatible-11.0,\
+  io.openliberty.cdi-4.1,\
+  io.openliberty.jakarta.data-1.0
 -bundles=\
   io.openliberty.data.internal.beandef
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
 WLP-Platform: jakartaee-11.0

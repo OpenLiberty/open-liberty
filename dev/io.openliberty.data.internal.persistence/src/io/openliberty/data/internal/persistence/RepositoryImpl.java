@@ -62,6 +62,7 @@ import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.data.internal.persistence.QueryInfo.Type;
 import io.openliberty.data.internal.persistence.cdi.DataExtension;
 import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import io.openliberty.data.internal.persistence.cdi.FutureEMBuilder;
@@ -686,7 +687,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), args);
+            Tr.entry(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(),
+                     provider.loggable(repositoryInterface, method, args));
         try {
             if (isDisposed.get())
                 throw new IllegalStateException("Repository instance " + repositoryInterface.getName() +
@@ -1236,8 +1238,18 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 }
             }
 
-            if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), returnValue);
+            if (trace && tc.isEntryEnabled()) {
+                boolean hideValue = queryInfo.type == Type.FIND
+                                    || queryInfo.type == Type.FIND_AND_DELETE
+                                    || queryInfo.type == Type.INSERT
+                                    || queryInfo.type == Type.SAVE
+                                    || queryInfo.type == Type.UPDATE_WITH_ENTITY_PARAM_AND_RESULT;
+                Object valueToLog = hideValue //
+                                ? provider.loggable(repositoryInterface, method, returnValue) //
+                                : returnValue;
+                Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(),
+                        valueToLog);
+            }
             return returnValue;
         } catch (Throwable x) {
             if (!isDefaultMethod && x instanceof Exception)

@@ -16,17 +16,19 @@
     <feature>componenttest-2.0</feature>
     <feature>data-1.0</feature>
     <feature>jndi-1.0</feature>
-    <feature>persistence-3.1</feature>
-    <feature>servlet-6.0</feature>
+    <feature>persistence-3.2</feature>
+    <feature>servlet-6.1</feature>
   </featureManager>
 
   <include location="../fatTestPorts.xml"/>
+
+  <data logValues="test.jakarta.data.config.web.Employees, test.jakarta.data.config.web.Students"/>
 
   <application location="DataConfigTestApp.war"/>
 
   <authData id="auth1" user="dbuser1" password="dbpwd1"/>
 
-  <databaseStore id="defaultDatabaseStore" authDataRef="auth1" createTables="true" dropTables="false" tablePrefix="TEST"/>
+  <databaseStore id="MyDataStore" authDataRef="auth1" createTables="true" dropTables="false" tablePrefix="TEST"/>
 
   <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="DerbyLib"/>
