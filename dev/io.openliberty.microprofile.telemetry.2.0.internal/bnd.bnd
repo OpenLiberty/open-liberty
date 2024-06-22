@@ -43,6 +43,8 @@ Service-Component: \
 # Need an explicit import for api.common because it gets used by weld proxies
 # created for other API classes
 Import-Package: \
+	!io.openliberty.http.monitor,\
+	!io.openliberty.http.monitor.metrics,\
 	io.opentelemetry.api.common;version="[1.2,3)",\
 	io.openliberty.microprofile.telemetry.internal.common.resources,\
 	javax.annotation;version="[1.2,2)",\
@@ -54,6 +56,10 @@ Import-Package: \
 	org.eclipse.microprofile.rest.client.spi; version="[1.0.0,3.0.0)",\
 	org.eclipse.microprofile.config; version="[1.0.0,3.0.0)",\
 	*
+
+DynamicImport-Package: \
+    io.openliberty.http.monitor,\
+    io.openliberty.http.monitor.metrics
 
 # Export-Package and Private-Package specified in sub-bundles
 # because bundles have different contents in addition to being transformed
@@ -77,6 +83,7 @@ Import-Package: \
 	io.openliberty.microprofile.telemetry.internal.common;version=latest,\
 	io.openliberty.io.opentelemetry.2.0;version=latest,\
 	io.opentelemetry.semconv:opentelemetry-semconv;version='1.25.0.alpha';strategy=exact,\
-	com.ibm.ws.kernel.boot.common;version=latest
+	com.ibm.ws.kernel.boot.common;version=latest,\
+	io.openliberty.http.monitor
 
 WS-TraceGroup: TELEMETRY

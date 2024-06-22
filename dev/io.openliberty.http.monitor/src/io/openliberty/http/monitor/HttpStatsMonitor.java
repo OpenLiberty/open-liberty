@@ -254,7 +254,7 @@ public class HttpStatsMonitor extends StatisticActions {
 		
 		
 		if (RestMetricManager.getInstance() != null ) {
-			RestMetricManager.getInstance().updateHttpMetrics(httpStatAttributes, duration);
+			RestMetricManager.getInstance().updateHttpMetrics(httpStatAttributes, duration, appName);
 		} else {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(tc, "No Available Metric runtimes to forward HTTP stats to.");

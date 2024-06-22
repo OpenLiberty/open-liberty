@@ -32,6 +32,7 @@ mariadb:10.3
 mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04
 mongo:6.0.6
 openzipkin/zipkin-slim:2.23
+otel/opentelemetry-collector-contrib:0.103.0
 otel/opentelemetry-collector:0.74.0
 postgres:14.1-alpine
 postgres:16.0-alpine

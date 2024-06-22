@@ -21,10 +21,12 @@ Export-Package: \
 Private-Package: \
 	io.openliberty.microprofile.telemetry20.internal.helper,\
 	io.openliberty.microprofile.telemetry20.internal.config,\
-	io.openliberty.microprofile.telemetry20.internal.rest.jakarta
+	io.openliberty.microprofile.telemetry20.internal.rest.jakarta,\
+	io.openliberty.microprofile.telemetry20.internal.http
 
 -dsannotations: \
   io.openliberty.microprofile.telemetry20.internal.cdi.SPIMetaData,\
   io.openliberty.microprofile.telemetry20.internal.config.OpenTelemetryVersionedConfigurationImpl,\
   io.openliberty.microprofile.telemetry20.internal.rest.TelemetryServletContainerInitializer,\
-  io.openliberty.microprofile.telemetry20.internal.rest.jakarta.TelemetryClientBuilderListener
+  io.openliberty.microprofile.telemetry20.internal.rest.jakarta.TelemetryClientBuilderListener,\
+  io.openliberty.microprofile.telemetry20.internal.http.MPTelemetryHTTPMetricsAdapterImpl

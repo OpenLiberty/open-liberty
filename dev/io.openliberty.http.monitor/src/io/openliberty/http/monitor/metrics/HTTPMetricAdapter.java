@@ -18,12 +18,13 @@ import io.openliberty.http.monitor.HttpStatAttributes;
  * Implemented by subsequent Metric run-times in their respective bundles.
  */
 public interface HTTPMetricAdapter {
-
+	
 	/**
 	 * Given the HttpStatAttributes, update the HTTP metric of the respective Metrics runtime
 	 * 
 	 * @param httpStatAttributes
 	 * @param duration
+	 * @param appName This value can be `null` to indicate that we're updating metrics relating to the server. Not all Implementations may need the appname value.
 	 */
-	public void updateHttpMetrics(HttpStatAttributes httpStatAttributes, Duration duration);
+	public void updateHttpMetrics(HttpStatAttributes httpStatAttributes, Duration duration, String appName);
 }
