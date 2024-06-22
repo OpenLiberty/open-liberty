@@ -1,0 +1,4 @@
+Subsystem-SymbolicName: t1.b-0.9; visibility:=public; singleton:=true
+Subsystem-Version: 0.9
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Content: t1.a-0.9; type="osgi.subsystem.feature"; ibm.tolerates:="1.0, 1.1"

@@ -1,0 +1,5 @@
+Subsystem-SymbolicName: t11.auto.1-1.0; singleton:=true
+Subsystem-Version: 1.0
+Subsystem-Type: osgi.subsystem.feature
+IBM-Provision-Capability: osgi.identity; filter:="(osgi.identity=t11.a-1.0)"
+Subsystem-Content: t11.e-1.0; type="osgi.subsystem.feature"; ibm.tolerates:="2.0"

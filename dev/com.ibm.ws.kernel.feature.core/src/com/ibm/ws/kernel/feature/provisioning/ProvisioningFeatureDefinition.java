@@ -18,27 +18,30 @@ import java.util.List;
 import java.util.Locale;
 
 import com.ibm.ws.kernel.feature.FeatureDefinition;
-import com.ibm.ws.kernel.provisioning.ExtensionConstants;
 
 /**
- * Provisioning operations incur overhead, and must be invoked within the
- * confines of a provisioning operation (for the server), or from a client
- * utility.
- * <p>
- * Methods in this interface (not in the parent) may throw Exceptions if
- * called outside of a provisioning operation.
- * <p>
- * PROVISIONING OPERATIONS SHOULD BE SINGLE THREADED.
- * <p>
- * The FeatureManager already ensured only one thread was performing
- * provisioning operations at a time. Any information exposed by this
- * interface, in particular, is vulnerable to thread safety due to the
- * extra storage backing the operations being subject to cleanup when
- * the provisioning operation completes. (The exact meaning of this
- * will be different for client utilities, which are usually a single
- * main-line path.).
+ * Extension of a feature definition.
+ *
+ * A feature definition {@link FeatureDefinition} encodes minimal feature
+ * information.
+ *
+ * This extension adds provisioning information.
+ *
+ * The split enables more lightweight processing of feature definitions
+ * outside of provisioning operations.
  */
 public interface ProvisioningFeatureDefinition extends FeatureDefinition {
+    /**
+     * Tell the IBM short name of this feature.
+     *
+     * Answer null if this feature does not have a short name.
+     *
+     * The IBM short name is not the same as the feature name.
+     *
+     * All public features and all versionless features have a short name.
+     *
+     * @return The IBM short name of this feature.
+     */
     String getIbmShortName();
 
     int getIbmFeatureVersion();
@@ -71,8 +74,8 @@ public interface ProvisioningFeatureDefinition extends FeatureDefinition {
      *
      * Other values indicate that the feature is in a product extension.
      *
-     * @see ExtensionConstants#CORE_EXTENSION
-     * @see ExtensionConstants#USER_EXTENSION
+     * See {@link com.ibm.ws.kernel.provisioning.ExtensionConstants#CORE_EXTENSION}
+     * and {@link com.ibm.ws.kernel.provisioning.ExtensionConstants#USER_EXTENSION}.
      *
      * @return The type of the bundle repository of this feature.
      */
@@ -165,41 +168,76 @@ public interface ProvisioningFeatureDefinition extends FeatureDefinition {
     boolean isCapabilitySatisfied(Collection<ProvisioningFeatureDefinition> supplyingDefs);
 
     /**
-     * Answer the platform of this feature.
+     * Answer the names of the platform (or platforms) of this feature.
      *
-     * The feature platform is stored as a header attribute.
+     * Platform names are stored as header attribute WLP-Platform.
      *
-     * @return The platform of this feature.
+     * When more than one platform name is specified, each should be a
+     * different version of the same base platform.
+     *
+     * Platform names are stored on versioned public features which have
+     * associated versionless features, and are stored on compatibility
+     * features.
+     *
+     * @return The platform names of this feature.
      */
-    List<String> getPlatforms();
+    List<String> getPlatformNames();
+
+    /**
+     * Answer the first platform name of the feature. Answer null if the
+     * feature has no platform names. (See {@see #getPlatformNames()}.)
+     *
+     * Versioned features which have associated versionless features
+     * and compatibility features all provide platform names.
+     *
+     * @return The platform name of this versioned or compatibility feature.
+     */
+    String getPlatformName();
 
     /**
      * Tell if this is a versionless feature.
      *
-     * @return
+     * Versionless features do not have a platform, but are associated
+     * with versioned features which have platform values.
+     *
+     * Versionless features are public. The feature short name is the
+     * base name of the associated versioned features.
+     *
+     * @return True or false telling if this is a versionless feature.
      */
     boolean isVersionless();
 
     /**
-     * Tell if this is a convenience feature.
+     * Tell if this is a platform convenience feature.
      *
-     * @return
+     * Platform convenience features are used to provision most (but not
+     * all) features which are associated with a platform / programming model.
+     *
+     * Convenience features are public and do not have a platform value.
+     *
+     * @return True or false telling if this is a platform convenience feature.
      */
     boolean isConvenience();
 
     /**
-     * Tell if the feature is a compatibility feature.
+     * Tell if the feature is a platform compatibility feature.
      *
-     * @return
+     * A compatibility feature sets a platform version, which is used
+     * to select versions of the versionless features which are associated
+     * with the platform version.
+     *
+     * Platform compatibility features are private and have a platform value.
+     *
+     * @return True or false telling if this is a platform compatibility
+     *         feature.
      */
     boolean isCompatibility();
 
     /**
-     * Answer the value of the platform when the feature is a compatibility feature.
+     * Answer the alternate names of this feature. Answer an empty collection
+     * if there are none.
      *
-     * Always returns the first platform the WLP_Platform: list. See { {@see #getPlatforms()}
-     *
-     * @return The platform value of this compatibility feature
+     * @return The alternate names of this feature.
      */
-    String getPlatformValue();
+    // List<String> getAltNames();
 }

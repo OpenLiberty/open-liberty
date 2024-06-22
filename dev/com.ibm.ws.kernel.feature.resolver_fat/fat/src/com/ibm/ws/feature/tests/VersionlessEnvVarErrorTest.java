@@ -27,7 +27,7 @@ public class VersionlessEnvVarErrorTest {
     public static final String SERVER_NAME = "ee7toMP";
 
     @Test
-    public void testNoEnvVar() throws Exception {
+    public void versionless_noEnvVarTest() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
 
         server.startServer();
@@ -41,7 +41,7 @@ public class VersionlessEnvVarErrorTest {
     }
 
     @Test
-    public void testNoFeatureInEnvVar() throws Exception {
+    public void versionless_noFeatureInEnvVarTest() throws Exception {
         String envVar = "mpHealth-1.0,mpHealth-2.0,mpHealth-2.1,mpHealth-2.2,mpHealth-3.0,mpHealth-3.1,mpHealth-4.0";
 
         LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);

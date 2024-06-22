@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -226,39 +226,30 @@ public class KernelResolverEsa implements ProvisioningFeatureDefinition {
         throw new UnsupportedOperationException();
     }
 
-    /** {@inheritDoc} */
+    //
+    
     @Override
-    public List<String> getPlatforms() {
-        // TODO Auto-generated method stub
-        return null;
+    public List<String> getPlatformNames() {
+        return null; // TODO
     }
 
-    /** {@inheritDoc} */
+    @Override
+    public String getPlatformName() {
+        return null; // TODO
+    }
+    
     @Override
     public boolean isVersionless() {
-        // TODO Auto-generated method stub
-        return false;
+        return false; // TODO
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isConvenience() {
-        // TODO Auto-generated method stub
-        return false;
+        return false; // TODO
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isCompatibility() {
-        // TODO Auto-generated method stub
-        return false;
+        return false; // TODO
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getPlatformValue() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

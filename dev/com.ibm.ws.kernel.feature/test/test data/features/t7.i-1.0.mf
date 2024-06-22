@@ -1,0 +1,4 @@
+Subsystem-SymbolicName: t7.i-1.0; singleton:=true
+Subsystem-Version: 1.0
+Subsystem-Type: osgi.subsystem.feature
+

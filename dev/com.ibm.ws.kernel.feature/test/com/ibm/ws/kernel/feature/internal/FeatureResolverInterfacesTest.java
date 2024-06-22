@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,7 +52,9 @@ import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
 
 /**
- * In contrast to {@link FeatureResolverTest}, this class tests the feature resolver using its interfaces directly, without invoking any manifest reading code.
+ * In contrast to {@link FeatureResolverTest}, this class tests the feature
+ * resolver using its interfaces directly, without invoking any manifest
+ * reading code.
  */
 public class FeatureResolverInterfacesTest {
 
@@ -494,36 +496,37 @@ public class FeatureResolverInterfacesTest {
             throw new UnsupportedOperationException();
         }
 
+        //
+
         @Override
-        public List<String> getPlatforms() {
-            // TODO Auto-generated method stub
-            return null;
+        public List<String> getPlatformNames() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getPlatformName() {
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public boolean isVersionless() {
-            // TODO Auto-generated method stub
             return false;
         }
 
         @Override
         public boolean isConvenience() {
-            // TODO Auto-generated method stub
             return false;
         }
 
         @Override
         public boolean isCompatibility() {
-            // TODO Auto-generated method stub
             return false;
         }
 
-        @Override
-        public String getPlatformValue() {
-            // TODO Auto-generated method stub
-            return null;
+        // @Override
+        public List<String> getAltNames() {
+            return Collections.emptyList();
         }
-
     }
 
     /**
@@ -627,7 +630,6 @@ public class FeatureResolverInterfacesTest {
         public ActivationType getActivationType() {
             throw new UnsupportedOperationException();
         }
-
     }
 
 }

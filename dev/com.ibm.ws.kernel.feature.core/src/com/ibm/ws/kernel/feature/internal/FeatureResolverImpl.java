@@ -660,38 +660,18 @@ public class FeatureResolverImpl implements FeatureResolver {
             // loops through the private features related to the versionless feature
             for(String feature : features){
                 ProvisioningFeatureDefinition featureDef = selectionContext.getRepository().getFeature(feature);
-                if(featureDef != null){
-                    boolean addFeature = false;
-                    FeatureResource compatibleFeature = null;
-                    Collection<FeatureResource> featureDeps = featureDef.getConstituents(SubsystemContentType.FEATURE_TYPE);
-                    for (FeatureResource featureDep : featureDeps) { // could be multiple
-                        if(!!!featureDep.getSymbolicName().contains("noShip")){
-                            ProvisioningFeatureDefinition versionedFeature = selectionContext.getRepository().getFeature(featureDep.getSymbolicName());
-                            if(versionedFeature == null){
-                                continue;
-                            }
-                            if(featureDep.getSymbolicName().startsWith("com.ibm.websphere.appserver.eeCompatible") 
-                                || featureDep.getSymbolicName().startsWith("io.openliberty.internal.mpVersion")){
-                                
-                                compatibleFeature = featureDep;
-                            }
-                            // if we resolved the public versioned feature, add the private versionless linking feature
-                            if(versionedFeature.getIbmShortName() != null && result._resolved.contains(versionedFeature.getIbmShortName())){
-                                addFeature = true;
-                            }
+                Collection<FeatureResource> featureDeps = featureDef.getConstituents(SubsystemContentType.FEATURE_TYPE);
+                for (FeatureResource featureDep : featureDeps) { // could be multiple, we only care about the public versioned feature
+                    if(!!!featureDep.getSymbolicName().startsWith("com.ibm.websphere.appserver.eeCompatible") &&
+                    !!!featureDep.getSymbolicName().startsWith("io.openliberty.internal.mpVersion") &&
+                    !!!featureDep.getSymbolicName().contains("noShip")){
+                        ProvisioningFeatureDefinition versionedFeature = selectionContext.getRepository().getFeature(featureDep.getSymbolicName());
+                        if(versionedFeature == null){
+                            continue;
                         }
-                    }
-                    if(addFeature){
-                        addingFeatures.add(feature);
-                        if(compatibleFeature != null){
-                            String[] nav = parseNameAndVersion(compatibleFeature.getSymbolicName());
-                            addingFeatures.add(nav[0] + "-" + nav[1]);
-
-                            if(compatibleFeature.getTolerates() != null){
-                                for(String version : compatibleFeature.getTolerates()) {
-                                    addingFeatures.add(nav[0] + "-" + version);
-                                }
-                            }
+                        // if we resolved the public versioned feature, add the private versionless linking feature
+                        if(versionedFeature.getIbmShortName() != null && result._resolved.contains(versionedFeature.getIbmShortName())){
+                            addingFeatures.add(feature);
                         }
                     }
                 }
