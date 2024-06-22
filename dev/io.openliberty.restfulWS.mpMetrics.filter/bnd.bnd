@@ -31,9 +31,10 @@ src: src
 WS-TraceGroup: JAXRS
 
 Import-Package: \
-    com.ibm.websphere.servlet.container, \
-    jakarta.servlet; version="[6.0,7)", \
-    org.eclipse.microprofile.metrics;version="[5.0,6)",\
+	com.ibm.websphere.servlet.container, \
+	jakarta.servlet; version="[6.0,7)", \
+	jakarta.ws.rs.container; version="[3.0.0,5.0.0)", \
+	org.eclipse.microprofile.metrics;version="[5.0,6)",\
 	org.eclipse.microprofile.metrics.*;version="[5.0,6)",\
 	io.openliberty.microprofile.metrics50,\
 	io.openliberty.microprofile.metrics.internal.monitor,\
