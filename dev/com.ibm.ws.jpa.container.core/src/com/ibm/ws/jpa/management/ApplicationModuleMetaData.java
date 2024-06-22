@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jpa.app;
+package com.ibm.ws.jpa.management;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.annotation.Trivial;

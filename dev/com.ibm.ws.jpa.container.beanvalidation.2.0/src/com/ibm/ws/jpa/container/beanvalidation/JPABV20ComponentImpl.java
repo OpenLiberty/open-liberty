@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import com.ibm.ws.beanvalidation.service.BeanValidation;
-import com.ibm.ws.jpa.app.ApplicationComponentMetaData;
+import com.ibm.ws.jpa.management.ApplicationComponentMetaData;
 import com.ibm.ws.jpa.management.JPAEMFPropertyProvider;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
