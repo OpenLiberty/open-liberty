@@ -21,7 +21,6 @@ task assembleBootstrap(type: Copy) {
 }
 
 task assembleBinaryDependencies() {
-    dependsOn jar
     dependsOn ':com.ibm.websphere.javaee.jaxb.2.2:jar'
     dependsOn ':com.ibm.websphere.javaee.jsonp.1.0:jar'
     dependsOn ':com.ibm.ws.common.encoder:jar'
@@ -133,6 +132,7 @@ jar {
     dependsOn assembleBootstrap
     dependsOn extractArquillianSupportFeature
     dependsOn extractArquillianSupportJakartaFeature21
+    finalizedBy assembleBinaryDependencies
 }
 
 task publishArquillianSupportFeature(type:Copy) {
@@ -145,6 +145,5 @@ task publishArquillianSupportFeature(type:Copy) {
 }
 
 assemble {
-    dependsOn assembleBinaryDependencies
     dependsOn publishArquillianSupportFeature
 }
