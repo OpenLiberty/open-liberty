@@ -42,7 +42,7 @@ tested.features:\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.security.jaas.common;version=latest,\
-        io.openliberty.jakarta.messaging.3.0;version=latest,\
+	io.openliberty.jakarta.messaging.3.0;version=latest,\
 	com.ibm.websphere.javaee.jaspic.1.1;version=latest,\
 	com.ibm.ws.jdbc;version=latest,\
 	com.ibm.websphere.javaee.validation.1.1;version=latest,\
