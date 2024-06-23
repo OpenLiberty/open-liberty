@@ -16,8 +16,8 @@
 
     <properties>
         <microprofile.config.version>3.0.1</microprofile.config.version>
-        <microprofile.faulttolerance.version>4.1-SNAPSHOT</microprofile.faulttolerance.version>
-        <microprofile.metrics.version>4.1</microprofile.metrics.version>
+        <microprofile.faulttolerance.version>4.1-RC1</microprofile.faulttolerance.version>
+        <microprofile.metrics.version>4.0</microprofile.metrics.version>
 
         <arquillian.version>1.7.0.Alpha13</arquillian.version>
         <arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
@@ -76,6 +76,11 @@
             <version>${microprofile.faulttolerance.version}</version>
             <scope>system</scope>
             <systemPath>${io.openliberty.org.eclipse.microprofile.faulttolerance.4.0}</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile.metrics</groupId>
+            <artifactId>microprofile-metrics-api</artifactId>
+            <version>${microprofile.metrics.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>

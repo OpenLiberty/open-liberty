@@ -43,7 +43,6 @@ import componenttest.topology.utils.tck.TCKRunner;
  * location.
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.EXPERIMENTAL) //Enable this test when the fault tolerence 4.1 tck is published
 public class FaultToleranceTck41Launcher {
 
     private static final String SERVER_NAME = "FaultTolerance41TCKServer";

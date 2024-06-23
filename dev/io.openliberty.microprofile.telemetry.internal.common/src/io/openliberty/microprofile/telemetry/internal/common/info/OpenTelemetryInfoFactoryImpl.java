@@ -20,14 +20,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 
-import org.apache.commons.lang3.concurrent.LazyInitializer;
-import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.config.spi.ConfigSource;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
@@ -43,6 +35,7 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import org.apache.commons.lang3.concurrent.LazyInitializer;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -133,7 +126,8 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
             if (atomicRef == null) {
                 //If this is triggered by internal code that isn't supposed to call ApplicationStateListener.applicationStarting() don't throw an error
                 String j2EEName = metaData.getJ2EEName().toString();
-                if (j2EEName.startsWith("io.openliberty") || j2EEName.startsWith("com.ibm.ws")) {
+                if (j2EEName.startsWith("io.openliberty") || j2EEName.startsWith("com.ibm.ws")
+                    || j2EEName.startsWith("arquillian-liberty-support")) {
                     Tr.info(tc, "CWMOT5100.tracing.is.disabled", j2EEName);
                     return new DisabledOpenTelemetryInfo();
                 }
@@ -233,17 +227,17 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
             Config config = ConfigProvider.getConfig();
 
             HashMap<String, String> telemetryProperties = new HashMap<>();
-            
+
             for (ConfigSource configSource : config.getConfigSources()) {
-                for ( Entry<String, String> entry : configSource.getProperties().entrySet()) {
+                for (Entry<String, String> entry : configSource.getProperties().entrySet()) {
                     if (entry.getKey().startsWith("otel") || entry.getKey().startsWith("OTEL")) {
                         String normalizedName = entry.getKey().toLowerCase().replace('_', '.');
                         config.getOptionalValue(normalizedName, String.class)
-                        .ifPresent(value -> telemetryProperties.putIfAbsent(normalizedName, value));
+                              .ifPresent(value -> telemetryProperties.putIfAbsent(normalizedName, value));
                     }
                 }
             }
-            
+
             return telemetryProperties;
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
