@@ -48,7 +48,7 @@ public class BeansXMLTest extends FATServletClient {
     public static final String ALL_BEANS_APP_NAME = "AllBeans";
 
     @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE11);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, true, EERepeatActions.EE10, EERepeatActions.EE11);
 
     @Server(SERVER_NAME)
     @TestServlets({

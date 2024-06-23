@@ -23,4 +23,3 @@ task addKafkaClientLibs (type: Copy) {
 
 zipAutoFVT.dependsOn addKafkaClientLibs
 addRequiredLibraries.dependsOn copyTestContainers
-addRequiredLibraries.dependsOn addJakartaTransformer

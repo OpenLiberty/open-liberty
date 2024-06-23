@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -32,9 +32,8 @@ tested.features: el-3.0, persistence-3.0, servlet-5.0, cdi-3.0, beanValidation-3
 javac.source: 11
 javac.target: 11
 
-# Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
+# Dependencies may be local bundles (e.g. io.openliberty.jakarta.servlet.6.0)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
-# TODO: io.openliberty.jakarta.servlet.5.0 needs to be updated to Servlet 6.0 when available
 -buildpath: \
     com.ibm.ws.componenttest.2.0;version=latest,\
     com.ibm.ws.jpa_testframework.jakarta;version=latest,\
@@ -42,7 +41,7 @@ javac.target: 11
     io.openliberty.jakarta.cdi.4.0;version=latest,\
     io.openliberty.jakarta.enterpriseBeans.4.0;version=latest,\
     io.openliberty.jakarta.jsonp.2.1;version=latest,\
-    io.openliberty.jakarta.servlet.5.0;version=latest,\
+    io.openliberty.jakarta.servlet.6.0;version=latest,\
     io.openliberty.jakarta.persistence.3.1;version=latest,\
     io.openliberty.jakarta.transaction.2.0;version=latest,\
     io.openliberty.jakarta.validation.3.0;version=latest,\

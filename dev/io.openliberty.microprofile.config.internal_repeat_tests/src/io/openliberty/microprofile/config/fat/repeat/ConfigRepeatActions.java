@@ -79,7 +79,21 @@ public class ConfigRepeatActions {
      * @return the RepeatTests rule
      */
     public static RepeatTests repeatDefault30Up(String server) {
-        return MicroProfileActions.repeat(server, TestMode.FULL,
+        return repeatDefault30Up(server, false);
+    }
+
+    /**
+     * Return a rule to repeat tests for MicroProfile 7.0 and 6.0.
+     * This translates to Config 3.1 and 3.0.
+     *
+     * Covers the latest version plus most of the other major versions, up to Config 3.0.
+     *
+     * @param server             the server name
+     * @param skipTransformation Skip transformation for actions
+     * @return the RepeatTests rule
+     */
+    public static RepeatTests repeatDefault30Up(String server, boolean skipTransformation) {
+        return MicroProfileActions.repeat(server, TestMode.FULL, skipTransformation,
                                           MicroProfileActions.MP70_EE10, //Config 3.1
                                           MicroProfileActions.MP70_EE11, //Config 3.1
                                           MicroProfileActions.MP60); //Config 3.0

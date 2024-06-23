@@ -44,7 +44,7 @@ public class HotAddMPConfig30 extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ConfigRepeatActions.repeatDefault30Up(FeatureReplacementAction.ALL_SERVERS);
+    public static RepeatTests r = ConfigRepeatActions.repeatDefault30Up(FeatureReplacementAction.ALL_SERVERS, true);
 
     @BeforeClass
     public static void setUp() throws Exception {
