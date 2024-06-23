@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -173,7 +173,7 @@ public class RLSUtils {
         return cell + "\\" + node + "\\" + server;
     }
 
-    public static boolean createDirectoryTree(String requiredDirectoryTree) {
+    public static boolean createDirectoryTree(Path requiredDirectoryTree) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "createDirectoryTree", requiredDirectoryTree);
 
@@ -191,7 +191,7 @@ public class RLSUtils {
         // Code added by PK35957 to handle UNC file specification
         // For example //server/share/directory path
         synchronized (_directoryCreationLock) {
-            File target = new File(requiredDirectoryTree);
+            File target = requiredDirectoryTree.toFile();
 
             // Only proceed if the directory does not exist.
             if (!target.exists()) {
@@ -408,13 +408,13 @@ public class RLSUtils {
     public static void archiveAndDeleteDirectoryTree(File directoryToBeDeleted) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "archiveAndDeleteDirectoryTree", directoryToBeDeleted.getAbsolutePath());
-        String trashDir = directoryToBeDeleted.getParent() + File.separator + ".trash";
+        Path trashDir = Paths.get(directoryToBeDeleted.getParent() + File.separator + ".trash");
         createDirectoryTree(trashDir);
         File to = new File(trashDir + File.separator + directoryToBeDeleted.getName());
 
         directoryToBeDeleted.renameTo(to);
 
-        File trashDirFile = new File(trashDir);
+        File trashDirFile = trashDir.toFile();
         for (File file : trashDirFile.listFiles()) {
             deleteDirectoryTreeTrash(file);
         }

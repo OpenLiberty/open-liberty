@@ -12,9 +12,10 @@
  *******************************************************************************/
 package com.ibm.tx.jta.impl;
 
-import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -304,15 +305,11 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         ((CustomLogProperties) partnerLogProps).setResourceFactory(nontranDSResourceFactory);
                     } else {
                         // Set up FileLogProperties
-                        String tranLogDirStem = tlc.expandedLogDirectory();
-                        tranLogDirStem = tranLogDirStem.trim();
-                        String tranLogDirToUse = tranLogDirStem + File.separator + TransactionImpl.TRANSACTION_LOG_NAME;
+                        String recLogDirStem = tlc.expandedLogDirectory().trim();
+                        Path tranLogDirToUse = Paths.get(recLogDirStem, TransactionImpl.TRANSACTION_LOG_NAME);
+                        transactionLogProps = new FileLogProperties(transactionLogRLI, TransactionImpl.TRANSACTION_LOG_NAME, tranLogDirToUse, tlc.logFileSize(), recLogDirStem);
 
-                        transactionLogProps = new FileLogProperties(transactionLogRLI, TransactionImpl.TRANSACTION_LOG_NAME, tranLogDirToUse, tlc.logFileSize(), tranLogDirStem);
-
-                        String partnerLogDirToUse = tlc.expandedLogDirectory();
-                        partnerLogDirToUse = partnerLogDirToUse.trim() + File.separator + TransactionImpl.PARTNER_LOG_NAME;
-
+                        Path partnerLogDirToUse = Paths.get(recLogDirStem, TransactionImpl.PARTNER_LOG_NAME);
                         partnerLogProps = new FileLogProperties(partnerLogRLI, TransactionImpl.PARTNER_LOG_NAME, partnerLogDirToUse, tlc.logFileSize());
                     }
 

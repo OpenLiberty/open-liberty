@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2023 IBM Corporation and others.
+ * Copyright (c) 2002, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,8 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -133,7 +135,7 @@ class LogFileHandle {
     /**
      * The directory in which the file managed by this instance of LogFileHandle resides.
      */
-    private final String _logDirectory;
+    private final Path _logDirectory;
 
     /**
      * The name of file managed by this instance of LogFileHandle.
@@ -198,7 +200,7 @@ class LogFileHandle {
      * @param logName        The name of the log that owns the file managed by this instance of LogFileHandle.
      * @param fileSize       The filesize (in kilobytes) of the file managed by this instance of LogFileHandle.
      */
-    protected LogFileHandle(String logDirectory, String fileName, String serverName, String serviceName, int serviceVersion, String logName, int fileSize, FailureScope fs) {
+    protected LogFileHandle(Path logDirectory, String fileName, String serverName, String serviceName, int serviceVersion, String logName, int fileSize, FailureScope fs) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "LogFileHandle", logDirectory, fileName, serverName, serviceName, serviceVersion, logName, fileSize, fs);
 
@@ -265,7 +267,8 @@ class LogFileHandle {
         // Open the file, creating it if it does not already exist.
         try {
             try {
-                final File pFile = new File(_logDirectory, _fileName);
+
+                final File pFile = Paths.get(_logDirectory.toString(), _fileName).toFile();
 
                 // Determine if the log file exists or is zero bytes long. In either of
                 // these cases, we consider it to be a cold start of the file.
@@ -534,7 +537,7 @@ class LogFileHandle {
 
         boolean fileAlreadyExists = true;
 
-        File file = new File(_logDirectory, _fileName);
+        File file = Paths.get(_logDirectory.toString(), _fileName).toFile();
         fileAlreadyExists = (file.exists() && (file.length() > 0));
 
         if (tc.isDebugEnabled()) {
