@@ -15,7 +15,7 @@ package io.openliberty.microprofile.rest.client40.internal;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
-import javax.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;

@@ -1,24 +1,6 @@
 package org.jboss.resteasy.microprofile.client;
 
-import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.rest.client.RestClientBuilder;
-import org.eclipse.microprofile.rest.client.ext.QueryParamStyle;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.jboss.logging.Logger;
 
-import javax.annotation.Priority;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.PassivationCapable;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.net.ssl.HostnameVerifier;
-import javax.ws.rs.Priorities;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,6 +17,7 @@ import java.security.AccessController;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.cert.CertificateException;
@@ -50,7 +33,26 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
-public class RestClientDelegateBean implements Bean<Object>, PassivationCapable {
+import javax.net.ssl.HostnameVerifier;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.InterceptionFactory;
+import jakarta.enterprise.inject.spi.PassivationCapable;
+import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.ws.rs.Priorities;
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.rest.client.RestClientBuilder;
+import org.eclipse.microprofile.rest.client.ext.QueryParamStyle;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.logging.Logger;
+public class RestClientDelegateBean<T> implements Bean<T>, PassivationCapable {
     private static final Logger LOGGER = Logger.getLogger(RestClientDelegateBean.class);
 
     public static final String REST_URL_FORMAT = "%s/mp-rest/url";
@@ -91,7 +93,7 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
 
     private static final String PROPERTY_PREFIX = "%s/property/";
 
-    private final Class<?> proxyType;
+    private final Class<T> proxyType;
 
     private final Class<? extends Annotation> scope;
 
@@ -103,7 +105,8 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
 
     private final Optional<String> configKey;
 
-    RestClientDelegateBean(final Class<?> proxyType, final BeanManager beanManager, final Optional<String> baseUri, final Optional<String> configKey) {
+    RestClientDelegateBean(final Class<T> proxyType, final BeanManager beanManager, final Optional<String> baseUri,
+            final Optional<String> configKey) {
         this.proxyType = proxyType;
         this.beanManager = beanManager;
         this.baseUri = baseUri;
@@ -128,13 +131,14 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
     }
 
     @Override
-    public boolean isNullable() {
-        return false;
+    public T create(CreationalContext<T> creationalContext) {
+        RestClientBuilder builder;
+        if (System.getSecurityManager() == null) {
+            builder = RestClientBuilder.newBuilder();
+        } else {
+            builder = AccessController.doPrivileged((PrivilegedAction<RestClientBuilder>) RestClientBuilder::newBuilder);
     }
 
-    @Override
-    public Object create(CreationalContext<Object> creationalContext) {
-        RestClientBuilder builder = RestClientBuilder.newBuilder();
 
         configureUri(builder);
 
@@ -153,7 +157,9 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
         // Liberty Change End
 
         getConfigProperties().forEach(builder::property);
-        return builder.build(proxyType);
+
+        InterceptionFactory<T> interceptionFactory = beanManager.createInterceptionFactory(creationalContext, proxyType);
+        return interceptionFactory.createInterceptedInstance(builder.build(proxyType));
     }
 
     private void configureSsl(RestClientBuilder builder) {
@@ -176,9 +182,11 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Could not find hostname verifier class" + verifier, e);
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException("Failed to instantiate hostname verifier class. Make sure it has a public, no-argument constructor", e);
+            throw new RuntimeException(
+                    "Failed to instantiate hostname verifier class. Make sure it has a public, no-argument constructor", e);
         } catch (ClassCastException e) {
-            throw new RuntimeException("The provided hostname verifier " + verifier + " is not an instance of HostnameVerifier", e);
+            throw new RuntimeException("The provided hostname verifier " + verifier + " is not an instance of HostnameVerifier",
+                    e);
         }
     }
 
@@ -188,12 +196,14 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
 
         try {
             KeyStore keyStore = KeyStore.getInstance(keyStoreType.orElse("JKS"));
-            String password = keyStorePassword.orElseThrow(() -> new IllegalArgumentException("No password provided for keystore"));
+            String password = keyStorePassword
+                    .orElseThrow(() -> new IllegalArgumentException("No password provided for keystore"));
 
             try (InputStream input = locateStream(keyStorePath)) {
                 keyStore.load(input, password.toCharArray());
             } catch (IOException | CertificateException | NoSuchAlgorithmException e) {
-                throw new IllegalArgumentException("Failed to initialize trust store from classpath resource " + keyStorePath, e);
+                throw new IllegalArgumentException("Failed to initialize trust store from classpath resource " + keyStorePath,
+                        e);
             }
 
             builder.keyStore(keyStore, password);
@@ -208,12 +218,14 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
 
         try {
             KeyStore trustStore = KeyStore.getInstance(maybeTrustStoreType.orElse("JKS"));
-            String password = maybeTrustStorePassword.orElseThrow(() -> new IllegalArgumentException("No password provided for truststore"));
+            String password = maybeTrustStorePassword
+                    .orElseThrow(() -> new IllegalArgumentException("No password provided for truststore"));
 
             try (InputStream input = locateStream(trustStorePath)) {
                 trustStore.load(input, password.toCharArray());
             } catch (IOException | CertificateException | NoSuchAlgorithmException e) {
-                throw new IllegalArgumentException("Failed to initialize trust store from classpath resource " + trustStorePath, e);
+                throw new IllegalArgumentException("Failed to initialize trust store from classpath resource " + trustStorePath,
+                        e);
             }
 
             builder.trustStore(trustStore);
@@ -230,7 +242,8 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
                 resultStream = getClass().getResourceAsStream(path);
             }
             if (resultStream == null) {
-                throw new IllegalArgumentException("Classpath resource " + path + " not found for MicroProfile Rest Client SSL configuration");
+                throw new IllegalArgumentException(
+                        "Classpath resource " + path + " not found for MicroProfile Rest Client SSL configuration");
             }
             return resultStream;
         } else {
@@ -239,7 +252,8 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
             }
             File certificateFile = new File(path);
             if (!certificateFile.isFile()) {
-                throw new IllegalArgumentException("Certificate file: " + path + " not found for MicroProfile Rest Client SSL configuration");
+                throw new IllegalArgumentException(
+                        "Certificate file: " + path + " not found for MicroProfile Rest Client SSL configuration");
             }
             return new FileInputStream(certificateFile);
         }
@@ -251,6 +265,7 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
     }
 
     private void registerProviders(RestClientBuilder builder, String providersAsString) {
+	//Liberty Change Start
         Stream.of(providersAsString.split(","))
                 .map(String::trim)
                 .map(providerName -> {
@@ -258,7 +273,8 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
                     int priority = getConfiguredProviderPriority(providerClass);
                     return new AbstractMap.SimpleEntry<>(providerClass, priority);
                 })
-                .forEach(entry -> builder.register(entry.getKey(), entry.getValue()));
+                .forEach(entry -> builder.register(entry.getKey(), entry.getValue())); 
+	//Liberty Change End			 
     }
 
     private Class<?> providerClassForName(String name) {
@@ -310,7 +326,8 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
 
     private <T> Optional<T> getOptionalProperty(String propertyFormat, Class<T> type) {
         Optional<T> value = config.getOptionalValue(String.format(propertyFormat, proxyType.getName()), type);
-        if (value.isPresent() || !configKey.isPresent()) return value;
+        if (value.isPresent() || !configKey.isPresent())
+            return value;
         return config.getOptionalValue(String.format(propertyFormat, configKey.get()), type);
     }
 
@@ -331,16 +348,17 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
     }
 
     @Override
-    public void destroy(Object instance, CreationalContext<Object> creationalContext) {
-        // Liberty Change Start
-//        if (instance instanceof AutoCloseable) {
-//            try {
-//                ((AutoCloseable) instance).close();
-//            } catch (Exception e) {
-//                LOGGER.debugf(e, "Failed to close client %s", instance);
-//            }
-//        }
-        // Liberty Change End
+    public void destroy(T instance, CreationalContext<T> creationalContext) {
+        if (instance instanceof AutoCloseable) {
+            try {
+                ((AutoCloseable) instance).close();
+            } catch (Exception e) {
+                LOGGER.debugf(e, "Failed to close client %s", instance);
+            }
+        }
+        // release all possibly created dependent objects of this creational context
+        // this will most likely be a no-op
+        creationalContext.release();
     }
 
     @Override
@@ -351,10 +369,9 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
     @Override
     public Set<Annotation> getQualifiers() {
         Set<Annotation> qualifiers = new HashSet<Annotation>();
-        qualifiers.add(new AnnotationLiteral<Default>() {
-        });
         qualifiers.add(new AnnotationLiteral<Any>() {
         });
+        qualifiers.add(Default.Literal.INSTANCE);
         qualifiers.add(RestClient.LITERAL);
         return qualifiers;
     }
