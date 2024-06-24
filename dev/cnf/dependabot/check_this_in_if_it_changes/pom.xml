@@ -3742,6 +3742,16 @@
       <version>5.10.6.Final</version>
     </dependency>
     <dependency>
+      <groupId>org.jboss.resteasy.microprofile</groupId>
+      <artifactId>microprofile-rest-client-base</artifactId>
+      <version>3.0.0.Alpha1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy.microprofile</groupId>
+      <artifactId>microprofile-rest-client</artifactId>
+      <version>3.0.0.Alpha1</version>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-cdi</artifactId>
       <version>4.7.2.Final</version>
