@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.boot.internal.KernelUtils;
+import com.ibm.ws.kernel.feature.Visibility;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureRepository;
 import com.ibm.ws.kernel.feature.internal.util.ImageReader;
 import com.ibm.ws.kernel.feature.internal.util.Images;
@@ -33,6 +34,8 @@ import componenttest.common.apiservices.Bootstrap;
 import junit.framework.Assert;
 
 public class RepositoryUtil {
+
+    private static final String CLASS_NAME = "RepositoryUtil ";
 
     public static final String INSTALL_PATH_PROPERTY_NAME = "libertyInstallPath";
 
@@ -244,6 +247,7 @@ public class RepositoryUtil {
     //
 
     public static FeatureResolver.Repository repository;
+    public static Map<String, ProvisioningFeatureDefinition> versionlessFeatureDefs;
 
     public static FeatureResolver.Repository getRepository() {
         return repository;
@@ -253,6 +257,174 @@ public class RepositoryUtil {
         return getRepository().getFeature(featureName);
     }
 
+    /**
+     * If not already done, it first saves a map of versionless feature names to feature definitions.
+     * Then it looks up the feature def using the given feature name.
+     *
+     * @param featureName Name of a versionless feature. This is NOT simply a versioned feature name
+     *            minus the version. The "package" name should be "io.openliberty.versionless."
+     *            <br>Example: io.openliberty.versionless.appClientSupport
+     * @return feature definition of the versionless feature associated with the input featureName
+     */
+    public static ProvisioningFeatureDefinition getVersionlessFeatureDef(String featureName) {
+        final String METHOD_NAME = "getVersionlessFeatureDef ";
+        if (versionlessFeatureDefs == null) {
+            intializeVersionlessFeatureDefsMap();
+        }
+
+        return versionlessFeatureDefs.get(asVersionlessFeatureName(featureName));
+    }
+
+    /**
+     * Initialize the map of versionless feature names to their feature definitions
+     */
+    public static void intializeVersionlessFeatureDefsMap() {
+
+        Map<String, ProvisioningFeatureDefinition> featureDefs = new HashMap<>();
+        for (ProvisioningFeatureDefinition featureDef : getRepository().getFeatures()) {
+            if (featureDef.isVersionless()) {
+                featureDefs.put(asVersionlessFeatureName(featureDef.getSymbolicName()), featureDef);
+            }
+        }
+        versionlessFeatureDefs = featureDefs;
+    }
+
+    /**
+     * Debug method for displaying the names of versionless features from the repository
+     */
+    public static void displayVersionlessFeatures() {
+        if (versionlessFeatureDefs == null) {
+            intializeVersionlessFeatureDefsMap();
+        }
+        System.out.println("\nDisplaying versionless feature names:\n[");
+        for (String fn : versionlessFeatureDefs.keySet()) {
+            System.out.println(fn);
+        }
+        System.out.println("]");
+    }
+
+    /**
+     * Returns a versionless feature name for a given versioned feature name.
+     * <br>Example:
+     * <ul>
+     * <li>input: com.ibm.websphere.appserver.appClientSupport-1.0
+     * <li>returns: io.openliberty.versionless.appClientSupport
+     * </ul>
+     *
+     * @param featureName the symbolic feature name
+     */
+    public static String asVersionlessFeatureName(String featureName) {
+
+        return "io.openliberty.versionless." + asShortName(featureName);
+    }
+
+    /**
+     * Returns the internal versionless "linking" feature name for a given versioned feature name.
+     * <br>Example:
+     * <ul>
+     * <li>input: com.ibm.websphere.appserver.appClientSupport-1.0
+     * <li>returns: io.openliberty.internal.versionless.appClientSupport-1.0
+     * </ul>
+     *
+     * @param featureName the symbolic feature name
+     */
+    public static String asInternalVersionlessFeatureName(String featureName) {
+
+        return "io.openliberty.internal.versionless." + asShortNameWithVersion(featureName);
+    }
+
+    /**
+     * Returns just the short name without the version for a given versioned feature name.
+     * <br>Example:
+     * <ul>
+     * <li>input: com.ibm.websphere.appserver.appClientSupport-1.0
+     * <li>returns: appClientSupport
+     * </ul>
+     *
+     * @param featureName the symbolic feature name
+     */
+    public static String asShortName(String featureName) {
+        String nameWithoutVersion = removeVersion(featureName);
+
+        int lastPeriodIndex = nameWithoutVersion.lastIndexOf(".");
+        if (lastPeriodIndex == -1) {
+            return nameWithoutVersion;
+        }
+
+        return nameWithoutVersion.substring(lastPeriodIndex + 1);
+    }
+
+    /**
+     * Returns the short name including the version for a given versioned feature name.
+     * <br>Example:
+     * <ul>
+     * <li>input: com.ibm.websphere.appserver.appClientSupport-1.0
+     * <li>returns: appClientSupport-1.0
+     * </ul>
+     *
+     * @param featureName the symbolic feature name
+     */
+    public static String asShortNameWithVersion(String featureName) {
+        String shortName = asShortName(featureName);
+        String version = asVersionOnly(featureName);
+
+        return shortName + "-" + version;
+    }
+
+    /**
+     * Returns just the version for a given versioned feature name
+     * <br>Example:
+     * <ul>
+     * <li>input: com.ibm.websphere.appserver.appClientSupport-1.0
+     * <li>returns: 1.0
+     * </ul>
+     *
+     * @param featureName the symbolic feature name
+     */
+    public static String asVersionOnly(String featureName) {
+        int lastDashIndex;
+        if ((lastDashIndex = featureName.lastIndexOf('-')) >= 0) {
+            return featureName.substring(lastDashIndex + 1);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Removes the version from the feature name. The result is not to be confused with
+     * a versionless feature name which most likely has a different package name than the parameter
+     * passed in.
+     * <br>Example:
+     * <ul>
+     * <li>input: com.ibm.websphere.appserver.appClientSupport-1.0
+     * <li>returns: com.ibm.websphere.appserver.appClientSupport
+     * </ul>
+     *
+     * @param featureName symbolic name of feature
+     */
+    public static String removeVersion(String featureName) {
+        int lastDashIndex;
+        if ((lastDashIndex = featureName.lastIndexOf('-')) >= 0) {
+            return featureName.substring(0, lastDashIndex);
+        } else {
+            return featureName;
+        }
+    }
+
+    /**
+     *
+     * @param symName symbolic feature name
+     * @return the platform name of the input feature
+     */
+    public static String getPlatformOf(String symName) {
+        ProvisioningFeatureDefinition featureDef = getFeatureDef(symName);
+        if (featureDef.getVisibility() != Visibility.PUBLIC) {
+            return null;
+        }
+
+        return featureDef.getPlatformName();
+    }
+	
     public static List<ProvisioningFeatureDefinition> getFeatureDefs() {
         return getRepository().getFeatures();
     }
