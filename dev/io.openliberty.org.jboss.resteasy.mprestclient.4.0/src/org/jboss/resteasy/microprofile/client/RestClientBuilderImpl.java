@@ -18,6 +18,53 @@
  */
 package org.jboss.resteasy.microprofile.client;
 
+import static org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder.PROPERTY_PROXY_HOST;
+import static org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder.PROPERTY_PROXY_PORT;
+import static org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder.PROPERTY_PROXY_SCHEME;
+import java.io.Closeable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.net.InetSocketAddress;
+import java.net.ProxySelector;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.security.AccessController;
+import java.security.KeyStore;
+import java.security.PrivilegedAction;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.ws.rs.BeanParam;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Priorities;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.ext.ParamConverterProvider;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
@@ -28,66 +75,26 @@ import org.eclipse.microprofile.rest.client.ext.QueryParamStyle;
 import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.jboss.logging.Logger;
-import org.jboss.resteasy.cdi.CdiInjectorFactory;
+import org.jboss.resteasy.client.jaxrs.ClientHttpEngine;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.engines.URLConnectionClientEngineBuilder;
 import org.jboss.resteasy.client.jaxrs.internal.LocalResteasyProviderFactory;
+import org.jboss.resteasy.concurrent.ContextualExecutorService;
+import org.jboss.resteasy.concurrent.ContextualExecutors;
+import org.jboss.resteasy.core.Headers;
 import org.jboss.resteasy.microprofile.client.async.AsyncInterceptorRxInvokerProvider;
-import org.jboss.resteasy.microprofile.client.header.ClientHeaderProviders;
+import org.jboss.resteasy.microprofile.client.async.AsyncInvocationInterceptorThreadContext;
 import org.jboss.resteasy.microprofile.client.header.ClientHeadersRequestFilter;
 import org.jboss.resteasy.microprofile.client.impl.MpClient;
 import org.jboss.resteasy.microprofile.client.impl.MpClientBuilderImpl;
-import org.jboss.resteasy.specimpl.ResteasyUriBuilderImpl;
 import org.jboss.resteasy.microprofile.client.publisher.MpPublisherMessageBodyReader;
+import org.jboss.resteasy.specimpl.ResteasyUriBuilderImpl;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.ResteasyUriBuilder;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.CDI;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.ws.rs.BeanParam;
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Priorities;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.ParamConverterProvider;
 
-import java.io.Closeable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.Proxy;
-import java.net.InetSocketAddress;
-import java.net.ProxySelector;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.security.AccessController;
-import java.security.KeyStore;
-import java.security.PrivilegedAction;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder.PROPERTY_PROXY_HOST;
-import static org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder.PROPERTY_PROXY_PORT;
-import static org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder.PROPERTY_PROXY_SCHEME;
 
 /**
  * @author Bill Burke (initial commit according to GitHub history)
@@ -99,14 +106,19 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     private static final String DEFAULT_MAPPER_PROP = "microprofile.rest.client.disable.default.mapper";
     private static final Logger LOGGER = Logger.getLogger(RestClientBuilderImpl.class);
     private static final DefaultMediaTypeFilter DEFAULT_MEDIA_TYPE_FILTER = new DefaultMediaTypeFilter();
+    private static final Collection<Method> IGNORED_METHODS = new ArrayList<>();
     public static final MethodInjectionFilter METHOD_INJECTION_FILTER = new MethodInjectionFilter();
-    public static final ClientHeadersRequestFilter HEADERS_REQUEST_FILTER = new ClientHeadersRequestFilter();
 
     static ResteasyProviderFactory PROVIDER_FACTORY;
 
+    static {
+        Collections.addAll(IGNORED_METHODS, Closeable.class.getMethods());
+        Collections.addAll(IGNORED_METHODS, AutoCloseable.class.getMethods());
+    }
     public static void setProviderFactory(ResteasyProviderFactory providerFactory) {
         PROVIDER_FACTORY = providerFactory;
     }
+    private final MultivaluedMap<String, Object> headers;
 
     public RestClientBuilderImpl() {
         builderDelegate = new MpClientBuilderImpl();
@@ -118,9 +130,10 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             }
             builderDelegate.providerFactory(localProviderFactory);
         }
-        if (getBeanManager() != null) {
+        this.beanManager = getBeanManager();
+        if (beanManager != null) {
             builderDelegate.getProviderFactory()
-                    .setInjectorFactory(new CdiInjectorFactory((jakarta.enterprise.inject.spi.BeanManager) getBeanManager())); // Liberty change for transformation
+                    .setInjectorFactory(new CdiInjectorFactory(beanManager));
         }
         configurationWrapper = new ConfigurationWrapper(builderDelegate.getConfiguration());
 
@@ -130,6 +143,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         } catch (Throwable e) {
 
         }
+        headers = new Headers<>();
     }
 
     public Configuration getConfigurationWrapper() {
@@ -148,6 +162,12 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     @Override
     public RestClientBuilder queryParamStyle(QueryParamStyle queryParamStyle) {
         this.queryParamStyle = queryParamStyle;
+        return this;
+    }
+    @Override
+    public RestClientBuilder header(final String name, final Object value) {
+        headers.add(Objects.requireNonNull(name, "A header name is required."),
+                Objects.requireNonNull(value, "Value for header is required."));
         return this;
     }
 
@@ -225,13 +245,12 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         if (executor == null) {
             throw new IllegalArgumentException("ExecutorService must not be null");
         }
-        executorService = executor;
+        executorService = ContextualExecutors.wrap(executor);
         return this;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T build(Class<T> aClass) throws IllegalStateException, RestClientDefinitionException {
+    public <T> T build(Class<T> aClass, ClientHttpEngine httpEngine)
+            throws IllegalStateException, RestClientDefinitionException {
 
         RestClientListeners.get().forEach(listener -> listener.onNewClient(aClass, this));
 
@@ -264,11 +283,10 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         ResteasyClient client;
 
         ResteasyClientBuilder resteasyClientBuilder;
-        List<String> noProxyHosts = Arrays.asList(
-                getSystemProperty("http.nonProxyHosts", "localhost|127.*|[::1]").split("\\|"));
         if (this.proxyHost != null) {
             resteasyClientBuilder = builderDelegate.defaultProxy(proxyHost, this.proxyPort);
         } else {
+            List<String> noProxyHosts = getProxyHostsAsRegex();
             String envProxyHost = getSystemProperty("http.proxyHost", null);
             boolean isUriMatched = false;
             if (envProxyHost != null && !noProxyHosts.isEmpty()) {
@@ -312,12 +330,12 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         if (this.executorService != null) {
             resteasyClientBuilder.executorService(this.executorService);
         } else {
-            this.executorService = Executors.newCachedThreadPool();
-            resteasyClientBuilder.executorService(executorService, true);
+            this.executorService = ContextualExecutors.threadPool();
+            resteasyClientBuilder.executorService(executorService, !executorService.isManaged());
         }
         resteasyClientBuilder.register(DEFAULT_MEDIA_TYPE_FILTER);
         resteasyClientBuilder.register(METHOD_INJECTION_FILTER);
-        resteasyClientBuilder.register(HEADERS_REQUEST_FILTER);
+        resteasyClientBuilder.register(new ClientHeadersRequestFilter(headers));
         register(new MpPublisherMessageBodyReader(executorService));
         resteasyClientBuilder.sslContext(sslContext);
         resteasyClientBuilder.trustStore(trustStore);
@@ -336,11 +354,28 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             resteasyClientBuilder.connectTimeout(connectTimeout, connectTimeoutUnit);
         }
 
-        if (useURLConnection()) {
-            resteasyClientBuilder.httpEngine(new URLConnectionClientEngineBuilder().resteasyClientBuilder(resteasyClientBuilder).build());
+        if (httpEngine != null) {
+            resteasyClientBuilder.httpEngine(httpEngine);
+        } else {
+            boolean registerEngine = false;
+            for (Object p : getBuilderDelegate().getProviderFactory().getProviderInstances()) {
+                if (p instanceof ClientHttpEngine) {
+                    resteasyClientBuilder.httpEngine((ClientHttpEngine) p);
+                    registerEngine = true;
+                    break;
+                }
+            }
+            if (!registerEngine && useURLConnection()) {
+                resteasyClientBuilder
+                        .httpEngine(new URLConnectionClientEngineBuilder().resteasyClientBuilder(resteasyClientBuilder)
+                                .build());
             resteasyClientBuilder.sslContext(null);
             resteasyClientBuilder.trustStore(null);
             resteasyClientBuilder.keyStore(null, "");
+            }
+        }
+        if (!invocationInterceptorFactories.isEmpty()) {
+            resteasyClientBuilder.register(new AsyncInvocationInterceptorThreadContext(invocationInterceptorFactories));
         }
         client = resteasyClientBuilder
                 .build();
@@ -352,16 +387,25 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                 .defaultConsumes(MediaType.APPLICATION_JSON)
                 .defaultProduces(MediaType.APPLICATION_JSON).build();
 
-        Class<?>[] interfaces = new Class<?>[3];
-        interfaces[0] = aClass;
-        interfaces[1] = RestClientProxy.class;
-        interfaces[2] = Closeable.class;
+        return aClass.cast(
+                ProxyInvocationHandler.createProxy(aClass, actualClient, getLocalProviderInstances(), client,
+                        beanManager));
+    }
 
-        final BeanManager beanManager = getBeanManager();
-        T proxy = (T) Proxy.newProxyInstance(classLoader, interfaces,
-                new ProxyInvocationHandler(aClass, actualClient, getLocalProviderInstances(), client, beanManager));
-        ClientHeaderProviders.registerForClass(aClass, proxy, beanManager);
-        return proxy;
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T build(Class<T> aClass) throws IllegalStateException, RestClientDefinitionException {
+        return build(aClass, null);
+    }
+    private List<String> getProxyHostsAsRegex() {
+        String noProxyHostsSysProps = getSystemProperty("http.nonProxyHosts", null);
+        if (noProxyHostsSysProps == null) {
+            noProxyHostsSysProps = "localhost|127.*|[::1]";
+        } else {
+            String src2 = noProxyHostsSysProps.replace(".", "\\.");
+            noProxyHostsSysProps = src2.replace("*", "[A-Za-z0-9-]*");
+        }
+        return Arrays.asList(noProxyHostsSysProps.split("\\|"));
     }
 
     /**
@@ -371,30 +415,30 @@ public class RestClientBuilderImpl implements RestClientBuilder {
      */
     private boolean useURLConnection() {
         if (useURLConnection == null) {
-            String defaultToURLConnection = getSystemProperty("org.jboss.resteasy.microprofile.defaultToURLConnectionHttpClient", "false");
-            useURLConnection = defaultToURLConnection.toLowerCase().equals("true");
+            String defaultToURLConnection = getSystemProperty(
+                    "org.jboss.resteasy.microprofile.defaultToURLConnectionHttpClient", "false");
+            useURLConnection = defaultToURLConnection.equalsIgnoreCase("true");
         }
         return useURLConnection;
     }
 
     private Optional<InetSocketAddress> selectHttpProxy() {
-    // Liberty change start:
+        final ProxySelector selector;
         if (System.getSecurityManager() == null) {
-            return selectHttpProxyActual();
-        }
-        return AccessController.doPrivileged((PrivilegedAction<Optional<InetSocketAddress>>) this::selectHttpProxyActual);
+            selector = ProxySelector.getDefault();
+        } else {
+            selector = AccessController.doPrivileged((PrivilegedAction<ProxySelector>) ProxySelector::getDefault);
     }
 
-    private Optional<InetSocketAddress> selectHttpProxyActual() {
     // Liberty change end
-        return ProxySelector.getDefault().select(baseURI).stream()
+        return selector.select(baseURI).stream()
                 .filter(proxy -> proxy.type() == java.net.Proxy.Type.HTTP)
                 .map(java.net.Proxy::address)
                 .map(InetSocketAddress.class::cast)
                 .findFirst();
     }
 
-    private void checkQueryParamStyleProperty(Class aClass) {
+    private void checkQueryParamStyleProperty(Class<?> aClass) {
         // User's programmatic setting takes precedence over
         // microprofile-config.properties.
         if (queryParamStyle == null) {
@@ -407,8 +451,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                             prop.get().trim().toUpperCase()));
 
                 } else {
-                    RegisterRestClient registerRestClient =
-                            (RegisterRestClient)aClass.getAnnotation(RegisterRestClient.class);
+                    RegisterRestClient registerRestClient = (RegisterRestClient) aClass.getAnnotation(RegisterRestClient.class);
                     if (registerRestClient !=null &&
                             registerRestClient.configKey() != null &&
                             !registerRestClient.configKey().isEmpty()) {
@@ -429,7 +472,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         }
     }
 
-    private void checkFollowRedirectProperty (Class aClass) {
+    private void checkFollowRedirectProperty(Class<?> aClass) {
         // User's programmatic setting takes precedence over
         // microprofile-config.properties.
         if (!followRedirect) {
@@ -442,8 +485,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                         followRedirects(prop.get());
                     }
                 } else {
-                    RegisterRestClient registerRestClient =
-                            (RegisterRestClient)aClass.getAnnotation(RegisterRestClient.class);
+                    RegisterRestClient registerRestClient = aClass.getAnnotation(RegisterRestClient.class);
                     if (registerRestClient !=null &&
                             registerRestClient.configKey() != null &&
                             !registerRestClient.configKey().isEmpty()) {
@@ -464,7 +506,8 @@ public class RestClientBuilderImpl implements RestClientBuilder {
 
     private boolean isMapperDisabled() {
         boolean disabled = false;
-        Optional<Boolean> defaultMapperProp = config == null ? Optional.empty() : config.getOptionalValue(DEFAULT_MAPPER_PROP, Boolean.class);
+        Optional<Boolean> defaultMapperProp = config == null ? Optional.empty()
+                : config.getOptionalValue(DEFAULT_MAPPER_PROP, Boolean.class);
 
         // disabled through config api
         if (defaultMapperProp.isPresent() && defaultMapperProp.get().equals(Boolean.TRUE)) {
@@ -482,7 +525,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             }
         }
         if (disabled) {
-            LOGGER.warnf("The default ResponseExceptionMapper has been disabled");
+            LOGGER.debug("The default ResponseExceptionMapper has been disabled");
         }
         return disabled;
     }
@@ -494,7 +537,8 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             return ((Field)element).getName();
         } else if (element instanceof Method) {
             Method m = (Method)element;
-            if (!m.getName().startsWith("get")) return null;
+            if (!m.getName().startsWith("get"))
+                return null;
             return Character.toLowerCase(m.getName().charAt(3)) + m.getName().substring(4);
         }
         return null;
@@ -505,8 +549,10 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             PathParam pp = element.getAnnotation(PathParam.class);
             return pp.value();
         } else if (element.isAnnotationPresent(org.jboss.resteasy.annotations.jaxrs.PathParam.class)) {
-            org.jboss.resteasy.annotations.jaxrs.PathParam pp = element.getAnnotation(org.jboss.resteasy.annotations.jaxrs.PathParam.class);
-            if (pp.value().length() > 0) return pp.value();
+            org.jboss.resteasy.annotations.jaxrs.PathParam pp = element
+                    .getAnnotation(org.jboss.resteasy.annotations.jaxrs.PathParam.class);
+            if (pp.value().length() > 0)
+                return pp.value();
             return getReflectName(element);
         }
         return null;
@@ -531,7 +577,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
 
     private <T> void verifyInterface(Class<T> typeDef) {
 
-        Method[] methods = typeDef.getMethods();
+        final Method[] methods = resolveMethods(typeDef);
 
         // multiple verbs
         for (Method method : methods) {
@@ -541,7 +587,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                 if (!hasHttpMethod && isHttpMethod) {
                     hasHttpMethod = true;
                 } else if (hasHttpMethod && isHttpMethod) {
-                    throw new RestClientDefinitionException("Ambiguous @Httpmethod defintion on type " + typeDef);
+                    throw new RestClientDefinitionException("Ambiguous @HttpMethod definition on type " + typeDef);
                 }
             }
         }
@@ -554,7 +600,8 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             Path methodPathAnno = method.getAnnotation(Path.class);
             if (methodPathAnno != null) {
                 template = classPathAnno == null ? (ResteasyUriBuilder) new ResteasyUriBuilderImpl().uri(methodPathAnno.value())
-                        : (ResteasyUriBuilder) new ResteasyUriBuilderImpl().uri(classPathAnno.value() + "/" + methodPathAnno.value());
+                        : (ResteasyUriBuilder) new ResteasyUriBuilderImpl()
+                                .uri(classPathAnno.value() + "/" + methodPathAnno.value());
             } else if (classPathAnno != null) {
                 template = (ResteasyUriBuilder) new ResteasyUriBuilderImpl().uri(classPathAnno.value());
             } else {
@@ -575,8 +622,10 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                 if (pathParam != null) {
                     paramMap.put(pathParam.value(), "foobar");
                 } else if (p.isAnnotationPresent(org.jboss.resteasy.annotations.jaxrs.PathParam.class)){
-                    org.jboss.resteasy.annotations.jaxrs.PathParam rePathParam = p.getAnnotation(org.jboss.resteasy.annotations.jaxrs.PathParam.class);
-                    String name = rePathParam.value() == null || rePathParam.value().length() == 0 ? p.getName() : rePathParam.value();
+                    org.jboss.resteasy.annotations.jaxrs.PathParam rePathParam = p
+                            .getAnnotation(org.jboss.resteasy.annotations.jaxrs.PathParam.class);
+                    String name = rePathParam.value() == null || rePathParam.value()
+                            .length() == 0 ? p.getName() : rePathParam.value();
                     paramMap.put(name, "foobar");
                 } else if (p.isAnnotationPresent(BeanParam.class)) {
                     verifyBeanPathParam(p.getType(), paramMap);
@@ -584,13 +633,15 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             }
 
             if (allVariables.size() != paramMap.size()) {
-                throw new RestClientDefinitionException("Parameters and variables don't match on " + typeDef + "::" + method.getName());
+                throw new RestClientDefinitionException(
+                        "Parameters and variables don't match on " + typeDef + "::" + method.getName());
             }
 
             try {
                 template.resolveTemplates(paramMap, false).build();
             } catch (IllegalArgumentException ex) {
-                throw new RestClientDefinitionException("Parameter names don't match variable names on " + typeDef + "::" + method.getName(), ex);
+                throw new RestClientDefinitionException(
+                        "Parameter names don't match variable names on " + typeDef + "::" + method.getName(), ex);
             }
 
         }
@@ -607,18 +658,20 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             // Makes it possible to configure some of the ResteasyClientBuilder delegate properties
             String builderMethodName = name.substring(RESTEASY_PROPERTY_PREFIX.length());
             Method builderMethod = Arrays.stream(ResteasyClientBuilder.class.getMethods())
-                    .filter(m -> builderMethodName.equals(m.getName()) && m.getParameterTypes().length >= 1)
+                    .filter(m -> builderMethodName.equals(m.getName()) && m.getParameterCount() >= 1)
                     .findFirst()
                     .orElse(null);
             if (builderMethod == null) {
                 throw new IllegalArgumentException("ResteasyClientBuilder setter method not found: " + builderMethodName);
             }
             Object[] arguments;
-            if (builderMethod.getParameterTypes().length > 1) {
+            if (builderMethod.getParameterCount() > 1) {
                 if (value instanceof List) {
                     arguments = ((List<?>) value).toArray();
                 } else {
-                    throw new IllegalArgumentException("Value must be an instance of List<> for ResteasyClientBuilder setter method: " + builderMethodName);
+                    throw new IllegalArgumentException(
+                            "Value must be an instance of List<> for ResteasyClientBuilder setter method: "
+                                    + builderMethodName);
                 }
             } else {
                 arguments = new Object[] { value };
@@ -673,7 +726,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         } else if (o instanceof ParamConverterProvider) {
             register(o, Priorities.USER);
         } else if (o instanceof AsyncInvocationInterceptorFactory) {
-            builderDelegate.asyncInterceptorFactories.add((AsyncInvocationInterceptorFactory) o);
+            invocationInterceptorFactories.add((AsyncInvocationInterceptorFactory) o);
         } else {
             builderDelegate.register(o);
         }
@@ -705,7 +758,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             builderDelegate.register(converter, i);
 
         } else if (o instanceof AsyncInvocationInterceptorFactory) {
-            builderDelegate.asyncInterceptorFactories.add((AsyncInvocationInterceptorFactory) o);
+            invocationInterceptorFactories.add((AsyncInvocationInterceptorFactory) o);
         } else {
             builderDelegate.register(o, i);
         }
@@ -771,8 +824,8 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         try {
             CDI<Object> current = CDI.current();
             return current != null ? current.getBeanManager() : null;
-        } catch (Throwable t) { // Liberty change - catching all throwables @author Andy McCright
-            LOGGER.warnf("CDI container is not available");
+        } catch (Throwable e) { // Liberty change - catching all throwables @author Andy McCright
+            LOGGER.debug("CDI container is not available", e);
             return null;
         }
     }
@@ -783,12 +836,19 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         return AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty(key, def));
     }
 
-    // Liberty change start:
-    private ClassLoader getClassLoader(Class<?> clazz) {
-        if (System.getSecurityManager() == null) {
-            return clazz.getClassLoader();
+    private static Method[] resolveMethods(final Class<?> type) {
+        if (AutoCloseable.class.isAssignableFrom(type)) {
+            return Stream.of(type.getMethods())
+                    .filter(method -> !IGNORED_METHODS.contains(method))
+                    .toArray(Method[]::new);
         }
-        return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) clazz::getClassLoader);
+        return type.getMethods();
+    }
+    private static ClassLoader getClassLoader(final Class<?> type) {
+        if (System.getSecurityManager() == null) {
+            return type.getClassLoader();
+        }
+        return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) type::getClassLoader);
     }
     //Liberty change end
     private final MpClientBuilderImpl builderDelegate;
@@ -797,7 +857,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
 
     private Config config;
 
-    private ExecutorService executorService;
+    private ContextualExecutorService executorService;
 
     private URI baseURI;
 
@@ -819,5 +879,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     private boolean followRedirect;
     private QueryParamStyle queryParamStyle = null;
 
-    private Set<Object> localProviderInstances = new HashSet<>();
+    private final Set<Object> localProviderInstances = new HashSet<>();
+    private final Collection<AsyncInvocationInterceptorFactory> invocationInterceptorFactories = new ArrayList<>();
+    private final BeanManager beanManager;
 }
