@@ -164,8 +164,6 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     private List<SubsystemFeatureDefinitionImpl> autoFeatures;
     private Map<String, SubsystemFeatureDefinitionImpl> compatibilityFeatures;
 
-    private Map<String, SubsystemFeatureDefinitionImpl> compatibilityFeatures;
-
     /**
      * Test initializer. Create a feature repository with
      * no cache resource and no bundle context.
@@ -234,7 +232,6 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         //       be at one valid installed feature.
         boolean firstInit = installedFeatures.isEmpty();
 
-<<<<<<< HEAD
         autoFeatures = new ArrayList<>();
         knownGoodFeatureFiles = new HashMap<>();
         knownBadFeatureFiles = new HashMap<>();
@@ -244,12 +241,6 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         // The installed features, the installed features
         // associated data, and the resolved features are
         // populated.
-=======
-        autoFeatures = new ArrayList<SubsystemFeatureDefinitionImpl>();
-        knownGoodFeatureFiles = new HashMap<File, SubsystemFeatureDefinitionImpl>();
-        knownBadFeatureFiles = new HashMap<File, BadFeature>();
-        compatibilityFeatures = new HashMap<String, SubsystemFeatureDefinitionImpl>();
->>>>>>> 122f6c1b08 (add api changes)
 
         readCache(firstInit);
         readFeatureManifests();
@@ -863,8 +854,8 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             alternateFeatureNameToPublicName.put(s, attr.featureName);
         }
 
-        if(def.getVisibility() == Visibility.PRIVATE && def.getPlatforms() != null && def.getPlatforms().size() > 0){
-            compatibilityFeatures.put(def.getPlatforms().get(0).toLowerCase(), def);
+        if(def.getVisibility() == Visibility.PRIVATE && def.hasWlpPlatform()){
+            compatibilityFeatures.put(def.getPlatformName().toLowerCase(), def);
         }
 
         // If this is an auto-feature, add it to that collection

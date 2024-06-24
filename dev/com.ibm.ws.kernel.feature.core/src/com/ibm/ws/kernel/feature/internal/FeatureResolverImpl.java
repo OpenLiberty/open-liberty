@@ -39,7 +39,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ProcessType;
 import com.ibm.ws.kernel.feature.Visibility;
-import com.ibm.ws.kernel.feature.internal.subsystem.SubsystemFeatureDefinitionImpl;
 import com.ibm.ws.kernel.feature.internal.util.VerifyEnv;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
@@ -225,6 +224,8 @@ public class FeatureResolverImpl implements FeatureResolver {
 
     private static boolean hasVersionlessFeatures = false;
 
+    private static HashMap<String, ProvisioningFeatureDefinition> allCompatibilityFeatures = new HashMap<>();
+
     /**
      * Override the environment defined preferred platform value.
      *
@@ -263,7 +264,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             //needs check for duplicate platforms with different versions, ex. can't have javaee7.0 and javaee8.0
             plat = plat.trim();
 
-            SubsystemFeatureDefinitionImpl platformFeature = repo.getCompatibilityFeatures().get(plat);
+            ProvisioningFeatureDefinition platformFeature = allCompatibilityFeatures.get(plat);
 
             if(platformFeature == null){
                 trace("Platform element [ " + plat + " ] is not a known platform.");
@@ -346,7 +347,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         for (String plat : preferredPlatforms) {
             plat = plat.trim().toLowerCase();
 
-            SubsystemFeatureDefinitionImpl platformFeature = repo.getCompatibilityFeatures().get(plat);
+            ProvisioningFeatureDefinition platformFeature = allCompatibilityFeatures.get(plat);
             if (platformFeature != null) {
                 String[] nav = parseNameAndVersion(platformFeature.getSymbolicName());
                 compatibleVersions.get(nav[0]).add(nav[1]);
@@ -523,6 +524,8 @@ public class FeatureResolverImpl implements FeatureResolver {
         SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
 
         if (isBeta) {
+            processCompatibilityFeatures(repository.getFeatures());
+
             rootPlatforms = collectConfiguredPlatforms(repository, rootPlatforms);
             rootPlatforms.addAll(collectEnvironmentPlatforms(repository, rootPlatforms, selectionContext));
         }
@@ -597,7 +600,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 hasVersionlessFeatures = true;
             }
 
-            List<String> wlpPlatform = rootFeatureDef.getPlatforms();
+            List<String> wlpPlatform = rootFeatureDef.getPlatformNames();
             if(wlpPlatform != null && wlpPlatform.size() > 0){
                 String[] nav = parseNameAndVersion(wlpPlatform.get(0));
                 String compatibilityFeature = selectionContext.platformToCompatibilityBaseName().get(nav[0]);
@@ -628,7 +631,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             for(String key : map.keySet()){
                 Set<String> current = map.get(key);
                 if(current.size() == 1){
-                    ProvisioningFeatureDefinition comp = selectionContext.getRepository().getCompatibilityFeatures().get(current.toArray()[0].toString().toLowerCase());
+                    ProvisioningFeatureDefinition comp = allCompatibilityFeatures.get(current.toArray()[0].toString().toLowerCase());
                     String[] nav = parseNameAndVersion(comp.getSymbolicName());
 
                     selectionContext._current._selected.put(nav[0], new Chain(comp.getSymbolicName(), nav[1], comp.getSymbolicName()));
@@ -715,6 +718,15 @@ public class FeatureResolverImpl implements FeatureResolver {
         addingFeatures.add(MP_COMPATIBLE_FEATURE_NAME);
         
         result._resolved.addAll(addingFeatures);
+    }
+
+    private void processCompatibilityFeatures(List<ProvisioningFeatureDefinition> features){
+        allCompatibilityFeatures = new HashMap<>();
+        for(ProvisioningFeatureDefinition feature : features){
+            if(feature.isCompatibility()){
+                allCompatibilityFeatures.put(feature.getPlatformName(), feature);
+            }
+        }
     }
 
     final static boolean supportedProcessType(EnumSet<ProcessType> supportedTypes, ProvisioningFeatureDefinition fd) {
@@ -1221,21 +1233,21 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         Set<String> compatibilityFeaturesBaseNames(){
-            Collection<SubsystemFeatureDefinitionImpl> values = _repository.getCompatibilityFeatures().values();
+            Collection<ProvisioningFeatureDefinition> values = allCompatibilityFeatures.values();
             Set<String> baseNames = new HashSet<>();
-            for(SubsystemFeatureDefinitionImpl value : values){
+            for(ProvisioningFeatureDefinition value : values){
                 baseNames.add(parseNameAndVersion(value.getSymbolicName())[0]);
             }
             return baseNames;
         }
 
         Map<String, String> platformToCompatibilityBaseName(){
-            Set<String> keys = _repository.getCompatibilityFeatures().keySet();
+            Set<String> keys = allCompatibilityFeatures.keySet();
             Map<String, String> platToCompat = new HashMap<>();
             for(String key : keys){
                 String baseKey = parseNameAndVersion(key)[0];
                 if(!platToCompat.containsKey(baseKey)){
-                    platToCompat.put(baseKey, parseName(_repository.getCompatibilityFeatures().get(key).getSymbolicName()));
+                    platToCompat.put(baseKey, parseName(allCompatibilityFeatures.get(key).getSymbolicName()));
                 }
             }
             return platToCompat;
@@ -1643,13 +1655,13 @@ public class FeatureResolverImpl implements FeatureResolver {
             for (Chain selectedChain : _chains) {
                 for(String candidate : selectedChain.getCandidates()){
                     ProvisioningFeatureDefinition feature = selectionContext.getRepository().getFeature(candidate);
-                    if(feature.getVisibility() != Visibility.PUBLIC || feature.getPlatforms() == null){
+                    if(feature.getVisibility() != Visibility.PUBLIC || feature.getPlatformNames() == null){
                         continue;
                     }
-                    for(String plat : feature.getPlatforms()){
+                    for(String plat : feature.getPlatformNames()){
                         Chain c = selectionContext.getSelected(selectionContext.platformToCompatibilityBaseName().get(parseName(plat.toLowerCase())));
                         if(c != null){
-                            if(c.getCandidates().size() == 1 && c.getCandidates().get(0).equals(selectionContext.getRepository().getCompatibilityFeatures().get(plat.toLowerCase()).getSymbolicName())){
+                            if(c.getCandidates().size() == 1 && c.getCandidates().get(0).equals(allCompatibilityFeatures.get(plat.toLowerCase()).getSymbolicName())){
                                 Chain match = match(candidate, selectedChain, selectionContext);
                                 if(match != null){
                                     System.out.println("I FOUND A MATCH YAY - " + candidate + " : " + plat);

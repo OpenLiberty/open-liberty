@@ -1,4 +1,4 @@
-<feature>webProfile-8.0</feature>
+<feature>webProfile-8.0</feature> 
 <feature>jdbc-4.2</feature>
 <feature>jdbc-4.3</feature>
 <feature>monitor-1.0</feature>
@@ -9,8 +9,8 @@
 <feature>transportSecurity-1.0</feature>
 <feature>sessionCache-1.0</feature>
 <feature>sessionDatabase-1.0</feature>
-<feature>microProfile-1.3</feature>
-<feature>microProfile-1.4</feature>
+<feature>microProfile-1.3</feature> 
+<feature>microProfile-1.4</feature> 
 <feature>microProfile-2.0</feature>
 <feature>microProfile-2.1</feature>
 <feature>microProfile-2.2</feature>

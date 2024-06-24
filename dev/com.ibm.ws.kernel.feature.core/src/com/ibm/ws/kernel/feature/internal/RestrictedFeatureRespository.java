@@ -42,11 +42,6 @@ public class RestrictedFeatureRespository implements Repository {
         return repo.getConfiguredTolerates(baseSymbolicName);
     }
 
-    @Override
-    public Map<String, SubsystemFeatureDefinitionImpl> getCompatibilityFeatures() {
-        return repo.getCompatibilityFeatures();
-    }
-
     //
 
     public static List<ProvisioningFeatureDefinition> select(Repository repository, Selector<ProvisioningFeatureDefinition> selector) {
