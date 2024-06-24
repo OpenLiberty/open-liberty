@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.test.merge;
 
@@ -33,14 +30,17 @@ import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.openliberty.microprofile.openapi20.internal.merge.MergeProcessor;
 import io.openliberty.microprofile.openapi20.internal.merge.ModelCopy;
+import io.openliberty.microprofile.openapi20.internal.services.MergeProcessor;
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
+import io.openliberty.microprofile.openapi20.test.merge.parts.TestUtil;
 import io.smallrye.openapi.runtime.io.Format;
 import io.smallrye.openapi.runtime.io.OpenApiParser;
 import io.smallrye.openapi.runtime.io.OpenApiSerializer;
 
 public class MergeProcessorTest {
+
+    MergeProcessor mergeProcessor = TestUtil.getMergeProcessor();
 
     /**
      * Test merge where context roots should be prepended to the start of paths, avoiding a clash
@@ -50,7 +50,7 @@ public class MergeProcessorTest {
         OpenAPIProvider model1 = loadModel("clashing-path-1.yaml", "/foo");
         OpenAPIProvider model2 = loadModel("clashing-path-2.yaml", "/bar");
 
-        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
+        OpenAPIProvider resultProvider = mergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
         OpenAPI result = resultProvider.getModel();
         assertThat(resultProvider.getApplicationPath(), is(nullValue()));
 
@@ -69,7 +69,7 @@ public class MergeProcessorTest {
         OpenAPIProvider model1 = loadModel("clashing-path-with-server-1.yaml", "/test1");
         OpenAPIProvider model2 = loadModel("clashing-path-with-server-2.yaml", "/test2");
 
-        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
+        OpenAPIProvider resultProvider = mergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
 
         // Path X from module Y clashes with module Z. Module Y will not be included.
         assertThat("Merge problems", resultProvider.getMergeProblems(),
@@ -91,7 +91,7 @@ public class MergeProcessorTest {
         assertModelsEqual(model1.getModel(), (OpenAPI) ModelCopy.copy(model1.getModel()));
         assertModelsEqual(model2.getModel(), (OpenAPI) ModelCopy.copy(model2.getModel()));
 
-        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
+        OpenAPIProvider resultProvider = mergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
         OpenAPI result = resultProvider.getModel();
         assertThat(resultProvider.getApplicationPath(), is(nullValue()));
         assertThat(resultProvider.getMergeProblems(), is(empty()));
@@ -110,7 +110,7 @@ public class MergeProcessorTest {
         OpenAPIProvider model1 = loadModel("component-merging-1.yaml", "/test1");
         OpenAPIProvider model2 = loadModel("component-merging-2.yaml", "/test2");
 
-        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
+        OpenAPIProvider resultProvider = mergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
         OpenAPI result = resultProvider.getModel();
         assertThat(resultProvider.getApplicationPath(), is(nullValue()));
         assertThat(resultProvider.getMergeProblems(), is(empty()));
@@ -131,7 +131,7 @@ public class MergeProcessorTest {
         OpenAPIProvider model1 = loadModel("server-includes-context-root-1.yaml", "/test1");
         OpenAPIProvider model2 = loadModel("server-includes-context-root-2.yaml", "/test2");
 
-        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
+        OpenAPIProvider resultProvider = mergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
         OpenAPI result = resultProvider.getModel();
         assertThat(resultProvider.getApplicationPath(), is(nullValue()));
         assertThat(resultProvider.getMergeProblems(), is(empty()));
@@ -148,7 +148,7 @@ public class MergeProcessorTest {
         OpenAPIProvider model1 = loadModel("operationid-clash-1.yaml", "/test1");
         OpenAPIProvider model2 = loadModel("operationid-clash-2.yaml", "/test2");
 
-        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
+        OpenAPIProvider resultProvider = mergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
         OpenAPI result = resultProvider.getModel();
         assertThat(resultProvider.getApplicationPath(), is(nullValue()));
         assertThat(resultProvider.getMergeProblems(), is(empty()));
@@ -172,7 +172,7 @@ public class MergeProcessorTest {
         OpenAPIProvider model1 = loadModel("tag-clash-1.yaml", "");
         OpenAPIProvider model2 = loadModel("tag-clash-2.yaml", "");
 
-        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
+        OpenAPIProvider resultProvider = mergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
         OpenAPI result = resultProvider.getModel();
         assertThat(resultProvider.getApplicationPath(), is(nullValue()));
         assertThat(resultProvider.getMergeProblems(), is(empty()));
@@ -186,7 +186,7 @@ public class MergeProcessorTest {
         OpenAPIProvider model1 = loadModel("server-under-path-1.yaml", "/test1");
         OpenAPIProvider model2 = loadModel("server-under-path-2.yaml", "/test2");
 
-        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
+        OpenAPIProvider resultProvider = mergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
         OpenAPI result = resultProvider.getModel();
         assertThat(resultProvider.getApplicationPath(), is(nullValue()));
         assertThat(resultProvider.getMergeProblems(), is(empty()));
@@ -200,7 +200,7 @@ public class MergeProcessorTest {
         OpenAPIProvider model1 = loadModel("server-moved-to-paths-1.yaml", "/foo");
         OpenAPIProvider model2 = loadModel("server-moved-to-paths-2.yaml", "/bar");
 
-        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
+        OpenAPIProvider resultProvider = mergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
         OpenAPI result = resultProvider.getModel();
         assertThat(resultProvider.getApplicationPath(), is(nullValue()));
         assertThat(resultProvider.getMergeProblems(), is(empty()));
@@ -214,7 +214,7 @@ public class MergeProcessorTest {
         OpenAPIProvider model1 = loadModel("test-security-moved-1.yaml", "/test1");
         OpenAPIProvider model2 = loadModel("test-security-moved-2.yaml", "/test2");
 
-        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
+        OpenAPIProvider resultProvider = mergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
         OpenAPI result = resultProvider.getModel();
         assertThat(resultProvider.getApplicationPath(), is(nullValue()));
         assertThat(resultProvider.getMergeProblems(), is(empty()));
@@ -231,7 +231,7 @@ public class MergeProcessorTest {
         OpenAPIProvider model1 = loadModel("docs-identical-1.yaml", "/test1");
         OpenAPIProvider model2 = loadModel("docs-identical-2.yaml", "/test2");
 
-        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
+        OpenAPIProvider resultProvider = mergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
         OpenAPI result = resultProvider.getModel();
         assertThat(resultProvider.getApplicationPath(), is(nullValue()));
         assertThat(resultProvider.getMergeProblems(), is(empty()));
@@ -248,7 +248,7 @@ public class MergeProcessorTest {
         OpenAPIProvider model1 = loadModel("docs-removed-1.yaml", "/test1");
         OpenAPIProvider model2 = loadModel("docs-removed-2.yaml", "/test2");
 
-        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
+        OpenAPIProvider resultProvider = mergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
         OpenAPI result = resultProvider.getModel();
         assertThat(resultProvider.getApplicationPath(), is(nullValue()));
         assertThat(resultProvider.getMergeProblems(), is(empty()));
@@ -265,7 +265,7 @@ public class MergeProcessorTest {
         OpenAPIProvider model1 = loadModel("info-identical-1.yaml", "/test1");
         OpenAPIProvider model2 = loadModel("info-identical-2.yaml", "/test2");
 
-        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
+        OpenAPIProvider resultProvider = mergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
         OpenAPI result = resultProvider.getModel();
         assertThat(resultProvider.getApplicationPath(), is(nullValue()));
         assertThat(resultProvider.getMergeProblems(), is(empty()));
@@ -288,7 +288,7 @@ public class MergeProcessorTest {
         // Note, model 2 clashes with model 1 and so won't be included in the final result
         // Names in model 3 overlap with model 2 and would be renamed, but shouldn't be because model 2 was discarded
         // Similarly, model 2 has a different info and external docs section so it would cause those to be discarded from the final model
-        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2, model3));
+        OpenAPIProvider resultProvider = mergeProcessor.mergeDocuments(Arrays.asList(model1, model2, model3));
         OpenAPI result = resultProvider.getModel();
         assertThat(resultProvider.getApplicationPath(), is(nullValue()));
         assertThat(resultProvider.getMergeProblems(), contains(containsString("no-phantom-changes-2")));
@@ -305,7 +305,7 @@ public class MergeProcessorTest {
         OpenAPIProvider model1 = loadModel("clashing-extension-1.yaml", "/test1");
         OpenAPIProvider model2 = loadModel("clashing-extension-2.yaml", "/test2");
 
-        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
+        OpenAPIProvider resultProvider = mergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
         OpenAPI result = resultProvider.getModel();
         // Extension key X in module Y conflicts with module Z, module Y will not be merged
         assertThat("Merge problems", resultProvider.getMergeProblems(),

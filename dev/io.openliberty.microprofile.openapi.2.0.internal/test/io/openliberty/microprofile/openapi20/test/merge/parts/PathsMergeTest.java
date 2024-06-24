@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -28,7 +28,6 @@ import org.eclipse.microprofile.openapi.models.Paths;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.openliberty.microprofile.openapi20.internal.merge.MergeProcessor;
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
 
 public class PathsMergeTest {
@@ -88,7 +87,7 @@ public class PathsMergeTest {
         List<OpenAPIProvider> providers = Arrays.stream(docs)
                                                 .map(TestUtil::createProvider)
                                                 .collect(Collectors.toList());
-        OpenAPIProvider result = MergeProcessor.mergeDocuments(providers);
+        OpenAPIProvider result = TestUtil.getMergeProcessor().mergeDocuments(providers);
 
         assertThat(result.getMergeProblems(), is(not(empty())));
 

@@ -25,9 +25,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult.ValidationEvent;
+import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult.ValidationEvent.Severity;
 import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
-import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
-import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent.Severity;
 
 /**
  *

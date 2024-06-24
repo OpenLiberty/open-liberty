@@ -230,7 +230,7 @@ io.smallrye.reactive:mutiny:2.5.6
 io.smallrye.reactive:smallrye-reactive-converter-api:3.0.1
 io.smallrye.reactive:smallrye-reactive-messaging-api:4.16.0
 io.smallrye.reactive:smallrye-reactive-messaging-provider:4.16.0
-io.smallrye:jandex:3.0.5
+io.smallrye:jandex:3.2.0
 io.smallrye:smallrye-graphql-api:1.0.26
 io.smallrye:smallrye-graphql-cdi:1.0.26
 io.smallrye:smallrye-graphql-client-api:1.0.26
@@ -241,7 +241,9 @@ io.smallrye:smallrye-graphql-servlet:1.0.26
 io.smallrye:smallrye-graphql:1.0.26
 io.smallrye:smallrye-metrics:5.1.0
 io.smallrye:smallrye-open-api-core:3.1.1
+io.smallrye:smallrye-open-api-core:4.0.0-alpha1
 io.smallrye:smallrye-open-api-jaxrs:3.1.1
+io.smallrye:smallrye-open-api-jaxrs:4.0.0-alpha1
 io.zipkin.reporter2:zipkin-reporter:2.16.4
 io.zipkin.reporter2:zipkin-reporter:3.3.0
 io.zipkin.reporter2:zipkin-sender-okhttp3:2.16.4
@@ -616,6 +618,7 @@ org.eclipse.microprofile.openapi:microprofile-openapi-api:1.1.1
 org.eclipse.microprofile.openapi:microprofile-openapi-api:2.0
 org.eclipse.microprofile.openapi:microprofile-openapi-api:3.0
 org.eclipse.microprofile.openapi:microprofile-openapi-api:3.1
+org.eclipse.microprofile.openapi:microprofile-openapi-api:4.0-RC1
 org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.0.1
 org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.1
 org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.2

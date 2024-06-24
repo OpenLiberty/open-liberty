@@ -71,7 +71,7 @@ public class ConfigFieldProvider31Impl implements ConfigFieldProvider {
         SCAN_PROFILES("getScanProfiles", OpenApiConstants.SCAN_PROFILES, OpenApiConfig::getScanProfiles, ConfigField::serializeSet),
         SCAN_EXCLUDE_PROFILES("getScanExcludeProfiles", OpenApiConstants.SCAN_EXCLUDE_PROFILES, OpenApiConfig::getScanExcludeProfiles, ConfigField::serializeSet),
         DUPLICATE_OPERATION_ID_BEHAVIOR("getDuplicateOperationIdBehavior", OpenApiConstants.DUPLICATE_OPERATION_ID_BEHAVIOR, OpenApiConfig::getDuplicateOperationIdBehavior, DuplicateOperationIdBehavior::name),
-        REMOVE_UNUSED_SCHEMAS("removeUnusedSchemas", OpenApiConstants.SMALLRYE_REMOVE_UNUSED_SCHEMAS, c -> Boolean.toString(c.removeUnusedSchemas()));
+        REMOVE_UNUSED_SCHEMAS("removeUnusedSchemas", OpenApiConstants.SMALLRYE_REMOVE_UNUSED_SCHEMAS, c -> Boolean.toString(c.removeUnusedSchemas()))
         ;
 
         Function<OpenApiConfig, String> function;
