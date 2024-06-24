@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
 import java.lang.reflect.Proxy;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -26,7 +25,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.microprofile.client.ProxyInvocationHandler;
@@ -42,7 +41,7 @@ public class DefaultMethodInvocationHandler implements InvocationHandler {
                                           final Set<Object> providerInstances,
                                           final ResteasyClient client,
                                           final BeanManager beanManager) {
-        this.delegateHandler = new ProxyInvocationHandler(restClientInterface, target, providerInstances, client, beanManager);
+        this.delegateHandler = new ProxyInvocationHandler(restClientInterface, target, providerInstances, client);
         this.restClientInterface = restClientInterface;
         this.target = createDefaultMethodTarget(restClientInterface);
     }
