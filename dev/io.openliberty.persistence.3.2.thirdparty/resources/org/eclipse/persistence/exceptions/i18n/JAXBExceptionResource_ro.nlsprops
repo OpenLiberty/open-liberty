@@ -85,7 +85,7 @@
 
 50028=Nu se poate crea o nou\u0103 instan\u0163\u0103 a [{0}].
 
-50029=Clasa [{0}] furnizat\u0103 \u00een XmlCustomizer nu implementeaz\u0103 interfa\u0163a org.eclipse.persistence.config.DescriptorCustomizer.
+50029=The class [{0}] provided on the XmlCustomizer does not implement the org.eclipse.persistence.descriptors.DescriptorCustomizer interface.
 
 50030=A fost f\u0103cut\u0103 o \u00eencercare de setare a mai mult de o proprietate XmlID \u00een clasa [{1}].  Proprietatea [{0}] nu poate fi setat\u0103 ca \u015fi XmlID, deoarece proprietatea [{2}] este deja setat\u0103 ca \u015fi XmlID.
 

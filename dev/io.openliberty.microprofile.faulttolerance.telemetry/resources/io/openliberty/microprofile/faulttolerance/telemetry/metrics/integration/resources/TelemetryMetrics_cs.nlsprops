@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Descriptions of metrics used by Fault Tolerance. 
+# See https://download.eclipse.org/microprofile/microprofile-fault-tolerance-4.0.2/microprofile-fault-tolerance-spec-4.0.2.html#_integration_with_microprofile_metrics
+#-----------------------------------------------------------------------------------------------------------------------------
+
+ft.invocations.total.description=Po\u010det vol\u00e1n\u00ed metody.
+
+ft.retry.calls.total.description=Po\u010det p\u0159\u00edpad\u016f, kdy byla spu\u0161t\u011bna logika opakov\u00e1n\u00ed. Toto bude v\u017edy jednou za vol\u00e1n\u00ed metody.
+
+ft.retry.retries.total.description=Po\u010det opakov\u00e1n\u00ed metody.
+
+ft.timeout.calls.total.description=Po\u010det p\u0159\u00edpad\u016f, kdy byla spu\u0161t\u011bna logika \u010dasov\u00e9ho limitu. Toto bude obvykle jednou za vol\u00e1n\u00ed metody, ale m\u016f\u017ee b\u00fdt nula kr\u00e1t, pokud jisti\u010d br\u00e1n\u00ed proveden\u00ed, nebo v\u00edce ne\u017e jednou, pokud je metoda zopakov\u00e1na.
+
+ft.timeout.executionDuration.description=Histogram dob prov\u00e1d\u011bn\u00ed pro metodu.
+
+ft.circuitbreaker.calls.total.description=Po\u010det p\u0159\u00edpad\u016f, kdy byla spu\u0161t\u011bna logika jisti\u010de. Toto bude obvykle jednou za vol\u00e1n\u00ed metody, ale m\u016f\u017ee b\u00fdt v\u00edce ne\u017e jednou, pokud je vol\u00e1n\u00ed metody opakov\u00e1no.
+
+ft.circuitbreaker.state.total.description=Doba, kterou jisti\u010d str\u00e1vil v ka\u017ed\u00e9m stavu.
+
+ft.circuitbreaker.opened.total.description=Po\u010det p\u0159\u00edpad\u016f, kdy se jisti\u010d p\u0159esunul z uzav\u0159en\u00e9ho stavu do otev\u0159en\u00e9ho stavu.
+
+ft.bulkhead.calls.total.description=Po\u010det p\u0159\u00edpad\u016f, kdy byla spu\u0161t\u011bna logika p\u0159ep\u00e1\u017eky. Toto bude obvykle jednou za vol\u00e1n\u00ed metody, ale m\u016f\u017ee b\u00fdt nula kr\u00e1t, pokud jisti\u010d zabr\u00e1nil proveden\u00ed, nebo v\u00edce ne\u017e jednou, pokud je vol\u00e1n\u00ed metody opakov\u00e1no.
+
+ft.bulkhead.executionsRunning.description=Po\u010det aktu\u00e1ln\u011b spu\u0161t\u011bn\u00fdch proveden\u00ed.
+
+ft.bulkhead.executionsWaiting.description=Po\u010det proveden\u00ed, kter\u00e1 moment\u00e1ln\u011b \u010dekaj\u00ed ve front\u011b.
+
+ft.bulkhead.runningDuration.description=Histogram \u010dasu, kter\u00fd proveden\u00ed metody str\u00e1vila spu\u0161t\u011bn\u00edm.
+
+ft.bulkhead.waitingDuration.description=Histogram \u010dasu, kter\u00fd proveden\u00ed metody str\u00e1vila \u010dek\u00e1n\u00edm ve front\u011b.

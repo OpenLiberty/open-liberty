@@ -47,3 +47,5 @@
 
 3009=No se pueden establecer las propiedades de {0} [{1}] en [{2}].
 
+3010=Valor de fecha incorrecto [AAAA-MM-DD]: [{0}].
+

@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Descriptions of metrics used by Fault Tolerance. 
+# See https://download.eclipse.org/microprofile/microprofile-fault-tolerance-4.0.2/microprofile-fault-tolerance-spec-4.0.2.html#_integration_with_microprofile_metrics
+#-----------------------------------------------------------------------------------------------------------------------------
+
+ft.invocations.total.description=Liczba wywo\u0142a\u0144 metody.
+
+ft.retry.calls.total.description=Liczba uruchomie\u0144 logiki ponawiania. B\u0119dzie to zawsze jeden raz dla ka\u017cdego wywo\u0142ania metody.
+
+ft.retry.retries.total.description=Liczba powt\u00f3rze\u0144 metody.
+
+ft.timeout.calls.total.description=Liczba uruchomie\u0144 logiki limitu czasu. B\u0119dzie to zwykle jeden raz dla wywo\u0142ania metody, ale mo\u017ce by\u0107 zerem, je\u015bli wy\u0142\u0105cznik automatyczny uniemo\u017cliwia wykonanie lub wi\u0119cej ni\u017c jeden raz, je\u015bli metoda jest ponawiana.
+
+ft.timeout.executionDuration.description=Histogram czas\u00f3w wykonania metody.
+
+ft.circuitbreaker.calls.total.description=Liczba uruchomie\u0144 logiki wy\u0142\u0105cznika automatycznego. B\u0119dzie to zwykle jeden raz dla ka\u017cdego wywo\u0142ania metody, ale mo\u017ce by\u0107 wi\u0119cej ni\u017c jeden raz, je\u015bli wywo\u0142anie metody zostanie ponowione.
+
+ft.circuitbreaker.state.total.description=Czas zu\u017cyty przez wy\u0142\u0105cznik automatyczny w ka\u017cdym stanie.
+
+ft.circuitbreaker.opened.total.description=Liczba przej\u015b\u0107 wy\u0142\u0105cznika automatycznego ze stanu zamkni\u0119tego do stanu otwartego.
+
+ft.bulkhead.calls.total.description=Liczba uruchomie\u0144 logiki bulkhead. B\u0119dzie to zwykle jeden raz dla wywo\u0142ania metody, ale mo\u017ce by\u0107 zerem, je\u015bli wy\u0142\u0105cznik automatyczny uniemo\u017cliwi\u0142 wykonanie lub wi\u0119cej ni\u017c jeden raz, je\u015bli wywo\u0142anie metody jest ponawiane.
+
+ft.bulkhead.executionsRunning.description=Liczba obecnie dzia\u0142aj\u0105cych wykona\u0144.
+
+ft.bulkhead.executionsWaiting.description=Liczba wykona\u0144 obecnie oczekuj\u0105cych w kolejce.
+
+ft.bulkhead.runningDuration.description=Histogram czasu wykonywania metod.
+
+ft.bulkhead.waitingDuration.description=Histogram czasu, przez jaki metody wykonywa\u0142y oczekiwanie w kolejce.

@@ -18,3 +18,7 @@
 #ISMESSAGEFILE FALSE
 #NLS_ENCODING=UNICODE
 # cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+AUDIT_EVENT_MISSING_REST_ENDPOINT=CWWKS5856E: El nombre de suceso de auditor\u00eda {0} no est\u00e1 soportado porque el punto final REST no est\u00e1 habilitado.
+AUDIT_EVENT_MISSING_REST_ENDPOINT.explanation=Para utilizar el suceso de auditor\u00eda especificado, el punto final REST debe estar habilitado.
+AUDIT_EVENT_MISSING_REST_ENDPOINT.useraction=Aseg\u00farese de que una caracter\u00edstica que habilita el punto final REST est\u00e9 habilitada en la configuraci\u00f3n server.xml .

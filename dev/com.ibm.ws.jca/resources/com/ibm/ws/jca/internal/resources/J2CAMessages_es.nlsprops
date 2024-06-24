@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,9 +49,25 @@ J2CA8510.create.timed.out=J2CA8510E: No se ha podido crear un temporizador para 
 J2CA8510.create.timed.out.explanation=Est\u00e1 tardando m\u00e1s de lo esperado en crear el temporizador.
 J2CA8510.create.timed.out.useraction=Verifique si existe una carga elevada en el sistema y, en su caso, red\u00fazcala.
 
+J2CA8511.create.timer.failed.checkpoint=J2CA8511E: La solicitud de punto de comprobaci\u00f3n del servidor ha fallado porque el adaptador de recursos {0} ha creado un temporizador.
+J2CA8511.create.timer.failed.checkpoint.explanation=Liberty no da soporte a adaptadores de recursos que crean un temporizador mientras las aplicaciones se inician cuando se solicita un punto de comprobaci\u00f3n de servidor.
+J2CA8511.create.timer.failed.checkpoint.useraction=Configure el punto de comprobaci\u00f3n para que se produzca antes de que se inicie la aplicaci\u00f3n utilizando la opci\u00f3n beforeAppIniciar punto de comprobaci\u00f3n del servidor.
+
+J2CA8512.create.timer.not.supported.checkpoint=J2CA8512E: No se ha podido crear un temporizador para el adaptador de recursos {0} durante la solicitud de punto de comprobaci\u00f3n del servidor.
+J2CA8512.create.timer.not.supported.checkpoint.explanation=Liberty no da soporte a la creaci\u00f3n de temporizadores por parte de adaptadores de recursos mientras las aplicaciones se inician cuando se solicita un punto de comprobaci\u00f3n de servidor.
+J2CA8512.create.timer.not.supported.checkpoint.useraction=Configure el punto de comprobaci\u00f3n para que se produzca antes de que se inicie la aplicaci\u00f3n utilizando la opci\u00f3n beforeAppIniciar punto de comprobaci\u00f3n del servidor.
+
 J2CA8600.work.start.timeout=J2CA8600E: El trabajo {0} enviado por el adaptador de recursos {1} no se ha iniciado en {2} milisegundos.
 J2CA8600.work.start.timeout.explanation=El intento de iniciar el trabajo ha excedido el tiempo de espera.
 J2CA8600.work.start.timeout.useraction=Verifique si existe una carga elevada en el sistema y, en su caso, red\u00fazcala o p\u00f3ngase en contacto con el proveedor del adaptador de recursos para considerar si se debe aumentar el tiempo de espera de trabajo que se utiliza cuando se env\u00eda trabajo al gestor de trabajo de JCA.
+
+J2CA8601.work.submit.failed.checkpoint=J2CA8601E: La solicitud de punto de comprobaci\u00f3n del servidor ha fallado porque el adaptador de recursos {0} ha enviado el trabajo {1}.
+J2CA8601.work.submit.failed.checkpoint.explanation=Liberty no da soporte a adaptadores de recursos que env\u00edan trabajo mientras las aplicaciones se inician cuando se solicita un punto de comprobaci\u00f3n de servidor.
+J2CA8601.work.submit.failed.checkpoint.useraction=Configure el punto de comprobaci\u00f3n para que se produzca antes de que se inicie la aplicaci\u00f3n utilizando la opci\u00f3n beforeAppIniciar punto de comprobaci\u00f3n del servidor.
+
+J2CA8602.work.submit.not.supported.checkpoint=J2CA8602E: El trabajo {0} enviado por el adaptador de recursos {1} se ha rechazado durante la solicitud de punto de comprobaci\u00f3n del servidor.
+J2CA8602.work.submit.not.supported.checkpoint.explanation=Liberty no da soporte al env\u00edo de trabajo por parte de adaptadores de recursos mientras las aplicaciones se inician cuando se solicita un punto de comprobaci\u00f3n de servidor.
+J2CA8602.work.submit.not.supported.checkpoint.useraction=Configure el punto de comprobaci\u00f3n para que se produzca antes de que se inicie la aplicaci\u00f3n utilizando la opci\u00f3n beforeAppIniciar punto de comprobaci\u00f3n del servidor.
 
 # 8622 deleted
 
@@ -168,6 +184,3 @@ BEAN_VALIDATION_FAILED_J2CA0238.useraction=Consulte la documentaci\u00f3n del pr
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241=J2CA0241W: Los archivados de bean de adaptador de recursos no est\u00e1n soportados.
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.explanation=El archivo beans.xml en el directorio META-INF se ignorar\u00e1, ya que los adaptadores de recursos de archivado de bean gestionado no est\u00e1n soportados.
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.useraction=Elimine el archivo beans.xml del directorio META-INF, ya que los adaptadores de recursos de archivado de bean gestionado no est\u00e1n soportados.
-
-
-

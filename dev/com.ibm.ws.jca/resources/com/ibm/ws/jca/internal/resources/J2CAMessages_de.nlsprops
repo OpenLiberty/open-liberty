@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,9 +49,25 @@ J2CA8510.create.timed.out=J2CA8510E: Es konnte kein Zeitgeber f\u00fcr den Resso
 J2CA8510.create.timed.out.explanation=Die Erstellung des Zeitgebers dauert l\u00e4nger als erwartet.
 J2CA8510.create.timed.out.useraction=Pr\u00fcfen Sie, ob die Auslastung des Systems hoch ist, und verringern Sie die Arbeitslast ggf.
 
+J2CA8511.create.timer.failed.checkpoint=J2CA8511E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen, weil der {0} Ressourcenadapter einen Zeitgeber erstellt hat.
+J2CA8511.create.timer.failed.checkpoint.explanation=Liberty unterst\u00fctzt keine Ressourcenadapter, die einen Zeitgeber erstellen, w\u00e4hrend Anwendungen gestartet werden, wenn ein Serverpr\u00fcfpunkt angefordert wird.
+J2CA8511.create.timer.failed.checkpoint.useraction=Konfigurieren Sie den Pr\u00fcfpunkt so, dass er vor dem Start der Anwendung auftritt, indem Sie die Option beforeAppPr\u00fcfpunkt f\u00fcr Server starten verwenden.
+
+J2CA8512.create.timer.not.supported.checkpoint=J2CA8512E: W\u00e4hrend der Serverpr\u00fcfpunktanforderung konnte f\u00fcr den Ressourcenadapter {0} kein Zeitgeber erstellt werden.
+J2CA8512.create.timer.not.supported.checkpoint.explanation=Liberty unterst\u00fctzt nicht die Erstellung von Zeitgebern durch Ressourcenadapter, w\u00e4hrend Anwendungen gestartet werden, wenn ein Serverpr\u00fcfpunkt angefordert wird.
+J2CA8512.create.timer.not.supported.checkpoint.useraction=Konfigurieren Sie den Pr\u00fcfpunkt so, dass er vor dem Start der Anwendung auftritt, indem Sie die Option beforeAppPr\u00fcfpunkt f\u00fcr Server starten verwenden.
+
 J2CA8600.work.start.timeout=J2CA8600E: Die Anforderung {0}, die vom Ressourcenadapter {1} \u00fcbergeben wurde, wurde nicht innerhalb von {2} Millisekunden gestartet.
 J2CA8600.work.start.timeout.explanation=Beim Versuch, die Anforderung zu starten, wurde das zul\u00e4ssige Zeitlimit \u00fcberschritten.
 J2CA8600.work.start.timeout.useraction=Pr\u00fcfen Sie, ob die Auslastung des Systems hoch ist, und verringern Sie die Arbeitslast ggf., oder fragen Sie beim Anbieter des Ressourcenadapters nach, ob das Anforderungszeitlimit f\u00fcr die \u00dcbergabe von Anforderungen an den JCA-Arbeitsmanager erh\u00f6ht werden kann.
+
+J2CA8601.work.submit.failed.checkpoint=J2CA8601E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen, weil der Ressourcenadapter {0} Arbeit {1}\u00fcbergeben hat.
+J2CA8601.work.submit.failed.checkpoint.explanation=Liberty unterst\u00fctzt keine Ressourcenadapter, die Arbeit \u00fcbergeben, w\u00e4hrend Anwendungen gestartet werden, wenn ein Serverpr\u00fcfpunkt angefordert wird.
+J2CA8601.work.submit.failed.checkpoint.useraction=Konfigurieren Sie den Pr\u00fcfpunkt so, dass er vor dem Start der Anwendung auftritt, indem Sie die Option beforeAppPr\u00fcfpunkt f\u00fcr Server starten verwenden.
+
+J2CA8602.work.submit.not.supported.checkpoint=J2CA8602E: Die Arbeit {0} , die vom Ressourcenadapter {1} \u00fcbergeben wurde, wurde w\u00e4hrend der Serverpr\u00fcfpunktanforderung zur\u00fcckgewiesen.
+J2CA8602.work.submit.not.supported.checkpoint.explanation=Liberty unterst\u00fctzt nicht die \u00dcbergabe von Arbeit durch Ressourcenadapter, w\u00e4hrend Anwendungen gestartet werden, wenn ein Serverpr\u00fcfpunkt angefordert wird.
+J2CA8602.work.submit.not.supported.checkpoint.useraction=Konfigurieren Sie den Pr\u00fcfpunkt so, dass er vor dem Start der Anwendung auftritt, indem Sie die Option beforeAppPr\u00fcfpunkt f\u00fcr Server starten verwenden.
 
 # 8622 deleted
 
@@ -132,6 +148,7 @@ J2CA8815.duplicate.resource.adapter.id.useraction=Weisen Sie den Ressourcenadapt
 J2CA8816.reserved.resource.adapter.id=J2CA8816E: Das Attribut id des Elements resourceAdapter f\u00fcr das Ressourcenadaptermodul {0} darf keine der reservierten IDs {1} sein.
 J2CA8816.reserved.resource.adapter.id.explanation=Die in der Konfiguration angegebene bzw. vom Modulnamen abgeleitete ID ist eine reservierte ID. Reservierte IDs sind nur f\u00fcr die interne Verwendung vorgesehen.
 J2CA8816.reserved.resource.adapter.id.useraction=Geben Sie einen nicht reservierten Wert f\u00fcr das Attribut id des Elements resourceAdapter oder f\u00fcr den Modulnamen in der Serverkonfiguration an.
+
 #{0} is the resource adapter name
 #{1} is the relative path to the deployment descriptor
 #{2} is the exception message
@@ -167,6 +184,3 @@ BEAN_VALIDATION_FAILED_J2CA0238.useraction=Verwenden Sie die vom Anbieter des Re
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241=J2CA0241W: Resource Adapter Bean Archives werden nicht unterst\u00fctzt.
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.explanation=Die Datei beans.xml im Verzeichnis META-INF wird ignoriert, da CDI Managed Bean Archive Resource Adapters nicht unterst\u00fctzt werden.
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.useraction=Entfernen Sie die Datei beans.xml aus dem Verzeichnis META-INF, da CDI Managed Bean Archive Resource Adapters nicht unterst\u00fctzt werden.
-
-
-

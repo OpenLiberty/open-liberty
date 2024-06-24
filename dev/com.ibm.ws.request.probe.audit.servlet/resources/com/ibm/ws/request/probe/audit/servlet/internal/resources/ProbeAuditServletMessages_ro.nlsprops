@@ -18,3 +18,7 @@
 #ISMESSAGEFILE FALSE
 #NLS_ENCODING=UNICODE
 # cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+AUDIT_EVENT_MISSING_REST_ENDPOINT=CWWKS5856E: Numele evenimentului de audit {0} este acceptat deoarece punctul final de evaluare a REST nu este activat.
+AUDIT_EVENT_MISSING_REST_ENDPOINT.explanation=Pentru a utiliza evenimentul de audit specificat, trebuie activat punctul de evaluare REST.
+AUDIT_EVENT_MISSING_REST_ENDPOINT.useraction=Asigura\u021bi-v\u0103 c\u0103 o caracteristic\u0103 care permite REST Endpoint este activat\u0103 \u00een configura\u021bia server.xml .

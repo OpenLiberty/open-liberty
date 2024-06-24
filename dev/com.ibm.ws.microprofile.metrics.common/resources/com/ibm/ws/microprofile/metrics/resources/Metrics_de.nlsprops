@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2023 IBM Corporation and others.
+# Copyright (c) 2009, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -100,6 +100,21 @@ missingDependencyClasses.error.CWMMC0013E.useraction=Geben Sie die erforderliche
 libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: Das Feature MicroProfile Metrics ist f\u00fcr die Verwendung des folgenden libraryRef-Attributs konfiguriert: [{0}]
 libraryRefConfigured.info.CWMMC0014I.explanation=Das Feature MicroProfile Metrics ist f\u00fcr die Verwendung eines libraryRef-Attributs konfiguriert. Diese referenzierte Bibliothek muss die Mikrometerkernbibliothek, die Zielmikrometerbibliotheken und die Abh\u00e4ngigkeiten enthalten.
 libraryRefConfigured.info.CWMMC0014I.useraction=Es ist keine Aktion erforderlich.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidHistogramValueConfigured.warning.CWMMC0015W=CWMMC0015W: Der Wert {0} ist f\u00fcr die Eigenschaft {1} ung\u00fcltig. Nur Ganzzahl-und Dezimalwerte werden akzeptiert.
+invalidHistogramValueConfigured.warning.CWMMC0015W.explanation=Die konfigurierten Histogrammwerte sind ung\u00fcltig.
+invalidHistogramValueConfigured.warning.CWMMC0015W.useraction=Konfigurieren Sie die Werte nur mit Ganzzahlen und Dezimalstellen.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidTimerValueConfigured.warning.CWMMC0016W=CWMMC0016W: Der Wert {0} ist f\u00fcr die Eigenschaft {1} ung\u00fcltig. Nur ganzzahlige Werte mit einer Zeiteinheit (z. B. ms, s, m, h) werden akzeptiert.
+invalidTimerValueConfigured.warning.CWMMC0016W.explanation=Die konfigurierten Zeitgeberwerte sind ung\u00fcltig.
+invalidTimerValueConfigured.warning.CWMMC0016W.useraction=Konfigurieren Sie mit ganzzahligen Werten und Zeiteinheiten (z. B. ms, s, m, h).
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidPercentileValueConfigured.warning.CWMMC0017W=CWMMC0017W: Der Wert {0} ist f\u00fcr die Eigenschaft {1} ung\u00fcltig. Werte m\u00fcssen im Bereich von 0.0 bis einschlie\u00dflich 1.0 liegen, damit sie akzeptiert werden.
+invalidPercentileValueConfigured.warning.CWMMC0017W.explanation=Die konfigurierten Perzentilwerte sind ung\u00fcltig.
+invalidPercentileValueConfigured.warning.CWMMC0017W.useraction=Konfigurieren Sie die Werte im Bereich 0.0 bis 1.0 einschlie\u00dflich, damit sie akzeptiert werden.
 
 #Memory usedHeap message
 memory.usedHeap.description=Zeigt die Menge des belegten Heapspeichers in Bytes an.

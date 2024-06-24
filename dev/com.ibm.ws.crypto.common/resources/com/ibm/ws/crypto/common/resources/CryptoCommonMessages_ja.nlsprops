@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWWKS0000=CWWKS0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.crypto.common/resources/com/ibm/ws/crypto/common/resources/CryptoCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Common Crypto Utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS5900 - CWWKS5910
+CRYPTO_UNSECURE=CWWKS5900W: {0} \u69cb\u6210\u30a8\u30ec\u30e1\u30f3\u30c8\u306f\u3001 {1} \u975e\u30bb\u30ad\u30e5\u30a2\u6697\u53f7\u30a2\u30eb\u30b4\u30ea\u30ba\u30e0\u3092\u6307\u5b9a\u3057\u3066\u3044\u307e\u3059\u3002  \u4ee3\u308f\u308a\u306b {2} \u30bb\u30ad\u30e5\u30a2\u30fb\u30a2\u30eb\u30b4\u30ea\u30ba\u30e0\u3092\u4f7f\u7528\u3059\u308b\u3053\u3068\u3092\u691c\u8a0e\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+CRYPTO_UNSECURE.explanation=\u69cb\u6210\u3055\u308c\u305f\u30a2\u30eb\u30b4\u30ea\u30ba\u30e0\u306f\u3001\u6697\u53f7\u7684\u306b\u30bb\u30ad\u30e5\u30a2\u3068\u306f\u898b\u306a\u3055\u308c\u306a\u304f\u306a\u308a\u307e\u3057\u305f\u3002
+CRYPTO_UNSECURE.useraction=\u63a8\u5968\u3055\u308c\u308b\u30bb\u30ad\u30e5\u30a2\u30fb\u30a2\u30eb\u30b4\u30ea\u30ba\u30e0\u3092\u4f7f\u7528\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+CRYPTO_UNSECURE_REPLACED=CWWKS5901W: {0} \u69cb\u6210\u30a8\u30ec\u30e1\u30f3\u30c8\u306f\u3001 {1} \u975e\u30bb\u30ad\u30e5\u30a2\u6697\u53f7\u30a2\u30eb\u30b4\u30ea\u30ba\u30e0\u3092\u6307\u5b9a\u3057\u3066\u3044\u307e\u3059\u3002  \u4ee3\u308f\u308a\u306b\u30bb\u30ad\u30e5\u30a2\u30fb\u30a2\u30eb\u30b4\u30ea\u30ba\u30e0 {2} \u304c\u4f7f\u7528\u3055\u308c\u307e\u3059\u3002
+CRYPTO_UNSECURE_REPLACED.explanation=\u975e\u30bb\u30ad\u30e5\u30a2\u6697\u53f7\u30a2\u30eb\u30b4\u30ea\u30ba\u30e0\u304c\u30bb\u30ad\u30e5\u30a2\u30fb\u30a2\u30eb\u30b4\u30ea\u30ba\u30e0\u306b\u7f6e\u304d\u63db\u3048\u3089\u308c\u307e\u3057\u305f\u3002
+CRYPTO_UNSECURE_REPLACED.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002

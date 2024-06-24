@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2023 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -875,7 +875,7 @@ WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Opravte v\u0161echny podm\u00ednky o
 
 WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: Po\u017eadavek kontroln\u00edho bodu serveru se nezda\u0159il, proto\u017ee transak\u010dn\u00ed slu\u017eba nem\u016f\u017ee zah\u00e1jit transakci.
 WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=Protokol Liberty nepodporuje aplikace, kter\u00e9 zahajuj\u00ed nebo vy\u017eaduj\u00ed transakci, zat\u00edmco se aplikace spou\u0161t\u00ed, kdy\u017e je po\u017eadov\u00e1n kontroln\u00ed bod serveru.
-WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Pou\u017eijte volbu kontroln\u00edho bodu serveru at=deployment, nebo upravte aplikaci tak, aby zah\u00e1jila transakce po jej\u00edm spu\u0161t\u011bn\u00ed.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Nakonfigurujte kontroln\u00ed bod tak, aby se vyskytl p\u0159ed spu\u0161t\u011bn\u00edm aplikace, pomoc\u00ed volby beforeAppSpustit kontroln\u00ed bod serveru, nebo upravte aplikaci tak, aby po spu\u0161t\u011bn\u00ed spustila transakce.
 
 # 0 - Stack trace of call to create new tx
 WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Aplikace zah\u00e1jila nebo vy\u017eadovala transakci b\u011bhem po\u017eadavku kontroln\u00edho bodu serveru. N\u00e1sleduj\u00edc\u00ed trasov\u00e1n\u00ed z\u00e1sobn\u00edku pro tento podproces bylo zachyceno p\u0159i vytvo\u0159en\u00ed transakce: {0}
