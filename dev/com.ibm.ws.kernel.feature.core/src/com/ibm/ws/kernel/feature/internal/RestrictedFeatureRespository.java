@@ -15,9 +15,7 @@ package com.ibm.ws.kernel.feature.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
-import com.ibm.ws.kernel.feature.internal.subsystem.SubsystemFeatureDefinitionImpl;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Selector;

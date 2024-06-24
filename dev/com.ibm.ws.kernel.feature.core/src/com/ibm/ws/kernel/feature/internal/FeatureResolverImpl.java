@@ -596,21 +596,24 @@ public class FeatureResolverImpl implements FeatureResolver {
                 continue;
             }
 
-            if(rootFeatureDef.isVersionless()){
-                hasVersionlessFeatures = true;
+            if(isBeta){
+                if(rootFeatureDef.isVersionless()){
+                    hasVersionlessFeatures = true;
+                }
+    
+                List<String> wlpPlatform = rootFeatureDef.getPlatformNames();
+                if(wlpPlatform != null && wlpPlatform.size() > 0){
+                    String[] nav = parseNameAndVersion(wlpPlatform.get(0));
+                    String compatibilityFeature = selectionContext.platformToCompatibilityBaseName().get(nav[0]);
+                    if(map.containsKey(compatibilityFeature)){
+                        map.get(compatibilityFeature).retainAll(wlpPlatform);
+                    }
+                    else{
+                        map.put(compatibilityFeature, new HashSet<String>(wlpPlatform));
+                    }
+                }
             }
 
-            List<String> wlpPlatform = rootFeatureDef.getPlatformNames();
-            if(wlpPlatform != null && wlpPlatform.size() > 0){
-                String[] nav = parseNameAndVersion(wlpPlatform.get(0));
-                String compatibilityFeature = selectionContext.platformToCompatibilityBaseName().get(nav[0]);
-                if(map.containsKey(compatibilityFeature)){
-                    map.get(compatibilityFeature).retainAll(wlpPlatform);
-                }
-                else{
-                    map.put(compatibilityFeature, new HashSet<String>(wlpPlatform));
-                }
-            }
             String symbolicName = rootFeatureDef.getSymbolicName();
             if (rootFeatureDef.getVisibility() != Visibility.PUBLIC) {
                 selectionContext.getResult().addNonPublicRoot(rootFeatureName);
@@ -627,7 +630,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         //check if we have versionless features in our config,
         //we need some way to capture platform equivalency, ex javaee and jakartaee
         //can be possibly be done by checking if the platforms compatibility features are the same.
-        if(hasVersionlessFeatures){
+        if(isBeta && hasVersionlessFeatures){
             for(String key : map.keySet()){
                 Set<String> current = map.get(key);
                 if(current.size() == 1){
