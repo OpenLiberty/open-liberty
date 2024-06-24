@@ -682,7 +682,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             for (FeatureResource privateVersionless : versionlessDeps) { //versionlessDeps.size will always be 1, the private versionless feature
                 String[] nav = parseNameAndVersion(privateVersionless.getSymbolicName());
                 features.add(nav[0] + "-" + nav[1]);
-                
+
                 if(privateVersionless.getTolerates() != null){
                     for(String version : privateVersionless.getTolerates()) {
                         features.add(nav[0] + "-" + version);
@@ -692,22 +692,38 @@ public class FeatureResolverImpl implements FeatureResolver {
             // loops through the private features related to the versionless feature
             for(String feature : features){
                 ProvisioningFeatureDefinition featureDef = selectionContext.getRepository().getFeature(feature);
-                if(featureDef == null){
-                    //some features aren't in this repo, we can skip those
-                    continue;
-                }
-                Collection<FeatureResource> featureDeps = featureDef.getConstituents(SubsystemContentType.FEATURE_TYPE);
-                for (FeatureResource featureDep : featureDeps) { // could be multiple, we only care about the public versioned feature
-                    if(!!!featureDep.getSymbolicName().startsWith("com.ibm.websphere.appserver.eeCompatible") &&
-                    !!!featureDep.getSymbolicName().startsWith("io.openliberty.internal.mpVersion") &&
-                    !!!featureDep.getSymbolicName().contains("noShip")){
-                        ProvisioningFeatureDefinition versionedFeature = selectionContext.getRepository().getFeature(featureDep.getSymbolicName());
-                        if(versionedFeature == null){
-                            continue;
+                if(featureDef != null){
+                    boolean addFeature = false;
+                    FeatureResource compatibleFeature = null;
+                    Collection<FeatureResource> featureDeps = featureDef.getConstituents(SubsystemContentType.FEATURE_TYPE);
+                    for (FeatureResource featureDep : featureDeps) { // could be multiple
+                        if(!!!featureDep.getSymbolicName().contains("noShip")){
+                            ProvisioningFeatureDefinition versionedFeature = selectionContext.getRepository().getFeature(featureDep.getSymbolicName());
+                            if(versionedFeature == null){
+                                continue;
+                            }
+                            if(featureDep.getSymbolicName().startsWith("com.ibm.websphere.appserver.eeCompatible") 
+                                || featureDep.getSymbolicName().startsWith("io.openliberty.internal.mpVersion")){
+                                
+                                compatibleFeature = featureDep;
+                            }
+                            // if we resolved the public versioned feature, add the private versionless linking feature
+                            if(versionedFeature.getIbmShortName() != null && result._resolved.contains(versionedFeature.getIbmShortName())){
+                                addFeature = true;
+                            }
                         }
-                        // if we resolved the public versioned feature, add the private versionless linking feature
-                        if(versionedFeature.getIbmShortName() != null && result._resolved.contains(versionedFeature.getIbmShortName())){
-                            addingFeatures.add(feature);
+                    }
+                    if(addFeature){
+                        addingFeatures.add(feature);
+                        if(compatibleFeature != null){
+                            String[] nav = parseNameAndVersion(compatibleFeature.getSymbolicName());
+                            addingFeatures.add(nav[0] + "-" + nav[1]);
+
+                            if(compatibleFeature.getTolerates() != null){
+                                for(String version : compatibleFeature.getTolerates()) {
+                                    addingFeatures.add(nav[0] + "-" + version);
+                                }
+                            }
                         }
                     }
                 }
@@ -727,7 +743,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         allCompatibilityFeatures = new HashMap<>();
         for(ProvisioningFeatureDefinition feature : features){
             if(feature.isCompatibility()){
-                allCompatibilityFeatures.put(feature.getPlatformName(), feature);
+                allCompatibilityFeatures.put(feature.getPlatformName().toLowerCase(), feature);
             }
         }
     }
@@ -1006,9 +1022,8 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
     }
 
-    //revisit with versionless updates
     private boolean isAccessible(ProvisioningFeatureDefinition includingFeature, ProvisioningFeatureDefinition candidateDef) {
-        return !!!candidateDef.getFeatureName().startsWith("io.openliberty.versionless.")
+        return !!!candidateDef.isVersionless()
                && ((candidateDef.getVisibility() != Visibility.PRIVATE) || includingFeature.getBundleRepositoryType().equals(candidateDef.getBundleRepositoryType()));
     }
 
@@ -1032,7 +1047,6 @@ public class FeatureResolverImpl implements FeatureResolver {
             return true;
         }
         if (isBeta) {
-            //replace with api call
             if (chain.peekFirst().startsWith("io.openliberty.versionless.")) {
                 return true;
             }
@@ -1421,10 +1435,6 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         void processPostponed() {
-            System.out.println();
-            System.out.println("Resolved: " + _current._selected);
-            System.out.println("Resolved: " + _current._postponedVersionless);
-            System.out.println("Resolved: " + _current._postponed);
             if (_current._postponed.isEmpty() && _current._postponedVersionless.isEmpty()) {
                 return;
             }
@@ -1480,7 +1490,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 // try to find a good selection
 
                 Chain selected = null;
-                if(hasVersionlessFeatures){
+                if(isBeta && hasVersionlessFeatures){
                     selected = firstPostponed.getValue().selectTryFirst(firstPostponed.getKey(), this);
                 }
                 else{
@@ -1667,7 +1677,6 @@ public class FeatureResolverImpl implements FeatureResolver {
                             if(c.getCandidates().size() == 1 && c.getCandidates().get(0).equals(allCompatibilityFeatures.get(plat.toLowerCase()).getSymbolicName())){
                                 Chain match = match(candidate, selectedChain, selectionContext);
                                 if(match != null){
-                                    System.out.println("I FOUND A MATCH YAY - " + candidate + " : " + plat);
                                     return new Chain(selectedChain.getChain(), Collections.singletonList(candidate), feature.getVersion().toString(), selectedChain.getFeatureRequirement());
                                 }
                             }
