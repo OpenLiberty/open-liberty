@@ -87,7 +87,7 @@ public class ArtifactDownloader implements AutoCloseable {
         });
     }
 
-    public Set<String> getMissingFeaturesFromRepo(List<String> mavenCoords, MavenRepository repository, VerifyOption verifyOption,
+    public Set<String> getMissingFeaturesFromRepo(List<String> mavenCoords, List<String> userFeatures, MavenRepository repository, VerifyOption verifyOption,
                                                   boolean downloadSignaturesOnly) throws InstallException {
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CONTACTING_MAVEN_REPO"));
 
@@ -116,7 +116,9 @@ public class ArtifactDownloader implements AutoCloseable {
                 String featureName = ArtifactDownloaderUtils.getFileNameFromURL(f);
                 String featureCoord = URLtoMavenCoordMap.get(f);
                 missingFeatureList.add(featureName);
-                missingCoords.add(featureCoord);
+                if (!userFeatures.contains(featureCoord) || verifyOption == verifyOption.all) {
+                    missingCoords.add(featureCoord);
+                }
             }
             fine("The remote repository \"" + repo.toString() + "\" is missing the following artifacts: " + missingFeatureList.toString());
 
@@ -124,23 +126,16 @@ public class ArtifactDownloader implements AutoCloseable {
         return missingCoords;
     }
 
-    public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, MavenRepository repository, VerifyOption verifyOption,
+    public void synthesizeAndDownloadFeatures(List<String> mavenCoords, List<String> usrFeatures, String dLocation, MavenRepository repository, VerifyOption verifyOption,
                                               boolean downloadSignaturesOnly) throws InstallException {
         final List<Future<?>> futures = new ArrayList<>();
         double individualSize = 0;
         info(Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_BEGINNING_DOWNLOAD_FEATURES"));
 
-        List<String> filesToDownload;
-        if (downloadSignaturesOnly) {
-            filesToDownload = Arrays.asList("esa.asc", "pom.asc");
-        } else if (verifyOption == null || verifyOption == VerifyOption.skip) {
-            filesToDownload = Arrays.asList("esa", "pom");
-        } else {
-            filesToDownload = Arrays.asList("esa", "pom", "esa.asc", "pom.asc");
-        }
-        for (String coords : mavenCoords) {
-            for (String file : filesToDownload) {
-                Future<?> future = submitDownloadRequest(coords, file, dLocation, repository);
+        for (String coord : mavenCoords) {
+            List<String> fileExtensions = getFileExt(coord, usrFeatures, verifyOption, downloadSignaturesOnly);
+            for (String fileExt : fileExtensions) {
+                Future<?> future = submitDownloadRequest(coord, fileExt, dLocation, repository);
                 futures.add(future);
             }
         }
@@ -168,6 +163,27 @@ public class ArtifactDownloader implements AutoCloseable {
         }
         progressBar.manuallyUpdate();
 
+    }
+
+    /**
+     * @param mavenCoord
+     * @param verifyOption
+     * @param downloadSignaturesOnly
+     * @param usrFeatures
+     * @return
+     */
+    private List<String> getFileExt(String mavenCoord, List<String> usrFeatures, VerifyOption verifyOption, boolean downloadSignaturesOnly) {
+        List<String> fileExtensions;
+        if (downloadSignaturesOnly) {
+            fileExtensions = Arrays.asList("esa.asc", "pom.asc");
+        } else if (verifyOption == null || verifyOption == VerifyOption.skip) {
+            fileExtensions = Arrays.asList("esa", "pom");
+        } else if (usrFeatures.contains(mavenCoord) && verifyOption != verifyOption.all) {
+            fileExtensions = Arrays.asList("esa", "pom");
+        } else {
+            fileExtensions = Arrays.asList("esa", "pom", "esa.asc", "pom.asc");
+        }
+        return fileExtensions;
     }
 
     /**
