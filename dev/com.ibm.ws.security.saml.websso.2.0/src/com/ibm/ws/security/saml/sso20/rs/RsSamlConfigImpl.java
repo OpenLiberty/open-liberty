@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,8 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.crypto.common.CryptoMessageUtils;
+import com.ibm.ws.crypto.common.CryptoUtils;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.saml.Constants;
 import com.ibm.ws.security.saml.SsoConfig;
@@ -189,6 +191,9 @@ public class RsSamlConfigImpl extends PkixTrustEngineConfig implements SsoConfig
 
         clockSkewMilliSeconds = (Long) props.get(KEY_clockSkew); // milliseconds
         signatureMethodAlgorithm = trim((String) props.get(KEY_signatureMethodAlgorithm));
+        if (CryptoUtils.isAlgorithmInsecure(signatureMethodAlgorithm)) {
+            CryptoMessageUtils.logInsecureAlgorithm(KEY_signatureMethodAlgorithm, signatureMethodAlgorithm);
+        }
         userIdentifier = trim((String) props.get(KEY_userIdentifier));
         groupIdentifier = trim((String) props.get(KEY_groupIdentifier));
         userUniqueIdentifier = trim((String) props.get(KEY_userUniqueIdentifier));
