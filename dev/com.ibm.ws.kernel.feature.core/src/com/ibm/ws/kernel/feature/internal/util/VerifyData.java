@@ -209,6 +209,7 @@ public class VerifyData {
 
         public final List<String> kernel = new ArrayList<>();
         public final List<String> roots = new ArrayList<>();
+        public final List<String> platforms = new ArrayList<>();
 
         public void setMultiple() {
             isMultiple = true;
@@ -229,6 +230,42 @@ public class VerifyData {
         public void addRoot(String name) {
             roots.add(name);
         }
+
+        public void addPlatform(String name) {
+            platforms.add(name);
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append("\nVerifyInput [\n\n");
+            if (isMultiple) {
+                sb.append("Multiple\n");
+            }
+            if (isClient) {
+                sb.append("Client\n");
+            }
+            if (isServer) {
+                sb.append("Server\n");
+            }
+
+            sb.append("\nKernel features:\n");
+            for (String kf : kernel) {
+                sb.append(kf + "\n");
+            }
+
+            sb.append("\nRoot features:\n");
+            for (String rf : roots) {
+                sb.append(rf + "\n");
+            }
+
+            sb.append("\nPlatforms:\n");
+            for (String p : platforms) {
+                sb.append(p + "\n");
+            }
+            sb.append("]\n");
+            return sb.toString();
+        }
     }
 
     public static class VerifyOutput {
@@ -248,6 +285,28 @@ public class VerifyData {
 
         public void addKernelBlocked(String feature) {
             kernelBlocked.add(feature);
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+
+            sb.append("\nVerifyOutput [\nExpected resolved features:\n");
+            for (String r : resolved) {
+                sb.append(r + "\n");
+            }
+
+            sb.append("\nkernel only:\n");
+            for (String ko : kernelOnly) {
+                sb.append(ko + "\n");
+            }
+
+            sb.append("\nKernel Blocked:\n");
+            for (String kb : kernelBlocked) {
+                sb.append(kb + "\n");
+            }
+            sb.append("]\n");
+            return sb.toString();
         }
     }
 }
