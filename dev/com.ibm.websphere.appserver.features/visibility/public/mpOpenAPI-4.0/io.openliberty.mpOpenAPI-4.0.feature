@@ -50,8 +50,8 @@ IBM-API-Package: \
     io.openliberty.microprofile.openapi.internal.common,\
     io.openliberty.com.fasterxml.jackson, \
     com.ibm.ws.org.jboss.logging
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
 WLP-Platform: microProfile-7.0
