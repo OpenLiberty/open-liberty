@@ -744,6 +744,8 @@ org.jboss.narayana.rts:lra-proxy-api:5.10.6.Final
 org.jboss.narayana.rts:lra-service-base:5.10.6.Final
 org.jboss.narayana.rts:narayana-lra:5.10.6.Final
 org.jboss.narayana:common:5.10.6.Final
+org.jboss.resteasy.microprofile:microprofile-rest-client-base:3.0.0.Alpha1
+org.jboss.resteasy.microprofile:microprofile-rest-client:3.0.0.Alpha1
 org.jboss.resteasy:resteasy-cdi:4.7.2.Final
 org.jboss.resteasy:resteasy-cdi:6.2.8.Final
 org.jboss.resteasy:resteasy-cdi:7.0.0.Alpha2
