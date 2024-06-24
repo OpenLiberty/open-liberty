@@ -21,6 +21,7 @@ import com.ibm.sip.util.log.Log;
 import com.ibm.sip.util.log.LogMgr;
 import com.ibm.sip.util.log.Situation;
 import com.ibm.ws.sip.container.appqueue.MessageDispatcher;
+import com.ibm.ws.sip.container.events.BasicTasksInvoker;
 import com.ibm.ws.sip.container.events.TasksInvoker;
 import com.ibm.ws.sip.container.failover.repository.SessionRepository;
 import com.ibm.ws.sip.container.parser.SipAppDesc;
@@ -106,7 +107,7 @@ public class SipContainer
 	/**
 	 * Invoker for SIP tasks
 	 */
-	private static TasksInvoker s_tasksInvoker = new WASXTasksInvoker();
+	private static TasksInvoker s_tasksInvoker = new BasicTasksInvoker();
 	
 	/**
 	 * The listener for http sessions
