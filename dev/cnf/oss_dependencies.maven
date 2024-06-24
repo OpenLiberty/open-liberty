@@ -298,7 +298,7 @@ jakarta.resource:jakarta.resource-api:2.0.0
 jakarta.resource:jakarta.resource-api:2.1.0
 jakarta.security.enterprise:jakarta.security.enterprise-api:2.0.0
 jakarta.security.enterprise:jakarta.security.enterprise-api:3.0.0
-jakarta.security.enterprise:jakarta.security.enterprise-api:4.0.0-M1
+jakarta.security.enterprise:jakarta.security.enterprise-api:4.0.0
 jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:2.0.0
 jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0
 jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0
