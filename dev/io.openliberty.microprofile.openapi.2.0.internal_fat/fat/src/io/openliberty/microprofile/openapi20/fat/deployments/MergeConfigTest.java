@@ -14,6 +14,8 @@ package io.openliberty.microprofile.openapi20.fat.deployments;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static componenttest.rules.repeater.MicroProfileActions.MP70_EE10_ID;
+import static componenttest.rules.repeater.MicroProfileActions.MP70_EE11_ID;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -38,6 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -263,6 +266,7 @@ public class MergeConfigTest {
 
     @Mode(TestMode.LITE)
     @Test
+    @SkipForRepeat({ MP70_EE10_ID, MP70_EE11_ID }) // Not yet implemented
     public void testInfoConfigured() throws Exception {
         String info = "{"
                       + "\"title\": \"test title\","
@@ -298,6 +302,7 @@ public class MergeConfigTest {
     }
 
     @Test
+    @SkipForRepeat({ MP70_EE10_ID, MP70_EE11_ID }) // Not yet implemented
     public void testInfoInvalidJson() throws Exception {
         setMergeConfig("all", null, "foo");
         server.startServer();
@@ -321,6 +326,7 @@ public class MergeConfigTest {
     }
 
     @Test
+    @SkipForRepeat({ MP70_EE10_ID, MP70_EE11_ID }) // Not yet implemented
     public void testInfoNoTitle() throws Exception {
         setMergeConfig("all", null, "{\"version\": \"1.0\"}");
         server.startServer();
@@ -345,6 +351,7 @@ public class MergeConfigTest {
     }
 
     @Test
+    @SkipForRepeat({ MP70_EE10_ID, MP70_EE11_ID }) // Not yet implemented
     public void testInfoConfiguredOneApp() throws Exception {
         String info = "{"
                       + "\"title\": \"test title\","
