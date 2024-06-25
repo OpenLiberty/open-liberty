@@ -41,8 +41,8 @@ import io.openliberty.netty.internal.impl.NettyConstants;
 
 public class LocalUtils {
 
-    private static final TraceComponent tc = Tr.register(LocalUtils.class, NettyConstants.NETTY_TRACE_NAME,
-            NettyConstants.BASE_BUNDLE);
+    private static final TraceComponent tc = Tr.register(LocalUtils.class, NettyConstants.NETTY_TRACE_NAME, null);
+            //NettyConstants.BASE_BUNDLE);
 
     /**
      * Create a {@link ServerBootstrapExtended} for local channels that are not
