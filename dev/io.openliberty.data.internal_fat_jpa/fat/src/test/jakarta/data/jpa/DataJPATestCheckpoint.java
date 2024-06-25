@@ -12,12 +12,8 @@
  *******************************************************************************/
 package test.jakarta.data.jpa;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -61,14 +57,15 @@ public class DataJPATestCheckpoint extends FATServletClient {
         WebArchive war = ShrinkHelper.buildDefaultApp("DataJPATestApp", "test.jakarta.data.jpa.web");
         ShrinkHelper.exportAppToServer(server, war);
 
-        configureEnvVariable(server, Collections.singletonMap("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName()));
+        Map<String, String> envVars = new HashMap<>();
+        envVars.put("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer();
 
         //Server started, application started, checkpoint taken, server is now stopped.
         //Configure environment variable used by servlet
-        configureEnvVariable(server, Collections.singletonMap("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName()));
+        server.addEnvVarsForCheckpoint(envVars);
 
         server.checkpointRestore();
     }
@@ -76,14 +73,5 @@ public class DataJPATestCheckpoint extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
-    }
-
-    static void configureEnvVariable(LibertyServer server, Map<String, String> newEnv) throws Exception {
-        Properties serverEnvProperties = new Properties();
-        serverEnvProperties.putAll(newEnv);
-        File serverEnvFile = new File(server.getFileFromLibertyServerRoot("server.env").getAbsolutePath());
-        try (OutputStream out = new FileOutputStream(serverEnvFile)) {
-            serverEnvProperties.store(out, "");
-        }
     }
 }

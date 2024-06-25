@@ -61,6 +61,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Set;
@@ -541,6 +542,27 @@ public class LibertyServer implements LogMonitorClient {
             checkpointInfo.checkpointRegexIgnoreMessages.add(regEx);
         }
         return this;
+    }
+
+    public void addEnvVarsForCheckpoint(Map<String, String> props) throws Exception {
+        File serverEnvFile;
+        if (fileExistsInLibertyServerRoot("server.env")) {
+            serverEnvFile = new File(getFileFromLibertyServerRoot("server.env").getAbsolutePath());
+        } else {
+            serverEnvFile = new File(getServerRoot() + "/" + "server.env");
+            serverEnvFile.createNewFile();
+        }
+        Properties mergeProps = new Properties();
+        try (InputStream in = new FileInputStream(serverEnvFile)) {
+            mergeProps.load(in);
+        }
+        mergeProps.putAll(props);
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(serverEnvFile), "8859_1"))) {
+            for (Entry<Object, Object> entry : mergeProps.entrySet()) {
+                bw.write(entry.getKey() + "=" + entry.getValue());
+                bw.newLine();
+            }
+        }
     }
 
     public static class CheckpointInfo {
