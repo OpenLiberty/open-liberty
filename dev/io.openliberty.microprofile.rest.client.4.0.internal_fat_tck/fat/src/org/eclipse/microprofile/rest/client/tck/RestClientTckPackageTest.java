@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -61,21 +61,21 @@ public class RestClientTckPackageTest {
         String javaVersion = System.getProperty("java.version");
         Log.info(RestClientTckPackageTest.class, "setup", "javaVersion: " + javaVersion);
         System.out.println("java.version = " + javaVersion);
-        if (javaVersion.startsWith("1.8")) {
-            useTCKSuite("java8");
-        } else if (TestModeFilter.shouldRun(TestMode.FULL)) {
-            useTCKSuite("FULL");
-        }
+//        if (javaVersion.startsWith("1.8")) {
+//            useTCKSuite("java8");
+//        } else if (TestModeFilter.shouldRun(TestMode.FULL)) {
+//            useTCKSuite("FULL");
+//        }
         server.startServer();
     }
 
-    private static void useTCKSuite(String id) throws Exception {
-        Path cwd = Paths.get(".");
-        Log.info(RestClientTckPackageTest.class, "setup", "cwd = " + cwd.toAbsolutePath());
-        Path java8File = Paths.get("publish/tckRunner/tck/tck-suite.xml-" + id);
-        Path tckSuiteFile = Paths.get("publish/tckRunner/tck/tck-suite.xml");
-        Files.copy(java8File, tckSuiteFile, StandardCopyOption.REPLACE_EXISTING);
-    }
+//    private static void useTCKSuite(String id) throws Exception {
+//        Path cwd = Paths.get(".");
+//        Log.info(RestClientTckPackageTest.class, "setup", "cwd = " + cwd.toAbsolutePath());
+//        Path java8File = Paths.get("publish/tckRunner/tck/tck-suite.xml-" + id);
+//        Path tckSuiteFile = Paths.get("publish/tckRunner/tck/tck-suite.xml");
+//        Files.copy(java8File, tckSuiteFile, StandardCopyOption.REPLACE_EXISTING);
+//    }
 
     @AfterClass
     public static void tearDown() throws Exception {
