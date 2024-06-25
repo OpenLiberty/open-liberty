@@ -518,4 +518,13 @@ public class DBRotationTest extends CloudFATServletClient {
     @Override
     protected void checkLogPresence() throws Exception {
     }
+
+    @Override
+    protected void setupRedundantLease(String serverName) throws Exception {
+    }
+
+    @Override
+    protected boolean checkRedundantLeaseExists(String serverName) throws Exception {
+        return false;
+    }
 }
