@@ -42,13 +42,11 @@ public class VersionlessTest {
         public static final int JAVA_11 = 11;
         public final int minJavaLevel;
 
-        public TestCase(String description,
-                        String serverName,
+        public TestCase(String description, String serverName,
                         String preferredVersions,
-                        String[] expectedResolved,
-                        String[] expectedFailed,
-                        String[] allowedErrors,
+                        String[] expectedResolved, String[] expectedFailed, String[] allowedErrors,
                         int minJavaLevel) {
+
             this.description = description;
             this.serverName = serverName;
             this.allowedErrors = allowedErrors;
@@ -58,12 +56,10 @@ public class VersionlessTest {
             this.minJavaLevel = minJavaLevel;
         }
 
-        public TestCase(String description,
-                        String serverName,
+        public TestCase(String description, String serverName,
                         String preferredVersions,
-                        String[] allowedErrors,
-                        String[] expectedFailed,
-                        String[] expectedResolved) {
+                        String[] expectedResolved, String[] expectedFailed, String[] allowedErrors) {
+
             this(description,
                  serverName,
                  preferredVersions,
@@ -211,10 +207,10 @@ public class VersionlessTest {
                 }
 
                 String failureMsg;
-                if (errors.size() == 1) {
-                    failureMsg = "Server [ " + serverName + " ] resolution error [ " + errors.get(0) + " ]";
+                if (errors.size() < 10) {
+                    failureMsg = "Server [ " + serverName + " ] has [ " + errors.size() + " ] resolution errors: [ " + errors + " ]";
                 } else {
-                    failureMsg = "Server [ " + serverName + " ] has [ " + errors.size() + " ] resolution errors";
+                    failureMsg = "Server [ " + serverName + " ] has [ " + errors.size() + " ] resolution errors (see logs)";
                 }
 
                 Assert.fail(failureMsg);

@@ -11,30 +11,45 @@ package com.ibm.ws.kernel.feature.internal.util;
 
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.CASES_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.CASE_TAG;
-import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.CLIENT_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.CONFLICT_FEATURE_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.DESCRIPTION_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.DURATION_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.ENV_CHAR;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.ENV_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.INPUT_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.KERNEL_BLOCKED_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.KERNEL_ONLY_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.KERNEL_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.MISSING_FEATURE_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.MULTIPLE_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.NAME_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.NON_PUBLIC_FEATURE_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.OUTPUT_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.PLATFORM_DUPLICATE_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.PLATFORM_MISSING_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.PLATFORM_RESOLVED_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.PLATFORM_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.RESOLVED_CHAR;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.RESOLVED_FEATURE_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.RESOLVED_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.ROOT_TAG;
-import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.SERVER_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.VERSIONLESS_NO_PLATFORM_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.VERSIONLESS_RESOLVED_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.WRONG_PROCESS_FEATURE_TAG;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import com.ibm.ws.kernel.feature.internal.util.VerifyData.ResultData;
 import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyCase;
 import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyInput;
 import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyOutput;
@@ -211,12 +226,6 @@ public class VerifyXML extends BaseXML {
             if (verifyInput.isMultiple) {
                 printElement(MULTIPLE_TAG);
             }
-            if (verifyInput.isClient) {
-                printElement(CLIENT_TAG);
-            }
-            if (verifyInput.isServer) {
-                printElement(SERVER_TAG);
-            }
             for (String kernelFeature : verifyInput.kernel) {
                 printElement(KERNEL_TAG, kernelFeature);
             }
@@ -225,6 +234,9 @@ public class VerifyXML extends BaseXML {
             }
             for (String platform : verifyInput.platforms) {
                 printElement(PLATFORM_TAG, platform);
+            }
+            for (Map.Entry<String, String> envEntry : verifyInput.envMap.entrySet()) {
+                printElement(ENV_TAG, envEntry.getKey() + ENV_CHAR + envEntry.getValue());
             }
 
             downIndent();
@@ -241,14 +253,59 @@ public class VerifyXML extends BaseXML {
             for (String feature : verifyOutput.kernelBlocked) {
                 printElement(KERNEL_BLOCKED_TAG, feature);
             }
-            for (String resolved : verifyOutput.resolved) {
-                printElement(RESOLVED_TAG, resolved);
+
+            for (ResultData dataType : ResultData.values()) {
+                String elementTag = resultTags.get(dataType);
+
+                if (dataType != ResultData.FEATURE_VERSIONLESS_RESOLVED) {
+                    for (String value : verifyOutput.get(dataType)) {
+                        printElement(elementTag, value);
+                    }
+                } else {
+                    Map<String, String> versionlessResolved = verifyOutput.getVersionlessResolved();
+                    for (Map.Entry<String, String> resolvedEntry : versionlessResolved.entrySet()) {
+                        String value = resolvedEntry.getKey() + RESOLVED_CHAR + resolvedEntry.getValue();
+                        printElement(elementTag, value);
+                    }
+                }
             }
 
             downIndent();
             closeElement(OUTPUT_TAG);
         }
     }
+
+    public static final EnumMap<ResultData, String> resultTags;
+    public static final Map<String, ResultData> tagResults;
+
+    // @formatter:off
+    static {
+        EnumMap<ResultData, String> useTags = new EnumMap<ResultData, String>(ResultData.class);
+        Map<String, ResultData> useResults = new HashMap<String, ResultData>();
+
+        put(useTags, useResults, ResultData.PLATFORM_RESOLVED, PLATFORM_RESOLVED_TAG);
+        put(useTags, useResults, ResultData.PLATFORM_MISSING, PLATFORM_MISSING_TAG);
+        put(useTags, useResults, ResultData.PLATFORM_DUPLICATE, PLATFORM_DUPLICATE_TAG);
+        put(useTags, useResults, ResultData.FEATURE_VERSIONLESS_RESOLVED, VERSIONLESS_RESOLVED_TAG);
+        put(useTags, useResults, ResultData.FEATURE_VERSIONLESS_NO_PLATFORM, VERSIONLESS_NO_PLATFORM_TAG);
+        put(useTags, useResults, ResultData.FEATURE_RESOLVED, RESOLVED_FEATURE_TAG);
+        put(useTags, useResults, ResultData.FEATURE_MISSING, MISSING_FEATURE_TAG);
+        put(useTags, useResults, ResultData.FEATURE_NON_PUBLIC, NON_PUBLIC_FEATURE_TAG);
+        put(useTags, useResults, ResultData.FEATURE_WRONG_PROCESS, WRONG_PROCESS_FEATURE_TAG);
+        put(useTags, useResults, ResultData.FEATURE_CONFLICT, CONFLICT_FEATURE_TAG);
+
+        resultTags = useTags;
+        tagResults = useResults;
+    }
+
+    private static void put(EnumMap<ResultData, String> useTags,
+                            Map<String, ResultData> useResults,
+                            ResultData dataType, String tag) {
+        useTags.put(dataType, tag);
+        useResults.put(tag, dataType);
+    }
+
+    // @formatter:on
 
     public static VerifyData read(File file) throws Exception {
         VerifyContentHandler contentHandler = new VerifyContentHandler();
@@ -310,24 +367,31 @@ public class VerifyXML extends BaseXML {
                 whitespaceOnly = true;
             } else if (pushElement(qName, MULTIPLE_TAG, INPUT_TAG)) {
                 // ignore
-            } else if (pushElement(qName, CLIENT_TAG, INPUT_TAG)) {
-                // ignore
-            } else if (pushElement(qName, SERVER_TAG, INPUT_TAG)) {
-                // ignore
             } else if (pushElement(qName, KERNEL_TAG, INPUT_TAG)) {
                 // ignore
             } else if (pushElement(qName, ROOT_TAG, INPUT_TAG)) {
                 // ignore
             } else if (pushElement(qName, PLATFORM_TAG, INPUT_TAG)) {
                 // ignore
+            } else if (pushElement(qName, ENV_TAG, INPUT_TAG)) {
+                // ignore
 
             } else if (pushElement(qName, OUTPUT_TAG, CASE_TAG)) {
                 whitespaceOnly = true;
             } else if (pushElement(qName, RESOLVED_TAG, OUTPUT_TAG)) {
+                // Provide compatibility with the original format.
                 // ignore
-
             } else {
-                super.startElement(uri, localName, qName, atts);
+                boolean isResultElement = false;
+                for (String tag : resultTags.values()) {
+                    if (pushElement(qName, tag, OUTPUT_TAG)) {
+                        isResultElement = true;
+                        break;
+                    }
+                }
+                if (!isResultElement) {
+                    super.startElement(uri, localName, qName, atts);
+                }
             }
 
             pushBuilder(whitespaceOnly);
@@ -355,25 +419,73 @@ public class VerifyXML extends BaseXML {
                 // ignore
             } else if (oldLast.contentEquals(MULTIPLE_TAG)) {
                 verifyCase.input.setMultiple();
-            } else if (oldLast.contentEquals(CLIENT_TAG)) {
-                verifyCase.input.setClient();
-            } else if (oldLast.contentEquals(SERVER_TAG)) {
-                verifyCase.input.setServer();
             } else if (oldLast.equals(KERNEL_TAG)) {
                 verifyCase.input.addKernel(elementText);
             } else if (oldLast.equals(ROOT_TAG)) {
                 verifyCase.input.addRoot(elementText);
             } else if (oldLast.equals(PLATFORM_TAG)) {
                 verifyCase.input.addPlatform(elementText);
+            } else if (oldLast.equals(ENV_TAG)) {
+                putEnvironment(elementText);
 
             } else if (oldLast.equals(OUTPUT_TAG)) {
                 // ignore
             } else if (oldLast.equals(RESOLVED_TAG)) {
+                // Provide compatibility with the original format.
                 verifyCase.output.addResolved(elementText);
-
             } else {
-                super.endElement(uri, localName, qName);
+                boolean isResultTag = false;
+                for (String tag : resultTags.values()) {
+                    if (oldLast.equals(tag)) {
+                        if (tag.equals(VERSIONLESS_RESOLVED_TAG)) {
+                            putVersionless(elementText);
+                        } else {
+                            verifyCase.output.add(tagResults.get(tag), elementText);
+                        }
+                        isResultTag = true;
+                        break;
+                    }
+                }
+
+                if (!isResultTag) {
+                    super.endElement(uri, localName, qName);
+                }
             }
+        }
+
+        private void putEnvironment(String elementText) {
+            String name;
+            String value;
+
+            int sepOffset = elementText.indexOf(ENV_CHAR);
+            if (sepOffset == -1) {
+                name = elementText;
+                value = "";
+            } else {
+                name = elementText.substring(0, sepOffset);
+                value = elementText.substring(sepOffset + 1);
+            }
+
+            verifyCase.input.putEnvironment(name, value);
+        }
+
+        private void putVersionless(String elementText) {
+            String name;
+            String value;
+
+            int sepOffset = elementText.indexOf(RESOLVED_CHAR);
+            if (sepOffset == -1) {
+                name = elementText;
+                value = "";
+            } else {
+                name = elementText.substring(0, sepOffset);
+                value = elementText.substring(sepOffset + 1);
+                if (value.equals("null")) {
+                    value = null;
+                }
+            }
+
+            verifyCase.output.putVersionlessResolved(name, value);
         }
     }
 

@@ -43,6 +43,8 @@ public interface FeatureResolver {
         boolean test(T input);
     }
 
+    String PREFERRED_PLATFORM_VERSIONS_PROPERTY_NAME = "PREFERRED_PLATFORM_VERSIONS";
+
     //
 
     /**
