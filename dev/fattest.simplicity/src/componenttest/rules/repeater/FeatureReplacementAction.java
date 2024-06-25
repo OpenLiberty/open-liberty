@@ -95,6 +95,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
         featureNameMapping.put("jsp", "pages");
         featureNameMapping.put("el", "expressionLanguage");
         featureNameMapping.put("wmqJmsClient", "wmqMessagingClient");
+        featureNameMapping.put("beanvalidation", "validation");
         featuresWithNameChangeOnEE9 = Collections.unmodifiableMap(featureNameMapping);
     }
 
