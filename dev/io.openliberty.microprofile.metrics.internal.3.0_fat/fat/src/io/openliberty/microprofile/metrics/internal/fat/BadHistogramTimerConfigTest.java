@@ -155,16 +155,16 @@ public class BadHistogramTimerConfigTest {
 
 		String metrics = "";
 		try {
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 
 		} catch (Exception e) {
 			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
@@ -206,16 +206,16 @@ public class BadHistogramTimerConfigTest {
 
 		String metrics = "";
 		try {
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 
 		} catch (Exception e) {
 			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
@@ -258,16 +258,16 @@ public class BadHistogramTimerConfigTest {
 
 		String metrics = "";
 		try {
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 
 		} catch (Exception e) {
 			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
@@ -309,16 +309,16 @@ public class BadHistogramTimerConfigTest {
 
 		String metrics = "";
 		try {
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 
 		} catch (Exception e) {
 			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
