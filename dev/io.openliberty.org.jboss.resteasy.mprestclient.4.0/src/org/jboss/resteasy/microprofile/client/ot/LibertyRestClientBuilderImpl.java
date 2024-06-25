@@ -59,7 +59,7 @@ import org.jboss.resteasy.spi.ResteasyUriBuilder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.microprofile.rest.client40.internal.OsgiServices;
-
+import io.openliberty.restfulWS.client.AsyncClientExecutorService;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.AnnotatedType;
@@ -393,8 +393,8 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
         if (this.executorService != null) {
             resteasyClientBuilder.executorService(this.executorService);
         } else {
-            this.executorService = (ContextualExecutorService) Executors.newCachedThreadPool(); // Liberty Change - add cast
-            resteasyClientBuilder.executorService(executorService, true);
+            this.executorService = ContextualExecutors.threadPool();
+            resteasyClientBuilder.executorService(executorService, !executorService.isManaged());
         }
         resteasyClientBuilder.register(DEFAULT_MEDIA_TYPE_FILTER);
         resteasyClientBuilder.register(METHOD_INJECTION_FILTER);
