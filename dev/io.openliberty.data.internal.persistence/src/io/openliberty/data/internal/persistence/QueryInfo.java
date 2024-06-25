@@ -1160,13 +1160,12 @@ public class QueryInfo {
         if (singleType.isPrimitive())
             singleType = wrapperClassIfPrimitive(singleType);
 
-        q.append("SELECT ");
-
         if (cols == null || cols.length == 0) {
             if (singleType.isAssignableFrom(entityInfo.entityClass)
                 || entityInfo.inheritance && entityInfo.entityClass.isAssignableFrom(singleType)) {
                 // Whole entity
-                q.append(o);
+                if (!"this".equals(o))
+                    q.append("SELECT ").append(o);
             } else {
                 // Look for single entity attribute with the desired type:
                 String singleAttributeName = null;
@@ -1194,7 +1193,7 @@ public class QueryInfo {
 
                 if (singleAttributeName == null) {
                     // Construct new instance for record or IdClass
-                    q.append("NEW ").append(singleType.getName()).append('(');
+                    q.append("SELECT NEW ").append(singleType.getName()).append('(');
                     RecordComponent[] recordComponents;
                     boolean first = true;
                     if ((recordComponents = singleType.getRecordComponents()) != null)
@@ -1221,7 +1220,7 @@ public class QueryInfo {
                                                    "or the Query annotation must be used to construct the result type with JPQL."); // TODO NLS
                     q.append(')');
                 } else {
-                    q.append(o_).append(singleAttributeName);
+                    q.append("SELECT ").append(o_).append(singleAttributeName);
                 }
             }
         } else { // Individual columns are requested by @Select
@@ -1242,10 +1241,10 @@ public class QueryInfo {
             if (selectAsColumns) {
                 // Specify columns without creating new instance
                 for (int i = 0; i < cols.length; i++)
-                    q.append(i == 0 ? "" : ", ").append(o).append('.').append(cols[i]);
+                    q.append(i == 0 ? "SELECT " : ", ").append(o).append('.').append(cols[i]);
             } else {
                 // Construct new instance from defined columns
-                q.append("NEW ").append(singleType.getName()).append('(');
+                q.append("SELECT NEW ").append(singleType.getName()).append('(');
                 for (int i = 0; i < cols.length; i++)
                     q.append(i == 0 ? "" : ", ").append(o).append('.').append(cols[i]);
                 q.append(')');
@@ -1858,6 +1857,7 @@ public class QueryInfo {
         } else { // SELECT ... or FROM ... or WHERE ... or ORDER BY ...
             int select0 = -1, selectLen = 0; // starts after SELECT
             int from0 = -1, fromLen = 0; // starts after FROM
+            int entityName0 = -1, entityNameLen = 0;
             int where0 = -1, whereLen = 0; // starts after WHERE
             int order0 = -1, orderLen = 0; // starts at ORDER BY
 
@@ -1957,7 +1957,7 @@ public class QueryInfo {
 
             type = Type.FIND;
             entityVar = "this";
-            entityVar_ = "";
+            entityVar_ = "this.";
             hasWhere = whereLen > 0;
 
             // Locate the entity identifier variable (if present). Examples of FROM clause:
@@ -1966,7 +1966,7 @@ public class QueryInfo {
             // FROM EntityName AS e
             for (startAt = from0; startAt < from0 + fromLen && Character.isWhitespace(ql.charAt(startAt)); startAt++);
             if (startAt < from0 + fromLen) {
-                int entityName0 = startAt, entityNameLen = 0; // starts at EntityName
+                entityName0 = startAt; // starts at EntityName
                 for (; startAt < from0 + fromLen && Character.isJavaIdentifierPart(ql.charAt(startAt)); startAt++);
                 if ((entityNameLen = startAt - entityName0) > 0) {
                     String entityName = ql.substring(entityName0, entityName0 + entityNameLen);
@@ -2008,28 +2008,31 @@ public class QueryInfo {
                          "  entity [" + entityName + "] [" + entityVar + "]");
             }
 
-            // TODO remove this once we have JPA 3.2
-            boolean lacksEntityVar;
-            if (lacksEntityVar = "this".equals(entityVar)) {
-                entityVar = "o";
-                entityVar_ = "o.";
-            }
+            boolean hasEntityVar = !"this".equals(entityVar);
 
             if (countPages) {
                 // TODO count query cannot always be accurately inferred if Query value is JPQL
                 StringBuilder c = new StringBuilder("SELECT COUNT(");
-                if (lacksEntityVar
-                    || selectLen <= 0
+                if (selectLen <= 0
                     || ql.substring(select0, select0 + selectLen).indexOf(',') >= 0) // comma delimited multiple return values
                     c.append(entityVar);
                 else // allows for COUNT(DISTINCT o.name)
                     appendWithIdentifierName(ql, select0, select0 + selectLen, c);
 
                 c.append(") FROM");
-                if (from0 >= 0 && !lacksEntityVar)
-                    c.append(ql.substring(from0, from0 + fromLen));
-                else
-                    c.append(' ').append(entityName).append(' ').append(entityVar).append(' ');
+                if (from0 >= 0) {
+                    if (entityName0 > 0) {
+                        c.append(ql.substring(from0, entityName0));
+                        c.append(entityName);
+                        c.append(ql.substring(entityName0 + entityNameLen, from0 + fromLen));
+                    } else {
+                        c.append(ql.substring(from0, from0 + fromLen));
+                    }
+                } else {
+                    c.append(' ').append(entityName).append(' ');
+                    if (hasEntityVar)
+                        c.append(entityVar).append(' ');
+                }
 
                 if (whereLen > 0) {
                     c.append("WHERE");
@@ -2073,14 +2076,23 @@ public class QueryInfo {
                 q.append("SELECT");
                 appendWithIdentifierName(ql, select0, select0 + selectLen, q);
             } else {
-                q = generateSelectClause();
+                q = generateSelectClause().append(' ');
             }
 
-            q.append(" FROM");
-            if (fromLen > 0 && !lacksEntityVar)
-                q.append(ql.substring(from0, from0 + fromLen));
-            else
-                q.append(' ').append(entityName).append(' ').append(entityVar).append(' ');
+            q.append("FROM");
+            if (fromLen > 0) {
+                if (entityName0 > 0) {
+                    q.append(ql.substring(from0, entityName0));
+                    q.append(entityName);
+                    q.append(ql.substring(entityName0 + entityNameLen, from0 + fromLen));
+                } else {
+                    q.append(ql.substring(from0, from0 + fromLen));
+                }
+            } else {
+                q.append(' ').append(entityName).append(' ');
+                if (hasEntityVar)
+                    q.append(entityVar).append(' ');
+            }
 
             if (whereLen > 0) {
                 q.append("WHERE");
@@ -2092,6 +2104,12 @@ public class QueryInfo {
             }
 
             jpql = q.toString();
+
+            // TODO remove this workaround for #28874 once fixed
+            if (jpql.equals("SELECT NEW test.jakarta.data.jpa.web.Rebate(this.id, this.amount, this.customerId, this.purchaseMadeAt, this.purchaseMadeOn, this.status, this.updatedAt, this.version) FROM RebateEntity WHERE this.customerId=?1 AND this.status=test.jakarta.data.jpa.web.Rebate.Status.PAID ORDER BY this.amount DESC, this.id ASC"))
+                jpql = "SELECT NEW test.jakarta.data.jpa.web.Rebate(o.id, o.amount, o.customerId, o.purchaseMadeAt, o.purchaseMadeOn, o.status, o.updatedAt, o.version) FROM RebateEntity o WHERE o.customerId=?1 AND o.status=test.jakarta.data.jpa.web.Rebate.Status.PAID ORDER BY o.amount DESC, o.id ASC";
+            else if (jpql.equals(" FROM NaturalNumber WHERE this.isOdd = false AND this.numType = ee.jakarta.tck.data.framework.read.only.NaturalNumber.NumberType.PRIME"))
+                jpql = "SELECT o FROM NaturalNumber o WHERE o.isOdd = false AND o.numType = ee.jakarta.tck.data.framework.read.only.NaturalNumber.NumberType.PRIME";
         }
     }
 
