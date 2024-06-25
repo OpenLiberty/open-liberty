@@ -11577,11 +11577,11 @@
             <root>io.openliberty.data-1.0</root>
         </input>
         <output>
-            <resolved>com.ibm.websphere.appserver.eeCompatible-10.0</resolved>
+            <resolved>com.ibm.websphere.appserver.eeCompatible-11.0</resolved>
             <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
-            <resolved>io.openliberty.jakarta.annotation-2.1</resolved>
+            <resolved>io.openliberty.jakarta.annotation-3.0</resolved>
             <resolved>com.ibm.websphere.appserver.anno-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.containerServices-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved>
@@ -11592,26 +11592,27 @@
             <resolved>com.ibm.websphere.appserver.javaeePlatform-8.0</resolved>
             <resolved>io.openliberty.jakartaeePlatform-9.0</resolved>
             <resolved>io.openliberty.jakartaeePlatform-10.0</resolved>
-            <resolved>io.openliberty.servlet.api-6.0</resolved>
+            <resolved>io.openliberty.jakartaeePlatform-11.0</resolved>
+            <resolved>io.openliberty.servlet.api-6.1</resolved>
             <resolved>com.ibm.websphere.appserver.contextService-1.0</resolved>
             <resolved>io.openliberty.jakarta.enterpriseBeans-4.0</resolved>
             <resolved>io.openliberty.jsonpImpl-2.1.1</resolved>
             <resolved>io.openliberty.jsonpInternal-2.1</resolved>
-            <resolved>io.openliberty.jakarta.persistence.base-3.1</resolved>
-            <resolved>io.openliberty.jakarta.persistence-3.1</resolved>
-            <resolved>io.openliberty.jakarta.expressionLanguage-5.0</resolved>
-            <resolved>io.openliberty.jakarta.interceptor-2.1</resolved>
-            <resolved>io.openliberty.jakarta.cdi-4.0</resolved>
+            <resolved>io.openliberty.jakarta.persistence.base-3.2</resolved>
+            <resolved>io.openliberty.jakarta.persistence-3.2</resolved>
+            <resolved>io.openliberty.jakarta.expressionLanguage-6.0</resolved>
+            <resolved>io.openliberty.jakarta.interceptor-2.2</resolved>
+            <resolved>io.openliberty.jakarta.cdi-4.1</resolved>
             <resolved>io.openliberty.jakarta.activation-2.1</resolved>
             <resolved>io.openliberty.jakarta.xmlBinding-4.0</resolved>
             <resolved>io.openliberty.jakarta.xmlWS-4.0</resolved>
             <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
-            <resolved>io.openliberty.jakarta.pages-3.1</resolved>
+            <resolved>io.openliberty.jakarta.pages-4.0</resolved>
             <resolved>io.openliberty.jta-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.injection-2.0</resolved>
             <resolved>io.openliberty.jakarta.connectors-2.1</resolved>
             <resolved>com.ibm.websphere.appserver.transaction-2.0</resolved>
-            <resolved>cdi-4.0</resolved>
+            <resolved>cdi-4.1</resolved>
             <resolved>io.openliberty.jakarta.data-1.0</resolved>
             <resolved>data-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
@@ -14070,6 +14071,7 @@
             <resolved>io.openliberty.cdi3.0-appSecurity</resolved>
             <resolved>io.openliberty.restfulWS3.0-monitor1.0</resolved>
             <resolved>io.openliberty.httpStat-monitor1.0.jakarta</resolved>
+            <resolved>io.openliberty.org.eclipse.microprofile.config.3.1.ee-10.0</resolved>
         </output>
     </case>
     <case>
@@ -14129,6 +14131,7 @@
             <resolved>io.openliberty.org.eclipse.microprofile.config-3.1</resolved>
             <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
             <resolved>mpConfig-3.1</resolved>
+            <resolved>io.openliberty.org.eclipse.microprofile.config.3.1.ee-10.0</resolved>
         </output>
     </case>
     <case>
@@ -14220,60 +14223,64 @@
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
         </output>
     </case>
-    <case>
-        <name>io.openliberty.mpFaultTolerance-4.1_SERVER</name>
-        <description>Singleton [ io.openliberty.mpFaultTolerance-4.1 ] [ SERVER ]</description>
-        <input>
-            <server/>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>io.openliberty.mpFaultTolerance-4.1</root>
-        </input>
-        <output>
-            <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.eeCompatible-9.0</resolved>
-            <resolved>io.openliberty.jakarta.annotation-2.0</resolved>
-            <resolved>com.ibm.websphere.appserver.anno-2.0</resolved>
-            <resolved>com.ibm.websphere.appserver.containerServices-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.classloading-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.appmanager-1.0</resolved>
-            <resolved>io.openliberty.mpCompatible-5.0</resolved>
-            <resolved>io.openliberty.jakarta.expressionLanguage-4.0</resolved>
-            <resolved>io.openliberty.jakarta.interceptor-2.0</resolved>
-            <resolved>io.openliberty.jakarta.cdi-3.0</resolved>
-            <resolved>io.openliberty.org.eclipse.microprofile.config.3.0.ee-9.0</resolved>
-            <resolved>io.openliberty.org.eclipse.microprofile.config-3.0</resolved>
-            <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
-            <resolved>mpConfig-3.0</resolved>
-            <resolved>io.openliberty.microprofile.cdi.api-3.0</resolved>
-            <resolved>io.openliberty.org.eclipse.microprofile.faulttolerance-4.0</resolved>
-            <resolved>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved>
-            <resolved>com.ibm.websphere.appserver.javaeePlatform-7.0</resolved>
-            <resolved>com.ibm.websphere.appserver.javaeePlatform-8.0</resolved>
-            <resolved>io.openliberty.jakartaeePlatform-9.0</resolved>
-            <resolved>io.openliberty.servlet.api-5.0</resolved>
-            <resolved>com.ibm.websphere.appserver.contextService-1.0</resolved>
-            <resolved>io.openliberty.jakarta.enterpriseBeans-4.0</resolved>
-            <resolved>io.openliberty.jakarta.persistence.base-3.0</resolved>
-            <resolved>io.openliberty.jakarta.persistence-3.0</resolved>
-            <resolved>io.openliberty.jakarta.activation-2.0</resolved>
-            <resolved>io.openliberty.jakarta.xmlBinding-3.0</resolved>
-            <resolved>io.openliberty.jakarta.xmlWS-3.0</resolved>
-            <resolved>io.openliberty.jakarta.pages-3.0</resolved>
-            <resolved>io.openliberty.jta-2.0</resolved>
-            <resolved>com.ibm.websphere.appserver.injection-2.0</resolved>
-            <resolved>io.openliberty.jakarta.connectors-2.0</resolved>
-            <resolved>com.ibm.websphere.appserver.transaction-2.0</resolved>
-            <resolved>cdi-3.0</resolved>
-            <resolved>mpFaultTolerance-4.1</resolved>
-            <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-        </output>
-    </case>
+<case>
+    <name>io.openliberty.mpFaultTolerance-4.1_SERVER</name>
+    <description>Singleton [ io.openliberty.mpFaultTolerance-4.1 ] [ SERVER ]</description>
+    <input>
+        <server/>
+        <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
+        <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
+        <root>io.openliberty.mpFaultTolerance-4.1</root>
+    </input>
+    <output>
+        <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
+        <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
+        <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
+        <resolved>com.ibm.websphere.appserver.eeCompatible-10.0</resolved>
+        <resolved>io.openliberty.jakarta.annotation-2.1</resolved>
+        <resolved>com.ibm.websphere.appserver.anno-2.0</resolved>
+        <resolved>com.ibm.websphere.appserver.containerServices-1.0</resolved>
+        <resolved>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved>
+        <resolved>com.ibm.websphere.appserver.classloading-1.0</resolved>
+        <resolved>com.ibm.websphere.appserver.appmanager-1.0</resolved>
+        <resolved>io.openliberty.internal.mpVersion-7.0</resolved>
+        <resolved>io.openliberty.mpCompatible-7.0</resolved>
+        <resolved>io.openliberty.jakarta.expressionLanguage-5.0</resolved>
+        <resolved>io.openliberty.jakarta.interceptor-2.1</resolved>
+        <resolved>io.openliberty.jakarta.cdi-4.0</resolved>
+        <resolved>io.openliberty.org.eclipse.microprofile.config.3.1.ee-10.0</resolved>
+        <resolved>io.openliberty.org.eclipse.microprofile.config-3.1</resolved>
+        <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
+        <resolved>mpConfig-3.1</resolved>
+        <resolved>io.openliberty.microprofile.cdi.api-4.0</resolved>
+        <resolved>io.openliberty.org.eclipse.microprofile.faulttolerance-4.1</resolved>
+        <resolved>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved>
+        <resolved>com.ibm.websphere.appserver.javaeePlatform-7.0</resolved>
+        <resolved>com.ibm.websphere.appserver.javaeePlatform-8.0</resolved>
+        <resolved>io.openliberty.jakartaeePlatform-9.0</resolved>
+        <resolved>io.openliberty.jakartaeePlatform-10.0</resolved>
+        <resolved>io.openliberty.servlet.api-6.0</resolved>
+        <resolved>com.ibm.websphere.appserver.contextService-1.0</resolved>
+        <resolved>io.openliberty.jakarta.enterpriseBeans-4.0</resolved>
+        <resolved>io.openliberty.jsonpImpl-2.1.1</resolved>
+        <resolved>io.openliberty.jsonpInternal-2.1</resolved>
+        <resolved>io.openliberty.jakarta.persistence.base-3.1</resolved>
+        <resolved>io.openliberty.jakarta.persistence-3.1</resolved>
+        <resolved>io.openliberty.jakarta.activation-2.1</resolved>
+        <resolved>io.openliberty.jakarta.xmlBinding-4.0</resolved>
+        <resolved>io.openliberty.jakarta.xmlWS-4.0</resolved>
+        <resolved>io.openliberty.jakarta.pages-3.1</resolved>
+        <resolved>io.openliberty.jta-2.0</resolved>
+        <resolved>com.ibm.websphere.appserver.injection-2.0</resolved>
+        <resolved>io.openliberty.jakarta.connectors-2.1</resolved>
+        <resolved>com.ibm.websphere.appserver.transaction-2.0</resolved>
+        <resolved>cdi-4.0</resolved>
+        <resolved>mpFaultTolerance-4.1</resolved>
+        <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
+        <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
+        <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
+    </output>
+</case>
     <case>
         <name>io.openliberty.mpGraphQL-2.0_SERVER</name>
         <description>Singleton [ io.openliberty.mpGraphQL-2.0 ] [ SERVER ]</description>
@@ -15036,6 +15043,7 @@
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
             <resolved>io.openliberty.httpStat-monitor1.0.jakarta</resolved>
+            <resolved>io.openliberty.org.eclipse.microprofile.config.3.1.ee-10.0</resolved>
         </output>
     </case>
     <case>
@@ -15586,82 +15594,85 @@
             <resolved>io.openliberty.cdi3.0-jndi1.0</resolved>
             <resolved>io.openliberty.cdi4.0-servlet6.0</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
+            <resolved>io.openliberty.org.eclipse.microprofile.config.3.1.ee-10.0</resolved>
         </output>
     </case>
-    <case>
-        <name>io.openliberty.mpTelemetry-2.0_SERVER</name>
-        <description>Singleton [ io.openliberty.mpTelemetry-2.0 ] [ SERVER ]</description>
-        <input>
-            <server/>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>io.openliberty.mpTelemetry-2.0</root>
-        </input>
-        <output>
-            <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.eeCompatible-10.0</resolved>
-            <resolved>io.openliberty.jakarta.annotation-2.1</resolved>
-            <resolved>com.ibm.websphere.appserver.anno-2.0</resolved>
-            <resolved>com.ibm.websphere.appserver.containerServices-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.classloading-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.appmanager-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved>
-            <resolved>com.ibm.websphere.appserver.javaeePlatform-7.0</resolved>
-            <resolved>com.ibm.websphere.appserver.javaeePlatform-8.0</resolved>
-            <resolved>io.openliberty.jakartaeePlatform-9.0</resolved>
-            <resolved>io.openliberty.jakartaeePlatform-10.0</resolved>
-            <resolved>io.openliberty.servlet.api-6.0</resolved>
-            <resolved>com.ibm.websphere.appserver.contextService-1.0</resolved>
-            <resolved>io.openliberty.jakarta.enterpriseBeans-4.0</resolved>
-            <resolved>io.openliberty.jsonpImpl-2.1.1</resolved>
-            <resolved>io.openliberty.jsonpInternal-2.1</resolved>
-            <resolved>io.openliberty.jakarta.persistence.base-3.1</resolved>
-            <resolved>io.openliberty.jakarta.persistence-3.1</resolved>
-            <resolved>io.openliberty.jakarta.expressionLanguage-5.0</resolved>
-            <resolved>io.openliberty.jakarta.interceptor-2.1</resolved>
-            <resolved>io.openliberty.jakarta.cdi-4.0</resolved>
-            <resolved>io.openliberty.jakarta.activation-2.1</resolved>
-            <resolved>io.openliberty.jakarta.xmlBinding-4.0</resolved>
-            <resolved>io.openliberty.jakarta.xmlWS-4.0</resolved>
-            <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
-            <resolved>io.openliberty.jakarta.pages-3.1</resolved>
-            <resolved>io.openliberty.jta-2.0</resolved>
-            <resolved>com.ibm.websphere.appserver.injection-2.0</resolved>
-            <resolved>io.openliberty.jakarta.connectors-2.1</resolved>
-            <resolved>com.ibm.websphere.appserver.transaction-2.0</resolved>
-            <resolved>cdi-4.0</resolved>
-            <resolved>io.openliberty.jakarta.mail-2.1</resolved>
-            <resolved>io.openliberty.jakarta.validation-3.0</resolved>
-            <resolved>com.ibm.websphere.appserver.javaeeddSchema-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.channelfw-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.httptransport-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.requestProbes-1.0</resolved>
-            <resolved>io.openliberty.servlet.internal-6.0</resolved>
-            <resolved>io.openliberty.jakarta.restfulWS-3.1</resolved>
-            <resolved>com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0</resolved>
-            <resolved>jndi-1.0</resolved>
-            <resolved>io.openliberty.activation.internal-2.1</resolved>
-            <resolved>jsonp-2.1</resolved>
-            <resolved>restfulWSClient-3.1</resolved>
-            <resolved>restfulWS-3.1</resolved>
-            <resolved>io.openliberty.mpCompatible-6.1</resolved>
-            <resolved>io.openliberty.org.eclipse.microprofile.config-3.1</resolved>
-            <resolved>mpConfig-3.1</resolved>
-            <resolved>io.openliberty.microprofile.cdi.api-4.0</resolved>
-            <resolved>io.openliberty.org.eclipse.microprofile.rest.client-3.0</resolved>
-            <resolved>io.openliberty.mpTelemetry2.0.ee-10.0</resolved>
-            <resolved>mpTelemetry-2.0</resolved>
-            <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>io.openliberty.cdi3.0-jndi1.0</resolved>
-            <resolved>io.openliberty.cdi4.0-servlet6.0</resolved>
-            <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-        </output>
-    </case>
+<case>
+    <name>io.openliberty.mpTelemetry-2.0_SERVER</name>
+    <description>Singleton [ io.openliberty.mpTelemetry-2.0 ] [ SERVER ]</description>
+    <input>
+        <server/>
+        <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
+        <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
+        <root>io.openliberty.mpTelemetry-2.0</root>
+    </input>
+    <output>
+        <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
+        <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
+        <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
+        <resolved>com.ibm.websphere.appserver.eeCompatible-10.0</resolved>
+        <resolved>io.openliberty.jakarta.annotation-2.1</resolved>
+        <resolved>com.ibm.websphere.appserver.anno-2.0</resolved>
+        <resolved>com.ibm.websphere.appserver.containerServices-1.0</resolved>
+        <resolved>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved>
+        <resolved>com.ibm.websphere.appserver.classloading-1.0</resolved>
+        <resolved>com.ibm.websphere.appserver.appmanager-1.0</resolved>
+        <resolved>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved>
+        <resolved>com.ibm.websphere.appserver.javaeePlatform-7.0</resolved>
+        <resolved>com.ibm.websphere.appserver.javaeePlatform-8.0</resolved>
+        <resolved>io.openliberty.jakartaeePlatform-9.0</resolved>
+        <resolved>io.openliberty.jakartaeePlatform-10.0</resolved>
+        <resolved>io.openliberty.servlet.api-6.0</resolved>
+        <resolved>com.ibm.websphere.appserver.contextService-1.0</resolved>
+        <resolved>io.openliberty.jakarta.enterpriseBeans-4.0</resolved>
+        <resolved>io.openliberty.jsonpImpl-2.1.1</resolved>
+        <resolved>io.openliberty.jsonpInternal-2.1</resolved>
+        <resolved>io.openliberty.jakarta.persistence.base-3.1</resolved>
+        <resolved>io.openliberty.jakarta.persistence-3.1</resolved>
+        <resolved>io.openliberty.jakarta.expressionLanguage-5.0</resolved>
+        <resolved>io.openliberty.jakarta.interceptor-2.1</resolved>
+        <resolved>io.openliberty.jakarta.cdi-4.0</resolved>
+        <resolved>io.openliberty.jakarta.activation-2.1</resolved>
+        <resolved>io.openliberty.jakarta.xmlBinding-4.0</resolved>
+        <resolved>io.openliberty.jakarta.xmlWS-4.0</resolved>
+        <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
+        <resolved>io.openliberty.jakarta.pages-3.1</resolved>
+        <resolved>io.openliberty.jta-2.0</resolved>
+        <resolved>com.ibm.websphere.appserver.injection-2.0</resolved>
+        <resolved>io.openliberty.jakarta.connectors-2.1</resolved>
+        <resolved>com.ibm.websphere.appserver.transaction-2.0</resolved>
+        <resolved>cdi-4.0</resolved>
+        <resolved>io.openliberty.jakarta.mail-2.1</resolved>
+        <resolved>io.openliberty.jakarta.validation-3.0</resolved>
+        <resolved>com.ibm.websphere.appserver.javaeeddSchema-1.0</resolved>
+        <resolved>com.ibm.websphere.appserver.channelfw-1.0</resolved>
+        <resolved>com.ibm.websphere.appserver.httptransport-1.0</resolved>
+        <resolved>com.ibm.websphere.appserver.requestProbes-1.0</resolved>
+        <resolved>io.openliberty.servlet.internal-6.0</resolved>
+        <resolved>io.openliberty.jakarta.restfulWS-3.1</resolved>
+        <resolved>com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0</resolved>
+        <resolved>jndi-1.0</resolved>
+        <resolved>io.openliberty.activation.internal-2.1</resolved>
+        <resolved>jsonp-2.1</resolved>
+        <resolved>restfulWSClient-3.1</resolved>
+        <resolved>restfulWS-3.1</resolved>
+        <resolved>io.openliberty.internal.mpVersion-7.0</resolved>
+        <resolved>io.openliberty.mpCompatible-7.0</resolved>
+        <resolved>io.openliberty.org.eclipse.microprofile.config.3.1.ee-10.0</resolved>
+        <resolved>io.openliberty.org.eclipse.microprofile.config-3.1</resolved>
+        <resolved>mpConfig-3.1</resolved>
+        <resolved>io.openliberty.microprofile.cdi.api-4.0</resolved>
+        <resolved>io.openliberty.org.eclipse.microprofile.rest.client-4.0</resolved>
+        <resolved>io.openliberty.mpTelemetry2.0.ee-10.0</resolved>
+        <resolved>mpTelemetry-2.0</resolved>
+        <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
+        <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
+        <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
+        <resolved>io.openliberty.cdi3.0-jndi1.0</resolved>
+        <resolved>io.openliberty.cdi4.0-servlet6.0</resolved>
+        <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
+    </output>
+</case>
     <case>
         <name>io.openliberty.noShip-1.0_SERVER</name>
         <description>Singleton [ io.openliberty.noShip-1.0 ] [ SERVER ]</description>

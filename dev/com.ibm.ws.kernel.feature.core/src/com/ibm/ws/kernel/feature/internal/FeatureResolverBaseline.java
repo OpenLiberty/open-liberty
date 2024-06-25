@@ -150,14 +150,22 @@ public class FeatureResolverBaseline {
 
     private final FeatureResolverImpl resolver;
 
+    public FeatureResolverImpl getResolver() {
+        return resolver;
+    }
+
     //
 
     private final Repository repository;
 
+    public Repository getRepository() {
+        return repository;
+    }
+
     private static final String WAS_LIBERTY_FEATURE_NAME = "apiDiscovery-1.0";
 
     private boolean isOpenLiberty() {
-        return (repository.getFeature(WAS_LIBERTY_FEATURE_NAME) == null);
+        return (getRepository().getFeature(WAS_LIBERTY_FEATURE_NAME) == null);
     }
 
     private static final String SERVLET_VERSIONLESS_PREFIX = "servlet-";
@@ -234,7 +242,7 @@ public class FeatureResolverBaseline {
         info("Writing feature repository to [ " + repoFilePath + " ] ...");
 
         try {
-            RepoXML.write(new File(repoFileName), repository);
+            RepoXML.write(new File(repoFileName), getRepository());
             info("Writing feature repository to [ " + repoFilePath + " ] ... done");
 
         } catch (Exception e) {
@@ -359,7 +367,7 @@ public class FeatureResolverBaseline {
          * Use a case insensitive comparison.
          *
          * @param def1 A feature definition which is to be compared.
-         * @param def2 Another feature definition which is to be compared.
+         * @param def2 Another feature definition which is to be
          *
          * @return The features compared by their symbolic name.
          */
@@ -427,7 +435,7 @@ public class FeatureResolverBaseline {
                                                 !RepoXML.IS_VERSIONLESS_FEATURE,
                                                 !RepoXML.IS_TEST_FEATURE);
 
-        List<ProvisioningFeatureDefinition> featureDefs = select(repository, selector);
+        List<ProvisioningFeatureDefinition> featureDefs = select(getRepository(), selector);
 
         int numDefs = featureDefs.size();
         ProvisioningFeatureDefinition[] defsArray = featureDefs.toArray( new ProvisioningFeatureDefinition[numDefs]);
@@ -590,16 +598,16 @@ public class FeatureResolverBaseline {
 
         long startTimeNs = VerifyData.getTimeNs();
 
-        Result resultWithKernel = resolver.doResolve(repository,
-                                                     kernelFeatures, rootFeatures, preResolved,
-                                                     allowedMultiple, processTypes,
-                                                     null);
+        Result resultWithKernel = getResolver().doResolve(getRepository(),
+                                                          kernelFeatures, rootFeatures, preResolved,
+                                                          allowedMultiple, processTypes,
+                                                          null);
 
         Collection<ProvisioningFeatureDefinition> emptyDefs = Collections.emptySet();
-        Result resultWithoutKernel = resolver.doResolve(repository,
-                                                        emptyDefs, rootFeatures, preResolved,
-                                                        allowedMultiple, processTypes,
-                                                        null);
+        Result resultWithoutKernel = getResolver().doResolve(getRepository(),
+                                                             emptyDefs, rootFeatures, preResolved,
+                                                             allowedMultiple, processTypes,
+                                                             null);
 
         long endTimeNs = VerifyData.getTimeNs();
         long durationNs = endTimeNs - startTimeNs;
@@ -648,16 +656,16 @@ public class FeatureResolverBaseline {
 
         long startTimeNs = VerifyData.getTimeNs();
 
-        Result resultWithKernel = resolver.doResolve(repository,
-                                                     kernelFeatures, rootFeatures, preResolved,
-                                                     allowedMultiple, processTypes,
-                                                     null);
+        Result resultWithKernel = getResolver().doResolve(getRepository(),
+                                                          kernelFeatures, rootFeatures, preResolved,
+                                                          allowedMultiple, processTypes,
+                                                          null);
 
         Collection<ProvisioningFeatureDefinition> emptyDefs = Collections.emptySet();
-        Result resultWithoutKernel = resolver.doResolve(repository,
-                                                        emptyDefs, rootFeatures, preResolved,
-                                                        allowedMultiple, processTypes,
-                                                        null);
+        Result resultWithoutKernel = getResolver().doResolve(getRepository(),
+                                                             emptyDefs, rootFeatures, preResolved,
+                                                             allowedMultiple, processTypes,
+                                                             null);
 
         long endTimeNs = VerifyData.getTimeNs();
         long durationNs = endTimeNs - startTimeNs;

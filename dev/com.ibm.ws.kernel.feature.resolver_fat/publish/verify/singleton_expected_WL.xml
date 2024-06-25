@@ -1,5 +1,4 @@
 <cases>
-
 <case>
     <name>com.ibm.websphere.appserver.acmeCA-2.0_SERVER</name>
     <description>Singleton [ com.ibm.websphere.appserver.acmeCA-2.0 ] [ SERVER ]</description>
@@ -84,7 +83,7 @@
     <output>
         <resolved>json-1.0</resolved>
         <resolved>com.ibm.websphere.appserver.eeCompatible-6.0</resolved>
-        <resolved>io.openliberty.servlet.api-3.0</resolved>
+        <resolved>io.openliberty.servlet.api-3.1</resolved>
         <resolved>com.ibm.websphere.appserver.servlet-servletSpi1.0</resolved>
         <resolved>com.ibm.websphere.appserver.channelfw-1.0</resolved>
         <resolved>com.ibm.websphere.appserver.httptransport-1.0</resolved>
@@ -10296,6 +10295,7 @@
         <resolved>io.openliberty.cdi3.0-appSecurity</resolved>
         <resolved>io.openliberty.restfulWS3.0-monitor1.0</resolved>
         <resolved>io.openliberty.httpStat-monitor1.0.jakarta</resolved>
+        <resolved>io.openliberty.org.eclipse.microprofile.config.3.1.ee-10.0</resolved>
     </output>
 </case>
 
@@ -11080,6 +11080,7 @@
         <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
         <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
         <resolved>io.openliberty.httpStat-monitor1.0.jakarta</resolved>
+        <resolved>io.openliberty.org.eclipse.microprofile.config.3.1.ee-10.0</resolved>
     </output>
 </case>
 
@@ -11557,6 +11558,7 @@
         <resolved>io.openliberty.cdi3.0-jndi1.0</resolved>
         <resolved>io.openliberty.cdi4.0-servlet6.0</resolved>
         <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
+        <resolved>io.openliberty.org.eclipse.microprofile.config.3.1.ee-10.0</resolved>
     </output>
 </case>
 
@@ -11633,6 +11635,7 @@
         <resolved>io.openliberty.cdi3.0-jndi1.0</resolved>
         <resolved>io.openliberty.cdi4.0-servlet6.0</resolved>
         <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
+        <resolved>io.openliberty.org.eclipse.microprofile.config.3.1.ee-10.0</resolved>
     </output>
 </case>
 

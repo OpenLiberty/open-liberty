@@ -1764,47 +1764,6 @@
 </case>
 
 <case>
-    <name>servlet-3.1_io.openliberty.versionless.jndi</name>
-    <description>Feature pair [ servlet-3.1, io.openliberty.versionless.jndi ]</description>
-    <input>
-        <server/>
-        <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-        <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-        <root>servlet-3.1</root>
-        <root>io.openliberty.versionless.jndi</root>
-    </input>
-    <output>
-        <resolved>com.ibm.websphere.appserver.eeCompatible-6.0</resolved>
-        <resolved>io.openliberty.servlet.api-3.1</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeeddSchema-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.servlet-servletSpi1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.channelfw-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.httptransport-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.requestProbes-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javax.annotation-1.1</resolved>
-        <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.anno-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.containerServices-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.injection-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.classloading-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.appmanager-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-7.0</resolved>
-        <resolved>servlet-3.1</resolved>
-        <resolved>noShip-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
-        <resolved>jndi-1.0</resolved>
-        <resolved>io.openliberty.internal.versionless.jndi-1.0</resolved>
-        <resolved>jndi</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved>
-    </output>
-</case>
-
-<case>
     <name>servlet-3.1_io.openliberty.versionless.jpa</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.jpa ]</description>
     <input>
@@ -2513,80 +2472,6 @@
     </output>
 </case>
 
-<case>
-    <name>servlet-3.1_io.openliberty.versionless.restConnector</name>
-    <description>Feature pair [ servlet-3.1, io.openliberty.versionless.restConnector ]</description>
-    <input>
-        <server/>
-        <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-        <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-        <root>servlet-3.1</root>
-        <root>io.openliberty.versionless.restConnector</root>
-    </input>
-    <output>
-        <resolved>com.ibm.websphere.appserver.eeCompatible-6.0</resolved>
-        <resolved>io.openliberty.servlet.api-3.1</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeeddSchema-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.servlet-servletSpi1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.channelfw-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.httptransport-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.requestProbes-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javax.annotation-1.1</resolved>
-        <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.anno-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.containerServices-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.injection-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.classloading-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.appmanager-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-7.0</resolved>
-        <resolved>servlet-3.1</resolved>
-        <resolved>noShip-1.0</resolved>
-        <resolved>json-1.0</resolved>
-        <resolved>io.openliberty.servlet.internal-3.1</resolved>
-        <resolved>io.openliberty.webBundle.internal.ee-6.0</resolved>
-        <resolved>io.openliberty.webBundle.internal-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
-        <resolved>jndi-1.0</resolved>
-        <resolved>io.openliberty.distributedMapInternal-1.0</resolved>
-        <resolved>distributedMap-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.basicRegistry-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.securityInfrastructure-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.builtinAuthorization-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.certificateCreator-1.0</resolved>
-        <resolved>ssl-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.ltpa-1.0</resolved>
-        <resolved>io.openliberty.jcache.internal1.1.ee-6.0</resolved>
-        <resolved>io.openliberty.jcache.internal-1.1</resolved>
-        <resolved>com.ibm.websphere.appserver.builtinAuthentication-1.0</resolved>
-        <resolved>io.openliberty.securityAPI.javaee-1.0</resolved>
-        <resolved>io.openliberty.security.internal.ee-6.0</resolved>
-        <resolved>com.ibm.websphere.appserver.security-1.0</resolved>
-        <resolved>io.openliberty.authFilter1.0.internal.ee-6.0</resolved>
-        <resolved>com.ibm.websphere.appserver.authFilter-1.0</resolved>
-        <resolved>io.openliberty.webBundleSecurity1.0.internal.ee-6.0</resolved>
-        <resolved>io.openliberty.webBundleSecurity.internal-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.adminSecurity-1.0</resolved>
-        <resolved>io.openliberty.restHandler1.0.internal.ee-6.0</resolved>
-        <resolved>io.openliberty.restHandler.internal-1.0</resolved>
-        <resolved>com.ibm.wsspi.appserver.webBundle-1.0</resolved>
-        <resolved>com.ibm.wsspi.appserver.webBundleSecurity-1.0</resolved>
-        <resolved>io.openliberty.securityAPI.jakarta-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.restHandler-1.0</resolved>
-        <resolved>io.openliberty.restConnector2.0.internal.ee-6.0</resolved>
-        <resolved>restConnector-2.0</resolved>
-        <resolved>io.openliberty.internal.versionless.restConnector-2.0</resolved>
-        <resolved>restConnector</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.autoRestHandlerApiDiscovery-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.autoRestConnector-2.0</resolved>
-        <resolved>com.ibm.websphere.appserver.autoRestHandlerCollectivePlugins-1.0</resolved>
-    </output>
-</case>
 
 <case>
     <name>servlet-3.1_io.openliberty.versionless.restfulWS</name>
@@ -4837,48 +4722,6 @@
 </case>
 
 <case>
-    <name>servlet-4.0_io.openliberty.versionless.jndi</name>
-    <description>Feature pair [ servlet-4.0, io.openliberty.versionless.jndi ]</description>
-    <input>
-        <server/>
-        <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-        <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-        <root>servlet-4.0</root>
-        <root>io.openliberty.versionless.jndi</root>
-    </input>
-    <output>
-        <resolved>io.openliberty.servlet.api-4.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeeddSchema-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.containerServices-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.classloading-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.appmanager-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-7.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-8.0</resolved>
-        <resolved>com.ibm.websphere.appserver.eeCompatible-8.0</resolved>
-        <resolved>com.ibm.websphere.appserver.servlet-servletSpi1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.channelfw-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.httptransport-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.requestProbes-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javax.annotation-1.3</resolved>
-        <resolved>com.ibm.websphere.appserver.anno-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.injection-1.0</resolved>
-        <resolved>servlet-4.0</resolved>
-        <resolved>noShip-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
-        <resolved>jndi-1.0</resolved>
-        <resolved>io.openliberty.internal.versionless.jndi-1.0</resolved>
-        <resolved>jndi</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved>
-    </output>
-</case>
-
-<case>
     <name>servlet-4.0_io.openliberty.versionless.jpa</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.jpa ]</description>
     <input>
@@ -5616,81 +5459,6 @@
     </output>
 </case>
 
-<case>
-    <name>servlet-4.0_io.openliberty.versionless.restConnector</name>
-    <description>Feature pair [ servlet-4.0, io.openliberty.versionless.restConnector ]</description>
-    <input>
-        <server/>
-        <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-        <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-        <root>servlet-4.0</root>
-        <root>io.openliberty.versionless.restConnector</root>
-    </input>
-    <output>
-        <resolved>com.ibm.websphere.appserver.eeCompatible-8.0</resolved>
-        <resolved>io.openliberty.servlet.api-4.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeeddSchema-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javax.annotation-1.3</resolved>
-        <resolved>com.ibm.websphere.appserver.anno-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.containerServices-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.classloading-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.appmanager-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-7.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-8.0</resolved>
-        <resolved>com.ibm.websphere.appserver.servlet-servletSpi1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.channelfw-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.httptransport-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.requestProbes-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.injection-1.0</resolved>
-        <resolved>servlet-4.0</resolved>
-        <resolved>noShip-1.0</resolved>
-        <resolved>json-1.0</resolved>
-        <resolved>io.openliberty.servlet.internal-4.0</resolved>
-        <resolved>io.openliberty.webBundle.internal.ee-6.0</resolved>
-        <resolved>io.openliberty.webBundle.internal-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
-        <resolved>jndi-1.0</resolved>
-        <resolved>io.openliberty.distributedMapInternal-1.0</resolved>
-        <resolved>distributedMap-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.basicRegistry-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.securityInfrastructure-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.builtinAuthorization-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.certificateCreator-1.0</resolved>
-        <resolved>ssl-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.ltpa-1.0</resolved>
-        <resolved>io.openliberty.jcache.internal1.1.ee-6.0</resolved>
-        <resolved>io.openliberty.jcache.internal-1.1</resolved>
-        <resolved>com.ibm.websphere.appserver.builtinAuthentication-1.0</resolved>
-        <resolved>io.openliberty.securityAPI.javaee-1.0</resolved>
-        <resolved>io.openliberty.security.internal.ee-6.0</resolved>
-        <resolved>com.ibm.websphere.appserver.security-1.0</resolved>
-        <resolved>io.openliberty.authFilter1.0.internal.ee-6.0</resolved>
-        <resolved>com.ibm.websphere.appserver.authFilter-1.0</resolved>
-        <resolved>io.openliberty.webBundleSecurity1.0.internal.ee-6.0</resolved>
-        <resolved>io.openliberty.webBundleSecurity.internal-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.adminSecurity-1.0</resolved>
-        <resolved>io.openliberty.restHandler1.0.internal.ee-6.0</resolved>
-        <resolved>io.openliberty.restHandler.internal-1.0</resolved>
-        <resolved>com.ibm.wsspi.appserver.webBundle-1.0</resolved>
-        <resolved>com.ibm.wsspi.appserver.webBundleSecurity-1.0</resolved>
-        <resolved>io.openliberty.securityAPI.jakarta-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.restHandler-1.0</resolved>
-        <resolved>io.openliberty.restConnector2.0.internal.ee-6.0</resolved>
-        <resolved>restConnector-2.0</resolved>
-        <resolved>io.openliberty.internal.versionless.restConnector-2.0</resolved>
-        <resolved>restConnector</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.autoRestHandlerApiDiscovery-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.autoRestConnector-2.0</resolved>
-        <resolved>com.ibm.websphere.appserver.autoRestHandlerCollectivePlugins-1.0</resolved>
-    </output>
-</case>
 
 <case>
     <name>servlet-4.0_io.openliberty.versionless.restfulWS</name>
@@ -8207,49 +7975,6 @@
 </case>
 
 <case>
-    <name>servlet-5.0_io.openliberty.versionless.jndi</name>
-    <description>Feature pair [ servlet-5.0, io.openliberty.versionless.jndi ]</description>
-    <input>
-        <server/>
-        <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-        <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-        <root>servlet-5.0</root>
-        <root>io.openliberty.versionless.jndi</root>
-    </input>
-    <output>
-        <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.eeCompatible-9.0</resolved>
-        <resolved>io.openliberty.jakarta.annotation-2.0</resolved>
-        <resolved>com.ibm.websphere.appserver.anno-2.0</resolved>
-        <resolved>com.ibm.websphere.appserver.containerServices-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.classloading-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.appmanager-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-7.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-8.0</resolved>
-        <resolved>io.openliberty.jakartaeePlatform-9.0</resolved>
-        <resolved>io.openliberty.servlet.api-5.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeeddSchema-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.injection-2.0</resolved>
-        <resolved>io.openliberty.servlet-servletSpi2.0</resolved>
-        <resolved>com.ibm.websphere.appserver.channelfw-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.httptransport-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.requestProbes-1.0</resolved>
-        <resolved>servlet-5.0</resolved>
-        <resolved>noShip-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
-        <resolved>jndi-1.0</resolved>
-        <resolved>io.openliberty.internal.versionless.jndi-1.0</resolved>
-        <resolved>jndi</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved>
-    </output>
-</case>
-
-<case>
     <name>servlet-5.0_io.openliberty.versionless.jpa</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.jpa ]</description>
     <input>
@@ -9012,84 +8737,6 @@
     </output>
 </case>
 
-<case>
-    <name>servlet-5.0_io.openliberty.versionless.restConnector</name>
-    <description>Feature pair [ servlet-5.0, io.openliberty.versionless.restConnector ]</description>
-    <input>
-        <server/>
-        <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-        <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-        <root>servlet-5.0</root>
-        <root>io.openliberty.versionless.restConnector</root>
-    </input>
-    <output>
-        <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.eeCompatible-9.0</resolved>
-        <resolved>io.openliberty.jakarta.annotation-2.0</resolved>
-        <resolved>com.ibm.websphere.appserver.anno-2.0</resolved>
-        <resolved>com.ibm.websphere.appserver.containerServices-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.classloading-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.appmanager-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-7.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-8.0</resolved>
-        <resolved>io.openliberty.jakartaeePlatform-9.0</resolved>
-        <resolved>io.openliberty.servlet.api-5.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeeddSchema-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.injection-2.0</resolved>
-        <resolved>io.openliberty.servlet-servletSpi2.0</resolved>
-        <resolved>com.ibm.websphere.appserver.channelfw-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.httptransport-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.requestProbes-1.0</resolved>
-        <resolved>servlet-5.0</resolved>
-        <resolved>noShip-1.0</resolved>
-        <resolved>json-1.0</resolved>
-        <resolved>io.openliberty.servlet.internal-5.0</resolved>
-        <resolved>io.openliberty.webBundle.internal.ee-9.0</resolved>
-        <resolved>io.openliberty.webBundle.internal-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
-        <resolved>jndi-1.0</resolved>
-        <resolved>io.openliberty.distributedMapInternal-2.0</resolved>
-        <resolved>distributedMap-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.basicRegistry-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.securityInfrastructure-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.builtinAuthorization-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.certificateCreator-1.0</resolved>
-        <resolved>ssl-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.ltpa-1.0</resolved>
-        <resolved>io.openliberty.jcache.internal1.1.ee-9.0</resolved>
-        <resolved>io.openliberty.jcache.internal-1.1</resolved>
-        <resolved>com.ibm.websphere.appserver.builtinAuthentication-2.0</resolved>
-        <resolved>io.openliberty.securityAPI.jakarta-1.0</resolved>
-        <resolved>io.openliberty.security.internal.ee-9.0</resolved>
-        <resolved>com.ibm.websphere.appserver.security-1.0</resolved>
-        <resolved>io.openliberty.authFilter1.0.internal.ee-9.0</resolved>
-        <resolved>com.ibm.websphere.appserver.authFilter-1.0</resolved>
-        <resolved>io.openliberty.webBundleSecurity1.0.internal.ee-9.0</resolved>
-        <resolved>io.openliberty.webBundleSecurity.internal-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.adminSecurity-2.0</resolved>
-        <resolved>io.openliberty.restHandler1.0.internal.ee-9.0</resolved>
-        <resolved>io.openliberty.restHandler.internal-1.0</resolved>
-        <resolved>com.ibm.wsspi.appserver.webBundle-1.0</resolved>
-        <resolved>com.ibm.wsspi.appserver.webBundleSecurity-1.0</resolved>
-        <resolved>io.openliberty.securityAPI.javaee-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.restHandler-1.0</resolved>
-        <resolved>io.openliberty.restConnector2.0.internal.ee-9.0</resolved>
-        <resolved>restConnector-2.0</resolved>
-        <resolved>io.openliberty.internal.versionless.restConnector-2.0</resolved>
-        <resolved>restConnector</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.autoRestHandlerApiDiscovery-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.autoRestConnector-2.0</resolved>
-        <resolved>transportSecurity-1.0</resolved>
-        <resolved>io.openliberty.transportSecurity1.0.jakarta</resolved>
-        <resolved>com.ibm.websphere.appserver.autoRestHandlerCollectivePlugins-1.0</resolved>
-    </output>
-</case>
 
 <case>
     <name>servlet-5.0_io.openliberty.versionless.restfulWS</name>
@@ -11723,51 +11370,6 @@
 </case>
 
 <case>
-    <name>servlet-6.0_io.openliberty.versionless.jndi</name>
-    <description>Feature pair [ servlet-6.0, io.openliberty.versionless.jndi ]</description>
-    <input>
-        <server/>
-        <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-        <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-        <root>servlet-6.0</root>
-        <root>io.openliberty.versionless.jndi</root>
-    </input>
-    <output>
-        <resolved>com.ibm.websphere.appserver.eeCompatible-10.0</resolved>
-        <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.containerServices-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.classloading-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.appmanager-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-7.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-8.0</resolved>
-        <resolved>io.openliberty.jakartaeePlatform-9.0</resolved>
-        <resolved>io.openliberty.jakartaeePlatform-10.0</resolved>
-        <resolved>io.openliberty.servlet.api-6.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeeddSchema-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.anno-2.0</resolved>
-        <resolved>com.ibm.websphere.appserver.injection-2.0</resolved>
-        <resolved>com.ibm.websphere.appserver.channelfw-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.httptransport-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.requestProbes-1.0</resolved>
-        <resolved>io.openliberty.jakarta.annotation-2.1</resolved>
-        <resolved>io.openliberty.servlet.internal-6.0</resolved>
-        <resolved>io.openliberty.servlet-servletSpi2.0</resolved>
-        <resolved>servlet-6.0</resolved>
-        <resolved>noShip-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
-        <resolved>jndi-1.0</resolved>
-        <resolved>io.openliberty.internal.versionless.jndi-1.0</resolved>
-        <resolved>jndi</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved>
-    </output>
-</case>
-
-<case>
     <name>servlet-6.0_io.openliberty.versionless.jpa</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.jpa ]</description>
     <input>
@@ -12577,85 +12179,6 @@
     </output>
 </case>
 
-<case>
-    <name>servlet-6.0_io.openliberty.versionless.restConnector</name>
-    <description>Feature pair [ servlet-6.0, io.openliberty.versionless.restConnector ]</description>
-    <input>
-        <server/>
-        <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-        <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-        <root>servlet-6.0</root>
-        <root>io.openliberty.versionless.restConnector</root>
-    </input>
-    <output>
-        <resolved>com.ibm.websphere.appserver.eeCompatible-10.0</resolved>
-        <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
-        <resolved>io.openliberty.jakarta.annotation-2.1</resolved>
-        <resolved>com.ibm.websphere.appserver.anno-2.0</resolved>
-        <resolved>com.ibm.websphere.appserver.containerServices-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.classloading-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.appmanager-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-7.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-8.0</resolved>
-        <resolved>io.openliberty.jakartaeePlatform-9.0</resolved>
-        <resolved>io.openliberty.jakartaeePlatform-10.0</resolved>
-        <resolved>io.openliberty.servlet.api-6.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeeddSchema-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.injection-2.0</resolved>
-        <resolved>com.ibm.websphere.appserver.channelfw-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.httptransport-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.requestProbes-1.0</resolved>
-        <resolved>io.openliberty.servlet.internal-6.0</resolved>
-        <resolved>io.openliberty.servlet-servletSpi2.0</resolved>
-        <resolved>servlet-6.0</resolved>
-        <resolved>noShip-1.0</resolved>
-        <resolved>json-1.0</resolved>
-        <resolved>io.openliberty.webBundle.internal.ee-10.0</resolved>
-        <resolved>io.openliberty.webBundle.internal-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
-        <resolved>jndi-1.0</resolved>
-        <resolved>io.openliberty.distributedMapInternal-2.0</resolved>
-        <resolved>distributedMap-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.basicRegistry-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.securityInfrastructure-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.builtinAuthorization-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.certificateCreator-1.0</resolved>
-        <resolved>ssl-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.ltpa-1.0</resolved>
-        <resolved>io.openliberty.jcache.internal1.1.ee-9.0</resolved>
-        <resolved>io.openliberty.jcache.internal-1.1</resolved>
-        <resolved>com.ibm.websphere.appserver.builtinAuthentication-2.0</resolved>
-        <resolved>io.openliberty.securityAPI.jakarta-1.0</resolved>
-        <resolved>io.openliberty.security.internal.ee-9.0</resolved>
-        <resolved>com.ibm.websphere.appserver.security-1.0</resolved>
-        <resolved>io.openliberty.authFilter1.0.internal.ee-9.0</resolved>
-        <resolved>com.ibm.websphere.appserver.authFilter-1.0</resolved>
-        <resolved>io.openliberty.webBundleSecurity1.0.internal.ee-10.0</resolved>
-        <resolved>io.openliberty.webBundleSecurity.internal-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.adminSecurity-2.0</resolved>
-        <resolved>io.openliberty.restHandler1.0.internal.ee-10.0</resolved>
-        <resolved>io.openliberty.restHandler.internal-1.0</resolved>
-        <resolved>com.ibm.wsspi.appserver.webBundle-1.0</resolved>
-        <resolved>com.ibm.wsspi.appserver.webBundleSecurity-1.0</resolved>
-        <resolved>io.openliberty.securityAPI.javaee-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.restHandler-1.0</resolved>
-        <resolved>io.openliberty.restConnector2.0.internal.ee-9.0</resolved>
-        <resolved>restConnector-2.0</resolved>
-        <resolved>io.openliberty.internal.versionless.restConnector-2.0</resolved>
-        <resolved>restConnector</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.autoRestHandlerApiDiscovery-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.autoRestConnector-2.0</resolved>
-        <resolved>transportSecurity-1.0</resolved>
-        <resolved>io.openliberty.transportSecurity1.0.jakarta</resolved>
-        <resolved>com.ibm.websphere.appserver.autoRestHandlerCollectivePlugins-1.0</resolved>
-    </output>
-</case>
 
 <case>
     <name>servlet-6.0_io.openliberty.versionless.restfulWS</name>
@@ -14904,52 +14427,6 @@
 </case>
 
 <case>
-    <name>servlet-6.1_io.openliberty.versionless.jndi</name>
-    <description>Feature pair [ servlet-6.1, io.openliberty.versionless.jndi ]</description>
-    <input>
-        <server/>
-        <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-        <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-        <root>servlet-6.1</root>
-        <root>io.openliberty.versionless.jndi</root>
-    </input>
-    <output>
-        <resolved>com.ibm.websphere.appserver.eeCompatible-11.0</resolved>
-        <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.containerServices-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.classloading-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.appmanager-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-7.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-8.0</resolved>
-        <resolved>io.openliberty.jakartaeePlatform-9.0</resolved>
-        <resolved>io.openliberty.jakartaeePlatform-10.0</resolved>
-        <resolved>io.openliberty.jakartaeePlatform-11.0</resolved>
-        <resolved>io.openliberty.servlet.api-6.1</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeeddSchema-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.anno-2.0</resolved>
-        <resolved>com.ibm.websphere.appserver.injection-2.0</resolved>
-        <resolved>com.ibm.websphere.appserver.channelfw-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.httptransport-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.requestProbes-1.0</resolved>
-        <resolved>io.openliberty.jakarta.annotation-3.0</resolved>
-        <resolved>io.openliberty.servlet.internal-6.1</resolved>
-        <resolved>io.openliberty.servlet-servletSpi2.0</resolved>
-        <resolved>servlet-6.1</resolved>
-        <resolved>noShip-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
-        <resolved>jndi-1.0</resolved>
-        <resolved>io.openliberty.internal.versionless.jndi-1.0</resolved>
-        <resolved>jndi</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved>
-    </output>
-</case>
-
-<case>
     <name>servlet-6.1_io.openliberty.versionless.jpa</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.jpa ]</description>
     <input>
@@ -15760,87 +15237,6 @@
         <resolved>persistence</resolved>
         <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
         <resolved>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved>
-    </output>
-</case>
-
-<case>
-    <name>servlet-6.1_io.openliberty.versionless.restConnector</name>
-    <description>Feature pair [ servlet-6.1, io.openliberty.versionless.restConnector ]</description>
-    <input>
-        <server/>
-        <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-        <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-        <root>servlet-6.1</root>
-        <root>io.openliberty.versionless.restConnector</root>
-    </input>
-    <output>
-        <resolved>com.ibm.websphere.appserver.eeCompatible-11.0</resolved>
-        <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
-        <resolved>io.openliberty.jakarta.annotation-3.0</resolved>
-        <resolved>com.ibm.websphere.appserver.anno-2.0</resolved>
-        <resolved>com.ibm.websphere.appserver.containerServices-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.classloading-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.appmanager-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-7.0</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform-8.0</resolved>
-        <resolved>io.openliberty.jakartaeePlatform-9.0</resolved>
-        <resolved>io.openliberty.jakartaeePlatform-10.0</resolved>
-        <resolved>io.openliberty.jakartaeePlatform-11.0</resolved>
-        <resolved>io.openliberty.servlet.api-6.1</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeeddSchema-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.injection-2.0</resolved>
-        <resolved>com.ibm.websphere.appserver.channelfw-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.httptransport-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.requestProbes-1.0</resolved>
-        <resolved>io.openliberty.servlet.internal-6.1</resolved>
-        <resolved>io.openliberty.servlet-servletSpi2.0</resolved>
-        <resolved>servlet-6.1</resolved>
-        <resolved>noShip-1.0</resolved>
-        <resolved>json-1.0</resolved>
-        <resolved>io.openliberty.webBundle.internal.ee-10.0</resolved>
-        <resolved>io.openliberty.webBundle.internal-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
-        <resolved>jndi-1.0</resolved>
-        <resolved>io.openliberty.distributedMapInternal-2.0</resolved>
-        <resolved>distributedMap-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.basicRegistry-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.securityInfrastructure-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.builtinAuthorization-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.certificateCreator-1.0</resolved>
-        <resolved>ssl-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.ltpa-1.0</resolved>
-        <resolved>io.openliberty.jcache.internal1.1.ee-9.0</resolved>
-        <resolved>io.openliberty.jcache.internal-1.1</resolved>
-        <resolved>com.ibm.websphere.appserver.builtinAuthentication-2.0</resolved>
-        <resolved>io.openliberty.securityAPI.jakarta-1.0</resolved>
-        <resolved>io.openliberty.security.internal.ee-9.0</resolved>
-        <resolved>com.ibm.websphere.appserver.security-1.0</resolved>
-        <resolved>io.openliberty.authFilter1.0.internal.ee-9.0</resolved>
-        <resolved>com.ibm.websphere.appserver.authFilter-1.0</resolved>
-        <resolved>io.openliberty.webBundleSecurity1.0.internal.ee-10.0</resolved>
-        <resolved>io.openliberty.webBundleSecurity.internal-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.adminSecurity-2.0</resolved>
-        <resolved>io.openliberty.restHandler1.0.internal.ee-10.0</resolved>
-        <resolved>io.openliberty.restHandler.internal-1.0</resolved>
-        <resolved>com.ibm.wsspi.appserver.webBundle-1.0</resolved>
-        <resolved>com.ibm.wsspi.appserver.webBundleSecurity-1.0</resolved>
-        <resolved>io.openliberty.securityAPI.javaee-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.restHandler-1.0</resolved>
-        <resolved>io.openliberty.restConnector2.0.internal.ee-9.0</resolved>
-        <resolved>restConnector-2.0</resolved>
-        <resolved>io.openliberty.internal.versionless.restConnector-2.0</resolved>
-        <resolved>restConnector</resolved>
-        <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.autoRestHandlerApiDiscovery-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved>
-        <resolved>com.ibm.websphere.appserver.autoRestConnector-2.0</resolved>
-        <resolved>transportSecurity-1.0</resolved>
-        <resolved>io.openliberty.transportSecurity1.0.jakarta</resolved>
-        <resolved>com.ibm.websphere.appserver.autoRestHandlerCollectivePlugins-1.0</resolved>
     </output>
 </case>
 

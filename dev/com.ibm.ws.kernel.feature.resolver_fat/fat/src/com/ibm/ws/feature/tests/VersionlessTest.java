@@ -211,10 +211,10 @@ public class VersionlessTest {
                 }
 
                 String failureMsg;
-                if (errors.size() == 1) {
-                    failureMsg = "Server [ " + serverName + " ] resolution error [ " + errors.get(0) + " ]";
+                if (errors.size() < 10) {
+                    failureMsg = "Server [ " + serverName + " ] has [ " + errors.size() + " ] resolution errors: [ " + errors + " ]";
                 } else {
-                    failureMsg = "Server [ " + serverName + " ] has [ " + errors.size() + " ] resolution errors";
+                    failureMsg = "Server [ " + serverName + " ] has [ " + errors.size() + " ] resolution errors (see logs)";
                 }
 
                 Assert.fail(failureMsg);

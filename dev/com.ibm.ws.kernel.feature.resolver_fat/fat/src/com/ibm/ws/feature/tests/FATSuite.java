@@ -18,25 +18,18 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                ReportFeaturesUnitTest.class,
+                // ReportImagesUnitTest.class, // Disabled: See issue 29079
+                FeatureDetailsUnitTest.class,
 
-// Needs to be refactored into normal build test suite - not as FAT's
-/*
- * ReportFeaturesUnitTest.class,
- * ReportImagesUnitTest.class,
- *
- * FeatureDetailsUnitTest.class,
- *
- * BaselineResolutionSingletonUnitTest.class,
- * BaselineResolutionServletUnitTest.class,
- * BaselineResolutionMicroProfileUnitTest.class,
- *
- * BaselineResolutionGenerationTest.class,
- * BaselineVersionlessSingletonUnitTest.class
- */
+                // BaselineResolutionGenerationTest.class,
+                BaselineResolutionSingletonUnitTest.class,
+                BaselineVersionlessSingletonUnitTest.class,
+
+                BaselineResolutionServletUnitTest.class,
+                BaselineResolutionMicroProfileUnitTest.class,
+
                 VersionlessMessagesTest.class
-// VersionlessServletToMicroProfileTest.class,
-// VersionlessJavaEEToMicroProfileTest.class,
-// VersionlessEnvVarErrorTest.class
 })
 
 public class FATSuite {

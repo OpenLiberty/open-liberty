@@ -34,7 +34,6 @@ import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyCase;
 import com.ibm.ws.kernel.feature.internal.util.VerifyDelta;
 import com.ibm.ws.kernel.feature.internal.util.VerifyXML;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
-import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
 
 /**
@@ -374,14 +373,14 @@ public class BaselineResolutionUnitTest {
         List<String> rootErrors = null;
 
         if (RepositoryUtil.getFeatureDef(rootFeature0) == null) {
-            String message = "Root feature [ " + rootFeature0 + " ]: Missing from baseline";
+            String message = "Missing root feature 0 [ " + rootFeature0 + " ]";
 
             rootErrors = new ArrayList<>(2);
             rootErrors.add(message);
         }
 
         if (RepositoryUtil.getFeatureDef(rootFeature1) == null) {
-            String message = "Combination feature [ " + rootFeature1 + " ]: Missing from baseline";
+            String message = "Missing root feature 1 [ " + rootFeature1 + " ]";
 
             if (rootErrors == null) {
                 rootErrors = Collections.singletonList(message);
@@ -433,11 +432,6 @@ public class BaselineResolutionUnitTest {
             return; // 'fail' never returns.
         }
 
-        System.out.println("DEBUG begin ******");
-        System.out.println(testCase.input);
-        System.out.println(testCase.output);
-        System.out.println("DEBUG end ******");
-
         long startNs = System.nanoTime();
         Result result = resolveFeatures(testCase, rootErrors);
         long endNs = System.nanoTime();
@@ -449,51 +443,42 @@ public class BaselineResolutionUnitTest {
 
         VerifyCase outputCase = new VerifyCase(testCase, resolvedFeatures, durationNs);
 
-        List<String> warnings = new ArrayList<>();
         List<String> missing = new ArrayList<>();
         List<String> extra = new ArrayList<>();
 
-        List<String> errors = VerifyDelta.compare(new RepoVisibilitySupplier(RepositoryUtil.getRepository()),
-                                                  null, warnings,
-                                                  testCase, outputCase,
-                                                  !VerifyDelta.UPDATED_USED_KERNEL,
-                                                  extra, missing);
+        VerifyDelta.ChangeMessages caseMessages = VerifyDelta.compare(RepositoryUtil.getSupplier(),
+                                                                      testCase, outputCase,
+                                                                      !VerifyDelta.UPDATED_USED_KERNEL,
+                                                                      extra, missing);
 
-        if ((errors == null) || errors.isEmpty()) {
+        if (!caseMessages.hasErrors()) {
             System.out.println("Verified");
         } else {
-            System.out.println("Verification errors [ " + errors.size() + " ]:");
-            for (String error : errors) {
+            System.out.println("Verification errors [ " + caseMessages.errors.size() + " ]:");
+            for (String error : caseMessages.errors) {
                 System.out.println("  [ " + error + " ]");
             }
             write("Revised Case:", outputCase, System.out);
         }
 
-        if (!warnings.isEmpty()) {
-            System.out.println("Verification warnings [ " + warnings.size() + " ]:");
-            for (String warning : warnings) {
+        if (caseMessages.hasWarnings()) {
+            System.out.println("Verification warnings [ " + caseMessages.warnings.size() + " ]:");
+            for (String warning : caseMessages.warnings) {
                 System.out.println("  [ " + warning + " ]");
             }
         }
 
-        if ((errors != null) && !errors.isEmpty()) {
+        if (caseMessages.hasInfo()) {
+            System.out.println("Verification info [ " + caseMessages.info.size() + " ]:");
+            for (String infoMsg : caseMessages.info) {
+                System.out.println("  [ " + infoMsg + " ]");
+            }
+        }
+
+        if (caseMessages.hasErrors()) {
             FailureSummary summary = addFailure(testCase, extra, missing);
             fail(summary.getMessage());
             return; // 'fail' never returns.
-        }
-    }
-
-    private class RepoVisibilitySupplier implements VerifyDelta.VisibilitySupplier {
-        public RepoVisibilitySupplier(FeatureResolver.Repository repo) {
-            this.repo = repo;
-        }
-
-        private final FeatureResolver.Repository repo;
-
-        @Override
-        public String getVisibility(String featureName) {
-            ProvisioningFeatureDefinition featureDef = repo.getFeature(featureName);
-            return ((featureDef == null) ? "MISSING" : featureDef.getVisibility().toString());
         }
     }
 
