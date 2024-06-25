@@ -339,7 +339,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         Map<String, List<String>> compatibleVersions = new HashMap<String, List<String>>();
         for(String platformBaseName : allPlatformBaseNames){
-            compatibleVersions.put(platformBaseName, new ArrayList<>());
+            compatibleVersions.put(platformBaseName, new ArrayList<String>());
         }
 
         Set<String> compatibilityFeatures = new HashSet<String>();
@@ -682,61 +682,59 @@ public class FeatureResolverImpl implements FeatureResolver {
         //Loop through the root features to get the versionless ones
         for(String feature : rootFeatures){
             ProvisioningFeatureDefinition rootFeatureDef = selectionContext.getRepository().getFeature(feature);
-            if(rootFeatureDef.isVersionless()){
-                Collection<FeatureResource> versionlessDeps = rootFeatureDef.getConstituents(SubsystemContentType.FEATURE_TYPE);
-                List<String> versionlessLinkingFeatures = new ArrayList<>();
-                for (FeatureResource privateVersionless : versionlessDeps) { //versionlessDeps.size will always be 1, the private versionless linking feature
-                    String[] nav = parseNameAndVersion(privateVersionless.getSymbolicName());
-                    versionlessLinkingFeatures.add(nav[0] + "-" + nav[1]);
-    
-                    if(privateVersionless.getTolerates() != null){
-                        for(String version : privateVersionless.getTolerates()) {
-                            versionlessLinkingFeatures.add(nav[0] + "-" + version);
-                        }
-                    }
-                }
-                boolean addFeature = false;
-                boolean hasVersionlessPlatform = false;
-                // loops through the private features related to the versionless feature
-                for(String linkingFeature : versionlessLinkingFeatures){
-                    ProvisioningFeatureDefinition linkingDef = selectionContext.getRepository().getFeature(linkingFeature);
-                    if(linkingDef != null){
-                        Collection<FeatureResource> featureDeps = linkingDef.getConstituents(SubsystemContentType.FEATURE_TYPE);
-                    
-                        // The dependencies of the linking feature, will be either public versioned feature, compatibility feature, or noship feature
-                        // The logic in the loop makes sure to only handle the public versioned feature.
-                        for (FeatureResource featureDep : featureDeps) {
-                            if(!!!featureDep.getSymbolicName().contains("noShip")){
-                                ProvisioningFeatureDefinition versionedFeature = selectionContext.getRepository().getFeature(featureDep.getSymbolicName());
-                                if(versionedFeature == null || versionedFeature.getVisibility() != Visibility.PUBLIC){
-                                    continue;
-                                }
-                                
-                                for(String platform : versionedFeature.getPlatformNames()){
-                                    if(rootPlatforms.contains(allCompatibilityFeatures.get(platform.toLowerCase()).getSymbolicName())){
-                                        addFeature = true;
-                                        selectionContext.getResult()._resolved.add(feature);
-                                        selectionContext.getResult()._resolved.add(linkingFeature);
-                                        addedRootFeatures.add(versionedFeature.getSymbolicName());
-                                        break;
-                                    }
-                                    else if(rootPlatforms.contains(compatibleBaseNameToVersionlessCompatible(parseName(allCompatibilityFeatures.get(platform.toLowerCase()).getSymbolicName())))){
-                                        hasVersionlessPlatform = true;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                if(!hasVersionlessPlatform){
-                    removedVersionlessFeatures.add(feature);
-                }
-                //regardless of whether or not we add the versioned feature, we remove the versionless feature from root features
+            if(!rootFeatureDef.isVersionless()){
+                continue;
+            }
+            Collection<FeatureResource> versionlessDeps = rootFeatureDef.getConstituents(SubsystemContentType.FEATURE_TYPE);
+            List<String> versionlessLinkingFeatures = new ArrayList<>();
+            for (FeatureResource privateVersionless : versionlessDeps) { //versionlessDeps.size will always be 1, the private versionless linking feature
+                String[] nav = parseNameAndVersion(privateVersionless.getSymbolicName());
+                versionlessLinkingFeatures.add(nav[0] + "-" + nav[1]);
 
-                if(!addFeature && !hasVersionlessPlatform){
-                    //if we didn't add a versioned feature, its an error, no compatible platform for feature.
+                if(privateVersionless.getTolerates() != null){
+                    for(String version : privateVersionless.getTolerates()) {
+                        versionlessLinkingFeatures.add(nav[0] + "-" + version);
+                    }
                 }
+            }
+            boolean addFeature = false;
+            boolean hasVersionlessPlatform = false;
+            // loops through the private features related to the versionless feature
+            for(String linkingFeature : versionlessLinkingFeatures){
+                ProvisioningFeatureDefinition linkingDef = selectionContext.getRepository().getFeature(linkingFeature);
+                if(linkingDef == null){
+                    continue;
+                }
+                Collection<FeatureResource> featureDeps = linkingDef.getConstituents(SubsystemContentType.FEATURE_TYPE);
+            
+                // The dependencies of the linking feature, will be either public versioned feature, compatibility feature, or noship feature
+                // The logic in the loop makes sure to only handle the public versioned feature.
+                for (FeatureResource featureDep : featureDeps) {
+                    ProvisioningFeatureDefinition versionedFeature = selectionContext.getRepository().getFeature(featureDep.getSymbolicName());
+                    if(versionedFeature == null || versionedFeature.getVisibility() != Visibility.PUBLIC || versionedFeature.getPlatformName() == null){
+                        continue;
+                    }
+                    
+                    for(String platform : versionedFeature.getPlatformNames()){
+                        if(rootPlatforms.contains(allCompatibilityFeatures.get(platform.toLowerCase()).getSymbolicName())){
+                            addFeature = true;
+                            selectionContext.getResult()._resolved.add(feature);
+                            selectionContext.getResult()._resolved.add(linkingFeature);
+                            addedRootFeatures.add(versionedFeature.getSymbolicName());
+                            break;
+                        }
+                        else if(rootPlatforms.contains(compatibleBaseNameToVersionlessCompatible(parseName(allCompatibilityFeatures.get(platform.toLowerCase()).getSymbolicName())))){
+                            hasVersionlessPlatform = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if(!hasVersionlessPlatform){
+                removedVersionlessFeatures.add(feature);
+            }
+            if(!addFeature && !hasVersionlessPlatform){
+                //if we didn't add a versioned feature, its an error, no compatible platform for feature.
             }
         }
 
@@ -1540,7 +1538,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             // unnecessary
 
             //if a versionless feature is postponed, process that first
-            if (true) {
+            if (isBeta) {
                 if (!!!_current._postponedVersionless.isEmpty() && hasAtLeastOneSelected(compatibilityFeaturesBaseNames())) {
 
                     Set<String> entries = _current._postponedVersionless.keySet();
