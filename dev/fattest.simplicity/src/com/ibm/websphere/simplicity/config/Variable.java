@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,12 +20,20 @@ import javax.xml.bind.annotation.XmlAttribute;
 public class Variable extends ConfigElement {
     private String name;
     private String value;
+    private String defaultValue;
 
     public Variable() {}
 
     public Variable(String name, String value) {
         setName(name);
         setValue(value);
+        setDefaultValue(null);
+    }
+
+    public Variable(String name, String value, String defaultValue) {
+        setName(name);
+        setValue(value);
+        setDefaultValue(defaultValue);
     }
 
     public String getName() {
@@ -46,9 +54,18 @@ public class Variable extends ConfigElement {
         this.value = value;
     }
 
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    @XmlAttribute
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
     /**
      * Returns a string representing this <variable> element
-     * 
+     *
      * @return String representing this <variable> element
      */
     @Override

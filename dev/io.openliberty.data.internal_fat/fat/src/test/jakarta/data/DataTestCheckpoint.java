@@ -12,13 +12,6 @@
  *******************************************************************************/
 package test.jakarta.data;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Properties;
-
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.spi.Extension;
 
@@ -40,7 +33,6 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerFactory;
-import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -83,8 +75,8 @@ public class DataTestCheckpoint extends FATServletClient {
         server.startServer();
 
         //Server started, application started, checkpoint taken, server is now stopped.
-        //Configure environment variable used by servlet
-        configureEnvVariable(server, Collections.singletonMap("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName()));
+        //Configure environment variables according to the test container
+        DatabaseContainerUtil.setupDataSourceEnvForCheckpoint(server, testContainer);
 
         server.checkpointRestore();
     }
@@ -94,12 +86,4 @@ public class DataTestCheckpoint extends FATServletClient {
         server.stopServer();
     }
 
-    static void configureEnvVariable(LibertyServer server, Map<String, String> newEnv) throws Exception {
-        Properties serverEnvProperties = new Properties();
-        serverEnvProperties.putAll(newEnv);
-        File serverEnvFile = new File(server.getFileFromLibertyServerRoot("server.env").getAbsolutePath());
-        try (OutputStream out = new FileOutputStream(serverEnvFile)) {
-            serverEnvProperties.store(out, "");
-        }
-    }
 }

@@ -12,6 +12,9 @@
  *******************************************************************************/
 package componenttest.topology.database.container;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,6 +31,7 @@ import com.ibm.websphere.simplicity.config.Fileset;
 import com.ibm.websphere.simplicity.config.JavaPermission;
 import com.ibm.websphere.simplicity.config.Library;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.Variable;
 import com.ibm.websphere.simplicity.config.dsprops.Properties;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -73,7 +77,23 @@ public final class DatabaseContainerUtil {
         //Get libraries to be changed
         Map<String, Fileset> libraries = getLibraries(cloneConfig);
         //Modify those datasources
-        modifyDataSourcePropsForDatabase(datasources, authDatas, libraries, cloneConfig, serv, cont);
+        modifyDataSourcePropsForDatabase(datasources, authDatas, libraries, cloneConfig, serv, cont, true);
+    }
+
+    public static void setupDataSourceEnvForCheckpoint(LibertyServer serv, JdbcDatabaseContainer<?> cont) throws Exception {
+        java.util.Properties envProps = serv.getServerEnv();
+        envProps.put(DB_DRIVER, DatabaseContainerType.valueOf(cont).getDriverName());
+        boolean isDerby = DatabaseContainerType.valueOf(cont) == DatabaseContainerType.Derby || DatabaseContainerType.valueOf(cont) == DatabaseContainerType.DerbyClient;
+        if (!isDerby) {
+            envProps.put(DB_HOST, cont.getHost());
+            envProps.put(DB_PORT, Integer.toString(cont.getFirstMappedPort()));
+            envProps.put(DB_USER, cont.getUsername());
+            envProps.put(DB_PASSWORD, cont.getPassword());
+        }
+        File serverEnvFile = new File(serv.getFileFromLibertyServerRoot("server.env").getAbsolutePath());
+        try (OutputStream out = new FileOutputStream(serverEnvFile)) {
+            envProps.store(out, "");
+        }
     }
 
     /**
@@ -95,7 +115,7 @@ public final class DatabaseContainerUtil {
         //Provide empty list of libraries
         Map<String, Fileset> libraries = Collections.emptyMap();
         //Modify those datasources
-        modifyDataSourcePropsForDatabase(datasources, authDatas, libraries, cloneConfig, serv, cont);
+        modifyDataSourcePropsForDatabase(datasources, authDatas, libraries, cloneConfig, serv, cont, false);
     }
 
     /**
@@ -305,22 +325,33 @@ public final class DatabaseContainerUtil {
         serv.updateServerConfiguration(cloneConfig);
     }
 
+    private static final String DB_DRIVER = "DB_DRIVER";
+    private static final String DB_USER = "DB_USER";
+    private static final String DB_PASSWORD = "DB_PASSWORD";
+    private static final String DB_HOST = "DB_HOST";
+    private static final String DB_PORT = "DB_PORT";
+
     /*
      * Creates properties for specific database
      */
     private static void modifyDataSourcePropsForDatabase(Map<String, DataSource> datasources, Map<String, AuthData> authDatas, Map<String, Fileset> libraries,
                                                          ServerConfiguration cloneConfig, LibertyServer serv,
-                                                         JdbcDatabaseContainer<?> cont) throws Exception {
+                                                         JdbcDatabaseContainer<?> cont, boolean envAuthConfig) throws Exception {
         //Get database type
         DatabaseContainerType type = DatabaseContainerType.valueOf(cont);
 
         if (!datasources.isEmpty()) {
+            if (envAuthConfig) {
+                // NOTE that we must set a default port here so that config doesn't complain about a non-number.
+                // The default will get overridden by the ENV value later
+                cloneConfig.getVariables().add(new Variable(DB_PORT, null, "9999"));
+            }
             //Create properties based on type
             DataSourceProperties props = type.getDataSourceProps();
-            props.setUser(cont.getUsername());
-            props.setPassword(cont.getPassword());
-            props.setServerName(cont.getHost());
-            props.setPortNumber(Integer.toString(cont.getFirstMappedPort()));
+            props.setUser(envAuthConfig ? "${" + DB_USER + "}" : cont.getUsername());
+            props.setPassword(envAuthConfig ? "${" + DB_PASSWORD + "}" : cont.getPassword());
+            props.setServerName(envAuthConfig ? "${" + DB_HOST + "}" : cont.getHost());
+            props.setPortNumber(envAuthConfig ? "${" + DB_PORT + "}" : Integer.toString(cont.getFirstMappedPort()));
             try {
                 props.setDatabaseName(cont.getDatabaseName());
             } catch (UnsupportedOperationException e) {
@@ -375,8 +406,8 @@ public final class DatabaseContainerUtil {
         for (Map.Entry<String, AuthData> entry : authDatas.entrySet()) {
             Log.info(c, "setupDataSourceProperties", "FOUND: AuthData to be enlisted in database rotation.  ID: " + entry.getKey());
             //Replace derby auth data
-            entry.getValue().setUser(cont.getUsername());
-            entry.getValue().setPassword(cont.getPassword());
+            entry.getValue().setUser(envAuthConfig ? "${" + DB_USER + "}" : cont.getUsername());
+            entry.getValue().setPassword(envAuthConfig ? "${" + DB_PASSWORD + "}" : cont.getPassword());
         }
 
         for (Map.Entry<String, Fileset> entry : libraries.entrySet()) {
