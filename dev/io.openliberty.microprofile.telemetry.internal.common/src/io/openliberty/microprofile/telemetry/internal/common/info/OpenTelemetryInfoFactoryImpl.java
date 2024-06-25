@@ -40,13 +40,6 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
-import org.apache.commons.lang3.concurrent.LazyInitializer;
-import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryInfoFactory;
@@ -197,14 +190,17 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
                 Tr.debug(tc, "Returning {0} OTEL instance.", OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME);
             }
             return new EnabledOpenTelemetryInfo(true, otelMap.get(OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME), appName);
-        } else {
+        } else if (otelMap.get(appName) != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Returning OTEL instance for appName= {0}", appName);
             }
             return new EnabledOpenTelemetryInfo(true, otelMap.get(appName), appName);
-
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Returning Disabled OpenTelemetryInfo instance.", appName);
+            }
+            return new DisabledOpenTelemetryInfo();
         }
-
     }
 
     private static OpenTelemetryInfo createDisposedOpenTelemetryInfo() {
@@ -233,17 +229,19 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
             Config config = ConfigProvider.getConfig();
 
             HashMap<String, String> telemetryProperties = new HashMap<>();
-            
+
             for (ConfigSource configSource : config.getConfigSources()) {
-                for ( Entry<String, String> entry : configSource.getProperties().entrySet()) {
+                for (Entry<String, String> entry : configSource.getProperties().entrySet()) {
                     if (entry.getKey().startsWith("otel") || entry.getKey().startsWith("OTEL")) {
                         String normalizedName = entry.getKey().toLowerCase().replace('_', '.');
                         config.getOptionalValue(normalizedName, String.class)
-                        .ifPresent(value -> telemetryProperties.putIfAbsent(normalizedName, value));
+                              .ifPresent(value -> telemetryProperties.putIfAbsent(normalizedName, value));
                     }
                 }
             }
-            
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Application OTEL instance is being configured with the properties: {0}", telemetryProperties);
+            }
             return telemetryProperties;
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
@@ -262,7 +260,6 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
                     Map<Object, Object> systemProperties = System.getProperties();
 
                     HashMap<String, String> tempProperties = new HashMap<>();
-
                     //Check system environment for all configured OTEL properties
                     for (String propertyName : envProperties.keySet()) {
                         if (propertyName.startsWith("otel") || propertyName.startsWith("OTEL")) {
