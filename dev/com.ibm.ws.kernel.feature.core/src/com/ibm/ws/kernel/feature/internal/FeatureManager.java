@@ -1298,11 +1298,10 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         Iterator<String> it = postInstalledFeatures.iterator();
         while (it.hasNext()) {
             String feature = it.next();
-            FeatureDefinition fd = getFeatureDefinition(feature);
+            ProvisioningFeatureDefinition fd = getFeatureDefinition(feature);
 
             if (fd != null && fd.getVisibility() == Visibility.PUBLIC) {
-                //replace with some api call
-                if (fd.getSymbolicName().contains("versionless")) {
+                if (fd.isVersionless()) {
                     continue;
                 }
                 // get name from feature definition.
@@ -1956,9 +1955,6 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         List<Entry<String, String>> reportedConfigured = new ArrayList<Entry<String, String>>(); // pairs of configured features
 
         boolean disableAllOnConflict = disableAllOnConflict(result);
-
-        //this is where we throw errors based on conflicting features, we may want to add some extra details on existing errors
-        //we need to add in versionless conflict errors here
         for (Entry<String, Collection<Chain>> conflict : sortedConflicts) {
             final String compatibleFeatureBase = conflict.getKey();
             final Collection<Chain> inConflictChains = conflict.getValue();
@@ -2214,12 +2210,10 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         return false;
     }
 
-    //revisit
     private boolean isEeCompatible(String symbolicName) {
         return symbolicName != null && symbolicName.lastIndexOf(EE_COMPATIBLE_NAME) >= 0;
     }
 
-    //revisit
     private static int getEeCompatibleVersion(String symbolicName) {
         String version = symbolicName.substring(symbolicName.lastIndexOf("-") + 1);
         int dotIndex = version.indexOf('.');
@@ -2229,7 +2223,6 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         return Integer.parseInt(version);
     }
 
-    //revisit
     private String getEeCompatiblePlatform(String symbolicName, boolean ignoreVersion) {
         int intVersion = getEeCompatibleVersion(symbolicName);
         switch (intVersion) {
@@ -2245,7 +2238,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                 // TODO this is really just a fall back and for testing
                 // this should come from additional meta-data of the feature
                 // instead of hard-coding in the above cases
-                ProvisioningFeatureDefinition fd = (ProvisioningFeatureDefinition) getFeatureDefinition(symbolicName);
+                ProvisioningFeatureDefinition fd = getFeatureDefinition(symbolicName);
                 if (fd != null) {
                     String subsystemName = fd.getHeader("Subsystem-Name");
                     if (subsystemName != null) {
@@ -2256,7 +2249,6 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         }
     }
 
-    //revisit
     private String getPreferredEePlatform(String symbolicName, String compatibleFeatureBase) {
         ProvisioningFeatureDefinition fdefinition = featureRepository.getFeature(symbolicName);
         for (FeatureResource fr : fdefinition.getConstituents(SubsystemContentType.FEATURE_TYPE)) {
@@ -2582,7 +2574,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
     }
 
     @Override
-    public FeatureDefinition getFeatureDefinition(String featureName) {
+    public ProvisioningFeatureDefinition getFeatureDefinition(String featureName) {
         return featureRepository.getFeature(featureName);
     }
 
