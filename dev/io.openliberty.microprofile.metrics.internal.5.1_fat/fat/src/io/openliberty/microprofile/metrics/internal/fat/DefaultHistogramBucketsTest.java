@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -51,6 +52,8 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -61,8 +64,14 @@ public class DefaultHistogramBucketsTest {
 
 	private static Class<?> c = DefaultHistogramBucketsTest.class;
 
-	@Server("DefaultBucketServer")
+	public static final String SERVER_NAME = "DefaultBucketServer";
+
+	@Server(SERVER_NAME)
 	public static LibertyServer server;
+
+	@ClassRule
+	public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+			MicroProfileActions.MP61, MicroProfileActions.MP70_EE11);
 
 	@BeforeClass
 	public static void setUp() throws Exception {
