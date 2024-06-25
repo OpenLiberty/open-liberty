@@ -32,8 +32,8 @@ import io.openliberty.netty.internal.impl.NettyFrameworkImpl;
  */
 public class LocalChannelInitializerWrapper extends ChannelInitializerWrapper {
 	
-	 private static final TraceComponent tc = Tr.register(LocalChannelInitializerWrapper.class, NettyConstants.NETTY_TRACE_NAME,
-	            NettyConstants.BASE_BUNDLE);	
+	 private static final TraceComponent tc = Tr.register(LocalChannelInitializerWrapper.class, NettyConstants.NETTY_TRACE_NAME, null);
+	       //     NettyConstants.BASE_BUNDLE);	
 
     LocalConfigurationImpl config;
 	NettyFrameworkImpl bundle;
