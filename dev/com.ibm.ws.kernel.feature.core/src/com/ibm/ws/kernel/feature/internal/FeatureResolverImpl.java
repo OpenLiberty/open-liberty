@@ -696,11 +696,13 @@ public class FeatureResolverImpl implements FeatureResolver {
                     }
                 }
                 boolean addFeature = false;
+                boolean hasVersionlessPlatform = false;
                 // loops through the private features related to the versionless feature
                 for(String linkingFeature : versionlessLinkingFeatures){
                     ProvisioningFeatureDefinition linkingDef = selectionContext.getRepository().getFeature(linkingFeature);
                     if(linkingDef != null){
                         Collection<FeatureResource> featureDeps = linkingDef.getConstituents(SubsystemContentType.FEATURE_TYPE);
+                    
                         // The dependencies of the linking feature, will be either public versioned feature, compatibility feature, or noship feature
                         // The logic in the loop makes sure to only handle the public versioned feature.
                         for (FeatureResource featureDep : featureDeps) {
@@ -709,22 +711,30 @@ public class FeatureResolverImpl implements FeatureResolver {
                                 if(versionedFeature == null || versionedFeature.getVisibility() != Visibility.PUBLIC){
                                     continue;
                                 }
+                                
                                 for(String platform : versionedFeature.getPlatformNames()){
                                     if(rootPlatforms.contains(allCompatibilityFeatures.get(platform.toLowerCase()).getSymbolicName())){
                                         addFeature = true;
                                         selectionContext.getResult()._resolved.add(feature);
                                         selectionContext.getResult()._resolved.add(linkingFeature);
                                         addedRootFeatures.add(versionedFeature.getSymbolicName());
+                                        break;
+                                    }
+                                    else if(rootPlatforms.contains(compatibleBaseNameToVersionlessCompatible(parseName(allCompatibilityFeatures.get(platform.toLowerCase()).getSymbolicName())))){
+                                        hasVersionlessPlatform = true;
+                                        break;
                                     }
                                 }
                             }
                         }
                     }
                 }
+                if(!hasVersionlessPlatform){
+                    removedVersionlessFeatures.add(feature);
+                }
                 //regardless of whether or not we add the versioned feature, we remove the versionless feature from root features
-                removedVersionlessFeatures.add(feature);
 
-                if(!addFeature){
+                if(!addFeature && !hasVersionlessPlatform){
                     //if we didn't add a versioned feature, its an error, no compatible platform for feature.
                 }
             }
@@ -1197,6 +1207,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             final Map<String, Chains> _postponed = new LinkedHashMap<String, Chains>();
             final Map<String, Chains> _postponedVersionless = new LinkedHashMap<String, Chains>();
             final Set<String> _blockedFeatures = new HashSet<String>();
+            final Set<String> _postponedFeaturesTried = new HashSet<String>();
             final FeatureResolverResultImpl _result = new FeatureResolverResultImpl();
 
             //possibly remove deadendchain
@@ -1223,6 +1234,8 @@ public class FeatureResolverImpl implements FeatureResolver {
                 for (Map.Entry<String, Chains> chainsEntry : _postponedVersionless.entrySet()) {
                     copy._postponedVersionless.put(chainsEntry.getKey(), chainsEntry.getValue().copy());
                 }
+
+                copy._postponedFeaturesTried.addAll(_postponedFeaturesTried);
 
                 // NOTE the blocked features are NOT copied; they get recalculated
                 return copy;
@@ -1571,7 +1584,8 @@ public class FeatureResolverImpl implements FeatureResolver {
                 // try to find a good selection
 
                 Chain selected = null;
-                if(isBeta && hasVersionlessFeatures){
+                if(isBeta && hasVersionlessFeatures && !_current._postponedFeaturesTried.contains(firstPostponed.getKey())){
+                    _current._postponedFeaturesTried.add(firstPostponed.getKey());
                     selected = firstPostponed.getValue().selectTryFirst(firstPostponed.getKey(), this);
                 }
                 else{
