@@ -49,7 +49,7 @@ public class BuildCompatibleExtensionsTest extends FATServletClient {
     public static final String SERVER_NAME = "cdiBceTestServer";
 
     @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE11);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, true, EERepeatActions.EE10, EERepeatActions.EE11);
 
     @Server(SERVER_NAME)
     @TestServlets({ @TestServlet(contextRoot = "war1", servlet = EarBCETestServlet1.class), //LITE

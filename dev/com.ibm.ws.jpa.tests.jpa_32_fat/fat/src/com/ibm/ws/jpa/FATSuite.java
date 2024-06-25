@@ -22,7 +22,6 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.ws.jpa.jpa32.JPABootstrapTest;
 
 import componenttest.containers.TestContainerSuite;
-import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 
@@ -40,6 +39,6 @@ public class FATSuite extends TestContainerSuite {
     public static JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE11_FEATURES());
+    public static RepeatTests r = RepeatTests.withoutModification();
 
 }

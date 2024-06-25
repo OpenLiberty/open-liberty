@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ public class FATSuite {
     private static final List<FeatureSet> ALL = Arrays.asList(ALL_CTX_SETS_ARRAY);
 
     public static RepeatTests repeat(String serverName, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
-        return RepeatActions.repeat(serverName, TestMode.FULL, ALL, firstFeatureSet, otherFeatureSets);
+        return RepeatActions.repeat(serverName, TestMode.FULL, ALL, firstFeatureSet, Arrays.asList(otherFeatureSets), true);
     }
 
 }
