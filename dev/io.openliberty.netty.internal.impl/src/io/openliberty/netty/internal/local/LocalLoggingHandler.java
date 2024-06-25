@@ -31,8 +31,8 @@ import io.openliberty.netty.internal.impl.NettyConstants;
 @Trivial
 class LocalLoggingHandler extends LoggingHandler{
 
-	private static final TraceComponent tc = Tr.register(LocalUtils.class, NettyConstants.NETTY_TRACE_NAME,
-			NettyConstants.BASE_BUNDLE);
+	private static final TraceComponent tc = Tr.register(LocalUtils.class, NettyConstants.NETTY_TRACE_NAME, null);
+			//NettyConstants.BASE_BUNDLE);
 	
 
 	public LocalLoggingHandler(){
