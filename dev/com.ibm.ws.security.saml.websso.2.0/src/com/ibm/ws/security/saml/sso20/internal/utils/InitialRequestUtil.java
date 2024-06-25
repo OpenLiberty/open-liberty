@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -265,7 +265,8 @@ public class InitialRequestUtil {
             String initialrequest_cookie_name = updateInitialRequestCookieNameWithRelayState(relayState);
             String initialrequest_cookie_value = digestInitialRequestCookieValue(irBytesStr, ssoService);
             if (initialrequest_cookie_name != null && initialrequest_cookie_value != null) {
-                RequestUtil.createCookie(req, resp, initialrequest_cookie_name, initialrequest_cookie_value);
+                int cookieMaxAge = ((int)ssoService.getConfig().getAuthnRequestTime())*60; //seconds
+                RequestUtil.createCookie(req, resp, initialrequest_cookie_name, initialrequest_cookie_value, cookieMaxAge);
             }        
         }
         return irBytesStr;
