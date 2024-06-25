@@ -62,7 +62,8 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Configuring pipeline with HTTP 1.1 for incoming connection " + ctx.channel());
             }
-            ctx.pipeline().addAfter(HttpPipelineInitializer.HTTP_ALPN_HANDLER_NAME, HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, new HttpServerCodec());
+            ctx.pipeline().addAfter(HttpPipelineInitializer.HTTP_ALPN_HANDLER_NAME, HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC,
+                                    new HttpServerCodec(8192, Integer.MAX_VALUE, httpConfig.getIncomingBodyBufferSize()));
             ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
             //TODO: this is a very large number, check best practice
             ctx.pipeline().addAfter(HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME, null,
