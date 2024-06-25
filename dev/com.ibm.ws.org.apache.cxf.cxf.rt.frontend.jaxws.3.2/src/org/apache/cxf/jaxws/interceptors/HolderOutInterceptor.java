@@ -47,8 +47,8 @@ public class HolderOutInterceptor extends AbstractPhaseInterceptor<Message> {
     }
 
     public void handleMessage(Message message) throws Fault {
-        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
-        boolean isFineEnabled = LOG.isLoggable(Level.FINE);   // Liberty Change issue #26529
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change #26529
+        boolean isFineEnabled = LOG.isLoggable(Level.FINE);   // Liberty Change #26529
         
         MessageContentsList outObjects = MessageContentsList.getContentsList(message);
         Exchange exchange = message.getExchange();
@@ -56,7 +56,7 @@ public class HolderOutInterceptor extends AbstractPhaseInterceptor<Message> {
             ? null
                 : exchange.getBindingOperationInfo().getOperationInfo();
 
-        if (isFineEnabled) {
+        if (isFineEnabled) {  // Liberty Change begin
             LOG.fine("op: " + op);
             if (null != op) {
                 LOG.fine("op.hasOutput(): " + op.hasOutput());
@@ -64,16 +64,16 @@ public class HolderOutInterceptor extends AbstractPhaseInterceptor<Message> {
                     LOG.fine("op.getOutput().size(): " + op.getOutput().size());
                 }
             }
-        }
+        }  // Liberty Change end
 
         if (op == null || !op.hasOutput() || op.getOutput().size() == 0) {
-            if (isFineEnabled) {
-                LOG.fine("OperationInfo is null or empty. Returning.");  // Liberty Change issue #26529
-            }
+            if (isFineEnabled) {  // Liberty Change begin #26529
+                LOG.fine("OperationInfo is null or empty. Returning.");
+            }  // Liberty Change end #26529
             return;
         }
 
-        if (!isRequestor(message)) {  // Liberty Change issue #26529
+        if (!isRequestor(message)) {  // Liberty Change begin #26529
             List<MessagePartInfo> parts = op.getOutput().getMessageParts();
             MessageContentsList inObjects = MessageContentsList.getContentsList(exchange.getInMessage());
             if (inObjects != null) {
@@ -84,9 +84,9 @@ public class HolderOutInterceptor extends AbstractPhaseInterceptor<Message> {
                             outObjects.set(x + 1, o);
                         }
                     }
-                    if (isFinestEnabled) {
-                        LOG.finest("Output MessageContentsList(outObjects) transferred from inbound MessageContentsList(inObjects): " + outObjects.toArray());  // Liberty Change issue #26529
-                    }
+                    if (isFinestEnabled) {  // Liberty Change begin #26529
+                        LOG.finest("Output MessageContentsList(outObjects) transferred from inbound MessageContentsList(inObjects): " + outObjects.toArray());
+                    }  // Liberty Change end #26529
                     
                 } else {
                     LOG.severe("CANNOT_SET_HOLDER_OBJECTS");
@@ -97,9 +97,9 @@ public class HolderOutInterceptor extends AbstractPhaseInterceptor<Message> {
                 if (part.getIndex() > 0 && part.getTypeClass() != null) {
                     Holder<?> holder = (Holder<?>)outObjects.get(part);
                     outObjects.put(part, holder.value);
-                    if (isFinestEnabled) {
-                        LOG.finest("Holder object value located in MessagePartInfo is stripped and put back in MessagePartInfo:" + holder.value);  // Liberty Change issue #26529
-                    }
+                    if (isFinestEnabled) {  // Liberty Change begin #26529
+                        LOG.finest("Holder object value located in MessagePartInfo is stripped and put back in MessagePartInfo:" + holder.value);
+                    }  // Liberty Change end #26529
                 }
             }
         } else {
@@ -108,20 +108,20 @@ public class HolderOutInterceptor extends AbstractPhaseInterceptor<Message> {
                 Object o = outObjects.get(x);
                 if (o instanceof Holder) {
                     outObjects.set(x, ((Holder<?>)o).value);
-                    if(isFinestEnabled)  {
-                        LOG.finest("The object in message contents list is wrapped in a holder:" + outObjects.get(x));   // Liberty Change issue #26529
-                    }
+                    if(isFinestEnabled)  {   // Liberty Change begin #26529
+                        LOG.finest("The object in message contents list is wrapped in a holder:" + outObjects.get(x));
+                    }  // Liberty Change end #26529
                 } else {
                     holders.set(x, null);
-                    if(isFinestEnabled)  {
-                        LOG.finest("A null value is set to holders list at the MessageContentsList index:" + holders.get(x));   // Liberty Change issue #26529
-                    }
+                    if(isFinestEnabled)  {   // Liberty Change begin #26529
+                        LOG.finest("A null value is set to holders list at the MessageContentsList index:" + holders.get(x));
+                    }  // Liberty Change end #26529
                 }
             }
             message.put(HolderInInterceptor.CLIENT_HOLDERS, holders);
-            if(isFinestEnabled)  {
-                LOG.finest("holders list is put in message with 'client.holders' key :" + holders);   // Liberty Change issue #26529
-            }
+            if(isFinestEnabled)  {   // Liberty Change begin #26529
+                LOG.finest("holders list is put in message with 'client.holders' key :" + holders);
+            }  // Liberty Change end #26529
         }
 
     }

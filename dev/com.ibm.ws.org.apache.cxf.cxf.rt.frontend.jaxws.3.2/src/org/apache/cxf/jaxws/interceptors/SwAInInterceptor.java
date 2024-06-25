@@ -44,7 +44,7 @@ import org.apache.cxf.service.model.MessagePartInfo;
 
 public class SwAInInterceptor extends AbstractSoapInterceptor {
 
-    private static final Logger LOG = LogUtils.getL7dLogger(SwAInInterceptor.class); // Liberty Change issue #26529
+    private static final Logger LOG = LogUtils.getL7dLogger(SwAInInterceptor.class); // Liberty Change #26529
     public SwAInInterceptor() {
         super(Phase.PRE_INVOKE);
         getBefore().add(HolderInInterceptor.class.getName());
@@ -52,38 +52,38 @@ public class SwAInInterceptor extends AbstractSoapInterceptor {
     }
 
     public void handleMessage(SoapMessage message) throws Fault {
-        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change #26529
         BindingOperationInfo bop = message.getExchange().getBindingOperationInfo();
         if (bop == null) {
-            if(isFinestEnabled)  {
-                LOG.finest("BindingOperationInfo is null. Returning.");   // Liberty Change issue #26529
-            } 
+            if(isFinestEnabled)  {   // Liberty Change begin #26529
+                LOG.finest("BindingOperationInfo is null. Returning.");
+            }  // Liberty Change end #26529
             return;
         }
 
         if (bop.isUnwrapped()) {
             bop = bop.getWrappedOperation();
-            if(isFinestEnabled)  {
-                LOG.finest("BindingOperationInfo is switched to wrapped version");   // Liberty Change issue #26529
-            }
+            if(isFinestEnabled)  {   // Liberty Change begin #26529
+                LOG.finest("BindingOperationInfo is switched to wrapped version");
+            } // Liberty Change end #26529
         }
 
         boolean client = isRequestor(message);
         BindingMessageInfo bmi = client ? bop.getOutput() : bop.getInput();
 
         if (bmi == null) {
-            if(isFinestEnabled)  {
-                LOG.finest("BindingMessageInfo is null. Returning.");   // Liberty Change issue #26529
-            } 
+            if(isFinestEnabled)  {   // Liberty Change begin #26529
+                LOG.finest("BindingMessageInfo is null. Returning.");
+            }  // Liberty Change end #26529
             return;
         }
 
         SoapBodyInfo sbi = bmi.getExtensor(SoapBodyInfo.class);
 
         if (sbi == null || sbi.getAttachments() == null || sbi.getAttachments().isEmpty()) {
-            if(isFinestEnabled)  {
-                LOG.finest("SoapBodyInfo is null or it doesn't have attachments. Returning.");   // Liberty Change issue #26529
-            } 
+            if(isFinestEnabled)  {   // Liberty Change begin #26529
+                LOG.finest("SoapBodyInfo is null or it doesn't have attachments. Returning.");
+            }  // Liberty Change end #26529
             return;
         }
 
@@ -109,43 +109,43 @@ public class SwAInInterceptor extends AbstractSoapInterceptor {
                     Class<?> typeClass = mpi.getTypeClass();
                     if (DataHandler.class.isAssignableFrom(typeClass)) {
                         o = dh;
-                        if(isFinestEnabled)  {
-                            LOG.finest("DataHandler obtained from attachment assigned to Object: " + o);   // Liberty Change issue #26529
-                        } 
+                        if(isFinestEnabled)  {   // Liberty Change begin #26529
+                            LOG.finest("DataHandler obtained from attachment assigned to Object: " + o);
+                        }  // Liberty Change end #26529
                     } else if (String.class.isAssignableFrom(typeClass)) {
                         try {
                             //o = IOUtils.readBytesFromStream(dh.getInputStream());
                             o = dh.getContent();
-                            if(isFinestEnabled)  {
-                                LOG.finest("Content of DataHandler obtained from attachment assigned to Object: " + o);   // Liberty Change issue #26529
-                            } 
+                            if(isFinestEnabled)  {   // Liberty Change begin #26529
+                                LOG.finest("Content of DataHandler obtained from attachment assigned to Object: " + o);
+                            }  // Liberty Change end #26529
                         } catch (IOException e) {
                             throw new Fault(e);
                         }
                     } else if (byte[].class.isAssignableFrom(typeClass)) {
                         try {
                             o = IOUtils.readBytesFromStream(dh.getInputStream());
-                            if(isFinestEnabled)  {
-                                LOG.finest("InputStream read from DataHandler tobtained from attachment assigned to Object: " + o);   // Liberty Change issue #26529
-                            } 
+                            if(isFinestEnabled)  {   // Liberty Change begin #26529
+                                LOG.finest("InputStream read from DataHandler tobtained from attachment assigned to Object: " + o);
+                            }  // Liberty Change end #26529
                         } catch (IOException e) {
                             throw new Fault(e);
                         }
                     } else if (ct.startsWith("image/")) {
                         try {
                             o = ImageIO.read(dh.getInputStream());
-                            if(isFinestEnabled)  {
-                                LOG.finest("InputStream read from DataHandlerobtained from image attachment assigned Object: " + o);   // Liberty Change issue #26529
-                            } 
+                            if(isFinestEnabled)  {   // Liberty Change begin #26529
+                                LOG.finest("InputStream read from DataHandlerobtained from image attachment assigned Object: " + o);
+                            }  // Liberty Change end #26529
                         } catch (IOException e) {
                             throw new Fault(e);
                         }
                     } else if (ct.startsWith("text/xml") || ct.startsWith("application/xml")) {
                         try {
                             o = new StreamSource(dh.getInputStream());
-                            if(isFinestEnabled)  {
-                                LOG.finest("A StreeamSource created from the DataHandler is assigned to Object: " + o);   // Liberty Change issue #26529
-                            } 
+                            if(isFinestEnabled)  {   // Liberty Change begin #26529
+                                LOG.finest("A StreeamSource created from the DataHandler is assigned to Object: " + o);
+                            }  // Liberty Change end #26529
                         } catch (IOException e) {
                             throw new Fault(e);
                         }
@@ -155,18 +155,18 @@ public class SwAInInterceptor extends AbstractSoapInterceptor {
 
                     inObjects.put(mpi, o);
                     found = true;
-                    if(isFinestEnabled)  {
-                        LOG.finest("Object is put in MessageContentsList and found is set to true.");   // Liberty Change issue #26529
-                    } 
+                    if(isFinestEnabled)  {   // Liberty Change begin #26529
+                        LOG.finest("Object is put in MessageContentsList and found is set to true.");
+                    }  // Liberty Change end #26529
                     break;
                 }
             }
 
             if (!found) {
                 inObjects.put(mpi, null);
-                if(isFinestEnabled)  {
-                    LOG.finest("Object is not put in MessageContentsList since it's not found.");   // Liberty Change issue #26529
-                } 
+                if(isFinestEnabled)  {   // Liberty Change begin #26529
+                    LOG.finest("Object is not put in MessageContentsList since it's not found.");
+                }  // Liberty Change end #26529
             }
         }
     }

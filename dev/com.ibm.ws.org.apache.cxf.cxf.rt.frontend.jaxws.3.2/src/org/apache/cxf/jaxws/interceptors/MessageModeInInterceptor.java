@@ -59,7 +59,7 @@ public class MessageModeInInterceptor extends AbstractPhaseInterceptor<Message> 
 
     Class<?> soapMsgClass;
 
-    private static final Logger LOG = LogUtils.getLogger(MessageModeInInterceptor.class); // Liberty Change issue #26529
+    private static final Logger LOG = LogUtils.getLogger(MessageModeInInterceptor.class); // Liberty Change #26529
     
     public MessageModeInInterceptor(Class<?> c, QName bName) {
         super(Phase.POST_LOGICAL);
@@ -67,23 +67,23 @@ public class MessageModeInInterceptor extends AbstractPhaseInterceptor<Message> 
         type = c;
         try {
             soapMsgClass = Class.forName("javax.xml.soap.SOAPMessage");
-            if(LOG.isLoggable(Level.FINEST))  {
-                LOG.finest("SOAPMessage class is found: " + soapMsgClass.getName());   // Liberty Change issue #26529
-            } 
+            if(LOG.isLoggable(Level.FINEST))  {   // Liberty Change begin #26529
+                LOG.finest("SOAPMessage class is found: " + soapMsgClass.getName());
+            }  // Liberty Change end #26529
         } catch (Throwable t) {
             soapMsgClass = null;
-            if(LOG.isLoggable(Level.FINEST))  {
-                LOG.finest("SOAPMessage class is not found.");   // Liberty Change issue #26529
-            } 
+            if(LOG.isLoggable(Level.FINEST))  {   // Liberty Change begin #26529
+                LOG.finest("SOAPMessage class is not found.");
+            }  // Liberty Change end #26529
         }
     }
 
     public void handleMessage(Message message) throws Fault {
         BindingOperationInfo bop = message.getExchange().getBindingOperationInfo();
         if (bop == null || !bindingName.equals(bop.getBinding().getName())) {
-            if(LOG.isLoggable(Level.FINEST))  {
-                LOG.finest("BindingOperationInfo is null or binding qname is different than the one provided in constructor. Returning.");   // Liberty Change issue #26529
-            } 
+            if(LOG.isLoggable(Level.FINEST))  {   // Liberty Change begin #26529
+                LOG.finest("BindingOperationInfo is null or binding qname is different than the one provided in constructor. Returning.");
+            }  // Liberty Change end #26529
             return;
         }
         Object o = message.getContent(soapMsgClass);
@@ -102,23 +102,23 @@ public class MessageModeInInterceptor extends AbstractPhaseInterceptor<Message> 
             && list != null
             && !list.isEmpty() && list.get(0) instanceof DataSource) {
             list.set(0, new MultiPartDataSource(message, (DataSource)list.get(0)));
-            if(LOG.isLoggable(Level.FINEST))  {
-                LOG.finest("Data source that is obtained from MessageContentsList is set back as MultiPartDataSource: " + list.get(0));   // Liberty Change issue #26529
-            } 
+            if(LOG.isLoggable(Level.FINEST))  {   // Liberty Change begin #26529
+                LOG.finest("Data source that is obtained from MessageContentsList is set back as MultiPartDataSource: " + list.get(0));
+            }   // Liberty Change end #26529
         }
     }
 
     private void doFromSoapMessage(Message message, Object sm) {
         
-        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);  // Liberty Change issue #26529
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);  // Liberty Change #26529
         SOAPMessage m = (SOAPMessage)sm;
         MessageContentsList list = (MessageContentsList)message.getContent(List.class);
         if (list == null) {
             list = new MessageContentsList();
             message.setContent(List.class, list);
-            if (isFinestEnabled) {
-                LOG.finest("MessageContentsList that is obtained from null. Replaced with empty list."); // Liberty Change issue #26529
-            }
+            if (isFinestEnabled) { // Liberty Change begin #26529
+                LOG.finest("MessageContentsList that is obtained from null. Replaced with empty list.");
+            }  // Liberty Change end #26529
         }
         Object o = m;
 
@@ -129,28 +129,28 @@ public class MessageModeInInterceptor extends AbstractPhaseInterceptor<Message> 
                     StaxUtils.copy(new DOMSource(m.getSOAPPart()), xsw);
                     xsw.close();
                     o = new StreamSource(out.getInputStream());
-                    if (isFinestEnabled) {
-                        LOG.finest("SOAPPart of SOAPMessage is converted to StreamSource"); // Liberty Change issue #26529
-                    }
+                    if (isFinestEnabled) { // Liberty Change begin #26529
+                        LOG.finest("SOAPPart of SOAPMessage is converted to StreamSource");
+                    }  // Liberty Change end #26529
                 }
             } catch (Exception e) {
                 throw new Fault(e);
             }
         } else if (SAXSource.class.isAssignableFrom(type)) {
             o = new StaxSource(new W3CDOMStreamReader(m.getSOAPPart()));
-            if (isFinestEnabled) {
-                LOG.finest("SOAPPart of SOAPMessage is converted to StaxSource"); // Liberty Change issue #26529
-            }
+            if (isFinestEnabled) { // Liberty Change begin #26529
+                LOG.finest("SOAPPart of SOAPMessage is converted to StaxSource");
+            }  // Liberty Change end #26529
         } else if (Source.class.isAssignableFrom(type)) {
             o = new DOMSource(m.getSOAPPart());
-            if (isFinestEnabled) {
-                LOG.finest("SOAPPart of SOAPMessage is converted to DOMSource"); // Liberty Change issue #26529
-            }
+            if (isFinestEnabled) { // Liberty Change begin #26529
+                LOG.finest("SOAPPart of SOAPMessage is converted to DOMSource");
+            }  // Liberty Change end #26529
         }
         list.set(0, o);
-        if (isFinestEnabled) {
-            LOG.finest("Converted object is added to MessageContentsList: " + o); // Liberty Change issue #26529
-        }
+        if (isFinestEnabled) { // Liberty Change begin #26529
+            LOG.finest("Converted object is added to MessageContentsList: " + o);
+        }  // Liberty Change end #26529
     }
 
     private static class MultiPartDataSource implements DataSource {

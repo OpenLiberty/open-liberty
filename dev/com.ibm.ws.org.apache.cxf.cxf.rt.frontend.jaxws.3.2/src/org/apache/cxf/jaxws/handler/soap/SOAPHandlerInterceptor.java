@@ -78,13 +78,13 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 // It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
 // to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
 // If a solution to this compilation issue can be found, this class should be removed as an overlay. 
-// Liberty change: traces are added issue #26529
+// Liberty change: traces are added
 public class SOAPHandlerInterceptor extends
         AbstractProtocolHandlerInterceptor<SoapMessage> implements
         SoapInterceptor {
     private static final SAAJOutInterceptor SAAJ_OUT = new SAAJOutInterceptor();
 
-    private static final Logger LOG = LogUtils.getLogger(SOAPHandlerInterceptor.class); // Liberty Change issue #26529
+    private static final Logger LOG = LogUtils.getLogger(SOAPHandlerInterceptor.class); // Liberty Change #26529
     AbstractSoapInterceptor ending = new AbstractSoapInterceptor(
             SOAPHandlerInterceptor.class.getName() + ".ENDING",
             Phase.USER_PROTOCOL) {
@@ -112,24 +112,21 @@ public class SOAPHandlerInterceptor extends
                 }
             }
         }
-        if (LOG.isLoggable(Level.FINEST)) {
-            LOG.finest("Headers that are obtained from SOAPHandler and it's subclasses: " + understood.toArray());   // Liberty Change issue #26529
-        }
         return understood;
     }
 
     public void handleMessage(@Sensitive SoapMessage message) { // Liberty Change
-        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change #26529
         if (binding.getHandlerChain().isEmpty()) {
-            if (isFinestEnabled) {
-                LOG.finest("Handler chain is empty. handleMessage won't be executed.");   // Liberty Change issue #26529
-            }
+            if (isFinestEnabled) {// Liberty Change begin #26529
+                LOG.finest("Handler chain is empty. handleMessage won't be executed.");   
+            } // Liberty Change end #26529
             return;
         }
         if (getInvoker(message).getProtocolHandlers().isEmpty()) {
-            if (isFinestEnabled) {
-                LOG.finest("Message does not contain any protocol handlers. handleMessage won't be executed.");   // Liberty Change issue #26529
-            }
+            if (isFinestEnabled) {// Liberty Change begin #26529
+                LOG.finest("Message does not contain any protocol handlers. handleMessage won't be executed.");   
+            } // Liberty Change end #26529
             return;
         }
 
@@ -138,9 +135,6 @@ public class SOAPHandlerInterceptor extends
         if (getInvoker(message).isOutbound()) {
             if (!chainAlreadyContainsSAAJ(message)) {
                 SAAJ_OUT.handleMessage(message);
-            }
-            if (isFinestEnabled) {
-                LOG.finest(ending + " will be added to interceptor chain for outbound message.");   // Liberty Change issue #26529
             }
             message.getInterceptorChain().add(ending);
         } else {
@@ -162,9 +156,9 @@ public class SOAPHandlerInterceptor extends
                 if (ep.getInFaultObserver() != null) {
                     ep.getInFaultObserver().onMessage(message);
                 } else {
-                    if (isFinestEnabled) {
-                        LOG.finest("MessageObserver(ep.getInFaultObserver())  is null. onMessage method of MessageObserver won't get executed.");   // Liberty Change issue #26529
-                    }
+                    if (isFinestEnabled) {   // Liberty Change begin #26529
+                        LOG.finest("MessageObserver(ep.getInFaultObserver())  is null. onMessage method of MessageObserver won't get executed.");
+                    } // Liberty Change end #26529
                 }
             }
         }
@@ -184,12 +178,12 @@ public class SOAPHandlerInterceptor extends
 
     private boolean handleMessageInternal(SoapMessage message) {
 
-        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);  // Liberty Change issue #26529
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);  // Liberty Change #26529
         MessageContext context = createProtocolMessageContext(message);
         if (context == null) {
-            if (isFinestEnabled) {
-                LOG.finest("MessageContext is null. handleMessageInternal won't be executed."); // Liberty Change issue #26529
-            }
+            if (isFinestEnabled) { // Liberty Change begin #26529
+                LOG.finest("MessageContext is null. handleMessageInternal won't be executed.");
+            }  // Liberty Change end #26529
             return true;
         }
 
@@ -197,16 +191,16 @@ public class SOAPHandlerInterceptor extends
         invoker.setProtocolMessageContext(context);
 
         if (!invoker.invokeProtocolHandlers(isRequestor(message), context)) {
-            if (isFinestEnabled) {
-                LOG.finest("There is a problem invoking protocol handlers. handleAbort method will be executed."); // Liberty Change issue #26529
-            }
+            if (isFinestEnabled) { // Liberty Change begin #26529
+                LOG.finest("There is a problem invoking protocol handlers. handleAbort method will be executed.");
+            } // Liberty Change end #26529
             handleAbort(message, context);
         }
 
-        if (isFinestEnabled) {
-            LOG.finest("Is it an outbound message(isOutbound): " + isOutbound(message)); // Liberty Change issue #26529
-            LOG.finest("Is it MEP complete(isMEPComlete): " + isMEPComlete(message)); // Liberty Change issue #26529
-        }
+        if (isFinestEnabled) { // Liberty Change begin #26529
+            LOG.finest("Is it an outbound message(isOutbound): " + isOutbound(message));
+            LOG.finest("Is it MEP complete(isMEPComlete): " + isMEPComlete(message));
+        } // Liberty Change end #26529
         // If this is the outbound and end of MEP, call MEP completion
         if (isRequestor(message) && invoker.getLogicalHandlers().isEmpty()
             && !isOutbound(message) && isMEPComlete(message)) {
@@ -218,16 +212,16 @@ public class SOAPHandlerInterceptor extends
     }
 
     private void handleAbort(SoapMessage message, MessageContext context) {
-        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);  // Liberty Change issue #26529
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);  // Liberty Change #26529
         if (isRequestor(message)) {
             // client side outbound
             if (getInvoker(message).isOutbound()) {
                 message.getInterceptorChain().abort();
 
                 MessageObserver observer = message.getExchange().get(MessageObserver.class);
-                if (isFinestEnabled) {
-                    LOG.finest("MessageObserver(observer): " + observer); // Liberty Change issue #26529
-                }
+                if (isFinestEnabled) { // Liberty Change begin #26529
+                    LOG.finest("MessageObserver(observer): " + observer);
+                } // Liberty Change end #26529
                 if (!message.getExchange().isOneWay()
                     && observer != null) {
                     Endpoint e = message.getExchange().getEndpoint();
@@ -246,17 +240,17 @@ public class SOAPHandlerInterceptor extends
                     }
                     responseMsg.put(InterceptorChain.STARTING_AT_INTERCEPTOR_ID,
                                     SOAPHandlerInterceptor.class.getName());
-                    if (isFinestEnabled) {
-                        LOG.finest("New response message is created and will be passed as parameter to onMessage method of MessageObserver: " + responseMsg); // Liberty Change issue #26529
-                    }
+                    if (isFinestEnabled) { // Liberty Change begin #26529
+                        LOG.finest("New response message is created and will be passed as parameter to onMessage method of MessageObserver: " + responseMsg);
+                    } // Liberty Change end #26529
                     observer.onMessage(responseMsg);
                 }
                 //We dont call onCompletion here, as onCompletion will be called by inbound
                 //LogicalHandlerInterceptor
             } else {
-                if (isFinestEnabled) {
-                    LOG.finest("Client side inbound onCompletion will be executed"); // Liberty Change issue #26529
-                }
+                if (isFinestEnabled) { // Liberty Change begin #26529
+                    LOG.finest("Client side inbound onCompletion will be executed");
+                } // Liberty Change end #26529
                 // client side inbound - Normal handler message processing
                 // stops, but the inbound interceptor chain still continues, dispatch the message
                 //By onCompletion here, we can skip following Logical handlers
@@ -265,9 +259,9 @@ public class SOAPHandlerInterceptor extends
         } else {
             if (!getInvoker(message).isOutbound()) {
                 // server side inbound
-                if (isFinestEnabled) {
-                    LOG.finest("Server side inbound interceptor chain will be aborted."); // Liberty Change issue #26529
-                }
+                if (isFinestEnabled) { // Liberty Change begin #26529
+                    LOG.finest("Server side inbound interceptor chain will be aborted.");
+                } // Liberty Change end #26529
                 message.getInterceptorChain().abort();
                 Endpoint e = message.getExchange().getEndpoint();
                 if (!message.getExchange().isOneWay()) {
@@ -282,9 +276,9 @@ public class SOAPHandlerInterceptor extends
                     InterceptorChain chain = OutgoingChainInterceptor.getOutInterceptorChain(message
                         .getExchange());
                     responseMsg.setInterceptorChain(chain);
-                    if (isFinestEnabled) {
-                        LOG.finest("New response message is created and will be passed as parameter to doInterceptStartingAfter method of InterceptorChain: " + responseMsg); // Liberty Change issue #26529
-                    }
+                    if (isFinestEnabled) { // Liberty Change begin #26529
+                        LOG.finest("New response message is created and will be passed as parameter to doInterceptStartingAfter method of InterceptorChain: " + responseMsg);
+                    } // Liberty Change end #26529
                     // so the idea of starting interceptor chain from any
                     // specified point does not work
                     // well for outbound case, as many outbound interceptors
@@ -295,9 +289,9 @@ public class SOAPHandlerInterceptor extends
                 }
 
             } else {
-                if (isFinestEnabled) {
-                    LOG.finest("Server side outbound. Do nothing."); // Liberty Change issue #26529
-                }
+                if (isFinestEnabled) { // Liberty Change begin #26529
+                    LOG.finest("Server side outbound. Do nothing.");
+                } // Liberty Change end #26529
                 // server side outbound - Normal handler message processing
                 // stops, but still continue the outbound interceptor chain, dispatch the message
             }
@@ -306,7 +300,7 @@ public class SOAPHandlerInterceptor extends
 
     @Override
     protected MessageContext createProtocolMessageContext(SoapMessage message) {        
-        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);  // Liberty Change issue #26529
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);  // Liberty Change #26529
         SOAPMessageContextImpl sm = new SOAPMessageContextImpl(message);
 
         Exchange exch = message.getExchange();
@@ -333,14 +327,14 @@ public class SOAPHandlerInterceptor extends
                         }
                     }
                 }
-                if (isFinestEnabled) {
-                    LOG.finest("Reference parameters obtained from SOAP header: " + params); // Liberty Change issue #26529
-                }
+                if (isFinestEnabled) { // Liberty Change begin #26529
+                    LOG.finest("Reference parameters obtained from SOAP header: " + params);
+                } // Liberty Change end #26529
                 if (isRequestor(message) && msg.getSOAPPart().getEnvelope().getBody() != null
                         && msg.getSOAPPart().getEnvelope().getBody().hasFault()) {
-                    if (isFinestEnabled) {
-                        LOG.finest("Message body has fault on client side. Protocol message context won't be returned."); // Liberty Change issue #26529
-                    }
+                    if (isFinestEnabled) { // Liberty Change begin #26529
+                        LOG.finest("Message body has fault on client side. Protocol message context won't be returned.");
+                    } // Liberty Change end #26529
                     return null;
                 }
             } catch (SOAPException e) {
@@ -366,17 +360,17 @@ public class SOAPHandlerInterceptor extends
     }
 
     public void handleFault(SoapMessage message) {
-        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);  // Liberty Change issue #26529
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);  // Liberty Change #26529
         if (binding.getHandlerChain().isEmpty()) {
-            if (isFinestEnabled) {
-                LOG.finest("Handler chain is empty. handleFault won't be executed."); // Liberty Change issue #26529
-            }
+            if (isFinestEnabled) { // Liberty Change begin #26529
+                LOG.finest("Handler chain is empty. handleFault won't be executed.");
+            } // Liberty Change end #26529
             return;
         }
         if (getInvoker(message).getProtocolHandlers().isEmpty()) {
-            if (isFinestEnabled) {
-                LOG.finest("Protocol handler list is empty. handleFault won't be executed."); // Liberty Change issue #26529
-            }
+            if (isFinestEnabled) { // Liberty Change begin #26529
+                LOG.finest("Protocol handler list is empty. handleFault won't be executed.");
+            } // Liberty Change end #26529
             return;
         }
         if (getInvoker(message).isOutbound()
@@ -386,21 +380,21 @@ public class SOAPHandlerInterceptor extends
     }
 
     protected QName getOpQName(Exchange ex, Object data) {
-        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);  // Liberty Change issue #26529
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);  // Liberty Change #26529
         SOAPMessageContextImpl sm = (SOAPMessageContextImpl)data;
         try {
             SOAPMessage msg = sm.getMessage();
             if (msg == null) {
-                if (isFinestEnabled) {
-                    LOG.finest("SOAP message is null. OpQname will not be returned."); // Liberty Change issue #26529
-                }
+                if (isFinestEnabled) { // Liberty Change begin #26529
+                    LOG.finest("SOAP message is null. OpQname will not be returned.");
+                } // Liberty Change end #26529
                 return null;
             }
             SOAPBody body = SAAJUtils.getBody(msg);
             if (body == null) {
-                if (isFinestEnabled) {
-                    LOG.finest("SOAP body is null. OpQname will not be returned."); // Liberty Change issue #26529
-                }
+                if (isFinestEnabled) { // Liberty Change begin #26529
+                    LOG.finest("SOAP body is null. OpQname will not be returned.");
+                } // Liberty Change end #26529
                 return null;
             }
             org.w3c.dom.Node nd = body.getFirstChild();

@@ -46,6 +46,8 @@ Import-Package: \
   javax.xml.ws.*;version="[2.2,3)", \
   org.apache.cxf.*;version="[3.2.4,4)", \
   com.ibm.ws.ffdc, \
+  javax.servlet;version=!, \
+  javax.servlet.http;version=!, \
   *
 
 Export-Package: \
@@ -85,7 +87,7 @@ instrument.classesIncludes: \
   com.ibm.websphere.javaee.jaxb.2.2;version=latest, \
   com.ibm.websphere.javaee.jaxws.2.2;version=latest, \
   com.ibm.websphere.javaee.jws.1.0;version=latest, \
-  com.ibm.websphere.javaee.servlet.3.1;version=latest, \
+  com.ibm.websphere.javaee.servlet.4.0;version=latest, \
   com.ibm.websphere.javaee.wsdl4j.1.2;version=latest, \
   com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2;version=latest, \
   com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest, \

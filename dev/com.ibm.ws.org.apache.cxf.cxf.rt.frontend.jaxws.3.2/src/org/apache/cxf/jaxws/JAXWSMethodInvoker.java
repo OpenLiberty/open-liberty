@@ -43,7 +43,7 @@ import org.apache.cxf.service.invoker.SingletonFactory;
 
 public class JAXWSMethodInvoker extends AbstractJAXWSMethodInvoker {
 
-    private static final Logger LOG = LogUtils.getLogger(JAXWSMethodInvoker.class);  // Liberty Change issue #26529
+    private static final Logger LOG = LogUtils.getLogger(JAXWSMethodInvoker.class);  // Liberty Change #26529
     public static final String COPY_SOAP_HEADERS_BY_FAULT = "org.apache.cxf.fault.copySoapHeaders";
 
     javax.xml.ws.spi.Invoker invoker;
@@ -74,7 +74,7 @@ public class JAXWSMethodInvoker extends AbstractJAXWSMethodInvoker {
     protected Object invoke(Exchange exchange,
                             final Object serviceObject, Method m,
                             List<Object> params) {
-        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change issue #26529
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change #26529
         // set up the webservice request context
         WrappedMessageContext ctx = new WrappedMessageContext(exchange.getInMessage(), Scope.APPLICATION);
 
@@ -82,9 +82,9 @@ public class JAXWSMethodInvoker extends AbstractJAXWSMethodInvoker {
 
         final MessageContext oldCtx = WebServiceContextImpl.setMessageContext(ctx);
         List<Object> res = null;
-        if(isFinestEnabled)  {
-            LOG.finest("Is serviceObject instanceof Provider: " + (serviceObject instanceof Provider));   // Liberty Change issue #26529
-        } 
+        if(isFinestEnabled)  {   // Liberty Change begin #26529
+            LOG.finest("Is serviceObject instanceof Provider: " + (serviceObject instanceof Provider));
+        }    // Liberty Change end #26529
         try {
             if ((params == null || params.isEmpty()) && serviceObject instanceof Provider) {
                 params = Collections.singletonList(null);
@@ -102,9 +102,9 @@ public class JAXWSMethodInvoker extends AbstractJAXWSMethodInvoker {
                 res = null;
                 changeToOneway(exchange);
                 params = Collections.singletonList(null);
-                if(isFinestEnabled)  {
-                    LOG.finest("Exchange is set to be one way.");   // Liberty Change issue #26529
-                } 
+                if(isFinestEnabled)  {   // Liberty Change begin #26529
+                    LOG.finest("Exchange is set to be one way.");
+                }   // Liberty Change end #26529
             }
             //update the webservice response context
             updateWebServiceContext(exchange, ctx);
