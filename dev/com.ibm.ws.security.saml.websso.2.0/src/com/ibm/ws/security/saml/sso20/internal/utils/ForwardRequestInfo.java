@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,9 +17,12 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,6 +45,8 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
                                                                    TraceConstants.MESSAGE_BUNDLE);
 
     boolean bNeedFragment = true;
+
+    private long fragmentCookieMaxAge = 10;
 
     /**
      *
@@ -124,7 +129,6 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
             //@AV999-092821 TODO: save this in another form also
             processDelegatedLogoutRequest(req);
 
-
             // HTTP 1.1.
             resp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, private, max-age=0");
             // HTTP 1.0.
@@ -203,12 +207,12 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
     }
 
     private void processDelegatedLogoutRequest(HttpServletRequest req) {
-        if(req.getAttribute("OIDC_END_SESSION_REDIRECT") != null) {
+        if (req.getAttribute("OIDC_END_SESSION_REDIRECT") != null) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "SP Initiated SLO Request, removing OIDC_END_SESSION_REDIRECT attribute");
             }
             req.removeAttribute("OIDC_END_SESSION_REDIRECT");
-        } else if(req.getAttribute("OIDC_LOGOUT_REDIRECT_URL") != null) {
+        } else if (req.getAttribute("OIDC_LOGOUT_REDIRECT_URL") != null) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "SP Initiated SLO Request, removing OIDC_LOGOUT_REDIRECT_URL attribute");
             }
@@ -227,7 +231,11 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
     String handleFragmentCookies() {
 
         String cookieName = Constants.COOKIE_NAME_SAML_FRAGMENT + getFragmentCookieId();
+        String cookieMaxAge = "expires=" + getSamlRequestCookieTimeoutString() + ";";
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "cookie " + cookieName + " , " + cookieMaxAge);
+        }
         StringBuffer sb = new StringBuffer();
         sb.append("\n<SCRIPT type=\"TEXT/JAVASCRIPT\" language=\"JavaScript\">\n");
         sb.append("document.cookie = '");
@@ -239,6 +247,22 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
         sb.append("</SCRIPT>\n");
 
         return sb.toString();
+    }
+
+    public String getSamlRequestCookieTimeoutString() {
+
+        long samlLoginRequestTimeoutMillis = this.fragmentCookieMaxAge * 60 * 1000; // default - 10 minutes
+        Date timeout = new Date(System.currentTimeMillis() + samlLoginRequestTimeoutMillis);
+
+        SimpleDateFormat utc_sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
+        utc_sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        String retVal = utc_sdf.format(timeout);
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "getSamlRequestCookieTimeoutString returns [" + retVal + "]");
+        }
+        return retVal;
     }
 
     // This is called when postIdp
@@ -382,6 +406,14 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
 
     public static boolean safeCompare(int i1, int i2) {
         return i1 == i2;
+    }
+
+    /**
+     * @param authnRequestTime
+     */
+    public void setFragmentCookieMaxAge(long authnRequestTime) {
+        this.fragmentCookieMaxAge = authnRequestTime;
+
     }
 
 }
