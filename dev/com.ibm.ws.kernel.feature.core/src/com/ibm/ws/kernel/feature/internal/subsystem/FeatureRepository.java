@@ -854,7 +854,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             alternateFeatureNameToPublicName.put(s, attr.featureName);
         }
 
-        if(def.getVisibility() == Visibility.PRIVATE && def.hasWlpPlatform()){
+        if(def.isCompatibility()){
             compatibilityFeatures.put(def.getPlatformName().toLowerCase(), def);
         }
 
