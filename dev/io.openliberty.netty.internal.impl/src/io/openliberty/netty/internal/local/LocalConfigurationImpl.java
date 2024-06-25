@@ -31,8 +31,8 @@ import io.openliberty.netty.internal.tcp.ValidateUtils;
 @Trivial
 public class LocalConfigurationImpl implements BootstrapConfiguration, FFDCSelfIntrospectable {
 
-	private static final TraceComponent tc = Tr.register(LocalConfigurationImpl.class, NettyConstants.NETTY_TRACE_NAME,
-			NettyConstants.BASE_BUNDLE);
+	private static final TraceComponent tc = Tr.register(LocalConfigurationImpl.class, NettyConstants.NETTY_TRACE_NAME, null);
+			//NettyConstants.BASE_BUNDLE);
 
 	private ChannelData channelData = null;
 	private Map<String, Object> channelProperties = null;
