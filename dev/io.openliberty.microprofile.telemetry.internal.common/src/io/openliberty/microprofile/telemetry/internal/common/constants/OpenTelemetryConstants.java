@@ -37,7 +37,7 @@ public class OpenTelemetryConstants {
 
     //HTTP Metric name + desc
     public static final String HTTP_SERVER_REQUEST_DURATION_NAME = "http.server.request.duration";
-    public static final String HTTP_SERVER_REQUEST_DURATION_DESC = "Duration of HTTP server requests";
+    public static final String HTTP_SERVER_REQUEST_DURATION_DESC = "Duration of HTTP server requests.";
 
     //HTTP Metric units
     public static final String OTEL_SECONDS_UNIT = "s";
