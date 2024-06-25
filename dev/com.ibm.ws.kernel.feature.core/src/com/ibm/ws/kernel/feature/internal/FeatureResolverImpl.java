@@ -557,7 +557,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         //add versionless after normal resolution for packaging
         List<String> filteredVersionless = new ArrayList<>();
-        if(isBeta && allowedMultipleVersions != null){
+        if(allowedMultipleVersions != null){
             filteredVersionless = filterVersionless(rootFeaturesList, selectionContext);
         }
 
