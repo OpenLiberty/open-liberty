@@ -48,13 +48,11 @@ Export-Package: \
 
 Import-Package: \
   !jakarta.enterprise.concurrent,\
-  !jakarta.enterprise.inject.spi,\
-  jakarta.annotation;version='!',\
+  jakarta.annotation;version="[2.1,4.0)",\
   jakarta.inject,\
-  jakarta.ws.rs.core,\
+  jakarta.ws.rs.*;version="[3.1,5.0)",\
   org.eclipse.microprofile.rest.client.*;version='!',\
-  org.jboss.resteasy.*; version="[4.7.0,8.0)",\
-  org.jboss.resteasy.microprofile.*; version="[3.0,4.0)",\
+  org.jboss.resteasy.*; version="[6.2.0,8.0)",\
   *
 
 DynamicImport-Package: \

@@ -20,9 +20,9 @@
 
     <properties>
         <microprofile.rest.client.version>4.0-RC1</microprofile.rest.client.version>
-        <arquillian.version>1.7.0.Alpha13</arquillian.version>
+        <arquillian.version>1.7.0.Final</arquillian.version>
 		<arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
-		<testng.version>7.5.1</testng.version>
+		<testng.version>7.8.0</testng.version>
         <slf4j.version>2.0.6</slf4j.version>
 
         <!-- the below is used in arquillian.xml -->
@@ -36,7 +36,7 @@
         <defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
         <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
         <targetDirectory>${project.basedir}/target</targetDirectory>
-        <jetty.version>9.4.31.v20200723</jetty.version>
+        <jetty.version>11.0.21</jetty.version>
         <reactive.streams.version>1.0.3</reactive.streams.version>
     </properties>
 
@@ -204,10 +204,8 @@
 
         <dependency>
             <groupId>jakarta.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
-            <version>4.0</version>
-            <scope>system</scope>
-            <systemPath>${io.openliberty.jakarta.cdi.4.0_}</systemPath>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <version>4.0.0</version>
         </dependency>
 
         <dependency>
@@ -230,8 +228,6 @@
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <version>6.0.0</version>
-            <scope>system</scope>
-            <systemPath>${io.openliberty.jakarta.servlet.6.0_}</systemPath>
         </dependency>
 
         <dependency>
@@ -278,7 +274,7 @@
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock-standalone</artifactId>
-            <version>2.14.0</version>
+            <version>3.0.1</version>
         </dependency>
 
         <dependency>
@@ -398,7 +394,7 @@
             <plugin>
                 <groupId>uk.co.automatictester</groupId>
                 <artifactId>wiremock-maven-plugin</artifactId>
-                <version>4.1.0</version>
+                <version>7.3.0</version>
                 <executions>
                     <execution>
                         <phase>generate-test-sources</phase>
