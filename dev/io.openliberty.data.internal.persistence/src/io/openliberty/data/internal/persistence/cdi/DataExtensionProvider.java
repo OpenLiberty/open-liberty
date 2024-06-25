@@ -242,21 +242,11 @@ public class DataExtensionProvider implements //
     public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
         Collection<FutureEMBuilder> futures = futureEMBuilders.remove(appInfo.getName());
         if (futures != null) {
-            boolean beforeCheckpoint = !CheckpointPhase.getPhase().restored();
             for (FutureEMBuilder futureEMBuilder : futures) {
-                if (beforeCheckpoint)
-                    try {
-                        // Run the task in the foreground if before a checkpoint.
-                        // This is necessary to ensure this task completes before the checkpoint.
-                        // Application startup performance is not as important before checkpoint
-                        // and this ensures we don't do this work on restore side which will make
-                        // restore faster.
-                        futureEMBuilder.complete(futureEMBuilder.createEMBuilder());
-                    } catch (Throwable x) {
-                        futureEMBuilder.completeExceptionally(x);
-                    }
-                else
-                    futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor);
+                // This delays createEMBuilder until restore.
+                // While this works by avoiding all connections to the data source, it does make restore much slower.
+                // TODO figure out how to do more work on restore without having to make a connection to the data source
+                CheckpointPhase.onRestore(() -> futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor));
             }
         }
     }
