@@ -29,7 +29,7 @@ import java.util.concurrent.Callable;
 import jakarta.interceptor.InvocationContext;
 
 // effectively copied with author's permission from:
-// https://github.com/apache/cxf/blob/master/rt/rs/microprofile-client/src/main/java/org/apache/cxf/microprofile/client/cdi/MPRestClientInvocationContextImpl.java
+// https://github.com/apache/cxf/blob/main/rt/rs/microprofile-client/src/main/java/org/apache/cxf/microprofile/client/cdi/MPRestClientInvocationContextImpl.java
 class MPRestClientInvocationContextImpl implements InvocationContext {
 
     private final Object target;
