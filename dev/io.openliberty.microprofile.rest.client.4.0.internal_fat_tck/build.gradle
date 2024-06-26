@@ -22,12 +22,12 @@ configurations.wiremockAndJetty {
 }
 
 dependencies {
-  wiremockAndJetty 'com.github.tomakehurst:wiremock-standalone:2.14.0',
-    'org.eclipse.jetty:jetty-http:9.4.31.v20200723',
-    'org.eclipse.jetty:jetty-io:9.4.31.v20200723',
-    'org.eclipse.jetty:jetty-server:9.4.31.v20200723',
-    'org.eclipse.jetty:jetty-util:9.4.31.v20200723'
-  httpcore 'org.apache.httpcomponents:httpcore:4.4.11'
+  wiremockAndJetty 'org.wiremock:wiremock-standalone:3.0.1',
+    'org.eclipse.jetty:jetty-http:11.0.21',
+    'org.eclipse.jetty:jetty-io:11.0.21',
+    'org.eclipse.jetty:jetty-server:11.0.21',
+    'org.eclipse.jetty:jetty-util:11.0.21'
+  httpcore 'org.apache.httpcomponents.core5:httpcore5:5.2'
 }
 
 task addWiremockAndJetty(type: Copy) {
