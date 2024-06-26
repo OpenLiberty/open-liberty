@@ -19,7 +19,7 @@
     <name>MicroProfile RestClient 4.0 TCK Runner TCK Module</name>
 
     <properties>
-        <microprofile.rest.client.version>4.0-RC1</microprofile.rest.client.version>
+        <microprofile.rest.client.version>4.0-RC2</microprofile.rest.client.version>
         <arquillian.version>1.7.0.Final</arquillian.version>
 		<arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
 		<testng.version>7.8.0</testng.version>
