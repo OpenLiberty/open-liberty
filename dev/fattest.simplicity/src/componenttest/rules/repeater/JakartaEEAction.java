@@ -374,9 +374,10 @@ public abstract class JakartaEEAction extends FeatureReplacementAction {
             classLoadError = e;
         }
         if (classLoadError != null || !new File(TRANSFORMER_RULES_ROOT).exists()) {
-            String mesg = "Unable to find the transformer rules OR failed to load the org.eclipse.transformer.cli.JakartaTransformerCLI class. \n" +
-                          "Did you include 'addRequiredLibraries.dependsOn addJakartaTransformer' in the FAT's build.gradle file?\n" +
-                          "If applications are already Jakarta-based, update to call setSkipTransformation(true) on your JakartaEEAction repeat action(s).";
+            String mesg = "Unable to find the transformer rules for doing package replacement for ExpectedFFDC and AllowedFFDC annotations.\n" +
+                          "IF applications are already Jakarta-based, update to call setSkipTransformation(true) on your JakartaEEAction repeat action(s)\n" +
+                          "or update MicroProfileActions or EERepeatActions repeat method call to pass true to a repeat method with a skipTransformation argument.\n" +
+                          "OTHERWISE, did you include 'addRequiredLibraries.dependsOn addJakartaTransformer' in the FAT's build.gradle file?";
             Log.error(c, m, classLoadError, mesg);
             throw new RuntimeException(mesg, classLoadError);
         }

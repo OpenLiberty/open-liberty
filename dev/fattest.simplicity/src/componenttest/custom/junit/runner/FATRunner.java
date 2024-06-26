@@ -684,22 +684,22 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                 String[] exceptionClasses = ffdc.value();
                 if (RepeatTestFilter.isAnyRepeatActionActive()) {
                     RepeatTestAction repeatTestAction = RepeatTestFilter.getMostRecentRepeatAction();
-                    if (repeatTestAction instanceof JakartaEEAction && !((JakartaEEAction) repeatTestAction).isSkipTransformation()) {
-                        String[] jakarta9ReplacementExceptionClasses = new String[exceptionClasses.length];
-                        System.arraycopy(exceptionClasses, 0, jakarta9ReplacementExceptionClasses, 0, exceptionClasses.length);
-                        int index = 0;
-                        for (String exceptionClass : exceptionClasses) {
-                            if (ee9Helper == null) {
-                                ee9Helper = new EE9PackageReplacementHelper();
-                            }
-                            jakarta9ReplacementExceptionClasses[index++] = ee9Helper.replacePackages(exceptionClass);
-                        }
-                        exceptionClasses = jakarta9ReplacementExceptionClasses;
-                    }
+                    boolean doExceptionPackageReplacement = repeatTestAction instanceof JakartaEEAction && !((JakartaEEAction) repeatTestAction).isSkipTransformation();
                     for (String repeatAction : ffdc.repeatAction()) {
-                        if (repeatAction.equals(ExpectedFFDC.ALL_REPEAT_ACTIONS) || RepeatTestFilter.isRepeatActionActive(repeatAction)) {
+                        boolean isAllRepeatActions = repeatAction.equals(ExpectedFFDC.ALL_REPEAT_ACTIONS);
+                        boolean isSpecificRepeatAction = !isAllRepeatActions && RepeatTestFilter.isRepeatActionActive(repeatAction);
+                        if (isAllRepeatActions || isSpecificRepeatAction) {
                             for (String exceptionClass : exceptionClasses) {
-                                annotationListPerClass.add(exceptionClass);
+                                // If package replacement is disabled, or the ExpectedFFDC is for a specific repeat action, there is no need
+                                // to do the package replacement processing.
+                                if (!doExceptionPackageReplacement || isSpecificRepeatAction) {
+                                    annotationListPerClass.add(exceptionClass);
+                                } else {
+                                    if (ee9Helper == null) {
+                                        ee9Helper = new EE9PackageReplacementHelper();
+                                    }
+                                    annotationListPerClass.add(ee9Helper.replacePackages(exceptionClass));
+                                }
                             }
                         }
                     }
@@ -739,22 +739,22 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                 String[] exceptionClasses = ffdc.value();
                 if (RepeatTestFilter.isAnyRepeatActionActive()) {
                     RepeatTestAction repeatTestAction = RepeatTestFilter.getMostRecentRepeatAction();
-                    if (repeatTestAction instanceof JakartaEEAction && !((JakartaEEAction) repeatTestAction).isSkipTransformation()) {
-                        String[] jakarta9ReplacementExceptionClasses = new String[exceptionClasses.length];
-                        System.arraycopy(exceptionClasses, 0, jakarta9ReplacementExceptionClasses, 0, exceptionClasses.length);
-                        int index = 0;
-                        for (String exceptionClass : exceptionClasses) {
-                            if (ee9Helper == null) {
-                                ee9Helper = new EE9PackageReplacementHelper();
-                            }
-                            jakarta9ReplacementExceptionClasses[index++] = ee9Helper.replacePackages(exceptionClass);
-                        }
-                        exceptionClasses = jakarta9ReplacementExceptionClasses;
-                    }
+                    boolean doExceptionPackageReplacement = repeatTestAction instanceof JakartaEEAction && !((JakartaEEAction) repeatTestAction).isSkipTransformation();
                     for (String repeatAction : ffdc.repeatAction()) {
-                        if (repeatAction.equals(AllowedFFDC.ALL_REPEAT_ACTIONS) || RepeatTestFilter.isRepeatActionActive(repeatAction)) {
+                        boolean isAllRepeatActions = repeatAction.equals(AllowedFFDC.ALL_REPEAT_ACTIONS);
+                        boolean isSpecificRepeatAction = !isAllRepeatActions && RepeatTestFilter.isRepeatActionActive(repeatAction);
+                        if (isAllRepeatActions || isSpecificRepeatAction) {
                             for (String exceptionClass : exceptionClasses) {
-                                annotationListPerClass.add(exceptionClass);
+                                // If package replacement is disabled, or the exception class is the default of all ffdc, or the AllowedFFDC is for
+                                // a specific repeat action, there is no need to do the package replacement processing.
+                                if (!doExceptionPackageReplacement || AllowedFFDC.ALL_FFDC.equals(exceptionClass) || isSpecificRepeatAction) {
+                                    annotationListPerClass.add(exceptionClass);
+                                } else {
+                                    if (ee9Helper == null) {
+                                        ee9Helper = new EE9PackageReplacementHelper();
+                                    }
+                                    annotationListPerClass.add(ee9Helper.replacePackages(exceptionClass));
+                                }
                             }
                         }
                     }
