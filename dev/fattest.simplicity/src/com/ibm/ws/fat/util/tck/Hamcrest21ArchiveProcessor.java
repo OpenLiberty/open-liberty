@@ -24,7 +24,7 @@ public class Hamcrest21ArchiveProcessor extends AbstractArchiveWeaver {
     private final Set<File> files = Collections.singleton(new File("../../../lib/hamcrest-2.1.jar"));
 
     @Override
-    protected Set<File> getFilesToWeave() {
+    protected Set<File> getJarsToWeave() {
         return files;
     }
 }
