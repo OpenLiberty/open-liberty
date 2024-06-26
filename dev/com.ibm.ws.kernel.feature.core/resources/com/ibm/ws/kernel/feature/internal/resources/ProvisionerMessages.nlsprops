@@ -265,7 +265,7 @@ UNKNOWN_PLATFORM_VERSION.useraction=Specify a version of the platform that exist
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
-tool.feature.exists=CWWKF1000I: The {0} feature already exists. It will not be reinstalled. To modify an existing feature, you need to manually uninstall it first.
+tool.feature.exists=CWWKF1000I: The feature {0} already exists. It will not be reinstalled. To modify an existing feature, you need to manually uninstall it first.
 tool.feature.exists.explanation=The feature being installed already exists.
 tool.feature.exists.useraction=No action is required.
 tool.missing.args=CWWKF1001E: {0} requires {1} arguments, but {2} were provided.
