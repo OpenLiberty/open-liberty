@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2022 IBM Corporation and others.
+ * Copyright (c) 2003, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@
 package com.ibm.ws.recoverylog.spi;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import com.ibm.websphere.ras.Tr;
@@ -94,7 +96,7 @@ class LogHandle {
      * The directory path under which the files that make up this recovery log will
      * be stored.
      */
-    private final String _logDirectory;
+    private final Path _logDirectory;
 
     /**
      * The size of this recovery log in kilobytes.
@@ -192,7 +194,7 @@ class LogHandle {
               int serviceVersion,
               String serverName,
               String logName,
-              String logDirectory,
+              Path logDirectory,
               int logFileSize,
               int maxLogFileSize,
               FailureScope fs) {
@@ -1233,7 +1235,7 @@ class LogHandle {
 
         try {
             // The filename used here should be internationalized under 532697.1
-            final File file = new File(_logDirectory, "DO NOT DELETE LOG FILES");
+            final File file = Paths.get(_logDirectory.toString(), "DO NOT DELETE LOG FILES").toFile();
             if (!file.exists()) {
                 file.createNewFile();
             }
@@ -1260,7 +1262,7 @@ class LogHandle {
         Operation deleteOp = new Operation() {
             @Override
             public boolean act() throws Exception {
-                return RLSUtils.deleteDirectory(new File(_logDirectory));
+                return RLSUtils.deleteDirectory(_logDirectory.toFile());
             }
         };
         boolean deleted = RLSUtils.retry(deleteOp, retryNs);

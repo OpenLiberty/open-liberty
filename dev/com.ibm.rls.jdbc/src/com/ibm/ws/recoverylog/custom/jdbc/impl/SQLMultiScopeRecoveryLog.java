@@ -512,12 +512,12 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
     @Override
     @FFDCIgnore({ PeerLostLogOwnershipException.class })
-    public void openLog() throws LogCorruptedException, LogAllocationException, InternalLogException {
+    public void openLog(boolean localRecovery) throws LogCorruptedException, LogAllocationException, InternalLogException {
 
         synchronized (_DBAccessIntentLock) {
             synchronized (this) {
                 if (tc.isEntryEnabled())
-                    Tr.entry(tc, "openLog", this);
+                    Tr.entry(tc, "openLog", localRecovery, this);
 
                 // If this recovery log instance has experienced a serious internal error then prevent this operation from
                 // executing.

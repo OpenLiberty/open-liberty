@@ -398,7 +398,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                         if (newline > 0)
                             line = line.substring(0, newline);
                         if (tc.isDebugEnabled())
-                            Tr.debug(tc, "String is now " + line + "of length " + line.length());
+                            Tr.debug(tc, "String is now " + line + " of length " + line.length());
                         // Set the string into the LeaseInfo object
                         leaseInfo.setLeaseDetail(new File(line));
 

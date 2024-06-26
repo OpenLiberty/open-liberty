@@ -46,6 +46,7 @@ import com.ibm.ws.recoverylog.spi.LogCursor;
 import com.ibm.ws.recoverylog.spi.LogIncompatibleException;
 import com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException;
 import com.ibm.ws.recoverylog.spi.NotSupportedException;
+import com.ibm.ws.recoverylog.spi.PeerLogsMissingException;
 import com.ibm.ws.recoverylog.spi.PeerLostLogOwnershipException;
 import com.ibm.ws.recoverylog.spi.RecoverableUnit;
 import com.ibm.ws.recoverylog.spi.RecoverableUnitSection;
@@ -1699,7 +1700,7 @@ public class RecoveryManager implements Runnable {
                     // Recovery is complete. This is a noop if peer recovery is not enabled.
                     if (_leaseLog != null && _localRecoveryIdentity != null && !_localRecoveryIdentity.equals(_failureScopeController.serverName())) {
                         // Careful, recovery may have been attempted and failed
-                        if (_tranLog != null && !_tranLog.failed() && _xaLog != null && !_xaLog.failed()) {
+                        if ((_tranLog == null && _xaLog == null) || (_tranLog != null && !_tranLog.failed() && _xaLog != null && !_xaLog.failed())) {
                             Tr.audit(tc,
                                      "WTRN0108I: Server with identity " + _localRecoveryIdentity + " has recovered the logs of peer server "
                                          + _failureScopeController.serverName());
@@ -1710,9 +1711,17 @@ public class RecoveryManager implements Runnable {
                             if (!_retainPeerLogs) {
                                 // Delete the peer recovery logs.
                                 // Don't delete the partner log if the tran log delete failed
-                                if (_tranLog.delete()) {
-                                    shouldDeleteLease = _xaLog.delete();
-                                } else {
+                                if (_tranLog != null) {
+                                    if (_tranLog.delete()) {
+                                        if (_xaLog != null) {
+                                            if (!_xaLog.delete()) {
+                                                shouldDeleteLease = false;
+                                            }
+                                        }
+                                    } else {
+                                        shouldDeleteLease = false;
+                                    }
+                                } else if (_xaLog != null) {
                                     shouldDeleteLease = false;
                                 }
                             }
@@ -1926,7 +1935,7 @@ public class RecoveryManager implements Runnable {
             // Open the transaction log. This contains details of inflight transactions.
             if (_tranLog != null) {
                 try {
-                    _tranLog.openLog();
+                    _tranLog.openLog(localRecovery);
 
                     // If this is a peer tran log, then flag that we have opened it.
                     if (!localRecovery)
@@ -2004,6 +2013,8 @@ public class RecoveryManager implements Runnable {
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "run");
                     return;
+                } catch (PeerLogsMissingException e) {
+                    _tranLog = null;
                 } catch (Exception exc) {
                     FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.run", "1698", this);
                     Tr.error(tc, "WTRN0112_LOG_OPEN_FAILURE", _tranLog);
@@ -2033,12 +2044,12 @@ public class RecoveryManager implements Runnable {
             // Open the partner log. This contains details of the resource managers in use by the above inflight transactions.
             if (_xaLog != null) {
                 try {
-                    _xaLog.openLog();
+                    _xaLog.openLog(localRecovery);
                     // If this is a peer partner log, then flag that we have opened it.
                     if (!_failureScopeController.localFailureScope() && _localRecoveryIdentity != null && !_localRecoveryIdentity.equals(serverName))
                         _peerXaLogEverOpened = true;
                     if (_recoverXaLog != null)
-                        _recoverXaLog.openLog();
+                        _recoverXaLog.openLog(localRecovery);
                 } catch (LogIncompatibleException exc) {
                     // No FFDC Code needed.
                     // The attempt to open the transaction log has failed because this recovery log is from a version
@@ -2117,6 +2128,8 @@ public class RecoveryManager implements Runnable {
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "run");
                     return;
+                } catch (PeerLogsMissingException e) {
+                    _xaLog = null;
                 } catch (Exception exc) {
                     FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.run", "1723", this);
                     Tr.error(tc, "WTRN0112_LOG_OPEN_FAILURE", _xaLog);
@@ -2233,8 +2246,6 @@ public class RecoveryManager implements Runnable {
                 Configuration.setCurrentEpoch(_ourEpoch);
             }
 
-            registerGlobalCoordinator();
-
             //
             // Inform the logs that all recovery work has been finished
             // so that they can keypoint.
@@ -2344,10 +2355,6 @@ public class RecoveryManager implements Runnable {
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "run");
-    }
-
-    protected void registerGlobalCoordinator() {
-        // Not used in JTM
     }
 
     protected void performResync(int xaEntries) {
