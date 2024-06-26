@@ -60,7 +60,11 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
         var identifier = item.id || item.name;
         var type = ((item && item.type) || "").toLowerCase();
 
-        if(targetBuf.hasKey(identifier)) { //already processed within the values
+        if((targetBuf.hasKey && targetBuf.hasKey(identifier)) ||
+            //change of api since this code was written, the official FormData nowadays
+            //uses has instead of hasKey, back then it was not finalized
+            //we now program a fallback in, to cover FormData for this caseF
+           (targetBuf.has && targetBuf.has(identifier))) { //already processed within the values
             return;
         }
 
