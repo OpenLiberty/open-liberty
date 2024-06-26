@@ -16,7 +16,7 @@
         <packages>
             <package name="org.eclipse.microprofile.rest.client.tck.*"/>
         </packages>
-        <classes>
+<!--        <classes>
         <class name="org.eclipse.microprofile.rest.client.tck.sse.BasicReactiveStreamsTest">
             <methods>
                 <exclude name=".*" />
@@ -27,6 +27,6 @@
                 <exclude name=".*" />
             </methods>
         </class>
-        </classes>
+        </classes> -->
     </test>
 </suite>
