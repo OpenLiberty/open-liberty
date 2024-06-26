@@ -66,9 +66,7 @@ tested.features=\
   restfulWS-3.1,\
   restfulWS-4.0,\
   appSecurity-5.0,\
-  appSecurity-6.0,\
-  noship-1.0
-
+  appSecurity-6.0
 
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.2;version=latest,\
