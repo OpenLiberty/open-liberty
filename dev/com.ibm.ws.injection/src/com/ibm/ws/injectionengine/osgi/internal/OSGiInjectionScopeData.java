@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,6 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -129,6 +131,15 @@ public class OSGiInjectionScopeData extends InjectionScopeData implements Deferr
      * @see #deferredReferenceDataEnabled
      */
     private Map<DeferredReferenceData, Boolean> deferredReferenceDatas;
+
+    /**
+     * The result of {@link #processDeferredReferenceData} for the current list of reference
+     * contexts that are registered for deferred processing if a non-java:comp request is made.
+     * This field is initialized lazily and cleared when no longer needed.
+     *
+     * @see #deferredReferenceDatas
+     */
+    private CompletableFuture<Boolean> deferredReferenceDatasFuture;
 
     public OSGiInjectionScopeData(J2EEName j2eeName, NamingConstants.JavaColonNamespace namespace, OSGiInjectionScopeData parent, ReentrantReadWriteLock nonCompEnvLock) {
         super(j2eeName);
@@ -515,6 +526,8 @@ public class OSGiInjectionScopeData extends InjectionScopeData implements Deferr
         if (parent != null && deferredReferenceDatas != null) {
             parent.removeDeferredReferenceData(this);
             deferredReferenceDatas = null;
+            deferredReferenceDatasFuture.complete(false);
+            deferredReferenceDatasFuture = null;
         }
     }
 
@@ -528,6 +541,7 @@ public class OSGiInjectionScopeData extends InjectionScopeData implements Deferr
 
         if (deferredReferenceDatas == null) {
             deferredReferenceDatas = new LinkedHashMap<DeferredReferenceData, Boolean>();
+            deferredReferenceDatasFuture = new CompletableFuture<Boolean>();
             if (parent != null && deferredReferenceDataEnabled) {
                 parent.addDeferredReferenceData(this);
             }
@@ -563,18 +577,17 @@ public class OSGiInjectionScopeData extends InjectionScopeData implements Deferr
      */
     @Override
     public boolean processDeferredReferenceData() {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "processDeferredReferenceData", "this=" + this);
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled()) {
+            Tr.entry(tc, "processDeferredReferenceData", "this=" + this + " future=" + deferredReferenceDatasFuture);
         }
 
         Map<DeferredReferenceData, Boolean> deferredReferenceDatas;
+        CompletableFuture<Boolean> currentFuture;
         synchronized (this) {
             deferredReferenceDatas = this.deferredReferenceDatas;
             this.deferredReferenceDatas = null;
-
-            if (parent != null) {
-                parent.removeDeferredReferenceData(this);
-            }
+            currentFuture = deferredReferenceDatasFuture;
         }
 
         boolean any = false;
@@ -589,12 +602,38 @@ public class OSGiInjectionScopeData extends InjectionScopeData implements Deferr
                     // (erroneous or conflicting metadata).  Any exception that
                     // is thrown will be rethrown by ReferenceContext.process
                     // when the component is actually used.
-                    ex.getClass(); // findbugs
+                    if (isTraceOn && tc.isDebugEnabled())
+                        Tr.debug(tc, "ignoring : " + ex);
                 }
+            }
+
+            synchronized (this) {
+                // Removed from parent after processing completes so concurrent access of parent
+                // will block on the parent future until all child processing completes.
+                if (parent != null) {
+                    parent.removeDeferredReferenceData(this);
+                }
+
+                // Unblock any concurrent access and clear the future as is no longer required.
+                if (deferredReferenceDatasFuture != null) {
+                    deferredReferenceDatasFuture.complete(any);
+                    deferredReferenceDatasFuture = null;
+                }
+            }
+        } else if (currentFuture != null) {
+            try {
+                // Wait a reasonable amount of time for deferred processing to complete
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(tc, "waiting up to 60 seconds for completion of " + currentFuture);
+                any = currentFuture.get(60, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(tc, "processDeferredReferenceData failed to complete; assuming something was processed");
+                any = true;
             }
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "processDeferredReferenceData", any);
         }
         return any;
