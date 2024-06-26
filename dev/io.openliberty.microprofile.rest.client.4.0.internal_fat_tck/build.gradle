@@ -44,3 +44,7 @@ addRequiredLibraries {
   dependsOn addWiremockAndJetty
   dependsOn addHttpcore
 }
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+
