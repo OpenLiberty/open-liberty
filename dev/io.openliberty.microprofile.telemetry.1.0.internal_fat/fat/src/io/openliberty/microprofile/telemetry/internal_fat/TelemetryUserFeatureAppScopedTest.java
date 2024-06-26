@@ -1,0 +1,117 @@
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
+package io.openliberty.microprofile.telemetry.internal_fat;
+
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+
+import java.nio.file.Paths;
+
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.LocalFile;
+import com.ibm.websphere.simplicity.PropertiesAsset;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEEAction;
+import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.userfeature.UserFeatureServlet;
+
+@RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
+public class TelemetryUserFeatureAppScopedTest extends FATServletClient {
+
+    public static final String APP_NAME = "TelemetryUserFeatureTestApp";
+    public static final String SERVER_NAME = "Telemetry10UserFeature";
+    public static final String FEATURE_NAME = "telemetry.user.feature-1.0";
+    public static final String FEATURE_JAKARTA_NAME = "telemetry.user.feature-2.0";
+    public static final String BUNDLE_NAME = "telemetry.user.feature";
+    public static final String BUNDLE_JAKARTA_NAME = "telemetry.user.feature-jakarta";
+    public static final String BUNDLE_PATH = "publish/bundles/";
+
+    private static final String SEVER_XML_SNIPPET = "serverxmlsnippet.xml";
+    private static final String JAVAX_SNIPPET = "javax/" + SEVER_XML_SNIPPET;
+    private static final String JAKARTA_SNIPPET = "jakarta/" + SEVER_XML_SNIPPET;;
+
+    @TestServlet(contextRoot = APP_NAME, servlet = UserFeatureServlet.class)
+    @Server(SERVER_NAME)
+    public static LibertyServer server;
+
+    //App Scope only exists on MpTel20 and later
+    @ClassRule
+    public static RepeatTests r = FATSuite.allMPRepeatsWithMPTel20OrLater(SERVER_NAME);
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+
+        System.out.println("Install the user feature bundles...");
+
+        if (JakartaEEAction.isEE9OrLaterActive()) {
+            String fullPath = BUNDLE_PATH + BUNDLE_JAKARTA_NAME;
+            LocalFile bundleFile = new LocalFile(fullPath);
+            if (bundleFile.exists()) {
+                bundleFile.delete();
+            }
+            JakartaEEAction.transformApp(Paths.get(BUNDLE_PATH + BUNDLE_NAME + ".jar"), Paths.get(fullPath + ".jar"));
+            server.installUserBundle(BUNDLE_JAKARTA_NAME);
+            server.installUserFeature(FEATURE_JAKARTA_NAME);
+
+            //Rather than force all the other tests to be aware of our user feature so a feature replacement action
+            //can modify it. We'll use an includes in the server.xml and slide in a snippet with the right version
+            server.copyFileToLibertyServerRoot(JAKARTA_SNIPPET);
+        } else {
+            String fullPath = BUNDLE_PATH + BUNDLE_NAME;
+            LocalFile bundleFile = new LocalFile(fullPath);
+            if (bundleFile.exists()) {
+                bundleFile.delete();
+            }
+            server.installUserBundle(BUNDLE_NAME);
+            server.installUserFeature(FEATURE_NAME);
+
+            server.copyFileToLibertyServerRoot(JAVAX_SNIPPET);
+        }
+
+        PropertiesAsset appConfig = new PropertiesAsset()
+                        .addProperty("otel.sdk.disabled", "false");
+        WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
+                        .addClass(UserFeatureServlet.class)
+                        .addAsResource(appConfig, "META-INF/microprofile-config.properties");
+
+        ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
+
+        server.startServer();
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        server.stopServer();
+
+        System.out.println("Unnstall the user feature bundles...");
+        if (JakartaEEAction.isEE9OrLaterActive()) {
+            server.uninstallUserBundle(BUNDLE_JAKARTA_NAME);
+            server.uninstallUserFeature(FEATURE_JAKARTA_NAME);
+        } else {
+            server.uninstallUserBundle(BUNDLE_NAME);
+            server.uninstallUserFeature(FEATURE_NAME);
+        }
+        server.deleteFileFromLibertyServerRoot(SEVER_XML_SNIPPET);
+    }
+}

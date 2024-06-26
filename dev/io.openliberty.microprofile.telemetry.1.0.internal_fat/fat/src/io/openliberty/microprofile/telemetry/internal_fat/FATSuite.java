@@ -46,6 +46,8 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
                 TelemetryGlobalOpenTelemetryTest.class,
                 TelemetryDisabledTest.class,
                 TelemetryServletTest.class,
+                TelemetryUserFeatureTest.class,
+                TelemetryUserFeatureAppScopedTest.class,
                 TelemetryWithSpanErrorTest.class,
                 TelemetryAttributesTest.class,
                 TelemetryRuntimeInstanceTest.class,
@@ -56,9 +58,8 @@ public class FATSuite {
     public static String getTelemetryVersionUnderTest() {
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             return "1.0";
-        } else if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID)
-                   || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID)
-                   || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID)) {
+        } else if (RepeatTestFilter.isAnyRepeatActionActive(MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP50_MPTEL20_ID,
+                                                            TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP14_MPTEL20_ID)) {
             return "2.0";
         } else {
             return "1.1";
