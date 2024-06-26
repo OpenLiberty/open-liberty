@@ -25,10 +25,10 @@ import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
-import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfoInternal;
 import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTelemetryContainerFilter;
 import io.openliberty.microprofile.telemetry.internal.common.rest.RestRouteCache;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
+import io.openliberty.microprofile.telemetry.spi.OpenTelemetryInfo;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
@@ -105,8 +105,8 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
 
     private Instrumenter<ContainerRequestContext, ContainerResponseContext> createInstrumenter() {
         try {
-            OpenTelemetryInfoInternal openTelemetry = OpenTelemetryAccessor.getOpenTelemetryInfo();
-            if (openTelemetry.getEnabled() && !AgentDetection.isAgentActive()) {
+            OpenTelemetryInfo openTelemetry = OpenTelemetryAccessor.getOpenTelemetryInfo();
+            if (openTelemetry.isEnabled() && !AgentDetection.isAgentActive()) {
                 InstrumenterBuilder<ContainerRequestContext, ContainerResponseContext> builder = Instrumenter.builder(
                                                                                                                       openTelemetry.getOpenTelemetry(),
                                                                                                                       INSTRUMENTATION_NAME,

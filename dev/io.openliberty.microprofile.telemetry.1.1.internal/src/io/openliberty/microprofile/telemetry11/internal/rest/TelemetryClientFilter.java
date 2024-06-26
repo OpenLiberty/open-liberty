@@ -28,9 +28,9 @@ import javax.ws.rs.ext.Provider;
 
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
-import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfoInternal;
 import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTelemetryClientFilter;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
+import io.openliberty.microprofile.telemetry.spi.OpenTelemetryInfo;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapSetter;
 import io.opentelemetry.instrumentation.api.instrumenter.Instrumenter;
@@ -59,14 +59,14 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
             instrumenter = createInstrumenter();
         }
     }
-    
+
     private Instrumenter<ClientRequestContext, ClientResponseContext> getInstrumenter() {
         if (instrumenter != null) {
             return instrumenter;
         }
         if (lazyCreate) {
             instrumenter = lazyInstrumenter.updateAndGet((i) -> {
-                if (i == null) {                    
+                if (i == null) {
                     return createInstrumenter();
                 } else {
                     return i;
@@ -76,10 +76,10 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
         }
         return instrumenter;
     }
-    
+
     private Instrumenter<ClientRequestContext, ClientResponseContext> createInstrumenter() {
-        final OpenTelemetryInfoInternal openTelemetryInfo = OpenTelemetryAccessor.getOpenTelemetryInfo();
-        if (openTelemetryInfo.getEnabled() && !AgentDetection.isAgentActive()) {
+        final OpenTelemetryInfo openTelemetryInfo = OpenTelemetryAccessor.getOpenTelemetryInfo();
+        if (openTelemetryInfo.isEnabled() && !AgentDetection.isAgentActive()) {
             InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(openTelemetryInfo.getOpenTelemetry(),
                                                                                                             "Client filter",
                                                                                                             HttpSpanNameExtractor.create(HTTP_CLIENT_ATTRIBUTES_GETTER));
@@ -145,8 +145,8 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
     public boolean isEnabled() {
         if (!CheckpointPhase.getPhase().restored()) {
             return true;
-        }         
-        return getInstrumenter() != null;  
+        }
+        return getInstrumenter() != null;
     }
 
     private static class ClientRequestContextTextMapSetter implements TextMapSetter<ClientRequestContext> {

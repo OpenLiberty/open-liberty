@@ -25,7 +25,7 @@ public class ErrorOpenTelemetryInfo implements OpenTelemetryInfoInternal {
 
     /** {@inheritDoc} */
     @Override
-    public boolean getEnabled() {
+    public boolean isEnabled() {
         return false;
     }
 

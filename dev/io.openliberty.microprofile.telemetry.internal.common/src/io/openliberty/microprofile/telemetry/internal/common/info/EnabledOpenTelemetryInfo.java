@@ -54,7 +54,7 @@ public class EnabledOpenTelemetryInfo implements OpenTelemetryInfoInternal {
      * @return true if enabled
      */
     @Override
-    public boolean getEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
 

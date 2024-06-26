@@ -35,7 +35,7 @@ public class DisposedOpenTelemetryInfo implements OpenTelemetryInfoInternal {
 
     /** {@inheritDoc} */
     @Override
-    public boolean getEnabled() {
+    public boolean isEnabled() {
         return false;
     }
 
