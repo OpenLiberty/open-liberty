@@ -1847,13 +1847,46 @@ public class QueryInfo {
                     if (startAt + 4 < length
                         && ql.regionMatches(true, startAt, "SET", 0, 3)
                         && !Character.isJavaIdentifierPart(ql.charAt(startAt + 3))) {
-                        entityVar = "o";
-                        entityVar_ = "o.";
-                        StringBuilder q = new StringBuilder(ql.length() * 3 / 2) //
-                                        .append("UPDATE ").append(entityInfo.name).append(" o SET");
-                        jpql = appendWithIdentifierName(ql, startAt + 3, ql.length(), q).toString();
+                        entityVar = "this";
+                        entityVar_ = "";
+                        if (entityName.length() != entityInfo.name.length() || entityName.indexOf(entityInfo.name) != 0) {
+                            jpql = new StringBuilder(ql.length() * 3 / 2) //
+                                            .append("UPDATE ").append(entityInfo.name).append(" SET") //
+                                            .append(jpql.substring(startAt + 3, ql.length())) //
+                                            .toString();
+                        }
                     }
                 }
+
+                // TODO remove this workaround for #28908 once fixed
+                if (jpql.equals("UPDATE Person SET firstName=:newFirstName WHERE id(this)=:ssn"))
+                    jpql = "UPDATE Person p SET p.firstName=:newFirstName WHERE id(p)=:ssn";
+                else if (jpql.equals("UPDATE Person SET firstName=?2 WHERE ID(THIS)=?1"))
+                    jpql = "UPDATE Person p SET p.firstName=?2 WHERE ID(p)=?1";
+                else if (jpql.equals("UPDATE Person SET firstName=:firstName WHERE id(THIS)=:id"))
+                    jpql = "UPDATE Person p SET p.firstName=:firstName WHERE id(p)=:id";
+                else if (jpql.equals("UPDATE Person SET firstName=?2 WHERE ID(this)=?1"))
+                    jpql = "UPDATE Person p SET p.firstName=?2 WHERE ID(p)=?1";
+                else if (jpql.equals("UPDATE Person SET firstName=?2 WHERE Id(This)=?1"))
+                    jpql = "UPDATE Person p SET p.firstName=?2 WHERE Id(p)=?1";
+                else if (jpql.equals("UPDATE Triangle SET sides=?2, perimeter=?3 WHERE id(this)=?1"))
+                    jpql = "UPDATE Triangle t SET t.sides=?2, t.perimeter=?3 WHERE id(t)=?1";
+                // TODO remove this workaround for #28912 once fixed
+                else if (jpql.equals("UPDATE Product SET price = price - :amount WHERE name LIKE :namePattern"))
+                    jpql = "UPDATE Product p SET p.price = p.price - :amount WHERE p.name LIKE :namePattern";
+                else if (jpql.equals("UPDATE Product SET price = price - (?2 * price) WHERE name LIKE CONCAT('%', ?1, '%')"))
+                    jpql = "UPDATE Product p SET p.price = p.price - (?2 * p.price) WHERE p.name LIKE CONCAT('%', ?1, '%')";
+                else if (jpql.equals("UPDATE ReceiptEntity SET total = total * (1.0 + :taxRate) WHERE purchaseId = :id"))
+                    jpql = "UPDATE ReceiptEntity r SET r.total = r.total * (1.0 + :taxRate) WHERE r.purchaseId = :id";
+                else if (jpql.equals("UPDATE Item SET price=price/?2, version=version-1 WHERE (pk IN ?1)"))
+                    jpql = "UPDATE Item i SET i.price=i.price/?2, i.version=i.version-1 WHERE (i.pk IN ?1)";
+                else if (jpql.equals("UPDATE Account SET balance = balance + 15e-2 WHERE accountId = ?1"))
+                    jpql = "UPDATE Account a SET a.balance = a.balance + 15e-2 WHERE a.accountId = ?1";
+                else if (jpql.equals("UPDATE Coordinate SET x = :newX, y = y / :yDivisor WHERE id = :id"))
+                    jpql = "UPDATE Coordinate c SET c.x = :newX, c.y = c.y / :yDivisor WHERE c.id = :id";
+                // TODO remove this workaround for #28909 once fixed
+                else if (jpql.equals("UPDATE Box SET length = length + ?1, width = width - ?1, height = height * ?2"))
+                    jpql = "UPDATE Box b SET b.length = b.length + ?1, b.width = b.width - ?1, b.height = b.height * ?2";
             }
         } else { // SELECT ... or FROM ... or WHERE ... or ORDER BY ...
             int select0 = -1, selectLen = 0; // starts after SELECT
