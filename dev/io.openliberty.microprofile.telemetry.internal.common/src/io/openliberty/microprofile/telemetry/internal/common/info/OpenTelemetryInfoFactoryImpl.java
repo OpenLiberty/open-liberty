@@ -121,6 +121,11 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
             return new EnabledOpenTelemetryInfo(true, otelMap.get(OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME), metaData.getJ2EEName().getApplication());
         }
 
+        if (metaData == null) {
+            Tr.warning(tc, "CWMOT5004.factory.used.without.metadata");
+            return new DisabledOpenTelemetryInfo();
+        }
+
         try {
             OpenTelemetryInfoReference atomicRef = (OpenTelemetryInfoReference) metaData.getMetaData(slotForOpenTelemetryInfoHolder);
             if (atomicRef == null) {
