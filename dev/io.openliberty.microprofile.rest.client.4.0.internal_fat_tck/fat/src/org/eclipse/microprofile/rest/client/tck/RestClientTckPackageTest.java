@@ -29,8 +29,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -48,10 +46,10 @@ public class RestClientTckPackageTest {
 
     public static final String SERVER_NAME = "FATServer";
     
-    // @ClassRule
-    // public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-    //                                                          MicroProfileActions.MP61,// 3.0+EE10
-    //                                                          MicroProfileActions.MP50); // 3.0+EE9
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+                                                             MicroProfileActions.MP70_EE10, // 4.0+EE10
+                                                             MicroProfileActions.MP70_EE11); // 4.0+EE11
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
