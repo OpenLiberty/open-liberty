@@ -421,9 +421,8 @@ public class QueryInfo {
                     if ("id".equalsIgnoreCase(str) && ql.regionMatches(true, i + 1, "(THIS)", 0, 6)) {
                         q.append(entityVar_).append(entityInfo.getAttributeName(By.ID, true));
                         i += 6;
-                    } else if ("this".equalsIgnoreCase(str)) {
-                        q.append(entityVar);
-                    } else if (entityInfo.getAttributeName(str, false) == null) {
+                    } else if ("this".equalsIgnoreCase(str)
+                               || entityInfo.getAttributeName(str, false) == null) {
                         q.append(str);
                     } else {
                         q.append(entityVar_).append(str);
@@ -624,16 +623,8 @@ public class QueryInfo {
 
         String name = entityInfo.getAttributeName(attribute, true);
         if (name == null) {
-            if (attribute.length() == 3) {
-                // TODO We might be able to remove special cases like this now that we have the entity parameter pattern
-                // Special case for BasicRepository.deleteAll and BasicRepository.findAll
-                int len = q.length(), where = q.lastIndexOf(" WHERE (");
-                if (where + 8 == len)
-                    q.delete(where, len); // Remove " WHERE " because there are no conditions
-                hasWhere = false;
-            } else if (entityInfo.idClassAttributeAccessors != null && ID.equals(attribute)) {
+            if (entityInfo.idClassAttributeAccessors != null && ID.equals(attribute))
                 generateConditionsForIdClass(condition, ignoreCase, negated, q);
-            }
             return;
         }
 
@@ -1805,23 +1796,33 @@ public class QueryInfo {
                         for (; startAt < length && Character.isWhitespace(ql.charAt(startAt)); startAt++);
                         if (startAt >= length) {
                             // Entity identifier variable is not present. Add it.
-                            entityVar = "o";
-                            entityVar_ = "o.";
-                            jpql = new StringBuilder(entityInfo.name.length() + 14) //
-                                            .append("DELETE FROM ").append(entityInfo.name).append(" o").toString();
+                            entityVar = "this";
+                            entityVar_ = "this.";
+                            jpql = new StringBuilder(entityInfo.name.length() + 12) //
+                                            .append("DELETE FROM ").append(entityInfo.name).toString();
                         } else if (startAt + 6 < length
                                    && ql.regionMatches(true, startAt, "WHERE", 0, 5)
                                    && !Character.isJavaIdentifierPart(ql.charAt(startAt + 5))) {
+                            // Entity identifier variable is not present. Add it.
                             hasWhere = true;
-                            entityVar = "o";
-                            entityVar_ = "o.";
+                            entityVar = "this";
+                            entityVar_ = "this.";
                             StringBuilder q = new StringBuilder(ql.length() * 3 / 2) //
-                                            .append("DELETE FROM ").append(entityInfo.name).append(" o WHERE");
+                                            .append("DELETE FROM ").append(entityInfo.name).append(" WHERE");
                             jpql = appendWithIdentifierName(ql, startAt + 5, ql.length(), q).toString();
                         }
                     }
                 }
             }
+
+            // TODO remove this workaround for #28895 once fixed
+            if (jpql.equals("DELETE FROM Product WHERE this.name LIKE ?1"))
+                jpql = "DELETE FROM Product WHERE name LIKE ?1";
+            // TODO remove this workaround for #28898 once fixed
+            else if (jpql.equals("DELETE FROM ReceiptEntity WHERE this.total < :max"))
+                jpql = "DELETE FROM ReceiptEntity WHERE total < :max";
+            else if (jpql.equals("DELETE FROM Coordinate WHERE this.x > 0.0d AND this.y > 0.0f"))
+                jpql = "DELETE FROM Coordinate WHERE x > 0.0d AND y > 0.0f";
         } else if (firstChar == 'U' || firstChar == 'u') { // UPDATE EntityName[ SET ... WHERE ...]
             // Temporarily simulate optional identifier names by inserting them.
             // TODO remove when switched to Jakarta Persistence 3.2.

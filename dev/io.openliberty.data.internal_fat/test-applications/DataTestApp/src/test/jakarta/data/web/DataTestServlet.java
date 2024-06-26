@@ -726,6 +726,36 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Repository delete method with query language (JPQL) that contains
+     * an entity identifier variable.
+     */
+    @Test
+    public void testDeleteQueryWithEntityIdentifierVariable() {
+        products.purge("TestDeleteQueryWithEntityIdentifierVariable-Product-%");
+
+        Product prod1 = new Product();
+        prod1.pk = UUID.nameUUIDFromBytes("TestDeleteQueryWithEntityIdentifierVariable-1".getBytes());
+        prod1.name = "TestDeleteQueryWithEntityIdentifierVariable-Product-1";
+        prod1.price = 1.99f;
+
+        Product prod2 = new Product();
+        prod2.pk = UUID.nameUUIDFromBytes("TestDeleteQueryWithEntityIdentifierVariable-2".getBytes());
+        prod2.name = "TestDeleteQueryWithEntityIdentifierVariable-Product-2";
+        prod2.price = 2.39f;
+
+        Product prod3 = new Product();
+        prod3.pk = UUID.nameUUIDFromBytes("TestDeleteQueryWithEntityIdentifierVariable-3".getBytes());
+        prod3.name = "TestDeleteQueryWithEntityIdentifierVariable-Product-3";
+        prod3.price = 3.89f;
+
+        products.saveMultiple(prod1, prod2, prod3);
+
+        assertEquals(3, products.purge("TestDeleteQueryWithEntityIdentifierVariable-Product-%"));
+
+        assertEquals(0, products.purge("TestDeleteQueryWithEntityIdentifierVariable-Product-%"));
+    }
+
+    /**
      * Unannotated entity with an attribute that is an embeddable type.
      */
     @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  https://github.com/OpenLiberty/open-liberty/issues/28380

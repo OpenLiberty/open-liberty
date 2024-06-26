@@ -48,6 +48,9 @@ public interface Products {
 
     Optional<Product> findByPK(UUID id);
 
+    @Query("DELETE FROM Product p WHERE p.name LIKE ?1")
+    int purge(String namePattern);
+
     @Query("UPDATE Product SET price = price - (?2 * price) WHERE name LIKE CONCAT('%', ?1, '%')")
     long putOnSale(String nameContains, float discount);
 
