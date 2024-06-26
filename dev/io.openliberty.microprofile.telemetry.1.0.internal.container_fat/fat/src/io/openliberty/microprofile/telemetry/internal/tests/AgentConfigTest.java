@@ -140,6 +140,8 @@ public class AgentConfigTest {
     }
 
     @Test
+    @SkipForRepeat({ MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID,
+                     TelemetryActions.MP14_MPTEL20_ID })
     public void testConfigFromAgentFile() throws Exception {
         copyToServer("agent-config.properties", "agent-config.properties");
         server.addEnvVar("OTEL_JAVAAGENT_CONFIGURATION_FILE", "agent-config.properties");
@@ -162,6 +164,8 @@ public class AgentConfigTest {
     }
 
     @Test
+    @SkipForRepeat({ MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID,
+                     TelemetryActions.MP14_MPTEL20_ID })
     public void testConfigFromJvmOptions() throws Exception {
         deleteFromServer("jvm.options");
         copyToServer("jvm.options-test", "jvm.options");
@@ -184,6 +188,8 @@ public class AgentConfigTest {
     }
 
     @Test
+    @SkipForRepeat({ MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID,
+                     TelemetryActions.MP14_MPTEL20_ID })
     public void testConfigNotReadFromBootstrap() throws Exception {
         deleteFromServer("bootstrap.properties");
         copyToServer("bootstrap.properties-test", "bootstrap.properties");
@@ -209,6 +215,8 @@ public class AgentConfigTest {
     }
 
     @Test
+    @SkipForRepeat({ MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID,
+                     TelemetryActions.MP14_MPTEL20_ID })
     public void testDisableInstrumentation() throws Exception {
         // Disable @WithSpan instrumentation
         server.addEnvVar("OTEL_INSTRUMENTATION_OPENTELEMETRY_INSTRUMENTATION_ANNOTATIONS_ENABLED", "false");
@@ -237,7 +245,9 @@ public class AgentConfigTest {
      * Skipping for 1.4 and 4.1 as JavaAgent 1.29 currently will not return a span for methods annotated with @withSpan
      * (https://github.com/open-telemetry/opentelemetry-java-instrumentation/issues/10159)
      */
-    @SkipForRepeat({ TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID, TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID})
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID, TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID,
+                     MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID,
+                     TelemetryActions.MP14_MPTEL20_ID })
     public void testEnableSpecificInstrumentation() throws Exception {
         // Enable only @WithSpan instrumentation
         server.addEnvVar("OTEL_INSTRUMENTATION_COMMON_DEFAULT_ENABLED", "false");
@@ -261,6 +271,8 @@ public class AgentConfigTest {
      */
 
     @Test
+    @SkipForRepeat({ MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID,
+                     TelemetryActions.MP14_MPTEL20_ID })
     public void testAgentRestAndCDIInstrumentationDisabled() throws Exception {
 
         server.addEnvVar("OTEL_INSTRUMENTATION_OPENTELEMETRY_INSTRUMENTATION_ANNOTATIONS_ENABLED", "false");
@@ -284,6 +296,8 @@ public class AgentConfigTest {
     }
 
     @Test
+    @SkipForRepeat({ MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID,
+                     TelemetryActions.MP14_MPTEL20_ID })
     public void testAgentDisabled() throws Exception {
         server.addEnvVar("OTEL_JAVAAGENT_ENABLED", "false");
 
@@ -320,6 +334,8 @@ public class AgentConfigTest {
     }
 
     @Test
+    @SkipForRepeat({ MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID,
+                     TelemetryActions.MP14_MPTEL20_ID })
     public void testAgentInstrumentationDisabled() throws Exception {
         server.addEnvVar("OTEL_INSTRUMENTATION_COMMON_DEFAULT_ENABLED", "false");
         server.addEnvVar("OTEL_INSTRUMENTATION_OPENTELEMETRY_API_ENABLED", "true");

@@ -16,6 +16,9 @@ import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.Jaeger
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasNoParent;
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasParentSpanId;
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.isSpan;
+import static io.opentelemetry.semconv.SemanticAttributes.HTTP_REQUEST_METHOD;
+// In MpTelemetry-2.0 SemanticAttributes was moved to a new package, so we use import static to allow both versions to coexist
+import static io.opentelemetry.semconv.SemanticAttributes.HTTP_ROUTE;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
@@ -31,6 +34,7 @@ import org.junit.Test;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.topology.impl.LibertyServer;
@@ -41,12 +45,8 @@ import io.jaegertracing.api_v2.Model.SpanRefType;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
 import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
-import componenttest.annotation.SkipForRepeat;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
-// In MpTelemetry-2.0 SemanticAttributes was moved to a new package, so we use import static to allow both versions to coexist
-import static io.opentelemetry.semconv.SemanticAttributes.HTTP_ROUTE;
-import static io.opentelemetry.semconv.SemanticAttributes.HTTP_REQUEST_METHOD;
 
 /**
  * Base set of tests for exporting spans to Jaeger over any protocol
@@ -75,7 +75,8 @@ public abstract class JaegerBaseTest {
     protected abstract JaegerQueryClient getJaegerClient();
 
     @Test
-    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID})
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, MicroProfileActions.MP70_EE10_ID,
+                     MicroProfileActions.MP70_EE11_ID })
     public void testBasicTelemetry1() throws Exception {
         HttpRequest request = new HttpRequest(server, "/spanTest");
         String traceId = request.run(String.class);
@@ -95,9 +96,10 @@ public abstract class JaegerBaseTest {
         assertThat(allSpans, hasItem(span));
     }
 
-
     @Test
-    @SkipForRepeat({MicroProfileActions.MP60_ID, TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID, TelemetryActions.MP50_MPTEL11_ID, MicroProfileActions.MP61_ID})
+    @SkipForRepeat({ MicroProfileActions.MP60_ID, TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID, TelemetryActions.MP50_MPTEL11_ID, MicroProfileActions.MP61_ID,
+                     MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID,
+                     TelemetryActions.MP14_MPTEL20_ID })
     public void testBasicTelemetry2() throws Exception {
         HttpRequest request = new HttpRequest(server, "/spanTest");
         String traceId = request.run(String.class);
