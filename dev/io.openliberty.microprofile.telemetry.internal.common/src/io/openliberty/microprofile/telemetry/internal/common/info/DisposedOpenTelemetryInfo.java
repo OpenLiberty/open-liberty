@@ -21,7 +21,7 @@ import io.opentelemetry.api.trace.Tracer;
 /**
  * An impl of OpenTelemetryInfo that only occurs if an OpenTelemetryInfo was created after the relevant application has shut down.
  */
-public class DisposedOpenTelemetryInfo implements OpenTelemetryInfo {
+public class DisposedOpenTelemetryInfo implements OpenTelemetryInfoInternal {
 
     private static final TraceComponent tc = Tr.register(DisposedOpenTelemetryInfo.class);
 

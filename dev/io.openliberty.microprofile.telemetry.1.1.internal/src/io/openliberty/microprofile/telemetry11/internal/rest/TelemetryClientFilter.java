@@ -28,7 +28,7 @@ import javax.ws.rs.ext.Provider;
 
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
-import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
+import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfoInternal;
 import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTelemetryClientFilter;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
 import io.opentelemetry.context.Context;
@@ -78,7 +78,7 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
     }
     
     private Instrumenter<ClientRequestContext, ClientResponseContext> createInstrumenter() {
-        final OpenTelemetryInfo openTelemetryInfo = OpenTelemetryAccessor.getOpenTelemetryInfo();
+        final OpenTelemetryInfoInternal openTelemetryInfo = OpenTelemetryAccessor.getOpenTelemetryInfo();
         if (openTelemetryInfo.getEnabled() && !AgentDetection.isAgentActive()) {
             InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(openTelemetryInfo.getOpenTelemetry(),
                                                                                                             "Client filter",

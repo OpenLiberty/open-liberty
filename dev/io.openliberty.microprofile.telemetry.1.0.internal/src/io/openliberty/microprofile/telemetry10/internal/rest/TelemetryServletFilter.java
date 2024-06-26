@@ -24,7 +24,7 @@ import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
-import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
+import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfoInternal;
 import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTelemetryServletFilter;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
 import io.opentelemetry.api.trace.Span;
@@ -101,7 +101,7 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
     private Instrumenter<ServletRequest, ServletResponse> createInstrumenter() {
         // Check if the HTTP tracing should be disabled
         boolean httpTracingDisabled = config.getOptionalValue(CONFIG_DISABLE_HTTP_TRACING_PROPERTY, Boolean.class).orElse(false);
-        OpenTelemetryInfo otelInfo = OpenTelemetryAccessor.getOpenTelemetryInfo();
+        OpenTelemetryInfoInternal otelInfo = OpenTelemetryAccessor.getOpenTelemetryInfo();
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, CONFIG_DISABLE_HTTP_TRACING_PROPERTY + "=" + httpTracingDisabled);
             Tr.debug(tc, "otelInfo.getEnabled()=" + otelInfo.getEnabled());

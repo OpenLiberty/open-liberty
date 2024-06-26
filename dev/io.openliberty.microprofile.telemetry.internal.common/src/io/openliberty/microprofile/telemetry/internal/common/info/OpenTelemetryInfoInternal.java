@@ -12,7 +12,7 @@ package io.openliberty.microprofile.telemetry.internal.common.info;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.Tracer;
 
-public interface OpenTelemetryInfo {
+public interface OpenTelemetryInfoInternal {
     /**
      * @return true if enabled
      */

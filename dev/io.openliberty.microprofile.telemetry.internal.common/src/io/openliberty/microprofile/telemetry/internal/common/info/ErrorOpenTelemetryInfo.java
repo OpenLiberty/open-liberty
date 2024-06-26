@@ -10,12 +10,18 @@
 package io.openliberty.microprofile.telemetry.internal.common.info;
 
 import io.opentelemetry.api.OpenTelemetry;
-import io.opentelemetry.api.trace.Tracer;
 
 /**
  * An impl of OpenTelemetryInfo that occurs if an error occurred creating an OpenTelemetryInfo object
  */
-public class ErrorOpenTelemetryInfo implements OpenTelemetryInfo {
+public class ErrorOpenTelemetryInfo implements OpenTelemetryInfoInternal {
+
+    public final static ErrorOpenTelemetryInfo INSTANCE = new ErrorOpenTelemetryInfo();
+
+    //For functional interfaces that expect a method
+    public static ErrorOpenTelemetryInfo getInstance() {
+        return INSTANCE;
+    }
 
     /** {@inheritDoc} */
     @Override
