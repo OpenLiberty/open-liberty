@@ -113,7 +113,12 @@ _MF_SINGLTN(_PFX_XHR + "_PartialSubmitUtils", myfaces._impl.xhrCore._AjaxUtils, 
         var _Impl = this.attr("impl");
 
         //viewstate covered, do a preemptive check
-        if (targetBuf.hasKey && targetBuf.hasKey(_Impl.P_VIEWSTATE)) return;
+        if (
+            (targetBuf.hasKey && targetBuf.hasKey(_Impl.P_VIEWSTATE)) ||
+            (targetBuf.has && targetBuf.has(_Impl.P_VIEWSTATE))
+        ) {
+            return;
+        }
 
         var viewStates = _Dom.findByName(parentNode, _Impl.P_VIEWSTATE);
         if (viewStates && viewStates.length) {
