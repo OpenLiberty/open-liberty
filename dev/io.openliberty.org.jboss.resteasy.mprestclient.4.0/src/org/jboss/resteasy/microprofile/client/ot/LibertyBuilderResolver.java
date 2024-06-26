@@ -22,8 +22,4 @@ public  class LibertyBuilderResolver extends RestClientBuilderResolver {
         return new LibertyRestClientBuilderImpl();
     }
 
-   
-
-   
-
 }
