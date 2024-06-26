@@ -5752,7 +5752,7 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
         if((targetBuf.hasKey && targetBuf.hasKey(identifier)) ||
             //change of api since this code was written, the official FormData nowadays
             //uses has instead of hasKey, back then it was not finalized
-            //we now program a fallback in, to cover FormData for this caseF
+            //we now program a fallback in, to cover FormData for this case
            (targetBuf.has && targetBuf.has(identifier))) { //already processed within the values
             return;
         }
