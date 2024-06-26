@@ -31,6 +31,8 @@ import com.ibm.ws.webcontainer.security.openidconnect.OidcServer;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+
 /**
  * Represents security configurable options for web applications.
  */
@@ -104,7 +106,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     private final String loginFormContextRoot;
     private final String basicAuthRealmName;
     private final String sameSiteCookie;
-    private final Boolean partitionedCookie;
+    private Boolean partitionedCookie = null; // in BETA, mark as final once GA'ed
     private final Boolean useContextRootForSSOCookiePath;
     private final Long postParamMaxRequestBodySize;
 
@@ -146,7 +148,9 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
             put(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT, "loginFormContextRoot");
             put(CFG_KEY_BASIC_AUTH_REALM_NAME, "basicAuthRealmName");
             put(CFG_KEY_SAME_SITE_COOKIE, "sameSiteCookie");
-            put(CFG_KEY_PARTITIONED_COOKIE, "partitionedCookie");
+            if (ProductInfo.getBetaEdition()) {
+                put(CFG_KEY_PARTITIONED_COOKIE, "partitionedCookie");
+            }
             put(CFG_KEY_USE_CONTEXT_ROOT_FOR_SSO_COOKIE_PATH, "useContextRootForSSOCookiePath");
             put(CFG_KEY_MAX_CONTENT_LENGTH_TO_SAVE_POST_PARAMETERS, "postParamMaxRequestBodySize");
         }
@@ -195,13 +199,14 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         useContextRootForSSOCookiePath = (Boolean) newProperties.get(CFG_KEY_USE_CONTEXT_ROOT_FOR_SSO_COOKIE_PATH);
         postParamMaxRequestBodySize = (Long) newProperties.get(CFG_KEY_MAX_CONTENT_LENGTH_TO_SAVE_POST_PARAMETERS);
 
-
-        String partValue = (String) newProperties.get(CFG_KEY_PARTITIONED_COOKIE);
-        if ("true".equalsIgnoreCase(partValue)||"false".equalsIgnoreCase(partValue)) {
-          //we want partitionedCookie to be null unless the value is true or false
-          partitionedCookie = getBooleanValue(CFG_KEY_PARTITIONED_COOKIE, partValue);
-        } else {
-          partitionedCookie = null;
+        if (ProductInfo.getBetaEdition()) {
+            String partValue = (String) newProperties.get(CFG_KEY_PARTITIONED_COOKIE);
+            if ("true".equalsIgnoreCase(partValue)||"false".equalsIgnoreCase(partValue)) {
+            //we want partitionedCookie to be null unless the value is true or false
+            partitionedCookie = getBooleanValue(CFG_KEY_PARTITIONED_COOKIE, partValue);
+            } else {
+            partitionedCookie = null;
+            }
         }
 
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(this);

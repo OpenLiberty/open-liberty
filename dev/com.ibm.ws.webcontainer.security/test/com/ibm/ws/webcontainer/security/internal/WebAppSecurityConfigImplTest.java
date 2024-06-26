@@ -74,12 +74,16 @@ public class WebAppSecurityConfigImplTest {
         // unless one of the copy methods or documentThrowable is called
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
+
+        System.setProperty("com.ibm.ws.beta.edition", "true");
     }
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
         // Make stdout and stderr "normal"
         outputMgr.restoreStreams();
+
+        System.clearProperty("com.ibm.ws.beta.edition");
     }
 
     @Test
