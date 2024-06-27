@@ -424,6 +424,13 @@ public class SRTInputStream31 extends SRTInputStream
     public Object getCompleteLockObj() {
         return completeLockObj;
     }
+
+    /**
+     * @return the lockObj
+     */
+    public Object getLockObj() {
+        return lockObj;
+    }
     
     /* (non-Javadoc)
      * @see javax.servlet.ServletInputStream#readLine(byte[], int, int)
