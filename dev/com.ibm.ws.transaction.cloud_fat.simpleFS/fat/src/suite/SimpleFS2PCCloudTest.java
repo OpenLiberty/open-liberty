@@ -124,7 +124,7 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
      *
      * @throws Exception
      */
-    //@Test
+    @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testFSBaseRecovery() throws Exception {
         serversToCleanup = new LibertyServer[] { server1 };
@@ -144,7 +144,7 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
      *
      * @throws Exception
      */
-    //@Test
+    @Test
     public void testFSRecoveryTakeover() throws Exception {
         final String method = "testFSRecoveryTakeover";
         StringBuilder sb = null;
@@ -198,7 +198,7 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
      *
      * @throws Exception
      */
-    //@Test
+    @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
     // defect 227411, if FScloud002 starts slowly, then access to FScloud001's indoubt tx
     // XAResources may need to be retried (tx recovery is, in such cases, working as designed.
@@ -254,7 +254,7 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
     // Check that we can now:
     // 1. Tolerate a v1 log on startup
     // 2. Tolerate a peer with a v1 log
-    //@Test
+    @Test
     public void testBackwardCompatibility() throws Exception {
         final String method = "testBackwardCompatibility";
 
