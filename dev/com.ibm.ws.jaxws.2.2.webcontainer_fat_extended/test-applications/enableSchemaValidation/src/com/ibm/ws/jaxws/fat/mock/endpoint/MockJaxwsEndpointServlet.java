@@ -52,16 +52,16 @@ public class MockJaxwsEndpointServlet extends HttpServlet {
 
         LOG.info("Received request: " + requestPayload);
 
-        // Now that we've got the request, we can the value of the "name" parameter sent by the client
+        // Now that we've got the request, we can check the value of the "name" parameter sent by the client
         // This will allow us to know which test we are running, and which response to send back to the client.
-        if (requestPayload.contains("AddedElement")) {
 
-            response.setStatus(200);
-            response.setContentType("text/xml");
-            response.setHeader("Address", "http://127.0.0.1:8010/testHandlerProvider/SayHelloService");
-            response.setHeader("ServiceName", "SayHelloService");
-            response.setHeader("PortName", "http://127.0.0.1:8010/testHandlerProvider/SayHelloService");
-            PrintWriter writer = response.getWriter();
+        response.setStatus(200);
+        response.setContentType("text/xml");
+        response.setHeader("Address", "http://127.0.0.1:8010/testHandlerProvider/SayHelloService");
+        response.setHeader("ServiceName", "SayHelloService");
+        response.setHeader("PortName", "http://127.0.0.1:8010/testHandlerProvider/SayHelloService");
+        PrintWriter writer = response.getWriter();
+        if (requestPayload.contains("AddedElement")) {
             writer.append("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n"
                           + "  <soap:Body>\n"
                           + "    <ns2:sayHelloResponse xmlns:ns2=\"http://jaxws.samples.ibm.com.handler/\">\n"
@@ -71,13 +71,6 @@ public class MockJaxwsEndpointServlet extends HttpServlet {
                           + "  </soap:Body>\n"
                           + "</soap:Envelope>");
         } else if (requestPayload.contains("WrongElementName")) {
-
-            response.setStatus(200);
-            response.setContentType("text/xml");
-            response.setHeader("Address", "http://127.0.0.1:8010/testHandlerProvider/SayHelloService");
-            response.setHeader("ServiceName", "SayHelloService");
-            response.setHeader("PortName", "http://127.0.0.1:8010/testHandlerProvider/SayHelloService");
-            PrintWriter writer = response.getWriter();
             writer.append("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n"
                           + "  <soap:Body>\n"
                           + "    <ns2:sayHelloResponse xmlns:ns2=\"http://jaxws.samples.ibm.com.handler/\">\n"
@@ -87,13 +80,6 @@ public class MockJaxwsEndpointServlet extends HttpServlet {
                           + "</soap:Envelope>");
 
         } else if (requestPayload.contains("WrongNamespace")) {
-
-            response.setStatus(200);
-            response.setContentType("text/xml");
-            response.setHeader("Address", "http://127.0.0.1:8010/testHandlerProvider/SayHelloService");
-            response.setHeader("ServiceName", "SayHelloService");
-            response.setHeader("PortName", "http://127.0.0.1:8010/testHandlerProvider/SayHelloService");
-            PrintWriter writer = response.getWriter();
             writer.append("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n"
                           + "  <soap:Body>\n"
                           + "    <ns2:sayHelloResponse xmlns:ns2=\"http://jaxws.samples.ibm.com.handler/\">\n" // change namespace to wrong.namespacee
@@ -103,13 +89,6 @@ public class MockJaxwsEndpointServlet extends HttpServlet {
                           + "</soap:Envelope>");
 
         } else if (requestPayload.contains("WrongElementContent")) {
-
-            response.setStatus(200);
-            response.setContentType("text/xml");
-            response.setHeader("Address", "http://127.0.0.1:8010/testHandlerProvider/SayHelloService");
-            response.setHeader("ServiceName", "SayHelloService");
-            response.setHeader("PortName", "http://127.0.0.1:8010/testHandlerProvider/SayHelloService");
-            PrintWriter writer = response.getWriter();
             writer.append("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n"
                           + "  <soap:Body>\n"
                           + "    <ns2:sayHelloResponse xmlns:ns2=\"http://jaxws.samples.ibm.com.handler/\">\n"

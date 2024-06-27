@@ -41,11 +41,11 @@ import componenttest.topology.utils.HttpUtils;
  * 2.) enableschemaValiation="false" - "global" setting
  * 3.) enableSchemValidation="true" serviceName="SayHelloServiceWithHandler" - targeted client setting
  * 4.) enableSchemValidation="false" serviceName="SayHelloServiceWithHandler" - targeted client setting
- * 4.) Combination of 1 and 4
- * 5.) Combination of 2 and 3
- * 4.) enableSchemValidation="false" serviceName="IncorrectServiceName" - targeted client setting with the wrong serviceName
+ * 5.) Combination of 1 and 4
+ * 6.) Combination of 2 and 3
+ * 7.) enableSchemValidation="false" serviceName="IncorrectServiceName" - targeted client setting with the wrong serviceName
  *
- * This Test uses a Mock endpoint to create "bad" responses that the client will fail to unmarshall unless enableSchemaValodation=false
+ * This Test uses a Mock endpoint to create "bad" responses that the client will fail to unmarshall unless enableSchemaValidation=false
  *
  * @see com.ibm.ws.jaxws.fat.mock.endpoint.MockJaxwsEndpointServlet
  *
@@ -287,11 +287,11 @@ public class EnableSchemaValidationTest {
     // serviceName True Tests
 
     /**
-     * Test the global setting of enableSchemaValidation=true in server.xml, with an additional element <arg0> following the <response> element
+     * Test the targeted setting of enableSchemaValidation=true in server.xml, with an additional element <arg0> following the <response> element
      * which will cause s No child element is expected at this point exception with the default schema validation enabled.
      *
      * Server config - servicename-true-server.xml
-     * Expected response - Unmarshalling Error: cvc-complex-type.2.4.a
+     * Expected response - Unmarshalling Error: No child element is expected at this point.
      *
      * @throws Exception
      */
@@ -305,12 +305,12 @@ public class EnableSchemaValidationTest {
         LOG.info("testAddedElementServiceNameSchemaValidationTrue - Response = " + response);
 
         assertNull("Expected null response from server, but was" + response, response);
-        assertNotNull("Expected Unmarshalling Error: unexpected element exception is not thrown",
+        assertNotNull("Expected Unmarshalling Error: No child element is expected at this point.",
                       server.waitForStringInLog("No child element is expected at this point."));
     }
 
     /**
-     * Test the global setting of enableSchemaValidation=true in server.xml, with the wrong element name where <response> element is expected
+     * Test the targeted setting of enableSchemaValidation=true in server.xml, with the wrong element name where <response> element is expected
      * which will cause an cvc-complex-type.2.4.a exception with the default schema validation enabled.
      *
      * Server config - servicename-true-server.xml
@@ -328,12 +328,12 @@ public class EnableSchemaValidationTest {
         LOG.info("testWrongElementNameServiceNameSchemaValidationTrue - Response = " + response);
 
         assertNull("Expected null response from server, but was" + response, response);
-        assertNotNull("Expected Unmarshalling Error: cvc-complex-type.2.4.a  in server logs",
+        assertNotNull("Expected Unmarshalling Error: cvc-complex-type.2.4.a not found in server logs",
                       server.waitForStringInLog("cvc-complex-type.2.4.a"));
     }
 
     /**
-     * Test the global setting of enableSchemaValidation=true in server.xml, with the wrong namespace in the <response> element
+     * Test the targeted setting of enableSchemaValidation=true in server.xml, with the wrong namespace in the <response> element
      * which will cause an cvc-complex-type.2.4.a exception with the default schema validation enabled.
      *
      * Server config - servicename-true-server.xml
@@ -351,12 +351,12 @@ public class EnableSchemaValidationTest {
         LOG.info("testWrongNamespaceServiceNameSchemaValidationTrue - Response = " + response);
 
         assertNull("Expected null response from server, but was" + response, response);
-        assertNotNull("Expected Unmarshalling Error: cvc-complex-type.2.4.a  in server logs",
+        assertNotNull("Expected Unmarshalling Error: cvc-complex-type.2.4.a not found in server logs",
                       server.waitForStringInLog("cvc-complex-type.2.4.a"));
     }
 
     /**
-     * Test the global setting of enableSchemaValidation=true in server.xml, with the wrong content in the <response> element
+     * Test the targeted setting of enableSchemaValidation=true in server.xml, with the wrong content in the <response> element
      * The response will contain an addtional child element <WrongElementContent> which will cause an Unexected Element exception
      * with the default schema validation enabled.
      *
@@ -375,14 +375,14 @@ public class EnableSchemaValidationTest {
         LOG.info("testWrongElementContentServiceNameSchemaValidationTrue - Response = " + response);
 
         assertNull("Expected null response from server, but was" + response, response);
-        assertNotNull("Expected Unmarshalling Error: Expected elements are (none) in server logs",
+        assertNotNull("Expected Unmarshalling Error: WrongelementContent is not found in server logs",
                       server.waitForStringInLog("local:\"WrongElementContent\""));
     }
 
     // serviceName FALSE TESTS
 
     /**
-     * Test the global setting of enableSchemaValidation=false in server.xml, with an additional element <arg0> following the <response> element
+     * Test the targeted setting of enableSchemaValidation=false in server.xml, with an additional element <arg0> following the <response> element
      * which is ignored when schema validation is disabled.
      *
      * Server config - servicename-false-server.xml
@@ -404,7 +404,7 @@ public class EnableSchemaValidationTest {
     }
 
     /**
-     * Test the global setting of enableSchemaValidation=false in server.xml, with the wrong element name where <response> element is expected
+     * Test the targeted setting of enableSchemaValidation=false in server.xml, with the wrong element name where <response> element is expected
      * which with schema valdation disabled will just be ignored and the response will be null when unmarshalled
      *
      * Server config - servicename-false-server.xml
@@ -426,7 +426,7 @@ public class EnableSchemaValidationTest {
     }
 
     /**
-     * Test the global setting of enableSchemaValidation=false in server.xml, with the wrong namespace set on <response> element
+     * Test the targeted setting of enableSchemaValidation=false in server.xml, with the wrong namespace set on <response> element
      * which with schema valdation disabled will just be ignored and the response will be null when unmarshalled
      *
      * Server config - servicename-false-server.xml
@@ -448,7 +448,7 @@ public class EnableSchemaValidationTest {
     }
 
     /**
-     * Test the global setting of enableSchemaValidation=false in server.xml, with wrong child elements of the <response> element
+     * Test the targeted setting of enableSchemaValidation=false in server.xml, with wrong child elements of the <response> element
      * which with schema valdation disabled will just be ignored and the response will be empty since response no longer contains a valid value.
      *
      * Server config - servicename-false-server.xml
@@ -473,7 +473,7 @@ public class EnableSchemaValidationTest {
 
     /**
      * Test the serviceName takes precedent over the global setting of enableSchemaValidation=true in server.xml, with an additional element <arg0> following the <response> element
-     * which will cause s No child element is expected at this point exception with the default schema validation enabled.
+     * which will causes No child element is expected at this point exception with the default schema validation enabled.
      *
      * Server config - servicename-true-global-false-server.xml
      * Expected response - Unmarshalling Error: cvc-complex-type.2.4.a
@@ -490,12 +490,13 @@ public class EnableSchemaValidationTest {
         LOG.info("testAddedElementServiceNameTrueGlobalSchemaValidationFalse - Response = " + response);
 
         assertNull("Expected null response from server, but was" + response, response);
-        assertNotNull("Expected Unmarshalling Error: unexpected element exception is not thrown",
+        assertNotNull("Expected Unmarshalling Error: No child element is expected at this point exception is not thrown",
                       server.waitForStringInLog("No child element is expected at this point."));
     }
 
     /**
-     * Test the global setting of enableSchemaValidation=false in server.xml, with an additional element <arg0> following the <response> element
+     * Test the serviceName takes precedent over the global setting of enableSchemaValidation=false in server.xml, with an additional element <arg0> following the <response>
+     * element
      * which is ignored when schema validation is disabled.
      *
      * Server config - servicename-false-global-truee-server.xml
@@ -523,7 +524,7 @@ public class EnableSchemaValidationTest {
      * will cause s No child element is expected at this point exception with the default schema validation enabled.
      *
      * Server config - incorrect-servicename-server.xml
-     * Expected response - Unmarshalling Error: cvc-complex-type.2.4.a
+     * Expected response - SAXParseException.*unexpected element
      *
      * @throws Exception
      */
@@ -538,7 +539,7 @@ public class EnableSchemaValidationTest {
 
         assertNull("Expected null response from server, but was" + response, response);
         assertNotNull("Expected Unmarshalling Error: unexpected element exception is not thrown",
-                      server.waitForStringInLog("unexpected element"));
+                      server.waitForStringInLog("SAXParseException.*unexpected element"));
     }
 
     private String runTest(LibertyServer server, String pathAndParams) throws ProtocolException, IOException {

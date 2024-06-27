@@ -110,10 +110,10 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
         if ( enableSchemaValidation != null) {
             if ((boolean) enableSchemaValidation == true) {
                 // enable Schema Validation 
-                message.put("schema-validation-enabled", (boolean) enableSchemaValidation);
+                message.put("schema-validation-enabled", true);
                 
                 if (debug) {
-                    Tr.debug(tc, "Set schema-validation-enabled to " + (boolean) enableSchemaValidation);
+                    Tr.debug(tc, "Set schema-validation-enabled to " + true);
 
                 }
             } else if ((boolean) enableSchemaValidation == false) {
@@ -121,6 +121,13 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
                 message.put("schema-validation-enabled", false);
                 // Disable the default vaildation as well
                 message.put(JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, false);
+                
+
+                
+                if (debug) {
+                    Tr.debug(tc, "Set schema-validation-enabled to " + false + " and " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " to " + false);
+
+                }
             }
         } else {
 
