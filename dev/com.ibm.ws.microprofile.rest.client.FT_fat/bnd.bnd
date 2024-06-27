@@ -35,6 +35,7 @@ fat.project: true
   com.ibm.websphere.javaee.jsonb.1.0;version=latest
 
 tested.features: \
+  mpfaulttolerance-2.1,\
   servlet-4.0,\
   jsonp-1.1,\
   jaxrsclient-2.1,\
@@ -62,4 +63,10 @@ tested.features: \
   restfulws-3.1,\
   cdi-4.0,\
   servlet-6.0,\
-  mpfaulttolerance-2.1
+  mprestclient-4.0,\
+  restfulwsclient-4.0,\
+  restfulws-4.0,\
+  mpfaulttolerance-4.1,\
+  servlet-6.1
+  
+  

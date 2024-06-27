@@ -363,7 +363,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
         ServerConfiguration config = server1.getServerConfiguration();
         ConfigElementList<Fileset> fsConfig = config.getFilesets();
         Log.info(this.getClass(), method, "retrieved fileset config " + fsConfig);
-        String sfDirOrig = "";
+        String sfDirOrig = null;
 
         Fileset fs = null;
         ListIterator<Fileset> lItr = fsConfig.listIterator();
@@ -376,14 +376,14 @@ public class Simple2PCCloudTest extends CloudTestBase {
             fs.setDir(sfDirOrig + "2");
         }
 
+        assertNotNull("Couldn't set test config", fs);
+
         server1.setMarkToEndOfLog();
         server1.updateServerConfiguration(config);
         server1.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
 
         Log.info(this.getClass(), method, "Reset the config back the way it originally was");
-        // Now reset the config back to the way it was
-        if (fs != null)
-            fs.setDir(sfDirOrig);
+        fs.setDir(sfDirOrig);
 
         server1.setMarkToEndOfLog();
         server1.updateServerConfiguration(config);
@@ -422,14 +422,14 @@ public class Simple2PCCloudTest extends CloudTestBase {
             fs.setDir(sfDirOrig + "2");
         }
 
+        assertNotNull("Couldn't set test config", fs);
+
         server1.setMarkToEndOfLog();
         server1.updateServerConfiguration(config);
         server1.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
 
         Log.info(this.getClass(), method, "Reset the config back the way it originally was");
-        // Now reset the config back to the way it was
-        if (fs != null)
-            fs.setDir(sfDirOrig);
+        fs.setDir(sfDirOrig);
 
         server1.setMarkToEndOfLog();
         server1.updateServerConfiguration(config);
@@ -439,15 +439,13 @@ public class Simple2PCCloudTest extends CloudTestBase {
         // WTRN0108I: Have recovered from ResourceAllocationException in SQL RecoveryLog partnerlog for server recovery.dblog
         assertNotNull("No warning message signifying failover", server1.waitForStringInLog("Have recovered from ResourceAllocationException"));
 
-        StringBuilder sb = null;
         String id = "007";
 
         try {
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
+            runTest(server1, SERVLET_NAME, "setupRec" + id);
         } catch (IOException e) {
         }
-        Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
         server1.waitForStringInLog(XAResourceImpl.DUMP_STATE);
         server1.resetStarted();
@@ -458,8 +456,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
         // Server appears to have started ok. Check for key string to see whether recovery has succeeded
         server1.waitForStringInTrace("Performed recovery for cloud0011");
 
-        sb = runTestWithResponse(server1, SERVLET_NAME, "checkRec" + id);
-        Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
+        runTest(server1, SERVLET_NAME, "checkRec" + id);
     }
 
     @Test
@@ -477,7 +474,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
         ServerConfiguration config = server1.getServerConfiguration();
         ConfigElementList<Fileset> fsConfig = config.getFilesets();
         Log.info(this.getClass(), method, "retrieved fileset config " + fsConfig);
-        String sfDirOrig = "";
+        String sfDirOrig = null;
 
         Fileset fs = null;
         ListIterator<Fileset> lItr = fsConfig.listIterator();
@@ -490,6 +487,8 @@ public class Simple2PCCloudTest extends CloudTestBase {
             fs.setDir(sfDirOrig + "2");
         }
 
+        assertNotNull("Couldn't set test config", fs);
+
         server1.setMarkToEndOfLog();
         server1.updateServerConfiguration(config);
         server1.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
@@ -500,15 +499,13 @@ public class Simple2PCCloudTest extends CloudTestBase {
         // WTRN0108I: Have recovered from ResourceAllocationException in SQL RecoveryLog partnerlog for server recovery.dblog
         assertNotNull("No warning message signifying failover", server1.waitForStringInLog("Have recovered from ResourceAllocationException"));
 
-        StringBuilder sb = null;
         String id = "007";
 
         try {
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
+            runTest(server1, SERVLET_NAME, "setupRec" + id);
         } catch (IOException e) {
         }
-        Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
         server1.waitForStringInLog(XAResourceImpl.DUMP_STATE);
         server1.resetStarted();
@@ -519,7 +516,15 @@ public class Simple2PCCloudTest extends CloudTestBase {
         // Server appears to have started ok. Check for key string to see whether recovery has succeeded
         server1.waitForStringInTrace("Performed recovery for cloud0011");
 
-        sb = runTestWithResponse(server1, SERVLET_NAME, "checkRec" + id);
-        Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
+        runTest(server1, SERVLET_NAME, "checkRec" + id);
+
+        // Test has passed at this point
+
+        Log.info(this.getClass(), method, "Reset the config back the way it originally was");
+        fs.setDir(sfDirOrig);
+
+        server1.setMarkToEndOfLog();
+        server1.updateServerConfiguration(config);
+        server1.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
     }
 }
