@@ -14,6 +14,7 @@ package tests;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -189,8 +190,6 @@ public abstract class CloudFATServletClient extends CloudTestBase {
     @Test
     @AllowedFFDC(value = { "com.ibm.tx.jta.XAResourceNotAvailableException", "java.lang.RuntimeException" }) // should be expected but..... Derby
     public void testAggressiveTakeover2() throws Exception {
-        final String method = "testAggressiveTakeover2";
-        StringBuilder sb = null;
 
         if (!isDerby()) { // Embedded Derby cannot support tests with concurrent server startup
             serversToCleanup = new LibertyServer[] { longLeaseCompeteServer1, server2fastcheck };
@@ -199,27 +198,35 @@ public abstract class CloudFATServletClient extends CloudTestBase {
 
             try {
                 // We expect this to fail since it is gonna crash the server
-                sb = runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "setupRecForAggressiveTakeover2");
+                runTest(longLeaseCompeteServer1, SERVLET_NAME, "setupRecForAggressiveTakeover2");
+                fail();
             } catch (IOException e) {
             }
-            Log.info(this.getClass(), method, "back from runTestWithResponse, sb is " + sb);
 
             // wait for 1st server to have gone away
-            assertNotNull(longLeaseCompeteServer1.getServerName() + " did not crash", longLeaseCompeteServer1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
+            assertNotNull(longLeaseCompeteServer1.getServerName() + " did not crash",
+                          longLeaseCompeteServer1.waitForStringInLog(XAResourceImpl.DUMP_STATE, FATUtils.LOG_SEARCH_TIMEOUT));
             longLeaseCompeteServer1.postStopServerArchive(); // must explicitly collect since crashed server
             // The server has been halted but its status variable won't have been reset because we crashed it. In order to
             // setup the server for a restart, set the server state manually.
             longLeaseCompeteServer1.setStarted(false);
 
-            // Now start server2
+            // Now start server2. This will continually try and fail to recover server1
             server2fastcheck.setHttpDefaultPort(Integer.getInteger("HTTP_secondary"));
             FATUtils.startServers(_runner, server2fastcheck);
+            server2fastcheck.resetLogMarks();
 
-            // Now start server1. This will continually try and fail to recover server1
+            assertNotNull(server2fastcheck.getServerName() + " didn't try to recover for " + longLeaseCompeteServer1.getServerName(),
+                          server2fastcheck.waitForStringInTraceUsingMark("CWRLS0011I: Performing recovery processing for a peer WebSphere server", FATUtils.LOG_SEARCH_TIMEOUT));
+
+            // Now start server1
             FATUtils.startServers(_runner, longLeaseCompeteServer1);
 
             // Server appears to have started ok. Check for key string to see whether recovery has succeeded, irrespective of what server2fastcheck has done
             assertNotNull("Local recovery failed", longLeaseCompeteServer1.waitForStringInLog("CWRLS0012I:", FATUtils.LOG_SEARCH_TIMEOUT));
+
+            // Stop server2 so it doesn't grab the lease again
+            FATUtils.stopServers(server2fastcheck);
 
             FATUtils.runWithRetries(() -> runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "checkRecAggressiveTakeover").toString());
         }
