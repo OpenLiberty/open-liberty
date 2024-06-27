@@ -3219,7 +3219,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.rest.client</groupId>
       <artifactId>microprofile-rest-client-api</artifactId>
-      <version>4.0-RC1</version>
+      <version>4.0-RC2</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.parsson</groupId>
@@ -3745,6 +3745,16 @@
       <groupId>org.jboss.narayana</groupId>
       <artifactId>common</artifactId>
       <version>5.10.6.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy.microprofile</groupId>
+      <artifactId>microprofile-rest-client-base</artifactId>
+      <version>3.0.0.Beta1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy.microprofile</groupId>
+      <artifactId>microprofile-rest-client</artifactId>
+      <version>3.0.0.Beta1</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>

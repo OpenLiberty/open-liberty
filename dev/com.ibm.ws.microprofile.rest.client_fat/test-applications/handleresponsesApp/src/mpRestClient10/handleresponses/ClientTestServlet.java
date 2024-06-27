@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ import org.junit.Test;
 
 import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
+import componenttest.rules.repeater.MicroProfileActions;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/ClientTestServlet")
@@ -83,7 +84,7 @@ public class ClientTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({MP50_ID, MP60_ID, MP61_ID}) // EE9's Response#readEntity behaves differently when there is no entity - see test below
+    @SkipForRepeat({MP50_ID, MP60_ID, MP61_ID, MP70_EE10_ID, MP70_EE11_ID}) // EE9's Response#readEntity behaves differently when there is no entity - see test below
     public void testEmpty202Response(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
         Response r = builder.build(HandleResponsesClient.class).batchWidget(new Widget("Markers", 150, 0.2));

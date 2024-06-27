@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018-2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,7 +13,8 @@
 package com.ibm.ws.fat.util.tck;
 
 import java.io.File;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -21,11 +22,9 @@ import java.util.Set;
  */
 public class WiremockArchiveProcessor extends AbstractArchiveWeaver {
 
-    private final Set<File> files = Collections.singleton(new File(System.getProperty("wlp"),
-                                                                   "/usr/servers/FATServer/wiremock-standalone-2.14.0.jar"));
-
     @Override
     protected Set<File> getFilesToWeave() {
-        return files;
+        File[] wiremockFiles = new File(System.getProperty("wlp"), "/usr/servers/FATServer").listFiles((dir, name) -> name.startsWith("wiremock-standalone-"));
+        return new HashSet<>(Arrays.asList(wiremockFiles));
     }
 }
