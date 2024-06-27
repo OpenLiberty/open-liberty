@@ -175,7 +175,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
                     }
                 } catch (NamingException x) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "Ignoring lookup failure for " + javaCompName + " : " + x);
+                        Tr.debug(this, tc, javaCompName + " is not available in JNDI");
                 }
             }
         } finally {
