@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2023 IBM Corporation and others.
+ * Copyright (c) 2016, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package com.ibm.ws.cdi.impl;
 
 import java.lang.annotation.Annotation;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.BeanManager;
@@ -20,8 +21,13 @@ import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.CDIProvider;
 import javax.interceptor.InvocationContext;
 
+import org.jboss.weld.bootstrap.spi.EEModuleDescriptor;
+import org.jboss.weld.bootstrap.spi.EEModuleDescriptor.ModuleType;
+
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.CDIService;
+import com.ibm.ws.cdi.impl.weld.WebSphereEEModuleDescriptor;
 import com.ibm.ws.cdi.internal.interfaces.ArchiveType;
 import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
@@ -101,7 +107,7 @@ public abstract class AbstractCDIRuntime implements CDIService, CDIRuntime, CDIP
      * in the server.xml, implicit bean archive scanning is disabled.
      *
      * @param moduleContainer the module container
-     * @param type            the module type
+     * @param type the module type
      * @return whether the jar will be ignored by CDI
      */
     @Override
@@ -173,5 +179,15 @@ public abstract class AbstractCDIRuntime implements CDIService, CDIRuntime, CDIP
     @Override
     public Set<Annotation> getInterceptorBindingsFromInvocationContext(InvocationContext ic) throws IllegalArgumentException {
         return CDIUtils.getInterceptorBindingsFromInvocationContext(ic);
+    }
+
+    @Override
+    public Optional<J2EEName> getModuleForClass(Class<?> clazz) {
+        return Optional.ofNullable(getClassBeanDeploymentArchive(clazz))
+                       .map(bda -> bda.getServices().get(EEModuleDescriptor.class))
+                       .filter(desc -> desc.getType() == ModuleType.WEB || desc.getType() == ModuleType.EJB_JAR)
+                       .filter(WebSphereEEModuleDescriptor.class::isInstance)
+                       .map(WebSphereEEModuleDescriptor.class::cast)
+                       .map(desc -> desc.getJ2eeName());
     }
 }
