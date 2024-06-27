@@ -1810,14 +1810,15 @@ public class QueryInfo {
                             entityVar_ = "";
 
                             // TODO remove this workaround for #28931 once fixed
-                            boolean insertIdentifier = !entityInfo.relationAttributeNames.isEmpty();
-                            if (insertIdentifier)
+                            boolean insertEntityVar = !entityInfo.relationAttributeNames.isEmpty();
+                            if (insertEntityVar)
                                 entityVar_ = entityVar + ".";
 
                             if (entityName.length() != entityInfo.name.length() || entityName.indexOf(entityInfo.name) != 0)
-                                if (insertIdentifier) {
+                                if (insertEntityVar) {
                                     StringBuilder q = new StringBuilder(ql.length() * 3 / 2) //
-                                                    .append("DELETE FROM ").append(entityInfo.name).append(" WHERE");
+                                                    .append("DELETE FROM ").append(entityInfo.name) //
+                                                    .append(' ').append(entityVar).append(" WHERE");
                                     appendWithIdentifierName(ql, startAt + 5, ql.length(), entityVar_, q);
                                     jpql = q.toString();
                                 } else
@@ -1830,8 +1831,6 @@ public class QueryInfo {
                 }
             }
         } else if (firstChar == 'U' || firstChar == 'u') { // UPDATE EntityName[ SET ... WHERE ...]
-            // Temporarily simulate optional identifier names by inserting them.
-            // TODO remove when switched to Jakarta Persistence 3.2.
             if (startAt + 13 < length
                 && ql.regionMatches(true, startAt + 1, "PDATE", 0, 5)
                 && Character.isWhitespace(ql.charAt(startAt + 6))) {
@@ -1855,43 +1854,36 @@ public class QueryInfo {
                         && !Character.isJavaIdentifierPart(ql.charAt(startAt + 3))) {
                         entityVar = "this";
                         entityVar_ = "";
-                        if (entityName.length() != entityInfo.name.length() || entityName.indexOf(entityInfo.name) != 0)
+
+                        // TODO remove this workaround for #28931 once fixed
+                        boolean insertEntityVar = !entityInfo.relationAttributeNames.isEmpty();
+                        if (!insertEntityVar)
+                            for (int i = startAt; !insertEntityVar && i < length; i++)
+                                switch (ql.charAt(i)) {
+                                    case '+':
+                                    case '-':
+                                    case '*':
+                                    case '/': // TODO remove this workaround for #28912 once fixed
+                                        insertEntityVar = true;
+                                        break;
+                                    case '(': // TODO remove this workaround for #28908 once fixed
+                                        insertEntityVar = ql.regionMatches(true, i - 2, "ID", 0, 2);
+                                        break;
+                                }
+                        if (insertEntityVar) {
+                            entityVar = "o";
+                            entityVar_ = "o.";
+                            StringBuilder q = new StringBuilder(ql.length() * 3 / 2) //
+                                            .append("UPDATE ").append(entityInfo.name).append(" o SET");
+                            appendWithIdentifierName(ql, startAt + 3, ql.length(), entityVar_, q);
+                            jpql = q.toString();
+                        } else if (entityName.length() != entityInfo.name.length() || entityName.indexOf(entityInfo.name) != 0)
                             jpql = new StringBuilder(ql.length() * 3 / 2) //
                                             .append("UPDATE ").append(entityInfo.name).append(" SET") //
                                             .append(jpql.substring(startAt + 3, ql.length())) //
                                             .toString();
                     }
                 }
-
-                // TODO remove this workaround for #28908 once fixed
-                if (jpql.equals("UPDATE Person SET firstName=:newFirstName WHERE id(this)=:ssn"))
-                    jpql = "UPDATE Person p SET p.firstName=:newFirstName WHERE id(p)=:ssn";
-                else if (jpql.equals("UPDATE Person SET firstName=?2 WHERE ID(THIS)=?1"))
-                    jpql = "UPDATE Person p SET p.firstName=?2 WHERE ID(p)=?1";
-                else if (jpql.equals("UPDATE Person SET firstName=:firstName WHERE id(THIS)=:id"))
-                    jpql = "UPDATE Person p SET p.firstName=:firstName WHERE id(p)=:id";
-                else if (jpql.equals("UPDATE Person SET firstName=?2 WHERE ID(this)=?1"))
-                    jpql = "UPDATE Person p SET p.firstName=?2 WHERE ID(p)=?1";
-                else if (jpql.equals("UPDATE Person SET firstName=?2 WHERE Id(This)=?1"))
-                    jpql = "UPDATE Person p SET p.firstName=?2 WHERE Id(p)=?1";
-                else if (jpql.equals("UPDATE Triangle SET sides=?2, perimeter=?3 WHERE id(this)=?1"))
-                    jpql = "UPDATE Triangle t SET t.sides=?2, t.perimeter=?3 WHERE id(t)=?1";
-                // TODO remove this workaround for #28912 once fixed
-                else if (jpql.equals("UPDATE Product SET price = price - :amount WHERE name LIKE :namePattern"))
-                    jpql = "UPDATE Product p SET p.price = p.price - :amount WHERE p.name LIKE :namePattern";
-                else if (jpql.equals("UPDATE Product SET price = price - (?2 * price) WHERE name LIKE CONCAT('%', ?1, '%')"))
-                    jpql = "UPDATE Product p SET p.price = p.price - (?2 * p.price) WHERE p.name LIKE CONCAT('%', ?1, '%')";
-                else if (jpql.equals("UPDATE ReceiptEntity SET total = total * (1.0 + :taxRate) WHERE purchaseId = :id"))
-                    jpql = "UPDATE ReceiptEntity r SET r.total = r.total * (1.0 + :taxRate) WHERE r.purchaseId = :id";
-                else if (jpql.equals("UPDATE Item SET price=price/?2, version=version-1 WHERE (pk IN ?1)"))
-                    jpql = "UPDATE Item i SET i.price=i.price/?2, i.version=i.version-1 WHERE (i.pk IN ?1)";
-                else if (jpql.equals("UPDATE Account SET balance = balance + 15e-2 WHERE accountId = ?1"))
-                    jpql = "UPDATE Account a SET a.balance = a.balance + 15e-2 WHERE a.accountId = ?1";
-                else if (jpql.equals("UPDATE Coordinate SET x = :newX, y = y / :yDivisor WHERE id = :id"))
-                    jpql = "UPDATE Coordinate c SET c.x = :newX, c.y = c.y / :yDivisor WHERE c.id = :id";
-                // TODO remove this workaround for #28909 once fixed
-                else if (jpql.equals("UPDATE Box SET length = length + ?1, width = width - ?1, height = height * ?2"))
-                    jpql = "UPDATE Box b SET b.length = b.length + ?1, b.width = b.width - ?1, b.height = b.height * ?2";
             }
         } else { // SELECT ... or FROM ... or WHERE ... or ORDER BY ...
             int select0 = -1, selectLen = 0; // starts after SELECT
@@ -2050,8 +2042,8 @@ public class QueryInfo {
             boolean hasEntityVar = entityVar_.length() > 0;
 
             // TODO remove this workaround for #28931 once fixed
-            boolean insertIdentifier = entityVar_.length() == 0 && !entityInfo.relationAttributeNames.isEmpty();
-            if (insertIdentifier)
+            boolean insertEntityVar = entityVar_.length() == 0 && !entityInfo.relationAttributeNames.isEmpty();
+            if (insertEntityVar)
                 entityVar_ = entityVar + ".";
 
             if (countPages) {
@@ -2081,7 +2073,7 @@ public class QueryInfo {
                 }
 
                 if (whereLen > 0)
-                    if (insertIdentifier) {
+                    if (insertEntityVar) {
                         c.append("WHERE");
                         appendWithIdentifierName(ql, where0, where0 + whereLen, entityVar_, c);
                     } else
@@ -2123,12 +2115,12 @@ public class QueryInfo {
                 q = new StringBuilder(ql.length() + (selectLen >= 0 ? 0 : 50) + (fromLen >= 0 ? 0 : 50) + 2);
                 String selection = ql.substring(select0, select0 + selectLen);
                 // TODO remove this workaround for #28913 once fixed
-                if (!insertIdentifier && entityVar_.length() == 0 && selection.indexOf('.') < 0
+                if (!insertEntityVar && entityVar_.length() == 0 && selection.indexOf('.') < 0
                     && entityInfo.attributeNames.containsKey(selection.trim().toLowerCase())) {
-                    insertIdentifier = true;
+                    insertEntityVar = true;
                     entityVar_ = entityVar + ".";
                 }
-                if (insertIdentifier) {
+                if (insertEntityVar) {
                     q.append("SELECT");
                     appendWithIdentifierName(ql, select0, select0 + selectLen, entityVar_, q);
                 } else {
@@ -2154,7 +2146,7 @@ public class QueryInfo {
             }
 
             if (whereLen > 0)
-                if (insertIdentifier) {
+                if (insertEntityVar) {
                     q.append("WHERE");
                     appendWithIdentifierName(ql, where0, where0 + whereLen, entityVar_, q);
                 } else {
@@ -2162,7 +2154,7 @@ public class QueryInfo {
                 }
 
             if (orderLen > 0)
-                if (insertIdentifier)
+                if (insertEntityVar)
                     appendWithIdentifierName(ql, order0, order0 + orderLen, entityVar_, q);
                 else
                     q.append(ql.substring(order0, order0 + orderLen));
