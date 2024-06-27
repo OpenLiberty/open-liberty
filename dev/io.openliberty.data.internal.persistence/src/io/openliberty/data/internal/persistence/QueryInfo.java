@@ -376,10 +376,11 @@ public class QueryInfo {
      * @param ql        Jakarta Data Query Language
      * @param startAt   position in query language to start at.
      * @param endBefore position in query language before which to end.
+     * @param o_        entity identifier variable followed by the . character.
      * @param q         simulated JPQL to which to append.
      * @return simulated JPQL.
      */
-    private StringBuilder appendWithIdentifierName(String ql, int startAt, int endBefore, StringBuilder q) {
+    private StringBuilder appendWithIdentifierName(String ql, int startAt, int endBefore, String o_, StringBuilder q) {
         boolean isLiteral = false;
         boolean isNamedParamOrEmbedded = false;
         for (int i = startAt; i < endBefore; i++) {
@@ -419,13 +420,13 @@ public class QueryInfo {
                     i--; // adjust for separate loop increment
 
                     if ("id".equalsIgnoreCase(str) && ql.regionMatches(true, i + 1, "(THIS)", 0, 6)) {
-                        q.append(entityVar_).append(entityInfo.getAttributeName(By.ID, true));
+                        q.append(o_).append(entityInfo.getAttributeName(By.ID, true));
                         i += 6;
                     } else if ("this".equalsIgnoreCase(str)
                                || entityInfo.getAttributeName(str, false) == null) {
                         q.append(str);
                     } else {
-                        q.append(entityVar_).append(str);
+                        q.append(o_).append(str);
                     }
                 }
             } else if (Character.isDigit(ch)) {
@@ -1190,7 +1191,7 @@ public class QueryInfo {
                     if ((recordComponents = singleType.getRecordComponents()) != null)
                         for (RecordComponent component : recordComponents) {
                             String name = component.getName();
-                            q.append(first ? "" : ", ").append(o).append('.').append(name);
+                            q.append(first ? "" : ", ").append(o_).append(name);
                             first = false;
                         }
                     else if (entityInfo.idClassAttributeAccessors != null && singleType.equals(entityInfo.idType))
@@ -1198,7 +1199,7 @@ public class QueryInfo {
                         // instead of guessing they are alphabetized?
                         for (String idClassAttributeName : entityInfo.idClassAttributeAccessors.keySet()) {
                             String name = entityInfo.getAttributeName(idClassAttributeName, true);
-                            q.append(first ? "" : ", ").append(o).append('.').append(name);
+                            q.append(first ? "" : ", ").append(o_).append(name);
                             first = false;
                         }
                     else
@@ -1232,12 +1233,12 @@ public class QueryInfo {
             if (selectAsColumns) {
                 // Specify columns without creating new instance
                 for (int i = 0; i < cols.length; i++)
-                    q.append(i == 0 ? "SELECT " : ", ").append(o).append('.').append(cols[i]);
+                    q.append(i == 0 ? "SELECT " : ", ").append(o_).append(cols[i]);
             } else {
                 // Construct new instance from defined columns
                 q.append("SELECT NEW ").append(singleType.getName()).append('(');
                 for (int i = 0; i < cols.length; i++)
-                    q.append(i == 0 ? "" : ", ").append(o).append('.').append(cols[i]);
+                    q.append(i == 0 ? "" : ", ").append(o_).append(cols[i]);
                 q.append(')');
             }
         }
@@ -1797,7 +1798,7 @@ public class QueryInfo {
                         if (startAt >= length) {
                             // Entity identifier variable is not present. Add it.
                             entityVar = "this";
-                            entityVar_ = "this.";
+                            entityVar_ = "";
                             jpql = new StringBuilder(entityInfo.name.length() + 12) //
                                             .append("DELETE FROM ").append(entityInfo.name).toString();
                         } else if (startAt + 6 < length
@@ -1806,23 +1807,28 @@ public class QueryInfo {
                             // Entity identifier variable is not present. Add it.
                             hasWhere = true;
                             entityVar = "this";
-                            entityVar_ = "this.";
-                            StringBuilder q = new StringBuilder(ql.length() * 3 / 2) //
-                                            .append("DELETE FROM ").append(entityInfo.name).append(" WHERE");
-                            jpql = appendWithIdentifierName(ql, startAt + 5, ql.length(), q).toString();
+                            entityVar_ = "";
+
+                            // TODO remove this workaround for #28931 once fixed
+                            boolean insertIdentifier = !entityInfo.relationAttributeNames.isEmpty();
+                            if (insertIdentifier)
+                                entityVar_ = entityVar + ".";
+
+                            if (entityName.length() != entityInfo.name.length() || entityName.indexOf(entityInfo.name) != 0)
+                                if (insertIdentifier) {
+                                    StringBuilder q = new StringBuilder(ql.length() * 3 / 2) //
+                                                    .append("DELETE FROM ").append(entityInfo.name).append(" WHERE");
+                                    appendWithIdentifierName(ql, startAt + 5, ql.length(), entityVar_, q);
+                                    jpql = q.toString();
+                                } else
+                                    jpql = new StringBuilder(ql.length() * 3 / 2) //
+                                                    .append("DELETE FROM ").append(entityInfo.name).append(" WHERE") //
+                                                    .append(ql.substring(startAt + 5, ql.length())) //
+                                                    .toString();
                         }
                     }
                 }
             }
-
-            // TODO remove this workaround for #28895 once fixed
-            if (jpql.equals("DELETE FROM Product WHERE this.name LIKE ?1"))
-                jpql = "DELETE FROM Product WHERE name LIKE ?1";
-            // TODO remove this workaround for #28898 once fixed
-            else if (jpql.equals("DELETE FROM ReceiptEntity WHERE this.total < :max"))
-                jpql = "DELETE FROM ReceiptEntity WHERE total < :max";
-            else if (jpql.equals("DELETE FROM Coordinate WHERE this.x > 0.0d AND this.y > 0.0f"))
-                jpql = "DELETE FROM Coordinate WHERE x > 0.0d AND y > 0.0f";
         } else if (firstChar == 'U' || firstChar == 'u') { // UPDATE EntityName[ SET ... WHERE ...]
             // Temporarily simulate optional identifier names by inserting them.
             // TODO remove when switched to Jakarta Persistence 3.2.
@@ -1849,12 +1855,11 @@ public class QueryInfo {
                         && !Character.isJavaIdentifierPart(ql.charAt(startAt + 3))) {
                         entityVar = "this";
                         entityVar_ = "";
-                        if (entityName.length() != entityInfo.name.length() || entityName.indexOf(entityInfo.name) != 0) {
+                        if (entityName.length() != entityInfo.name.length() || entityName.indexOf(entityInfo.name) != 0)
                             jpql = new StringBuilder(ql.length() * 3 / 2) //
                                             .append("UPDATE ").append(entityInfo.name).append(" SET") //
                                             .append(jpql.substring(startAt + 3, ql.length())) //
                                             .toString();
-                        }
                     }
                 }
 
@@ -1991,7 +1996,7 @@ public class QueryInfo {
 
             type = Type.FIND;
             entityVar = "this";
-            entityVar_ = "this.";
+            entityVar_ = "";
             hasWhere = whereLen > 0;
 
             // Locate the entity identifier variable (if present). Examples of FROM clause:
@@ -2042,7 +2047,12 @@ public class QueryInfo {
                          "  entity [" + entityName + "] [" + entityVar + "]");
             }
 
-            boolean hasEntityVar = !"this".equals(entityVar);
+            boolean hasEntityVar = entityVar_.length() > 0;
+
+            // TODO remove this workaround for #28931 once fixed
+            boolean insertIdentifier = entityVar_.length() == 0 && !entityInfo.relationAttributeNames.isEmpty();
+            if (insertIdentifier)
+                entityVar_ = entityVar + ".";
 
             if (countPages) {
                 // TODO count query cannot always be accurately inferred if Query value is JPQL
@@ -2051,7 +2061,9 @@ public class QueryInfo {
                     || ql.substring(select0, select0 + selectLen).indexOf(',') >= 0) // comma delimited multiple return values
                     c.append(entityVar);
                 else // allows for COUNT(DISTINCT o.name)
-                    appendWithIdentifierName(ql, select0, select0 + selectLen, c);
+                    appendWithIdentifierName(ql, select0, select0 + selectLen,
+                                             entityVar_.length() == 0 ? "this." : entityVar_,
+                                             c);
 
                 c.append(") FROM");
                 if (from0 >= 0) {
@@ -2068,10 +2080,12 @@ public class QueryInfo {
                         c.append(entityVar).append(' ');
                 }
 
-                if (whereLen > 0) {
-                    c.append("WHERE");
-                    appendWithIdentifierName(ql, where0, where0 + whereLen, c);
-                }
+                if (whereLen > 0)
+                    if (insertIdentifier) {
+                        c.append("WHERE");
+                        appendWithIdentifierName(ql, where0, where0 + whereLen, entityVar_, c);
+                    } else
+                        c.append("WHERE").append(ql.substring(where0, where0 + whereLen));
 
                 jpqlCount = c.toString();
             }
@@ -2107,8 +2121,19 @@ public class QueryInfo {
             StringBuilder q;
             if (selectLen > 0) {
                 q = new StringBuilder(ql.length() + (selectLen >= 0 ? 0 : 50) + (fromLen >= 0 ? 0 : 50) + 2);
-                q.append("SELECT");
-                appendWithIdentifierName(ql, select0, select0 + selectLen, q);
+                String selection = ql.substring(select0, select0 + selectLen);
+                // TODO remove this workaround for #28913 once fixed
+                if (!insertIdentifier && entityVar_.length() == 0 && selection.indexOf('.') < 0
+                    && entityInfo.attributeNames.containsKey(selection.trim().toLowerCase())) {
+                    insertIdentifier = true;
+                    entityVar_ = entityVar + ".";
+                }
+                if (insertIdentifier) {
+                    q.append("SELECT");
+                    appendWithIdentifierName(ql, select0, select0 + selectLen, entityVar_, q);
+                } else {
+                    q.append("SELECT").append(selection);
+                }
             } else {
                 q = generateSelectClause().append(' ');
             }
@@ -2128,22 +2153,47 @@ public class QueryInfo {
                     q.append(entityVar).append(' ');
             }
 
-            if (whereLen > 0) {
-                q.append("WHERE");
-                appendWithIdentifierName(ql, where0, where0 + whereLen, q);
-            }
+            if (whereLen > 0)
+                if (insertIdentifier) {
+                    q.append("WHERE");
+                    appendWithIdentifierName(ql, where0, where0 + whereLen, entityVar_, q);
+                } else {
+                    q.append("WHERE").append(ql.substring(where0, where0 + whereLen));
+                }
 
-            if (orderLen > 0) {
-                appendWithIdentifierName(ql, order0, order0 + orderLen, q);
-            }
+            if (orderLen > 0)
+                if (insertIdentifier)
+                    appendWithIdentifierName(ql, order0, order0 + orderLen, entityVar_, q);
+                else
+                    q.append(ql.substring(order0, order0 + orderLen));
 
             jpql = q.toString();
 
-            // TODO remove this workaround for #28874 once fixed
-            if (jpql.equals("SELECT NEW test.jakarta.data.jpa.web.Rebate(this.id, this.amount, this.customerId, this.purchaseMadeAt, this.purchaseMadeOn, this.status, this.updatedAt, this.version) FROM RebateEntity WHERE this.customerId=?1 AND this.status=test.jakarta.data.jpa.web.Rebate.Status.PAID ORDER BY this.amount DESC, this.id ASC"))
+            // TODO remove this workaround for #28874 and #28920 once fixed
+            if (jpql.equals("SELECT NEW test.jakarta.data.jpa.web.Rebate(id, amount, customerId, purchaseMadeAt, purchaseMadeOn, status, updatedAt, version) FROM RebateEntity WHERE customerId=?1 AND status=test.jakarta.data.jpa.web.Rebate.Status.PAID ORDER BY amount DESC, id ASC"))
                 jpql = "SELECT NEW test.jakarta.data.jpa.web.Rebate(o.id, o.amount, o.customerId, o.purchaseMadeAt, o.purchaseMadeOn, o.status, o.updatedAt, o.version) FROM RebateEntity o WHERE o.customerId=?1 AND o.status=test.jakarta.data.jpa.web.Rebate.Status.PAID ORDER BY o.amount DESC, o.id ASC";
-            else if (jpql.equals(" FROM NaturalNumber WHERE this.isOdd = false AND this.numType = ee.jakarta.tck.data.framework.read.only.NaturalNumber.NumberType.PRIME"))
+            // TODO remove this workaround for #28874 once fixed
+            else if (jpql.equals(" FROM NaturalNumber WHERE isOdd = false AND numType = ee.jakarta.tck.data.framework.read.only.NaturalNumber.NumberType.PRIME"))
                 jpql = "SELECT o FROM NaturalNumber o WHERE o.isOdd = false AND o.numType = ee.jakarta.tck.data.framework.read.only.NaturalNumber.NumberType.PRIME";
+            // TODO remove this workaround for #28913 once fixed
+            else if (jpql.equals("SELECT amount FROM RebateEntity WHERE customerId=?1")) // misses prior workaround because selection is implicit
+                jpql = "SELECT this.amount FROM RebateEntity WHERE this.customerId=?1";
+            else if (jpql.equals("SELECT DISTINCT name FROM Item WHERE name LIKE :namePattern")) // misses prior workaround due to DISTINCT
+                jpql = "SELECT DISTINCT this.name FROM Item WHERE this.name LIKE :namePattern";
+            // TODO remove this workaround for #28925 once fixed
+            else if (jpql.equals("SELECT ID(THIS) FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR ID(THIS)=:num)"))
+                jpql = "SELECT o.numberId FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR o.numberId=:num)";
+            // TODO remove this workaround for #28928 once fixed
+            else if (jpql.equals("SELECT MAX(price) FROM Item"))
+                jpql = "SELECT MAX(this.price) FROM Item";
+            else if (jpql.equals("SELECT MIN(price) FROM Item"))
+                jpql = "SELECT MIN(this.price) FROM Item";
+            else if (jpql.equals("SELECT AVG(price) FROM Item"))
+                jpql = "SELECT AVG(this.price) FROM Item";
+            else if (jpql.equals("SELECT SUM(DISTINCT price) FROM Item"))
+                jpql = "SELECT SUM(DISTINCT this.price) FROM Item";
+            else if (jpql.equals("SELECT NEW test.jakarta.data.experimental.web.ItemCount(COUNT(name), COUNT(description), COUNT(price)) FROM Item"))
+                jpql = "SELECT NEW test.jakarta.data.experimental.web.ItemCount(COUNT(this.name), COUNT(this.description), COUNT(this.price)) FROM Item";
         }
     }
 
@@ -2222,7 +2272,7 @@ public class QueryInfo {
         } else if (methodName.startsWith("exists")) {
             String name = entityInfo.idClassAttributeAccessors == null ? ID : entityInfo.idClassAttributeAccessors.firstKey();
             String attrName = entityInfo.getAttributeName(name, true);
-            q = new StringBuilder(200).append("SELECT ").append(o).append('.').append(attrName) //
+            q = new StringBuilder(200).append("SELECT ").append(entityVar_).append(attrName) //
                             .append(" FROM ").append(entityInfo.name).append(' ').append(o);
             if (by > 0 && methodName.length() > by + 2)
                 generateWhereClause(methodName, by + 2, methodName.length(), q);
