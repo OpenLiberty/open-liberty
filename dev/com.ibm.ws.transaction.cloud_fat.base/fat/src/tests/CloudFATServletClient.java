@@ -12,6 +12,7 @@
  *******************************************************************************/
 package tests;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
@@ -222,6 +223,37 @@ public abstract class CloudFATServletClient extends CloudTestBase {
 
             FATUtils.runWithRetries(() -> runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "checkRecAggressiveTakeover").toString());
         }
+    }
+
+    protected abstract void setupRedundantLease(String serverName) throws Exception;
+
+    protected abstract boolean checkRedundantLeaseExists(String serverName) throws Exception;
+
+    /*
+     * Setup a lease for a non-existant server and check it gets deleted without creating bogus new recovery logs
+     */
+    @Test
+    public void testRedundantLeaseDeletion() throws Exception {
+
+        if (this.getClass().getCanonicalName().contains("DBRotationTest")) {
+            Log.info(CloudFATServletClient.class, "testRedundantLeaseDeletion", "Not implemented for DB tests yet");
+            return;
+        }
+
+        final String nonexistantServerName = "nonexistant";
+
+        serversToCleanup = new LibertyServer[] { server2fastcheck };
+
+        setupRedundantLease(nonexistantServerName);
+
+        // Now start server2
+        server2fastcheck.setHttpDefaultPort(Integer.getInteger("HTTP_secondary"));
+        FATUtils.startServers(_runner, server2fastcheck);
+
+        assertNotNull(server2fastcheck.getServerName() + " did not perform peer recovery",
+                      server2fastcheck.waitForStringInTrace("< peerRecoverServers Exit"));
+
+        assertFalse("Redundant lease was not deleted", checkRedundantLeaseExists(nonexistantServerName));
     }
 
     public static void setDerby() {

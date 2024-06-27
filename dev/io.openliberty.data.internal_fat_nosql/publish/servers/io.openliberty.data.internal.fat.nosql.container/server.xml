@@ -18,8 +18,8 @@
     <feature>componenttest-2.0</feature>
     <feature>dataContainer-1.0</feature>
     <feature>nosql-1.0</feature>
-    <feature>servlet-6.0</feature>
-    <feature>mpConfig-3.0</feature>
+    <feature>servlet-6.1</feature>
+    <feature>mpConfig-3.1</feature>
     <feature>jsonb-3.0</feature>
   </featureManager>
 

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.internal.utils;
 
@@ -19,6 +16,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 
@@ -35,10 +33,11 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
 
-import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult;
-import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent.Severity;
-import io.openliberty.microprofile.openapi20.internal.validation.OASValidator;
+import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult;
+import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult.ValidationEvent.Severity;
+import io.openliberty.microprofile.openapi20.internal.services.OASValidator;
 import io.openliberty.microprofile.openapi20.internal.validation.ValidatorUtils;
 import io.smallrye.openapi.api.constants.OpenApiConstants;
 import io.smallrye.openapi.api.models.OpenAPIImpl;
@@ -50,6 +49,7 @@ import io.smallrye.openapi.runtime.io.info.InfoReader;
 
 public class OpenAPIUtils {
     private static final TraceComponent tc = Tr.register(OpenAPIUtils.class);
+    private static final ServiceCaller<OASValidator> validatorService = new ServiceCaller<>(OpenAPIUtils.class, OASValidator.class);
 
     /**
      * The createBaseOpenAPIDocument method creates a default OpenAPI model object.
@@ -112,8 +112,9 @@ public class OpenAPIUtils {
      */
     @Trivial
     public static void validateDocument(OpenAPI document) {
-        final OASValidator validator = new OASValidator();
-        final OASValidationResult result = validator.validate(document);
+        OASValidationResult result = validatorService.call(v -> {
+            return v.validate(document);
+        }).orElseThrow(() -> new NoSuchElementException("validatorService"));
         final StringBuilder sbError = new StringBuilder();
         final StringBuilder sbWarnings = new StringBuilder();
         if (result.hasEvents()) {
@@ -264,31 +265,6 @@ public class OpenAPIUtils {
 
     private OpenAPIUtils() {
         // This class is not meant to be instantiated.
-    }
-
-    /**
-     * Create a shallow copy of an OpenAPI model
-     * <p>
-     * This allows us to replace the servers and info sections without modifying the original model.
-     *
-     * @param model the original OpenAPI model
-     * @return shallow copy of {@code model}
-     */
-    public static OpenAPI shallowCopy(OpenAPI model) {
-        OpenAPI result = OASFactory.createOpenAPI();
-
-        // Shallow copy each part
-        result.setOpenapi(model.getOpenapi());
-        result.setComponents(model.getComponents());
-        result.setExtensions(model.getExtensions());
-        result.setExternalDocs(model.getExternalDocs());
-        result.setInfo(model.getInfo());
-        result.setPaths(model.getPaths());
-        result.setSecurity(model.getSecurity());
-        result.setServers(model.getServers());
-        result.setTags(model.getTags());
-
-        return result;
     }
 
     @FFDCIgnore(JsonProcessingException.class)

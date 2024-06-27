@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
@@ -26,13 +26,11 @@ javac.source: 11
 javac.target: 11
 
 -buildpath: \
-    com.ibm.websphere.javaee.ejb.3.2;version=latest,\
     io.openliberty.jakarta.servlet.6.0;version=latest,\
     io.openliberty.jakarta.websocket.2.1;version=latest,\
     io.openliberty.jakarta.websocket.client.2.1;version=latest,\
     io.openliberty.jakarta.cdi.4.0;version=latest,\
     io.openliberty.jakarta.interceptor.2.1;version=latest,\
-    com.ibm.websphere.javaee.jms.1.1;version=latest,\
     io.openliberty.jakarta.transaction.2.0;version=latest,\
     com.ibm.ws.wsoc.jakarta;version=latest,\
     org.apache.httpcomponents.client5:httpclient5;version=5.0,\

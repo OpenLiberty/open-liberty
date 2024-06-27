@@ -433,6 +433,19 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
+    public String getUserDir() {
+        String userDir = "";
+        synchronized (this) {
+            if (locationService != null)
+                userDir = locationService.resolveString("${wlp.user.dir}");
+        }
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getUserDir {0}", userDir);
+        return userDir;
+    }
+
+    @Override
     public String getHeuristicCompletionDirectionAsString() {
         return (String) _props.get("lpsHeuristicCompletion");
     }

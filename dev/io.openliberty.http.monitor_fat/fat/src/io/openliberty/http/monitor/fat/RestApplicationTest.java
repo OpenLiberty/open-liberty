@@ -39,16 +39,6 @@ public class RestApplicationTest extends BaseTestClass {
 
     private static Class<?> c = RestApplicationTest.class;
 
-    static final String CONTEXT_ROOT = "/RestApp";
-
-    static final String REST_APP_URL = CONTEXT_ROOT + "/resource";
-
-    static final String SIMPLE_RESOURCE_URL = REST_APP_URL + "/simple";
-
-    static final String FAIL_RESOURCE_URL = REST_APP_URL + "/fail";
-
-    static final String PARAM_RESOURCE_URL = REST_APP_URL + "/params";
-
     @Server("SimpleRestServer")
     public static LibertyServer server;
 
@@ -83,13 +73,13 @@ public class RestApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_RESOURCE_URL + "/pathGet";
+        String route = Constants.SIMPLE_RESOURCE_URL + "/pathGet";
         String requestMethod = HttpMethod.GET;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), route, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod));
 
     }
 
@@ -97,13 +87,13 @@ public class RestApplicationTest extends BaseTestClass {
     public void r1_normalPathPost() throws Exception {
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_RESOURCE_URL + "/pathPost";
+        String route = Constants.SIMPLE_RESOURCE_URL + "/pathPost";
         String requestMethod = HttpMethod.POST;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), route, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod));
 
     }
 
@@ -112,13 +102,13 @@ public class RestApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_RESOURCE_URL + "/pathPut";
+        String route = Constants.SIMPLE_RESOURCE_URL + "/pathPut";
         String requestMethod = HttpMethod.PUT;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), route, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod));
 
     }
 
@@ -127,13 +117,13 @@ public class RestApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_RESOURCE_URL + "/pathDelete";
+        String route = Constants.SIMPLE_RESOURCE_URL + "/pathDelete";
         String requestMethod = HttpMethod.DELETE;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), route, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod));
 
     }
 
@@ -142,13 +132,13 @@ public class RestApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_RESOURCE_URL + "/pathOptions";
+        String route = Constants.SIMPLE_RESOURCE_URL + "/pathOptions";
         String requestMethod = HttpMethod.OPTIONS;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), route, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod));
 
     }
 
@@ -157,13 +147,13 @@ public class RestApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_RESOURCE_URL + "/pathHead";
+        String route = Constants.SIMPLE_RESOURCE_URL + "/pathHead";
         String requestMethod = HttpMethod.HEAD;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), route, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod));
     }
 
     @Test
@@ -172,14 +162,14 @@ public class RestApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = FAIL_RESOURCE_URL + "/zero";
+        String route = Constants.FAIL_RESOURCE_URL + "/zero";
         String requestMethod = HttpMethod.GET;
         String responseStatus = "500";
         String errorType = responseStatus;
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetricWithErrorType(getVendorMetrics(server), route, responseStatus, requestMethod, errorType));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod, errorType));
 
     }
 
@@ -188,14 +178,14 @@ public class RestApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_RESOURCE_URL + "/fakePath";
-        String resolvedRoute = REST_APP_URL + "/\\*";
+        String route = Constants.SIMPLE_RESOURCE_URL + "/fakePath";
+        String resolvedRoute = Constants.REST_APP_URL + "/\\*";
         String requestMethod = HttpMethod.GET;
         String responseStatus = "404";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), resolvedRoute, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), resolvedRoute, responseStatus, requestMethod));
 
     }
 
@@ -205,14 +195,14 @@ public class RestApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = FAIL_RESOURCE_URL + "/io";
+        String route = Constants.FAIL_RESOURCE_URL + "/io";
         String requestMethod = HttpMethod.GET;
         String responseStatus = "500";
         String errorType = responseStatus;
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetricWithErrorType(getVendorMetrics(server), route, responseStatus, requestMethod, errorType));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod, errorType));
 
     }
 
@@ -222,14 +212,14 @@ public class RestApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = FAIL_RESOURCE_URL + "/iae";
+        String route = Constants.FAIL_RESOURCE_URL + "/iae";
         String requestMethod = HttpMethod.GET;
         String responseStatus = "500";
         String errorType = responseStatus;
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetricWithErrorType(getVendorMetrics(server), route, responseStatus, requestMethod, errorType));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod, errorType));
 
     }
 
@@ -238,15 +228,15 @@ public class RestApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = PARAM_RESOURCE_URL + "/awooga";
-        String expectedRoute = PARAM_RESOURCE_URL + "/\\{anything\\}";
+        String route = Constants.PARAM_RESOURCE_URL + "/awooga";
+        String expectedRoute = Constants.PARAM_RESOURCE_URL + "/\\{anything\\}";
 
         String requestMethod = HttpMethod.GET;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
 
     }
 
@@ -255,15 +245,15 @@ public class RestApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = PARAM_RESOURCE_URL + "/name/watson";
-        String expectedRoute = PARAM_RESOURCE_URL + "/name/\\{name\\}";
+        String route = Constants.PARAM_RESOURCE_URL + "/name/watson";
+        String expectedRoute = Constants.PARAM_RESOURCE_URL + "/name/\\{name\\}";
 
         String requestMethod = HttpMethod.GET;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
 
     }
 
@@ -272,15 +262,15 @@ public class RestApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = PARAM_RESOURCE_URL + "/name/watson";
-        String expectedRoute = PARAM_RESOURCE_URL + "/name/\\{name\\}";
+        String route = Constants.PARAM_RESOURCE_URL + "/name/watson";
+        String expectedRoute = Constants.PARAM_RESOURCE_URL + "/name/\\{name\\}";
 
         String requestMethod = HttpMethod.POST;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
 
     }
 
@@ -293,8 +283,8 @@ public class RestApplicationTest extends BaseTestClass {
          */
         assertTrue(server.isStarted());
 
-        String route = PARAM_RESOURCE_URL + "/query?useless=this";
-        String expectedRoute = PARAM_RESOURCE_URL + "/query";
+        String route = Constants.PARAM_RESOURCE_URL + "/query?useless=this";
+        String expectedRoute = Constants.PARAM_RESOURCE_URL + "/query";
 
         String requestMethod = HttpMethod.GET;
         String responseStatus = "200";
@@ -303,7 +293,7 @@ public class RestApplicationTest extends BaseTestClass {
 
         Log.info(c, " r1_params_query", "the response is " + res);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
 
     }
 
@@ -316,15 +306,15 @@ public class RestApplicationTest extends BaseTestClass {
          */
         assertTrue(server.isStarted());
 
-        String route = PARAM_RESOURCE_URL + "/pq/peeqeee?useless=this";
-        String expectedRoute = PARAM_RESOURCE_URL + "/pq/\\{pq\\}";
+        String route = Constants.PARAM_RESOURCE_URL + "/pq/peeqeee?useless=this";
+        String expectedRoute = Constants.PARAM_RESOURCE_URL + "/pq/\\{pq\\}";
 
         String requestMethod = HttpMethod.GET;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
 
     }
 

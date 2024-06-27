@@ -18,7 +18,6 @@ IBM-ShortName: mpRestClient-4.0
 Subsystem-Name: MicroProfile Rest Client 4.0
 
 -features=\
-  io.openliberty.noShip-1.0,\
   io.openliberty.mpCompatible-7.0, \
   io.openliberty.jsonp-2.1, \
   io.openliberty.mpConfig-3.1, \
@@ -27,9 +26,9 @@ Subsystem-Name: MicroProfile Rest Client 4.0
   com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0
 
 -bundles=\
-  io.openliberty.org.jboss.resteasy.mprestclient; apiJar=false; location:="lib/"
-kind=noship
-edition=full
+  io.openliberty.org.jboss.resteasy.mprestclient.4.0; apiJar=false; location:="lib/"
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
 WLP-Platform: microProfile-7.0

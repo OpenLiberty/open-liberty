@@ -55,3 +55,6 @@ tested.features: cdi-4.1
   io.openliberty.jakarta.servlet.6.0;version=latest,\
   io.openliberty.jakarta.transaction.2.0;version=latest,\
   io.openliberty.org.testcontainers;version=latest
+
+# If building with gradle do not include org.hibernate.orm:hibernate-core;version=7.0.0.Alpha2
+-buildpath.extra: ${if;${driver;gradle};;org.hibernate.orm:hibernate-core\\;version=7.0.0.Alpha2}

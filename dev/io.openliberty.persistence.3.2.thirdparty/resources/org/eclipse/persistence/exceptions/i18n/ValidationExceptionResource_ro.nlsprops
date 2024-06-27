@@ -613,7 +613,7 @@
 
 7345={0} fi\u015fierul specificat pentru XMLMetadataSource nu a fost g\u0103sit
 
-7346=Proprietatea contextual\u0103 multi-chiria\u015f [{0}] nu a fost furnizat\u0103. Atunci c\u00e2nd proprietatea unitate de persisten\u0163\u0103 (eclipselink.multitenant.tenants-share-emf) este setat\u0103 pe false, toate propriet\u0103\u0163ile contextuale multi-chiria\u015f trebuiesc furnizate \u00eenainte. Acest lucru se poate face direct prin defini\u0163ia unit\u0103\u0163ii de persisten\u0163\u0103 sau prin trecerea unei h\u0103r\u0163i de proprietate ce con\u0163ine toate propriet\u0103\u0163ile contextuale multi-chiria\u015f pentru crearea apel\u0103rii EntityManagerFactory.
+7346=Proprietatea contextual\u0103 multi-chiria\u015f [{0}] nu a fost furnizat\u0103. Atunci c\u00e2nd proprietatea unit\u0103\u021bii de persisten\u021b\u0103 ({1}) este setat\u0103 la fals, toate propriet\u0103\u021bile contextului multitcontext trebuie s\u0103 fie furnizate \u00een fa\u021b\u0103. Acest lucru se poate face direct prin defini\u0163ia unit\u0103\u0163ii de persisten\u0163\u0103 sau prin trecerea unei h\u0103r\u0163i de proprietate ce con\u0163ine toate propriet\u0103\u0163ile contextuale multi-chiria\u015f pentru crearea apel\u0103rii EntityManagerFactory.
 
 7347=Clasa [{0}] specific\u0103 metadatele convertite la nivel de tip f\u0103r\u0103 specificarea unui nume de atribut pentru fiecare. Un nume de atribut trebuie furnizat pentru toate metadatele convertite la nivel de tip pentru a v\u0103 asigura aplica\u0163iile corecte la un atribut de clas\u0103 super.
 
@@ -633,9 +633,12 @@
 
 7356=Procedur\u0103: [{1}] nu poate fi executat deoarece {0} nu suport\u0103 momentan parametrii de ie\u015fire multiplii
 
-7357=URL-ul [{0}] pentru resursa [{1}] face parte dintr-o r\u0103d\u0103cin\u0103 de persisten\u021b\u0103 valid\u0103, a\u0219a cum este definit\u0103 de Specifica\u021bia JPA.
+7357=URL-ul "[{0}]" pentru resursa "[{1}" nu apar\u021bine unei r\u0103d\u0103cini valide de persisten\u021b\u0103, a\u0219a cum este definit\u0103 de specifica\u021bia Jakarta Persistence.
 
 7358=A fost furnizat un nume de serviciu ASM incorect.
 
 7359=Nu exist\u0103 niciun serviciu ASM disponibil.
+
+7360=Parola bazei de date a fost criptat\u0103 prin algoritm depreciat.
+Reencrypt it by `passwordUpdate.sh ` from eclipselink.zip bundle.
 

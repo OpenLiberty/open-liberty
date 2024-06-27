@@ -43,7 +43,7 @@ public class MPMetricsHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
     }
 
     @Override
-    public void updateHttpMetrics(HttpStatAttributes httpStatAttributes, Duration duration) {
+    public void updateHttpMetrics(HttpStatAttributes httpStatAttributes, Duration duration, String appName) {
 
         if (sharedMetricRegistries == null) {
             return;
@@ -51,7 +51,8 @@ public class MPMetricsHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
 
         MetricRegistry vendorRegistry = sharedMetricRegistries.getOrCreate(MetricRegistry.VENDOR_SCOPE);
 
-        Metadata md = new MetadataBuilder().withName("http.server.request.duration").build();
+        Metadata md = new MetadataBuilder().withName("http.server.request.duration")
+                .withDescription("Duration of HTTP server requests").build();
 
         Timer httpTimer = vendorRegistry.timer(md, retrieveTags(httpStatAttributes));
         httpTimer.update(duration);
@@ -60,18 +61,19 @@ public class MPMetricsHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
 
     private Tag[] retrieveTags(HttpStatAttributes httpStatAttributes) {
 
-        Tag requestMethod = new Tag("request_method", httpStatAttributes.getRequestMethod());
-        Tag scheme = new Tag("http_scheme", httpStatAttributes.getScheme());
+        Tag requestMethod = new Tag("http_request_method", httpStatAttributes.getRequestMethod());
+        Tag scheme = new Tag("url_scheme", httpStatAttributes.getScheme());
 
         Integer status = httpStatAttributes.getResponseStatus().orElse(-1);
-        Tag responseStatusTag = new Tag("response_status", status == -1 ? "" : status.toString().trim());
+        Tag responseStatusTag = new Tag("http_response_status_code", status == -1 ? "" : status.toString().trim());
 
         Tag httpRouteTag = new Tag("http_route", httpStatAttributes.getHttpRoute().orElse(""));
 
-        Tag networkProtoclNameTag = new Tag("network_name", httpStatAttributes.getNetworkProtocolName());
-        Tag networkProtocolVersionTag = new Tag("network_version", httpStatAttributes.getNetworkProtocolVersion());
+        Tag networkProtoclNameTag = new Tag("network_protocol_name", httpStatAttributes.getNetworkProtocolName());
+        Tag networkProtocolVersionTag = new Tag("network_protocol_version",
+                httpStatAttributes.getNetworkProtocolVersion());
 
-        Tag serverNameTag = new Tag("server_name", httpStatAttributes.getServerName());
+        Tag serverNameTag = new Tag("server_address", httpStatAttributes.getServerName());
         Tag serverPortTag = new Tag("server_port", String.valueOf(httpStatAttributes.getServerPort()));
 
         String errorType = httpStatAttributes.getErrorType().orElse("");

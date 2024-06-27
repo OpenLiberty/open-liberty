@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.fat.util.tck;
 
@@ -28,6 +25,13 @@ public enum TCKArchiveModifications implements ArchiveModification {
         public void applyModification(ExtensionBuilder extensionBuilder) {
             LOG.log(Level.INFO, "WLP: Adding Extension com.ibm.ws.fat.util.tck.HamcrestArchiveProcessor");
             extensionBuilder.service(ApplicationArchiveProcessor.class, HamcrestArchiveProcessor.class);
+        }
+    },
+    HAMCREST21 {
+        @Override
+        public void applyModification(ExtensionBuilder extensionBuilder) {
+            LOG.log(Level.INFO, "WLP: Adding Extension com.ibm.ws.fat.util.tck.Hamcrest21ArchiveProcessor");
+            extensionBuilder.service(ApplicationArchiveProcessor.class, Hamcrest21ArchiveProcessor.class);
         }
     },
     JETTY {

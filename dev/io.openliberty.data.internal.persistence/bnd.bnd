@@ -46,6 +46,9 @@ Private-Package: \
   io.openliberty.data.internal.persistence.resources.*,\
   io.openliberty.data.internal.persistence.validation.*
 
+Include-Resource:\
+  OSGI-INF=resources/OSGI-INF
+
 -cdiannotations:
 
 -dsannotations: \

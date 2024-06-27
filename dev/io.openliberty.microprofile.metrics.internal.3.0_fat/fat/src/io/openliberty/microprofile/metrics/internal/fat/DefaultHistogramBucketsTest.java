@@ -140,12 +140,12 @@ public class DefaultHistogramBucketsTest {
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet(
+		String metrics = getHttpServlet(
 				"/metrics?scope=application&name=testHistogram");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
@@ -171,12 +171,12 @@ public class DefaultHistogramBucketsTest {
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet(
+		String metrics = getHttpServlet(
 				"/metrics?scope=application&name=testTimer");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
@@ -203,12 +203,12 @@ public class DefaultHistogramBucketsTest {
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet(
+		String metrics = getHttpServlet(
 				"/metrics?scope=application&name=testHistogramMinMax");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
@@ -244,12 +244,12 @@ public class DefaultHistogramBucketsTest {
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet(
+		String metrics = getHttpServlet(
 				"/metrics?scope=application&name=testTimerMinMax");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
@@ -286,12 +286,12 @@ public class DefaultHistogramBucketsTest {
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet(
+		String metrics = getHttpServlet(
 				"/metrics?scope=application&name=histogram.bad.enable.config");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
@@ -320,12 +320,12 @@ public class DefaultHistogramBucketsTest {
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet(
+		String metrics = getHttpServlet(
 				"/metrics?scope=application&name=timer.bad.max.good.min.config");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
@@ -358,12 +358,12 @@ public class DefaultHistogramBucketsTest {
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet(
+		String metrics = getHttpServlet(
 				"/metrics?scope=application&name=timer.bad.min.good.max.config");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
@@ -396,12 +396,12 @@ public class DefaultHistogramBucketsTest {
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet(
+		String metrics = getHttpServlet(
 				"/metrics?scope=application&name=histogram.bad.min.good.max.config");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
@@ -437,12 +437,12 @@ public class DefaultHistogramBucketsTest {
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet(
+		String metrics = getHttpServlet(
 				"/metrics?scope=application&name=histogram.bad.max.good.min.config");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
@@ -475,12 +475,12 @@ public class DefaultHistogramBucketsTest {
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet(
+		String metrics = getHttpServlet(
 				"/metrics?scope=application&name=timer.good.min.good.max.config");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
@@ -514,12 +514,12 @@ public class DefaultHistogramBucketsTest {
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet(
+		String metrics = getHttpServlet(
 				"/metrics?scope=application&name=histogram.good.max.good.min.config");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 

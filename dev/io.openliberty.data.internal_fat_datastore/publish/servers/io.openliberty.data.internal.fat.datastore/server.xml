@@ -17,11 +17,20 @@
     <feature>data-1.0</feature>
     <feature>enterpriseBeans-4.0</feature>
     <feature>jndi-1.0</feature>
-    <feature>persistence-3.1</feature>
-    <feature>servlet-6.0</feature>
+    <feature>persistence-3.2</feature>
+    <feature>servlet-6.1</feature>
   </featureManager>
 
   <include location="../fatTestPorts.xml"/>
+
+  <data>
+    <logValues>test.jakarta.data.datastore.ejb</logValues>
+    <logValues>test.jakarta.data.datastore.global.lib.GlobalLibRepo</logValues>
+    <logValues>test.jakarta.data.datastore.lib</logValues>
+    <logValues>test.jakarta.data.datastore.web</logValues>
+    <logValues>test.jakarta.data.datastore.web2</logValues>
+    <logValues>test.jakarta.data.datastore.webapp</logValues>
+  </data>
 
   <application location="DataStoreTestApp.ear">
     <classloader commonLibraryRef="DerbyLib"/>

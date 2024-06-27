@@ -613,7 +613,7 @@
 
 7345=Le fichier {0} sp\u00e9cifi\u00e9 pour l''\u00e9l\u00e9ment XMLMetadataSource est introuvable
 
-7346=La propri\u00e9t\u00e9 de contexte \u00e0 plusieurs titulaires [{0}] n''a pas \u00e9t\u00e9 fournie. Lorsque la propri\u00e9t\u00e9 d''unit\u00e9 de persistance (eclipselink.multitenant.tenants-share-emf) est d\u00e9finie sur false, toutes les propri\u00e9t\u00e9s de contexte \u00e0 plusieurs titulaires doivent \u00eatre fournies au d\u00e9but. Cela peut s''effectuer via la d\u00e9finition d''unit\u00e9 de persistance directement ou par la transmission d''une mappe de propri\u00e9t\u00e9s contenant toutes les propri\u00e9t\u00e9s de contexte \u00e0 plusieurs titulaires dans la cr\u00e9ation de l''appel EntityManagerFactory.
+7346=La propri\u00e9t\u00e9 de contexte \u00e0 plusieurs titulaires [{0}] n''a pas \u00e9t\u00e9 fournie. Lorsque la propri\u00e9t\u00e9 d''unit\u00e9 de persistance ({1}) est d\u00e9finie sur false, toutes les propri\u00e9t\u00e9s de contexte \u00e0 service partag\u00e9 doivent \u00eatre fournies en amont. Cela peut s''effectuer via la d\u00e9finition d''unit\u00e9 de persistance directement ou par la transmission d''une mappe de propri\u00e9t\u00e9s contenant toutes les propri\u00e9t\u00e9s de contexte \u00e0 plusieurs titulaires dans la cr\u00e9ation de l''appel EntityManagerFactory.
 
 7347=La classe [{0}] sp\u00e9cifie les m\u00e9tadonn\u00e9es de conversion de niveau de type sans sp\u00e9cifier un nom d''attribut pour chaque. Un nom d''attribut doit \u00eatre fourni pour toutes les m\u00e9tadonn\u00e9es de conversion de niveau de type afin de garantir l''application correcte \u00e0 un super attribut de classe.
 
@@ -633,9 +633,12 @@
 
 7356=La proc\u00e9dure : [{1}] ne peut pas \u00eatre ex\u00e9cut\u00e9e car {0} ne prend actuellement pas en charge plusieurs param\u00e8tres de sortie
 
-7357=L''URL [{0}] de la ressource [{1}] n''appartient pas \u00e0 une racine de persistance valide, telle que d\u00e9finie par la sp\u00e9cification JPA.
+7357=L''URL "[{0}]" de la ressource "[{1}]" n''appartient pas \u00e0 une racine de persistance valide, comme d\u00e9fini par la sp\u00e9cification Jakarta Persistence.
 
 7358=Nom de service ASM fourni incorrect.
 
 7359=Aucun service ASM disponible.
+
+7360=Le mot de passe de la base de donn\u00e9es a \u00e9t\u00e9 chiffr\u00e9 par un algorithme obsol\u00e8te.
+Reencrypt par `passwordUpdate.sh ` \u00e0 partir du bundle eclipselink.zip .
 

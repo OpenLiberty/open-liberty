@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2023 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -869,13 +869,13 @@ WTRN0152_UNUSUAL_HA_CONFIG=WTRN0152W: Configuration haute disponibilit\u00e9 inh
 WTRN0152_UNUSUAL_HA_CONFIG.explanation=La haute disponibilit\u00e9 est activ\u00e9e pour ce cluster, mais le gestionnaire \u00e0 haute disponibilit\u00e9 est d\u00e9sactiv\u00e9.
 WTRN0152_UNUSUAL_HA_CONFIG.useraction=S'il s'agit de la configuration souhait\u00e9e, aucune action n'est requise. Sinon, corrigez la configuration haute disponibilit\u00e9.
 
-WTRN0153_INVALID_LOG_AT_SHUTDOWN=WTRN0153W: le service de transaction s'est arr\u00eat\u00e9 mais le journal de reprise a \u00e9t\u00e9 marqu\u00e9 comme ayant \u00e9chou\u00e9.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN=WTRN0153W : le service de transaction s'est arr\u00eat\u00e9 mais le journal de reprise a \u00e9t\u00e9 marqu\u00e9 comme ayant \u00e9chou\u00e9.
 WTRN0153_INVALID_LOG_AT_SHUTDOWN.explanation=Le journal de reprise a \u00e9chou\u00e9 et l'acc\u00e8s au journal n'a pas eu lieu lors de l'arr\u00eat du serveur.
 WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Corrigez les conditions indiqu\u00e9es par les messages qui ont signal\u00e9 l'invalidation du journal. Red\u00e9marrez le serveur afin de r\u00e9parer le journal.
 
 WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9 car le service de transaction ne parvient pas \u00e0 d\u00e9marrer une transaction.
 WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=Liberty ne prend pas en charge les applications qui se lancent ou n\u00e9cessitent une transaction alors que l'application se lance lorsqu'un point de contr\u00f4le du serveur est demand\u00e9.
-WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Utilisez l'option de point de contr\u00f4le du serveur at=deployment ou modifiez l'application pour lancer les transactions apr\u00e8s son d\u00e9marrage.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Configurez le point de contr\u00f4le pour qu'il se produise avant le d\u00e9marrage de l'application \u00e0 l'aide de l'option de point de contr\u00f4le du serveur beforeAppou modifiez l'application pour qu'elle d\u00e9marre les transactions apr\u00e8s son d\u00e9marrage.
 
 # 0 - Stack trace of call to create new tx
 WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Une application a d\u00e9marr\u00e9 ou a n\u00e9cessit\u00e9 une transaction lors de la demande de point de contr\u00f4le du serveur. La trace de pile suivante pour cette unit\u00e9 d''ex\u00e9cution a \u00e9t\u00e9 captur\u00e9e lors de la cr\u00e9ation de la transaction : {0}

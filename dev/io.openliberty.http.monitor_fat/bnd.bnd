@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -26,6 +23,11 @@ fat.project: true
 javac.source: 11
 javac.target: 11
 
+# Uncomment to use remote docker host to simulate continuous build behavior.
+#fat.test.use.remote.docker: true
+
+fat.test.container.images: otel/opentelemetry-collector-contrib:0.103.0
+
 -buildpath: \
 	com.ibm.ws.webcontainer.servlet.4.0.jakarta,\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
@@ -33,4 +35,5 @@ javac.target: 11
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	io.openliberty.jakarta.annotation.2.1;version=latest,\
 	io.openliberty.jakarta.restfulWS.3.0;version=latest,\
-	io.openliberty.jakarta.cdi.4.0;version=latest
+	io.openliberty.jakarta.cdi.4.0;version=latest,\
+	io.openliberty.org.testcontainers;version=latest

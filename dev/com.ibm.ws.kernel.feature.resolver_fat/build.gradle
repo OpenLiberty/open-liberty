@@ -33,7 +33,8 @@ dependencies {
       project(':com.ibm.wsspi.org.osgi.service.event'),
       project(':com.ibm.ws.org.eclipse.equinox.region'),
       project(':com.ibm.ws.org.apache.aries.util'),
-      project(':com.ibm.ws.org.osgi.annotation.versioning')
+      project(':com.ibm.ws.org.osgi.annotation.versioning'),
+      'biz.aQute.bnd:biz.aQute.bnd:6.4.1'
 }
 
 task addJunitdependencies(type: Copy) {

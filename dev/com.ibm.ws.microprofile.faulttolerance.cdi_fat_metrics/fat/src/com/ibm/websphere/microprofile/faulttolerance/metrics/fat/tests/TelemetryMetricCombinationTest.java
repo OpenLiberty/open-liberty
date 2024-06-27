@@ -53,7 +53,7 @@ public class TelemetryMetricCombinationTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP70_EE10);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP70_EE10, MicroProfileActions.MP70_EE11);
 
     @BeforeClass
     public static void setup() throws Exception {

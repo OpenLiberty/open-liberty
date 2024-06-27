@@ -11,17 +11,29 @@ package com.ibm.ws.crypto.common;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo; // TODO remove beta check
 
 public class CryptoMessageUtils {
 
     private static TraceComponent tc = Tr.register(CryptoMessageUtils.class);
 
     
-    public void logUnsecureAlgorithm(String configProperty, String unsecureAlgorithm) {
-        Tr.warning(tc, "CRYPTO_UNSECURE", configProperty, unsecureAlgorithm);
+    public static void logInsecureAlgorithm(String configProperty, String insecureAlgorithm) {
+        // TODO remove beta check
+        if (isRunningBetaMode()) {
+            Tr.warning(tc, "CRYPTO_INSECURE", configProperty, insecureAlgorithm);
+        }
     }
 
-    public void logUnsecureAlgorithmReplaced(String configProperty, String unsecureAlgorithm, String secureAlgorithm) {
-        Tr.warning(tc, "CRYPTO_UNSECURE_REPLACED", configProperty, unsecureAlgorithm, secureAlgorithm);
+    public static void logInsecureAlgorithmReplaced(String configProperty, String insecureAlgorithm, String secureAlgorithm) {
+        // TODO remove beta check
+        if (isRunningBetaMode()) {
+            Tr.warning(tc, "CRYPTO_INSECURE_REPLACED", configProperty, insecureAlgorithm, secureAlgorithm);
+        }
+    }
+
+    // TODO remove beta check
+    static boolean isRunningBetaMode() {
+        return ProductInfo.getBetaEdition();
     }
 }

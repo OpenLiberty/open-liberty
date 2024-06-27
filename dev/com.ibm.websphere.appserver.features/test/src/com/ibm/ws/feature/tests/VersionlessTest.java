@@ -295,9 +295,6 @@ public class VersionlessTest {
                     //each feature dependency of the platform
                     Set<FeatureInfo> publicDepFeatures = getAllPublicDependentFeatures(featureInfo);
                     for (FeatureInfo depInfo : publicDepFeatures) {
-                        if (depInfo.getKind().equals("noship")){
-                            continue;
-                        }
                         System.out.println("        [ " + depInfo.getBaseName() + " - " + depInfo.getVersion() + " ]");
 
                         if (depInfo.isAlsoKnownAsSet()) {
@@ -321,8 +318,8 @@ public class VersionlessTest {
                                                     new VersionlessFeatureDefinition(featureTitle, featureTitle,
                                                                                      new String[] { depInfo.getShortName(),
                                                                                                     baseName.replace("javaee", "jakartaee") + "-" + version,
-                                                                                                    depInfo.getName()},
-                                                                                                    depInfo.getEdition()));
+                                                                                                    depInfo.getName() },
+                                                                                     depInfo.getEdition()));
                         }
 
                         //Keep track of features with updated names via the alsoknownas metadata

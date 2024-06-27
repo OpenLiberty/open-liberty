@@ -95,10 +95,7 @@ import test.jakarta.data.jpa.web.CreditCard.Issuer;
                       user = "${repository.database.user}",
                       password = "${repository.database.password}",
                       properties = {
-                                     "createDatabase=create",
-                                     "data.createTables=${repository.database.tables.create}",
-                                     "data.dropTables=${repository.database.tables.drop}",
-                                     "data.tablePrefix=${repository.database.tables.prefix}"
+                                     "createDatabase=create"
                       })
 @SuppressWarnings("serial")
 @WebServlet("/*")
@@ -279,7 +276,8 @@ public class DataJPATestServlet extends FATServlet {
      * Use a repository method comparing a BigDecimal value on an entity that includes BigDecimal attributes.
      * This includes both a comparison in the query conditions as well as ordering on the BigDecimal attribute.
      */
-    @Test
+    // TODO re-enable once 28813 (java.time.Instant DateTimeParseException) is fixed
+    //@Test
     public void testBigDecimal() {
         final ZoneId EASTERN = ZoneId.of("America/New_York");
 
@@ -307,7 +305,8 @@ public class DataJPATestServlet extends FATServlet {
      * Use a repository method comparing a BigInteger value on an entity that includes BigInteger attributes.
      * This includes both a comparison in the query conditions as well as ordering on the BigInteger attribute.
      */
-    @Test
+    // TODO re-enable once 28813 (java.time.Instant DateTimeParseException) is fixed
+    //@Test
     public void testBigInteger() {
         ZoneId ET = ZoneId.of("America/New_York");
 

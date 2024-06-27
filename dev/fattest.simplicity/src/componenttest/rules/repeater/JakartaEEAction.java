@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -59,6 +60,17 @@ public abstract class JakartaEEAction extends FeatureReplacementAction {
 
     static final String TRANSFORMER_RULES_APPEND_ROOT = System.getProperty("user.dir") + "/publish/rules/";
     static final String TRANSFORMER_RULES_ROOT = System.getProperty("user.dir") + "/autoFVT-templates/";
+
+    private boolean skipTransformation;
+
+    public boolean isSkipTransformation() {
+        return skipTransformation;
+    }
+
+    public JakartaEEAction setSkipTransformation(boolean skip) {
+        skipTransformation = skip;
+        return this;
+    }
 
     public static final boolean isEE9Active() {
         return RepeatTestFilter.isRepeatActionActive(EE9_ACTION_ID);
@@ -318,11 +330,16 @@ public abstract class JakartaEEAction extends FeatureReplacementAction {
         //If you are running a repeat test inside a repeat test
         //E.G. a microprofile repeat action inside an EE repeat action
         //the JakartaEEAction might not be at the top of the stack
-        actions.stream()
+        Optional<JakartaEEAction> jakartaAction = actions.stream()
                         .filter(a -> a instanceof JakartaEEAction)
                         .map(a -> (JakartaEEAction) a)
-                        .findFirst()
-                        .ifPresent(a -> a.transformApplication(appPath, newAppPath, null));
+                        .findFirst();
+        if (jakartaAction.isPresent()) {
+            JakartaEEAction action = jakartaAction.get();
+            if (!action.isSkipTransformation()) {
+                action.transformApplication(appPath, newAppPath, null);
+            }
+        }
     }
 
     abstract void transformApplication(Path appPath, Path newAppPath, Map<String, String> transformationRulesAppend);
@@ -350,13 +367,18 @@ public abstract class JakartaEEAction extends FeatureReplacementAction {
             System.setErr(ps);
         }
 
+        Throwable classLoadError = null;
         try {
             Class.forName("org.eclipse.transformer.cli.JakartaTransformerCLI");
         } catch (Throwable e) {
-            String mesg = "Unable to load the org.eclipse.transformer.cli.JakartaTransformerCLI class. " +
-                          "Did you include 'addRequiredLibraries.dependsOn addJakartaTransformer' in the FAT's build.gradle file?";
-            Log.error(c, m, e, mesg);
-            throw new RuntimeException(mesg, e);
+            classLoadError = e;
+        }
+        if (classLoadError != null || !new File(TRANSFORMER_RULES_ROOT).exists()) {
+            String mesg = "Unable to find the transformer rules OR failed to load the org.eclipse.transformer.cli.JakartaTransformerCLI class. \n" +
+                          "Did you include 'addRequiredLibraries.dependsOn addJakartaTransformer' in the FAT's build.gradle file?\n" +
+                          "If applications are already Jakarta-based, update to call setSkipTransformation(true) on your JakartaEEAction repeat action(s).";
+            Log.error(c, m, classLoadError, mesg);
+            throw new RuntimeException(mesg, classLoadError);
         }
 
         Path outputPath;

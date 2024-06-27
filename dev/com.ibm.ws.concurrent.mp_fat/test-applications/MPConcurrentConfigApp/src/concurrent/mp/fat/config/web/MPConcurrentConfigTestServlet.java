@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2021 IBM Corporation and others.
+ * Copyright (c) 2019,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.security.AccessController;
 import java.security.Principal;
 import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
@@ -52,8 +51,8 @@ import org.test.context.location.TestContextTypes;
 import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
 
-import componenttest.annotation.MaximumJavaLevel;
 import componenttest.app.FATServlet;
+import componenttest.app.FATUtilities;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/MPConcurrentConfigTestServlet")
@@ -397,19 +396,18 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
     /**
      * Security context propagation should include subjects that are created by the application.
      */
-    @MaximumJavaLevel(javaLevel = 22) //Subject.doAs fails in Java 23, Subject.runAs for replacement is only in Java 18+: https://bugs.openjdk.org/browse/JDK-8327134
     @Test
     public void testSecurityContextPropagatesSubjectCreatedByApp() throws Exception {
         Subject subject = new Subject();
         subject.setReadOnly();
         CompletableFuture<Subject> cf = Subject.doAs(subject, (PrivilegedExceptionAction<CompletableFuture<Subject>>) () -> {
             // verify that it works before we try propagating it
-            Subject s = Subject.getSubject(AccessController.getContext());
+            Subject s = FATUtilities.getCurrentSubject();
             assertTrue(s.isReadOnly());
             assertSame(subject, s);
 
             return securityContextExecutor.supplyAsync(() -> {
-                Subject sub = Subject.getSubject(AccessController.getContext());
+                Subject sub = FATUtilities.getCurrentSubject();
                 // assertTrue(sub.isReadOnly()); // TODO fails - Subject from AccessControlContext is null
                 return sub;
             });
@@ -435,7 +433,7 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
              // verify that it works before we try propagating it
              assertSame(subject, WSSubject.getRunAsSubject());
              assertSame(subject, WSSubject.getCallerSubject());
-             Subject s = Subject.getSubject(AccessController.getContext());
+             Subject s = FATUtilities.getCurrentSubject();
              assertTrue(s.isReadOnly());
              assertSame(subject, s);
 
@@ -447,7 +445,7 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
                      throw new CompletionException(x);
                  }
 
-                 Subject sub = Subject.getSubject(AccessController.getContext());
+                 Subject sub = FATUtilities.getCurrentSubject();
                  // assertTrue(sub.isReadOnly()); // TODO fails - Subject from AccessControlContext is null
                  return sub;
              });

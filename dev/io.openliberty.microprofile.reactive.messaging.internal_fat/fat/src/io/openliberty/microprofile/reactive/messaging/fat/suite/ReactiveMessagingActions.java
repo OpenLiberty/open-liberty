@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ public class ReactiveMessagingActions {
      * @return a RepeatTests instance
      */
     public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
-        return RepeatActions.repeat(server, otherFeatureSetsTestMode, ALL_RM_SETS_LIST, firstFeatureSet, Arrays.asList(otherFeatureSets));
+        return RepeatActions.repeat(server, otherFeatureSetsTestMode, ALL_RM_SETS_LIST, firstFeatureSet, Arrays.asList(otherFeatureSets), true);
     }
 
 }

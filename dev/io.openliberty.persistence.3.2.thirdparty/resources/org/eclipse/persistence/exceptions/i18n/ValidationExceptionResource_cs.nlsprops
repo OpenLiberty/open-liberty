@@ -613,7 +613,7 @@
 
 7345=Soubor {0} ur\u010den\u00fd pro XMLMetadataSource nebyl nalezen.
 
-7346=Nebyla poskytnuta vlastnost kontextu v\u00edce n\u00e1jemc\u016f [{0}]. Kdy\u017e je vlastnost jednotky perzistence (eclipselink.multitenant.tenants-share-emf) nastavena na hodnotu false, mus\u00ed b\u00fdt v\u0161echny vlastnosti kontextu v\u00edce n\u00e1jemc\u016f poskytnuty p\u0159edem. To lze prov\u00e9st p\u0159\u00edmo prost\u0159ednictv\u00edm definice jednotky perzistence nebo p\u0159ed\u00e1n\u00edm mapy vlastnost\u00ed obsahuj\u00edc\u00ed v\u0161echny vlastnosti kontextu v\u00edce n\u00e1jemc\u016f p\u0159i vol\u00e1n\u00ed vytvo\u0159en\u00ed rozhran\u00ed EntityManagerFactory.
+7346=Nebyla poskytnuta vlastnost kontextu v\u00edce n\u00e1jemc\u016f [{0}]. Je-li vlastnost jednotky perzistence ({1}) nastavena na hodnotu false, mus\u00ed b\u00fdt v\u0161echny vlastnosti v\u00edceklientsk\u00e9ho kontextu poskytnuty p\u0159edem. To lze prov\u00e9st p\u0159\u00edmo prost\u0159ednictv\u00edm definice jednotky perzistence nebo p\u0159ed\u00e1n\u00edm mapy vlastnost\u00ed obsahuj\u00edc\u00ed v\u0161echny vlastnosti kontextu v\u00edce n\u00e1jemc\u016f p\u0159i vol\u00e1n\u00ed vytvo\u0159en\u00ed rozhran\u00ed EntityManagerFactory.
 
 7347=T\u0159\u00edda [{0}] ur\u010duje metadata p\u0159eveden\u00ed \u00farovn\u011b typu bez ur\u010den\u00ed n\u00e1zvu atributu pro v\u0161echna z nich. N\u00e1zev atributu mus\u00ed b\u00fdt poskytnut\u00fd pro v\u0161echna metadata p\u0159eveden\u00ed \u00farovn\u011b typu, aby bylo zaru\u010deno jejich spr\u00e1vn\u00e9 pou\u017eit\u00ed na atribut supert\u0159\u00eddy.
 
@@ -633,9 +633,12 @@
 
 7356=Proceduru [{1}] nelze prov\u00e9st, proto\u017ee {0} aktu\u00e1ln\u011b nepodporuje v\u00edce v\u00fdstupn\u00edch parametr\u016f.
 
-7357=Adresa URL [{0}] pro prost\u0159edek [{1}] nepat\u0159\u00ed do platn\u00e9ho ko\u0159ene perzistence, jak je definov\u00e1n specifikac\u00ed JPA.
+7357=Adresa URL "[{0}]" pro prost\u0159edek "[{1}]" nepat\u0159\u00ed do platn\u00e9ho ko\u0159ene perzistence, jak je definov\u00e1no specifikac\u00ed Jakarta Persistence.
 
 7358=Byl zad\u00e1n nespr\u00e1vn\u00fd n\u00e1zev slu\u017eby ASM.
 
 7359=\u017d\u00e1dn\u00e1 slu\u017eba ASM nen\u00ed k dispozici.
+
+7360=Heslo datab\u00e1ze bylo \u0161ifrov\u00e1no zam\u00edtnut\u00fdm algoritmem.
+Reencrypt it by `passwordUpdate.sh ` z bal\u00edku eclipselink.zip .
 

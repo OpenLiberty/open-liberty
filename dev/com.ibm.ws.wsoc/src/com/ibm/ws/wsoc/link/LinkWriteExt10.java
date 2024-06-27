@@ -34,7 +34,6 @@ public class LinkWriteExt10 extends LinkWrite {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "calling onResult on SendHandler: " + wsocSendHandler);
                 }
-                LOG.info("SESSION TO USE " + connLink.getWsocSession());
                 wsocSendHandler.onResult(SendResultGood);
             }
         }

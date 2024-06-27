@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -113,6 +113,30 @@ public class MP5CompatibleTest {
     public void testMP50andEE8() throws Exception {
         try {
             server.setServerConfigurationFromFilePath("MP50andEE8.xml");
+            server.startServerAndValidate(true, //preClean
+                                          false, //cleanStart
+                                          false, //validateApps
+                                          false, //expectStartFailure
+                                          false); //validateTimedExit
+        } finally {
+            server.stopServer("CWWKF0033E: The singleton features .* and .* cannot be loaded at the same time",
+                              "(CWWKF0044E|CWWKF0047E): The .* and .* features cannot be loaded at the same time",
+                              "CWWKF0046W: The configuration includes an incompatible combination of features");
+        }
+    }
+
+    /**
+     * microProfile-5.0 plus jakartaee-10.0
+     * Should fail because microProfile-5.0 is not compatible with jakartaee-10.0
+     *
+     * @throws Exception
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    @ExpectedFFDC("java.lang.IllegalArgumentException")
+    public void testMP50andEE10() throws Exception {
+        try {
+            server.setServerConfigurationFromFilePath("MP50andEE10.xml");
             server.startServerAndValidate(true, //preClean
                                           false, //cleanStart
                                           false, //validateApps

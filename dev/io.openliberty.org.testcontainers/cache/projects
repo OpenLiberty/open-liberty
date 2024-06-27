@@ -120,6 +120,7 @@ com.ibm.ws.jpa.tests.spec20_jpa_3.0_fat
 com.ibm.ws.jpa.tests.spec20_jpa_3.1_fat
 com.ibm.ws.jpa.tests.spec20_jpa_3.2_fat
 com.ibm.ws.jsf.2.2_fat
+com.ibm.ws.jsf.2.2_fat.2
 com.ibm.ws.jsf.2.3_fat
 com.ibm.ws.jsfContainer_fat_2.3
 com.ibm.ws.logstash.collector_fat
@@ -178,6 +179,7 @@ io.openliberty.data.internal_fat
 io.openliberty.data.internal_fat_jpa
 io.openliberty.data.internal_fat_jpa_hibernate
 io.openliberty.data.internal_fat_nosql
+io.openliberty.http.monitor_fat
 io.openliberty.jakarta.data.1.0_fat_tck
 io.openliberty.jcache.internal_fat.hazelcast
 io.openliberty.jcache.internal_fat.infinispan

@@ -19,6 +19,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
@@ -71,26 +72,65 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 public final class FeatureRepository implements FeatureResolver.Repository {
     private static final TraceComponent tc = Tr.register(FeatureRepository.class);
 
+    private static void debug(String message, String parm) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, message, parm);
+        }
+    }
+
+    private static void debug(String message) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, message);
+        }
+    }
+
     private static final int FEATURE_CACHE_VERSION = 3;
 
     private static final String EMPTY = "";
 
     private static final boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
 
+    /**
+     * Answer the current cache version.
+     *
+     * That depends on whether versionless features are enabled, which
+     * depends on the beta flag. (Eventually, the increated version will
+     * be returned regardless.)
+     *
+     * Cache version 3 was in use pre-versionless features.
+     *
+     * Cache version 4 is in use with versionless features.
+     *
+     * Cache version 4 adds configured platforms and the value of the
+     * platform environment variable. Storage of these values is necessary
+     * to tell if the resolved feature configuration has changed between
+     * restarts and between configuration updates.
+     *
+     * @return The current cache version.
+     */
     public static int getCacheVersion() {
         return (isBeta ? (FEATURE_CACHE_VERSION + 1) : FEATURE_CACHE_VERSION);
     }
 
-    /**
-     * Whether or not any elements in the cache are stale:
-     * This is initially set by the constructor, after validating whether or not
-     * feature definition files have changed since last read.
-     */
-    private boolean isDirty;
+    private boolean isDirty; // Is the cache resource up to date.
 
-    /** Cache file is reachable/working */
+    /**
+     * Flag telling if no IO failures have occurred attempting
+     * to read or write the repository cache. Cleared if an IO
+     * failure occurs.
+     *
+     * Any single cache IO failure causes the caching function to
+     * be disabled.
+     *
+     * There is no way to reset this flag.
+     */
     private boolean cacheOk = true;
 
+    /**
+     * Binary store of the feature repository.
+     *
+     * May be null, in which case caching is not performed.
+     */
     private final WsResource cacheResource;
 
     private final BundleContext bundleContext;
@@ -123,12 +163,34 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     private Map<File, BadFeature> knownBadFeatureFiles;
     private List<SubsystemFeatureDefinitionImpl> autoFeatures;
 
+    private Map<String, SubsystemFeatureDefinitionImpl> compatibilityFeatures;
+
+    /**
+     * Test initializer. Create a feature repository with
+     * no cache resource and no bundle context.
+     *
+     * Mark the repository as dirty.
+     */
     public FeatureRepository() {
         cacheResource = null;
         isDirty = true;
         bundleContext = null;
     }
 
+    /**
+     * Standard initializer. Create a feature repository with
+     * the specified cache resource and bundle context.
+     *
+     * Mark the repository as clean.
+     *
+     * The repository is not yet usable: {@link #init()} must be
+     * invoked to complete the initialization of the repository.
+     *
+     * @param cacheResource The resource used to cache bundle
+     *                          information.
+     * @param bundleContext The bundle context which is active for
+     *                          the repository.
+     */
     public FeatureRepository(WsResource res, BundleContext bundleContext) {
         cacheResource = res;
         this.bundleContext = bundleContext;
@@ -153,42 +215,59 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     }
 
     /**
-     * This is called at the beginning of a provisioning operation. It re-initializes
-     * or refreshes the cache against what is known in the filesystem.
-     * <p>
-     * Note that for update operations (rather than initial provisioning), cachedInstalledFeatures will
-     * be pre-populated..
+     * Initialize the feature repository.
+     *
+     * Note if the repository is empty. That affects the
+     * cache read and affects whether resolution related
+     * fields are cleared.
+     *
+     * Read the cache, then read (or re-read) the feature
+     * manifests.
+     *
+     * Conditionally, clear the resolution related data.
      */
     public void init() {
         isDirty = false;
 
-        // If we haven't looked at anything from the cache or the filesystem, this is bootstrap time
+        // TODO: This presumes that there will always
+        //       be at one valid installed feature.
         boolean firstInit = installedFeatures.isEmpty();
 
-        autoFeatures = new ArrayList<SubsystemFeatureDefinitionImpl>();
-        knownGoodFeatureFiles = new HashMap<File, SubsystemFeatureDefinitionImpl>();
-        knownBadFeatureFiles = new HashMap<File, BadFeature>();
+        autoFeatures = new ArrayList<>();
+        knownGoodFeatureFiles = new HashMap<>();
+        knownBadFeatureFiles = new HashMap<>();
+        compatibilityFeatures = new HashMap<>();
 
-        // Read feature cache, this will only toss files that no longer exist
-        // stale will be marked true if feature definitions were discarded.
+        // Read the cache, then read the feature manifest.
+        // The installed features, the installed features
+        // associated data, and the resolved features are
+        // populated.
+
         readCache(firstInit);
-        // Now we need to go find / update the cache with anything new/interesting/different.
-        // This will happen at most twice...
         readFeatureManifests();
 
-        // If something was out of sync with the filesystem and this is the first pass,
-        // reset the resolved features list so we re-figure out what should be resolved.
+        // If something was out of sync with        // As a special case, if there was a change to the
+        // installed features, if this is the first initialization,
+        // then clear the resolved features data.
+
         if (isDirty && firstInit) {
-            // If stale, reset to empty list as we'll be rebuilding....
             resolvedFeatures = Collections.emptySet();
             configuredFeatures = Collections.emptySet();
+            // configurationError = false; // TODO?
             platforms = Collections.emptySet();
             platformEnvVar = null;
         }
     }
 
     /**
-     * Release all resources associated with the provisioning operation
+     * Strip provisioning data from the repository.
+     *
+     * First, write the cache to the repository.
+     *
+     * Then, strip installed features associated data.
+     * Leave just the installed features.
+     *
+     * Also leave resolved feature information.
      */
     public void dispose() {
         storeCache();
@@ -197,6 +276,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         autoFeatures = null;
         knownGoodFeatureFiles = null;
         knownBadFeatureFiles = null;
+        compatibilityFeatures = null;
 
         for (SubsystemFeatureDefinitionImpl def : installedFeatures.values()) {
             def.setProvisioningDetails(null);
@@ -222,7 +302,9 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         boolean configError = false;
         Set<String> cachedPlatforms = new HashSet<>();
         String envVar = null;
-        try (DataInputStream in = new DataInputStream(new BufferedInputStream(cacheResource.get()))) {
+        try (InputStream input = cacheResource.get();
+                        DataInputStream in = new DataInputStream(new BufferedInputStream(input))) {
+
             if (in.readInt() != getCacheVersion()) {
                 return; // not a version we understand; ignore the cache
             }
@@ -238,7 +320,9 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                 ImmutableAttributes installedAttr = installedFeature == null ? null : installedFeature.getImmutableAttributes();
 
                 if (!cachedAttr.featureFile.exists()) {
-                    // feature file no longer exists; throw away the value
+                    // The feature file of a cached feature no longer exists.
+                    // Mark that the repository as dirty, and, if stored,
+                    // remove the installed feature.
                     cachedAttr = null;
                 } else if (installedAttr != null) {
                     // we had this value already; use it
@@ -303,16 +387,16 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                 }
             }
 
-            if(isBeta){
+            if (isBeta) {
                 //read in previous configured platforms
                 int numPlatforms = in.readInt();
-                for(int i = 0; i < numPlatforms; i++){
+                for (int i = 0; i < numPlatforms; i++) {
                     cachedPlatforms.add(in.readUTF());
                 }
-                
+
                 //read previous platform environment variable from cache
                 boolean hasPlatformEnv = in.readBoolean();
-                if(hasPlatformEnv){
+                if (hasPlatformEnv) {
                     envVar = in.readUTF();
                 }
             }
@@ -349,10 +433,10 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                 if ((imAttrs != null) && (provDetails != null)) {
                     features.add(new SimpleEntry<>(imAttrs, provDetails));
                 } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Unable to write out " + entry.getFeatureName() + " to cache because the provisioning "
-                                     + "detail: " + provDetails + " or imAttrs: " + imAttrs + " is null");
-                    }
+                    debug("Unable to write out " + entry.getFeatureName() +
+                          " to cache because the provisioning detail: " + provDetails +
+                          " or imAttrs: " + imAttrs +
+                          " is null");
                 }
             }
             out.writeInt(getCacheVersion());
@@ -385,16 +469,22 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                 out.writeLong(entry.getValue().length);
             }
 
-            if(isBeta){
+            // Versionless features additions:
+            //
+            // [int] always: number of configured platforms
+            // [UF8] zero or more: configured platforms
+            // [bool] always: if the platform environment variable is non-null
+            // [UTF8] optional: the value of the platform environment variable
+
+            if (isBeta) {
                 out.writeInt(platforms.size());
-                for(String plat : platforms){
+                for (String plat : platforms) {
                     out.writeUTF(plat);
                 }
 
-                if(platformEnvVar == null){
+                if (platformEnvVar == null) {
                     out.writeBoolean(false);
-                }
-                else{
+                } else {
                     out.writeBoolean(true);
                     out.writeUTF(platformEnvVar);
                 }
@@ -562,9 +652,9 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     }
 
     /**
-     * Look over the collection of all the manifest files:
-     * a) see if any have changed (invalidate/replace the cache elements)
-     * b) add any we didn't know about before
+     * Update this repository with feature manifests located in the "lib/features"
+     * folder relative to the installation directory of all registered
+     * bundle repositories.
      */
     private void readFeatureManifests() {
         // For each bundle repository, we need to look at the manifest files
@@ -576,6 +666,27 @@ public final class FeatureRepository implements FeatureResolver.Repository {
 
                 // Let's look at all the manifest files in this dir
                 libFeatureDir.listFiles(new FileFilter() {
+                    /**
+                     * Process a file as a potential feature manifest file.
+                     *
+                     * Skip files which are not simple files or which are not manifest files.
+                     *
+                     * Don't process files which were previously unreadable, and which have
+                     * no changes: Keep the file as a 'bad' feature file.
+                     *
+                     * Don't process files which were previously read, and which have no changes.
+                     * Keep the file as a 'good' feature file and keep using the previously
+                     * read feature data.
+                     *
+                     * Always answer false. The {@link FileFilter#accept(File)} API is used
+                     * to shift processing to the iteration step. Effects of processing each
+                     * feature manifest are side effects of accepting the file.
+                     *
+                     * @param file   A candidate feature manifest file.
+                     *
+                     * @param holder A bundle repository holder used to process feature definitions.
+                     * @param file   A possible feature manifest.
+                     */
                     @Override
                     public boolean accept(File file) {
                         // Note: we always return false. We do the work as we see the files,
@@ -600,7 +711,8 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                             return false; // NEXT!
                         }
 
-                        // Pessimistic test first: Is this a file we know is bad?
+                        // Don't process a feature file which failed to read previously,
+                        // and which has no changes since the prior read.
                         BadFeature bad = knownBadFeatureFiles.get(file);
                         if (isFeatureStillBad(file, bad)) {
                             return false; // NEXT!
@@ -626,8 +738,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                                                                                              details);
 
                             if (!attr.isSupportedFeatureVersion()) {
-                                // this feature should be ignored (perhaps backlevel version)
-                                // add it to list of files to skip
+                                debug("Unsupported feature version [ " + file.getAbsolutePath() + " ]"); // TODO: NLS
                                 knownBadFeatureFiles.put(file, new BadFeature(file.lastModified(), file.length()));
                                 return false; // NEXT
                             }
@@ -639,11 +750,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                             updateMaps(def);
 
                         } catch (IOException e) {
-                            // TODO: NLS MESSAGE
-                            // We have no message for "An exception occurred reading the feature manifest"
-                            if (tc.isDebugEnabled()) {
-                                Tr.debug(tc, "An exception occurred while reading the feature manifest", e.toString());
-                            }
+                            debug("Exception reading feature manifest [ " + file.getAbsolutePath() + " ]", e.toString()); // TODO: NLS                            // TODO: NLS MESSAGE
                             knownBadFeatureFiles.put(file, new BadFeature(file.lastModified(), file.length()));
                         }
                         return false; // NEXT!
@@ -682,6 +789,11 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             publicFeatureNameToSymbolicName.remove(lowerFeature(cachedAttr.featureName));
             if (cachedAttr.isAutoFeature) {
                 autoFeatures.remove(def);
+            }
+
+            String platform = getCompatibilityPlatform(def, cachedAttr);
+            if (platform != null) {
+                removeCompatibilityFeature(platform);
             }
         }
 
@@ -731,6 +843,10 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         }
         if (def.getVisibility() == Visibility.PUBLIC) {
             publicFeatureNameToSymbolicName.put(lowerFeature(attr.symbolicName), attr.symbolicName);
+        } else if (def.getVisibility() == Visibility.PRIVATE) {
+            if ((attr.platforms != null) && !attr.platforms.isEmpty()) {
+                putCompatibilityFeature(def.getPlatformName(), def);
+            }
         }
 
         // populate mapping from known, commonly used alternative names to allow hints when the wrong feature
@@ -744,6 +860,17 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         if (attr.isAutoFeature) {
             autoFeatures.add(def);
         }
+
+        // TODO: In actual processing, auto features are always
+        //       private features.  However, in the feature test data,
+        //       there are auto features which are public, or which have
+        //       unspecified visibility.
+        //
+        //       Allowing public auto-features is problematic.  However,
+        //       to preserve prior behavior, they are still handled.
+        //
+        //       The TODO is to move this step into the PRIVATE visibility
+        //       case.  That would require changes to test data.
     }
 
     private void cacheWarning(IOException ioe) {
@@ -761,11 +888,11 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         return platforms;
     }
 
-    public void setPlatformEnvVar(String platformEnvVar){
+    public void setPlatformEnvVar(String platformEnvVar) {
         this.platformEnvVar = consumeEmpty(platformEnvVar);
     }
 
-    public String getPlatformEnvVar(){
+    public String getPlatformEnvVar() {
         return platformEnvVar;
     }
 
@@ -780,11 +907,22 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     }
 
     /**
-     * Change the active list of resolved features
+     * Set the configured and resolved features.
      *
-     * @param newResolvedFeatures new set of resolved features. Replaces the previous set.
+     * Store the features using new, un-modifiable, storage. Do not
+     * use references to the parameter feature sets.
+     *
+     * @param newResolvedFeatures    Symbolic names of resolved features.
+     * @param newConfiguredFeatures  Symbolic names of configured features.
+     * @param configurationError     True or false, telling if any errors occured
+     *                                   during feature resolution.
+     * @param newConfiguredPlatforms Newly configured platforms.
+     * @param platformEnv            New platform environment value. (This is not expected
+     *                                   to be different than the current value.)
      */
-    public void setResolvedFeatures(Set<String> newResolvedFeatures, Set<String> newConfiguredFeatures, boolean configurationError, Set<String> newConfiguredPlatforms, String platformEnv) {
+    public void setResolvedFeatures(Set<String> newResolvedFeatures,
+                                    Set<String> newConfiguredFeatures, boolean configurationError,
+                                    Set<String> newConfiguredPlatforms, String platformEnv) {
         Set<String> current = resolvedFeatures;
         if (!current.equals(newResolvedFeatures)) {
             isDirty = true;
@@ -805,7 +943,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             configuredFeatures = Collections.unmodifiableSet(new HashSet<String>(newConfiguredFeatures));
         }
 
-        if(isBeta){
+        if (isBeta) {
             current = platforms;
             if (!current.equals(newConfiguredPlatforms)) {
                 isDirty = true;
@@ -815,7 +953,6 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             } else {
                 platforms = Collections.unmodifiableSet(new HashSet<String>(newConfiguredPlatforms));
             }
-    
             platformEnvVar = consumeEmpty(platformEnv);
         }
 
@@ -830,6 +967,16 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         return configuredFeatures;
     }
 
+    /**
+     * Tell if there was an error when the feature were resolved.
+     *
+     * (The meaning is in the sense of "the configured features are
+     * not valid" which is to say "an error occurred when resolving
+     * the configured features".)
+     *
+     * @return True or false telling if there was a feature resolution
+     *         error.
+     */
     public boolean hasConfigurationError() {
         return configurationError;
     }
@@ -858,6 +1005,15 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         return !isDirty && newFeatureSet.equals(resolvedFeatures);
     }
 
+    /**
+     * Answer the collection of auto-features.
+     *
+     * These are a distinguished category of private features. These
+     * features are provisioned conditionally based on the resolution of
+     * other features.
+     *
+     * @return The collection of auto-features.
+     */
     @Override
     public Collection<ProvisioningFeatureDefinition> getAutoFeatures() {
         if (autoFeatures == null) {
@@ -865,6 +1021,61 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         }
 
         return asProvisioningFeatureDefinitionCollection(Collections.unmodifiableCollection(autoFeatures));
+    }
+
+    /**
+     * Answer the compatibility platform from a private
+     * versionless compatibility feature.
+     *
+     * Such features are the feature analogues to platform values. When a platform
+     * is specified, either through a platform element, or through an environment
+     * variable, the platform is matched to a feature definition based on the
+     * platform of the feature.
+     *
+     * This use of feature platforms is specific to private features. Only private
+     * features which are compatibility features can have a platform name.
+     *
+     * At most one feature which is a versionless compatibility feature may
+     * have a particular platform value. If more than one has the same platform
+     * value, the preconditions of {@link #removeFromMaps} and {@link #updateMaps}
+     * are not satisfied and the compatibility features table won't be accurately
+     * maintained.
+     *
+     * @param def  A feature definition which may be a compatibility feature.
+     * @param attr The attributes of the feature.
+     *
+     * @return Null, if the feature is not a versionless compatibility feature.
+     *         The platform name (which includes a version!) if the feature is a
+     *         compatibility feature.
+     */
+    public static String getCompatibilityPlatform(SubsystemFeatureDefinitionImpl def, ImmutableAttributes attr) {
+        if (def.getVisibility() != Visibility.PRIVATE) {
+            return null;
+        } else if ((attr.platforms == null) || attr.platforms.isEmpty()) {
+            return null;
+        } else {
+            return def.getPlatformName();
+        }
+    }
+
+    /**
+     * Answer the compatibility feature that has a specified platform name.
+     *
+     * @param platformName A platform of a compatibility feature.
+     *
+     * @return The compatibility feature that has the specified platform name.
+     */
+    // @Override
+    public ProvisioningFeatureDefinition getCompatibilityFeature(String platformName) {
+        return compatibilityFeatures.get(lowerFeature(platformName));
+    }
+
+    private void putCompatibilityFeature(String platformName, SubsystemFeatureDefinitionImpl featureDef) {
+        compatibilityFeatures.put(lowerFeature(platformName), featureDef);
+    }
+
+    private void removeCompatibilityFeature(String platformName) {
+        compatibilityFeatures.remove(lowerFeature(platformName));
     }
 
     @SuppressWarnings("unchecked")
@@ -943,17 +1154,20 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     }
 
     /**
-     * Get feature name with product extension unchanged and the
-     * feature name converted to lower case.
+     * Convert a feature name to a canonical, lower case value.
      *
-     * note: feature type in featureLocations is case specific.
-     * In order for the bundles to be found, the case of the
-     * product extension in the feature name needs to be preserved.
-     * If it is not, an incorrect bundle repository type will be put into
-     * the feature definition when it is loaded from the feature cache.
+     * The feature name may include a product extension prefix value.
+     * Do not convert the prefix value.
      *
-     * @param inFeature feature name
-     * @return String product extension unchanged and the feature name converted to lower case.
+     * (Feature type in featureLocations is case specific.
+     * For the bundles to be found, the case of the product extension
+     * in the feature name must be preserved. Otherwise, an incorrect
+     * bundle repository type may be put into the feature definition
+     * when it is loaded from the feature cache.)
+     *
+     * @param feature A feature name.
+     *
+     * @return The feature name with the suffix converted to lower case.
      */
     @Trivial
     public static String lowerFeature(String inFeature) {
@@ -972,7 +1186,14 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         }
     }
 
-    static class BadFeature {
+    /**
+     * Information for a feature file which could not be read.
+     *
+     * TODO: Rename this to 'FileSignature'. The information is
+     * last modified and length values of a file. The information
+     * is used to tell if a file has changed.
+     */
+    private static class BadFeature {
         final long lastModified;
         final long length;
 
@@ -982,6 +1203,20 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         }
     }
 
+    /**
+     * Register all of the resolved features as service factories.
+     *
+     * Start by unregistering any previously registered features which
+     * are no longer resolved.
+     *
+     * Finish by registering all resolved features. Update any previously
+     * resolved features which are still resolved. Do a new registration
+     * of any newly resolved feature.
+     *
+     * Do nothing if the bundle context is null, which indicates that
+     * the repository is being used outside of a running server image.
+     * (For example, the repository may be used in a unit test environment.)
+     */
     public void updateServices() {
         if (bundleContext == null) {
             // do nothing; not really in a running system (unit tests etc.)
@@ -1018,8 +1253,14 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     private static String FEATURE_SERVICE_SYMBOLIC_NAME = "osgi.symbolicName";
     private static String FEATURE_SERVICE_VERSION = "osgi.version";
     private static String FEATURE_SERVICE_CATEGORY = "osgi.category";
+    private static final String FEATURE_SUBSYSTEM_CATEGORY = "Subsystem-Category";
 
     /**
+     * Service factory for a liberty feature.
+     *
+     * Each feature definition is also a liberty feature, meaning feature definitions and
+     * liberty features are the same objects.
+     *
      * This is registered as a ServiceFactory, so that each bundle requesting an instance of the
      * Liberty feature makes a separate request for the service. This allows us to maintain a usage count.
      * When the usage count is back to zero, we can indicate that the details aren't needed anymore
@@ -1030,6 +1271,19 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         private ServiceRegistration<LibertyFeature> registration;
         private volatile SubsystemFeatureDefinitionImpl _featureDef;
 
+        /**
+         * Ensure that the provisioning details of the associated feature
+         * definition are assigned. Read them from the feature manifest
+         * file if necessary.
+         *
+         * Increase the feature definition use count: See
+         * {@link SubsystemFeatureDefinitionImpl#setProvisioningDetails}.
+         *
+         * @param bundle          The active bundle. Currently unused.
+         * @param useRegistration The service registration. Currently unused.
+         *
+         * @return The associated feature definition (as a liberty feature).
+         */
         @Override
         public LibertyFeature getService(Bundle bundle, ServiceRegistration<LibertyFeature> registration) {
             SubsystemFeatureDefinitionImpl current = _featureDef;
@@ -1039,9 +1293,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                     details = new ProvisioningDetails(current.getImmutableAttributes().featureFile, null);
                 } catch (IOException e) {
                     // Unlikely, as this feature manifest has been read before.
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "An exception occurred while reading the feature manifest", e.toString());
-                    }
+                    debug("An exception occurred while reading the feature manifest", e.toString());
                 }
             }
             current.setProvisioningDetails(details);
@@ -1049,21 +1301,67 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             return current;
         }
 
+        /**
+         * Clear the provisioning details of the associated feature definition.
+         *
+         * Decrease the feature definition use count: See
+         * {@link SubsystemFeatureDefinitionImpl#setProvisioningDetails}.
+         *
+         * @param bundle          The active bundle. Currently unused.
+         * @param useRegistration The service registration. Currently unused.
+         * @param service         The feature service. Usually the same as the feature
+         *                            definition. Currently unused.
+         */
         @Override
         public void ungetService(Bundle bundle, ServiceRegistration<LibertyFeature> registration, LibertyFeature service) {
             _featureDef.setProvisioningDetails(null);
         }
 
+        /**
+         * Register this service factory with the bundle context
+         * using the generated service properties. Record the
+         * registration which is obtained.
+         *
+         * @param bundleContext The bundle context with which to register
+         *                          this service factory.
+         */
         void registerService(BundleContext bundleContext) {
             registration = bundleContext.registerService(LibertyFeature.class, this, serviceProps);
         }
 
+        /**
+         * Unregister this service factory.
+         *
+         * Do nothing if this service factory has no recorded registration.
+         */
         void unregisterService() {
             if (registration != null) {
                 registration.unregister();
             }
         }
 
+        /**
+         * Associate this service factory with a feature definition.
+         *
+         * Do nothing if the feature definition is the same as previously associated.
+         *
+         * A service factory is created with empty service properties, a null feature
+         * definition, and a null registration.
+         *
+         * The initial invocation of update will detect a null associated feature
+         * definition and will create the association.
+         *
+         * Subsequent invocations test the new feature definition against the
+         * previously associated feature definition. If these are the same object,
+         * no update is performed. Otherwise, any prior registration is cleared,
+         * the service factory is associated with the new feature definition, and
+         * the service is re-registered to the bundle context.
+         *
+         * @param featureDef    A feature definition to associate with this service
+         *                          factory.
+         * @param bundleContext Bundle context with which to register this service
+         *                          factory.
+         */
         void update(SubsystemFeatureDefinitionImpl featureDef, BundleContext bundleContext) {
             if (featureDef == _featureDef) {
                 // nothing to do
@@ -1079,12 +1377,19 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             registerService(bundleContext);
         }
 
+        /**
+         * Store feature values into the service properties.
+         *
+         * Store the feature name, the feature symbolic name, the feature
+         * version, and the feature subsystem category value (from the feature
+         * header).
+         */
         private void getServiceProps() {
             serviceProps.clear();
             serviceProps.put(FEATURE_SERVICE_NAME, _featureDef.getFeatureName());
             serviceProps.put(FEATURE_SERVICE_SYMBOLIC_NAME, _featureDef.getSymbolicName());
             serviceProps.put(FEATURE_SERVICE_VERSION, _featureDef.getVersion());
-            String category = _featureDef.getHeader("Subsystem-Category");
+            String category = _featureDef.getHeader(FEATURE_SUBSYSTEM_CATEGORY);
             if (category != null) {
                 serviceProps.put(FEATURE_SERVICE_CATEGORY, category.split("\\s*,\\s*"));
             }
@@ -1106,18 +1411,89 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     }
 
     /**
-     * Remove an resolved feature from the list. This is intended to be used to remove features that failed during
-     * bundle resolution because of java version restrictions.
+     * Remove a resolved feature. Mark that there is a feature resolution
+     * error.
      *
-     * It will also set configurationError to true, as this should only be called in an error scenario.
+     * This is intended to be used to remove features that failed during
+     * resolution because of java version restrictions.
      *
-     * @param feature The feature to remove
+     * @param feature The symbolic name of a feature which is to be removed
+     *                    as a resolved feature.
      */
     public void removeResolvedFeature(String feature) {
         this.configurationError = true;
         HashSet<String> newResolvedFeatures = new HashSet<>(resolvedFeatures);
         if (newResolvedFeatures.remove(feature)) {
             resolvedFeatures = newResolvedFeatures.isEmpty() ? Collections.<String> emptySet() : Collections.unmodifiableSet(newResolvedFeatures);
+        }
+    }
+
+    /**
+     * Tell if the configured features have changed.
+     *
+     * Always answer true if the configured features are dirty, or if there
+     * was an error performing feature cache IO.
+     *
+     * If versionless features are enabled, tell if there are changes to
+     * either the configured platforms or to the value of platform environment
+     * variable.
+     *
+     * Tell if there are changes to the configured features, or if any of
+     * the configured features is not present in the repository.
+     *
+     * This is used between server restarts and during configuration updates.
+     *
+     * During a server restart, all of the values might have changed.
+     *
+     * During a configuration update, the value of the platform environment
+     * variable cannot change.
+     *
+     * @param newConfiguredFeatures     The new configured features.
+     * @param newConfiguredPlatforms    The new configured platforms.
+     * @param newPlatformEnvironmentVar The new value of the platform environment
+     *                                      variable.
+     *
+     * @return True or false telling if the values have changed, or if the
+     *         repository is dirty, or has a resolution error.
+     */
+    public boolean areConfiguredFeaturesGood(Set<String> newConfiguredFeatures,
+                                             Set<String> newConfiguredPlatforms,
+                                             String newPlatformEnvironmentVar) {
+
+        if (isDirty() || hasConfigurationError()) {
+            return false;
+        }
+
+        if (isBeta) {
+            if (!getPlatforms().equals(newConfiguredPlatforms)) {
+                return false;
+            }
+            if (!equals(getPlatformEnvVar(), newPlatformEnvironmentVar)) {
+                return false;
+            }
+        }
+        if (!getConfiguredFeatures().equals(newConfiguredFeatures)) {
+            return false;
+        }
+
+        for (String resolvedFeature : getResolvedFeatures()) {
+            if (getFeature(resolvedFeature) == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Trivial
+    private static boolean equals(String s0, String s1) {
+        if (s0 == null) {
+            return (s1 == null);
+        } else {
+            if (s1 == null) {
+                return false;
+            } else {
+                return s0.equals(s1);
+            }
         }
     }
 }

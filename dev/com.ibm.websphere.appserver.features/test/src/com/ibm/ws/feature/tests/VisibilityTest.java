@@ -413,18 +413,6 @@ public class VisibilityTest {
                         break;
                     }
                 }
-            } else if (baseFeatureName.equals("com.ibm.websphere.appserver.org.eclipse.persistence-")) {
-                // The 2.6 and 2.7 versions are used by the jpa-2.6 and 2.7 features, but in 3.0 and later features it is not used by the persistence features.
-                // As such, the 2.6 and 2.7 features are in core and the 3.0 and later versions are in base because they are only used by base features.
-                // If future versions end up being needed by core features, this test will fail and need to be updated.
-                for (Iterator<FeatureInfo> it = featureInfos.iterator(); it.hasNext();) {
-                    FeatureInfo featureInfo = it.next();
-                    if ((featureInfo.getName().equals("com.ibm.websphere.appserver.org.eclipse.persistence-2.6") ||
-                         featureInfo.getName().equals("com.ibm.websphere.appserver.org.eclipse.persistence-2.7"))
-                        && featureInfo.getEdition().equals("core")) {
-                        it.remove();
-                    }
-                }
             } else if (baseFeatureName.equals("com.ibm.websphere.appserver.passwordUtilities-")) {
                 // The 1.0 feature depended on a jca / connectors feature which is in base.
                 // When 1.1 was created, the dependency on jca / connectors was removed to allow it to move to core.
@@ -817,12 +805,8 @@ public class VisibilityTest {
         allowedToleratedFeatures.add("com.ibm.websphere.appserver.appSecurity-");
         allowedToleratedFeatures.add("com.ibm.websphere.appserver.jdbc-");
 
-        // data-1.0 will be updated to not tolerate EE 10 features when it ships with EE 11.0 and
-        // can depend on EE 11 features because they are also in beta.
         // restfulWSLogging-3.0 hopefully never will see the light of day and will be done differently.
         Set<String> expectedFailingFeatures = new HashSet<>();
-        expectedFailingFeatures.add("io.openliberty.data-1.0");
-        expectedFailingFeatures.add("io.openliberty.dataContainer-1.0");
         expectedFailingFeatures.add("io.openliberty.restfulWSLogging-3.0");
         Map<String, String> visibilityMap = new HashMap<>();
         for (Entry<String, FeatureInfo> entry : features.entrySet()) {

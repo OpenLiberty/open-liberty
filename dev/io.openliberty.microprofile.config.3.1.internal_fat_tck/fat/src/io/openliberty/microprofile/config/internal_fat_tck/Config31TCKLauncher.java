@@ -14,6 +14,7 @@ package io.openliberty.microprofile.config.internal_fat_tck;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -23,8 +24,10 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import io.openliberty.microprofile.config.fat.repeat.ConfigRepeatActions;
 import componenttest.topology.utils.tck.TCKRunner;
 
 /**
@@ -37,6 +40,9 @@ import componenttest.topology.utils.tck.TCKRunner;
 public class Config31TCKLauncher {
 
     private static final String SERVER_NAME = "Config31TCKServer";
+
+    @ClassRule
+    public static RepeatTests r = ConfigRepeatActions.repeatDefault31(SERVER_NAME);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

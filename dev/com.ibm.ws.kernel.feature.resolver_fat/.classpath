@@ -7,5 +7,10 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.feature"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/fattest.simplicity"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.feature.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.feature.resolver"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

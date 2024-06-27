@@ -24,6 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
 import java.sql.Statement;
+import java.time.Instant;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -117,10 +118,11 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
     private PreparedStatement _claimPeerUpdateStmt;
     private ResultSet _claimPeerLockingRS;
     private boolean _noLockOnLeaseScans;
+    private String _localRecoveryIdentity;
 
     public SQLSharedServerLeaseLog(CustomLogProperties logProperties) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "SQLSharedServerStatusLog", logProperties, this);
+            Tr.entry(tc, "SQLSharedServerLeaseLog", logProperties, this);
 
         // Cache the supplied information
         _customLogProperties = logProperties;
@@ -142,7 +144,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
             Tr.debug(tc, "The _noLockOnLeaseScans flag has been set to: " + _noLockOnLeaseScans);
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "SQLSharedServerStatusLog", this);
+            Tr.exit(tc, "SQLSharedServerLeaseLog", this);
     }
 
     @FFDCIgnore({ SQLException.class, SQLRecoverableException.class })
@@ -400,6 +402,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
     public synchronized void updateServerLease(String recoveryIdentity, String recoveryGroup, boolean isServerStartup) throws Exception {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "updateServerLease", recoveryIdentity, recoveryGroup, isServerStartup, this);
+
         boolean updateSuccess = false;
         Connection conn = null;
         int initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
@@ -414,9 +417,6 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 Tr.exit(tc, "updateServerLease", "server stopping");
             return;
         }
-
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "Work with recoveryIdentity - ", recoveryIdentity);
 
         // Reset a null recoveryGroup to an empty string
         if (recoveryGroup == null)
@@ -754,19 +754,24 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
         if (tc.isEntryEnabled())
             Tr.entry(tc, "insertNewLease", this);
 
+        if (_localRecoveryIdentity == null) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Setting recoveryIdentity for this log: {0}", recoveryIdentity);
+            _localRecoveryIdentity = recoveryIdentity;
+        }
+
         String insertString = "INSERT INTO " +
                               _leaseTableName +
                               " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
                               " VALUES (?,?,?,?)";
 
-        PreparedStatement specStatement = null;
-        long fir1 = System.currentTimeMillis();
+        long fir1 = Instant.now().toEpochMilli();
 
         Tr.audit(tc, "WTRN0108I: Insert New Lease for server with recovery identity " + recoveryIdentity);
-        try {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Need to setup new row using - " + insertString + ", and time: " + Utils.traceTime(fir1));
-            specStatement = conn.prepareStatement(insertString);
+
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "Need to setup new row using - " + insertString + ", and time: " + Utils.traceTime(fir1));
+        try (PreparedStatement specStatement = conn.prepareStatement(insertString)) {
             specStatement.setString(1, recoveryIdentity);
             specStatement.setString(2, recoveryGroup);
             // Overload the LEASE_OWNER column with both the owner and the BackendURL, separated by a comma
@@ -780,10 +785,8 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
 
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Have inserted Server row with return: " + ret);
-        } finally {
-            if (specStatement != null && !specStatement.isClosed())
-                specStatement.close();
         }
+
         if (tc.isEntryEnabled())
             Tr.exit(tc, "insertNewLease");
     }
@@ -1298,17 +1301,44 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
 
         _deleteStmt = conn.createStatement();
 
-        String deleteString = "DELETE FROM " + _leaseTableName +
-                              (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
-                              " WHERE SERVER_IDENTITY='" + recoveryIdentity + "'";
+        final String queryString = "SELECT LEASE_OWNER FROM " + _leaseTableName
+                                   + (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "")
+                                   + " WHERE SERVER_IDENTITY='" + recoveryIdentity + "'"
+                                   + ((_isSQLServer) ? "" : " FOR UPDATE");
+
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "delete server lease for " + recoveryIdentity + "using string " + deleteString);
+            Tr.debug(tc, "Locking lease for delete: {0}", queryString);
 
-        int ret = _deleteStmt.executeUpdate(deleteString);
+        try (ResultSet rs = _deleteStmt.executeQuery(queryString)) {
+            while (rs.next()) {
+                final String leaseOwner = rs.getString(1);
 
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Locked lease owner: {0}", leaseOwner);
+
+                // Check we're still the lease owner
+                if (leaseOwner.startsWith(_localRecoveryIdentity + ",")) {
+                    final String deleteString = "DELETE FROM " + _leaseTableName +
+                                                (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "")
+                                                + " WHERE SERVER_IDENTITY='" + recoveryIdentity + "'";
+
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Deleting lease with: {0}", deleteString);
+
+                    final int ret = _deleteStmt.executeUpdate(deleteString);
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "deleteLeaseFromTable", ret);
+                    return ret;
+                }
+
+                break; // should only be one anyway (SERVER_IDENTITY is UNIQUE)
+            }
+        }
+
+        // We don't own this lease any more.
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "deleteLeaseFromTable", ret);
-        return ret;
+            Tr.exit(tc, "deleteLeaseFromTable");
+        return 0;
     }
 
     /**
@@ -1324,6 +1354,14 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
     public synchronized boolean claimPeerLeaseForRecovery(String recoveryIdentityToRecover, String myRecoveryIdentity, LeaseInfo leaseInfo) throws Exception {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "claimPeerLeaseForRecovery", recoveryIdentityToRecover, myRecoveryIdentity, leaseInfo, this);
+
+        if (_localRecoveryIdentity == null) {
+            _localRecoveryIdentity = myRecoveryIdentity;
+        } else {
+            if (tc.isDebugEnabled())
+                if (!_localRecoveryIdentity.equals(myRecoveryIdentity))
+                    Tr.debug(tc, "Existing recoveryId: {0}, this recoveryId: {1}!", _localRecoveryIdentity, myRecoveryIdentity);
+        }
 
         boolean peerClaimed = false;
         boolean peerClaimSuccess = false;

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.internal;
 
@@ -39,8 +36,8 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ServerStartedPhase2;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
-import io.openliberty.microprofile.openapi20.internal.merge.MergeProcessor;
 import io.openliberty.microprofile.openapi20.internal.services.ApplicationRegistry;
+import io.openliberty.microprofile.openapi20.internal.services.MergeProcessor;
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
 import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
@@ -65,6 +62,9 @@ public class ApplicationRegistryImpl implements ApplicationRegistry {
 
     @Reference
     private MergeDisabledAlerter mergeDisabledAlerter;
+
+    @Reference
+    private MergeProcessor mergeProcessor;
 
     // Thread safety: access to these fields must be synchronized on this
     private final Map<String, ApplicationRecord> applications = new LinkedHashMap<>(); // Linked map retains order in which applications were added
@@ -229,7 +229,7 @@ public class ApplicationRegistryImpl implements ApplicationRegistry {
             } else if (providers.size() == 1) {
                 result = providers.get(0);
             } else {
-                OpenAPIProvider mergedProvider = MergeProcessor.mergeDocuments(providers);
+                OpenAPIProvider mergedProvider = mergeProcessor.mergeDocuments(providers);
                 if (!mergedProvider.getMergeProblems().isEmpty()) {
                     StringBuilder sb = new StringBuilder();
                     for (String problem : mergedProvider.getMergeProblems()) {

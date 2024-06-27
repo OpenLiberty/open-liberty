@@ -20,9 +20,9 @@ import java.util.Set;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult;
-import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
-import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent.Severity;
+import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult;
+import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult.ValidationEvent;
+import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult.ValidationEvent.Severity;
 import io.openliberty.microprofile.openapi20.internal.validation.ValidationHelper;
 
 public class TestValidationHelper implements ValidationHelper {

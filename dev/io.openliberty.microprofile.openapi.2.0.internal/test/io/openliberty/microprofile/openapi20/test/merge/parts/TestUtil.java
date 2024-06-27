@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.test.merge.parts;
 
@@ -20,7 +17,8 @@ import java.util.List;
 
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 
-import io.openliberty.microprofile.openapi20.internal.merge.MergeProcessor;
+import io.openliberty.microprofile.openapi20.internal.merge.MergeProcessorImpl;
+import io.openliberty.microprofile.openapi20.internal.services.MergeProcessor;
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
 
 public class TestUtil {
@@ -47,7 +45,7 @@ public class TestUtil {
     }
 
     /**
-     * Merge several OpenAPI models using {@link MergeProcessor}
+     * Merge several OpenAPI models using {@link MergeProcessorImpl}
      *
      * @param docs the openapi models
      * @return the merged model
@@ -61,14 +59,25 @@ public class TestUtil {
     }
 
     /**
-     * Merge several OpenAPI providers using {@link MergeProcessor}
+     * Merge several OpenAPI providers using {@link MergeProcessorImpl}
      *
      * @param providers the providers
      * @return the merged model
      */
     public static OpenAPI merge(List<OpenAPIProvider> providers) {
-        OpenAPIProvider merged = MergeProcessor.mergeDocuments(providers);
+        OpenAPIProvider merged = getMergeProcessor().mergeDocuments(providers);
         assertThat("Merge problems", merged.getMergeProblems(), empty());
         return merged.getModel();
     }
+
+    /**
+     * Create a {@link MergeProcessorImpl} and initialize references
+     *
+     * @return the MergeProcessor under test
+     */
+    public static MergeProcessor getMergeProcessor() {
+        MergeProcessorImpl mergeProcessor = new MergeProcessorImpl();
+        return mergeProcessor;
+    }
+
 }

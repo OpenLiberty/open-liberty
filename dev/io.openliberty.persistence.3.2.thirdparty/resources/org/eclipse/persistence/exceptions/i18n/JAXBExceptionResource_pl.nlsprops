@@ -85,7 +85,7 @@
 
 50028=Nie mo\u017cna utworzy\u0107 nowej instancji obiektu [{0}].
 
-50029=Klasa [{0}] podana w adnotacji XmlCustomizer nie implementuje interfejsu org.eclipse.persistence.config.DescriptorCustomizer.
+50029=Klasa [{0}] udost\u0119pniona w klasie XmlCustomizer nie implementuje interfejsu org.eclipse.persistence.descriptors.DescriptorCustomizer .
 
 50030=Podj\u0119to pr\u00f3b\u0119 ustawienia wi\u0119cej ni\u017c jednej w\u0142a\u015bciwo\u015bci XmlID dla klasy [{1}].  W\u0142a\u015bciwo\u015bci [{0}] nie mo\u017cna ustawi\u0107 jako XmlID, poniewa\u017c w\u0142a\u015bciwo\u015b\u0107 [{2}] jest ju\u017c ustawiona jako XmlID.
 

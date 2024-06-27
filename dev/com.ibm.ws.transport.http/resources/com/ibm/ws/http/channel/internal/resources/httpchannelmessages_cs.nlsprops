@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2002, 2022 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #
 #COMPONENTPREFIX CWWKT
@@ -210,3 +207,8 @@ log.rollover.start.time.format.warning.useraction=Ujist\u011bte se, \u017ee hodn
 log.rollover.interval.too.short.warning=CWWKT0046W: Interval p\u0159eto\u010den\u00ed protokolu nesm\u00ed b\u00fdt krat\u0161\u00ed ne\u017e 1 minuta. Je-li uvedena hodnota men\u0161\u00ed ne\u017e 1 minuta, interval p\u0159eto\u010den\u00ed protokolu je nastaven na v\u00fdchoz\u00ed hodnotu 1 den.
 log.rollover.interval.too.short.warning.explanation=Interval p\u0159eto\u010den\u00ed protokolu nesm\u00ed b\u00fdt krat\u0161\u00ed ne\u017e 1 minuta.
 log.rollover.interval.too.short.warning.useraction=Zadejte interval p\u0159eto\u010den\u00ed protokolu, kter\u00fd se rovn\u00e1 nebo je del\u0161\u00ed ne\u017e 1 minuta.
+
+#only if the Set-Cookie is added with the response set/addHeader API.  The best practice is to use Cookie() API which already has this check and uses its own message.
+cookie.attribute.name.invalid=CWWKT0047E: Atribut souboru cookie [{0}] obsahuje neplatn\u00fd znak.
+cookie.attribute.name.invalid.explanation=N\u00e1zev atributu souboru cookie nesm\u00ed obsahovat \u017e\u00e1dn\u00fd speci\u00e1ln\u00ed znak [ () < > @,;: \\/ []? = {}].
+cookie.attribute.name.invalid.useraction=Opravte n\u00e1zev atributu souboru cookie tak, aby nepou\u017e\u00edval \u017e\u00e1dn\u00fd speci\u00e1ln\u00ed znak.

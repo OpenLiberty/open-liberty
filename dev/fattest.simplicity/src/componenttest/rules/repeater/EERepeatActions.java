@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -83,7 +83,28 @@ public class EERepeatActions {
      * @return                  a RepeatTests instance
      */
     public static RepeatTests repeat(String server, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
-        return repeat(server, TestMode.FULL, firstFeatureSet, otherFeatureSets);
+        return repeat(server, TestMode.FULL, false, firstFeatureSet, otherFeatureSets);
+    }
+
+    /**
+     * Get a RepeatTests instance for the given FeatureSets. The first FeatureSet will be run in LITE mode. The others will be run in FULL.
+     * Usage: The following example will repeat the tests using EE versions 8, 9 and 10 (8 in LITE mode, the others in FULL).
+     *
+     * <pre>
+     * <code>
+     * &#64;ClassRule
+     * public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE8, EERepeatActions.EE9, EERepeatActions.EE10);
+     * </code>
+     * </pre>
+     *
+     * @param  server             The server to repeat on
+     * @param  skipTransformation Skip transformation for actions
+     * @param  firstFeatureSet    The first FeatureSet
+     * @param  otherFeatureSets   The other FeatureSets
+     * @return                    a RepeatTests instance
+     */
+    public static RepeatTests repeat(String server, boolean skipTransformation, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
+        return repeat(server, TestMode.FULL, skipTransformation, firstFeatureSet, otherFeatureSets);
     }
 
     /**
@@ -100,12 +121,13 @@ public class EERepeatActions {
      *
      * @param  server                   The server to repeat on
      * @param  otherFeatureSetsTestMode The test mode to run the otherFeatureSets
+     * @param  skipTransformation       Skip transformation for actions
      * @param  firstFeatureSet          The first FeatureSet to repeat with. This is run in LITE mode.
      * @param  otherFeatureSets         The other FeatureSets to repeat with. These are in the mode specified by otherFeatureSetsTestMode
      * @return                          A RepeatTests instance
      */
-    public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
-        return RepeatActions.repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, Arrays.asList(otherFeatureSets));
+    public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, boolean skipTransformation, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
+        return RepeatActions.repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, Arrays.asList(otherFeatureSets), skipTransformation);
     }
 
 }

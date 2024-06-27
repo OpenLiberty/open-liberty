@@ -30,6 +30,7 @@ fat.project: true
 tested.features: all_features
 
 -buildpath: \
+    biz.aQute.bnd:biz.aQute.bnd;strategy=exact;version=6.4.1,\
     io.openliberty.org.apache.commons.logging;version=latest, \
     com.ibm.ws.kernel.boot.cmdline;version=latest, \
     com.ibm.ws.kernel.boot.core;version=latest, \

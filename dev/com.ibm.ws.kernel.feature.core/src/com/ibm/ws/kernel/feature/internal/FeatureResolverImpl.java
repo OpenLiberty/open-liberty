@@ -263,7 +263,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             String platBase = nameAndVersion[0];
             String platVersion = nameAndVersion[1];
             if (platVersion == null) {
-                trace("Platform element [ " + plat + " ] does not contain a valid version.");
+                Tr.error((TraceComponent) tc, "UNKNOWN_PLATFORM_VERSION", plat);
                 continue;
             }
 
@@ -274,14 +274,14 @@ public class FeatureResolverImpl implements FeatureResolver {
                 compatibilityFeature = "io.openliberty.internal.mpVersion-" + platVersion;
 
             } else {
-                trace("Platform element [ " + plat + " ] is not a known platform.");
+                Tr.error((TraceComponent) tc, "UNKNOWN_PLATFORM_ELEMENT", plat);
                 continue;
             }
 
             if (repo.getFeature(compatibilityFeature) != null) {
                 compatibilityFeatures.add(compatibilityFeature);
             } else {
-                trace("Platform element [ " + plat + " ] is not a known platform version.");
+                Tr.error((TraceComponent) tc, "UNKNOWN_PLATFORM_VERSION", plat);
                 continue;
             }
         }
@@ -347,8 +347,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             String platVersion = nameAndVersion[1];
 
             if (platVersion == null) {
-                trace("Platform environment variable [ " + PREFERRED_PLATFORM_VERSIONS_ENV_VAR + " ]" +
-                      " platform value [ " + plat + " ] does not contain a valid version.");
+                Tr.error((TraceComponent) tc, "UNKNOWN_PLATFORM_VALUE_ENV_VAR", plat);
                 continue;
             }
 
@@ -357,8 +356,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             } else if (plat.startsWith("microprofile")) {
                 mpCompatibleVersions.add(platVersion);
             } else {
-                trace("Platform environment variable [ " + PREFERRED_PLATFORM_VERSIONS_ENV_VAR + " ]" +
-                      " platform value [ " + plat + " ] is not a valid platform.");
+                Tr.error((TraceComponent) tc, "UNKNOWN_PLATFORM_VALUE_ENV_VAR", plat);
             }
         }
 
@@ -530,11 +528,13 @@ public class FeatureResolverImpl implements FeatureResolver {
                             Collection<String> rootPlatforms) {
 
         if (isBeta) {
-            Collection<String> serverPlatforms = collectPlatformCompatibilityFeatures(repository, rootPlatforms);
-            if (serverPlatforms != null) {
-                rootPlatforms = serverPlatforms;
-            } else {
-                rootPlatforms = collectPlatformCompatibilityFeatures(repository);
+            if(hasVersionlessFeatures(repository, rootFeatures)){
+                Collection<String> serverPlatforms = collectPlatformCompatibilityFeatures(repository, rootPlatforms);
+                if (serverPlatforms != null) {
+                    rootPlatforms = serverPlatforms;
+                } else {
+                    rootPlatforms = collectPlatformCompatibilityFeatures(repository);
+                }
             }
         }
 
@@ -593,6 +593,20 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         // Finally return the selected result
         return selectionContext.getResult();
+    }
+
+    private boolean hasVersionlessFeatures(Repository repo, Collection<String> featureList){
+        for(String s : featureList){
+            ProvisioningFeatureDefinition feature = repo.getFeature(s);
+            if(feature.getSymbolicName().startsWith("io.openliberty.versionless.")){
+                return true;
+            }
+            // after apis are implemented
+            // if(feature.isVersionless()){
+            //     return true;
+            // }
+        }
+        return false;
     }
 
     private List<String> checkRootsAreAccessibleAndSetFullName(List<String> rootFeatures, SelectionContext selectionContext, Set<String> preResolved) {
@@ -703,7 +717,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         //for the environment variable
         addingFeatures.add(EE_COMPATIBLE_FEATURE_NAME);
         addingFeatures.add(MP_COMPATIBLE_FEATURE_NAME);
-
+        
         result._resolved.addAll(addingFeatures);
     }
 
@@ -787,6 +801,10 @@ public class FeatureResolverImpl implements FeatureResolver {
         } while (selectionContext.hasPostponed() ||
                  (numBlocked != selectionContext.getBlockedCount()) ||
                  selectionContext.hasTriedVersionlessResolution());
+
+        if(selectionContext.hasPostponedVersionless()){
+            selectionContext.addVersionlessConflicts();
+        }
 
         selectionContext._current._result.setResolvedFeatures(result);
         selectionContext.checkForBestSolution();
@@ -1344,6 +1362,16 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         boolean hasPostponed() {
             return !!!_current._postponed.isEmpty();
+        }
+
+        boolean hasPostponedVersionless() {
+            return !!!_current._postponedVersionless.isEmpty();
+        }
+
+        void addVersionlessConflicts() {
+            for(String s : _current._postponedVersionless.keySet()){
+                _current._result.addUnresolvedVersionless(_current._postponedVersionless.get(s).getChains().get(0).getChain().get(0));
+            }
         }
 
         // Versionless features require eeCompatible to be resolved. In rare cases, eeCompatible will be resolved after

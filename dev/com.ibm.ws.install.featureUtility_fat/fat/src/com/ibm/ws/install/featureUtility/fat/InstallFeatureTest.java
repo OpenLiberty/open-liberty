@@ -149,7 +149,8 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	}
 
 	/**
-	 * Test installation of feature json-1.0.esa from local repository
+	 * Test installation of feature json-1.0.esa from local file.
+	 * 
 	 *
 	 * @throws Exception
 	 */
@@ -160,8 +161,10 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
 	    String esaFile = String.format("/io/openliberty/features/json-1.0/%s/json-1.0-%s.esa", libertyVersion,
 		    libertyVersion);
+	    //copy json esa file from local Maven repo to a temporary location (wlp/tmp)
+	    copyFileToMinifiedRoot("tmp", mavenLocalRepo + esaFile);
 	    // Begin Test
-	    String[] param1s = { "installFeature", mavenLocalRepo + esaFile, "--verbose" };
+	    String[] param1s = { "installFeature", minifiedRoot + "/tmp/" + String.format("json-1.0-%s.esa", libertyVersion), "--verbose" };
 	    String[] filesList = { "lib/features/com.ibm.websphere.appserver.json-1.0.mf" };
 	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
@@ -565,6 +568,31 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 
 	    String[] param1s = { "installFeature", "testesa1", "json-1.0",
+		    "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+	    checkCommandOutput(po, 0, null, filesList);
+	    Log.exiting(c, METHOD_NAME);
+	}
+	
+	/*
+	 * Test installFeature --verify=enforce with user feature and no signature (userFeature.asc) file. Default verify option
+	 * is "enforce". Only IBM Liberty feature will be verified. User feature
+	 * signature verification is expected to fail as there are no signature file and public key to verify,
+	 *  but should install all features successfully.
+	 */
+	
+	@Test
+	public void testFeatureVerifyENFORCEnoSig() throws Exception {
+	    final String METHOD_NAME = "testFeatureVerifyENFORCEnoSig";
+	    Log.entering(c, METHOD_NAME);
+
+	    String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
+	    
+	    //copy testesa1 esa file from local Maven repo to a temporary location (wlp/tmp)
+	    copyFileToMinifiedRoot("tmp", mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa");
+	    
+	    // Begin Test
+	    String[] param1s = { "installFeature", minifiedRoot + "/tmp/testesa1-19.0.0.8.esa", "json-1.0",
 		    "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
 	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 	    checkCommandOutput(po, 0, null, filesList);

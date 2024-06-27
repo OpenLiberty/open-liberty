@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,13 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package test.jakarta.data;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Properties;
 
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.spi.Extension;
@@ -55,14 +62,8 @@ public class DataTestCheckpoint extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Get driver type
-        DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
-        server.addEnvVar("DB_DRIVER", type.getDriverName());
-        server.addEnvVar("DB_USER", testContainer.getUsername());
-        server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
-
         // Set up server DataSource properties
-        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
+        DatabaseContainerUtil.setupDataSourcePropertiesForCheckpoint(server, testContainer);
 
         WebArchive war = ShrinkHelper.buildDefaultApp("DataTestApp", "test.jakarta.data.web");
         ShrinkHelper.exportAppToServer(server, war);
@@ -77,12 +78,28 @@ public class DataTestCheckpoint extends FATServletClient {
         WebArchive providerWar = ShrinkHelper.buildDefaultApp("ProviderTestApp", "test.jakarta.data.inmemory.web")
                         .addAsLibrary(providerJar);
         ShrinkHelper.exportAppToServer(server, providerWar);
-        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, null);
+
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer();
+
+        //Server started, application started, checkpoint taken, server is now stopped.
+        //Configure environment variable used by servlet
+        configureEnvVariable(server, Collections.singletonMap("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName()));
+
+        server.checkpointRestore();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
+    }
+
+    static void configureEnvVariable(LibertyServer server, Map<String, String> newEnv) throws Exception {
+        Properties serverEnvProperties = new Properties();
+        serverEnvProperties.putAll(newEnv);
+        File serverEnvFile = new File(server.getFileFromLibertyServerRoot("server.env").getAbsolutePath());
+        try (OutputStream out = new FileOutputStream(serverEnvFile)) {
+            serverEnvProperties.store(out, "");
+        }
     }
 }

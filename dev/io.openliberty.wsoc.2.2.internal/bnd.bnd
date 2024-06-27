@@ -12,6 +12,11 @@
 bVersion=1.0
 bSymbolicName=io.openliberty.wsoc.2.2.internal
 
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
 Bundle-Name: WebSocket
 Bundle-SymbolicName: io.openliberty.wsoc.2.2.internal
 Bundle-Description: WebSocket, version ${bVersion}

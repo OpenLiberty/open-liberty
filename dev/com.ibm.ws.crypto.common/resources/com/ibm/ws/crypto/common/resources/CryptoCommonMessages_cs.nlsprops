@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWWKS0000=CWWKS0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.crypto.common/resources/com/ibm/ws/crypto/common/resources/CryptoCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Common Crypto Utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS5900 - CWWKS5910
+CRYPTO_UNSECURE=CWWKS5900W: Prvek konfigurace {0} ur\u010duje nezabezpe\u010den\u00fd \u0161ifrovac\u00ed algoritmus {1} .  Zva\u017ete m\u00edsto toho pou\u017eit\u00ed zabezpe\u010den\u00e9ho algoritmu {2} .
+CRYPTO_UNSECURE.explanation=Konfigurovan\u00fd algoritmus ji\u017e nen\u00ed pova\u017eov\u00e1n za kryptograficky zabezpe\u010den\u00fd.
+CRYPTO_UNSECURE.useraction=Pou\u017eijte navrhovan\u00fd zabezpe\u010den\u00fd algoritmus.
+
+CRYPTO_UNSECURE_REPLACED=CWWKS5901W: Prvek konfigurace {0} ur\u010duje nezabezpe\u010den\u00fd \u0161ifrovac\u00ed algoritmus {1} .  M\u00edsto toho se pou\u017eije zabezpe\u010den\u00fd algoritmus {2} .
+CRYPTO_UNSECURE_REPLACED.explanation=Nezabezpe\u010den\u00fd \u0161ifrovac\u00ed algoritmus byl nahrazen zabezpe\u010den\u00fdm algoritmem.
+CRYPTO_UNSECURE_REPLACED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

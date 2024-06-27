@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Descriptions of metrics used by Fault Tolerance. 
+# See https://download.eclipse.org/microprofile/microprofile-fault-tolerance-4.0.2/microprofile-fault-tolerance-spec-4.0.2.html#_integration_with_microprofile_metrics
+#-----------------------------------------------------------------------------------------------------------------------------
+
+ft.invocations.total.description=Gibt an, wie oft die Methode aufgerufen wurde
+
+ft.retry.calls.total.description=Gibt an, wie oft die Wiederholungslogik ausgef\u00fchrt wurde. Dies ist immer ein Mal pro Methodenaufruf.
+
+ft.retry.retries.total.description=Gibt an, wie oft die Methode wiederholt wurde.
+
+ft.timeout.calls.total.description=Gibt an, wie oft die Zeitlimitlogik ausgef\u00fchrt wurde. Dies ist in der Regel einmal pro Methodenaufruf, kann aber null Mal sein, wenn der Trennschalter die Ausf\u00fchrung verhindert, oder mehrmals, wenn die Methode wiederholt wird.
+
+ft.timeout.executionDuration.description=Histogramm der Ausf\u00fchrungszeiten f\u00fcr die Methode.
+
+ft.circuitbreaker.calls.total.description=Gibt an, wie oft die Logik des Sicherungsautomaten ausgef\u00fchrt wurde. Dies ist in der Regel einmal pro Methodenaufruf, kann aber mehr als einmal sein, wenn der Methodenaufruf wiederholt wird.
+
+ft.circuitbreaker.state.total.description=Zeit, die der Trennschalter in jedem Status verbracht hat.
+
+ft.circuitbreaker.opened.total.description=Gibt an, wie oft der Trennschalter vom Status 'Geschlossen' in den Status 'Offen' versetzt wurde.
+
+ft.bulkhead.calls.total.description=Gibt an, wie oft die Bulkhead-Logik ausgef\u00fchrt wurde. Dies ist in der Regel einmal pro Methodenaufruf, kann aber null Mal sein, wenn der Trennschalter die Ausf\u00fchrung verhindert hat, oder mehr als einmal, wenn der Methodenaufruf wiederholt wird.
+
+ft.bulkhead.executionsRunning.description=Die Anzahl der momentan aktiven Ausf\u00fchrungen.
+
+ft.bulkhead.executionsWaiting.description=Anzahl der Ausf\u00fchrungen, die derzeit in der Warteschlange warten.
+
+ft.bulkhead.runningDuration.description=Histogramm der Zeit, die Methodenausf\u00fchrungen ausgef\u00fchrt wurden.
+
+ft.bulkhead.waitingDuration.description=Histogramm der Zeit, die Methodenausf\u00fchrungen in der Warteschlange gewartet haben.

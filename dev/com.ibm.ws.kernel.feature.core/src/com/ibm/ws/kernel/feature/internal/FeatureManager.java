@@ -348,7 +348,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         private volatile Collection<ProvisioningFeatureDefinition> kernelFeatures;
 
         private final FeatureManager featureManager;
-
+       
         private final ProvisioningMode initialMode;
 
         KernelFeaturesHolder(FeatureManager featureManager, ProvisioningMode initialMode) {
@@ -976,6 +976,32 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             Tr.debug(tc, "all installed features " + postInstalledFeatures);
         }
 
+        if(isBeta){
+            for(String feature : postInstalledFeatures){
+                if(feature.indexOf("internal.versionless") == -1){
+                    continue;
+                }
+                String featureName = feature.substring(36);
+                String alternateName = featureRepository.matchesAlternate(featureName);
+                if(postInstalledFeatures.contains(featureName)){
+                    if(postInstalledFeatures.contains(featureName.split("-")[0])){
+                        Tr.info(tc, "VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", featureName.split("-")[0], featureName);
+                    }
+                    else if(alternateName != null && postInstalledFeatures.contains(alternateName.split("-")[0])){
+                        Tr.info(tc, "VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", alternateName.split("-")[0], featureName);
+                    }
+                }
+                else if(alternateName != null && postInstalledFeatures.contains(alternateName)){
+                    if(postInstalledFeatures.contains(featureName.split("-")[0])){
+                        Tr.info(tc, "VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", featureName.split("-")[0], alternateName);
+                    }
+                    else if(postInstalledFeatures.contains(alternateName.split("-")[0])){
+                        Tr.info(tc, "VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", alternateName.split("-")[0], alternateName);
+                    }
+                }
+            }
+        }
+
         //remove the pre-installed features from all installed features to show just the added features
         postInstalledFeatures.removeAll(preInstalledFeatures);
         Set<String> installedPublicFeatures = Collections.emptySet();
@@ -1457,6 +1483,11 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             @Override
             public Map<String, Collection<Chain>> getConflicts() {
                 return Collections.emptyMap();
+            }
+
+            @Override
+            public Set<String> getUnresolvedVersionless() {
+                return Collections.emptySet();
             }
         };
     }
@@ -1947,6 +1978,13 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                 Tr.error(tc, "UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR", getFeatureName(restricted), processTypeString + ".xml");
             } else {
                 Tr.error(tc, "UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR", getFeatureName(restricted), processTypeString + ".xml");
+            }
+        }
+
+        if(isBeta){
+            for(String versionlessFeature : result.getUnresolvedVersionless()){
+                reportedErrors = true;
+                Tr.error(tc, "UNRESOLVED_VERSIONLESS_FEATURE", getFeatureName(versionlessFeature));
             }
         }
 
