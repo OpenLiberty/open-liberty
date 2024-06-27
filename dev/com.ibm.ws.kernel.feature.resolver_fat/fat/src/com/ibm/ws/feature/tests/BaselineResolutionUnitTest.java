@@ -199,11 +199,86 @@ public class BaselineResolutionUnitTest {
 
     //
 
+    /**
+     * Converts a versioned test case to an equivalent versionless test case
+     *
+     * @param verifyData the versioned test case
+     * @return a versionless test case derived from the input case
+     * @throws Exception
+     */
+    public static VerifyData convertToVersionless(VerifyData verifyData) throws Exception {
+        VerifyData newVerifyData = new VerifyData();
+
+        for (VerifyCase inputCase : verifyData.getCases()) {
+            String symName = inputCase.input.roots.get(0);
+            String platform = RepositoryUtil.getPlatformOf(symName);
+            if (platform == null) {
+                continue;
+            }
+
+            VerifyCase newCase = copyForVersionless(inputCase, symName, platform);
+            newVerifyData.addCase(newCase);
+        }
+
+        return newVerifyData;
+    }
+
+    /**
+     * Copies the case and modifies it to be an equivalent versionless case.
+     * Instead of having a versioned root feature, the copy has a
+     * versionless root feature and a platform. The platform is derived from
+     * the versioned feature that versionless feature replaces.
+     *
+     * @param inputCase test case
+     * @param symName symbolic feature name
+     * @param platform
+     * @return
+     */
+    public static VerifyCase copyForVersionless(VerifyCase inputCase, String symName, String platform) {
+        VerifyCase newCase = new VerifyCase();
+        newCase.name = "versionless " + inputCase.name;
+        newCase.description = "versionless " + inputCase.description;
+
+        newCase.durationNs = inputCase.durationNs;
+
+        if (inputCase.input.isMultiple) {
+            newCase.input.setMultiple();
+        }
+
+        if (inputCase.input.isClient) {
+            newCase.input.setClient();
+        } else if (inputCase.input.isServer) {
+            newCase.input.setServer();
+        }
+
+        for (String kernelName : inputCase.input.kernel) {
+            newCase.input.addKernel(kernelName);
+        }
+
+        for (String featureName : inputCase.output.resolved) {
+            newCase.output.addResolved(featureName);
+        }
+
+        String versionlessFeatureName = RepositoryUtil.asVersionlessFeatureName(symName);
+        newCase.name = "versionless - " + versionlessFeatureName + " -  derived from " + inputCase.name;
+        newCase.description = "versionless - platform [" + platform + "] -  derived from " + inputCase.description;
+        newCase.input.addRoot(versionlessFeatureName);
+        newCase.input.addPlatform(platform);
+        newCase.output.addResolved(RepositoryUtil.asInternalVersionlessFeatureName(symName));
+        newCase.output.addResolved(RepositoryUtil.asShortName(symName));
+
+        return newCase;
+    }
+
+    //
+
     public static Collection<Object[]> nullCases(String description) {
         return Collections.singletonList(new Object[] { description, new VerifyCase() });
     }
 
-    public void nullResult() {}
+    public void nullResult() {
+        //
+    }
 
     public static Collection<Object[]> asCases(VerifyData verifyData) {
         List<? extends VerifyCase> cases = verifyData.getCases();
@@ -280,6 +355,18 @@ public class BaselineResolutionUnitTest {
         }
     }
 
+    public List<String> detectVersionlessSingletonErrors(List<String> rootFeatures) {
+        String rootFeature = rootFeatures.get(0);
+
+        if (RepositoryUtil.getVersionlessFeatureDef(rootFeature) == null) {
+            String message = "Versionless root feature [ " + rootFeature + " ]: Missing from baseline";
+            RepositoryUtil.displayVersionlessFeatures();
+            return Collections.singletonList(message);
+        } else {
+            return null;
+        }
+    }
+
     public List<String> detectPairErrors(List<String> rootFeatures) {
         String rootFeature0 = rootFeatures.get(0);
         String rootFeature1 = rootFeatures.get(1);
@@ -313,7 +400,7 @@ public class BaselineResolutionUnitTest {
                                 Collections.<String> emptySet(), // pre-resolved feature names
                                 verifyCase.input.isMultiple,
                                 getProcessTypes(verifyCase),
-                                null);
+                                verifyCase.input.platforms);
     }
 
     public static EnumSet<ProcessType> getProcessTypes(VerifyCase verifyCase) {
@@ -333,21 +420,26 @@ public class BaselineResolutionUnitTest {
     }
 
     public void doTestResolve() throws Exception {
-        VerifyCase inputCase = getTestCase();
+        VerifyCase testCase = getTestCase();
 
         largeDashes(System.out);
 
-        System.out.println("Verifying [ " + inputCase.name + " ] [ " + inputCase.description + " ]");
+        System.out.println("Verifying case name[ " + testCase.name + " ]\ncase description [ " + testCase.description + " ]");
 
-        List<String> rootErrors = detectFeatureErrors(inputCase.input.roots);
+        List<String> rootErrors = detectFeatureErrors(testCase.input.roots);
         if (rootErrors != null) {
-            FailureSummary summary = addRootFailure(inputCase, rootErrors);
+            FailureSummary summary = addRootFailure(testCase, rootErrors);
             fail(summary.getMessage());
             return; // 'fail' never returns.
         }
 
+        System.out.println("DEBUG begin ******");
+        System.out.println(testCase.input);
+        System.out.println(testCase.output);
+        System.out.println("DEBUG end ******");
+
         long startNs = System.nanoTime();
-        Result result = resolveFeatures(inputCase, rootErrors);
+        Result result = resolveFeatures(testCase, rootErrors);
         long endNs = System.nanoTime();
         long durationNs = endNs - startNs;
 
@@ -355,7 +447,7 @@ public class BaselineResolutionUnitTest {
         List<String> resolvedFeatures = new ArrayList<>(resultFeatures.size());
         resolvedFeatures.addAll(resultFeatures);
 
-        VerifyCase outputCase = new VerifyCase(inputCase, resolvedFeatures, durationNs);
+        VerifyCase outputCase = new VerifyCase(testCase, resolvedFeatures, durationNs);
 
         List<String> warnings = new ArrayList<>();
         List<String> missing = new ArrayList<>();
@@ -363,7 +455,7 @@ public class BaselineResolutionUnitTest {
 
         List<String> errors = VerifyDelta.compare(new RepoVisibilitySupplier(RepositoryUtil.getRepository()),
                                                   null, warnings,
-                                                  inputCase, outputCase,
+                                                  testCase, outputCase,
                                                   !VerifyDelta.UPDATED_USED_KERNEL,
                                                   extra, missing);
 
@@ -385,7 +477,7 @@ public class BaselineResolutionUnitTest {
         }
 
         if ((errors != null) && !errors.isEmpty()) {
-            FailureSummary summary = addFailure(inputCase, extra, missing);
+            FailureSummary summary = addFailure(testCase, extra, missing);
             fail(summary.getMessage());
             return; // 'fail' never returns.
         }

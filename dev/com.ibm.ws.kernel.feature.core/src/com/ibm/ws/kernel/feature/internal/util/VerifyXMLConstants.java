@@ -17,6 +17,7 @@ package com.ibm.ws.kernel.feature.internal.util;
 //   <input>
 //     <kernel>featureName</kernel>
 //     <root>featureName</root>
+//     <platform>platformName</platform>
 //     <client/>
 //     <server/>
 //   </input>
@@ -40,6 +41,7 @@ public interface VerifyXMLConstants {
     String SERVER_TAG = "server";
     String KERNEL_TAG = "kernel";
     String ROOT_TAG = "root";
+    String PLATFORM_TAG = "platform";
 
     String OUTPUT_TAG = "output";
     String RESOLVED_TAG = "resolved";

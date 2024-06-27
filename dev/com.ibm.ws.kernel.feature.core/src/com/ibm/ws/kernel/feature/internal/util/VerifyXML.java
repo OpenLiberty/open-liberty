@@ -21,6 +21,7 @@ import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.KERNEL_
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.MULTIPLE_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.NAME_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.OUTPUT_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.PLATFORM_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.RESOLVED_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.ROOT_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.SERVER_TAG;
@@ -222,6 +223,9 @@ public class VerifyXML extends BaseXML {
             for (String root : verifyInput.roots) {
                 printElement(ROOT_TAG, root);
             }
+            for (String platform : verifyInput.platforms) {
+                printElement(PLATFORM_TAG, platform);
+            }
 
             downIndent();
             closeElement(INPUT_TAG);
@@ -314,6 +318,8 @@ public class VerifyXML extends BaseXML {
                 // ignore
             } else if (pushElement(qName, ROOT_TAG, INPUT_TAG)) {
                 // ignore
+            } else if (pushElement(qName, PLATFORM_TAG, INPUT_TAG)) {
+                // ignore
 
             } else if (pushElement(qName, OUTPUT_TAG, CASE_TAG)) {
                 whitespaceOnly = true;
@@ -357,6 +363,8 @@ public class VerifyXML extends BaseXML {
                 verifyCase.input.addKernel(elementText);
             } else if (oldLast.equals(ROOT_TAG)) {
                 verifyCase.input.addRoot(elementText);
+            } else if (oldLast.equals(PLATFORM_TAG)) {
+                verifyCase.input.addPlatform(elementText);
 
             } else if (oldLast.equals(OUTPUT_TAG)) {
                 // ignore

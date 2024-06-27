@@ -31,8 +31,8 @@ import org.junit.runners.Suite.SuiteClasses;
  * BaselineResolutionMicroProfileUnitTest.class,
  * 
  * BaselineResolutionGenerationTest.class,
+ * BaselineVersionlessSingletonUnitTest.class
  */
-
         AlwaysPassTest.class
 // VersionlessServletToMicroProfileTest.class,
 // VersionlessJavaEEToMicroProfileTest.class,
