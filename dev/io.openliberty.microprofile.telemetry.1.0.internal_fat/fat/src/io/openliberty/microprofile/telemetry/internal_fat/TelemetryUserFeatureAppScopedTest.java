@@ -12,6 +12,7 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -95,6 +96,7 @@ public class TelemetryUserFeatureAppScopedTest extends FATServletClient {
                         .addClass(UserFeatureServlet.class)
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
 
+        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
 
         server.startServer();

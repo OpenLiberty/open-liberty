@@ -21,7 +21,7 @@ Export-Package: io.openliberty.microprofile.telemetry.spi
 
 -maven-dependencies:
  
-publish.wlp.jar.suffix: dev/spi/ibm
+publish.wlp.jar.suffix: lib
 
 -buildpath: \
 	io.openliberty.microprofile.telemetry.internal.common;version=latest
