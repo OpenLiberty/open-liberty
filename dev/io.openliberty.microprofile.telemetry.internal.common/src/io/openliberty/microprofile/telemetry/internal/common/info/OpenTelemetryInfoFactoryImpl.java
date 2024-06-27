@@ -342,6 +342,11 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
 
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
+        //We don't use app scoped OpenTelemetry objects if the server scoped object exists
+        if (otelMap.get(OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME) != null) {
+            return;
+        }
+        
         ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
         OpenTelemetryInfoReference oTelRef = (OpenTelemetryInfoReference) extAppInfo.getMetaData().getMetaData(slotForOpenTelemetryInfoHolder);
 
