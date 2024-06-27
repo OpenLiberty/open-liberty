@@ -639,6 +639,5 @@
 
 7359=No any ASM service available.
 
-7360=Database password was encrypted by deprecated algorithm.
-Reencrypt it by `passwordUpdate.sh` from eclipselink.zip bundle.
+7360=Database password was encrypted by deprecated algorithm. Reencrypt it by `passwordUpdate.sh` from eclipselink.zip bundle.
 
