@@ -24,6 +24,7 @@ import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
@@ -270,6 +271,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
      * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#deleteServerLease(java.lang.String)
      */
     @Override
+    @FFDCIgnore(NoSuchFileException.class)
     public void deleteServerLease(final String recoveryIdentity, boolean isPeerServer) throws Exception {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "deleteServerLease", this, recoveryIdentity, isPeerServer);
@@ -322,6 +324,9 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                     }
 
                 }
+            } catch (FileNotFoundException | NoSuchFileException e) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "{0} is already deleted", _serverInstallLeaseLogDir);
             } catch (IOException e) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Error deleting in {0}: {1}", _serverInstallLeaseLogDir, e);
