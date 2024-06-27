@@ -112,6 +112,8 @@ public interface FeatureResolver {
         Map<String, Chain> getWrongProcessTypes();
 
         Map<String, Collection<Chain>> getConflicts();
+
+        Set<String> getUnresolvedVersionless();
     }
 
     public static final List<String> EMPTY_STRINGS = Collections.emptyList();
