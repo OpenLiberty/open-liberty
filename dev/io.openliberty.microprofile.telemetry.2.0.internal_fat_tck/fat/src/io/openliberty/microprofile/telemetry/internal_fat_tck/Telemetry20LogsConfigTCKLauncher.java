@@ -35,9 +35,9 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.EXPERIMENTAL) //Change this back to Lite when the 2.0 version of the telemetry TCK is published. I've tested locally with a snapshot and it passed everything.
-public class Telemetry20TCKLauncher {
+public class Telemetry20LogsConfigTCKLauncher {
 
-    private static final String SERVER_NAME = "Telemetry20TCKServer";
+    private static final String SERVER_NAME = "Telemetry20LogsConfigTCKServer";
 
     @ClassRule
     public static RepeatTests r = FATSuite.allMPTel20Repeats(SERVER_NAME);
@@ -57,10 +57,10 @@ public class Telemetry20TCKLauncher {
 
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void launchTelemetry20Tck() throws Exception {
-        String suiteName = "tck-suite-application.xml";
+    public void launchTelemetry20LogsConfigTck() throws Exception {
+        String suiteName = "tck-suite-logs-server-config.xml";
         String bucketName = "io.openliberty.microprofile.telemetry.2.0.internal_fat_tck";
-        String testName = this.getClass() + ":launchTelemetry20Tck";
+        String testName = this.getClass() + ":launchTelemetry20LogsConfigTck";
         Type type = Type.MICROPROFILE;
         String specName = "Telemetry";
         TCKRunner.runTCK(server, bucketName, testName, type, specName, suiteName);

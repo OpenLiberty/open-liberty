@@ -1,9 +1,5 @@
 /*******************************************************************************
-<<<<<<< HEAD
  * Copyright (c) 2018, 2024 IBM Corporation and others.
-=======
- * Copyright (c) 2018-2024 IBM Corporation and others.
->>>>>>> c0411e1b0d (Rework archive weaving to allow for classes and text files)
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +24,7 @@ public class WiremockArchiveProcessor extends AbstractArchiveWeaver {
 
     @Override
     protected Set<File> getJarsToWeave() {
-        return files;
+        File[] wiremockFiles = new File(System.getProperty("wlp"), "/usr/servers/FATServer").listFiles((dir, name) -> name.startsWith("wiremock-standalone-"));
+        return new HashSet<>(Arrays.asList(wiremockFiles));
     }
 }

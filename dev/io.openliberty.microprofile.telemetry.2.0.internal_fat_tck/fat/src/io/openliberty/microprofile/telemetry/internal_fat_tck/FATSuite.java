@@ -25,8 +25,10 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class, //LITE
-                Telemetry20TCKLauncher.class //LITE
+                AlwaysPassesTest.class,
+                Telemetry20TCKLauncher.class,
+                Telemetry20MetricsConfigTCKLauncher.class,
+                Telemetry20LogsConfigTCKLauncher.class
 })
 @MinimumJavaLevel(javaLevel = 11)
 public class FATSuite {

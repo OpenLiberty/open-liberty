@@ -24,7 +24,6 @@
         <feature>servlet-6.0</feature>
         <feature>mpTelemetry-2.0</feature>
         <feature>concurrent-3.0</feature>
-        <feature>monitor-1.0</feature>
     </featureManager>
 
     <!-- Required by Arquillian ServletTestRunner -->
@@ -42,8 +41,7 @@
     <!-- Test makes requests to localhost using HttpUrlConnection -->
     <javaPermission className="java.net.URLPermission" name="http://localhost:*/-" actions="*" />
     <javaPermission className="java.lang.management.ManagementPermission" name="monitor"/>
-
-    <javaPermission className="java.io.FilePermission" name="wlp/usr/servers/Telemetry20TCKServer/logs/messages.log" actions="read"/>
+    <javaPermission className="java.io.FilePermission" name="wlp/usr/servers/Telemetry20LogsConfigTCKServer/logs/messages.log" actions="read"/>
 
     <include location="../fatTestPorts.xml" />
 </server>

@@ -12,9 +12,18 @@
 
 <suite name="microprofile-telemetry-1.0-tck" verbose="2" configfailurepolicy="continue">
     <test name="tck-package-org.eclipse.microprofile.telemetry.tracing.tck">
-        
         <packages>
             <package name="org.eclipse.microprofile.telemetry.tracing.tck.*"></package>
+        </packages>
+    </test>
+    <test name="tck-package-org.eclipse.microprofile.telemetry.metrics.tck.application">
+        <packages>
+            <package name="org.eclipse.microprofile.telemetry.metrics.tck.application.*"></package>
+        </packages>
+    </test>
+    <test name="tck-package-org.eclipse.microprofile.telemetry.logs.tck.application">
+        <packages>
+            <package name="org.eclipse.microprofile.telemetry.logs.tck.application.*"></package>
         </packages>
     </test>
 </suite>
