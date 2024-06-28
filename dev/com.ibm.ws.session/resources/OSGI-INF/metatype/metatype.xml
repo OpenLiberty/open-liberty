@@ -123,10 +123,10 @@
         </AD>
 
         <AD id="cookiePartitioned" 
-            name="internal" 
-            description="internal use only"
+            name="%cookie.partitioned" 
+            description="%cookie.partitioned.desc"
             ibmui:group="cookies"
-            required="false" type="String" default="Defer">
+            required="false" type="String" default="Defer" ibm:beta="true">
             <Option label="%cookie.partitioned.defer" value="Defer"/>
             <Option label="%cookie.partitioned.true" value="True"/>
             <Option label="%cookie.partitioned.false" value="False"/>
