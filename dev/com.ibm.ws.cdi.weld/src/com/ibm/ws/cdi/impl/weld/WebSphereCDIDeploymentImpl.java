@@ -46,7 +46,6 @@ import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.TransactionService;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
-import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 import com.ibm.ws.cdi.internal.interfaces.WeldDevelopmentMode;
 import com.ibm.ws.cdi.liberty.ExtensionMetaData;
 import com.ibm.wsspi.injectionengine.InjectionException;
@@ -63,7 +62,7 @@ import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
 
-public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
+public class WebSphereCDIDeploymentImpl extends AbstractWebSphereCDIDeployment {
 
     private static final TraceComponent tc = Tr.register(WebSphereCDIDeploymentImpl.class);
 
@@ -617,27 +616,6 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
     }
 
     /**
-     * Scan all the BDAs in the deployment to see if there are any bean classes.
-     *
-     * This method must be called before scanForEjbEndpoints() and before we try to do
-     * any real work with the deployment or the BDAs
-     *
-     * @throws CDIException
-     */
-    @Override
-    public void scan() throws CDIException {
-        Collection<WebSphereBeanDeploymentArchive> allBDAs = new ArrayList<WebSphereBeanDeploymentArchive>(deploymentDBAs.values());
-        for (WebSphereBeanDeploymentArchive bda : allBDAs) {
-            bda.scanForBeanDefiningAnnotations(true);
-        }
-
-        BeanDeploymentArchiveVisitor visitor = new BeanDeploymentArchiveVisitor();
-        for (WebSphereBeanDeploymentArchive bda : allBDAs) {
-            visitor.visit(bda);
-        }
-    }
-
-    /**
      * Initialize the Resource Injection Service with each BDA's bean classes.
      *
      * This method must be called after scanForBeans() and scanForEjbEndpoints() but before we try to do
@@ -804,5 +782,11 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
         }
 
         return empty;
+    }
+
+    //for unit testing
+    @Override
+    protected Collection<WebSphereBeanDeploymentArchive> getAllBDAs() {
+        return deploymentDBAs.values();
     }
 }
