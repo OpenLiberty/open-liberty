@@ -528,7 +528,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                             Collection<String> rootPlatforms) {
 
         if (isBeta) {
-            if(hasVersionlessFeatures(repository, rootFeatures)){
+            if (hasVersionlessFeatures(repository, rootFeatures)) {
                 Collection<String> serverPlatforms = collectPlatformCompatibilityFeatures(repository, rootPlatforms);
                 if (serverPlatforms != null) {
                     rootPlatforms = serverPlatforms;
@@ -557,7 +557,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         //add versionless after normal resolution for packaging
         List<String> filteredVersionless = new ArrayList<>();
-        if(allowedMultipleVersions != null){
+        if (allowedMultipleVersions != null) {
             filteredVersionless = filterVersionless(rootFeaturesList, selectionContext);
         }
 
@@ -586,8 +586,8 @@ public class FeatureResolverImpl implements FeatureResolver {
             }
             resolved = doResolveFeatures(rootFeaturesList, preResolved, selectionContext);
         } while (!!!(autoFeaturesToInstall = processAutoFeatures(kernelFeatures, resolved, seenAutoFeatures, selectionContext)).isEmpty());
-        
-        if(allowedMultipleVersions != null && !filteredVersionless.isEmpty()){
+
+        if (allowedMultipleVersions != null && !filteredVersionless.isEmpty()) {
             addBackVersionless(filteredVersionless, selectionContext);
         }
 
@@ -595,10 +595,13 @@ public class FeatureResolverImpl implements FeatureResolver {
         return selectionContext.getResult();
     }
 
-    private boolean hasVersionlessFeatures(Repository repo, Collection<String> featureList){
-        for(String s : featureList){
+    private boolean hasVersionlessFeatures(Repository repo, Collection<String> featureList) {
+        for (String s : featureList) {
             ProvisioningFeatureDefinition feature = repo.getFeature(s);
-            if(feature.getSymbolicName().startsWith("io.openliberty.versionless.")){
+            if (feature == null)
+                //Can't find the feature of that name - just skip for now....
+                continue;
+            if (feature.getSymbolicName().startsWith("io.openliberty.versionless.")) {
                 return true;
             }
             // after apis are implemented
@@ -637,12 +640,12 @@ public class FeatureResolverImpl implements FeatureResolver {
         return rootFeatures;
     }
 
-    private List<String> filterVersionless(Collection<String> rootFeatures, SelectionContext selectionContext){
+    private List<String> filterVersionless(Collection<String> rootFeatures, SelectionContext selectionContext) {
         List<String> versionless = new ArrayList<String>();
 
-        for(String feature : rootFeatures){
+        for (String feature : rootFeatures) {
             ProvisioningFeatureDefinition featureDef = selectionContext.getRepository().getFeature(feature);
-            if(featureDef.getSymbolicName().startsWith("io.openliberty.versionless")){
+            if (featureDef.getSymbolicName().startsWith("io.openliberty.versionless")) {
                 versionless.add(feature);
             }
         }
@@ -652,12 +655,12 @@ public class FeatureResolverImpl implements FeatureResolver {
         return versionless;
     }
 
-    private void addBackVersionless(List<String> versionlessFeatures, SelectionContext selectionContext){
+    private void addBackVersionless(List<String> versionlessFeatures, SelectionContext selectionContext) {
         FeatureResolverResultImpl result = selectionContext.getResult();
         Set<String> addingFeatures = new HashSet<>();
 
         //loop through all the versionless features we filtered out earlier
-        for(String versionlessFeature : versionlessFeatures){
+        for (String versionlessFeature : versionlessFeatures) {
             ProvisioningFeatureDefinition versionlessDef = selectionContext.getRepository().getFeature(versionlessFeature);
             Collection<FeatureResource> versionlessDeps = versionlessDef.getConstituents(SubsystemContentType.FEATURE_TYPE);
             List<String> features = new ArrayList<>();
@@ -665,44 +668,44 @@ public class FeatureResolverImpl implements FeatureResolver {
                 String[] nav = parseNameAndVersion(privateVersionless.getSymbolicName());
                 features.add(nav[0] + "-" + nav[1]);
 
-                if(privateVersionless.getTolerates() != null){
-                    for(String version : privateVersionless.getTolerates()) {
+                if (privateVersionless.getTolerates() != null) {
+                    for (String version : privateVersionless.getTolerates()) {
                         features.add(nav[0] + "-" + version);
                     }
                 }
             }
             // loops through the private features related to the versionless feature
-            for(String feature : features){
+            for (String feature : features) {
                 ProvisioningFeatureDefinition featureDef = selectionContext.getRepository().getFeature(feature);
-                if(featureDef != null){
+                if (featureDef != null) {
                     boolean addFeature = false;
                     FeatureResource compatibleFeature = null;
                     Collection<FeatureResource> featureDeps = featureDef.getConstituents(SubsystemContentType.FEATURE_TYPE);
                     for (FeatureResource featureDep : featureDeps) { // could be multiple
-                        if(!!!featureDep.getSymbolicName().contains("noShip")){
+                        if (!!!featureDep.getSymbolicName().contains("noShip")) {
                             ProvisioningFeatureDefinition versionedFeature = selectionContext.getRepository().getFeature(featureDep.getSymbolicName());
-                            if(versionedFeature == null){
+                            if (versionedFeature == null) {
                                 continue;
                             }
-                            if(featureDep.getSymbolicName().startsWith("com.ibm.websphere.appserver.eeCompatible") 
-                                || featureDep.getSymbolicName().startsWith("io.openliberty.internal.mpVersion")){
-                                
+                            if (featureDep.getSymbolicName().startsWith("com.ibm.websphere.appserver.eeCompatible")
+                                || featureDep.getSymbolicName().startsWith("io.openliberty.internal.mpVersion")) {
+
                                 compatibleFeature = featureDep;
                             }
                             // if we resolved the public versioned feature, add the private versionless linking feature
-                            if(versionedFeature.getIbmShortName() != null && result._resolved.contains(versionedFeature.getIbmShortName())){
+                            if (versionedFeature.getIbmShortName() != null && result._resolved.contains(versionedFeature.getIbmShortName())) {
                                 addFeature = true;
                             }
                         }
                     }
-                    if(addFeature){
+                    if (addFeature) {
                         addingFeatures.add(feature);
-                        if(compatibleFeature != null){
+                        if (compatibleFeature != null) {
                             String[] nav = parseNameAndVersion(compatibleFeature.getSymbolicName());
                             addingFeatures.add(nav[0] + "-" + nav[1]);
 
-                            if(compatibleFeature.getTolerates() != null){
-                                for(String version : compatibleFeature.getTolerates()) {
+                            if (compatibleFeature.getTolerates() != null) {
+                                for (String version : compatibleFeature.getTolerates()) {
                                     addingFeatures.add(nav[0] + "-" + version);
                                 }
                             }
@@ -717,7 +720,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         //for the environment variable
         addingFeatures.add(EE_COMPATIBLE_FEATURE_NAME);
         addingFeatures.add(MP_COMPATIBLE_FEATURE_NAME);
-        
+
         result._resolved.addAll(addingFeatures);
     }
 
@@ -802,7 +805,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                  (numBlocked != selectionContext.getBlockedCount()) ||
                  selectionContext.hasTriedVersionlessResolution());
 
-        if(selectionContext.hasPostponedVersionless()){
+        if (selectionContext.hasPostponedVersionless()) {
             selectionContext.addVersionlessConflicts();
         }
 
@@ -1369,7 +1372,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         void addVersionlessConflicts() {
-            for(String s : _current._postponedVersionless.keySet()){
+            for (String s : _current._postponedVersionless.keySet()) {
                 _current._result.addUnresolvedVersionless(_current._postponedVersionless.get(s).getChains().get(0).getChain().get(0));
             }
         }
