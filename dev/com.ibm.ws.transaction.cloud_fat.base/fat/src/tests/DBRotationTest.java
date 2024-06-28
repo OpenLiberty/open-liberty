@@ -13,7 +13,6 @@
 package tests;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -45,7 +44,7 @@ import componenttest.topology.impl.LibertyServer;
 public class DBRotationTest extends CloudFATServletClient {
     private static final Class<?> c = DBRotationTest.class;
 
-    protected static final int cloud2ServerPort = 9992;
+    protected static final int cloud2ServerPort = Integer.parseInt(System.getProperty("HTTP_secondary"));
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001")
     public static LibertyServer s1;
@@ -138,8 +137,9 @@ public class DBRotationTest extends CloudFATServletClient {
 
     @AfterClass
     public static void teardown() throws Exception {
-
-        dropTables();
+        if (!isDerby()) {
+            dropTables();
+        }
     }
 
     /**
@@ -175,37 +175,33 @@ public class DBRotationTest extends CloudFATServletClient {
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
     public void testDBBaseRecovery() throws Exception {
-        final String method = "testDBBaseRecovery";
-        StringBuilder sb = null;
         String id = "001";
 
         serversToCleanup = new LibertyServer[] { server1 };
 
-        Log.info(c, method, "Starting testDBBaseRecovery in DBRotationTest");
         FATUtils.startServers(_runner, server1);
         try {
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
+            runTest(server1, SERVLET_NAME, "setupRec" + id);
+            fail();
         } catch (IOException e) {
         }
-        Log.info(c, method, "back from runTestWithResponse in testDBBaseRecovery, sb is " + sb);
-        assertNull("setupRec" + id + " returned: " + sb, sb);
 
         // wait for 1st server to have gone away
-        Log.info(c, method, "wait for first server to go away in testDBBaseRecovery");
         assertNotNull(server1.getServerName() + " did not crash", server1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
 
         // The server has been halted but its status variable won't have been reset because we crashed it. In order to
         // setup the server for a restart, set the server state manually.
         server1.setStarted(false);
 
-        Log.info(c, method, "restart server1");
-
         // Now re-start cloud1
         FATUtils.startServers(_runner, server1);
 
         // Server appears to have started ok. Check for key string to see whether recovery has succeeded
-        assertNotNull("peer recovery failed", server1.waitForStringInTrace("Performed recovery for cloud0011", FATUtils.LOG_SEARCH_TIMEOUT));
+        assertNotNull("recovery failed", server1.waitForStringInTrace("Performed recovery for cloud0011", FATUtils.LOG_SEARCH_TIMEOUT));
+
+        // check resource states - retry a few times if this fails
+        FATUtils.runWithRetries(() -> runTestWithResponse(server1, SERVLET_NAME, "checkRec" + id).toString());
     }
 
     /**
@@ -218,18 +214,16 @@ public class DBRotationTest extends CloudFATServletClient {
      * @throws Exception
      */
     @Test
-    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
+    @AllowedFFDC(value = { "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
     public void testDBRecoveryTakeover() throws Exception {
-        final String method = "testDBRecoveryTakeover";
-        StringBuilder sb = null;
         String id = "001";
-
         serversToCleanup = new LibertyServer[] { server1, server2 };
 
         FATUtils.startServers(_runner, server1);
         try {
             // We expect this to fail since it is gonna crash the server
             runTest(server1, SERVLET_NAME, "setupRec" + id);
+            fail();
         } catch (IOException e) {
         }
 
@@ -242,17 +236,11 @@ public class DBRotationTest extends CloudFATServletClient {
         // Server appears to have started ok. Check for key string to see whether peer recovery has succeeded
         assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud0011", FATUtils.LOG_SEARCH_TIMEOUT));
 
+        // check resource states - retry a few times if this fails
+        FATUtils.runWithRetries(() -> runTestWithResponse(server2, SERVLET_NAME, "checkRec" + id).toString());
+
         // Check ABSENCE of WAS_TRAN_LOGCLOUD0011 database table
-        try {
-            sb = runTestWithResponse(server2, SERVLET_NAME, "testTranlogTableAccess");
-
-        } catch (IOException e) {
-            Log.info(c, method, "testTranlogTableAccess" + id + " caught exception: " + e);
-        }
-        Log.info(c, method, "testTranlogTableAccess" + id + " returned: " + sb);
-
-        if (sb != null && sb.toString().contains("Unexpectedly"))
-            fail(sb.toString());
+        runTest(server2, SERVLET_NAME, "testTranlogTableAccess");
     }
 
     /**

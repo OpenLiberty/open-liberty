@@ -12,7 +12,6 @@
  *******************************************************************************/
 package servlets;
 
-import java.io.PrintWriter;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -20,6 +19,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.annotation.Resource.AuthenticationType;
@@ -176,73 +178,35 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
         }
     }
 
+    // Check our logs are still here and peer leases have gone
     public void testTranlogTableAccess(HttpServletRequest request,
                                        HttpServletResponse response) throws Exception {
 
         try (Connection con = getConnection(dsTranLog)) {
             con.setAutoCommit(false);
 
-            DatabaseMetaData mdata = con.getMetaData();
+            final Set<String> ourTables = new HashSet<String>();
 
-            System.out.println("testTranlogTableAccess: get metadata tables - " + mdata);
-
-            // Need to be a bit careful here, some RDBMS store uppercase versions of the name and some lower.
-            boolean foundUpperTranCloud1 = false; // WAS_TRAN_LOGCLOUD0011 should have been dropped
-            boolean foundUpperTranCloud2 = false; // WAS_TRAN_LOGCLOUD0021 should be found
-            boolean foundUpperPartnerCloud1 = false; // WAS_PARTNER_LOGCLOUD0011 should have been dropped
-            boolean foundUpperPartnerCloud2 = false; // WAS_PARTNER_LOGCLOUD0021 should be found
-            //Retrieving the columns in the database
-            ResultSet tables = mdata.getTables(null, null, "WAS_%", null); // Just get all the "WAS" prepended tables
-            String tableString = "";
-            while (tables.next()) {
-                tableString = tables.getString("Table_NAME");
-                System.out.println("testTranlogTableAccess: Found table name: " + tableString);
-                if (tableString.equalsIgnoreCase("WAS_TRAN_LOGCLOUD0011"))
-                    foundUpperTranCloud1 = true;
-                else if (tableString.equalsIgnoreCase("WAS_TRAN_LOGCLOUD0021"))
-                    foundUpperTranCloud2 = true;
-                else if (tableString.equalsIgnoreCase("WAS_PARTNER_LOGCLOUD0011"))
-                    foundUpperPartnerCloud1 = true;
-                else if (tableString.equalsIgnoreCase("WAS_PARTNER_LOGCLOUD0021"))
-                    foundUpperPartnerCloud2 = true;
+            // Need to be a bit careful here, some RDBMS store upper case versions of the name and some lower.
+            for (String wasPrefix : Arrays.asList("WAS_%", "was_%")) {
+                try (ResultSet tables = con.getMetaData().getTables(null, null, wasPrefix, null)) {
+                    while (tables.next()) {
+                        final String tableName = tables.getString("Table_NAME");
+                        System.out.println("Found table: " + tableName);
+                        ourTables.add(tableName.toUpperCase());
+                    }
+                }
             }
 
-            boolean foundLowerTranCloud1 = false; // WAS_TRAN_LOGCLOUD0011 should have been dropped
-            boolean foundLowerTranCloud2 = false; // WAS_TRAN_LOGCLOUD0021 should be found
-            boolean foundLowerPartnerCloud1 = false; // WAS_PARTNER_LOGCLOUD0011 should have been dropped
-            boolean foundLowerPartnerCloud2 = false; // WAS_PARTNER_LOGCLOUD0021 should be found
-            tables = mdata.getTables(null, null, "was%", null); // Just get all the "was" tables
-            while (tables.next()) {
-                tableString = tables.getString("Table_NAME");
-                System.out.println("testTranlogTableAccess: Found table name: " + tableString);
-                if (tableString.equalsIgnoreCase("WAS_TRAN_LOGCLOUD0011"))
-                    foundLowerTranCloud1 = true;
-                else if (tableString.equalsIgnoreCase("WAS_TRAN_LOGCLOUD0021"))
-                    foundLowerTranCloud2 = true;
-                else if (tableString.equalsIgnoreCase("WAS_PARTNER_LOGCLOUD0011"))
-                    foundLowerPartnerCloud1 = true;
-                else if (tableString.equalsIgnoreCase("WAS_PARTNER_LOGCLOUD0021"))
-                    foundLowerPartnerCloud2 = true;
-            }
-
-            // Report unexpected behaviour
-            final PrintWriter pw = response.getWriter();
-            if (foundUpperTranCloud1 || foundLowerTranCloud1) {
-                pw.println("Unexpectedly found tran log table for CLOUD0011");
-            }
-            if (!foundUpperTranCloud2 && !foundLowerTranCloud2) {
-                pw.println("Unexpectedly did not find tran log table for CLOUD0021");
-            }
-            if (foundUpperPartnerCloud1 || foundLowerPartnerCloud1) {
-                pw.println("Unexpectedly found partner log table for CLOUD0011");
-            }
-            if (!foundUpperPartnerCloud2 && !foundLowerPartnerCloud2) {
-                pw.println("Unexpectedly did not find partner log table for CLOUD0021");
-            }
-            tables.close();
             con.commit();
-        } catch (Exception ex) {
-            System.out.println("testTranlogTableAccess: caught exception " + ex);
+
+            if (ourTables.contains("WAS_TRAN_LOGCLOUD0011") || ourTables.contains("WAS_PARTNER_LOGCLOUD0011")) {
+                throw new Exception("cloud0011 logs still exist");
+            }
+
+            if (!ourTables.contains("WAS_TRAN_LOGCLOUD0021") || !ourTables.contains("WAS_PARTNER_LOGCLOUD0021")) {
+                throw new Exception("cloud0021 logs don't exist");
+            }
         }
     }
 
