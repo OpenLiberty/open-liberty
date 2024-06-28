@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -736,5 +737,142 @@ public class WIMUserRegistryTest {
             String errorMessage = e.getMessage();
             assertEquals("Call completed successfully", true, false + " with " + errorMessage);
         }
+    }
+
+    @Test
+    public void testFindUsersByAttribute() throws Exception {
+        Map<String, Object> urProps = new HashMap<String, Object>();
+        UR = newWIMUR(urProps);
+        WIMUserRegistry WIMUR = (WIMUserRegistry) UR;
+
+        SearchResult result = WIMUR.findUsersByAttribute("uid", "user1", 10);
+        List<String> resultList = result.getList();
+
+        int i = resultList.size();
+
+        assertEquals("Number of members mismatched", 1, i);
+        assertEquals("CN Mismatched", "uid=user1,o=defaultWIMFileBasedRealm", resultList.get(0));
+    }
+
+    @Test
+    public void testFindUsersByAttributeNameNull() {
+        try {
+            Map<String, Object> urProps = new HashMap<String, Object>();
+            UR = newWIMUR(urProps);
+            WIMUserRegistry WIMUR = (WIMUserRegistry) UR;
+
+            WIMUR.findUsersByAttribute(null, "test", 10);
+            fail("expected fail");
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            assertEquals("Incorrect exception thrown", RegistryException.class, e.getClass());
+            assertEquals("The error code for RegistryException", null, errorMessage);
+        }
+    }
+
+    @Test
+    public void testFindUsersByAttributeValueNull() {
+        try {
+            Map<String, Object> urProps = new HashMap<String, Object>();
+            UR = newWIMUR(urProps);
+            WIMUserRegistry WIMUR = (WIMUserRegistry) UR;
+
+            WIMUR.findUsersByAttribute("uid", null, 10);
+            fail("expected fail");
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            assertEquals("Incorrect exception thrown", RegistryException.class, e.getClass());
+            assertEquals("The error code for RegistryException", null, errorMessage);
+        }
+    }
+
+    @Test
+    public void testGetAllAttributesForUser() throws Exception {
+        Map<String, Object> urProps = new HashMap<String, Object>();
+        UR = newWIMUR(urProps);
+        WIMUserRegistry WIMUR = (WIMUserRegistry) UR;
+
+        List<String> attrList = new ArrayList();
+        attrList.add("*");
+        Map<String, Object> result = WIMUR.getAttributesForUser("user1", attrList);
+
+        int i = result.size();
+
+        assertEquals("Number of attributes mismatched", 5, i);
+        assertEquals("SN Mismatched", "user1", result.get("sn"));
+        assertEquals("CN Mismatched", "user1", result.get("cn"));
+    }
+
+    @Test
+    public void testGetAttributesForUser() throws Exception {
+        Map<String, Object> urProps = new HashMap<String, Object>();
+        UR = newWIMUR(urProps);
+        WIMUserRegistry WIMUR = (WIMUserRegistry) UR;
+
+        List<String> attrList = new ArrayList();
+        attrList.add("sn");
+        attrList.add("cn");
+        attrList.add("");
+        Map<String, Object> result = WIMUR.getAttributesForUser("user1", attrList);
+
+        int i = result.size();
+
+        assertEquals("Number of attributes mismatched", 2, i);
+        assertEquals("SN Mismatched", "user1", result.get("sn"));
+        assertEquals("CN Mismatched", "user1", result.get("cn"));
+    }
+
+    @Test
+    public void testNotSetAttributeForUser() throws Exception {
+        Map<String, Object> urProps = new HashMap<String, Object>();
+        UR = newWIMUR(urProps);
+        WIMUserRegistry WIMUR = (WIMUserRegistry) UR;
+
+        List<String> attrList = new ArrayList();
+        attrList.add("title");
+        attrList.add("mail");
+        Map<String, Object> result = WIMUR.getAttributesForUser("user1", attrList);
+
+        int i = result.size();
+
+        assertEquals("Number of attributes mismatched", 0, i);
+    }
+
+    @Test
+    public void testGetAttributesForUserNull() throws Exception {
+        try {
+	        Map<String, Object> urProps = new HashMap<String, Object>();
+	        UR = newWIMUR(urProps);
+	        WIMUserRegistry WIMUR = (WIMUserRegistry) UR;
+	
+	        List<String> attrList = new ArrayList();
+	        attrList.add("sn");
+	        attrList.add("cn");
+	        WIMUR.getAttributesForUser(null, attrList);
+	        fail("expected fail");
+        } catch (Exception e) {
+	        String errorMessage = e.getMessage();
+	        assertEquals("Incorrect exception thrown", RegistryException.class, e.getClass());
+	        assertEquals("The error code for RegistryException", null, errorMessage);
+	    }
+    }
+
+    @Test
+    public void testGetAttributesForUserListNull() throws Exception {
+        try {
+	        Map<String, Object> urProps = new HashMap<String, Object>();
+	        UR = newWIMUR(urProps);
+	        WIMUserRegistry WIMUR = (WIMUserRegistry) UR;
+	
+	        List<String> attrList = new ArrayList();
+	        attrList.add("sn");
+	        attrList.add("cn");
+	        WIMUR.getAttributesForUser("user1", null);
+	        fail("expected fail");
+        } catch (Exception e) {
+	        String errorMessage = e.getMessage();
+	        assertEquals("Incorrect exception thrown", RegistryException.class, e.getClass());
+	        assertEquals("The error code for RegistryException", null, errorMessage);
+	    }
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.bnd.metatype.annotation.Ext;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.registry.AttributeReader;
 import com.ibm.ws.security.registry.CertificateMapFailedException;
 import com.ibm.ws.security.registry.CertificateMapNotSupportedException;
 import com.ibm.ws.security.registry.CustomRegistryException;
@@ -65,7 +66,7 @@ interface WIMUserRegistryConfig {
  */
 //TODO policy REQUIRE when we count this....
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM", "com.ibm.ws.security.registry.type=WIM" })
-public class WIMUserRegistry implements FederationRegistry, UserRegistry {
+public class WIMUserRegistry implements FederationRegistry, UserRegistry, AttributeReader {
 
     private static final TraceComponent tc = Tr.register(WIMUserRegistry.class);
 
@@ -549,5 +550,35 @@ public class WIMUserRegistry implements FederationRegistry, UserRegistry {
     @Override
     public void removeAllFederatedRegistries() {
         mappingUtils.removeAllFederatedRegistries();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, Object> getAttributesForUser(final String userSecurityName, List<String> attributeNames) throws EntryNotFoundException, RegistryException {
+        Map<String, Object> returnValue = null;
+        try {
+            returnValue = searchBridge.getAttributesForUser(userSecurityName, attributeNames);
+        } catch (Exception excp) {
+            if (excp instanceof RegistryException)
+                throw (RegistryException) excp;
+            else
+                throw new RegistryException(excp.getMessage(), excp);
+        }
+
+        return returnValue;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public SearchResult findUsersByAttribute(String attributeName, String value, int limit) throws RegistryException {
+        try {
+            SearchResult returnValue = searchBridge.findUsersByAttribute(attributeName, value, limit);
+            return returnValue;
+        } catch (Exception excp) {
+            if (excp instanceof RegistryException)
+                throw (RegistryException) excp;
+            else
+                throw new RegistryException(excp.getMessage(), excp);
+        }
     }
 }
