@@ -62,11 +62,14 @@ public class ReadListenerRunnable implements Runnable {
                 //If there is data immediately available Channel will call the callback.complete before returning to this thread
                 //Since the read is forced to go asynchronous, we need to notify the input stream so that multiple reads do not
                 //happen at once when verifying if the input is ready
-                synchronized (this.in.getLockObj()){
-                    if(_callback instanceof AsyncReadCallback) {
-                        this.in.setAsyncReadOutstanding(true);
+                synchronized (this.in.getLockObj()) {
+                    //Check if an async read has already been queued and don't start another one
+                    if (!this.in.isAsyncReadOutstanding()) {
+                        if(_callback instanceof AsyncReadCallback) {
+                            this.in.setAsyncReadOutstanding(true);
+                        }
+                        _isc.getRequestBodyBuffer(_callback, true);
                     }
-                    _isc.getRequestBodyBuffer(_callback, true);
                 }
             }
         } catch (Exception e){

@@ -407,6 +407,10 @@ public class SRTInputStream31 extends SRTInputStream
     public void setAsyncReadOutstanding(boolean asyncReadOutstanding){
         this.asyncReadOutstanding = asyncReadOutstanding;
     }
+
+    public boolean isAsyncReadOutstanding() {
+        return this.asyncReadOutstanding;
+    }
     
     /**
      * Sets up for driving the read listener again on another thread.
