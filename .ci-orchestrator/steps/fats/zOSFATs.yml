@@ -1,0 +1,29 @@
+- stepName: z/OS FATs
+  conditionalRun:
+    - type: ifTrue
+      value: ${spawn.zos}
+  workType: FAT
+  timeoutInMinutes: 1920
+  properties:
+    spawn.zos: true
+    ebcPlan: See Shortlist 
+    ebcShortlist: managed-pool-zos-fat-test-middleware.yml
+    reportingOS: zOS
+    
+    # Product to be tested.
+    product_image_type_under_test: wlp-zosimage
+
+    # Buckets to be tested.
+    fat.buckets.to.run: ${PR Changes:fat.buckets.to.run}
+    fat.test.mode: lite
+    # Pattern causes us to only execute the z/OS FATs.
+    fatPatternToMatch: .*_zfat
+    runZosTests: true
+    command: ant -f build-ztest.xml localrun -propertyfile ../../../buildandbucket.properties -DhaltOnFailure=false -lib ../ant_build/lib.antClasspath
+    runner_threshold: 13
+    runner_minimum_total: 4
+    runner_max_total: 4
+  includeProperties:
+  - file: jvms/dev/zOS_s390_64.properties
+  - file: steps/fats/fatCommon.properties
+  - file: fatMaxDurationOverrides.properties
