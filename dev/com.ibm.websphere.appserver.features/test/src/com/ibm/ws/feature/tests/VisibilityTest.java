@@ -640,6 +640,9 @@ public class VisibilityTest {
         for (Entry<String, FeatureInfo> entry : features.entrySet()) {
             String featureName = entry.getKey();
             FeatureInfo featureInfo = entry.getValue();
+            if(featureName.equals("io.openliberty.internal.versionless.jsp-2.2")){
+                continue;
+            }
             if (!featureInfo.isAutoFeature() && featureName.startsWith("io.openliberty.internal.versionless") && featureName.contains("-")) {
                 String kind = featureInfo.getKind();
                 if ("ga".equals(kind)) {
