@@ -10,6 +10,7 @@
 package com.ibm.ws.jsf22.fat.tests;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,7 +66,7 @@ import io.openliberty.faces.fat.selenium.util.internal.WebPage;
 /**
  * Tests to execute on the jsfTestServer2 that use HtmlUnit.
  */
-// @Mode(TestMode.FULL)
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class JSF22InputFileTests {
     @Rule
@@ -116,6 +117,7 @@ public class JSF22InputFileTests {
     public void clearCookies()
     {
         driver.getRemoteWebDriver().manage().deleteAllCookies();
+        jsfTestServer2.resetLogMarks();
     }
 
     /**
@@ -157,13 +159,11 @@ public class JSF22InputFileTests {
     }
 
     /**
-     * inputFile defect - This test copies a file to the ServerRoot (so we have a full path) and then
-     * sets the file to be uploaded. It then attempts to upload the file, if it works, the word 'SUCCESS'
-     * will be present in the subsequently loaded page.
-     *
-     * Note: Even though we are copying the file to 'ServerRoot' that is just so we can figure out/know where
-     * it is. This lets us create the path to it so it can be selected later on.
-     *
+     * Scenario:
+     * - MultiPart Form 
+     * - An ajax enabled h:inputFile tag
+     * 
+     * - Verifies the file upload works via XHR requests (with type multi part form data). NOTE: Development project stage is used to ensure any errors are alerts.
      * @throws Exception
      */
     @Test
@@ -185,16 +185,23 @@ public class JSF22InputFileTests {
         page.get(url);
         page.waitForPageToLoad();
 
-        System.out.println(page.getPageSource());
+        Log.info(c, name.getMethodName(), page.getPageSource());
 
+        jsfTestServer2.setMarkToEndOfLog();
         WebElement element = page.findElement(By.id("form1:file1"));
         element.sendKeys(fileToUpload.getAbsolutePath());
 
+        //Ensure the correct content type is used. 
+        assertNotNull("The 'multipart/form-data; boundary=' content type was not found!", jsfTestServer2.waitForStringInTraceUsingMark(".*multipart/form-data; boundary=.*"));
+
         page.findElement(By.id("form1:uploadButton")).click();
+
+        Log.info(c, name.getMethodName(), page.getPageSource());
+
         page.waitForCondition(driver -> page.isInPage("Ajax-SUCCESS"));
     }
 
-        private static File generateTempFile(String name, String ext, String content) throws IOException {
+    private static File generateTempFile(String name, String ext, String content) throws IOException {
         Path path = Files.createTempFile(name, "." + ext);
         Files.write(path, content.getBytes(), StandardOpenOption.APPEND);
         return path.toFile();
