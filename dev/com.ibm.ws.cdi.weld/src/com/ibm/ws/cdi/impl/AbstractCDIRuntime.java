@@ -182,7 +182,7 @@ public abstract class AbstractCDIRuntime implements CDIService, CDIRuntime, CDIP
     }
 
     @Override
-    public Optional<J2EEName> getModuleForClass(Class<?> clazz) {
+    public Optional<J2EEName> getModuleNameForClass(Class<?> clazz) {
         return Optional.ofNullable(getClassBeanDeploymentArchive(clazz))
                        .map(bda -> bda.getServices().get(EEModuleDescriptor.class))
                        .filter(desc -> desc.getType() == ModuleType.WEB || desc.getType() == ModuleType.EJB_JAR)

@@ -87,11 +87,11 @@ public interface CDIService {
     /**
      * Gets the J2EEName of the Web or EJB module containing the given class (if any)
      * <p>
-     * Result is non-deterministic if the class appears in two modules (e.g. same jar is referenced on the Manifest-Classpath of two wars)
+     * Result is non-deterministic if the class appears in two modules but there's only one {@code Class<T>} instance.
      *
      * @param clazz the class to get the module for
      * @return the J2EEName of the module, or nothing if the class is not in an archive which is part of a Web or EJB module
      */
-    public Optional<J2EEName> getModuleForClass(Class<?> clazz);
+    public Optional<J2EEName> getModuleNameForClass(Class<?> clazz);
 
 }

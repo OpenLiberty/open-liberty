@@ -82,4 +82,6 @@ tested.features:\
 	com.ibm.websphere.javaee.el.3.0;version=latest,\
 	com.ibm.websphere.javaee.jsp.2.3;version=latest,\
 	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
-	com.ibm.ws.cdi.interfaces;version=latest
+	com.ibm.ws.cdi.interfaces;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.container.service;version=latest
