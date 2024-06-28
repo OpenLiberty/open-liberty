@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -25,6 +26,7 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -150,6 +152,9 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
                                         resourceName, metadataIdentifier, application, module, component, entityTypes);
 
                 } catch (NamingException x) {
+                    FFDCFilter.processException(x, this.getClass().getName() + ".createEMBuilder", "155", this, new Object[] { (switchMetadata ? repoMetadata : extMetadata) });
+                    throw new CompletionException("Unable to find " + dataStore + " from " +
+                                                  (switchMetadata ? repoMetadata : extMetadata).getJ2EEName(), x);
                 }
             } else if (!DataExtension.DEFAULT_DATA_STORE.equals(resourceName)) {
                 // Check for resource references and persistence unit references where java:comp/env/ is omitted:
@@ -169,6 +174,8 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
                         resourceName = javaCompName;
                     }
                 } catch (NamingException x) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, javaCompName + " is not available in JNDI");
                 }
             }
         } finally {
@@ -214,12 +221,12 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
                                             (application == null ? 4 : application.length()) +
                                             (module == null ? 4 : module.length()) +
                                             (component == null ? 4 : component.length())) //
-                                                            .append("FutureEMBuilder@") //
-                                                            .append(Integer.toHexString(hashCode())) //
-                                                            .append(":").append(dataStore) //
-                                                            .append(' ').append(application) //
-                                                            .append('#').append(module) //
-                                                            .append('#').append(component);
+                        .append("FutureEMBuilder@") //
+                        .append(Integer.toHexString(hashCode())) //
+                        .append(":").append(dataStore) //
+                        .append(' ').append(application) //
+                        .append('#').append(module) //
+                        .append('#').append(component);
         return b.toString();
     }
 }
