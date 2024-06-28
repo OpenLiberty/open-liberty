@@ -198,10 +198,10 @@ public class JSPJava17Test {
         assertTrue("The response did not contain: success", response.getText().contains("success-text-block"));
         assertTrue("The response did not contain: success", response.getText().contains("success-pattern-matching"));
 
-        //Wait for FFDC to be produced so that it doesn't leak into another test when Jakarta EE 11 and Later is not active
+        //Wait for FFDC to be produced when Java 2 Security is enabled so that it doesn't leak into another test when Jakarta EE 11 and later is not active
         //Java2 Security is not enabled for Jakarta EE11 and above
 
-        if (!JakartaEEAction.isEE11OrLaterActive()){
+        if (!JakartaEEAction.isEE11OrLaterActive() && server.isJava2SecurityEnabled()){
             assertTrue("The expected FFDC was not produced!",server.waitForStringInLogUsingMark("FFDC1015I")!=null);
         }
     }
