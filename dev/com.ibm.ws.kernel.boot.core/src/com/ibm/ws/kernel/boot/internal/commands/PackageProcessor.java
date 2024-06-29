@@ -272,9 +272,6 @@ public class PackageProcessor implements ArchiveProcessor {
             archive.create();
         } catch (IOException e) {
             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.unableZipDir"), e));
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-            System.out.println(e.getCause().toString());
             Debug.printStackTrace(e);
             return ReturnCode.ERROR_SERVER_PACKAGE;
         } finally {
