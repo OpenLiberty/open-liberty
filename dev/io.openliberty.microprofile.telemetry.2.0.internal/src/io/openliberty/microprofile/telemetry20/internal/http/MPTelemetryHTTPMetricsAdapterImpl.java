@@ -38,6 +38,8 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
 
     private static final String INSTR_SCOPE = "io.openliberty.microprofile.telemetry20.internal.http";
 
+    private static final double NANO_CONVERSION = 0.000000001;
+
     @Override
     public void updateHttpMetrics(HttpStatAttributes httpStatAttributes, Duration duration, String appName) {
         OpenTelemetry otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo((appName == null) ? OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME : appName).getOpenTelemetry();
@@ -69,7 +71,9 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
                         .setExplicitBucketBoundariesAdvice(List.of(0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0, 2.5, 5.0, 7.5, 10.0)).build();
 
         Context ctx = Context.current();
-        dHistogram.record(duration.toSeconds(), retrieveAttributes(httpStatAttributes), ctx);
+
+        double seconds = duration.toNanos() * NANO_CONVERSION;
+        dHistogram.record(seconds, retrieveAttributes(httpStatAttributes), ctx);
 
     }
 
