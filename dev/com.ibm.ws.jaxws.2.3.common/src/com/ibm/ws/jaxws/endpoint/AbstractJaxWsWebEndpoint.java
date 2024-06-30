@@ -36,6 +36,7 @@ import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.frontend.WSDLGetInterceptor;
 import org.apache.cxf.frontend.WSDLGetUtils;
 import org.apache.cxf.interceptor.Interceptor;
+import org.apache.cxf.jaxb.JAXBDataBinding;
 import org.apache.cxf.jaxws.support.JaxWsEndpointImpl;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
@@ -44,6 +45,7 @@ import org.apache.cxf.transport.servlet.BaseUrlHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.JaxWsConstants;
+import com.ibm.ws.jaxws.internal.WebServiceConfigConstants;
 
 import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.feature.Feature;
@@ -57,6 +59,11 @@ import com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor;
 import com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor;
 import com.ibm.ws.jaxws.utils.JaxWsUtils;
 import com.ibm.ws.jaxws.utils.StringUtils;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.kernel.service.util.JavaInfo;
+
+import io.openliberty.jaxws.jaxb.IgnoreUnexpectedElementValidationEventHandler;
+
 import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.Bus;
 
@@ -84,7 +91,10 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
 
     protected boolean disableAddressUpdates;
 
-    protected String forcedBaseAddress;
+    protected String forcedBaseAddress;    
+    
+    // Flag tells us if the message for a call to a beta method has been issued
+    private static boolean issuedBetaMessage = false;
 
     public AbstractJaxWsWebEndpoint(EndpointInfo endpointInfo, JaxWsModuleMetaData jaxWsModuleMetaData) {
         this.endpointInfo = endpointInfo;
@@ -231,20 +241,160 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
             updateDestination(request);
             final HttpServletRequest req = request;
             final HttpServletResponse resp = response;
-            try {
-                AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
-                    @Override
-                    public Void run() throws IOException {
-                        destination.invoke(servletConfig, servletConfig.getServletContext(), req, resp);
-                        return null;
-                    }
-                });
-            } catch (PrivilegedActionException pae) {
-                throw (IOException) pae.getException();
+            
+            if (!ProductInfo.getBetaEdition()) {           
+
+                try {
+                    AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                        @Override
+                        public Void run() throws IOException {
+                            destination.invoke(servletConfig, servletConfig.getServletContext(), req, resp);
+                            return null;
+                        }
+                    });
+                } catch (PrivilegedActionException pae) {
+                    throw (IOException) pae.getException();
+                }
+            } else {
+                // Running beta exception, issue message if we haven't already issued one for this class
+                if (!issuedBetaMessage) {
+                    Tr.info(tc, "BETA: A webServiceClient configuration beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                    issuedBetaMessage = !issuedBetaMessage;
+                }
+                
+                configureWebServicesConfig();
+                
+                try {
+                    AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                        @Override
+                        public Void run() throws IOException {
+                            destination.invoke(servletConfig, servletConfig.getServletContext(), req, resp);
+                            return null;
+                        }
+                    });
+                } catch (PrivilegedActionException pae) {
+                    throw (IOException) pae.getException();
+                }
             }
+                    
+
+
         } catch (IOException e) {
             throw new ServletException(e);
         }
+    }
+
+    /**
+     * 
+     */
+    private void configureWebServicesConfig() {
+        
+        // Get the portName from the Liberty's EndpointInfo
+        String portName = endpointInfo.getPortComponentName();
+        boolean debug = tc.isDebugEnabled();
+        
+        // Use CXF's EndpointInfo to set the configuration properties
+        org.apache.cxf.service.model.EndpointInfo cxfEndpointInfo = destination.getEndpointInfo();
+        
+        if (debug) {
+            Tr.info(tc, portName + " will be used to find webService Configuration");
+        }
+        
+        Object enableSchemaValidation = null;
+
+        Object ignoreUnexpectedElements = null;
+
+        // if portName != null, try to get the values from configuration using it
+        if (portName != null) {
+            // if portName != null, try to get enableSchemaValidation value from configuration, if it's == null try it to get the default configuration value
+            if(WebServicesConfigHolder.getEnableSchemaValidation(portName) != null) {
+                
+                enableSchemaValidation = WebServicesConfigHolder.getEnableSchemaValidation(portName);
+                
+            } else if (WebServicesConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) {
+                
+                enableSchemaValidation = WebServicesConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP);
+                
+            }
+            
+
+            // if messageServiceName != null, try to get ignoreUnexpectedElements value from configuration, if it's == null try to get the default configuration value
+            if(WebServicesConfigHolder.getIgnoreUnexpectedElements(portName) != null) {
+                
+                ignoreUnexpectedElements = WebServicesConfigHolder.getIgnoreUnexpectedElements(portName);
+                
+            } else if (WebServicesConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) != null) {
+                
+                ignoreUnexpectedElements = WebServicesConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP);
+                
+            }
+
+            
+        } else {
+            // if messageSevice == null then try to get the global configuration values, if its not set keep values null
+            enableSchemaValidation = (WebServicesConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP) : null;
+
+            ignoreUnexpectedElements = (WebServicesConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) : null;            
+
+        }
+        
+        
+        if ((enableSchemaValidation == null && ignoreUnexpectedElements == null)) {
+            if (debug) {
+                Tr.info(tc, "No webServiceClient configuration found. returning.");
+            }
+            return;
+        }
+        
+        Map<String, String> endpointInfoProperties = endpointInfo.getEndpointProperties();
+
+        // Enable or disable schema validation as long as property is non-null
+        if ( enableSchemaValidation != null) {
+            cxfEndpointInfo.setProperty("schema-validation-enabled",  enableSchemaValidation);
+
+            if (debug) {
+                Tr.info(tc, "Set schema-validation-enabled to " + enableSchemaValidation);
+
+            }
+        } else {
+
+            if (debug) {
+                Tr.info(tc, "enableSchemaValdiation was null, not configuring schema-validation-enabled on client the client");
+
+            }
+        }
+        
+//        if(JavaInfo.majorVersion() != 8 && JavaInfo.vendor().equals("ibm")) {
+//
+//            if (debug) {
+//                Tr.info(tc, "XLXP does not support Validation Event Handlers, no ignoreUnexpecteeElements configuration will be applied");
+//
+//            }
+//            
+//            return;
+//        
+//        }
+       
+
+        // Set ignoreUnexpectedElements if true
+        if (ignoreUnexpectedElements != null && (boolean) ignoreUnexpectedElements == true) {
+            cxfEndpointInfo.setProperty(JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, ignoreUnexpectedElements);
+            
+            // Set our custom validation event handler
+            IgnoreUnexpectedElementValidationEventHandler unexpectedElementValidationEventHandler = new IgnoreUnexpectedElementValidationEventHandler();
+            cxfEndpointInfo.setProperty(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER, unexpectedElementValidationEventHandler); 
+
+            if (debug) {
+                Tr.info(tc, "Set JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER to  " + ignoreUnexpectedElements);
+            }
+
+        } else {
+            if (debug) {
+                Tr.info(tc, "ignoreUnexpectedElements was " + ignoreUnexpectedElements + " not configuring ignoreUnexpectedElements on the client");
+
+            }
+        }
+        
     }
 
     @SuppressWarnings("rawtypes")
