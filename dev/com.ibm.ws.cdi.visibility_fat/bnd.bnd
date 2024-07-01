@@ -39,8 +39,11 @@ tested.features:\
         connectors-2.1,\
         jakartaee-10.0,\
         servlet-6.0,\
+        servlet-6.1,\
         mpConfig-3.0,\
+        mpConfig-3.1,\
         mpFaultTolerance-4.0,\
+        mpFaultTolerance-4.1,\
         data-1.0,\
         webprofile-11.0,\
         expressionlanguage-6.0,\
