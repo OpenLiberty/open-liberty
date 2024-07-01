@@ -33,6 +33,7 @@ import oracle.jdbc.pool.OracleDataSource;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                OracleCheckpointTest.class,
                 OracleCustomTrace.class,
                 OracleTest.class,
                 OracleTraceTest.class,
@@ -42,17 +43,28 @@ import oracle.jdbc.pool.OracleDataSource;
 public class FATSuite extends TestContainerSuite {
 
     private static final DockerImageName ORACLE_IMAGE_NAME = DockerImageName.parse("gvenzl/oracle-free:23.3-slim-faststart");
-    public static OracleContainer oracle = new OracleContainer(ORACLE_IMAGE_NAME)
-                    .usingSid()
-                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25))
-                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Oracle"));
+    public static OracleContainer oracle = createOracleContainer0();
 
     public static OracleContainer getSharedOracleContainer() {
         if (!oracle.isRunning()) {
             oracle.start();
         }
-        initDatabaseTables();
+        initDatabaseTables(oracle);
         return oracle;
+    }
+
+    public static OracleContainer createOracleContainer() {
+        OracleContainer result = createOracleContainer0();
+        result.start();
+        initDatabaseTables(result);
+        return result;
+    }
+
+    private static OracleContainer createOracleContainer0() {
+        return new OracleContainer(ORACLE_IMAGE_NAME)
+                        .usingSid()
+                        .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25))
+                        .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Oracle"));
     }
 
     @AfterClass
@@ -62,7 +74,7 @@ public class FATSuite extends TestContainerSuite {
         }
     }
 
-    private static void initDatabaseTables() {
+    private static void initDatabaseTables(OracleContainer container) {
         Properties connProps = new Properties();
         // This property prevents "ORA-01882: timezone region not found" errors due to
         // the Oracle DB not understanding
@@ -72,9 +84,9 @@ public class FATSuite extends TestContainerSuite {
         try {
             OracleDataSource ds = new OracleDataSource();
             ds.setConnectionProperties(connProps);
-            ds.setUser(oracle.getUsername());
-            ds.setPassword(oracle.getPassword());
-            ds.setURL(oracle.getJdbcUrl());
+            ds.setUser(container.getUsername());
+            ds.setPassword(container.getPassword());
+            ds.setURL(container.getJdbcUrl());
 
             try (Connection conn = ds.getConnection()) {
                 Statement stmt = conn.createStatement();
