@@ -15,6 +15,7 @@ package componenttest.topology.utils.tck;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
@@ -127,10 +128,20 @@ public class TCKResultsWriter {
                 }
             }
             output.write("----");
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (SAXException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Files written to the extras directory are copied to the build directory on LibFS (by default, the location is configurable on the pipeline).
+        // This copying only occurs in CI Orchestrator environments as the code wrapping FAT execution is responsible for performing the upload to LibFS.
+        // Here, the use case is to make .adoc files available in the build directory without having to extract them from the FAT output zip every time.
+        try {
+            Path extrasPath = Paths.get("extras", filename);
+            Files.createDirectories(extrasPath.getParent());
+            Files.copy(outputPath, extrasPath);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
