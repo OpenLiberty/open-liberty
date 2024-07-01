@@ -9,6 +9,7 @@
  *******************************************************************************/
 
 addRequiredLibraries.dependsOn addDerby
+addRequiredLibraries.dependsOn addJakartaTransformer
 
 configurations {
   requiredLibs {
@@ -21,3 +22,4 @@ dependencies {
   requiredLibs project(':com.ibm.tx.jta')
   requiredLibs project(':io.openliberty.org.eclipse.microprofile')
 }
+

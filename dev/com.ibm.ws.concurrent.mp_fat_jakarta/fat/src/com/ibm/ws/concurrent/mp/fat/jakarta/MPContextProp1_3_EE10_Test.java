@@ -23,6 +23,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -31,13 +32,14 @@ import componenttest.topology.utils.FATServletClient;
 @MinimumJavaLevel(javaLevel = 11)
 public class MPContextProp1_3_EE10_Test extends FATServletClient {
 
+    private static final String SERVER_NAME = "com.ibm.ws.concurrent.mp.fat.1.3.ee10";
     private static final String APP_NAME = "MPContextProp1_3_EE10_App";
 
-    @Server("com.ibm.ws.concurrent.mp.fat.1.3.ee10")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = FATSuite.repeat("com.ibm.ws.concurrent.mp.fat.1.3.ee10", FATSuite.MP61_CTX13);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP70_EE11, MicroProfileActions.MP61);
 
     @BeforeClass
     public static void setUp() throws Exception {
