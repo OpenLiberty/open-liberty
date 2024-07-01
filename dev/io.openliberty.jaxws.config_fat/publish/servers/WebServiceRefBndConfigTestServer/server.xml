@@ -1,0 +1,20 @@
+<server>
+    <featureManager>
+        <feature>jaxws-2.2</feature>
+        <feature>servlet-3.1</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <webApplication name="simpleTestService" location="simpleTestService.war" context-root="simpleTestService">
+		<webservices-bnd>
+			<service-ref name="service/SimpleEchoServiceServer">
+				<properties enableLoggingInOutInterceptor="true" />
+			</service-ref>
+		</webservices-bnd>
+	</webApplication>
+    
+    <applicationManager autoExpand="true" />
+    
+    <javaPermission className="java.security.AllPermission" name="*" actions="*"/>
+</server>
