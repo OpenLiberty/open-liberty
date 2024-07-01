@@ -30,7 +30,7 @@ import com.ibm.ws.kernel.productinfo.ProductInfo;
  * The declarative service responsible for processing a given <webService> element in the server.xml
  * Adapted from com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfig
  */
-@Component(configurationPid = "com.ibm.ws.jaxws.clientConfig",
+@Component(configurationPid = "com.ibm.ws.jaxws.config",
            configurationPolicy = ConfigurationPolicy.REQUIRE, // Must be ConfigurationPolicy.REQUIRE to prevent the DS being activated without the configuration present. 
            service = { WebServiceConfig.class },
            immediate = true,
@@ -53,7 +53,7 @@ public class WebServiceConfigImpl extends WebServiceConfig {
         } else {
         // Running beta exception, issue message if we haven't already issued one for this class
             if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A webService configuration beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                Tr.debug(tc, "BETA: A webService configuration beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
                 issuedBetaMessage = !issuedBetaMessage;
            }
         }
@@ -79,9 +79,9 @@ public class WebServiceConfigImpl extends WebServiceConfig {
             return;
         }
         
-        String portName = getPortName(properties); // find serviceName
+        String portName = getPortName(properties); // find portName
         
-        // Add config for serviceName
+        // Add config for portName
         WebServicesConfigHolder.addConfig(this.toString(), portName,
                                                 filterProps(properties));
     }

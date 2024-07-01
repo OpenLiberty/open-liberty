@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2022 IBM Corporation and others.
+ * Copyright (c) 2019,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -258,7 +258,7 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
             } else {
                 // Running beta exception, issue message if we haven't already issued one for this class
                 if (!issuedBetaMessage) {
-                    Tr.info(tc, "BETA: A webServiceClient configuration beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                    Tr.debug(tc, "BETA: A webService configuration beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
                     issuedBetaMessage = !issuedBetaMessage;
                 }
                 
@@ -297,7 +297,7 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
         org.apache.cxf.service.model.EndpointInfo cxfEndpointInfo = destination.getEndpointInfo();
         
         if (debug) {
-            Tr.info(tc, portName + " will be used to find webService Configuration");
+            Tr.debug(tc, portName + " will be used to find webService Configuration");
         }
         
         Object enableSchemaValidation = null;
@@ -318,7 +318,7 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
             }
             
 
-            // if messageServiceName != null, try to get ignoreUnexpectedElements value from configuration, if it's == null try to get the default configuration value
+            // if portName != null, try to get ignoreUnexpectedElements value from configuration, if it's == null try to get the default configuration value
             if(WebServicesConfigHolder.getIgnoreUnexpectedElements(portName) != null) {
                 
                 ignoreUnexpectedElements = WebServicesConfigHolder.getIgnoreUnexpectedElements(portName);
@@ -331,7 +331,7 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
 
             
         } else {
-            // if messageSevice == null then try to get the global configuration values, if its not set keep values null
+            // if portName == null then try to get the global configuration values, if its not set keep values null
             enableSchemaValidation = (WebServicesConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP) : null;
 
             ignoreUnexpectedElements = (WebServicesConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) : null;            
@@ -341,7 +341,7 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
         
         if ((enableSchemaValidation == null && ignoreUnexpectedElements == null)) {
             if (debug) {
-                Tr.info(tc, "No webServiceClient configuration found. returning.");
+                Tr.debug(tc, "No webService configuration found. returning.");
             }
             return;
         }
@@ -353,31 +353,21 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
             cxfEndpointInfo.setProperty("schema-validation-enabled",  enableSchemaValidation);
 
             if (debug) {
-                Tr.info(tc, "Set schema-validation-enabled to " + enableSchemaValidation);
+                Tr.debug(tc, "Set schema-validation-enabled to " + enableSchemaValidation);
 
             }
         } else {
 
             if (debug) {
-                Tr.info(tc, "enableSchemaValdiation was null, not configuring schema-validation-enabled on client the client");
+                Tr.debug(tc, "enableSchemaValdiation was null, not configuring schema-validation-enabled on the Web Service Endpoint");
 
             }
         }
-        
-//        if(JavaInfo.majorVersion() != 8 && JavaInfo.vendor().equals("ibm")) {
-//
-//            if (debug) {
-//                Tr.info(tc, "XLXP does not support Validation Event Handlers, no ignoreUnexpecteeElements configuration will be applied");
-//
-//            }
-//            
-//            return;
-//        
-//        }
        
 
         // Set ignoreUnexpectedElements if true
         if (ignoreUnexpectedElements != null && (boolean) ignoreUnexpectedElements == true) {
+           
             cxfEndpointInfo.setProperty(JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, ignoreUnexpectedElements);
             
             // Set our custom validation event handler
@@ -385,12 +375,12 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
             cxfEndpointInfo.setProperty(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER, unexpectedElementValidationEventHandler); 
 
             if (debug) {
-                Tr.info(tc, "Set JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER to  " + ignoreUnexpectedElements);
+                Tr.debug(tc, "Set JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER to  " + ignoreUnexpectedElements);
             }
 
         } else {
             if (debug) {
-                Tr.info(tc, "ignoreUnexpectedElements was " + ignoreUnexpectedElements + " not configuring ignoreUnexpectedElements on the client");
+                Tr.debug(tc, "ignoreUnexpectedElements was " + ignoreUnexpectedElements + " not configuring ignoreUnexpectedElements on the Web Service Endpoint");
 
             }
         }

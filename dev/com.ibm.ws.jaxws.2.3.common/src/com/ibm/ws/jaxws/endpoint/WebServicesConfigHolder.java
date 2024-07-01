@@ -12,9 +12,9 @@ package com.ibm.ws.jaxws.endpoint;
 import com.ibm.ws.jaxws.internal.ConfigHolder;
 
 /**
- * The webServiceClient configuration holder, currently since 
+ * The webService configuration holder, currently since 
  * configuration is identical with webService this just extends the
- * ConfigHolder class. Any client unqiue configuration to be held should be 
+ * ConfigHolder class. Any client unique configuration to be held should be 
  * added here.
  */
 public class WebServicesConfigHolder extends ConfigHolder {
