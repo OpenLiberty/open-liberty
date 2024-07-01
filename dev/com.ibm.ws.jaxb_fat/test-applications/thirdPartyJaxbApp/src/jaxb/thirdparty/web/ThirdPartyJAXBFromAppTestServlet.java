@@ -54,7 +54,10 @@ public class ThirdPartyJAXBFromAppTestServlet extends FATServlet {
     @Test
     @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE10_FEATURES })
     public void testJaxbAPILoadedFromApp() throws Exception {
-
+        if (System.getProperty("java.version").startsWith("1.")) { // Meaning it's Java 8 or before Java 8
+            LOG.info("testJaxbAPILoadedFromApp test is skipped for Java 8");
+            return; // Skip the test for for Java version prior to 8
+        }
         // Verify JAX-B API came from the application dependencies
         ClassLoader apiLoader = JAXBContext.class.getClassLoader();
         CodeSource apiSrc = JAXBContext.class.getProtectionDomain().getCodeSource();
@@ -75,6 +78,10 @@ public class ThirdPartyJAXBFromAppTestServlet extends FATServlet {
     @Test
     @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
     public void testJaxbAPILoadedFromAppEE8AndEE10() throws Exception {
+        if (System.getProperty("java.version").startsWith("1.")) { // Meaning it's Java 8 or before Java 8
+            LOG.info("testJaxbAPILoadedFromAppEE8AndEE10 test is skipped for Java 8");
+            return; // Skip the test for for Java version prior to 8
+        }
         // Verify JAX-B API came from the application dependencies
         ClassLoader apiLoader = JAXBContext.class.getClassLoader();
         CodeSource apiSrc = JAXBContext.class.getProtectionDomain().getCodeSource();
