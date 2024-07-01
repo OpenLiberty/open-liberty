@@ -34,7 +34,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
  * There is a detailed output on specific
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.EXPERIMENTAL) //Change this back to Lite when the 2.0 version of the telemetry TCK is published. I've tested locally with a snapshot and it passed everything.
+@Mode(TestMode.LITE)
 public class Telemetry20MetricsConfigTCKLauncher {
 
     private static final String SERVER_NAME = "Telemetry20MetricsConfigTCKServer";
