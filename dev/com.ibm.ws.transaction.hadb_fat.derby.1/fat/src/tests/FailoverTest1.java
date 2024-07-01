@@ -17,7 +17,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.net.ConnectException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,9 +30,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.tx.jta.ut.util.FailoverTestUtils;
 import com.ibm.tx.jta.ut.util.TxTestUtils;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
+import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
@@ -136,7 +141,7 @@ public class FailoverTest1 extends FailoverTest {
     };
 
     @AfterClass
-    public static void afterSuite() {
+    public static void afterSuite() throws SQLException {
         FATSuite.afterSuite("HATABLE", "WAS_TRAN_LOG", "WAS_PARTNER_LOG");
     }
 
@@ -155,11 +160,17 @@ public class FailoverTest1 extends FailoverTest {
         serverMsgs = new String[] { "WTRN0112E", };
 
         try {
-            FATUtils.startServers(runner, server);
+            if (TxTestContainerSuite.isDerby()) {
+                FATUtils.startServers(runner, server);
 
-            runInServletAndCheck(server, SERVLET_NAME, "setupForRecoverableFailover");
+                runInServletAndCheck(server, SERVLET_NAME, "setupForRecoverableFailover");
 
-            FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, server);
+                FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, server);
+            } else {
+                try (Connection con = TxTestContainerSuite.testContainer.createConnection("")) {
+                    FailoverTestUtils.setupForRecoverableFailover(con);
+                }
+            }
 
             Log.info(this.getClass(), method, "set timeout");
             server.setServerStartTimeout(START_TIMEOUT);
@@ -194,11 +205,17 @@ public class FailoverTest1 extends FailoverTest {
 
         server = defaultServer;
 
-        FATUtils.startServers(runner, server);
+        if (TxTestContainerSuite.isDerby()) {
+            FATUtils.startServers(runner, server);
 
-        runInServletAndCheck(server, SERVLET_NAME, "setupForRecoverableFailover");
+            runInServletAndCheck(server, SERVLET_NAME, "setupForRecoverableFailover");
 
-        FATUtils.stopServers(server);
+            FATUtils.stopServers(server);
+        } else {
+            try (Connection con = TxTestContainerSuite.testContainer.createConnection("")) {
+                FailoverTestUtils.setupForRecoverableFailover(con);
+            }
+        }
 
         Log.info(this.getClass(), method, "set timeout");
         server.setServerStartTimeout(START_TIMEOUT);
@@ -225,11 +242,17 @@ public class FailoverTest1 extends FailoverTest {
 
         server = retriesServer;
 
-        FATUtils.startServers(runner, server);
+        if (TxTestContainerSuite.isDerby()) {
+            FATUtils.startServers(runner, server);
 
-        runInServletAndCheck(server, SERVLET_NAME, "setupForRecoverableFailureMultipleRetries");
+            runInServletAndCheck(server, SERVLET_NAME, "setupForRecoverableFailureMultipleRetries");
 
-        FATUtils.stopServers(server);
+            FATUtils.stopServers(server);
+        } else {
+            try (Connection con = TxTestContainerSuite.testContainer.createConnection("")) {
+                FailoverTestUtils.setupForRecoverableFailureMultipleRetries(con);
+            }
+        }
 
         Log.info(this.getClass(), method, "set timeout");
         server.setServerStartTimeout(START_TIMEOUT);
@@ -272,11 +295,17 @@ public class FailoverTest1 extends FailoverTest {
 
         server = defaultServer;
 
-        FATUtils.startServers(runner, server);
+        if (TxTestContainerSuite.isDerby()) {
+            FATUtils.startServers(runner, server);
 
-        runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableFailover");
+            runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableFailover");
 
-        FATUtils.stopServers(server);
+            FATUtils.stopServers(server);
+        } else {
+            try (Connection con = TxTestContainerSuite.testContainer.createConnection("")) {
+                FailoverTestUtils.setupForNonRecoverableFailover(con);
+            }
+        }
 
         Log.info(this.getClass(), method, "set timeout");
         server.setServerStartTimeout(START_TIMEOUT);
@@ -315,11 +344,17 @@ public class FailoverTest1 extends FailoverTest {
 
         server = defaultServer;
 
-        FATUtils.startServers(runner, server);
+        if (TxTestContainerSuite.isDerby()) {
+            FATUtils.startServers(runner, server);
 
-        runInServletAndCheck(server, SERVLET_NAME, "setupForStartupFailover");
+            runInServletAndCheck(server, SERVLET_NAME, "setupForStartupFailover");
 
-        FATUtils.stopServers(server);
+            FATUtils.stopServers(server);
+        } else {
+            try (Connection con = TxTestContainerSuite.testContainer.createConnection("")) {
+                FailoverTestUtils.setupForStartupFailover(con);
+            }
+        }
 
         Log.info(this.getClass(), method, "set timeout");
         server.setServerStartTimeout(START_TIMEOUT);
@@ -392,11 +427,17 @@ public class FailoverTest1 extends FailoverTest {
 
         server = defaultServer;
 
-        FATUtils.startServers(runner, server);
+        if (TxTestContainerSuite.isDerby()) {
+            FATUtils.startServers(runner, server);
 
-        runInServletAndCheck(server, SERVLET_NAME, "setupForDuplicationRestart");
+            runInServletAndCheck(server, SERVLET_NAME, "setupForDuplicationRestart");
 
-        FATUtils.stopServers(server);
+            FATUtils.stopServers(server);
+        } else {
+            try (Connection con = TxTestContainerSuite.testContainer.createConnection("")) {
+                FailoverTestUtils.setupForDuplicationRestart(con);
+            }
+        }
 
         Log.info(this.getClass(), method, "set timeout");
         server.setServerStartTimeout(START_TIMEOUT);
@@ -438,11 +479,17 @@ public class FailoverTest1 extends FailoverTest {
 
         server = defaultServer;
 
-        FATUtils.startServers(runner, server);
+        if (TxTestContainerSuite.isDerby()) {
+            FATUtils.startServers(runner, server);
 
-        runInServletAndCheck(server, SERVLET_NAME, "setupForDuplicationRuntime");
+            runInServletAndCheck(server, SERVLET_NAME, "setupForDuplicationRuntime");
 
-        FATUtils.stopServers(server);
+            FATUtils.stopServers(server);
+        } else {
+            try (Connection con = TxTestContainerSuite.testContainer.createConnection("")) {
+                FailoverTestUtils.setupForDuplicationRuntime(con);
+            }
+        }
 
         Log.info(this.getClass(), method, "set timeout");
         server.setServerStartTimeout(START_TIMEOUT);
@@ -491,35 +538,34 @@ public class FailoverTest1 extends FailoverTest {
     }
 
     /**
-     * This is normal recovery processing. We want to check theat there are no duplicate rows in "normal" recovery processing.
+     * This is normal recovery processing. We want to check that there are no duplicate rows in "normal" recovery processing.
      * Crash the server and check that recovery succeeds and that there are no duplicate records in the log.
      *
      */
     @Test
     public void testAbsenceOfDuplicatesInRecoveryLogs() throws Exception {
-        final String method = "testAbsenceOfDuplicatesInRecoveryLogs";
-        StringBuilder sb = null;
 
         server = defaultServer;
 
-        FATUtils.startServers(runner, server);
+        if (TxTestContainerSuite.isDerby()) {
+            FATUtils.startServers(runner, server);
 
-        sb = runTestWithResponse(server, SERVLET_NAME, "setupForHalt");
-        assertTrue("setupForHalt did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
+            runTest(server, SERVLET_NAME, "setupForHalt");
 
-        FATUtils.stopServers(server);
+            FATUtils.stopServers(server);
+        } else {
+            try (Connection con = TxTestContainerSuite.testContainer.createConnection("")) {
+                FailoverTestUtils.setupForHalt(con);
+            }
+        }
 
-        Log.info(this.getClass(), method, "set timeout");
         server.setServerStartTimeout(START_TIMEOUT);
-
         FATUtils.startServers(runner, server);
 
         try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "driveTransactions");
+            runTest(server, SERVLET_NAME, "driveTransactions");
             fail("driveTransactions did not throw an Exception");
-        } catch (Exception e) {
-            // Halting the server generates a java.net.SocketException
-            Log.info(this.getClass(), method, "driveTransactions caught exception " + e);
+        } catch (IOException e) {
         }
 
         // Server should have halted, check for message

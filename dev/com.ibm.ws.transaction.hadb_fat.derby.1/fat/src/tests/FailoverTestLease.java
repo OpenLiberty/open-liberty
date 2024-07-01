@@ -15,6 +15,7 @@ package tests;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.After;
@@ -154,7 +155,7 @@ public class FailoverTestLease extends FATServletClient {
     }
 
     @AfterClass
-    public static void afterSuite() {
+    public static void afterSuite() throws SQLException {
         FATSuite.afterSuite("HATABLE", "WAS_LEASES_LOG", "WAS_PARTNER_LOGCLOUDSTALE", "WAS_TRAN_LOGCLOUDSTALE");
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.JdbcDatabaseContainer.NoDriverFoundException;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -48,62 +49,63 @@ public class TxTestContainerSuite extends TestContainerSuite {
         Log.info(TxTestContainerSuite.class, "beforeSuite", "started test container of type: " + databaseContainerType);
     }
 
-    public static void afterSuite(String ...tables) {
+    public static void afterSuite(String ...tables) throws SQLException {
     	dropTables(tables);
     }
     
-    public static void showTables() {
+    public static void showTables() throws NoDriverFoundException, SQLException {
     	Log.info(TxTestContainerSuite.class, "showTables", "");
-        try (Connection conn = testContainer.createConnection("")) {
-        	
-            DatabaseMetaData metaData = conn.getMetaData();
-            String[] types = {"TABLE"};
-            //Retrieving the columns in the database
-            ResultSet tables = metaData.getTables(null, null, "%", types);
-            while (tables.next()) {
-            	Log.info(TxTestContainerSuite.class, "showTables", tables.getString("TABLE_NAME"));
-            }
-        } catch (SQLException e) {
-        	Log.error(TxTestContainerSuite.class, "showTables", e);
+    	if (!isDerby()) {
+    		try (Connection conn = testContainer.createConnection("")) {
+    			final DatabaseMetaData metaData = conn.getMetaData();
+    			final String[] types = {"TABLE"};
+    			// Retrieving the columns in the database
+    			try (ResultSet tables = metaData.getTables(null, null, "%", types)) {
+    				while (tables.next()) {
+    					Log.info(TxTestContainerSuite.class, "showTables", tables.getString("TABLE_NAME"));
+    				}
+    			}
+    		}
         }
     }
 
-    public static void dropTables(String ...tables) {
+    public static void dropTables(String ...tables) throws SQLException {
     	Log.entering(TxTestContainerSuite.class, "dropTables");
-        try (Connection conn = testContainer.createConnection(""); Statement stmt = conn.createStatement()) {
-        	if (tables.length != 0) {
-            	Log.info(TxTestContainerSuite.class, "dropTables", "explicit");
-        		for (String table : tables) {
-        			dropTable(stmt, table);
-        		}
-        	} else {
-        		DatabaseMetaData metaData = conn.getMetaData();
-        		String[] types = {"TABLE"};
-        		//Retrieving the columns in the database
-        		ResultSet existing = metaData.getTables(null, null, "%", types);
-        		while (existing.next()) {
-        			dropTable(stmt, existing.getString("TABLE_NAME"));
-        		}
-        	}
-        } catch (SQLException e) {
-        	Log.error(TxTestContainerSuite.class, "dropTables", e);
-        }
+    	if (!isDerby()) {
+    		try (Connection con = testContainer.createConnection(""); Statement stmt = con.createStatement()) {
+    			if (tables.length != 0) {
+    				Log.info(TxTestContainerSuite.class, "dropTables", "explicit");
+    				for (String table : tables) {
+    					dropTable(stmt, table);
+    				}
+    			} else {
+    				final DatabaseMetaData metaData = con.getMetaData();
+    				final String[] types = {"TABLE"};
+    				// Retrieving the columns in the database
+    				try (ResultSet existing = metaData.getTables(null, null, "%", types)) {
+    					while (existing.next()) {
+    						dropTable(stmt, existing.getString("TABLE_NAME"));
+    					}
+    				}
+    			}
+    		}
+    	}
     }
     
-    private static void dropTable(Statement stmt, String table) {
-    	try {
-    		switch (databaseContainerType) {
-    		case Oracle:
-            	Log.info(TxTestContainerSuite.class, "dropTables", "DROP TABLE " + table);
-				stmt.execute("DROP TABLE " + table);
-    			break;
-    		default:
-            	Log.info(TxTestContainerSuite.class, "dropTables", "DROP TABLE IF EXISTS " + table);
-				stmt.execute("DROP TABLE IF EXISTS " + table);
-    		}
-		} catch (Exception e) {
-        	Log.error(TxTestContainerSuite.class, "dropTables", e);
-		}
+    private static void dropTable(Statement stmt, String table) throws SQLException {
+    	final boolean result;
+    	final String ddl;
+
+    	switch (databaseContainerType) {
+    	case Oracle:
+    		ddl = "DROP TABLE " + table;
+    		break;
+    	default:
+    		ddl = "DROP TABLE IF EXISTS " + table;
+    	}
+
+    	result = stmt.execute(ddl);
+		Log.info(TxTestContainerSuite.class, "dropTables", ddl + " returned " + result);
     }
 
 	public static boolean isDerby() {
@@ -111,5 +113,6 @@ public class TxTestContainerSuite extends TestContainerSuite {
 	}
 
 	public static void setType(DatabaseContainerType type) {
-		databaseContainerType = type;	}
+		databaseContainerType = type;
+	}
 }

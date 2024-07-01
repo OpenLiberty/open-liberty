@@ -14,6 +14,8 @@ package tests;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.sql.SQLException;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -129,7 +131,7 @@ public class FailoverTestRetriableCodes extends FailoverTest {
     };
 
     @AfterClass
-    public static void afterSuite() {
+    public static void afterSuite() throws SQLException {
         FATSuite.afterSuite("HATABLE", "WAS_TRAN_LOG", "WAS_PARTNER_LOG");
     }
 

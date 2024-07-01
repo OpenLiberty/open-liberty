@@ -12,6 +12,8 @@
  *******************************************************************************/
 package tests;
 
+import java.sql.SQLException;
+
 import org.junit.After;
 import org.junit.Before;
 
@@ -36,7 +38,7 @@ public class CloudTestBase extends FATServletClient {
                                                                 "WAS_TRAN_LOGcloud0021"
     };
 
-    protected static void dropTables() {
+    protected static void dropTables() throws SQLException {
         Log.info(CloudTestBase.class, "dropTables", String.join(", ", testRecoveryTables));
         TxTestContainerSuite.dropTables(testRecoveryTables);
     }
