@@ -390,12 +390,25 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
             }
         }
 
+        //Liberty Change begin
         if (this.executorService != null) {
-            resteasyClientBuilder.executorService(this.executorService);
+            resteasyClientBuilder.executorService(new AsyncClientExecutorService(this.executorService));
         } else {
-            this.executorService = ContextualExecutors.threadPool();
-            resteasyClientBuilder.executorService(executorService, !executorService.isManaged());
+            // If the executorService is null then we want to use the default managed executor service if available, 
+            // otherwise use the default Liberty thread pool.
+            Optional<ExecutorService> managedExecutor = OsgiServices.getManagedExecutorService();
+            final boolean cleanupExecutor;
+            if (managedExecutor.isPresent()) {
+                cleanupExecutor = false;
+                this.executorService = ContextualExecutors.wrap(managedExecutor.get(), true);
+            } else {
+                this.executorService = ContextualExecutors.threadPool(); 
+                cleanupExecutor = !executorService.isManaged();
+            }
+            resteasyClientBuilder.executorService(new AsyncClientExecutorService(executorService), cleanupExecutor);
         }
+        //Liberty Change end
+
         resteasyClientBuilder.register(DEFAULT_MEDIA_TYPE_FILTER);
         resteasyClientBuilder.register(METHOD_INJECTION_FILTER);
         resteasyClientBuilder.register(new ClientHeadersRequestFilter(headers));
