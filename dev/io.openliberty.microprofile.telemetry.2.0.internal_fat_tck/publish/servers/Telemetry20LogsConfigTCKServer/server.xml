@@ -41,7 +41,7 @@
     <!-- Test makes requests to localhost using HttpUrlConnection -->
     <javaPermission className="java.net.URLPermission" name="http://localhost:*/-" actions="*" />
     <javaPermission className="java.lang.management.ManagementPermission" name="monitor"/>
-    <javaPermission className="java.io.FilePermission" name="wlp/usr/servers/Telemetry20LogsConfigTCKServer/logs/messages.log" actions="read"/>
+    <javaPermission className="java.io.FilePermission" name="${server.output.dir}/servers/logs/messages.log" actions="read"/>
 
     <include location="../fatTestPorts.xml" />
 </server>
