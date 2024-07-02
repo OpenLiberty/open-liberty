@@ -132,4 +132,11 @@ public interface EsaResource extends RepositoryResource, ApplicableToProduct {
      * @return The AppliesToFilter header property
      */
     public Collection<AppliesToFilterInfo> getAppliesToFilterInfo();
+
+    /**
+     * Returns a collection of platform Strings this feature "belongs" in
+     *
+     * @return a collection of platform Strings this feature "belongs" in, WLP-Platforms header property
+     */
+    public Collection<String> getPlatforms();
 }
