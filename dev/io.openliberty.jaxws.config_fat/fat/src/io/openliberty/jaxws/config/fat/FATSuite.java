@@ -20,7 +20,9 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	WebServiceBndServiceRefPropertiesConfigTest.class,
+	EnableSchemaValidationTest.class,
+	IgnoreUnexpectedElementConfigTest.class,
+	WebServiceBndServiceRefPropertiesConfigTest.class
 })
 public class FATSuite {
     @ClassRule

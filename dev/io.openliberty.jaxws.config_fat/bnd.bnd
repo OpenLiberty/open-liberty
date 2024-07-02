@@ -12,8 +12,10 @@
 bVersion=1.0
 
 src: \
-	fat/src,\
-	test-applications/simpleTestService/src
+  fat/src,\
+  test-applications/enableSchemaValidation/src, \
+  test-applications/simpleTestService/src, \
+  test-applications/testHandlerClient/src
 	
 fat.project: true
 
@@ -41,4 +43,5 @@ tested.features: \
 	com.sun.xml.messaging.saaj:saaj-impl;version=1.4.0,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.1;version=latest
+	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
+	io.openliberty.org.apache.commons.logging;version=latest

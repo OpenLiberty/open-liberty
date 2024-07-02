@@ -1,0 +1,19 @@
+<server>
+    <featureManager>
+        <feature>jsp-2.2</feature>
+        <feature>jaxws-2.2</feature>
+    </featureManager>
+    
+   
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <webApplication name="enableSchemaValidation" location="enableSchemaValidation.war" context-root="testHandlerProvider" />
+    
+    <webServiceClient serviceName="SayHelloServiceWithHandler"  enableSchemaValidation="false" />
+    
+    <webServiceClient enableSchemaValidation="true" />
+    
+    <javaPermission className="java.security.AllPermission" name="*" actions="*"/>
+    
+</server>
