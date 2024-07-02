@@ -93,7 +93,7 @@ public class NettyInboundChain implements InboundChain{
     private ServerBootstrapExtended bootstrap;
     private Channel serverChan;
     
-    private FutureTask<ChannelFuture> channelFuture;
+//    private FutureTask<ChannelFuture> channelFuture;
 
     NettyInboundChain(CommsServerServiceFacade commsServer, boolean isSecureChain) {
         _commsServerFacade = commsServer;
@@ -166,7 +166,7 @@ public class NettyInboundChain implements InboundChain{
 		if(serverChan == null) {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 SibTr.debug(tc, "Netty channel not initialized. Setting chain stop");
-			channelFuture.cancel(true);
+//			channelFuture.cancel(true);
 			_isChainStarted = false;
 			return;
 		}else {
@@ -176,9 +176,10 @@ public class NettyInboundChain implements InboundChain{
 	        //stopchain() first quiesce's(invokes chainQuiesced) depending on the chainQuiesceTimeOut
 	        //Once the chain is quiesced StopChainTask is initiated.Hence we block until the actual stopChain is invoked
 	        try {
-                ChannelFuture future = _nettyFramework.stop(serverChan);
-                if(future != null)
-                    future.await(_nettyFramework.getDefaultChainQuiesceTimeout(), TimeUnit.MILLISECONDS); //BLOCK till stopChain actually completes from StopChainTask
+	        	_nettyFramework.stop(serverChan, -1);
+//                ChannelFuture future = _nettyFramework.stop(serverChan, -1);
+//                if(future != null)
+//                    future.await(_nettyFramework.getDefaultChainQuiesceTimeout(), TimeUnit.MILLISECONDS); //BLOCK till stopChain actually completes from StopChainTask
 	        } catch (Exception e) {
 	            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
 	                SibTr.debug(tc, "Failed in successfully cleaning(i.e stopping/destorying/removing) chain: ", e);
@@ -299,7 +300,7 @@ public class NettyInboundChain implements InboundChain{
             }
             bootstrap.childHandler(new JMSServerInitializer(bootstrap.getBaseInitializer(), this));
             NettyInboundChain parent = this;
-            this.channelFuture = _nettyFramework.start(bootstrap, ep.getHost(), ep.getPort(), f ->{
+            this.serverChan = _nettyFramework.start(bootstrap, ep.getHost(), ep.getPort(), f ->{
                 if (f.isCancelled() || !f.isSuccess()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         SibTr.debug(this, tc, "Channel exception during connect: " + f.cause().getMessage());
@@ -309,7 +310,7 @@ public class NettyInboundChain implements InboundChain{
                 }else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "ready", f);
                     Channel chan = f.channel();
-                    parent.serverChan = chan;
+//                    parent.serverChan = chan;
                     f.addListener(innerFuture -> {
                         if (innerFuture.isCancelled() || !innerFuture.isSuccess()) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
