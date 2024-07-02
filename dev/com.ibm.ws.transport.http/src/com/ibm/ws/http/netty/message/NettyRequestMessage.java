@@ -122,17 +122,17 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         setAndGetIsGrpc();
 //        verifyRequest();
 
-//        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-//        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-//        System.out.println("HTTP Request:");
-//        System.out.println("Method: " + request.method());
-//        System.out.println("URI: " + request.uri());
-//        System.out.println("Headers: ");
-//        request.headers().forEach(header -> System.out.println(header.getKey() + ": " + header.getValue()));
-//        System.out.println("Cookies: ");
-//        this.getAllCookies().forEach(cookie -> System.out.println(cookie.toString()));
-//        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-//        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("HTTP Request:");
+        System.out.println("Method: " + request.method());
+        System.out.println("URI: " + GenericUtils.nullOutPasswords(request.uri(), (byte) '&'));
+        System.out.println("Headers: ");
+        request.headers().forEach(header -> System.out.println(header.getKey() + ": " + header.getValue()));
+        System.out.println("Cookies: ");
+        this.getAllCookies().forEach(cookie -> System.out.println(cookie.toString()));
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     }
 
     /**
@@ -341,8 +341,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             //URI requestUri = new URL(request.uri()).toURI();
             URI requestUri = new URI(request.uri());
             // If it works it means we have an absolute URI and not a path
-            System.out.println("MSP: requestURI path is set to -> " + requestUri.getPath());
-            System.out.println("MSP: there is also the raw: " + requestUri.getRawPath());
             return requestUri.getRawPath();
             //   } catch (MalformedURLException e) {
             //  return query.path();
