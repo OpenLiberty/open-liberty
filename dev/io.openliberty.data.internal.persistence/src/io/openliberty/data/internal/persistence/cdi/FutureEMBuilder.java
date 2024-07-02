@@ -47,7 +47,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
      * These are present only if needed to disambiguate a JNDI name
      * that is in java:app, java:module, or java:comp
      */
-    private final String application, module, component;
+    private final String application, module;
 
     /**
      * The configured dataStore value of the Repository annotation.
@@ -83,14 +83,14 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
      * @param emf                   entity manager factory.
      * @param dataStore             configured dataStore value of the Repository annotation.
      * @param metaDataIdentifier    metadata identifier for the class loader of the repository interface.
-     * @param appModComp            application/module/component in which the repository interface is defined.
-     *                                  Module and component might be null or absent.
+     * @param moduleName            JEE name of the module in which the repository interface is defined.
+     *                                  Module and component might be null or absent if not defined a module.
      */
     FutureEMBuilder(DataExtensionProvider provider,
                     ClassLoader repositoryClassLoader,
                     String dataStore,
                     String metadataIdentifier,
-                    String[] appModComp) {
+                    J2EEName moduleName) {
         this.provider = provider;
         this.repositoryClassLoader = repositoryClassLoader;
         this.dataStore = dataStore;
@@ -100,9 +100,8 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
         boolean javaModule = !javaApp && dataStore.regionMatches(5, "module", 0, 6);
         boolean javaComp = !javaApp && !javaModule && dataStore.regionMatches(5, "comp", 0, 4);
 
-        application = appModComp.length > 0 && (javaApp || javaModule || javaComp) ? appModComp[0] : null;
-        module = appModComp.length > 1 && (javaModule || javaComp) ? appModComp[1] : null;
-        component = appModComp.length > 2 && javaComp ? appModComp[2] : null;
+        application = javaApp || javaModule || javaComp ? moduleName.getApplication() : null;
+        module = javaModule || javaComp ? moduleName.getModule() : null;
     }
 
     /**
@@ -149,7 +148,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
 
                     if (resource instanceof EntityManagerFactory)
                         return new PUnitEMBuilder(provider, repositoryClassLoader, (EntityManagerFactory) resource, //
-                                        resourceName, metadataIdentifier, application, module, component, entityTypes);
+                                        resourceName, metadataIdentifier, application, module, entityTypes);
 
                 } catch (NamingException x) {
                     FFDCFilter.processException(x, this.getClass().getName() + ".createEMBuilder", "155", this, new Object[] { (switchMetadata ? repoMetadata : extMetadata) });
@@ -167,7 +166,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
 
                     if (resource instanceof EntityManagerFactory)
                         return new PUnitEMBuilder(provider, repositoryClassLoader, (EntityManagerFactory) resource, //
-                                        javaCompName, metadataIdentifier, application, module, component, entityTypes);
+                                        javaCompName, metadataIdentifier, application, module, entityTypes);
 
                     if (resource instanceof DataSource) {
                         isJNDIName = true;
@@ -201,7 +200,6 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
                             && dataStore.equals((b = (FutureEMBuilder) o).dataStore)
                             && Objects.equals(application, b.application)
                             && Objects.equals(module, b.module)
-                            && Objects.equals(component, b.component)
                             && Objects.equals(repositoryClassLoader, b.repositoryClassLoader);
     }
 
@@ -210,8 +208,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
     public int hashCode() {
         return dataStore.hashCode() +
                (application == null ? 0 : application.hashCode()) +
-               (module == null ? 0 : module.hashCode()) +
-               (component == null ? 0 : component.hashCode());
+               (module == null ? 0 : module.hashCode());
     }
 
     @Override
@@ -219,14 +216,12 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
     public String toString() {
         StringBuilder b = new StringBuilder(27 + dataStore.length() +
                                             (application == null ? 4 : application.length()) +
-                                            (module == null ? 4 : module.length()) +
-                                            (component == null ? 4 : component.length())) //
-                        .append("FutureEMBuilder@") //
-                        .append(Integer.toHexString(hashCode())) //
-                        .append(":").append(dataStore) //
-                        .append(' ').append(application) //
-                        .append('#').append(module) //
-                        .append('#').append(component);
+                                            (module == null ? 4 : module.length())) //
+                                                            .append("FutureEMBuilder@") //
+                                                            .append(Integer.toHexString(hashCode())) //
+                                                            .append(":").append(dataStore) //
+                                                            .append(' ').append(application) //
+                                                            .append('#').append(module);
         return b.toString();
     }
 }

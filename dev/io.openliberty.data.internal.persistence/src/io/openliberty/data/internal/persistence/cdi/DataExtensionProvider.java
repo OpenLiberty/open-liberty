@@ -48,6 +48,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
+import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
 import com.ibm.ws.classloading.ClassLoaderIdentifierService;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
@@ -61,7 +62,6 @@ import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
-import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.wsspi.resource.ResourceConfigFactory;
@@ -103,6 +103,9 @@ public class DataExtensionProvider implements //
     private static final Set<Class<?>> beanClasses = Set.of(DataSource.class, EntityManagerFactory.class);
 
     private static final Set<Class<? extends Extension>> extensions = Collections.singleton(DataExtension.class);
+
+    @Reference
+    CDIService cdiService;
 
     @Reference
     public ClassLoaderIdentifierService classloaderIdSvc;
@@ -266,30 +269,22 @@ public class DataExtensionProvider implements //
      * such as when the repository is defined in a library of the application
      * rather than in a web component or enterprise bean.
      *
-     * @param metadata    ApplicatonMetaData to include in the metadata hierarchy.
+     * @param appData     ApplicationMetaData to include in the metadata hierarchy.
      * @param classloader class loader of the repository interface.
      * @return component metadata.
      */
-    public ComponentMetaData createComponentMetadata(MetaData metadata,
-                                                     ClassLoader classloader) {
-        J2EEName jeeName;
-        ModuleMetaData moduleMetadata;
-
-        if (metadata instanceof ApplicationMetaData) {
-            ApplicationMetaData adata = (ApplicationMetaData) metadata;
-            jeeName = adata.getJ2EEName();
-            moduleMetadata = new DataModuleMetaData(jeeName, adata);
-        } else {
-            throw new IllegalArgumentException(metadata == null //
-                            ? null //
-                            : metadata.getClass().getName());
-        }
+    ComponentMetaData createComponentMetadata(ApplicationMetaData appData,
+                                              ClassLoader classloader) {
+        J2EEName jeeName = appData.getJ2EEName();
+        ModuleMetaData moduleData = new DataModuleMetaData(jeeName, appData);
 
         String identifier = "DATA#" + jeeName;
 
-        DataComponentMetaData componentMetadata = new DataComponentMetaData(identifier, moduleMetadata, classloader);
-        DataComponentMetaData existing = metadatas.putIfAbsent(identifier, componentMetadata);
-        return existing == null ? componentMetadata : existing;
+        DataComponentMetaData componentData = new DataComponentMetaData( //
+                        identifier, moduleData, classloader);
+
+        DataComponentMetaData existing = metadatas.putIfAbsent(identifier, componentData);
+        return existing == null ? componentData : existing;
     }
 
     /**

@@ -40,7 +40,7 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
      * These are present only if needed to disambiguate a persistence unit reference JNDI name
      * that is in java:app, java:module, or java:comp
      */
-    private final String application, module, component;
+    private final String application, module;
 
     private final EntityManagerFactory emf;
 
@@ -58,7 +58,6 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
 
         this.application = null;
         this.module = null;
-        this.component = null;
 
         try {
             collectEntityInfo(entityTypes);
@@ -98,14 +97,12 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
                           String metadataIdentifier,
                           String application,
                           String module,
-                          String component,
                           Set<Class<?>> entityTypes) {
         super(provider, repositoryClassLoader);
         this.emf = emf;
         this.persistenceUnitRef = persistenceUnitRef;
         this.application = application;
         this.module = module;
-        this.component = component;
 
         try {
             collectEntityInfo(entityTypes);
@@ -137,7 +134,6 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
                             && persistenceUnitRef.equals((b = (PUnitEMBuilder) o).persistenceUnitRef)
                             && Objects.equals(application, b.application)
                             && Objects.equals(module, b.module)
-                            && Objects.equals(component, b.component)
                             && Objects.equals(getRepositoryClassLoader(), b.getRepositoryClassLoader());
     }
 
@@ -163,8 +159,7 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
     public int hashCode() {
         return persistenceUnitRef.hashCode() +
                (application == null ? 0 : application.hashCode()) +
-               (module == null ? 0 : module.hashCode()) +
-               (component == null ? 0 : component.hashCode());
+               (module == null ? 0 : module.hashCode());
 
     }
 
@@ -173,14 +168,12 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
     public String toString() {
         return new StringBuilder(27 + persistenceUnitRef.length() +
                                  (application == null ? 4 : application.length()) +
-                                 (module == null ? 4 : module.length()) +
-                                 (component == null ? 4 : component.length())) //
+                                 (module == null ? 4 : module.length())) //
                                                  .append("PUnitEMBuilder@") //
                                                  .append(Integer.toHexString(hashCode())) //
                                                  .append(":").append(persistenceUnitRef) //
                                                  .append(' ').append(application) //
                                                  .append('#').append(module) //
-                                                 .append('#').append(component) //
                                                  .toString();
     }
 }
