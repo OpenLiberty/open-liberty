@@ -205,7 +205,13 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         if (context == null) {
             throw new NettyException("Problems creating SSL context for endpoint: " + ep.getHost() + ":" + ep.getPort() + " - " + ep);
         }
-        pipeline.addFirst(HTTP_SSL_HANDLER_NAME, context.newHandler(pipeline.channel().alloc()));
+        context.sessionContext().setSessionCacheSize(100);
+        context.sessionContext().setSessionTimeout(86400);
+//        engine = context.newEngine(ch.alloc());
+//        SslHandler handler = new SslHandler(engine, false);
+        SslHandler handler = context.newHandler(pipeline.channel().alloc());
+        handler.setHandshakeTimeoutMillis(30000);
+        pipeline.addFirst(HTTP_SSL_HANDLER_NAME, handler);
         addPreHttpCodecHandlers(pipeline);
         pipeline.addLast(HTTP_ALPN_HANDLER_NAME, new LibertyNettyALPNHandler(httpConfig));
         pipeline.addLast(HTTP_DISPATCHER_HANDLER_NAME, new HttpDispatcherHandler(httpConfig));

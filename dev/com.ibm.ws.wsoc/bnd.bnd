@@ -128,6 +128,7 @@ instrument.classesExcludes: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	io.openliberty.wsoc.ssl.internal;version=latest,\
 	io.openliberty.netty.internal;version=latest,\
+	io.openliberty.netty.internal.impl;version=latest,\
 	io.openliberty.io.netty,\
 	io.openliberty.io.netty.ssl
 
