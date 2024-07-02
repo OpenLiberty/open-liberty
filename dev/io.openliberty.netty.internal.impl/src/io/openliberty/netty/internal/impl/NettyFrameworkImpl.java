@@ -388,8 +388,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
             if (!serverCompletelyStarted.get()) {
                 serverStartedTasks.add(future);
             }else {
-//            	this.executorService.submit(future);
-            	future.run();
+            	this.executorService.submit(future);
             }
             return future;
         }
