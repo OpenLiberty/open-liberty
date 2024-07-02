@@ -80,7 +80,7 @@ public class FATSuite extends TestContainerSuite {
     }
 
     public static RepeatTests telemetry20Repeats(String serverName) {
-        return TelemetryActions.repeat(serverName, MicroProfileActions.MP70_EE11, TelemetryActions.MP14_MPTEL20, TelemetryActions.MP41_MPTEL20, TelemetryActions.MP50_MPTEL20, MicroProfileActions.MP70_EE10, MicroProfileActions.MP70_EE11);
+        return TelemetryActions.repeat(serverName, MicroProfileActions.MP70_EE11, TelemetryActions.MP14_MPTEL20, TelemetryActions.MP41_MPTEL20, TelemetryActions.MP50_MPTEL20, MicroProfileActions.MP70_EE10);
     }
 
 }
