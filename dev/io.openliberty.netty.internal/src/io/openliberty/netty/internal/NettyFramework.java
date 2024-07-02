@@ -76,7 +76,7 @@ public interface NettyFramework {
      * @param bootstrap
      * @param inetHost
      * @param inetPort
-     * @return ChannelFuture for the ServerChannel, or null if the server is not yet
+     * @return Channel for the ServerChannel, or null if the server is not yet
      *         started
      */
     Channel start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
@@ -89,7 +89,7 @@ public interface NettyFramework {
      * @param bootstrap
      * @param inetHost
      * @param inetPort
-     * @return ChannelFuture for the ServerChannel, or null if the server is not yet
+     * @return Channel for the ServerChannel, or null if the server is not yet
      *         started
      */
     Channel start(BootstrapExtended bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener)
@@ -103,7 +103,7 @@ public interface NettyFramework {
      * @param inetHost
      * @param inetPort
      * @param bindListener
-     * @return ChannelFuture
+     * @return Channel
      * @throws NettyException
      */
     Channel startOutbound(BootstrapExtended bootstrap, String inetHost, int inetPort,
