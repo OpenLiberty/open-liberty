@@ -424,9 +424,9 @@ public final class FeatureRepository implements FeatureResolver.Repository {
      * @return String versionedFeatureName
      */
     public String getVersionlessFeatureVersionForPlatform(String versionlessFeatureName, String platformName) {
-        SubsystemFeatureDefinitionImpl versionlessFeature;
-        Map features = getAllFeatures();
-        versionlessFeature = (SubsystemFeatureDefinitionImpl) features.get("io.openliberty.versionless." + versionlessFeatureName);
+        ProvisioningFeatureDefinition versionlessFeature;
+        versionlessFeature = getFeature(versionlessFeatureName);
+
         if (versionlessFeature != null && versionlessFeature.isVersionless()) {
             for (ProvisioningFeatureDefinition child : findAllPossibleVersions(versionlessFeature)) {
                 if (child.getPlatformNames().contains(platformName))
@@ -441,7 +441,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
      *
      * @return List<ProvisioningFeatureDefinition>
      */
-    private List<ProvisioningFeatureDefinition> findAllPossibleVersions(SubsystemFeatureDefinitionImpl versionlessFeature) {
+    private List<ProvisioningFeatureDefinition> findAllPossibleVersions(ProvisioningFeatureDefinition versionlessFeature) {
         List<ProvisioningFeatureDefinition> result = new ArrayList<>();
         for (FeatureResource dependency : versionlessFeature.getConstituents(null)) {
             result.add(getVersionedFeature(dependency.getSymbolicName()));
@@ -471,8 +471,12 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         if (feature != null) {
             //This is the versionless linking feature pointing to a public versioned feature
             for (FeatureResource versionedFeature : feature.getConstituents(null)) {
-                //There should be only one element - set the result
-                result = getFeature(versionedFeature.getSymbolicName());
+                //Find the right public feature (should only be one) - set the result
+                ProvisioningFeatureDefinition versionedFeatureDef = getFeature(versionedFeature.getSymbolicName());
+                if (versionedFeatureDef.getVisibility() != Visibility.PUBLIC) {
+                    continue;
+                }
+                result = versionedFeatureDef;
             }
         }
         return result;
