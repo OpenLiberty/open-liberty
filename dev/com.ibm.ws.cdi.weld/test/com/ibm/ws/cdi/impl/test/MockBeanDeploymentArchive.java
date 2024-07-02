@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.cdi.impl.test;
 
 import java.net.URL;
@@ -8,13 +20,13 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import com.ibm.ws.cdi.CDIException;
-import com.ibm.ws.cdi.impl.weld.AbstractBeanDeploymentArchive;
+import com.ibm.ws.cdi.impl.weld.BeanDeploymentArchiveImpl;
+import com.ibm.ws.cdi.impl.weld.WebSphereCDIDeploymentImpl;
 import com.ibm.ws.cdi.internal.interfaces.ArchiveType;
 import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
@@ -27,10 +39,11 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
+import org.jboss.weld.manager.api.WeldManager;
 
 import junit.framework.Assert;
 
-public class MockBeanDeploymentArchive extends AbstractBeanDeploymentArchive {
+public class MockBeanDeploymentArchive extends BeanDeploymentArchiveImpl {
 
     private static AtomicInteger orderScannedCounter = new AtomicInteger(1);
     Set<WebSphereBeanDeploymentArchive> descendetBDAs = new HashSet<WebSphereBeanDeploymentArchive>();
@@ -41,7 +54,11 @@ public class MockBeanDeploymentArchive extends AbstractBeanDeploymentArchive {
     private final int acceptableFloor;
     private final int acceptableCeiling;
 
-    public MockBeanDeploymentArchive(ArchiveType type, int acceptableFloor, int acceptableCeiling, String id) {
+    public MockBeanDeploymentArchive(ArchiveType type, int acceptableFloor, int acceptableCeiling, String id) throws CDIException {
+
+        //Everything we actually use will be set after the call to super, even if its a code duplication.
+        super(new WebSphereCDIDeploymentImpl(new MockApplication(), new MockCDIRuntime()), id, new MockCDIArchive(type), new MockCDIRuntime(), new HashSet<String>(), new HashSet<String>(), new HashSet<String>(), false, new HashSet<String>(), null);
+
         archive = new MockCDIArchive(type);
         this.acceptableFloor = acceptableFloor;
         this.acceptableCeiling = acceptableCeiling;
@@ -137,7 +154,7 @@ public class MockBeanDeploymentArchive extends AbstractBeanDeploymentArchive {
     }
 
     @Override
-    public BeanManager getBeanManager() {
+    public WeldManager getBeanManager() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -257,7 +274,7 @@ public class MockBeanDeploymentArchive extends AbstractBeanDeploymentArchive {
     }
 
     @Override
-    public ClassLoader getClassLoader() throws CDIException {
+    public ClassLoader getClassLoader() {
         // TODO Auto-generated method stub
         return null;
     }

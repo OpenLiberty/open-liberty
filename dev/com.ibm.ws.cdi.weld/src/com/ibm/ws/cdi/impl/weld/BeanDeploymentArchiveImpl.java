@@ -79,7 +79,8 @@ import org.jboss.weld.resources.spi.ResourceLoadingException;
  * The implementation of Weld spi BeanDeploymentArchive to represent a CDI bean
  * archive.
  */
-public class BeanDeploymentArchiveImpl extends AbstractBeanDeploymentArchive {
+public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive {
+    protected static final TraceComponent tc = Tr.register(BeanDeploymentArchiveImpl.class);
 
     //the classes which is directly in this archive
     private final Set<String> archiveClassNames = new HashSet<String>();
@@ -106,6 +107,9 @@ public class BeanDeploymentArchiveImpl extends AbstractBeanDeploymentArchive {
     private final ServiceRegistry weldServiceRegistry;
     private final String id;
     private final EEModuleDescriptor eeModuleDescriptor;
+
+    protected boolean scanned = false;
+    protected boolean visited = false;
 
     private final Set<WebSphereBeanDeploymentArchive> accessibleBDAs = new HashSet<WebSphereBeanDeploymentArchive>();
     private final Set<WebSphereBeanDeploymentArchive> descendantBDAs = new HashSet<WebSphereBeanDeploymentArchive>();
@@ -138,7 +142,7 @@ public class BeanDeploymentArchiveImpl extends AbstractBeanDeploymentArchive {
     private final CDIArchive archive;
 
     //package visibility only ... use factory
-    BeanDeploymentArchiveImpl(WebSphereCDIDeployment cdiDeployment,
+    protected BeanDeploymentArchiveImpl(WebSphereCDIDeployment cdiDeployment,
                               String archiveID,
                               CDIArchive archive,
                               CDIRuntime cdiRuntime,
@@ -297,6 +301,33 @@ public class BeanDeploymentArchiveImpl extends AbstractBeanDeploymentArchive {
         initializeInjectionClasses(this.beanClasses.values());
         initializeJEEComponentClasses(this.allClasses);
 
+    }
+
+    @Override
+    public Iterator<WebSphereBeanDeploymentArchive> visit() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "visit");
+        }
+        visited = true;
+
+        Set<WebSphereBeanDeploymentArchive> accessibleBDAs = getDescendentBDAs();
+
+        Iterator<WebSphereBeanDeploymentArchive> toReturn = null;
+        //Runtime Extensions can see everything so they break even our rough dependency graph.
+        //Return no children so they get scanned immediately.
+        if (getArchive().getType() != ArchiveType.RUNTIME_EXTENSION) {
+
+            toReturn = accessibleBDAs.iterator();
+        } else {
+            toReturn = Collections.emptyListIterator();
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            String children = getArchive().getType() != ArchiveType.RUNTIME_EXTENSION ? accessibleBDAs.toString() : "[]";
+            Tr.exit(tc, getHumanReadableName() + " visited, found these children: " + children);
+        }
+
+        return toReturn;
     }
 
     private boolean isAccessibleBean(Class<?> beanClass) {
@@ -809,7 +840,6 @@ public class BeanDeploymentArchiveImpl extends AbstractBeanDeploymentArchive {
         return getHumanReadableName();
     }
 
-    @Override
     @Trivial
     protected String getHumanReadableName() {
         return "BDA for " + id + "(" + archive.getType() + ")";
@@ -1126,8 +1156,13 @@ public class BeanDeploymentArchiveImpl extends AbstractBeanDeploymentArchive {
         });
     }
 
-    //Unlike the public method, this one for unit tests returns WebSphereBeanDeploymentArchive
     @Override
+    @Trivial
+    public boolean hasBeenVisited() {
+        return visited;
+    }
+
+    //Unlike the public method, this one for unit tests returns WebSphereBeanDeploymentArchive
     protected Set<WebSphereBeanDeploymentArchive> getDescendentBDAs() {
         return descendantBDAs;
     }
