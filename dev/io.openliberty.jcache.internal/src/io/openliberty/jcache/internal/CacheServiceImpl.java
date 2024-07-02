@@ -90,8 +90,10 @@ public class CacheServiceImpl implements CacheService {
         /*
          * Schedule a task to initialize the cache in the background. This will
          * alleviate delays on the first request to the cache.
+         *
+         * Assign Rank 2 to the restore hook to ensure it executes after the CacheProviderService (rank 0) and CacheManagerServiceImp (rank 1).
          */
-        CheckpointPhase.onRestore(1, () -> {
+        CheckpointPhase.onRestore(2, () -> {
             getCacheFuture = scheduledExecutorService.schedule(new Runnable() {
                 @Override
                 public void run() {
