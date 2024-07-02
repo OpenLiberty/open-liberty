@@ -48,17 +48,20 @@ public class MockBeanDeploymentArchive extends AbstractBeanDeploymentArchive {
         this.id = id + ":" + type.toString();
     }
 
-    public void seenInAcceptableOrder() {
-        Assert.assertTrue("archive: " + id + " expected something between " + acceptableFloor + " and " + acceptableCeiling + " but was " + orderScanned,
-                          orderScanned >= acceptableFloor && orderScanned <= acceptableCeiling);
-    }
-
-    public void assertScanned() {
-        Assert.assertFalse("archive: " + id + " was never scanned", orderScanned == -1);
+    public boolean isScanned() {
+        return orderScanned != -1;
     }
 
     public int getOrderScanned() {
         return orderScanned;
+    }
+
+    public int getOrderAcceptibleCeiling() {
+        return acceptableCeiling;
+    }
+
+    public int getOrderAcceptibleFloor() {
+        return acceptableFloor;
     }
 
     public void scannedAfter(MockBeanDeploymentArchive other) {
@@ -77,7 +80,6 @@ public class MockBeanDeploymentArchive extends AbstractBeanDeploymentArchive {
 
     @Override
     public String getId() {
-        // TODO Auto-generated method stub
         return id;
     }
 
@@ -87,7 +89,7 @@ public class MockBeanDeploymentArchive extends AbstractBeanDeploymentArchive {
     }
 
     @Override
-    protected Set<WebSphereBeanDeploymentArchive> getDescendetBDAs() {
+    protected Set<WebSphereBeanDeploymentArchive> getDescendentBDAs() {
         return descendetBDAs;
     }
 

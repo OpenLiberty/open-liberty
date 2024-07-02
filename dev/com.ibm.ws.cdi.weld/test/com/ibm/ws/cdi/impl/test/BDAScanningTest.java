@@ -11,6 +11,8 @@ import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 
 import org.junit.Test;
 
+import junit.framework.Assert;
+
 public class BDAScanningTest {
 
     @Test
@@ -20,14 +22,22 @@ public class BDAScanningTest {
 
         Set<MockBeanDeploymentArchive> allBDAs = new HashSet<MockBeanDeploymentArchive>();
 
+        //There are a total of 14 archives, root should be scanned last.
+        int rootAbsoluteOrder = 14;
+
         //create a root archive
-        MockBeanDeploymentArchive root = new MockBeanDeploymentArchive(ArchiveType.WEB_MODULE, 14, 14, "" + id.getAndIncrement());
+        MockBeanDeploymentArchive root = new MockBeanDeploymentArchive(ArchiveType.WEB_MODULE, rootAbsoluteOrder, rootAbsoluteOrder, "" + id.getAndIncrement());
         allBDAs.add(root);
+
+        //The shared libs should be scanned after the three runtime extensions, and there are 9 of them.
+        //So the 4th through 13th BDA scanned will be shared libs.
+        int sharedLibOrderFloor = 4;
+        int sharedLibOrderCeiling = 13;
 
         //create a bunch of mock libs
         Set<MockBeanDeploymentArchive> libs = new HashSet<MockBeanDeploymentArchive>();
         for (int i = 0; i < 10; i++) {
-            libs.add(new MockBeanDeploymentArchive(ArchiveType.SHARED_LIB, 4, 13, "" + id.getAndIncrement()));
+            libs.add(new MockBeanDeploymentArchive(ArchiveType.SHARED_LIB, sharedLibOrderFloor, sharedLibOrderCeiling, "" + id.getAndIncrement()));
         }
         allBDAs.addAll(libs);
 
@@ -36,10 +46,14 @@ public class BDAScanningTest {
             libs.stream().filter(lib -> !lib.equals(bda)).forEach(lib -> lib.addDescendantBda(bda));
         }
 
+        //There are three runtime extensions, and they will be scanned first
+        int runtimeExtbOrderFloor = 1;
+        int runtimeExtOrderCeiling = 3;
+
         //create a bunch of runtime extensions configured to see app beans
         Set<MockBeanDeploymentArchive> runtimeExtensions = new HashSet<MockBeanDeploymentArchive>();
         for (int i = 0; i < 3; i++) {
-            runtimeExtensions.add(new MockBeanDeploymentArchive(ArchiveType.RUNTIME_EXTENSION, 1, 3, "" + id.getAndIncrement()));
+            runtimeExtensions.add(new MockBeanDeploymentArchive(ArchiveType.RUNTIME_EXTENSION, runtimeExtbOrderFloor, runtimeExtOrderCeiling, "" + id.getAndIncrement()));
         }
 
         //they can all see each other.
@@ -61,8 +75,11 @@ public class BDAScanningTest {
         MockWebSphereCDIDeployment deployment = new MockWebSphereCDIDeployment(new ArrayList<WebSphereBeanDeploymentArchive>(allBDAs));
         deployment.scan();
 
-        allBDAs.stream().forEach(bda -> bda.assertScanned());
-        allBDAs.stream().forEach(bda -> bda.seenInAcceptableOrder());
+        allBDAs.stream().forEach(bda -> Assert.assertTrue("archive: " + bda.getId() + " was never scanned", bda.isScanned()));
+        allBDAs.stream().forEach(bda -> Assert.assertTrue("archive: " + bda.getId() + " should have been scanned between " + bda.getOrderAcceptibleFloor() + " and "
+                                                          + bda.getOrderAcceptibleCeiling() +
+                                                          " but was scanned in the following position: " + bda.getOrderScanned(),
+                                                          bda.getOrderScanned() >= bda.getOrderAcceptibleFloor() && bda.getOrderScanned() <= bda.getOrderAcceptibleCeiling()));
 
     }
 
@@ -73,34 +90,45 @@ public class BDAScanningTest {
 
         Set<MockBeanDeploymentArchive> allBDAs = new HashSet<MockBeanDeploymentArchive>();
 
-        //create a root archive (we're not using the acceptable order in this test.
-        MockBeanDeploymentArchive root = new MockBeanDeploymentArchive(ArchiveType.WEB_MODULE, 1, 100, "" + id.getAndIncrement());
+        // Use 1 and 100 because we're checking relative not absolute ordering in this test.
+        int dontCheckAbsoluteOrderFloor = 1;
+        int dontCheckAbsoluteOrderCeiling = 100;
+
+        //create a root archive
+        MockBeanDeploymentArchive root = new MockBeanDeploymentArchive(ArchiveType.WEB_MODULE, dontCheckAbsoluteOrderFloor, dontCheckAbsoluteOrderCeiling, ""
+                                                                                                                                                           + id.getAndIncrement());
         allBDAs.add(root);
 
         //Create two children
-        MockBeanDeploymentArchive branch1 = new MockBeanDeploymentArchive(ArchiveType.WEB_MODULE, 1, 100, "" + id.getAndIncrement());
+        MockBeanDeploymentArchive branch1 = new MockBeanDeploymentArchive(ArchiveType.WEB_MODULE, dontCheckAbsoluteOrderFloor, dontCheckAbsoluteOrderCeiling, ""
+                                                                                                                                                              + id.getAndIncrement());
         allBDAs.add(branch1);
 
-        MockBeanDeploymentArchive branch2 = new MockBeanDeploymentArchive(ArchiveType.WEB_MODULE, 1, 100, "" + id.getAndIncrement());
+        MockBeanDeploymentArchive branch2 = new MockBeanDeploymentArchive(ArchiveType.WEB_MODULE, dontCheckAbsoluteOrderFloor, dontCheckAbsoluteOrderCeiling, ""
+                                                                                                                                                              + id.getAndIncrement());
         allBDAs.add(branch2);
 
         root.addDescendantBda(branch1);
         root.addDescendantBda(branch2);
 
         //and create two children of each
-        MockBeanDeploymentArchive leaf1 = new MockBeanDeploymentArchive(ArchiveType.WEB_MODULE, 1, 100, "" + id.getAndIncrement());
+        MockBeanDeploymentArchive leaf1 = new MockBeanDeploymentArchive(ArchiveType.WEB_MODULE, dontCheckAbsoluteOrderFloor, dontCheckAbsoluteOrderCeiling, ""
+                                                                                                                                                            + id.getAndIncrement());
         allBDAs.add(leaf1);
 
-        MockBeanDeploymentArchive leaf2 = new MockBeanDeploymentArchive(ArchiveType.WEB_MODULE, 1, 100, "" + id.getAndIncrement());
+        MockBeanDeploymentArchive leaf2 = new MockBeanDeploymentArchive(ArchiveType.WEB_MODULE, dontCheckAbsoluteOrderFloor, dontCheckAbsoluteOrderCeiling, ""
+                                                                                                                                                            + id.getAndIncrement());
         allBDAs.add(leaf2);
 
         branch1.addDescendantBda(leaf1);
         branch1.addDescendantBda(leaf2);
 
-        MockBeanDeploymentArchive leaf3 = new MockBeanDeploymentArchive(ArchiveType.WEB_MODULE, 1, 100, "" + id.getAndIncrement());
+        MockBeanDeploymentArchive leaf3 = new MockBeanDeploymentArchive(ArchiveType.WEB_MODULE, dontCheckAbsoluteOrderFloor, dontCheckAbsoluteOrderCeiling, ""
+                                                                                                                                                            + id.getAndIncrement());
         allBDAs.add(leaf3);
 
-        MockBeanDeploymentArchive leaf4 = new MockBeanDeploymentArchive(ArchiveType.WEB_MODULE, 1, 100, "" + id.getAndIncrement());
+        MockBeanDeploymentArchive leaf4 = new MockBeanDeploymentArchive(ArchiveType.WEB_MODULE, dontCheckAbsoluteOrderFloor, dontCheckAbsoluteOrderCeiling, ""
+                                                                                                                                                            + id.getAndIncrement());
         allBDAs.add(leaf4);
 
         branch2.addDescendantBda(leaf3);
@@ -110,7 +138,7 @@ public class BDAScanningTest {
         MockWebSphereCDIDeployment deployment = new MockWebSphereCDIDeployment(new ArrayList<WebSphereBeanDeploymentArchive>(allBDAs));
         deployment.scan();
 
-        allBDAs.stream().forEach(bda -> bda.assertScanned());
+        allBDAs.stream().forEach(bda -> Assert.assertTrue("archive: " + bda.getId() + " was never scanned", bda.isScanned()));
         root.scannedAfter(branch1);
         root.scannedAfter(branch2);
 

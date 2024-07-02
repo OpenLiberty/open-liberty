@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ * IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.cdi.impl.weld;
 
 import java.util.Collections;
@@ -11,18 +23,6 @@ import com.ibm.ws.cdi.internal.interfaces.ArchiveType;
 import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 
-/*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License 2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
- *******************************************************************************/
 //this class exists to be extended by unit tests
 public abstract class AbstractBeanDeploymentArchive implements WebSphereBeanDeploymentArchive {
 
@@ -45,7 +45,7 @@ public abstract class AbstractBeanDeploymentArchive implements WebSphereBeanDepl
         }
         visited = true;
 
-        Set<WebSphereBeanDeploymentArchive> accessibleBDAs = getDescendetBDAs();
+        Set<WebSphereBeanDeploymentArchive> accessibleBDAs = getDescendentBDAs();
 
         Iterator<WebSphereBeanDeploymentArchive> toReturn = null;
         //Runtime Extensions can see everything so they break even our rough dependency graph.
@@ -54,9 +54,6 @@ public abstract class AbstractBeanDeploymentArchive implements WebSphereBeanDepl
 
             toReturn = accessibleBDAs.iterator();
         } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, getHumanReadableName() + " visited, found these children: []");
-            }
             toReturn = Collections.emptyListIterator();
         }
 
@@ -73,6 +70,6 @@ public abstract class AbstractBeanDeploymentArchive implements WebSphereBeanDepl
 
     protected abstract String getHumanReadableName();
 
-    protected abstract Set<WebSphereBeanDeploymentArchive> getDescendetBDAs();
+    protected abstract Set<WebSphereBeanDeploymentArchive> getDescendentBDAs();
 
 }

@@ -1128,7 +1128,7 @@ public class BeanDeploymentArchiveImpl extends AbstractBeanDeploymentArchive {
 
     //Unlike the public method, this one for unit tests returns WebSphereBeanDeploymentArchive
     @Override
-    protected Set<WebSphereBeanDeploymentArchive> getDescendetBDAs() {
+    protected Set<WebSphereBeanDeploymentArchive> getDescendentBDAs() {
         return descendantBDAs;
     }
 
