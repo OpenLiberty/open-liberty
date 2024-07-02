@@ -21,6 +21,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.internal.HttpChain;
+import com.ibm.ws.http.internal.HttpChain.ChainState;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
 import com.ibm.ws.http.internal.HttpServiceConstants;
 import com.ibm.ws.http.internal.VirtualHostMap;
@@ -95,14 +96,21 @@ public class NettyChain extends HttpChain {
         MSP.log("Attempting to stop NettyChain: " + endpointName + " Attempt count: " + stopCount + " Current state: " + state.get());
 
         if (state.get() != ChainState.STOPPING) {
+//            if(state.get() != ChainState.STARTING) {
+//                synchronized (serverChannel) {
+//                    if(serverChannel.isActive()) {
+//
+//                    }
+//                }
+//            }
             endpointMgr.removeEndPoint(endpointName);
             ChainState previousState = state.getAndSet(ChainState.STOPPING);
 
-            if (Objects.nonNull(channelFuture)) {
-                System.out.println("Canceling future");
-                channelFuture.cancel(true);
-                channelFuture = null;
-            }
+//            if (Objects.nonNull(channelFuture)) {
+//                System.out.println("Canceling future");
+//                channelFuture.cancel(true);
+//                channelFuture = null;
+//            }
 
             try {
                 if (Objects.nonNull(serverChannel) && serverChannel.isOpen()) {
@@ -110,6 +118,7 @@ public class NettyChain extends HttpChain {
                     MSP.log("STOP -> serverChannel is open, attempting to close");
 
                     nettyFramework.stop(serverChannel, -1);
+                    serverChannel.closeFuture().syncUninterruptibly();
                     serverChannel = null;
                 }
 
@@ -242,7 +251,7 @@ public class NettyChain extends HttpChain {
 
                 bootstrap.childHandler(httpPipeline);
 
-                channelFuture = nettyFramework.start(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
+                serverChannel = nettyFramework.start(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
 
                 VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
                 String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
@@ -262,7 +271,7 @@ public class NettyChain extends HttpChain {
 
     private void channelFutureHandler(ChannelFuture future) {
         if (future.isSuccess()) {
-            serverChannel = future.channel();
+//            serverChannel = future.channel();
             state.set(ChainState.STARTED);
 
             MSP.log("Channel is now active and listening on port " + getActivePort());
