@@ -13068,7 +13068,7 @@
             <resolved>expressionLanguage-6.0</resolved>
             <resolved>io.openliberty.jakarta.interceptor-2.2</resolved>
             <resolved>io.openliberty.jakarta.cdi-4.1</resolved>
-            <resolved>beanValidation-3.1</resolved>
+            <resolved>validation-3.1</resolved>
             <resolved>io.openliberty.internal.versionless.beanValidation-3.1</resolved>
             <resolved>beanValidation</resolved>
         </output>

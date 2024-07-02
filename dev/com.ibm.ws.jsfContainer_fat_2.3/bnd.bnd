@@ -35,7 +35,7 @@ tested.features: \
   persistenceContainer-3.1, \
   persistenceContainer-3.2, \
   beanvalidation-3.0, \
-  beanvalidation-3.1, \
+  validation-3.1, \
   beanvalidation-4.0, \
   faces-3.0, \
   faces-4.0, \
