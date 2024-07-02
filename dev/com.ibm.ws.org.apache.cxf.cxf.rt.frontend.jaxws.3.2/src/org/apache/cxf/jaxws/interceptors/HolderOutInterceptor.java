@@ -36,6 +36,8 @@ import org.apache.cxf.phase.Phase;
 import org.apache.cxf.service.model.MessagePartInfo;
 import org.apache.cxf.service.model.OperationInfo;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 
 public class HolderOutInterceptor extends AbstractPhaseInterceptor<Message> {
 
@@ -46,7 +48,7 @@ public class HolderOutInterceptor extends AbstractPhaseInterceptor<Message> {
         addBefore(WrapperClassOutInterceptor.class.getName());
     }
 
-    public void handleMessage(Message message) throws Fault {
+    public void handleMessage(@Sensitive Message message) throws Fault {
         boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change #26529
         boolean isFineEnabled = LOG.isLoggable(Level.FINE);   // Liberty Change #26529
         

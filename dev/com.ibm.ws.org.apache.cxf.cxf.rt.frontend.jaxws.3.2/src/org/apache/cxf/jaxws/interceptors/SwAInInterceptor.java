@@ -42,6 +42,8 @@ import org.apache.cxf.service.model.BindingMessageInfo;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.MessagePartInfo;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 public class SwAInInterceptor extends AbstractSoapInterceptor {
 
     private static final Logger LOG = LogUtils.getL7dLogger(SwAInInterceptor.class); // Liberty Change #26529
@@ -51,7 +53,7 @@ public class SwAInInterceptor extends AbstractSoapInterceptor {
         getAfter().add(StaxInEndingInterceptor.class.getName());
     }
 
-    public void handleMessage(SoapMessage message) throws Fault {
+    public void handleMessage(@Sensitive SoapMessage message) throws Fault {
         boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change #26529
         BindingOperationInfo bop = message.getExchange().getBindingOperationInfo();
         if (bop == null) {

@@ -47,13 +47,15 @@ import org.apache.cxf.service.model.MessagePartInfo;
 import org.apache.cxf.service.model.ServiceModelUtil;
 import org.apache.cxf.wsdl.service.factory.ReflectionServiceFactoryBean;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 public class WrapperClassOutInterceptor extends AbstractPhaseInterceptor<Message> {
     private static final Logger LOG = LogUtils.getLogger(WrapperClassOutInterceptor.class);  // Liberty Change #26529
     public WrapperClassOutInterceptor() {
         super(Phase.PRE_LOGICAL);
     }
 
-    public void handleMessage(Message message) throws Fault {
+    public void handleMessage(@Sensitive Message message) throws Fault {
         boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change #26529
         Exchange ex = message.getExchange();
         BindingOperationInfo bop = ex.getBindingOperationInfo();

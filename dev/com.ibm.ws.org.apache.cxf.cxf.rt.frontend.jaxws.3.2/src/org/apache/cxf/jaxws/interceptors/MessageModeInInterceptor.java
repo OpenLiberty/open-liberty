@@ -53,6 +53,8 @@ import org.apache.cxf.staxutils.StaxSource;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.staxutils.W3CDOMStreamReader;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 public class MessageModeInInterceptor extends AbstractPhaseInterceptor<Message> {
     Class<?> type;
     QName bindingName;
@@ -78,7 +80,7 @@ public class MessageModeInInterceptor extends AbstractPhaseInterceptor<Message> 
         }
     }
 
-    public void handleMessage(Message message) throws Fault {
+    public void handleMessage(@Sensitive Message message) throws Fault {
         BindingOperationInfo bop = message.getExchange().getBindingOperationInfo();
         if (bop == null || !bindingName.equals(bop.getBinding().getName())) {
             if(LOG.isLoggable(Level.FINEST))  {   // Liberty Change begin #26529
@@ -108,7 +110,7 @@ public class MessageModeInInterceptor extends AbstractPhaseInterceptor<Message> 
         }
     }
 
-    private void doFromSoapMessage(Message message, Object sm) {
+    private void doFromSoapMessage(@Sensitive Message message, Object sm) {
         
         boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);  // Liberty Change #26529
         SOAPMessage m = (SOAPMessage)sm;

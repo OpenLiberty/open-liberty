@@ -37,6 +37,8 @@ import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.MessagePartInfo;
 import org.apache.cxf.service.model.OperationInfo;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 public class HolderInInterceptor extends AbstractPhaseInterceptor<Message> {
 
     public static final String CLIENT_HOLDERS = "client.holders";
@@ -46,7 +48,7 @@ public class HolderInInterceptor extends AbstractPhaseInterceptor<Message> {
         super(Phase.PRE_INVOKE);
     }
 
-    public void handleMessage(Message message) throws Fault {
+    public void handleMessage(@Sensitive Message message) throws Fault {
         
         boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);   // Liberty Change #26529
         MessageContentsList inObjects = MessageContentsList.getContentsList(message);
