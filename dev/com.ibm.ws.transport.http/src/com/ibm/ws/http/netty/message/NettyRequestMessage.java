@@ -122,17 +122,17 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         setAndGetIsGrpc();
 //        verifyRequest();
 
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("HTTP Request:");
-        System.out.println("Method: " + request.method());
-        System.out.println("URI: " + request.uri());
-        System.out.println("Headers: ");
-        request.headers().forEach(header -> System.out.println(header.getKey() + ": " + header.getValue()));
-        System.out.println("Cookies: ");
-        this.getAllCookies().forEach(cookie -> System.out.println(cookie.toString()));
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+//        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+//        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+//        System.out.println("HTTP Request:");
+//        System.out.println("Method: " + request.method());
+//        System.out.println("URI: " + request.uri());
+//        System.out.println("Headers: ");
+//        request.headers().forEach(header -> System.out.println(header.getKey() + ": " + header.getValue()));
+//        System.out.println("Cookies: ");
+//        this.getAllCookies().forEach(cookie -> System.out.println(cookie.toString()));
+//        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+//        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     }
 
     /**
