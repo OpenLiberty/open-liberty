@@ -46,7 +46,7 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
 
     boolean bNeedFragment = true;
 
-    private long fragmentCookieMaxAge = 10;
+    private long fragmentCookieMaxAge = 10*60*1000; //10 minutes
 
     /**
      *
@@ -239,7 +239,7 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
         StringBuffer sb = new StringBuffer();
         sb.append("\n<SCRIPT type=\"TEXT/JAVASCRIPT\" language=\"JavaScript\">\n");
         sb.append("document.cookie = '");
-        sb.append(cookieName + "=' + encodeURIComponent(window.location.href) + '; Path=/;"); // session cookie
+        sb.append(cookieName + "=' + encodeURIComponent(window.location.href) + ';" + cookieMaxAge + "Path=/;"); // session cookie
         JavaScriptUtils jsUtils = new JavaScriptUtils();
         String cookieProps = jsUtils.createHtmlCookiePropertiesString(jsUtils.getWebAppSecurityConfigCookieProperties());
         sb.append(cookieProps);
@@ -251,7 +251,7 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
 
     public String getSamlRequestCookieTimeoutString() {
 
-        long samlLoginRequestTimeoutMillis = this.fragmentCookieMaxAge * 60 * 1000; // default - 10 minutes
+        long samlLoginRequestTimeoutMillis = this.fragmentCookieMaxAge; // default - 10 minutes
         Date timeout = new Date(System.currentTimeMillis() + samlLoginRequestTimeoutMillis);
 
         SimpleDateFormat utc_sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");

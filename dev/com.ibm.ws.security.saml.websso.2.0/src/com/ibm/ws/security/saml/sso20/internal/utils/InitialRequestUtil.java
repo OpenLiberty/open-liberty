@@ -265,7 +265,7 @@ public class InitialRequestUtil {
             String initialrequest_cookie_name = updateInitialRequestCookieNameWithRelayState(relayState);
             String initialrequest_cookie_value = digestInitialRequestCookieValue(irBytesStr, ssoService);
             if (initialrequest_cookie_name != null && initialrequest_cookie_value != null) {
-                int cookieMaxAge = ((int)ssoService.getConfig().getAuthnRequestTime())*60; //seconds
+                int cookieMaxAge = (int)ssoService.getConfig().getAuthnRequestTime()/1000; //seconds
                 RequestUtil.createCookie(req, resp, initialrequest_cookie_name, initialrequest_cookie_value, cookieMaxAge);
             }        
         }
