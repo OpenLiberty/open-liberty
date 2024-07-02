@@ -7,9 +7,9 @@
    
 
     <include location="../fatTestPorts.xml"/>
-    <webApplication name="enableSchemaValidation" location="enableSchemaValidation.war" context-root="testHandlerProvider" />
     
-    <webServiceClient serviceName="SayHelloServiceWithHandler"  enableSchemaValidation="true" />
+    
+    <webServiceClient serviceName="SayHelloService"  enableSchemaValidation="true" />
     
     <javaPermission className="java.security.AllPermission" name="*" actions="*"/>
     

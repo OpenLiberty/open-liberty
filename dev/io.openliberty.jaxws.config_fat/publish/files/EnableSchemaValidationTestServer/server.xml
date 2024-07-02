@@ -6,8 +6,6 @@
 
     <include location="../fatTestPorts.xml"/>
     
-    <webApplication name="enableSchemaValidation" location="enableSchemaValidation.war" context-root="testHandlerProvider" />
-    
     <javaPermission className="java.security.AllPermission" name="*" actions="*"/>
     
 </server>

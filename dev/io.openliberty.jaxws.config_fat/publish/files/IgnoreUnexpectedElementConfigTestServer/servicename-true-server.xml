@@ -8,7 +8,7 @@
 
     <include location="../fatTestPorts.xml"/>
     
-    <webServiceClient serviceName="SayHelloServiceWithHandler" ignoreUnexpectedElements="true"/>
+    <webServiceClient serviceName="SayHelloService" ignoreUnexpectedElements="true"/>
     
     <javaPermission className="java.security.AllPermission" name="*" actions="*"/>
     

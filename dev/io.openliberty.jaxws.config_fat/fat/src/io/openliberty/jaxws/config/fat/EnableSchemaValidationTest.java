@@ -39,15 +39,15 @@ import componenttest.topology.utils.HttpUtils;
  *
  * 1.) enableSchemValidation="true" - "global" setting
  * 2.) enableschemaValiation="false" - "global" setting
- * 3.) enableSchemValidation="true" serviceName="SayHelloServiceWithHandler" - targeted client setting
- * 4.) enableSchemValidation="false" serviceName="SayHelloServiceWithHandler" - targeted client setting
+ * 3.) enableSchemValidation="true" serviceName="SayHelloService" - targeted client setting
+ * 4.) enableSchemValidation="false" serviceName="SayHelloService" - targeted client setting
  * 5.) Combination of 1 and 4
  * 6.) Combination of 2 and 3
  * 7.) enableSchemValidation="false" serviceName="IncorrectServiceName" - targeted client setting with the wrong serviceName
  *
  * This Test uses a Mock endpoint to create "bad" responses that the client will fail to unmarshall unless enableSchemaValidation=false
  *
- * @see com.ibm.ws.jaxws.fat.mock.endpoint.MockJaxwsEndpointServlet
+ * @see io.openliberty.jaxws.fat.mock.endpoint.MockJaxwsEndpointServlet
  *
  *      Each test uses a specific server.xml configuration that's reconfigured at test start. It calls the @see IgnoreUnexpectedElementTestServiceServlet servlet
  *      along with a HTTP request parameter. That parameter is added to the SOAP Request, and when the mock JAX-WS endpoint receives the request, it checks for the string
@@ -69,16 +69,14 @@ public class EnableSchemaValidationTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+    	
+        ShrinkHelper.defaultDropinApp(server, "testWebServiceClient", "io.openliberty.samples.jaxws.client",
+                                      "io.openliberty.samples.jaxws.client.handler",
+                                      "io.openliberty.samples.jaxws.client.servlet", "io.openliberty.jaxws.fat.mock.endpoint");
 
-        ShrinkHelper.defaultApp(server, "enableSchemaValidation", "com.ibm.ws.jaxws.fat.mock.endpoint");
+        server.startServer("EnableSchemaValidationTest.log");
 
-        ShrinkHelper.defaultDropinApp(server, "testHandlerClient", "com.ibm.samples.jaxws.client",
-                                      "com.ibm.samples.jaxws.client.handler",
-                                      "com.ibm.samples.jaxws.client.servlet");
-
-        server.startServer("HandlerChainClientAddedElement.log");
-
-        assertNotNull("Application hello does not appear to have started.", server.waitForStringInLog("CWWKZ0001I:.*" + "testHandlerClient"));
+        assertNotNull("Application hello does not appear to have started.", server.waitForStringInLog("CWWKZ0001I:.*" + "testWebServiceClient"));
     }
 
     /**
@@ -114,8 +112,8 @@ public class EnableSchemaValidationTest {
     public void testAddedElementGlobalSchemaValidationTrue() throws Exception {
         server.reconfigureServer("EnableSchemaValidationTestServer/global-true-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=user
-        String response = runTest(server, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=user
+        String response = runTest(server, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
         // Log response to output.txt
         LOG.info("testAddedElementGlobalSchemaValidationTrue - Response = " + response);
 
@@ -137,8 +135,8 @@ public class EnableSchemaValidationTest {
     public void testWrongElementNameGlobalSchemaValidationTrue() throws Exception {
         server.reconfigureServer("EnableSchemaValidationTestServer/global-true-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=user
-        String response = runTest(server, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongElementName");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=user
+        String response = runTest(server, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongElementName");
         // Log response to output.txt
         LOG.info("testWrongElementNameGlobalSchemaValidationTrue - Response = " + response);
 
@@ -160,8 +158,8 @@ public class EnableSchemaValidationTest {
     public void testWrongNamespaceGlobalSchemaValidationTrue() throws Exception {
         server.reconfigureServer("EnableSchemaValidationTestServer/global-true-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=user
-        String response = runTest(server, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongNamespace");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=user
+        String response = runTest(server, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongNamespace");
         // Log response to output.txt
         LOG.info("testWrongNamespaceGlobalSchemaValidationTrue - Response = " + response);
 
@@ -184,8 +182,8 @@ public class EnableSchemaValidationTest {
     public void testWrongElementContentGlobalSchemaValidationTrue() throws Exception {
         server.reconfigureServer("EnableSchemaValidationTestServer/global-true-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=user
-        String response = runTest(server, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongElementContent");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=user
+        String response = runTest(server, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongElementContent");
         // Log response to output.txt
         LOG.info("testWrongElementContentGlobalSchemaValidationTrue - Response = " + response);
 
@@ -209,8 +207,8 @@ public class EnableSchemaValidationTest {
     public void testAddedElementGlobalSchemaValidationFalse() throws Exception {
         server.reconfigureServer("EnableSchemaValidationTestServer/global-false-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=user
-        String response = runTest(server, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=user
+        String response = runTest(server, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
         // Log response to output.txt
         LOG.info("testAddedElementGlobalSchemaValidationFalse - Response = " + response);
 
@@ -231,8 +229,8 @@ public class EnableSchemaValidationTest {
     public void testWrongElementNameGlobalSchemaValidationFalse() throws Exception {
         server.reconfigureServer("EnableSchemaValidationTestServer/global-false-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=user
-        String response = runTest(server, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongElementName");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=user
+        String response = runTest(server, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongElementName");
         // Log response to output.txt
         LOG.info("testWrongElementNameGlobalSchemaValidationFalse - Response = " + response);
 
@@ -253,8 +251,8 @@ public class EnableSchemaValidationTest {
     public void testWrongNamespaceGlobalSchemaValidationFalse() throws Exception {
         server.reconfigureServer("EnableSchemaValidationTestServer/global-false-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=user
-        String response = runTest(server, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongNamespace");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=user
+        String response = runTest(server, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongNamespace");
         // Log response to output.txt
         LOG.info("testWrongNamespaceGlobalSchemaValidationFalse - Response = " + response);
 
@@ -275,8 +273,8 @@ public class EnableSchemaValidationTest {
     public void testWrongElementContentGlobalSchemaValidationFalse() throws Exception {
         server.reconfigureServer("EnableSchemaValidationTestServer/global-false-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=user
-        String response = runTest(server, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongElementContent");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=user
+        String response = runTest(server, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongElementContent");
         // Log response to output.txt
         LOG.info("testWrongElementContentGlobalSchemaValidationFalse - Response = " + response);
 
@@ -299,8 +297,8 @@ public class EnableSchemaValidationTest {
     public void testAddedElementServiceNameSchemaValidationTrue() throws Exception {
         server.reconfigureServer("EnableSchemaValidationTestServer/servicename-true-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=user
-        String response = runTest(server, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=user
+        String response = runTest(server, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
         // Log response to output.txt
         LOG.info("testAddedElementServiceNameSchemaValidationTrue - Response = " + response);
 
@@ -322,8 +320,8 @@ public class EnableSchemaValidationTest {
     public void testWrongElementNameServiceNameSchemaValidationTrue() throws Exception {
         server.reconfigureServer("EnableSchemaValidationTestServer/servicename-true-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=user
-        String response = runTest(server, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongElementName");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=user
+        String response = runTest(server, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongElementName");
         // Log response to output.txt
         LOG.info("testWrongElementNameServiceNameSchemaValidationTrue - Response = " + response);
 
@@ -345,8 +343,8 @@ public class EnableSchemaValidationTest {
     public void testWrongNamespaceServiceNameSchemaValidationTrue() throws Exception {
         server.reconfigureServer("EnableSchemaValidationTestServer/servicename-true-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=user
-        String response = runTest(server, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongNamespace");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=user
+        String response = runTest(server, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongNamespace");
         // Log response to output.txt
         LOG.info("testWrongNamespaceServiceNameSchemaValidationTrue - Response = " + response);
 
@@ -369,8 +367,8 @@ public class EnableSchemaValidationTest {
     public void testWrongElementContentServiceNameSchemaValidationTrue() throws Exception {
         server.reconfigureServer("EnableSchemaValidationTestServer/servicename-true-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=user
-        String response = runTest(server, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongElementContent");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=user
+        String response = runTest(server, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongElementContent");
         // Log response to output.txt
         LOG.info("testWrongElementContentServiceNameSchemaValidationTrue - Response = " + response);
 
@@ -394,8 +392,8 @@ public class EnableSchemaValidationTest {
     public void testAddedElementServiceNameSchemaValidationFalse() throws Exception {
         server.reconfigureServer("EnableSchemaValidationTestServer/servicename-false-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=user
-        String response = runTest(server, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=user
+        String response = runTest(server, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
         // Log response to output.txt
         LOG.info("testAddedElementServiceNameSchemaValidationFalse - Response = " + response);
 
@@ -416,8 +414,8 @@ public class EnableSchemaValidationTest {
     public void testWrongElementNameServiceNameSchemaValidationFalse() throws Exception {
         server.reconfigureServer("EnableSchemaValidationTestServer/servicename-false-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=user
-        String response = runTest(server, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongElementName");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=user
+        String response = runTest(server, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongElementName");
         // Log response to output.txt
         LOG.info("testWrongElementNameServiceNameSchemaValidationFalse - Response = " + response);
 
@@ -438,8 +436,8 @@ public class EnableSchemaValidationTest {
     public void testWrongNamespaceServiceNameSchemaValidationFalse() throws Exception {
         server.reconfigureServer("EnableSchemaValidationTestServer/servicename-false-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=user
-        String response = runTest(server, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongNamespace");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=user
+        String response = runTest(server, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongNamespace");
         // Log response to output.txt
         LOG.info("testWrongNamespaceServiceNameSchemaValidationFalse - Response = " + response);
 
@@ -460,8 +458,8 @@ public class EnableSchemaValidationTest {
     public void testWrongElementContentServiceNameSchemaValidationFalse() throws Exception {
         server.reconfigureServer("EnableSchemaValidationTestServer/servicename-false-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=user
-        String response = runTest(server, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongElementContent");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=user
+        String response = runTest(server, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=WrongElementContent");
         // Log response to output.txt
         LOG.info("testWrongElementContentServiceNameSchemaValidationFalse - Response = " + response);
 
@@ -484,8 +482,8 @@ public class EnableSchemaValidationTest {
     public void testAddedElementServiceNameTrueGlobalSchemaValidationFalse() throws Exception {
         server.reconfigureServer("EnableSchemaValidationTestServer/servicename-true-global-false-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=user
-        String response = runTest(server, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=user
+        String response = runTest(server, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
         // Log response to output.txt
         LOG.info("testAddedElementServiceNameTrueGlobalSchemaValidationFalse - Response = " + response);
 
@@ -508,8 +506,8 @@ public class EnableSchemaValidationTest {
     public void testAddedElementServiceNameFalseGlobalSchemaValidationTrue() throws Exception {
         server.reconfigureServer("EnableSchemaValidationTestServer/servicename-false-global-true-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=user
-        String response = runTest(server, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=user
+        String response = runTest(server, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
         // Log response to output.txt
         LOG.info("testAddedElementServiceNameFalseGlobalSchemaValidationTrue - Response = " + response);
 
@@ -532,8 +530,8 @@ public class EnableSchemaValidationTest {
     public void testAddedElementIncorrectServiceNameSchemaValidatinFalse() throws Exception {
         server.reconfigureServer("EnableSchemaValidationTestServer/incorrect-servicename-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=user
-        String response = runTest(server, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=user
+        String response = runTest(server, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
         // Log response to output.txt
         LOG.info("testAddedElementIncorrectServiceNameSchemaValidatinFalse - Response = " + response);
 

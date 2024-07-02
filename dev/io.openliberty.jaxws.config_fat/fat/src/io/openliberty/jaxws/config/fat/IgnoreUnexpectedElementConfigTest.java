@@ -60,13 +60,12 @@ public class IgnoreUnexpectedElementConfigTest {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        ShrinkHelper.defaultDropinApp(addedElementServer, "testHandlerClient", "com.ibm.samples.jaxws.client",
-                                      "com.ibm.samples.jaxws.client.handler",
-                                      "com.ibm.samples.jaxws.client.servlet", "com.ibm.ws.jaxws.fat.mock.endpoint");
+        ShrinkHelper.defaultDropinApp(addedElementServer, "testWebServiceClient", "io.openliberty.samples.jaxws.client",
+                                      "io.openliberty.samples.jaxws.client.servlet", "io.openliberty.jaxws.fat.mock.endpoint");
 
         addedElementServer.startServer("IgnoreUnexpectedElementConfigTest.log");
 
-        assertNotNull("Application hello does not appear to have started.", addedElementServer.waitForStringInLog("CWWKZ0001I:.*" + "testHandlerClient"));
+        assertNotNull("Application hello does not appear to have started.", addedElementServer.waitForStringInLog("CWWKZ0001I:.*" + "testWebServiceClient"));
     }
 
     @AfterClass
@@ -88,13 +87,13 @@ public class IgnoreUnexpectedElementConfigTest {
     public void testGlobalIgnoreUnexpectedElementTrue() throws Exception {
         addedElementServer.reconfigureServer("IgnoreUnexpectedElementConfigTestServer/global-true-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/TestServiceServlet?target=user
-        String response = runTest(addedElementServer, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/TestServiceServlet?target=user
+        String response = runTest(addedElementServer, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
         // Log response to output.txt
         LOG.info("testGlobalIgnoreUnexpectedElementTrue - Response = " + response);
 
         assertTrue("Expected successful response, but response was " + response,
-                   response.contains("Hello,AddedElement"));
+                   response.contains("Hello, AddedElement"));
     }
 
     /**
@@ -109,8 +108,8 @@ public class IgnoreUnexpectedElementConfigTest {
     public void testGlobalIgnoreUnexpectedElementFalse() throws Exception {
         addedElementServer.reconfigureServer("IgnoreUnexpectedElementConfigTestServer/global-false-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/TestServiceServlet?target=user
-        String response = runTest(addedElementServer, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/TestServiceServlet?target=user
+        String response = runTest(addedElementServer, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
         // Log response to output.txt
         LOG.info("testGlobalIgnoreUnexpectedElementFalse - Response = " + response);
 
@@ -131,13 +130,13 @@ public class IgnoreUnexpectedElementConfigTest {
     public void testServiceNameIgnoreUnexpectedElementTrue() throws Exception {
         addedElementServer.reconfigureServer("IgnoreUnexpectedElementConfigTestServer/servicename-true-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/TestServiceServlet?target=user
-        String response = runTest(addedElementServer, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/TestServiceServlet?target=user
+        String response = runTest(addedElementServer, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
         // Log response to output.txt
         LOG.info("testServiceNameIgnoreUnexpectedElementTrue - Response = " + response);
 
         assertTrue("Expected successful response, but response was " + response,
-                   response.contains("Hello,AddedElement"));
+                   response.contains("Hello, AddedElement"));
     }
 
     /**
@@ -152,8 +151,8 @@ public class IgnoreUnexpectedElementConfigTest {
     public void testServiceNameIgnoreUnexpectedElementFalse() throws Exception {
         addedElementServer.reconfigureServer("IgnoreUnexpectedElementConfigTestServer/servicename-false-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/TestServiceServlet?target=user
-        String response = runTest(addedElementServer, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/TestServiceServlet?target=user
+        String response = runTest(addedElementServer, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
         // Log response to output.txt
         LOG.info("testServiceNameIgnoreUnexpectedElementFalse - Response = " + response);
 
@@ -174,13 +173,13 @@ public class IgnoreUnexpectedElementConfigTest {
     public void testServiceNameTrueAndGlobalTrueIgnoreUnexpectedElement() throws Exception {
         addedElementServer.reconfigureServer("IgnoreUnexpectedElementConfigTestServer/servicename-true-global-true-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/TestServiceServlet?target=user
-        String response = runTest(addedElementServer, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/TestServiceServlet?target=user
+        String response = runTest(addedElementServer, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
         // Log response to output.txt
         LOG.info("testServiceNameIgnoreUnexpectedElementTrue - Response = " + response);
 
         assertTrue("Expected successful response, but response was " + response,
-                   response.contains("Hello,AddedElement"));
+                   response.contains("Hello, AddedElement"));
     }
 
     /**
@@ -195,8 +194,8 @@ public class IgnoreUnexpectedElementConfigTest {
     public void testServiceNameFalseAndGlobalFalseIgnoreUnexpectedElement() throws Exception {
         addedElementServer.reconfigureServer("IgnoreUnexpectedElementConfigTestServer/servicename-false-global-false-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/TestServiceServlet?target=user
-        String response = runTest(addedElementServer, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/TestServiceServlet?target=user
+        String response = runTest(addedElementServer, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
         // Log response to output.txt
         LOG.info("testServiceNameIgnoreUnexpectedElementFalse - Response = " + response);
 
@@ -217,13 +216,13 @@ public class IgnoreUnexpectedElementConfigTest {
     public void testServiceNameTrueAndGlobalFalseIgnoreUnexpectedElement() throws Exception {
         addedElementServer.reconfigureServer("IgnoreUnexpectedElementConfigTestServer/servicename-true-global-false-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/TestServiceServlet?target=user
-        String response = runTest(addedElementServer, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/TestServiceServlet?target=user
+        String response = runTest(addedElementServer, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
         // Log response to output.txt
         LOG.info("testServiceNameIgnoreUnexpectedElementTrue - Response = " + response);
 
         assertTrue("Expected successful response, but response was " + response,
-                   response.contains("Hello,AddedElement"));
+                   response.contains("Hello, AddedElement"));
     }
 
     /**
@@ -238,8 +237,8 @@ public class IgnoreUnexpectedElementConfigTest {
     public void testServiceNameFalseAndGlobalTrueIgnoreUnexpectedElement() throws Exception {
         addedElementServer.reconfigureServer("IgnoreUnexpectedElementConfigTestServer/servicename-false-global-false-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/TestServiceServlet?target=user
-        String response = runTest(addedElementServer, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/TestServiceServlet?target=user
+        String response = runTest(addedElementServer, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
         // Log response to output.txt
         LOG.info("testServiceNameIgnoreUnexpectedElementFalse - Response = " + response);
 
@@ -260,8 +259,8 @@ public class IgnoreUnexpectedElementConfigTest {
     public void testIncorrectServiceNameIgnoreUnexpectedElement() throws Exception {
         addedElementServer.reconfigureServer("IgnoreUnexpectedElementConfigTestServer/incorrect-servicename-server.xml", "CWWKG0017I");
 
-        // Visit the URL:  http://hostName:hostPort/testHandlerClient/TestServiceServlet?target=user
-        String response = runTest(addedElementServer, "testHandlerClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
+        // Visit the URL:  http://hostName:hostPort/testWebServiceClient/TestServiceServlet?target=user
+        String response = runTest(addedElementServer, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
         // Log response to output.txt
         LOG.info("testServiceNameIgnoreUnexpectedElementFalse - Response = " + response);
 

@@ -8,7 +8,7 @@
 
     <include location="../fatTestPorts.xml"/>
     
-    <webServiceClient serviceName="SayHelloServiceWithHandler" ignoreUnexpectedElements="true"/>
+    <webServiceClient serviceName="SayHelloService" ignoreUnexpectedElements="true"/>
     
     <webServiceClient ignoreUnexpectedElements="false"/>
     
