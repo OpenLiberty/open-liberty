@@ -86,18 +86,24 @@ public class TCPUtils {
         return bs;
     }
 
-    private static ChannelFuture open(NettyFrameworkImpl framework, AbstractBootstrap bootstrap,
+    private static ChannelFuture open(NettyFrameworkImpl framework, final Channel channel,
             final TCPConfigurationImpl config, String inetHost, int inetPort, ChannelFutureListener openListener,
             final int retryCount) {
-
+    	System.out.println("Channel details: " + channel.isRegistered()+ " " + channel.isOpen() + " " + channel.isActive());
+    	if(!channel.isOpen()) {
+            System.out.println("Not starting channel since it was closed...");
+    		return null;
+    	}
         ChannelFuture oFuture = null;
         if (inetHost.equals("*")) {
             inetHost = NettyConstants.INADDR_ANY;
         }
         if (config.isInbound()) {
-            oFuture = ((ServerBootstrapExtended) bootstrap).bind(inetHost, inetPort);
+        	oFuture = channel.bind(new InetSocketAddress(inetHost, inetPort));
+//            oFuture = ((ServerBootstrapExtended) bootstrap).bind(inetHost, inetPort);
         } else {
-            oFuture = ((BootstrapExtended) bootstrap).connect(inetHost, inetPort);
+        	oFuture = channel.connect(new InetSocketAddress(inetHost, inetPort));
+//            oFuture = ((BootstrapExtended) bootstrap).connect(inetHost, inetPort);
         }
         final ChannelFuture openFuture = oFuture;
         if (openListener != null) {
@@ -111,7 +117,7 @@ public class TCPUtils {
                 // add new channel to set of active channels, and set a close future to
                 // remove it
             	// Get parent and increment active connections
-                final Channel channel = openFuture.channel();
+//                final Channel channel = openFuture.channel();
 
                 // set common channel attrs
                 channel.attr(ConfigConstants.NAME_KEY).set(config.getExternalName());
@@ -173,7 +179,14 @@ public class TCPUtils {
                 
                 System.out.println("open failed for " + config.getExternalName() + " due to: " + future.cause().getMessage());
 
-                if (retryCount > 0 ) {
+                if (retryCount > 0) {
+                	if(!channel.isOpen()) {
+                		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Channel not open so must have been cancelled. Returning...");
+                        }
+                		System.out.println("Channel not open so must have been cancelled. Returning...");
+                		return;
+                	}
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "attempt to bind again after a wait of " + timeBetweenRetriesMsec + "ms; "
                                 + retryCount + " attempts remaining" + " for " + config.getExternalName());
@@ -187,8 +200,12 @@ public class TCPUtils {
                             Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
                         }
                     }
-                    open(framework, bootstrap, config, newHost, inetPort, openListener, retryCount - 1);
+                    open(framework, channel, config, newHost, inetPort, openListener, retryCount - 1);
                 } else {
+                	if(!channel.isOpen()) {
+                        System.out.println("No retries left and channel is not open. Returning...");
+                		return;
+                	}
                     if (config.isInbound()) {
                         Tr.error(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(), newHost,
                                 String.valueOf(inetPort), openFuture.cause().getMessage() });
@@ -204,7 +221,7 @@ public class TCPUtils {
         return openFuture;
     }
 
-    private static FutureTask<ChannelFuture> startHelper(NettyFrameworkImpl framework, AbstractBootstrap bootstrap,
+    private static Channel startHelper(NettyFrameworkImpl framework, AbstractBootstrap bootstrap,
             TCPConfigurationImpl config, String inetHost, int inetPort, ChannelFutureListener openListener)
             throws NettyException {
     	if(framework.isStopping()){ // Framework already started and is no longer active
@@ -214,13 +231,15 @@ public class TCPUtils {
             return null;
         }else{
             try {
-                return framework.runWhenServerStarted(new Callable<ChannelFuture>() {
+            	Channel channel = bootstrap.register().channel();
+                framework.runWhenServerStarted(new Callable<ChannelFuture>() {
                     @Override
                     public ChannelFuture call() {
-                        return open(framework, bootstrap, config, inetHost, inetPort, openListener,
+                        return open(framework, channel, config, inetHost, inetPort, openListener,
                                 config.getPortOpenRetries());
                     }
                 });
+                return channel;
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "NettyFramework signaled- caught exception:: " + e.getMessage());
@@ -241,7 +260,7 @@ public class TCPUtils {
      * @return
      * @throws NettyException
      */
-    public static FutureTask<ChannelFuture> start(NettyFrameworkImpl framework, ServerBootstrapExtended bootstrap, String inetHost,
+    public static Channel start(NettyFrameworkImpl framework, ServerBootstrapExtended bootstrap, String inetHost,
             int inetPort, ChannelFutureListener openListener) throws NettyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "start (TCP): attempt to bind a channel at host " + inetHost + " port " + inetPort);
@@ -261,7 +280,7 @@ public class TCPUtils {
      * @return
      * @throws NettyException
      */
-    public static FutureTask<ChannelFuture> startOutbound(NettyFrameworkImpl framework, BootstrapExtended bootstrap,
+    public static Channel startOutbound(NettyFrameworkImpl framework, BootstrapExtended bootstrap,
             String inetHost, int inetPort, ChannelFutureListener openListener) throws NettyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "startOutbound (TCP): attempt to connect to host " + inetHost + " port " + inetPort);

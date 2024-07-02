@@ -388,7 +388,8 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
             if (!serverCompletelyStarted.get()) {
                 serverStartedTasks.add(future);
             }else {
-            	this.executorService.submit(future);
+//            	this.executorService.submit(future);
+            	future.run();
             }
             return future;
         }
@@ -469,20 +470,20 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     }
 
     @Override
-    public FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
+    public Channel start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
             ChannelFutureListener bindListener) throws NettyException {
         return TCPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
     }
     
 
     @Override
-    public FutureTask<ChannelFuture> start(BootstrapExtended bootstrap, String inetHost, int inetPort,
+    public Channel start(BootstrapExtended bootstrap, String inetHost, int inetPort,
             ChannelFutureListener bindListener) throws NettyException {
         return UDPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
     }
 
     @Override
-    public FutureTask<ChannelFuture> startOutbound(BootstrapExtended bootstrap, String inetHost, int inetPort,
+    public Channel startOutbound(BootstrapExtended bootstrap, String inetHost, int inetPort,
     		ChannelFutureListener bindListener) throws NettyException {
     	if (bootstrap.getConfiguration() instanceof TCPConfigurationImpl) {
     		return TCPUtils.startOutbound(this, bootstrap, inetHost, inetPort, bindListener);

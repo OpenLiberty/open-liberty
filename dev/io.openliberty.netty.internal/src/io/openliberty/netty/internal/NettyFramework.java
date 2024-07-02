@@ -79,7 +79,7 @@ public interface NettyFramework {
      * @return ChannelFuture for the ServerChannel, or null if the server is not yet
      *         started
      */
-    FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
+    Channel start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
             ChannelFutureListener bindListener) throws NettyException;
     
     /**
@@ -92,7 +92,7 @@ public interface NettyFramework {
      * @return ChannelFuture for the ServerChannel, or null if the server is not yet
      *         started
      */
-    FutureTask<ChannelFuture> start(BootstrapExtended bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener)
+    Channel start(BootstrapExtended bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener)
             throws NettyException;
 
     /**
@@ -106,7 +106,7 @@ public interface NettyFramework {
      * @return ChannelFuture
      * @throws NettyException
      */
-    FutureTask<ChannelFuture> startOutbound(BootstrapExtended bootstrap, String inetHost, int inetPort,
+    Channel startOutbound(BootstrapExtended bootstrap, String inetHost, int inetPort,
             ChannelFutureListener bindListener) throws NettyException;
 
     /**

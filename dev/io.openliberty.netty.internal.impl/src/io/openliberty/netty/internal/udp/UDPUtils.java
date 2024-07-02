@@ -68,9 +68,9 @@ public class UDPUtils {
         return bs;
     }
 
-    private static ChannelFuture bind(NettyFrameworkImpl framework, BootstrapExtended bootstrap, String inetHost,
+    private static ChannelFuture bind(NettyFrameworkImpl framework, BootstrapExtended bootstrap, final Channel channel, String inetHost,
             int inetPort, final int retryCount, final int retryDelay, ChannelFutureListener bindListener) {
-        ChannelFuture bindFuture = bootstrap.bind(inetHost, inetPort);
+        ChannelFuture bindFuture = channel.bind(new InetSocketAddress(inetHost, inetPort));
         if (inetHost.equals("*")) {
             inetHost = NettyConstants.INADDR_ANY;
         }
@@ -87,7 +87,7 @@ public class UDPUtils {
 
                 // add the new channel to the set of active channels, and set a close future to
                 // remove it
-                final Channel channel = bindFuture.channel();
+//                final Channel channel = bindFuture.channel();
                 // framework.getActiveChannels().add(channel);
 
                 // set common channel attrs
@@ -133,6 +133,13 @@ public class UDPUtils {
                 }
 
                 if (retryCount > 0) {
+                	if(!channel.isOpen()) {
+                		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Channel not open so must have been cancelled. Returning...");
+                        }
+                		System.out.println("Channel not open so must have been cancelled. Returning...");
+                		return;
+                	}
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "attempt to bind again after a wait of " + retryDelay + "ms; " + retryCount
                                 + " attempts remaining");
@@ -146,8 +153,12 @@ public class UDPUtils {
                             Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
                         }
                     }
-                    bind(framework, bootstrap, newHost, inetPort, retryCount - 1, retryDelay, bindListener);
+                    bind(framework, bootstrap, channel, newHost, inetPort, retryCount - 1, retryDelay, bindListener);
                 } else {
+                	if(!channel.isOpen()) {
+                        System.out.println("No retries left and channel is not open. Returning...");
+                		return;
+                	}
                     if (config.isInboundChannel()) {
                         Tr.error(tc, UDPMessageConstants.BIND_FAILURE,
                                 new Object[] { channelName, newHost, String.valueOf(inetPort) });
@@ -174,7 +185,7 @@ public class UDPUtils {
      * @return
      * @throws NettyException
      */
-    public static FutureTask<ChannelFuture> startOutbound(NettyFrameworkImpl framework, BootstrapExtended bootstrap,
+    public static Channel startOutbound(NettyFrameworkImpl framework, BootstrapExtended bootstrap,
             String inetHost, int inetPort, ChannelFutureListener bindListener) throws NettyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "startOutbound (UDP): attempt to bind a channel at host " + inetHost + " port " + inetPort);
@@ -193,7 +204,7 @@ public class UDPUtils {
      * @return
      * @throws NettyException
      */
-    public static FutureTask<ChannelFuture> start(NettyFrameworkImpl framework, BootstrapExtended bootstrap, String inetHost,
+    public static Channel start(NettyFrameworkImpl framework, BootstrapExtended bootstrap, String inetHost,
             int inetPort, ChannelFutureListener bindListener) throws NettyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "start (UDP): attempt to bind a channel at host " + inetHost + " port " + inetPort);
@@ -201,7 +212,7 @@ public class UDPUtils {
         return startHelper(framework, bootstrap, inetHost, inetPort, bindListener);
     }
 
-    private static FutureTask<ChannelFuture> startHelper(NettyFrameworkImpl framework, BootstrapExtended bootstrap, String inetHost,
+    private static Channel startHelper(NettyFrameworkImpl framework, BootstrapExtended bootstrap, String inetHost,
             int inetPort, ChannelFutureListener bindListener) throws NettyException {
         if(framework.isStopping()){ // Framework already started and is no longer active
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -210,7 +221,8 @@ public class UDPUtils {
             return null;
         }
         try {
-            return framework.runWhenServerStarted(new Callable<ChannelFuture>() {
+        	Channel channel = bootstrap.register().channel();
+            framework.runWhenServerStarted(new Callable<ChannelFuture>() {
                 @Override
                 public ChannelFuture call() throws NettyException {
                     UDPConfigurationImpl config = (UDPConfigurationImpl) bootstrap.getConfiguration();
@@ -232,10 +244,11 @@ public class UDPUtils {
                                 "local address unresolved for " + channelName + " - " + hostLogString + ":" + inetPort);
                     }
 
-                    return bind(framework, bootstrap, newHost, inetPort, bindRetryCount, bindRetryInterval,
+                    return bind(framework, bootstrap, channel, newHost, inetPort, bindRetryCount, bindRetryInterval,
                             bindListener);
                 }
             });
+            return channel;
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "NettyFramework signaled- caught exception:: " + e.getMessage());
