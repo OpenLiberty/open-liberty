@@ -136,7 +136,7 @@
   -->
   <dataSource id="ds-client-reroute-wrong-cert" jndiName="jdbc/ds-client-reroute-wrong-cert">
     <jdbcDriver libraryRef="DB2Lib"/>
-    <properties.db2.jcc serverName="fake.host.name" portNumber="1234" 
+    <properties.db2.jcc serverName="host.name.invalid" portNumber="1234" 
     user="${DB2_USER}" password="${DB2_PASS}" databaseName="${DB2_DBNAME}"
     clientRerouteAlternateServerName="${DB2_HOSTNAME}" clientRerouteAlternatePortNumber="${DB2_PORT_SECURE}"
     maxRetriesForClientReroute="1" retryIntervalForClientReroute="15"
