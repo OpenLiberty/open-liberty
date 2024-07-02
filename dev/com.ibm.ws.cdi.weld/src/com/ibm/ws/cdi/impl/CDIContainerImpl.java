@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -224,7 +224,8 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                             String id = module.getId();
                             WebSphereBeanDeploymentArchive bda = deployment.getBeanDeploymentArchive(id);
                             if (bda != null) {
-                                try (ContextBeginnerEnder contextBeginnerEnder = cdiRuntime.createContextBeginnerEnder().extractComponentMetaData(bda.getArchive()).extractTCCL(application).beginContext()) {
+                                try (ContextBeginnerEnder contextBeginnerEnder = cdiRuntime.createContextBeginnerEnder().extractComponentMetaData(bda.getArchive())
+                                                                                           .extractTCCL(application).beginContext()) {
                                     eventManager.fireStartupEvent(module);
                                 }
                             } else {
@@ -311,7 +312,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
      * Create a BDA for each runtime extension and add it to the deployment.
      *
      * @param webSphereCDIDeployment
-     * @param excludedBdas           a set of application BDAs which should not be visible to runtime extensions
+     * @param excludedBdas a set of application BDAs which should not be visible to runtime extensions
      * @throws CDIException
      */
     private void addRuntimeExtensions(WebSphereCDIDeployment webSphereCDIDeployment,
@@ -425,10 +426,13 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                 continue;
             }
 
+            EEModuleDescriptor eeModuleDescriptor = new WebSphereEEModuleDescriptor(archiveID, archive.getJ2EEName(), archive.getType());
+
             WebSphereBeanDeploymentArchive moduleBda = BDAFactory.createBDA(applicationContext,
                                                                             archiveID,
                                                                             archive,
-                                                                            cdiRuntime);
+                                                                            cdiRuntime,
+                                                                            eeModuleDescriptor);
             discoveredBdas.addDiscoveredBda(archive.getType(), moduleBda);
             moduleBDAs.add(moduleBda);
 
@@ -466,8 +470,9 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                 childType == ArchiveType.SHARED_LIB) {
 
                 archiveID = parentModule.getId() + "#" + childType + "#" + child.getName();
+                WebSphereEEModuleDescriptor parentDescriptor = (WebSphereEEModuleDescriptor) parentModule.getServices().get(EEModuleDescriptor.class);
                 //a module library uses the same descriptor ID as it's parent module
-                eeModuleDescriptor = new WebSphereEEModuleDescriptor(parentModule.getEEModuleDescriptorId(), childType);
+                eeModuleDescriptor = new WebSphereEEModuleDescriptor(parentDescriptor.getId(), parentDescriptor.getJ2eeName(), childType);
 
             } else {
                 // This isn't the right type to be a child library, skip it

@@ -9,6 +9,10 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.visibility.tests.vistest;
 
+import static org.hamcrest.Matchers.either;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -66,8 +70,14 @@ import com.ibm.ws.cdi.visibility.tests.vistest.nonLib.NonLibTargetBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.nonLib.NonLibTestingBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.privateLib.PrivateLibTargetBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.privateLib.PrivateLibTestingBean;
+import com.ibm.ws.cdi.visibility.tests.vistest.standaloneWar.StandaloneWarTargetBean;
+import com.ibm.ws.cdi.visibility.tests.vistest.standaloneWar.StandaloneWarTestingBean;
+import com.ibm.ws.cdi.visibility.tests.vistest.standaloneWar.servlet.StandaloneVisibilityTestServlet;
+import com.ibm.ws.cdi.visibility.tests.vistest.standaloneWarLib.StandaloneWarLibTargetBean;
+import com.ibm.ws.cdi.visibility.tests.vistest.standaloneWarLib.StandaloneWarLibTestingBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.war.WarTargetBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.war.WarTestingBean;
+import com.ibm.ws.cdi.visibility.tests.vistest.war.servlet.ModuleTestServlet;
 import com.ibm.ws.cdi.visibility.tests.vistest.war.servlet.VisibilityTestServlet;
 import com.ibm.ws.cdi.visibility.tests.vistest.war2.War2TargetBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.war2.War2TestingBean;
@@ -119,6 +129,8 @@ import componenttest.topology.utils.HttpUtils;
  * <li>PrivateLib - a shared library referenced with privateLibraryRef</li>
  * <li>RuntimeExtRegular - a regular runtime extension which can't see application beans</li>
  * <li>RuntimeExtSeeApp - a runtime extension configured so that it can see application beans</li>
+ * <li>StandaloneWar - a WAR which is not part of an EJB</li>
+ * <li>StandaloneWarLib - a library of StandaloneWar</li>
  * </ul>
  * <p>
  * The test is conducted by going through a servlet or application client main class, providing the location from which to test visibility. This class will load a
@@ -151,6 +163,7 @@ public class VisTest extends FATServletClient {
         WebArchive visTestWar = ShrinkWrap.create(WebArchive.class, "visTestWar.war")
                                           .addClass(WarTargetBean.class)
                                           .addClass(VisibilityTestServlet.class)
+                                          .addClass(ModuleTestServlet.class)
                                           .addClass(WarTestingBean.class)
                                           .addAsManifestResource(WarTestingBean.class.getResource("MANIFEST.MF"), "MANIFEST.MF")
                                           .addAsWebInfResource(WarTestingBean.class.getResource("beans.xml"), "beans.xml")
@@ -286,7 +299,20 @@ public class VisTest extends FATServletClient {
                                                       .addClass(PrivateLibTestingBean.class)
                                                       .addAsManifestResource(PrivateLibTestingBean.class.getResource("beans.xml"), "beans.xml");
 
+        JavaArchive visTestStandaloneWarLib = ShrinkWrap.create(JavaArchive.class, "visTestStandaloneWarLib.jar")
+                                                        .addClass(StandaloneWarLibTargetBean.class)
+                                                        .addClass(StandaloneWarLibTestingBean.class);
+
+        WebArchive visTestStandaloneWar = ShrinkWrap.create(WebArchive.class, "visTestStandaloneWar.war")
+                                                    .addClass(StandaloneWarTargetBean.class)
+                                                    .addClass(StandaloneWarTestingBean.class)
+                                                    .addClass(StandaloneVisibilityTestServlet.class)
+                                                    .addClass(ModuleTestServlet.class)
+                                                    .addAsWebInfResource(WarTestingBean.class.getResource("beans.xml"), "beans.xml")
+                                                    .addAsLibrary(visTestStandaloneWarLib);
+
         ShrinkHelper.exportAppToServer(server, visTest, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, visTestStandaloneWar, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportToServer(server, "/", visTestPrivateLibrary, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportToServer(server, "/", visTestCommonLibrary, DeployOptions.SERVER_ONLY);
 
@@ -338,6 +364,8 @@ public class VisTest extends FATServletClient {
         InPrivateLib,
         InRuntimeExtRegular,
         InRuntimeExtSeeApp,
+        InStandaloneWar,
+        InStandaloneWarLib
     }
 
     /**
@@ -443,6 +471,18 @@ public class VisTest extends FATServletClient {
                                                                                                      Location.InPrivateLib,
                                                                                                      Location.InRuntimeExtRegular,
                                                                                                      Location.InRuntimeExtSeeApp));
+
+    /**
+     * Set of locations that should be visible from the standalone .war
+     * <p>
+     * This is a separate application, so none of the EAR beans should be visible.
+     */
+    Set<Location> STANDALONE_WAR_VISIBLE_LOCATIONS = new HashSet<VisTest.Location>(Arrays.asList(Location.InStandaloneWar,
+                                                                                                 Location.InStandaloneWarLib,
+                                                                                                 Location.InCommonLib,
+                                                                                                 Location.InPrivateLib,
+                                                                                                 Location.InRuntimeExtRegular,
+                                                                                                 Location.InRuntimeExtSeeApp));
 
     private static Map<Location, String> appClientResults = null;
 
@@ -569,23 +609,142 @@ public class VisTest extends FATServletClient {
     @Test
     public void testVisibilityFromCommonLib() throws Exception {
         doTestWithServlet(Location.InCommonLib, COMMON_LIB_VISIBLE_LOCATIONS);
+        doTestWithStandaloneServlet(Location.InCommonLib, COMMON_LIB_VISIBLE_LOCATIONS);
     }
 
     @Test
     public void testVisibilityFromPrivateLib() throws Exception {
         doTestWithServlet(Location.InPrivateLib, EJB_VISIBLE_LOCATIONS);
+        doTestWithStandaloneServlet(Location.InPrivateLib, STANDALONE_WAR_VISIBLE_LOCATIONS);
     }
 
     @Test
     public void testVisibilityFromRuntimeExtRegular() throws Exception {
         doTestWithServlet(Location.InRuntimeExtRegular, RUNTIME_EXT_REGULAR_VISIBLE_LOCATIONS);
         doTestWithAppClient(Location.InRuntimeExtRegular, RUNTIME_EXT_REGULAR_VISIBLE_LOCATIONS);
+        doTestWithStandaloneServlet(Location.InRuntimeExtRegular, RUNTIME_EXT_REGULAR_VISIBLE_LOCATIONS);
     }
 
     @Test
     public void testVisibilityFromRuntimeExtSeeAll() throws Exception {
         doTestWithServlet(Location.InRuntimeExtSeeApp, RUNTIME_EXT_SEE_ALL_VISIBLE_LOCATIONS);
         doTestWithAppClient(Location.InRuntimeExtSeeApp, RUNTIME_EXT_SEE_ALL_CLIENT_VISIBLE_LOCATIONS);
+        doTestWithStandaloneServlet(Location.InRuntimeExtSeeApp, STANDALONE_WAR_VISIBLE_LOCATIONS);
+    }
+
+    @Test
+    public void testVisibilityFromStandaloneWar() throws Exception {
+        doTestWithStandaloneServlet(Location.InStandaloneWar, STANDALONE_WAR_VISIBLE_LOCATIONS);
+    }
+
+    @Test
+    public void testVisibilityFromStandaloneWarLib() throws Exception {
+        doTestWithStandaloneServlet(Location.InStandaloneWarLib, STANDALONE_WAR_VISIBLE_LOCATIONS);
+    }
+
+    @Test
+    public void testModuleForEjb() throws Exception {
+        assertEquals("visTest#visTestEjb.jar", getJ2eeNameForLocation(Location.InEjb));
+    }
+
+    @Test
+    public void testModuleForWar() throws Exception {
+        assertEquals("visTest#visTestWar.war", getJ2eeNameForLocation(Location.InWar));
+    }
+
+    @Test
+    public void testModuleForEjbLib() throws Exception {
+        assertEquals("visTest#visTestEjb.jar", getJ2eeNameForLocation(Location.InEjbLib));
+    }
+
+    @Test
+    public void testModuleForWarLib() throws Exception {
+        assertEquals("visTest#visTestWar.war", getJ2eeNameForLocation(Location.InWarLib));
+    }
+
+    @Test
+    public void testModuleForWarWebinfLib() throws Exception {
+        assertEquals("visTest#visTestWar.war", getJ2eeNameForLocation(Location.InWarWebinfLib));
+    }
+
+    @Test
+    public void testModuleForEjbWarLib() throws Exception {
+        // Class is in both modules, which we get is random(!)
+        assertThat(getJ2eeNameForLocation(Location.InEjbWarLib), either(equalTo("visTest#visTestEjb.jar")).or(equalTo("visTest#visTestWar.war")));
+    }
+
+    @Test
+    public void testModuleForEjbAppClientLib() throws Exception {
+        assertEquals("visTest#visTestEjb.jar", getJ2eeNameForLocation(Location.InEjbAppClientLib));
+    }
+
+    @Test
+    public void testModuleForWarAppClientLib() throws Exception {
+        assertEquals("visTest#visTestWar.war", getJ2eeNameForLocation(Location.InWarAppClientLib));
+    }
+
+    @Test
+    public void testModuleForEarLib() throws Exception {
+        assertEquals("NONE", getJ2eeNameForLocation(Location.InEarLib));
+    }
+
+    @Test
+    public void testModuleForEjbAsEjbLib() throws Exception {
+        assertEquals("visTest#visTestEjbAsEjbLib.jar", getJ2eeNameForLocation(Location.InEjbAsEjbLib));
+    }
+
+    @Test
+    public void testModuleForEjbAsWarLib() throws Exception {
+        assertEquals("visTest#visTestEjbAsWarLib.jar", getJ2eeNameForLocation(Location.InEjbAsWarLib));
+    }
+
+    @Test
+    public void testModuleForEjbAsAppClientLib() throws Exception {
+        assertEquals("visTest#visTestEjbAsAppClientLib.jar", getJ2eeNameForLocation(Location.InEjbAsAppClientLib));
+    }
+
+    @Test
+    public void testModuleForAppClientAsEjbLib() throws Exception {
+        assertEquals("visTest#visTestEjb.jar", getJ2eeNameForLocation(Location.InAppClientAsEjbLib));
+    }
+
+    @Test
+    public void testModuleForAppClientAsWarLib() throws Exception {
+        assertEquals("visTest#visTestWar.war", getJ2eeNameForLocation(Location.InAppClientAsWarLib));
+    }
+
+    @Test
+    public void testModuleForCommonLib() throws Exception {
+        assertEquals("NONE", getJ2eeNameForLocation(Location.InCommonLib));
+        assertEquals("NONE", getJ2eeNameForStandaloneLocation(Location.InCommonLib));
+    }
+
+    @Test
+    public void testModuleForPrivateLib() throws Exception {
+        assertEquals("NONE", getJ2eeNameForLocation(Location.InPrivateLib));
+        assertEquals("NONE", getJ2eeNameForStandaloneLocation(Location.InPrivateLib));
+    }
+
+    @Test
+    public void testModuleForRuntimeExtRegular() throws Exception {
+        assertEquals("NONE", getJ2eeNameForLocation(Location.InRuntimeExtRegular));
+        assertEquals("NONE", getJ2eeNameForStandaloneLocation(Location.InRuntimeExtRegular));
+    }
+
+    @Test
+    public void testModuleForRuntimeExtSeeApp() throws Exception {
+        assertEquals("NONE", getJ2eeNameForLocation(Location.InRuntimeExtSeeApp));
+        assertEquals("NONE", getJ2eeNameForStandaloneLocation(Location.InRuntimeExtRegular));
+    }
+
+    @Test
+    public void testModuleForStandaloneWar() throws Exception {
+        assertEquals("visTestStandaloneWar#visTestStandaloneWar.war", getJ2eeNameForStandaloneLocation(Location.InStandaloneWar));
+    }
+
+    @Test
+    public void testModuleForStandaloneWarLib() throws Exception {
+        assertEquals("visTestStandaloneWar#visTestStandaloneWar.war", getJ2eeNameForStandaloneLocation(Location.InStandaloneWarLib));
     }
 
     /**
@@ -600,6 +759,31 @@ public class VisTest extends FATServletClient {
         String response = HttpUtils.getHttpResponseAsString(server, "/visTestWar/?location=" + location);
 
         checkResult(response, visibleLocations);
+    }
+
+    private void doTestWithStandaloneServlet(Location location, Set<Location> visibleLocations) throws Exception {
+        String response = HttpUtils.getHttpResponseAsString(server, "/visTestStandaloneWar/?location=" + location);
+
+        checkResult(response, visibleLocations);
+    }
+
+    /**
+     * Returns the context root that should be used for testing visibility from the given location
+     *
+     * @param location the location to test visibility from
+     * @return the context root to use to call servlets to test from this location
+     */
+    private String getContextRootForLocation(Location location) {
+        String appName;
+        switch (location) {
+            case InStandaloneWar:
+            case InStandaloneWarLib:
+                appName = "visTestStandaloneWar";
+                break;
+            default:
+                appName = "visTestWar";
+        }
+        return appName;
     }
 
     /**
@@ -721,6 +905,30 @@ public class VisTest extends FATServletClient {
 
     private Exception parsingException(String line, String response, Throwable cause) {
         return new Exception("Badly formed line: " + line + "\n\nWhole response:\n" + response, cause);
+    }
+
+    /**
+     * Retrieve the J2EE name of the module containing the target bean in the given location when accessed from an .ear
+     *
+     * @param location the location to test
+     * @return the J2EE name as a string, or {@code "NONE"} if the bean is not in a web or ejb module
+     * @throws Exception if there is an error querying the module
+     */
+    private String getJ2eeNameForLocation(Location location) throws Exception {
+        String response = HttpUtils.getHttpResponseAsString(server, "/visTestWar/moduletest?location=" + location);
+        return response.trim();
+    }
+
+    /**
+     * Retrieve the J2EE name of the module containing the target bean in the given location when accessed from a standalone .war
+     *
+     * @param location the location to test
+     * @return the J2EE name as a string, or {@code "NONE"} if the bean is not in a web or ejb module
+     * @throws Exception if there is an error querying the module
+     */
+    private String getJ2eeNameForStandaloneLocation(Location location) throws Exception {
+        String response = HttpUtils.getHttpResponseAsString(server, "/visTestStandaloneWar/moduletest?location=" + location);
+        return response.trim();
     }
 
     @AfterClass
