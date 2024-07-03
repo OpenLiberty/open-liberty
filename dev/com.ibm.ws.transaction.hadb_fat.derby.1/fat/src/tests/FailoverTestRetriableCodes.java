@@ -14,6 +14,7 @@ package tests;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.junit.AfterClass;
@@ -21,18 +22,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.tx.jta.ut.util.FailoverTestUtils;
 import com.ibm.ws.transaction.fat.util.FATUtils;
+import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import suite.FATSuite;
-import web.FailoverServlet;
 
 /**
  * These tests are designed to exercise the ability of the SQLMultiScopeRecoveryLog (transaction logs stored
@@ -118,11 +118,9 @@ import web.FailoverServlet;
 public class FailoverTestRetriableCodes extends FailoverTest {
 
     @Server("com.ibm.ws.transaction_retriable")
-    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer retriableServer;
 
     @Server("com.ibm.ws.transaction_nonretriable")
-    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer nonRetriableServer;
 
     public static String[] serverNames = new String[] {
@@ -138,6 +136,9 @@ public class FailoverTestRetriableCodes extends FailoverTest {
     @BeforeClass
     public static void setUp() throws Exception {
         FailoverTest.commonSetUp(FailoverTestRetriableCodes.class);
+
+        retriableServer.setServerStartTimeout(START_TIMEOUT);
+        nonRetriableServer.setServerStartTimeout(START_TIMEOUT);
     }
 
     /**
@@ -146,18 +147,20 @@ public class FailoverTestRetriableCodes extends FailoverTest {
      */
     @Test
     public void testHADBRetriableSqlCodeRuntimeFailover() throws Exception {
-        final String method = "testHADBRetriableSqlCodeRuntimeFailover";
 
         server = retriableServer;
 
-        FATUtils.startServers(runner, server);
+        if (TxTestContainerSuite.isDerby()) {
+            FATUtils.startServers(runner, server);
 
-        runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableFailover");
+            runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableFailover");
 
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+            FATUtils.stopServers(server);
+        } else {
+            try (Connection con = TxTestContainerSuite.testContainer.createConnection("")) {
+                FailoverTestUtils.setupForNonRecoverableFailover(con);
+            }
+        }
 
         FATUtils.startServers(runner, server);
 
@@ -176,20 +179,20 @@ public class FailoverTestRetriableCodes extends FailoverTest {
      */
     @Test
     public void testHADBRetriableSqlCodeBatchFailover() throws Exception {
-        final String method = "testHADBRetriableSqlCodeBatchFailover";
 
         server = retriableServer;
 
-        FATUtils.startServers(runner, server);
+        if (TxTestContainerSuite.isDerby()) {
+            FATUtils.startServers(runner, server);
 
-        Log.info(this.getClass(), method, "call setupForNonRecoverableBatchFailover");
+            runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableBatchFailover");
 
-        runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableBatchFailover");
-
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+            FATUtils.stopServers(server);
+        } else {
+            try (Connection con = TxTestContainerSuite.testContainer.createConnection("")) {
+                FailoverTestUtils.setupForNonRecoverableBatchFailover(con);
+            }
+        }
 
         FATUtils.startServers(runner, server);
 
@@ -213,18 +216,20 @@ public class FailoverTestRetriableCodes extends FailoverTest {
     @Test
     @ExpectedFFDC(value = { "javax.transaction.SystemException", "java.lang.Exception", "com.ibm.ws.recoverylog.spi.InternalLogException", })
     public void testHADBNonRetriableRuntimeFailover() throws Exception {
-        final String method = "testHADBNonRetriableRuntimeFailover";
 
         server = nonRetriableServer;
 
-        FATUtils.startServers(runner, server);
+        if (TxTestContainerSuite.isDerby()) {
+            FATUtils.startServers(runner, server);
 
-        runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableFailover");
+            runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableFailover");
 
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+            FATUtils.stopServers(server);
+        } else {
+            try (Connection con = TxTestContainerSuite.testContainer.createConnection("")) {
+                FailoverTestUtils.setupForNonRecoverableFailover(con);
+            }
+        }
 
         FATUtils.startServers(runner, server);
 
@@ -258,19 +263,21 @@ public class FailoverTestRetriableCodes extends FailoverTest {
     @Test
     @ExpectedFFDC(value = { "javax.transaction.SystemException", "java.lang.Exception", "com.ibm.ws.recoverylog.spi.InternalLogException", })
     public void testHADBNonRetriableBatchFailover() throws Exception {
-        final String method = "testHADBNonRetriableBatchFailover";
 
         server = nonRetriableServer;
         serverMsgs = new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" };
 
-        FATUtils.startServers(runner, server);
+        if (TxTestContainerSuite.isDerby()) {
+            FATUtils.startServers(runner, server);
 
-        runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableBatchFailover");
+            runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableBatchFailover");
 
-        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+            FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, server);
+        } else {
+            try (Connection con = TxTestContainerSuite.testContainer.createConnection("")) {
+                FailoverTestUtils.setupForNonRecoverableBatchFailover(con);
+            }
+        }
 
         FATUtils.startServers(runner, server);
 

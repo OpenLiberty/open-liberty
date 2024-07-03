@@ -99,10 +99,18 @@ public class FailoverTestUtils {
 	}
 
 	public static void setupForConnectFailover(Connection con) throws Exception {
-        FailoverTestUtils.setupTestParameters(con, FailoverTestType.CONNECT, 0, 0, 1);
+        setupTestParameters(con, FailoverTestType.CONNECT, 0, 0, 1);
 	}
 
 	public static void setupForMultiConnectFailover(Connection con) throws Exception {
-        FailoverTestUtils.setupTestParameters(con, FailoverTestType.CONNECT, 0, 0, 3);
+        setupTestParameters(con, FailoverTestType.CONNECT, 0, 0, 3);
+	}
+
+	public static void setupForNonRecoverableBatchFailover(Connection con) throws Exception {
+        setupTestParameters(con, FailoverTestType.RUNTIME, -33, 12, 1);
+	}
+
+	public static void setupForLeaseUpdate(Connection con) throws Exception {
+        setupTestParameters(con, FailoverTestType.LEASE, 0, 770, 1); // 770 interpreted as lease update
 	}
 }

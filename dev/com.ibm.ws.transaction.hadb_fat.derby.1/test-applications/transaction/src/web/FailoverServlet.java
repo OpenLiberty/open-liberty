@@ -73,11 +73,9 @@ public class FailoverServlet extends FATServlet {
     }
 
     public void setupForNonRecoverableBatchFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        System.out.println("FAILOVERSERVLET: drive setupForNonRecoverableBatchFailover");
         try (Connection con = getConnection()) {
-            FailoverTestUtils.setupTestParameters(con, FailoverTestType.RUNTIME, -33, 12, 1);
+            FailoverTestUtils.setupForNonRecoverableBatchFailover(con);
         }
-        System.out.println("FAILOVERSERVLET: setupForNonRecoverableBatchFailover complete");
     }
 
     public void setupForConnectFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -129,11 +127,9 @@ public class FailoverServlet extends FATServlet {
     }
 
     public void setupForLeaseUpdate(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        System.out.println("FAILOVERSERVLET: drive setupForLeaseUpdate");
         try (Connection con = getConnection()) {
-            FailoverTestUtils.setupTestParameters(con, FailoverTestType.LEASE, 0, 770, 1); // 770 interpreted as lease update
+            FailoverTestUtils.setupForLeaseUpdate(con);
         }
-        System.out.println("FAILOVERSERVLET: setupForLeaseUpdate complete");
     }
 
     public void setupForLeaseDelete(HttpServletRequest request, HttpServletResponse response) throws Exception {
