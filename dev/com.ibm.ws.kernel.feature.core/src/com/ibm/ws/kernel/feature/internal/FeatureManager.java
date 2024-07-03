@@ -1324,10 +1324,10 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         Iterator<String> it = postInstalledFeatures.iterator();
         while (it.hasNext()) {
             String feature = it.next();
-            FeatureDefinition fd = getFeatureDefinition(feature);
+            ProvisioningFeatureDefinition fd = getFeatureDefinition(feature);
 
             if (fd != null && fd.getVisibility() == Visibility.PUBLIC) {
-                if (fd.getSymbolicName().contains("versionless")) {
+                if (fd.isVersionless()) {
                     continue;
                 }
                 // get name from feature definition.
@@ -2276,7 +2276,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                 // TODO this is really just a fall back and for testing
                 // this should come from additional meta-data of the feature
                 // instead of hard-coding in the above cases
-                ProvisioningFeatureDefinition fd = (ProvisioningFeatureDefinition) getFeatureDefinition(symbolicName);
+                ProvisioningFeatureDefinition fd = getFeatureDefinition(symbolicName);
                 if (fd != null) {
                     String subsystemName = fd.getHeader("Subsystem-Name");
                     if (subsystemName != null) {
@@ -2612,7 +2612,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
     }
 
     @Override
-    public FeatureDefinition getFeatureDefinition(String featureName) {
+    public ProvisioningFeatureDefinition getFeatureDefinition(String featureName) {
         return featureRepository.getFeature(featureName);
     }
 

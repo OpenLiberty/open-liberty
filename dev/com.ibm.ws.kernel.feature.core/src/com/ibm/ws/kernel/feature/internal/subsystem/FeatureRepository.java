@@ -163,7 +163,6 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     private Map<File, SubsystemFeatureDefinitionImpl> knownGoodFeatureFiles;
     private Map<File, BadFeature> knownBadFeatureFiles;
     private List<SubsystemFeatureDefinitionImpl> autoFeatures;
-
     private Map<String, SubsystemFeatureDefinitionImpl> compatibilityFeatures;
 
     /**
@@ -960,6 +959,10 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         // name is specified in a server config.
         for (String s : attr.alternateNames) {
             alternateFeatureNameToPublicName.put(s, attr.featureName);
+        }
+
+        if(def.isCompatibility()){
+            compatibilityFeatures.put(def.getPlatformName().toLowerCase(), def);
         }
 
         // If this is an auto-feature, add it to that collection

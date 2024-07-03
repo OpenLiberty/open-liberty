@@ -168,6 +168,17 @@ public interface FeatureResolver {
             this.toString = getString();
         }
 
+        public Chain(List<String> candidates, String preferredVersion, String featureName) {
+            this._chain = EMPTY_STRINGS;
+
+            this._featureName = featureName;
+            this._preferredVersion = parseVersion(preferredVersion);
+
+            this._candidates = candidates;
+
+            this.toString = getString();
+        }
+
         //
 
         private final List<String> _chain;
