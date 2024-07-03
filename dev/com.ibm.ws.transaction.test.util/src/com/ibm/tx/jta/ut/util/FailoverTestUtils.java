@@ -97,4 +97,12 @@ public class FailoverTestUtils {
 	public static void setupForStartupFailover(Connection con) throws Exception {
         setupTestParameters(con, FailoverTestType.STARTUP, -4498, 6, 1);
 	}
+
+	public static void setupForConnectFailover(Connection con) throws Exception {
+        FailoverTestUtils.setupTestParameters(con, FailoverTestType.CONNECT, 0, 0, 1);
+	}
+
+	public static void setupForMultiConnectFailover(Connection con) throws Exception {
+        FailoverTestUtils.setupTestParameters(con, FailoverTestType.CONNECT, 0, 0, 3);
+	}
 }

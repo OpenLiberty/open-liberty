@@ -14,6 +14,7 @@ package tests;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collections;
 
@@ -22,20 +23,20 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.tx.jta.ut.util.FailoverTestUtils;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.Transaction;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
+import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import suite.FATSuite;
-import web.FailoverServlet;
 
 /**
  * These tests are designed to exercise the ability of the SQLMultiScopeRecoveryLog (transaction logs stored
@@ -121,11 +122,9 @@ import web.FailoverServlet;
 public class FailoverTest2 extends FailoverTest {
 
     @Server("com.ibm.ws.transaction")
-    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer defaultServer;
 
     @Server("com.ibm.ws.transaction_recover")
-    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer recoverServer;
 
     public static String[] serverNames = new String[] {
@@ -141,6 +140,8 @@ public class FailoverTest2 extends FailoverTest {
     @BeforeClass
     public static void setUp() throws Exception {
         FailoverTest.commonSetUp(FailoverTest2.class);
+        defaultServer.setServerStartTimeout(START_TIMEOUT);
+        recoverServer.setServerStartTimeout(START_TIMEOUT);
     }
 
     /**
@@ -150,18 +151,20 @@ public class FailoverTest2 extends FailoverTest {
      */
     @Test
     public void testHADBNewBehaviourRuntimeFailover() throws Exception {
-        final String method = "testHADBNewBehaviourRuntimeFailover";
 
         server = recoverServer;
 
-        FATUtils.startServers(runner, server);
+        if (TxTestContainerSuite.isDerby()) {
+            FATUtils.startServers(runner, server);
 
-        runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableFailover");
+            runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableFailover");
 
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+            FATUtils.stopServers(server);
+        } else {
+            try (Connection con = TxTestContainerSuite.testContainer.createConnection("")) {
+                FailoverTestUtils.setupForNonRecoverableFailover(con);
+            }
+        }
 
         FATUtils.startServers(runner, server);
 
@@ -186,14 +189,17 @@ public class FailoverTest2 extends FailoverTest {
 
         server = recoverServer;
 
-        FATUtils.startServers(runner, server);
+        if (TxTestContainerSuite.isDerby()) {
+            FATUtils.startServers(runner, server);
 
-        runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableFailover");
+            runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableFailover");
 
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+            FATUtils.stopServers(server);
+        } else {
+            try (Connection con = TxTestContainerSuite.testContainer.createConnection("")) {
+                FailoverTestUtils.setupForNonRecoverableFailover(con);
+            }
+        }
 
         FATUtils.startServers(runner, server);
 
@@ -274,14 +280,17 @@ public class FailoverTest2 extends FailoverTest {
 
         server = defaultServer;
 
-        FATUtils.startServers(runner, server);
+        if (TxTestContainerSuite.isDerby()) {
+            FATUtils.startServers(runner, server);
 
-        runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableFailover");
+            runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableFailover");
 
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+            FATUtils.stopServers(server);
+        } else {
+            try (Connection con = TxTestContainerSuite.testContainer.createConnection("")) {
+                FailoverTestUtils.setupForNonRecoverableFailover(con);
+            }
+        }
 
         FATUtils.startServers(runner, server);
 
@@ -355,18 +364,20 @@ public class FailoverTest2 extends FailoverTest {
                            "java.sql.SQLException",
     })
     public void testHADBConnectFailover() throws Exception {
-        final String method = "testHADBConnectFailover";
 
         server = defaultServer;
 
-        FATUtils.startServers(runner, server);
+        if (TxTestContainerSuite.isDerby()) {
+            FATUtils.startServers(runner, server);
 
-        runInServletAndCheck(server, SERVLET_NAME, "setupForConnectFailover");
+            runInServletAndCheck(server, SERVLET_NAME, "setupForConnectFailover");
 
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+            FATUtils.stopServers(server);
+        } else {
+            try (Connection con = TxTestContainerSuite.testContainer.createConnection("")) {
+                FailoverTestUtils.setupForConnectFailover(con);
+            }
+        }
 
         FATUtils.startServers(runner, server);
 
@@ -384,18 +395,20 @@ public class FailoverTest2 extends FailoverTest {
     @Test
     @ExpectedFFDC(value = { "java.sql.SQLException", })
     public void testHADBNewBehaviourConnectFailover() throws Exception {
-        final String method = "testHADBNewBehaviourConnectFailover";
 
         server = recoverServer;
 
-        FATUtils.startServers(runner, server);
+        if (TxTestContainerSuite.isDerby()) {
+            FATUtils.startServers(runner, server);
 
-        runInServletAndCheck(server, SERVLET_NAME, "setupForConnectFailover");
+            runInServletAndCheck(server, SERVLET_NAME, "setupForConnectFailover");
 
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+            FATUtils.stopServers(server);
+        } else {
+            try (Connection con = TxTestContainerSuite.testContainer.createConnection("")) {
+                FailoverTestUtils.setupForConnectFailover(con);
+            }
+        }
 
         FATUtils.startServers(runner, server);
 
@@ -413,19 +426,20 @@ public class FailoverTest2 extends FailoverTest {
     @Test
     @ExpectedFFDC(value = { "java.sql.SQLException", })
     public void testHADBNewBehaviourMultiConnectFailover() throws Exception {
-        final String method = "testHADBNewBehaviourMultiConnectFailover";
 
         server = recoverServer;
 
-        FATUtils.startServers(runner, server);
-        Log.info(this.getClass(), method, "call testHADBNewBehaviourMultiConnectFailover");
+        if (TxTestContainerSuite.isDerby()) {
+            FATUtils.startServers(runner, server);
 
-        runInServletAndCheck(server, SERVLET_NAME, "setupForMultiConnectFailover");
+            runInServletAndCheck(server, SERVLET_NAME, "setupForMultiConnectFailover");
 
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+            FATUtils.stopServers(server);
+        } else {
+            try (Connection con = TxTestContainerSuite.testContainer.createConnection("")) {
+                FailoverTestUtils.setupForMultiConnectFailover(con);
+            }
+        }
 
         FATUtils.startServers(runner, server);
 

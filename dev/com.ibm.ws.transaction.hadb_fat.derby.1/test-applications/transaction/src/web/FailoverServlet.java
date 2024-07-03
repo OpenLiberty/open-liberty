@@ -81,19 +81,15 @@ public class FailoverServlet extends FATServlet {
     }
 
     public void setupForConnectFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        System.out.println("FAILOVERSERVLET: drive setupForConnectFailover");
         try (Connection con = getConnection()) {
-            FailoverTestUtils.setupTestParameters(con, FailoverTestType.CONNECT, 0, 0, 1);
+            FailoverTestUtils.setupForConnectFailover(con);
         }
-        System.out.println("FAILOVERSERVLET: setupForConnectFailover complete");
     }
 
     public void setupForMultiConnectFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        System.out.println("FAILOVERSERVLET: drive setupForConnectFailover");
         try (Connection con = getConnection()) {
-            FailoverTestUtils.setupTestParameters(con, FailoverTestType.CONNECT, 0, 0, 3);
+            FailoverTestUtils.setupForMultiConnectFailover(con);
         }
-        System.out.println("FAILOVERSERVLET: setupForConnectFailover complete");
     }
 
     public void setupForStartupFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
