@@ -12,7 +12,7 @@ package io.openliberty.http.monitor.mbean;
 /**
  *
  */
-public interface HttpStatsMXBean {
+public interface HttpServerStatsMXBean {
 
 	/*
 	 * HTTP Attributes

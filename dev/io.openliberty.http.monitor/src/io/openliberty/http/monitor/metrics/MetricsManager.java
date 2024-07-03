@@ -26,15 +26,15 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.http.monitor.HttpStatAttributes;
-import io.openliberty.http.monitor.HttpStatsMonitor;
+import io.openliberty.http.monitor.HttpServerStatsMonitor;
 
 @Component(configurationPolicy = IGNORE, immediate = true)
-public class RestMetricManager {
+public class MetricsManager {
 
 	
-	private static RestMetricManager instance;
+	private static MetricsManager instance;
 	
-	private static final TraceComponent tc = Tr.register(RestMetricManager.class);
+	private static final TraceComponent tc = Tr.register(MetricsManager.class);
     
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     private volatile List<HTTPMetricAdapter> httpMetricRuntimes;
@@ -51,7 +51,7 @@ public class RestMetricManager {
     	instance = null;
     }
    
-    public static RestMetricManager getInstance() {
+    public static MetricsManager getInstance() {
     	if (instance != null) {
         	return instance;
     	} 

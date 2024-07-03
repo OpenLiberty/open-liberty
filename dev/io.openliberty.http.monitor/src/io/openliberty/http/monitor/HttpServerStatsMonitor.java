@@ -25,7 +25,7 @@ import com.ibm.ws.webcontainer.servlet.ServletWrapper;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.pmi.factory.StatisticActions;
 
-import io.openliberty.http.monitor.metrics.RestMetricManager;
+import io.openliberty.http.monitor.metrics.MetricsManager;
 
 import com.ibm.wsspi.http.HttpRequest;
 
@@ -40,17 +40,17 @@ import jakarta.servlet.GenericServlet;
 /**
  *
  */
-@Monitor(group = "HttpStats")
-public class HttpStatsMonitor extends StatisticActions {
+@Monitor(group = "HTTP")
+public class HttpServerStatsMonitor extends StatisticActions {
 
-	private static final TraceComponent tc = Tr.register(HttpStatsMonitor.class);
+	private static final TraceComponent tc = Tr.register(HttpServerStatsMonitor.class);
 
 	private static final ThreadLocal<HttpStatAttributes> tl_httpStats = new ThreadLocal<HttpStatAttributes>();
 	private static final ThreadLocal<Long> tl_startNanos = new ThreadLocal<Long>();
 	
 	private static final ConcurrentHashMap<String,Set<String>> appNameToStat = new ConcurrentHashMap<String,Set<String>>();
 	
-	private static HttpStatsMonitor instance;
+	private static HttpServerStatsMonitor instance;
 
 	/*
 	 * Instance block to create singleton.
@@ -66,18 +66,18 @@ public class HttpStatsMonitor extends StatisticActions {
 			instance = this;
 		} else {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-				Tr.debug(tc, String.format("Multiple attempts to create %s. We already have an instance", HttpStatsMonitor.class.getName()));
+				Tr.debug(tc, String.format("Multiple attempts to create %s. We already have an instance", HttpServerStatsMonitor.class.getName()));
 			}
 		}
 
 	}
 
-	public static HttpStatsMonitor getInstance() {
+	public static HttpServerStatsMonitor getInstance() {
 		if (instance != null) {
 			return instance;
 		} else {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-				Tr.debug(tc, String.format("No instance of %s found", HttpStatsMonitor.class.getName()));
+				Tr.debug(tc, String.format("No instance of %s found", HttpServerStatsMonitor.class.getName()));
 			}
 
 		}
@@ -85,7 +85,7 @@ public class HttpStatsMonitor extends StatisticActions {
 	}
 
 	@PublishedMetric
-	public MeterCollection<HttpStats> HttpConnByRoute = new MeterCollection<HttpStats>("HttpMetrics", this);
+	public MeterCollection<HttpServerStats> HttpConnByRoute = new MeterCollection<HttpServerStats>("HttpMetrics", this);
 
 	@ProbeAtReturn
 	@ProbeSite(clazz = "com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink", method = "sendResponse", args = "com.ibm.wsspi.http.channel.values.StatusCodes,java.lang.String,java.lang.Exception,boolean")
@@ -243,18 +243,18 @@ public class HttpStatsMonitor extends StatisticActions {
 		 */
 		String key = resolveStatsKey(httpStatAttributes);
 
-		HttpStats hms = HttpConnByRoute.get(key);
-		if (hms == null) {
-			hms = initializeHttpStat(key, httpStatAttributes, appName);
+		HttpServerStats hss = HttpConnByRoute.get(key);
+		if (hss == null) {
+			hss = initializeHttpStat(key, httpStatAttributes, appName);
 		}
 
 		//Monitor bundle when updating statistics will do synchronization
-		hms.updateDuration(duration);
+		hss.updateDuration(duration);
 
 		
 		
-		if (RestMetricManager.getInstance() != null ) {
-			RestMetricManager.getInstance().updateHttpMetrics(httpStatAttributes, duration, appName);
+		if (MetricsManager.getInstance() != null ) {
+			MetricsManager.getInstance().updateHttpMetrics(httpStatAttributes, duration, appName);
 		} else {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(tc, "No Available Metric runtimes to forward HTTP stats to.");
@@ -262,7 +262,7 @@ public class HttpStatsMonitor extends StatisticActions {
 		}
 	}
 
-	private synchronized HttpStats initializeHttpStat(String key, HttpStatAttributes statAttri, String appName) {
+	private synchronized HttpServerStats initializeHttpStat(String key, HttpStatAttributes statAttri, String appName) {
 		/*
 		 * Check again it was added, thread that was blocking may have been adding it
 		 */
@@ -270,7 +270,7 @@ public class HttpStatsMonitor extends StatisticActions {
 			return HttpConnByRoute.get(key);
 		}
 
-		HttpStats httpMetricStats = new HttpStats(statAttri);
+		HttpServerStats httpMetricStats = new HttpServerStats(statAttri);
 		HttpConnByRoute.put(key, httpMetricStats);
 		
 		/*
