@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2017,2023 IBM Corporation and others.
+    Copyright (c) 2017, 2024 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -32,8 +32,6 @@
   <library id="DB2Lib">
     <fileset dir="${shared.resource.dir}/db2" includes="jcc.jar"/>
   </library>
-  
-  <keyStore id="defaultKeyStore" location="security/db2-keystore.p12" password="db2test" />
     
   <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="DB2Lib"/> 
@@ -54,10 +52,11 @@
   </dataSource>
   
   <dataSource jndiName="jdbc/db2-secure">
-    <jdbcDriver libraryRef="DB2Lib"/> 
+    <jdbcDriver libraryRef="DB2Lib"/>
     <properties.db2.jcc
       databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT_SECURE}"
       user="${DB2_USER}" password="${DB2_PASS}"
+      sslTrustStoreLocation="${server.config.dir}/security/db2-keystore.p12" sslTrustStorePassword="db2test" sslTrustStoreType="PKCS12"
       sslConnection="true" sslVersion="TLSv1.2"/>
   </dataSource>
   
@@ -107,6 +106,41 @@
   <dataSource id="ds-no-url-defaults" jndiName="jdbc/ds-no-url-defaults" type="javax.sql.DataSource">
     <jdbcDriver libraryRef="DB2Lib"/>
     <properties.db2.jcc databaseName="${DB2_DBNAME}" portNumber="${DB2_PORT}" user="${DB2_USER}" password="${DB2_PASS}" />
+  </dataSource>
+  
+  <!-- 
+    Verify client re-route config
+  -->
+  <dataSource id="ds-client-reroute" jndiName="jdbc/ds-client-reroute">
+    <jdbcDriver libraryRef="DB2Lib"/>
+    <properties.db2.jcc serverName="host.name.invalid" portNumber="1234" 
+    user="${DB2_USER}" password="${DB2_PASS}" databaseName="${DB2_DBNAME}"
+    clientRerouteAlternateServerName="${DB2_HOSTNAME}" clientRerouteAlternatePortNumber="${DB2_PORT}"
+    maxRetriesForClientReroute="1" retryIntervalForClientReroute="15"/>
+  </dataSource>
+  
+  <!--
+    Verify client re-route with tls + cert
+  -->
+  <dataSource id="ds-client-reroute-cert" jndiName="jdbc/ds-client-reroute-cert">
+    <jdbcDriver libraryRef="DB2Lib"/>
+    <properties.db2.jcc serverName="host.name.invalid" portNumber="1234" 
+    user="${DB2_USER}" password="${DB2_PASS}" databaseName="${DB2_DBNAME}"
+    clientRerouteAlternateServerName="${DB2_HOSTNAME}" clientRerouteAlternatePortNumber="${DB2_PORT_SECURE}"
+    maxRetriesForClientReroute="1" retryIntervalForClientReroute="15"
+    sslConnection="true" sslVersion="TLSv1.2" sslCertLocation="${server.config.dir}/security/server.crt"/>
+  </dataSource>
+  
+  <!--
+    Verify client re-route with tls + wrong cert
+  -->
+  <dataSource id="ds-client-reroute-wrong-cert" jndiName="jdbc/ds-client-reroute-wrong-cert">
+    <jdbcDriver libraryRef="DB2Lib"/>
+    <properties.db2.jcc serverName="host.name.invalid" portNumber="1234" 
+    user="${DB2_USER}" password="${DB2_PASS}" databaseName="${DB2_DBNAME}"
+    clientRerouteAlternateServerName="${DB2_HOSTNAME}" clientRerouteAlternatePortNumber="${DB2_PORT_SECURE}"
+    maxRetriesForClientReroute="1" retryIntervalForClientReroute="15"
+    sslConnection="true" sslVersion="TLSv1.2" sslCertLocation="${server.config.dir}/security/wrong.crt"/>
   </dataSource>
 
   <javaPermission codebase="${shared.resource.dir}db2/*" className="java.security.AllPermission"/>
