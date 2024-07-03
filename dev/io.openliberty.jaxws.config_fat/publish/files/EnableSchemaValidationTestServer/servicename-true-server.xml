@@ -1,0 +1,16 @@
+<server>
+    <featureManager>
+        <feature>jsp-2.2</feature>
+        <feature>jaxws-2.2</feature>
+    </featureManager>
+    
+   
+
+    <include location="../fatTestPorts.xml"/>
+    
+    
+    <webServiceClient serviceName="SayHelloService"  enableSchemaValidation="true" />
+    
+    <javaPermission className="java.security.AllPermission" name="*" actions="*"/>
+    
+</server>
