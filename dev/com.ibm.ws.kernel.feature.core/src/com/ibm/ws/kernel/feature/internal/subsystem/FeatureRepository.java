@@ -55,6 +55,7 @@ import com.ibm.ws.kernel.feature.internal.ProvisionerConstants;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils.ImmutableAttributes;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils.ProvisioningDetails;
 import com.ibm.ws.kernel.feature.provisioning.ActivationType;
+import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Selector;
@@ -415,6 +416,112 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         for (SubsystemFeatureDefinitionImpl cachedInstalledFeature : cachedInstalledFeatures) {
             updateMaps(cachedInstalledFeature);
         }
+    }
+
+    /**
+     * Answer the versioned feature shortName if exists for the passed platform version or null if doesn't exist.
+     *
+     * @return String versionedFeatureName
+     */
+    public String getVersionlessFeatureVersionForPlatform(String versionlessFeatureName, String platformName) {
+        ProvisioningFeatureDefinition versionlessFeature;
+        versionlessFeature = getFeature(versionlessFeatureName);
+
+        if (versionlessFeature != null && versionlessFeature.isVersionless()) {
+            for (ProvisioningFeatureDefinition child : findAllPossibleVersions(versionlessFeature)) {
+                if (child.getPlatformNames().contains(platformName))
+                    return child.getIbmShortName();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Answer the list of public versioned features derived from the passed versionless feature or empty List if doesn't exist.
+     *
+     * @return List<ProvisioningFeatureDefinition>
+     */
+    private List<ProvisioningFeatureDefinition> findAllPossibleVersions(ProvisioningFeatureDefinition versionlessFeature) {
+        List<ProvisioningFeatureDefinition> result = new ArrayList<>();
+        for (FeatureResource dependency : versionlessFeature.getConstituents(null)) {
+            result.add(getVersionedFeature(dependency.getSymbolicName()));
+
+            String baseName = getFeatureBaseName(dependency.getSymbolicName());
+            List<String> tolerates = dependency.getTolerates();
+            if (tolerates != null) {
+                for (String toleratedVersion : tolerates) {
+                    String featureName = baseName + toleratedVersion;
+                    result.add(getVersionedFeature(featureName));
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     *
+     * Answer the public versioned feature based on the internal versionless linking feature
+     *
+     * @param versionlessLinkingFeatureName
+     * @return ProvisioningFeatureDefinition
+     */
+    private ProvisioningFeatureDefinition getVersionedFeature(String versionlessLinkingFeatureName) {
+        ProvisioningFeatureDefinition result = null;
+        ProvisioningFeatureDefinition feature = getFeature(versionlessLinkingFeatureName);
+        if (feature != null) {
+            //This is the versionless linking feature pointing to a public versioned feature
+            for (FeatureResource versionedFeature : feature.getConstituents(null)) {
+                //Find the right public feature (should only be one) - set the result
+                ProvisioningFeatureDefinition versionedFeatureDef = getFeature(versionedFeature.getSymbolicName());
+                if (versionedFeatureDef.getVisibility() != Visibility.PUBLIC) {
+                    continue;
+                }
+                result = versionedFeatureDef;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Removes the version from the end of a feature symbolic name
+     * <p>
+     * The version is presumed to start after the last dash character in the name.
+     * <p>
+     * E.g. {@code getFeatureBaseName("com.example.featureA-1.0")} returns {@code "com.example.featureA-"}
+     *
+     * @param nameAndVersion the feature symbolic name
+     * @return the feature symbolic name with any version stripped
+     */
+    private String getFeatureBaseName(String nameAndVersion) {
+        int dashPosition = nameAndVersion.lastIndexOf('-');
+        if (dashPosition != -1) {
+            return nameAndVersion.substring(0, dashPosition + 1);
+        } else {
+            return nameAndVersion;
+        }
+    }
+
+    /**
+     * Returns the common intersection of platform names between the set of features passed
+     *
+     *
+     * @param features
+     * @return Set<String>
+     */
+    public Set<String> getCommonPlatformsForFeatureSet(Set<String> features) {
+        Set<String> commonPlatforms = null;
+        for (String featureName : features) {
+            ProvisioningFeatureDefinition versionedFeature = getFeature(featureName);
+            if (versionedFeature != null && !versionedFeature.isVersionless()) {
+                Set featurePlatforms = new HashSet(versionedFeature.getPlatformNames());
+                if (commonPlatforms == null)
+                    commonPlatforms = featurePlatforms;
+                else {
+                    commonPlatforms.retainAll(featurePlatforms);
+                }
+            }
+        }
+        return commonPlatforms;
     }
 
     /**
