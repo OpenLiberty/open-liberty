@@ -35,6 +35,6 @@ public class FATSuite {
 
     public static RepeatTests allMPTel20Repeats(String serverName) {
         return TelemetryActions
-            .repeat(serverName, MicroProfileActions.MP70_EE10, MicroProfileActions.MP70_EE11);
+            .repeat(serverName, MicroProfileActions.MP70_EE11, MicroProfileActions.MP70_EE10);
     }
 }

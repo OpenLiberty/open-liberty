@@ -52,7 +52,7 @@ public class FATSuite {
 
     public static RepeatTests allMPRepeats(String serverName) {
         return TelemetryActions
-                        .repeat(serverName, MicroProfileActions.MP61, MicroProfileActions.MP70_EE10, MicroProfileActions.MP70_EE11, TelemetryActions.MP14_MPTEL11, TelemetryActions.MP41_MPTEL11, TelemetryActions.MP50_MPTEL11,
+                        .repeat(serverName, MicroProfileActions.MP70_EE11, MicroProfileActions.MP70_EE10, MicroProfileActions.MP61, TelemetryActions.MP14_MPTEL11, TelemetryActions.MP41_MPTEL11, TelemetryActions.MP50_MPTEL11,
                                 TelemetryActions.MP50_MPTEL20, TelemetryActions.MP41_MPTEL20, TelemetryActions.MP14_MPTEL20);
     }
 
