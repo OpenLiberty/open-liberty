@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
@@ -140,7 +141,7 @@ public class TCKResultsWriter {
         try {
             Path extrasPath = Paths.get("extras", filename);
             Files.createDirectories(extrasPath.getParent());
-            Files.copy(outputPath, extrasPath);
+            Files.copy(outputPath, extrasPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
