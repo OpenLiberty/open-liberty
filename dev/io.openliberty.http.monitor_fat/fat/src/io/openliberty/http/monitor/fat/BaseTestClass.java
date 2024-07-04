@@ -379,7 +379,7 @@ public abstract class BaseTestClass {
                 }
                 Log.info(c, "validatePrometheusHTTPMetricSum", "Potential match with: " + line);
                 if (line.matches(matchString)) {
-                    Log.info(c, "validatePromethvalidatePrometheusHTTPMetricSumeusHTTPMetric", "Matched with: " + line);
+                    Log.info(c, "validatePrometheusHTTPMetricSum", "Matched with: " + line);
 
                     /*
                      * If no custom count regex was supplied.
