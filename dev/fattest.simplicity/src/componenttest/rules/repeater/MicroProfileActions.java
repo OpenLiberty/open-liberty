@@ -249,9 +249,7 @@ public class MicroProfileActions {
                                                           "mpOpenTracing-3.0",
                                                           "mpRestClient-3.0",
                                                           "mpContextPropagation-1.3", //standalone
-                                                          "mpGraphQL-2.0", //standalone
-                                                          "mpReactiveMessaging-3.0", //standalone
-                                                          "mpReactiveStreams-3.0" }; //standalone
+                                                          "mpGraphQL-2.0" }; //standalone
 
     private static final String[] MP60_FEATURES_ARRAY = { "microProfile-6.0",
                                                           "cdi-4.0", //ee10
