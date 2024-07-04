@@ -390,7 +390,7 @@ public abstract class BaseTestClass {
                         assertEquals("Error. Expected 2 indexes from split " + Arrays.toString(split), split.length, 2);
 
                         double countVal = Double.parseDouble(split[1].trim());
-                        assertTrue("Expected count value to be greater than 0", countVal > 0);
+                        assertTrue("Expected sum value to be greater than 0", countVal > 0);
                     }
 
                     return true;
