@@ -740,8 +740,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         }
 
         MSP.log("parsingSetCookieHeaders! ");
-        System.out.println("present headers: ");
-        this.message.headers().forEach(h -> System.out.println(h.getKey() + ": " + h.getValue()));
         // Iterate through the unparsed cookie header instances
         // in storage and add them to the list to be returned
         List<HeaderField> vals = getHeaders(header);
@@ -1067,14 +1065,14 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         System.out.println("process set-cookie2 cache");
         marshallCookieCache(this.setCookie2Cache);
 
-        System.out.println("after processing, what are my headers?");
-        message.headers().forEach(headers -> System.out.println(headers.getKey() + ": " + headers.getValue()));
+//        System.out.println("after processing, what are my headers?");
+//        message.headers().forEach(headers -> System.out.println(headers.getKey() + ": " + headers.getValue()));
 
-        System.out.println("and what are my baseMessage headers?");
-        this.getAllHeaders().forEach(headers -> System.out.println(headers.getName() + ": " + headers.asString()));
+//        System.out.println("and what are my baseMessage headers?");
+//        this.getAllHeaders().forEach(headers -> System.out.println(headers.getName() + ": " + headers.asString()));
 
-        System.out.println("and what are my message cookies?");
-        this.getAllCookies().forEach(headers -> System.out.println(headers.getName() + ": " + headers.getValue()));
+//        System.out.println("and what are my message cookies?");
+//        this.getAllCookies().forEach(headers -> System.out.println(headers.getName() + ": " + headers.getValue()));
 
     }
 
