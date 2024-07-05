@@ -24,6 +24,7 @@ import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -195,6 +196,9 @@ public abstract class BaseTestClass {
     }
 
     protected String getVendorMetrics(LibertyServer server) throws Exception {
+
+        TimeUnit.MILLISECONDS.sleep(500);
+
         String vendorMetricsOutput = requestHttpServlet("/metrics?scope=vendor", server, HttpMethod.GET);
         Log.info(c, "getVendorMetrics", vendorMetricsOutput);
         return vendorMetricsOutput;
@@ -222,14 +226,22 @@ public abstract class BaseTestClass {
             errorType = "";
         }
 
-        String matchString = "http_server_request_duration_seconds_count\\{error_type=\"" + errorType
-                             + "\",http_request_method=\""
-                             + requestMethod
-                             + "\",http_response_status_code=\"" + responseStatus
-                             + "\",http_route=\"" + route
-                             + "\",mp_scope=\"vendor\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\",\\} ";
+        String countMatchString = "http_server_request_duration_seconds_count\\{error_type=\"" + errorType
+                                  + "\",http_request_method=\""
+                                  + requestMethod
+                                  + "\",http_response_status_code=\"" + responseStatus
+                                  + "\",http_route=\"" + route
+                                  + "\",mp_scope=\"vendor\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\",\\} ";
 
-        return validatePrometheusHTTPMetric(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, count, matchString);
+        String sumMatchString = "http_server_request_duration_seconds_sum\\{error_type=\"" + errorType
+                                + "\",http_request_method=\""
+                                + requestMethod
+                                + "\",http_response_status_code=\"" + responseStatus
+                                + "\",http_route=\"" + route
+                                + "\",mp_scope=\"vendor\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\",\\} ";
+
+        return validatePrometheusHTTPMetricCount(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, count, countMatchString) &&
+               validatePrometheusHTTPMetricSum(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, count, sumMatchString);
     }
 
     /*
@@ -245,36 +257,53 @@ public abstract class BaseTestClass {
 
     protected boolean validateMpTelemetryHttp(String appName, String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType,
                                               String count) {
-        String matchString = null;
+        String countMatchString = null;
+        String sumMatchString = null;
 
         /*
          * Otel Prometheus output not bound by the Prometheus client issue where same labels are needed
          */
         if (errorType == null) {
-            matchString = "http_server_request_duration_seconds_count\\{http_request_method=\""
-                          + requestMethod
-                          + "\",http_response_status_code=\"" + responseStatus
-                          + "\",http_route=\"" + route
-                          + "\",job=\"" + appName
-                          + "\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
+            countMatchString = "http_server_request_duration_seconds_count\\{http_request_method=\""
+                               + requestMethod
+                               + "\",http_response_status_code=\"" + responseStatus
+                               + "\",http_route=\"" + route
+                               + "\",job=\"" + appName
+                               + "\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
+
+            sumMatchString = "http_server_request_duration_seconds_sum\\{http_request_method=\""
+                             + requestMethod
+                             + "\",http_response_status_code=\"" + responseStatus
+                             + "\",http_route=\"" + route
+                             + "\",job=\"" + appName
+                             + "\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
         } else {
-            matchString = "http_server_request_duration_seconds_count\\{error_type=\"" + errorType
-                          + "\",http_request_method=\""
-                          + requestMethod
-                          + "\",http_response_status_code=\"" + responseStatus
-                          + "\",http_route=\"" + route
-                          + "\",job=\"" + appName
-                          + "\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
+            countMatchString = "http_server_request_duration_seconds_count\\{error_type=\"" + errorType
+                               + "\",http_request_method=\""
+                               + requestMethod
+                               + "\",http_response_status_code=\"" + responseStatus
+                               + "\",http_route=\"" + route
+                               + "\",job=\"" + appName
+                               + "\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
+
+            sumMatchString = "http_server_request_duration_seconds_sum\\{error_type=\"" + errorType
+                             + "\",http_request_method=\""
+                             + requestMethod
+                             + "\",http_response_status_code=\"" + responseStatus
+                             + "\",http_route=\"" + route
+                             + "\",job=\"" + appName
+                             + "\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
         }
 
-        return validatePrometheusHTTPMetric(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, count, matchString);
+        return validatePrometheusHTTPMetricCount(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, count, countMatchString)
+               && validatePrometheusHTTPMetricSum(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, count, sumMatchString);
     }
 
     /*
      * For all
      */
-    private boolean validatePrometheusHTTPMetric(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType, String count,
-                                                 String matchString) {
+    private boolean validatePrometheusHTTPMetricCount(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType, String count,
+                                                      String matchString) {
         boolean isDefaultCountCheck = false;
 
         /*
@@ -288,7 +317,7 @@ public abstract class BaseTestClass {
 
         matchString += count;
 
-        Log.info(c, "validatePrometheusHTTPMetric", "Trying to match: " + matchString);
+        Log.info(c, "validatePrometheusHTTPMetricCount", "Trying to match: " + matchString);
         try (Scanner sc = new Scanner(vendorMetricsOutput)) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
@@ -298,9 +327,9 @@ public abstract class BaseTestClass {
                 if (!line.startsWith("http_server_request_duration_seconds_count")) {
                     continue;
                 }
-                Log.info(c, "validatePrometheusHTTPMetric", "Potential match with: " + line);
+                Log.info(c, "validatePrometheusHTTPMetricCount", "Potential match with: " + line);
                 if (line.matches(matchString)) {
-                    Log.info(c, "validatePrometheusHTTPMetric", "Matched with: " + line);
+                    Log.info(c, "validatePrometheusHTTPMetricCount", "Matched with: " + line);
 
                     /*
                      * If no custom count regex was supplied.
@@ -312,6 +341,56 @@ public abstract class BaseTestClass {
 
                         double countVal = Double.parseDouble(split[1].trim());
                         assertTrue("Expected count value to be greater than 0", countVal > 0);
+                    }
+
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean validatePrometheusHTTPMetricSum(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType, String count,
+                                                    String matchString) {
+
+        boolean isDefaultCountCheck = false;
+
+        /*
+         * For Open Telemetry, a zero would be 0.
+         * The existence of a period indicates that something has been recorded
+         */
+        if (count == null) {
+            count = "[0-9]+\\.[0-9]*[eE]?-?[0-9]+";
+            isDefaultCountCheck = true;
+        }
+
+        matchString += count;
+
+        Log.info(c, "validatePrometheusHTTPMetricSum", "Trying to match: " + matchString);
+        try (Scanner sc = new Scanner(vendorMetricsOutput)) {
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                /*
+                 * Skip things we don't care about for perfomance
+                 */
+                if (!line.startsWith("http_server_request_duration_seconds_sum")) {
+                    continue;
+                }
+                Log.info(c, "validatePrometheusHTTPMetricSum", "Potential match with: " + line);
+                if (line.matches(matchString)) {
+                    Log.info(c, "validatePrometheusHTTPMetricSum", "Matched with: " + line);
+
+                    /*
+                     * If no custom count regex was supplied.
+                     * We will check if value is greater than 0
+                     */
+                    if (isDefaultCountCheck) {
+                        String[] split = line.split(" "); // should be only one space at the very end.
+                        assertEquals("Error. Expected 2 indexes from split " + Arrays.toString(split), split.length, 2);
+
+                        double countVal = Double.parseDouble(split[1].trim());
+                        assertTrue("Expected sum value to be greater than 0", countVal > 0);
                     }
 
                     return true;
