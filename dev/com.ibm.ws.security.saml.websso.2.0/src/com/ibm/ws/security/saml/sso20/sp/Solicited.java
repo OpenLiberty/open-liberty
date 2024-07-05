@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2024 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -404,7 +404,6 @@ public class Solicited {
             requestInfo.setFragmentCookieId(cachingRequestInfo.getFragmentCookieId());
             requestInfo.setParameter("RelayState", new String[] { relayState });
             requestInfo.setParameter("SAMLRequest", new String[] { samlRequest });
-            requestInfo.setFragmentCookieMaxAge(ssoService.getConfig().getAuthnRequestTime());
             requestInfo.redirectPostRequest(req,
                                             resp,
                                             null, // In SP_INIT, we do not depend on cookie to store sp_init id
