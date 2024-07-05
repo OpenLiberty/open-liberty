@@ -121,18 +121,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         super.init(request, isc, config);
         setAndGetIsGrpc();
 //        verifyRequest();
-
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("HTTP Request:");
-        System.out.println("Method: " + request.method());
-        System.out.println("URI: " + GenericUtils.nullOutPasswords(request.uri(), (byte) '&'));
-        System.out.println("Headers: ");
-        request.headers().forEach(header -> System.out.println(header.getKey() + ": " + header.getValue()));
-        System.out.println("Cookies: ");
-        this.getAllCookies().forEach(cookie -> System.out.println(cookie.toString()));
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     }
 
     /**
@@ -189,8 +177,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             if ("application/grpc".equalsIgnoreCase(requestContentType)) {
 
                 String currentURL = request.uri();
-
-                System.out.println("Current url: " + currentURL);
 
                 String searchURL = currentURL;
                 searchURL = searchURL.substring(1);
@@ -770,8 +756,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     public List<HttpCookie> getAllCookies() {
         List<HttpCookie> list = new LinkedList<HttpCookie>();
         String cookieString = headers.get(HttpHeaders.Names.COOKIE);
-        System.out.println("MSP getAllCookies -> " + cookieString);
-
         return com.ibm.ws.http.netty.cookie.CookieDecoder.decode(cookieString);
 
     }
