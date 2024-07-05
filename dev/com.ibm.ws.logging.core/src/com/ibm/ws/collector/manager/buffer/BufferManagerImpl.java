@@ -38,7 +38,7 @@ public class BufferManagerImpl extends BufferManager {
 	/* Map to keep track of the next event for a handler */
 	private final ConcurrentHashMap<String, HandlerStats> handlerEventMap = new ConcurrentHashMap<String, HandlerStats>();
 
-	protected Queue<Object> earlyMessageQueue;
+	protected volatile Queue<Object> earlyMessageQueue;
 
 	private static final int EARLY_MESSAGE_QUEUE_SIZE = 400;
 	
