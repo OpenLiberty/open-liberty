@@ -17,7 +17,6 @@ IBM-API-Package: \
   io.opentelemetry.context;type="third-party",\
   io.opentelemetry.context.propagation;type="third-party",\
   io.opentelemetry.extension.incubator.metrics;type="third-party",\
-  io.opentelemetry.internal.shaded.jctools.queues;type="third-party",\
   io.opentelemetry.sdk.trace;type="third-party",\
   io.opentelemetry.sdk.trace.export;type="third-party",\
   io.opentelemetry.sdk.trace.data;type="third-party",\
