@@ -478,7 +478,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @return boolean
      */
     final public boolean headersParsed() {
-        return getHttpConfig().useNetty() ? Boolean.TRUE:STATE_FULL_HEADERS <= this.msgParsedState;
+        return getHttpConfig().useNetty() ? Boolean.TRUE : STATE_FULL_HEADERS <= this.msgParsedState;
     }
 
     /**
@@ -487,7 +487,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      */
     final public void setHeadersParsed() {
         this.msgParsedState = STATE_FULL_HEADERS;
-        
+
     }
 
     /**
@@ -1487,7 +1487,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
         } //End PI35277
     }
-    
+
     public boolean isTemporaryStatusCode() {
         int code = this.getResponse().getStatusCodeAsInt();
         if (HttpDispatcher.useEE7Streams() && (code == 101))
@@ -2099,7 +2099,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
 
         // save the amount of data written inside actual body
-        if(Objects.isNull(nettyContext)) {
+        if (Objects.isNull(nettyContext)) {
             addBytesWritten(length);
         }
 
@@ -2269,7 +2269,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         setupCompressionHandler(msg);
         formatHeaders(msg, false);
         synchWrite();
-       
+
     }
 
     final protected void sendHeaders(HttpResponse response) throws IOException {
@@ -2277,22 +2277,12 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             Tr.event(tc, "Invalid call to sendHeaders after already sent");
             return;
         }
-        
-        
-        System.out.println("&&& SEND HEADERS &&&");
-        
 
+        System.out.println("&&& SEND HEADERS &&&");
 
         if (getResponse() instanceof NettyResponseMessage) {
-            
-            response = ((NettyResponseMessage)getResponse()).getResponse();
-            
-            System.out.println("&&& SEND HEADERS &&&");
-            System.out.println("Headers: ");
-            getResponse().getAllHeaders().forEach(header -> System.out.println(header.getName() + ": " + header.asString()));
-            System.out.println("pre process cookie objects");
-            getResponse().getAllCookies().forEach(header -> System.out.println(header.getName() + ": " + header.getValue()));
-            
+
+            response = ((NettyResponseMessage) getResponse()).getResponse();
 
             ((NettyResponseMessage) getResponse()).processCookies();
             HeaderHandler headerHandler = new HeaderHandler(myChannelConfig, response);
@@ -2303,13 +2293,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
             MSP.log("SENDING HEADERS");
 
-            System.out.println("Headers: ");
-            getResponse().getAllHeaders().forEach(header -> System.out.println(header.getName() + ": " + header.asString()));
-            
-            getResponse().getAllCookies().forEach(header -> System.out.println(header.getName() + ": " + header.getValue()));
-            System.out.println("&&& END of processing, should be all in message.");
-
-            ((NettyResponseMessage)getResponse()).logHttpResponse();
+            ((NettyResponseMessage) getResponse()).logHttpResponse();
 
         }
         final boolean isSwitching = response.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS);
@@ -2318,9 +2302,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).set("WebSocket");
         }
         this.nettyContext.channel().writeAndFlush(response);
-        
-        System.out.println("After flush Headers: ");
-        response.headers().forEach(header -> System.out.println(header.getKey() + ": " + header.getValue()));
 
         this.setHeadersSent();
 
@@ -3004,19 +2985,17 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
         }
 
-        
-
         boolean shouldSkipWriteOnUpgrade = nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)
                                            && !nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).get().equals("HTTP2");
         if (!shouldSkipWriteOnUpgrade && Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
             MSP.log("sendOutgoing are buffers good? " + GenericUtils.sizeOf(buffers));
-            
+
             addBytesWritten(GenericUtils.sizeOf(buffers));
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Number of bytes to write: " + getNumBytesWritten());
             }
-            
+
             String streamId = nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), "-1");
             if (this.getTSC() instanceof NettyTCPConnectionContext) {
                 ((NettyTCPWriteRequestContext) (getTSC().getWriteInterface())).setStreamId(streamId);
@@ -3288,8 +3267,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
         }
 
-        
-
         if (!headersSent()) {
             boolean complete = false;
             HttpResponseMessage msg = getResponse();
@@ -3348,7 +3325,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
             MSP.log("Butffer bytes: " + GenericUtils.sizeOf(buffers));
             MSP.log("Bytes to write: " + getNumBytesWritten());
-            
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Number of bytes to write: " + getNumBytesWritten());
             }
@@ -3409,7 +3386,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         System.out.println("After await");
         MSP.log("set message sent");
         setMessageSent();
-        
+
         MSP.log("END OF FINISH RESPONSE -> bytes are: " + getNumBytesWritten());
     }
 

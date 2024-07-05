@@ -858,12 +858,12 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     }
 
     public void logHttpResponse() {
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        System.out.println("HTTP Response:");
-        System.out.println("Status: " + this.nettyResponse.status());
-        System.out.println("Headers: ");
-        nettyResponse.headers().forEach(header -> System.out.println(header.getKey() + ": " + header.getValue()));
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+//        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+//        System.out.println("HTTP Response:");
+//        System.out.println("Status: " + this.nettyResponse.status());
+//        System.out.println("Headers: ");
+//        nettyResponse.headers().forEach(header -> System.out.println(header.getKey() + ": " + header.getValue()));
+//        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     }
 
     public HttpResponse getResponse() {
