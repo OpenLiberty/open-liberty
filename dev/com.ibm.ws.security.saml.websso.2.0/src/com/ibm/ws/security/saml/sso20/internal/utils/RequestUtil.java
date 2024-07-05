@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -158,23 +158,6 @@ public class RequestUtil extends KnownSamlUrl {
         Cookie c = referrerURLCookieHandler.createCookie(cookieName,
                                                          cookieValue,
                                                          req);
-        response.addCookie(c);
-    }
-    
-    public static void createCookie(HttpServletRequest req,
-                                    HttpServletResponse response,
-                                    String cookieName,
-                                    String cookieValue, int maxAge) {
-        // cookieName and cookieValue has been verified as non-null
-        WebAppSecurityConfig webAppSecurityConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
-        ReferrerURLCookieHandler referrerURLCookieHandler = webAppSecurityConfig.createReferrerURLCookieHandler();
-        Cookie c = referrerURLCookieHandler.createCookie(cookieName,
-                                                         cookieValue,
-                                                         req);
-        c.setMaxAge(maxAge); // seconds
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "cookie " + cookieName + ", expires in " + c.getMaxAge() + " seconds");
-        }
         response.addCookie(c);
     }
 
