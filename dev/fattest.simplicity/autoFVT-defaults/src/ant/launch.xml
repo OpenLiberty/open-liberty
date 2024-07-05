@@ -691,6 +691,25 @@
 			<exclude name="${javacores.server.exclude}" />
 		</fileset>
 
+		<!-- Move any test javacores into the javacores directory that were piped to /var, there are two places to check -->
+		<fileset id="javacores.var" dir="/var/crash/">
+			<include name="javacore*" />
+			<include name="core*" />
+			<include name="heapdump*.phd" />
+			<include name="Snap*" />
+			<include name="*.hprof" />
+			<include name="hs_err*" />
+		</fileset>
+
+		<fileset id="javacores.var.apport" dir="/var/lib/apport/coredump/">
+			<include name="javacore*" />
+			<include name="core*" />
+			<include name="heapdump*.phd" />
+			<include name="Snap*" />
+			<include name="*.hprof" />
+			<include name="hs_err*" />
+		</fileset>
+
 		<iff>
 			<length property="total.length.of.all.javacores" mode="all" when="greater" length="0">
 				<fileset refid="javacores.test" />
@@ -704,6 +723,40 @@
 				</move>
 			</then>
 		</iff>
+		<iff>
+			<available file="/var/crash/" type="dir" />
+			<then>
+				<iff>
+					<length property="total.length.of.all.javacores.var.crash" mode="all" when="greater" length="0">
+						<fileset refid="javacores.var" />
+					</length>
+					<then>
+						<mkdir dir="${dir.log.javacores}" />
+						<move todir="${dir.log.javacores}">
+							<fileset refid="javacores.var" />
+						</move>
+					</then>
+				</iff>
+			</then>
+		</iff>	  
+		<iff>
+			<available file="/var/lib/apport/coredump/" type="dir" />
+			<then>
+				<iff>
+					<length property="total.length.of.all.javacores.apport.coredump" mode="all" when="greater" length="0">
+						<fileset refid="javacores.var.apport" />
+					</length>
+					<then>
+						<mkdir dir="${dir.log.javacores}" />
+						<move todir="${dir.log.javacores}">
+							<fileset refid="javacores.var.apport" />
+						</move>
+					</then>
+				</iff>
+			</then>
+		</iff>                           
+	
+
 
 	</target>
 
