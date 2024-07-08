@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Set;
 
 import javax.enterprise.inject.Stereotype;
@@ -27,6 +26,7 @@ import javax.transaction.TransactionalException;
 import org.osgi.framework.FrameworkUtil;
 
 import com.ibm.tx.TranConstants;
+import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -45,15 +45,6 @@ public abstract class TransactionalInterceptor implements Serializable {
     private static final TraceComponent tc = Tr.register(TransactionalInterceptor.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
     private static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
-
-    protected static final String THROW_CHECKED_EXCEPTIONS = "com.ibm.tx.jta.cdi.interceptors.throwCheckedExceptions";
-
-    private static boolean _throwCheckedExceptions = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-        @Override
-        public Boolean run() {
-            return Boolean.getBoolean(THROW_CHECKED_EXCEPTIONS);
-        }
-    });
 
     /*
      * Find the Transactional annotation being processed
@@ -218,9 +209,9 @@ public abstract class TransactionalInterceptor implements Serializable {
 
     @Trivial
     private Exception processException(final InvocationContext context, Exception e) {
-        if (_throwCheckedExceptions) {
+        if (ConfigurationProviderManager.getConfigurationProvider().isThrowCheckedExceptions()) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "processException: {0} is set.", THROW_CHECKED_EXCEPTIONS);
+                Tr.debug(tc, "processException: configured to throw any exceptions.");
             return e;
         }
 
