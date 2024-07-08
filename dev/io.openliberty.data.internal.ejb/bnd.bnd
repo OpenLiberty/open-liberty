@@ -29,6 +29,11 @@ Import-Package: *
 Private-Package: \
   io.openliberty.data.internal.ejb.*
 
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+Include-Resource:\
+  OSGI-INF=resources/OSGI-INF
+
 -dsannotations: io.openliberty.data.internal.ejb.EJBModuleTracker
 
 -buildpath: \
@@ -42,4 +47,3 @@ Private-Package: \
   com.ibm.ws.ejbcontainer.core,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   io.openliberty.data.internal
-

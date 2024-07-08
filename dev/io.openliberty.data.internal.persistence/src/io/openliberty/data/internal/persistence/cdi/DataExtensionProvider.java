@@ -158,8 +158,8 @@ public class DataExtensionProvider implements //
     @Reference
     public MetaDataIdentifierService metadataIdSvc;
 
-    // TODO make optional if EJB not enabled
-    @Reference(target = "(component.name=io.openliberty.data.internal.ejb.EJBModuleTracker)")
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+               target = "(component.name=io.openliberty.data.internal.ejb.EJBModuleTracker)")
     protected ModuleTracker moduleTracker;
 
     private final ConcurrentHashMap<String, DataComponentMetaData> metadatas = new ConcurrentHashMap<>();
