@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -314,13 +314,12 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
         InetAddress addr;
         try {
             addr = InetAddress.getByName(hostname);
-            if (addr != null && addr.toString().startsWith("/"))
+            if (addr != null && addr.toString().startsWith("/")) {
                 ext = "SAN=ip:" + hostname;
-            else {
-                // If the hostname start with a digit keytool will not create a SAN with the value
-                if (!Character.isDigit(hostname.charAt(0)))
-                    ext = "SAN=dns:" + hostname;
+            } else {
+                ext = "SAN=dns:" + hostname;
             }
+
         } catch (UnknownHostException e) {
             // use return null and not set SAN if there is an exception here
         }
@@ -344,9 +343,9 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
      * This method acts like a filter for xml snippets. If the user provides the {@link #ARG_OPT_CREATE_CONFIG_FILE} option, then we will write it to a file and
      * provide an include snippet. Otherwise, we just return the provided xml snippet.
      *
-     * @param serverDir Path to the root of the server. e.g. /path/to/wlp/usr/servers/myServer/
+     * @param serverDir   Path to the root of the server. e.g. /path/to/wlp/usr/servers/myServer/
      * @param commandLine The command-line arguments.
-     * @param xmlSnippet The xml configuration the task produced.
+     * @param xmlSnippet  The xml configuration the task produced.
      * @return An include snippet or the given xmlSnippet.
      */
     protected String createConfigFileIfNeeded(String serverDir, String[] commandLine, String xmlSnippet) {

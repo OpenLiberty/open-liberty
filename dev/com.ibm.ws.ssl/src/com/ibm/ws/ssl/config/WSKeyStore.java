@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -1040,9 +1040,9 @@ public class WSKeyStore extends Properties {
     /**
      * Get the key store wrapped by this object.
      *
-     * @param reinitialize Reinitialize the keystore?
+     * @param reinitialize       Reinitialize the keystore?
      * @param createIfNotPresent Create the keystore if not present?
-     * @param clone Return a clone of the keystore?
+     * @param clone              Return a clone of the keystore?
      * @return The keystore instance.
      * @throws Exception
      */
@@ -1365,9 +1365,9 @@ public class WSKeyStore extends Properties {
      * @param alias
      * @param cert
      * @throws KeyStoreException
-     *             - if the store is read only or not found
+     *                               - if the store is read only or not found
      * @throws KeyException
-     *             - if an error happens updating the store with the cert
+     *                               - if an error happens updating the store with the cert
      */
     public void setCertificateEntry(String alias, Certificate cert) throws KeyStoreException, KeyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -1454,9 +1454,9 @@ public class WSKeyStore extends Properties {
      * @param password
      * @param chain
      * @throws KeyStoreException
-     *             - if the store is read only or not found
+     *                               - if the store is read only or not found
      * @throws KeyException
-     *             - if an error happens updating the store with the cert
+     *                               - if an error happens updating the store with the cert
      */
     @Sensitive
     public void setKeyEntry(String alias, Key key, Certificate[] chain) throws KeyStoreException, KeyException {
@@ -1651,9 +1651,9 @@ public class WSKeyStore extends Properties {
      *
      * @param cert
      * @throws KeyStoreException
-     *             - if the store is read only or not found
+     *                               - if the store is read only or not found
      * @throws KeyException
-     *             - if an error happens updating the store with the cert
+     *                               - if an error happens updating the store with the cert
      */
     private void setCertificateEntryNoStore(String alias, Certificate cert) throws KeyStoreException, KeyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -1720,8 +1720,7 @@ public class WSKeyStore extends Properties {
             if (hostname != null && !hostname.isEmpty()) {
                 if (hostname.equals("localhost")) {
                     String host = InetAddress.getLocalHost().getCanonicalHostName();
-                    if (isGoodDNSName(host))
-                        san.add("dns:" + host);
+                    san.add("dns:" + host);
                 }
                 InetAddress addr;
                 // get the InetAddress if there is one
@@ -1729,14 +1728,11 @@ public class WSKeyStore extends Properties {
                 if (addr != null && addr.toString().startsWith("/"))
                     san.add("ip:" + hostname);
                 else {
-                    // If the hostname start with a digit keytool will not create a SAN with the value
-                    if (isGoodDNSName(hostname))
-                        san.add("dns:" + hostname);
+                    san.add("dns:" + hostname);
                 }
             } else {
                 String host = InetAddress.getLocalHost().getCanonicalHostName();
-                if (isGoodDNSName(host))
-                    san.add("dns:" + host);
+                san.add("dns:" + host);
             }
         } catch (UnknownHostException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
