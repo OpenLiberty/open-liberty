@@ -123,9 +123,11 @@ public enum CheckpointPhase {
     static CheckpointPhase THE_PHASE = CheckpointPhase.INACTIVE;
 
     /**
-     * Returns true if the process has been restored
+     * Returns true if the process has been restored or if Liberty was
+     * launched with no checkpoint action (the {@link #INACTIVE} checkpoint phase).
      *
-     * @return true if the process has been restored
+     * @return true if the process has been restored or this is the
+     *         {@link #INACTIVE} checkpoint phase.
      */
     final public boolean restored() {
         return this == INACTIVE || restored;
