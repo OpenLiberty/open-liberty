@@ -71,6 +71,7 @@ import io.openliberty.cdi.spi.CDIExtensionMetadata;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.data.internal.persistence.service.DataComponentMetaData;
 import io.openliberty.data.internal.persistence.service.DataModuleMetaData;
+import io.openliberty.data.internal.tracker.ModuleTracker;
 import io.openliberty.data.internal.version.DataVersionCompatibility;
 import jakarta.data.Limit;
 import jakarta.data.Order;
@@ -156,6 +157,10 @@ public class DataExtensionProvider implements //
 
     @Reference
     public MetaDataIdentifierService metadataIdSvc;
+
+    // TODO make optional if EJB not enabled
+    @Reference(target = "(component.name=io.openliberty.data.internal.ejb.EJBModuleTracker)")
+    protected ModuleTracker moduleTracker;
 
     private final ConcurrentHashMap<String, DataComponentMetaData> metadatas = new ConcurrentHashMap<>();
 

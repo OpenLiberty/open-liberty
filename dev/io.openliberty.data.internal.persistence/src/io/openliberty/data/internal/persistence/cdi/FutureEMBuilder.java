@@ -60,9 +60,10 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
     final Set<Class<?>> entityTypes = new HashSet<>();
 
     /**
-     * Metadata identifier for the class loader of the repository interface.
+     * Module name in which the repository interface is defined.
+     * If not defined in a module, only the application name part is included.
      */
-    private final String metadataIdentifier;
+    private final J2EEName moduleName;
 
     /**
      * OSGi service component that provides the CDI extension for Data.
@@ -89,12 +90,11 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
     FutureEMBuilder(DataExtensionProvider provider,
                     ClassLoader repositoryClassLoader,
                     String dataStore,
-                    String metadataIdentifier,
                     J2EEName moduleName) {
         this.provider = provider;
         this.repositoryClassLoader = repositoryClassLoader;
         this.dataStore = dataStore;
-        this.metadataIdentifier = metadataIdentifier;
+        this.moduleName = moduleName;
 
         boolean javaApp = dataStore.regionMatches(5, "app", 0, 3);
         boolean javaModule = !javaApp && dataStore.regionMatches(5, "module", 0, 6);
@@ -130,6 +130,8 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
     EntityManagerBuilder createEMBuilder() {
         String resourceName = dataStore;
         boolean isJNDIName = resourceName.startsWith("java:");
+
+        String metadataIdentifier = getMetadataIdentifier();
 
         ComponentMetaDataAccessorImpl accessor = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor();
         ComponentMetaData extMetadata = accessor.getComponentMetaData();
@@ -201,6 +203,44 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
                             && Objects.equals(application, b.application)
                             && Objects.equals(module, b.module)
                             && Objects.equals(repositoryClassLoader, b.repositoryClassLoader);
+    }
+
+    /**
+     * Obtains the metadata identifier for the module that defines the repository
+     * interface.
+     *
+     * @return metadata identifier as the key, and application/module/component
+     *         as the value. Module and component might be null or might not be
+     *         present at all.
+     */
+    private String getMetadataIdentifier() {
+        String mdIdentifier;
+
+        if (moduleName.getModule() == null) {
+            mdIdentifier = provider.getMetaDataIdentifier(moduleName.getApplication(),
+                                                          moduleName.getModule(),
+                                                          null);
+        } else {
+            String clIdentifier = provider.classloaderIdSvc.getClassLoaderIdentifier(repositoryClassLoader);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc,
+                         "defined in module: " + moduleName,
+                         "class loader identifier: " + clIdentifier);
+            if (clIdentifier.startsWith("WebModule:")) {
+                mdIdentifier = provider.metadataIdSvc.getMetaDataIdentifier("WEB",
+                                                                            moduleName.getApplication(),
+                                                                            moduleName.getModule(),
+                                                                            null);
+            } else {
+                String componentName = provider.moduleTracker.firstComponentName(moduleName);
+                mdIdentifier = provider.metadataIdSvc.getMetaDataIdentifier("EJB",
+                                                                            moduleName.getApplication(),
+                                                                            moduleName.getModule(),
+                                                                            componentName);
+            }
+        }
+
+        return mdIdentifier;
     }
 
     @Override

@@ -20,7 +20,6 @@ import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.sql.Connection;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -130,9 +129,7 @@ public class DataExtension implements Extension {
 
             Class<?> repositoryInterface = repositoryType.getJavaClass();
             ClassLoader loader = repositoryInterface.getClassLoader();
-            Map.Entry<String, J2EEName> metadataInfo = getMetadata(repositoryInterface, loader, provider);
-            String metadataIdentifier = metadataInfo.getKey();
-            J2EEName moduleName = metadataInfo.getValue();
+            J2EEName moduleName = getModuleName(repositoryInterface, loader, provider);
 
             Repository repository = repositoryType.getAnnotation(Repository.class);
             String dataStore = repository.dataStore();
@@ -178,7 +175,7 @@ public class DataExtension implements Extension {
             // This needs to be done with the correct metadata on the thread,
             // but that might not be available yet.
 
-            FutureEMBuilder futureEMBuilder = new FutureEMBuilder(provider, loader, dataStore, metadataIdentifier, moduleName);
+            FutureEMBuilder futureEMBuilder = new FutureEMBuilder(provider, loader, dataStore, moduleName);
 
             Class<?>[] primaryEntityClassReturnValue = new Class<?>[1];
             Map<Class<?>, List<QueryInfo>> queriesPerEntityClass = new HashMap<>();
@@ -466,56 +463,32 @@ public class DataExtension implements Extension {
     }
 
     /**
-     * Obtains the metadata identifier and application/module/component based on
-     * the class loader identifier of the repository's class loader.
+     * Obtains the module name in which the repository interface is defined.
      *
      * @param repositoryInterface   the repository interface.
      * @param repositoryClassLoader class loader of the repository interface.
      * @param provider              OSGi service that provides the CDI extension.
-     * @return metadata identifier as the key, and application/module/component
-     *         as the value. Module and component might be null or might not be
-     *         present at all.
+     * @return AppName[#ModuleName] with only the application name if not defined
+     *         in a module.
      */
-    private Map.Entry<String, J2EEName> getMetadata(Class<?> repositoryInterface,
-                                                    ClassLoader repositoryClassLoader,
-                                                    DataExtensionProvider provider) {
-        String mdIdentifier;
+    private J2EEName getModuleName(Class<?> repositoryInterface,
+                                   ClassLoader repositoryClassLoader,
+                                   DataExtensionProvider provider) {
         J2EEName moduleName;
 
         Optional<J2EEName> moduleNameOptional = provider.cdiService.getModuleNameForClass(repositoryInterface);
 
         if (moduleNameOptional.isPresent()) {
             moduleName = moduleNameOptional.get();
-            String clIdentifier = provider.classloaderIdSvc.getClassLoaderIdentifier(repositoryClassLoader);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(this, tc,
-                         "defined in module: " + moduleName,
-                         "class loader identifier: " + clIdentifier);
-            if (clIdentifier.startsWith("WebModule:")) {
-                mdIdentifier = provider.metadataIdSvc.getMetaDataIdentifier("WEB",
-                                                                            moduleName.getApplication(),
-                                                                            moduleName.getModule(),
-                                                                            null);
-            } else {
-                mdIdentifier = provider.metadataIdSvc.getMetaDataIdentifier("EJB",
-                                                                            moduleName.getApplication(),
-                                                                            moduleName.getModule(),
-                                                                            "?"); // TODO
-                // Any EJB component would be fine here, but we don't know of any.
-                // We cannot even find one from ComponentMetaDataListener because they are lazily created.
-            }
         } else {
             // create component and module metadata based on the application metadata
             ComponentMetaData cdata = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
             ApplicationMetaData adata = cdata == null ? null : cdata.getModuleMetaData().getApplicationMetaData();
             cdata = provider.createComponentMetadata(adata, repositoryClassLoader);
             moduleName = cdata.getModuleMetaData().getJ2EEName();
-            mdIdentifier = provider.getMetaDataIdentifier(moduleName.getApplication(),
-                                                          moduleName.getModule(),
-                                                          null);
         }
 
-        return new AbstractMap.SimpleImmutableEntry<>(mdIdentifier, moduleName);
+        return moduleName;
     }
 
     /**
