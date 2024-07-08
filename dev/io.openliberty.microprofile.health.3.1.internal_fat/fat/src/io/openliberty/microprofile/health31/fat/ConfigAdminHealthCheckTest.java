@@ -197,7 +197,7 @@ public class ConfigAdminHealthCheckTest {
         log("testMatchingAppNamesDropinsTest", "Deploying the ConfigAdmin App into the apps directory.");
 
         WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME2, "io.openliberty.microprofile.health31.config.admin.xml.checks.app");
-        ShrinkHelper.exportAppToServer(server2, app);
+        ShrinkHelper.exportAppToServer(server2, app, DeployOptions.SERVER_ONLY);
 
         if (!server2.isStarted())
             server2.startServer();
@@ -226,7 +226,7 @@ public class ConfigAdminHealthCheckTest {
         log("testMatchingAppNamesDropinsTest", "Deploying the ConfigAdmin App into the apps directory.");
 
         WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME2, "io.openliberty.microprofile.health31.config.admin.xml.checks.app");
-        ShrinkHelper.exportAppToServer(server2, app);
+        ShrinkHelper.exportAppToServer(server2, app, DeployOptions.SERVER_ONLY);
 
         if (!server2.isStarted())
             server2.startServer();
@@ -290,7 +290,7 @@ public class ConfigAdminHealthCheckTest {
             testEar.addAsModule(war2);
             testEar.addAsModule(war1);
 
-            ShrinkHelper.exportDropinAppToServer(server1, testEar);
+            ShrinkHelper.exportDropinAppToServer(server1, testEar, DeployOptions.SERVER_ONLY);
             server1.startServer();
         } catch (Exception e) {
             assertTrue("Failure to start server. ", server1.isStarted());
