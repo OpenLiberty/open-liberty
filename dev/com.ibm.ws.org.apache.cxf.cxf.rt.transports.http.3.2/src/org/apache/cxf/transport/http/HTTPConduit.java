@@ -1884,14 +1884,14 @@ public abstract class HTTPConduit
                         // remove callback so that it won't be invoked twice
                         // Liberty Change begin
                         if (LOG.isLoggable(Level.FINEST)) {
-                           LOG.finest("handleResponseInternal: Removing Client Callback...");
+                           LOG.finest("handleResponseInternal: Removing ClientCallBack...");
                         }
                         // Liberty Change end
                         ClientCallback cc = exchange.remove(ClientCallback.class);
                         if (null != cc) {
                             // Liberty Change begin
                             if (LOG.isLoggable(Level.FINEST)) {
-                               LOG.finest("handleResponseInternal: Invoking handleResponse for ClientCallbak: " + cc.getClass().getName());
+                               LOG.finest("handleResponseInternal: Invoking handleResponse for ClientCallBack: " + cc.getClass().getName());
                             }
                             // Liberty Change end
                             cc.handleResponse(null, null);
