@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -65,6 +65,8 @@ import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.ws.tx.rrs.RRSXAResourceFactory;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.resource.ResourceFactory;
+
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * An instance of the ConnectionManager class is created by the
@@ -329,6 +331,14 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                                                                 "this failure may have been logged during the connection error event " +
                                                                 "logging.");
                     throw e;
+                }
+
+                boolean beforeCheckpoint = !CheckpointPhase.getPhase().restored();
+                if (beforeCheckpoint) {
+                    mcWrapper.markStale();
+                    if (isTraceOn && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Marked the mcWrapper stale " + mcWrapper + " Do not pool any connection before checkpoint restore");
+                    }
                 }
             } catch (ResourceException e) {
                 mcWrapper.setPoolState(poolState);
