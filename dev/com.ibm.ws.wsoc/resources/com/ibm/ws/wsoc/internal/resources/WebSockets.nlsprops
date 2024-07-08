@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2022 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -239,3 +239,7 @@ scheme.incorrect.error.useraction=The scheme type must be http, https, ws, or ws
 upgradeHttpToWebSocket.failed=CWWKH0055E: The jakarta.websocket.server.ServerContainer#upgradeHttpToWebSocket call failed due to {0}. 
 upgradeHttpToWebSocket.failed.explanation=The server could not upgrade the HTTP or HTTPS request to the ws/wss protocol.
 upgradeHttpToWebSocket.failed.useraction=Review the error to identify why the request failed to upgrade.
+
+maxmessagesize.exceeded=CWWKH0056E: The maxMessageSize for method {0} exceeded Integer.MAX_VALUE for class {1}.
+maxmessagesize.exceeded.explanation=The OnMessage annotation parameter maxMessageSize can only be set to a maxmimum value of Integer.MAX_VALUE as per the WebSocket2.2 spec.
+maxmessagesize.exceeded.useraction=Reduce maxMessageSize to be a value less than Integer.MAX_VALUE.
