@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal;
 
@@ -2976,6 +2973,10 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
                 if (userAgent != null && SameSiteCookieUtils.isSameSiteNoneIncompatible(userAgent)) {
                     //TODO: do we remove Secure, probably should be retained.
                     cookie.setAttribute("samesite", null);
+                    // Partitioned should only be included when SameSite=None, so if it is incompatible Partitioned should be removed as well
+                    if (partitionedValue != null) {
+                        cookie.setAttribute("partitioned", null);
+                    }
                 }
             }
 

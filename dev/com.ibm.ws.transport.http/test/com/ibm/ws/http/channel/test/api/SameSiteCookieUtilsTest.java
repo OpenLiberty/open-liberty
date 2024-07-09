@@ -1,12 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.http.channel.test.api;
 
@@ -212,8 +211,21 @@ public class SameSiteCookieUtilsTest {
             userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14) AppleWebKit/537.36 (KHTML, like Gecko)";
             assertTrue(SameSiteCookieUtils.isSameSiteNoneIncompatible(userAgent));
 
+            //Test Embedded @ MacOS before 10.14 - Expected to return false
+            //Older versions also most likely don't work, but there have been no reported issues so best not to introduce a change
+            userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13) AppleWebKit/537.36 (KHTML, like Gecko)";
+            assertFalse(SameSiteCookieUtils.isSameSiteNoneIncompatible(userAgent));
+
+            //Test Embedded @ MacOS after 10.14 - Expected to return false
+            userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) AppleWebKit/537.36 (KHTML, like Gecko)";
+            assertFalse(SameSiteCookieUtils.isSameSiteNoneIncompatible(userAgent));
+
             //Test Safari  @ MacOS after 10.14 - Expected to return false
             userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) AppleWebKit/601.1.39 (KHTML, like Gecko) Version/10.1.2 Safari/601.1.39";
+            assertFalse(SameSiteCookieUtils.isSameSiteNoneIncompatible(userAgent));
+
+            //Test Safari @ MacOS before 10.14 - Expected to return false.
+            userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Safari/605.1.15";
             assertFalse(SameSiteCookieUtils.isSameSiteNoneIncompatible(userAgent));
 
             //Test Safari @ MacOS 10.15.1 - major.minor.release version format on a supported user-agent
@@ -235,12 +247,9 @@ public class SameSiteCookieUtilsTest {
             userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/602.1.38 (KHTML, like Gecko) Version/66.6 Mobile/14A5297c Safari/602.1";
             assertFalse(SameSiteCookieUtils.isSameSiteNoneIncompatible(userAgent));
 
-            //TODO: considerations
-            //Test user agent on Safari and macOS before 10.14
-
-            //Test user agent on MacEmbedded browser and macOS before 10.14
-            //Test user agent on MacEmbedded browser and macOS after 10.14
-            //Test user agent on iOS before 12
+            //Test a browser before iOS version 12 (@ iOS 11)
+            userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/602.1.38 (KHTML, like Gecko) Version/66.6 Mobile/14A5297c Safari/602.1";
+            assertFalse(SameSiteCookieUtils.isSameSiteNoneIncompatible(userAgent));
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable("testMACOSAndIOSCompatibility", t);
