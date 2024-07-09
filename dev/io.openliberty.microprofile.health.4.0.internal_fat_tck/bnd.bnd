@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -19,7 +16,7 @@ src: \
 
 fat.project: true
 
-tested.features=cdi-3.0,cdi-4.0,mpConfig-3.0,servlet-5.0,jsonp-2.1
+tested.features=cdi-3.0,cdi-4.0,mpConfig-3.0,servlet-5.0,jsonp-2.1,mpconfig-3.1, cdi-4.1
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}

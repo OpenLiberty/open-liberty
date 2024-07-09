@@ -45,6 +45,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.exception.TopologyException;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -59,8 +60,6 @@ public class ConfigAdminHealthCheckTest {
     final static String SERVER_NAME2 = "ConfigAdminXmlCheck";
     final static String SERVER_NAME3 = "ConfigAdminWrongAppCheck";
     final static String FAILS_TO_START_SERVER_NAME = "FailedConfigAdminApplicationStateHealthCheck";
-
-    private static final String MESSAGE_LOG = "logs/messages.log";
 
     private static final String[] EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W", "CWMMH0052W", "CWMMH0053W", "CWWKE1106W", "CWWKE1107W" };
     private static final String[] FAILS_TO_START_EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWM*H0053W", "CWMMH0052W", "CWMMH0053W", "CWWKZ0060E",
@@ -79,7 +78,6 @@ public class ConfigAdminHealthCheckTest {
     private final String READY_ENDPOINT = "/health/ready";
     private final String LIVE_ENDPOINT = "/health/live";
     private final String STARTED_ENDPOINT = "/health/started";
-    private final String APP_ENDPOINT = "/DelayedHealthCheckApp/DelayedServlet";
 
     private final int SUCCESS_RESPONSE_CODE = 200;
     private final int FAILED_RESPONSE_CODE = 503; // Response when port is open but Application is not ready
@@ -95,17 +93,12 @@ public class ConfigAdminHealthCheckTest {
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new FeatureReplacementAction()
-                                    .withID("mpHealth-3.0")
-                                    .addFeature("mpHealth-3.0")
-                                    .removeFeature("mpHealth-3.1")
-                                    .forServers(SERVER_NAME))
-                    .andWith(new FeatureReplacementAction()
-                                    .withID("mpHealth-2.0")
-                                    .addFeature("mpHealth-2.0")
-                                    .removeFeature("mpHealth-3.0")
-                                    .forServers(SERVER_NAME));
+    public static RepeatTests r = MicroProfileActions.repeat(FeatureReplacementAction.ALL_SERVERS,
+                                                             MicroProfileActions.MP70_EE10, // mpHealth-4.0 LITE
+                                                             MicroProfileActions.MP70_EE11, // mpHealth-4.0 FULL
+                                                             MicroProfileActions.MP41, // mpHealth-3.1 FULL
+                                                             MicroProfileActions.MP40, // mpHealth-3.0 FULL
+                                                             MicroProfileActions.MP30); // mpHealth-2.0 FULL
 
     @Server(SERVER_NAME)
     public static LibertyServer server1;
@@ -204,7 +197,7 @@ public class ConfigAdminHealthCheckTest {
         log("testMatchingAppNamesDropinsTest", "Deploying the ConfigAdmin App into the apps directory.");
 
         WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME2, "io.openliberty.microprofile.health31.config.admin.xml.checks.app");
-        ShrinkHelper.exportAppToServer(server2, app);
+        ShrinkHelper.exportAppToServer(server2, app, DeployOptions.SERVER_ONLY);
 
         if (!server2.isStarted())
             server2.startServer();
@@ -228,12 +221,12 @@ public class ConfigAdminHealthCheckTest {
      * It will confirm that both the configAdmin and appTracker do not detect the application.
      */
     @Test
-    @SkipForRepeat({ "mpHealth-2.0", "mpHealth-3.0" })
+    @SkipForRepeat({ MicroProfileActions.MP30_ID, MicroProfileActions.MP40_ID })
     public void testWrongAppNameServerXml() throws Exception {
         log("testMatchingAppNamesDropinsTest", "Deploying the ConfigAdmin App into the apps directory.");
 
         WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME2, "io.openliberty.microprofile.health31.config.admin.xml.checks.app");
-        ShrinkHelper.exportAppToServer(server2, app);
+        ShrinkHelper.exportAppToServer(server2, app, DeployOptions.SERVER_ONLY);
 
         if (!server2.isStarted())
             server2.startServer();
@@ -287,7 +280,7 @@ public class ConfigAdminHealthCheckTest {
      * There's one slow and one quick starting application and the test will confirm that configAdmin detects the applications.
      */
     @Test
-    @SkipForRepeat({ "mpHealth-2.0", "mpHealth-3.0" })
+    @SkipForRepeat({ MicroProfileActions.MP30_ID, MicroProfileActions.MP40_ID })
     public void testMultiWarDetectionDropinsTest() throws Exception {
 
         try {
@@ -297,7 +290,7 @@ public class ConfigAdminHealthCheckTest {
             testEar.addAsModule(war2);
             testEar.addAsModule(war1);
 
-            ShrinkHelper.exportDropinAppToServer(server1, testEar);
+            ShrinkHelper.exportDropinAppToServer(server1, testEar, DeployOptions.SERVER_ONLY);
             server1.startServer();
         } catch (Exception e) {
             assertTrue("Failure to start server. ", server1.isStarted());
@@ -369,9 +362,9 @@ public class ConfigAdminHealthCheckTest {
                 server.copyFileToLibertyServerRoot(file.getParent(), "kafkaLib", file.getName());
             }
             //Don't validate that FAILS_TO_START_APP_NAME starts correctly.
-            ShrinkHelper.exportAppToServer(server, app, DeployOptions.DISABLE_VALIDATION);
+            ShrinkHelper.exportAppToServer(server, app, DeployOptions.DISABLE_VALIDATION, DeployOptions.SERVER_ONLY);
         } else {
-            ShrinkHelper.exportDropinAppToServer(server, app);
+            ShrinkHelper.exportDropinAppToServer(server, app, DeployOptions.SERVER_ONLY);
         }
     }
 
