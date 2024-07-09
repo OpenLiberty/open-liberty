@@ -724,19 +724,16 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
             //Enable hostname verification
             String verifyHostname = sslprops.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION);
             if (verifyHostname != null && verifyHostname.equalsIgnoreCase("true")) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "verifyHostname = " + verifyHostname);
-                if (verifyHostname != null && verifyHostname.equalsIgnoreCase("true")) {
-                    String skipHostList = sslprops.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS);
-                    if (!Constants.isSkipHostnameVerificationForHosts(remoteHostname, skipHostList)) {
-                        p.setEndpointIdentificationAlgorithm(ENDPOINT_ALGORITHM);
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Hostname verification is enabled");
-                        }
-                    } else {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Hostname verification is disabled");
-                        }
+                if (tc.isDebugEnabled()) Tr.debug(tc, "verifyHostname = " + verifyHostname);
+                String skipHostList = sslprops.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS);
+                if (!Constants.isSkipHostnameVerificationForHosts(remoteHostname, skipHostList)) {
+                    p.setEndpointIdentificationAlgorithm(ENDPOINT_ALGORITHM);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Hostname verification is enabled");
+                    }
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Hostname verification is disabled");
                     }
                 }
             }
