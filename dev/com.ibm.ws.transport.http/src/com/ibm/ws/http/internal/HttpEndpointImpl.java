@@ -1208,19 +1208,22 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             // TCP Channel *** has been started and is now listening for requests on host ***  (IPv6) port ***.).
             processHttpChainWork(true, true);
 
-            // Check the state of the HTTP chains. The expectation is that the HTTP and HTTPS chains states are either STARTED
-            // or UNINITIALIZED (disabled).
-            int httpChainState = httpChain.getChainState();
-            int httpsChainState = httpSecureChain.getChainState();
-            if (!(httpChainState == ChainState.STARTED.val && httpsChainState == ChainState.UNINITIALIZED.val ||
-                  httpChainState == ChainState.UNINITIALIZED.val && httpsChainState == ChainState.STARTED.val ||
-                  httpChainState == ChainState.STARTED.val && httpsChainState == ChainState.STARTED.val)) {
+            if(!(checkChainStates())) {
                 throw new PauseableComponentException("The request to resume HTTP endpoint " + name + " did not complete successfully. HTTPChain: " + httpChain.toString()
-                                                      + ". HTTPSChain: " + httpSecureChain.toString());
+                + ". HTTPSChain: " + httpSecureChain.toString()); 
             }
         } catch (Throwable t) {
             throw new PauseableComponentException(t);
         }
+    }
+
+    private boolean checkChainStates() {
+        int httpChainState = httpChain.getChainState();
+        int httpsChainState = httpSecureChain.getChainState();
+
+        return (httpChainState == ChainState.STARTED.val && httpsChainState == ChainState.UNINITIALIZED.val) ||
+                        (httpChainState == ChainState.UNINITIALIZED.val && httpsChainState == ChainState.STARTED.val) ||
+                        (httpChainState == ChainState.STARTED.val && httpsChainState == ChainState.STARTED.val);
     }
 
     /** {@inheritDoc} */
