@@ -281,15 +281,19 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
         //useNetty = MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), false);
         if (useNetty) {
-            httpChain = new NettyChain(this, false);
-            httpSecureChain = new NettyChain(this, true);
+            if(httpChain == null || !(httpChain instanceof NettyChain)) {
+                httpChain = new NettyChain(this, false);
+                httpSecureChain = new NettyChain(this, true);
+            }
 
             ((NettyChain) httpChain).initNettyChain(name, netty);
             ((NettyChain) httpSecureChain).initNettyChain(name, netty);
 
         } else {
-            httpChain = new HttpChain(this, false);
-            httpSecureChain = new HttpChain(this, true);
+            if(httpChain == null || httpChain instanceof NettyChain) {
+                httpChain = new HttpChain(this, false);
+                httpSecureChain = new HttpChain(this, true);
+            }
 
             httpChain.init(name, cid, chfw);
             httpSecureChain.init(name, cid, chfw);
