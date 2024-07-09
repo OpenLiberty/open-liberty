@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.ibm.ws.feature.tests.util.RepositoryUtil;
@@ -418,24 +419,27 @@ public class BaselineResolutionUnitTest {
         }
     }
 
+    protected void testBanner(VerifyCase useTestCase) {
+        System.out.println("Verifying case:");
+        System.out.println("  Name [ " + useTestCase.name + " ]");
+        System.out.println("  Description [ " + useTestCase.description + " ]");
+    }
+
     public void doTestResolve() throws Exception {
-        VerifyCase testCase = getTestCase();
+        VerifyCase useTestCase = getTestCase();
 
         largeDashes(System.out);
 
-        System.out.println("Verifying case:");
-        System.out.println("  Name [ " + testCase.name + " ]");
-        System.out.println("  Description [ " + testCase.description + " ]");
-
-        List<String> rootErrors = detectFeatureErrors(testCase.input.roots);
+        List<String> rootErrors = detectFeatureErrors(useTestCase.input.roots);
         if (rootErrors != null) {
-            FailureSummary summary = addRootFailure(testCase, rootErrors);
+            testBanner(useTestCase);
+            FailureSummary summary = addRootFailure(useTestCase, rootErrors);
             fail(summary.getMessage());
             return; // 'fail' never returns.
         }
 
         long startNs = System.nanoTime();
-        Result result = resolveFeatures(testCase, rootErrors);
+        Result result = resolveFeatures(useTestCase, rootErrors);
         long endNs = System.nanoTime();
         long durationNs = endNs - startNs;
 
@@ -443,15 +447,23 @@ public class BaselineResolutionUnitTest {
         List<String> resolvedFeatures = new ArrayList<>(resultFeatures.size());
         resolvedFeatures.addAll(resultFeatures);
 
-        VerifyCase outputCase = new VerifyCase(testCase, resolvedFeatures, durationNs);
+        VerifyCase outputCase = new VerifyCase(useTestCase, resolvedFeatures, durationNs);
 
         List<String> missing = new ArrayList<>();
         List<String> extra = new ArrayList<>();
 
         VerifyDelta.ChangeMessages caseMessages = VerifyDelta.compare(RepositoryUtil.getSupplier(),
-                                                                      testCase, outputCase,
+                                                                      useTestCase, outputCase,
                                                                       !VerifyDelta.UPDATED_USED_KERNEL,
-                                                                      extra, missing);
+                                                                      extra, missing,
+                                                                      getAllowedSubstitution(useTestCase));
+
+        if (!caseMessages.hasErrors() && !caseMessages.hasWarnings() && !caseMessages.hasInfo()) {
+            System.out.println("Verified case [ " + useTestCase.name + " ]");
+            return;
+        }
+
+        testBanner(useTestCase);
 
         if (!caseMessages.hasErrors()) {
             System.out.println("Verified");
@@ -478,10 +490,18 @@ public class BaselineResolutionUnitTest {
         }
 
         if (caseMessages.hasErrors()) {
-            FailureSummary summary = addFailure(testCase, extra, missing);
+            FailureSummary summary = addFailure(useTestCase, extra, missing);
             fail(summary.getMessage());
             return; // 'fail' never returns.
         }
+    }
+
+    public Map<String, String[]> getAllowedSubstitutions() {
+        return Collections.emptyMap();
+    }
+
+    public String[] getAllowedSubstitution(VerifyCase useTestCase) {
+        return null;
     }
 
     protected void write(String tag, VerifyCase verifyCase, PrintStream output) {

@@ -16,8 +16,8 @@ public interface BaselineResolutionEnablement {
     boolean enableSingletonGeneration = false;
     boolean enableServletGeneration = false;
 
-    boolean enableSingleton = true;
-    boolean enableVersionlessSingleton = false;
+    boolean enableSingleton = false;
+    boolean enableVersionlessSingleton = true;
     boolean enableMicroProfile = false;
-    boolean enableServlet = true;
+    boolean enableServlet = false;
 }

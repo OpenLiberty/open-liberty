@@ -213,22 +213,45 @@ public class VerifyDelta {
             ChangeMessages caseMessages = compare(repo,
                                                   expectedCase,
                                                   actualCase, actualUsedKernel,
-                                                  null, null);
+                                                  null, null,
+                                                  null);
             setMessages(caseKey, caseMessages);
         }
+    }
+
+    public static final int ORIGINAL_FEATURE_OFFSET = 0;
+    public static final int VERSIONLESS_FEATURE_OFFSET = 1;
+    public static final int PLATFORM_OFFSET = 2;
+    public static final int OLD_FEATURE_OFFSET = 3;
+    public static final int NEW_FEATURE_OFFSET = 4;
+
+    public static String substitutionKey(String vFeature, String platform) {
+        return vFeature + ":" + platform;
+    }
+
+    public static void putSubstitution(String[] substitution, Map<String, String[]> substitutions) {
+        String vFeature = substitution[VERSIONLESS_FEATURE_OFFSET];
+        String platform = substitution[PLATFORM_OFFSET];
+        substitutions.put(substitutionKey(vFeature, platform), substitution);
+    }
+
+    public static String[] getSubstitution(String vFeature, String platform, Map<String, String[]> substitutions) {
+        return substitutions.get(substitutionKey(vFeature, platform));
     }
 
     public static ChangeMessages compare(FeatureSupplier repo,
                                          VerifyCase expectedCase,
                                          VerifyCase actualCase, boolean actualUsedKernel,
-                                         List<String> extra, List<String> missing) {
+                                         List<String> extra, List<String> missing,
+                                         String[] allowedSubstitution) {
 
         return compare(repo,
                        expectedCase.output.resolved,
                        expectedCase.output.kernelOnly,
                        expectedCase.output.kernelBlocked,
                        actualCase.output.resolved, actualUsedKernel,
-                       extra, missing);
+                       extra, missing,
+                       allowedSubstitution);
     }
 
     public static interface FeatureSupplier {
@@ -329,7 +352,8 @@ public class VerifyDelta {
                                          List<String> expectedKernelBlocked,
                                          List<String> actual,
                                          boolean actualUsedKernel,
-                                         List<String> extra, List<String> missing) {
+                                         List<String> extra, List<String> missing,
+                                         String[] allowedSubstitution) {
 
         // Don't do this: Rely on the extra/missing checks.
         // The sizes are allowed to be different if the differences are all no-ship features.
@@ -350,13 +374,23 @@ public class VerifyDelta {
         Set<String> expectedSet = new HashSet<>(expected);
         Set<String> expectedExtraSet = new HashSet<>(actualUsedKernel ? expectedKernelOnly : expectedKernelBlocked);
 
+        String expectedMissing = ((allowedSubstitution != null) ? allowedSubstitution[OLD_FEATURE_OFFSET] : null);
+        String actualMissing = null;
+        String expectedExtra = ((allowedSubstitution != null) ? allowedSubstitution[NEW_FEATURE_OFFSET] : null);
+        String actualExtra = null;
+
         for (String expectedElement : expectedSet) {
             if (!actualSet.contains(expectedElement)) {
+                add(missing, expectedElement);
+
                 if (repo.isNoShip(expectedElement) || repo.dependsOnNoShip(expectedElement)) {
                     caseWarnings = addMessage(caseWarnings, "Missing no-ship [ " + addType(repo, expectedElement) + " ]");
                 } else {
-                    add(missing, expectedElement);
-                    caseErrors = addMessage(caseErrors, "Missing [ " + addType(repo, expectedElement) + " ]");
+                    if ((expectedMissing != null) && expectedElement.equals(expectedMissing)) {
+                        actualMissing = expectedElement;
+                    } else {
+                        caseErrors = addMessage(caseErrors, "Missing [ " + addType(repo, expectedElement) + " ]");
+                    }
                 }
             }
         }
@@ -365,10 +399,11 @@ public class VerifyDelta {
 
         for (String expectedElement : expectedExtraSet) {
             if (!actualSet.contains(expectedElement)) {
+                add(missing, expectedElement);
+
                 if (repo.isNoShip(expectedElement) || repo.dependsOnNoShip(expectedElement)) {
                     caseWarnings = addMessage(caseWarnings, "Missing no-ship [ " + addType(repo, expectedElement) + " ]" + usedKernelTag);
                 } else {
-                    add(missing, expectedElement);
                     caseErrors = addMessage(caseErrors, "Missing [ " + addType(repo, expectedElement) + " ]" + usedKernelTag);
                 }
             }
@@ -395,12 +430,44 @@ public class VerifyDelta {
             }
 
             if (extraTag != null) {
+                add(extra, actualElement);
+
                 if (repo.isNoShip(actualElement) || repo.dependsOnNoShip(actualElement)) {
                     caseWarnings = addMessage(caseErrors, extraTag + " no-ship [ " + addType(repo, actualElement) + " ]");
                 } else {
-                    add(extra, actualElement);
-                    caseErrors = addMessage(caseErrors, extraTag + " [ " + addType(repo, actualElement) + " ]");
+                    if ((expectedExtra != null) && actualElement.equals(expectedExtra)) {
+                        actualExtra = actualElement;
+                    } else {
+                        caseErrors = addMessage(caseErrors, extraTag + " [ " + addType(repo, actualElement) + " ]");
+                    }
                 }
+            }
+        }
+
+        if ((expectedExtra != null) && (expectedMissing != null)) {
+            String substitutionError;
+
+            if ((actualExtra == null) && (actualMissing == null)) {
+                substitutionError = "Missing substitution: [ " + expectedMissing + " ] with [ " + expectedExtra + " ]";
+            } else if (actualExtra == null) {
+                substitutionError = "Broken substitution: Removed [ " + expectedMissing + " ] but did not add [ " + expectedExtra + " ]";
+            } else if (actualMissing == null) {
+                substitutionError = "Broken substitution: Did not remove [ " + expectedMissing + " ] but did add [ " + expectedExtra + " ]";
+            } else {
+                substitutionError = null;
+            }
+            if (substitutionError != null) {
+                caseErrors = addMessage(caseErrors, substitutionError);
+            }
+
+        } else if (expectedExtra != null) {
+            if (actualExtra == null) {
+                caseErrors = addMessage(caseErrors, "Did not add [ " + expectedExtra + " ]");
+            }
+
+        } else if (expectedMissing != null) {
+            if (actualMissing == null) {
+                caseErrors = addMessage(caseErrors, "Did not remove [ " + expectedMissing + " ]");
             }
         }
 
