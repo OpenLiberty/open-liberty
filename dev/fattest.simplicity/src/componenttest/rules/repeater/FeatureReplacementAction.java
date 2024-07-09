@@ -290,6 +290,24 @@ public class FeatureReplacementAction implements RepeatTestAction {
     }
 
     /**
+     * Get the set of features to add
+     *
+     * @return the set of features to add
+     */
+    public Set<String> getAddFeatures() {
+        return this.addFeatures;
+    }
+
+    /**
+     * Get the set of features to always add
+     *
+     * @return the set of features to always add
+     */
+    public Set<String> getAlwaysAddFeatures() {
+        return this.alwaysAddFeatures;
+    }
+
+    /**
      * Add a feature to the set to be removed
      *
      * ...to be clear, this is not the opposite of addFeature()
@@ -395,6 +413,14 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
         calledForServers = true;
         return this;
+    }
+
+    /**
+     * Return a set of server names which this feature replacement action will apply to. See {@link #forServers(String...)}.
+     * The set may contain the special ALL_SERVERS or NO_SERVERS values.
+     */
+    public Set<String> getServers() {
+        return this.servers;
     }
 
     /**
