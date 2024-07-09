@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package componenttest.topology.impl;
 
@@ -115,8 +112,10 @@ import componenttest.custom.junit.runner.LogPolice;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.depchain.FeatureDependencyProcessor;
 import componenttest.exception.TopologyException;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE11Action;
 import componenttest.rules.repeater.JakartaEEAction;
+import componenttest.rules.repeater.RepeatTestAction;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyFileManager.LogSearchResult;
 import componenttest.topology.utils.FileUtils;
@@ -669,6 +668,14 @@ public class LibertyServer implements LogMonitorClient {
          * in the post checkpoint log not matching any of these expressions will result in test failure
          */
         private final List<String> checkpointRegexIgnoreMessages = new ArrayList<String>();
+
+        public void setCheckpointEnv(Properties checkpointEnv) {
+            this.checkpointEnv = checkpointEnv;
+        }
+
+        public Properties getCheckpointEnv() {
+            return this.checkpointEnv;
+        }
 
     }
 
@@ -1803,7 +1810,7 @@ public class LibertyServer implements LogMonitorClient {
 
         if (doCheckpoint()) {
             // save off envVars for checkpoint
-            checkpointInfo.checkpointEnv = (Properties) useEnvVars.clone();
+            checkpointInfo.setCheckpointEnv((Properties) useEnvVars.clone());
             checkpointInfo.preCheckpointLambda.accept(this);
         }
 
@@ -1850,6 +1857,7 @@ public class LibertyServer implements LogMonitorClient {
                     final ArrayList<String> startServiceParmList = makeParmList(parametersList, 1);
 
                     execServerCmd = new Runnable() {
+
                         @Override
                         public void run() {
                             try {
@@ -2011,7 +2019,7 @@ public class LibertyServer implements LogMonitorClient {
             @Override
             public void run() {
                 try {
-                    Properties restoreEnv = (Properties) checkpointInfo.checkpointEnv.clone();
+                    Properties restoreEnv = (Properties) checkpointInfo.getCheckpointEnv().clone();
                     if (checkpointInfo.criuRestoreDisableRecovery) {
                         restoreEnv.setProperty("CRIU_RESTORE_DISABLE_RECOVERY", "true");
                     }
@@ -3187,7 +3195,7 @@ public class LibertyServer implements LogMonitorClient {
                 // The server may never have been successfully started because
                 // the checkpoint failed or the restore failed.
                 // We archive the server in this case to ensure we get the possible error logs
-                if (checkpointInfo == null || checkpointInfo.checkpointEnv == null) {
+                if (checkpointInfo == null || checkpointInfo.getCheckpointEnv() == null) {
                     postStopServerArchive = false;
                 }
                 return null;
@@ -3286,6 +3294,7 @@ public class LibertyServer implements LogMonitorClient {
 
             isTidy = true;
 
+            checkServerRepeatFeatures();
             checkLogsForErrorsAndWarnings(failuresRegExps, ignoredFailuresRegExps);
 
             if (doCheckpoint() && checkpointInfo.isAssertNoAppRestartOnRestore() &&
@@ -3472,6 +3481,159 @@ public class LibertyServer implements LogMonitorClient {
             Log.info(c, method, "No unexpected errors or warnings found in server logs.");
         else
             throw ex;
+    }
+
+    //servers which are exempt from checking repeat features
+    //this list should eventually be removed once the tests are fixed
+    private static final String[] EXEMPT_SERVERS = {
+                                                     "com.ibm.ws.jpa.el.defaultds.fat.server", //io.openliberty.jpa.defaultdatasource.JPADefaultDataSourceTest
+                                                     "com.ibm.ws.jpa.el.defaultds.fat.server", //io.openliberty.jpa.dserror.JPADSErrorTest
+                                                     "com.ibm.ws.jpa.fat.dsoverride", //io.openliberty.jpa.dsoverride.DSOverrideTest
+                                                     "com.ibm.ws.jpa.fat.emlocking", //io.openliberty.jpa.emlocking.EMLockingTest
+                                                     "com.ibm.ws.jpa.el.defaultds.fat.server", //io.openliberty.jpa.defaultdatasource.JPADefaultDataSourceTest
+                                                     "com.ibm.ws.jpa.fat.dserror", //io.openliberty.jpa.dsoverride.DSOverrideTest
+                                                     "com.ibm.ws.jpa.fat.emlocking", //io.openliberty.jpa.emlocking.EMLockingTest
+                                                     "ConcurrentEnhancementVerification", //io.openliberty.jpa.concurrent_enhancement.TestConcurrentEnhancement
+                                                     "com.ibm.ws.jpa.fat.ejbpassivation", //io.openliberty.jpa.ejbpassivation.JPAPassivationTest
+                                                     "CDIFaultTolerance", //com.ibm.websphere.microprofile.faulttolerance_fat.tests.FaultToleranceMainTest
+                                                     "FaultToleranceMultiModule", //com.ibm.websphere.microprofile.faulttolerance_fat.tests.completionstage.CDICompletionStageTest
+                                                     "FaultToleranceMultiModule", //com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.TestMultiModuleClassLoading
+                                                     "AsyncFaultTolerance", //com.ibm.websphere.microprofile.faulttolerance_fat.tests.async.AsyncReturnNullTest
+                                                     "AsyncFaultTolerance", //com.ibm.websphere.microprofile.faulttolerance_fat.tests.async.AsyncRequestScopedContextTest
+                                                     "AsyncFaultTolerance", //com.ibm.websphere.microprofile.faulttolerance_fat.tests.interceptors.InterceptorTest
+                                                     "FaultToleranceEJB", //com.ibm.websphere.microprofile.faulttolerance_fat.tests.ejb.AsyncEJBTest
+                                                     "JaxRsFaultTolerance", //com.ibm.websphere.microprofile.faulttolerance_fat.tests.jaxrs.JaxRsTest
+                                                     "validationServerOne", //com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestOne
+                                                     "validationServerTwo", //com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestTwo
+                                                     "validationServerThree", //com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestThree
+                                                     "validationServerFour", //com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestFour
+                                                     "validationServerFive", //com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestFive
+                                                     "mpRestClient10.remoteServer", //com.ibm.ws.microprofile.rest.client.fat.CollectionsTest
+                                                     "mpRestClient10.remoteServer", //com.ibm.ws.microprofile.rest.client.fat.HandleResponsesTest
+                                                     "mpRestClient10.remoteServer", //com.ibm.ws.microprofile.rest.client.fat.JsonbContextTest
+                                                     "com.ibm.ws.rest.handler.config.fat", //com.ibm.ws.rest.handler.config.fat.ConfigRESTHandlerTest
+                                                     "com.ibm.ws.rest.handler.config.openapi.fat", //com.ibm.ws.rest.handler.config.fat.ConfigOpenApiSchemaTest
+                                                     "com.ibm.ws.rest.handler.config.audit.feature.fat", //com.ibm.ws.rest.handler.config.fat.audit.ConfigRestHandlerAuditFeatureTest
+                                                     "com.ibm.ws.rest.handler.validator.jdbc.fat", //com.ibm.ws.rest.handler.validator.fat.ValidateDataSourceTest
+                                                     "com.ibm.ws.rest.handler.validator.jca.fat", //com.ibm.ws.rest.handler.validator.fat.ValidateJMSTest
+                                                     "com.ibm.ws.rest.handler.validator.openapi.fat", //com.ibm.ws.rest.handler.validator.fat.ValidateOpenApiSchemaTest
+                                                     "com.ibm.ws.scaling.member.fat.member1", //com.ibm.ws.scaling.member.fat.DeploymentMetadataTests
+                                                     "com.ibm.ws.ui.fat", //com.ibm.ws.ui.fat.rest.v1.IconRestHandlerTest
+                                                     "com.ibm.ws.ui.fat", //com.ibm.ws.ui.fat.rest.v1.ToolboxPersistenceTest
+                                                     "com.ibm.ws.webcontainer.security.fat.basicauth.audit", //com.ibm.ws.webcontainer.security.jacc15.fat.audit.BasicAuthAuditAUTHZTest
+                                                     "opentracingFATServer1", //com.ibm.ws.testing.opentracing.test.FATOpentracing
+                                                     "opentracingFATServer3", //com.ibm.ws.testing.opentracing.test.FATMPOpenTracing
+                                                     "opentracingFATServer4", //com.ibm.ws.testing.opentracing.test.MicroProfile14NoTracer
+                                                     "crossFeatureOpenTracingServer", //io.openliberty.microprofile.telemetry.internal.tests.CrossFeatureJaegerTest
+                                                     "crossFeatureOpenTracingZipkinServer", //io.openliberty.microprofile.telemetry.internal.tests.CrossFeatureZipkinTest
+                                                     "crossFeatureTelemetryServer", //io.openliberty.microprofile.telemetry.internal.tests.CrossFeatureJaegerTest
+                                                     "crossFeatureTelemetryServer", //io.openliberty.microprofile.telemetry.internal.tests.CrossFeatureZipkinTest
+                                                     "spanTestServer", //io.openliberty.microprofile.telemetry.internal.tests.JaegerBaseTest
+                                                     "spanTestServer", //io.openliberty.microprofile.telemetry.internal.tests.JvmMetricsOtelCollectorTest
+                                                     "spanTestServer", //io.openliberty.microprofile.telemetry.internal.tests.MetricsApiOtelCollectorTest
+                                                     "spanTestServer", //io.openliberty.microprofile.telemetry.internal.tests.TracingNotEnabledTest
+                                                     "spanTestServer", //io.openliberty.microprofile.telemetry.internal.tests.ZipkinOtelCollectorTest
+                                                     "spanTestServer", //io.openliberty.microprofile.telemetry.internal.tests.ZipkinTest
+                                                     "Health40TCKServer", //io.openliberty.microprofile.health40.tck.Health40TCKLauncher
+                                                     "ConfigAdminDropinsCheck", //io.openliberty.microprofile.health31.fat.ConfigAdminHealthCheckTest
+                                                     "ConfigAdminWrongAppCheck", //io.openliberty.microprofile.health31.fat.ConfigAdminHealthCheckTest
+                                                     "ConfigAdminXmlCheck", //io.openliberty.microprofile.health31.fat.ConfigAdminHealthCheckTest
+                                                     "DefaultStartupOverallStatusHealthCheck", //io.openliberty.microprofile.health31.fat.DefaultOverallStartupStatusUpAppStartupTest
+                                                     "FailedConfigAdminApplicationStateHealthCheck", //io.openliberty.microprofile.health31.fat.ConfigAdminHealthCheckTest
+                                                     "InvalidDefaultStartupOverallStatusProperty", //io.openliberty.microprofile.health31.fat.DefaultOverallStartupStatusUpAppStartupTest
+                                                     "SlowAppStartupHealthCheck", //io.openliberty.microprofile.health31.fat.SlowAppStartupHealthCheckTest
+                                                     "FATServer", //org.eclipse.microprofile.graphql.tck.GraphQLTckPackageTest
+                                                     "com.ibm.ws.scaling.member.fat.controller1", //com.ibm.ws.scaling.member.fat.DeploymentMetadataTests
+                                                     "checkpointMPJWT", //io.openliberty.checkpoint.fat.MPJWTTest
+                                                     "com.ibm.ws.rest.handler.validator.jms.fat", //com.ibm.ws.rest.handler.validator.fat.ValidateJMSTest
+    };
+    private static final Set<String> EXEMPT_SERVERS_SET = new HashSet<String>(Arrays.asList(EXEMPT_SERVERS));
+
+    /**
+     * After the server has shutdown, check that the features used at runtime matched those expected by any FeatureReplacementAction which may have been active.
+     *
+     * @throws Exception
+     */
+    protected void checkServerRepeatFeatures() throws Exception {
+        String method = "checkServerRepeatFeatures";
+
+        RepeatTestAction action = RepeatTestFilter.getMostRecentRepeatAction();
+        if (action instanceof FeatureReplacementAction) {
+            FeatureReplacementAction featureReplacementAction = (FeatureReplacementAction) action;
+
+            //only check the features if this server was included in the FeatureReplacementAction
+            String serverName = getServerName();
+
+            Set<String> servers = featureReplacementAction.getServers();
+            //only check the features if the FeatureReplacementAction applies to this server
+            if (!servers.contains(FeatureReplacementAction.NO_SERVERS) &&
+                (servers.contains(serverName) || servers.contains(FeatureReplacementAction.ALL_SERVERS))) {
+
+                Set<String> expectedFeatures = new HashSet<>(featureReplacementAction.getAddFeatures()); //the expected features, if present
+                expectedFeatures.addAll(featureReplacementAction.getAlwaysAddFeatures());
+                Set<String> installedFeatures = getInstalledFeatures(); //the features actually installed at runtime
+
+                //expected feature -> actual feature
+                Map<String, String> unexpectedFeatures = new HashMap<>();
+
+                //compare each installed feature to the expected ones
+                for (String installedFeature : installedFeatures) {
+                    //ignore versionless features
+                    int dash = installedFeature.indexOf("-");
+                    if (dash > -1) {
+                        String versionlessInstalledFeature = removeFeatureVersion(installedFeature);
+                        for (String replacementFeature : expectedFeatures) {
+                            String versionlessReplacementFeature = removeFeatureVersion(replacementFeature);
+                            if (versionlessReplacementFeature.equalsIgnoreCase(versionlessInstalledFeature)) {
+                                //if the base feature name matches but the version does not, throw an exception.
+                                if (!replacementFeature.equalsIgnoreCase(installedFeature)) {
+                                    unexpectedFeatures.put(replacementFeature, installedFeature);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (unexpectedFeatures.size() > 0) {
+                    String message = "Runtime features were not of the expected version for repeat action (Server: " + serverName + ", Action: " + action.getID() + ").\n";
+                    for (Map.Entry<String, String> entry : unexpectedFeatures.entrySet()) {
+                        message = message + "Expected: " + entry.getKey() + ", Actual: " + entry.getValue() + ".\n";
+                    }
+                    message = message
+                              + "This is usually caused by a feature not being explicitly set in the FAT's server.xml such that FeatureReplacementAction does not replace it properly.";
+
+                    //check for exempt servers should eventually be removed
+                    //if exempt then output info message, otherwise throw exception
+                    if (EXEMPT_SERVERS_SET.contains(serverName)) {
+                        Log.info(c, method, message);
+                    } else {
+                        throw new Exception(message);
+                    }
+                }
+            }
+        }
+        //re-instate this message once the exempt servers are removed
+        //Log.info(c, method, "No invalid replacement features found.");
+    }
+
+    /**
+     * Remove the version suffix and return only the base name of a feature, everything up to but not including the dash.
+     * If the feature is already versionless (no dash) return as is.
+     *
+     * e.g.
+     * servlet-6.0 -> servlet
+     * servlet -> servlet
+     *
+     * @param  feature The short feature name
+     * @return         The versionless feature name
+     */
+    public static final String removeFeatureVersion(String feature) {
+        String baseFeatureName = feature;
+        int dash = feature.indexOf("-");
+        if (dash > -1) {
+            baseFeatureName = feature.substring(0, dash); //the feature name, up to but not including the dash
+        }
+        return baseFeatureName;
     }
 
     public void restartServer() throws Exception {
@@ -4267,10 +4429,16 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public ArrayList<String> listFFDCFiles(String server) throws Exception {
+        //This method should respect that the logs folder can be changed, by using getLogsRoot()
+        //However, there are some tests in WS-CD that fail after making this change and will need to be fixed first
+        //return listDirectoryContents(LibertyServerUtils.makeJavaCompatible(getLogsRoot() + "ffdc", machine), "ffdc");
         return listDirectoryContents(LibertyServerUtils.makeJavaCompatible(serverRoot + "/logs/ffdc", machine), "ffdc");
     }
 
     public ArrayList<String> listFFDCSummaryFiles(String server) throws Exception {
+        //This method should respect that the logs folder can be changed, by using getLogsRoot()
+        //However, there are some tests in WS-CD that fail after making this change and will need to be fixed first
+        //return listDirectoryContents(LibertyServerUtils.makeJavaCompatible(getLogsRoot() + "ffdc", machine), "exception_summary");
         return listDirectoryContents(LibertyServerUtils.makeJavaCompatible(serverRoot + "/logs/ffdc", machine), "exception_summary");
     }
 
@@ -5945,6 +6113,9 @@ public class LibertyServer implements LogMonitorClient {
             for (String name : possiblyInstalledAppNames)
                 counters.put(name, 0);
 
+            //This method should respect that the logs folder can be changed, by using findStringsInLogs()
+            //However, there are some tests in WS-CD that fail after making this change and will need to be fixed first
+            //for (String line : findStringsInLogs(".*((CWWKZ0)|(J2CA7))00[139]I: .*"))
             for (String line : findStringsInFileInLibertyServerRoot(".*((CWWKZ0)|(J2CA7))00[139]I: .*", "logs/messages.log"))
                 for (String name : possiblyInstalledAppNames)
                     if (line.contains(name))
@@ -5956,6 +6127,69 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         return subset;
+    }
+
+    private static final String INSTALL_FEATURE_MESSAGE_PREFIX = "CWWKF0012I: The server installed the following features:";
+
+    /**
+     * Returns a set of the features which were installed at runtime startup, based on the messages.log.
+     * We only look at the first occurrence of the message. This method does not look for subsequent feature changes.
+     *
+     * e.g.
+     * CWWKF0012I: The server installed the following features: [bells-1.0, cdi-4.0, componenttest-2.0, concurrent-3.0, jndi-1.0, mpConfig-3.1, mpContextPropagation-1.3,
+     * mpFaultTolerance-4.0, servlet-6.0, timedexit-1.0].
+     *
+     * @return           a set of the features installed at runtime
+     * @throws Exception
+     */
+    public Set<String> getInstalledFeatures() throws Exception {
+        Set<String> installedFeatures = new HashSet<>();
+
+        for (String line : findStringsInLogs(INSTALL_FEATURE_MESSAGE_PREFIX)) {
+            installedFeatures.addAll(getInstalledFeaturesFromLogMessage(line));
+            break; //only look at the first message
+        }
+
+        return installedFeatures;
+    }
+
+    /**
+     * Returns a set of the features which were installed at runtime, based on the CWWKF0012I message from the messages.log file.
+     *
+     * Only a line containing a CWWKF0012I message should be passed in. It may be prefixed with timestamps etc.
+     * e.g.
+     * [04/07/2024, 15:26:31:119 BST] 00000035 com.ibm.ws.kernel.feature.internal.FeatureManager A
+     * CWWKF0012I: The server installed the following features: [bells-1.0, cdi-4.0, componenttest-2.0,
+     * concurrent-3.0, jndi-1.0, mpConfig-3.1, mpContextPropagation-1.3, mpFaultTolerance-4.0, servlet-6.0, timedexit-1.0].
+     *
+     * @return           a set of the features installed at runtime
+     * @throws Exception
+     */
+    public static final Set<String> getInstalledFeaturesFromLogMessage(String installedFeaturesMessage) {
+        Set<String> installedFeatures = new HashSet<>();
+        int prefixIndex = installedFeaturesMessage.indexOf(INSTALL_FEATURE_MESSAGE_PREFIX);
+        if (prefixIndex > -1) {
+            String trimmed = installedFeaturesMessage.substring(prefixIndex); //strip off the date & time etc
+            int openBracketIndex = trimmed.indexOf("[");
+            if (openBracketIndex > -1) {
+                trimmed = trimmed.substring(openBracketIndex + 1); //strip off everything up to and including the first "["
+                int closeBracketIndex = trimmed.indexOf("]");
+                if (closeBracketIndex > -1) {
+                    trimmed = trimmed.substring(0, closeBracketIndex);// remove "]."
+                    String[] features = trimmed.split(", ");
+                    for (String feature : features) {
+                        installedFeatures.add(feature);
+                    }
+                } else {
+                    Log.warning(LibertyServer.class, "Installed Features Message CWWKF0012I was not formatted as expected: " + installedFeaturesMessage);
+                }
+            } else {
+                Log.warning(LibertyServer.class, "Installed Features Message CWWKF0012I was not formatted as expected: " + installedFeaturesMessage);
+            }
+        } else {
+            Log.warning(LibertyServer.class, "Installed Features Message CWWKF0012I was not formatted as expected: " + installedFeaturesMessage);
+        }
+        return installedFeatures;
     }
 
     /**

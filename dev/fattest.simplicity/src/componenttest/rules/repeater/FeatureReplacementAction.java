@@ -153,7 +153,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private boolean forceAddFeatures = true;
     private SEVersion minJavaLevel = SEVersion.JAVA8;
     private SEVersion maxJavaLevel = null;
-    protected String currentID = null;
+    private String currentID = null;
     private final Set<String> optionsToAdd = new HashSet<String>();
     private final Set<File> optionFilesCreated = new HashSet<File>();
     private final Map<File, File> optionsFileBackupMapping = new HashMap<File, File>();
@@ -290,6 +290,24 @@ public class FeatureReplacementAction implements RepeatTestAction {
     }
 
     /**
+     * Get the set of features to add
+     *
+     * @return the set of features to add
+     */
+    public Set<String> getAddFeatures() {
+        return Collections.unmodifiableSet(this.addFeatures);
+    }
+
+    /**
+     * Get the set of features to always add
+     *
+     * @return the set of features to always add
+     */
+    public Set<String> getAlwaysAddFeatures() {
+        return Collections.unmodifiableSet(this.alwaysAddFeatures);
+    }
+
+    /**
      * Add a feature to the set to be removed
      *
      * ...to be clear, this is not the opposite of addFeature()
@@ -395,6 +413,14 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
         calledForServers = true;
         return this;
+    }
+
+    /**
+     * Return a set of server names which this feature replacement action will apply to. See {@link #forServers(String...)}.
+     * The set may contain the special ALL_SERVERS or NO_SERVERS values.
+     */
+    public Set<String> getServers() {
+        return Collections.unmodifiableSet(this.servers);
     }
 
     /**
