@@ -13,4 +13,11 @@
 <server>
 	<include location="../fatTestPorts.xml"/>
     <config monitorInterval="1s" />	
+    
+    <featureManager>
+    	<feature>jsp</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>mpHealth</feature>
+    </featureManager>
+    
 </server>
