@@ -29,8 +29,7 @@ import test.jakarta.data.datastore.lib.ServerDSEntity;
  * except with a different container managed authentication alias,
  * which has auth data where the user name is resrefuser3.
  */
-@Repository(// TODO dataStore = "java:module/env/jdbc/ServerDataSourceRef")
-            dataStore = "java:app/env/jdbc/ServerDataSourceRef") // replace with the above
+@Repository(dataStore = "java:module/env/jdbc/ServerDataSourceRef")
 public interface EJBModuleDSResRefRepo {
 
     @Insert

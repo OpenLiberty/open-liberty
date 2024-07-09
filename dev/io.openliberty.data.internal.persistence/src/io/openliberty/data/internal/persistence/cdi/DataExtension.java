@@ -20,7 +20,6 @@ import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.sql.Connection;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.DoubleStream;
@@ -46,8 +46,8 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
-import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 import io.openliberty.data.internal.persistence.QueryInfo;
@@ -129,9 +129,7 @@ public class DataExtension implements Extension {
 
             Class<?> repositoryInterface = repositoryType.getJavaClass();
             ClassLoader loader = repositoryInterface.getClassLoader();
-            Map.Entry<String, String[]> metadataInfo = getMetadata(repositoryInterface, loader, provider);
-            String metadataIdentifier = metadataInfo.getKey();
-            String[] appModComp = metadataInfo.getValue();
+            J2EEName moduleName = getModuleName(repositoryInterface, loader, provider);
 
             Repository repository = repositoryType.getAnnotation(Repository.class);
             String dataStore = repository.dataStore();
@@ -177,7 +175,7 @@ public class DataExtension implements Extension {
             // This needs to be done with the correct metadata on the thread,
             // but that might not be available yet.
 
-            FutureEMBuilder futureEMBuilder = new FutureEMBuilder(provider, loader, dataStore, metadataIdentifier, appModComp);
+            FutureEMBuilder futureEMBuilder = new FutureEMBuilder(provider, loader, dataStore, moduleName);
 
             Class<?>[] primaryEntityClassReturnValue = new Class<?>[1];
             Map<Class<?>, List<QueryInfo>> queriesPerEntityClass = new HashMap<>();
@@ -465,44 +463,32 @@ public class DataExtension implements Extension {
     }
 
     /**
-     * Obtains the metadata identifier and application/module/component based on
-     * the class loader identifier of the repository's class loader.
+     * Obtains the module name in which the repository interface is defined.
      *
      * @param repositoryInterface   the repository interface.
      * @param repositoryClassLoader class loader of the repository interface.
      * @param provider              OSGi service that provides the CDI extension.
-     * @return metadata identifier as the key, and application/module/component
-     *         as the value. Module and component might be null or might not be
-     *         present at all.
+     * @return AppName[#ModuleName] with only the application name if not defined
+     *         in a module.
      */
-    private Map.Entry<String, String[]> getMetadata(Class<?> repositoryInterface, // include for tracing
-                                                    ClassLoader repositoryClassLoader,
-                                                    DataExtensionProvider provider) {
-        String mdIdentifier;
-        String clIdentifier = provider.classloaderIdSvc.getClassLoaderIdentifier(repositoryClassLoader);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "class loader identifier: " + clIdentifier);
+    private J2EEName getModuleName(Class<?> repositoryInterface,
+                                   ClassLoader repositoryClassLoader,
+                                   DataExtensionProvider provider) {
+        J2EEName moduleName;
 
-        int sep = clIdentifier.indexOf(':');
-        String[] parts = sep < 0 ? new String[1] : clIdentifier.substring(sep + 1).split("#");
-        if (parts.length < 2 || parts[1] == null) { // no module
-            //  component metadata based on the application metadata
-            ComponentMetaData cdata = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-            MetaData adata = cdata == null ? null : cdata.getModuleMetaData().getApplicationMetaData();
-            cdata = provider.createComponentMetadata(adata, repositoryClassLoader);
-            J2EEName jeeName = cdata.getJ2EEName();
-            mdIdentifier = provider.getMetaDataIdentifier(parts[0] = jeeName.getApplication(),
-                                                          null,
-                                                          null);
+        Optional<J2EEName> moduleNameOptional = provider.cdiService.getModuleNameForClass(repositoryInterface);
+
+        if (moduleNameOptional.isPresent()) {
+            moduleName = moduleNameOptional.get();
         } else {
-            // convert classloader identifier to metadata identifier
-            mdIdentifier = provider.metadataIdSvc.getMetaDataIdentifier(clIdentifier.startsWith("WebModule:") ? "WEB" : "EJB",
-                                                                        parts[0], // application
-                                                                        parts[1], // module
-                                                                        parts.length < 3 ? null : parts[2]); // component
+            // create component and module metadata based on the application metadata
+            ComponentMetaData cdata = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+            ApplicationMetaData adata = cdata == null ? null : cdata.getModuleMetaData().getApplicationMetaData();
+            cdata = provider.createComponentMetadata(adata, repositoryClassLoader);
+            moduleName = cdata.getModuleMetaData().getJ2EEName();
         }
 
-        return new AbstractMap.SimpleImmutableEntry<>(mdIdentifier, parts);
+        return moduleName;
     }
 
     /**

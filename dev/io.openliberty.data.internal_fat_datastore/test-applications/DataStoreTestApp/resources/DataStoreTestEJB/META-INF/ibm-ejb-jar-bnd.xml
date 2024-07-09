@@ -18,10 +18,7 @@
         version="1.1">
 
   <session name="DataStoreTestEJB">
-    <!-- TODO replace the following with
     <resource-ref name="java:module/env/jdbc/ServerDataSourceRef">
-    -->
-    <resource-ref name="java:app/env/jdbc/ServerDataSourceRef">
       <authentication-alias name="ResRefAuth3"/>
     </resource-ref>
   </session>
