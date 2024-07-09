@@ -53,7 +53,7 @@ public class BaselineVersionlessSingletonUnitTest extends BaselineResolutionUnit
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        doTearDownClass();
+        doTearDownClass(BaselineVersionlessSingletonUnitTest.class);
     }
 
     public static final String DATA_FILE_PATH_OL = "publish/verify/singleton_expected.xml";

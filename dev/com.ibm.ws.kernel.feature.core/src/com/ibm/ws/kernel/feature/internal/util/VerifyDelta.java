@@ -404,7 +404,7 @@ public class VerifyDelta {
             }
         }
 
-        if (!missing.isEmpty() && !extra.isEmpty()) {
+        if (((missing != null) && !missing.isEmpty()) && ((extra != null) && !extra.isEmpty())) {
             Map<String, Set<String>> missingVersions = mapVersions(missing);
             Map<String, Set<String>> extraVersions = mapVersions(extra);
 

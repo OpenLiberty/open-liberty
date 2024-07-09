@@ -128,15 +128,15 @@ public class BaselineResolutionUnitTest {
         FailureSummary summary = new FailureSummary(inputCase, extra, missing);
 
         failures.add(summary);
-        System.out.println("Failures [ " + failures.size() + " ]");
+        System.out.println("Added failure [ " + failures.size() + " ]");
 
         return summary;
     }
 
-    public static void printFailures(PrintStream output) {
+    public static void printFailures(PrintStream output, Class<?> testClass) {
         if (!failures.isEmpty()) {
             largeDashes(output);
-            output.println("Failures [ " + failures.size() + " ]:");
+            output.println("Test class [ " + testClass.getSimpleName() + " ] failures [ " + failures.size() + " ]:");
             smallDashes(output);
             for (FailureSummary summary : failures) {
                 summary.print(output);
@@ -188,8 +188,8 @@ public class BaselineResolutionUnitTest {
 
     //
 
-    public static void doTearDownClass() throws Exception {
-        printFailures(System.out);
+    public static void doTearDownClass(Class<?> testClass) throws Exception {
+        printFailures(System.out, testClass);
         clearFailures();
 
         Utils.setInstallDir(null);
@@ -259,8 +259,8 @@ public class BaselineResolutionUnitTest {
         }
 
         String versionlessFeatureName = RepositoryUtil.asVersionlessFeatureName(symName);
-        newCase.name = "versionless - " + versionlessFeatureName + " -  derived from " + inputCase.name;
-        newCase.description = "versionless - platform [" + platform + "] -  derived from " + inputCase.description;
+        newCase.name = "versionless - " + versionlessFeatureName + " - from " + inputCase.name;
+        newCase.description = "versionless - platform " + platform + " - from " + inputCase.description;
         newCase.input.addRoot(versionlessFeatureName);
         newCase.input.addPlatform(platform);
         newCase.output.addResolved(RepositoryUtil.asInternalVersionlessFeatureName(symName));
@@ -423,7 +423,9 @@ public class BaselineResolutionUnitTest {
 
         largeDashes(System.out);
 
-        System.out.println("Verifying case name[ " + testCase.name + " ]\ncase description [ " + testCase.description + " ]");
+        System.out.println("Verifying case:");
+        System.out.println("  Name [ " + testCase.name + " ]");
+        System.out.println("  Description [ " + testCase.description + " ]");
 
         List<String> rootErrors = detectFeatureErrors(testCase.input.roots);
         if (rootErrors != null) {

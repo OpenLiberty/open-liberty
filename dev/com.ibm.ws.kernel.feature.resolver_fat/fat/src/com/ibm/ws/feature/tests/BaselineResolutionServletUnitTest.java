@@ -53,7 +53,7 @@ public class BaselineResolutionServletUnitTest extends BaselineResolutionUnitTes
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        doTearDownClass();
+        doTearDownClass(BaselineResolutionServletUnitTest.class);
     }
 
     public static final String DATA_FILE_PATH_OL = "publish/verify/servlet_expected.xml";

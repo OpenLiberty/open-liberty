@@ -587,6 +587,7 @@ public class FeatureResolverBaseline {
 
         Set<String> preResolved = Collections.emptySet();
         EnumSet<ProcessType> processTypes = EnumSet.of(processType);
+        Set<String> profiles = Collections.emptySet();
 
         List<String> rootFeatures = new ArrayList<>(2);
         rootFeatures.add(feature0);
@@ -601,13 +602,13 @@ public class FeatureResolverBaseline {
         Result resultWithKernel = getResolver().doResolve(getRepository(),
                                                           kernelFeatures, rootFeatures, preResolved,
                                                           allowedMultiple, processTypes,
-                                                          null);
+                                                          profiles);
 
         Collection<ProvisioningFeatureDefinition> emptyDefs = Collections.emptySet();
         Result resultWithoutKernel = getResolver().doResolve(getRepository(),
                                                              emptyDefs, rootFeatures, preResolved,
                                                              allowedMultiple, processTypes,
-                                                             null);
+                                                             profiles);
 
         long endTimeNs = VerifyData.getTimeNs();
         long durationNs = endTimeNs - startTimeNs;
@@ -651,6 +652,7 @@ public class FeatureResolverBaseline {
         Collection<String> rootFeatures = Collections.singleton(featureDef.getSymbolicName());
         Set<String> preResolved = Collections.emptySet();
         EnumSet<ProcessType> processTypes = EnumSet.of(processType);
+        Set<String> profiles = Collections.emptySet();
 
         info("Creating singleton test result ... ");
 
@@ -659,13 +661,13 @@ public class FeatureResolverBaseline {
         Result resultWithKernel = getResolver().doResolve(getRepository(),
                                                           kernelFeatures, rootFeatures, preResolved,
                                                           allowedMultiple, processTypes,
-                                                          null);
+                                                          profiles);
 
         Collection<ProvisioningFeatureDefinition> emptyDefs = Collections.emptySet();
         Result resultWithoutKernel = getResolver().doResolve(getRepository(),
                                                              emptyDefs, rootFeatures, preResolved,
                                                              allowedMultiple, processTypes,
-                                                             null);
+                                                             profiles);
 
         long endTimeNs = VerifyData.getTimeNs();
         long durationNs = endTimeNs - startTimeNs;
