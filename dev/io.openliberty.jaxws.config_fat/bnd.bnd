@@ -26,6 +26,7 @@ tested.features: \
   jsp-2.2, \
   jsp-2.3, \
   pages-3.0, \
+  servlet-4.0, \
   servlet-5.0, \
   xmlBinding-3.0, \
   xmlWS-3.0, \
