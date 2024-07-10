@@ -274,7 +274,7 @@ INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM.explanation=No version of the fea
 INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM.useraction=Either, remove the versionless feature, or specify a different platform version, or use a versioned feature.
 
 # CWWKF0056E 
-NO_RESOLVED_PLATFORM=CWWKF0050E: A platform could not be determined. As a result, no versionless features will be resolved.
+NO_RESOLVED_PLATFORM=CWWKF0056E: A platform could not be determined. As a result, no versionless features will be resolved.
 NO_RESOLVED_PLATFORM.explanation=A platform must be determined before versionless features can be resolved. The platform can be determined from a platform element, from a versioned feature, or from an environment variable.
 NO_RESOLVED_PLATFORM.useraction=Either add a platform element, a versioned feature, or an environment variable.
 
