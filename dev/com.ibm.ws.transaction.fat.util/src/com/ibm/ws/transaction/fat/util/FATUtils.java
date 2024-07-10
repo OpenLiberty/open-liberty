@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 import java.time.Duration;
 import java.time.Instant;
 
+import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -61,7 +62,7 @@ public class FATUtils {
             Log.info(FATUtils.class, method, "setupRec" + id + " crashed as expected");
         }
 
-        assertNotNull(crashingServer.getServerName() + " didn't crash properly", crashingServer.waitForStringInLog("Dump State: "));
+        assertNotNull(crashingServer.getServerName() + " didn't crash properly", crashingServer.waitForStringInLog(XAResourceImpl.DUMP_STATE));
 
         crashingServer.postStopServerArchive(); // must explicitly collect since server start failed
 
