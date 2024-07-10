@@ -58,7 +58,6 @@ tested.features: \
     cdi-4.0,\
     expressionlanguage-6.0,\
     faces-4.1,\
-    noship-1.0,\
     cdi-4.1,\
     servlet-6.1,\
     validation-3.1
