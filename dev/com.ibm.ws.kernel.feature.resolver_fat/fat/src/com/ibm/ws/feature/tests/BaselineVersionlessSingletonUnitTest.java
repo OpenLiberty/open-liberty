@@ -174,7 +174,11 @@ public class BaselineVersionlessSingletonUnitTest extends BaselineResolutionUnit
         { "com.ibm.websphere.appserver.websocket-1.1",
           "io.openliberty.versionless.websocket", "javaee-7.0",
           "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
+    };
 
+/*
+        // These are now handled by the initial feature substitution.
+        //
         // feature rename across versions
 
         { "io.openliberty.appAuthentication-2.0",
@@ -307,7 +311,7 @@ public class BaselineVersionlessSingletonUnitTest extends BaselineResolutionUnit
         { "io.openliberty.xmlWS-4.0",
           "io.openliberty.versionless.xmlWS", "jakartaee-10.0",
           "io.openliberty.internal.versionless.xmlWS-4.0", "io.openliberty.internal.versionless.jaxws-4.0" }
-    };
+*/
 
     protected static final Map<String, String[]> allowedSubstitutions;
 

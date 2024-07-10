@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.feature.tests;
 
+import static com.ibm.ws.feature.tests.util.RepositoryUtil.getFeatureDef;
+import static com.ibm.ws.feature.tests.util.RepositoryUtil.getVersionlessFeatureDef;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -210,14 +212,10 @@ public class BaselineResolutionUnitTest {
         VerifyData newVerifyData = new VerifyData();
 
         for (VerifyCase inputCase : verifyData.getCases()) {
-            String symName = inputCase.input.roots.get(0);
-            String platform = RepositoryUtil.getPlatformOf(symName);
-            if (platform == null) {
-                continue;
+            VerifyCase newCase = copyForVersionless(inputCase);
+            if (newCase != null) {
+                newVerifyData.addCase(newCase);
             }
-
-            VerifyCase newCase = copyForVersionless(inputCase, symName, platform);
-            newVerifyData.addCase(newCase);
         }
 
         return newVerifyData;
@@ -230,14 +228,81 @@ public class BaselineResolutionUnitTest {
      * the versioned feature that versionless feature replaces.
      *
      * @param inputCase test case
-     * @param symName symbolic feature name
-     * @param platform
-     * @return
+     *
+     * @return The copied case. Null if the case does not support versionless.
      */
-    public static VerifyCase copyForVersionless(VerifyCase inputCase, String symName, String platform) {
+    public static VerifyCase copyForVersionless(VerifyCase inputCase) {
+        String symName = inputCase.input.roots.get(0);
+
+        if (inputCase.input.isClient) {
+            System.out.println("Skipping singleton [ " + symName + " ]: CLIENT");
+            return null;
+        }
+
+        String platform = null;
+        String versionlessSymName = null;
+        String versionlessInternalSymName = null;
+
+        String skipReason;
+
+        ProvisioningFeatureDefinition featureDef = getFeatureDef(symName);
+        if (featureDef == null) {
+            skipReason = "Feature not found [ " + symName + " ]";
+        } else if (RepositoryUtil.isNoShip(featureDef)) {
+            skipReason = "Feature is no-ship [ " + symName + " ]";
+
+        } else {
+            platform = RepositoryUtil.getPlatformOf(featureDef);
+            if (platform == null) {
+                skipReason = "No platform";
+            } else if (platform.startsWith("microProfile-")) {
+                skipReason = "Platform [ " + platform + " ]";
+
+            } else {
+                versionlessSymName = RepositoryUtil.asVersionlessFeatureName(symName);
+                ProvisioningFeatureDefinition versionlessDef = getFeatureDef(versionlessSymName);
+                if (versionlessDef == null) {
+                    skipReason = "Versionless not found [ " + versionlessSymName + " ]";
+                } else if (RepositoryUtil.isNoShip(versionlessDef)) {
+                    skipReason = "Versionless is no-ship [ " + versionlessSymName + " ]";
+
+                } else {
+                    versionlessInternalSymName = RepositoryUtil.asInternalVersionlessFeatureName(symName);
+                    ProvisioningFeatureDefinition internalDef = getFeatureDef(versionlessInternalSymName);
+                    if (internalDef == null) {
+                        String altName = RepositoryUtil.getRename(symName);
+                        if (altName != null) {
+                            versionlessInternalSymName = RepositoryUtil.asInternalVersionlessFeatureName(altName);
+                            internalDef = getFeatureDef(versionlessInternalSymName);
+                        }
+                    }
+                    if (internalDef == null) {
+                        skipReason = "Internal versionless not found [ " + versionlessInternalSymName + " ]";
+                    } else if (RepositoryUtil.isNoShip(internalDef)) {
+                        skipReason = "Internal versionless is no-ship [ " + versionlessInternalSymName + " ]";
+
+                    } else {
+                        skipReason = null;
+                    }
+                }
+            }
+        }
+
+        if (skipReason == null) {
+            if (RepositoryUtil.isJDBCVersionlessException(symName, platform)) {
+                skipReason = "JDBC 4.3 exception case for platform [ " + platform + " ]";
+            }
+        }
+
+        if (skipReason != null) {
+            System.out.println("Skipping singleton [ " + symName + " ]: " + skipReason);
+            return null;
+        }
+
         VerifyCase newCase = new VerifyCase();
-        newCase.name = "versionless " + inputCase.name;
-        newCase.description = "versionless " + inputCase.description;
+
+        newCase.name = "versionless - " + versionlessSymName + " - from " + inputCase.name;
+        newCase.description = "versionless - platform " + platform + " - from " + inputCase.description;
 
         newCase.durationNs = inputCase.durationNs;
 
@@ -255,17 +320,14 @@ public class BaselineResolutionUnitTest {
             newCase.input.addKernel(kernelName);
         }
 
+        newCase.input.addRoot(versionlessSymName);
+        newCase.input.addPlatform(platform);
+        newCase.output.addResolved(versionlessInternalSymName);
+        newCase.output.addResolved(RepositoryUtil.asShortName(symName));
+
         for (String featureName : inputCase.output.resolved) {
             newCase.output.addResolved(featureName);
         }
-
-        String versionlessFeatureName = RepositoryUtil.asVersionlessFeatureName(symName);
-        newCase.name = "versionless - " + versionlessFeatureName + " - from " + inputCase.name;
-        newCase.description = "versionless - platform " + platform + " - from " + inputCase.description;
-        newCase.input.addRoot(versionlessFeatureName);
-        newCase.input.addPlatform(platform);
-        newCase.output.addResolved(RepositoryUtil.asInternalVersionlessFeatureName(symName));
-        newCase.output.addResolved(RepositoryUtil.asShortName(symName));
 
         return newCase;
     }
@@ -346,8 +408,7 @@ public class BaselineResolutionUnitTest {
 
     public List<String> detectSingletonErrors(List<String> rootFeatures) {
         String rootFeature = rootFeatures.get(0);
-
-        if (RepositoryUtil.getFeatureDef(rootFeature) == null) {
+        if (getFeatureDef(rootFeature) == null) {
             String message = "Root feature [ " + rootFeature + " ]: Missing from baseline";
             return Collections.singletonList(message);
         } else {
@@ -358,7 +419,7 @@ public class BaselineResolutionUnitTest {
     public List<String> detectVersionlessSingletonErrors(List<String> rootFeatures) {
         String rootFeature = rootFeatures.get(0);
 
-        if (RepositoryUtil.getVersionlessFeatureDef(rootFeature) == null) {
+        if (getVersionlessFeatureDef(rootFeature) == null) {
             String message = "Versionless root feature [ " + rootFeature + " ]: Missing from baseline";
             RepositoryUtil.displayVersionlessFeatures();
             return Collections.singletonList(message);
@@ -373,14 +434,14 @@ public class BaselineResolutionUnitTest {
 
         List<String> rootErrors = null;
 
-        if (RepositoryUtil.getFeatureDef(rootFeature0) == null) {
+        if (getFeatureDef(rootFeature0) == null) {
             String message = "Missing root feature 0 [ " + rootFeature0 + " ]";
 
             rootErrors = new ArrayList<>(2);
             rootErrors.add(message);
         }
 
-        if (RepositoryUtil.getFeatureDef(rootFeature1) == null) {
+        if (getFeatureDef(rootFeature1) == null) {
             String message = "Missing root feature 1 [ " + rootFeature1 + " ]";
 
             if (rootErrors == null) {

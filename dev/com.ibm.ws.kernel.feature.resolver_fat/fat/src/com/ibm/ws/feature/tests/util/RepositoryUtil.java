@@ -26,7 +26,9 @@ import com.ibm.ws.kernel.feature.Visibility;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureRepository;
 import com.ibm.ws.kernel.feature.internal.util.ImageReader;
 import com.ibm.ws.kernel.feature.internal.util.Images;
+import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
+import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 
@@ -415,7 +417,6 @@ public class RepositoryUtil {
      * @param featureName the symbolic feature name
      */
     public static String asVersionlessFeatureName(String featureName) {
-
         return "io.openliberty.versionless." + asShortName(featureName);
     }
 
@@ -523,12 +524,61 @@ public class RepositoryUtil {
      *         feature is not found, or is not public.
      */
     public static String getPlatformOf(String symName) {
-        ProvisioningFeatureDefinition featureDef = getFeatureDef(symName);
-        if (featureDef.getVisibility() != Visibility.PUBLIC) {
-            return null;
-        }
+        return getPlatformOf(getFeatureDef(symName));
+    }
 
-        return featureDef.getPlatformName();
+    public static String getPlatformOf(ProvisioningFeatureDefinition featureDef) {
+        return ((featureDef.getVisibility() == Visibility.PUBLIC) ? featureDef.getPlatformName() : null);
+    }
+
+    public static final String NO_SHIP_10 = "io.openliberty.noShip-1.0";
+
+    /**
+     * Tell if feature is no-ship.
+     *
+     * No ship features have "io.openliberty.noShip-1.0" as a constituent feature.
+     *
+     * @param featureDef A feature definition
+     *
+     * @return True or false telling if the feature is no-ship.
+     */
+    public static boolean isNoShip(ProvisioningFeatureDefinition featureDef) {
+        for (FeatureResource fr : featureDef.getConstituents(SubsystemContentType.FEATURE_TYPE)) {
+            String subSymName = fr.getSymbolicName();
+            if ((subSymName != null) && subSymName.equals(NO_SHIP_10)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Tell if a combination of symbolic name and platform are to be
+     * skipped based on JDBC exceptions.
+     *
+     * The exception occurs because of the version priorities in the JDBC feature dependency,
+     * and because of the JDBC 4.2 platform setting.
+     *
+     * From "open-liberty/dev/build.image/wlp/lib/features/com.ibm.websphere.appserver.jdbc-4.3.mf":
+     *
+     * <code>
+     * Subsystem-Content: ...
+     * io.openliberty.jdbc4.3.internal.ee-6.0; ibm.tolerates:="9.0"; type="osgi.subsystem.feature"
+     * WLP-Platform: jakartaee-11.0
+     * </code>
+     *
+     * This combination causes the resolution of "jdbc-4.3" as a singleton versioned feature to
+     * change when modified to "jdbc" (versionless) with assigned platform "jakartaee-11.0".
+     *
+     * @param symName A feature symbolic name.
+     * @param platform A platform.
+     *
+     * @return True or false telling if the symbolic name and platform should be skipped
+     *         by versionless singleton tests because of the JDBC 4.3 exception.
+     */
+    public static boolean isJDBCVersionlessException(String symName, String platform) {
+        return ((symName.equals("com.ibm.websphere.appserver.jdbc-4.3") && platform.equals("jakartaee-11.0")) ||
+                (symName.equals("io.openliberty.persistence-3.2") && platform.equals("jakartaee-11.0")));
     }
 
     // Use this to decide whether to run in WAS liberty mode or in open liberty
@@ -628,5 +678,79 @@ public class RepositoryUtil {
             featureDefs.add(featureDef);
         }
         return featureDefs;
+    }
+
+    //
+
+    //@formatter:off
+    private static final String[][] FEATURE_RENAMES = {
+        { "io.openliberty.appAuthentication-2.0", "jaspic-2.0" },
+        { "io.openliberty.appAuthentication-3.0", "jaspic-3.0" },
+        { "io.openliberty.appAuthentication-3.1", "jaspic-3.1" },
+        { "io.openliberty.appAuthorization-2.0", "jacc-2.0" },
+        { "io.openliberty.appAuthorization-2.1", "jacc-2.1" },
+        { "io.openliberty.appAuthorization-3.0", "jacc-3.0" },
+        { "io.openliberty.beanValidation-3.1", "beanValidation-3.1" },
+        { "io.openliberty.connectors-2.0", "jca-2.0" },
+        { "io.openliberty.connectors-2.1", "jca-2.1" },
+        { "io.openliberty.connectorsInboundSecurity-2.0", "jcaInboundSecurity-2.0" },
+        { "io.openliberty.enterpriseBeans-4.0", "ejb-4.0" },
+        { "io.openliberty.enterpriseBeansHome-4.0", "ejbHome-4.0" },
+        { "io.openliberty.enterpriseBeansLite-4.0", "ejbLite-4.0" },
+        { "io.openliberty.enterpriseBeansPersistentTimer-4.0", "ejbPersistentTimer-4.0" },
+        { "io.openliberty.enterpriseBeansRemote-4.0", "ejbRemote-4.0" },
+        { "io.openliberty.expressionLanguage-4.0", "el-4.0" },
+        { "io.openliberty.expressionLanguage-5.0", "el-5.0" },
+        { "io.openliberty.expressionLanguage-6.0", "el-6.0" },
+        { "io.openliberty.faces-3.0", "jsf-3.0" },
+        { "io.openliberty.faces-4.0", "jsf-4.0" },
+        { "io.openliberty.faces-4.1", "jsf-4.1" },
+        { "io.openliberty.facesContainer-3.0", "jsfContainer-3.0" },
+        { "io.openliberty.facesContainer-4.0", "jsfContainer-4.0" },
+        { "io.openliberty.facesContainer-4.1", "jsfContainer-4.1" },
+        { "io.openliberty.jakartaee-9.1", "jakartaee-9.0" },
+        { "io.openliberty.jakartaeeClient-9.1", "jakartaeeClient-9.0" },
+        { "io.openliberty.mail-2.0", "javaMail-2.0" },
+        { "io.openliberty.mail-2.1", "javaMail-2.1" },
+        { "io.openliberty.messaging-3.0", "jms-3.0" },
+        { "io.openliberty.messaging-3.1", "jms-3.1" },
+        { "io.openliberty.messagingClient-3.0", "wasJmsClient-3.0" },
+        { "io.openliberty.messagingSecurity-3.0", "wasJmsSecurity-3.0" },
+        { "io.openliberty.messagingServer-3.0", "wasJmsServer-3.0" },
+        { "io.openliberty.pages-3.0", "jsp-3.0" },
+        { "io.openliberty.pages-3.1", "jsp-3.1" },
+        { "io.openliberty.pages-4.0", "jsp-4.0" },
+        { "io.openliberty.persistence-3.0", "jpa-3.0" },
+        { "io.openliberty.persistence-3.1", "jpa-3.1" },
+        { "io.openliberty.persistence-3.2", "jpa-3.2" },
+        { "io.openliberty.persistenceContainer-3.0", "jpaContainer-3.0" },
+        { "io.openliberty.persistenceContainer-3.1", "jpaContainer-3.1" },
+        { "io.openliberty.persistenceContainer-3.2", "jpaContainer-3.2" },
+        { "io.openliberty.restfulWS-3.0", "jaxrs-3.0" },
+        { "io.openliberty.restfulWS-3.1", "jaxrs-3.1" },
+        { "io.openliberty.restfulWS-4.0", "jaxrs-4.0" },
+        { "io.openliberty.restfulWSClient-3.0", "jaxrsClient-3.0" },
+        { "io.openliberty.restfulWSClient-3.1", "jaxrsClient-3.1" },
+        { "io.openliberty.restfulWSClient-4.0", "jaxrsClient-4.0" },
+        { "io.openliberty.webProfile-9.1", "webProfile-9.0" },
+        { "io.openliberty.xmlBinding-3.0", "jaxb-3.0" },
+        { "io.openliberty.xmlBinding-4.0", "jaxb-4.0" },
+        { "io.openliberty.xmlWS-3.0", "jaxws-3.0" },
+        { "io.openliberty.xmlWS-4.0", "jaxws-4.0" }
+    };
+    //@formatter:on
+
+    private static final Map<String, String> featureRenames;
+
+    static {
+        Map<String, String> renames = new HashMap<>(FEATURE_RENAMES.length);
+        for (String[] names : FEATURE_RENAMES) {
+            renames.put(names[0], names[1]);
+        }
+        featureRenames = renames;
+    }
+
+    public static String getRename(String featureName) {
+        return featureRenames.get(featureName);
     }
 }

@@ -134,6 +134,10 @@ public class VerifyData {
                 this.input.addRoot(rootName);
             }
 
+            for (String platform : inputCase.input.platforms) {
+                this.input.addPlatform(platform);
+            }
+
             for (String featureName : resolved) {
                 this.output.addResolved(featureName);
             }
