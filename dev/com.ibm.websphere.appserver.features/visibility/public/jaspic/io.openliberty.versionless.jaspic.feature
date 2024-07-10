@@ -4,6 +4,6 @@ visibility=public
 IBM-ShortName: jaspic
 Subsystem-Name: jaspic
 -features=io.openliberty.internal.versionless.jaspic-1.1; ibm.tolerates:="2.0,3.0,3.1"
-kind=beta
+kind=ga
 edition=core
 WLP-InstantOn-Enabled: true

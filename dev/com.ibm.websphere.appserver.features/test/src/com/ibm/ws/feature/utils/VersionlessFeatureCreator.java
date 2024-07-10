@@ -116,7 +116,7 @@ public class VersionlessFeatureCreator {
         }
         writer.append("    " + fullName);
         writer.newLine();
-        writer.append("kind=beta");
+        writer.append("kind=ga");
         writer.newLine();
         writer.append("edition=" + edition);
         writer.newLine();
@@ -184,7 +184,7 @@ public class VersionlessFeatureCreator {
             writer.append("-features=io.openliberty.internal.versionless." + toleratesFeature + "-" + versions[0] + "; ibm.tolerates:=\"" + versions[1] + "\"");
         }
         writer.newLine();
-        writer.append("kind=beta");
+        writer.append("kind=ga");
         writer.newLine();
         writer.append("edition=" + feature.getEdition());
         writer.newLine();

@@ -4,6 +4,6 @@ visibility=public
 IBM-ShortName: ejbPersistentTimer
 Subsystem-Name: ejbPersistentTimer
 -features=io.openliberty.internal.versionless.ejbPersistentTimer-3.2; ibm.tolerates:="4.0"
-kind=beta
+kind=ga
 edition=base
 WLP-InstantOn-Enabled: true

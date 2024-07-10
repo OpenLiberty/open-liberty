@@ -4,6 +4,6 @@ visibility=public
 IBM-ShortName: connectorsInboundSecurity
 Subsystem-Name: connectorsInboundSecurity
 -features=io.openliberty.internal.versionless.jcaInboundSecurity-1.0; ibm.tolerates:="2.0"
-kind=beta
+kind=ga
 edition=base
 WLP-InstantOn-Enabled: true
