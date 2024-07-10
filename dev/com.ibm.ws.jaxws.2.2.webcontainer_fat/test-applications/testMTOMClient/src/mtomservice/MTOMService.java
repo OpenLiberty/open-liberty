@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package mtomservice;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
@@ -22,19 +23,30 @@ import javax.xml.ws.WebServiceClient;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceFeature;
 
-@WebServiceClient(name = "MTOMService", targetNamespace = "http://MTOMService/", wsdlLocation = "http://localhost:8010/MTOMTest/MTOMService?wsdl")
+@WebServiceClient(name = "MTOMService", targetNamespace = "http://MTOMService/")
 public class MTOMService extends Service {
 
     private final static URL MTOMSERVICE_WSDL_LOCATION;
     private final static WebServiceException MTOMSERVICE_EXCEPTION;
     private final static QName MTOMSERVICE_QNAME = new QName("http://MTOMService/", "MTOMService");
+    private final static Logger logger = Logger.getLogger(mtomservice.MTOMService.class.getName());
 
     static {
         URL url = null;
         WebServiceException e = null;
+        String urlString = null;
         try {
-            url = new URL("http://localhost:8010/MTOMTest/MTOMService?wsdl");
+            URL baseUrl = mtomservice.MTOMService.class.getResource(".");
+            String host = System.getProperty("hostName");
+            if (host == null) {
+                logger.info("Failed to obtain host from system property, hostName, falling back to localhost");
+                host = "localhost";
+            }
+            urlString = new StringBuilder().append("http://" + host
+                                                   + ":").append(Integer.getInteger("bvt.prop.HTTP_default")).append("/MTOMTest/MTOMService?wsdl").toString();
+            url = new URL(baseUrl, urlString);
         } catch (MalformedURLException ex) {
+            logger.warning("Failed to create URL for the wsdl Location: " + urlString);
             e = new WebServiceException(ex);
         }
         MTOMSERVICE_WSDL_LOCATION = url;
