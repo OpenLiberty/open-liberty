@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance20.state.impl;
 
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.ibm.websphere.ras.Tr;
@@ -154,11 +155,16 @@ public class CircuitBreakerStateImpl implements CircuitBreakerState {
                         // If the user runs an operation which never returns (possible using CompletionStage), we might end up stuck in half-open state
                         // denying all executions forever. For this reason, if we stay in half-open state for longer than the open state delay time,
                         // allow another execution
-                        if (System.nanoTime() - halfOpenLastExecutionStarted > policyDelayNanos) {
+                        long nanoTimeOfThisMethod = System.nanoTime();
+                        if (nanoTimeOfThisMethod - halfOpenLastExecutionStarted > policyDelayNanos) {
                             halfOpenLastExecutionStarted = System.nanoTime();
                             result = true;
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Allowing execution in half-open state because enough time has passed without a trial executions completing");
+                                Tr.debug(tc,
+                                         "Allowing execution in half-open state because enough time has passed without a trial executions completing. Time since the last execution started {0},"
+                                             + " time required to allow an extra execution: {1} , nanotimestamp when the last execution started: {2}, current nanotimestamp {3}",
+                                         Duration.ofNanos(nanoTimeOfThisMethod - halfOpenLastExecutionStarted), Duration.ofNanos(policyDelayNanos), halfOpenLastExecutionStarted,
+                                         nanoTimeOfThisMethod);
                             }
                         } else {
                             result = false;
@@ -169,14 +175,18 @@ public class CircuitBreakerStateImpl implements CircuitBreakerState {
                     }
                     break;
                 case OPEN:
-                    if (System.nanoTime() - openStateStartTime > policyDelayNanos) {
+                    long nanoTimeOfThisMethod = System.nanoTime();
+                    if (nanoTimeOfThisMethod - openStateStartTime > policyDelayNanos) {
                         // We've been in open state for long enough, transition to half-open
                         stateHalfOpen();
                         halfOpenRunningExecutions++;
                         halfOpenLastExecutionStarted = System.nanoTime();
                         result = true;
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Allowing execution because we just changed to half-open state");
+                            Tr.debug(tc,
+                                     "Allowing execution because we just changed to half-open state. Time since we opened: {0}, "
+                                         + "time required to half-open: {1}, nanotimestamp when we opened: {2}, current nanotimestamp {3}",
+                                     Duration.ofNanos(nanoTimeOfThisMethod - openStateStartTime), Duration.ofNanos(policyDelayNanos), openStateStartTime, nanoTimeOfThisMethod);
                         }
                     } else {
                         result = false;
@@ -266,7 +276,7 @@ public class CircuitBreakerStateImpl implements CircuitBreakerState {
         state.set(State.OPEN);
         metricRecorder.reportCircuitOpen();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Transitioned to Open state");
+            Tr.debug(tc, "Transitioned to Open state. nanotimestamp: {0}", openStateStartTime);
         }
     }
 
@@ -319,5 +329,4 @@ public class CircuitBreakerStateImpl implements CircuitBreakerState {
         HALF_OPEN,
         CLOSED
     }
-
 }
