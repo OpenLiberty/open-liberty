@@ -135,9 +135,10 @@ public class TCKResultsWriter {
             throw new RuntimeException(e);
         }
 
-        // Files written to the extras directory are copied to the build directory on LibFS (by default, the location is configurable on the pipeline).
-        // This copying only occurs in CI Orchestrator environments as the code wrapping FAT execution is responsible for performing the upload to LibFS.
-        // Here, the use case is to make .adoc files available in the build directory without having to extract them from the FAT output zip every time.
+        // Files written to the extras directory are included in the FAT output zip, but can also be uploaded to an additional location by setting the
+        // 'extraFatOutputPath' property to a path on LibFS (e.g. /liberty/dev/Xo/release/BUILD_LABEL) to retain them beyond the life cycle of FAT output.
+        // Note that this copying *only* occurs in CI Orchestrator environments as the code wrapping FAT execution is responsible for performing the upload to LibFS.
+        // The use case here is to make .adoc files available in the build directory without having to extract them from the FAT output zip every time.
         try {
             Path extrasPath = Paths.get("extras", filename);
             Files.createDirectories(extrasPath.getParent());
