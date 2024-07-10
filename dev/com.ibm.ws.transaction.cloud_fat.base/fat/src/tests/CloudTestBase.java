@@ -46,29 +46,30 @@ public class CloudTestBase extends FATServletClient {
 
     @After
     public void cleanup() throws Exception {
-
-        // If any servers have been added to the serversToCleanup array, we'll stop them now
-        // test is long gone so we don't care about messages & warnings anymore
-        if (serversToCleanup != null && serversToCleanup.length > 0) {
-            final String serverNames[] = new String[serversToCleanup.length];
-            int i = 0;
-            for (LibertyServer s : serversToCleanup) {
-                serverNames[i++] = s.getServerName();
+        try {
+            // If any servers have been added to the serversToCleanup array, we'll stop them now
+            // test is long gone so we don't care about messages & warnings anymore
+            if (serversToCleanup != null && serversToCleanup.length > 0) {
+                final String serverNames[] = new String[serversToCleanup.length];
+                int i = 0;
+                for (LibertyServer s : serversToCleanup) {
+                    serverNames[i++] = s.getServerName();
+                }
+                Log.info(CloudTestBase.class, "cleanup", "Cleaning " + String.join(", ", serverNames));
+                FATUtils.stopServers(toleratedMsgs, serversToCleanup);
+            } else {
+                Log.info(CloudTestBase.class, "cleanup", "No servers to stop");
             }
-            Log.info(CloudTestBase.class, "cleanup", "Cleaning " + String.join(", ", serverNames));
-            FATUtils.stopServers(toleratedMsgs, serversToCleanup);
-        } else {
-            Log.info(CloudTestBase.class, "cleanup", "No servers to stop");
+
+            // Clean up XA resource files
+            server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
+
+            // Remove tranlog DB
+            server1.deleteDirectoryFromLibertyInstallRoot("/usr/shared/resources/data");
+        } finally {
+            serversToCleanup = null;
+            toleratedMsgs = new String[] { ".*" };
         }
-
-        serversToCleanup = null;
-        toleratedMsgs = new String[] { ".*" };
-
-        // Clean up XA resource files
-        server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
-
-        // Remove tranlog DB
-        server1.deleteDirectoryFromLibertyInstallRoot("/usr/shared/resources/data");
     }
 
     @Before
