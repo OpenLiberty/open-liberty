@@ -175,7 +175,8 @@ public class DataExtension implements Extension {
             // This needs to be done with the correct metadata on the thread,
             // but that might not be available yet.
 
-            FutureEMBuilder futureEMBuilder = new FutureEMBuilder(provider, loader, dataStore, moduleName);
+            FutureEMBuilder futureEMBuilder = new FutureEMBuilder( //
+                            provider, repositoryInterface, loader, dataStore, moduleName);
 
             Class<?>[] primaryEntityClassReturnValue = new Class<?>[1];
             Map<Class<?>, List<QueryInfo>> queriesPerEntityClass = new HashMap<>();
