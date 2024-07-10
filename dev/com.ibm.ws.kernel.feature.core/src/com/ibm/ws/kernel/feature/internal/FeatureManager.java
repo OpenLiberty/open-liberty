@@ -1486,9 +1486,20 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             }
 
             @Override
-            public Set<String> getUnresolvedVersionless() {
+            public Map<String, String> getVersionlessFeatures(){
+                return Collections.emptyMap();
+            }
+
+            @Override
+            public Set<String> getResolvedPlatforms(){
                 return Collections.emptySet();
             }
+
+            @Override
+            public Set<String> getMissingPlatforms(){
+                return Collections.emptySet();
+            }
+
         };
     }
 
@@ -1982,9 +1993,11 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         }
 
         if(isBeta){
-            for(String versionlessFeature : result.getUnresolvedVersionless()){
-                reportedErrors = true;
-                Tr.error(tc, "UNRESOLVED_VERSIONLESS_FEATURE", getFeatureName(versionlessFeature));
+            for (Map.Entry<String, String> versionlessResolved : result.getVersionlessFeatures().entrySet()) {
+                if(versionlessResolved.getValue() == null){
+                    reportedErrors = true;
+                    Tr.error(tc, "UNRESOLVED_VERSIONLESS_FEATURE", versionlessResolved.getKey());
+                }
             }
         }
 

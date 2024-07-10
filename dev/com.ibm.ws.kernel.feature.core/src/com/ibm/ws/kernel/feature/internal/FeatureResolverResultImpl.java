@@ -44,7 +44,11 @@ public class FeatureResolverResultImpl implements Result {
 
         this._conflicts = new HashMap<>(0);
 
-        this._unresolvedVersionless = new HashSet<>();
+        this._missingPlatforms = new HashSet<String>(0);
+
+        this._versionlessFeatures = new HashMap<>(0);
+
+        this._resolvedPlatforms = new HashSet<>(0);
 
         this._resolved = new LinkedHashSet<>();
     }
@@ -56,7 +60,9 @@ public class FeatureResolverResultImpl implements Result {
         return !(_missing.isEmpty() &&
                  _nonPublicRoots.isEmpty() &&
                  _wrongProcessTypes.isEmpty() &&
-                 _conflicts.isEmpty());
+                 _conflicts.isEmpty() && 
+                 !_versionlessFeatures.values().contains(null) &&
+                 _missingPlatforms.isEmpty());
     }
 
     //
@@ -316,16 +322,37 @@ public class FeatureResolverResultImpl implements Result {
 
     //
 
-    protected final Set<String> _unresolvedVersionless;
+    protected final HashMap<String, String> _versionlessFeatures;
 
     @Override
-    public Set<String> getUnresolvedVersionless(){
-        return _unresolvedVersionless;
+    public HashMap<String, String> getVersionlessFeatures(){
+        return _versionlessFeatures;
     }
 
-    protected void addUnresolvedVersionless(String versionlessFeature){
-        trace("Unresolvable versionless feature  [ " + versionlessFeature + "]");
-        _unresolvedVersionless.add(versionlessFeature);
+    protected void addVersionlessFeature(String versionlessFeature, String versionedFeature){
+        _versionlessFeatures.put(versionlessFeature, versionedFeature);
+    }
+
+    protected final HashSet<String> _resolvedPlatforms;
+
+    @Override
+    public HashSet<String> getResolvedPlatforms(){
+        return _resolvedPlatforms;
+    }
+
+    protected void addResolvedPlatform(String platform){
+        _resolvedPlatforms.add(platform);
+    }
+
+    protected final HashSet<String> _missingPlatforms;
+
+    @Override
+    public HashSet<String> getMissingPlatforms(){
+        return _missingPlatforms;
+    }
+
+    protected void addMissingPlatform(String platform){
+        _missingPlatforms.add(platform);
     }
 
     // Remember the resolved in resolution order.
