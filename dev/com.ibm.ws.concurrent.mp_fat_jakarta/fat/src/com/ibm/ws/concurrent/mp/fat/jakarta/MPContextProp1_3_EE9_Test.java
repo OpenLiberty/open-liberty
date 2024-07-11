@@ -44,7 +44,7 @@ public class MPContextProp1_3_EE9_Test extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP70_EE11, MicroProfileActions.MP61, MicroProfileActions.MP50);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, TestMode.FULL, true, MicroProfileActions.MP70_EE11, MicroProfileActions.MP61, MicroProfileActions.MP50);
 
     @BeforeClass
     public static void setUp() throws Exception {
