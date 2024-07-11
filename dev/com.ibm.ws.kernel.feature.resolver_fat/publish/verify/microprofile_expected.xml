@@ -36,6 +36,7 @@
         <resolved>com.ibm.websphere.appserver.requestProbes-1.0</resolved>
         <resolved>servlet-5.0</resolved>
         <resolved>io.openliberty.mpCompatible-5.0</resolved>
+        <resolved>io.openliberty.internal.mpVersion-5.0</resolved>
         <resolved>io.openliberty.jakarta.expressionLanguage-4.0</resolved>
         <resolved>io.openliberty.jakarta.interceptor-2.0</resolved>
         <resolved>io.openliberty.jakarta.cdi-3.0</resolved>
@@ -152,6 +153,7 @@
         <resolved>io.openliberty.servlet-servletSpi2.0</resolved>
         <resolved>servlet-6.0</resolved>
         <resolved>io.openliberty.mpCompatible-6.1</resolved>
+        <resolved>io.openliberty.internal.mpVersion-6.1</resolved>
         <resolved>io.openliberty.jakarta.expressionLanguage-5.0</resolved>
         <resolved>io.openliberty.jakarta.interceptor-2.1</resolved>
         <resolved>io.openliberty.jakarta.cdi-4.0</resolved>
@@ -174,6 +176,7 @@
         <resolved>cdi-4.0</resolved>
         <resolved>jndi-1.0</resolved>
         <resolved>json-1.0</resolved>
+        <resolved>io.openliberty.org.eclipse.microprofile.config.3.1.ee-10.0</resolved>
         <resolved>io.openliberty.org.eclipse.microprofile.config-3.1</resolved>
         <resolved>mpConfig-3.1</resolved>
         <resolved>jsonp-2.1</resolved>
@@ -209,6 +212,7 @@
         <resolved>io.openliberty.internal.versionless.mpMetrics-5.1</resolved>
         <resolved>mpMetrics</resolved>
         <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
+        <resolved>io.openliberty.httpStat-monitor1.0.jakarta</resolved>
         <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
         <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
         <resolved>com.ibm.websphere.appserver.sessionMonitor-1.0</resolved>

@@ -25,7 +25,6 @@ import org.junit.runners.Suite.SuiteClasses;
                 // BaselineResolutionGenerationTest.class,
                 BaselineResolutionSingletonUnitTest.class,
                 BaselineVersionlessSingletonUnitTest.class,
-
                 BaselineResolutionServletUnitTest.class,
                 BaselineResolutionMicroProfileUnitTest.class,
 
