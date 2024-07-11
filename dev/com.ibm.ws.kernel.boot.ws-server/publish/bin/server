@@ -913,7 +913,7 @@ javaCmd()
     REMAINING_ARGS="$REMAINING_ARGS --internal-checkpoint-at=$CHECKPOINT_AT"
 
     # Default list of immutable env vars for checkpoint
-    X_WLP_IMMUTABLE_VARS="-Dorg.eclipse.openj9.criu.ImmutableEnvVars=INVOKED,WLP_USER_DIR,WLP_OUTPUT_DIR,LOG_DIR,X_LOG_DIR,LOG_FILE,X_LOG_FILE,VARIABLE_SOURCE_DIRS,X_CMD"
+    X_WLP_IMMUTABLE_VARS="-Dorg.eclipse.openj9.criu.ImmutableEnvVars=INVOKED,WLP_USER_DIR,WLP_OUTPUT_DIR,LOG_DIR,X_LOG_DIR,LOG_FILE,X_LOG_FILE,VARIABLE_SOURCE_DIRS,X_CMD,PREFERRED_PLATFORM_VERSIONS"
 
     # Add any additional user specified variables
     if [ -n "$WLP_IMMUTABLE_VARS" ]; then
