@@ -18,4 +18,4 @@ kind=ga
 edition=core
 -jars=com.ibm.websphere.appserver.api.jacc; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.jacc_1.0-javadoc.zip
-WLP-Platform: javaee-6.0,javaee-7.0,javaee-8.0
+WLP-Platform: javaee-7.0,javaee-8.0
