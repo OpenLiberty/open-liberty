@@ -217,7 +217,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
                 }
                 if (dbStoreId == null) {
                     // Create a ResourceFactory that can delegate back to a resource reference lookup
-                    ResourceFactory delegator = new DelegatingResourceFactory(dataStore, metadataIdentifier, provider);
+                    ResourceFactory delegator = new ResRefDelegator(dataStore, metadataIdentifier, provider);
                     Hashtable<String, Object> svcProps = new Hashtable<String, Object>();
                     dbStoreId = isJNDIName ? qualifiedName : ("application[" + application + "]/databaseStore[" + dataStore + ']');
                     String id = dbStoreId + "/ResourceFactory";
@@ -649,7 +649,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
         ResourceFactory dsFactory = bc.getService(dsFactoryRefs.iterator().next());
         try {
             ResourceConfig resRef = null;
-            if (!(dsFactory instanceof DelegatingResourceFactory)) {
+            if (!(dsFactory instanceof ResRefDelegator)) {
                 // Use a resource reference that includes the authDataRef of the databaseStore.
                 resRef = provider.resourceConfigFactory.createResourceConfig(DataSource.class.getName());
                 resRef.setSharingScope(ResourceConfig.SHARING_SCOPE_SHAREABLE);

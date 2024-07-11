@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data.internal.persistence.service;
+package io.openliberty.data.internal.persistence.metadata;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.annotation.Trivial;
