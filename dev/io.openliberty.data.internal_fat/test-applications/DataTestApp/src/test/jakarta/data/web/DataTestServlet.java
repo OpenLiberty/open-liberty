@@ -729,6 +729,7 @@ public class DataTestServlet extends FATServlet {
      * Repository delete method with query language (JPQL) that contains
      * an entity identifier variable.
      */
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  https://github.com/OpenLiberty/open-liberty/issues/28368
     @Test
     public void testDeleteQueryWithEntityIdentifierVariable() {
         products.purge("TestDeleteQueryWithEntityIdentifierVariable-Product-%");
