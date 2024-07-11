@@ -39,7 +39,7 @@ fat.project: true
 # The databaseRotation feature is required to tell the SOE build system that this FAT suite
 # should be run in the databaseRotation build.
 tested.features: \
-    databaseRotation,servlet-5.0
+    databaseRotation, servlet-5.0
 	
 fat.test.container.images: kyleaure/postgres-test-table:3.0
 
