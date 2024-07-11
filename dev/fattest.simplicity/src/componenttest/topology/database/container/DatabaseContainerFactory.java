@@ -13,7 +13,10 @@
 package componenttest.topology.database.container;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.function.Consumer;
 
@@ -47,6 +50,8 @@ import componenttest.custom.junit.runner.FATRunner;
 public class DatabaseContainerFactory {
     private static final Class<DatabaseContainerFactory> c = DatabaseContainerFactory.class;
 
+    private static final String databaseRotationTestFeature = "databaseRotation";
+
     /**
      * Used for <b>database rotation testing</b>.
      *
@@ -73,14 +78,24 @@ public class DatabaseContainerFactory {
      *      This should mainly be used if you want to use derby client instead of derby embedded as your default.
      */
     public static JdbcDatabaseContainer<?> create(DatabaseContainerType defaultType) throws IllegalArgumentException {
-        String dbRotation = System.getProperty("fat.test.databases");
+        Path testedFeatures = new File("fat-metadata.json").toPath();
         String dbProperty = System.getProperty("fat.bucket.db.type", defaultType.name());
 
-        Log.info(c, "create", "System property: fat.test.databases is " + dbRotation);
+        boolean validateDatabaseRotationFeature;
+        try {
+            validateDatabaseRotationFeature = Files.lines(testedFeatures)
+                            .filter(line -> line.contains(databaseRotationTestFeature))
+                            .count() > 0;
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Unable to validate tested features", e);
+        }
+
+        Log.info(c, "create", "fat-metadata.json: contains databaseRoation " + validateDatabaseRotationFeature);
         Log.info(c, "create", "System property: fat.bucket.db.type is " + dbProperty);
 
-        if (!"true".equals(dbRotation)) {
-            throw new IllegalArgumentException("To use a generic database, the FAT must be opted into database rotation by setting 'fat.test.databases: true' in the FAT project's bnd.bnd file");
+        if (!validateDatabaseRotationFeature) {
+            throw new IllegalArgumentException("To use a generic database, the FAT must be opted into database rotation by setting 'testedFeatures: " //
+                                               + databaseRotationTestFeature + "' in the FAT project's bnd.bnd file");
         }
 
         DatabaseContainerType type = null;
