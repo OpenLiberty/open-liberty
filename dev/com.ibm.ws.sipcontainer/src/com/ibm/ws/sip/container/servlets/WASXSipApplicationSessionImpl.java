@@ -118,10 +118,10 @@ public class WASXSipApplicationSessionImpl extends SipApplicationSessionImpl imp
     public void invalidate() {
                 //remove synchronized as it can cause deadlock
                 //see open-liberty issue #27282
-		//synchronized (getSynchronizer()) {
+		synchronized (getSynchronizer()) {
 			destoryHttpSession();
 			super.invalidate();
-		//}
+		}
     }
 
 	/**

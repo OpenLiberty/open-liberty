@@ -1187,7 +1187,7 @@ public class ProxyBranchImpl extends BranchManager
 	 */
 
 	//remove synchronized as it caused deadlock 
-	public void proxyTimedOut(boolean isTimeout){
+	public synchronized void proxyTimedOut(boolean isTimeout){
     	
     	if (c_logger.isTraceDebugEnabled()) {
 			c_logger.traceDebug(this, "proxyTimedOut", getMyInfo() );

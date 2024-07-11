@@ -1419,7 +1419,7 @@ public class StatefullProxy	extends BranchManager
 	 * 
 	 */
 	//remove sychronized as it caused a deadlock, see OL issue 25962
-	public void proxyTimeout() {
+	public synchronized void proxyTimeout() {
 
 		if (c_logger.isTraceDebugEnabled()) {
 			c_logger.traceDebug(this, "proxyTimeout", getMyInfo());

@@ -109,11 +109,11 @@ public class ExpirationTimer extends BaseTimer {
      */
     public void run() {
 	//remove syncronized as it can cause deadlock in proxy mode
-    	//synchronized (getSynchronizer()) {
+    	synchronized (getSynchronizer()) {
     	if(m_expInvoker != null) {
     		m_expInvoker.invokeExpiredTimer(); 	// defect 642320, the invocation has to be in-sync with the 
     	}						//cancel method of both the timer and the listener to avoid NPEs		
-    	//}						//Note that AppSessionTimerListener.cancel is also synced on 
+    	}						//Note that AppSessionTimerListener.cancel is also synced on 
     }							//the same handle
 
 	/**

@@ -1701,7 +1701,7 @@ ClientTransactionListener, Serializable, SipServletInvokerListener,SipDialogCont
     */
    public void invalidateTU(boolean removeFromAppSession, boolean removeFromSessionsTbl){
 	   	//remove synchronized as it can cause a deadlock if called in a synchronized block in application code
-	   	//synchronized (getSynchronizer()) {
+	   	synchronized (getSynchronizer()) {
 	   		if (c_logger.isTraceEntryExitEnabled()) {
 	   			c_logger.traceEntry(this, "invalidateTU", new Object[] {removeFromAppSession});
 	   		}
@@ -1771,7 +1771,7 @@ ClientTransactionListener, Serializable, SipServletInvokerListener,SipDialogCont
 
 	   			ThreadLocalStorage.setTUKey(null);
 	   		}
-	   	//}
+	   	}
    }
    
    
