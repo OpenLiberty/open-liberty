@@ -35,7 +35,7 @@ import componenttest.custom.junit.runner.FATRunner;
  *
  * The {fat.bucket.db.type} property is set to different databases
  * by our test infrastructure when a fat-suite is enlisted in
- * database rotation by setting the property {fat.test.databases} to true.</br>
+ * database rotation by setting 'databaseRotation' on the tested.features property in bnd.bnd.</br>
  *
  * <br> Container Information: <br>
  * Derby: Uses a derby no-op test container <br>
@@ -50,7 +50,8 @@ import componenttest.custom.junit.runner.FATRunner;
 public class DatabaseContainerFactory {
     private static final Class<DatabaseContainerFactory> c = DatabaseContainerFactory.class;
 
-    private static final String databaseRotationTestFeature = "databaseRotation";
+    // Features in fat-metadata.json are transformed to lowercase by default
+    private static final String databaseRotationTestFeature = "databaserotation";
 
     /**
      * Used for <b>database rotation testing</b>.
@@ -64,7 +65,7 @@ public class DatabaseContainerFactory {
      *
      * @return                          JdbcDatabaseContainer - The test container.
      *
-     * @throws IllegalArgumentException - if database rotation {fat.test.databases} is not set or is false,
+     * @throws IllegalArgumentException - if databaseRotation is not set on tested.features,
      *                                      or database type {fat.bucket.db.type} is unsupported.
      */
     public static JdbcDatabaseContainer<?> create() throws IllegalArgumentException {
