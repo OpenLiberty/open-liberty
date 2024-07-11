@@ -20,6 +20,7 @@ import static io.opentelemetry.semconv.ServerAttributes.SERVER_PORT;
 import static io.opentelemetry.semconv.UrlAttributes.URL_SCHEME;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -49,6 +50,8 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
     private static final String INSTR_SCOPE = "io.openliberty.microprofile.telemetry20.internal.http";
 
     private static final double NANO_CONVERSION = 0.000000001;
+    private static final Double[] BUCKET_BOUNDARIES = { 0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0, 2.5, 5.0, 7.5, 10.0 };
+    private static final List<Double> BUCKET_BOUNDARIES_LIST = Arrays.asList(BUCKET_BOUNDARIES);
 
     @Override
     public void updateHttpMetrics(HttpStatAttributes httpStatAttributes, Duration duration) {
@@ -77,7 +80,7 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
         DoubleHistogram dHistogram = otelInstance.getMeterProvider().get(INSTR_SCOPE).histogramBuilder(OpenTelemetryConstants.HTTP_SERVER_REQUEST_DURATION_NAME)
                         .setUnit(OpenTelemetryConstants.OTEL_SECONDS_UNIT)
                         .setDescription(OpenTelemetryConstants.HTTP_SERVER_REQUEST_DURATION_DESC)
-                        .setExplicitBucketBoundariesAdvice(List.of(0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0, 2.5, 5.0, 7.5, 10.0)).build();
+                        .setExplicitBucketBoundariesAdvice(BUCKET_BOUNDARIES_LIST).build();
 
         Context ctx = Context.current();
 

@@ -16,7 +16,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.MicroProfileActions;
@@ -54,12 +53,11 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
                 JaegerOtelCollectorTest.class,
                 JaegerLegacyTest.class,
                 TracingNotEnabledTest.class,
-                ZipkinOtelCollectorTest.class, 
+                ZipkinOtelCollectorTest.class,
                 ZipkinTest.class,
 
 })
 
-@MinimumJavaLevel(javaLevel = 11)
 /**
  * Purpose: This suite collects and runs all known good test suites.
  */
@@ -69,6 +67,7 @@ public class FATSuite extends TestContainerSuite {
         return TelemetryActions.repeat(serverName, MicroProfileActions.MP70_EE11, MicroProfileActions.MP60, TelemetryActions.MP14_MPTEL11, TelemetryActions.MP41_MPTEL11,
                                        TelemetryActions.MP50_MPTEL11,
                                        MicroProfileActions.MP61, TelemetryActions.MP14_MPTEL20, TelemetryActions.MP41_MPTEL20, TelemetryActions.MP50_MPTEL20,
+                                       TelemetryActions.MP50_MPTEL20_JAVA8,
                                        MicroProfileActions.MP70_EE10);
     }
 
@@ -87,6 +86,7 @@ public class FATSuite extends TestContainerSuite {
 
     public static RepeatTests telemetry20Repeats(String serverName) {
         return TelemetryActions.repeat(serverName, MicroProfileActions.MP70_EE11, TelemetryActions.MP14_MPTEL20, TelemetryActions.MP41_MPTEL20, TelemetryActions.MP50_MPTEL20,
+                                       TelemetryActions.MP50_MPTEL20_JAVA8,
                                        MicroProfileActions.MP70_EE10);
     }
 

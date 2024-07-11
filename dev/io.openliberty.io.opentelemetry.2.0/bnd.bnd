@@ -20,8 +20,8 @@ openTelemetryInstrumentationVersion=2.1.0
 alphaOpenTelemetryInstrumentationVersion=2.1.0.alpha
 alphaSemconvOpenTelemetryVersion=1.25.0.alpha
 
-javac.source: 11
-javac.target: 11
+javac.source: 1.8
+javac.target: 1.8
 
 src: src, resources
 
@@ -88,7 +88,7 @@ Service-Component: \
         configuration-policy:=optional; \
         properties:="resources=${app-resources}"
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
 	io.openliberty.com.squareup.okhttp;version=latest,\

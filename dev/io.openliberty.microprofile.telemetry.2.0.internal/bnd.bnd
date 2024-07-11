@@ -17,10 +17,10 @@ Bundle-SymbolicName: io.openliberty.microprofile.telemetry.2.0.internal
 Bundle-Activator: io.openliberty.microprofile.telemetry20.internal.helper.InstrumenterActivator
 Bundle-Description: MicroProfile.telemetry, version 2.0
 
-javac.source: 11
-javac.target: 11
+javac.source: 1.8
+javac.target: 1.8
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 src: src, resources
 

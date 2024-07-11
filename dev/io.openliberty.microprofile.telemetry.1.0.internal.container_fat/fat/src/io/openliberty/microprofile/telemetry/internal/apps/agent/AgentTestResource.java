@@ -14,12 +14,13 @@ package io.openliberty.microprofile.telemetry.internal.apps.agent;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
+import java.net.URLConnection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -118,16 +119,30 @@ public class AgentTestResource extends Application {
 
     @GET
     @Path("/httpclient")
-    public String callHttpClient(@Context UriInfo uriInfo) throws IOException, InterruptedException {
+    public String callHttpClient(@Context UriInfo uriInfo) throws MalformedURLException, IOException {
         Span span = Span.current();
 
         URI targetUri = uriInfo.getBaseUriBuilder().path(AgentTestResource.class, "httpClientTarget").build();
 
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder(targetUri).GET().build();
-        HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+        BufferedReader in = null;
 
-        assertEquals("OK", response.body());
+        try {
+            URLConnection urlConnection = targetUri.toURL().openConnection();
+            in = new BufferedReader(new InputStreamReader((InputStream) urlConnection.getContent()));
+
+            String content = "";
+            String current;
+            while ((current = in.readLine()) != null) {
+                content += current;
+                content += "\n";
+            }
+
+            assertEquals("OK", content);
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+        }
 
         return span.getSpanContext().getTraceId();
     }
