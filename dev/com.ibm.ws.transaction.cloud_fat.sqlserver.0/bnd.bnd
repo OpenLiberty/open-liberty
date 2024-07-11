@@ -17,11 +17,11 @@ src: \
 	fat/src
 
 fat.project: true
-fat.test.databases: true
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
 # In this case, servlet-4.0 is added programmatically at runtime by the RepeatTests rule.
 tested.features:\
+  databaseRotation,\
   cdi-2.0, cdi-3.0, cdi-4.0,\
   el-3.0,\
   jdbc-4.2,\

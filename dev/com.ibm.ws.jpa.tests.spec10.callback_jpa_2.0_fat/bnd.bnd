@@ -17,8 +17,7 @@ src: \
     fat/src
 
 fat.project: true
-fat.test.databases: true
-tested.features: jpa-2.0, ejbLite-3.1, servlet-3.0, jdbc-4.0, jndi-1.0
+tested.features: databaseRotation, jpa-2.0, ejbLite-3.1, servlet-3.0, jdbc-4.0, jndi-1.0
 
 # Uncomment to test against alternative databases
 # Options: Derby, Postgres, DB2, Oracle, SQLServer

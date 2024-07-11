@@ -24,10 +24,6 @@ fat.project: true
 # External contributors will need to have docker installed on their local machine.
 #fat.test.use.remote.docker: true
 
-# This property is used to tell the SOE build system that this FAT suite
-# should be run in the database rotation build.
-fat.test.databases: true
-
 # Uncomment to test against alternative databases
 # This allows you to locally tell gradle what database you want to test against.
 # This is the same way the database rotation build sets the database. 
@@ -40,8 +36,10 @@ fat.test.databases: true
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
 # In this case, servlet-5.0 is added programmatically at runtime by the RepeatTests rule.
+# The databaseRotation feature is required to tell the SOE build system that this FAT suite
+# should be run in the databaseRotation build.
 tested.features: \
-	servlet-5.0
+    databaseRotation,servlet-5.0
 	
 fat.test.container.images: kyleaure/postgres-test-table:3.0
 
