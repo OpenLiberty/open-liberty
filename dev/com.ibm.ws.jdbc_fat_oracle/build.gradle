@@ -13,7 +13,7 @@
 apply from: "../wlp-gradle/subprojects/maven-central-mirror.gradle"
 
 // Use a variable for the oracle version so that we can test customer issues easily
-ext.oracleVersion = '21.8.0.0'
+ext.oracleVersion = '23.4.0.24.05'
 
 configurations {
   oracle	{transitive = false}
