@@ -239,7 +239,7 @@ UNKNOWN_PLATFORM_VALUE_ENV_VAR.explanation=Each value in the platform environmen
 UNKNOWN_PLATFORM_VALUE_ENV_VAR.useraction=Check that the environment variable contains only known platforms.
 
 # CWWKF0049E  {0} = set of duplicate platforms
-DUPLICATE_PLATFORMS=CWWKF0049E: Conflicting platform versions {0}.
+DUPLICATE_PLATFORMS=CWWKF0049E: The following configured platform versions are in conflict: {0}.
 DUPLICATE_PLATFORMS.explanation=More than one version was specified for the same platform.
 DUPLICATE_PLATFORMS.useraction=Remove all but one of the platform versions.
 
@@ -250,7 +250,7 @@ UNRESOLVED_VERSIONLESS_FEATURE.useraction=Make sure there is a platform element 
 
 # CWWKF0051I  {0} = the versionless features: {1} = the features that were resolved from the versionless features
 VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE=CWWKF0051I: The {0} versionless features resolved to {1}
-VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.explanation=The versioned features resolved from the versionless features.
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.explanation=The versioned features that were resolved from the versionless features.
 VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.useraction=No action is required.
 
 # CWWKF0052E  {0} = the unknown platform
@@ -264,13 +264,13 @@ RESOLVED_PLATFORM.explanation=The platform versions were selected to enable reso
 RESOLVED_PLATFORM.useraction=No action is required.
 
 # CWWKF0054E  {0} = the versionless feature that cannot be resolved: {1} = the resolved platform
-INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM=CWWKF0054E: The {0} versionless feature does not have a version belonging to the {1} platform.
+INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM=CWWKF0054E: The {0} versionless feature does not have a version that belongs to the {1} platform.
 INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM.explanation=No version of the feature is available for the platform version. Feature resolution was completed, but did not select a version of the feature.
 INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM.useraction=Either, remove the versionless feature, or specify a different platform version, or use a versioned feature.
 
-# CWWKF0055E 
-NO_RESOLVED_PLATFORM=CWWKF0055E: Versionless features are being used but there is no platform.
-NO_RESOLVED_PLATFORM.explanation=A platform must be determined before versionless features can be resolved. The platform can be determined from a platform element, from a versioned feature, or from an environment variable.
+# CWWKF0055E  {0} = the versionless features
+NO_RESOLVED_PLATFORM=CWWKF0055E: The {0} versionless features do not have a configured platform.
+NO_RESOLVED_PLATFORM.explanation=Each type of versionless feature which is configured is required to have a configured platform. If javaee/jakartaee versionless features are configured, they require a javaee/jakartaee platform. If microProfile versionless features are configured, they require a microProfile platform.
 NO_RESOLVED_PLATFORM.useraction=Either add a platform element, a versioned feature, or an environment variable.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
