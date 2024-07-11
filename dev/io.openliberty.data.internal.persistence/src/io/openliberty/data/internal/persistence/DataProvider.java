@@ -52,9 +52,6 @@ import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
 import com.ibm.ws.classloading.ClassLoaderIdentifierService;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
-import com.ibm.ws.container.service.metadata.ApplicationMetaDataListener;
-import com.ibm.ws.container.service.metadata.MetaDataEvent;
-import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.container.service.metadata.ModuleMetaDataListener;
 import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
@@ -92,14 +89,12 @@ import jakarta.persistence.EntityManagerFactory;
            service = { CDIExtensionMetadata.class,
                        DataProvider.class,
                        DeferredMetaDataFactory.class,
-                       ApplicationMetaDataListener.class,
                        ApplicationStateListener.class },
            property = { "deferredMetaData=DATA" })
 public class DataProvider implements //
                 CDIExtensionMetadata, //
                 CDIExtensionMetadataInternal, //
                 DeferredMetaDataFactory, //
-                ApplicationMetaDataListener, // TODO remove this? and use the following instead?
                 ApplicationStateListener {
     private static final TraceComponent tc = Tr.register(DataProvider.class);
 
@@ -208,15 +203,35 @@ public class DataProvider implements //
     }
 
     @Override
-    @Trivial
-    public void applicationMetaDataCreated(MetaDataEvent<ApplicationMetaData> event) throws MetaDataException {
+    public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
     }
 
     @Override
-    public void applicationMetaDataDestroyed(MetaDataEvent<ApplicationMetaData> event) {
+    public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
+        Collection<FutureEMBuilder> futures = futureEMBuilders.remove(appInfo.getName());
+        if (futures != null) {
+            for (FutureEMBuilder futureEMBuilder : futures) {
+                // This delays createEMBuilder until restore.
+                // While this works by avoiding all connections to the data source, it does make restore much slower.
+                // TODO figure out how to do more work on restore without having to make a connection to the data source
+                CheckpointPhase.onRestore(() -> futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor));
+            }
+        }
+    }
+
+    @Override
+    public void applicationStopping(ApplicationInfo appInfo) {
+        futureEMBuilders.remove(appInfo.getName());
+    }
+
+    @Override
+    public void applicationStopped(ApplicationInfo appInfo) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        String appName = event.getMetaData().getName();
+        String appName = appInfo.getName();
+
+        futureEMBuilders.remove(appName);
+
         Map<String, Configuration> configurations = dbStoreConfigAllApps.remove(appName);
         if (configurations != null)
             for (Configuration config : configurations.values())
@@ -242,33 +257,6 @@ public class DataProvider implements //
                 it.remove();
             }
         }
-    }
-
-    @Override
-    public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
-    }
-
-    @Override
-    public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
-        Collection<FutureEMBuilder> futures = futureEMBuilders.remove(appInfo.getName());
-        if (futures != null) {
-            for (FutureEMBuilder futureEMBuilder : futures) {
-                // This delays createEMBuilder until restore.
-                // While this works by avoiding all connections to the data source, it does make restore much slower.
-                // TODO figure out how to do more work on restore without having to make a connection to the data source
-                CheckpointPhase.onRestore(() -> futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor));
-            }
-        }
-    }
-
-    @Override
-    public void applicationStopping(ApplicationInfo appInfo) {
-        futureEMBuilders.remove(appInfo.getName());
-    }
-
-    @Override
-    public void applicationStopped(ApplicationInfo appInfo) {
-        futureEMBuilders.remove(appInfo.getName());
     }
 
     /**
