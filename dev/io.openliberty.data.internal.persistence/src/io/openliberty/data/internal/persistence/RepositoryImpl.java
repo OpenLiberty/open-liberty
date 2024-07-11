@@ -64,7 +64,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.data.internal.persistence.QueryInfo.Type;
 import io.openliberty.data.internal.persistence.cdi.DataExtension;
-import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import io.openliberty.data.internal.persistence.cdi.FutureEMBuilder;
 import jakarta.data.Limit;
 import jakarta.data.Order;
@@ -96,12 +95,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
     private final AtomicBoolean isDisposed = new AtomicBoolean();
     final CompletableFuture<EntityInfo> primaryEntityInfoFuture;
-    final DataExtensionProvider provider;
+    final DataProvider provider;
     final Map<Method, CompletableFuture<QueryInfo>> queries = new HashMap<>();
     final Class<R> repositoryInterface;
     final EntityValidator validator;
 
-    public RepositoryImpl(DataExtensionProvider provider, DataExtension extension, FutureEMBuilder futureEMBuilder,
+    public RepositoryImpl(DataProvider provider, DataExtension extension, FutureEMBuilder futureEMBuilder,
                           Class<R> repositoryInterface, Class<?> primaryEntityClass,
                           Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
         EntityManagerBuilder builder = futureEMBuilder.join();
@@ -110,7 +109,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         this.primaryEntityInfoFuture = primaryEntityClass == null ? null : builder.entityInfoMap.computeIfAbsent(primaryEntityClass, EntityInfo::newFuture);
         this.provider = provider;
         this.repositoryInterface = repositoryInterface;
-        Object validation = provider.validationService();
+        Object validation = provider.validationService;
         this.validator = validation == null ? null : EntityValidator.newInstance(validation, repositoryInterface);
 
         List<CompletableFuture<EntityInfo>> entityInfoFutures = new ArrayList<>();

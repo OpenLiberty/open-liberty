@@ -19,7 +19,7 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.resource.ResourceInfo;
 
-import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
+import io.openliberty.data.internal.persistence.DataProvider;
 
 /**
  * A resource factory that delegates to a JNDI name that was specified
@@ -30,7 +30,7 @@ import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 class DelegatingResourceFactory implements ResourceFactory {
     private final String identifier;
     private final String jndiName;
-    private final DataExtensionProvider provider;
+    private final DataProvider provider;
 
     /**
      * Construct a new instance.
@@ -40,7 +40,7 @@ class DelegatingResourceFactory implements ResourceFactory {
      *                     of the class loader of the repository interface.
      * @param provider OSGi service that provides the CDI extension.
      */
-    DelegatingResourceFactory(String jndiName, String identifier, DataExtensionProvider provider) {
+    DelegatingResourceFactory(String jndiName, String identifier, DataProvider provider) {
         this.jndiName = jndiName;
         this.identifier = identifier;
         this.provider = provider;

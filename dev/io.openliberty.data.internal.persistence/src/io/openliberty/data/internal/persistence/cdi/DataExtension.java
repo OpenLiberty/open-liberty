@@ -50,6 +50,7 @@ import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
+import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.QueryInfo;
 import io.openliberty.data.internal.persistence.provider.PUnitEMBuilder;
 import jakarta.data.exceptions.MappingException;
@@ -116,9 +117,9 @@ public class DataExtension implements Extension {
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanMgr) {
         // Obtain the service that informed CDI of this extension.
-        BundleContext bundleContext = FrameworkUtil.getBundle(DataExtensionProvider.class).getBundleContext();
-        ServiceReference<DataExtensionProvider> ref = bundleContext.getServiceReference(DataExtensionProvider.class);
-        DataExtensionProvider provider = bundleContext.getService(ref);
+        BundleContext bundleContext = FrameworkUtil.getBundle(DataProvider.class).getBundleContext();
+        ServiceReference<DataProvider> ref = bundleContext.getServiceReference(DataProvider.class);
+        DataProvider provider = bundleContext.getService(ref);
 
         // Group entities by data access provider and class loader
         Map<FutureEMBuilder, FutureEMBuilder> entityGroups = new HashMap<>();
@@ -474,7 +475,7 @@ public class DataExtension implements Extension {
      */
     private J2EEName getModuleName(Class<?> repositoryInterface,
                                    ClassLoader repositoryClassLoader,
-                                   DataExtensionProvider provider) {
+                                   DataProvider provider) {
         J2EEName moduleName;
 
         Optional<J2EEName> moduleNameOptional = provider.cdiService.getModuleNameForClass(repositoryInterface);

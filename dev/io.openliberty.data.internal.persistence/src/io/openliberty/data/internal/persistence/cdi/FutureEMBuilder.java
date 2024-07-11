@@ -31,6 +31,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
+import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.provider.PUnitEMBuilder;
 import io.openliberty.data.internal.persistence.service.DBStoreEMBuilder;
@@ -73,7 +74,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
     /**
      * OSGi service component that provides the CDI extension for Data.
      */
-    private final DataExtensionProvider provider;
+    private final DataProvider provider;
 
     /**
      * The class loader for repository classes.
@@ -97,7 +98,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
      * @param moduleName            JEE name of the module in which the repository interface is defined.
      *                                  Module and component might be null or absent if not defined a module.
      */
-    FutureEMBuilder(DataExtensionProvider provider,
+    FutureEMBuilder(DataProvider provider,
                     Class<?> repositoryInterface,
                     ClassLoader repositoryClassLoader,
                     String dataStore,
@@ -152,7 +153,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
      * @throws Exception if an error occurs.
      */
     @FFDCIgnore(NamingException.class)
-    EntityManagerBuilder createEMBuilder() {
+    public EntityManagerBuilder createEMBuilder() {
         String resourceName = dataStore;
         String metadataIdentifier = getMetadataIdentifier();
 

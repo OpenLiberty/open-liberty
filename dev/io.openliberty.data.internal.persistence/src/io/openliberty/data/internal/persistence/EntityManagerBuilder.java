@@ -38,7 +38,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.Attribute;
 import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
@@ -65,7 +64,7 @@ public abstract class EntityManagerBuilder {
     /**
      * OSGi service component that provides the CDI extension for Data.
      */
-    public final DataExtensionProvider provider;
+    public final DataProvider provider;
 
     /**
      * The class loader for repository classes.
@@ -80,7 +79,7 @@ public abstract class EntityManagerBuilder {
      * @param entityTypes
      */
     @Trivial
-    protected EntityManagerBuilder(DataExtensionProvider provider, ClassLoader repositoryClassLoader) {
+    protected EntityManagerBuilder(DataProvider provider, ClassLoader repositoryClassLoader) {
         this.provider = provider;
         this.repositoryClassLoader = repositoryClassLoader;
     }

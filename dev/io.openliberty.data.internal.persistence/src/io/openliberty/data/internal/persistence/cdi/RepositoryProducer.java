@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.QueryInfo;
 import io.openliberty.data.internal.persistence.RepositoryImpl;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -57,11 +58,11 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
     private final DataExtension extension;
     private final Map<R, R> intercepted = new ConcurrentHashMap<>();
     private final Class<?> primaryEntityClass;
-    private final DataExtensionProvider provider;
+    private final DataProvider provider;
     private final Map<Class<?>, List<QueryInfo>> queriesPerEntityClass;
     private final Class<?> repositoryInterface;
 
-    RepositoryProducer(Class<?> repositoryInterface, BeanManager beanMgr, DataExtensionProvider provider, DataExtension extension,
+    RepositoryProducer(Class<?> repositoryInterface, BeanManager beanMgr, DataProvider provider, DataExtension extension,
                        FutureEMBuilder futureEMBuilder, Class<?> primaryEntityClass, Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
         this.beanMgr = beanMgr;
         this.beanTypes = Set.of(repositoryInterface);

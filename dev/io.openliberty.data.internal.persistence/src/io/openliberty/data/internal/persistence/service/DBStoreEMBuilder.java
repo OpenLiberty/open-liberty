@@ -78,9 +78,9 @@ import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.resource.ResourceFactory;
 
+import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.EntityInfo;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
-import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.Convert;
@@ -135,7 +135,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
      *                                  Module and component might be null or absent.
      * @param entityTypes           entity classes as known by the user, not generated.
      */
-    public DBStoreEMBuilder(DataExtensionProvider provider, ClassLoader repositoryClassLoader,
+    public DBStoreEMBuilder(DataProvider provider, ClassLoader repositoryClassLoader,
                             String dataStore, boolean isJNDIName,
                             String metadataIdentifier, J2EEName jeeName,
                             Set<Class<?>> entityTypes) {

@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data.internal.persistence.cdi;
+package io.openliberty.data.internal.persistence;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -69,6 +69,8 @@ import com.ibm.wsspi.resource.ResourceFactory;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
+import io.openliberty.data.internal.persistence.cdi.DataExtension;
+import io.openliberty.data.internal.persistence.cdi.FutureEMBuilder;
 import io.openliberty.data.internal.persistence.service.DataComponentMetaData;
 import io.openliberty.data.internal.persistence.service.DataModuleMetaData;
 import io.openliberty.data.internal.tracker.ModuleTracker;
@@ -82,31 +84,31 @@ import jakarta.enterprise.inject.spi.Extension;
 import jakarta.persistence.EntityManagerFactory;
 
 /**
- * Simulates a provider for relational databases by delegating
- * JPQL queries to the Jakarta Persistence layer.
+ * Built-in Jakarta Data provider for relational databases that
+ * delegates queries and operations to the Jakarta Persistence layer.
  */
 @Component(configurationPid = "io.openliberty.data",
            configurationPolicy = ConfigurationPolicy.OPTIONAL,
            service = { CDIExtensionMetadata.class,
-                       DataExtensionProvider.class,
+                       DataProvider.class,
                        DeferredMetaDataFactory.class,
                        ApplicationMetaDataListener.class,
                        ApplicationStateListener.class },
            property = { "deferredMetaData=DATA" })
-public class DataExtensionProvider implements //
+public class DataProvider implements //
                 CDIExtensionMetadata, //
                 CDIExtensionMetadataInternal, //
                 DeferredMetaDataFactory, //
                 ApplicationMetaDataListener, // TODO remove this? and use the following instead?
                 ApplicationStateListener {
-    private static final TraceComponent tc = Tr.register(DataExtensionProvider.class);
+    private static final TraceComponent tc = Tr.register(DataProvider.class);
 
     private static final Set<Class<?>> beanClasses = Set.of(DataSource.class, EntityManagerFactory.class);
 
     private static final Set<Class<? extends Extension>> extensions = Collections.singleton(DataExtension.class);
 
     @Reference
-    CDIService cdiService;
+    public CDIService cdiService;
 
     @Reference
     public ClassLoaderIdentifierService classloaderIdSvc;
@@ -148,7 +150,7 @@ public class DataExtensionProvider implements //
     protected ExecutorService executor;
 
     @Reference
-    public LocalTransactionCurrent localTranCurrent;
+    protected LocalTransactionCurrent localTranCurrent;
 
     /**
      * Configured interface/method/package names for logValues.
@@ -160,19 +162,19 @@ public class DataExtensionProvider implements //
 
     @Reference(cardinality = ReferenceCardinality.OPTIONAL,
                target = "(component.name=io.openliberty.data.internal.ejb.EJBModuleTracker)")
-    protected ModuleTracker moduleTracker;
+    public ModuleTracker moduleTracker;
 
     private final ConcurrentHashMap<String, DataComponentMetaData> metadatas = new ConcurrentHashMap<>();
 
     public @Reference ResourceConfigFactory resourceConfigFactory;
 
     @Reference
-    public EmbeddableWebSphereTransactionManager tranMgr;
+    protected EmbeddableWebSphereTransactionManager tranMgr;
 
     /**
      * Service that provides Jakarta Validation.
      */
-    private transient Object validationService;
+    transient Object validationService;
 
     /**
      * OSGi service activate.
@@ -278,8 +280,8 @@ public class DataExtensionProvider implements //
      * @param classloader class loader of the repository interface.
      * @return component metadata.
      */
-    ComponentMetaData createComponentMetadata(ApplicationMetaData appData,
-                                              ClassLoader classloader) {
+    public ComponentMetaData createComponentMetadata(ApplicationMetaData appData,
+                                                     ClassLoader classloader) {
         J2EEName jeeName = appData.getJ2EEName();
         ModuleMetaData moduleData = new DataModuleMetaData(jeeName, appData);
 
@@ -398,7 +400,7 @@ public class DataExtensionProvider implements //
      * @return loggable values.
      */
     @Trivial
-    public Object[] loggable(Class<?> repoClass, Method method, Object... values) {
+    Object[] loggable(Class<?> repoClass, Method method, Object... values) {
         String className;
         if (values == null ||
             values.length == 0 ||
@@ -436,7 +438,7 @@ public class DataExtensionProvider implements //
      * @return loggable value.
      */
     @Trivial
-    public Object loggable(Class<?> repoClass, Method method, Object value) {
+    Object loggable(Class<?> repoClass, Method method, Object value) {
         String className;
         if (value == null ||
             !logValues.isEmpty() &&
@@ -542,7 +544,7 @@ public class DataExtensionProvider implements //
      * @param appName  application name.
      * @param builders list of EntityManagerBuilder.
      */
-    void onAppStarted(String appName, Collection<FutureEMBuilder> builders) {
+    public void onAppStarted(String appName, Collection<FutureEMBuilder> builders) {
         Collection<FutureEMBuilder> previous = futureEMBuilders.putIfAbsent(appName, builders);
         if (previous != null)
             previous.addAll(builders);
@@ -560,12 +562,5 @@ public class DataExtensionProvider implements //
     protected void unsetValidation(ModuleMetaDataListener svc) {
         if (validationService == svc)
             validationService = null;
-    }
-
-    /**
-     * @return service that provides Jakarta Validation.
-     */
-    public Object validationService() {
-        return validationService;
     }
 }
