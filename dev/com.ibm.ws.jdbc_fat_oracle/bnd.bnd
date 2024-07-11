@@ -33,6 +33,6 @@ fat.test.container.images: gvenzl/oracle-free:23.3-slim-faststart, kyleaure/orac
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
     com.ibm.websphere.javaee.transaction.1.1;version=latest,\
     io.openliberty.org.testcontainers;version=latest,\
-    com.oracle.database.jdbc:ojdbc8_g;version=23.4.0.24.05,\
+    com.oracle.database.jdbc:ojdbc8;version=23.4.0.24.05,\
     com.oracle.database.security:oraclepki;version=23.4.0.24.05,\
     com.oracle.database.jdbc:ucp;version=23.4.0.24.05
