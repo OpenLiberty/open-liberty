@@ -92,45 +92,42 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
 
         try (Connection con = getConnection(dsTranLog)) {
             con.setAutoCommit(false);
-            DatabaseMetaData mdata = con.getMetaData();
-            String dbName = mdata.getDatabaseProductName();
-            boolean isPostgreSQL = dbName.toLowerCase().contains("postgresql");
-            boolean isSQLServer = dbName.toLowerCase().contains("microsoft sql");
+            final DatabaseMetaData mdata = con.getMetaData();
+            final String dbName = mdata.getDatabaseProductName();
+            final boolean isPostgreSQL = dbName.toLowerCase().contains("postgresql");
+            final boolean isSQLServer = dbName.toLowerCase().contains("microsoft sql");
 
             // Statement used to drop table
-            try (Statement stmt = con.createStatement()) {
-                String selForUpdateString = "SELECT LEASE_OWNER" +
-                                            " FROM WAS_LEASES_LOG" +
-                                            (isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
-                                            " WHERE SERVER_IDENTITY='cloud0011'" +
-                                            ((isSQLServer) ? "" : " FOR UPDATE") +
-                                            ((isPostgreSQL || isSQLServer) ? "" : " OF LEASE_TIME");
-                System.out.println("modifyLeaseOwner: " + selForUpdateString);
-                ResultSet rs = stmt.executeQuery(selForUpdateString);
+            final String selForUpdateString = "SELECT LEASE_OWNER" +
+                                              " FROM WAS_LEASES_LOG" +
+                                              (isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                                              " WHERE SERVER_IDENTITY='cloud0011'" +
+                                              ((isSQLServer) ? "" : " FOR UPDATE") +
+                                              ((isPostgreSQL || isSQLServer) ? "" : " OF LEASE_TIME");
+            System.out.println("modifyLeaseOwner: " + selForUpdateString);
+            try (Statement stmt = con.createStatement(); ResultSet rs = stmt.executeQuery(selForUpdateString)) {
+
                 String owner = null;
                 while (rs.next()) {
                     owner = rs.getString("LEASE_OWNER");
                     System.out.println("modifyLeaseOwner: owner is - " + owner);
+                    break;
                 }
-                rs.close();
 
                 if (owner == null) {
                     throw new Exception("No rows were returned for " + selForUpdateString);
                 }
 
-                String updateString = "UPDATE WAS_LEASES_LOG" +
-                                      " SET LEASE_OWNER = 'cloud0021'" +
-                                      " WHERE SERVER_IDENTITY='cloud0011'";
+                final String updateString = "UPDATE WAS_LEASES_LOG" +
+                                            " SET LEASE_OWNER = 'cloud0021'" +
+                                            " WHERE SERVER_IDENTITY='cloud0011'";
                 System.out.println("modifyLeaseOwner: " + updateString);
-                stmt.executeUpdate(updateString);
-            } catch (Exception x) {
-                System.out.println("modifyLeaseOwner: caught exception - " + x);
+                final int ret = stmt.executeUpdate(updateString);
+                System.out.println("modifyLeaseOwner: update returned " + ret);
             }
 
             System.out.println("modifyLeaseOwner: commit changes to database");
             con.commit();
-        } catch (Exception ex) {
-            System.out.println("modifyLeaseOwner: caught exception in testSetup: " + ex);
         }
     }
 
@@ -477,5 +474,13 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void modifyLeaseOwnerAndDie(HttpServletRequest request,
+                                       HttpServletResponse response) throws Exception {
+        modifyLeaseOwner(request, response);
+        // Give the test something to search for
+        XAResourceImpl.dumpState();
+        Runtime.getRuntime().halt(XAResourceImpl.DIE);
     }
 }
