@@ -270,7 +270,7 @@ INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM.useraction=Either, remove the ver
 
 # CWWKF0055E  {0} = the versionless features
 NO_RESOLVED_PLATFORM=CWWKF0055E: The {0} versionless features do not have a configured platform.
-NO_RESOLVED_PLATFORM.explanation=Each type of versionless feature which is configured is required to have a configured platform. If javaee/jakartaee versionless features are configured, they require a javaee/jakartaee platform. If microProfile versionless features are configured, they require a microProfile platform.
+NO_RESOLVED_PLATFORM.explanation=Each type of versionless feature is required to have a configured platform. If javaee or jakartaee versionless features are configured, they require a corresponding javaee or jakartaee platform. If microProfile versionless features are configured, they require a microProfile platform.
 NO_RESOLVED_PLATFORM.useraction=Either add a platform element, a versioned feature, or an environment variable.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
