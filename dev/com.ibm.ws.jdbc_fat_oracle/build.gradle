@@ -22,8 +22,8 @@ configurations {
 }
 
 dependencies {
-  oracle        "com.oracle.database.jdbc.debug:ojdbc8_g:${oracleVersion}"
-  oraclessl     "com.oracle.database.jdbc.debug:ojdbc8_g:${oracleVersion}",
+  oracle        "com.oracle.database.jdbc:ojdbc8_g:${oracleVersion}"
+  oraclessl     "com.oracle.database.jdbc:ojdbc8_g:${oracleVersion}",
                	"com.oracle.database.security:oraclepki:${oracleVersion}",
                	"com.oracle.database.security:osdt_core:${oracleVersion}",
                	"com.oracle.database.security:osdt_cert:${oracleVersion}"				
