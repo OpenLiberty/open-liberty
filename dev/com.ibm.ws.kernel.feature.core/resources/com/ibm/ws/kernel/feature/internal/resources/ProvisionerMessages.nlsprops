@@ -266,7 +266,7 @@ RESOLVED_PLATFORM.useraction=No action is required.
 # CWWKF0054E  {0} = the versionless feature that cannot be resolved: {1} = the resolved platform
 INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM=CWWKF0054E: The {0} versionless feature does not have a version that belongs to the {1} platform.
 INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM.explanation=No version of the feature is available for the platform version. Feature resolution was completed, but did not select a version of the feature.
-INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM.useraction=Either, remove the versionless feature, or specify a different platform version, or use a versioned feature.
+INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM.useraction=Either remove the versionless feature, specify a different platform version, or use a versioned feature.
 
 # CWWKF0055E  {0} = the versionless features
 NO_RESOLVED_PLATFORM=CWWKF0055E: The {0} versionless features do not have a configured platform.
