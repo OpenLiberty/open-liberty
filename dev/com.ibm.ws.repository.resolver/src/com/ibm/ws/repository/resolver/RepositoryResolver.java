@@ -119,6 +119,11 @@ public class RepositoryResolver {
     List<ApplicableToProduct> resourcesWrongProduct;
 
     /**
+     * List of platform names that were determined after resolve if versionless features requested, an empty list indicates a failed resolution if versionless features requested.
+     */
+    Set<String> resolvedPlatforms;
+
+    /**
      * List of requirements which couldn't be resolved but for which we found a solution that applied to the wrong product
      * <p>
      * Each requirement will be a symbolic name, feature name or sample name
@@ -136,6 +141,15 @@ public class RepositoryResolver {
      * List of all the missing requirements we've found so far
      */
     List<MissingRequirement> missingRequirements;
+    /**
+     * List of all the missing platforms after resolution
+     */
+    Set<String> missingPlatforms;
+
+    /**
+     * Indicates if an issue was found resolving versionless features and platforms
+     */
+    boolean hasVersionlessIssue;
 
     /**
      * <p>
@@ -378,6 +392,19 @@ public class RepositoryResolver {
         return resolve(toResolve, null, ResolutionMode.DETECT_CONFLICTS);
     }
 
+    protected boolean hasRequestedVersionlessFeatures(Collection<String> featureList, KernelResolverRepository repo) {
+        for (String s : featureList) {
+            ProvisioningFeatureDefinition feature = repo.getFeature(s);
+            if (feature == null)
+                //Can't find the feature of that name - just skip for now....
+                continue;
+            if (feature.isVersionless()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Takes a list of feature names that the user wants to install and returns a minimal set of the {@link RepositoryResource}s that should be installed to allow those features to
      * start together in one server.
@@ -472,6 +499,9 @@ public class RepositoryResolver {
         missingRequirements = new ArrayList<>();
         resolverRepository = null;
         featureConflicts = new HashMap<>();
+        resolvedPlatforms = new HashSet<>();
+        missingPlatforms = new HashSet<>();
+        hasVersionlessIssue = false;
     }
 
     /**
@@ -536,6 +566,8 @@ public class RepositoryResolver {
         Result result = resolver.resolve(resolverRepository, kernelFeatures, featureNamesToResolve, Collections.<String> emptySet(), false, requestedPlatformNames);
 
         featureConflicts.putAll(result.getConflicts());
+        if (hasRequestedVersionlessFeatures(featureNamesToResolve, resolverRepository))
+            recordVersionless(result);
 
         for (String name : result.getResolvedFeatures()) {
             ProvisioningFeatureDefinition feature = resolverRepository.getFeature(name);
@@ -545,6 +577,21 @@ public class RepositoryResolver {
         for (String missingFeature : result.getMissing()) {
             recordMissingFeature(missingFeature);
         }
+    }
+
+    /**
+     * Record Versionless Messages and Issues
+     *
+     * @param result
+     * @param requestedFeatures
+     */
+    private void recordVersionless(Result result) {
+
+        resolvedPlatforms = result.getResolvedPlatforms();
+        missingPlatforms = result.getMissingPlatforms();
+        if (resolvedPlatforms.isEmpty() || !missingPlatforms.isEmpty())
+            hasVersionlessIssue = true;
+
     }
 
     /**
@@ -956,7 +1003,7 @@ public class RepositoryResolver {
      * @throws RepositoryResolutionException if any errors occurred during resolution
      */
     private void reportErrors() throws RepositoryResolutionException {
-        if (resourcesWrongProduct.isEmpty() && missingTopLevelRequirements.isEmpty() && missingRequirements.isEmpty() && featureConflicts.isEmpty()) {
+        if (resourcesWrongProduct.isEmpty() && missingTopLevelRequirements.isEmpty() && missingRequirements.isEmpty() && featureConflicts.isEmpty() && !hasVersionlessIssue()) {
             // Everything went fine!
             return;
         }
@@ -987,7 +1034,19 @@ public class RepositoryResolver {
             missingRequirementNames.add(req.getRequirementName());
         }
 
-        throw new RepositoryResolutionException(null, missingTopLevelRequirements, missingRequirementNames, missingProductInformation, missingRequirements, featureConflicts);
+        if (hasVersionlessIssue())
+            throw new RepositoryResolutionException(null, missingTopLevelRequirements, missingRequirementNames, missingProductInformation, missingRequirements, featureConflicts,
+                                                    resolvedPlatforms, missingPlatforms);
+        else
+            throw new RepositoryResolutionException(null, missingTopLevelRequirements, missingRequirementNames, missingProductInformation, missingRequirements, featureConflicts);
+    }
+
+    /**
+     * @return
+     */
+    protected boolean hasVersionlessIssue() {
+
+        return hasVersionlessIssue;
     }
 
     static class NameAndVersion {
