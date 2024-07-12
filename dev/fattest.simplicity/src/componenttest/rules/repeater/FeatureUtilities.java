@@ -21,6 +21,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.common.apiservices.LocalMachine;
 import componenttest.rules.repeater.RepeatActions.EEVersion;
+import componenttest.topology.impl.JavaInfo;
 
 /**
  * Utility methods for obtaining features associated with
@@ -125,10 +126,28 @@ public class FeatureUtilities {
      * @return           the set of compatible MP feature short names
      */
     public static Set<String> compatibleMpFeatures(EEVersion eeVersion) {
-        return MicroProfileActions.ALL.stream()
+        Set<String> features = MicroProfileActions.ALL.stream()
                         .filter(s -> s.getEEVersion() == eeVersion)
                         .flatMap(s -> s.getFeatures().stream())
-                        .collect(Collectors.toSet());
+                        .collect(Collectors.toCollection(HashSet::new));
+
+        //MP RM is compatible with EE9+ but only with Java11+
+        if (eeVersion.compareTo(EEVersion.EE9) >= 0 && JavaInfo.JAVA_VERSION >= 11) {
+            features.add("mpReactiveStreams-3.0");
+            features.add("mpReactiveMessaging-3.0");
+        }
+
+        // MP Telemetry 1.1 is compatible with EE7 - EE10 but only with Java11+
+        if (eeVersion.compareTo(EEVersion.EE7) >= 0 && eeVersion.compareTo(EEVersion.EE10) <= 0 && JavaInfo.JAVA_VERSION >= 11) {
+            features.add("mpTelemetry-1.1");
+        }
+
+        // MP Telemetry 2.0 is compatible with EE7 - EE11 but only with Java11+
+        if (eeVersion.compareTo(EEVersion.EE7) >= 0 && eeVersion.compareTo(EEVersion.EE11) <= 0 && JavaInfo.JAVA_VERSION >= 11) {
+            features.add("mpTelemetry-2.0");
+        }
+
+        return features;
     }
 
     /**

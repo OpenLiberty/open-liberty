@@ -107,7 +107,7 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
 
         if (!errors.isEmpty()) {
             FATLogger.dumpErrors(c, method, "EE9: Feature incompatibility errors:", errors);
-            Assert.fail("Features incompatibility errors");
+            Assert.fail("Features incompatibility errors. " + errors);
         }
     }
 
@@ -127,7 +127,7 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
 
         if (!errors.isEmpty()) {
             FATLogger.dumpErrors(c, method, "EE9: Feature incompatibility errors:", errors);
-            Assert.fail("Features incompatibility errors");
+            Assert.fail("Features incompatibility errors. " + errors);
         }
     }
 
@@ -155,7 +155,7 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
 
         if (!errors.isEmpty()) {
             FATLogger.dumpErrors(c, method, "EE9: Feature compatibility errors:", errors);
-            Assert.fail("EE9 compatibility errors");
+            Assert.fail("EE9 compatibility errors. " + errors);
         }
     }
 
@@ -182,7 +182,7 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
 
         if (!errors.isEmpty()) {
             FATLogger.dumpErrors(c, method, "EE9: Feature compatibility errors:", errors);
-            Assert.fail("EE9 compatibility errors");
+            Assert.fail("EE9 compatibility errors. " + errors);
         }
     }
 
@@ -254,7 +254,7 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
                                                                  specialConflicts);
         if (!errors.isEmpty()) {
             FATLogger.dumpErrors(c, method, "EE9: Feature compatibility errors:", errors);
-            Assert.fail("EE9 compatibility errors");
+            Assert.fail("EE9 compatibility errors. " + errors);
         }
     }
 
@@ -328,7 +328,7 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
 
         if (!errors.isEmpty()) {
             FATLogger.dumpErrors(c, method, "EE9: Transport resolution errors", errors);
-            Assert.fail("EE9: Transport resolution errors");
+            Assert.fail("EE9: Transport resolution errors. " + errors);
         }
     }
 }
