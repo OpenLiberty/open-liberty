@@ -581,6 +581,11 @@ public class SSLConfigManager {
                 sslprops.setProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, hostnameVerification.toString());
             }
         }
+
+        if (sslprops.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION).equalsIgnoreCase("false")) {
+            Tr.warning(tc, "ssl.hnv.disabled.warning.CWPKI0063W", new Object[] { alias });
+        }
+
         String skipHostnameVerificationForHosts = (String) map.get("skipHostnameVerificationForHosts");
         if (skipHostnameVerificationForHosts != null && !skipHostnameVerificationForHosts.isEmpty())
             sslprops.setProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS, skipHostnameVerificationForHosts);

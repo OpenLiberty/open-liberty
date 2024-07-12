@@ -640,6 +640,10 @@ ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: SSL HANDSHAKE FAILURE:  Host n
 ssl.client.handshake.error.CWPKI0824E.explanation=An error occurred during the SSL handshake.  Host name verification is enabled and server's identity can not be verified.  The host name used to access the server does not match the server certificate's Subject Alternative Name information or SubjectDN .
 ssl.client.handshake.error.CWPKI0824E.useraction=When host name verification is enable the server's being accessed needs to be setup with a certificate contain the proper information needed to verify the server's identity.
 # -------------------------------------------------------------------------------------------------
+ssl.hnv.disabled.warning.CWPKI0063W=CWPKI0063W: Hostname verification is disabled for {0}. TLS/SSL connections do not check server identities to verify that the client is communicating with the correct server.
+ssl.hnv.disabled.warning.CWPKI0063W.explanation=Hostname verification must be enabled to ensure that the hostname in the URL that the client is connecting to matches the hostname in the certificate that the server sends back during the TLS/SSL communication.
+ssl.hnv.disabled.warning.CWPKI0063W.useraction=Enable hostname verification by setting the com.ibm.ssl.verifyHostname security custom property to true.
+# -------------------------------------------------------------------------------------------------
 ssl.cacerts.error.CWPKI0825W=CWPKI0825W: The trustDefaultCerts attribute is enabled but the default truststore failed to initialize. Because the default truststore did not initialize, only the truststore that is configured by the {0} SSL configuration is used. The exception that is returned is: {1}. 
 ssl.cacerts.error.CWPKI0825W.explanation=The default truststore did not initialize because it could not be retrieved from the trust manager. The default truststore is not used for trust. Only the configured SSL configuration is used.
 ssl.cacerts.error.CWPKI0825W.useraction=Ensure that the default truststore file exists and is accessible
