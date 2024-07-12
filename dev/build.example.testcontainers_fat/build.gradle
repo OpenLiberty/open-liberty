@@ -18,6 +18,6 @@
  // If you are preforming database testing use the copyJdbcDrivers
  // task to copy the common JDBC drivers into the
  // publish/shared/resources/jdbc directory 
- addRequiredLibraries.dependsOn copyJdbcDriversOracle
+ addRequiredLibraries.dependsOn copyJdbcDrivers
 
  addRequiredLibraries.dependsOn addJakartaTransformer
