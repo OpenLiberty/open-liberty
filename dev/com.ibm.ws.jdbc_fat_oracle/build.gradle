@@ -24,9 +24,7 @@ configurations {
 dependencies {
   oracle        "com.oracle.database.jdbc:ojdbc8:${oracleVersion}"
   oraclessl     "com.oracle.database.jdbc:ojdbc8:${oracleVersion}",
-               	"com.oracle.database.security:oraclepki:${oracleVersion}",
-               	"com.oracle.database.security:osdt_core:${oracleVersion}",
-               	"com.oracle.database.security:osdt_cert:${oracleVersion}"				
+               	"com.oracle.database.security:oraclepki:${oracleVersion}"			
   ucp           "com.oracle.database.jdbc:ucp:${oracleVersion}"
 }
 
@@ -57,8 +55,6 @@ task copySharedOracleSSL(type: Copy) {
   into new File(autoFvtDir, "publish/shared/resources/ssl/")
   rename "ojdbc8-.*.", "ojdbc8.jar"
   rename "oraclepki.*.", "oraclepki.jar"
-  rename "osdt_core.*.", "osdt_core.jar"
-  rename "osdt_cert.*.", "osdt_cert.jar"
 }
 
 addRequiredLibraries {
