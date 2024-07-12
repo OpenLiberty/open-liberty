@@ -28,11 +28,15 @@ fat.project: true
 
 fat.test.container.images: gvenzl/oracle-free:23.3-slim-faststart, kyleaure/oracle-21.3.0-faststart:1.0.full.ssl
 
+# NOTE: ojdbc8, ucp, and oraclepki do not have versions because bnd-tools
+# does not support 5 part versions (i.e. 23.4.0.24.05). Thus we left the version blank.
+# It is unknown which driver version will be used if more than one is configured in cnf.
 -buildpath: \
     com.ibm.websphere.javaee.annotation.1.1,\
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
     com.ibm.websphere.javaee.transaction.1.1;version=latest,\
     io.openliberty.org.testcontainers;version=latest,\
-    com.oracle.database.jdbc:ojdbc8;version=23.4.0.24.05,\
-    com.oracle.database.security:oraclepki;version=23.4.0.24.05,\
-    com.oracle.database.jdbc:ucp;version=23.4.0.24.05
+    com.oracle.database.jdbc:ojdbc8,\
+    com.oracle.database.jdbc:ucp,\
+    com.oracle.database.security:oraclepki
+    
