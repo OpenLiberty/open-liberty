@@ -1814,8 +1814,7 @@ public class WSKeyStore extends Properties {
             if (hostname != null && !hostname.isEmpty()) {
                 if (hostname.equals("localhost")) {
                     String host = InetAddress.getLocalHost().getCanonicalHostName();
-                    if (isGoodDNSName(host))
-                        san.add("dns:" + host);
+                    san.add("dns:" + host);
                 }
                 InetAddress addr;
                 // get the InetAddress if there is one
@@ -1823,14 +1822,11 @@ public class WSKeyStore extends Properties {
                 if (addr != null && addr.toString().startsWith("/"))
                     san.add("ip:" + hostname);
                 else {
-                    // If the hostname start with a digit keytool will not create a SAN with the value
-                    if (isGoodDNSName(hostname))
-                        san.add("dns:" + hostname);
+                    san.add("dns:" + hostname);
                 }
             } else {
                 String host = InetAddress.getLocalHost().getCanonicalHostName();
-                if (isGoodDNSName(host))
-                    san.add("dns:" + host);
+                san.add("dns:" + host);
             }
             String ipAddresses = buildSanIpStringFromNetworkInterface();
             if (ipAddresses != null)
