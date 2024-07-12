@@ -10,9 +10,6 @@
 package com.ibm.ws.fat.wc.tests;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.util.Collections;
 import java.util.logging.Logger;
@@ -45,6 +42,11 @@ import componenttest.topology.impl.LibertyServer;
 public class WCSameSiteIncompatibleClientsTests {
     private static final Logger LOG = Logger.getLogger(WCSameSiteIncompatibleClientsTests.class.getName());
     private static final String APP_NAME = "IncompatibleClientTest";
+    private enum Compatability {
+        COMPATIBLE,
+        INCOMPATIBLE,
+        ERROR
+    };
 
     @Server("servlet40_incompatible")
     public static LibertyServer server;
@@ -71,14 +73,15 @@ public class WCSameSiteIncompatibleClientsTests {
      * Helper method to be run for all versions since the implementation is userAgent dependent
      * Drives a request with the provided userAgent and returns true if the SameSite cookie is part of the response
      */
-    private boolean isCompatibleVersion(String userAgent) throws Exception{
+    private Compatability isCompatibleVersion(String userAgent) throws Exception{
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME + "/IncompatibleClientServlet";
 
         LOG.info("Navigating to url: " + url);
 
         CloseableHttpClient client = null;
         CloseableHttpResponse response = null;
-        boolean headerFound = false;
+        byte correctCookieCount = 0;
+        String[] sameSiteNoneCookieNames = {"AddCookieCookie","AddHeaderCookie", "SetHeaderCookie", "JSESSIONID"};
         HttpGet getMethod = new HttpGet(url);
         getMethod.setHeader("User-Agent", userAgent);
         Header[] headers = null;
@@ -95,14 +98,19 @@ public class WCSameSiteIncompatibleClientsTests {
                                 String cookieHeaderValue = cookieHeader.getValue();
                                 LOG.info("Header Name: " + cookieHeader.getName());
                                 LOG.info("Header Value: " + cookieHeaderValue);
-            
-                                if (cookieHeaderValue.startsWith("AddCookieCookie")) {
-                                    if (cookieHeaderValue.contains("SameSite=None")) {
-                                        headerFound = true;
+                                
+                                for (String cookieName : sameSiteNoneCookieNames) {
+                                    if (cookieHeaderValue.startsWith(cookieName)) {
+                                        if (cookieHeaderValue.contains("SameSite=None")) {
+                                            correctCookieCount++;
+                                        }
                                     }
                                 }
+                                
+                                if (cookieHeaderValue.startsWith("BasicCookie")) {
+                                    correctCookieCount++;
+                                }
                             }
-
         } finally {
             if (client != null)
                 client.close();
@@ -110,7 +118,14 @@ public class WCSameSiteIncompatibleClientsTests {
                 response.close();
         }
 
-        return headerFound;
+        // The 1 is for the BasicCookie
+        if (correctCookieCount == sameSiteNoneCookieNames.length + 1){
+            return Compatability.COMPATIBLE;
+        } else if (correctCookieCount == 1) {
+            return Compatability.INCOMPATIBLE;
+        } else {
+            return Compatability.ERROR;
+        }
     }
 
     /*
@@ -119,7 +134,7 @@ public class WCSameSiteIncompatibleClientsTests {
     @Test
     public void testiOSAfterFix() throws Exception {
         String userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/602.1.38 (KHTML, like Gecko) Version/66.6 Mobile/14A5297c Safari/602.1";
-        assertTrue("SameSite=None cookie was not received when it should have been for the compatible client:" + userAgent, isCompatibleVersion(userAgent));
+        assertTrue("Either the BasicCookie was not received or the SameSite=None cookie was not received when it should have been for the compatible client:" + userAgent, isCompatibleVersion(userAgent) == Compatability.COMPATIBLE);
     }
 
     /*
@@ -128,7 +143,7 @@ public class WCSameSiteIncompatibleClientsTests {
     @Test
     public void testMacOSSafariAfterFix() throws Exception {
         String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) AppleWebKit/601.1.39 (KHTML, like Gecko) Version/10.1.2 Safari/601.1.39";
-        assertTrue("SameSite=None cookie was not received when it should have been for the compatible client:" + userAgent, isCompatibleVersion(userAgent));
+        assertTrue("Either the BasicCookie was not received or the SameSite=None cookie was not received when it should have been for the compatible client:" + userAgent, isCompatibleVersion(userAgent)==Compatability.COMPATIBLE);
     }
 
     /*
@@ -137,7 +152,7 @@ public class WCSameSiteIncompatibleClientsTests {
     @Test
     public void testMacOSEmbeddedAfterFix() throws Exception {
         String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) AppleWebKit/537.36 (KHTML, like Gecko)";
-        assertTrue("SameSite=None cookie was not received when it should have been for the compatible client:" + userAgent, isCompatibleVersion(userAgent));
+        assertTrue("Either the BasicCookie was not received or the SameSite=None cookie was not received when it should have been for the compatible client:" + userAgent, isCompatibleVersion(userAgent)==Compatability.COMPATIBLE);
     }
 
     /*
@@ -146,7 +161,7 @@ public class WCSameSiteIncompatibleClientsTests {
     @Test
     public void testUCBrowserAfterFix() throws Exception {
         String userAgent = "Mozilla/5.0 (Linux; U; Android 8.0.0; en-US; Pixel XL Build/OPR3.170623.007) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 UCBrowser/12.13.4.1005 U3/0.8.0 Mobile Safari/534.30";
-        assertTrue("SameSite=None cookie was not received when it should have been for the compatible client:" + userAgent, isCompatibleVersion(userAgent));
+        assertTrue("Either the BasicCookie was not received or the SameSite=None cookie was not received when it should have been for the compatible client:" + userAgent, isCompatibleVersion(userAgent)==Compatability.COMPATIBLE);
     }
 
     /*
@@ -155,7 +170,7 @@ public class WCSameSiteIncompatibleClientsTests {
     @Test
     public void testChromeAfterFix() throws Exception {
         String userAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.2526.73 Safari/537.36";
-        assertTrue("SameSite=None cookie was not received when it should have been for the compatible client:" + userAgent, isCompatibleVersion(userAgent));
+        assertTrue("Either the BasicCookie was not received or the SameSite=None cookie was not received when it should have been for the compatible client:" + userAgent, isCompatibleVersion(userAgent)==Compatability.COMPATIBLE);
     }
 
     /*
@@ -164,7 +179,7 @@ public class WCSameSiteIncompatibleClientsTests {
     @Test
     public void testIncompatibleiOS() throws Exception {
         String userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/ 604.1.21 (KHTML, like Gecko) Version/ 12.0 Mobile/17A6278a Safari/602.1.26";
-        assertFalse("SameSite=None cookie was received when it shouldn't have been for the incompatible client:" + userAgent, isCompatibleVersion(userAgent));
+        assertTrue("Either the BasicCookie was not received or the SameSite=None cookie was received when it shouldn't have been for the incompatible client:" + userAgent, isCompatibleVersion(userAgent)==Compatability.INCOMPATIBLE);
     }
 
     /*
@@ -173,7 +188,7 @@ public class WCSameSiteIncompatibleClientsTests {
     @Test
     public void testIncompatibleMacOSEmbedded() throws Exception {
         String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14) AppleWebKit/537.36 (KHTML, like Gecko)";
-        assertFalse("SameSite=None cookie was received when it shouldn't have been for the incompatible client:" + userAgent, isCompatibleVersion(userAgent));
+        assertTrue("Either the BasicCookie was not received or the SameSite=None cookie was received when it shouldn't have been for the incompatible client:" + userAgent, isCompatibleVersion(userAgent)==Compatability.INCOMPATIBLE);
     }
 
     /*
@@ -182,7 +197,7 @@ public class WCSameSiteIncompatibleClientsTests {
     @Test
     public void testIncompatibleMacOSSafari() throws Exception {
         String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Safari/605.1.15";
-        assertFalse("SameSite=None cookie was received when it shouldn't have been for the incompatible client:" + userAgent, isCompatibleVersion(userAgent));
+        assertTrue("Either the BasicCookie was not received or the SameSite=None cookie was received when it shouldn't have been for the incompatible client:" + userAgent, isCompatibleVersion(userAgent)==Compatability.INCOMPATIBLE);
     }
 
     /*
@@ -191,7 +206,7 @@ public class WCSameSiteIncompatibleClientsTests {
     @Test
     public void testCompatibleUCBrowser() throws Exception {
         String userAgent = "Mozilla/5.0 (Linux; U; Android 8.0.0; en-US; Pixel XL Build/OPR3.170623.007) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 UCBrowser/12.13.2.1005 U3/0.8.0 Mobile Safari/534.30";
-        assertTrue("SameSite=None cookie was not received when it should have been for the compatible client:" + userAgent, isCompatibleVersion(userAgent));
+        assertTrue("Either the BasicCookie was not received or the SameSite=None cookie was not received when it should have been for the compatible client:" + userAgent, isCompatibleVersion(userAgent)==Compatability.COMPATIBLE);
     }
 
     /*
@@ -200,9 +215,9 @@ public class WCSameSiteIncompatibleClientsTests {
     @Test
     public void testIncompatibleChrome() throws Exception {
         String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3334.0 Safari/537.36";
-        assertFalse("SameSite=None cookie was received when it shouldn't have been for the incompatible client:" + userAgent, isCompatibleVersion(userAgent));
+        assertTrue("Either the BasicCookie was not received or the SameSite=None cookie was received when it shouldn't have been for the incompatible client:" + userAgent, isCompatibleVersion(userAgent)==Compatability.INCOMPATIBLE);
         userAgent = "Mozilla/5.0 doogiePIM/1.0.4.2 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36";
-        assertFalse("SameSite=None cookie was received when it shouldn't have been for the incompatible client:" + userAgent, isCompatibleVersion(userAgent));
+        assertTrue("Either the BasicCookie was not received or the SameSite=None cookie was received when it shouldn't have been for the incompatible client:" + userAgent, isCompatibleVersion(userAgent)==Compatability.INCOMPATIBLE);
     }
 
     /*
@@ -212,7 +227,7 @@ public class WCSameSiteIncompatibleClientsTests {
     @Test
     public void testiOSBeforeFix() throws Exception {
         String userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/602.1.38 (KHTML, like Gecko) Version/66.6 Mobile/14A5297c Safari/602.1";
-        assertTrue("SameSite=None cookie was not received when it should have been for the compatible client:" + userAgent, isCompatibleVersion(userAgent));
+        assertTrue("Either the BasicCookie was not received or the SameSite=None cookie was not received when it should have been for the compatible client:" + userAgent, isCompatibleVersion(userAgent)==Compatability.COMPATIBLE);
     }
 
     /*
@@ -222,7 +237,7 @@ public class WCSameSiteIncompatibleClientsTests {
     @Test
     public void testMacOSEmbeddedBeforeFix() throws Exception {
         String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13) AppleWebKit/537.36 (KHTML, like Gecko)";
-        assertTrue("SameSite=None cookie was not received when it should have been for the compatible client:" + userAgent, isCompatibleVersion(userAgent));
+        assertTrue("Either the BasicCookie was not received or the SameSite=None cookie was not received when it should have been for the compatible client:" + userAgent, isCompatibleVersion(userAgent)==Compatability.COMPATIBLE);
     }
 
     /*
@@ -232,7 +247,7 @@ public class WCSameSiteIncompatibleClientsTests {
     @Test
     public void testMacOSSafariBeforeFix() throws Exception {
         String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Safari/605.1.15";
-        assertTrue("SameSite=None cookie was not received when it should have been for the compatible client:" + userAgent, isCompatibleVersion(userAgent));
+        assertTrue("Either the BasicCookie was not received or the SameSite=None cookie was not received when it should have been for the compatible client:" + userAgent, isCompatibleVersion(userAgent)==Compatability.COMPATIBLE);
     }
 
     /*
@@ -241,7 +256,7 @@ public class WCSameSiteIncompatibleClientsTests {
     @Test
     public void testUCBrowserBeforeFix() throws Exception {
         String userAgent = "Mozilla/5.0 (Linux; U; Android 7.1.1; en-US; Lenovo K8 Note Build/NMB26.54-74) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.108 UCBrowser/12.0.0.1088 Mobile Safari/537.36";
-        assertFalse("SameSite=None cookie was received when it shouldn't have been for the incompatible client:" + userAgent, isCompatibleVersion(userAgent));
+        assertTrue("Either the BasicCookie was not received or the SameSite=None cookie was received when it shouldn't have been for the incompatible client:" + userAgent, isCompatibleVersion(userAgent)==Compatability.INCOMPATIBLE);
     }
 
     /*
@@ -251,7 +266,7 @@ public class WCSameSiteIncompatibleClientsTests {
     @Test
     public void testChromeBeforeFix() throws Exception {
         String userAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36";
-        assertTrue("SameSite=None cookie was not received when it should have been for the compatible client:" + userAgent, isCompatibleVersion(userAgent));
+        assertTrue("Either the BasicCookie was not received or the SameSite=None cookie was not received when it should have been for the compatible client:" + userAgent, isCompatibleVersion(userAgent)==Compatability.COMPATIBLE);
     }
 
 }

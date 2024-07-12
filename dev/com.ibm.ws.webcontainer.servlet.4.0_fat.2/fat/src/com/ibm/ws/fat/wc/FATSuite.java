@@ -48,11 +48,11 @@ import componenttest.rules.repeater.RepeatTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                // WCResponseHeadersTest.class,
-                // WCSameSiteCookieAttributeTests.class,
-                // WCSameSiteCookieAttributeSecurityTest.class,
-                // WCPartitionedAttributeTests.class,
-                // WCPartitionedCookieAttributeSecurityTest.class,
+                WCResponseHeadersTest.class,
+                WCSameSiteCookieAttributeTests.class,
+                WCSameSiteCookieAttributeSecurityTest.class,
+                WCPartitionedAttributeTests.class,
+                WCPartitionedCookieAttributeSecurityTest.class,
                 WCSameSiteIncompatibleClientsTests.class
 })
 

@@ -132,10 +132,7 @@ public class SameSiteCookieUtilsTest {
             //Chrome 67
             userAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.2526.73 Safari/537.36";
             assertFalse(SameSiteCookieUtils.isSameSiteNoneIncompatible(userAgent));
-
-            //Test UC browser before 12.13.2
-            //Test UC browser on 12.13.2
-            //Test UC browser after 12.13.2
+            
             //test bad format of product
 
         } catch (Throwable t) {

@@ -34,9 +34,13 @@ public class IncompatibleClientServlet extends HttpServlet {
         PrintWriter writer = response.getWriter();
         writer.print("Welcome to the IncompatibleClientServlet!");
 
-        // TODO: Add more coverage with Session cookies
-
+        // Session cookie is configured to have SameSite=None via server.xml, calling getSession just creates the cookie
+        request.getSession();
+        response.setHeader("set-cookie", "SetHeaderCookie; SameSite=None");
         response.addHeader("set-cookie", "AddHeaderCookie; SameSite=None");
         response.addCookie(new Cookie("AddCookieCookie", "sugar"));
+
+        // Have a base cookie that always gets sent and does not have SameSite set
+        response.addHeader("set-cookie", "BasicCookie");
     }
 }

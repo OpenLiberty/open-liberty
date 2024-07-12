@@ -7,6 +7,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
+/** 
+ * Adapted function names and idea from Google's pseudocode
+ * https://www.chromium.org/updates/same-site/incompatible-clients/
+ * Created our own implementation for Java
+ */
 package com.ibm.ws.http.channel.internal.cookies;
 
 import java.util.regex.Matcher;
