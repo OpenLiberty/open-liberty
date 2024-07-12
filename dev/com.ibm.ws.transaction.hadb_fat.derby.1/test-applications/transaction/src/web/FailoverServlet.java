@@ -19,6 +19,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +35,7 @@ import javax.transaction.xa.XAResource;
 
 import com.ibm.tx.jta.ExtendedTransactionManager;
 import com.ibm.tx.jta.TransactionManagerFactory;
+import com.ibm.tx.jta.ut.util.TxTestUtils;
 import com.ibm.tx.jta.ut.util.XAResourceFactoryImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
@@ -178,78 +181,71 @@ public class FailoverServlet extends FATServlet {
                               int thesqlcode, int operationToFail, int numberOfFailures) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupHATable");
 
-        Connection con = getConnection();
-        // Set up statement to use for table delete/recreate
-        Statement stmt = con.createStatement();
+        try (Connection con = getConnection(); Statement stmt = con.createStatement()) {
+            try {
+                System.out.println("FAILOVERSERVLET: drop hatable");
+                stmt.executeUpdate("drop table hatable");
+            } catch (SQLException x) {
+                // didn't exist
+            }
 
-        try {
-            System.out.println("FAILOVERSERVLET: drop hatable");
-            stmt.executeUpdate("drop table hatable");
-        } catch (SQLException x) {
-            // didn't exist
+            System.out.println("FAILOVERSERVLET: create hatable");
+            stmt.executeUpdate(
+                               "create table hatable (testtype int not null primary key, failingoperation int, numberoffailures int, simsqlcode int)");
+            // was col2 varchar(20)
+            System.out.println("FAILOVERSERVLET: insert row into hatable - type" + testType.ordinal()
+                               + ", operationtofail: " + operationToFail + ", sqlcode: " + thesqlcode);
+            stmt.executeUpdate("insert into hatable values (" + testType.ordinal() + ", " + operationToFail + ", " + numberOfFailures + ", "
+                               + thesqlcode + ")"); // was -4498
+
+            // UserTransaction Commit
+            con.setAutoCommit(false);
+
+            System.out.println("FAILOVERSERVLET: commit changes to database");
+            con.commit();
         }
-        System.out.println("FAILOVERSERVLET: create hatable");
-        stmt.executeUpdate(
-                           "create table hatable (testtype int not null primary key, failingoperation int, numberoffailures int, simsqlcode int)");
-        // was col2 varchar(20)
-        System.out.println("FAILOVERSERVLET: insert row into hatable - type" + testType.ordinal()
-                           + ", operationtofail: " + operationToFail + ", sqlcode: " + thesqlcode);
-        stmt.executeUpdate("insert into hatable values (" + testType.ordinal() + ", " + operationToFail + ", " + numberOfFailures + ", "
-                           + thesqlcode + ")"); // was -4498
-
-        // UserTransaction Commit
-        con.setAutoCommit(false);
-
-        System.out.println("FAILOVERSERVLET: commit changes to database");
-        con.commit();
-
     }
 
     public void dropHATable(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive dropHATable");
 
-        Connection con = getConnection();
-        // Set up statement to use for table delete
-        Statement stmt = con.createStatement();
+        try (Connection con = getConnection(); Statement stmt = con.createStatement()) {
+            try {
+                System.out.println("FAILOVERSERVLET: drop hatable");
+                stmt.executeUpdate("drop table hatable");
+            } catch (SQLException x) {
+                // didn't exist
+            }
 
-        try {
-            System.out.println("FAILOVERSERVLET: drop hatable");
-            stmt.executeUpdate("drop table hatable");
-        } catch (SQLException x) {
-            // didn't exist
+            // UserTransaction Commit
+            con.setAutoCommit(false);
+
+            System.out.println("FAILOVERSERVLET: commit changes to database");
+            con.commit();
         }
-
-        // UserTransaction Commit
-        con.setAutoCommit(false);
-
-        System.out.println("FAILOVERSERVLET: commit changes to database");
-        con.commit();
-
     }
 
     public void dropStaleRecoveryLogTables(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive dropStaleRecoveryLogTables");
 
-        Connection con = getConnection();
-        // Set up statement to use for table delete
-        Statement stmt = con.createStatement();
-        System.out.println("FAILOVERSERVLET: drop dropStaleRecoveryLogTables");
-        try {
-            stmt.executeUpdate("drop table WAS_PARTNER_LOGcloudstale");
-        } catch (SQLException x) {
-            // didn't exist
-        }
-        try {
-            stmt.executeUpdate("drop table WAS_TRAN_LOGcloudstale");
-        } catch (SQLException x) {
-            // didn't exist
-        }
-        // UserTransaction Commit
-        con.setAutoCommit(false);
+        try (Connection con = getConnection(); Statement stmt = con.createStatement()) {
+            System.out.println("FAILOVERSERVLET: drop dropStaleRecoveryLogTables");
+            try {
+                stmt.executeUpdate("drop table WAS_PARTNER_LOGcloudstale");
+            } catch (SQLException x) {
+                // didn't exist
+            }
+            try {
+                stmt.executeUpdate("drop table WAS_TRAN_LOGcloudstale");
+            } catch (SQLException x) {
+                // didn't exist
+            }
+            // UserTransaction Commit
+            con.setAutoCommit(false);
 
-        System.out.println("FAILOVERSERVLET: commit changes to database");
-        con.commit();
-
+            System.out.println("FAILOVERSERVLET: commit changes to database");
+            con.commit();
+        }
     }
 
     /**
@@ -364,20 +360,16 @@ public class FailoverServlet extends FATServlet {
                                    HttpServletResponse response) throws Exception {
         Set<List<Number>> resultSet;
         List<Number> row;
-        Statement recoveryStmt = null;
-        ResultSet recoveryRS = null;
 
-        try {
-            Connection conn = getConnection();
+        String queryString = "SELECT RU_ID, RUSECTION_ID, RUSECTION_DATA_INDEX, DATA" +
+                             " FROM WAS_TRAN_LOG" +
+                             " WHERE SERVER_NAME='com.ibm.ws.transaction'" +
+                             " AND SERVICE_ID=1";
+        System.out.println("Retrieve all rows from table using - " + queryString);
+
+        try (Connection conn = getConnection(); Statement recoveryStmt = conn.createStatement(); ResultSet recoveryRS = recoveryStmt.executeQuery(queryString)) {
+
             conn.setAutoCommit(false);
-            recoveryStmt = conn.createStatement();
-            String queryString = "SELECT RU_ID, RUSECTION_ID, RUSECTION_DATA_INDEX, DATA" +
-                                 " FROM WAS_TRAN_LOG" +
-                                 " WHERE SERVER_NAME='com.ibm.ws.transaction'" +
-                                 " AND SERVICE_ID=1";
-            System.out.println("Retrieve all rows from table using - " + queryString);
-
-            recoveryRS = recoveryStmt.executeQuery(queryString);
 
             resultSet = new HashSet<List<Number>>();
 
@@ -399,49 +391,35 @@ public class FailoverServlet extends FATServlet {
                 }
             }
 
-            // UserTransaction Commit
-            conn.setAutoCommit(false);
-
             System.out.println("FAILOVERSERVLET: commit changes to database");
             conn.commit();
         } catch (Exception ex) {
             System.out.println("FAILOVERSERVLET: caught exception in testSetup: " + ex);
             throw ex;
-        } finally {
-            if (recoveryRS != null && !recoveryRS.isClosed())
-                recoveryRS.close();
-            if (recoveryStmt != null && !recoveryStmt.isClosed())
-                recoveryStmt.close();
         }
-
     }
 
     public void insertStaleLease(HttpServletRequest request,
                                  HttpServletResponse response) throws Exception {
 
-        Connection con = getConnection();
-        con.setAutoCommit(false);
-        DatabaseMetaData mdata = con.getMetaData();
-        String dbName = mdata.getDatabaseProductName();
-        System.out.println("insertStaleLease with cleanup");
-        // Access the Database
-        boolean rowNotFound = false;
-        boolean isPostgreSQL = false;
-        boolean isSQLServer = false;
-        if (dbName.toLowerCase().contains("postgresql")) {
-            // we are PostgreSQL
-            isPostgreSQL = true;
-            System.out.println("insertStaleLease: This is a PostgreSQL Database");
-        } else if (dbName.toLowerCase().contains("microsoft sql")) {
-            // we are MS SQL Server
-            isSQLServer = true;
-            System.out.println("insertStaleLease: This is an MS SQL Server Database");
-        }
+        try (Connection con = getConnection()) {
+            con.setAutoCommit(false);
+            DatabaseMetaData mdata = con.getMetaData();
+            String dbName = mdata.getDatabaseProductName();
+            System.out.println("insertStaleLease with cleanup");
+            // Access the Database
+            boolean isPostgreSQL = false;
+            boolean isSQLServer = false;
+            if (dbName.toLowerCase().contains("postgresql")) {
+                // we are PostgreSQL
+                isPostgreSQL = true;
+                System.out.println("insertStaleLease: This is a PostgreSQL Database");
+            } else if (dbName.toLowerCase().contains("microsoft sql")) {
+                // we are MS SQL Server
+                isSQLServer = true;
+                System.out.println("insertStaleLease: This is an MS SQL Server Database");
+            }
 
-        Statement claimPeerlockingStmt = con.createStatement();
-        ResultSet claimPeerLockingRS = null;
-
-        try {
             String queryString = "SELECT LEASE_TIME" +
                                  " FROM WAS_LEASES_LOG" +
                                  (isSQLServer ? " WITH (UPDLOCK)" : "") +
@@ -449,234 +427,146 @@ public class FailoverServlet extends FATServlet {
                                  (isSQLServer ? "" : " FOR UPDATE") +
                                  (isSQLServer || isPostgreSQL ? "" : " OF LEASE_TIME");
             System.out.println("insertStaleLease: Attempt to select the row for UPDATE using - " + queryString);
-            claimPeerLockingRS = claimPeerlockingStmt.executeQuery(queryString);
-        } catch (Exception e) {
-            System.out.println("insertStaleLease: Query failed with exception: " + e);
-            rowNotFound = true;
-        } // eof Exception e block
 
-        // see if we acquired the row
-        if (!rowNotFound && claimPeerLockingRS.next()) {
-            // We found an existing lease row
-            PreparedStatement claimPeerUpdateStmt = null;
-            try {
-                long storedLease = claimPeerLockingRS.getLong(1);
-                System.out.println("insertStaleLease: Acquired server row, stored lease value is: " + storedLease);
+            try (Statement claimPeerlockingStmt = con.createStatement(); ResultSet claimPeerLockingRS = claimPeerlockingStmt.executeQuery(queryString)) {
 
-                // Construct the UPDATE string
-                String updateString = "UPDATE WAS_LEASES_LOG" +
-                                      " SET LEASE_OWNER = ?, LEASE_TIME = ?" +
-                                      " WHERE SERVER_IDENTITY='cloudstale'";
+                final long fiveMinutesAgo = Instant.now().minus(5, ChronoUnit.MINUTES).toEpochMilli();
 
-                System.out.println("insertStaleLease: update lease for cloudstale");
+                // see if we acquired the row
+                if (claimPeerLockingRS.next()) {
+                    // We found an existing lease row
+                    long storedLease = claimPeerLockingRS.getLong(1);
+                    System.out.println("insertStaleLease: Acquired server row, stored lease value is: " + storedLease);
 
-                claimPeerUpdateStmt = con.prepareStatement(updateString);
+                    // Construct the UPDATE string
+                    String updateString = "UPDATE WAS_LEASES_LOG" +
+                                          " SET LEASE_OWNER = ?, LEASE_TIME = ?" +
+                                          " WHERE SERVER_IDENTITY='cloudstale'";
 
-                // Set the Lease_time
-                long fir1 = System.currentTimeMillis() - (1000 * 300);
-                claimPeerUpdateStmt.setString(1, "cloudstale");
-                claimPeerUpdateStmt.setLong(2, fir1);
+                    System.out.println("insertStaleLease: update lease for cloudstale");
 
-                System.out.println("insertStaleLease: Ready to UPDATE using string - " + updateString + " and time: " + fir1);
+                    try (PreparedStatement claimPeerUpdateStmt = con.prepareStatement(updateString)) {
 
-                int ret = claimPeerUpdateStmt.executeUpdate();
+                        // Set the Lease_time
+                        claimPeerUpdateStmt.setString(1, "cloudstale");
+                        claimPeerUpdateStmt.setLong(2, fiveMinutesAgo);
 
-                System.out.println("insertStaleLease: Have updated server row with return: " + ret);
-                con.commit();
-            } catch (Exception ex) {
-                System.out.println("insertStaleLease: caught exception in testSetup: " + ex);
-                // attempt rollback
-                con.rollback();
-            } finally {
-                if (claimPeerUpdateStmt != null && !claimPeerUpdateStmt.isClosed())
-                    claimPeerUpdateStmt.close();
-                if (claimPeerlockingStmt != null && !claimPeerlockingStmt.isClosed())
-                    claimPeerlockingStmt.close();
-                if (claimPeerLockingRS != null && !claimPeerLockingRS.isClosed())
-                    claimPeerLockingRS.close();
-                if (con != null) {
-                    con.close();
+                        System.out.println("insertStaleLease: Ready to UPDATE using string - " + updateString + " and time: " + TxTestUtils.traceTime(fiveMinutesAgo));
+
+                        int ret = claimPeerUpdateStmt.executeUpdate();
+
+                        System.out.println("insertStaleLease: Have updated server row with return: " + ret);
+                        con.commit();
+                    } catch (Exception ex) {
+                        System.out.println("insertStaleLease: caught exception in testSetup: " + ex);
+                        // attempt rollback
+                        con.rollback();
+                    }
+                } else {
+                    // We didn't find the row in the table
+                    System.out.println("insertStaleLease: Could not find row");
+
+                    String insertString = "INSERT INTO WAS_LEASES_LOG" +
+                                          " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
+                                          " VALUES (?,?,?,?)";
+
+                    System.out.println("insertStaleLease: Using - " + insertString + ", and time: " + TxTestUtils.traceTime(fiveMinutesAgo));
+
+                    try (PreparedStatement specStatement = con.prepareStatement(insertString)) {
+                        specStatement.setString(1, "cloudstale");
+                        specStatement.setString(2, "defaultGroup");
+                        specStatement.setString(3, "cloudstale");
+                        specStatement.setLong(4, fiveMinutesAgo);
+
+                        int ret = specStatement.executeUpdate();
+
+                        System.out.println("insertStaleLease: Have inserted Server row with return: " + ret);
+                        con.commit();
+                    } catch (Exception ex) {
+                        System.out.println("insertStaleLease: caught exception in testSetup: " + ex);
+                        // attempt rollback
+                        con.rollback();
+                    }
                 }
             }
-        } else {
-            // We didn't find the row in the table
-            System.out.println("insertStaleLease: Could not find row");
+        }
+    }
 
-            PreparedStatement specStatement = null;
-            try {
+    public void setupBatchOfStaleLeases(int lower, int upper) throws Exception {
+
+        try (Connection con = getConnection(); Statement claimPeerlockingStmt = con.createStatement()) {
+
+            con.setAutoCommit(false);
+            System.out.println("setupBatchOfStaleLeases1");
+
+            for (int i = lower; i < upper; i++) {
                 String insertString = "INSERT INTO WAS_LEASES_LOG" +
                                       " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
                                       " VALUES (?,?,?,?)";
 
-                long fir1 = System.currentTimeMillis() - (1000 * 300);
+                final long fiveMinutesAgo = Instant.now().minus(5, ChronoUnit.MINUTES).toEpochMilli();
+                String serverid = "cloudstale" + i;
+                System.out.println("setupBatchOfStaleLeases1: Using - " + insertString + ", and time: " + TxTestUtils.traceTime(fiveMinutesAgo));
 
-                System.out.println("insertStaleLease: Using - " + insertString + ", and time: " + fir1);
-                specStatement = con.prepareStatement(insertString);
-                specStatement.setString(1, "cloudstale");
-                specStatement.setString(2, "defaultGroup");
-                specStatement.setString(3, "cloudstale");
-                specStatement.setLong(4, fir1);
+                try (PreparedStatement specStatement = con.prepareStatement(insertString)) {
+                    specStatement.setString(1, serverid);
+                    specStatement.setString(2, "defaultGroup");
+                    specStatement.setString(3, serverid);
+                    specStatement.setLong(4, fiveMinutesAgo);
 
-                int ret = specStatement.executeUpdate();
+                    int ret = specStatement.executeUpdate();
 
-                System.out.println("insertStaleLease: Have inserted Server row with return: " + ret);
-                con.commit();
-            } catch (Exception ex) {
-                System.out.println("insertStaleLease: caught exception in testSetup: " + ex);
-                // attempt rollback
-                con.rollback();
-            } finally {
-                if (specStatement != null && !specStatement.isClosed())
-                    specStatement.close();
-                if (claimPeerlockingStmt != null && !claimPeerlockingStmt.isClosed())
-                    claimPeerlockingStmt.close();
-                if (claimPeerLockingRS != null && !claimPeerLockingRS.isClosed())
-                    claimPeerLockingRS.close();
-                if (con != null) {
-                    con.close();
+                    System.out.println("setupBatchOfStaleLeases1: Have inserted Server row with return: " + ret);
                 }
             }
+
+            con.commit();
         }
     }
 
     public void setupBatchOfStaleLeases1(HttpServletRequest request,
                                          HttpServletResponse response) throws Exception {
 
-        Connection con = getConnection();
-        con.setAutoCommit(false);
-        System.out.println("setupBatchOfStaleLeases1");
-        // Access the Database
-
-        Statement claimPeerlockingStmt = con.createStatement();
-        ResultSet claimPeerLockingRS = null;
-
-        PreparedStatement specStatement = null;
-        try {
-            for (int i = 0; i < 10; i++) {
-                String insertString = "INSERT INTO WAS_LEASES_LOG" +
-                                      " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
-                                      " VALUES (?,?,?,?)";
-
-                long fir1 = System.currentTimeMillis() - (1000 * 300);
-                String serverid = "cloudstale" + i;
-                System.out.println("setupBatchOfStaleLeases1: Using - " + insertString + ", and time: " + fir1);
-                specStatement = con.prepareStatement(insertString);
-                specStatement.setString(1, serverid);
-                specStatement.setString(2, "defaultGroup");
-                specStatement.setString(3, serverid);
-                specStatement.setLong(4, fir1);
-
-                int ret = specStatement.executeUpdate();
-
-                System.out.println("setupBatchOfStaleLeases1: Have inserted Server row with return: " + ret);
-                con.commit();
-            }
-        } catch (Exception ex) {
-            System.out.println("setupBatchOfStaleLeases1: caught exception in testSetup: " + ex);
-            // attempt rollback
-            con.rollback();
-        } finally {
-            if (specStatement != null && !specStatement.isClosed())
-                specStatement.close();
-            if (claimPeerlockingStmt != null && !claimPeerlockingStmt.isClosed())
-                claimPeerlockingStmt.close();
-            if (claimPeerLockingRS != null && !claimPeerLockingRS.isClosed())
-                claimPeerLockingRS.close();
-            if (con != null) {
-                con.close();
-            }
-        }
-
+        setupBatchOfStaleLeases(0, 10);
     }
 
     public void setupBatchOfStaleLeases2(HttpServletRequest request,
                                          HttpServletResponse response) throws Exception {
 
-        Connection con = getConnection();
-        con.setAutoCommit(false);
-        System.out.println("setupBatchOfStaleLeases2");
-        // Access the Database
-
-        Statement claimPeerlockingStmt = con.createStatement();
-        ResultSet claimPeerLockingRS = null;
-
-        PreparedStatement specStatement = null;
-        try {
-            for (int i = 10; i < 20; i++) {
-                String insertString = "INSERT INTO WAS_LEASES_LOG" +
-                                      " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
-                                      " VALUES (?,?,?,?)";
-
-                long fir1 = System.currentTimeMillis() - (1000 * 300);
-                String serverid = "cloudstale" + i;
-                System.out.println("setupBatchOfStaleLeases2: Using - " + insertString + ", and time: " + fir1);
-                specStatement = con.prepareStatement(insertString);
-                specStatement.setString(1, serverid);
-                specStatement.setString(2, "defaultGroup");
-                specStatement.setString(3, serverid);
-                specStatement.setLong(4, fir1);
-
-                int ret = specStatement.executeUpdate();
-
-                System.out.println("setupBatchOfStaleLeases2: Have inserted Server row with return: " + ret);
-                con.commit();
-            }
-        } catch (Exception ex) {
-            System.out.println("setupBatchOfStaleLeases2: caught exception in testSetup: " + ex);
-            // attempt rollback
-            con.rollback();
-        } finally {
-            if (specStatement != null && !specStatement.isClosed())
-                specStatement.close();
-            if (claimPeerlockingStmt != null && !claimPeerlockingStmt.isClosed())
-                claimPeerlockingStmt.close();
-            if (claimPeerLockingRS != null && !claimPeerLockingRS.isClosed())
-                claimPeerLockingRS.close();
-            if (con != null) {
-                con.close();
-            }
-        }
-
+        setupBatchOfStaleLeases(10, 20);
     }
 
     public void deleteStaleLease(HttpServletRequest request,
                                  HttpServletResponse response) throws Exception {
 
-        Connection con = getConnection();
-        con.setAutoCommit(false);
-        DatabaseMetaData mdata = con.getMetaData();
-        String dbName = mdata.getDatabaseProductName();
+        try (Connection con = getConnection()) {
+            con.setAutoCommit(false);
+            DatabaseMetaData mdata = con.getMetaData();
+            String dbName = mdata.getDatabaseProductName();
 
-        // Access the Database
-        boolean isSQLServer = false;
-        if (dbName.toLowerCase().contains("microsoft sql")) {
-            // we are MS SQL Server
-            isSQLServer = true;
-            System.out.println("deleteStaleLease: This is an MS SQL Server Database");
-        }
+            // Access the Database
+            boolean isSQLServer = false;
+            if (dbName.toLowerCase().contains("microsoft sql")) {
+                // we are MS SQL Server
+                isSQLServer = true;
+                System.out.println("deleteStaleLease: This is an MS SQL Server Database");
+            }
 
-        Statement deleteStmt = con.createStatement();
+            try (Statement deleteStmt = con.createStatement()) {
 
-        try {
-            String deleteString = "DELETE FROM WAS_LEASES_LOG" +
-                                  (isSQLServer ? " WITH (UPDLOCK)" : "") +
-                                  " WHERE SERVER_IDENTITY='cloudstale'";
-            System.out.println("deleteStaleLease: Attempt to delete the row using - " + deleteString);
-            int ret = deleteStmt.executeUpdate(deleteString);
-            System.out.println("deleteStaleLease: return was - " + ret);
-            con.commit();
-        } catch (Exception e) {
-            System.out.println("deleteStaleLease: Delete failed with exception: " + e);
-            // attempt rollback
-            con.rollback();
-        } finally {
-            if (deleteStmt != null && !deleteStmt.isClosed())
-                deleteStmt.close();
-            if (con != null) {
-                con.close();
+                String deleteString = "DELETE FROM WAS_LEASES_LOG" +
+                                      (isSQLServer ? " WITH (UPDLOCK)" : "") +
+                                      " WHERE SERVER_IDENTITY='cloudstale'";
+                System.out.println("deleteStaleLease: Attempt to delete the row using - " + deleteString);
+                int ret = deleteStmt.executeUpdate(deleteString);
+                System.out.println("deleteStaleLease: return was - " + ret);
+                con.commit();
+            } catch (Exception e) {
+                System.out.println("deleteStaleLease: Delete failed with exception: " + e);
+                // attempt rollback
+                con.rollback();
             }
         }
-
     }
 
     public void setupRec007(HttpServletRequest request,
