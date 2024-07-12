@@ -328,7 +328,7 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
             }
             String ipAddresses = buildSanIpStringFromNetworkInterface();
             if (ipAddresses != null)
-                ext = ext + ipAddresses;
+                ext = ext + "," + ipAddresses;
         } catch (UnknownHostException e) {
             // use return null and not set SAN if there is an exception here
         }
