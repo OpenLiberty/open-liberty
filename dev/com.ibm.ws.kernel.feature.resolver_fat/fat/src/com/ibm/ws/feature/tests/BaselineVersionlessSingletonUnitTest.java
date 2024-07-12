@@ -151,6 +151,18 @@ public class BaselineVersionlessSingletonUnitTest extends BaselineResolutionUnit
 
         // eeCompatible version change
 
+        { "com.ibm.websphere.appserver.concurrent-1.0",
+          "io.openliberty.versionless.concurrent", "javaee-7.0",
+          "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
+
+        { "com.ibm.websphere.appserver.jacc-1.5",
+          "io.openliberty.versionless.jacc", "javaee-7.0",
+          "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
+
+        { "com.ibm.websphere.appserver.jaspic-1.1",
+          "io.openliberty.versionless.jaspic", "javaee-7.0",
+          "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
+
         { "com.ibm.websphere.appserver.javaMail-1.5",
           "io.openliberty.versionless.javaMail", "javaee-7.0",
           "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
