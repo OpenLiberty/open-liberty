@@ -141,6 +141,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     /**
      * Which RDBMS are we working against?
      */
+    volatile private boolean _isDerby;
     volatile private boolean _isOracle;
     volatile private boolean _isPostgreSQL;
     volatile private boolean _isDB2;
@@ -858,6 +859,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             } else if (dbName.toLowerCase().contains("microsoft sql")) {
                 _isSQLServer = true;
             } else if (dbName.toLowerCase().contains("derby")) {
+                _isDerby = true;
             } else {
                 _isNonStandard = true;
                 // We're not working with the standard set of databases. The "default" behaviour is not to retry for such non-standard, untested databases,
@@ -2550,16 +2552,16 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
     private boolean isTableDeleted(SQLException sqlex) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "isTableDeleted ", new Object[] { sqlex });
+            Tr.entry(tc, "isTableDeleted ", sqlex);
         boolean noTable = false;
-        int sqlErrorCode = sqlex.getErrorCode();
-        String sqlmessage = sqlex.getMessage();
+        final int sqlErrorCode = sqlex.getErrorCode();
+        final String sqlState = sqlex.getSQLState();
+        final String sqlMessage = sqlex.getMessage();
 
-        if (tc.isEventEnabled()) {
-            Tr.event(tc, " SQL exception:");
-            Tr.event(tc, " Message: " + sqlex.getMessage());
-            Tr.event(tc, " SQLSTATE: " + sqlex.getSQLState());
-            Tr.event(tc, " Error code: " + sqlErrorCode);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Message: {0}", sqlMessage);
+            Tr.debug(tc, "SQL State: {0}", sqlState);
+            Tr.debug(tc, "Error code: {0}", sqlErrorCode);
         }
         if (_isDB2) {
             if (sqlErrorCode == -204)
@@ -2568,10 +2570,13 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             if (sqlErrorCode == 942)
                 noTable = true;
         } else if (_isPostgreSQL) {
-            if (sqlmessage.contains("relation") && sqlmessage.contains("does not exist"))
+            if (sqlMessage.contains("relation") && sqlMessage.contains("does not exist"))
                 noTable = true;
         } else if (_isSQLServer) {
             if (sqlErrorCode == 208)
+                noTable = true;
+        } else if (_isDerby) {
+            if ("42X05".equals(sqlState))
                 noTable = true;
         }
         if (tc.isEntryEnabled())

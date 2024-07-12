@@ -32,4 +32,3 @@ IBM-App-ForceRestart: uninstall, \
  com.ibm.ws.jpa.container.thirdparty
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
-WLP-Platform: javaee-8.0

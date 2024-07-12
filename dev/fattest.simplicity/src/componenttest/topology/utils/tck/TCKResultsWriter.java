@@ -15,8 +15,10 @@ package componenttest.topology.utils.tck;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
@@ -127,10 +129,21 @@ public class TCKResultsWriter {
                 }
             }
             output.write("----");
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (SAXException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Files written to the extras directory are included in the FAT output zip, but can also be uploaded to an additional location by setting the
+        // 'extraFatOutputPath' property to a path on LibFS (e.g. /liberty/dev/Xo/release/BUILD_LABEL) to retain them beyond the life cycle of FAT output.
+        // Note that this copying *only* occurs in CI Orchestrator environments as the code wrapping FAT execution is responsible for performing the upload to LibFS.
+        // The use case here is to make .adoc files available in the build directory without having to extract them from the FAT output zip every time.
+        try {
+            Path extrasPath = Paths.get("extras", filename);
+            Files.createDirectories(extrasPath.getParent());
+            Files.copy(outputPath, extrasPath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

@@ -24,7 +24,7 @@ import jakarta.data.repository.Save;
  * A repository that uses a DataSourceDefinition that is defined in
  * the EJB module.
  */
-@Repository(dataStore = "java:global/jdbc/DataSourceDef") // TODO java:module
+@Repository(dataStore = "java:module/jdbc/DataSourceDef")
 public interface EJBModuleDSDRepo {
 
     @Find

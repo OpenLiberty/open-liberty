@@ -24,10 +24,11 @@
  </Designate>
 
  <OCD id="io.openliberty.data" ibm:alias="data" ibmui:localization="OSGI-INF/l10n/metatype" name="%data" description="%data.desc">
-  <AD id="createTables"             type="Boolean" default="true" name="%createTables" description="%createTables.desc"/>
-  <AD id="dropTables"               type="Boolean" default="false" name="%dropTables" description="%dropTables.desc"/>
+  <AD id="createTables"                      type="Boolean" default="true" name="%createTables" description="%createTables.desc"/>
+  <AD id="dropTables"                        type="Boolean" default="false" name="%dropTables" description="%dropTables.desc"/>
   <!-- add name/description once implemented -->
-  <AD id="logValues"                type="String"  required="false" cardinality="-100" name="%logValues" description="%logValues.desc"/>
+  <AD id="logValues"                         type="String"  required="false" cardinality="-100" name="%logValues" description="%logValues.desc"/>
+  <AD id="moduleTracker.cardinality.minimum" type="String"  default="0" name="internal" description="internal use only"/>
  </OCD>
 
 </metatype:MetaData>

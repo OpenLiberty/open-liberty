@@ -258,6 +258,16 @@
     </dependency>
     <dependency>
       <groupId>com.oracle.database.jdbc</groupId>
+      <artifactId>ojdbc11</artifactId>
+      <version>23.4.0.24.05</version>
+    </dependency>
+    <dependency>
+      <groupId>com.oracle.database.jdbc</groupId>
+      <artifactId>ojdbc8</artifactId>
+      <version>23.4.0.24.05</version>
+    </dependency>
+    <dependency>
+      <groupId>com.oracle.database.jdbc</groupId>
       <artifactId>ucp</artifactId>
       <version>21.8.0.0</version>
     </dependency>
@@ -1354,7 +1364,7 @@
     <dependency>
       <groupId>jakarta.enterprise.concurrent</groupId>
       <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-      <version>3.0.3</version>
+      <version>3.0.4</version>
     </dependency>
     <dependency>
       <groupId>jakarta.enterprise.concurrent</groupId>
@@ -2479,7 +2489,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-el-api</artifactId>
-      <version>11.0.0-M20</version>
+      <version>11.0.0-M21</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
@@ -2494,7 +2504,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper-el</artifactId>
-      <version>11.0.0-M20</version>
+      <version>11.0.0-M21</version>
     </dependency>
     <dependency>
       <groupId>org.apache.wink</groupId>

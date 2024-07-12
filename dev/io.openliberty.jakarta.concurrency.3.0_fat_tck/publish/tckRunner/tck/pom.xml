@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    Copyright (c) 2022, 2023 IBM Corporation and others. All rights reserved.
+    Copyright (c) 2022, 2024 IBM Corporation and others. All rights reserved.
     This program and the accompanying materials are made available under the 
     terms of the Eclipse Public License 2.0 which accompanies this distribution, 
     and is available at 
@@ -22,8 +22,8 @@
     <properties>
     	<!-- These properties can be overwritten by users if they want to test against a snapshot version-->
         <jakarta.concurrent.tck.groupid>jakarta.enterprise.concurrent</jakarta.concurrent.tck.groupid>
-        <jakarta.concurrent.tck.version>3.0.3</jakarta.concurrent.tck.version>
-        <jakarta.concurrent.version>3.0.3</jakarta.concurrent.version>
+        <jakarta.concurrent.tck.version>3.0.4</jakarta.concurrent.tck.version>
+        <jakarta.concurrent.version>3.0.4</jakarta.concurrent.version>
         
         <arquillian.version>1.7.0.Alpha13</arquillian.version>
         <arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>

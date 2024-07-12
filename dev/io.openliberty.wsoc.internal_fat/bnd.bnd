@@ -45,7 +45,6 @@ tested.features: \
     expressionlanguage-6.0, \
     appsecurity-6.0, \
     websocket-2.2, \
-    noship-1.0, \
     cdi-4.1, \
     servlet-6.1
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ package db2.web;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
@@ -23,6 +24,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLNonTransientException;
 import java.sql.Statement;
 
 import javax.annotation.Resource;
@@ -30,6 +32,7 @@ import javax.naming.InitialContext;
 import javax.naming.RefAddr;
 import javax.naming.Reference;
 import javax.naming.Referenceable;
+import javax.net.ssl.SSLHandshakeException;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
@@ -67,6 +70,15 @@ public class DB2TestServlet extends FATServlet {
 
     @Resource(lookup = "jdbc/ds-no-url-defaults")
     private DataSource ds_no_url_defaults;
+
+    @Resource(lookup = "jdbc/ds-client-reroute")
+    private DataSource ds_client_reroute;
+
+    @Resource(lookup = "jdbc/ds-client-reroute-cert")
+    private DataSource ds_client_reroute_cert;
+
+    @Resource(lookup = "jdbc/ds-client-reroute-wrong-cert")
+    private DataSource ds_client_reroute_wrong_cert;
 
     @Resource
     private UserTransaction tran;
@@ -334,6 +346,46 @@ public class DB2TestServlet extends FATServlet {
         } catch (SQLException e) {
             //Expect the default to be localhost and for the connection to fail.
             assertTrue("serverName was not correctly defaulted to localhost", e.getMessage().contains("Error opening socket to server localhost"));
+        }
+    }
+
+    @Test
+    public void testClientReroute() throws Throwable {
+        try (Connection con = ds_client_reroute.getConnection(); PreparedStatement stmt = con.prepareStatement("INSERT INTO MYTABLE VALUES (?, ?)");) {
+            stmt.setInt(1, 36);
+            stmt.setString(2, "thirty-six");
+            stmt.execute();
+        }
+    }
+
+    @Test
+    public void testClientRerouteWithCert() throws Throwable {
+        try (Connection con = ds_client_reroute_cert.getConnection(); PreparedStatement stmt = con.prepareStatement("INSERT INTO MYTABLE VALUES (?, ?)");) {
+            stmt.setInt(1, 37);
+            stmt.setString(2, "thirty-seven");
+            stmt.execute();
+        }
+    }
+
+    @Test
+    @ExpectedFFDC({ "javax.resource.spi.ResourceAllocationException",
+                    "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
+    public void testClientRerouteWithWrongCert() throws Throwable {
+        try (Connection con = ds_client_reroute_wrong_cert.getConnection(); PreparedStatement stmt = con.prepareStatement("INSERT INTO MYTABLE VALUES (?, ?)");) {
+            stmt.setInt(1, 38);
+            stmt.setString(2, "thirty-eight");
+            stmt.execute();
+        } catch (SQLNonTransientException e) {
+            // java.sql.SQLNonTransientException: [jcc][t4][2030][11211][4.25.13]
+            // A communication error occurred during operations on the connection's underlying socket, socket input stream, or socket output stream.
+
+            // Caused by: javax.net.ssl.SSLHandshakeException: PKIX path building failed
+            Throwable cause = e.getCause();
+            assertNotNull(cause);
+            assertTrue(cause instanceof SSLHandshakeException);
+
+            // Caused by: sun.security.validator.ValidatorException
+            // Caused by: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
         }
     }
 }

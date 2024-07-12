@@ -12,6 +12,7 @@
  *******************************************************************************/
 package componenttest.topology.database.container;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,25 +38,27 @@ import com.ibm.websphere.simplicity.log.Log;
  */
 @SuppressWarnings("rawtypes")
 public enum DatabaseContainerType {
-    DB2("jcc.jar", Db2Container.class.getCanonicalName(), Properties_db2_jcc.class, //
+    DB2("jcc.jar", "", Db2Container.class.getCanonicalName(), Properties_db2_jcc.class, //
         DockerImageName.parse("kyleaure/db2:1.0").asCompatibleSubstituteFor("ibmcom/db2")),
-    Derby("derby.jar", DerbyNoopContainer.class.getCanonicalName(), Properties_derby_embedded.class, DockerImageName.parse("")),
-    DerbyClient("derbyclient.jar", DerbyClientContainer.class.getCanonicalName(), Properties_derby_client.class, DockerImageName.parse("")),
-    Oracle("ojdbc8_g.jar", OracleContainer.class.getCanonicalName(), Properties_oracle.class, //
+    Derby("derby.jar", "", DerbyNoopContainer.class.getCanonicalName(), Properties_derby_embedded.class, DockerImageName.parse("")),
+    DerbyClient("derbyclient.jar", "", DerbyClientContainer.class.getCanonicalName(), Properties_derby_client.class, DockerImageName.parse("")),
+    Oracle("ojdbc8_g.jar", "ojdbc8.jar", OracleContainer.class.getCanonicalName(), Properties_oracle.class, //
            DockerImageName.parse("gvenzl/oracle-free:23.3-full-faststart")),
-    Postgres("postgresql.jar", PostgreSQLContainer.class.getCanonicalName(), Properties_postgresql.class, //
+    Postgres("postgresql.jar", "", PostgreSQLContainer.class.getCanonicalName(), Properties_postgresql.class, //
              DockerImageName.parse("postgres:14.1-alpine")),
-    SQLServer("mssql-jdbc.jar", MSSQLServerContainer.class.getCanonicalName(), Properties_microsoft_sqlserver.class, //
+    SQLServer("mssql-jdbc.jar", "", MSSQLServerContainer.class.getCanonicalName(), Properties_microsoft_sqlserver.class, //
               DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04"));
 
     private final String driverName;
+    private final String altDriverName; //TODO temporary while we switch from ojdbc8_g to ojdbc8
     private final Class<DataSourceProperties> dsPropsClass;
     private final Class<? extends JdbcDatabaseContainer> containerClass;
     private final DockerImageName imageName;
 
     @SuppressWarnings("unchecked")
-    DatabaseContainerType(final String driverName, final String containerClassName, final Class dsPropsClass, final DockerImageName imageName) {
+    DatabaseContainerType(final String driverName, final String altDriverName, final String containerClassName, final Class dsPropsClass, final DockerImageName imageName) {
         this.driverName = driverName;
+        this.altDriverName = altDriverName;
 
         //Use reflection to get classes at runtime.
         Class containerClass = null;
@@ -77,7 +80,21 @@ public enum DatabaseContainerType {
      * @return String - JDBC Driver Name
      */
     public String getDriverName() {
-        return driverName;
+        //TODO temporary while we switch from ojdbc8_g to ojdbc8
+        // return this.driverName;
+        File primary = new File("publish/shared/resources/jdbc/" + this.driverName);
+        File secondary = new File("publish/shared/resources/jdbc/" + (this.altDriverName == "" ? "null" : this.altDriverName));
+
+        if (primary.exists()) {
+            Log.info(this.containerClass, "getDriverName", "FOUND: " + this + " JDBC driver in location: " + primary.getAbsolutePath());
+            return this.driverName;
+        } else if (secondary.exists()) {
+            Log.info(this.containerClass, "getDriverName", "FOUND: " + this + " JDBC driver in location: " + secondary.getAbsolutePath());
+            return this.altDriverName;
+        } else {
+            Log.warning(this.containerClass, "MISSING: " + this + " JDBC driver not in location: " + primary.getAbsolutePath());
+            return this.driverName;
+        }
     }
 
     /**

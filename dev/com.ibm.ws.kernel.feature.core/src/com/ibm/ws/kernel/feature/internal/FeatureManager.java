@@ -1324,10 +1324,10 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         Iterator<String> it = postInstalledFeatures.iterator();
         while (it.hasNext()) {
             String feature = it.next();
-            FeatureDefinition fd = getFeatureDefinition(feature);
+            ProvisioningFeatureDefinition fd = getFeatureDefinition(feature);
 
             if (fd != null && fd.getVisibility() == Visibility.PUBLIC) {
-                if (fd.getSymbolicName().contains("versionless")) {
+                if (fd.isVersionless()) {
                     continue;
                 }
                 // get name from feature definition.
@@ -1486,9 +1486,20 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             }
 
             @Override
-            public Set<String> getUnresolvedVersionless() {
+            public Map<String, String> getVersionlessFeatures(){
+                return Collections.emptyMap();
+            }
+
+            @Override
+            public Set<String> getResolvedPlatforms(){
                 return Collections.emptySet();
             }
+
+            @Override
+            public Set<String> getMissingPlatforms(){
+                return Collections.emptySet();
+            }
+
         };
     }
 
@@ -1982,9 +1993,11 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         }
 
         if(isBeta){
-            for(String versionlessFeature : result.getUnresolvedVersionless()){
-                reportedErrors = true;
-                Tr.error(tc, "UNRESOLVED_VERSIONLESS_FEATURE", getFeatureName(versionlessFeature));
+            for (Map.Entry<String, String> versionlessResolved : result.getVersionlessFeatures().entrySet()) {
+                if(versionlessResolved.getValue() == null){
+                    reportedErrors = true;
+                    Tr.error(tc, "UNRESOLVED_VERSIONLESS_FEATURE", versionlessResolved.getKey());
+                }
             }
         }
 
@@ -2276,7 +2289,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                 // TODO this is really just a fall back and for testing
                 // this should come from additional meta-data of the feature
                 // instead of hard-coding in the above cases
-                ProvisioningFeatureDefinition fd = (ProvisioningFeatureDefinition) getFeatureDefinition(symbolicName);
+                ProvisioningFeatureDefinition fd = getFeatureDefinition(symbolicName);
                 if (fd != null) {
                     String subsystemName = fd.getHeader("Subsystem-Name");
                     if (subsystemName != null) {
@@ -2612,7 +2625,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
     }
 
     @Override
-    public FeatureDefinition getFeatureDefinition(String featureName) {
+    public ProvisioningFeatureDefinition getFeatureDefinition(String featureName) {
         return featureRepository.getFeature(featureName);
     }
 

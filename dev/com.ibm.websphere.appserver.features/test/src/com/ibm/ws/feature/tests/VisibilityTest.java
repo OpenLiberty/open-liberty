@@ -1005,7 +1005,8 @@ public class VisibilityTest {
             toleratedFeatures.put(feature.substring(0, feature.lastIndexOf('-') + 1), depFeatureWithTolerate);
             processedFeatures.add(feature);
         } else if (!hasToleratesAncestor && rootDepFeatures.contains(feature) && !feature.startsWith("com.ibm.websphere.appserver.eeCompatible-")
-                   && !feature.startsWith("io.openliberty.mpCompatible-") && !feature.startsWith("io.openliberty.servlet.internal-")) {
+                   && !feature.startsWith("io.openliberty.mpCompatible-") && !feature.startsWith("io.openliberty.servlet.internal-") 
+                   && !feature.startsWith("io.openliberty.internal.mpVersion-")) {
             if (!isApiJarFalse) {
                 Set<String> errors = featureErrors.get(feature);
                 if (errors == null) {

@@ -33,6 +33,7 @@ DynamicImport-Package: \
 Import-Package: \
   !*.internal.*, \
   !com.ibm.ws.beanvalidation.service, \
+  io.openliberty.data.internal.tracker, \
   io.openliberty.data.internal.version, \
   !jakarta.validation, \
   !jakarta.validation.executable, \
@@ -52,7 +53,7 @@ Include-Resource:\
 -cdiannotations:
 
 -dsannotations: \
-  io.openliberty.data.internal.persistence.cdi.DataExtensionProvider
+  io.openliberty.data.internal.persistence.DataProvider
 
 instrument.classesExcludes: io/openliberty/data/internal/persistence/resources/*.class
 

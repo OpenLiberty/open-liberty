@@ -18,7 +18,6 @@ fat.project: true
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
 tested.features:\
-    noship-1.0,\
     websocket-2.2,\
     servlet-6.1
 

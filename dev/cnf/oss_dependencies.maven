@@ -47,6 +47,8 @@ com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8
 com.nimbusds:nimbus-jose-jwt:4.23
 com.oracle.database.jdbc.debug:ojdbc11_g:21.8.0.0
 com.oracle.database.jdbc.debug:ojdbc8_g:21.8.0.0
+com.oracle.database.jdbc:ojdbc11:23.4.0.24.05
+com.oracle.database.jdbc:ojdbc8:23.4.0.24.05
 com.oracle.database.jdbc:ucp:21.8.0.0
 com.oracle.database.security:oraclepki:21.8.0.0
 com.oracle.database.security:osdt_cert:21.8.0.0
@@ -266,7 +268,7 @@ jakarta.batch:jakarta.batch-api:2.1.1
 jakarta.data:jakarta.data-api:1.0.0
 jakarta.ejb:jakarta.ejb-api:4.0.1
 jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:2.0.0
-jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:3.0.3
+jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:3.0.4
 jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:3.1.1
 jakarta.enterprise:jakarta.enterprise.cdi-api:3.0.1
 jakarta.enterprise:jakarta.enterprise.cdi-api:4.0.1
@@ -491,10 +493,10 @@ org.apache.thrift:libthrift:0.14.1
 org.apache.tomcat.embed:tomcat-embed-websocket:8.5.23
 org.apache.tomcat:tomcat-el-api:10.0.27
 org.apache.tomcat:tomcat-el-api:10.1.11
-org.apache.tomcat:tomcat-el-api:11.0.0-M20
+org.apache.tomcat:tomcat-el-api:11.0.0-M21
 org.apache.tomcat:tomcat-jasper-el:10.0.27
 org.apache.tomcat:tomcat-jasper-el:10.1.11
-org.apache.tomcat:tomcat-jasper-el:11.0.0-M20
+org.apache.tomcat:tomcat-jasper-el:11.0.0-M21
 org.apache.wink:wink-client-apache-httpclient:1.4
 org.apache.wink:wink-client:1.4
 org.apache.wink:wink-common:1.4
