@@ -58,14 +58,13 @@ public class DataStoreTestServlet extends FATServlet {
     DSDRepo dsdRepo;
 
     @Inject
-    PersistenceUnitRepo persistenceUnitRepo;
-
-    //TODO enable if we can figure out how to obtain the WSJdbcDataSource instance from the Weld proxy
-    //@Inject
-    QualifiedDSRepo qualifiedDSRepo;
+    DSAccessorMethodQualifiedRepo dsAccessorQualifiedRepo;
 
     @Inject
-    QualifiedPersistenceUnitRepo qualifiedPersistenceUnitRepo;
+    EMAccessorMethodQualifiedRepo emAccessorQualifiedRepo;
+
+    @Inject
+    PersistenceUnitRepo persistenceUnitRepo;
 
     @Inject
     ServerDSIdRepo serverDSIdRepo;
@@ -123,6 +122,47 @@ public class DataStoreTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository that defaults to the default dataStore, but also has a
+     * qualifier annotation on its resource accessor method for a DataSource.
+     * The qualifier annotation must be ignored.
+     */
+    @Test
+    public void testDataSourceResourceAccessorMethodQualifierIgnored() {
+        dsAccessorQualifiedRepo.add(List.of(DefaultDSEntity.of(31, "DSRAMQI-3"),
+                                            DefaultDSEntity.of(32, "DSRAMQI-2"),
+                                            DefaultDSEntity.of(33, "DSRAMQI-3")));
+
+        List<DefaultDSEntity> threes = dsAccessorQualifiedRepo.getAll("DSRAMQI-3");
+        assertEquals(threes.toString(), 2, threes.size());
+        assertEquals(31, threes.get(0).id);
+        assertEquals(33, threes.get(1).id);
+
+        // Prove it went into the expected database by accessing it from
+        // another repository that uses the same DataSource
+        defaultDSRepo.existsByIdAndValue(32, "DSRAMQI-2");
+    }
+
+    /**
+     * Verify that a qualified resource accessor method can also be used by the
+     * application to obtain an EntityManager. The qualifier is ignored.
+     */
+    @Test
+    public void testEntityManagerResourceAccessorMethodQualifierIgnored() {
+
+        // goes into defaultdb
+        emAccessorQualifiedRepo.add(List.of(PersistenceUnitEntity.of("EMRAMQI", 70)));
+
+        // goes into serverdb
+        persistenceUnitRepo.save(List.of(PersistenceUnitEntity.of("EMRAMQI", 71)));
+
+        // reads from defaultdb
+        try (EntityManager em = emAccessorQualifiedRepo.entityManager()) {
+            PersistenceUnitEntity entity = em.find(PersistenceUnitEntity.class, "EMRAMQI");
+            assertEquals(Integer.valueOf(70), entity.value);
+        }
+    }
+
+    /**
      * Verify that the EntityManagerFactory for the PersistenceUnit reference can be looked up by its JNDI name:
      */
     @Test
@@ -176,63 +216,8 @@ public class DataStoreTestServlet extends FATServlet {
     }
 
     /**
-     * Use a repository that specifies the data source to use via a qualifier on the
-     * resource accessor method.
-     */
-    //TODO enable if we can figure out how to obtain the WSJdbcDataSource instance from the Weld proxy
-    //@Test
-    public void testQualifiedDataSource() {
-        qualifiedDSRepo.add(List.of(ServerDSEntity.of("TestQualifiedDataSource-1", 31),
-                                    ServerDSEntity.of("TestQualifiedDataSource-2", 32),
-                                    ServerDSEntity.of("TestQualifiedDataSource-3", 31)));
-
-        List<ServerDSEntity> thirtyOnes = qualifiedDSRepo.getAll(31);
-        assertEquals(thirtyOnes.toString(), 2, thirtyOnes.size());
-        assertEquals("TestQualifiedDataSource-1", thirtyOnes.get(0).id);
-        assertEquals("TestQualifiedDataSource-3", thirtyOnes.get(1).id);
-
-        // Prove it went into the expected database by accessing it from another repository that uses ServerDataSource
-        serverDSIdRepo.remove(ServerDSEntity.of("TestQualifiedDataSource-1", 31)); // raises an error if not found
-    }
-
-    /**
-     * Use a repository that specifies the data source to use via a qualifier on the
-     * resource accessor method.
-     */
-    @Test
-    public void testQualifiedPersistenceUnit() {
-        qualifiedPersistenceUnitRepo.add(List.of(PersistenceUnitEntity.of("TestQualifiedPersistenceUnit-1", 71),
-                                                 PersistenceUnitEntity.of("TestQualifiedPersistenceUnit-2", 72),
-                                                 PersistenceUnitEntity.of("TestQualifiedPersistenceUnit-3", 71)));
-
-        List<PersistenceUnitEntity> seventyOnes = qualifiedPersistenceUnitRepo.getAll(71);
-        assertEquals(seventyOnes.toString(), 2, seventyOnes.size());
-        assertEquals("TestQualifiedPersistenceUnit-1", seventyOnes.get(0).id);
-        assertEquals("TestQualifiedPersistenceUnit-3", seventyOnes.get(1).id);
-
-        // Prove it went into the expected database by accessing it from another repository that uses ServerDataSource
-        assertEquals(3, persistenceUnitRepo.countByIdStartsWith("TestQualifiedPersistenceUnit-"));
-    }
-
-    /**
-     * Verify that the qualified resource accessor method that is used to configure the EntityManagerFactory
-     * can also be used by the application to obtain an EntityManager.
-     */
-    @Test
-    public void testQualifiedEntityManagerResourceAccessorMethodUsedByApp() throws SQLException {
-
-        qualifiedPersistenceUnitRepo.add(List.of(PersistenceUnitEntity.of("testPersistenceUnitRefWithQualifier", 70)));
-
-        try (EntityManager em = qualifiedPersistenceUnitRepo.entityManager()) {
-            PersistenceUnitEntity entity = em.find(PersistenceUnitEntity.class, "testPersistenceUnitRefWithQualifier");
-            assertEquals(Integer.valueOf(70), entity.value);
-        }
-    }
-
-    /**
      * Verify that the resource reference that is defined with a qualifier is made
-     * accessible to the test application as a prerequisite for being able to make it
-     * available to a repository in another test.
+     * accessible to the test application.
      */
     @Test
     public void testResourceReferenceWithQualifier() throws SQLException {

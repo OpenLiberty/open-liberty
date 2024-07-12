@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data.internal.persistence.cdi;
+package io.openliberty.data.internal.persistence;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -52,9 +52,6 @@ import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
 import com.ibm.ws.classloading.ClassLoaderIdentifierService;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
-import com.ibm.ws.container.service.metadata.ApplicationMetaDataListener;
-import com.ibm.ws.container.service.metadata.MetaDataEvent;
-import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.container.service.metadata.ModuleMetaDataListener;
 import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
@@ -69,8 +66,10 @@ import com.ibm.wsspi.resource.ResourceFactory;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
-import io.openliberty.data.internal.persistence.service.DataComponentMetaData;
-import io.openliberty.data.internal.persistence.service.DataModuleMetaData;
+import io.openliberty.data.internal.persistence.cdi.DataExtension;
+import io.openliberty.data.internal.persistence.cdi.FutureEMBuilder;
+import io.openliberty.data.internal.persistence.metadata.DataComponentMetaData;
+import io.openliberty.data.internal.persistence.metadata.DataModuleMetaData;
 import io.openliberty.data.internal.tracker.ModuleTracker;
 import io.openliberty.data.internal.version.DataVersionCompatibility;
 import jakarta.data.Limit;
@@ -82,31 +81,29 @@ import jakarta.enterprise.inject.spi.Extension;
 import jakarta.persistence.EntityManagerFactory;
 
 /**
- * Simulates a provider for relational databases by delegating
- * JPQL queries to the Jakarta Persistence layer.
+ * Built-in Jakarta Data provider for relational databases that
+ * delegates queries and operations to the Jakarta Persistence layer.
  */
 @Component(configurationPid = "io.openliberty.data",
            configurationPolicy = ConfigurationPolicy.OPTIONAL,
            service = { CDIExtensionMetadata.class,
-                       DataExtensionProvider.class,
+                       DataProvider.class,
                        DeferredMetaDataFactory.class,
-                       ApplicationMetaDataListener.class,
                        ApplicationStateListener.class },
            property = { "deferredMetaData=DATA" })
-public class DataExtensionProvider implements //
+public class DataProvider implements //
                 CDIExtensionMetadata, //
                 CDIExtensionMetadataInternal, //
                 DeferredMetaDataFactory, //
-                ApplicationMetaDataListener, // TODO remove this? and use the following instead?
                 ApplicationStateListener {
-    private static final TraceComponent tc = Tr.register(DataExtensionProvider.class);
+    private static final TraceComponent tc = Tr.register(DataProvider.class);
 
     private static final Set<Class<?>> beanClasses = Set.of(DataSource.class, EntityManagerFactory.class);
 
     private static final Set<Class<? extends Extension>> extensions = Collections.singleton(DataExtension.class);
 
     @Reference
-    CDIService cdiService;
+    public CDIService cdiService;
 
     @Reference
     public ClassLoaderIdentifierService classloaderIdSvc;
@@ -148,7 +145,7 @@ public class DataExtensionProvider implements //
     protected ExecutorService executor;
 
     @Reference
-    public LocalTransactionCurrent localTranCurrent;
+    protected LocalTransactionCurrent localTranCurrent;
 
     /**
      * Configured interface/method/package names for logValues.
@@ -160,19 +157,19 @@ public class DataExtensionProvider implements //
 
     @Reference(cardinality = ReferenceCardinality.OPTIONAL,
                target = "(component.name=io.openliberty.data.internal.ejb.EJBModuleTracker)")
-    protected ModuleTracker moduleTracker;
+    public ModuleTracker moduleTracker;
 
     private final ConcurrentHashMap<String, DataComponentMetaData> metadatas = new ConcurrentHashMap<>();
 
     public @Reference ResourceConfigFactory resourceConfigFactory;
 
     @Reference
-    public EmbeddableWebSphereTransactionManager tranMgr;
+    protected EmbeddableWebSphereTransactionManager tranMgr;
 
     /**
      * Service that provides Jakarta Validation.
      */
-    private transient Object validationService;
+    transient Object validationService;
 
     /**
      * OSGi service activate.
@@ -206,15 +203,35 @@ public class DataExtensionProvider implements //
     }
 
     @Override
-    @Trivial
-    public void applicationMetaDataCreated(MetaDataEvent<ApplicationMetaData> event) throws MetaDataException {
+    public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
     }
 
     @Override
-    public void applicationMetaDataDestroyed(MetaDataEvent<ApplicationMetaData> event) {
+    public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
+        Collection<FutureEMBuilder> futures = futureEMBuilders.remove(appInfo.getName());
+        if (futures != null) {
+            for (FutureEMBuilder futureEMBuilder : futures) {
+                // This delays createEMBuilder until restore.
+                // While this works by avoiding all connections to the data source, it does make restore much slower.
+                // TODO figure out how to do more work on restore without having to make a connection to the data source
+                CheckpointPhase.onRestore(() -> futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor));
+            }
+        }
+    }
+
+    @Override
+    public void applicationStopping(ApplicationInfo appInfo) {
+        futureEMBuilders.remove(appInfo.getName());
+    }
+
+    @Override
+    public void applicationStopped(ApplicationInfo appInfo) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        String appName = event.getMetaData().getName();
+        String appName = appInfo.getName();
+
+        futureEMBuilders.remove(appName);
+
         Map<String, Configuration> configurations = dbStoreConfigAllApps.remove(appName);
         if (configurations != null)
             for (Configuration config : configurations.values())
@@ -242,33 +259,6 @@ public class DataExtensionProvider implements //
         }
     }
 
-    @Override
-    public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
-    }
-
-    @Override
-    public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
-        Collection<FutureEMBuilder> futures = futureEMBuilders.remove(appInfo.getName());
-        if (futures != null) {
-            for (FutureEMBuilder futureEMBuilder : futures) {
-                // This delays createEMBuilder until restore.
-                // While this works by avoiding all connections to the data source, it does make restore much slower.
-                // TODO figure out how to do more work on restore without having to make a connection to the data source
-                CheckpointPhase.onRestore(() -> futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor));
-            }
-        }
-    }
-
-    @Override
-    public void applicationStopping(ApplicationInfo appInfo) {
-        futureEMBuilders.remove(appInfo.getName());
-    }
-
-    @Override
-    public void applicationStopped(ApplicationInfo appInfo) {
-        futureEMBuilders.remove(appInfo.getName());
-    }
-
     /**
      * Create or obtain DataComponentMetaData for an application artifact,
      * such as when the repository is defined in a library of the application
@@ -278,8 +268,8 @@ public class DataExtensionProvider implements //
      * @param classloader class loader of the repository interface.
      * @return component metadata.
      */
-    ComponentMetaData createComponentMetadata(ApplicationMetaData appData,
-                                              ClassLoader classloader) {
+    public ComponentMetaData createComponentMetadata(ApplicationMetaData appData,
+                                                     ClassLoader classloader) {
         J2EEName jeeName = appData.getJ2EEName();
         ModuleMetaData moduleData = new DataModuleMetaData(jeeName, appData);
 
@@ -398,7 +388,7 @@ public class DataExtensionProvider implements //
      * @return loggable values.
      */
     @Trivial
-    public Object[] loggable(Class<?> repoClass, Method method, Object... values) {
+    Object[] loggable(Class<?> repoClass, Method method, Object... values) {
         String className;
         if (values == null ||
             values.length == 0 ||
@@ -436,7 +426,7 @@ public class DataExtensionProvider implements //
      * @return loggable value.
      */
     @Trivial
-    public Object loggable(Class<?> repoClass, Method method, Object value) {
+    Object loggable(Class<?> repoClass, Method method, Object value) {
         String className;
         if (value == null ||
             !logValues.isEmpty() &&
@@ -542,7 +532,7 @@ public class DataExtensionProvider implements //
      * @param appName  application name.
      * @param builders list of EntityManagerBuilder.
      */
-    void onAppStarted(String appName, Collection<FutureEMBuilder> builders) {
+    public void onAppStarted(String appName, Collection<FutureEMBuilder> builders) {
         Collection<FutureEMBuilder> previous = futureEMBuilders.putIfAbsent(appName, builders);
         if (previous != null)
             previous.addAll(builders);
@@ -560,12 +550,5 @@ public class DataExtensionProvider implements //
     protected void unsetValidation(ModuleMetaDataListener svc) {
         if (validationService == svc)
             validationService = null;
-    }
-
-    /**
-     * @return service that provides Jakarta Validation.
-     */
-    public Object validationService() {
-        return validationService;
     }
 }

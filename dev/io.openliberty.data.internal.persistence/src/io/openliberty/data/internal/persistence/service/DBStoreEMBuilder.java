@@ -78,9 +78,9 @@ import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.resource.ResourceFactory;
 
+import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.EntityInfo;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
-import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.Convert;
@@ -135,7 +135,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
      *                                  Module and component might be null or absent.
      * @param entityTypes           entity classes as known by the user, not generated.
      */
-    public DBStoreEMBuilder(DataExtensionProvider provider, ClassLoader repositoryClassLoader,
+    public DBStoreEMBuilder(DataProvider provider, ClassLoader repositoryClassLoader,
                             String dataStore, boolean isJNDIName,
                             String metadataIdentifier, J2EEName jeeName,
                             Set<Class<?>> entityTypes) {
@@ -217,7 +217,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
                 }
                 if (dbStoreId == null) {
                     // Create a ResourceFactory that can delegate back to a resource reference lookup
-                    ResourceFactory delegator = new DelegatingResourceFactory(dataStore, metadataIdentifier, provider);
+                    ResourceFactory delegator = new ResRefDelegator(dataStore, metadataIdentifier, provider);
                     Hashtable<String, Object> svcProps = new Hashtable<String, Object>();
                     dbStoreId = isJNDIName ? qualifiedName : ("application[" + application + "]/databaseStore[" + dataStore + ']');
                     String id = dbStoreId + "/ResourceFactory";
@@ -649,7 +649,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
         ResourceFactory dsFactory = bc.getService(dsFactoryRefs.iterator().next());
         try {
             ResourceConfig resRef = null;
-            if (!(dsFactory instanceof DelegatingResourceFactory)) {
+            if (!(dsFactory instanceof ResRefDelegator)) {
                 // Use a resource reference that includes the authDataRef of the databaseStore.
                 resRef = provider.resourceConfigFactory.createResourceConfig(DataSource.class.getName());
                 resRef.setSharingScope(ResourceConfig.SHARING_SCOPE_SHAREABLE);

@@ -28,7 +28,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.DoubleStream;
@@ -42,16 +41,13 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
-import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.runtime.metadata.ApplicationMetaData;
-import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
+import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.QueryInfo;
-import io.openliberty.data.internal.persistence.provider.PUnitEMBuilder;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.repository.By;
 import jakarta.data.repository.DataRepository;
@@ -63,19 +59,15 @@ import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
 import jakarta.data.spi.EntityDefining;
 import jakarta.enterprise.event.Observes;
-import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.inject.spi.WithAnnotations;
-import jakarta.inject.Qualifier;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 
 /**
  * CDI extension to handle the injection of repository implementations
@@ -116,9 +108,9 @@ public class DataExtension implements Extension {
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanMgr) {
         // Obtain the service that informed CDI of this extension.
-        BundleContext bundleContext = FrameworkUtil.getBundle(DataExtensionProvider.class).getBundleContext();
-        ServiceReference<DataExtensionProvider> ref = bundleContext.getServiceReference(DataExtensionProvider.class);
-        DataExtensionProvider provider = bundleContext.getService(ref);
+        BundleContext bundleContext = FrameworkUtil.getBundle(DataProvider.class).getBundleContext();
+        ServiceReference<DataProvider> ref = bundleContext.getServiceReference(DataProvider.class);
+        DataProvider provider = bundleContext.getService(ref);
 
         // Group entities by data access provider and class loader
         Map<FutureEMBuilder, FutureEMBuilder> entityGroups = new HashMap<>();
@@ -129,46 +121,11 @@ public class DataExtension implements Extension {
 
             Class<?> repositoryInterface = repositoryType.getJavaClass();
             ClassLoader loader = repositoryInterface.getClassLoader();
-            J2EEName moduleName = getModuleName(repositoryInterface, loader, provider);
 
             Repository repository = repositoryType.getAnnotation(Repository.class);
             String dataStore = repository.dataStore();
-            EntityManagerFactory emf = null; // TODO remove along with the following TODO
-            if (dataStore.length() == 0) {
+            if (dataStore.length() == 0)
                 dataStore = DEFAULT_DATA_STORE;
-
-                // Look for resource accessor method with qualifiers
-                // TODO if we keep this code, make it more efficient/stable. Identification of resource accessor methods
-                // is also done by discoverEntityClasses.
-                for (Method method : repositoryInterface.getMethods()) {
-                    if (method.getParameterCount() == 0) {
-                        Class<?> returnType = method.getReturnType();
-                        if (EntityManager.class.equals(returnType)) {
-                            ArrayList<Annotation> qualifiers = new ArrayList<>();
-                            Annotation[] annos = method.getAnnotations();
-                            for (Annotation anno : annos)
-                                if (anno.annotationType().isAnnotationPresent(Qualifier.class))
-                                    qualifiers.add(anno);
-                            int numQualifiers = qualifiers.size();
-                            if (numQualifiers > 0) {
-                                annos = numQualifiers == annos.length ? annos : qualifiers.toArray(new Annotation[numQualifiers]);
-
-                                // EntityManager/EntityManagerFactory
-                                Instance<EntityManagerFactory> instance = CDI.current().select(EntityManagerFactory.class, annos);
-
-                                if (emf == null)
-                                    emf = instance.get();
-                                else
-                                    throw new UnsupportedOperationException//
-                                    ("The " + method.getName() + " resource accessor method of the " +
-                                     method.getDeclaringClass().getName() + " repository should not be annotated with the " +
-                                     qualifiers + " qualifier annotations because a repository is only permitted to have" +
-                                     " one resource accessor method with qualifier annotations."); // TODO NLS
-                            }
-                        }
-                    }
-                }
-            }
             // else
             // Determining whether it is JNDI name for a data source or
             // persistence unit requires attempting to look up the resource.
@@ -176,7 +133,7 @@ public class DataExtension implements Extension {
             // but that might not be available yet.
 
             FutureEMBuilder futureEMBuilder = new FutureEMBuilder( //
-                            provider, repositoryInterface, loader, dataStore, moduleName);
+                            provider, repositoryInterface, loader, dataStore);
 
             Class<?>[] primaryEntityClassReturnValue = new Class<?>[1];
             Map<Class<?>, List<QueryInfo>> queriesPerEntityClass = new HashMap<>();
@@ -194,14 +151,6 @@ public class DataExtension implements Extension {
                 @SuppressWarnings("unchecked")
                 Bean<Object> bean = beanMgr.createBean(producer, (Class<Object>) repositoryInterface, producer);
                 event.addBean(bean);
-            }
-
-            // TODO These is not properly placed here, but the whole section should be removed along with earlier TODOs
-            try {
-                if (emf != null)
-                    futureEMBuilder.complete(new PUnitEMBuilder(provider, loader, emf, futureEMBuilder.entityTypes));
-            } catch (Exception x) {
-                futureEMBuilder.completeExceptionally(x);
             }
         }
 
@@ -461,35 +410,6 @@ public class DataExtension implements Extension {
 
         primaryEntityClassReturnValue[0] = primaryEntityClass;
         return supportsAllEntities;
-    }
-
-    /**
-     * Obtains the module name in which the repository interface is defined.
-     *
-     * @param repositoryInterface   the repository interface.
-     * @param repositoryClassLoader class loader of the repository interface.
-     * @param provider              OSGi service that provides the CDI extension.
-     * @return AppName[#ModuleName] with only the application name if not defined
-     *         in a module.
-     */
-    private J2EEName getModuleName(Class<?> repositoryInterface,
-                                   ClassLoader repositoryClassLoader,
-                                   DataExtensionProvider provider) {
-        J2EEName moduleName;
-
-        Optional<J2EEName> moduleNameOptional = provider.cdiService.getModuleNameForClass(repositoryInterface);
-
-        if (moduleNameOptional.isPresent()) {
-            moduleName = moduleNameOptional.get();
-        } else {
-            // create component and module metadata based on the application metadata
-            ComponentMetaData cdata = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-            ApplicationMetaData adata = cdata == null ? null : cdata.getModuleMetaData().getApplicationMetaData();
-            cdata = provider.createComponentMetadata(adata, repositoryClassLoader);
-            moduleName = cdata.getModuleMetaData().getJ2EEName();
-        }
-
-        return moduleName;
     }
 
     /**

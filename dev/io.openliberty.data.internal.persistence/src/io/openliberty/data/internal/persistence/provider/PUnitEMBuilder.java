@@ -20,9 +20,9 @@ import javax.sql.DataSource;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.EntityInfo;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
-import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceException;
@@ -38,7 +38,7 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
 
     // TODO this should be removed because the spec did not add the ability to use
     // a resource access method with a qualifier to configure the EntityManager.
-    public PUnitEMBuilder(DataExtensionProvider provider,
+    public PUnitEMBuilder(DataProvider provider,
                           ClassLoader repositoryClassLoader,
                           EntityManagerFactory emf,
                           Set<Class<?>> entityTypes) {
@@ -74,7 +74,7 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
      * @param metaDataIdentifier    metadata identifier for the class loader of the repository interface.
      * @param entityTypes           entity classes as known by the user, not generated.
      */
-    public PUnitEMBuilder(DataExtensionProvider provider,
+    public PUnitEMBuilder(DataProvider provider,
                           ClassLoader repositoryClassLoader,
                           EntityManagerFactory emf,
                           String persistenceUnitRef,
