@@ -553,13 +553,22 @@ public class ExceptionUtils {
                                    boolean isOpenLiberty, boolean isFeatureUtility) {
         isFeatureUtil = isFeatureUtility;
         Collection<MissingRequirement> allRequirementsNotFound = e.getAllRequirementsResourcesNotFound();
+
+        String msg = createVersionlessIssues(e);
+        if (!msg.isEmpty()) {
+            InstallException ie = create(msg, e);
+            ie.setData(assetNames);
+            return ie;
+        }
+
         if (allRequirementsNotFound.isEmpty()) {
-            String msg = checkForSingletonException(e.getFeatureConflicts());
+            msg = checkForSingletonException(e.getFeatureConflicts());
             if (!msg.isEmpty()) {
                 InstallException ie = create(msg, e);
                 ie.setData(assetNames);
                 return ie;
             }
+            return null;
         }
         Collection<MissingRequirement> dependants = new ArrayList<MissingRequirement>(allRequirementsNotFound.size());
         for (MissingRequirement f : allRequirementsNotFound) {
@@ -693,6 +702,38 @@ public class ExceptionUtils {
         ie.setData(assetNames);
 
         return ie;
+    }
+
+    /**
+     * @param e
+     * @return
+     */
+    protected static String createVersionlessIssues(RepositoryResolutionException e) {
+        StringBuilder sb = new StringBuilder();
+        if (!e.getMissingPlatforms().isEmpty()) {
+            for (String missing : e.getMissingPlatforms()) {
+                sb.append(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MISSING_PLATFORM_NAME", missing)).append("\n");
+            }
+        }
+        String missingFeatures = createMissingFeatureString(e.getTopLevelFeaturesNotResolved());
+        if (!e.getMissingBasePlatforms().isEmpty()) {
+            sb.append(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_NO_DERIVED_PLATFORM", missingFeatures)).append("\n");
+        }
+
+        String msg = sb.toString();
+        return msg;
+    }
+
+    /**
+     * @param collection
+     * @return
+     */
+    protected static String createMissingFeatureString(Collection<String> missingFeatures) {
+        StringBuilder sb = new StringBuilder();
+        for (String missing : missingFeatures) {
+            sb.append(missing).append(" ");
+        }
+        return sb.toString().trim();
     }
 
     /**
