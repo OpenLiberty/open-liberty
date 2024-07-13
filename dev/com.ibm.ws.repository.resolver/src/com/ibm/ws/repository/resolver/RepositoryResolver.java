@@ -32,6 +32,7 @@ import com.ibm.ws.kernel.feature.internal.FeatureResolverImpl;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Chain;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.product.utility.extension.IFixUtils;
@@ -567,7 +568,7 @@ public class RepositoryResolver {
 
         featureConflicts.putAll(result.getConflicts());
         if (hasRequestedVersionlessFeatures(featureNamesToResolve, resolverRepository))
-            recordVersionless(result);
+            recordVersionless(result, resolverRepository);
 
         for (String name : result.getResolvedFeatures()) {
             ProvisioningFeatureDefinition feature = resolverRepository.getFeature(name);
@@ -583,9 +584,10 @@ public class RepositoryResolver {
      * Record Versionless Messages and Issues
      *
      * @param result
+     * @param resolverRepo
      * @param requestedFeatures
      */
-    private void recordVersionless(Result result) {
+    private void recordVersionless(Result result, Repository resolverRepo) {
 
         resolvedPlatforms = result.getResolvedPlatforms();
         missingPlatforms = result.getMissingPlatforms();
@@ -1008,6 +1010,22 @@ public class RepositoryResolver {
             return;
         }
 
+        List<String> missingBasePlatforms = new ArrayList<String>();
+
+        // Versionless feature issues
+        if (!missingTopLevelRequirements.isEmpty()) {
+            for (String name : missingTopLevelRequirements) {
+                ProvisioningFeatureDefinition feature = resolverRepository.getFeature(name);
+                if (feature != null && feature.isVersionless()) {
+                    ProvisioningFeatureDefinition firstChild = resolverRepository.findAllPossibleVersions(feature).get(0);
+                    String plat = firstChild.getPlatformName();
+                    if (plat != null && plat.indexOf("-") != -1) {
+                        missingBasePlatforms.add(resolverRepository.getFeatureBaseName(plat));
+                    }
+                }
+            }
+        }
+
         Set<ProductRequirementInformation> missingProductInformation = new HashSet<>();
 
         for (ApplicableToProduct esa : resourcesWrongProduct) {
@@ -1034,11 +1052,8 @@ public class RepositoryResolver {
             missingRequirementNames.add(req.getRequirementName());
         }
 
-        if (hasVersionlessIssue())
-            throw new RepositoryResolutionException(null, missingTopLevelRequirements, missingRequirementNames, missingProductInformation, missingRequirements, featureConflicts,
-                                                    resolvedPlatforms, missingPlatforms);
-        else
-            throw new RepositoryResolutionException(null, missingTopLevelRequirements, missingRequirementNames, missingProductInformation, missingRequirements, featureConflicts);
+        throw new RepositoryResolutionException(null, missingTopLevelRequirements, missingRequirementNames, missingProductInformation, missingRequirements, featureConflicts,
+                                                resolvedPlatforms, missingPlatforms, missingBasePlatforms);
     }
 
     /**

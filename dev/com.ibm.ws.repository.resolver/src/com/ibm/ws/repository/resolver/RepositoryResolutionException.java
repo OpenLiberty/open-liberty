@@ -15,6 +15,7 @@ package com.ibm.ws.repository.resolver;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -44,6 +45,7 @@ public class RepositoryResolutionException extends RepositoryException {
     private Set<String> resolvedPlatforms;
     private Set<String> missingPlatforms;
     private boolean hasVersionlessIssue;
+    private List<String> missingBasePlatforms;
 
     /**
      * @param cause
@@ -68,15 +70,17 @@ public class RepositoryResolutionException extends RepositoryException {
      * @param object
      * @param missingTopLevelRequirements
      * @param missingRequirementNames
-     * @param missingProductInformation2
-     * @param missingRequirements
-     * @param featureConflicts2
+     * @param missingProductInformation        all the product information requirements that could not be found. Can be empty but must not be <code>null</code>
+     * @param allRequirementsResourcesNotFound The {@link MissingRequirement} objects that were not found. Must not be <code>null</code>.
+     * @param featureConflicts                 the details of any feature conflicts which occurred during feature resolution, as returned from {@link Result#getConflicts()}
      * @param resolvedPlatforms
-     * @param missingPlatforms
+     * @param missingPlatforms                 Unknown platform names
+     * @param missingBasePlatforms             unresolved versionless features needing platforms defined
      */
     public RepositoryResolutionException(ResolutionException cause, Collection<String> topLevelFeaturesNotResolved, Collection<String> allRequirementsNotFound,
                                          Collection<ProductRequirementInformation> missingProductInformation, Collection<MissingRequirement> allRequirementsResourcesNotFound,
-                                         Map<String, Collection<Chain>> featureConflicts, Set<String> resolvedPlatforms, Set<String> missingPlatforms) {
+                                         Map<String, Collection<Chain>> featureConflicts, Set<String> resolvedPlatforms, Set<String> missingPlatforms,
+                                         List<String> missingBasePlatforms) {
         super(cause);
         this.topLevelFeaturesNotResolved = topLevelFeaturesNotResolved;
         this.allRequirementsNotFound = allRequirementsNotFound;
@@ -85,7 +89,8 @@ public class RepositoryResolutionException extends RepositoryException {
         this.featureConflicts = featureConflicts;
         this.resolvedPlatforms = resolvedPlatforms;
         this.missingPlatforms = missingPlatforms;
-        this.hasVersionlessIssue = true;
+        this.missingBasePlatforms = missingBasePlatforms;
+
     }
 
     /**
@@ -280,15 +285,13 @@ public class RepositoryResolutionException extends RepositoryException {
     public String getMessage() {
         StringBuilder sb = new StringBuilder();
 
-        if (hasVersionlessIssue()) {
-            if (!getMissingPlatforms().isEmpty()) {
-                for (String missing : getMissingPlatforms()) {
-                    sb.append("Platform: ").append(missing).append(" couldn't be found, no versionless features will be resolved").append("\n");
-                }
+        if (!getMissingPlatforms().isEmpty()) {
+            for (String missing : getMissingPlatforms()) {
+                sb.append("Platform: ").append(missing).append(" couldn't be found, no versionless features will be resolved").append("\n");
             }
-            if (getResolvedPlatforms().isEmpty() && getMissingPlatforms().isEmpty()) {
-                sb.append("Platform couldn't be determined, no versionless features will be resolved").append("\n");
-            }
+        }
+        if (getResolvedPlatforms().isEmpty() && getMissingPlatforms().isEmpty()) {
+            sb.append("Platform couldn't be determined, no versionless features will be resolved").append("\n");
         }
 
         for (String missing : getTopLevelFeaturesNotResolved()) {
@@ -384,10 +387,10 @@ public class RepositoryResolutionException extends RepositoryException {
     }
 
     /**
-     * @return the hasVersionlessIssue
+     * @return the missingBasePlatforms
      */
-    public boolean hasVersionlessIssue() {
-        return hasVersionlessIssue;
+    public List<String> getMissingBasePlatforms() {
+        return missingBasePlatforms;
     }
 
 }
