@@ -25,7 +25,7 @@ src: src
 
 -dsannotations: \
   io.openliberty.http.monitor.ServletContainerInitializer,\
-  io.openliberty.http.monitor.metrics.RestMetricManager,\
+  io.openliberty.http.monitor.metrics.MetricsManager,\
   io.openliberty.http.monitor.MonitorAppStateListener
 
 WS-TraceGroup: 
@@ -40,7 +40,7 @@ Export-Package: \
   io.openliberty.http.monitor.mbean
 
 Liberty-Monitoring-Components: \
-			io.openliberty.http.monitor.HttpStatsMonitor
+			io.openliberty.http.monitor.HttpServerStatsMonitor
 
 DynamicImport-Package: \
   com.ibm.ws.http.*

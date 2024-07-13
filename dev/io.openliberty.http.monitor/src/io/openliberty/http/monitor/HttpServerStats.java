@@ -15,12 +15,12 @@ import java.util.Optional;
 import com.ibm.websphere.monitor.jmx.Meter;
 import com.ibm.websphere.monitor.meters.StatisticsMeter;
 
-import io.openliberty.http.monitor.mbean.HttpStatsMXBean;
+import io.openliberty.http.monitor.mbean.HttpServerStatsMXBean;
 
 /**
  *
  */
-public class HttpStats extends Meter implements HttpStatsMXBean {
+public class HttpServerStats extends Meter implements HttpServerStatsMXBean {
 
 	private final StatisticsMeter responseTime;
 	private String requestMethod, httpRoute;
@@ -32,14 +32,14 @@ public class HttpStats extends Meter implements HttpStatsMXBean {
 	private String scheme, serverName, networkProtocolName, networkProtocolVersion;
 	private int serverPort;
 
-	public HttpStats() {
+	public HttpServerStats() {
 
 		responseTime = new StatisticsMeter();
 		responseTime.setDescription("Cumulative Response Time (NanoSeconds) for a HTTP connection");
 		responseTime.setUnit("ns");
 	}
 
-	public HttpStats(HttpStatAttributes httpStatAttributes) {
+	public HttpServerStats(HttpStatAttributes httpStatAttributes) {
 		responseTime = new StatisticsMeter();
 		responseTime.setDescription("Cumulative Response Time (NanoSeconds) for a HTTP connection");
 		responseTime.setUnit("ns");

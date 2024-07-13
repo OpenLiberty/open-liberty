@@ -239,14 +239,14 @@ public class ServletFilter implements Filter {
 			httpStatsAttributesHolder.setHttpRoute(httpRoute);
 
 			/*
-			 * Pass information onto HttpStatsMonitor.
+			 * Pass information onto HttpServerStatsMonitor.
 			 */
-			HttpStatsMonitor httpMetricsMonitor = HttpStatsMonitor.getInstance();
+			HttpServerStatsMonitor httpMetricsMonitor = HttpServerStatsMonitor.getInstance();
 			if (httpMetricsMonitor != null) {
 				httpMetricsMonitor.updateHttpStatDuration(httpStatsAttributesHolder, Duration.ofNanos(elapsednanos), appName);
 			} else {
 				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-					Tr.debug(tc, "Could not acquire instance of HTTpStatsMonitor. Can not proceed to create/update Mbean.");
+					Tr.debug(tc, "Could not acquire instance of HttpServerStatsMonitor. Can not proceed to create/update Mbean.");
 				}
 			}
 
