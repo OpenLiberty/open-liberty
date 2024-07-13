@@ -372,8 +372,8 @@ public abstract class FeatureUtilityToolTest {
 
     protected ProgramOutput runFeatureUtility(String testcase, String[] params, boolean debug) throws Exception {
         Properties envProps = new Properties();
-	// add beta property here
-	// envProps.put("JVM_ARGS", "-Dbeta.property=true");
+	//add beta property here
+	 envProps.put("JVM_ARGS", "-Dbeta.property=true");
         return runFeatureUtility(testcase, params, envProps);
     }
 

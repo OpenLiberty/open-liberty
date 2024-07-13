@@ -158,24 +158,43 @@ public class InstallServerTest extends FeatureUtilityToolTest {
     }
     
     /**
-     * Test the install of versionless servlet from maven central. Multi-version is not
-     * supported with installServerFeature as it cannot be installed to same
-     * resource.
+     * Test the install of versionless with bogus platform name xxx from maven central. Should throw expected platform name not found
      *
      * @throws Exception
      */
     @Ignore
     @Test
-    public void testVersionlessWithPlatformFeatures() throws Exception {
-	final String METHOD_NAME = "testInvalidMultiVersionFeatures";
+    public void testVersionlessWithBadPlatformFeatures() throws Exception {
+	final String METHOD_NAME = "testVersionlessWithBadPlatformFeatures";
 	Log.entering(c, METHOD_NAME);
 
-	copyFileToMinifiedRoot("usr/servers/serverX", "publish/tmp/versionlessWPlatform/server.xml");
+	copyFileToMinifiedRoot("usr/servers/serverX", "publish/tmp/versionlessBadPlatform/server.xml");
+	
+	String[] param1s = { "installServerFeatures", "serverX", "--verbose" };
+	
+	ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+
+	checkCommandOutput(po, 21, "CWWKF1515E", null); //UnKnown platform error
+	Log.exiting(c, METHOD_NAME);
+    }
+    
+    /**
+     * Test the install of versionless with no platform defined. Should throw expected platform can't be determined error
+     *
+     * @throws Exception
+     */
+    @Ignore
+    @Test
+    public void testVersionlessWithNoPlatformFeatures() throws Exception {
+	final String METHOD_NAME = "testVersionlessWithNoPlatformFeatures";
+	Log.entering(c, METHOD_NAME);
+
+	copyFileToMinifiedRoot("usr/servers/serverX", "publish/tmp/versionlessNoPlatform/server.xml");
 
 	String[] param1s = { "installServerFeatures", "serverX", "--verbose" };
 	ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
-	checkCommandOutput(po, 21, "CWWKF1405E", null);
+	checkCommandOutput(po, 21, "CWWKF1516E", null); //Platform not determined
 	Log.exiting(c, METHOD_NAME);
     }
 
