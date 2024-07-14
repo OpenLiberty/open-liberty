@@ -776,8 +776,8 @@ public class FeatureResolverImpl implements FeatureResolver {
                     for(String platform : versionedFeature.getPlatformNames()){
                         if(rootPlatforms.contains(allCompatibilityFeatures.get(platform.toLowerCase()).getSymbolicName())){
                             addFeature = true;
-                            filteredVersionless.add(rootFeatureDef.getSymbolicName());
-                            filteredVersionless.add(linkingDef.getSymbolicName());
+                            filteredVersionless.add(rootFeatureDef.getFeatureName());
+                            filteredVersionless.add(linkingDef.getFeatureName());
                             addedRootFeatures.add(versionedFeature.getSymbolicName());
                             break;
                         }
@@ -787,19 +787,19 @@ public class FeatureResolverImpl implements FeatureResolver {
             if(!addFeature){
                 if(!usedPlatforms.contains(platformBase)){
                     if(noPlatformFeatures.containsKey(platformBase)){
-                        noPlatformFeatures.get(platformBase).add(feature);
+                        noPlatformFeatures.get(platformBase).add(rootFeatureDef.getFeatureName());
                     }
                     else{
                         Set<String> featureWithoutPlatform = new HashSet<>();
-                        featureWithoutPlatform.add(feature);
+                        featureWithoutPlatform.add(rootFeatureDef.getFeatureName());
                         noPlatformFeatures.put(platformBase, featureWithoutPlatform);
                     }
                 }
-                filteredVersionless.add(rootFeatureDef.getSymbolicName());
-                selectionContext.getResult().addVersionlessFeature(rootFeatureDef.getSymbolicName(), null);
+                filteredVersionless.add(rootFeatureDef.getFeatureName());
+                selectionContext.getResult().addVersionlessFeature(rootFeatureDef.getFeatureName(), null);
             }
             if(!hasMultiplePlatforms){
-                removedVersionlessFeatures.add(feature);
+                removedVersionlessFeatures.add(rootFeatureDef.getSymbolicName());
             }
             else{
                 linkingFeatureBaseNameToPlatform.put(linkingFeatureBase, platformBase);
@@ -937,7 +937,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                     if (versionedFeatureDef.getVisibility() != Visibility.PUBLIC) {
                         continue;
                     }
-                    selectionContext.getResult().addVersionlessFeature(versionless, versionedFeatureDef.getSymbolicName());
+                    selectionContext.getResult().addVersionlessFeature(versionless, versionedFeatureDef.getFeatureName());
                     added = true;
                 }
             }

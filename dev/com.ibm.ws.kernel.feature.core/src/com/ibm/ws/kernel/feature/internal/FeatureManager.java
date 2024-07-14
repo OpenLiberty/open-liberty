@@ -978,8 +978,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
 
         if(isBeta && result != null){
             if(!result.getResolvedPlatforms().isEmpty()){
-                System.out.println("CWWKF0053I: Feature resolution selected the " + result.getResolvedPlatforms() + " platforms.");
-                //Tr.info(tc, "RESOLVED_PLATFORM", result.getResolvedPlatforms());
+                Tr.info(tc, "RESOLVED_PLATFORM", result.getResolvedPlatforms());
             }
 
             List<String> resolvedVersionless = new ArrayList<>();
@@ -2005,6 +2004,41 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
 
         if(isBeta){
 
+            if(!result.getDuplicatePlatforms().isEmpty()){
+                for(Map.Entry<String, Set<String>> duplicatePlatforms : result.getDuplicatePlatforms().entrySet()){
+                    Tr.error(tc, "DUPLICATE_PLATFORMS", duplicatePlatforms.getValue());
+                }
+            }
+
+            if(!result.getMissingPlatforms().isEmpty()){
+                reportedErrors = true;
+                Set<String> remainingMissingPlatforms = new HashSet<String>();
+                if(platformEnvironmentVariable != null){
+                    for(String plat : result.getMissingPlatforms()){
+                        if(platformEnvironmentVariable.contains(plat)){
+                            Tr.error(tc, "UNKNOWN_PLATFORM_VALUE_ENV_VAR", plat);
+                        }
+                        else{
+                            remainingMissingPlatforms.add(plat);
+                        }
+                    }
+                }
+                else{
+                    remainingMissingPlatforms.addAll(result.getMissingPlatforms());
+                }
+                if(!remainingMissingPlatforms.isEmpty()){
+                    for(String missingPlat : remainingMissingPlatforms){
+                        Tr.error(tc, "UNKNOWN_PLATFORM_ELEMENT", missingPlat);
+                    }
+                }
+            }
+
+            if(!result.getNoPlatformVersionless().isEmpty()){
+                for (Map.Entry<String, Set<String>> noPlatformVersionless : result.getNoPlatformVersionless().entrySet()) {
+                    Tr.error(tc, "NO_RESOLVED_PLATFORM", noPlatformVersionless.getValue());
+                }
+            }
+
             List<String> unresolvedVersionless = new ArrayList<>();
             for (Map.Entry<String, String> versionlessResolved : result.getVersionlessFeatures().entrySet()) {
                 if(versionlessResolved.getValue() == null){
@@ -2016,8 +2050,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                             if(resolvedPlat.toLowerCase().startsWith(platformBaseName.toLowerCase()) && 
                                 featureRepository.getVersionlessFeatureVersionForPlatform(versionlessResolved.getKey(), resolvedPlat) == null){
 
-                                System.out.println("CWWKF0054E: The " + versionlessResolved.getKey() + " versionless feature does not have a version belonging to the " + resolvedPlat + " platform.");
-                                //Tr.error(tc, "INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM", versionlessResolved.getKey(), resolvedPlat);
+                                Tr.error(tc, "INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM", getFeatureName(versionlessResolved.getKey()), resolvedPlat);
                                 compatibleWithPlatform = false;
                                 break;
                             }
@@ -2025,50 +2058,13 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                     }
 
                     if(compatibleWithPlatform){
-                        unresolvedVersionless.add(versionlessResolved.getKey());
+                        unresolvedVersionless.add(getFeatureName(versionlessResolved.getKey()));
                     }
                 }
             }
             if(!unresolvedVersionless.isEmpty()){
                 reportedErrors = true;
                 Tr.error(tc, "UNRESOLVED_VERSIONLESS_FEATURE", unresolvedVersionless);
-            }
-
-            if(!result.getDuplicatePlatforms().isEmpty()){
-                for(Map.Entry<String, Set<String>> duplicatePlatforms : result.getDuplicatePlatforms().entrySet()){
-                    System.out.println("CWWKF0049E: The following configured platform versions are in conflict: " + duplicatePlatforms.getValue());
-                    //Tr.error(tc, "DUPLICATE_PLATFORMS", duplicatePlatforms.getValue());
-                }
-            }
-
-            if(!result.getMissingPlatforms().isEmpty()){
-                reportedErrors = true;
-                Set<String> remainingMissingPlatforms = new HashSet<String>();
-                if(platformEnvironmentVariable != null){
-                    for(String plat : result.getMissingPlatforms()){
-                        if(platformEnvironmentVariable.contains(plat)){
-                            System.out.println("CWWKF0048E: The " + plat + " value of the PREFERRED_PLATFORM_VERSIONS platform environment variable does not contain a valid version.");
-                            //Tr.error(tc, "UNKNOWN_PLATFORM_ELEMENT", plat);
-                        }
-                        else{
-                            remainingMissingPlatforms.add(plat);
-                        }
-                    }
-                }
-                else{
-                    remainingMissingPlatforms.addAll(result.getMissingPlatforms());
-                }
-                if(!remainingMissingPlatforms.isEmpty()){
-                    System.out.println("CWWKF0052E: The " + remainingMissingPlatforms + " platforms are not valid");
-                    //Tr.error(tc, "UNKNOWN_PLATFORM_ELEMENT", remainingMissingPlatforms);
-                }
-            }
-
-            if(!result.getNoPlatformVersionless().isEmpty()){
-                for (Map.Entry<String, Set<String>> noPlatformVersionless : result.getNoPlatformVersionless().entrySet()) {
-                    System.out.println("CWWKF0055E: The " + noPlatformVersionless.getValue() + " versionless features do not have a configured platform.");
-                    //Tr.error(tc, "NO_RESOLVED_PLATFORM", noPlatformVersionless.getValue());
-                }
             }
 
         }
