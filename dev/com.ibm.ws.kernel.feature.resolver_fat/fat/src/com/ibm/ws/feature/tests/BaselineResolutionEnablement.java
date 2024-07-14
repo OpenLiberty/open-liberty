@@ -13,8 +13,8 @@
 package com.ibm.ws.feature.tests;
 
 public interface BaselineResolutionEnablement {
-    boolean enableSingletonGeneration = false;
-    boolean enableServletGeneration = false;
+    boolean enableSingletonGeneration = true;
+    boolean enableServletGeneration = true;
 
     boolean enableSingleton = true;
     boolean enableVersionlessSingleton = true;
