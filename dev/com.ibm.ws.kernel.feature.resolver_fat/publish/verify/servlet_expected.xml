@@ -54,7 +54,7 @@
             <resolved>com.ibm.websphere.appserver.authFilter-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.webAppSecurity-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-            <resolved>appAuthentication</resolved>
+            <resolved>io.openliberty.versionless.appAuthentication</resolved>
             <resolved>io.openliberty.internal.versionless.jaspic-1.1</resolved>
         </output>
     </case>
@@ -112,7 +112,7 @@
             <resolved>com.ibm.websphere.appserver.webAppSecurity-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jaccWeb-1.5</resolved>
-            <resolved>appAuthorization</resolved>
+            <resolved>io.openliberty.versionless.appAuthorization</resolved>
             <resolved>io.openliberty.internal.versionless.jacc-1.5</resolved>
         </output>
     </case>
@@ -159,7 +159,7 @@
             <resolved>appClientSupport-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jndi1.0-iiop1.0</resolved>
-            <resolved>appClientSupport</resolved>
+            <resolved>io.openliberty.versionless.appClientSupport</resolved>
             <resolved>io.openliberty.internal.versionless.appClientSupport-1.0</resolved>
         </output>
     </case>
@@ -215,7 +215,7 @@
             <resolved>com.ibm.websphere.appserver.authFilter-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.webAppSecurity-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-            <resolved>appSecurity</resolved>
+            <resolved>io.openliberty.versionless.appSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.appSecurity-2.0</resolved>
         </output>
     </case>
@@ -275,7 +275,7 @@
             <resolved>com.ibm.websphere.appserver.transactionContext-1.0</resolved>
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>batch</resolved>
+            <resolved>io.openliberty.versionless.batch</resolved>
             <resolved>io.openliberty.internal.versionless.batch-1.0</resolved>
         </output>
     </case>
@@ -322,7 +322,7 @@
             <resolved>com.ibm.websphere.appserver.beanValidationCore-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javax.validation-1.1</resolved>
             <resolved>beanValidation-1.1</resolved>
-            <resolved>beanValidation</resolved>
+            <resolved>io.openliberty.versionless.beanValidation</resolved>
             <resolved>io.openliberty.internal.versionless.beanValidation-1.1</resolved>
         </output>
     </case>
@@ -373,7 +373,7 @@
             <resolved>cdi-1.2</resolved>
             <resolved>com.ibm.websphere.appserver.cdi1.2-servlet3.1</resolved>
             <resolved>com.ibm.websphere.appserver.cdi1.2-transaction1.2</resolved>
-            <resolved>cdi</resolved>
+            <resolved>io.openliberty.versionless.cdi</resolved>
             <resolved>io.openliberty.internal.versionless.cdi-1.2</resolved>
         </output>
     </case>
@@ -413,7 +413,7 @@
             <resolved>com.ibm.websphere.appserver.org.eclipse.microprofile.contextpropagation-1.0</resolved>
             <resolved>concurrent-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>concurrent</resolved>
+            <resolved>io.openliberty.versionless.concurrent</resolved>
             <resolved>io.openliberty.internal.versionless.concurrent-1.0</resolved>
         </output>
     </case>
@@ -466,7 +466,7 @@
             <resolved>com.ibm.websphere.appserver.transactionContext-1.0</resolved>
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>connectors</resolved>
+            <resolved>io.openliberty.versionless.connectors</resolved>
             <resolved>io.openliberty.internal.versionless.jca-1.7</resolved>
         </output>
     </case>
@@ -534,7 +534,7 @@
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
-            <resolved>connectorsInboundSecurity</resolved>
+            <resolved>io.openliberty.versionless.connectorsInboundSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.jcaInboundSecurity-1.0</resolved>
         </output>
     </case>
@@ -647,7 +647,7 @@
             <resolved>com.ibm.websphere.appserver.iioptransport.transaction-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejb</resolved>
+            <resolved>io.openliberty.versionless.ejb</resolved>
             <resolved>io.openliberty.internal.versionless.ejb-3.2</resolved>
         </output>
     </case>
@@ -704,7 +704,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejbHome</resolved>
+            <resolved>io.openliberty.versionless.ejbHome</resolved>
             <resolved>io.openliberty.internal.versionless.ejbHome-3.2</resolved>
         </output>
     </case>
@@ -760,7 +760,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejbLite</resolved>
+            <resolved>io.openliberty.versionless.ejbLite</resolved>
             <resolved>io.openliberty.internal.versionless.ejbLite-3.2</resolved>
         </output>
     </case>
@@ -828,7 +828,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejbPersistentTimer</resolved>
+            <resolved>io.openliberty.versionless.ejbPersistentTimer</resolved>
             <resolved>io.openliberty.internal.versionless.ejbPersistentTimer-3.2</resolved>
         </output>
     </case>
@@ -889,7 +889,7 @@
             <resolved>com.ibm.websphere.appserver.iioptransport.transaction-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejbRemote</resolved>
+            <resolved>io.openliberty.versionless.ejbRemote</resolved>
             <resolved>io.openliberty.internal.versionless.ejbRemote-3.2</resolved>
         </output>
     </case>
@@ -926,7 +926,7 @@
             <resolved>servlet-3.1</resolved>
             <resolved>com.ibm.websphere.appserver.javax.el-3.0</resolved>
             <resolved>el-3.0</resolved>
-            <resolved>el</resolved>
+            <resolved>io.openliberty.versionless.el</resolved>
             <resolved>io.openliberty.internal.versionless.el-3.0</resolved>
         </output>
     </case>
@@ -1006,7 +1006,7 @@
             <resolved>com.ibm.websphere.appserver.iioptransport.transaction-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeans</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeans</resolved>
             <resolved>io.openliberty.internal.versionless.ejb-3.2</resolved>
         </output>
     </case>
@@ -1063,7 +1063,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeansHome</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeansHome</resolved>
             <resolved>io.openliberty.internal.versionless.ejbHome-3.2</resolved>
         </output>
     </case>
@@ -1119,7 +1119,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeansLite</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeansLite</resolved>
             <resolved>io.openliberty.internal.versionless.ejbLite-3.2</resolved>
         </output>
     </case>
@@ -1187,7 +1187,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeansPersistentTimer</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeansPersistentTimer</resolved>
             <resolved>io.openliberty.internal.versionless.ejbPersistentTimer-3.2</resolved>
         </output>
     </case>
@@ -1248,7 +1248,7 @@
             <resolved>com.ibm.websphere.appserver.iioptransport.transaction-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeansRemote</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeansRemote</resolved>
             <resolved>io.openliberty.internal.versionless.ejbRemote-3.2</resolved>
         </output>
     </case>
@@ -1285,7 +1285,7 @@
             <resolved>servlet-3.1</resolved>
             <resolved>com.ibm.websphere.appserver.javax.el-3.0</resolved>
             <resolved>el-3.0</resolved>
-            <resolved>expressionLanguage</resolved>
+            <resolved>io.openliberty.versionless.expressionLanguage</resolved>
             <resolved>io.openliberty.internal.versionless.el-3.0</resolved>
         </output>
     </case>
@@ -1331,7 +1331,7 @@
             <resolved>com.ibm.websphere.appserver.javax.jsf-2.2</resolved>
             <resolved>com.ibm.websphere.appserver.javax.validation-1.1</resolved>
             <resolved>jsf-2.2</resolved>
-            <resolved>faces</resolved>
+            <resolved>io.openliberty.versionless.faces</resolved>
             <resolved>io.openliberty.internal.versionless.jsf-2.2</resolved>
         </output>
     </case>
@@ -1378,7 +1378,7 @@
             <resolved>com.ibm.websphere.appserver.appJ2eeManagement-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.webJ2eeManagement-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.j2eeManagement1.1-transaction1.2</resolved>
-            <resolved>j2eeManagement</resolved>
+            <resolved>io.openliberty.versionless.j2eeManagement</resolved>
             <resolved>io.openliberty.internal.versionless.j2eeManagement-1.1</resolved>
         </output>
     </case>
@@ -1436,7 +1436,7 @@
             <resolved>com.ibm.websphere.appserver.webAppSecurity-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jaccWeb-1.5</resolved>
-            <resolved>jacc</resolved>
+            <resolved>io.openliberty.versionless.jacc</resolved>
             <resolved>io.openliberty.internal.versionless.jacc-1.5</resolved>
         </output>
     </case>
@@ -1495,7 +1495,7 @@
             <resolved>com.ibm.websphere.appserver.authFilter-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.webAppSecurity-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-            <resolved>jaspic</resolved>
+            <resolved>io.openliberty.versionless.jaspic</resolved>
             <resolved>io.openliberty.internal.versionless.jaspic-1.1</resolved>
         </output>
     </case>
@@ -1532,7 +1532,7 @@
             <resolved>servlet-3.1</resolved>
             <resolved>com.ibm.websphere.appserver.javax.mail-1.5</resolved>
             <resolved>javaMail-1.5</resolved>
-            <resolved>javaMail</resolved>
+            <resolved>io.openliberty.versionless.javaMail</resolved>
             <resolved>io.openliberty.internal.versionless.javaMail-1.5</resolved>
         </output>
     </case>
@@ -1570,7 +1570,7 @@
             <resolved>com.ibm.websphere.appserver.internal.optional.jaxb-2.2</resolved>
             <resolved>com.ibm.websphere.appserver.optional.jaxb-2.2</resolved>
             <resolved>jaxb-2.2</resolved>
-            <resolved>jaxb</resolved>
+            <resolved>io.openliberty.versionless.jaxb</resolved>
             <resolved>io.openliberty.internal.versionless.jaxb-2.2</resolved>
         </output>
     </case>
@@ -1616,7 +1616,7 @@
             <resolved>com.ibm.websphere.appserver.jaxrs.common-2.0</resolved>
             <resolved>jaxrsClient-2.0</resolved>
             <resolved>jaxrs-2.0</resolved>
-            <resolved>jaxrs</resolved>
+            <resolved>io.openliberty.versionless.jaxrs</resolved>
             <resolved>io.openliberty.internal.versionless.jaxrs-2.0</resolved>
         </output>
     </case>
@@ -1660,7 +1660,7 @@
             <resolved>com.ibm.websphere.appserver.globalhandler-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jaxrs.common-2.0</resolved>
             <resolved>jaxrsClient-2.0</resolved>
-            <resolved>jaxrsClient</resolved>
+            <resolved>io.openliberty.versionless.jaxrsClient</resolved>
             <resolved>io.openliberty.internal.versionless.jaxrsClient-2.0</resolved>
         </output>
     </case>
@@ -1707,7 +1707,7 @@
             <resolved>com.ibm.websphere.appserver.javax.mail-1.5</resolved>
             <resolved>jaxws-2.2</resolved>
             <resolved>com.ibm.websphere.appserver.jaxwsweb-2.2</resolved>
-            <resolved>jaxws</resolved>
+            <resolved>io.openliberty.versionless.jaxws</resolved>
             <resolved>io.openliberty.internal.versionless.jaxws-2.2</resolved>
         </output>
     </case>
@@ -1760,7 +1760,7 @@
             <resolved>com.ibm.websphere.appserver.transactionContext-1.0</resolved>
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>jca</resolved>
+            <resolved>io.openliberty.versionless.jca</resolved>
             <resolved>io.openliberty.internal.versionless.jca-1.7</resolved>
         </output>
     </case>
@@ -1828,7 +1828,7 @@
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
-            <resolved>jcaInboundSecurity</resolved>
+            <resolved>io.openliberty.versionless.jcaInboundSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.jcaInboundSecurity-1.0</resolved>
         </output>
     </case>
@@ -1872,7 +1872,7 @@
             <resolved>com.ibm.websphere.appserver.connectionManagement-1.0</resolved>
             <resolved>io.openliberty.jdbc4.1.internal.ee-6.0</resolved>
             <resolved>jdbc-4.1</resolved>
-            <resolved>jdbc</resolved>
+            <resolved>io.openliberty.versionless.jdbc</resolved>
             <resolved>io.openliberty.internal.versionless.jdbc-4.1</resolved>
         </output>
     </case>
@@ -1928,7 +1928,7 @@
             <resolved>com.ibm.websphere.appserver.transactionContext-1.0</resolved>
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>jms</resolved>
+            <resolved>io.openliberty.versionless.jms</resolved>
             <resolved>io.openliberty.internal.versionless.jms-2.0</resolved>
         </output>
     </case>
@@ -1985,7 +1985,7 @@
             <resolved>com.ibm.websphere.appserver.org.eclipse.persistence-2.6</resolved>
             <resolved>jpa-2.1</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-            <resolved>jpa</resolved>
+            <resolved>io.openliberty.versionless.jpa</resolved>
             <resolved>io.openliberty.internal.versionless.jpa-2.1</resolved>
         </output>
     </case>
@@ -2031,7 +2031,7 @@
             <resolved>com.ibm.websphere.appserver.javax.jsf-2.2</resolved>
             <resolved>com.ibm.websphere.appserver.javax.validation-1.1</resolved>
             <resolved>jsf-2.2</resolved>
-            <resolved>jsf</resolved>
+            <resolved>io.openliberty.versionless.jsf</resolved>
             <resolved>io.openliberty.internal.versionless.jsf-2.2</resolved>
         </output>
     </case>
@@ -2101,7 +2101,7 @@
             <resolved>servlet-3.1</resolved>
             <resolved>com.ibm.websphere.appserver.jsonpImpl-1.0.0</resolved>
             <resolved>jsonp-1.0</resolved>
-            <resolved>jsonp</resolved>
+            <resolved>io.openliberty.versionless.jsonp</resolved>
             <resolved>io.openliberty.internal.versionless.jsonp-1.0</resolved>
         </output>
     </case>
@@ -2141,7 +2141,7 @@
             <resolved>io.openliberty.servlet.internal-3.1</resolved>
             <resolved>el-3.0</resolved>
             <resolved>jsp-2.3</resolved>
-            <resolved>jsp</resolved>
+            <resolved>io.openliberty.versionless.jsp</resolved>
             <resolved>io.openliberty.internal.versionless.jsp-2.3</resolved>
         </output>
     </case>
@@ -2178,7 +2178,7 @@
             <resolved>servlet-3.1</resolved>
             <resolved>com.ibm.websphere.appserver.javax.mail-1.5</resolved>
             <resolved>javaMail-1.5</resolved>
-            <resolved>mail</resolved>
+            <resolved>io.openliberty.versionless.mail</resolved>
             <resolved>io.openliberty.internal.versionless.javaMail-1.5</resolved>
         </output>
     </case>
@@ -2225,7 +2225,7 @@
             <resolved>managedBeans-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>managedBeans</resolved>
+            <resolved>io.openliberty.versionless.managedBeans</resolved>
             <resolved>io.openliberty.internal.versionless.managedBeans-1.0</resolved>
         </output>
     </case>
@@ -2288,7 +2288,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>mdb</resolved>
+            <resolved>io.openliberty.versionless.mdb</resolved>
             <resolved>io.openliberty.internal.versionless.mdb-3.2</resolved>
         </output>
     </case>
@@ -2344,7 +2344,7 @@
             <resolved>com.ibm.websphere.appserver.transactionContext-1.0</resolved>
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>messaging</resolved>
+            <resolved>io.openliberty.versionless.messaging</resolved>
             <resolved>io.openliberty.internal.versionless.jms-2.0</resolved>
         </output>
     </case>
@@ -2398,7 +2398,7 @@
             <resolved>com.ibm.websphere.appserver.transactionContext-1.0</resolved>
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>messagingClient</resolved>
+            <resolved>io.openliberty.versionless.messagingClient</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsClient-2.0</resolved>
         </output>
     </case>
@@ -2450,7 +2450,7 @@
             <resolved>io.openliberty.security.internal.ee-6.0</resolved>
             <resolved>com.ibm.websphere.appserver.security-1.0</resolved>
             <resolved>wasJmsSecurity-1.0</resolved>
-            <resolved>messagingSecurity</resolved>
+            <resolved>io.openliberty.versionless.messagingSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsSecurity-1.0</resolved>
         </output>
     </case>
@@ -2489,7 +2489,7 @@
             <resolved>com.ibm.websphere.appserver.javax.connector.internal-1.6</resolved>
             <resolved>com.ibm.websphere.appserver.transaction-1.1</resolved>
             <resolved>wasJmsServer-1.0</resolved>
-            <resolved>messagingServer</resolved>
+            <resolved>io.openliberty.versionless.messagingServer</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsServer-1.0</resolved>
         </output>
     </case>
@@ -2529,7 +2529,7 @@
             <resolved>io.openliberty.servlet.internal-3.1</resolved>
             <resolved>el-3.0</resolved>
             <resolved>jsp-2.3</resolved>
-            <resolved>pages</resolved>
+            <resolved>io.openliberty.versionless.pages</resolved>
             <resolved>io.openliberty.internal.versionless.jsp-2.3</resolved>
         </output>
     </case>
@@ -2586,7 +2586,7 @@
             <resolved>com.ibm.websphere.appserver.org.eclipse.persistence-2.6</resolved>
             <resolved>jpa-2.1</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-            <resolved>persistence</resolved>
+            <resolved>io.openliberty.versionless.persistence</resolved>
             <resolved>io.openliberty.internal.versionless.jpa-2.1</resolved>
         </output>
     </case>
@@ -2632,7 +2632,7 @@
             <resolved>com.ibm.websphere.appserver.jaxrs.common-2.0</resolved>
             <resolved>jaxrsClient-2.0</resolved>
             <resolved>jaxrs-2.0</resolved>
-            <resolved>restfulWS</resolved>
+            <resolved>io.openliberty.versionless.restfulWS</resolved>
             <resolved>io.openliberty.internal.versionless.jaxrs-2.0</resolved>
         </output>
     </case>
@@ -2676,7 +2676,7 @@
             <resolved>com.ibm.websphere.appserver.globalhandler-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jaxrs.common-2.0</resolved>
             <resolved>jaxrsClient-2.0</resolved>
-            <resolved>restfulWSClient</resolved>
+            <resolved>io.openliberty.versionless.restfulWSClient</resolved>
             <resolved>io.openliberty.internal.versionless.jaxrsClient-2.0</resolved>
         </output>
     </case>
@@ -2692,7 +2692,7 @@
         </input>
         <output>
             <resolved>com.ibm.websphere.appserver.eeCompatible-7.0</resolved>
-            <resolved>servlet</resolved>
+            <resolved>io.openliberty.versionless.servlet</resolved>
             <resolved>io.openliberty.internal.versionless.servlet-3.1</resolved>
         </output>
     </case>
@@ -2739,7 +2739,7 @@
             <resolved>com.ibm.websphere.appserver.beanValidationCore-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javax.validation-1.1</resolved>
             <resolved>beanValidation-1.1</resolved>
-            <resolved>validation</resolved>
+            <resolved>io.openliberty.versionless.validation</resolved>
             <resolved>io.openliberty.internal.versionless.beanValidation-1.1</resolved>
         </output>
     </case>
@@ -2793,7 +2793,7 @@
             <resolved>com.ibm.websphere.appserver.transactionContext-1.0</resolved>
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>wasJmsClient</resolved>
+            <resolved>io.openliberty.versionless.wasJmsClient</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsClient-2.0</resolved>
         </output>
     </case>
@@ -2845,7 +2845,7 @@
             <resolved>io.openliberty.security.internal.ee-6.0</resolved>
             <resolved>com.ibm.websphere.appserver.security-1.0</resolved>
             <resolved>wasJmsSecurity-1.0</resolved>
-            <resolved>wasJmsSecurity</resolved>
+            <resolved>io.openliberty.versionless.wasJmsSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsSecurity-1.0</resolved>
         </output>
     </case>
@@ -2884,7 +2884,7 @@
             <resolved>com.ibm.websphere.appserver.javax.connector.internal-1.6</resolved>
             <resolved>com.ibm.websphere.appserver.transaction-1.1</resolved>
             <resolved>wasJmsServer-1.0</resolved>
-            <resolved>wasJmsServer</resolved>
+            <resolved>io.openliberty.versionless.wasJmsServer</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsServer-1.0</resolved>
         </output>
     </case>
@@ -2922,7 +2922,7 @@
             <resolved>io.openliberty.servlet.internal-3.1</resolved>
             <resolved>io.openliberty.javaee.websocket-1.1</resolved>
             <resolved>websocket-1.1</resolved>
-            <resolved>websocket</resolved>
+            <resolved>io.openliberty.versionless.websocket</resolved>
             <resolved>io.openliberty.internal.versionless.websocket-1.1</resolved>
         </output>
     </case>
@@ -2960,7 +2960,7 @@
             <resolved>com.ibm.websphere.appserver.internal.optional.jaxb-2.2</resolved>
             <resolved>com.ibm.websphere.appserver.optional.jaxb-2.2</resolved>
             <resolved>jaxb-2.2</resolved>
-            <resolved>xmlBinding</resolved>
+            <resolved>io.openliberty.versionless.xmlBinding</resolved>
             <resolved>io.openliberty.internal.versionless.jaxb-2.2</resolved>
         </output>
     </case>
@@ -3007,7 +3007,7 @@
             <resolved>com.ibm.websphere.appserver.javax.mail-1.5</resolved>
             <resolved>jaxws-2.2</resolved>
             <resolved>com.ibm.websphere.appserver.jaxwsweb-2.2</resolved>
-            <resolved>xmlWS</resolved>
+            <resolved>io.openliberty.versionless.xmlWS</resolved>
             <resolved>io.openliberty.internal.versionless.jaxws-2.2</resolved>
         </output>
     </case>
@@ -3067,7 +3067,7 @@
             <resolved>com.ibm.websphere.appserver.authFilter-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.webAppSecurity-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-            <resolved>appAuthentication</resolved>
+            <resolved>io.openliberty.versionless.appAuthentication</resolved>
             <resolved>io.openliberty.internal.versionless.jaspic-1.1</resolved>
         </output>
     </case>
@@ -3126,7 +3126,7 @@
             <resolved>com.ibm.websphere.appserver.webAppSecurity-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jaccWeb-1.5</resolved>
-            <resolved>appAuthorization</resolved>
+            <resolved>io.openliberty.versionless.appAuthorization</resolved>
             <resolved>io.openliberty.internal.versionless.jacc-1.5</resolved>
         </output>
     </case>
@@ -3174,7 +3174,7 @@
             <resolved>appClientSupport-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jndi1.0-iiop1.0</resolved>
-            <resolved>appClientSupport</resolved>
+            <resolved>io.openliberty.versionless.appClientSupport</resolved>
             <resolved>io.openliberty.internal.versionless.appClientSupport-1.0</resolved>
         </output>
     </case>
@@ -3252,7 +3252,7 @@
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
             <resolved>com.ibm.websphere.appserver.cdi2.0-jndi1.0</resolved>
-            <resolved>appSecurity</resolved>
+            <resolved>io.openliberty.versionless.appSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.appSecurity-3.0</resolved>
         </output>
     </case>
@@ -3313,7 +3313,7 @@
             <resolved>com.ibm.websphere.appserver.transactionContext-1.0</resolved>
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>batch</resolved>
+            <resolved>io.openliberty.versionless.batch</resolved>
             <resolved>io.openliberty.internal.versionless.batch-1.0</resolved>
         </output>
     </case>
@@ -3360,7 +3360,7 @@
             <resolved>com.ibm.websphere.appserver.javax.cdi-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.javax.validation-2.0</resolved>
             <resolved>beanValidation-2.0</resolved>
-            <resolved>beanValidation</resolved>
+            <resolved>io.openliberty.versionless.beanValidation</resolved>
             <resolved>io.openliberty.internal.versionless.beanValidation-2.0</resolved>
         </output>
     </case>
@@ -3413,7 +3413,7 @@
             <resolved>com.ibm.websphere.appserver.cdi2.0-transaction1.2</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.cdi2.0-servlet4.0</resolved>
-            <resolved>cdi</resolved>
+            <resolved>io.openliberty.versionless.cdi</resolved>
             <resolved>io.openliberty.internal.versionless.cdi-2.0</resolved>
         </output>
     </case>
@@ -3454,7 +3454,7 @@
             <resolved>com.ibm.websphere.appserver.org.eclipse.microprofile.contextpropagation-1.0</resolved>
             <resolved>concurrent-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>concurrent</resolved>
+            <resolved>io.openliberty.versionless.concurrent</resolved>
             <resolved>io.openliberty.internal.versionless.concurrent-1.0</resolved>
         </output>
     </case>
@@ -3508,7 +3508,7 @@
             <resolved>com.ibm.websphere.appserver.transactionContext-1.0</resolved>
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>connectors</resolved>
+            <resolved>io.openliberty.versionless.connectors</resolved>
             <resolved>io.openliberty.internal.versionless.jca-1.7</resolved>
         </output>
     </case>
@@ -3577,7 +3577,7 @@
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
-            <resolved>connectorsInboundSecurity</resolved>
+            <resolved>io.openliberty.versionless.connectorsInboundSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.jcaInboundSecurity-1.0</resolved>
         </output>
     </case>
@@ -3692,7 +3692,7 @@
             <resolved>com.ibm.websphere.appserver.iioptransport.transaction-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejb</resolved>
+            <resolved>io.openliberty.versionless.ejb</resolved>
             <resolved>io.openliberty.internal.versionless.ejb-3.2</resolved>
         </output>
     </case>
@@ -3750,7 +3750,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejbHome</resolved>
+            <resolved>io.openliberty.versionless.ejbHome</resolved>
             <resolved>io.openliberty.internal.versionless.ejbHome-3.2</resolved>
         </output>
     </case>
@@ -3807,7 +3807,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejbLite</resolved>
+            <resolved>io.openliberty.versionless.ejbLite</resolved>
             <resolved>io.openliberty.internal.versionless.ejbLite-3.2</resolved>
         </output>
     </case>
@@ -3876,7 +3876,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejbPersistentTimer</resolved>
+            <resolved>io.openliberty.versionless.ejbPersistentTimer</resolved>
             <resolved>io.openliberty.internal.versionless.ejbPersistentTimer-3.2</resolved>
         </output>
     </case>
@@ -3938,7 +3938,7 @@
             <resolved>com.ibm.websphere.appserver.iioptransport.transaction-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejbRemote</resolved>
+            <resolved>io.openliberty.versionless.ejbRemote</resolved>
             <resolved>io.openliberty.internal.versionless.ejbRemote-3.2</resolved>
         </output>
     </case>
@@ -3976,7 +3976,7 @@
             <resolved>servlet-4.0</resolved>
             <resolved>com.ibm.websphere.appserver.javax.el-3.0</resolved>
             <resolved>el-3.0</resolved>
-            <resolved>el</resolved>
+            <resolved>io.openliberty.versionless.el</resolved>
             <resolved>io.openliberty.internal.versionless.el-3.0</resolved>
         </output>
     </case>
@@ -4057,7 +4057,7 @@
             <resolved>com.ibm.websphere.appserver.iioptransport.transaction-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeans</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeans</resolved>
             <resolved>io.openliberty.internal.versionless.ejb-3.2</resolved>
         </output>
     </case>
@@ -4115,7 +4115,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeansHome</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeansHome</resolved>
             <resolved>io.openliberty.internal.versionless.ejbHome-3.2</resolved>
         </output>
     </case>
@@ -4172,7 +4172,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeansLite</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeansLite</resolved>
             <resolved>io.openliberty.internal.versionless.ejbLite-3.2</resolved>
         </output>
     </case>
@@ -4241,7 +4241,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeansPersistentTimer</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeansPersistentTimer</resolved>
             <resolved>io.openliberty.internal.versionless.ejbPersistentTimer-3.2</resolved>
         </output>
     </case>
@@ -4303,7 +4303,7 @@
             <resolved>com.ibm.websphere.appserver.iioptransport.transaction-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeansRemote</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeansRemote</resolved>
             <resolved>io.openliberty.internal.versionless.ejbRemote-3.2</resolved>
         </output>
     </case>
@@ -4341,7 +4341,7 @@
             <resolved>servlet-4.0</resolved>
             <resolved>com.ibm.websphere.appserver.javax.el-3.0</resolved>
             <resolved>el-3.0</resolved>
-            <resolved>expressionLanguage</resolved>
+            <resolved>io.openliberty.versionless.expressionLanguage</resolved>
             <resolved>io.openliberty.internal.versionless.el-3.0</resolved>
         </output>
     </case>
@@ -4390,7 +4390,7 @@
             <resolved>com.ibm.websphere.appserver.javax.jsf-2.3</resolved>
             <resolved>io.openliberty.javaee.websocket-1.1</resolved>
             <resolved>jsf-2.3</resolved>
-            <resolved>faces</resolved>
+            <resolved>io.openliberty.versionless.faces</resolved>
             <resolved>io.openliberty.internal.versionless.jsf-2.3</resolved>
         </output>
     </case>
@@ -4438,7 +4438,7 @@
             <resolved>com.ibm.websphere.appserver.appJ2eeManagement-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.webJ2eeManagement-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.j2eeManagement1.1-transaction1.2</resolved>
-            <resolved>j2eeManagement</resolved>
+            <resolved>io.openliberty.versionless.j2eeManagement</resolved>
             <resolved>io.openliberty.internal.versionless.j2eeManagement-1.1</resolved>
         </output>
     </case>
@@ -4497,7 +4497,7 @@
             <resolved>com.ibm.websphere.appserver.webAppSecurity-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jaccWeb-1.5</resolved>
-            <resolved>jacc</resolved>
+            <resolved>io.openliberty.versionless.jacc</resolved>
             <resolved>io.openliberty.internal.versionless.jacc-1.5</resolved>
         </output>
     </case>
@@ -4557,7 +4557,7 @@
             <resolved>com.ibm.websphere.appserver.authFilter-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.webAppSecurity-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-            <resolved>jaspic</resolved>
+            <resolved>io.openliberty.versionless.jaspic</resolved>
             <resolved>io.openliberty.internal.versionless.jaspic-1.1</resolved>
         </output>
     </case>
@@ -4595,7 +4595,7 @@
             <resolved>servlet-4.0</resolved>
             <resolved>com.ibm.websphere.appserver.javax.mail-1.6</resolved>
             <resolved>javaMail-1.6</resolved>
-            <resolved>javaMail</resolved>
+            <resolved>io.openliberty.versionless.javaMail</resolved>
             <resolved>io.openliberty.internal.versionless.javaMail-1.6</resolved>
         </output>
     </case>
@@ -4634,7 +4634,7 @@
             <resolved>com.ibm.websphere.appserver.internal.optional.jaxb-2.2</resolved>
             <resolved>com.ibm.websphere.appserver.optional.jaxb-2.2</resolved>
             <resolved>jaxb-2.2</resolved>
-            <resolved>jaxb</resolved>
+            <resolved>io.openliberty.versionless.jaxb</resolved>
             <resolved>io.openliberty.internal.versionless.jaxb-2.2</resolved>
         </output>
     </case>
@@ -4692,7 +4692,7 @@
             <resolved>com.ibm.websphere.appserver.jaxrs.common-2.1</resolved>
             <resolved>jaxrsClient-2.1</resolved>
             <resolved>jaxrs-2.1</resolved>
-            <resolved>jaxrs</resolved>
+            <resolved>io.openliberty.versionless.jaxrs</resolved>
             <resolved>io.openliberty.internal.versionless.jaxrs-2.1</resolved>
         </output>
     </case>
@@ -4747,7 +4747,7 @@
             <resolved>com.ibm.websphere.appserver.internal.cxf.common-3.2</resolved>
             <resolved>com.ibm.websphere.appserver.jaxrs.common-2.1</resolved>
             <resolved>jaxrsClient-2.1</resolved>
-            <resolved>jaxrsClient</resolved>
+            <resolved>io.openliberty.versionless.jaxrsClient</resolved>
             <resolved>io.openliberty.internal.versionless.jaxrsClient-2.1</resolved>
         </output>
     </case>
@@ -4795,7 +4795,7 @@
             <resolved>com.ibm.websphere.appserver.javax.mail-1.5</resolved>
             <resolved>jaxws-2.2</resolved>
             <resolved>com.ibm.websphere.appserver.jaxwsweb-2.2</resolved>
-            <resolved>jaxws</resolved>
+            <resolved>io.openliberty.versionless.jaxws</resolved>
             <resolved>io.openliberty.internal.versionless.jaxws-2.2</resolved>
         </output>
     </case>
@@ -4849,7 +4849,7 @@
             <resolved>com.ibm.websphere.appserver.transactionContext-1.0</resolved>
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>jca</resolved>
+            <resolved>io.openliberty.versionless.jca</resolved>
             <resolved>io.openliberty.internal.versionless.jca-1.7</resolved>
         </output>
     </case>
@@ -4918,7 +4918,7 @@
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
-            <resolved>jcaInboundSecurity</resolved>
+            <resolved>io.openliberty.versionless.jcaInboundSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.jcaInboundSecurity-1.0</resolved>
         </output>
     </case>
@@ -4966,7 +4966,7 @@
             <resolved>com.ibm.websphere.appserver.connectionManagement-1.0</resolved>
             <resolved>io.openliberty.jdbc4.2.internal.ee-6.0</resolved>
             <resolved>jdbc-4.2</resolved>
-            <resolved>jdbc</resolved>
+            <resolved>io.openliberty.versionless.jdbc</resolved>
             <resolved>io.openliberty.internal.versionless.jdbc-4.2</resolved>
         </output>
     </case>
@@ -5023,7 +5023,7 @@
             <resolved>com.ibm.websphere.appserver.transactionContext-1.0</resolved>
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>jms</resolved>
+            <resolved>io.openliberty.versionless.jms</resolved>
             <resolved>io.openliberty.internal.versionless.jms-2.0</resolved>
         </output>
     </case>
@@ -5081,7 +5081,7 @@
             <resolved>com.ibm.websphere.appserver.org.eclipse.persistence-2.7</resolved>
             <resolved>jpa-2.2</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-            <resolved>jpa</resolved>
+            <resolved>io.openliberty.versionless.jpa</resolved>
             <resolved>io.openliberty.internal.versionless.jpa-2.2</resolved>
         </output>
     </case>
@@ -5130,7 +5130,7 @@
             <resolved>com.ibm.websphere.appserver.javax.jsf-2.3</resolved>
             <resolved>io.openliberty.javaee.websocket-1.1</resolved>
             <resolved>jsf-2.3</resolved>
-            <resolved>jsf</resolved>
+            <resolved>io.openliberty.versionless.jsf</resolved>
             <resolved>io.openliberty.internal.versionless.jsf-2.3</resolved>
         </output>
     </case>
@@ -5175,7 +5175,7 @@
             <resolved>com.ibm.websphere.appserver.jsonbImpl-1.0.1</resolved>
             <resolved>com.ibm.websphere.appserver.jsonbInternal-1.0</resolved>
             <resolved>jsonb-1.0</resolved>
-            <resolved>jsonb</resolved>
+            <resolved>io.openliberty.versionless.jsonb</resolved>
             <resolved>io.openliberty.internal.versionless.jsonb-1.0</resolved>
         </output>
     </case>
@@ -5214,7 +5214,7 @@
             <resolved>com.ibm.websphere.appserver.jsonpImpl-1.1.1</resolved>
             <resolved>com.ibm.websphere.appserver.jsonpInternal-1.1</resolved>
             <resolved>jsonp-1.1</resolved>
-            <resolved>jsonp</resolved>
+            <resolved>io.openliberty.versionless.jsonp</resolved>
             <resolved>io.openliberty.internal.versionless.jsonp-1.1</resolved>
         </output>
     </case>
@@ -5255,7 +5255,7 @@
             <resolved>io.openliberty.servlet.internal-4.0</resolved>
             <resolved>el-3.0</resolved>
             <resolved>jsp-2.3</resolved>
-            <resolved>jsp</resolved>
+            <resolved>io.openliberty.versionless.jsp</resolved>
             <resolved>io.openliberty.internal.versionless.jsp-2.3</resolved>
         </output>
     </case>
@@ -5293,7 +5293,7 @@
             <resolved>servlet-4.0</resolved>
             <resolved>com.ibm.websphere.appserver.javax.mail-1.6</resolved>
             <resolved>javaMail-1.6</resolved>
-            <resolved>mail</resolved>
+            <resolved>io.openliberty.versionless.mail</resolved>
             <resolved>io.openliberty.internal.versionless.javaMail-1.6</resolved>
         </output>
     </case>
@@ -5343,7 +5343,7 @@
             <resolved>managedBeans-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>managedBeans</resolved>
+            <resolved>io.openliberty.versionless.managedBeans</resolved>
             <resolved>io.openliberty.internal.versionless.managedBeans-1.0</resolved>
         </output>
     </case>
@@ -5407,7 +5407,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>mdb</resolved>
+            <resolved>io.openliberty.versionless.mdb</resolved>
             <resolved>io.openliberty.internal.versionless.mdb-3.2</resolved>
         </output>
     </case>
@@ -5464,7 +5464,7 @@
             <resolved>com.ibm.websphere.appserver.transactionContext-1.0</resolved>
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>messaging</resolved>
+            <resolved>io.openliberty.versionless.messaging</resolved>
             <resolved>io.openliberty.internal.versionless.jms-2.0</resolved>
         </output>
     </case>
@@ -5519,7 +5519,7 @@
             <resolved>com.ibm.websphere.appserver.transactionContext-1.0</resolved>
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>messagingClient</resolved>
+            <resolved>io.openliberty.versionless.messagingClient</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsClient-2.0</resolved>
         </output>
     </case>
@@ -5575,7 +5575,7 @@
             <resolved>io.openliberty.security.internal.ee-6.0</resolved>
             <resolved>com.ibm.websphere.appserver.security-1.0</resolved>
             <resolved>wasJmsSecurity-1.0</resolved>
-            <resolved>messagingSecurity</resolved>
+            <resolved>io.openliberty.versionless.messagingSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsSecurity-1.0</resolved>
         </output>
     </case>
@@ -5618,7 +5618,7 @@
             <resolved>com.ibm.websphere.appserver.javax.connector.internal-1.7</resolved>
             <resolved>com.ibm.websphere.appserver.transaction-1.2</resolved>
             <resolved>wasJmsServer-1.0</resolved>
-            <resolved>messagingServer</resolved>
+            <resolved>io.openliberty.versionless.messagingServer</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsServer-1.0</resolved>
         </output>
     </case>
@@ -5659,7 +5659,7 @@
             <resolved>io.openliberty.servlet.internal-4.0</resolved>
             <resolved>el-3.0</resolved>
             <resolved>jsp-2.3</resolved>
-            <resolved>pages</resolved>
+            <resolved>io.openliberty.versionless.pages</resolved>
             <resolved>io.openliberty.internal.versionless.jsp-2.3</resolved>
         </output>
     </case>
@@ -5717,7 +5717,7 @@
             <resolved>com.ibm.websphere.appserver.org.eclipse.persistence-2.7</resolved>
             <resolved>jpa-2.2</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-            <resolved>persistence</resolved>
+            <resolved>io.openliberty.versionless.persistence</resolved>
             <resolved>io.openliberty.internal.versionless.jpa-2.2</resolved>
         </output>
     </case>
@@ -5775,7 +5775,7 @@
             <resolved>com.ibm.websphere.appserver.jaxrs.common-2.1</resolved>
             <resolved>jaxrsClient-2.1</resolved>
             <resolved>jaxrs-2.1</resolved>
-            <resolved>restfulWS</resolved>
+            <resolved>io.openliberty.versionless.restfulWS</resolved>
             <resolved>io.openliberty.internal.versionless.jaxrs-2.1</resolved>
         </output>
     </case>
@@ -5830,7 +5830,7 @@
             <resolved>com.ibm.websphere.appserver.internal.cxf.common-3.2</resolved>
             <resolved>com.ibm.websphere.appserver.jaxrs.common-2.1</resolved>
             <resolved>jaxrsClient-2.1</resolved>
-            <resolved>restfulWSClient</resolved>
+            <resolved>io.openliberty.versionless.restfulWSClient</resolved>
             <resolved>io.openliberty.internal.versionless.jaxrsClient-2.1</resolved>
         </output>
     </case>
@@ -5846,7 +5846,7 @@
         </input>
         <output>
             <resolved>com.ibm.websphere.appserver.eeCompatible-8.0</resolved>
-            <resolved>servlet</resolved>
+            <resolved>io.openliberty.versionless.servlet</resolved>
             <resolved>io.openliberty.internal.versionless.servlet-4.0</resolved>
         </output>
     </case>
@@ -5893,7 +5893,7 @@
             <resolved>com.ibm.websphere.appserver.javax.cdi-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.javax.validation-2.0</resolved>
             <resolved>beanValidation-2.0</resolved>
-            <resolved>validation</resolved>
+            <resolved>io.openliberty.versionless.validation</resolved>
             <resolved>io.openliberty.internal.versionless.beanValidation-2.0</resolved>
         </output>
     </case>
@@ -5948,7 +5948,7 @@
             <resolved>com.ibm.websphere.appserver.transactionContext-1.0</resolved>
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>wasJmsClient</resolved>
+            <resolved>io.openliberty.versionless.wasJmsClient</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsClient-2.0</resolved>
         </output>
     </case>
@@ -6004,7 +6004,7 @@
             <resolved>io.openliberty.security.internal.ee-6.0</resolved>
             <resolved>com.ibm.websphere.appserver.security-1.0</resolved>
             <resolved>wasJmsSecurity-1.0</resolved>
-            <resolved>wasJmsSecurity</resolved>
+            <resolved>io.openliberty.versionless.wasJmsSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsSecurity-1.0</resolved>
         </output>
     </case>
@@ -6047,7 +6047,7 @@
             <resolved>com.ibm.websphere.appserver.javax.connector.internal-1.7</resolved>
             <resolved>com.ibm.websphere.appserver.transaction-1.2</resolved>
             <resolved>wasJmsServer-1.0</resolved>
-            <resolved>wasJmsServer</resolved>
+            <resolved>io.openliberty.versionless.wasJmsServer</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsServer-1.0</resolved>
         </output>
     </case>
@@ -6086,7 +6086,7 @@
             <resolved>io.openliberty.servlet.internal-4.0</resolved>
             <resolved>io.openliberty.javaee.websocket-1.1</resolved>
             <resolved>websocket-1.1</resolved>
-            <resolved>websocket</resolved>
+            <resolved>io.openliberty.versionless.websocket</resolved>
             <resolved>io.openliberty.internal.versionless.websocket-1.1</resolved>
         </output>
     </case>
@@ -6125,7 +6125,7 @@
             <resolved>com.ibm.websphere.appserver.internal.optional.jaxb-2.2</resolved>
             <resolved>com.ibm.websphere.appserver.optional.jaxb-2.2</resolved>
             <resolved>jaxb-2.2</resolved>
-            <resolved>xmlBinding</resolved>
+            <resolved>io.openliberty.versionless.xmlBinding</resolved>
             <resolved>io.openliberty.internal.versionless.jaxb-2.2</resolved>
         </output>
     </case>
@@ -6173,7 +6173,7 @@
             <resolved>com.ibm.websphere.appserver.javax.mail-1.5</resolved>
             <resolved>jaxws-2.2</resolved>
             <resolved>com.ibm.websphere.appserver.jaxwsweb-2.2</resolved>
-            <resolved>xmlWS</resolved>
+            <resolved>io.openliberty.versionless.xmlWS</resolved>
             <resolved>io.openliberty.internal.versionless.jaxws-2.2</resolved>
         </output>
     </case>
@@ -6259,7 +6259,7 @@
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
             <resolved>io.openliberty.cdi3.0-appSecurity</resolved>
-            <resolved>appAuthentication</resolved>
+            <resolved>io.openliberty.versionless.appAuthentication</resolved>
             <resolved>io.openliberty.internal.versionless.jaspic-2.0</resolved>
         </output>
     </case>
@@ -6346,7 +6346,7 @@
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
             <resolved>io.openliberty.appAuthorizationWeb-2.0</resolved>
             <resolved>io.openliberty.cdi3.0-appSecurity</resolved>
-            <resolved>appAuthorization</resolved>
+            <resolved>io.openliberty.versionless.appAuthorization</resolved>
             <resolved>io.openliberty.internal.versionless.jacc-2.0</resolved>
         </output>
     </case>
@@ -6395,7 +6395,7 @@
             <resolved>appClientSupport-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jndi1.0-iiop1.0</resolved>
-            <resolved>appClientSupport</resolved>
+            <resolved>io.openliberty.versionless.appClientSupport</resolved>
             <resolved>io.openliberty.internal.versionless.appClientSupport-2.0</resolved>
         </output>
     </case>
@@ -6479,7 +6479,7 @@
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
             <resolved>io.openliberty.cdi3.0-appSecurity</resolved>
-            <resolved>appSecurity</resolved>
+            <resolved>io.openliberty.versionless.appSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.appSecurity-4.0</resolved>
         </output>
     </case>
@@ -6546,7 +6546,7 @@
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>batch</resolved>
+            <resolved>io.openliberty.versionless.batch</resolved>
             <resolved>io.openliberty.internal.versionless.batch-2.0</resolved>
         </output>
     </case>
@@ -6594,7 +6594,7 @@
             <resolved>io.openliberty.jakarta.connectors-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.transaction-2.0</resolved>
             <resolved>beanValidation-3.0</resolved>
-            <resolved>beanValidation</resolved>
+            <resolved>io.openliberty.versionless.beanValidation</resolved>
             <resolved>io.openliberty.internal.versionless.beanValidation-3.0</resolved>
         </output>
     </case>
@@ -6651,7 +6651,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>io.openliberty.cdi3.0-servlet5.0</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-            <resolved>cdi</resolved>
+            <resolved>io.openliberty.versionless.cdi</resolved>
             <resolved>io.openliberty.internal.versionless.cdi-3.0</resolved>
         </output>
     </case>
@@ -6695,7 +6695,7 @@
             <resolved>io.openliberty.org.eclipse.microprofile.contextpropagation-1.3</resolved>
             <resolved>concurrent-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>concurrent</resolved>
+            <resolved>io.openliberty.versionless.concurrent</resolved>
             <resolved>io.openliberty.internal.versionless.concurrent-2.0</resolved>
         </output>
     </case>
@@ -6752,7 +6752,7 @@
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>connectors</resolved>
+            <resolved>io.openliberty.versionless.connectors</resolved>
             <resolved>io.openliberty.internal.versionless.jca-2.0</resolved>
         </output>
     </case>
@@ -6826,7 +6826,7 @@
             <resolved>transportSecurity-1.0</resolved>
             <resolved>io.openliberty.transportSecurity1.0.jakarta</resolved>
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
-            <resolved>connectorsInboundSecurity</resolved>
+            <resolved>io.openliberty.versionless.connectorsInboundSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.jcaInboundSecurity-2.0</resolved>
         </output>
     </case>
@@ -6947,7 +6947,7 @@
             <resolved>io.openliberty.iioptransport.transaction-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejb</resolved>
+            <resolved>io.openliberty.versionless.ejb</resolved>
             <resolved>io.openliberty.internal.versionless.ejb-4.0</resolved>
         </output>
     </case>
@@ -7006,7 +7006,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejbHome</resolved>
+            <resolved>io.openliberty.versionless.ejbHome</resolved>
             <resolved>io.openliberty.internal.versionless.ejbHome-4.0</resolved>
         </output>
     </case>
@@ -7064,7 +7064,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejbLite</resolved>
+            <resolved>io.openliberty.versionless.ejbLite</resolved>
             <resolved>io.openliberty.internal.versionless.ejbLite-4.0</resolved>
         </output>
     </case>
@@ -7135,7 +7135,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejbPersistentTimer</resolved>
+            <resolved>io.openliberty.versionless.ejbPersistentTimer</resolved>
             <resolved>io.openliberty.internal.versionless.ejbPersistentTimer-4.0</resolved>
         </output>
     </case>
@@ -7198,7 +7198,7 @@
             <resolved>io.openliberty.iioptransport.transaction-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejbRemote</resolved>
+            <resolved>io.openliberty.versionless.ejbRemote</resolved>
             <resolved>io.openliberty.internal.versionless.ejbRemote-4.0</resolved>
         </output>
     </case>
@@ -7237,7 +7237,7 @@
             <resolved>servlet-5.0</resolved>
             <resolved>io.openliberty.jakarta.expressionLanguage-4.0</resolved>
             <resolved>expressionLanguage-4.0</resolved>
-            <resolved>el</resolved>
+            <resolved>io.openliberty.versionless.el</resolved>
             <resolved>io.openliberty.internal.versionless.el-4.0</resolved>
         </output>
     </case>
@@ -7323,7 +7323,7 @@
             <resolved>io.openliberty.iioptransport.transaction-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeans</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeans</resolved>
             <resolved>io.openliberty.internal.versionless.ejb-4.0</resolved>
         </output>
     </case>
@@ -7382,7 +7382,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeansHome</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeansHome</resolved>
             <resolved>io.openliberty.internal.versionless.ejbHome-4.0</resolved>
         </output>
     </case>
@@ -7440,7 +7440,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeansLite</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeansLite</resolved>
             <resolved>io.openliberty.internal.versionless.ejbLite-4.0</resolved>
         </output>
     </case>
@@ -7511,7 +7511,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeansPersistentTimer</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeansPersistentTimer</resolved>
             <resolved>io.openliberty.internal.versionless.ejbPersistentTimer-4.0</resolved>
         </output>
     </case>
@@ -7574,7 +7574,7 @@
             <resolved>io.openliberty.iioptransport.transaction-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeansRemote</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeansRemote</resolved>
             <resolved>io.openliberty.internal.versionless.ejbRemote-4.0</resolved>
         </output>
     </case>
@@ -7613,7 +7613,7 @@
             <resolved>servlet-5.0</resolved>
             <resolved>io.openliberty.jakarta.expressionLanguage-4.0</resolved>
             <resolved>expressionLanguage-4.0</resolved>
-            <resolved>expressionLanguage</resolved>
+            <resolved>io.openliberty.versionless.expressionLanguage</resolved>
             <resolved>io.openliberty.internal.versionless.el-4.0</resolved>
         </output>
     </case>
@@ -7664,7 +7664,7 @@
             <resolved>io.openliberty.jakarta.cdi-3.0</resolved>
             <resolved>io.openliberty.jakarta.faces-3.0</resolved>
             <resolved>faces-3.0</resolved>
-            <resolved>faces</resolved>
+            <resolved>io.openliberty.versionless.faces</resolved>
             <resolved>io.openliberty.internal.versionless.jsf-3.0</resolved>
         </output>
     </case>
@@ -7786,7 +7786,7 @@
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
             <resolved>io.openliberty.appAuthorizationWeb-2.0</resolved>
             <resolved>io.openliberty.cdi3.0-appSecurity</resolved>
-            <resolved>jacc</resolved>
+            <resolved>io.openliberty.versionless.jacc</resolved>
             <resolved>io.openliberty.internal.versionless.jacc-2.0</resolved>
         </output>
     </case>
@@ -7872,7 +7872,7 @@
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
             <resolved>io.openliberty.cdi3.0-appSecurity</resolved>
-            <resolved>jaspic</resolved>
+            <resolved>io.openliberty.versionless.jaspic</resolved>
             <resolved>io.openliberty.internal.versionless.jaspic-2.0</resolved>
         </output>
     </case>
@@ -7912,7 +7912,7 @@
             <resolved>io.openliberty.jakarta.activation-2.0</resolved>
             <resolved>io.openliberty.jakarta.mail-2.0</resolved>
             <resolved>mail-2.0</resolved>
-            <resolved>javaMail</resolved>
+            <resolved>io.openliberty.versionless.javaMail</resolved>
             <resolved>io.openliberty.internal.versionless.javaMail-2.0</resolved>
         </output>
     </case>
@@ -7952,7 +7952,7 @@
             <resolved>io.openliberty.jakarta.activation-2.0</resolved>
             <resolved>io.openliberty.jakarta.xmlBinding-3.0</resolved>
             <resolved>xmlBinding-3.0</resolved>
-            <resolved>jaxb</resolved>
+            <resolved>io.openliberty.versionless.jaxb</resolved>
             <resolved>io.openliberty.internal.versionless.jaxb-3.0</resolved>
         </output>
     </case>
@@ -8029,7 +8029,7 @@
             <resolved>io.openliberty.cdi3.0-jndi1.0</resolved>
             <resolved>io.openliberty.cdi3.0-servlet5.0</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-            <resolved>jaxrs</resolved>
+            <resolved>io.openliberty.versionless.jaxrs</resolved>
             <resolved>io.openliberty.internal.versionless.jaxrs-3.0</resolved>
         </output>
     </case>
@@ -8105,7 +8105,7 @@
             <resolved>io.openliberty.cdi3.0-jndi1.0</resolved>
             <resolved>io.openliberty.cdi3.0-servlet5.0</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-            <resolved>jaxrsClient</resolved>
+            <resolved>io.openliberty.versionless.jaxrsClient</resolved>
             <resolved>io.openliberty.internal.versionless.jaxrsClient-3.0</resolved>
         </output>
     </case>
@@ -8154,7 +8154,7 @@
             <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
             <resolved>io.openliberty.xmlws.common-3.0</resolved>
             <resolved>xmlWS-3.0</resolved>
-            <resolved>jaxws</resolved>
+            <resolved>io.openliberty.versionless.jaxws</resolved>
             <resolved>io.openliberty.internal.versionless.jaxws-3.0</resolved>
         </output>
     </case>
@@ -8211,7 +8211,7 @@
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>jca</resolved>
+            <resolved>io.openliberty.versionless.jca</resolved>
             <resolved>io.openliberty.internal.versionless.jca-2.0</resolved>
         </output>
     </case>
@@ -8285,7 +8285,7 @@
             <resolved>transportSecurity-1.0</resolved>
             <resolved>io.openliberty.transportSecurity1.0.jakarta</resolved>
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
-            <resolved>jcaInboundSecurity</resolved>
+            <resolved>io.openliberty.versionless.jcaInboundSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.jcaInboundSecurity-2.0</resolved>
         </output>
     </case>
@@ -8334,7 +8334,7 @@
             <resolved>com.ibm.websphere.appserver.connectionManagement-1.0</resolved>
             <resolved>io.openliberty.jdbc4.2.internal.ee-9.0</resolved>
             <resolved>jdbc-4.2</resolved>
-            <resolved>jdbc</resolved>
+            <resolved>io.openliberty.versionless.jdbc</resolved>
             <resolved>io.openliberty.internal.versionless.jdbc-4.2</resolved>
         </output>
     </case>
@@ -8395,7 +8395,7 @@
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>io.openliberty.connectors.resourcedefinition.messaging-3.0</resolved>
-            <resolved>jms</resolved>
+            <resolved>io.openliberty.versionless.jms</resolved>
             <resolved>io.openliberty.internal.versionless.jms-3.0</resolved>
         </output>
     </case>
@@ -8454,7 +8454,7 @@
             <resolved>persistenceContainer-3.0</resolved>
             <resolved>persistence-3.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-            <resolved>jpa</resolved>
+            <resolved>io.openliberty.versionless.jpa</resolved>
             <resolved>io.openliberty.internal.versionless.jpa-3.0</resolved>
         </output>
     </case>
@@ -8505,7 +8505,7 @@
             <resolved>io.openliberty.jakarta.cdi-3.0</resolved>
             <resolved>io.openliberty.jakarta.faces-3.0</resolved>
             <resolved>faces-3.0</resolved>
-            <resolved>jsf</resolved>
+            <resolved>io.openliberty.versionless.jsf</resolved>
             <resolved>io.openliberty.internal.versionless.jsf-3.0</resolved>
         </output>
     </case>
@@ -8551,7 +8551,7 @@
             <resolved>io.openliberty.jsonbImpl-2.0.1</resolved>
             <resolved>io.openliberty.jsonbInternal-2.0</resolved>
             <resolved>jsonb-2.0</resolved>
-            <resolved>jsonb</resolved>
+            <resolved>io.openliberty.versionless.jsonb</resolved>
             <resolved>io.openliberty.internal.versionless.jsonb-2.0</resolved>
         </output>
     </case>
@@ -8591,7 +8591,7 @@
             <resolved>io.openliberty.jsonpImpl-2.0.1</resolved>
             <resolved>io.openliberty.jsonpInternal-2.0</resolved>
             <resolved>jsonp-2.0</resolved>
-            <resolved>jsonp</resolved>
+            <resolved>io.openliberty.versionless.jsonp</resolved>
             <resolved>io.openliberty.internal.versionless.jsonp-2.0</resolved>
         </output>
     </case>
@@ -8633,7 +8633,7 @@
             <resolved>io.openliberty.jakarta.pages-3.0</resolved>
             <resolved>expressionLanguage-4.0</resolved>
             <resolved>pages-3.0</resolved>
-            <resolved>jsp</resolved>
+            <resolved>io.openliberty.versionless.jsp</resolved>
             <resolved>io.openliberty.internal.versionless.jsp-3.0</resolved>
         </output>
     </case>
@@ -8673,7 +8673,7 @@
             <resolved>io.openliberty.jakarta.activation-2.0</resolved>
             <resolved>io.openliberty.jakarta.mail-2.0</resolved>
             <resolved>mail-2.0</resolved>
-            <resolved>mail</resolved>
+            <resolved>io.openliberty.versionless.mail</resolved>
             <resolved>io.openliberty.internal.versionless.javaMail-2.0</resolved>
         </output>
     </case>
@@ -8724,7 +8724,7 @@
             <resolved>managedBeans-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>managedBeans</resolved>
+            <resolved>io.openliberty.versionless.managedBeans</resolved>
             <resolved>io.openliberty.internal.versionless.managedBeans-2.0</resolved>
         </output>
     </case>
@@ -8792,7 +8792,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>mdb</resolved>
+            <resolved>io.openliberty.versionless.mdb</resolved>
             <resolved>io.openliberty.internal.versionless.mdb-4.0</resolved>
         </output>
     </case>
@@ -8853,7 +8853,7 @@
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>io.openliberty.connectors.resourcedefinition.messaging-3.0</resolved>
-            <resolved>messaging</resolved>
+            <resolved>io.openliberty.versionless.messaging</resolved>
             <resolved>io.openliberty.internal.versionless.jms-3.0</resolved>
         </output>
     </case>
@@ -8912,7 +8912,7 @@
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>io.openliberty.connectors.resourcedefinition.messaging-3.0</resolved>
-            <resolved>messagingClient</resolved>
+            <resolved>io.openliberty.versionless.messagingClient</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsClient-3.0</resolved>
         </output>
     </case>
@@ -8971,7 +8971,7 @@
             <resolved>messagingSecurity-3.0</resolved>
             <resolved>transportSecurity-1.0</resolved>
             <resolved>io.openliberty.transportSecurity1.0.jakarta</resolved>
-            <resolved>messagingSecurity</resolved>
+            <resolved>io.openliberty.versionless.messagingSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsSecurity-3.0</resolved>
         </output>
     </case>
@@ -9015,7 +9015,7 @@
             <resolved>io.openliberty.jakarta.connectors-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.transaction-2.0</resolved>
             <resolved>messagingServer-3.0</resolved>
-            <resolved>messagingServer</resolved>
+            <resolved>io.openliberty.versionless.messagingServer</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsServer-3.0</resolved>
         </output>
     </case>
@@ -9057,7 +9057,7 @@
             <resolved>io.openliberty.jakarta.pages-3.0</resolved>
             <resolved>expressionLanguage-4.0</resolved>
             <resolved>pages-3.0</resolved>
-            <resolved>pages</resolved>
+            <resolved>io.openliberty.versionless.pages</resolved>
             <resolved>io.openliberty.internal.versionless.jsp-3.0</resolved>
         </output>
     </case>
@@ -9116,7 +9116,7 @@
             <resolved>persistenceContainer-3.0</resolved>
             <resolved>persistence-3.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-            <resolved>persistence</resolved>
+            <resolved>io.openliberty.versionless.persistence</resolved>
             <resolved>io.openliberty.internal.versionless.jpa-3.0</resolved>
         </output>
     </case>
@@ -9193,7 +9193,7 @@
             <resolved>io.openliberty.cdi3.0-jndi1.0</resolved>
             <resolved>io.openliberty.cdi3.0-servlet5.0</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-            <resolved>restfulWS</resolved>
+            <resolved>io.openliberty.versionless.restfulWS</resolved>
             <resolved>io.openliberty.internal.versionless.jaxrs-3.0</resolved>
         </output>
     </case>
@@ -9269,7 +9269,7 @@
             <resolved>io.openliberty.cdi3.0-jndi1.0</resolved>
             <resolved>io.openliberty.cdi3.0-servlet5.0</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-            <resolved>restfulWSClient</resolved>
+            <resolved>io.openliberty.versionless.restfulWSClient</resolved>
             <resolved>io.openliberty.internal.versionless.jaxrsClient-3.0</resolved>
         </output>
     </case>
@@ -9285,7 +9285,7 @@
         </input>
         <output>
             <resolved>com.ibm.websphere.appserver.eeCompatible-9.0</resolved>
-            <resolved>servlet</resolved>
+            <resolved>io.openliberty.versionless.servlet</resolved>
             <resolved>io.openliberty.internal.versionless.servlet-5.0</resolved>
         </output>
     </case>
@@ -9333,7 +9333,7 @@
             <resolved>io.openliberty.jakarta.connectors-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.transaction-2.0</resolved>
             <resolved>beanValidation-3.0</resolved>
-            <resolved>validation</resolved>
+            <resolved>io.openliberty.versionless.validation</resolved>
             <resolved>io.openliberty.internal.versionless.beanValidation-3.0</resolved>
         </output>
     </case>
@@ -9392,7 +9392,7 @@
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>io.openliberty.connectors.resourcedefinition.messaging-3.0</resolved>
-            <resolved>wasJmsClient</resolved>
+            <resolved>io.openliberty.versionless.wasJmsClient</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsClient-3.0</resolved>
         </output>
     </case>
@@ -9451,7 +9451,7 @@
             <resolved>messagingSecurity-3.0</resolved>
             <resolved>transportSecurity-1.0</resolved>
             <resolved>io.openliberty.transportSecurity1.0.jakarta</resolved>
-            <resolved>wasJmsSecurity</resolved>
+            <resolved>io.openliberty.versionless.wasJmsSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsSecurity-3.0</resolved>
         </output>
     </case>
@@ -9495,7 +9495,7 @@
             <resolved>io.openliberty.jakarta.connectors-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.transaction-2.0</resolved>
             <resolved>messagingServer-3.0</resolved>
-            <resolved>wasJmsServer</resolved>
+            <resolved>io.openliberty.versionless.wasJmsServer</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsServer-3.0</resolved>
         </output>
     </case>
@@ -9535,7 +9535,7 @@
             <resolved>io.openliberty.jakarta.websocket-2.0</resolved>
             <resolved>io.openliberty.servlet.internal-5.0</resolved>
             <resolved>websocket-2.0</resolved>
-            <resolved>websocket</resolved>
+            <resolved>io.openliberty.versionless.websocket</resolved>
             <resolved>io.openliberty.internal.versionless.websocket-2.0</resolved>
         </output>
     </case>
@@ -9575,7 +9575,7 @@
             <resolved>io.openliberty.jakarta.activation-2.0</resolved>
             <resolved>io.openliberty.jakarta.xmlBinding-3.0</resolved>
             <resolved>xmlBinding-3.0</resolved>
-            <resolved>xmlBinding</resolved>
+            <resolved>io.openliberty.versionless.xmlBinding</resolved>
             <resolved>io.openliberty.internal.versionless.jaxb-3.0</resolved>
         </output>
     </case>
@@ -9624,7 +9624,7 @@
             <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
             <resolved>io.openliberty.xmlws.common-3.0</resolved>
             <resolved>xmlWS-3.0</resolved>
-            <resolved>xmlWS</resolved>
+            <resolved>io.openliberty.versionless.xmlWS</resolved>
             <resolved>io.openliberty.internal.versionless.jaxws-3.0</resolved>
         </output>
     </case>
@@ -9714,7 +9714,7 @@
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
             <resolved>io.openliberty.cdi3.0-appSecurity</resolved>
-            <resolved>appAuthentication</resolved>
+            <resolved>io.openliberty.versionless.appAuthentication</resolved>
             <resolved>io.openliberty.internal.versionless.jaspic-3.0</resolved>
         </output>
     </case>
@@ -9805,7 +9805,7 @@
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
             <resolved>io.openliberty.appAuthorizationWeb-2.0</resolved>
             <resolved>io.openliberty.cdi3.0-appSecurity</resolved>
-            <resolved>appAuthorization</resolved>
+            <resolved>io.openliberty.versionless.appAuthorization</resolved>
             <resolved>io.openliberty.internal.versionless.jacc-2.1</resolved>
         </output>
     </case>
@@ -9856,7 +9856,7 @@
             <resolved>appClientSupport-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jndi1.0-iiop1.0</resolved>
-            <resolved>appClientSupport</resolved>
+            <resolved>io.openliberty.versionless.appClientSupport</resolved>
             <resolved>io.openliberty.internal.versionless.appClientSupport-2.0</resolved>
         </output>
     </case>
@@ -9944,7 +9944,7 @@
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
             <resolved>io.openliberty.cdi3.0-appSecurity</resolved>
-            <resolved>appSecurity</resolved>
+            <resolved>io.openliberty.versionless.appSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.appSecurity-5.0</resolved>
         </output>
     </case>
@@ -10016,7 +10016,7 @@
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>batch</resolved>
+            <resolved>io.openliberty.versionless.batch</resolved>
             <resolved>io.openliberty.internal.versionless.batch-2.1</resolved>
         </output>
     </case>
@@ -10066,7 +10066,7 @@
             <resolved>io.openliberty.jakarta.connectors-2.1</resolved>
             <resolved>com.ibm.websphere.appserver.transaction-2.0</resolved>
             <resolved>beanValidation-3.0</resolved>
-            <resolved>beanValidation</resolved>
+            <resolved>io.openliberty.versionless.beanValidation</resolved>
             <resolved>io.openliberty.internal.versionless.beanValidation-3.0</resolved>
         </output>
     </case>
@@ -10127,7 +10127,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>io.openliberty.cdi4.0-servlet6.0</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-            <resolved>cdi</resolved>
+            <resolved>io.openliberty.versionless.cdi</resolved>
             <resolved>io.openliberty.internal.versionless.cdi-4.0</resolved>
         </output>
     </case>
@@ -10172,7 +10172,7 @@
             <resolved>io.openliberty.jakarta.interceptor-2.1</resolved>
             <resolved>concurrent-3.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>concurrent</resolved>
+            <resolved>io.openliberty.versionless.concurrent</resolved>
             <resolved>io.openliberty.internal.versionless.concurrent-3.0</resolved>
         </output>
     </case>
@@ -10231,7 +10231,7 @@
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>connectors</resolved>
+            <resolved>io.openliberty.versionless.connectors</resolved>
             <resolved>io.openliberty.internal.versionless.jca-2.1</resolved>
         </output>
     </case>
@@ -10395,7 +10395,7 @@
             <resolved>io.openliberty.iioptransport.transaction-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejb</resolved>
+            <resolved>io.openliberty.versionless.ejb</resolved>
             <resolved>io.openliberty.internal.versionless.ejb-4.0</resolved>
         </output>
     </case>
@@ -10456,7 +10456,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejbHome</resolved>
+            <resolved>io.openliberty.versionless.ejbHome</resolved>
             <resolved>io.openliberty.internal.versionless.ejbHome-4.0</resolved>
         </output>
     </case>
@@ -10516,7 +10516,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejbLite</resolved>
+            <resolved>io.openliberty.versionless.ejbLite</resolved>
             <resolved>io.openliberty.internal.versionless.ejbLite-4.0</resolved>
         </output>
     </case>
@@ -10591,7 +10591,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejbPersistentTimer</resolved>
+            <resolved>io.openliberty.versionless.ejbPersistentTimer</resolved>
             <resolved>io.openliberty.internal.versionless.ejbPersistentTimer-4.0</resolved>
         </output>
     </case>
@@ -10656,7 +10656,7 @@
             <resolved>io.openliberty.iioptransport.transaction-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejbRemote</resolved>
+            <resolved>io.openliberty.versionless.ejbRemote</resolved>
             <resolved>io.openliberty.internal.versionless.ejbRemote-4.0</resolved>
         </output>
     </case>
@@ -10697,7 +10697,7 @@
             <resolved>servlet-6.0</resolved>
             <resolved>io.openliberty.jakarta.expressionLanguage-5.0</resolved>
             <resolved>expressionLanguage-5.0</resolved>
-            <resolved>el</resolved>
+            <resolved>io.openliberty.versionless.el</resolved>
             <resolved>io.openliberty.internal.versionless.el-5.0</resolved>
         </output>
     </case>
@@ -10787,7 +10787,7 @@
             <resolved>io.openliberty.iioptransport.transaction-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeans</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeans</resolved>
             <resolved>io.openliberty.internal.versionless.ejb-4.0</resolved>
         </output>
     </case>
@@ -10848,7 +10848,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeansHome</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeansHome</resolved>
             <resolved>io.openliberty.internal.versionless.ejbHome-4.0</resolved>
         </output>
     </case>
@@ -10908,7 +10908,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeansLite</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeansLite</resolved>
             <resolved>io.openliberty.internal.versionless.ejbLite-4.0</resolved>
         </output>
     </case>
@@ -10983,7 +10983,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeansPersistentTimer</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeansPersistentTimer</resolved>
             <resolved>io.openliberty.internal.versionless.ejbPersistentTimer-4.0</resolved>
         </output>
     </case>
@@ -11048,7 +11048,7 @@
             <resolved>io.openliberty.iioptransport.transaction-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeansRemote</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeansRemote</resolved>
             <resolved>io.openliberty.internal.versionless.ejbRemote-4.0</resolved>
         </output>
     </case>
@@ -11089,7 +11089,7 @@
             <resolved>servlet-6.0</resolved>
             <resolved>io.openliberty.jakarta.expressionLanguage-5.0</resolved>
             <resolved>expressionLanguage-5.0</resolved>
-            <resolved>expressionLanguage</resolved>
+            <resolved>io.openliberty.versionless.expressionLanguage</resolved>
             <resolved>io.openliberty.internal.versionless.el-5.0</resolved>
         </output>
     </case>
@@ -11156,7 +11156,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>io.openliberty.cdi4.0-servlet6.0</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-            <resolved>faces</resolved>
+            <resolved>io.openliberty.versionless.faces</resolved>
             <resolved>io.openliberty.internal.versionless.jsf-4.0</resolved>
         </output>
     </case>
@@ -11284,7 +11284,7 @@
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
             <resolved>io.openliberty.appAuthorizationWeb-2.0</resolved>
             <resolved>io.openliberty.cdi3.0-appSecurity</resolved>
-            <resolved>jacc</resolved>
+            <resolved>io.openliberty.versionless.jacc</resolved>
             <resolved>io.openliberty.internal.versionless.jacc-2.1</resolved>
         </output>
     </case>
@@ -11374,7 +11374,7 @@
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
             <resolved>io.openliberty.cdi3.0-appSecurity</resolved>
-            <resolved>jaspic</resolved>
+            <resolved>io.openliberty.versionless.jaspic</resolved>
             <resolved>io.openliberty.internal.versionless.jaspic-3.0</resolved>
         </output>
     </case>
@@ -11417,7 +11417,7 @@
             <resolved>io.openliberty.jakarta.mail-2.1</resolved>
             <resolved>io.openliberty.activation.internal-2.1</resolved>
             <resolved>mail-2.1</resolved>
-            <resolved>javaMail</resolved>
+            <resolved>io.openliberty.versionless.javaMail</resolved>
             <resolved>io.openliberty.internal.versionless.javaMail-2.1</resolved>
         </output>
     </case>
@@ -11461,7 +11461,7 @@
             <resolved>io.openliberty.xmlBinding.internal-4.0</resolved>
             <resolved>io.openliberty.activation.internal-2.1</resolved>
             <resolved>xmlBinding-4.0</resolved>
-            <resolved>jaxb</resolved>
+            <resolved>io.openliberty.versionless.jaxb</resolved>
             <resolved>io.openliberty.internal.versionless.jaxb-4.0</resolved>
         </output>
     </case>
@@ -11533,7 +11533,7 @@
             <resolved>io.openliberty.cdi3.0-jndi1.0</resolved>
             <resolved>io.openliberty.cdi4.0-servlet6.0</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-            <resolved>jaxrs</resolved>
+            <resolved>io.openliberty.versionless.jaxrs</resolved>
             <resolved>io.openliberty.internal.versionless.jaxrs-3.1</resolved>
         </output>
     </case>
@@ -11604,7 +11604,7 @@
             <resolved>io.openliberty.cdi3.0-jndi1.0</resolved>
             <resolved>io.openliberty.cdi4.0-servlet6.0</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-            <resolved>jaxrsClient</resolved>
+            <resolved>io.openliberty.versionless.jaxrsClient</resolved>
             <resolved>io.openliberty.internal.versionless.jaxrsClient-3.1</resolved>
         </output>
     </case>
@@ -11655,7 +11655,7 @@
             <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
             <resolved>io.openliberty.xmlws.common-4.0</resolved>
             <resolved>xmlWS-4.0</resolved>
-            <resolved>jaxws</resolved>
+            <resolved>io.openliberty.versionless.jaxws</resolved>
             <resolved>io.openliberty.internal.versionless.jaxws-4.0</resolved>
         </output>
     </case>
@@ -11714,7 +11714,7 @@
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>jca</resolved>
+            <resolved>io.openliberty.versionless.jca</resolved>
             <resolved>io.openliberty.internal.versionless.jca-2.1</resolved>
         </output>
     </case>
@@ -11802,7 +11802,7 @@
             <resolved>com.ibm.websphere.appserver.connectionManagement-1.0</resolved>
             <resolved>io.openliberty.jdbc4.2.internal.ee-9.0</resolved>
             <resolved>jdbc-4.2</resolved>
-            <resolved>jdbc</resolved>
+            <resolved>io.openliberty.versionless.jdbc</resolved>
             <resolved>io.openliberty.internal.versionless.jdbc-4.2</resolved>
         </output>
     </case>
@@ -11865,7 +11865,7 @@
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>io.openliberty.connectors.resourcedefinition.messaging-3.0</resolved>
-            <resolved>jms</resolved>
+            <resolved>io.openliberty.versionless.jms</resolved>
             <resolved>io.openliberty.internal.versionless.jms-3.1</resolved>
         </output>
     </case>
@@ -11929,7 +11929,7 @@
             <resolved>jsonp-2.1</resolved>
             <resolved>persistence-3.1</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-            <resolved>jpa</resolved>
+            <resolved>io.openliberty.versionless.jpa</resolved>
             <resolved>io.openliberty.internal.versionless.jpa-3.1</resolved>
         </output>
     </case>
@@ -11996,7 +11996,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>io.openliberty.cdi4.0-servlet6.0</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-            <resolved>jsf</resolved>
+            <resolved>io.openliberty.versionless.jsf</resolved>
             <resolved>io.openliberty.internal.versionless.jsf-4.0</resolved>
         </output>
     </case>
@@ -12044,7 +12044,7 @@
             <resolved>io.openliberty.jsonbImpl-3.0.1</resolved>
             <resolved>io.openliberty.jsonbInternal-3.0</resolved>
             <resolved>jsonb-3.0</resolved>
-            <resolved>jsonb</resolved>
+            <resolved>io.openliberty.versionless.jsonb</resolved>
             <resolved>io.openliberty.internal.versionless.jsonb-3.0</resolved>
         </output>
     </case>
@@ -12086,7 +12086,7 @@
             <resolved>io.openliberty.jsonpImpl-2.1.1</resolved>
             <resolved>io.openliberty.jsonpInternal-2.1</resolved>
             <resolved>jsonp-2.1</resolved>
-            <resolved>jsonp</resolved>
+            <resolved>io.openliberty.versionless.jsonp</resolved>
             <resolved>io.openliberty.internal.versionless.jsonp-2.1</resolved>
         </output>
     </case>
@@ -12129,7 +12129,7 @@
             <resolved>io.openliberty.jakarta.pages-3.1</resolved>
             <resolved>expressionLanguage-5.0</resolved>
             <resolved>pages-3.1</resolved>
-            <resolved>jsp</resolved>
+            <resolved>io.openliberty.versionless.jsp</resolved>
             <resolved>io.openliberty.internal.versionless.jsp-3.1</resolved>
         </output>
     </case>
@@ -12172,7 +12172,7 @@
             <resolved>io.openliberty.jakarta.mail-2.1</resolved>
             <resolved>io.openliberty.activation.internal-2.1</resolved>
             <resolved>mail-2.1</resolved>
-            <resolved>mail</resolved>
+            <resolved>io.openliberty.versionless.mail</resolved>
             <resolved>io.openliberty.internal.versionless.javaMail-2.1</resolved>
         </output>
     </case>
@@ -12225,7 +12225,7 @@
             <resolved>managedBeans-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>managedBeans</resolved>
+            <resolved>io.openliberty.versionless.managedBeans</resolved>
             <resolved>io.openliberty.internal.versionless.managedBeans-2.0</resolved>
         </output>
     </case>
@@ -12295,7 +12295,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>mdb</resolved>
+            <resolved>io.openliberty.versionless.mdb</resolved>
             <resolved>io.openliberty.internal.versionless.mdb-4.0</resolved>
         </output>
     </case>
@@ -12358,7 +12358,7 @@
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>io.openliberty.connectors.resourcedefinition.messaging-3.0</resolved>
-            <resolved>messaging</resolved>
+            <resolved>io.openliberty.versionless.messaging</resolved>
             <resolved>io.openliberty.internal.versionless.jms-3.1</resolved>
         </output>
     </case>
@@ -12419,7 +12419,7 @@
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>io.openliberty.connectors.resourcedefinition.messaging-3.0</resolved>
-            <resolved>messagingClient</resolved>
+            <resolved>io.openliberty.versionless.messagingClient</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsClient-3.0</resolved>
         </output>
     </case>
@@ -12480,7 +12480,7 @@
             <resolved>messagingSecurity-3.0</resolved>
             <resolved>transportSecurity-1.0</resolved>
             <resolved>io.openliberty.transportSecurity1.0.jakarta</resolved>
-            <resolved>messagingSecurity</resolved>
+            <resolved>io.openliberty.versionless.messagingSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsSecurity-3.0</resolved>
         </output>
     </case>
@@ -12526,7 +12526,7 @@
             <resolved>io.openliberty.jakarta.connectors-2.1</resolved>
             <resolved>com.ibm.websphere.appserver.transaction-2.0</resolved>
             <resolved>messagingServer-3.0</resolved>
-            <resolved>messagingServer</resolved>
+            <resolved>io.openliberty.versionless.messagingServer</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsServer-3.0</resolved>
         </output>
     </case>
@@ -12569,7 +12569,7 @@
             <resolved>io.openliberty.jakarta.pages-3.1</resolved>
             <resolved>expressionLanguage-5.0</resolved>
             <resolved>pages-3.1</resolved>
-            <resolved>pages</resolved>
+            <resolved>io.openliberty.versionless.pages</resolved>
             <resolved>io.openliberty.internal.versionless.jsp-3.1</resolved>
         </output>
     </case>
@@ -12633,7 +12633,7 @@
             <resolved>jsonp-2.1</resolved>
             <resolved>persistence-3.1</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-            <resolved>persistence</resolved>
+            <resolved>io.openliberty.versionless.persistence</resolved>
             <resolved>io.openliberty.internal.versionless.jpa-3.1</resolved>
         </output>
     </case>
@@ -12705,7 +12705,7 @@
             <resolved>io.openliberty.cdi3.0-jndi1.0</resolved>
             <resolved>io.openliberty.cdi4.0-servlet6.0</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-            <resolved>restfulWS</resolved>
+            <resolved>io.openliberty.versionless.restfulWS</resolved>
             <resolved>io.openliberty.internal.versionless.jaxrs-3.1</resolved>
         </output>
     </case>
@@ -12776,7 +12776,7 @@
             <resolved>io.openliberty.cdi3.0-jndi1.0</resolved>
             <resolved>io.openliberty.cdi4.0-servlet6.0</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-            <resolved>restfulWSClient</resolved>
+            <resolved>io.openliberty.versionless.restfulWSClient</resolved>
             <resolved>io.openliberty.internal.versionless.jaxrsClient-3.1</resolved>
         </output>
     </case>
@@ -12792,7 +12792,7 @@
         </input>
         <output>
             <resolved>com.ibm.websphere.appserver.eeCompatible-10.0</resolved>
-            <resolved>servlet</resolved>
+            <resolved>io.openliberty.versionless.servlet</resolved>
             <resolved>io.openliberty.internal.versionless.servlet-6.0</resolved>
         </output>
     </case>
@@ -12842,7 +12842,7 @@
             <resolved>io.openliberty.jakarta.connectors-2.1</resolved>
             <resolved>com.ibm.websphere.appserver.transaction-2.0</resolved>
             <resolved>beanValidation-3.0</resolved>
-            <resolved>validation</resolved>
+            <resolved>io.openliberty.versionless.validation</resolved>
             <resolved>io.openliberty.internal.versionless.beanValidation-3.0</resolved>
         </output>
     </case>
@@ -12903,7 +12903,7 @@
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>io.openliberty.connectors.resourcedefinition.messaging-3.0</resolved>
-            <resolved>wasJmsClient</resolved>
+            <resolved>io.openliberty.versionless.wasJmsClient</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsClient-3.0</resolved>
         </output>
     </case>
@@ -12964,7 +12964,7 @@
             <resolved>messagingSecurity-3.0</resolved>
             <resolved>transportSecurity-1.0</resolved>
             <resolved>io.openliberty.transportSecurity1.0.jakarta</resolved>
-            <resolved>wasJmsSecurity</resolved>
+            <resolved>io.openliberty.versionless.wasJmsSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsSecurity-3.0</resolved>
         </output>
     </case>
@@ -13010,7 +13010,7 @@
             <resolved>io.openliberty.jakarta.connectors-2.1</resolved>
             <resolved>com.ibm.websphere.appserver.transaction-2.0</resolved>
             <resolved>messagingServer-3.0</resolved>
-            <resolved>wasJmsServer</resolved>
+            <resolved>io.openliberty.versionless.wasJmsServer</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsServer-3.0</resolved>
         </output>
     </case>
@@ -13051,7 +13051,7 @@
             <resolved>servlet-6.0</resolved>
             <resolved>io.openliberty.jakarta.websocket-2.1</resolved>
             <resolved>websocket-2.1</resolved>
-            <resolved>websocket</resolved>
+            <resolved>io.openliberty.versionless.websocket</resolved>
             <resolved>io.openliberty.internal.versionless.websocket-2.1</resolved>
         </output>
     </case>
@@ -13095,7 +13095,7 @@
             <resolved>io.openliberty.xmlBinding.internal-4.0</resolved>
             <resolved>io.openliberty.activation.internal-2.1</resolved>
             <resolved>xmlBinding-4.0</resolved>
-            <resolved>xmlBinding</resolved>
+            <resolved>io.openliberty.versionless.xmlBinding</resolved>
             <resolved>io.openliberty.internal.versionless.jaxb-4.0</resolved>
         </output>
     </case>
@@ -13146,7 +13146,7 @@
             <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
             <resolved>io.openliberty.xmlws.common-4.0</resolved>
             <resolved>xmlWS-4.0</resolved>
-            <resolved>xmlWS</resolved>
+            <resolved>io.openliberty.versionless.xmlWS</resolved>
             <resolved>io.openliberty.internal.versionless.jaxws-4.0</resolved>
         </output>
     </case>
@@ -13239,7 +13239,7 @@
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
             <resolved>io.openliberty.cdi3.0-appSecurity</resolved>
-            <resolved>appAuthentication</resolved>
+            <resolved>io.openliberty.versionless.appAuthentication</resolved>
             <resolved>io.openliberty.internal.versionless.jaspic-3.1</resolved>
         </output>
     </case>
@@ -13333,7 +13333,7 @@
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
             <resolved>io.openliberty.appAuthorizationWeb-2.0</resolved>
             <resolved>io.openliberty.cdi3.0-appSecurity</resolved>
-            <resolved>appAuthorization</resolved>
+            <resolved>io.openliberty.versionless.appAuthorization</resolved>
             <resolved>io.openliberty.internal.versionless.jacc-3.0</resolved>
         </output>
     </case>
@@ -13385,7 +13385,7 @@
             <resolved>appClientSupport-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jndi1.0-iiop1.0</resolved>
-            <resolved>appClientSupport</resolved>
+            <resolved>io.openliberty.versionless.appClientSupport</resolved>
             <resolved>io.openliberty.internal.versionless.appClientSupport-2.0</resolved>
         </output>
     </case>
@@ -13475,7 +13475,7 @@
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
             <resolved>io.openliberty.cdi3.0-appSecurity</resolved>
-            <resolved>appSecurity</resolved>
+            <resolved>io.openliberty.versionless.appSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.appSecurity-6.0</resolved>
         </output>
     </case>
@@ -13548,7 +13548,7 @@
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>batch</resolved>
+            <resolved>io.openliberty.versionless.batch</resolved>
             <resolved>io.openliberty.internal.versionless.batch-2.1</resolved>
         </output>
     </case>
@@ -13595,7 +13595,7 @@
             <resolved>io.openliberty.jakarta.interceptor-2.2</resolved>
             <resolved>io.openliberty.jakarta.cdi-4.1</resolved>
             <resolved>validation-3.1</resolved>
-            <resolved>beanValidation</resolved>
+            <resolved>io.openliberty.versionless.beanValidation</resolved>
             <resolved>io.openliberty.internal.versionless.beanValidation-3.1</resolved>
         </output>
     </case>
@@ -13657,7 +13657,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>io.openliberty.cdi4.1-servlet6.1</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-            <resolved>cdi</resolved>
+            <resolved>io.openliberty.versionless.cdi</resolved>
             <resolved>io.openliberty.internal.versionless.cdi-4.1</resolved>
         </output>
     </case>
@@ -13703,7 +13703,7 @@
             <resolved>io.openliberty.jakarta.interceptor-2.2</resolved>
             <resolved>concurrent-3.1</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>concurrent</resolved>
+            <resolved>io.openliberty.versionless.concurrent</resolved>
             <resolved>io.openliberty.internal.versionless.concurrent-3.1</resolved>
         </output>
     </case>
@@ -13763,7 +13763,7 @@
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>connectors</resolved>
+            <resolved>io.openliberty.versionless.connectors</resolved>
             <resolved>io.openliberty.internal.versionless.jca-2.1</resolved>
         </output>
     </case>
@@ -13865,7 +13865,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>io.openliberty.cdi4.1-servlet6.1</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-            <resolved>data</resolved>
+            <resolved>io.openliberty.versionless.data</resolved>
             <resolved>io.openliberty.internal.versionless.data-1.0</resolved>
         </output>
     </case>
@@ -13956,7 +13956,7 @@
             <resolved>io.openliberty.iioptransport.transaction-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejb</resolved>
+            <resolved>io.openliberty.versionless.ejb</resolved>
             <resolved>io.openliberty.internal.versionless.ejb-4.0</resolved>
         </output>
     </case>
@@ -14018,7 +14018,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejbHome</resolved>
+            <resolved>io.openliberty.versionless.ejbHome</resolved>
             <resolved>io.openliberty.internal.versionless.ejbHome-4.0</resolved>
         </output>
     </case>
@@ -14079,7 +14079,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejbLite</resolved>
+            <resolved>io.openliberty.versionless.ejbLite</resolved>
             <resolved>io.openliberty.internal.versionless.ejbLite-4.0</resolved>
         </output>
     </case>
@@ -14155,7 +14155,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejbPersistentTimer</resolved>
+            <resolved>io.openliberty.versionless.ejbPersistentTimer</resolved>
             <resolved>io.openliberty.internal.versionless.ejbPersistentTimer-4.0</resolved>
         </output>
     </case>
@@ -14221,7 +14221,7 @@
             <resolved>io.openliberty.iioptransport.transaction-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>ejbRemote</resolved>
+            <resolved>io.openliberty.versionless.ejbRemote</resolved>
             <resolved>io.openliberty.internal.versionless.ejbRemote-4.0</resolved>
         </output>
     </case>
@@ -14263,7 +14263,7 @@
             <resolved>servlet-6.1</resolved>
             <resolved>io.openliberty.jakarta.expressionLanguage-6.0</resolved>
             <resolved>expressionLanguage-6.0</resolved>
-            <resolved>el</resolved>
+            <resolved>io.openliberty.versionless.el</resolved>
             <resolved>io.openliberty.internal.versionless.el-6.0</resolved>
         </output>
     </case>
@@ -14354,7 +14354,7 @@
             <resolved>io.openliberty.iioptransport.transaction-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeans</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeans</resolved>
             <resolved>io.openliberty.internal.versionless.ejb-4.0</resolved>
         </output>
     </case>
@@ -14416,7 +14416,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeansHome</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeansHome</resolved>
             <resolved>io.openliberty.internal.versionless.ejbHome-4.0</resolved>
         </output>
     </case>
@@ -14477,7 +14477,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeansLite</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeansLite</resolved>
             <resolved>io.openliberty.internal.versionless.ejbLite-4.0</resolved>
         </output>
     </case>
@@ -14553,7 +14553,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeansPersistentTimer</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeansPersistentTimer</resolved>
             <resolved>io.openliberty.internal.versionless.ejbPersistentTimer-4.0</resolved>
         </output>
     </case>
@@ -14619,7 +14619,7 @@
             <resolved>io.openliberty.iioptransport.transaction-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>enterpriseBeansRemote</resolved>
+            <resolved>io.openliberty.versionless.enterpriseBeansRemote</resolved>
             <resolved>io.openliberty.internal.versionless.ejbRemote-4.0</resolved>
         </output>
     </case>
@@ -14661,7 +14661,7 @@
             <resolved>servlet-6.1</resolved>
             <resolved>io.openliberty.jakarta.expressionLanguage-6.0</resolved>
             <resolved>expressionLanguage-6.0</resolved>
-            <resolved>expressionLanguage</resolved>
+            <resolved>io.openliberty.versionless.expressionLanguage</resolved>
             <resolved>io.openliberty.internal.versionless.el-6.0</resolved>
         </output>
     </case>
@@ -14730,7 +14730,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>io.openliberty.cdi4.1-servlet6.1</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-            <resolved>faces</resolved>
+            <resolved>io.openliberty.versionless.faces</resolved>
             <resolved>io.openliberty.internal.versionless.jsf-4.1</resolved>
         </output>
     </case>
@@ -14862,7 +14862,7 @@
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
             <resolved>io.openliberty.appAuthorizationWeb-2.0</resolved>
             <resolved>io.openliberty.cdi3.0-appSecurity</resolved>
-            <resolved>jacc</resolved>
+            <resolved>io.openliberty.versionless.jacc</resolved>
             <resolved>io.openliberty.internal.versionless.jacc-3.0</resolved>
         </output>
     </case>
@@ -14955,7 +14955,7 @@
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
             <resolved>io.openliberty.cdi3.0-appSecurity</resolved>
-            <resolved>jaspic</resolved>
+            <resolved>io.openliberty.versionless.jaspic</resolved>
             <resolved>io.openliberty.internal.versionless.jaspic-3.1</resolved>
         </output>
     </case>
@@ -14999,7 +14999,7 @@
             <resolved>io.openliberty.jakarta.mail-2.1</resolved>
             <resolved>io.openliberty.activation.internal-2.1</resolved>
             <resolved>mail-2.1</resolved>
-            <resolved>javaMail</resolved>
+            <resolved>io.openliberty.versionless.javaMail</resolved>
             <resolved>io.openliberty.internal.versionless.javaMail-2.1</resolved>
         </output>
     </case>
@@ -15044,7 +15044,7 @@
             <resolved>io.openliberty.xmlBinding.internal-4.0</resolved>
             <resolved>io.openliberty.activation.internal-2.1</resolved>
             <resolved>xmlBinding-4.0</resolved>
-            <resolved>jaxb</resolved>
+            <resolved>io.openliberty.versionless.jaxb</resolved>
             <resolved>io.openliberty.internal.versionless.jaxb-4.0</resolved>
         </output>
     </case>
@@ -15117,7 +15117,7 @@
             <resolved>io.openliberty.cdi3.0-jndi1.0</resolved>
             <resolved>io.openliberty.cdi4.1-servlet6.1</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-            <resolved>jaxrs</resolved>
+            <resolved>io.openliberty.versionless.jaxrs</resolved>
             <resolved>io.openliberty.internal.versionless.jaxrs-4.0</resolved>
         </output>
     </case>
@@ -15189,7 +15189,7 @@
             <resolved>io.openliberty.cdi3.0-jndi1.0</resolved>
             <resolved>io.openliberty.cdi4.1-servlet6.1</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-            <resolved>jaxrsClient</resolved>
+            <resolved>io.openliberty.versionless.jaxrsClient</resolved>
             <resolved>io.openliberty.internal.versionless.jaxrsClient-4.0</resolved>
         </output>
     </case>
@@ -15241,7 +15241,7 @@
             <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
             <resolved>io.openliberty.xmlws.common-4.0</resolved>
             <resolved>xmlWS-4.0</resolved>
-            <resolved>jaxws</resolved>
+            <resolved>io.openliberty.versionless.jaxws</resolved>
             <resolved>io.openliberty.internal.versionless.jaxws-4.0</resolved>
         </output>
     </case>
@@ -15301,7 +15301,7 @@
             <resolved>io.openliberty.emptyHandleListContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
-            <resolved>jca</resolved>
+            <resolved>io.openliberty.versionless.jca</resolved>
             <resolved>io.openliberty.internal.versionless.jca-2.1</resolved>
         </output>
     </case>
@@ -15391,7 +15391,7 @@
             <resolved>com.ibm.websphere.appserver.connectionManagement-1.0</resolved>
             <resolved>io.openliberty.jdbc4.3.internal.ee-9.0</resolved>
             <resolved>jdbc-4.3</resolved>
-            <resolved>jdbc</resolved>
+            <resolved>io.openliberty.versionless.jdbc</resolved>
             <resolved>io.openliberty.internal.versionless.jdbc-4.3</resolved>
         </output>
     </case>
@@ -15455,7 +15455,7 @@
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>io.openliberty.connectors.resourcedefinition.messaging-3.0</resolved>
-            <resolved>jms</resolved>
+            <resolved>io.openliberty.versionless.jms</resolved>
             <resolved>io.openliberty.internal.versionless.jms-3.1</resolved>
         </output>
     </case>
@@ -15520,7 +15520,7 @@
             <resolved>jsonp-2.1</resolved>
             <resolved>persistence-3.2</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-            <resolved>jpa</resolved>
+            <resolved>io.openliberty.versionless.jpa</resolved>
             <resolved>io.openliberty.internal.versionless.jpa-3.2</resolved>
         </output>
     </case>
@@ -15589,7 +15589,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>io.openliberty.cdi4.1-servlet6.1</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-            <resolved>jsf</resolved>
+            <resolved>io.openliberty.versionless.jsf</resolved>
             <resolved>io.openliberty.internal.versionless.jsf-4.1</resolved>
         </output>
     </case>
@@ -15638,7 +15638,7 @@
             <resolved>io.openliberty.jsonbImpl-3.0.1</resolved>
             <resolved>io.openliberty.jsonbInternal-3.0</resolved>
             <resolved>jsonb-3.0</resolved>
-            <resolved>jsonb</resolved>
+            <resolved>io.openliberty.versionless.jsonb</resolved>
             <resolved>io.openliberty.internal.versionless.jsonb-3.0</resolved>
         </output>
     </case>
@@ -15681,7 +15681,7 @@
             <resolved>io.openliberty.jsonpImpl-2.1.1</resolved>
             <resolved>io.openliberty.jsonpInternal-2.1</resolved>
             <resolved>jsonp-2.1</resolved>
-            <resolved>jsonp</resolved>
+            <resolved>io.openliberty.versionless.jsonp</resolved>
             <resolved>io.openliberty.internal.versionless.jsonp-2.1</resolved>
         </output>
     </case>
@@ -15725,7 +15725,7 @@
             <resolved>io.openliberty.jakarta.pages-4.0</resolved>
             <resolved>expressionLanguage-6.0</resolved>
             <resolved>pages-4.0</resolved>
-            <resolved>jsp</resolved>
+            <resolved>io.openliberty.versionless.jsp</resolved>
             <resolved>io.openliberty.internal.versionless.jsp-4.0</resolved>
         </output>
     </case>
@@ -15769,7 +15769,7 @@
             <resolved>io.openliberty.jakarta.mail-2.1</resolved>
             <resolved>io.openliberty.activation.internal-2.1</resolved>
             <resolved>mail-2.1</resolved>
-            <resolved>mail</resolved>
+            <resolved>io.openliberty.versionless.mail</resolved>
             <resolved>io.openliberty.internal.versionless.javaMail-2.1</resolved>
         </output>
     </case>
@@ -15878,7 +15878,7 @@
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved>
-            <resolved>mdb</resolved>
+            <resolved>io.openliberty.versionless.mdb</resolved>
             <resolved>io.openliberty.internal.versionless.mdb-4.0</resolved>
         </output>
     </case>
@@ -15942,7 +15942,7 @@
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>io.openliberty.connectors.resourcedefinition.messaging-3.0</resolved>
-            <resolved>messaging</resolved>
+            <resolved>io.openliberty.versionless.messaging</resolved>
             <resolved>io.openliberty.internal.versionless.jms-3.1</resolved>
         </output>
     </case>
@@ -16004,7 +16004,7 @@
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>io.openliberty.connectors.resourcedefinition.messaging-3.0</resolved>
-            <resolved>messagingClient</resolved>
+            <resolved>io.openliberty.versionless.messagingClient</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsClient-3.0</resolved>
         </output>
     </case>
@@ -16066,7 +16066,7 @@
             <resolved>messagingSecurity-3.0</resolved>
             <resolved>transportSecurity-1.0</resolved>
             <resolved>io.openliberty.transportSecurity1.0.jakarta</resolved>
-            <resolved>messagingSecurity</resolved>
+            <resolved>io.openliberty.versionless.messagingSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsSecurity-3.0</resolved>
         </output>
     </case>
@@ -16113,7 +16113,7 @@
             <resolved>io.openliberty.jakarta.connectors-2.1</resolved>
             <resolved>com.ibm.websphere.appserver.transaction-2.0</resolved>
             <resolved>messagingServer-3.0</resolved>
-            <resolved>messagingServer</resolved>
+            <resolved>io.openliberty.versionless.messagingServer</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsServer-3.0</resolved>
         </output>
     </case>
@@ -16157,7 +16157,7 @@
             <resolved>io.openliberty.jakarta.pages-4.0</resolved>
             <resolved>expressionLanguage-6.0</resolved>
             <resolved>pages-4.0</resolved>
-            <resolved>pages</resolved>
+            <resolved>io.openliberty.versionless.pages</resolved>
             <resolved>io.openliberty.internal.versionless.jsp-4.0</resolved>
         </output>
     </case>
@@ -16222,7 +16222,7 @@
             <resolved>jsonp-2.1</resolved>
             <resolved>persistence-3.2</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-            <resolved>persistence</resolved>
+            <resolved>io.openliberty.versionless.persistence</resolved>
             <resolved>io.openliberty.internal.versionless.jpa-3.2</resolved>
         </output>
     </case>
@@ -16295,7 +16295,7 @@
             <resolved>io.openliberty.cdi3.0-jndi1.0</resolved>
             <resolved>io.openliberty.cdi4.1-servlet6.1</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-            <resolved>restfulWS</resolved>
+            <resolved>io.openliberty.versionless.restfulWS</resolved>
             <resolved>io.openliberty.internal.versionless.jaxrs-4.0</resolved>
         </output>
     </case>
@@ -16367,7 +16367,7 @@
             <resolved>io.openliberty.cdi3.0-jndi1.0</resolved>
             <resolved>io.openliberty.cdi4.1-servlet6.1</resolved>
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
-            <resolved>restfulWSClient</resolved>
+            <resolved>io.openliberty.versionless.restfulWSClient</resolved>
             <resolved>io.openliberty.internal.versionless.jaxrsClient-4.0</resolved>
         </output>
     </case>
@@ -16383,7 +16383,7 @@
         </input>
         <output>
             <resolved>com.ibm.websphere.appserver.eeCompatible-11.0</resolved>
-            <resolved>servlet</resolved>
+            <resolved>io.openliberty.versionless.servlet</resolved>
             <resolved>io.openliberty.internal.versionless.servlet-6.1</resolved>
         </output>
     </case>
@@ -16430,7 +16430,7 @@
             <resolved>io.openliberty.jakarta.interceptor-2.2</resolved>
             <resolved>io.openliberty.jakarta.cdi-4.1</resolved>
             <resolved>validation-3.1</resolved>
-            <resolved>validation</resolved>
+            <resolved>io.openliberty.versionless.validation</resolved>
             <resolved>io.openliberty.internal.versionless.beanValidation-3.1</resolved>
         </output>
     </case>
@@ -16492,7 +16492,7 @@
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>io.openliberty.connectors.resourcedefinition.messaging-3.0</resolved>
-            <resolved>wasJmsClient</resolved>
+            <resolved>io.openliberty.versionless.wasJmsClient</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsClient-3.0</resolved>
         </output>
     </case>
@@ -16554,7 +16554,7 @@
             <resolved>messagingSecurity-3.0</resolved>
             <resolved>transportSecurity-1.0</resolved>
             <resolved>io.openliberty.transportSecurity1.0.jakarta</resolved>
-            <resolved>wasJmsSecurity</resolved>
+            <resolved>io.openliberty.versionless.wasJmsSecurity</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsSecurity-3.0</resolved>
         </output>
     </case>
@@ -16601,7 +16601,7 @@
             <resolved>io.openliberty.jakarta.connectors-2.1</resolved>
             <resolved>com.ibm.websphere.appserver.transaction-2.0</resolved>
             <resolved>messagingServer-3.0</resolved>
-            <resolved>wasJmsServer</resolved>
+            <resolved>io.openliberty.versionless.wasJmsServer</resolved>
             <resolved>io.openliberty.internal.versionless.wasJmsServer-3.0</resolved>
         </output>
     </case>
@@ -16643,7 +16643,7 @@
             <resolved>servlet-6.1</resolved>
             <resolved>io.openliberty.jakarta.websocket-2.2</resolved>
             <resolved>websocket-2.2</resolved>
-            <resolved>websocket</resolved>
+            <resolved>io.openliberty.versionless.websocket</resolved>
             <resolved>io.openliberty.internal.versionless.websocket-2.2</resolved>
         </output>
     </case>
@@ -16688,7 +16688,7 @@
             <resolved>io.openliberty.xmlBinding.internal-4.0</resolved>
             <resolved>io.openliberty.activation.internal-2.1</resolved>
             <resolved>xmlBinding-4.0</resolved>
-            <resolved>xmlBinding</resolved>
+            <resolved>io.openliberty.versionless.xmlBinding</resolved>
             <resolved>io.openliberty.internal.versionless.jaxb-4.0</resolved>
         </output>
     </case>
@@ -16740,7 +16740,7 @@
             <resolved>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved>
             <resolved>io.openliberty.xmlws.common-4.0</resolved>
             <resolved>xmlWS-4.0</resolved>
-            <resolved>xmlWS</resolved>
+            <resolved>io.openliberty.versionless.xmlWS</resolved>
             <resolved>io.openliberty.internal.versionless.jaxws-4.0</resolved>
         </output>
     </case>

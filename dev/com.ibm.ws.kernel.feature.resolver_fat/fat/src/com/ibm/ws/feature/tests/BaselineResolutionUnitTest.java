@@ -323,7 +323,7 @@ public class BaselineResolutionUnitTest {
         newCase.input.addRoot(versionlessSymName);
         newCase.input.addPlatform(platform);
         newCase.output.addResolved(versionlessInternalSymName);
-        newCase.output.addResolved(RepositoryUtil.asShortName(symName));
+        newCase.output.addResolved(versionlessSymName);
 
         for (String featureName : inputCase.output.resolved) {
             newCase.output.addResolved(featureName);
