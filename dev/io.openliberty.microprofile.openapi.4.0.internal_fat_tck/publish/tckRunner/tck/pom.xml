@@ -8,9 +8,17 @@
     <packaging>jar</packaging>
 
     <name>MicroProfile OpenAPI TCK Runner</name>
+
+    <repositories>
+        <repository>
+            <id>sonatype</id>
+            <name>sonatype repository with the staged version of the tcks</name>
+            <url>https://oss.sonatype.org/content/repositories/orgeclipsemicroprofile-1705/</url>
+        </repository>
+    </repositories>
     
     <properties>
-        <microprofile.openapi.version>4.0-RC3</microprofile.openapi.version>
+        <microprofile.openapi.version>4.0</microprofile.openapi.version>
 
         <surefire.version>2.17</surefire.version> <!-- Any changes to the surefire version must be tested against ZOS-->
 
