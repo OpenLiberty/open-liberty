@@ -14,10 +14,14 @@ package com.ibm.ws.testing.opentracing.test;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -35,12 +39,16 @@ import componenttest.topology.impl.LibertyServerFactory;
  * </ul>
  */
 @Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
 public class MicroProfile14NoTracer extends FATTestBase {
     /**
      * Set to the generated server before any tests are run.
      */
     private static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests r = TracingActions.defaultRepeat("opentracingFATServer4");
+    
     /**
      * Start the server.
      * 
