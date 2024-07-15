@@ -19,6 +19,7 @@ import java.util.Set;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.ws.feature.tests.util.FeatureConstants;
 import com.ibm.ws.feature.tests.util.FeatureInfo;
 import com.ibm.ws.feature.tests.util.FeatureUtil;
 import com.ibm.ws.feature.tests.util.RepositoryUtil;
@@ -379,4 +380,43 @@ public class FeatureDetailsUnitTest {
         validate("Validate feature is-compatibility", isCompatibilityTester);
     }
 
+    /**
+     * Verify that 'instantOnEnabled' is set to true for all versionless features.
+     */
+    @Test
+    public void features_validateInstantOnTest() throws Exception {
+        FeatureTester visibilityTester = new FeatureTester() {
+            @Override
+            public boolean validate(String symName,
+                                    ProvisioningFeatureDefinition featureDef,
+                                    FeatureInfo featureInfo) {
+
+                // Only test versionless features.
+
+                if (!featureDef.isVersionless()) {
+                    return true;
+                }
+
+                // All versionless features must have WLP-InstantOn-Enabled set to true.
+
+                boolean instantOnEnabledIsSet = featureInfo.isInstantOnEnabledSet();
+                boolean instantOnEnabled = (instantOnEnabledIsSet && featureInfo.isInstantOnEnabled());
+
+                if (!instantOnEnabledIsSet) {
+                    System.out.println("Feature error: Versionless [ " + symName + " ] " +
+                                       " does not set [ " + FeatureConstants.WLP_INSTANT_ON_ENABLED + " ]");
+                    return false;
+                } else if (!instantOnEnabled) {
+                    System.out.println("Feature error: Versionless [ " + symName + " ] " +
+                                       " has false on [ " + FeatureConstants.WLP_INSTANT_ON_ENABLED + " ]");
+                    return false;
+
+                } else {
+                    return true;
+                }
+            }
+        };
+
+        validate("Validate feature instantOnEnabled", visibilityTester);
+    }
 }
