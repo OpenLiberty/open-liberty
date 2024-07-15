@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,6 +21,7 @@ import java.security.CodeSource;
 import java.security.Permission;
 import java.security.PermissionCollection;
 import java.security.ProtectionDomain;
+import java.security.SecureRandom;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,6 +39,19 @@ public class MissingDoPrivDetectionSecurityManager extends SecurityManager {
     private static boolean UNIQUE_ONLY = false;
 
     private final static TraceComponent tc = Tr.register(MissingDoPrivDetectionSecurityManager.class);
+
+    // Initialize SecureRandom prior to this SecurityManager being enabled to initialize OpenJCEPlus.
+    // Otherwise, jrt:/openjceplus introduced in Java 17 will result in AccessControlExceptions. 
+    public static final SecureRandom sr = getSecureRandom();
+
+    @FFDCIgnore({ Exception.class })
+    private static SecureRandom getSecureRandom() {
+        try {
+            return SecureRandom.getInstance("NativePRNGNonBlocking");
+        } catch (Exception e) {
+            return new SecureRandom(); // This should not fail
+        }
+    }
 
     @Override
     @FFDCIgnore({ SecurityException.class })
@@ -126,9 +140,9 @@ public class MissingDoPrivDetectionSecurityManager extends SecurityManager {
      * class was loaded from. Where a class is loaded from is very important
      * because that is one of the essential items contributing to a policy in a
      * policy file.
-     * 
+     *
      * @param e
-     * 
+     *
      */
     public String getCodeBaseLoc(final Permission perm, final SecurityException e) {
 
@@ -231,7 +245,7 @@ public class MissingDoPrivDetectionSecurityManager extends SecurityManager {
      * class was loaded from. Where a class is loaded from is very important
      * because that is one of the essential items contributing to a policy in a
      * policy file.
-     * 
+     *
      */
     public String[] getCodeBaseLocForPerm(Permission perm) {
 
@@ -305,7 +319,7 @@ public class MissingDoPrivDetectionSecurityManager extends SecurityManager {
 
     /**
      * Find the code source based on the protection domain
-     * 
+     *
      */
     public String getCodeSource(ProtectionDomain pd) {
 
@@ -335,7 +349,7 @@ public class MissingDoPrivDetectionSecurityManager extends SecurityManager {
 
     /**
      * Print out permissions granted to a CodeSource.
-     * 
+     *
      */
     public String permissionToString(java.security.CodeSource cs, ClassLoader classloaderClass,
                                      PermissionCollection col) {
@@ -372,7 +386,7 @@ public class MissingDoPrivDetectionSecurityManager extends SecurityManager {
     /**
      * isOffendingClass determines the offending class from the classes defined
      * in the stack.
-     * 
+     *
      */
     boolean isOffendingClass(Class<?>[] classes, int j, ProtectionDomain pd2, Permission inPerm) {
         // Return true if ...
