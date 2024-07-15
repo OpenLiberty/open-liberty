@@ -6,3 +6,4 @@ singleton=true
     io.openliberty.connectors-2.1
 kind=beta
 edition=base
+WLP-InstantOn-Enabled: true

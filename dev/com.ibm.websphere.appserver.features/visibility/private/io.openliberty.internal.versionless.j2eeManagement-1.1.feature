@@ -6,3 +6,4 @@ singleton=true
     com.ibm.websphere.appserver.j2eeManagement-1.1
 kind=beta
 edition=base
+WLP-InstantOn-Enabled: true

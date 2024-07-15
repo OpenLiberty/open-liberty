@@ -7,3 +7,4 @@ singleton=true
     io.openliberty.mpMetrics-4.0
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

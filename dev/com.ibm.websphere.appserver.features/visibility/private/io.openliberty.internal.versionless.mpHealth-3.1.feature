@@ -7,3 +7,4 @@ singleton=true
     com.ibm.websphere.appserver.mpHealth-3.1
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

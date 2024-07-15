@@ -7,3 +7,4 @@ singleton=true
     io.openliberty.mpTelemetry-2.0
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

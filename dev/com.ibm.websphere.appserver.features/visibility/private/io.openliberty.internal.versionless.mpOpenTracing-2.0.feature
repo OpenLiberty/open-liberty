@@ -7,3 +7,4 @@ singleton=true
     com.ibm.websphere.appserver.mpOpenTracing-2.0
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

@@ -7,3 +7,4 @@ singleton=true
     com.ibm.websphere.appserver.mpConfig-1.3
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

@@ -6,3 +6,4 @@ singleton=true
     io.openliberty.restfulWS-3.1
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

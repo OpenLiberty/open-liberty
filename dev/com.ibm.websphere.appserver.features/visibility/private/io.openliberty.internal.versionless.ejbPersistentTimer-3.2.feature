@@ -6,3 +6,4 @@ singleton=true
     com.ibm.websphere.appserver.ejbPersistentTimer-3.2
 kind=beta
 edition=base
+WLP-InstantOn-Enabled: true

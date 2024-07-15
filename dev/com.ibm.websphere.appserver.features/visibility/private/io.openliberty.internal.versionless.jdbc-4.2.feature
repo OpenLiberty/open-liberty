@@ -6,3 +6,4 @@ singleton=true
     com.ibm.websphere.appserver.jdbc-4.2
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

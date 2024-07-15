@@ -6,3 +6,4 @@ singleton=true
     com.ibm.websphere.appserver.wasJmsClient-2.0
 kind=beta
 edition=base
+WLP-InstantOn-Enabled: true

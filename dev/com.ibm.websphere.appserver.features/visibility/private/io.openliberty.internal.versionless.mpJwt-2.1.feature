@@ -7,3 +7,4 @@ singleton=true
     io.openliberty.mpJwt-2.1
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

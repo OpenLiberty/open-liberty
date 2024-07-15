@@ -7,3 +7,4 @@ singleton=true
     com.ibm.websphere.appserver.mpOpenAPI-1.1
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

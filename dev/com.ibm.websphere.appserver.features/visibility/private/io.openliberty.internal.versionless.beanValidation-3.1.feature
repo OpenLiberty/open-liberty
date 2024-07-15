@@ -6,3 +6,4 @@ singleton=true
     io.openliberty.beanValidation-3.1
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

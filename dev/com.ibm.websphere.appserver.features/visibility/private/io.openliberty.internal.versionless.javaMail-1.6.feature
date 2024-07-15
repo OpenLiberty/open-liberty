@@ -6,3 +6,4 @@ singleton=true
     com.ibm.websphere.appserver.javaMail-1.6
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

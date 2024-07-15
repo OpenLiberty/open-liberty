@@ -6,3 +6,4 @@ singleton=true
     com.ibm.websphere.appserver.jaxrsClient-2.0
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

@@ -6,3 +6,4 @@ singleton=true
     io.openliberty.enterpriseBeansHome-4.0
 kind=beta
 edition=base
+WLP-InstantOn-Enabled: true

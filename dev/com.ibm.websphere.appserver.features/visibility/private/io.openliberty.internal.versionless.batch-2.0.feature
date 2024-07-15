@@ -6,3 +6,4 @@ singleton=true
     io.openliberty.batch-2.0
 kind=beta
 edition=base
+WLP-InstantOn-Enabled: true

@@ -6,3 +6,4 @@ singleton=true
     io.openliberty.xmlBinding-3.0
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

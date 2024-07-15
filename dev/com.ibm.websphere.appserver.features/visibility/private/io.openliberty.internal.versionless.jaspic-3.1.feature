@@ -7,3 +7,4 @@ singleton=true
     io.openliberty.appAuthentication-3.1
 kind=noship
 edition=full
+WLP-InstantOn-Enabled: true

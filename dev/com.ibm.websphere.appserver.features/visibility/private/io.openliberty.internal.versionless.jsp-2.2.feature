@@ -7,3 +7,4 @@ singleton=true
     com.ibm.websphere.appserver.jsp-2.2
 kind=noship
 edition=full
+WLP-InstantOn-Enabled: true

@@ -6,3 +6,4 @@ singleton=true
     com.ibm.websphere.appserver.servlet-6.1
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

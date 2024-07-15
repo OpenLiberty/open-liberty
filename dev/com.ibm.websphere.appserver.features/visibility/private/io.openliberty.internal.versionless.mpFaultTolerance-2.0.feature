@@ -7,3 +7,4 @@ singleton=true
     com.ibm.websphere.appserver.mpFaultTolerance-2.0
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

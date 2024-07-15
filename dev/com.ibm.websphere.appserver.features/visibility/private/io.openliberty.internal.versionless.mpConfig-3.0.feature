@@ -7,3 +7,4 @@ singleton=true
     io.openliberty.mpConfig-3.0
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

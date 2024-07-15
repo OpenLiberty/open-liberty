@@ -6,3 +6,4 @@ singleton=true
     com.ibm.websphere.appserver.jsonb-1.0
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

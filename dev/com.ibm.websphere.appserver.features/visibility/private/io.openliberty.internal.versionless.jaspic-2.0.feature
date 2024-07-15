@@ -6,3 +6,4 @@ singleton=true
     io.openliberty.appAuthentication-2.0
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

@@ -6,3 +6,4 @@ singleton=true
     io.openliberty.messagingServer-3.0
 kind=beta
 edition=base
+WLP-InstantOn-Enabled: true
