@@ -755,6 +755,7 @@ public class HttpChain implements ChainEventListener {
      * @return An integer representation of the state.
      */
     public int getChainState() {
+        System.out.println("legacy getChainState");
         return chainState.get();
     }
 

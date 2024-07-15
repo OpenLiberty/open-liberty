@@ -25,7 +25,6 @@ import com.ibm.ws.http.internal.HttpChain.ChainState;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
 import com.ibm.ws.http.internal.HttpServiceConstants;
 import com.ibm.ws.http.internal.VirtualHostMap;
-import com.ibm.ws.http.internal.HttpChain.ChainState;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer.ConfigElement;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -49,12 +48,9 @@ public class NettyChain extends HttpChain {
     private ServerBootstrapExtended bootstrap;
     private volatile Channel serverChannel;
     private FutureTask<ChannelFuture> channelFuture;
-<<<<<<< HEAD
-    private final AtomicReference<ChainState> state = new AtomicReference<>(ChainState.STOPPED);
-=======
+
     private final AtomicReference<ChainState> state = new AtomicReference<>(ChainState.UNINITIALIZED);
 
->>>>>>> b7b530b1b2 (Adding consideration to the unitialized chain state)
     private volatile boolean enabled = false;
 
     /**
@@ -90,10 +86,10 @@ public class NettyChain extends HttpChain {
 
     @Override
     public synchronized void stop() {
-        
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.entry(this, tc, "Stopping Netty Chain: " + endpointName + ", Current state: " + state.get());
-        }   
+        }
 
         if (state.get() != ChainState.STOPPING) {
             endpointMgr.removeEndPoint(endpointName);
@@ -120,8 +116,8 @@ public class NettyChain extends HttpChain {
                     String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STOPPED;
                     postEvent(topic, currentConfig, null);
                 }
-                
-                //TODO: do we really need to do events when unitialized? 
+
+                //TODO: do we really need to do events when unitialized?
                 if (previousState != ChainState.UNINITIALIZED) {
                     state.set(ChainState.STOPPED);
                 } else {
@@ -212,7 +208,7 @@ public class NettyChain extends HttpChain {
         // Don't update or start the chain if it is disabled or the framework is stopping..
         if (!enabled || FrameworkState.isStopping())
             return;
-        
+
         if (currentConfig == null || !currentConfig.complete()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Current configuration is null or incomplete. Cannot start channel.");
@@ -221,7 +217,7 @@ public class NettyChain extends HttpChain {
         }
 
         if (state.compareAndSet(ChainState.STOPPED, ChainState.STARTING)
-                        || state.compareAndSet(ChainState.UNINITIALIZED, ChainState.STARTING)) {
+            || state.compareAndSet(ChainState.UNINITIALIZED, ChainState.STARTING)) {
 
             try {
 
@@ -240,7 +236,7 @@ public class NettyChain extends HttpChain {
                 if (owner.getProtocolVersion() != null) {
                     httpOptions.put(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION, owner.getProtocolVersion());
                 }
-                
+
                 EndPointInfo info = endpointMgr.getEndPoint(this.endpointName);
                 info = endpointMgr.defineEndPoint(this.endpointName, currentConfig.configHost, currentConfig.configPort);
 
@@ -251,15 +247,14 @@ public class NettyChain extends HttpChain {
                 tcpOptions.put(ConfigConstants.EXTERNAL_NAME, endpointName);
 
                 bootstrap = nettyFramework.createTCPBootstrap(tcpOptions);
-                HttpPipelineInitializer httpPipeline = new HttpPipelineInitializer.HttpPipelineBuilder(this)
-                                .with(ConfigElement.COMPRESSION, owner.getCompressionConfig())
-                                .with(ConfigElement.HTTP_OPTIONS, httpOptions)
-                                .with(ConfigElement.HEADERS, owner.getHeadersConfig())
-                                .with(ConfigElement.REMOTE_IP,owner.getRemoteIpConfig())
-                                .with(ConfigElement.SAMESITE, owner.getSamesiteConfig()).build();
+                HttpPipelineInitializer httpPipeline = new HttpPipelineInitializer.HttpPipelineBuilder(this).with(ConfigElement.COMPRESSION,
+                                                                                                                  owner.getCompressionConfig()).with(ConfigElement.HTTP_OPTIONS,
+                                                                                                                                                     httpOptions).with(ConfigElement.HEADERS,
+                                                                                                                                                                       owner.getHeadersConfig()).with(ConfigElement.REMOTE_IP,
+                                                                                                                                                                                                      owner.getRemoteIpConfig()).with(ConfigElement.SAMESITE,
+                                                                                                                                                                                                                                      owner.getSamesiteConfig()).build();
 
                 bootstrap.childHandler(httpPipeline);
-
 
                 serverChannel = nettyFramework.start(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
 
@@ -273,8 +268,6 @@ public class NettyChain extends HttpChain {
                     Tr.exit(this, tc, "Failed to start Netty Channel: " + e.getMessage());
                 }
                 state.set(ChainState.STOPPED);
-            } finally {
-                notifyAll();
             }
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -284,6 +277,7 @@ public class NettyChain extends HttpChain {
     }
 
     private void channelFutureHandler(ChannelFuture future) {
+
         synchronized(this) {
             if (future.isSuccess()) {
                 state.set(ChainState.STARTED);
@@ -292,7 +286,6 @@ public class NettyChain extends HttpChain {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Channel is now active and listening on port " + getActivePort());
                 }
-
 
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -310,7 +303,7 @@ public class NettyChain extends HttpChain {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "enable chain " + this);
         }
-        
+
         enabled = true;
         if (state.get() == ChainState.UNINITIALIZED || state.get() == ChainState.STOPPED) {
             startNettyChannel();
@@ -351,13 +344,13 @@ public class NettyChain extends HttpChain {
 
     public EndPointInfo getEndpointInfo() {
         EndPointInfo info = endpointMgr.getEndPoint(endpointName);
-        
-        if(Objects.isNull(info) && state.get() == ChainState.STARTED) {
+
+        if (Objects.isNull(info) && state.get() == ChainState.STARTED) {
             info = endpointMgr.defineEndPoint(this.endpointName, currentConfig.configHost, currentConfig.configPort);
         }
-        
+
         return info;
-     //   return endpointMgr.getEndPoint(endpointName);
+        //   return endpointMgr.getEndPoint(endpointName);
     }
 
     public String getEndpointPID() {
@@ -397,7 +390,7 @@ public class NettyChain extends HttpChain {
         }
         return null;
     }
-    
+
     @Override
     public int getChainState() {
         return state.get().val;
