@@ -328,6 +328,12 @@ public class FeatureResolverResultImpl implements Result {
 
     protected final HashMap<String, String> _versionlessFeatures;
 
+    /**
+     * The versionless feature specified and the versioned feature it resolved to
+     * 
+     * Key: versionless feature shortname
+     * Value: versioned feature shortname
+     */
     @Override
     public HashMap<String, String> getVersionlessFeatures(){
         return _versionlessFeatures;
@@ -365,6 +371,12 @@ public class FeatureResolverResultImpl implements Result {
 
     protected final Map<String, Set<String>> _duplicatePlatforms;
 
+    /**
+     * Duplicate platforms specified in the config
+     * 
+     * Key: compatibility feature base name associated with the duplicates
+     * Value: the set of platforms that are duplicates, same platform different version
+     */
     @Override
     public Map<String, Set<String>> getDuplicatePlatforms(){
         return _duplicatePlatforms;
@@ -376,6 +388,12 @@ public class FeatureResolverResultImpl implements Result {
 
     protected final Map<String, Set<String>> _noPlatformVersionless;
 
+    /**
+     * Features without platforms
+     * 
+     * Key: the platform baseName
+     * Value: the set of versionless features that do not have a configured platform
+     */
     @Override
     public Map<String, Set<String>> getNoPlatformVersionless(){
         return _noPlatformVersionless;

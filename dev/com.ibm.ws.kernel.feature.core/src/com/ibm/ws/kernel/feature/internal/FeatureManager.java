@@ -981,6 +981,8 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                 Tr.info(tc, "RESOLVED_PLATFORM", result.getResolvedPlatforms());
             }
 
+            //checks if the resolved versionless features are in the postInstalledFeatures list
+            //if they are, they get displayed in the resolved versionless message
             List<String> resolvedVersionless = new ArrayList<>();
             List<String> resolvedVersioned = new ArrayList<>();
             for (Map.Entry<String, String> versionlessResolved : result.getVersionlessFeatures().entrySet()) {
