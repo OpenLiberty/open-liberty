@@ -21,20 +21,7 @@ import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
-import io.openliberty.microprofile.telemetry.internal.tests.Agent129Test;
-import io.openliberty.microprofile.telemetry.internal.tests.AgentConfigMultiAppTest;
-import io.openliberty.microprofile.telemetry.internal.tests.AgentConfigTest;
-import io.openliberty.microprofile.telemetry.internal.tests.AgentTest;
-import io.openliberty.microprofile.telemetry.internal.tests.CrossFeatureJaegerTest;
-import io.openliberty.microprofile.telemetry.internal.tests.CrossFeatureZipkinTest;
-import io.openliberty.microprofile.telemetry.internal.tests.JaegerLegacyTest;
-import io.openliberty.microprofile.telemetry.internal.tests.JaegerOtelCollectorTest;
-import io.openliberty.microprofile.telemetry.internal.tests.JaegerOtlpTest;
-import io.openliberty.microprofile.telemetry.internal.tests.JaegerSecureOtelCollectorTest;
-import io.openliberty.microprofile.telemetry.internal.tests.JaegerSecureOtlpTest;
-import io.openliberty.microprofile.telemetry.internal.tests.TracingNotEnabledTest;
-import io.openliberty.microprofile.telemetry.internal.tests.ZipkinOtelCollectorTest;
-import io.openliberty.microprofile.telemetry.internal.tests.ZipkinTest;
+import io.openliberty.microprofile.telemetry.internal.tests.Agent210Test;
 import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @RunWith(Suite.class)
@@ -42,6 +29,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
                 AlwaysPassesTest.class, //Must keep this test to run something in the Java 6 builds.
                 AgentTest.class,
                 Agent129Test.class,
+                Agent210Test.class,
                 AgentConfigTest.class,
                 AgentConfigMultiAppTest.class,
                 CrossFeatureJaegerTest.class,
@@ -52,8 +40,8 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
                 JaegerOtelCollectorTest.class,
                 JaegerLegacyTest.class,
                 TracingNotEnabledTest.class,
-                ZipkinOtelCollectorTest.class,
-                ZipkinTest.class,
+                ZipkinOtelCollectorTest.class,ZipkinTest.class,
+
 })
 
 @MinimumJavaLevel(javaLevel = 11)
@@ -63,8 +51,10 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 public class FATSuite extends TestContainerSuite {
 
     public static RepeatTests allMPRepeats(String serverName) {
-        return TelemetryActions.repeat(serverName, MicroProfileActions.MP70_EE11, MicroProfileActions.MP60, TelemetryActions.MP14_MPTEL11, TelemetryActions.MP41_MPTEL11, TelemetryActions.MP50_MPTEL11,
-                                       MicroProfileActions.MP61, TelemetryActions.MP14_MPTEL20, TelemetryActions.MP41_MPTEL20, TelemetryActions.MP50_MPTEL20, MicroProfileActions.MP70_EE10);
+        return TelemetryActions.repeat(serverName, MicroProfileActions.MP70_EE11, MicroProfileActions.MP60, TelemetryActions.MP14_MPTEL11, TelemetryActions.MP41_MPTEL11,
+                                       TelemetryActions.MP50_MPTEL11,
+                                       MicroProfileActions.MP61, TelemetryActions.MP14_MPTEL20, TelemetryActions.MP41_MPTEL20, TelemetryActions.MP50_MPTEL20,
+                                       MicroProfileActions.MP70_EE10);
     }
 
     public static RepeatTests mp60Repeat(String serverName) {
@@ -76,11 +66,13 @@ public class FATSuite extends TestContainerSuite {
     }
 
     public static RepeatTests telemetry10and11Repeats(String serverName) {
-        return TelemetryActions.repeat(serverName, MicroProfileActions.MP60, TelemetryActions.MP14_MPTEL11, TelemetryActions.MP41_MPTEL11, TelemetryActions.MP50_MPTEL11, MicroProfileActions.MP61);
+        return TelemetryActions.repeat(serverName, MicroProfileActions.MP60, TelemetryActions.MP14_MPTEL11, TelemetryActions.MP41_MPTEL11, TelemetryActions.MP50_MPTEL11,
+                                       MicroProfileActions.MP61);
     }
 
     public static RepeatTests telemetry20Repeats(String serverName) {
-        return TelemetryActions.repeat(serverName, MicroProfileActions.MP70_EE11, TelemetryActions.MP14_MPTEL20, TelemetryActions.MP41_MPTEL20, TelemetryActions.MP50_MPTEL20, MicroProfileActions.MP70_EE10);
+        return TelemetryActions.repeat(serverName, MicroProfileActions.MP70_EE11, TelemetryActions.MP14_MPTEL20, TelemetryActions.MP41_MPTEL20, TelemetryActions.MP50_MPTEL20,
+        MicroProfileActions.MP70_EE10);
     }
 
 }
