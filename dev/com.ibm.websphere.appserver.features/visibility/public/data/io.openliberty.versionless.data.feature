@@ -6,3 +6,4 @@ Subsystem-Name: data
 -features=io.openliberty.internal.versionless.data-1.0
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

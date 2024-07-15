@@ -6,3 +6,4 @@ Subsystem-Name: persistence
 -features=io.openliberty.internal.versionless.jpa-2.0; ibm.tolerates:="2.1,2.2,3.0,3.1,3.2"
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

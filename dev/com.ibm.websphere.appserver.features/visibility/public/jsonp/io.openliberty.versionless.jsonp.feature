@@ -6,3 +6,4 @@ Subsystem-Name: jsonp
 -features=io.openliberty.internal.versionless.jsonp-1.0; ibm.tolerates:="1.1,2.0,2.1"
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

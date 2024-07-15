@@ -6,3 +6,4 @@ Subsystem-Name: jaxrs
 -features=io.openliberty.internal.versionless.jaxrs-1.1; ibm.tolerates:="2.0,2.1,3.0,3.1,4.0"
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

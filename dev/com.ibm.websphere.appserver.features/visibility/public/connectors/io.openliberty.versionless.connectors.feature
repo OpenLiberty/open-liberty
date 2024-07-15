@@ -6,3 +6,4 @@ Subsystem-Name: connectors
 -features=io.openliberty.internal.versionless.jca-1.6; ibm.tolerates:="1.7,2.0,2.1"
 kind=beta
 edition=base
+WLP-InstantOn-Enabled: true

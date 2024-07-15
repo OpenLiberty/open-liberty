@@ -6,3 +6,4 @@ Subsystem-Name: enterpriseBeansPersistentTimer
 -features=io.openliberty.internal.versionless.ejbPersistentTimer-3.2; ibm.tolerates:="4.0"
 kind=beta
 edition=base
+WLP-InstantOn-Enabled: true
