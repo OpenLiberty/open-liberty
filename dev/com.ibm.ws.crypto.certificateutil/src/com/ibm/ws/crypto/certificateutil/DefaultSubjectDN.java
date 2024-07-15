@@ -12,6 +12,14 @@
  *******************************************************************************/
 package com.ibm.ws.crypto.certificateutil;
 
+import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+
 /**
  *
  */
@@ -48,6 +56,40 @@ public class DefaultSubjectDN {
      */
     public String getSubjectDN() {
         return subjectDN;
+    }
+
+    /**
+     *  This method builds subjectAltNames ip addresses from System's configured network interface
+     **/
+    public static String buildSanIpStringFromNetworkInterface() {
+        List<String> sanIpAddress = new ArrayList<String>();
+        try {
+            Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
+            while(e.hasMoreElements()) {
+                NetworkInterface n = e.nextElement();
+                Enumeration<InetAddress> ee = n.getInetAddresses();
+                while (ee.hasMoreElements()) {
+                    InetAddress ip = ee.nextElement();
+                    if(ip instanceof java.net.Inet4Address){
+                        sanIpAddress.add(ip.getHostAddress());
+                    }
+                }
+            }
+        } catch (IOException e) {
+            // no network interfaces found for the system
+            sanIpAddress.add("127.0.0.1");
+        }
+
+        // on Liberty consider using String.join(",", sanIpAddress); instead of below. (twas doesn't compile with String.join())
+        if (!sanIpAddress.isEmpty()) {
+            StringBuilder sb = new StringBuilder("ip:" + sanIpAddress.get(0).toString());
+            for (int i = 1; i < sanIpAddress.size(); i++) {
+                sb.append(",ip:");
+                sb.append(sanIpAddress.get(i).toString());
+            }
+            return sb.toString();
+        }
+        return null;
     }
 
     /**

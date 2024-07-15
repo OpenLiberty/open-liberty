@@ -582,7 +582,7 @@ public class SSLConfigManager {
             }
         }
 
-        if (sslprops.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION).equalsIgnoreCase("false")) {
+        if ("false".equalsIgnoreCase(sslprops.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION))) {
             Tr.warning(tc, "ssl.hnv.disabled.warning.CWPKI0063W", new Object[] { alias });
         }
 

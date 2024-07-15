@@ -19,10 +19,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
-import java.net.NetworkInterface;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
@@ -1812,7 +1810,7 @@ public class WSKeyStore extends Properties {
 
         try {
             if (hostname != null && !hostname.isEmpty()) {
-                if (hostname.equals("localhost")) {
+                if (hostname.equalsIgnoreCase("localhost")) {
                     String host = InetAddress.getLocalHost().getCanonicalHostName();
                     san.add("dns:" + host);
                 }
@@ -1828,7 +1826,7 @@ public class WSKeyStore extends Properties {
                 String host = InetAddress.getLocalHost().getCanonicalHostName();
                 san.add("dns:" + host);
             }
-            String ipAddresses = buildSanIpStringFromNetworkInterface();
+            String ipAddresses = DefaultSubjectDN.buildSanIpStringFromNetworkInterface();
             if (ipAddresses != null)
                 san.add(ipAddresses);
         } catch (UnknownHostException e) {
@@ -1926,43 +1924,6 @@ public class WSKeyStore extends Properties {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "isGoodDNSName", true);
         return true;
-    }
-    
-    /**
-     *  This method builds subjectAltNames ip addresses from System's configured network interface
-     **/
-    private static String buildSanIpStringFromNetworkInterface() {
-        List<String> sanIpAddress = new ArrayList<String>();
-        try {
-            Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
-            while(e.hasMoreElements()) {
-                NetworkInterface n = e.nextElement();
-                Enumeration<InetAddress> ee = n.getInetAddresses();
-                while (ee.hasMoreElements()) {
-                    InetAddress ip = ee.nextElement();
-                    if(ip instanceof Inet4Address){
-                        sanIpAddress.add(ip.getHostAddress());
-                    }
-                }
-            }
-        } catch (IOException e) {
-            // no network interfaces found for the system
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "buildSanIpStringFromNetworkInterface exception -> " + e.getMessage());
-            }
-            sanIpAddress.add("127.0.0.1");
-        }
-
-        // on Liberty consider using String.join(",", sanIpAddress); instead of below. (twas doesn't compile with String.join())
-        if (!sanIpAddress.isEmpty()) {
-            StringBuilder sb = new StringBuilder("ip:" + sanIpAddress.get(0).toString());
-            for (int i = 1; i < sanIpAddress.size(); i++) {
-                sb.append(",ip:");
-                sb.append(sanIpAddress.get(i).toString());
-            }
-            return sb.toString();
-        }
-        return null;
     }
 
     /**

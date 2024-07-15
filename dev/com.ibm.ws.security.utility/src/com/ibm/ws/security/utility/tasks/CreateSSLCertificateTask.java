@@ -13,18 +13,14 @@
 package com.ibm.ws.security.utility.tasks;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.security.cert.CertificateException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Enumeration;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
@@ -324,7 +320,7 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
             else {
                 ext += "dns:" + hostname;
             }
-            String ipAddresses = buildSanIpStringFromNetworkInterface();
+            String ipAddresses = DefaultSubjectDN.buildSanIpStringFromNetworkInterface();
             if (ipAddresses != null)
                 ext = ext + "," + ipAddresses;
         } catch (UnknownHostException e) {
@@ -344,40 +340,6 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
         } catch (java.net.UnknownHostException e) {
             return "localhost";
         }
-    }
-
-    /**
-     *  This method builds subjectAltNames ip addresses from System's configured network interface
-     **/
-    private static String buildSanIpStringFromNetworkInterface() {
-        List<String> sanIpAddress = new ArrayList<String>();
-        try {
-            Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
-            while(e.hasMoreElements()) {
-                NetworkInterface n = e.nextElement();
-                Enumeration<java.net.InetAddress> ee = n.getInetAddresses();
-                while (ee.hasMoreElements()) {
-                    InetAddress ip = ee.nextElement();
-                    if(ip instanceof java.net.Inet4Address){
-                        sanIpAddress.add(ip.getHostAddress());
-                    }
-                }
-            }
-        } catch (IOException e) {
-            // no network interfaces found for the system
-            sanIpAddress.add("127.0.0.1");
-        }
-
-        // on Liberty consider using String.join(",", sanIpAddress); instead of below. (twas doesn't compile with String.join())
-        if (!sanIpAddress.isEmpty()) {
-            StringBuilder sb = new StringBuilder("ip:" + sanIpAddress.get(0).toString());
-            for (int i = 1; i < sanIpAddress.size(); i++) {
-                sb.append(",ip:");
-                sb.append(sanIpAddress.get(i).toString());
-            }
-            return sb.toString();
-        }
-        return null;
     }
 
     /**
