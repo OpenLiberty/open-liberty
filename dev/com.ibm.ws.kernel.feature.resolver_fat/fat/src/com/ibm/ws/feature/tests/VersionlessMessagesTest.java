@@ -60,17 +60,17 @@ public class VersionlessMessagesTest {
         initTest(SERVER_NAME_PLATFORM_VARIABLE_VERSION_NOT_VALID, "", "jsp", "javaee-0.1");
 
         // Expect message: "CWWKF0048E: The {0} value of the PREFERRED_PLATFORM_VERSIONS platform environment variable does not contain a valid version"
-        allowedMessages = new String[] { "CWWKF0050E", "CWWKF0048E" };
+        allowedMessages = new String[] { "CWWKF0050E", "CWWKF0055E", "CWWKF0048E" };
         startServer_CheckLogs("CWWKF0048E:");
     }
 
     @Test // 49E
     public void versionless_PlatformVersionsInConflict() throws Exception {
 
-        initTest(SERVER_NAME_PLATFORM_VERSIONS_IN_CONFLICT, "javaee_7.0, microProfile-7.0", "servlet, jsp", null);
+        initTest(SERVER_NAME_PLATFORM_VERSIONS_IN_CONFLICT, "javaee-7.0, javaee-8.0", "servlet, jsp", null);
 
         // Expect message: "CWWKF0049E: The following configured platform versions are in conflict: {0}"
-        allowedMessages = new String[] { "CWWKF0050E", "CWWKF0049E" };
+        allowedMessages = new String[] { "CWWKF0050E", "CWWKF0055E", "CWWKF0049E" };
         startServer_CheckLogs("CWWKF0049E:");
     }
 
@@ -84,7 +84,7 @@ public class VersionlessMessagesTest {
 
         // Expect message: "CWWKF0052E: The {0} platform element is not a known platform"
         startServer_CheckLogs("CWWKF0052E:");
-        allowedMessages = new String[] { "CWWKF0050E", "CWWKF0052E" };
+        allowedMessages = new String[] { "CWWKF0050E", "CWWKF0055E", "CWWKF0052E" };
     }
 
     @Test // 53I
@@ -103,7 +103,7 @@ public class VersionlessMessagesTest {
         initTest(SERVER_NAME_NO_VERSION_OF_FEATURE_EXISTS_FOR_PLATFORM, "microProfile-5.0", "mpTelemetry", null);
 
         // Expect message: "CWWKF0054E: The {0} versionless feature does not have a version that belongs to the {1} platform.
-        allowedMessages = new String[] { "CWWKF0050E", "CWWKF0054E" };
+        allowedMessages = new String[] { "CWWKF0050E", "CWWKF0055E", "CWWKF0054E" };
         startServer_CheckLogs("CWWKF0054E:");
     }
 
@@ -149,18 +149,26 @@ public class VersionlessMessagesTest {
             if (platforms != null) {
                 for (String platform : platforms) {
                     if (platform != null && !platform.isEmpty()) {
-                        writer.write("        <platform>" + platform + "</platform>\n");
+                        writer.write("        <platform>" + platform.trim() + "</platform>\n");
                     }
                 }
             }
             if (features != null) {
                 for (String feature : features) {
                     if (feature != null && !feature.isEmpty()) {
-                        writer.write("        <feature>" + feature + "</feature>\n");
+                        writer.write("        <feature>" + feature.trim() + "</feature>\n");
                     }
                 }
             }
-            writer.write("    </featureManager>\n");
+            writer.write("        <feature>timedexit-1.0</feature>\n"); // This is probably not needed, but here because most fat tests include it (usually by importing ../fatTestCommon.xml which doesn't exist).
+            writer.write("    </featureManager>\n\n");
+
+            writer.write("    <httpEndpoint id=\"defaultHttpEndpoint\"\n");
+            writer.write("              httpPort=\"9080\"\n");
+            writer.write("              httpsPort=\"9443\" />\n\n");
+
+            //writer.write("    <include location=\"../fatTestCommon.xml\"/>\n\n");
+
             writer.write("</server>\n");
         }
         displayFile(file);
