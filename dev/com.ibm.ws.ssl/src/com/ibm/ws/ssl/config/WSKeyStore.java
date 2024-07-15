@@ -1875,56 +1875,65 @@ public class WSKeyStore extends Properties {
      * No part of the domain name can start with a digit
      * The dnsName can not start or end with a period, and there can not be any empty component of the domain name
      */
-    public static boolean isGoodDNSName(String dnsName) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "isGoodDNSName", dnsName);
-        String alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        String validCharsString = alpha + "0123456789-.";
-        // Make sure the first character is not a digit.
-        if (Character.isDigit(dnsName.charAt(0))) {
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "isGoodDNSName - dnsName starts with digit", false);
-            return false;
-        }
-        // make sure the dnsName does not start or end with a period
-        if (dnsName.charAt(0) == '.' || dnsName.charAt(dnsName.length() - 1) == '.') {
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "isGoodDNSName - dnsName starts or ends with a '.' ", false);
-            return false;
-        }
-        // Make sure there are no unacceptable characters in the dnsName
-        for (int i = 0; i < dnsName.length(); i++) {
-            char x = dnsName.charAt(i);
-            if (validCharsString.indexOf(x) < 0) {
-                if (tc.isEntryEnabled())
-                    Tr.exit(tc, "isGoodDNSName - dnsName contains invalid character", false);
-                return false;
-            }
-        }
-        // look at the domain parts
-        for (int endIndex, startIndex = 0; startIndex < dnsName.length(); startIndex = endIndex + 1) {
-            endIndex = dnsName.indexOf('.', startIndex);
-            // getting part of the domain name
-            if (endIndex < 0) {
-                endIndex = dnsName.length();
-            }
-            // DNSName SubjectAltNames with empty components are not permitted
-            if ((endIndex - startIndex) < 1) {
-                if (tc.isEntryEnabled())
-                    Tr.exit(tc, "isGoodDNSName - dnsName domain section is empty", false);
-                return false;
-            }
-            //DNSName components must begin with a letter A-Z or a-z
-            if (alpha.indexOf(dnsName.charAt(startIndex)) < 0) {
-                if (tc.isEntryEnabled())
-                    Tr.exit(tc, "isGoodDNSName - dnsName domain part starts with a digit", false);
-                return false; //DNSName components must begin with a letter
-            }
-        }
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "isGoodDNSName", true);
-        return true;
-    }
+
+    /*
+     * Removing isGoodDNSName as we do not believe we need this any longer.
+     * The check for the first character being numeric is invalid because this is allowed since RFC1123.
+     * We will no longer validate hostnames before adding them into the SAN and will delegate that to the certificate creation tool
+     *
+     * public static boolean isGoodDNSName(String dnsName) {
+     * if (tc.isEntryEnabled())
+     * Tr.entry(tc, "isGoodDNSName", dnsName);
+     * String alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+     * String validCharsString = alpha + "0123456789-.";
+     * // Make sure the first character is not a digit.
+     * if (Character.isDigit(dnsName.charAt(0))) {
+     * if (tc.isEntryEnabled())
+     * Tr.exit(tc, "isGoodDNSName - dnsName starts with digit", false);
+     * return false;
+     * }
+     * // make sure the dnsName does not start or end with a period
+     * if (dnsName.charAt(0) == '.' || dnsName.charAt(dnsName.length() - 1) == '.') {
+     * if (tc.isEntryEnabled())
+     * Tr.exit(tc, "isGoodDNSName - dnsName starts or ends with a '.' ", false);
+     * return false;
+     * }
+     * // Make sure there are no unacceptable characters in the dnsName
+     * for (int i = 0; i < dnsName.length(); i++) {
+     * char x = dnsName.charAt(i);
+     * if (validCharsString.indexOf(x) < 0) {
+     * if (tc.isEntryEnabled())
+     * Tr.exit(tc, "isGoodDNSName - dnsName contains invalid character", false);
+     * return false;
+     * }
+     * }
+     * // look at the domain parts
+     * for (int endIndex, startIndex = 0; startIndex < dnsName.length(); startIndex = endIndex + 1) {
+     * endIndex = dnsName.indexOf('.', startIndex);
+     * // getting part of the domain name
+     * if (endIndex < 0) {
+     * endIndex = dnsName.length();
+     * }
+     * // DNSName SubjectAltNames with empty components are not permitted
+     * if ((endIndex - startIndex) < 1) {
+     * if (tc.isEntryEnabled())
+     * Tr.exit(tc, "isGoodDNSName - dnsName domain section is empty", false);
+     * return false;
+     * }
+     * //DNSName components must begin with a letter A-Z or a-z
+     * if (alpha.indexOf(dnsName.charAt(startIndex)) < 0) {
+     * if (tc.isEntryEnabled())
+     * Tr.exit(tc, "isGoodDNSName - dnsName domain part starts with a digit", false);
+     * return false; //DNSName components must begin with a letter
+     * }
+     * }
+     * if (tc.isEntryEnabled())
+     * Tr.exit(tc, "isGoodDNSName", true);
+     * return true;
+     * }
+     *
+     *
+     */
 
     /**
      * Acquire the writer lock. To be used to prevent concurrent keystore

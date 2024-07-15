@@ -33,8 +33,7 @@ Export-Package: com.ibm.websphere.ssl*;provide:=true, \
     com.ibm.wsspi.ssl;provide:=true, \
     com.ibm.ws.ssl;provide:=true, \
     com.ibm.ws.ssl.optional;provide:=true, \
-    com.ibm.ws.ssl.provider;provide:=true, \
-    com.ibm.ws.ssl.config;version=1.0
+    com.ibm.ws.ssl.provider;provide:=true
     
 Import-Package: \
 	com.ibm.crypto.pkcs11impl.provider;resolution:=optional, \
