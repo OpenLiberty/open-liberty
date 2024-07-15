@@ -1006,6 +1006,69 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
+     * Set the platform / feature elements of the server.xml to the new platform / features values specified.
+     * Each String should be the only platform or feature name, e.g. jakartaee-10.0 or servlet-3.0. If the
+     * server.xml has no <featureManager> tag this method will simply duplicate the existing server.xml content.
+     *
+     * @param  newPlatforms
+     * @param  newFeatures
+     * @return
+     * @throws Exception
+     */
+    public void changePlatformsAndFeatures(List<String> newPlatforms, List<String> newFeatures) throws Exception {
+        RemoteFile serverXML = machine.getFile(serverRoot + "/" + SERVER_CONFIG_FILE_NAME);
+        LocalFile tempServerXML = new LocalFile(SERVER_CONFIG_FILE_NAME);
+
+        Writer w = new OutputStreamWriter(tempServerXML.openForWriting(false));
+        InputStream originalOutput = serverXML.openForReading();
+        InputStreamReader in2 = new InputStreamReader(originalOutput);
+        Scanner s2 = new Scanner(in2);
+
+        while (s2.hasNextLine()) {
+            String line = s2.nextLine();
+            // We've reached  the platform/feature elements
+            if (line.contains("<featureManager>")) {
+                // Skip until we reach the end tag
+                while (s2.hasNextLine()) {
+                    line = s2.nextLine();
+                    if (line.contains("</featureManager>")) {
+                        break;
+                    }
+                }
+
+                // Now write the <featureManager> snippet to the temp xml
+                w.write("   <featureManager>");
+                w.write("\n");
+                if (newPlatforms != null || newPlatforms.size() > 0) {
+                    for (String platform : newPlatforms) {
+                        w.write("               <platform>" + platform.trim() + "</platform>");
+                        w.write("\n");
+                    }
+                }
+                if (newFeatures != null || newFeatures.size() > 0) {
+                    for (String feature : newFeatures) {
+                        w.write("               <feature>" + feature.trim() + "</feature>");
+                        w.write("\n");
+                    }
+                }
+                w.write("   </featureManager>");
+                w.write("\n");
+            } else {
+                w.write(line);
+                w.write("\n");
+            }
+        }
+
+        s2.close();
+        originalOutput.close();
+        w.flush();
+        w.close();
+        //Now we need to copy file overwriting existing server.xml and delete the temp
+        boolean rc = tempServerXML.copyToDest(serverXML, false, true);
+        tempServerXML.delete();
+    }
+
+    /**
      * Copies the server.xml to the server.
      *
      * @throws Exception

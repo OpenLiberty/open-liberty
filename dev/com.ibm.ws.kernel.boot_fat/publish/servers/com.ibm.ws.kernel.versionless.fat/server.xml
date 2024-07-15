@@ -13,5 +13,9 @@
 <server>
 	<include location="../fatTestPorts.xml"/>
     <config monitorInterval="1s" />	
+    
+    <featureManager>
+    	<feature>localConnector-1.0</feature>
+	</featureManager>
 </server>
 
