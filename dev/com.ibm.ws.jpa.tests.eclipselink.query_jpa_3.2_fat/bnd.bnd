@@ -17,8 +17,7 @@ src: \
     fat/src
 
 fat.project: true
-fat.test.databases: true
-tested.features: persistence-3.2, persistenceContainer-3.2, enterpriseBeansLite-4.0, servlet-6.1, jdbc-4.2, jndi-1.0
+tested.features: databaseRotation, persistence-3.2, persistenceContainer-3.2, enterpriseBeansLite-4.0, servlet-6.1, jdbc-4.2, jndi-1.0
 
 javac.source: 17
 javac.target: 17

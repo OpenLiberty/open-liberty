@@ -100,7 +100,7 @@
 		<!-- Work out the actual entry point based on the current java level and database properties -->
 		<echo message="Checking min java level for project based on bootstrapping.properties file..." />
 
-		<!-- Get fat.test.databases and fat.minimum.java.level properties-->
+		<!-- Get fat.minimum.java.level properties-->
 		<property file="${basedir}/fat.bnd.properties" />
 		<property file="${basedir}/fat.sys.properties" />
 		
@@ -126,39 +126,6 @@
 		<echo message="fat.minimum.java.level=${fat.minimum.java.level}" />
 		<echo message="java.specification.version=${java.specification.version}" />
 		<echo message="micro.version=${micro.version}" />
-
-		<!-- Enforce fat.test.databases.only rule.  If bucket is not enlisted in database rotation skip it -->
-		<condition property="skip.no.db.tests" value="true">
-			<and>
-				<istrue value="${fat.test.databases.only}" />
-				<not>
-					<isTrue value="${fat.test.databases}" />
-				</not>
-			</and>
-		</condition>
-
-		<!-- Determine if we are going to skip testing or not -->
-		<!-- Bypass the tests by invoking the always passes test instead of real FAT tests -->
-		<iff>
-			<or>
-				<istrue value="${skip.no.db.tests}" />
-				<istrue value="${skip.java.level}" />
-			</or>
-			<then>
-				<var name="test.bucket.class" unset="true" />
-				<var name="test.bucket.name" unset="true" />
-				<property name="test.bucket.class" value="componenttest.custom.junit.runner.AlwaysPassesTest" />
-				<property name="test.bucket.name" value="${test.bucket.class}" />
-
-				<echo message="FAT bucket WILL NOT run tests, due to the following properties:" />
-				<echo message="     Only run database rotation buckets:  ${fat.test.databases.only}" />
-				<echo message="     This bucket uses database rotation:  ${fat.test.databases}" />
-				<echo message="     This bucket uses java level:         ${fat.minimum.java.level}" />
-			</then>
-			<else>
-				<property name="test.bucket.class" value="${entry.point}" />
-			</else>
-		</iff>
 
 		<!-- What will our entry point be? -->
 		<echo message="FAT entry point will be: ${test.bucket.class}" />
