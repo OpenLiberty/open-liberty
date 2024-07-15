@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -56,6 +56,7 @@ public class Http2Client {
     private final AtomicBoolean didTimeout = new AtomicBoolean(false);
     private final AtomicBoolean lockWaitFor = new AtomicBoolean(true);
     private boolean waitForAck = true;
+    private final long DEFAULT_TEST_TIMEOUT = 120000L;
 
     private final Map<Frame, Frame> sendFrameConditional = new HashMap<Frame, Frame>();
     private final List<SimpleEntry<Frame, Frame>> sendFrameConditionalList = new LinkedList<AbstractMap.SimpleEntry<Frame, Frame>>();
@@ -80,7 +81,7 @@ public class Http2Client {
 
         h2Connection.startAsyncRead();
 
-        TimeoutHelper timeoutHelper = new TimeoutHelper(blockUntilConnectionIsDone, defaultTimeOutToSendFrame);
+        TimeoutHelper timeoutHelper = new TimeoutHelper(blockUntilConnectionIsDone, DEFAULT_TEST_TIMEOUT);
         timeoutHelper.setPriority(Thread.MIN_PRIORITY);
         timeoutHelper.start();
     }
