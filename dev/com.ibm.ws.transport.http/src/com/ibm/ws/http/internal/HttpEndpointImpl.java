@@ -562,9 +562,10 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "enable ssl support " + ref.getProperty("type"), this);
         }
+        System.out.println("Enabling SSL support!");
         sslFactoryProvider.setReference(ref);
 
-        if (endpointConfig != null) {
+        if (endpointConfig != null && nettyTlsProvider != null) {
             httpSecureChain.enable();
             // If this is post-activate, drive the update action
             performAction(updateAction);
@@ -912,10 +913,15 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         return netty;
     }
 
-    @Reference(name = "nettyTlsProvider", cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY, unbind = "unbindTlsProviderService")
+    @Reference(name = "nettyTlsProvider", policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY, unbind = "unbindTlsProviderService")
     protected void bindNettyTlsProvider(NettyTlsProvider tlsProvider) {
         System.out.println("Setting Netty TLS provider");
         this.nettyTlsProvider = tlsProvider;
+        if (endpointConfig != null && sslFactoryProvider.getReference() != null) {
+            httpSecureChain.enable();
+            // If this is post-activate, drive the update action
+            performAction(updateAction);
+        }
     }
 
     protected void unbindTlsProviderService(NettyTlsProvider bundle) {
