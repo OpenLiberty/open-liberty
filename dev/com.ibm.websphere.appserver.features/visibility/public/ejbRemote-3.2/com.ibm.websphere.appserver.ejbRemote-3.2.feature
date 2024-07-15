@@ -68,3 +68,4 @@ Subsystem-Name: Enterprise JavaBeans Remote 3.2
 kind=ga
 edition=base
 WLP-Platform: javaee-7.0,javaee-8.0,jakartaee-8.0
+WLP-InstantOn-Enabled: true; type:=beta
