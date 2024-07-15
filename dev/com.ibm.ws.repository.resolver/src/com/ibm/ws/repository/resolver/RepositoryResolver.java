@@ -1012,16 +1012,14 @@ public class RepositoryResolver {
 
         List<String> missingBasePlatforms = new ArrayList<String>();
 
-        // Versionless feature issues
-        if (!missingTopLevelRequirements.isEmpty()) {
-            for (String name : missingTopLevelRequirements) {
-                ProvisioningFeatureDefinition feature = resolverRepository.getFeature(name);
-                if (feature != null && feature.isVersionless()) {
-                    ProvisioningFeatureDefinition firstChild = resolverRepository.findAllPossibleVersions(feature).get(0);
-                    String plat = firstChild.getPlatformName();
-                    if (plat != null && plat.indexOf("-") != -1) {
-                        missingBasePlatforms.add(resolverRepository.getFeatureBaseName(plat));
-                    }
+        // Versionless feature issues will appear in missingTopLevelRequirements, and this will gather the associated platform unable to target.
+        for (String name : missingTopLevelRequirements) {
+            ProvisioningFeatureDefinition feature = resolverRepository.getFeature(name);
+            if (feature != null && feature.isVersionless()) {
+                ProvisioningFeatureDefinition firstChild = resolverRepository.findAllPossibleVersions(feature).get(0);
+                String plat = firstChild.getPlatformName();
+                if (plat != null) {//This will add just the platform name without version
+                    missingBasePlatforms.add(resolverRepository.getFeatureBaseName(plat));
                 }
             }
         }

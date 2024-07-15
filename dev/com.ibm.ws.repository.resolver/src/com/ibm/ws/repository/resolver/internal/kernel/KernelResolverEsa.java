@@ -283,7 +283,7 @@ public class KernelResolverEsa implements ProvisioningFeatureDefinition {
      *
      * <ul><li>private</li>
      * <li>do not have a short name</li>
-     * <li>contain ".eeCompatible-" or ".mpCompatible-" in their symbolic name.</li>
+     * <li>has a platform value</li>
      * </ul>
      *
      * @return True or false telling if this is a versionless feature.
