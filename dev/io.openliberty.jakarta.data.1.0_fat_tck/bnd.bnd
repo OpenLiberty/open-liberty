@@ -28,6 +28,10 @@ fat.project: true
 # External contributors will need to have docker installed on their local machine.
 #fat.test.use.remote.docker: true
 
+# This property is used to tell the SOE build system that this FAT suite
+# should be run in the database rotation build.
+fat.test.databases: true
+
 # Uncomment to test against alternative databases
 # This allows you to locally tell gradle what database you want to test against.
 # This is the same way the database rotation build sets the database. 
@@ -36,7 +40,8 @@ fat.project: true
 
 fat.test.container.images: mongo:6.0.6
 
-tested.features: databaseRotation, data-1.0
+tested.features:\
+	data-1.0
 
 -buildpath: \
 	io.openliberty.org.testcontainers;version=latest

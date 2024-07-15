@@ -19,7 +19,8 @@ src: \
     test-applications/jpabootstrap/src
 
 fat.project: true
-tested.features: databaseRotation, persistence-3.2, persistencecontainer-3.2, servlet-6.1
+fat.test.databases: true
+tested.features: persistence-3.2, persistencecontainer-3.2, servlet-6.1
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}
