@@ -1,46 +1,35 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
 package io.openliberty.jpa;
 
 import java.io.File;
-import java.util.HashSet;
 import java.util.Set;
 
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.rules.repeater.EE7FeatureReplacementAction;
-import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  *
  */
-public class RepeatWithJPA20 extends FeatureReplacementAction {
+public class RepeatWithJPA20 extends EE7FeatureReplacementAction {
     public static final String ID = "JPA20_FEATURES";
 
     public RepeatWithJPA20() {
-        super(EE7FeatureReplacementAction.EE7_FEATURE_SET, featuresToAdd());
-        forceAddFeatures(false);
-        this.withID(ID);
-    }
-
-    private static Set<String> featuresToAdd() {
-        Set<String> addFeatures = new HashSet<>(EE7FeatureReplacementAction.EE7_FEATURE_SET);
+        Set<String> addFeatures = getAddFeatures();
         addFeatures.remove("jpa-2.1");
         addFeatures.add("jpa-2.0");
-        return addFeatures;
+        this.withID(ID);
     }
 
     @Override
