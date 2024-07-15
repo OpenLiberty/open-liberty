@@ -8,7 +8,9 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
@@ -26,6 +28,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * {@link FATUtilsSpans} will need to be updated to match.</p>
  */
 @Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
 public class TestSpanUtils {
     /**
      * <p>Completed spans for span print string and parse verification.</p>

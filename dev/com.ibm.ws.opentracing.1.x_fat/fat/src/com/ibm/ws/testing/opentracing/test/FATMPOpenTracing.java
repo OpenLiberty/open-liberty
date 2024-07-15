@@ -20,14 +20,19 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import static org.junit.Assert.assertNull;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.RemoteFile;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import junit.framework.Assert;
@@ -42,6 +47,7 @@ import junit.framework.Assert;
  * </ul>
  */
 @Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
 public class FATMPOpenTracing {
     /**
      * For tracing.
@@ -52,6 +58,9 @@ public class FATMPOpenTracing {
      * Set to the generated server before any tests are run.
      */
     private static LibertyServer server;
+    
+    @ClassRule
+    public static RepeatTests r = TracingActions.defaultRepeat("opentracingFATServer3");
 
     /**
      * Deploy the application and start the server.
