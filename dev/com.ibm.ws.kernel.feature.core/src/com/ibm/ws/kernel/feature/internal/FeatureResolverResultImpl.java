@@ -45,6 +45,9 @@ public class FeatureResolverResultImpl implements Result {
         this._conflicts = new HashMap<>(0);
 
         this._missingPlatforms = new HashSet<String>(0);
+        this._duplicatePlatforms = new HashMap<>(0);
+
+        this._noPlatformVersionless = new HashMap<>(0);
 
         this._versionlessFeatures = new HashMap<>(0);
 
@@ -62,7 +65,8 @@ public class FeatureResolverResultImpl implements Result {
                  _wrongProcessTypes.isEmpty() &&
                  _conflicts.isEmpty() && 
                  !_versionlessFeatures.values().contains(null) &&
-                 _missingPlatforms.isEmpty());
+                 _missingPlatforms.isEmpty() &&
+                 _duplicatePlatforms.isEmpty());
     }
 
     //
@@ -344,6 +348,10 @@ public class FeatureResolverResultImpl implements Result {
         _resolvedPlatforms.add(platform);
     }
 
+    protected void emptyResolvedPlatforms(){
+        _resolvedPlatforms.clear();
+    }
+
     protected final HashSet<String> _missingPlatforms;
 
     @Override
@@ -353,6 +361,28 @@ public class FeatureResolverResultImpl implements Result {
 
     protected void addMissingPlatform(String platform){
         _missingPlatforms.add(platform);
+    }
+
+    protected final Map<String, Set<String>> _duplicatePlatforms;
+
+    @Override
+    public Map<String, Set<String>> getDuplicatePlatforms(){
+        return _duplicatePlatforms;
+    }
+
+    protected void addDuplicatePlatforms(String compatibleFeature, Set<String> platforms){
+        _duplicatePlatforms.put(compatibleFeature, platforms);
+    }
+
+    protected final Map<String, Set<String>> _noPlatformVersionless;
+
+    @Override
+    public Map<String, Set<String>> getNoPlatformVersionless(){
+        return _noPlatformVersionless;
+    }
+
+    protected void addNoPlatformVersionless(String compatibleFeature, Set<String> features){
+        _noPlatformVersionless.put(compatibleFeature, features);
     }
 
     // Remember the resolved in resolution order.

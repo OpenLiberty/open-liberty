@@ -118,6 +118,10 @@ public interface FeatureResolver {
         Set<String> getResolvedPlatforms();
 
         Set<String> getMissingPlatforms();
+
+        Map<String, Set<String>> getDuplicatePlatforms();
+
+        Map<String, Set<String>> getNoPlatformVersionless();
     }
 
     public static final List<String> EMPTY_STRINGS = Collections.emptyList();
