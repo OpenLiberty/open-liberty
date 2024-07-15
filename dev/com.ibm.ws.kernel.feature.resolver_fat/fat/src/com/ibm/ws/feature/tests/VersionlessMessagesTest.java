@@ -32,15 +32,13 @@ import componenttest.topology.impl.LibertyServerFactory;
 public class VersionlessMessagesTest {
 
     public static final String SERVER_NAME_PLATFORM_VARIABLE_VERSION_NOT_VALID = "msg_48E_platformVariableVersionNotValid";
-    public static final String SERVER_NAME_PLATFORM_VERSIONS_IN_CONFLICT = "msg_49E_platofrmVersionsInConflict";
+    public static final String SERVER_NAME_PLATFORM_VERSIONS_IN_CONFLICT = "msg_49E_platformVersionsInConflict";
     public static final String SERVER_NAME_UNKNOWN_PLATFORM = "msg_52E_unknownPlatform";
     public static final String SERVER_NAME_RESOLVED_PLATFORMS = "msg_53I_ResolvedPlatforms";
     public static final String SERVER_NAME_NO_VERSION_OF_FEATURE_EXISTS_FOR_PLATFORM = "msg_54E_NoFeatureVersionExistsForPlatform";
     public static final String SERVER_NAME_NO_CONFIGURED_PLATFORM = "msg_55E_NoConfiguredPlatform";
-    public static final String SERVER_NAME_PLATFORM_NOT_DETERMINED = "msg_56E_PlatformNotDetermined";
 
     private static LibertyServer server;
-    private static boolean isBeta = true;
     private String[] allowedMessages = null;
 
     @Before
@@ -134,9 +132,8 @@ public class VersionlessMessagesTest {
         if (preferredPlatformVersions != null && !preferredPlatformVersions.isEmpty()) {
             createServerEnv(directory, preferredPlatformVersions);
         }
-        if (isBeta) {
-            createJvmOptions(directory);
-        }
+
+        createJvmOptions(directory);
     }
 
     private static void createServerXml(String directory, List<String> platforms, List<String> features) throws IOException {
@@ -182,14 +179,15 @@ public class VersionlessMessagesTest {
         displayFile(file);
     }
 
+    // !!! This can/should be removed after GA
     private static void createJvmOptions(String directory) throws IOException {
-        if (isBeta) {
-            File file = new File(directory, "jvm.options");
-            try (FileWriter writer = new FileWriter(file)) {
-                writer.write("-Dcom.ibm.ws.beta.edition=true\n");
-            }
-            displayFile(file);
+
+        File file = new File(directory, "jvm.options");
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write("-Dcom.ibm.ws.beta.edition=true\n");
         }
+        displayFile(file);
+
     }
 
     private void initTest(String serverName, String platforms, String features, String preferredVersionsVariable) throws Exception {
