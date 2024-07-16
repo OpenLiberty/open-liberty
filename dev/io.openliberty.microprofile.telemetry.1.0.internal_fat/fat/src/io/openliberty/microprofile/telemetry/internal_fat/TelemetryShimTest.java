@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,6 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.RepeatTestFilter;
-import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -58,21 +57,29 @@ public class TelemetryShimTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
-        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID)) {
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID)) { //MpTelemetry version 1.0
             WebArchive exporterTestWar = ShrinkWrap.create(WebArchive.class, SHIM_APP_NAME + ".war")
                             .addClass(OpenTracingShimServlet.class)
                             .addClass(TracedBean.class)
                             .addAsLibraries(new File("lib/shim129").listFiles());
             ShrinkHelper.exportAppToServer(server, exporterTestWar, SERVER_ONLY);
-        } else {
+        } else if (FATSuite.getTelemetryVersionUnderTest().equals("1.1")) { //MpTelemetry version 1.1
             WebArchive exporterTestWar = ShrinkWrap.create(WebArchive.class, SHIM_APP_NAME + ".war")
                             .addClass(OpenTracingShimServlet.class)
                             .addClass(TracedBean.class)
                             .addAsLibraries(new File("lib/shim").listFiles());
             ShrinkHelper.exportAppToServer(server, exporterTestWar, SERVER_ONLY);
+        } else { //MpTelemetry version 2.0
+            WebArchive exporterTestWar = ShrinkWrap.create(WebArchive.class, SHIM_APP_NAME + ".war")
+                            .addClass(OpenTracingShimServlet.class)
+                            .addClass(TracedBean.class)
+                            .addAsLibraries(new File("lib/shim139").listFiles());
+            ShrinkHelper.exportAppToServer(server, exporterTestWar, SERVER_ONLY);
+
         }
 
         server.startServer();
+
     }
 
     @AfterClass
