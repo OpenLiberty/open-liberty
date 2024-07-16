@@ -951,7 +951,7 @@ ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=If the public key is a local file, make 
 
 ERROR_MISSING_PLATFORM_NAME=CWWKF1515E: The {0} platform couldn't be found. No versionless features can be installed.
 ERROR_MISSING_PLATFORM_NAME.explanation=The platform name that is specified by the configuration or environment variable wasn't found.
-ERROR_MISSING_PLATFORM_NAME.useraction=Check the spelling of the platform name-version.
+ERROR_MISSING_PLATFORM_NAME.useraction=Check the spelling of the platform name and version, for example, microProfile-6.1.
 
 ERROR_NO_DERIVED_PLATFORM=CWWKF1516E: Platform couldn't be determined, the following versionless features won't be installed: {0}.
 ERROR_NO_DERIVED_PLATFORM.explanation=Platform was not set, or couldn't be derived from existing versioned features. 
