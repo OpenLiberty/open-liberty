@@ -949,7 +949,7 @@ ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: The {0} public key ID does not match th
 ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=The public key might have changed. 
 ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=If the public key is a local file, make sure to provide the correct file.
 
-ERROR_MISSING_PLATFORM_NAME=CWWKF1515E: The platform {0} couldn't be found, no versionless features will be installed.
+ERROR_MISSING_PLATFORM_NAME=CWWKF1515E: The {0} platform couldn't be found. No versionless features can be installed.
 ERROR_MISSING_PLATFORM_NAME.explanation=The platform name passed by the config or Env Var wasn't found.
 ERROR_MISSING_PLATFORM_NAME.useraction=Check the spelling of the platform name-version.
 
