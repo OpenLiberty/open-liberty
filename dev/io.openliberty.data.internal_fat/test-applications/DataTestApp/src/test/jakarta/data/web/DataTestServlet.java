@@ -70,6 +70,7 @@ import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Cursor;
+import jakarta.data.repository.By;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -4416,6 +4417,19 @@ public class DataTestServlet extends FATServlet {
                              slice.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
         assertEquals(false, slice.hasNext());
+    }
+
+    /**
+     * Use the JDQL id(entityVar) function as the sort property to perform a
+     * descending sort.
+     */
+    @Test
+    public void testSortByIdFunction() {
+        assertEquals(List.of(31L, 29L, 23L, 19L, 17L, 13L),
+                     primes.findByNumberIdBetween(12, 36, Sort.desc(By.ID))
+                                     .stream()
+                                     .map(p -> p.numberId)
+                                     .collect(Collectors.toList()));
     }
 
     /**
