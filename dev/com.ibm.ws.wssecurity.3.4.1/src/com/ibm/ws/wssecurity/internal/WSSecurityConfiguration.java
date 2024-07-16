@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,8 @@ import org.osgi.service.component.ComponentContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.crypto.common.CryptoMessageUtils;
+import com.ibm.ws.crypto.common.CryptoUtils;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.ws.wssecurity.cxf.interceptor.WSSecurityLibertyPluginInterceptor;
@@ -352,6 +354,15 @@ public class WSSecurityConfiguration implements ConfigurationListener {
                             sigProp = signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER) != null ? 
                                             signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER) : signaturePropertyMap.get(WSSecurityConstants.WSS4J_CRYPTO_PROVIDER);
                             Tr.debug(tc, "signature configuration provider = ", sigProp);
+                        }
+
+                        // Log a message if the signature algorithm is not secure
+                        String algorithm = (String) signaturePropertyMap.get("signatureAlgorithm");
+                        if (algorithm == null || algorithm.isEmpty()) {
+                            algorithm = WSSecurityConstants.WSSEC_DEFAULT_SIGNATURE_ALGORITHM;
+                        }
+                        if (CryptoUtils.isAlgorithmInsecure(algorithm)) {
+                            CryptoMessageUtils.logInsecureAlgorithm("wsSecurityProvider.signatureProperties.signatureAlgorithm", algorithm);
                         }
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
