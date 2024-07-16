@@ -392,6 +392,8 @@ public class SAMLCommonTest extends CommonTest {
             //			String importsDir = aTestServer.getServer().getServerRoot() + File.separator + "imports";
             //			LibertyFileManager.copyFileIntoLiberty(aTestServer.getServer().getMachine(), importsDir, "saml_only_features.xml", importsDir + File.separator + featureConfigFile);
 
+            aTestServer.addIgnoredServerException(SAMLMessageConstants.CWPKI0063W_HOSTNAME_VERIFICATION_DISABLED);
+
             // start the server - if it fails to start the Junit flag is what causes the class to error immediately
             // SAML requires port 8020, so tell startServer to wait for it
             aTestServer.startServer(usableServerXml, null, checkApps, messages, SAMLConstants.JUNIT_REPORTING, new int[] { 8020 });

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,8 @@ package com.ibm.ws.fat.grpc;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.Arrays;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -56,6 +58,8 @@ public class StoreProducerServletClientTests extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
 
+        storeServer.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
+        producerServer.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
         boolean isArchive = false;
         // To export the assembled services application archive files, set isArchive to true
         // run it locally , keep this false when merging

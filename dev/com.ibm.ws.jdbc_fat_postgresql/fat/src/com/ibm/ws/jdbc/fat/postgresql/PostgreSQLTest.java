@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package com.ibm.ws.jdbc.fat.postgresql;
 
 import java.sql.Connection;
 import java.sql.Statement;
+import java.util.Arrays;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -41,6 +42,8 @@ public class PostgreSQLTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        server.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
 
         ShrinkHelper.defaultApp(server, APP_NAME, "jdbc.fat.postgresql.web");
 

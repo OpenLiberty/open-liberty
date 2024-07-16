@@ -358,6 +358,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
             addToServerRefList(aTestServer);
             installUserFeature(aTestServer); // for installing user feature
+            aTestServer.addIgnoredServerException(MessageConstants.CWPKI0063W_HOSTNAME_VERIFICATION_DISABLED);
+
             if (skipServerStart) {
                 Log.info(thisClass, "setupBeforeTest", "/****************************** SKIP ACTUAL SERVER START ********************************/");
                 // reset for the next server

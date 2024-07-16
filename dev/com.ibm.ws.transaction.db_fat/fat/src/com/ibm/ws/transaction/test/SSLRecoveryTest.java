@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -63,6 +64,7 @@ public class SSLRecoveryTest extends FATServletClient {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+        serverLibertySSL.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
         testContainer.waitingFor(Wait.forLogMessage(".*database system is ready.*", 2).withStartupTimeout(FATUtils.TESTCONTAINER_STARTUP_TIMEOUT)).start();
 
         setUp();
