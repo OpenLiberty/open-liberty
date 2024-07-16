@@ -6,3 +6,4 @@ Subsystem-Name: expressionLanguage
 -features=io.openliberty.internal.versionless.el-3.0; ibm.tolerates:="4.0,5.0,6.0"
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

@@ -6,3 +6,4 @@ Subsystem-Name: jms
 -features=io.openliberty.internal.versionless.jms-1.1; ibm.tolerates:="2.0,3.0,3.1"
 kind=beta
 edition=base
+WLP-InstantOn-Enabled: true

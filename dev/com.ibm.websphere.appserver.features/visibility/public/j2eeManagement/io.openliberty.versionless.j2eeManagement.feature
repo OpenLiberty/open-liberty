@@ -6,3 +6,4 @@ Subsystem-Name: j2eeManagement
 -features=io.openliberty.internal.versionless.j2eeManagement-1.1
 kind=beta
 edition=base
+WLP-InstantOn-Enabled: true

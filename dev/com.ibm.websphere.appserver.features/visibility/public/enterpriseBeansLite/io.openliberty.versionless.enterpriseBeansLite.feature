@@ -6,3 +6,4 @@ Subsystem-Name: enterpriseBeansLite
 -features=io.openliberty.internal.versionless.ejbLite-3.1; ibm.tolerates:="3.2,4.0"
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

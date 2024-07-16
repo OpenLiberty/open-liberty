@@ -6,3 +6,4 @@ Subsystem-Name: xmlBinding
 -features=io.openliberty.internal.versionless.jaxb-2.2; ibm.tolerates:="3.0,4.0"
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true
