@@ -67,6 +67,7 @@ public class RepositoryUtil {
     //
 
     private static boolean didSetupImageLocations;
+    private static boolean didSetupImageFailure;
 
     private static void requireImageLocations() {
         if (!didSetupImageLocations) {
@@ -75,12 +76,22 @@ public class RepositoryUtil {
     }
 
     public static void setupImageLocations() throws Exception {
-        if (didSetupImageLocations) {
+        if (didSetupImageFailure) {
+            throw new Exception("Prior image locations failure");
+        } else if (didSetupImageLocations) {
             return;
         } else {
-            didSetupImageLocations = true;
+            try {
+                basicSetupImageLocations();
+                didSetupImageLocations = true;
+            } catch (Exception e) {
+                didSetupImageFailure = true;
+                throw e;
+            }
         }
+    }
 
+    protected static void basicSetupImageLocations() throws Exception {
         Bootstrap bootstrap = Bootstrap.getInstance(); // throws Exception
 
         IMAGE_PATH = bootstrap.getValue(INSTALL_PATH_PROPERTY_NAME);
@@ -110,6 +121,7 @@ public class RepositoryUtil {
     //
 
     private static boolean didSetupFeatureLocations;
+    private static boolean didSetupFeatureLocationsFailure;
 
     private static void requireFeatureLocations() {
         if (!didSetupFeatureLocations) {
@@ -118,12 +130,22 @@ public class RepositoryUtil {
     }
 
     public static void setupFeatureLocations() throws Exception {
-        if (didSetupFeatureLocations) {
+        if (didSetupFeatureLocationsFailure) {
+            throw new Exception("Prior feature locations failure");
+        } else if (didSetupFeatureLocations) {
             return;
         } else {
-            didSetupFeatureLocations = true;
+            try {
+                basicSetupFeatureLocations();
+                didSetupFeatureLocations = true;
+            } catch (Exception e) {
+                didSetupFeatureLocationsFailure = true;
+                throw e;
+            }
         }
+    }
 
+    protected static void basicSetupFeatureLocations() throws Exception {
         File featuresFile = new File(FEATURES_PATH);
         FEATURES_ABS_PATH = featuresFile.getCanonicalPath();
         FEATURES_FILE = new File(FEATURES_ABS_PATH);
@@ -150,6 +172,7 @@ public class RepositoryUtil {
     //
 
     private static boolean didSetupProfileLocations;
+    private static boolean didSetupProfileLocationsFailure;
 
     private static void requireProfileLocations() {
         if (!didSetupProfileLocations) {
@@ -158,12 +181,22 @@ public class RepositoryUtil {
     }
 
     public static void setupProfileLocations() throws Exception {
-        if (didSetupProfileLocations) {
+        if (didSetupProfileLocationsFailure) {
+            throw new Exception("Prior profile locations failure");
+        } else if (didSetupProfileLocations) {
             return;
         } else {
-            didSetupProfileLocations = true;
+            try {
+                basicSetupProfileLocations();
+                didSetupProfileLocations = true;
+            } catch (Exception e) {
+                didSetupProfileLocationsFailure = true;
+                throw e;
+            }
         }
+    }
 
+    protected static void basicSetupProfileLocations() throws Exception {
         setupImageLocations();
 
         File profilesFile = new File(getImageDir(), PROFILES_PATH);
@@ -197,6 +230,7 @@ public class RepositoryUtil {
     //
 
     private static boolean didSetupRepo;
+    private static boolean didSetupRepoFailure;
 
     private static void requireRepo() {
         if (!didSetupRepo) {
@@ -205,12 +239,22 @@ public class RepositoryUtil {
     }
 
     public static void setupRepo(String serverName) throws Exception {
-        if (didSetupRepo) {
+        if (didSetupRepoFailure) {
+            throw new Exception("Prior setup repo failure");
+        } else if (didSetupRepo) {
             return;
         } else {
-            didSetupRepo = true;
+            try {
+                basicSetupRepo(serverName);
+                didSetupRepo = true;
+            } catch (Exception e) {
+                didSetupRepoFailure = true;
+                throw e;
+            }
         }
+    }
 
+    protected static void basicSetupRepo(String serverName) throws Exception {
         setupImageLocations();
 
         File useImageDir = getImageDir();
@@ -277,6 +321,7 @@ public class RepositoryUtil {
     //
 
     private static boolean didSetupFeatures;
+    private static boolean didSetupFeaturesFailure;
 
     private static void requireFeatures() {
         if (!didSetupFeatures) {
@@ -285,12 +330,22 @@ public class RepositoryUtil {
     }
 
     public static void setupFeatures() throws Exception {
-        if (didSetupFeatures) {
+        if (didSetupFeaturesFailure) {
+            throw new Exception("Prior features failure");
+        } else if (didSetupFeatures) {
             return;
         } else {
-            didSetupFeatures = true;
+            try {
+                basicSetupFeatures();
+                didSetupFeatures = true;
+            } catch (Exception e) {
+                didSetupFeaturesFailure = true;
+                throw e;
+            }
         }
+    }
 
+    protected static void basicSetupFeatures() throws Exception {
         setupFeatureLocations();
 
         File rootFeaturesInputFile = getFeaturesFile();
@@ -326,6 +381,7 @@ public class RepositoryUtil {
     //
 
     private static boolean didSetupProfiles;
+    private static boolean didSetupProfilesFailure;
 
     private static void requireProfiles() {
         if (!didSetupProfiles) {
@@ -338,12 +394,22 @@ public class RepositoryUtil {
     }
 
     public static void disabled_setupProfiles() throws Exception {
-        if (didSetupProfiles) {
+        if (didSetupProfilesFailure) {
+            throw new Exception("Prior profiles failure");
+        } else if (didSetupProfiles) {
             return;
         } else {
-            didSetupProfiles = true;
+            try {
+                basicSetupProfiles();
+                didSetupProfiles = true;
+            } catch (Exception e) {
+                didSetupProfilesFailure = true;
+                throw e;
+            }
         }
+    }
 
+    protected static void basicSetupProfiles() throws Exception {
         setupProfileLocations();
 
         File rootInputFile = getProfilesFile();

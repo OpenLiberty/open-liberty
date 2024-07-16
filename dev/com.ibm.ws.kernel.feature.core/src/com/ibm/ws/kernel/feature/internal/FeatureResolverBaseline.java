@@ -733,7 +733,6 @@ public class FeatureResolverBaseline {
         if ( allowMultiple ) {
             verifyCase.input.setMultiple();
         }
-
         if (processType == ProcessType.CLIENT) {
             verifyCase.input.setClient();
         } else if (processType == ProcessType.SERVER) {
@@ -746,9 +745,8 @@ public class FeatureResolverBaseline {
         for ( String rootFeature: rootFeatures ) {
             verifyCase.input.addRoot(rootFeature);
         }
-        for ( String resolvedFeature : resultWithKernel.getResolvedFeatures() ) {
-            verifyCase.output.addResolved(resolvedFeature);
-        }
+
+        verifyCase.output.copy(resultWithKernel);
 
         verifyCase.kernelAdjust(VerifyDelta.ORIGINAL_USED_KERNEL,
                                 resultWithoutKernel.getResolvedFeatures(),

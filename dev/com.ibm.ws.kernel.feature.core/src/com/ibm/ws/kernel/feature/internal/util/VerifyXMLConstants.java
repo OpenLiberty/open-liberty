@@ -18,6 +18,7 @@ package com.ibm.ws.kernel.feature.internal.util;
 //     <kernel>featureName</kernel>
 //     <root>featureName</root>
 //     <platform>platformName</platform>
+//     <environment>name=value</environment>
 //     <client/>
 //     <server/>
 //   </input>
@@ -42,9 +43,24 @@ public interface VerifyXMLConstants {
     String KERNEL_TAG = "kernel";
     String ROOT_TAG = "root";
     String PLATFORM_TAG = "platform";
+    String ENV_TAG = "environment";
+    char ENV_CHAR = '=';
 
     String OUTPUT_TAG = "output";
     String RESOLVED_TAG = "resolved";
     String KERNEL_ONLY_TAG = "kernelOnly";
     String KERNEL_BLOCKED_TAG = "kernelBlocked";
+
+    String PLATFORM_RESOLVED_TAG = "resolved-platform";
+    String PLATFORM_MISSING_TAG = "missing-platform";
+    String PLATFORM_DUPLICATE_TAG = "duplicate-platform";
+
+    String VERSIONLESS_RESOLVED_TAG = "resolved-versionless";
+    char RESOLVED_CHAR = '=';
+
+    String RESOLVED_FEATURE_TAG = "resolved-feature";
+    String MISSING_FEATURE_TAG = "missing-feature";
+    String NON_PUBLIC_FEATURE_TAG = "non-public-feature";
+    String WRONG_PROCESS_FEATURE_TAG = "wrong-process-feature";
+    String CONFLICT_FEATURE_TAG = "conflict-feature";
 }

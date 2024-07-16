@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.ibm.ws.kernel.feature.internal.util.VerifyData.ResultData;
 import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyCase;
 
 public class VerifyDelta {
@@ -84,7 +85,7 @@ public class VerifyDelta {
         caseErrors.add(error);
     }
 
-    private static List<String> addMessage(List<String> messages, String message) {
+    public static List<String> addMessage(List<String> messages, String message) {
         if (messages == null) {
             messages = new ArrayList<>();
         }
@@ -245,13 +246,98 @@ public class VerifyDelta {
                                          List<String> extra, List<String> missing,
                                          String[] allowedSubstitution) {
 
-        return compare(repo,
-                       expectedCase.output.resolved,
-                       expectedCase.output.kernelOnly,
-                       expectedCase.output.kernelBlocked,
-                       actualCase.output.resolved, actualUsedKernel,
-                       extra, missing,
-                       allowedSubstitution);
+        ChangeMessages messages = new ChangeMessages();
+
+        compareResult(repo, expectedCase, actualCase, messages);
+
+        compareResolved(repo,
+                        expectedCase.output.getResolved(),
+                        expectedCase.output.kernelOnly,
+                        expectedCase.output.kernelBlocked,
+                        actualCase.output.getResolved(), actualUsedKernel,
+                        extra, missing,
+                        allowedSubstitution,
+                        messages);
+
+        return messages;
+    }
+
+    public static void compareResult(FeatureSupplier repo,
+                                     VerifyCase expectedCase,
+                                     VerifyCase actualCase,
+                                     ChangeMessages messages) {
+
+        for (ResultData resultType : VerifyData.ResultData.values()) {
+            compare(resultType.description,
+                    expectedCase.output.get(resultType),
+                    actualCase.output.get(resultType),
+                    messages);
+        }
+
+        compare("Versionless resolutions",
+                expectedCase.output.getVersionlessResolved(),
+                actualCase.output.getVersionlessResolved(),
+                messages);
+    }
+
+    public static void compare(String description,
+                               Map<String, String> expectedResolved,
+                               Map<String, String> actualResolved,
+                               ChangeMessages messages) {
+
+        for (Map.Entry<String, String> expectedEntry : expectedResolved.entrySet()) {
+            String expectedKey = expectedEntry.getKey();
+            String expectedValue = expectedEntry.getValue();
+
+            if (!actualResolved.containsKey(expectedKey)) {
+                messages.addError("Missing [ " + description + " ]: Key [ " + expectedKey + " ] Expected value [ " + expectedValue + " ]");
+            } else {
+                String actualValue = actualResolved.get(expectedKey);
+
+                boolean failed;
+                if (expectedValue == null) {
+                    if (actualValue != null) {
+                        failed = true;
+                    } else {
+                        failed = false;
+                    }
+                } else if (actualValue == null) {
+                    failed = true;
+                } else if (!expectedValue.equals(actualValue)) {
+                    failed = true;
+                } else {
+                    failed = false;
+                }
+
+                if (failed) {
+                    messages.addError("Incorrect [ " + description + " ]:" +
+                                      " Key [ " + expectedKey + " ]" +
+                                      " Expected value [ " + expectedValue + " ]" +
+                                      " Actual value [ " + actualValue + " ]");
+                }
+            }
+        }
+    }
+
+    public static void compare(String description,
+                               List<String> expected,
+                               List<String> actual,
+                               ChangeMessages messages) {
+
+        Set<String> expectedSet = new HashSet<>(expected);
+        Set<String> actualSet = new HashSet<>(actual);
+
+        for (String expectedElement : expectedSet) {
+            if (!actualSet.contains(expectedElement)) {
+                messages.addError("Missing [ " + description + " ]: [ " + expectedElement + " ]");
+            }
+        }
+
+        for (String actualElement : actualSet) {
+            if (!expectedSet.contains(actualElement)) {
+                messages.addError("Extra [ " + description + " ]: [ " + actualElement + " ]");
+            }
+        }
     }
 
     public static interface FeatureSupplier {
@@ -325,20 +411,34 @@ public class VerifyDelta {
         public final List<String> warnings;
         public final List<String> info;
 
-        public ChangeMessages(List<String> errors,
-                              List<String> warnings,
-                              List<String> info) {
+        public ChangeMessages() {
+            this(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        }
+
+        public ChangeMessages(List<String> errors, List<String> warnings, List<String> info) {
             this.errors = errors;
             this.warnings = warnings;
             this.info = info;
+        }
+
+        public void addError(String message) {
+            errors.add(message);
         }
 
         public boolean hasErrors() {
             return ((errors != null) && !errors.isEmpty());
         }
 
+        public void addWarning(String message) {
+            warnings.add(message);
+        }
+
         public boolean hasWarnings() {
             return ((warnings != null) && !warnings.isEmpty());
+        }
+
+        public void addInfo(String message) {
+            info.add(message);
         }
 
         public boolean hasInfo() {
@@ -346,14 +446,15 @@ public class VerifyDelta {
         }
     }
 
-    public static ChangeMessages compare(FeatureSupplier repo,
-                                         List<String> expected,
-                                         List<String> expectedKernelOnly,
-                                         List<String> expectedKernelBlocked,
-                                         List<String> actual,
-                                         boolean actualUsedKernel,
-                                         List<String> extra, List<String> missing,
-                                         String[] allowedSubstitution) {
+    public static void compareResolved(FeatureSupplier repo,
+                                       List<String> expected,
+                                       List<String> expectedKernelOnly,
+                                       List<String> expectedKernelBlocked,
+                                       List<String> actual,
+                                       boolean actualUsedKernel,
+                                       List<String> extra, List<String> missing,
+                                       String[] allowedSubstitution,
+                                       ChangeMessages messages) {
 
         // Don't do this: Rely on the extra/missing checks.
         // The sizes are allowed to be different if the differences are all no-ship features.
@@ -363,12 +464,8 @@ public class VerifyDelta {
         // int expectedSize = expected.size();
         // expectedSize += (actualUsedKernel ? expectedKernelOnly.size() : expectedKernelBlocked.size());
         // if (actualSize != expectedSize) {
-        //     caseErrors = addMessage(caseErrors, "Incorrect count: expected [ " + expectedSize + " ] actual [ " + actualSize + " ]");
+        //     messages.addError("Incorrect count: expected [ " + expectedSize + " ] actual [ " + actualSize + " ]");
         // }
-
-        List<String> caseErrors = null;
-        List<String> caseWarnings = null;
-        List<String> caseInfo = null;
 
         Set<String> actualSet = new HashSet<>(actual);
         Set<String> expectedSet = new HashSet<>(expected);
@@ -384,12 +481,12 @@ public class VerifyDelta {
                 add(missing, expectedElement);
 
                 if (repo.isNoShip(expectedElement) || repo.dependsOnNoShip(expectedElement)) {
-                    caseWarnings = addMessage(caseWarnings, "Missing no-ship [ " + addType(repo, expectedElement) + " ]");
+                    messages.addWarning("Missing no-ship [ " + addType(repo, expectedElement) + " ]");
                 } else {
                     if ((expectedMissing != null) && expectedElement.equals(expectedMissing)) {
                         actualMissing = expectedElement;
                     } else {
-                        caseErrors = addMessage(caseErrors, "Missing [ " + addType(repo, expectedElement) + " ]");
+                        messages.addError("Missing [ " + addType(repo, expectedElement) + " ]");
                     }
                 }
             }
@@ -402,9 +499,9 @@ public class VerifyDelta {
                 add(missing, expectedElement);
 
                 if (repo.isNoShip(expectedElement) || repo.dependsOnNoShip(expectedElement)) {
-                    caseWarnings = addMessage(caseWarnings, "Missing no-ship [ " + addType(repo, expectedElement) + " ]" + usedKernelTag);
+                    messages.addWarning("Missing no-ship [ " + addType(repo, expectedElement) + " ]" + usedKernelTag);
                 } else {
-                    caseErrors = addMessage(caseErrors, "Missing [ " + addType(repo, expectedElement) + " ]" + usedKernelTag);
+                    messages.addError("Missing [ " + addType(repo, expectedElement) + " ]" + usedKernelTag);
                 }
             }
         }
@@ -433,12 +530,12 @@ public class VerifyDelta {
                 add(extra, actualElement);
 
                 if (repo.isNoShip(actualElement) || repo.dependsOnNoShip(actualElement)) {
-                    caseWarnings = addMessage(caseErrors, extraTag + " no-ship [ " + addType(repo, actualElement) + " ]");
+                    messages.addWarning(extraTag + " no-ship [ " + addType(repo, actualElement) + " ]");
                 } else {
                     if ((expectedExtra != null) && actualElement.equals(expectedExtra)) {
                         actualExtra = actualElement;
                     } else {
-                        caseErrors = addMessage(caseErrors, extraTag + " [ " + addType(repo, actualElement) + " ]");
+                        messages.addError(extraTag + " [ " + addType(repo, actualElement) + " ]");
                     }
                 }
             }
@@ -457,17 +554,17 @@ public class VerifyDelta {
                 substitutionError = null;
             }
             if (substitutionError != null) {
-                caseErrors = addMessage(caseErrors, substitutionError);
+                messages.addError(substitutionError);
             }
 
         } else if (expectedExtra != null) {
             if (actualExtra == null) {
-                caseErrors = addMessage(caseErrors, "Did not add [ " + expectedExtra + " ]");
+                messages.addError("Did not add [ " + expectedExtra + " ]");
             }
 
         } else if (expectedMissing != null) {
             if (actualMissing == null) {
-                caseErrors = addMessage(caseErrors, "Did not remove [ " + expectedMissing + " ]");
+                messages.addError("Did not remove [ " + expectedMissing + " ]");
             }
         }
 
@@ -493,14 +590,14 @@ public class VerifyDelta {
                 String oldVersion = getAny(missingVersionsOfBase);
                 String newVersion = getAny(extraVersionsOfBase);
 
-                caseInfo = addMessage(caseInfo, "Feature [ " + missingBase + " ] changed from [ " + oldVersion + " ] to [ " + newVersion + " ]");
+                messages.addInfo("Feature [ " + missingBase + " ] changed from [ " + oldVersion + " ] to [ " + newVersion + " ]");
             }
         }
 
         // Don't bother with the order if the resolved are incorrect.  The order
         // is likely wildly off because of omissions.
 
-        if (caseErrors == null) {
+        if (!messages.hasErrors()) {
             int actualSize = actual.size();
             int expectedSize = expected.size();
             int minSize = ((actualSize > expectedSize) ? expectedSize : actualSize);
@@ -550,11 +647,9 @@ public class VerifyDelta {
             }
 
             if (orderMsg != null) {
-                caseWarnings = addMessage(caseWarnings, orderMsg);
+                messages.addWarning(orderMsg);
             }
         }
-
-        return new ChangeMessages(caseErrors, caseWarnings, caseInfo);
     }
 
     public static final boolean ORIGINAL_USED_KERNEL = true;
@@ -584,7 +679,7 @@ public class VerifyDelta {
             removed = original.output.kernelOnly;
         }
 
-        moveDifference(original.output.resolved, updatedResolved, added, removed);
+        moveDifference(original.output.getResolved(), updatedResolved, added, removed);
     }
 
     protected static void moveDifference(List<String> original, Set<String> updated,

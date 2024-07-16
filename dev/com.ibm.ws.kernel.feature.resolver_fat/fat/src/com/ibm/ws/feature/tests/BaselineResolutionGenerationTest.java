@@ -45,20 +45,20 @@ public class BaselineResolutionGenerationTest {
     public static final String REPO_PATH_OL = "output/verify/repository.xml";
     public static final String REPO_PATH_WL = "output/verify/repository_WL.xml";
 
-    public static final String SINGLETON_ACTUAL_PATH_OL = "output/verify/singleton_actual.xml";
-    public static final String SINGLETON_ACTUAL_PATH_WL = "output/verify/singleton_actual_WL.xml";
+    public static final String SINGLETON_ACTUAL_PATH_OL = "output/servers/verify/singleton_actual.xml";
+    public static final String SINGLETON_ACTUAL_PATH_WL = "output/servers/verify/singleton_actual_WL.xml";
 
-    public static final String SINGLETON_DURATIONS_PATH_OL = "output/verify/singleton_durations.txt";
-    public static final String SINGLETON_DURATIONS_PATH_WL = "output/verify/singleton_durations_WL.txt";
+    public static final String SINGLETON_DURATIONS_PATH_OL = "output/servers/verify/singleton_durations.txt";
+    public static final String SINGLETON_DURATIONS_PATH_WL = "output/servers/verify/singleton_durations_WL.txt";
 
     public static final String SINGLETON_EXPECTED_PATH_OL = "publish/verify/singleton_expected.xml";
     public static final String SINGLETON_EXPECTED_PATH_WL = "publish/verify/singleton_expected_WL.xml";
 
-    public static final String SERVLET_ACTUAL_PATH_OL = "output/verify/servlet_actual.xml";
-    public static final String SERVLET_ACTUAL_PATH_WL = "output/verify/servlet_actual_WL.xml";
+    public static final String SERVLET_ACTUAL_PATH_OL = "output/servers/verify/servlet_actual.xml";
+    public static final String SERVLET_ACTUAL_PATH_WL = "output/servers/verify/servlet_actual_WL.xml";
 
-    public static final String SERVLET_DURATIONS_PATH_OL = "output/verify/servlet_durations.txt";
-    public static final String SERVLET_DURATIONS_PATH_WL = "output/verify/servlet_durations_WL.txt";
+    public static final String SERVLET_DURATIONS_PATH_OL = "output/servers/verify/servlet_durations.txt";
+    public static final String SERVLET_DURATIONS_PATH_WL = "output/servers/verify/servlet_durations_WL.txt";
 
     public static final String SERVLET_EXPECTED_PATH_OL = "publish/verify/servlet_expected.xml";
     public static final String SERVLET_EXPECTED_PATH_WL = "publish/verify/servlet_expected_WL.xml";
