@@ -205,66 +205,68 @@ public class FATUtils {
     public static void stopServers(String[] toleratedMsgs, LibertyServer... servers) throws Exception {
         final String method = "stopServers";
 
-        for (LibertyServer server : servers) {
-            assertNotNull("Attempted to stop a null server", server);
-            int attempt = 0;
-            int maxAttempts = 5;
-            Log.info(c, method, "Stopping " + server.getServerName());
-            do {
-                if (attempt++ > 0) {
-                    Log.info(c, method, "Waiting 5 seconds after stop failure before making attempt " + attempt);
-                    try {
-                        Thread.sleep(5000);
-                    } catch (Exception e) {
-                        Log.error(c, method, e);
-                    }
-                }
+        if (servers != null) {
+        	for (LibertyServer server : servers) {
+        		assertNotNull("Attempted to stop a null server", server);
+        		int attempt = 0;
+        		int maxAttempts = 5;
+        		Log.info(c, method, "Stopping " + server.getServerName());
+        		do {
+        			if (attempt++ > 0) {
+        				Log.info(c, method, "Waiting 5 seconds after stop failure before making attempt " + attempt);
+        				try {
+        					Thread.sleep(5000);
+        				} catch (Exception e) {
+        					Log.error(c, method, e);
+        				}
+        			}
 
-                if (!server.isStarted()) {
-                    Log.info(c, method,
-                             "Server " + server.getServerName() + " is not started. No need to stop it.");
-                    break;
-                }
+        			if (!server.isStarted()) {
+        				Log.info(c, method,
+        						"Server " + server.getServerName() + " is not started. No need to stop it.");
+        				break;
+        			}
 
-                ProgramOutput po = null;
-                try {
-                    po = server.stopServer(toleratedMsgs);
-                } catch (Exception e) {
-                    Log.error(c, method, e, "Server stop attempt " + attempt + " failed with return code " + (po != null ? po.getReturnCode() : "<unavailable>"));
-                }
+        			ProgramOutput po = null;
+        			try {
+        				po = server.stopServer(toleratedMsgs);
+        			} catch (Exception e) {
+        				Log.error(c, method, e, "Server stop attempt " + attempt + " failed with return code " + (po != null ? po.getReturnCode() : "<unavailable>"));
+        			}
 
-                if (po != null) {
-                    String s;
-                    int rc = po.getReturnCode();
+        			if (po != null) {
+        				String s;
+        				int rc = po.getReturnCode();
 
-                    Log.info(c, method, "ReturnCode: " + rc);
+        				Log.info(c, method, "ReturnCode: " + rc);
 
-                    if (rc == 0) {
-                        break;
-                    } else {
-                        String pid = server.getPid();
-                        Log.info(c, method,
-                                 "Non zero return code stopping server " + server.getServerName() + "." + ((pid != null ? "(pid:" + pid + ")" : "")));
+        				if (rc == 0) {
+        					break;
+        				} else {
+        					String pid = server.getPid();
+        					Log.info(c, method,
+        							"Non zero return code stopping server " + server.getServerName() + "." + ((pid != null ? "(pid:" + pid + ")" : "")));
 
-                        s = po.getStdout();
+        					s = po.getStdout();
 
-                        if (s != null && !s.isEmpty())
-                            Log.info(c, method, "Stdout: " + s.trim());
+        					if (s != null && !s.isEmpty())
+        						Log.info(c, method, "Stdout: " + s.trim());
 
-                        s = po.getStderr();
+        					s = po.getStderr();
 
-                        if (s != null && !s.isEmpty())
-                            Log.info(c, method, "Stderr: " + s.trim());
+        					if (s != null && !s.isEmpty())
+        						Log.info(c, method, "Stderr: " + s.trim());
 
-                        server.printProcessHoldingPort(server.getHttpDefaultPort());
-                    }
-                }
-            } while (attempt < maxAttempts);
+        					server.printProcessHoldingPort(server.getHttpDefaultPort());
+        				}
+        			}
+        		} while (attempt < maxAttempts);
 
-            if (server.isStarted()) {
-                server.postStopServerArchive();
-                throw new Exception("Failed to stop " + server.getServerName() + " after " + attempt + " attempts");
-            }
+        		if (server.isStarted()) {
+        			server.postStopServerArchive();
+        			throw new Exception("Failed to stop " + server.getServerName() + " after " + attempt + " attempts");
+        		}
+        	}
         }
     }
 
