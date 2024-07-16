@@ -646,7 +646,7 @@ public class DataJPATestServlet extends FATServlet {
         cityNames.add("Pierre");
 
         //TODO Eclipse link SQL Generation bug on Oracle: https://github.com/OpenLiberty/open-liberty/issues/28545
-        if (jdbcJarName.startsWith("ojdbc8_g")) {
+        if (jdbcJarName.startsWith("ojdbc8")) {
             cities.removeByStateName("South Dakota"); //Cleanup Cities repository and skip the rest of these tests
             return;
         }
@@ -3322,10 +3322,10 @@ public class DataJPATestServlet extends FATServlet {
 
         // Derby, Oracle, SQLServer  does not support comparisons of BLOB (IMAGE sqlserver) values
         // Derby JDBC Jar Name : derby.jar
-        // Oracle JDBC Jar Name : ojdbc8_g.jar
+        // Oracle JDBC Jar Name : ojdbc8.jar
         // SQLServer JDBC Jar Name : mssql-jdbc.jar
         String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
-        if (!(jdbcJarName.startsWith("derby") || jdbcJarName.startsWith("ojdbc8_g") || jdbcJarName.startsWith("mssql-jdbc"))) {
+        if (!(jdbcJarName.startsWith("derby") || jdbcJarName.startsWith("ojdbc8") || jdbcJarName.startsWith("mssql-jdbc"))) {
             // find one entity by zipcodes as Optional
             c = counties.findByZipCodes(wabashaZipCodes).orElseThrow();
             assertEquals("Wabasha", c.name);
