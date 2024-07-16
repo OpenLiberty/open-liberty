@@ -1184,33 +1184,41 @@ public class QueryInfo {
                 }
 
                 if (singleAttributeName == null) {
-                    // Construct new instance for record or IdClass
-                    q.append("SELECT NEW ").append(singleType.getName()).append('(');
-                    RecordComponent[] recordComponents;
-                    boolean first = true;
-                    if ((recordComponents = singleType.getRecordComponents()) != null)
-                        for (RecordComponent component : recordComponents) {
-                            String name = component.getName();
-                            q.append(first ? "" : ", ").append(o_).append(name);
-                            first = false;
-                        }
-                    else if (entityInfo.idClassAttributeAccessors != null && singleType.equals(entityInfo.idType))
-                        // TODO determine correct order of idClass attributes for constructor (possibly based on type?)
-                        // instead of guessing they are alphabetized?
-                        for (String idClassAttributeName : entityInfo.idClassAttributeAccessors.keySet()) {
-                            String name = entityInfo.getAttributeName(idClassAttributeName, true);
-                            q.append(first ? "" : ", ").append(o_).append(name);
-                            first = false;
-                        }
-                    else
-                        throw new MappingException("The " + method.getName() + " method of the " +
-                                                   method.getDeclaringClass().getName() + " repository specifies the " +
-                                                   singleType.getName() + " result type, which is not convertible from the " +
-                                                   entityInfo.entityClass.getName() + " entity type. A repository method " +
-                                                   "result type must be the entity type, an entity attribute type, or a " +
-                                                   "Java record with attribute names that are a subset of the entity attribute names, " +
-                                                   "or the Query annotation must be used to construct the result type with JPQL."); // TODO NLS
-                    q.append(')');
+                    // TODO enable this once #29073 is fixed
+                    //if (entityInfo.idClassAttributeAccessors != null && singleType.equals(entityInfo.idType)) {
+                    //    // IdClass
+                    //    q.append("SELECT ID(THIS)");
+                    // } else
+                    {
+                        // Construct new instance for record
+                        q.append("SELECT NEW ").append(singleType.getName()).append('(');
+                        RecordComponent[] recordComponents;
+                        boolean first = true;
+                        if ((recordComponents = singleType.getRecordComponents()) != null)
+                            for (RecordComponent component : recordComponents) {
+                                String name = component.getName();
+                                q.append(first ? "" : ", ").append(o_).append(name);
+                                first = false;
+                            }
+                        // TODO remove else block once #29073 is fixed
+                        else if (entityInfo.idClassAttributeAccessors != null && singleType.equals(entityInfo.idType))
+                            // The following guess of alphabetic order is not valid in most cases, but the
+                            // whole code block that will be removed before GA, so there is no reason to correct it.
+                            for (String idClassAttributeName : entityInfo.idClassAttributeAccessors.keySet()) {
+                                String name = entityInfo.getAttributeName(idClassAttributeName, true);
+                                q.append(first ? "" : ", ").append(o_).append(name);
+                                first = false;
+                            }
+                        else
+                            throw new MappingException("The " + method.getName() + " method of the " +
+                                                       method.getDeclaringClass().getName() + " repository specifies the " +
+                                                       singleType.getName() + " result type, which is not convertible from the " +
+                                                       entityInfo.entityClass.getName() + " entity type. A repository method " +
+                                                       "result type must be the entity type, an entity attribute type, or a " +
+                                                       "Java record with attribute names that are a subset of the entity attribute names, " +
+                                                       "or the Query annotation must be used to construct the result type with JPQL."); // TODO NLS
+                        q.append(')');
+                    }
                 } else {
                     q.append("SELECT ").append(o_).append(singleAttributeName);
                 }

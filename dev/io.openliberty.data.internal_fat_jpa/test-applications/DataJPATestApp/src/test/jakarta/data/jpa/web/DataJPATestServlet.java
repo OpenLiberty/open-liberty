@@ -657,7 +657,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         if (supportsOrderByForUpdate)
             assertEquals("Aberdeen", id.name);
         // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
@@ -665,7 +665,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         if (supportsOrderByForUpdate)
             assertEquals("Brookings", id.name);
         // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
@@ -673,7 +673,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         if (supportsOrderByForUpdate)
             assertEquals("Mitchell", id.name);
         // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
@@ -683,14 +683,14 @@ public class DataJPATestServlet extends FATServlet {
 
         Order<City> orderByPopulation = supportsOrderByForUpdate ? Order.by(Sort.asc("population")) : Order.by();
         id = cities.deleteFirstByStateName("South Dakota", orderByPopulation).orElseThrow();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         if (supportsOrderByForUpdate)
             assertEquals("Spearfish", id.name);
         // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
         id = cities.deleteByStateName("South Dakota", Limit.of(1));
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
         List<CityId> some = cities.deleteSome("South Dakota", Limit.of(2));
@@ -698,12 +698,12 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
         assertEquals(false, ids.hasNext());
@@ -714,7 +714,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
         assertEquals(false, ids.hasNext());
@@ -741,15 +741,15 @@ public class DataJPATestServlet extends FATServlet {
 
         CityId id = ids.next();
         assertEquals("Davenport", id.name);
-        assertEquals("Iowa", id.stateName);
+        assertEquals("Iowa", id.getStateName());
 
         id = ids.next();
         assertEquals("Iowa City", id.name);
-        assertEquals("Iowa", id.stateName);
+        assertEquals("Iowa", id.getStateName());
 
         id = ids.next();
         assertEquals("Sioux City", id.name);
-        assertEquals("Iowa", id.stateName);
+        assertEquals("Iowa", id.getStateName());
 
         removed = cities.deleteByStateName("Iowa");
 
@@ -1905,7 +1905,7 @@ public class DataJPATestServlet extends FATServlet {
         // single result
         CityId cityId = cities.findFirstByNameOrderByPopulationDesc("Springfield");
         assertEquals("Springfield", cityId.name);
-        assertEquals("Missouri", cityId.stateName);
+        assertEquals("Missouri", cityId.getStateName());
 
         // Stream result
         assertIterableEquals(List.of("Springfield, Oregon",
