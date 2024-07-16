@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.osgi.framework.Version;
+
 import com.ibm.ws.kernel.feature.Visibility;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
@@ -35,8 +37,6 @@ import com.ibm.ws.repository.resources.ApplicableToProduct;
 import com.ibm.ws.repository.resources.EsaResource;
 import com.ibm.ws.repository.resources.RepositoryResource;
 import com.ibm.ws.repository.resources.internal.RepositoryResourceImpl;
-
-import junit.runner.Version;
 
 /**
  * Implementation of {@link FeatureResolver.Repository} which is backed by a collection of {@link EsaResource}s.
@@ -252,16 +252,21 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
      * @return List<ProvisioningFeatureDefinition>
      */
     public List<ProvisioningFeatureDefinition> findAllPossibleVersions(ProvisioningFeatureDefinition versionlessFeature) {
+        ProvisioningFeatureDefinition publicFeature = null;
         List<ProvisioningFeatureDefinition> result = new ArrayList<>();
         for (FeatureResource dependency : versionlessFeature.getConstituents(SubsystemContentType.FEATURE_TYPE)) {
-            result.add(getVersionedFeature(dependency.getSymbolicName()));
-
+            publicFeature = getVersionedFeature(dependency.getSymbolicName());
+            if (publicFeature != null)
+                result.add(publicFeature);
+            
             String baseName = getFeatureBaseName(dependency.getSymbolicName());
             List<String> tolerates = dependency.getTolerates();
             if (tolerates != null) {
                 for (String toleratedVersion : tolerates) {
                     String featureName = baseName + toleratedVersion;
-                    result.add(getVersionedFeature(featureName));
+                    publicFeature = getVersionedFeature(featureName);
+                    if (publicFeature != null)
+                        result.add(publicFeature);
                 }
             }
         }
@@ -286,11 +291,9 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
                 if (versionedFeatureDef.getVisibility() == Visibility.PUBLIC) {
                     return versionedFeatureDef;
                 }
-                result = versionedFeatureDef;
-                break;
             }
         }
-        return result;
+        return null;
     }
 
     /**
