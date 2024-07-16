@@ -955,5 +955,5 @@ ERROR_MISSING_PLATFORM_NAME.useraction=Check the spelling of the platform name a
 
 ERROR_NO_DERIVED_PLATFORM=CWWKF1516E: The platform couldn't be determined. The following versionless features can't be installed: {0}.
 ERROR_NO_DERIVED_PLATFORM.explanation= The platform was not set or couldn't be derived from existing versioned features. 
-ERROR_NO_DERIVED_PLATFORM.useraction=Add platform for versionless features
+ERROR_NO_DERIVED_PLATFORM.useraction=Add a platform for versionless features.
 
