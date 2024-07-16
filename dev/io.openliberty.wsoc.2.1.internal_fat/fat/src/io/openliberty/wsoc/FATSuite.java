@@ -32,8 +32,8 @@ import io.openliberty.wsoc.tests.SSLBasic21Test;
  * below should represent all of the test cases for this FAT.
  */
 @SuiteClasses({
-                Basic21Test.class,
-                SSLBasic21Test.class
+                SSLBasic21Test.class, // run this first to avoid jetty timeouts in Basic21Test
+                Basic21Test.class
 })
 public class FATSuite {
 
