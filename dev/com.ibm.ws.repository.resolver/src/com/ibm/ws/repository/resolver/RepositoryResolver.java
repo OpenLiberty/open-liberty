@@ -32,7 +32,6 @@ import com.ibm.ws.kernel.feature.internal.FeatureResolverImpl;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Chain;
-import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.product.utility.extension.IFixUtils;
@@ -146,11 +145,10 @@ public class RepositoryResolver {
      * List of all the missing platforms after resolution
      */
     Set<String> missingPlatforms;
-
     /**
-     * Indicates if an issue was found resolving versionless features and platforms
+     * returns if versionless features are part of the resolution - used to skip extra processing
      */
-    boolean hasVersionlessIssue;
+    boolean includesVersionless;
 
     /**
      * <p>
@@ -367,6 +365,8 @@ public class RepositoryResolver {
      * For example, if {@code ejbLite-3.2} is already installed and {@code resolve(Arrays.asList("cdi-2.0"))} is called, it will not return the autofeature which would be required
      * for {@code cdi-2.0} and {@code ejbLite-3.2} to work together.
      *
+     * @deprecated - calling this method should be replaced by passing the platform list, required to support versionless features.
+     *
      * @param toResolve A collection of the identifiers of the resources to resolve. It should be in the form:</br>
      *                      <code>{name}/{version}</code></br>
      *                      <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is
@@ -389,6 +389,7 @@ public class RepositoryResolver {
      *
      * @throws RepositoryResolutionException If the resource cannot be resolved
      */
+    @Deprecated
     public Collection<List<RepositoryResource>> resolveAsSet(Collection<String> toResolve) throws RepositoryResolutionException {
         return resolve(toResolve, null, ResolutionMode.DETECT_CONFLICTS);
     }
@@ -502,7 +503,7 @@ public class RepositoryResolver {
         featureConflicts = new HashMap<>();
         resolvedPlatforms = new HashSet<>();
         missingPlatforms = new HashSet<>();
-        hasVersionlessIssue = false;
+        includesVersionless = false;
     }
 
     /**
@@ -567,8 +568,11 @@ public class RepositoryResolver {
         Result result = resolver.resolve(resolverRepository, kernelFeatures, featureNamesToResolve, Collections.<String> emptySet(), false, requestedPlatformNames);
 
         featureConflicts.putAll(result.getConflicts());
-        if (hasRequestedVersionlessFeatures(featureNamesToResolve, resolverRepository))
-            recordVersionless(result, resolverRepository);
+        if (hasRequestedVersionlessFeatures(featureNamesToResolve, resolverRepository)) {
+            includesVersionless = true;
+            resolvedPlatforms = result.getResolvedPlatforms();
+            missingPlatforms = result.getMissingPlatforms();
+        }
 
         for (String name : result.getResolvedFeatures()) {
             ProvisioningFeatureDefinition feature = resolverRepository.getFeature(name);
@@ -578,22 +582,6 @@ public class RepositoryResolver {
         for (String missingFeature : result.getMissing()) {
             recordMissingFeature(missingFeature);
         }
-    }
-
-    /**
-     * Record Versionless Messages and Issues
-     *
-     * @param result
-     * @param resolverRepo
-     * @param requestedFeatures
-     */
-    private void recordVersionless(Result result, Repository resolverRepo) {
-
-        resolvedPlatforms = result.getResolvedPlatforms();
-        missingPlatforms = result.getMissingPlatforms();
-        if (resolvedPlatforms.isEmpty() || !missingPlatforms.isEmpty())
-            hasVersionlessIssue = true;
-
     }
 
     /**
@@ -1005,21 +993,27 @@ public class RepositoryResolver {
      * @throws RepositoryResolutionException if any errors occurred during resolution
      */
     private void reportErrors() throws RepositoryResolutionException {
-        if (resourcesWrongProduct.isEmpty() && missingTopLevelRequirements.isEmpty() && missingRequirements.isEmpty() && featureConflicts.isEmpty() && !hasVersionlessIssue()) {
+        if (resourcesWrongProduct.isEmpty() && missingTopLevelRequirements.isEmpty() && missingRequirements.isEmpty() && featureConflicts.isEmpty()
+            && (!includesVersionless || ((!resolvedPlatforms.isEmpty()) && (missingPlatforms.isEmpty())))) {
             // Everything went fine!
             return;
         }
 
         List<String> missingBasePlatforms = new ArrayList<String>();
 
-        // Versionless feature issues will appear in missingTopLevelRequirements, and this will gather the associated platform unable to target.
-        for (String name : missingTopLevelRequirements) {
-            ProvisioningFeatureDefinition feature = resolverRepository.getFeature(name);
-            if (feature != null && feature.isVersionless()) {
-                ProvisioningFeatureDefinition firstChild = resolverRepository.findAllPossibleVersions(feature).get(0);
-                String plat = firstChild.getPlatformName();
-                if (plat != null) {//This will add just the platform name without version
-                    missingBasePlatforms.add(resolverRepository.getFeatureBaseName(plat));
+        // Versionless features can't be resolved if a corresponding platform is not derived, making the choice ambiguous, and the feature won't be included in the resolved list.  -  will gather the associated platform unable to target.
+        if (includesVersionless) {
+            for (String name : missingTopLevelRequirements) {
+                ProvisioningFeatureDefinition feature = resolverRepository.getFeature(name);
+                if (feature != null && feature.isVersionless()) {
+                    List<ProvisioningFeatureDefinition> featureChildren = resolverRepository.findAllPossibleVersions(feature);
+                    if (!featureChildren.isEmpty()) {
+                        ProvisioningFeatureDefinition firstChild = featureChildren.get(0);
+                        String plat = firstChild.getPlatformName();
+                        if (plat != null) {//This will add just the platform name without version
+                            missingBasePlatforms.add(resolverRepository.getFeatureBaseName(plat));
+                        }
+                    }
                 }
             }
         }
@@ -1052,14 +1046,6 @@ public class RepositoryResolver {
 
         throw new RepositoryResolutionException(null, missingTopLevelRequirements, missingRequirementNames, missingProductInformation, missingRequirements, featureConflicts,
                                                 resolvedPlatforms, missingPlatforms, missingBasePlatforms);
-    }
-
-    /**
-     * @return
-     */
-    protected boolean hasVersionlessIssue() {
-
-        return hasVersionlessIssue;
     }
 
     static class NameAndVersion {

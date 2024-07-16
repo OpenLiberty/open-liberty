@@ -258,7 +258,7 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
             publicFeature = getVersionedFeature(dependency.getSymbolicName());
             if (publicFeature != null)
                 result.add(publicFeature);
-            
+
             String baseName = getFeatureBaseName(dependency.getSymbolicName());
             List<String> tolerates = dependency.getTolerates();
             if (tolerates != null) {
@@ -275,13 +275,13 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
 
     /**
      *
-     * Answer the public versioned feature based on the internal versionless linking feature
+     * Answer the public versioned feature based on the internal versionless linking feature, or null if can't be found
      *
      * @param versionlessLinkingFeatureName
      * @return ProvisioningFeatureDefinition
      */
     private ProvisioningFeatureDefinition getVersionedFeature(String versionlessLinkingFeatureName) {
-        ProvisioningFeatureDefinition result = null;
+
         ProvisioningFeatureDefinition feature = getFeature(versionlessLinkingFeatureName);
         if (feature != null) {
             //This is the versionless linking feature pointing to a public versioned feature

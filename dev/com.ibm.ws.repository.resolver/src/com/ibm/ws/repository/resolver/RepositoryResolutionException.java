@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -44,7 +44,6 @@ public class RepositoryResolutionException extends RepositoryException {
     private final Map<String, Collection<Chain>> featureConflicts;
     private Set<String> resolvedPlatforms;
     private Set<String> missingPlatforms;
-    private boolean hasVersionlessIssue;
     private List<String> missingBasePlatforms;
 
     /**
@@ -373,6 +372,7 @@ public class RepositoryResolutionException extends RepositoryException {
     }
 
     /**
+     * This states the target platforms that were used during the resolution
      * @return the resolvedPlatforms
      */
     public Set<String> getResolvedPlatforms() {
@@ -380,6 +380,7 @@ public class RepositoryResolutionException extends RepositoryException {
     }
 
     /**
+     * This describes missspelled or unknown platform names, official names are collected by the feature metadata
      * @return the missingPlatforms
      */
     public Set<String> getMissingPlatforms() {
@@ -387,6 +388,7 @@ public class RepositoryResolutionException extends RepositoryException {
     }
 
     /**
+     * This describes base platforms like "jakartaee" that are not derived, either by passed platform values, or by other included versioned features
      * @return the missingBasePlatforms
      */
     public List<String> getMissingBasePlatforms() {

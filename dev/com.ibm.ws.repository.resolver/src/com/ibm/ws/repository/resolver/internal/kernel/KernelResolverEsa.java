@@ -264,13 +264,12 @@ public class KernelResolverEsa implements ProvisioningFeatureDefinition {
             return false;
         }
 
-        if (getSymbolicName().indexOf(".versionless.") == -1) {
-            return false;
-        } else if (getSymbolicName().indexOf(".internal.versionless.") != -1) {
+        if (getSymbolicName().contains(".versionless.")
+                && !getSymbolicName().contains(".internal.")) {
+            return true;
+        } else {
             return false;
         }
-
-        return true;
     }
 
     @Override
