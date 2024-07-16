@@ -334,6 +334,10 @@ public class RepositoryUtil {
     }
 
     public static void setupProfiles() throws Exception {
+        return;
+    }
+
+    public static void disabled_setupProfiles() throws Exception {
         if (didSetupProfiles) {
             return;
         } else {

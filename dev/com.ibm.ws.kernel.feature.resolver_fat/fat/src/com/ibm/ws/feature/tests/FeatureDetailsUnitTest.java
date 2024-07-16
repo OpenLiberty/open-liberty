@@ -48,6 +48,30 @@ public class FeatureDetailsUnitTest {
         setupMaps();
     }
 
+    /**
+     * Tell if running relative to a WAS liberty build.
+     *
+     * Currently, FATs run relative to Open Liberty and relative
+     * to WAS Liberty. WAS Liberty has more features than Open
+     * Liberty.
+     *
+     * This is a problem in regards to the creation of the feature
+     * resolver FAT image, which is created in the Open Liberty
+     * environment then is used to run relative to Open Liberty
+     * and WAS Liberty.
+     *
+     * When running relative to Open Liberty, the features (expressed
+     * as feature information, copied from com.ibm.websphere.appserver.features
+     * as feature files), are correct relative to the feature manifest
+     * stored in build.image/wlp/lib/features.
+     *
+     * When running relative to WAS Liberty the features are incomplete:
+     * in WAS Liberty, build.image/wlp/lib/features has WAS Liberty features.
+     */
+    public static boolean isWASLiberty() {
+        return RepositoryUtil.isWASLiberty();
+    }
+
     private static Map<String, FeatureInfo> featureMap;
 
     public static Map<String, ? extends FeatureInfo> getFeatureMap() {
@@ -139,32 +163,53 @@ public class FeatureDetailsUnitTest {
         Map<String, ? extends ProvisioningFeatureDefinition> useFeatureDefMap = getFeatureDefMap();
         int numFeatureDefs = useFeatureDefMap.size();
 
+        boolean isWASLiberty = isWASLiberty();
+
         System.out.println("Validating [ " + numFeatures + " ] features");
         System.out.println("Validating [ " + numFeatureDefs + " ] feature definitions");
+        System.out.println("Running relative to [ " + (isWASLiberty() ? "WAS Liberty" : "Open Liberty") + " ]");
+
+        // In WAS Liberty, the feature counts are expected to be unequal.
 
         boolean unequalMaps = (numFeatures != numFeatureDefs);
         if (unequalMaps) {
-            System.out.println("Failed: Have [ " + numFeatures + " ] features and [ " + numFeatureDefs + " ] feature definitions");
+            if (isWASLiberty) {
+                System.out.println("Expected: Have [ " + numFeatures + " ] features and [ " + numFeatureDefs + " ] feature definitions");
+            } else {
+                System.out.println("Failed: Have [ " + numFeatures + " ] features and [ " + numFeatureDefs + " ] feature definitions");
+            }
         }
 
-        boolean missingFeatureDef = false;
+        // In WAS Liberty, the feature definitions (read from wlp/lib/features) must be
+        // a superset of the features copied from com.ibm.websphere.appserver.features/visibility.
+
+        int numMissingFeatureDefs = 0;
         for (String featureSymName : useFeatureMap.keySet()) {
             if (useFeatureDefMap.get(featureSymName) == null) {
-                missingFeatureDef = true;
-                System.out.println("Feature [ " + featureSymName + " ] not found in defs");
+                numMissingFeatureDefs++;
+                System.out.println("Failed: Feature [ " + featureSymName + " ] not found in defs");
             }
         }
 
-        boolean missingFeature = false;
+        // In WAS Liberty, the features (copied from com.ibm.websphere.appserver.features/visibility)
+        // are expected to be a subset of the feature definitions (read from wlp/lib/features).
+
+        int numMissingFeatures = 0;
         for (String featureSymName : useFeatureDefMap.keySet()) {
             if (useFeatureMap.get(featureSymName) == null) {
-                missingFeature = true;
-                System.out.println("Feature definition [ " + featureSymName + " ] not found in features");
+                numMissingFeatures++;
+                if (isWASLiberty) {
+                    System.out.println("Expected: Feature definition [ " + featureSymName + " ] not found in features");
+                } else {
+                    System.out.println("Failed: Feature definition [ " + featureSymName + " ] not found in features");
+                }
             }
         }
 
-        if (unequalMaps || missingFeatureDef || missingFeature) {
-            Assert.fail("Features do not match the feature definitions");
+        if ((!isWASLiberty && unequalMaps) || (numMissingFeatureDefs > 0) || (!isWASLiberty && (numMissingFeatures > 0))) {
+            Assert.fail("Features do not match the feature definitions:" +
+                        " Missing feature definitions (from wlp/lib/features) [ " + numMissingFeatureDefs + " ];" +
+                        " Missing features (from com.ibm.websphere.appserver.features/visibility) [ " + numMissingFeatures + " ]");
         }
     }
 
@@ -180,6 +225,9 @@ public class FeatureDetailsUnitTest {
         for (Map.Entry<String, ? extends ProvisioningFeatureDefinition> defEntry : useFeatureDefMap.entrySet()) {
             String symName = defEntry.getKey();
             ProvisioningFeatureDefinition featureDef = defEntry.getValue();
+
+            // Allow this: Feature information in WAS liberty is currently limited.
+            // See the comment on 'features_validateMapsTest'.
 
             FeatureInfo feature = useFeatureMap.get(symName);
             if (feature == null) {
@@ -396,6 +444,9 @@ public class FeatureDetailsUnitTest {
                 if (!featureDef.isVersionless()) {
                     return true;
                 }
+
+                // TODO: This test is not running on WAS liberty features.
+                // Current feature info is obtained only for Open liberty features.
 
                 // All versionless features must have WLP-InstantOn-Enabled set to true.
 
