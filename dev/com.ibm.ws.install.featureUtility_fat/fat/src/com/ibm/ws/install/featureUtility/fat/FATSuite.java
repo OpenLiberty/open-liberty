@@ -39,7 +39,7 @@ public class FATSuite extends TestContainerSuite {
     public static void beforeSuite() throws Exception {
 	FeatureUtilityToolTest.setupEnv();
 	FeatureUtilityToolTest.constructLocalMavenRepo(Paths.get("publish/repo/userFeature/userFeature-1.0.zip"));
-	FeatureUtilityToolTest.constructLocalMavenRepo(Paths.get("publish/repo/archive/Archive-1.0.zip"));
+	FeatureUtilityToolTest.constructLocalMavenRepo(Paths.get("publish/repo/archive/Archive-2.0.zip"));
     }
 
     @AfterClass

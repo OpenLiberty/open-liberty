@@ -48,7 +48,7 @@ public abstract class FeatureUtilityToolTest {
 
     private static final Class<?> c = FeatureUtilityToolTest.class;
 
-    protected static String libertyVersion = "23.0.0.2";
+    protected static String libertyVersion = "24.0.0.8";
     // ${buildDir}/publish/repo
     protected static String mavenLocalRepo = Paths.get("publish/repo/").toAbsolutePath().toString();
     public static LibertyServer server;

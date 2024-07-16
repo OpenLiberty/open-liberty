@@ -162,7 +162,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
      *
      * @throws Exception
      */
-    @Ignore
+    
     @Test
     public void testVersionlessWithBadPlatformFeatures() throws Exception {
 	final String METHOD_NAME = "testVersionlessWithBadPlatformFeatures";
@@ -183,7 +183,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
      *
      * @throws Exception
      */
-    @Ignore
+    
     @Test
     public void testVersionlessWithNoPlatformFeatures() throws Exception {
 	final String METHOD_NAME = "testVersionlessWithNoPlatformFeatures";
@@ -195,6 +195,28 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 	ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
 	checkCommandOutput(po, 21, "CWWKF1516E", null); //Platform not determined
+	Log.exiting(c, METHOD_NAME);
+    }
+
+     /**
+     * Test the install of versionless with  platform name. install servlet-6.0 feature
+     *
+     * @throws Exception
+     */
+    
+    @Test
+    public void testVersionlessWithPlatformFeatures() throws Exception {
+	final String METHOD_NAME = "testVersionlessWithPlatformFeatures";
+	Log.entering(c, METHOD_NAME);
+
+	copyFileToMinifiedRoot("usr/servers/serverX", "publish/tmp/versionlessWithPlatform/server.xml");
+	
+	String[] param1s = { "installServerFeatures", "serverX", "--verbose" };
+	String[] filesList = { "/lib/features/com.ibm.websphere.appserver.servlet-6.0.mf" };
+	
+	ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+
+	checkCommandOutput(po, 0, null, filesList); //Should have servlet-6.0
 	Log.exiting(c, METHOD_NAME);
     }
 
