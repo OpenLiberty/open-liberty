@@ -435,7 +435,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
         }
 
-        Object id = entityInfo.getAttribute(e, entityInfo.getAttributeName(ID, true));
+        Object id = entityInfo.getAttribute(e, queryInfo.getAttributeName(ID, true));
         if (id == null) {
             jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
             if (version != null)
@@ -1323,7 +1323,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         Object id = null;
         if (entityInfo.idClassAttributeAccessors == null) {
-            id = entityInfo.getAttribute(e, entityInfo.getAttributeName(ID, true));
+            id = entityInfo.getAttribute(e, queryInfo.getAttributeName(ID, true));
             if (id == null) {
                 jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
                 if (version != null)
@@ -1682,7 +1682,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
         }
 
-        Object id = entityInfo.getAttribute(e, entityInfo.getAttributeName(ID, true));
+        Object id = entityInfo.getAttribute(e, queryInfo.getAttributeName(ID, true));
         if (id == null) {
             jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
             if (version != null)
