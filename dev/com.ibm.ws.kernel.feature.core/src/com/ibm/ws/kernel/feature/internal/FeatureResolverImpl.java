@@ -117,10 +117,6 @@ public class FeatureResolverImpl implements FeatureResolver {
         return builder;
     }
 
-    //
-
-    private static final boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
-
     // Feature parse cache ...
 
     /**
@@ -580,17 +576,15 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
 
-        if (isBeta) {
-            if(hasRootVersionlessFeatures(repository, rootFeatures)){
-                hasVersionlessFeatures = true;
-                processCompatibilityFeatures(repository.getFeatures());
+        if(hasRootVersionlessFeatures(repository, rootFeatures)){
+            hasVersionlessFeatures = true;
+            processCompatibilityFeatures(repository.getFeatures());
 
-                rootPlatforms = collectConfiguredPlatforms(repository, rootPlatforms, selectionContext);
-                rootPlatforms.addAll(collectEnvironmentPlatforms(repository, rootPlatforms, selectionContext));
-                rootPlatforms.addAll(collectFeaturePlatforms(repository, rootPlatforms, rootFeatures, selectionContext));
-                for(String platform : rootPlatforms){
-                    selectionContext.getResult().addResolvedPlatform(repository.getFeature(platform).getPlatformName());
-                }
+            rootPlatforms = collectConfiguredPlatforms(repository, rootPlatforms, selectionContext);
+            rootPlatforms.addAll(collectEnvironmentPlatforms(repository, rootPlatforms, selectionContext));
+            rootPlatforms.addAll(collectFeaturePlatforms(repository, rootPlatforms, rootFeatures, selectionContext));
+            for(String platform : rootPlatforms){
+                selectionContext.getResult().addResolvedPlatform(repository.getFeature(platform).getPlatformName());
             }
         }
 
@@ -605,7 +599,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         // This will ensure that the root and pre-resolved features do not conflict
         Collection<String> rootFeaturesList = new ArrayList<String>(rootFeatures);
         //Implementation for platform element
-        if (isBeta && rootPlatforms != null && hasVersionlessFeatures) {
+        if (rootPlatforms != null && hasVersionlessFeatures) {
             rootFeaturesList.addAll(rootPlatforms);
         }
 
@@ -1335,10 +1329,8 @@ public class FeatureResolverImpl implements FeatureResolver {
             return true;
         }
         // if it comes from a versionless feature
-        if (isBeta) {
-            if(selectionContext.getRepository().getFeature(chain.peekFirst()).isVersionless()){
-                return true;
-            }
+        if(selectionContext.getRepository().getFeature(chain.peekFirst()).isVersionless()){
+            return true;
         }
         return false;
     }
@@ -1728,38 +1720,36 @@ public class FeatureResolverImpl implements FeatureResolver {
             // unnecessary
 
             //if a versionless feature is postponed, process that first
-            if (isBeta) {
-                if (!!!_current._postponedVersionless.isEmpty() && hasAtLeastOneSelected(compatibilityFeaturesBaseNames())) {
+            if (!!!_current._postponedVersionless.isEmpty() && hasAtLeastOneSelected(compatibilityFeaturesBaseNames())) {
 
-                    Set<String> entries = _current._postponedVersionless.keySet();
-                    Iterator<Map.Entry<String, Chains>> postponedVersionlessIterator = _current._postponedVersionless.entrySet().iterator();
-                    Map.Entry<String, Chains> firstPostponedVersionless = null;
+                Set<String> entries = _current._postponedVersionless.keySet();
+                Iterator<Map.Entry<String, Chains>> postponedVersionlessIterator = _current._postponedVersionless.entrySet().iterator();
+                Map.Entry<String, Chains> firstPostponedVersionless = null;
 
-                    //Check if we have any postponed versionless features that can be resolved,
-                    //If we do, choose the first one we see
-                    while (postponedVersionlessIterator.hasNext()) {
-                        firstPostponedVersionless = postponedVersionlessIterator.next();
-                        String plat = getLinkingFeaturesPlatform(firstPostponedVersionless.getKey());
+                //Check if we have any postponed versionless features that can be resolved,
+                //If we do, choose the first one we see
+                while (postponedVersionlessIterator.hasNext()) {
+                    firstPostponedVersionless = postponedVersionlessIterator.next();
+                    String plat = getLinkingFeaturesPlatform(firstPostponedVersionless.getKey());
 
-                        if(getSelected(getCompatibilityBaseName(plat)) != null){
-                            break;
-                        }
-                        firstPostponedVersionless = null;
+                    if(getSelected(getCompatibilityBaseName(plat)) != null){
+                        break;
+                    }
+                    firstPostponedVersionless = null;
+                }
+
+                if (firstPostponedVersionless != null) {
+                    // try to find a good selection
+                    Chain selected = firstPostponedVersionless.getValue().select(firstPostponedVersionless.getKey(), this);
+                    if (selected != null) {
+                        // found a good one, select it.
+                        _current._selected.put(firstPostponedVersionless.getKey(), selected);
                     }
 
-                    if (firstPostponedVersionless != null) {
-                        // try to find a good selection
-                        Chain selected = firstPostponedVersionless.getValue().select(firstPostponedVersionless.getKey(), this);
-                        if (selected != null) {
-                            // found a good one, select it.
-                            _current._selected.put(firstPostponedVersionless.getKey(), selected);
-                        }
-
-                        // clean postponed since we will walk the tree again and find them again if necessary
-                        _current._postponed.clear();
-                        _current._postponedVersionless.clear();
-                        return;
-                    }
+                    // clean postponed since we will walk the tree again and find them again if necessary
+                    _current._postponed.clear();
+                    _current._postponedVersionless.clear();
+                    return;
                 }
             }
 
@@ -1769,7 +1759,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
                 Chain selected = null;
                 String postponedBaseName = firstPostponed.getKey();
-                if(isBeta && hasVersionlessFeatures && !_current._postponedFeaturesTried.contains(postponedBaseName)){
+                if(hasVersionlessFeatures && !_current._postponedFeaturesTried.contains(postponedBaseName)){
                     _current._postponedFeaturesTried.add(postponedBaseName);
                     selected = firstPostponed.getValue().selectTryFirst(postponedBaseName, this);
                 }
