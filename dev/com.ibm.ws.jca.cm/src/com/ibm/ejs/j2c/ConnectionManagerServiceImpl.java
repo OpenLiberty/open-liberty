@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -167,7 +167,7 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
     public void addObserver(Observer observer) {
         super.addObserver(observer);
         if (countObservers() > 1) {
-            super.deleteObserver(observer);
+//            super.deleteObserver(observer);
             AbstractConnectionFactoryService cfSvc = (AbstractConnectionFactoryService) observer;
             Object[] params = new Object[] { CONNECTION_MANAGER, name, cfSvc.getConfigElementName() };
             RuntimeException failure = connectorSvc.ignoreWarnOrFail(tc, null, UnsupportedOperationException.class, "CARDINALITY_ERROR_J2CA8040", params);
