@@ -32,7 +32,7 @@ DynamicImport-Package: \
 # Use this format (4.1.0.RC#)  once we have an official release and not an RC Version
 -includeresource: \
 	@${repo;org.apache.myfaces.core:myfaces-api;4.1.0.RC2;EXACT}!/!(META-INF/maven/*|module-info.class), \
-  META-INF=@src/META-INF
+	META-INF=@src/META-INF
 
 instrument.disabled: true
 
