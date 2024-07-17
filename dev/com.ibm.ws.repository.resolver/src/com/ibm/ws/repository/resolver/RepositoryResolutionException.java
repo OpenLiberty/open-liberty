@@ -284,15 +284,6 @@ public class RepositoryResolutionException extends RepositoryException {
     public String getMessage() {
         StringBuilder sb = new StringBuilder();
 
-        if (!getMissingPlatforms().isEmpty()) {
-            for (String missing : getMissingPlatforms()) {
-                sb.append("Platform: ").append(missing).append(" couldn't be found, no versionless features will be resolved").append("\n");
-            }
-        }
-        if (getResolvedPlatforms().isEmpty() && getMissingPlatforms().isEmpty()) {
-            sb.append("Platform couldn't be determined, no versionless features will be resolved").append("\n");
-        }
-
         for (String missing : getTopLevelFeaturesNotResolved()) {
             sb.append("Top level feature not resolved: resource=").append(missing).append("\n");
         }
@@ -373,6 +364,7 @@ public class RepositoryResolutionException extends RepositoryException {
 
     /**
      * This states the target platforms that were used during the resolution
+     *
      * @return the resolvedPlatforms
      */
     public Set<String> getResolvedPlatforms() {
@@ -381,6 +373,7 @@ public class RepositoryResolutionException extends RepositoryException {
 
     /**
      * This describes missspelled or unknown platform names, official names are collected by the feature metadata
+     *
      * @return the missingPlatforms
      */
     public Set<String> getMissingPlatforms() {
@@ -389,6 +382,7 @@ public class RepositoryResolutionException extends RepositoryException {
 
     /**
      * This describes base platforms like "jakartaee" that are not derived, either by passed platform values, or by other included versioned features
+     *
      * @return the missingBasePlatforms
      */
     public List<String> getMissingBasePlatforms() {
