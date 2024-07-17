@@ -144,7 +144,6 @@ public class HttpChain implements ChainEventListener {
      * @param cfw         Channel framework
      */
     public void init(String endpointId, Object componentId, CHFWBundle cfBundle) {
-        System.out.println("HttpChain init called!");
         final String root = endpointId + (isHttps ? "-ssl" : "");
 
         cfw = cfBundle.getFramework();
@@ -156,7 +155,6 @@ public class HttpChain implements ChainEventListener {
         httpName = "HTTP-" + root;
         dispatcherName = "HTTPD-" + root;
         chainName = "CHAIN-" + root;
-        System.out.println("HttpChain name! "+chainName);
 
         // If there is a chain that is in the CFW with this name, it was potentially
         // left over from a previous instance of the endpoint. There is no way to get
@@ -166,7 +164,6 @@ public class HttpChain implements ChainEventListener {
         try {
             ChainData cd = cfw.getChain(chainName);
             if (cd != null) {
-                System.out.println("HttpChain stopping chain! "+chainName);
                 cfw.stopChain(cd, 0L); // no timeout: FORCE the stop.
                 cfw.destroyChain(cd);
                 cfw.removeChain(cd);
@@ -220,7 +217,6 @@ public class HttpChain implements ChainEventListener {
      */
     @FFDCIgnore(InvalidRuntimeStateException.class)
     public synchronized void stop() {
-        System.out.println("Stop called for: "+chainName);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "stop chain " + this);
         }
@@ -239,7 +235,6 @@ public class HttpChain implements ChainEventListener {
         try {
             ChainData cd = cfw.getChain(chainName);
             if (cd != null) {
-                System.out.println("Stopping chain: "+chainName);
                 cfw.stopChain(cd, cfw.getDefaultChainQuiesceTimeout());
                 stopWait.waitForStop(cfw.getDefaultChainQuiesceTimeout(), this); // BLOCK
                 try {
@@ -267,7 +262,6 @@ public class HttpChain implements ChainEventListener {
      */
     @FFDCIgnore({ ChannelException.class, ChainException.class })
     public synchronized void update(String resolvedHostName) {
-        System.out.println("Update happening for: "+chainName);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "update chain " + this);
         }
@@ -355,7 +349,6 @@ public class HttpChain implements ChainEventListener {
                     // really support dynamic updates. *sigh*
                     ChainData cd = cfw.getChain(chainName);
                     if (cd != null) {
-                        System.out.println("Update stopping chain: "+chainName);
                         cfw.stopChain(cd, cfw.getDefaultChainQuiesceTimeout());
                         stopWait.waitForStop(cfw.getDefaultChainQuiesceTimeout(), this); // BLOCK
                         cfw.destroyChain(cd);
@@ -561,7 +554,6 @@ public class HttpChain implements ChainEventListener {
             if (newConfig.validConfiguration) {
                 try {
                     // Start the chain: follow along to chainStarted method (CFW callback)
-                    System.out.println("Update starting chain: "+chainName);
                     cfw.startChain(chainName);
                 } catch (ChannelException e) {
                     handleStartupError(e, newConfig); // FFDCIgnore: CFW will have logged and FFDCd already
@@ -584,7 +576,6 @@ public class HttpChain implements ChainEventListener {
         // (for example, the SSL feature was removed), then this could
         // fail.
         try {
-            System.out.println("Remove channel called for: "+chainName);
             cfw.removeChannel(name);
         } catch (ChannelException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

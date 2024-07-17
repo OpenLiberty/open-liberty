@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -85,16 +85,10 @@ public class NettyInboundChain implements InboundChain{
     
     private ChainConfiguration _currentConfig;
 
-	/**
-     * The TCP based bootstrap.
-     */
-//    private ServerBootstrapExtended serverBootstrap;
     /** The bootstrap this object wraps */
     private ServerBootstrapExtended bootstrap;
     private Channel serverChan;
     
-//    private FutureTask<ChannelFuture> channelFuture;
-
     NettyInboundChain(CommsServerServiceFacade commsServer, boolean isSecureChain) {
         _commsServerFacade = commsServer;
         _isSecureChain = isSecureChain;
@@ -166,7 +160,6 @@ public class NettyInboundChain implements InboundChain{
 		if(serverChan == null) {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 SibTr.debug(tc, "Netty channel not initialized. Setting chain stop");
-//			channelFuture.cancel(true);
 			_isChainStarted = false;
 			return;
 		}else {
@@ -177,9 +170,6 @@ public class NettyInboundChain implements InboundChain{
 	        //Once the chain is quiesced StopChainTask is initiated.Hence we block until the actual stopChain is invoked
 	        try {
 	        	_nettyFramework.stop(serverChan, -1);
-//                ChannelFuture future = _nettyFramework.stop(serverChan, -1);
-//                if(future != null)
-//                    future.await(_nettyFramework.getDefaultChainQuiesceTimeout(), TimeUnit.MILLISECONDS); //BLOCK till stopChain actually completes from StopChainTask
 	        } catch (Exception e) {
 	            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
 	                SibTr.debug(tc, "Failed in successfully cleaning(i.e stopping/destorying/removing) chain: ", e);
@@ -310,7 +300,6 @@ public class NettyInboundChain implements InboundChain{
                 }else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "ready", f);
                     Channel chan = f.channel();
-//                    parent.serverChan = chan;
                     f.addListener(innerFuture -> {
                         if (innerFuture.isCancelled() || !innerFuture.isSuccess()) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

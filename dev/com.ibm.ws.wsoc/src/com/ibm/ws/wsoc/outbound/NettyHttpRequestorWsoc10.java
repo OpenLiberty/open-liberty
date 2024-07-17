@@ -119,11 +119,8 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
     public void connect() throws Exception {
         // Doesn't actually connect, we just initialize the bootstrap
         access = new ClientTransportAccess();
-
         factory = WsocOutboundChain.getBootstrap(endpointAddress);
         startConnection();
-//        access.setVirtualConnection(vc);
-//        vc.connect(endpointAddress);
     }
 
     private void startConnection() throws InterruptedException, ExecutionException, NettyException, TimeoutException {
@@ -134,6 +131,7 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
         connection = WsocOutboundChain.getNettyFramework().startOutbound(factory, host, port, null);
         activePromise = connection.newPromise();
         responsePromise = connection.newPromise();
+        // TODO Configure this with legacy timeouts
         System.out.println("Waiting up to 60s for connection to be established");
         activePromise.get(60000, TimeUnit.MILLISECONDS);
     }
@@ -142,15 +140,11 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
     public void sendRequest() throws IOException, MessageSentException {
         System.out.println("Sending request!");
         sendRequest(null);
-//        throw new IOException("Working on it!");
     }
 
     @Override
     public void sendRequest(ParametersOfInterest poi) throws IOException, MessageSentException {
         System.out.println("Sending request with parameters!");
-        // TODO Need to set Netty TCP Conn context here
-//        access.setTCPConnectionContext(httpOutboundSC.getTSC());
-//        access.setDeviceConnLink(httpOutboundSC.getLink());
         access.setTCPConnectionContext(new NettyTCPConnectionContext(connection, null));
         access.setDeviceConnLink(new ConnectionLink() {
 
@@ -218,14 +212,6 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
         request.headers().set(HttpHeaderKeys.HDR_HOST.getName(), endpointAddress.getURI().getHost() + ":" + endpointAddress.getURI().getPort());
 
         HttpHeaders nettyRequestHeaders = request.headers();
-
-//        hrm.setRequestURI(endpointAddress.getPath());
-//
-//        // PH10279
-//        hrm.setQueryString(endpointAddress.getURI().getQuery());
-//
-//        hrm.setVersion(VersionValues.V11);
-//        hrm.setMethod(MethodValues.GET);
 
         //   We put request headers in Map for possible modification by configurator beforeRequest, and also used by Session
         requestHeaders.put(HttpHeaderKeys.HDR_CONNECTION.getName(), Arrays.asList(Constants.HEADER_VALUE_UPGRADE));
@@ -297,11 +283,7 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
             nettyRequestHeaders.add(entry.getKey(), list);
         }
 
-//        httpOutboundSC.enableImmediateResponseRead();
-//        httpOutboundSC.sendRequestHeaders();
-
-        // TODO Send HTTP Upgrade request here
-        System.out.println("Is channel active before request is sent? "+connection.isActive() + ", " + connection.isOpen());
+        // Send HTTP Upgrade request here
         connection.writeAndFlush(request);
 
         // PH10279
@@ -326,6 +308,7 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
     public WsByteBuffer completeResponse() throws IOException {
         System.out.println("Completing response!");
         try {
+            // TODO Configure this with legacy timeouts
             System.out.println("This should wait up to 60s");
             responsePromise.get(60000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e1) {
@@ -410,34 +393,22 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
         things.setWsocProtocolVersion(Constants.HEADER_VALUE_FOR_SEC_WEBSOCKET_VERSION);
         things.setSecure(endpointAddress.isSecure());
 
-        // TODO update the pipeline to remove http and have wsoc specific handlers after successful upgrade
-
         // Assuming no data left here to parse
         return null;
-
-//        throw new IOException("Working on it!");
     }
 
     private void updatePipelineToWebsocket() {
-        // TODO Add wsoc related handlers
+        // Add wsoc related handlers
         NettyServletUpgradeHandler upgradeHandler = new NettyServletUpgradeHandler(connection);
 
-//        upgradeHandler.setVC(vc); // Don't think this is necessary
         HttpClientCodec httpHandler = connection.pipeline().get(HttpClientCodec.class);
         if (httpHandler == null) {
             System.out.println("Found null handler HTTP!");
             throw new UnsupportedOperationException("Can't deal with this");
         }
-        System.out.println("Should remove remove the dispatch handler, only keep reading and writing upgrade handler");
 
-        // nettyContext.channel().pipeline().addBefore(nettyContext.channel().pipeline().context(httpHandler).name(), "ServletUpgradeHandler", upgradeHandler);
-        //nettyContext.channel().pipeline().addLast(new WebSocketServerProtocolHandler("/websocket")); // Handles the WebSocket upgrade and control frames
         connection.pipeline().addLast("ServletUpgradeHandler", upgradeHandler);
 
-        // nettyContext.channel().pipeline().remove(LibertyHttpObjectAggregator.class);
-
-        // if(nettyContext.channel().pipeline().get(HttpDispatcherHandler.class)
-        // nettyContext.channel().pipeline().remove(HttpDispatcherHandler.class);
         System.out.println(connection.pipeline().names());
 
         // Remove HTTP Codecs
@@ -467,15 +438,9 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
             parent.init(ch);
             ChannelPipeline pipeline = ch.pipeline();
 
-            // TODO enable SSL
+            // Enable SSL
             if (requestor.endpointAddress.isSecure()) {
                 SSLEngine engine = null;
-//                if(requestor.endpointAddress instanceof Wsoc21Address) {
-//                    System.out.println("Attempting to pull sslcontext from Wsoc21Address");
-//                    engine = ((Wsoc21Address) requestor.endpointAddress).getSSLContext().createSSLEngine();
-//                    engine.setUseClientMode(true);
-//                    System.out.println("Pulled engine: " + Objects.nonNull(engine));
-//                }
 
                 if (Objects.isNull(engine) && (WsocOutboundChain.currentSSL == null || WsocOutboundChain.getNettyTlsProvider() == null)) { // This shouldn't happen
                     System.out.println("Oh no, secure address requested but no SSL Options found!");
@@ -500,13 +465,9 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
                         ch.close();
                         return;
                     }
-                    context.sessionContext().setSessionCacheSize(100);
-                    context.sessionContext().setSessionTimeout(86400);
                     engine = context.newEngine(ch.alloc());
-                    engine.setUseClientMode(true);
                 }
                 SslHandler handler = new SslHandler(engine);
-                handler.setHandshakeTimeoutMillis(30000);
                 pipeline.addFirst("SSLHandler", handler);
 
             }
