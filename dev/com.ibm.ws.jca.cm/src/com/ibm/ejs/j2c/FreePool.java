@@ -248,9 +248,8 @@ public final class FreePool implements JCAPMIHelper {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(this, tc, "returnToFreePool", gConfigProps.cfName);
         }
-        if (mcWrapper.shouldBeDestroyed() || mcWrapper.hasFatalErrorNotificationOccurred(fatalErrorNotificationTime)
-            || ((pm.agedTimeout != -1)
-                && (mcWrapper.hasAgedTimedOut(pm.agedTimeoutMillis)))) {
+        if (mcWrapper.shouldBeDestroyed() || mcWrapper.hasFatalErrorNotificationOccurred(fatalErrorNotificationTime) || !mcWrapper.isPoolable()
+            || ((pm.agedTimeout != -1) && (mcWrapper.hasAgedTimedOut(pm.agedTimeoutMillis)))) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 if (mcWrapper.shouldBeDestroyed()) {
                     Tr.debug(this, tc, "Connection destroy flag is set, removing connection " + mcWrapper);
@@ -264,6 +263,9 @@ public final class FreePool implements JCAPMIHelper {
                 if (mcWrapper.isDestroyState()) {
                     Tr.debug(this, tc, "Mbean method purgePoolContents with option immediate was used." +
                                        "  Connection cleanup and destroy is being processed.");
+                }
+                if (!mcWrapper.isPoolable()) {
+                    Tr.debug(this, tc, "Connection was flagged as not poolable and will not be returned to the free pool.");
                 }
             }
             if (mcWrapper.isDestroyState()) {

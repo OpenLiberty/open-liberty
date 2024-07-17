@@ -364,6 +364,15 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
     private boolean inSharedPool = false;
 
     /**
+     * During specific server states (such as during instantOn checkpoint) we may not
+     * want to allow connections to pool and disregard user configuration.
+     * This is another property like stale and do_not_reuse_mcw that will prevent pooling.
+     * However, this property is not related to an error state and is expected to allow
+     * valid connections to be discarded after use.
+     */
+    private boolean poolable = true;
+
+    /**
      * There is one recoveryToken needed per ManagedConnectionFactory and thus one per PoolManager.
      * The <code>PoolManager</code> will get the token from the transaction service in it's constructor
      * and pass it into the MCWrapperPool. The MCWrapper pool will in turn set it into all the MCWrapper
@@ -3191,5 +3200,15 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
     @Override
     public int getMaximumConnectionValue() {
         return this.pm.maxConnections;
+    }
+
+    @Override
+    public void markNotPoolable() {
+        this.poolable = false;
+    }
+
+    @Override
+    public boolean isPoolable() {
+        return this.poolable;
     }
 }

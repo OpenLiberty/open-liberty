@@ -335,10 +335,10 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
                 boolean beforeCheckpoint = !CheckpointPhase.getPhase().restored();
                 if (beforeCheckpoint) {
-                    mcWrapper.markStale();
                     if (isTraceOn && tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "Marked the mcWrapper stale " + mcWrapper + " Do not pool any connection before checkpoint restore");
+                        Tr.debug(this, tc, "Marking the mcWrapper as not poolable before checkpoint restore " + mcWrapper);
                     }
+                    mcWrapper.markNotPoolable();
                 }
             } catch (ResourceException e) {
                 mcWrapper.setPoolState(poolState);

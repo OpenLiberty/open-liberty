@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2013 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -106,6 +106,12 @@ public interface MCWrapper {
      */
     void markStale();
 
+    /**
+     * Marks this connection for destruction.
+     * Used during specific server states where valid connections should not be pooled.
+     */
+    void markNotPoolable();
+
     boolean hasFatalErrorNotificationOccurred(int fatalErrorNotificationTime);
 
     boolean hasAgedTimedOut(long timeoutValue);
@@ -113,6 +119,14 @@ public interface MCWrapper {
     boolean hasIdleTimedOut(long timeoutValue);
 
     void markInUse();
+
+    /**
+     * Returns true if the connection is poolable as determined by the MCWrapper property poolable.
+     * Does not check any other state such as agedTimeout, idleTimeout, or stale.
+     *
+     * @return
+     */
+    boolean isPoolable();
 
     boolean isStale();
 
