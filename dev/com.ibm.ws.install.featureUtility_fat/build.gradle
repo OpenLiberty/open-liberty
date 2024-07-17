@@ -13,12 +13,14 @@
 addRequiredLibraries {
     configurations {
     	usrFeatures
-    	features
+    	features1
+    	features2
     }
     
     dependencies {
       usrFeatures 'test.featureUtility_fat:userFeature:1.0@zip'
-      features 'test.featureUtility_fat:Archive:2.0@zip'
+      features1 'test.featureUtility_fat:Archive:1.0@zip'
+      features2 'test.featureUtility_fat:Archive:2.0@zip'
       requiredLibs project(':com.ibm.ws.org.slf4j.api'),
       	project(':com.ibm.ws.org.slf4j.simple')
     }    
@@ -29,8 +31,13 @@ addRequiredLibraries {
     }
     
     copy {
-        from configurations.features
-        into "publish/repo/archive"
+        from configurations.features1
+        into "publish/repo/archive1"
+    }
+    
+    copy {
+        from configurations.features2
+        into "publish/repo/archive2"
     }
 
     dependsOn copyTestContainers

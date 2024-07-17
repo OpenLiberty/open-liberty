@@ -4,7 +4,7 @@
     <!-- Enable features -->
     <featureManager>
 	   <platform>xxx</platform>
-	   <feature>servlet</feature>
+	   <feature>jsp</feature>
     </featureManager>
 </server>
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -44,7 +44,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
     @Before
     public void beforeSetUp() throws Exception {
 	copyFileToMinifiedRoot("etc", "publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
-	writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo);
+	writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo1);
     }
 
     @After
@@ -157,69 +157,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 	Log.exiting(c, METHOD_NAME);
     }
     
-    /**
-     * Test the install of versionless with bogus platform name xxx from maven central. Should throw expected platform name not found
-     *
-     * @throws Exception
-     */
-    
-    @Test
-    public void testVersionlessWithBadPlatformFeatures() throws Exception {
-	final String METHOD_NAME = "testVersionlessWithBadPlatformFeatures";
-	Log.entering(c, METHOD_NAME);
-
-	copyFileToMinifiedRoot("usr/servers/serverX", "publish/tmp/versionlessBadPlatform/server.xml");
-	
-	String[] param1s = { "installServerFeatures", "serverX", "--verbose" };
-	
-	ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-
-	checkCommandOutput(po, 21, "CWWKF1515E", null); //UnKnown platform error
-	Log.exiting(c, METHOD_NAME);
-    }
-    
-    /**
-     * Test the install of versionless with no platform defined. Should throw expected platform can't be determined error
-     *
-     * @throws Exception
-     */
-    
-    @Test
-    public void testVersionlessWithNoPlatformFeatures() throws Exception {
-	final String METHOD_NAME = "testVersionlessWithNoPlatformFeatures";
-	Log.entering(c, METHOD_NAME);
-
-	copyFileToMinifiedRoot("usr/servers/serverX", "publish/tmp/versionlessNoPlatform/server.xml");
-
-	String[] param1s = { "installServerFeatures", "serverX", "--verbose" };
-	ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-
-	checkCommandOutput(po, 21, "CWWKF1516E", null); //Platform not determined
-	Log.exiting(c, METHOD_NAME);
-    }
-
-     /**
-     * Test the install of versionless with  platform name. install servlet-6.0 feature
-     *
-     * @throws Exception
-     */
-    
-    @Test
-    public void testVersionlessWithPlatformFeatures() throws Exception {
-	final String METHOD_NAME = "testVersionlessWithPlatformFeatures";
-	Log.entering(c, METHOD_NAME);
-
-	copyFileToMinifiedRoot("usr/servers/serverX", "publish/tmp/versionlessWithPlatform/server.xml");
-	
-	String[] param1s = { "installServerFeatures", "serverX", "--verbose" };
-	String[] filesList = { "/lib/features/com.ibm.websphere.appserver.servlet-6.0.mf" };
-	
-	ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-
-	checkCommandOutput(po, 0, null, filesList); //Should have servlet-6.0
-	Log.exiting(c, METHOD_NAME);
-    }
-
+   
     /**
      * Install an user feature with the "--featuresBom" parameters
      */
@@ -334,7 +272,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 	    copyFileToMinifiedRoot("usr/servers/serverX", "publish/tmp/usrFeaturesServerXml/server.xml");
 
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-		    mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
+		    mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
 
 	    String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
