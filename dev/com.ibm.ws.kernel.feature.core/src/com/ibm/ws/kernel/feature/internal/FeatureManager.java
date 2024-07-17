@@ -179,7 +179,6 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
     final static String PRODUCT_INFO_STRING_OPEN_LIBERTY = "Open Liberty";
     private static String platformEnvironmentVariable = System.getenv("PREFERRED_PLATFORM_VERSIONS");
     final static FeatureResolver featureResolver = new FeatureResolverImpl();
-    private static final boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
 
     private static Version JAVA_MAJOR_VERSION = new Version(JavaInfo.majorVersion(), 0, 0);
 
@@ -976,7 +975,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             Tr.debug(tc, "all installed features " + postInstalledFeatures);
         }
 
-        if(isBeta && result != null){
+        if(result != null){
             if(!result.getResolvedPlatforms().isEmpty()){
                 Tr.info(tc, "RESOLVED_PLATFORM", result.getResolvedPlatforms());
             }
@@ -1752,8 +1751,8 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         if (!!!featureRepository.isDirty()
             && !!!featureRepository.hasConfigurationError()
             && featureRepository.getConfiguredFeatures().equals(newConfiguredFeatures)){
-            if( !isBeta || (isBeta && featureRepository.getPlatforms().equals(newConfiguredPlatforms) 
-                && equals(featureRepository.getPlatformEnvVar(), platformEnvironmentVariable))) {
+            if(featureRepository.getPlatforms().equals(newConfiguredPlatforms) 
+                && equals(featureRepository.getPlatformEnvVar(), platformEnvironmentVariable)) {
                     
                 // check that all installed features are still installed
                 for (String resolvedFeature : featureRepository.getResolvedFeatures()) {
@@ -2004,71 +2003,67 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             }
         }
 
-        if(isBeta){
-
-            if(!result.getDuplicatePlatforms().isEmpty()){
-                for(Map.Entry<String, Set<String>> duplicatePlatforms : result.getDuplicatePlatforms().entrySet()){
-                    Tr.error(tc, "DUPLICATE_PLATFORMS", duplicatePlatforms.getValue());
-                }
+        if(!result.getDuplicatePlatforms().isEmpty()){
+            for(Map.Entry<String, Set<String>> duplicatePlatforms : result.getDuplicatePlatforms().entrySet()){
+                Tr.error(tc, "DUPLICATE_PLATFORMS", duplicatePlatforms.getValue());
             }
+        }
 
-            if(!result.getMissingPlatforms().isEmpty()){
-                reportedErrors = true;
-                Set<String> remainingMissingPlatforms = new HashSet<String>();
-                if(platformEnvironmentVariable != null){
-                    for(String plat : result.getMissingPlatforms()){
-                        if(platformEnvironmentVariable.contains(plat)){
-                            Tr.error(tc, "UNKNOWN_PLATFORM_VALUE_ENV_VAR", plat);
-                        }
-                        else{
-                            remainingMissingPlatforms.add(plat);
-                        }
+        if(!result.getMissingPlatforms().isEmpty()){
+            reportedErrors = true;
+            Set<String> remainingMissingPlatforms = new HashSet<String>();
+            if(platformEnvironmentVariable != null){
+                for(String plat : result.getMissingPlatforms()){
+                    if(platformEnvironmentVariable.contains(plat)){
+                        Tr.error(tc, "UNKNOWN_PLATFORM_VALUE_ENV_VAR", plat);
                     }
-                }
-                else{
-                    remainingMissingPlatforms.addAll(result.getMissingPlatforms());
-                }
-                if(!remainingMissingPlatforms.isEmpty()){
-                    for(String missingPlat : remainingMissingPlatforms){
-                        Tr.error(tc, "UNKNOWN_PLATFORM_ELEMENT", missingPlat);
+                    else{
+                        remainingMissingPlatforms.add(plat);
                     }
                 }
             }
-
-            if(!result.getNoPlatformVersionless().isEmpty()){
-                for (Map.Entry<String, Set<String>> noPlatformVersionless : result.getNoPlatformVersionless().entrySet()) {
-                    Tr.error(tc, "NO_RESOLVED_PLATFORM", noPlatformVersionless.getValue());
+            else{
+                remainingMissingPlatforms.addAll(result.getMissingPlatforms());
+            }
+            if(!remainingMissingPlatforms.isEmpty()){
+                for(String missingPlat : remainingMissingPlatforms){
+                    Tr.error(tc, "UNKNOWN_PLATFORM_ELEMENT", missingPlat);
                 }
             }
+        }
 
-            List<String> unresolvedVersionless = new ArrayList<>();
-            for (Map.Entry<String, String> versionlessResolved : result.getVersionlessFeatures().entrySet()) {
-                if(versionlessResolved.getValue() == null){
-                    String platformBaseName = featureRepository.getPlatformForVersionlessFeature(versionlessResolved.getKey());
+        if(!result.getNoPlatformVersionless().isEmpty()){
+            for (Map.Entry<String, Set<String>> noPlatformVersionless : result.getNoPlatformVersionless().entrySet()) {
+                Tr.error(tc, "NO_RESOLVED_PLATFORM", noPlatformVersionless.getValue());
+            }
+        }
 
-                    boolean compatibleWithPlatform = true;
-                    if(platformBaseName != null && !result.getResolvedPlatforms().isEmpty()){
-                        for(String resolvedPlat : result.getResolvedPlatforms()){
-                            if(resolvedPlat.toLowerCase().startsWith(platformBaseName.toLowerCase()) && 
-                                featureRepository.getVersionlessFeatureVersionForPlatform(versionlessResolved.getKey(), resolvedPlat) == null){
+        List<String> unresolvedVersionless = new ArrayList<>();
+        for (Map.Entry<String, String> versionlessResolved : result.getVersionlessFeatures().entrySet()) {
+            if(versionlessResolved.getValue() == null){
+                String platformBaseName = featureRepository.getPlatformForVersionlessFeature(versionlessResolved.getKey());
 
-                                Tr.error(tc, "INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM", getFeatureName(versionlessResolved.getKey()), resolvedPlat);
-                                compatibleWithPlatform = false;
-                                break;
-                            }
+                boolean compatibleWithPlatform = true;
+                if(platformBaseName != null && !result.getResolvedPlatforms().isEmpty()){
+                    for(String resolvedPlat : result.getResolvedPlatforms()){
+                        if(resolvedPlat.toLowerCase().startsWith(platformBaseName.toLowerCase()) && 
+                            featureRepository.getVersionlessFeatureVersionForPlatform(versionlessResolved.getKey(), resolvedPlat) == null){
+
+                            Tr.error(tc, "INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM", getFeatureName(versionlessResolved.getKey()), resolvedPlat);
+                            compatibleWithPlatform = false;
+                            break;
                         }
                     }
+                }
 
-                    if(compatibleWithPlatform){
-                        unresolvedVersionless.add(getFeatureName(versionlessResolved.getKey()));
-                    }
+                if(compatibleWithPlatform){
+                    unresolvedVersionless.add(getFeatureName(versionlessResolved.getKey()));
                 }
             }
-            if(!unresolvedVersionless.isEmpty()){
-                reportedErrors = true;
-                Tr.error(tc, "UNRESOLVED_VERSIONLESS_FEATURE", unresolvedVersionless);
-            }
-
+        }
+        if(!unresolvedVersionless.isEmpty()){
+            reportedErrors = true;
+            Tr.error(tc, "UNRESOLVED_VERSIONLESS_FEATURE", unresolvedVersionless);
         }
 
         List<Entry<String, Collection<Chain>>> sortedConflicts = new ArrayList<Entry<String, Collection<Chain>>>(result.getConflicts().entrySet());
