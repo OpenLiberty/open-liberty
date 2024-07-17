@@ -10,12 +10,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.jcache.internal.fat.plugins;
+package io.openliberty.jcache.internal.infinispan.fat.plugins;
 
 import java.util.Arrays;
 
 import componenttest.topology.impl.LibertyServer;
-import io.openliberty.jcache.internal.fat.FATSuite;
+import io.openliberty.jcache.internal.fat.plugins.TestPlugin;
+import io.openliberty.jcache.internal.infinispan.fat.FATSuite;
 
 /**
  * See Infinispan hotrod properties here:
