@@ -24,10 +24,10 @@
 # -------------------------------------------------------------------------------------------------
 
 #Message prefix block: CWWKS5900 - CWWKS5910
-CRYPTO_UNSECURE=CWWKS5900W: A {0} konfigur\u00e1ci\u00f3s elem megadja a {1} nem biztons\u00e1gos kriptogr\u00e1fiai algoritmust.  Fontolja meg a {2} biztons\u00e1gos algoritmus haszn\u00e1lat\u00e1t.
-CRYPTO_UNSECURE.explanation=A be\u00e1ll\u00edtott algoritmus t\u00f6bb\u00e9 nem tekinthet\u0151 kriptogr\u00e1fiai biztons\u00e1goss\u00e1.
-CRYPTO_UNSECURE.useraction=Haszn\u00e1lja a javasolt biztons\u00e1gos algoritmust.
+CRYPTO_INSECURE=CWWKS5900W: A {0} konfigur\u00e1ci\u00f3s elem hat\u00e1rozza meg a {1} nem biztons\u00e1gos kriptogr\u00e1fiai algoritmus.  Fontolja meg a {2} biztons\u00e1gos algoritmus helyett.
+CRYPTO_INSECURE.explanation=A be\u00e1ll\u00edtott algoritmus m\u00e1r nem tekinthet\u0151 kriptogr\u00e1fiailag biztons\u00e1gosnak.
+CRYPTO_INSECURE.useraction=Haszn\u00e1lja a javasolt biztons\u00e1gos algoritmust.
 
-CRYPTO_UNSECURE_REPLACED=CWWKS5901W: A {0} konfigur\u00e1ci\u00f3s elem megadja a {1} nem biztons\u00e1gos kriptogr\u00e1fiai algoritmust.  Helyette a {2} biztons\u00e1gos algoritmus ker\u00fcl felhaszn\u00e1l\u00e1sra.
-CRYPTO_UNSECURE_REPLACED.explanation=A nem biztons\u00e1gos kriptogr\u00e1fiai algoritmus lecser\u00e9l\u00e9sre ker\u00fclt a biztons\u00e1gos algoritmusra.
-CRYPTO_UNSECURE_REPLACED.useraction=Nincs teend\u0151.
+CRYPTO_INSECURE_REPLACED=CWWKS5901W: A {0} konfigur\u00e1ci\u00f3s elem hat\u00e1rozza meg a {1} nem biztons\u00e1gos kriptogr\u00e1fiai algoritmus.  A {2} helyett biztons\u00e1gos algoritmust haszn\u00e1lnak.
+CRYPTO_INSECURE_REPLACED.explanation=A nem biztons\u00e1gos kriptogr\u00e1fiai algoritmust a biztons\u00e1gos algoritmus v\u00e1ltotta fel.
+CRYPTO_INSECURE_REPLACED.useraction=Nincs teend\u0151.

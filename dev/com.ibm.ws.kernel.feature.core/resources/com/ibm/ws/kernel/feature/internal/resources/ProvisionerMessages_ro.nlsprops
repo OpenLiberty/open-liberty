@@ -225,19 +225,50 @@ UPDATE_DISABLED_FEATURES_ON_CONFLICT=CWWKF0046W: Configura\u0163ia include o com
 UPDATE_DISABLED_FEATURES_ON_CONFLICT.explanation=Configura\u0163ia include o combina\u0163ie incompatibil\u0103 de caracteristici. Pentru a evita un comportament invalid, managerul de caracteristici a dezactivat toate caracteristicile.
 UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Specifica\u0163i o versiune diferit\u0103 a caracteristicilor configurate care au cauzat conflictul.
 
-# CWWK0044E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2 {6} EePlaformCommonToProgModels
+# CWWK0047E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2 {6} EePlatformCommonToProgModels
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: Caracteristicile {2} \u015fi {3} nu pot fi \u00eenc\u0103rcate \u00een acela\u015fi timp. Caracteristica {2} din {0} este incompatibil\u0103 cu caracteristica {3} din {1}. Configura\u0163ia include o combina\u0163ie incompatibil\u0103 de {6} caracteristici care nu sunt suportate. Caracteristicile configurate {4} \u015fi {5} includ o combina\u0163ie incompatibil\u0103 de caracteristici. Configura\u0163ia dumneavoastr\u0103 nu este suportat\u0103. Actualiza\u0163i configura\u0163ia pentru a utiliza versiuni compatibile ale caracteristicilor configurate care suport\u0103 modelele de programare {0} sau {1}.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=Configura\u0163ia serverului con\u0163ine o combina\u0163ie incompatibil\u0103 de caracteristici pentru modelele de programare indicate. Acest conflict poate ap\u0103rea dac\u0103 cele dou\u0103 caracteristici incompatibile sunt configurate direct \u00een configura\u0163ia de server sau dac\u0103 caracteristicile configurate includ versiuni diferite ale unei caracteristici care sunt incompatibile.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=\u00cencerca\u0163i s\u0103 specifica\u0163i o versiune compatibil\u0103 pentru caracteristicile configurate care au cauzat conflictul \u00een fi\u015fierul server.xml. Dac\u0103 nu sunt disponibile alte versiuni, caracteristicile configurate nu sunt compatibile una cu alta \u015fi nu pot fi configurate \u00een acela\u015fi timp.
 
-UPDATE_MISSING_VERSIONLESS_ENV_VAR=CWWKF0048E: O valoare nu a putut fi g\u0103sit\u0103 pentru variabila de mediu PREFERRED_FEATURE_VERSIONS
-UPDATE_MISSING_VERSIONLESS_ENV_VAR.explanation=Ave\u021bi caracteristici versionless \u00een configura\u021bia dvs. \u0219i variabila de mediu PREFERRED_FEATURE_VERSIONS nu a putut fi g\u0103sit\u0103
-UPDATE_MISSING_VERSIONLESS_ENV_VAR.useraction=Verifica\u021bi dac\u0103 variabila de mediu, PREFERRED_FEATURE_VERSIONS, exist\u0103 \u0219i este ortografiat\u0103 corect.
+# CWWKF0048E  {0} = the unknown platform value in the environment variable
+UNKNOWN_PLATFORM_VALUE_ENV_VAR=CWWKF0048E: The {0} valoarea variabilei de mediu a platformei PREFERRED_PLATFORM_VERSIONS nu con\u021bine o versiune valid\u0103.
+UNKNOWN_PLATFORM_VALUE_ENV_VAR.explanation=Fiecare valoare din variabila de mediu platform\u0103 trebuie s\u0103 fie o platform\u0103 cunoscut\u0103. Platformele cunoscute sunt o versiune a javaee, jakartaee sau microProfile.
+UNKNOWN_PLATFORM_VALUE_ENV_VAR.useraction=Verifica\u021bi dac\u0103 variabila de mediu con\u021bine doar platforme cunoscute.
 
-# CWWKF0049E  {0} = the feature that needs to be specified within PREFERRED_FEATURE_VERSIONS
-UPDATE_MISSING_VERSIONLESS_FEATURE_VAL=CWWKF0049E: Variabila de mediu, PREFERRED_FEATURE_VERSIONS, nu contine o valoare pentru {0}
-UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.explanation=Pentru fiecare caracteristic\u0103 versionless \u00een configura\u021bia dvs., trebuie s\u0103 existe o valoare de versiune preferat\u0103 pentru ea \u00een cadrul PREFERRED_FEATURE_VERSIUNI
-UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.useraction=Ad\u0103uga\u021bi o valoare \u00een PREFERRED_FEATURE_VERSIUNI pentru caracteristica
+# CWWKF0049E  {0} = set of duplicate platforms
+DUPLICATE_PLATFORMS=CWWKF0049E: Urm\u0103toarele versiuni de platform\u0103 configurat\u0103 sunt \u00een conflict: {0}.
+DUPLICATE_PLATFORMS.explanation=Au fost specificate mai multe versiuni pentru aceea\u0219i platform\u0103.
+DUPLICATE_PLATFORMS.useraction=Elimina\u021bi toate versiunile platformei, cu excep\u021bia uneia.
+
+# CWWKF0050E  {0} = the versionless features that cannot be resolved
+UNRESOLVED_VERSIONLESS_FEATURE=CWWKF0050E: The {0} caracteristicile f\u0103r\u0103 versiune nu pot fi rezolvate
+UNRESOLVED_VERSIONLESS_FEATURE.explanation=Func\u021biile f\u0103r\u0103 versiune necesit\u0103 o platform\u0103 desemnat\u0103 \u00eenainte de a putea fi rezolvate.
+UNRESOLVED_VERSIONLESS_FEATURE.useraction=Asigura\u021bi-v\u0103 c\u0103 exist\u0103 un element de platform\u0103 specificat pentru caracteristica dvs.
+
+# CWWKF0051I  {0} = the versionless features: {1} = the features that were resolved from the versionless features
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE=CWWKF0051I: The {0} caracteristici f\u0103r\u0103 versiune rezolvate la {1}
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.explanation=Caracteristicile versionate care au fost rezolvate din caracteristicile f\u0103r\u0103 versiune.
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# CWWKF0052E  {0} = the unknown platform
+UNKNOWN_PLATFORM_ELEMENT=CWWKF0052E: The {0} platforma nu este valabil\u0103
+UNKNOWN_PLATFORM_ELEMENT.explanation=Elementul de platform\u0103 specificat nu este o platform\u0103 cunoscut\u0103. Platformele cunoscute sunt o versiune a javaee, jakartaee sau microProfile
+UNKNOWN_PLATFORM_ELEMENT.useraction=Asigura\u021bi-v\u0103 c\u0103 platforma configurat\u0103 este o platform\u0103 cunoscut\u0103.
+
+# CWWKF0053I  {0} = the resolved platforms
+RESOLVED_PLATFORM=CWWKF0053I: Rezolu\u021bia caracteristicii a selectat {0} platforme.
+RESOLVED_PLATFORM.explanation=Versiunile platformei au fost selectate pentru a permite rezolu\u021bia caracteristicilor f\u0103r\u0103 versiune. Versiunile platformei au fost ob\u021binute din elemente de platform\u0103, din caracteristici versionate sau dintr-o variabil\u0103 de mediu.
+RESOLVED_PLATFORM.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# CWWKF0054E  {0} = the versionless feature that cannot be resolved: {1} = the resolved platform
+INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM=CWWKF0054E: The {0} Caracteristica f\u0103r\u0103 versiune nu are o versiune care apar\u021bine {1} platform\u0103.
+INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM.explanation=Nicio versiune a func\u021biei nu este disponibil\u0103 pentru versiunea platformei. Rezolu\u021bia caracteristicii a fost finalizat\u0103, dar nu a selectat o versiune a caracteristicii.
+INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM.useraction=Fie elimina\u021bi caracteristica f\u0103r\u0103 versiune, specifica\u021bi o versiune diferit\u0103 a platformei sau utiliza\u021bi o func\u021bie cu versiune.
+
+# CWWKF0055E  {0} = the versionless features
+NO_RESOLVED_PLATFORM=CWWKF0055E: The {0} Caracteristicile f\u0103r\u0103 versiune nu au o platform\u0103 configurat\u0103.
+NO_RESOLVED_PLATFORM.explanation=Fiecare tip de caracteristic\u0103 f\u0103r\u0103 versiune este necesar pentru a avea o platform\u0103 configurat\u0103. Dac\u0103 sunt configurate caracteristici f\u0103r\u0103 versiune javaee sau jakartaee, acestea necesit\u0103 o platform\u0103 javaee sau jakartaee corespunz\u0103toare. Dac\u0103 microProfile caracteristicile f\u0103r\u0103 versiune sunt configurate, acestea necesit\u0103 o microProfile platform\u0103.
+NO_RESOLVED_PLATFORM.useraction=Fie ad\u0103uga\u021bi un element de platform\u0103, o caracteristic\u0103 versionat\u0103 sau o variabil\u0103 de mediu.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 

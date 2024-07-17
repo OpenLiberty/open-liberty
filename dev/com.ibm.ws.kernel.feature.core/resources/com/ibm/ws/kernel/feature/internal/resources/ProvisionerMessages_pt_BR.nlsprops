@@ -225,19 +225,50 @@ UPDATE_DISABLED_FEATURES_ON_CONFLICT=CWWKF0046W: A configura\u00e7\u00e3o inclui
 UPDATE_DISABLED_FEATURES_ON_CONFLICT.explanation=A configura\u00e7\u00e3o inclui uma combina\u00e7\u00e3o incompat\u00edvel de recursos. Para evitar um comportamento inv\u00e1lido, o gerenciador de recursos desativou todos os recursos.
 UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Especifique uma vers\u00e3o diferente dos recursos configurados que causaram o conflito.
 
-# CWWK0044E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2 {6} EePlaformCommonToProgModels
+# CWWK0047E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2 {6} EePlatformCommonToProgModels
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: Os recursos {2} e {3} n\u00e3o podem ser carregados ao mesmo tempo. O recurso {2} de {0} \u00e9 incompat\u00edvel com o recurso {3} de {1}. A configura\u00e7\u00e3o inclui uma combina\u00e7\u00e3o incompat\u00edvel de recursos {6} que n\u00e3o \u00e9 suportada. Os recursos configurados {4} e {5} incluem uma combina\u00e7\u00e3o incompat\u00edvel de recursos. Sua configura\u00e7\u00e3o n\u00e3o \u00e9 suportada. Atualize a configura\u00e7\u00e3o para usar vers\u00f5es compat\u00edveis dos recursos configurados que suportem os modelos de programa\u00e7\u00e3o {0} ou {1}.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=A configura\u00e7\u00e3o do servidor cont\u00e9m uma combina\u00e7\u00e3o incompat\u00edvel de recursos para os modelos de programa\u00e7\u00e3o indicados. Esse conflito pode acontecer se os dois recursos incompat\u00edveis forem definidos diretamente na configura\u00e7\u00e3o do servidor ou se os recursos configurados inclu\u00edrem vers\u00f5es diferentes de um recurso que s\u00e3o incompat\u00edveis.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Tente especificar uma vers\u00e3o compat\u00edvel dos recursos configurados que causaram o conflito no arquivo server.xml. Se n\u00e3o houver outras vers\u00f5es dispon\u00edveis, os recursos configurados n\u00e3o ser\u00e3o compat\u00edveis uns com os outros e n\u00e3o poder\u00e3o ser configurados ao mesmo tempo.
 
-UPDATE_MISSING_VERSIONLESS_ENV_VAR=CWWKF0048E: N\u00e3o foi poss\u00edvel encontrar um valor para a vari\u00e1vel de ambiente PREFERRED_FEATURE_VERSIONS
-UPDATE_MISSING_VERSIONLESS_ENV_VAR.explanation=Voc\u00ea tem recursos sem vers\u00e3o em sua configura\u00e7\u00e3o e a vari\u00e1vel de ambiente PREFERRED_FEATURE_VERSIONS n\u00e3o p\u00f4de ser localizada
-UPDATE_MISSING_VERSIONLESS_ENV_VAR.useraction=Verifique se a vari\u00e1vel de ambiente, PREFERRED_FEATURE_VERSIONS, existe e est\u00e1 escrita corretamente.
+# CWWKF0048E  {0} = the unknown platform value in the environment variable
+UNKNOWN_PLATFORM_VALUE_ENV_VAR=CWWKF0048E: O {0} o valor da vari\u00e1vel de ambiente da plataforma PREFERRED_PLATFORM_VERSIONS n\u00e3o cont\u00e9m uma vers\u00e3o v\u00e1lida.
+UNKNOWN_PLATFORM_VALUE_ENV_VAR.explanation=Cada valor na vari\u00e1vel de ambiente da plataforma deve ser uma plataforma conhecida. As plataformas conhecidas s\u00e3o uma vers\u00e3o de javaee, jakartaee ou microProfile.
+UNKNOWN_PLATFORM_VALUE_ENV_VAR.useraction=Verifique se a vari\u00e1vel de ambiente cont\u00e9m apenas plataformas conhecidas.
 
-# CWWKF0049E  {0} = the feature that needs to be specified within PREFERRED_FEATURE_VERSIONS
-UPDATE_MISSING_VERSIONLESS_FEATURE_VAL=CWWKF0049E: A vari\u00e1vel de ambiente, PREFERRED_FEATURE_VERSIONS, n\u00e3o cont\u00e9m um valor para {0}
-UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.explanation=Para cada recurso sem vers\u00e3o em sua configura\u00e7\u00e3o, deve haver um valor de vers\u00e3o preferencial para ele dentro de PREFERRED_FEATURE_VERSIONS
-UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.useraction=Inclua um valor em PREFERRED_FEATURE_VERSIONS para o recurso
+# CWWKF0049E  {0} = set of duplicate platforms
+DUPLICATE_PLATFORMS=CWWKF0049E: As seguintes vers\u00f5es de plataforma configuradas est\u00e3o em conflito: {0}.
+DUPLICATE_PLATFORMS.explanation=Mais de uma vers\u00e3o foi especificada para a mesma plataforma.
+DUPLICATE_PLATFORMS.useraction=Remova todas as vers\u00f5es da plataforma, exceto uma.
+
+# CWWKF0050E  {0} = the versionless features that cannot be resolved
+UNRESOLVED_VERSIONLESS_FEATURE=CWWKF0050E: O {0} recursos sem vers\u00e3o n\u00e3o podem ser resolvidos
+UNRESOLVED_VERSIONLESS_FEATURE.explanation=Os recursos sem vers\u00e3o precisam de uma plataforma designada antes de serem resolvidos.
+UNRESOLVED_VERSIONLESS_FEATURE.useraction=Certifique-se de que haja um elemento de plataforma especificado para seu recurso.
+
+# CWWKF0051I  {0} = the versionless features: {1} = the features that were resolved from the versionless features
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE=CWWKF0051I: O {0} recursos sem vers\u00e3o resolvidos para {1}
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.explanation=Os recursos com vers\u00e3o que foram resolvidos a partir dos recursos sem vers\u00e3o.
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# CWWKF0052E  {0} = the unknown platform
+UNKNOWN_PLATFORM_ELEMENT=CWWKF0052E: O {0} plataforma n\u00e3o \u00e9 v\u00e1lida
+UNKNOWN_PLATFORM_ELEMENT.explanation=O elemento de plataforma especificado n\u00e3o \u00e9 uma plataforma conhecida. As plataformas conhecidas s\u00e3o uma vers\u00e3o de javaee, jakartaee ou microProfile
+UNKNOWN_PLATFORM_ELEMENT.useraction=Certifique-se de que a plataforma configurada seja uma plataforma conhecida.
+
+# CWWKF0053I  {0} = the resolved platforms
+RESOLVED_PLATFORM=CWWKF0053I: A resolu\u00e7\u00e3o do recurso selecionou o {0} plataformas.
+RESOLVED_PLATFORM.explanation=As vers\u00f5es da plataforma foram selecionadas para permitir a resolu\u00e7\u00e3o de recursos sem vers\u00e3o. As vers\u00f5es da plataforma foram obtidas a partir de elementos da plataforma, de recursos versionados ou de uma vari\u00e1vel de ambiente.
+RESOLVED_PLATFORM.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# CWWKF0054E  {0} = the versionless feature that cannot be resolved: {1} = the resolved platform
+INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM=CWWKF0054E: O {0} recurso sem vers\u00e3o n\u00e3o possui uma vers\u00e3o que perten\u00e7a ao {1} plataforma.
+INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM.explanation=Nenhuma vers\u00e3o do recurso est\u00e1 dispon\u00edvel para a vers\u00e3o da plataforma. A resolu\u00e7\u00e3o do recurso foi conclu\u00edda, mas n\u00e3o selecionou uma vers\u00e3o do recurso.
+INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM.useraction=Remova o recurso sem vers\u00e3o, especifique uma vers\u00e3o de plataforma diferente ou use um recurso com vers\u00e3o.
+
+# CWWKF0055E  {0} = the versionless features
+NO_RESOLVED_PLATFORM=CWWKF0055E: O {0} recursos sem vers\u00e3o n\u00e3o possuem uma plataforma configurada.
+NO_RESOLVED_PLATFORM.explanation=Cada tipo de recurso sem vers\u00e3o precisa ter uma plataforma configurada. Se os recursos sem vers\u00e3o javaee ou jakartaee estiverem configurados, eles exigir\u00e3o uma plataforma javaee ou jakartaee correspondente. Se microProfile recursos sem vers\u00e3o s\u00e3o configurados, eles exigem um microProfile plataforma.
+NO_RESOLVED_PLATFORM.useraction=Adicione um elemento de plataforma, um recurso com vers\u00e3o ou uma vari\u00e1vel de ambiente.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 

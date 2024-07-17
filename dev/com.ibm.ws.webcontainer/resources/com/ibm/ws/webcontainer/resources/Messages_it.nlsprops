@@ -1557,8 +1557,8 @@ servlet.with.same.name.already.exists.explanation=Esiste gi\u00e0 un servlet con
 servlet.with.same.name.already.exists.useraction=Nessuna azione richiesta.  Verificare l'esistenza di conflitti nel descrittore di distribuzione, annotazioni, e codice sorgente che possano aggiungere dinamicamente questa configurazione servlet. 
 
 servlet.feature.not.loaded.correctly=SRVE8501E: Il contenitore servlet non \u00e8 stato caricato con una versione accettabile.
-servlet.feature.not.loaded.correctly.explanation=Il contenitore servlet \u00e8 stato caricato con una versione che corrisponde alla specifica Java EE di tale funzione servlet. Il contenitore \u00e8 stato caricato senza una versione definita.
-servlet.feature.not.loaded.correctly.useraction=Controllare nel file server.xml se esiste una funzione servlet-3.0 o servlet-3.1. Una sola di queste funzioni deve essere definita, non entrambe.
+servlet.feature.not.loaded.correctly.explanation=Il contenitore servlet \u00e8 stato caricato senza una versione accettabile. L'applicazione potrebbe comportarsi in modo diverso rispetto al previsto.
+servlet.feature.not.loaded.correctly.useraction=Controlla il server.xml file per l'esistenza di pi\u00f9 funzionalit\u00e0 servlet.  Il file non deve specificare pi\u00f9 di una funzionalit\u00e0 servlet.
 
 filter.failed.app.destroyed=SRVE8502W: Impossibile completare la richiesta {0} poich\u00e9 l''applicazione \u00e8 stata arrestata.
 filter.failed.app.destroyed.explanation=L'applicazione Web \u00e8 in fase di arresto e la richiesta non pu\u00f2 essere completata. Questa situazione pu\u00f2 essere causata da un server in fase di chiusura al momento della gestione della richiesta.

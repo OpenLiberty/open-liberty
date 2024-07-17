@@ -633,9 +633,11 @@
 
 7356=El procedimiento: [{1}] no puede ejecutarse porque {0} no da soporte actualmente a varios par\u00e1metros de salida
 
-7357=El URL [{0}] del recurso [{1}] no pertenece a una ra\u00edz de persistencia v\u00e1lida, tal como se define en la especificaci\u00f3n JPA.
+7357=El "[{0} ]" URL para "[{1} ]" el recurso no pertenece a una ra\u00edz de persistencia v\u00e1lida, seg\u00fan lo definido por la especificaci\u00f3n de persistencia de Jakarta
 
 7358=Se ha proporcionado un nombre de servicio ASM incorrecto.
 
 7359=No hay ning\u00fan servicio ASM disponible.
+
+7360=La contrase\u00f1a de la base de datos se cifr\u00f3 mediante un algoritmo obsoleto. Vuelva a cifrarlo por `passwordUpdate.sh` de eclipselink.zip manojo
 

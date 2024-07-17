@@ -1,17 +1,12 @@
 ###############################################################################
-# Copyright (c) 2002, 2022 IBM Corporation and others.
+# Copyright (c) 2002, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
-#
-
 
 #COMPONENTPREFIX CWWKH
 #COMPONENTNAMEFOR CWWKH WebSphere WebSocket
@@ -228,9 +223,9 @@ missingslashornull.uri=CWWKH0052E: Do\u0161lo k v\u00fdjimce b\u011bhem implemen
 missingslashornull.uri.explanation=Koncov\u00fd bod serveru je neplatn\u00fd, proto\u017ee identifik\u00e1tor URI koncov\u00e9ho bodu je bu\u010f null, nebo se nespou\u0161t\u00ed s / ve t\u0159\u00edd\u011b koncov\u00e9ho bodu. Aplikace WebSocket nen\u00ed pro po\u017eadavky dostupn\u00e1.
 missingslashornull.uri.useraction=Definujte nenulov\u00fd identifik\u00e1tor URI koncov\u00e9ho bodu, kter\u00fd za\u010d\u00edn\u00e1 /. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
 
-wsoc.feature.not.loaded.correctly=CWWKH0053E: Funkce WebSocket se nena\u010detla s p\u0159ijatelnou verz\u00ed.
-wsoc.feature.not.loaded.correctly.explanation=Funkce WebSocket se na\u010detla s verz\u00ed, kter\u00e1 odpov\u00edd\u00e1 specifikaci Java [Jakarta] EE dan\u00e9 funkce WebSocket. Funkce byla na\u010dtena bez definovan\u00e9 verze.
-wsoc.feature.not.loaded.correctly.useraction=Zkontrolujte v souboru server.xml existenci v\u00edce funkc\u00ed WebSocket. M\u011bl by b\u00fdt zad\u00e1n pouze jeden.
+wsoc.feature.not.loaded.correctly=CWWKH0053E: Kontejner websocket se nena\u010detl p\u0159ijatelnou verz\u00ed.
+wsoc.feature.not.loaded.correctly.explanation=Kontejner websocket na\u010dten bez p\u0159ijateln\u00e9 verze. Aplikace se m\u016f\u017ee chovat jinak, ne\u017e se o\u010dek\u00e1valo.
+wsoc.feature.not.loaded.correctly.useraction=Zkontrolujte v souboru server.xml existenci v\u00edce funkc\u00ed WebSocket. Soubor nesm\u00ed specifikovat v\u00edce ne\u017e jednu funkci websocket.
 
 scheme.incorrect.error=CWWKH0054E: V identifik\u00e1toru URI {0} bylo pou\u017eito neidentifikovan\u00e9 sch\u00e9ma.
 scheme.incorrect.error.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku bylo nalezeno neidentifikovan\u00e9 sch\u00e9ma. 

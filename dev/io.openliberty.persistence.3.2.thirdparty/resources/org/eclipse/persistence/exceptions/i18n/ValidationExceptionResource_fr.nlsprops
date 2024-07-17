@@ -639,6 +639,5 @@
 
 7359=Aucun service ASM disponible.
 
-7360=Le mot de passe de la base de donn\u00e9es a \u00e9t\u00e9 chiffr\u00e9 par un algorithme obsol\u00e8te.
-Reencrypt par `passwordUpdate.sh ` \u00e0 partir du bundle eclipselink.zip .
+7360=Le mot de passe de la base de donn\u00e9es a \u00e9t\u00e9 chiffr\u00e9 par un algorithme obsol\u00e8te. Rechiffrez-le en `passwordUpdate.sh` de eclipselink.zip paquet.
 

@@ -639,6 +639,5 @@
 
 7359=Nessun servizio ASM disponibile.
 
-7360=La password del database \u00e8 stata crittografata dall''algoritmo obsoleto.
-Reencrypt da `passwordUpdate.sh ` dal bundle eclipselink.zip .
+7360=La password del database \u00e8 stata crittografata da un algoritmo deprecato. Ricodificalo tramite `passwordUpdate.sh` da eclipselink.zip fascio.
 

@@ -24,10 +24,10 @@
 # -------------------------------------------------------------------------------------------------
 
 #Message prefix block: CWWKS5900 - CWWKS5910
-CRYPTO_UNSECURE=CWWKS5900W: Elementul de configurare a lui {0} specific\u0103 algoritmul criptografic nesigur {1}  Lua\u021bi \u00een considerare utilizarea {2} schimb.
-CRYPTO_UNSECURE.explanation=Algoritmul configurat nu mai este considerat criptografic securizat.
-CRYPTO_UNSECURE.useraction=Utiliza\u021bi algoritmul securizat sugerat.
+CRYPTO_INSECURE=CWWKS5900W: The {0} elementul de configurare specific\u0103 {1} algoritm criptografic nesigur.  Lua\u021bi \u00een considerare utilizarea {2} algoritm securizat \u00een schimb.
+CRYPTO_INSECURE.explanation=Algoritmul configurat nu mai este considerat sigur din punct de vedere criptografic.
+CRYPTO_INSECURE.useraction=Utiliza\u021bi algoritmul securizat sugerat.
 
-CRYPTO_UNSECURE_REPLACED=CWWKS5901W: Elementul de configurare a lui {0} specific\u0103 algoritmul criptografic nesigur {1}  Algoritmul securizat {2} folosit \u00een schimb.
-CRYPTO_UNSECURE_REPLACED.explanation=Algoritmul criptografic nesigur a fost \u00eenlocuit cu algoritmul securizat.
-CRYPTO_UNSECURE_REPLACED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+CRYPTO_INSECURE_REPLACED=CWWKS5901W: The {0} elementul de configurare specific\u0103 {1} algoritm criptografic nesigur.  The {2} se folose\u0219te \u00een schimb algoritmul securizat.
+CRYPTO_INSECURE_REPLACED.explanation=Algoritmul criptografic nesigur a fost \u00eenlocuit cu algoritmul securizat.
+CRYPTO_INSECURE_REPLACED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.

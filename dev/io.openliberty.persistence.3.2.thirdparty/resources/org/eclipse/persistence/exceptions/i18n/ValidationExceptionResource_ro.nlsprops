@@ -639,6 +639,5 @@
 
 7359=Nu exist\u0103 niciun serviciu ASM disponibil.
 
-7360=Parola bazei de date a fost criptat\u0103 prin algoritm depreciat.
-Reencrypt it by `passwordUpdate.sh ` from eclipselink.zip bundle.
+7360=Parola bazei de date a fost criptat\u0103 de un algoritm depreciat. Recripta\u021bi-l prin `passwordUpdate.sh` din eclipselink.zip pachet.
 

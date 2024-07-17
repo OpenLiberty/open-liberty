@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -118,3 +118,8 @@ reaper.reopen.active.useraction=Red\u00e9marrez le serveur.  Lors de la mise \u0
 missing.zip.file=CWWKM0128E: Le fichier zip {0} est manquant.
 missing.zip.file.explanation=Une exception s'est produite lors du traitement de l'archive car le fichier indiqu\u00e9 n'a pas \u00e9t\u00e9 trouv\u00e9. 
 missing.zip.file.useraction=V\u00e9rifiez que le fichier sp\u00e9cifi\u00e9 existe et que ses droits d'acc\u00e8s sont lisibles par le serveur.
+
+# # {0} A jar: URL.
+CWWKM0129W.missing.dir.entry=CWWKM0129W: Les archives {0} n''a pas le chemin d''entr\u00e9e de r\u00e9pertoire attendu\u00a0: {1}
+CWWKM0129W.missing.dir.entry.explanation=L'archive utilis\u00e9e dans l'URL de la ressource contient des entr\u00e9es contenues dans le r\u00e9pertoire, mais il manque une entr\u00e9e pour le r\u00e9pertoire lui-m\u00eame. L'URL du r\u00e9pertoire n'est pas renvoy\u00e9e. Cette omission peut emp\u00eacher certaines applications qui recherchent des ressources de trouver certaines ressources dans le fichier d'archive.
+CWWKM0129W.missing.dir.entry.useraction=Le fichier d'archive doit \u00eatre construit pour inclure toutes les entr\u00e9es du r\u00e9pertoire.

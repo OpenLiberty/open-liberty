@@ -639,6 +639,5 @@
 
 7359=\u017d\u00e1dn\u00e1 slu\u017eba ASM nen\u00ed k dispozici.
 
-7360=Heslo datab\u00e1ze bylo \u0161ifrov\u00e1no zam\u00edtnut\u00fdm algoritmem.
-Reencrypt it by `passwordUpdate.sh ` z bal\u00edku eclipselink.zip .
+7360=Heslo datab\u00e1ze bylo za\u0161ifrov\u00e1no zastaral\u00fdm algoritmem. Znovu to za\u0161ifrujte pomoc\u00ed `passwordUpdate.sh` od eclipselink.zip svazek.
 
