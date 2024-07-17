@@ -227,20 +227,49 @@ public class KernelResolverEsa implements ProvisioningFeatureDefinition {
     }
 
     //
-    
+
     @Override
     public List<String> getPlatformNames() {
-        return null; // TODO
+
+        return esaResource.getPlatforms() == null ? new ArrayList() : new ArrayList(esaResource.getPlatforms());
     }
 
     @Override
     public String getPlatformName() {
-        return null; // TODO
+        return (!getPlatformNames().isEmpty() ? getPlatformNames().get(0) : null);
     }
-    
+
+    /**
+     * Tell if this is a versionless feature.
+     *
+     * Currently these are:
+     *
+     * <ul><li>public</li>
+     * <li>platformless</li>
+     * <li>have a short name that is equal to the feature name</li>
+     * <li>contain ".versionless." in their symbolic name.</li>
+     * <li>does not contain ".internal.versionless." in their symbolic name.</li>
+     * </ul>
+     *
+     * @return True or false telling if this is a versionless feature.
+     */
     @Override
     public boolean isVersionless() {
-        return false; // TODO
+        if (!getVisibility().equals(Visibility.PUBLIC) || (getPlatformName() != null)) {
+            return false;
+        }
+
+        String shortName = getIbmShortName();
+        if ((shortName == null) || !shortName.equals(getFeatureName())) {
+            return false;
+        }
+
+        if (getSymbolicName().contains(".versionless.")
+                && !getSymbolicName().contains(".internal.")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -248,8 +277,23 @@ public class KernelResolverEsa implements ProvisioningFeatureDefinition {
         return false; // TODO
     }
 
+    /**
+     * Tell if this is a compatibility feature.
+     *
+     * <ul><li>private</li>
+     * <li>do not have a short name</li>
+     * <li>has a platform value</li>
+     * </ul>
+     *
+     * @return True or false telling if this is a versionless feature.
+     */
     @Override
     public boolean isCompatibility() {
-        return false; // TODO
+        if (!getVisibility().equals(Visibility.PRIVATE)) {
+            return false;
+        } else if (getIbmShortName() != null) {
+            return false;
+        }
+        return (getPlatformName() != null);
     }
 }

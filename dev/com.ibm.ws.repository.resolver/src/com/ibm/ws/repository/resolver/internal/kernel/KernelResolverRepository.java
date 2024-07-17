@@ -24,7 +24,9 @@ import java.util.Map.Entry;
 import org.osgi.framework.Version;
 
 import com.ibm.ws.kernel.feature.Visibility;
+import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
+import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.repository.common.enums.FilterableAttribute;
 import com.ibm.ws.repository.common.enums.ResourceType;
@@ -242,6 +244,75 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
         }
 
         return feature;
+    }
+
+    /**
+     * Answer the list of public versioned features derived from the passed versionless feature or empty List if doesn't exist.
+     *
+     * @return List<ProvisioningFeatureDefinition>
+     */
+    public List<ProvisioningFeatureDefinition> findAllPossibleVersions(ProvisioningFeatureDefinition versionlessFeature) {
+        ProvisioningFeatureDefinition publicFeature = null;
+        List<ProvisioningFeatureDefinition> result = new ArrayList<>();
+        for (FeatureResource dependency : versionlessFeature.getConstituents(SubsystemContentType.FEATURE_TYPE)) {
+            publicFeature = getVersionedFeature(dependency.getSymbolicName());
+            if (publicFeature != null)
+                result.add(publicFeature);
+
+            String baseName = getFeatureBaseName(dependency.getSymbolicName());
+            List<String> tolerates = dependency.getTolerates();
+            if (tolerates != null) {
+                for (String toleratedVersion : tolerates) {
+                    String featureName = baseName + toleratedVersion;
+                    publicFeature = getVersionedFeature(featureName);
+                    if (publicFeature != null)
+                        result.add(publicFeature);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     *
+     * Answer the public versioned feature based on the internal versionless linking feature, or null if can't be found
+     *
+     * @param versionlessLinkingFeatureName
+     * @return ProvisioningFeatureDefinition
+     */
+    private ProvisioningFeatureDefinition getVersionedFeature(String versionlessLinkingFeatureName) {
+
+        ProvisioningFeatureDefinition feature = getFeature(versionlessLinkingFeatureName);
+        if (feature != null) {
+            //This is the versionless linking feature pointing to a public versioned feature
+            for (FeatureResource versionedFeature : feature.getConstituents(SubsystemContentType.FEATURE_TYPE)) {
+                //Find the right public feature (should only be one) - set the result
+                ProvisioningFeatureDefinition versionedFeatureDef = getFeature(versionedFeature.getSymbolicName());
+                if (versionedFeatureDef.getVisibility() == Visibility.PUBLIC) {
+                    return versionedFeatureDef;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Removes the version from the end of a feature symbolic name
+     * <p>
+     * The version is presumed to start after the last dash character in the name.
+     * <p>
+     * E.g. {@code getFeatureBaseName("com.example.featureA-1.0")} returns {@code "com.example.featureA-"}
+     *
+     * @param nameAndVersion the feature symbolic name
+     * @return the feature symbolic name with any version stripped
+     */
+    public String getFeatureBaseName(String nameAndVersion) {
+        int dashPosition = nameAndVersion.lastIndexOf('-');
+        if (dashPosition != -1) {
+            return nameAndVersion.substring(0, dashPosition + 1);
+        } else {
+            return nameAndVersion;
+        }
     }
 
     /**
