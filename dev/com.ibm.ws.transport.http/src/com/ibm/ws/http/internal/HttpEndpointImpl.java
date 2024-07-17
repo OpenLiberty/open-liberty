@@ -255,8 +255,6 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         cid = config.get(ComponentConstants.COMPONENT_ID);
         name = (String) config.get("id");
         pid = (String) config.get(Constants.SERVICE_PID);
-        
-        System.out.println("Activate called!" + this);
 
         bundleContext = ctx.getBundleContext();
 
@@ -562,9 +560,10 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "enable ssl support " + ref.getProperty("type"), this);
         }
-        System.out.println("Enabling SSL support!");
         sslFactoryProvider.setReference(ref);
 
+        // TODO Add logic to verify no Netty TLS provider is needed to start up the chain
+        // if Netty is not enabled on this endpoint
         if (endpointConfig != null && nettyTlsProvider != null) {
             httpSecureChain.enable();
             // If this is post-activate, drive the update action
@@ -915,7 +914,6 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     @Reference(name = "nettyTlsProvider", policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY, unbind = "unbindTlsProviderService")
     protected void bindNettyTlsProvider(NettyTlsProvider tlsProvider) {
-        System.out.println("Setting Netty TLS provider");
         this.nettyTlsProvider = tlsProvider;
         if (endpointConfig != null && sslFactoryProvider.getReference() != null) {
             httpSecureChain.enable();
@@ -1011,12 +1009,9 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      */
     @Trivial
     private void performAction(Runnable action, boolean addToQueue) {
-        System.out.println("Performing action: "+this);
-        new Exception().printStackTrace();
         ExecutorService exec = executorService.getService();
 
         if (exec == null) {
-            System.out.println("Executor service null, running action in place");
             // If we can't find the executor service, we have to run it in place.
             action.run();
         } else {
@@ -1036,16 +1031,13 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             // random order.
             if (addToQueue) {
                 synchronized (actionQueue) {
-                    System.out.println("Adding action to action queue");
                     actionQueue.add(action);
                     if ((actionFuture == null) && (configFuture == null)) {
-                        System.out.println("Running action in executor service");
                         actionFuture = exec.submit(actionsRunner);
                     }
                 }
             } else {
                 // Schedule immediately
-                System.out.println("AddToQueue false, running action in executor service");
                 exec.submit(action);
             }
         }

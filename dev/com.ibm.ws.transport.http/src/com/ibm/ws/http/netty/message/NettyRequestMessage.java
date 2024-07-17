@@ -121,6 +121,19 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         super.init(request, isc, config);
         setAndGetIsGrpc();
 //        verifyRequest();
+        
+        MSP.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        MSP.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        MSP.log("HTTP Request:");
+        MSP.log("Method: " + request.method());
+        MSP.log("URI: " + request.uri());
+        MSP.log("Headers: ");
+        request.headers().forEach(header -> MSP.log(header.getKey() + ": " + header.getValue()));
+        MSP.log("Cookies: ");
+        this.getAllCookies().forEach(cookie -> MSP.log(cookie.toString()));
+        MSP.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        MSP.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        
     }
 
     /**

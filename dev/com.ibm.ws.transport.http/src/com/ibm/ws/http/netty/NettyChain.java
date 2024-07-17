@@ -96,21 +96,8 @@ public class NettyChain extends HttpChain {
         MSP.log("Attempting to stop NettyChain: " + endpointName + " Attempt count: " + stopCount + " Current state: " + state.get());
 
         if (state.get() != ChainState.STOPPING) {
-//            if(state.get() != ChainState.STARTING) {
-//                synchronized (serverChannel) {
-//                    if(serverChannel.isActive()) {
-//
-//                    }
-//                }
-//            }
             endpointMgr.removeEndPoint(endpointName);
             ChainState previousState = state.getAndSet(ChainState.STOPPING);
-
-//            if (Objects.nonNull(channelFuture)) {
-//                System.out.println("Canceling future");
-//                channelFuture.cancel(true);
-//                channelFuture = null;
-//            }
 
             try {
                 if (Objects.nonNull(serverChannel) && serverChannel.isOpen()) {
@@ -118,6 +105,7 @@ public class NettyChain extends HttpChain {
                     MSP.log("STOP -> serverChannel is open, attempting to close");
 
                     nettyFramework.stop(serverChannel, -1);
+                    // TODO Check this syncUninterruptibly
                     serverChannel.closeFuture().syncUninterruptibly();
                     serverChannel = null;
                 }
@@ -269,7 +257,6 @@ public class NettyChain extends HttpChain {
 
     private void channelFutureHandler(ChannelFuture future) {
         if (future.isSuccess()) {
-//            serverChannel = future.channel();
             state.set(ChainState.STARTED);
             EndPointInfo info = endpointMgr.getEndPoint(this.endpointName);
             info = endpointMgr.defineEndPoint(this.endpointName, currentConfig.configHost, currentConfig.configPort);

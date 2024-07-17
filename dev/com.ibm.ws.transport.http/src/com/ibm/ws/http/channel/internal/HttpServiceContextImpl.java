@@ -2283,6 +2283,12 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if (getResponse() instanceof NettyResponseMessage) {
 
             response = ((NettyResponseMessage) getResponse()).getResponse();
+            
+            MSP.log("&&& SEND HEADERS &&&");
+            MSP.log("Headers: ");
+            getResponse().getAllHeaders().forEach(header -> MSP.log(header.getName() + ": " + header.asString()));
+            MSP.log("pre process cookie objects");
+            getResponse().getAllCookies().forEach(header -> MSP.log(header.getName() + ": " + header.getValue()));
 
             ((NettyResponseMessage) getResponse()).processCookies();
             HeaderHandler headerHandler = new HeaderHandler(myChannelConfig, response);
@@ -2292,6 +2298,12 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 this.nettyContext.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(HttpUtil.getContentLength(response));
             }
             MSP.log("SENDING HEADERS");
+            
+            MSP.log("Headers: ");
+            getResponse().getAllHeaders().forEach(header -> MSP.log(header.getName() + ": " + header.asString()));
+
+            getResponse().getAllCookies().forEach(header -> MSP.log(header.getName() + ": " + header.getValue()));
+            MSP.log("&&& END of processing, should be all in message.");
 
             ((NettyResponseMessage) getResponse()).logHttpResponse();
 
@@ -2302,6 +2314,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).set("WebSocket");
         }
         this.nettyContext.channel().writeAndFlush(response);
+        
+        MSP.log("After flush Headers: ");
+        response.headers().forEach(header -> MSP.log(header.getKey() + ": " + header.getValue()));
 
         this.setHeadersSent();
 
