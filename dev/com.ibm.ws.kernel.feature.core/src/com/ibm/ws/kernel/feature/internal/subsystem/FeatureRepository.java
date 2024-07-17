@@ -85,11 +85,9 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         }
     }
 
-    private static final int FEATURE_CACHE_VERSION = 3;
+    private static final int FEATURE_CACHE_VERSION = 4;
 
     private static final String EMPTY = "";
-
-    private static final boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
 
     /**
      * Answer the current cache version.
@@ -110,7 +108,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
      * @return The current cache version.
      */
     public static int getCacheVersion() {
-        return (isBeta ? (FEATURE_CACHE_VERSION + 1) : FEATURE_CACHE_VERSION);
+        return FEATURE_CACHE_VERSION;
     }
 
     private boolean isDirty; // Is the cache resource up to date.
@@ -387,18 +385,16 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                 }
             }
 
-            if (isBeta) {
-                //read in previous configured platforms
-                int numPlatforms = in.readInt();
-                for (int i = 0; i < numPlatforms; i++) {
-                    cachedPlatforms.add(in.readUTF());
-                }
+            //read in previous configured platforms
+            int numPlatforms = in.readInt();
+            for (int i = 0; i < numPlatforms; i++) {
+                cachedPlatforms.add(in.readUTF());
+            }
 
-                //read previous platform environment variable from cache
-                boolean hasPlatformEnv = in.readBoolean();
-                if (hasPlatformEnv) {
-                    envVar = in.readUTF();
-                }
+            //read previous platform environment variable from cache
+            boolean hasPlatformEnv = in.readBoolean();
+            if (hasPlatformEnv) {
+                envVar = in.readUTF();
             }
         } catch (IOException e) {
             cacheWarning(e);
@@ -625,18 +621,16 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             // [bool] always: if the platform environment variable is non-null
             // [UTF8] optional: the value of the platform environment variable
 
-            if (isBeta) {
-                out.writeInt(platforms.size());
-                for (String plat : platforms) {
-                    out.writeUTF(plat);
-                }
+            out.writeInt(platforms.size());
+            for (String plat : platforms) {
+                out.writeUTF(plat);
+            }
 
-                if (platformEnvVar == null) {
-                    out.writeBoolean(false);
-                } else {
-                    out.writeBoolean(true);
-                    out.writeUTF(platformEnvVar);
-                }
+            if (platformEnvVar == null) {
+                out.writeBoolean(false);
+            } else {
+                out.writeBoolean(true);
+                out.writeUTF(platformEnvVar);
             }
 
             isDirty = false;
@@ -1096,18 +1090,16 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             configuredFeatures = Collections.unmodifiableSet(new HashSet<String>(newConfiguredFeatures));
         }
 
-        if (isBeta) {
-            current = platforms;
-            if (!current.equals(newConfiguredPlatforms)) {
-                isDirty = true;
-            }
-            if (newConfiguredPlatforms.isEmpty()) {
-                platforms = Collections.emptySet();
-            } else {
-                platforms = Collections.unmodifiableSet(new HashSet<String>(newConfiguredPlatforms));
-            }
-            platformEnvVar = consumeEmpty(platformEnv);
+        current = platforms;
+        if (!current.equals(newConfiguredPlatforms)) {
+            isDirty = true;
         }
+        if (newConfiguredPlatforms.isEmpty()) {
+            platforms = Collections.emptySet();
+        } else {
+            platforms = Collections.unmodifiableSet(new HashSet<String>(newConfiguredPlatforms));
+        }
+        platformEnvVar = consumeEmpty(platformEnv);
 
         this.configurationError = configurationError;
     }
@@ -1617,13 +1609,11 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             return false;
         }
 
-        if (isBeta) {
-            if (!getPlatforms().equals(newConfiguredPlatforms)) {
-                return false;
-            }
-            if (!equals(getPlatformEnvVar(), newPlatformEnvironmentVar)) {
-                return false;
-            }
+        if (!getPlatforms().equals(newConfiguredPlatforms)) {
+            return false;
+        }
+        if (!equals(getPlatformEnvVar(), newPlatformEnvironmentVar)) {
+            return false;
         }
         if (!getConfiguredFeatures().equals(newConfiguredFeatures)) {
             return false;
