@@ -19,20 +19,31 @@ import javax.xml.ws.WebEndpoint;
 import javax.xml.ws.WebServiceClient;
 import javax.xml.ws.WebServiceFeature;
 
-@WebServiceClient(name = "SimpleEchoService", targetNamespace = "http://stubclient.fat.jaxws.openliberty.io/", wsdlLocation = "http://localhost:8010/simpleTestService/SimpleEchoService?wsdl")
+@WebServiceClient(name = "SimpleEchoService", targetNamespace = "http://stubclient.fat.jaxws.openliberty.io/")
 public class SimpleEchoService extends Service {
 
     private final static URL SIMPLEECHOSERVICE_WSDL_LOCATION;
     private final static Logger logger = Logger.getLogger(io.openliberty.jaxws.fat.stubclient.client.SimpleEchoService.class.getName());
 
+
     static {
+		String host = System.getProperty("hostName");
+   		if (host == null) {
+                logger.info("Failed to obtain host from system property, hostName, falling back to localhost");
+                host = "localhost";
+    	}
         URL url = null;
         try {
             URL baseUrl;
             baseUrl = io.openliberty.jaxws.fat.stubclient.client.SimpleEchoService.class.getResource(".");
-            url = new URL(baseUrl, new StringBuilder().append("http://localhost:").append(Integer.getInteger("bvt.prop.HTTP_default")).append("/simpleTestService/SimpleEchoService?wsdl").toString());
-            } catch (MalformedURLException e) {
-            logger.warning("Failed to create URL for the wsdl Location: " + new StringBuilder().append("http://localhost:").append(Integer.getInteger("bvt.prop.HTTP_default")).append("/simpleService/SimpleEchoService?wsdl").toString()+ ", retrying as a local file");
+
+            url = new URL(baseUrl, new StringBuilder().append("http://" + host
+                                                              + ":").append(Integer.getInteger("bvt.prop.HTTP_default")).append("/simpleTestService/SimpleEchoService?wsdl").toString());
+        } catch (MalformedURLException e) {
+            logger.warning("Failed to create URL for the wsdl Location: "
+                           + new StringBuilder().append("http://" + host
+                                                              + ":").append(Integer.getInteger("bvt.prop.HTTP_default")).append("/simpleService/SimpleEchoService?wsdl").toString()
+                           + ", retrying as a local file");
             logger.warning(e.getMessage());
         }
         SIMPLEECHOSERVICE_WSDL_LOCATION = url;
