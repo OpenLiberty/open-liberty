@@ -23,17 +23,17 @@ import org.junit.runners.Suite.SuiteClasses;
 /*
  * ReportFeaturesUnitTest.class,
  * ReportImagesUnitTest.class,
- * 
+ *
  * FeatureDetailsUnitTest.class,
- * 
+ *
  * BaselineResolutionSingletonUnitTest.class,
  * BaselineResolutionServletUnitTest.class,
  * BaselineResolutionMicroProfileUnitTest.class,
- * 
+ *
  * BaselineResolutionGenerationTest.class,
  * BaselineVersionlessSingletonUnitTest.class
  */
-        AlwaysPassTest.class
+                VersionlessMessagesTest.class
 // VersionlessServletToMicroProfileTest.class,
 // VersionlessJavaEEToMicroProfileTest.class,
 // VersionlessEnvVarErrorTest.class
