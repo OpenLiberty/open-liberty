@@ -1,9 +1,8 @@
 <cases>
 <case>
-    <name>com.ibm.websphere.appserver.acmeCA-2.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.acmeCA-2.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.acmeCA-2.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.acmeCA-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.acmeCA-2.0</root>
@@ -72,10 +71,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.adminCenter-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.adminCenter-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.adminCenter-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.adminCenter-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.adminCenter-1.0</root>
@@ -157,10 +155,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.appSecurity-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.appSecurity-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.appSecurity-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.appSecurity-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.appSecurity-1.0</root>
@@ -215,10 +212,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.appSecurity-3.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.appSecurity-3.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.appSecurity-3.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.appSecurity-3.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.appSecurity-3.0</root>
@@ -292,10 +288,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.audit-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.audit-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.audit-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.audit-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.audit-1.0</root>
@@ -366,10 +361,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.batch-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.batch-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.batch-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.batch-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.batch-1.0</root>
@@ -425,10 +419,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.batchManagement-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.batchManagement-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.batchManagement-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.batchManagement-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.batchManagement-1.0</root>
@@ -520,10 +513,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.jakartaee-8.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.jakartaee-8.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.jakartaee-8.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.jakartaee-8.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.jakartaee-8.0</root>
@@ -733,10 +725,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.jaspic-1.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.jaspic-1.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.jaspic-1.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.jaspic-1.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.jaspic-1.1</root>
@@ -788,10 +779,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.javaee-7.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.javaee-7.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.javaee-7.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.javaee-7.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.javaee-7.0</root>
@@ -995,10 +985,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.javaee-8.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.javaee-8.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.javaee-8.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.javaee-8.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.javaee-8.0</root>
@@ -1208,10 +1197,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.jaxb-2.2_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.jaxb-2.2 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.jaxb-2.2</name>
+    <description>Singleton [ com.ibm.websphere.appserver.jaxb-2.2 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.jaxb-2.2</root>
@@ -1233,10 +1221,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.jaxrs-2.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.jaxrs-2.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.jaxrs-2.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.jaxrs-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.jaxrs-2.0</root>
@@ -1278,10 +1265,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.jaxrs-2.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.jaxrs-2.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.jaxrs-2.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.jaxrs-2.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.jaxrs-2.1</root>
@@ -1335,10 +1321,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.jaxrsClient-2.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.jaxrsClient-2.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.jaxrsClient-2.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.jaxrsClient-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.jaxrsClient-2.0</root>
@@ -1378,10 +1363,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.jaxrsClient-2.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.jaxrsClient-2.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.jaxrsClient-2.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.jaxrsClient-2.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.jaxrsClient-2.1</root>
@@ -1432,10 +1416,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.jaxws-2.2_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.jaxws-2.2 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.jaxws-2.2</name>
+    <description>Singleton [ com.ibm.websphere.appserver.jaxws-2.2 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.jaxws-2.2</root>
@@ -1467,10 +1450,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.jcaInboundSecurity-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.jcaInboundSecurity-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.jcaInboundSecurity-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.jcaInboundSecurity-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.jcaInboundSecurity-1.0</root>
@@ -1524,10 +1506,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.jsf-2.2_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.jsf-2.2 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.jsf-2.2</name>
+    <description>Singleton [ com.ibm.websphere.appserver.jsf-2.2 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.jsf-2.2</root>
@@ -1570,10 +1551,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.jsf-2.3_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.jsf-2.3 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.jsf-2.3</name>
+    <description>Singleton [ com.ibm.websphere.appserver.jsf-2.3 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.jsf-2.3</root>
@@ -1619,10 +1599,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.jsfContainer-2.2_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.jsfContainer-2.2 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.jsfContainer-2.2</name>
+    <description>Singleton [ com.ibm.websphere.appserver.jsfContainer-2.2 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.jsfContainer-2.2</root>
@@ -1677,10 +1656,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.jsfContainer-2.3_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.jsfContainer-2.3 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.jsfContainer-2.3</name>
+    <description>Singleton [ com.ibm.websphere.appserver.jsfContainer-2.3 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.jsfContainer-2.3</root>
@@ -1741,10 +1719,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.jsp-2.2_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.jsp-2.2 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.jsp-2.2</name>
+    <description>Singleton [ com.ibm.websphere.appserver.jsp-2.2 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.jsp-2.2</root>
@@ -1777,10 +1754,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.jsp-2.3_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.jsp-2.3 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.jsp-2.3</name>
+    <description>Singleton [ com.ibm.websphere.appserver.jsp-2.3 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.jsp-2.3</root>
@@ -1816,10 +1792,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.jwt-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.jwt-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.jwt-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.jwt-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.jwt-1.0</root>
@@ -1873,10 +1848,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.jwtSso-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.jwtSso-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.jwtSso-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.jwtSso-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.jwtSso-1.0</root>
@@ -1943,10 +1917,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.logstashCollector-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.logstashCollector-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.logstashCollector-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.logstashCollector-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.logstashCollector-1.0</root>
@@ -1961,10 +1934,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.microProfile-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.microProfile-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.microProfile-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.microProfile-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.microProfile-1.0</root>
@@ -2030,10 +2002,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.microProfile-1.2_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.microProfile-1.2 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.microProfile-1.2</name>
+    <description>Singleton [ com.ibm.websphere.appserver.microProfile-1.2 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.microProfile-1.2</root>
@@ -2157,10 +2128,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.microProfile-1.3_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.microProfile-1.3 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.microProfile-1.3</name>
+    <description>Singleton [ com.ibm.websphere.appserver.microProfile-1.3 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.microProfile-1.3</root>
@@ -2294,10 +2264,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.microProfile-1.4_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.microProfile-1.4 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.microProfile-1.4</name>
+    <description>Singleton [ com.ibm.websphere.appserver.microProfile-1.4 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.microProfile-1.4</root>
@@ -2432,10 +2401,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.microProfile-2.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.microProfile-2.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.microProfile-2.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.microProfile-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.microProfile-2.0</root>
@@ -2576,10 +2544,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.microProfile-2.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.microProfile-2.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.microProfile-2.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.microProfile-2.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.microProfile-2.1</root>
@@ -2720,10 +2687,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.microProfile-2.2_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.microProfile-2.2 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.microProfile-2.2</name>
+    <description>Singleton [ com.ibm.websphere.appserver.microProfile-2.2 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.microProfile-2.2</root>
@@ -2864,10 +2830,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.microProfile-3.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.microProfile-3.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.microProfile-3.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.microProfile-3.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.microProfile-3.0</root>
@@ -3008,10 +2973,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.microProfile-3.2_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.microProfile-3.2 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.microProfile-3.2</name>
+    <description>Singleton [ com.ibm.websphere.appserver.microProfile-3.2 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.microProfile-3.2</root>
@@ -3152,10 +3116,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.microProfile-3.3_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.microProfile-3.3 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.microProfile-3.3</name>
+    <description>Singleton [ com.ibm.websphere.appserver.microProfile-3.3 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.microProfile-3.3</root>
@@ -3301,10 +3264,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.microProfile-4.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.microProfile-4.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.microProfile-4.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.microProfile-4.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.microProfile-4.0</root>
@@ -3447,10 +3409,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.microProfile-4.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.microProfile-4.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.microProfile-4.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.microProfile-4.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.microProfile-4.1</root>
@@ -3593,10 +3554,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpGraphQL-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpGraphQL-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpGraphQL-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpGraphQL-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpGraphQL-1.0</root>
@@ -3659,10 +3619,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpHealth-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpHealth-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpHealth-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpHealth-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpHealth-1.0</root>
@@ -3725,10 +3684,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpHealth-2.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpHealth-2.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpHealth-2.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpHealth-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpHealth-2.0</root>
@@ -3791,10 +3749,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpHealth-2.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpHealth-2.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpHealth-2.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpHealth-2.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpHealth-2.1</root>
@@ -3857,10 +3814,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpHealth-2.2_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpHealth-2.2 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpHealth-2.2</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpHealth-2.2 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpHealth-2.2</root>
@@ -3923,10 +3879,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpHealth-3.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpHealth-3.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpHealth-3.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpHealth-3.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpHealth-3.0</root>
@@ -3991,10 +3946,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpHealth-3.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpHealth-3.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpHealth-3.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpHealth-3.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpHealth-3.1</root>
@@ -4059,10 +4013,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpJwt-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpJwt-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpJwt-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpJwt-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpJwt-1.0</root>
@@ -4144,10 +4097,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpJwt-1.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpJwt-1.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpJwt-1.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpJwt-1.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpJwt-1.1</root>
@@ -4232,10 +4184,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpJwt-1.2_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpJwt-1.2 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpJwt-1.2</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpJwt-1.2 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpJwt-1.2</root>
@@ -4324,10 +4275,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpMetrics-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpMetrics-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpMetrics-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpMetrics-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpMetrics-1.0</root>
@@ -4412,10 +4362,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpMetrics-1.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpMetrics-1.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpMetrics-1.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpMetrics-1.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpMetrics-1.1</root>
@@ -4503,10 +4452,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpMetrics-2.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpMetrics-2.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpMetrics-2.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpMetrics-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpMetrics-2.0</root>
@@ -4594,10 +4542,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpMetrics-2.2_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpMetrics-2.2 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpMetrics-2.2</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpMetrics-2.2 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpMetrics-2.2</root>
@@ -4685,10 +4632,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpMetrics-2.3_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpMetrics-2.3 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpMetrics-2.3</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpMetrics-2.3 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpMetrics-2.3</root>
@@ -4783,10 +4729,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpMetrics-3.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpMetrics-3.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpMetrics-3.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpMetrics-3.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpMetrics-3.0</root>
@@ -4880,10 +4825,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpOpenAPI-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpOpenAPI-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpOpenAPI-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpOpenAPI-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpOpenAPI-1.0</root>
@@ -4936,10 +4880,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpOpenAPI-1.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpOpenAPI-1.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpOpenAPI-1.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpOpenAPI-1.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpOpenAPI-1.1</root>
@@ -4992,10 +4935,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpOpenAPI-2.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpOpenAPI-2.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpOpenAPI-2.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpOpenAPI-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpOpenAPI-2.0</root>
@@ -5057,10 +4999,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpOpenTracing-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpOpenTracing-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpOpenTracing-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpOpenTracing-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpOpenTracing-1.0</root>
@@ -5126,10 +5067,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpOpenTracing-1.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpOpenTracing-1.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpOpenTracing-1.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpOpenTracing-1.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpOpenTracing-1.1</root>
@@ -5195,10 +5135,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpOpenTracing-1.2_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpOpenTracing-1.2 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpOpenTracing-1.2</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpOpenTracing-1.2 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpOpenTracing-1.2</root>
@@ -5267,10 +5206,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpOpenTracing-1.3_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpOpenTracing-1.3 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpOpenTracing-1.3</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpOpenTracing-1.3 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpOpenTracing-1.3</root>
@@ -5348,10 +5286,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpOpenTracing-2.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpOpenTracing-2.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpOpenTracing-2.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpOpenTracing-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpOpenTracing-2.0</root>
@@ -5428,10 +5365,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpRestClient-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpRestClient-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpRestClient-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpRestClient-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpRestClient-1.0</root>
@@ -5480,10 +5416,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpRestClient-1.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpRestClient-1.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpRestClient-1.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpRestClient-1.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpRestClient-1.1</root>
@@ -5532,10 +5467,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpRestClient-1.2_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpRestClient-1.2 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpRestClient-1.2</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpRestClient-1.2 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpRestClient-1.2</root>
@@ -5592,10 +5526,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpRestClient-1.3_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpRestClient-1.3 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpRestClient-1.3</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpRestClient-1.3 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpRestClient-1.3</root>
@@ -5652,10 +5585,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpRestClient-1.4_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpRestClient-1.4 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpRestClient-1.4</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpRestClient-1.4 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpRestClient-1.4</root>
@@ -5712,10 +5644,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.mpRestClient-2.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.mpRestClient-2.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.mpRestClient-2.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.mpRestClient-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.mpRestClient-2.0</root>
@@ -5772,10 +5703,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.oauth-2.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.oauth-2.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.oauth-2.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.oauth-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.oauth-2.0</root>
@@ -5843,10 +5773,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.openapi-3.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.openapi-3.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.openapi-3.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.openapi-3.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.openapi-3.1</root>
@@ -5923,10 +5852,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.openid-2.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.openid-2.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.openid-2.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.openid-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.openid-2.0</root>
@@ -5977,10 +5905,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.openidConnectClient-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.openidConnectClient-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.openidConnectClient-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.openidConnectClient-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.openidConnectClient-1.0</root>
@@ -6053,10 +5980,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.openidConnectServer-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.openidConnectServer-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.openidConnectServer-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.openidConnectServer-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.openidConnectServer-1.0</root>
@@ -6129,10 +6055,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.opentracing-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.opentracing-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.opentracing-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.opentracing-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.opentracing-1.0</root>
@@ -6195,10 +6120,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.opentracing-1.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.opentracing-1.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.opentracing-1.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.opentracing-1.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.opentracing-1.1</root>
@@ -6261,10 +6185,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.opentracing-1.2_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.opentracing-1.2 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.opentracing-1.2</name>
+    <description>Singleton [ com.ibm.websphere.appserver.opentracing-1.2 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.opentracing-1.2</root>
@@ -6331,10 +6254,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.opentracing-1.3_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.opentracing-1.3 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.opentracing-1.3</name>
+    <description>Singleton [ com.ibm.websphere.appserver.opentracing-1.3 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.opentracing-1.3</root>
@@ -6410,10 +6332,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.opentracing-2.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.opentracing-2.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.opentracing-2.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.opentracing-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.opentracing-2.0</root>
@@ -6488,10 +6409,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.passwordUtilities-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.passwordUtilities-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.passwordUtilities-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.passwordUtilities-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.passwordUtilities-1.0</root>
@@ -6556,10 +6476,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.passwordUtilities-1.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.passwordUtilities-1.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.passwordUtilities-1.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.passwordUtilities-1.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.passwordUtilities-1.1</root>
@@ -6616,10 +6535,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.restConnector-2.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.restConnector-2.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.restConnector-2.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.restConnector-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.restConnector-2.0</root>
@@ -6684,10 +6602,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.samlWeb-2.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.samlWeb-2.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.samlWeb-2.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.samlWeb-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.samlWeb-2.0</root>
@@ -6748,10 +6665,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.scim-2.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.scim-2.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.scim-2.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.scim-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.scim-2.0</root>
@@ -6814,10 +6730,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.servlet-3.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.servlet-3.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.servlet-3.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.servlet-3.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.servlet-3.1</root>
@@ -6848,10 +6763,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.servlet-4.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.servlet-4.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.servlet-4.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.servlet-4.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.servlet-4.0</root>
@@ -6883,10 +6797,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.servlet-5.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.servlet-5.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.servlet-5.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.servlet-5.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.servlet-5.0</root>
@@ -6919,10 +6832,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.servlet-6.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.servlet-6.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.servlet-6.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.servlet-6.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.servlet-6.0</root>
@@ -6957,10 +6869,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.servlet-6.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.servlet-6.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.servlet-6.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.servlet-6.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.servlet-6.1</root>
@@ -6996,10 +6907,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.sipServlet-1.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.sipServlet-1.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.sipServlet-1.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.sipServlet-1.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.sipServlet-1.1</root>
@@ -7032,10 +6942,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.socialLogin-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.socialLogin-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.socialLogin-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.socialLogin-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.socialLogin-1.0</root>
@@ -7111,10 +7020,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.spnego-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.spnego-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.spnego-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.spnego-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.spnego-1.0</root>
@@ -7165,10 +7073,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.webCache-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.webCache-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.webCache-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.webCache-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.webCache-1.0</root>
@@ -7208,10 +7115,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.webProfile-7.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.webProfile-7.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.webProfile-7.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.webProfile-7.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.webProfile-7.0</root>
@@ -7340,10 +7246,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.webProfile-8.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.webProfile-8.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.webProfile-8.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.webProfile-8.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.webProfile-8.0</root>
@@ -7482,10 +7387,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.websocket-1.0_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.websocket-1.0 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.websocket-1.0</name>
+    <description>Singleton [ com.ibm.websphere.appserver.websocket-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.websocket-1.0</root>
@@ -7519,10 +7423,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.websocket-1.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.websocket-1.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.websocket-1.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.websocket-1.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.websocket-1.1</root>
@@ -7556,10 +7459,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.wsAtomicTransaction-1.2_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.wsAtomicTransaction-1.2 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.wsAtomicTransaction-1.2</name>
+    <description>Singleton [ com.ibm.websphere.appserver.wsAtomicTransaction-1.2 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.wsAtomicTransaction-1.2</root>
@@ -7638,10 +7540,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.wsSecurity-1.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.wsSecurity-1.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.wsSecurity-1.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.wsSecurity-1.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.wsSecurity-1.1</root>
@@ -7694,10 +7595,9 @@
 </case>
 
 <case>
-    <name>com.ibm.websphere.appserver.wsSecuritySaml-1.1_SERVER</name>
-    <description>Singleton [ com.ibm.websphere.appserver.wsSecuritySaml-1.1 ] [ SERVER ]</description>
+    <name>com.ibm.websphere.appserver.wsSecuritySaml-1.1</name>
+    <description>Singleton [ com.ibm.websphere.appserver.wsSecuritySaml-1.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>com.ibm.websphere.appserver.wsSecuritySaml-1.1</root>
@@ -7778,10 +7678,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.appAuthentication-2.0_SERVER</name>
-    <description>Singleton [ io.openliberty.appAuthentication-2.0 ] [ SERVER ]</description>
+    <name>io.openliberty.appAuthentication-2.0</name>
+    <description>Singleton [ io.openliberty.appAuthentication-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.appAuthentication-2.0</root>
@@ -7863,10 +7762,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.appAuthentication-3.0_SERVER</name>
-    <description>Singleton [ io.openliberty.appAuthentication-3.0 ] [ SERVER ]</description>
+    <name>io.openliberty.appAuthentication-3.0</name>
+    <description>Singleton [ io.openliberty.appAuthentication-3.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.appAuthentication-3.0</root>
@@ -7952,10 +7850,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.appAuthentication-3.1_SERVER</name>
-    <description>Singleton [ io.openliberty.appAuthentication-3.1 ] [ SERVER ]</description>
+    <name>io.openliberty.appAuthentication-3.1</name>
+    <description>Singleton [ io.openliberty.appAuthentication-3.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.appAuthentication-3.1</root>
@@ -8044,10 +7941,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.appAuthorization-2.0_SERVER</name>
-    <description>Singleton [ io.openliberty.appAuthorization-2.0 ] [ SERVER ]</description>
+    <name>io.openliberty.appAuthorization-2.0</name>
+    <description>Singleton [ io.openliberty.appAuthorization-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.appAuthorization-2.0</root>
@@ -8130,10 +8026,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.appAuthorization-2.1_SERVER</name>
-    <description>Singleton [ io.openliberty.appAuthorization-2.1 ] [ SERVER ]</description>
+    <name>io.openliberty.appAuthorization-2.1</name>
+    <description>Singleton [ io.openliberty.appAuthorization-2.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.appAuthorization-2.1</root>
@@ -8220,10 +8115,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.appAuthorization-3.0_SERVER</name>
-    <description>Singleton [ io.openliberty.appAuthorization-3.0 ] [ SERVER ]</description>
+    <name>io.openliberty.appAuthorization-3.0</name>
+    <description>Singleton [ io.openliberty.appAuthorization-3.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.appAuthorization-3.0</root>
@@ -8313,10 +8207,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.appSecurity-4.0_SERVER</name>
-    <description>Singleton [ io.openliberty.appSecurity-4.0 ] [ SERVER ]</description>
+    <name>io.openliberty.appSecurity-4.0</name>
+    <description>Singleton [ io.openliberty.appSecurity-4.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.appSecurity-4.0</root>
@@ -8396,10 +8289,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.appSecurity-5.0_SERVER</name>
-    <description>Singleton [ io.openliberty.appSecurity-5.0 ] [ SERVER ]</description>
+    <name>io.openliberty.appSecurity-5.0</name>
+    <description>Singleton [ io.openliberty.appSecurity-5.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.appSecurity-5.0</root>
@@ -8483,10 +8375,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.appSecurity-6.0_SERVER</name>
-    <description>Singleton [ io.openliberty.appSecurity-6.0 ] [ SERVER ]</description>
+    <name>io.openliberty.appSecurity-6.0</name>
+    <description>Singleton [ io.openliberty.appSecurity-6.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.appSecurity-6.0</root>
@@ -8572,10 +8463,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.arquillian.arquillian-support-1.0_SERVER</name>
-    <description>Singleton [ io.openliberty.arquillian.arquillian-support-1.0 ] [ SERVER ]</description>
+    <name>io.openliberty.arquillian.arquillian-support-1.0</name>
+    <description>Singleton [ io.openliberty.arquillian.arquillian-support-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.arquillian.arquillian-support-1.0</root>
@@ -8609,10 +8499,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.batch-2.0_SERVER</name>
-    <description>Singleton [ io.openliberty.batch-2.0 ] [ SERVER ]</description>
+    <name>io.openliberty.batch-2.0</name>
+    <description>Singleton [ io.openliberty.batch-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.batch-2.0</root>
@@ -8675,10 +8564,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.batch-2.1_SERVER</name>
-    <description>Singleton [ io.openliberty.batch-2.1 ] [ SERVER ]</description>
+    <name>io.openliberty.batch-2.1</name>
+    <description>Singleton [ io.openliberty.batch-2.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.batch-2.1</root>
@@ -8746,10 +8634,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.beanValidation-3.1_SERVER</name>
-    <description>Singleton [ io.openliberty.beanValidation-3.1 ] [ SERVER ]</description>
+    <name>io.openliberty.beanValidation-3.1</name>
+    <description>Singleton [ io.openliberty.beanValidation-3.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.beanValidation-3.1</root>
@@ -8775,10 +8662,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.faces-3.0_SERVER</name>
-    <description>Singleton [ io.openliberty.faces-3.0 ] [ SERVER ]</description>
+    <name>io.openliberty.faces-3.0</name>
+    <description>Singleton [ io.openliberty.faces-3.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.faces-3.0</root>
@@ -8825,10 +8711,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.faces-4.0_SERVER</name>
-    <description>Singleton [ io.openliberty.faces-4.0 ] [ SERVER ]</description>
+    <name>io.openliberty.faces-4.0</name>
+    <description>Singleton [ io.openliberty.faces-4.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.faces-4.0</root>
@@ -8891,10 +8776,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.faces-4.1_SERVER</name>
-    <description>Singleton [ io.openliberty.faces-4.1 ] [ SERVER ]</description>
+    <name>io.openliberty.faces-4.1</name>
+    <description>Singleton [ io.openliberty.faces-4.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.faces-4.1</root>
@@ -8959,10 +8843,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.facesContainer-3.0_SERVER</name>
-    <description>Singleton [ io.openliberty.facesContainer-3.0 ] [ SERVER ]</description>
+    <name>io.openliberty.facesContainer-3.0</name>
+    <description>Singleton [ io.openliberty.facesContainer-3.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.facesContainer-3.0</root>
@@ -9027,10 +8910,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.facesContainer-4.0_SERVER</name>
-    <description>Singleton [ io.openliberty.facesContainer-4.0 ] [ SERVER ]</description>
+    <name>io.openliberty.facesContainer-4.0</name>
+    <description>Singleton [ io.openliberty.facesContainer-4.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.facesContainer-4.0</root>
@@ -9097,10 +8979,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.facesContainer-4.1_SERVER</name>
-    <description>Singleton [ io.openliberty.facesContainer-4.1 ] [ SERVER ]</description>
+    <name>io.openliberty.facesContainer-4.1</name>
+    <description>Singleton [ io.openliberty.facesContainer-4.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.facesContainer-4.1</root>
@@ -9170,10 +9051,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.grpc-1.0_SERVER</name>
-    <description>Singleton [ io.openliberty.grpc-1.0 ] [ SERVER ]</description>
+    <name>io.openliberty.grpc-1.0</name>
+    <description>Singleton [ io.openliberty.grpc-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.grpc-1.0</root>
@@ -9208,10 +9088,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.grpcClient-1.0_SERVER</name>
-    <description>Singleton [ io.openliberty.grpcClient-1.0 ] [ SERVER ]</description>
+    <name>io.openliberty.grpcClient-1.0</name>
+    <description>Singleton [ io.openliberty.grpcClient-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.grpcClient-1.0</root>
@@ -9247,10 +9126,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.jakartaee-10.0_SERVER</name>
-    <description>Singleton [ io.openliberty.jakartaee-10.0 ] [ SERVER ]</description>
+    <name>io.openliberty.jakartaee-10.0</name>
+    <description>Singleton [ io.openliberty.jakartaee-10.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.jakartaee-10.0</root>
@@ -9452,10 +9330,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.jakartaee-11.0_SERVER</name>
-    <description>Singleton [ io.openliberty.jakartaee-11.0 ] [ SERVER ]</description>
+    <name>io.openliberty.jakartaee-11.0</name>
+    <description>Singleton [ io.openliberty.jakartaee-11.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.jakartaee-11.0</root>
@@ -9649,10 +9526,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.jakartaee-9.1_SERVER</name>
-    <description>Singleton [ io.openliberty.jakartaee-9.1 ] [ SERVER ]</description>
+    <name>io.openliberty.jakartaee-9.1</name>
+    <description>Singleton [ io.openliberty.jakartaee-9.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.jakartaee-9.1</root>
@@ -9866,10 +9742,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.microProfile-5.0_SERVER</name>
-    <description>Singleton [ io.openliberty.microProfile-5.0 ] [ SERVER ]</description>
+    <name>io.openliberty.microProfile-5.0</name>
+    <description>Singleton [ io.openliberty.microProfile-5.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.microProfile-5.0</root>
@@ -10021,10 +9896,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.microProfile-6.0_SERVER</name>
-    <description>Singleton [ io.openliberty.microProfile-6.0 ] [ SERVER ]</description>
+    <name>io.openliberty.microProfile-6.0</name>
+    <description>Singleton [ io.openliberty.microProfile-6.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.microProfile-6.0</root>
@@ -10160,10 +10034,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.microProfile-6.1_SERVER</name>
-    <description>Singleton [ io.openliberty.microProfile-6.1 ] [ SERVER ]</description>
+    <name>io.openliberty.microProfile-6.1</name>
+    <description>Singleton [ io.openliberty.microProfile-6.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.microProfile-6.1</root>
@@ -10300,10 +10173,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.mpGraphQL-2.0_SERVER</name>
-    <description>Singleton [ io.openliberty.mpGraphQL-2.0 ] [ SERVER ]</description>
+    <name>io.openliberty.mpGraphQL-2.0</name>
+    <description>Singleton [ io.openliberty.mpGraphQL-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.mpGraphQL-2.0</root>
@@ -10377,10 +10249,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.mpHealth-4.0_SERVER</name>
-    <description>Singleton [ io.openliberty.mpHealth-4.0 ] [ SERVER ]</description>
+    <name>io.openliberty.mpHealth-4.0</name>
+    <description>Singleton [ io.openliberty.mpHealth-4.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.mpHealth-4.0</root>
@@ -10450,10 +10321,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.mpJwt-2.0_SERVER</name>
-    <description>Singleton [ io.openliberty.mpJwt-2.0 ] [ SERVER ]</description>
+    <name>io.openliberty.mpJwt-2.0</name>
+    <description>Singleton [ io.openliberty.mpJwt-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.mpJwt-2.0</root>
@@ -10551,10 +10421,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.mpJwt-2.1_SERVER</name>
-    <description>Singleton [ io.openliberty.mpJwt-2.1 ] [ SERVER ]</description>
+    <name>io.openliberty.mpJwt-2.1</name>
+    <description>Singleton [ io.openliberty.mpJwt-2.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.mpJwt-2.1</root>
@@ -10646,10 +10515,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.mpLRA-1.0_SERVER</name>
-    <description>Singleton [ io.openliberty.mpLRA-1.0 ] [ SERVER ]</description>
+    <name>io.openliberty.mpLRA-1.0</name>
+    <description>Singleton [ io.openliberty.mpLRA-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.mpLRA-1.0</root>
@@ -10723,10 +10591,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.mpLRACoordinator-1.0_SERVER</name>
-    <description>Singleton [ io.openliberty.mpLRACoordinator-1.0 ] [ SERVER ]</description>
+    <name>io.openliberty.mpLRACoordinator-1.0</name>
+    <description>Singleton [ io.openliberty.mpLRACoordinator-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.mpLRACoordinator-1.0</root>
@@ -10783,10 +10650,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.mpMetrics-4.0_SERVER</name>
-    <description>Singleton [ io.openliberty.mpMetrics-4.0 ] [ SERVER ]</description>
+    <name>io.openliberty.mpMetrics-4.0</name>
+    <description>Singleton [ io.openliberty.mpMetrics-4.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.mpMetrics-4.0</root>
@@ -10887,10 +10753,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.mpMetrics-5.0_SERVER</name>
-    <description>Singleton [ io.openliberty.mpMetrics-5.0 ] [ SERVER ]</description>
+    <name>io.openliberty.mpMetrics-5.0</name>
+    <description>Singleton [ io.openliberty.mpMetrics-5.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.mpMetrics-5.0</root>
@@ -10986,10 +10851,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.mpMetrics-5.1_SERVER</name>
-    <description>Singleton [ io.openliberty.mpMetrics-5.1 ] [ SERVER ]</description>
+    <name>io.openliberty.mpMetrics-5.1</name>
+    <description>Singleton [ io.openliberty.mpMetrics-5.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.mpMetrics-5.1</root>
@@ -11085,10 +10949,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.mpOpenAPI-3.0_SERVER</name>
-    <description>Singleton [ io.openliberty.mpOpenAPI-3.0 ] [ SERVER ]</description>
+    <name>io.openliberty.mpOpenAPI-3.0</name>
+    <description>Singleton [ io.openliberty.mpOpenAPI-3.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.mpOpenAPI-3.0</root>
@@ -11169,10 +11032,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.mpOpenAPI-3.1_SERVER</name>
-    <description>Singleton [ io.openliberty.mpOpenAPI-3.1 ] [ SERVER ]</description>
+    <name>io.openliberty.mpOpenAPI-3.1</name>
+    <description>Singleton [ io.openliberty.mpOpenAPI-3.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.mpOpenAPI-3.1</root>
@@ -11247,10 +11109,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.mpOpenTracing-3.0_SERVER</name>
-    <description>Singleton [ io.openliberty.mpOpenTracing-3.0 ] [ SERVER ]</description>
+    <name>io.openliberty.mpOpenTracing-3.0</name>
+    <description>Singleton [ io.openliberty.mpOpenTracing-3.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.mpOpenTracing-3.0</root>
@@ -11328,10 +11189,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.mpRestClient-3.0_SERVER</name>
-    <description>Singleton [ io.openliberty.mpRestClient-3.0 ] [ SERVER ]</description>
+    <name>io.openliberty.mpRestClient-3.0</name>
+    <description>Singleton [ io.openliberty.mpRestClient-3.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.mpRestClient-3.0</root>
@@ -11410,10 +11270,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.mpTelemetry-1.0_SERVER</name>
-    <description>Singleton [ io.openliberty.mpTelemetry-1.0 ] [ SERVER ]</description>
+    <name>io.openliberty.mpTelemetry-1.0</name>
+    <description>Singleton [ io.openliberty.mpTelemetry-1.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.mpTelemetry-1.0</root>
@@ -11486,10 +11345,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.mpTelemetry-1.1_SERVER</name>
-    <description>Singleton [ io.openliberty.mpTelemetry-1.1 ] [ SERVER ]</description>
+    <name>io.openliberty.mpTelemetry-1.1</name>
+    <description>Singleton [ io.openliberty.mpTelemetry-1.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.mpTelemetry-1.1</root>
@@ -11563,10 +11421,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.mpTelemetry-2.0_SERVER</name>
-    <description>Singleton [ io.openliberty.mpTelemetry-2.0 ] [ SERVER ]</description>
+    <name>io.openliberty.mpTelemetry-2.0</name>
+    <description>Singleton [ io.openliberty.mpTelemetry-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.mpTelemetry-2.0</root>
@@ -11640,10 +11497,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.pages-3.0_SERVER</name>
-    <description>Singleton [ io.openliberty.pages-3.0 ] [ SERVER ]</description>
+    <name>io.openliberty.pages-3.0</name>
+    <description>Singleton [ io.openliberty.pages-3.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.pages-3.0</root>
@@ -11681,10 +11537,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.pages-3.1_SERVER</name>
-    <description>Singleton [ io.openliberty.pages-3.1 ] [ SERVER ]</description>
+    <name>io.openliberty.pages-3.1</name>
+    <description>Singleton [ io.openliberty.pages-3.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.pages-3.1</root>
@@ -11723,10 +11578,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.pages-4.0_SERVER</name>
-    <description>Singleton [ io.openliberty.pages-4.0 ] [ SERVER ]</description>
+    <name>io.openliberty.pages-4.0</name>
+    <description>Singleton [ io.openliberty.pages-4.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.pages-4.0</root>
@@ -11766,10 +11620,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.restfulWS-3.0_SERVER</name>
-    <description>Singleton [ io.openliberty.restfulWS-3.0 ] [ SERVER ]</description>
+    <name>io.openliberty.restfulWS-3.0</name>
+    <description>Singleton [ io.openliberty.restfulWS-3.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.restfulWS-3.0</root>
@@ -11842,10 +11695,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.restfulWS-3.1_SERVER</name>
-    <description>Singleton [ io.openliberty.restfulWS-3.1 ] [ SERVER ]</description>
+    <name>io.openliberty.restfulWS-3.1</name>
+    <description>Singleton [ io.openliberty.restfulWS-3.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.restfulWS-3.1</root>
@@ -11911,10 +11763,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.restfulWS-4.0_SERVER</name>
-    <description>Singleton [ io.openliberty.restfulWS-4.0 ] [ SERVER ]</description>
+    <name>io.openliberty.restfulWS-4.0</name>
+    <description>Singleton [ io.openliberty.restfulWS-4.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.restfulWS-4.0</root>
@@ -11982,10 +11833,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.restfulWSClient-3.0_SERVER</name>
-    <description>Singleton [ io.openliberty.restfulWSClient-3.0 ] [ SERVER ]</description>
+    <name>io.openliberty.restfulWSClient-3.0</name>
+    <description>Singleton [ io.openliberty.restfulWSClient-3.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.restfulWSClient-3.0</root>
@@ -12057,10 +11907,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.restfulWSClient-3.1_SERVER</name>
-    <description>Singleton [ io.openliberty.restfulWSClient-3.1 ] [ SERVER ]</description>
+    <name>io.openliberty.restfulWSClient-3.1</name>
+    <description>Singleton [ io.openliberty.restfulWSClient-3.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.restfulWSClient-3.1</root>
@@ -12125,10 +11974,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.restfulWSClient-4.0_SERVER</name>
-    <description>Singleton [ io.openliberty.restfulWSClient-4.0 ] [ SERVER ]</description>
+    <name>io.openliberty.restfulWSClient-4.0</name>
+    <description>Singleton [ io.openliberty.restfulWSClient-4.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.restfulWSClient-4.0</root>
@@ -12195,10 +12043,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.restfulWSLogging-3.0_SERVER</name>
-    <description>Singleton [ io.openliberty.restfulWSLogging-3.0 ] [ SERVER ]</description>
+    <name>io.openliberty.restfulWSLogging-3.0</name>
+    <description>Singleton [ io.openliberty.restfulWSLogging-3.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.restfulWSLogging-3.0</root>
@@ -12272,10 +12119,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.webProfile-10.0_SERVER</name>
-    <description>Singleton [ io.openliberty.webProfile-10.0 ] [ SERVER ]</description>
+    <name>io.openliberty.webProfile-10.0</name>
+    <description>Singleton [ io.openliberty.webProfile-10.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.webProfile-10.0</root>
@@ -12415,10 +12261,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.webProfile-11.0_SERVER</name>
-    <description>Singleton [ io.openliberty.webProfile-11.0 ] [ SERVER ]</description>
+    <name>io.openliberty.webProfile-11.0</name>
+    <description>Singleton [ io.openliberty.webProfile-11.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.webProfile-11.0</root>
@@ -12564,10 +12409,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.webProfile-9.1_SERVER</name>
-    <description>Singleton [ io.openliberty.webProfile-9.1 ] [ SERVER ]</description>
+    <name>io.openliberty.webProfile-9.1</name>
+    <description>Singleton [ io.openliberty.webProfile-9.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.webProfile-9.1</root>
@@ -12710,10 +12554,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.websocket-2.0_SERVER</name>
-    <description>Singleton [ io.openliberty.websocket-2.0 ] [ SERVER ]</description>
+    <name>io.openliberty.websocket-2.0</name>
+    <description>Singleton [ io.openliberty.websocket-2.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.websocket-2.0</root>
@@ -12749,10 +12592,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.websocket-2.1_SERVER</name>
-    <description>Singleton [ io.openliberty.websocket-2.1 ] [ SERVER ]</description>
+    <name>io.openliberty.websocket-2.1</name>
+    <description>Singleton [ io.openliberty.websocket-2.1 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.websocket-2.1</root>
@@ -12789,10 +12631,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.websocket-2.2_SERVER</name>
-    <description>Singleton [ io.openliberty.websocket-2.2 ] [ SERVER ]</description>
+    <name>io.openliberty.websocket-2.2</name>
+    <description>Singleton [ io.openliberty.websocket-2.2 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.websocket-2.2</root>
@@ -12831,10 +12672,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.xmlWS-3.0_SERVER</name>
-    <description>Singleton [ io.openliberty.xmlWS-3.0 ] [ SERVER ]</description>
+    <name>io.openliberty.xmlWS-3.0</name>
+    <description>Singleton [ io.openliberty.xmlWS-3.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.xmlWS-3.0</root>
@@ -12879,10 +12719,9 @@
 </case>
 
 <case>
-    <name>io.openliberty.xmlWS-4.0_SERVER</name>
-    <description>Singleton [ io.openliberty.xmlWS-4.0 ] [ SERVER ]</description>
+    <name>io.openliberty.xmlWS-4.0</name>
+    <description>Singleton [ io.openliberty.xmlWS-4.0 ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>io.openliberty.xmlWS-4.0</root>
@@ -12932,7 +12771,6 @@
     <name>servlet-3.1_io.openliberty.versionless.appAuthentication</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.appAuthentication ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -12994,7 +12832,6 @@
     <name>servlet-3.1_io.openliberty.versionless.appAuthorization</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.appAuthorization ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -13055,7 +12892,6 @@
     <name>servlet-3.1_io.openliberty.versionless.appClientSupport</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.appClientSupport ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -13105,7 +12941,6 @@
     <name>servlet-3.1_io.openliberty.versionless.appSecurity</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.appSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -13164,7 +12999,6 @@
     <name>servlet-3.1_io.openliberty.versionless.batch</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.batch ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -13227,7 +13061,6 @@
     <name>servlet-3.1_io.openliberty.versionless.beanValidation</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.beanValidation ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -13277,7 +13110,6 @@
     <name>servlet-3.1_io.openliberty.versionless.cdi</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.cdi ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -13331,7 +13163,6 @@
     <name>servlet-3.1_io.openliberty.versionless.concurrent</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.concurrent ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -13374,7 +13205,6 @@
     <name>servlet-3.1_io.openliberty.versionless.connectors</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.connectors ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -13430,7 +13260,6 @@
     <name>servlet-3.1_io.openliberty.versionless.connectorsInboundSecurity</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.connectorsInboundSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -13498,7 +13327,6 @@
     <name>servlet-3.1_io.openliberty.versionless.data</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.data ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -13560,7 +13388,6 @@
     <name>servlet-3.1_io.openliberty.versionless.ejb</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.ejb ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -13643,7 +13470,6 @@
     <name>servlet-3.1_io.openliberty.versionless.ejbLite</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.ejbLite ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -13702,7 +13528,6 @@
     <name>servlet-3.1_io.openliberty.versionless.el</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.el ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -13742,7 +13567,6 @@
     <name>servlet-3.1_io.openliberty.versionless.enterpriseBeans</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.enterpriseBeans ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -13825,7 +13649,6 @@
     <name>servlet-3.1_io.openliberty.versionless.enterpriseBeansLite</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.enterpriseBeansLite ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -13884,7 +13707,6 @@
     <name>servlet-3.1_io.openliberty.versionless.enterpriseBeansPersistentTimer</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.enterpriseBeansPersistentTimer ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -13951,7 +13773,6 @@
     <name>servlet-3.1_io.openliberty.versionless.enterpriseBeansRemote</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.enterpriseBeansRemote ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -14015,7 +13836,6 @@
     <name>servlet-3.1_io.openliberty.versionless.expressionLanguage</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.expressionLanguage ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -14055,7 +13875,6 @@
     <name>servlet-3.1_io.openliberty.versionless.faces</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.faces ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -14105,7 +13924,6 @@
     <name>servlet-3.1_io.openliberty.versionless.j2eeManagement</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.j2eeManagement ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -14155,7 +13973,6 @@
     <name>servlet-3.1_io.openliberty.versionless.jacc</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.jacc ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -14216,7 +14033,6 @@
     <name>servlet-3.1_io.openliberty.versionless.jaspic</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.jaspic ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -14278,7 +14094,6 @@
     <name>servlet-3.1_io.openliberty.versionless.javaMail</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.javaMail ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -14318,7 +14133,6 @@
     <name>servlet-3.1_io.openliberty.versionless.jaxrs</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.jaxrs ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -14367,7 +14181,6 @@
     <name>servlet-3.1_io.openliberty.versionless.jaxrsClient</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.jaxrsClient ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -14414,7 +14227,6 @@
     <name>servlet-3.1_io.openliberty.versionless.jaxws</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.jaxws ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -14465,7 +14277,6 @@
     <name>servlet-3.1_io.openliberty.versionless.jca</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.jca ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -14521,7 +14332,6 @@
     <name>servlet-3.1_io.openliberty.versionless.jcaInboundSecurity</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.jcaInboundSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -14589,7 +14399,6 @@
     <name>servlet-3.1_io.openliberty.versionless.jdbc</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.jdbc ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -14636,7 +14445,6 @@
     <name>servlet-3.1_io.openliberty.versionless.jms</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.jms ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -14695,7 +14503,6 @@
     <name>servlet-3.1_io.openliberty.versionless.jndi</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.jndi ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -14736,7 +14543,6 @@
     <name>servlet-3.1_io.openliberty.versionless.jpa</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.jpa ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -14796,7 +14602,6 @@
     <name>servlet-3.1_io.openliberty.versionless.jsf</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.jsf ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -14846,7 +14651,6 @@
     <name>servlet-3.1_io.openliberty.versionless.jsonb</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.jsonb ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -14892,7 +14696,6 @@
     <name>servlet-3.1_io.openliberty.versionless.jsonp</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.jsonp ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -14932,7 +14735,6 @@
     <name>servlet-3.1_io.openliberty.versionless.jsp</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.jsp ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -14975,7 +14777,6 @@
     <name>servlet-3.1_io.openliberty.versionless.mail</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.mail ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -15015,7 +14816,6 @@
     <name>servlet-3.1_io.openliberty.versionless.managedBeans</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.managedBeans ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -15065,7 +14865,6 @@
     <name>servlet-3.1_io.openliberty.versionless.mdb</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.mdb ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -15129,7 +14928,6 @@
     <name>servlet-3.1_io.openliberty.versionless.messaging</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.messaging ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -15188,7 +14986,6 @@
     <name>servlet-3.1_io.openliberty.versionless.messagingClient</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.messagingClient ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -15245,7 +15042,6 @@
     <name>servlet-3.1_io.openliberty.versionless.messagingSecurity</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.messagingSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -15300,7 +15096,6 @@
     <name>servlet-3.1_io.openliberty.versionless.messagingServer</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.messagingServer ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -15342,7 +15137,6 @@
     <name>servlet-3.1_io.openliberty.versionless.pages</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.pages ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -15385,7 +15179,6 @@
     <name>servlet-3.1_io.openliberty.versionless.persistence</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.persistence ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -15445,7 +15238,6 @@
     <name>servlet-3.1_io.openliberty.versionless.restConnector</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.restConnector ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -15520,7 +15312,6 @@
     <name>servlet-3.1_io.openliberty.versionless.restfulWS</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.restfulWS ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -15569,7 +15360,6 @@
     <name>servlet-3.1_io.openliberty.versionless.restfulWSClient</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.restfulWSClient ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -15616,7 +15406,6 @@
     <name>servlet-3.1_io.openliberty.versionless.servlet</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.servlet ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -15654,7 +15443,6 @@
     <name>servlet-3.1_io.openliberty.versionless.wasJmsClient</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.wasJmsClient ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -15711,7 +15499,6 @@
     <name>servlet-3.1_io.openliberty.versionless.wasJmsSecurity</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.wasJmsSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -15766,7 +15553,6 @@
     <name>servlet-3.1_io.openliberty.versionless.wasJmsServer</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.wasJmsServer ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -15808,7 +15594,6 @@
     <name>servlet-3.1_io.openliberty.versionless.websocket</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.websocket ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -15849,7 +15634,6 @@
     <name>servlet-3.1_io.openliberty.versionless.xmlBinding</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.xmlBinding ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -15889,7 +15673,6 @@
     <name>servlet-3.1_io.openliberty.versionless.xmlWS</name>
     <description>Feature pair [ servlet-3.1, io.openliberty.versionless.xmlWS ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-3.1</root>
@@ -15940,7 +15723,6 @@
     <name>servlet-4.0_io.openliberty.versionless.appAuthentication</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.appAuthentication ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -16003,7 +15785,6 @@
     <name>servlet-4.0_io.openliberty.versionless.appAuthorization</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.appAuthorization ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -16065,7 +15846,6 @@
     <name>servlet-4.0_io.openliberty.versionless.appClientSupport</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.appClientSupport ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -16116,7 +15896,6 @@
     <name>servlet-4.0_io.openliberty.versionless.appSecurity</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.appSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -16176,7 +15955,6 @@
     <name>servlet-4.0_io.openliberty.versionless.batch</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.batch ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -16240,7 +16018,6 @@
     <name>servlet-4.0_io.openliberty.versionless.beanValidation</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.beanValidation ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -16290,7 +16067,6 @@
     <name>servlet-4.0_io.openliberty.versionless.cdi</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.cdi ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -16346,7 +16122,6 @@
     <name>servlet-4.0_io.openliberty.versionless.concurrent</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.concurrent ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -16390,7 +16165,6 @@
     <name>servlet-4.0_io.openliberty.versionless.connectors</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.connectors ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -16447,7 +16221,6 @@
     <name>servlet-4.0_io.openliberty.versionless.connectorsInboundSecurity</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.connectorsInboundSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -16519,7 +16292,6 @@
     <name>servlet-4.0_io.openliberty.versionless.data</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.data ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -16581,7 +16353,6 @@
     <name>servlet-4.0_io.openliberty.versionless.ejb</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.ejb ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -16665,7 +16436,6 @@
     <name>servlet-4.0_io.openliberty.versionless.ejbLite</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.ejbLite ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -16725,7 +16495,6 @@
     <name>servlet-4.0_io.openliberty.versionless.el</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.el ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -16766,7 +16535,6 @@
     <name>servlet-4.0_io.openliberty.versionless.enterpriseBeans</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.enterpriseBeans ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -16850,7 +16618,6 @@
     <name>servlet-4.0_io.openliberty.versionless.enterpriseBeansLite</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.enterpriseBeansLite ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -16910,7 +16677,6 @@
     <name>servlet-4.0_io.openliberty.versionless.enterpriseBeansPersistentTimer</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.enterpriseBeansPersistentTimer ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -16982,7 +16748,6 @@
     <name>servlet-4.0_io.openliberty.versionless.enterpriseBeansRemote</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.enterpriseBeansRemote ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -17046,7 +16811,6 @@
     <name>servlet-4.0_io.openliberty.versionless.expressionLanguage</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.expressionLanguage ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -17087,7 +16851,6 @@
     <name>servlet-4.0_io.openliberty.versionless.faces</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.faces ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -17140,7 +16903,6 @@
     <name>servlet-4.0_io.openliberty.versionless.j2eeManagement</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.j2eeManagement ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -17191,7 +16953,6 @@
     <name>servlet-4.0_io.openliberty.versionless.jacc</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.jacc ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -17253,7 +17014,6 @@
     <name>servlet-4.0_io.openliberty.versionless.jaspic</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.jaspic ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -17316,7 +17076,6 @@
     <name>servlet-4.0_io.openliberty.versionless.javaMail</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.javaMail ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -17357,7 +17116,6 @@
     <name>servlet-4.0_io.openliberty.versionless.jaxrs</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.jaxrs ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -17418,7 +17176,6 @@
     <name>servlet-4.0_io.openliberty.versionless.jaxrsClient</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.jaxrsClient ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -17476,7 +17233,6 @@
     <name>servlet-4.0_io.openliberty.versionless.jaxws</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.jaxws ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -17528,7 +17284,6 @@
     <name>servlet-4.0_io.openliberty.versionless.jca</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.jca ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -17585,7 +17340,6 @@
     <name>servlet-4.0_io.openliberty.versionless.jcaInboundSecurity</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.jcaInboundSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -17657,7 +17411,6 @@
     <name>servlet-4.0_io.openliberty.versionless.jdbc</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.jdbc ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -17708,7 +17461,6 @@
     <name>servlet-4.0_io.openliberty.versionless.jms</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.jms ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -17768,7 +17520,6 @@
     <name>servlet-4.0_io.openliberty.versionless.jndi</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.jndi ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -17810,7 +17561,6 @@
     <name>servlet-4.0_io.openliberty.versionless.jpa</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.jpa ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -17871,7 +17621,6 @@
     <name>servlet-4.0_io.openliberty.versionless.jsf</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.jsf ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -17924,7 +17673,6 @@
     <name>servlet-4.0_io.openliberty.versionless.jsonb</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.jsonb ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -17972,7 +17720,6 @@
     <name>servlet-4.0_io.openliberty.versionless.jsonp</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.jsonp ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -18013,7 +17760,6 @@
     <name>servlet-4.0_io.openliberty.versionless.jsp</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.jsp ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -18057,7 +17803,6 @@
     <name>servlet-4.0_io.openliberty.versionless.mail</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.mail ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -18098,7 +17843,6 @@
     <name>servlet-4.0_io.openliberty.versionless.managedBeans</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.managedBeans ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -18151,7 +17895,6 @@
     <name>servlet-4.0_io.openliberty.versionless.mdb</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.mdb ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -18220,7 +17963,6 @@
     <name>servlet-4.0_io.openliberty.versionless.messaging</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.messaging ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -18280,7 +18022,6 @@
     <name>servlet-4.0_io.openliberty.versionless.messagingClient</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.messagingClient ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -18338,7 +18079,6 @@
     <name>servlet-4.0_io.openliberty.versionless.messagingSecurity</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.messagingSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -18397,7 +18137,6 @@
     <name>servlet-4.0_io.openliberty.versionless.messagingServer</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.messagingServer ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -18443,7 +18182,6 @@
     <name>servlet-4.0_io.openliberty.versionless.pages</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.pages ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -18487,7 +18225,6 @@
     <name>servlet-4.0_io.openliberty.versionless.persistence</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.persistence ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -18548,7 +18285,6 @@
     <name>servlet-4.0_io.openliberty.versionless.restConnector</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.restConnector ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -18624,7 +18360,6 @@
     <name>servlet-4.0_io.openliberty.versionless.restfulWS</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.restfulWS ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -18685,7 +18420,6 @@
     <name>servlet-4.0_io.openliberty.versionless.restfulWSClient</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.restfulWSClient ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -18743,7 +18477,6 @@
     <name>servlet-4.0_io.openliberty.versionless.servlet</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.servlet ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -18782,7 +18515,6 @@
     <name>servlet-4.0_io.openliberty.versionless.wasJmsClient</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.wasJmsClient ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -18840,7 +18572,6 @@
     <name>servlet-4.0_io.openliberty.versionless.wasJmsSecurity</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.wasJmsSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -18899,7 +18630,6 @@
     <name>servlet-4.0_io.openliberty.versionless.wasJmsServer</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.wasJmsServer ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -18945,7 +18675,6 @@
     <name>servlet-4.0_io.openliberty.versionless.websocket</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.websocket ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -18987,7 +18716,6 @@
     <name>servlet-4.0_io.openliberty.versionless.xmlBinding</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.xmlBinding ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -19028,7 +18756,6 @@
     <name>servlet-4.0_io.openliberty.versionless.xmlWS</name>
     <description>Feature pair [ servlet-4.0, io.openliberty.versionless.xmlWS ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-4.0</root>
@@ -19080,7 +18807,6 @@
     <name>servlet-5.0_io.openliberty.versionless.appAuthentication</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.appAuthentication ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -19169,7 +18895,6 @@
     <name>servlet-5.0_io.openliberty.versionless.appAuthorization</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.appAuthorization ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -19259,7 +18984,6 @@
     <name>servlet-5.0_io.openliberty.versionless.appClientSupport</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.appClientSupport ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -19311,7 +19035,6 @@
     <name>servlet-5.0_io.openliberty.versionless.appSecurity</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.appSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -19398,7 +19121,6 @@
     <name>servlet-5.0_io.openliberty.versionless.batch</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.batch ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -19468,7 +19190,6 @@
     <name>servlet-5.0_io.openliberty.versionless.beanValidation</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.beanValidation ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -19519,7 +19240,6 @@
     <name>servlet-5.0_io.openliberty.versionless.cdi</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.cdi ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -19579,7 +19299,6 @@
     <name>servlet-5.0_io.openliberty.versionless.concurrent</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.concurrent ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -19626,7 +19345,6 @@
     <name>servlet-5.0_io.openliberty.versionless.connectors</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.connectors ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -19686,7 +19404,6 @@
     <name>servlet-5.0_io.openliberty.versionless.connectorsInboundSecurity</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.connectorsInboundSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -19763,7 +19480,6 @@
     <name>servlet-5.0_io.openliberty.versionless.data</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.data ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -19825,7 +19541,6 @@
     <name>servlet-5.0_io.openliberty.versionless.ejb</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.ejb ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -19914,7 +19629,6 @@
     <name>servlet-5.0_io.openliberty.versionless.ejbLite</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.ejbLite ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -19975,7 +19689,6 @@
     <name>servlet-5.0_io.openliberty.versionless.el</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.el ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -20017,7 +19730,6 @@
     <name>servlet-5.0_io.openliberty.versionless.enterpriseBeans</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.enterpriseBeans ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -20106,7 +19818,6 @@
     <name>servlet-5.0_io.openliberty.versionless.enterpriseBeansLite</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.enterpriseBeansLite ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -20167,7 +19878,6 @@
     <name>servlet-5.0_io.openliberty.versionless.enterpriseBeansPersistentTimer</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.enterpriseBeansPersistentTimer ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -20241,7 +19951,6 @@
     <name>servlet-5.0_io.openliberty.versionless.enterpriseBeansRemote</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.enterpriseBeansRemote ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -20307,7 +20016,6 @@
     <name>servlet-5.0_io.openliberty.versionless.expressionLanguage</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.expressionLanguage ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -20349,7 +20057,6 @@
     <name>servlet-5.0_io.openliberty.versionless.faces</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.faces ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -20403,7 +20110,6 @@
     <name>servlet-5.0_io.openliberty.versionless.j2eeManagement</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.j2eeManagement ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -20452,7 +20158,6 @@
     <name>servlet-5.0_io.openliberty.versionless.jacc</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.jacc ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -20542,7 +20247,6 @@
     <name>servlet-5.0_io.openliberty.versionless.jaspic</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.jaspic ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -20631,7 +20335,6 @@
     <name>servlet-5.0_io.openliberty.versionless.javaMail</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.javaMail ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -20674,7 +20377,6 @@
     <name>servlet-5.0_io.openliberty.versionless.jaxrs</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.jaxrs ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -20754,7 +20456,6 @@
     <name>servlet-5.0_io.openliberty.versionless.jaxrsClient</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.jaxrsClient ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -20833,7 +20534,6 @@
     <name>servlet-5.0_io.openliberty.versionless.jaxws</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.jaxws ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -20885,7 +20585,6 @@
     <name>servlet-5.0_io.openliberty.versionless.jca</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.jca ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -20945,7 +20644,6 @@
     <name>servlet-5.0_io.openliberty.versionless.jcaInboundSecurity</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.jcaInboundSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -21022,7 +20720,6 @@
     <name>servlet-5.0_io.openliberty.versionless.jdbc</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.jdbc ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -21074,7 +20771,6 @@
     <name>servlet-5.0_io.openliberty.versionless.jms</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.jms ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -21138,7 +20834,6 @@
     <name>servlet-5.0_io.openliberty.versionless.jndi</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.jndi ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -21181,7 +20876,6 @@
     <name>servlet-5.0_io.openliberty.versionless.jpa</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.jpa ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -21243,7 +20937,6 @@
     <name>servlet-5.0_io.openliberty.versionless.jsf</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.jsf ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -21297,7 +20990,6 @@
     <name>servlet-5.0_io.openliberty.versionless.jsonb</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.jsonb ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -21346,7 +21038,6 @@
     <name>servlet-5.0_io.openliberty.versionless.jsonp</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.jsonp ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -21389,7 +21080,6 @@
     <name>servlet-5.0_io.openliberty.versionless.jsp</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.jsp ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -21434,7 +21124,6 @@
     <name>servlet-5.0_io.openliberty.versionless.mail</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.mail ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -21477,7 +21166,6 @@
     <name>servlet-5.0_io.openliberty.versionless.managedBeans</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.managedBeans ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -21531,7 +21219,6 @@
     <name>servlet-5.0_io.openliberty.versionless.mdb</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.mdb ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -21602,7 +21289,6 @@
     <name>servlet-5.0_io.openliberty.versionless.messaging</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.messaging ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -21666,7 +21352,6 @@
     <name>servlet-5.0_io.openliberty.versionless.messagingClient</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.messagingClient ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -21728,7 +21413,6 @@
     <name>servlet-5.0_io.openliberty.versionless.messagingSecurity</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.messagingSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -21790,7 +21474,6 @@
     <name>servlet-5.0_io.openliberty.versionless.messagingServer</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.messagingServer ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -21837,7 +21520,6 @@
     <name>servlet-5.0_io.openliberty.versionless.pages</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.pages ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -21882,7 +21564,6 @@
     <name>servlet-5.0_io.openliberty.versionless.persistence</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.persistence ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -21944,7 +21625,6 @@
     <name>servlet-5.0_io.openliberty.versionless.restConnector</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.restConnector ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -22023,7 +21703,6 @@
     <name>servlet-5.0_io.openliberty.versionless.restfulWS</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.restfulWS ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -22103,7 +21782,6 @@
     <name>servlet-5.0_io.openliberty.versionless.restfulWSClient</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.restfulWSClient ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -22182,7 +21860,6 @@
     <name>servlet-5.0_io.openliberty.versionless.servlet</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.servlet ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -22222,7 +21899,6 @@
     <name>servlet-5.0_io.openliberty.versionless.wasJmsClient</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.wasJmsClient ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -22284,7 +21960,6 @@
     <name>servlet-5.0_io.openliberty.versionless.wasJmsSecurity</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.wasJmsSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -22346,7 +22021,6 @@
     <name>servlet-5.0_io.openliberty.versionless.wasJmsServer</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.wasJmsServer ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -22393,7 +22067,6 @@
     <name>servlet-5.0_io.openliberty.versionless.websocket</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.websocket ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -22436,7 +22109,6 @@
     <name>servlet-5.0_io.openliberty.versionless.xmlBinding</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.xmlBinding ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -22479,7 +22151,6 @@
     <name>servlet-5.0_io.openliberty.versionless.xmlWS</name>
     <description>Feature pair [ servlet-5.0, io.openliberty.versionless.xmlWS ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -22531,7 +22202,6 @@
     <name>servlet-6.0_io.openliberty.versionless.appAuthentication</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.appAuthentication ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -22624,7 +22294,6 @@
     <name>servlet-6.0_io.openliberty.versionless.appAuthorization</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.appAuthorization ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -22718,7 +22387,6 @@
     <name>servlet-6.0_io.openliberty.versionless.appClientSupport</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.appClientSupport ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -22772,7 +22440,6 @@
     <name>servlet-6.0_io.openliberty.versionless.appSecurity</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.appSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -22863,7 +22530,6 @@
     <name>servlet-6.0_io.openliberty.versionless.batch</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.batch ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -22938,7 +22604,6 @@
     <name>servlet-6.0_io.openliberty.versionless.beanValidation</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.beanValidation ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -22991,7 +22656,6 @@
     <name>servlet-6.0_io.openliberty.versionless.cdi</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.cdi ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -23055,7 +22719,6 @@
     <name>servlet-6.0_io.openliberty.versionless.concurrent</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.concurrent ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -23103,7 +22766,6 @@
     <name>servlet-6.0_io.openliberty.versionless.connectors</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.connectors ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -23165,7 +22827,6 @@
     <name>servlet-6.0_io.openliberty.versionless.connectorsInboundSecurity</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.connectorsInboundSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -23234,7 +22895,6 @@
     <name>servlet-6.0_io.openliberty.versionless.data</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.data ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -23300,7 +22960,6 @@
     <name>servlet-6.0_io.openliberty.versionless.ejb</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.ejb ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -23393,7 +23052,6 @@
     <name>servlet-6.0_io.openliberty.versionless.ejbLite</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.ejbLite ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -23456,7 +23114,6 @@
     <name>servlet-6.0_io.openliberty.versionless.el</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.el ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -23500,7 +23157,6 @@
     <name>servlet-6.0_io.openliberty.versionless.enterpriseBeans</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.enterpriseBeans ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -23593,7 +23249,6 @@
     <name>servlet-6.0_io.openliberty.versionless.enterpriseBeansLite</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.enterpriseBeansLite ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -23656,7 +23311,6 @@
     <name>servlet-6.0_io.openliberty.versionless.enterpriseBeansPersistentTimer</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.enterpriseBeansPersistentTimer ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -23734,7 +23388,6 @@
     <name>servlet-6.0_io.openliberty.versionless.enterpriseBeansRemote</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.enterpriseBeansRemote ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -23802,7 +23455,6 @@
     <name>servlet-6.0_io.openliberty.versionless.expressionLanguage</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.expressionLanguage ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -23846,7 +23498,6 @@
     <name>servlet-6.0_io.openliberty.versionless.faces</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.faces ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -23916,7 +23567,6 @@
     <name>servlet-6.0_io.openliberty.versionless.j2eeManagement</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.j2eeManagement ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -23967,7 +23617,6 @@
     <name>servlet-6.0_io.openliberty.versionless.jacc</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.jacc ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -24061,7 +23710,6 @@
     <name>servlet-6.0_io.openliberty.versionless.jaspic</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.jaspic ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -24154,7 +23802,6 @@
     <name>servlet-6.0_io.openliberty.versionless.javaMail</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.javaMail ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -24200,7 +23847,6 @@
     <name>servlet-6.0_io.openliberty.versionless.jaxrs</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.jaxrs ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -24275,7 +23921,6 @@
     <name>servlet-6.0_io.openliberty.versionless.jaxrsClient</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.jaxrsClient ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -24349,7 +23994,6 @@
     <name>servlet-6.0_io.openliberty.versionless.jaxws</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.jaxws ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -24403,7 +24047,6 @@
     <name>servlet-6.0_io.openliberty.versionless.jca</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.jca ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -24465,7 +24108,6 @@
     <name>servlet-6.0_io.openliberty.versionless.jcaInboundSecurity</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.jcaInboundSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -24534,7 +24176,6 @@
     <name>servlet-6.0_io.openliberty.versionless.jdbc</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.jdbc ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -24588,7 +24229,6 @@
     <name>servlet-6.0_io.openliberty.versionless.jms</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.jms ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -24654,7 +24294,6 @@
     <name>servlet-6.0_io.openliberty.versionless.jndi</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.jndi ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -24699,7 +24338,6 @@
     <name>servlet-6.0_io.openliberty.versionless.jpa</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.jpa ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -24766,7 +24404,6 @@
     <name>servlet-6.0_io.openliberty.versionless.jsf</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.jsf ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -24836,7 +24473,6 @@
     <name>servlet-6.0_io.openliberty.versionless.jsonb</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.jsonb ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -24887,7 +24523,6 @@
     <name>servlet-6.0_io.openliberty.versionless.jsonp</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.jsonp ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -24932,7 +24567,6 @@
     <name>servlet-6.0_io.openliberty.versionless.jsp</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.jsp ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -24978,7 +24612,6 @@
     <name>servlet-6.0_io.openliberty.versionless.mail</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.mail ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -25024,7 +24657,6 @@
     <name>servlet-6.0_io.openliberty.versionless.managedBeans</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.managedBeans ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -25080,7 +24712,6 @@
     <name>servlet-6.0_io.openliberty.versionless.mdb</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.mdb ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -25153,7 +24784,6 @@
     <name>servlet-6.0_io.openliberty.versionless.messaging</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.messaging ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -25219,7 +24849,6 @@
     <name>servlet-6.0_io.openliberty.versionless.messagingClient</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.messagingClient ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -25283,7 +24912,6 @@
     <name>servlet-6.0_io.openliberty.versionless.messagingSecurity</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.messagingSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -25347,7 +24975,6 @@
     <name>servlet-6.0_io.openliberty.versionless.messagingServer</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.messagingServer ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -25396,7 +25023,6 @@
     <name>servlet-6.0_io.openliberty.versionless.pages</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.pages ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -25442,7 +25068,6 @@
     <name>servlet-6.0_io.openliberty.versionless.persistence</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.persistence ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -25509,7 +25134,6 @@
     <name>servlet-6.0_io.openliberty.versionless.restConnector</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.restConnector ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -25589,7 +25213,6 @@
     <name>servlet-6.0_io.openliberty.versionless.restfulWS</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.restfulWS ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -25664,7 +25287,6 @@
     <name>servlet-6.0_io.openliberty.versionless.restfulWSClient</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.restfulWSClient ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -25738,7 +25360,6 @@
     <name>servlet-6.0_io.openliberty.versionless.servlet</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.servlet ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -25780,7 +25401,6 @@
     <name>servlet-6.0_io.openliberty.versionless.wasJmsClient</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.wasJmsClient ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -25844,7 +25464,6 @@
     <name>servlet-6.0_io.openliberty.versionless.wasJmsSecurity</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.wasJmsSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -25908,7 +25527,6 @@
     <name>servlet-6.0_io.openliberty.versionless.wasJmsServer</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.wasJmsServer ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -25957,7 +25575,6 @@
     <name>servlet-6.0_io.openliberty.versionless.websocket</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.websocket ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -26001,7 +25618,6 @@
     <name>servlet-6.0_io.openliberty.versionless.xmlBinding</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.xmlBinding ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -26048,7 +25664,6 @@
     <name>servlet-6.0_io.openliberty.versionless.xmlWS</name>
     <description>Feature pair [ servlet-6.0, io.openliberty.versionless.xmlWS ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -26102,7 +25717,6 @@
     <name>servlet-6.1_io.openliberty.versionless.appAuthorization</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.appAuthorization ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -26157,7 +25771,6 @@
     <name>servlet-6.1_io.openliberty.versionless.appClientSupport</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.appClientSupport ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -26212,7 +25825,6 @@
     <name>servlet-6.1_io.openliberty.versionless.appSecurity</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.appSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -26305,7 +25917,6 @@
     <name>servlet-6.1_io.openliberty.versionless.batch</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.batch ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -26381,7 +25992,6 @@
     <name>servlet-6.1_io.openliberty.versionless.beanValidation</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.beanValidation ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -26431,7 +26041,6 @@
     <name>servlet-6.1_io.openliberty.versionless.cdi</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.cdi ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -26496,7 +26105,6 @@
     <name>servlet-6.1_io.openliberty.versionless.concurrent</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.concurrent ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -26545,7 +26153,6 @@
     <name>servlet-6.1_io.openliberty.versionless.connectors</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.connectors ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -26608,7 +26215,6 @@
     <name>servlet-6.1_io.openliberty.versionless.connectorsInboundSecurity</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.connectorsInboundSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -26678,7 +26284,6 @@
     <name>servlet-6.1_io.openliberty.versionless.data</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.data ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -26745,7 +26350,6 @@
     <name>servlet-6.1_io.openliberty.versionless.ejb</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.ejb ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -26839,7 +26443,6 @@
     <name>servlet-6.1_io.openliberty.versionless.ejbLite</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.ejbLite ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -26903,7 +26506,6 @@
     <name>servlet-6.1_io.openliberty.versionless.el</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.el ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -26948,7 +26550,6 @@
     <name>servlet-6.1_io.openliberty.versionless.enterpriseBeans</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.enterpriseBeans ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -27042,7 +26643,6 @@
     <name>servlet-6.1_io.openliberty.versionless.enterpriseBeansLite</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.enterpriseBeansLite ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -27106,7 +26706,6 @@
     <name>servlet-6.1_io.openliberty.versionless.enterpriseBeansPersistentTimer</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.enterpriseBeansPersistentTimer ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -27185,7 +26784,6 @@
     <name>servlet-6.1_io.openliberty.versionless.enterpriseBeansRemote</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.enterpriseBeansRemote ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -27254,7 +26852,6 @@
     <name>servlet-6.1_io.openliberty.versionless.expressionLanguage</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.expressionLanguage ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -27299,7 +26896,6 @@
     <name>servlet-6.1_io.openliberty.versionless.faces</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.faces ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -27327,7 +26923,6 @@
     <name>servlet-6.1_io.openliberty.versionless.j2eeManagement</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.j2eeManagement ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -27379,7 +26974,6 @@
     <name>servlet-6.1_io.openliberty.versionless.jacc</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.jacc ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -27434,7 +27028,6 @@
     <name>servlet-6.1_io.openliberty.versionless.javaMail</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.javaMail ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -27481,7 +27074,6 @@
     <name>servlet-6.1_io.openliberty.versionless.jaxws</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.jaxws ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -27536,7 +27128,6 @@
     <name>servlet-6.1_io.openliberty.versionless.jca</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.jca ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -27599,7 +27190,6 @@
     <name>servlet-6.1_io.openliberty.versionless.jcaInboundSecurity</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.jcaInboundSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -27669,7 +27259,6 @@
     <name>servlet-6.1_io.openliberty.versionless.jdbc</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.jdbc ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -27724,7 +27313,6 @@
     <name>servlet-6.1_io.openliberty.versionless.jms</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.jms ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -27791,7 +27379,6 @@
     <name>servlet-6.1_io.openliberty.versionless.jndi</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.jndi ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -27837,7 +27424,6 @@
     <name>servlet-6.1_io.openliberty.versionless.jpa</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.jpa ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -27900,7 +27486,6 @@
     <name>servlet-6.1_io.openliberty.versionless.jsf</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.jsf ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -27928,7 +27513,6 @@
     <name>servlet-6.1_io.openliberty.versionless.jsonb</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.jsonb ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -27980,7 +27564,6 @@
     <name>servlet-6.1_io.openliberty.versionless.jsonp</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.jsonp ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -28026,7 +27609,6 @@
     <name>servlet-6.1_io.openliberty.versionless.jsp</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.jsp ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -28073,7 +27655,6 @@
     <name>servlet-6.1_io.openliberty.versionless.mail</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.mail ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -28120,7 +27701,6 @@
     <name>servlet-6.1_io.openliberty.versionless.managedBeans</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.managedBeans ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -28176,7 +27756,6 @@
     <name>servlet-6.1_io.openliberty.versionless.mdb</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.mdb ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -28250,7 +27829,6 @@
     <name>servlet-6.1_io.openliberty.versionless.messaging</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.messaging ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -28317,7 +27895,6 @@
     <name>servlet-6.1_io.openliberty.versionless.messagingClient</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.messagingClient ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -28382,7 +27959,6 @@
     <name>servlet-6.1_io.openliberty.versionless.messagingSecurity</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.messagingSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -28447,7 +28023,6 @@
     <name>servlet-6.1_io.openliberty.versionless.messagingServer</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.messagingServer ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -28497,7 +28072,6 @@
     <name>servlet-6.1_io.openliberty.versionless.pages</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.pages ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -28544,7 +28118,6 @@
     <name>servlet-6.1_io.openliberty.versionless.persistence</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.persistence ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -28607,7 +28180,6 @@
     <name>servlet-6.1_io.openliberty.versionless.restConnector</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.restConnector ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -28688,7 +28260,6 @@
     <name>servlet-6.1_io.openliberty.versionless.servlet</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.servlet ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -28731,7 +28302,6 @@
     <name>servlet-6.1_io.openliberty.versionless.wasJmsClient</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.wasJmsClient ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -28796,7 +28366,6 @@
     <name>servlet-6.1_io.openliberty.versionless.wasJmsSecurity</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.wasJmsSecurity ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -28861,7 +28430,6 @@
     <name>servlet-6.1_io.openliberty.versionless.wasJmsServer</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.wasJmsServer ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -28911,7 +28479,6 @@
     <name>servlet-6.1_io.openliberty.versionless.xmlBinding</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.xmlBinding ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>
@@ -28959,7 +28526,6 @@
     <name>servlet-6.1_io.openliberty.versionless.xmlWS</name>
     <description>Feature pair [ servlet-6.1, io.openliberty.versionless.xmlWS ]</description>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.1</root>

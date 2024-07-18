@@ -1,11 +1,10 @@
 <cases>
 
 <case>
-    <name>MP Case 1: Multiple [ false ] Process [ SERVER ]</name>
+    <name>MP Case 1: Multiple [ false ]</name>
     <description>MP Case 1</description>
     <duration>0.106762100 s</duration>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -13,6 +12,10 @@
         <root>mpMetrics</root>
     </input>
     <output>
+        <resolved-platform>microProfile-5.0</resolved-platform>
+        <resolved-platform>jakartaee-9.1</resolved-platform>
+        <resolved-versionless>io.openliberty.versionless.mpHealth=io.openliberty.mpHealth-4.0</resolved-versionless>
+        <resolved-versionless>io.openliberty.versionless.mpMetrics=io.openliberty.mpMetrics-4.0</resolved-versionless>
         <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
         <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
         <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
@@ -116,11 +119,10 @@
 </case>
 
 <case>
-    <name>MP Case 2: Multiple [ false ] Process [ SERVER ]</name>
+    <name>MP Case 2: Multiple [ false ]</name>
     <description>MP Case 2</description>
     <duration>0.055599500 s</duration>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -128,6 +130,10 @@
         <root>mpMetrics</root>
     </input>
     <output>
+        <resolved-platform>jakartaee-10.0</resolved-platform>
+        <resolved-platform>microProfile-6.1</resolved-platform>
+        <resolved-versionless>io.openliberty.versionless.mpHealth=io.openliberty.mpHealth-4.0</resolved-versionless>
+        <resolved-versionless>io.openliberty.versionless.mpMetrics=io.openliberty.mpMetrics-5.1</resolved-versionless>
         <resolved>com.ibm.websphere.appserver.eeCompatible-10.0</resolved>
         <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
         <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>

@@ -11,7 +11,6 @@ package com.ibm.ws.kernel.feature.internal.util;
 
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.CASES_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.CASE_TAG;
-import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.CLIENT_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.CONFLICT_FEATURE_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.DESCRIPTION_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.DURATION_TAG;
@@ -34,7 +33,7 @@ import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.RESOLVE
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.RESOLVED_FEATURE_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.RESOLVED_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.ROOT_TAG;
-import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.SERVER_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.VERSIONLESS_NO_PLATFORM_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.VERSIONLESS_RESOLVED_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.WRONG_PROCESS_FEATURE_TAG;
 
@@ -227,12 +226,6 @@ public class VerifyXML extends BaseXML {
             if (verifyInput.isMultiple) {
                 printElement(MULTIPLE_TAG);
             }
-            if (verifyInput.isClient) {
-                printElement(CLIENT_TAG);
-            }
-            if (verifyInput.isServer) {
-                printElement(SERVER_TAG);
-            }
             for (String kernelFeature : verifyInput.kernel) {
                 printElement(KERNEL_TAG, kernelFeature);
             }
@@ -294,6 +287,7 @@ public class VerifyXML extends BaseXML {
         put(useTags, useResults, ResultData.PLATFORM_MISSING, PLATFORM_MISSING_TAG);
         put(useTags, useResults, ResultData.PLATFORM_DUPLICATE, PLATFORM_DUPLICATE_TAG);
         put(useTags, useResults, ResultData.FEATURE_VERSIONLESS_RESOLVED, VERSIONLESS_RESOLVED_TAG);
+        put(useTags, useResults, ResultData.FEATURE_VERSIONLESS_NO_PLATFORM, VERSIONLESS_NO_PLATFORM_TAG);
         put(useTags, useResults, ResultData.FEATURE_RESOLVED, RESOLVED_FEATURE_TAG);
         put(useTags, useResults, ResultData.FEATURE_MISSING, MISSING_FEATURE_TAG);
         put(useTags, useResults, ResultData.FEATURE_NON_PUBLIC, NON_PUBLIC_FEATURE_TAG);
@@ -373,10 +367,6 @@ public class VerifyXML extends BaseXML {
                 whitespaceOnly = true;
             } else if (pushElement(qName, MULTIPLE_TAG, INPUT_TAG)) {
                 // ignore
-            } else if (pushElement(qName, CLIENT_TAG, INPUT_TAG)) {
-                // ignore
-            } else if (pushElement(qName, SERVER_TAG, INPUT_TAG)) {
-                // ignore
             } else if (pushElement(qName, KERNEL_TAG, INPUT_TAG)) {
                 // ignore
             } else if (pushElement(qName, ROOT_TAG, INPUT_TAG)) {
@@ -429,10 +419,6 @@ public class VerifyXML extends BaseXML {
                 // ignore
             } else if (oldLast.contentEquals(MULTIPLE_TAG)) {
                 verifyCase.input.setMultiple();
-            } else if (oldLast.contentEquals(CLIENT_TAG)) {
-                verifyCase.input.setClient();
-            } else if (oldLast.contentEquals(SERVER_TAG)) {
-                verifyCase.input.setServer();
             } else if (oldLast.equals(KERNEL_TAG)) {
                 verifyCase.input.addKernel(elementText);
             } else if (oldLast.equals(ROOT_TAG)) {

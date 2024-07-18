@@ -26,6 +26,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
+import com.ibm.ws.feature.tests.util.FeatureUtil;
 import com.ibm.ws.feature.tests.util.RepositoryUtil;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.boot.internal.KernelUtils;
@@ -92,13 +93,12 @@ public class BaselineResolutionUnitTest {
 
             int errorNo = 0;
             for (String error : messages) {
-                if (errorNo > 3) {
-                    builder.append("...");
+                if (errorNo == 10) {
+                    builder.append("\n    ...");
                     break;
-                } else if (errorNo > 0) {
-                    builder.append(", ");
                 }
 
+                builder.append("\n   ");
                 builder.append(error);
                 errorNo++;
             }
@@ -180,11 +180,7 @@ public class BaselineResolutionUnitTest {
     //
 
     /**
-     * Converts a versioned test case to an equivalent versionless test case
-     *
-     * @param verifyData the versioned test case
-     * @return a versionless test case derived from the input case
-     * @throws Exception
+     * Convert versioned test data to the versionless equivalent.
      */
     public static VerifyData convertToVersionless(VerifyData verifyData) throws Exception {
         VerifyData newVerifyData = new VerifyData();
@@ -210,15 +206,25 @@ public class BaselineResolutionUnitTest {
      * @return The copied case. Null if the case does not support versionless.
      */
     public static VerifyCase copyForVersionless(VerifyCase inputCase) {
-        String symName = inputCase.input.roots.get(0);
+        // sym: prefix.short-V1.V2
+        // base: prefix.short
+        // shortBase: short
+        // short: short-V1.V2
 
-        if (inputCase.input.isClient) {
-            System.out.println("Skipping singleton [ " + symName + " ]: CLIENT");
+        String symName = inputCase.input.roots.get(0);
+        String[] parts = FeatureResolverImpl.parseNameAndVersion(symName);
+        String baseName = parts[0];
+        String version = parts[1];
+
+        if (version == null) {
+            System.out.println("Skipping singleton [ " + symName + " ]: " + "Feature is not versioned");
             return null;
         }
 
+        String shortBaseName = FeatureUtil.getShortName(baseName);
+        String shortName = shortBaseName + "-" + version;
+
         String platform = null;
-        String versionlessSymName = null;
         String versionlessInternalSymName = null;
 
         String skipReason;
@@ -237,12 +243,11 @@ public class BaselineResolutionUnitTest {
                 skipReason = "Platform [ " + platform + " ]";
 
             } else {
-                versionlessSymName = RepositoryUtil.asVersionlessFeatureName(symName);
-                ProvisioningFeatureDefinition versionlessDef = getFeatureDef(versionlessSymName);
+                ProvisioningFeatureDefinition versionlessDef = getFeatureDef(shortBaseName);
                 if (versionlessDef == null) {
-                    skipReason = "Versionless not found [ " + versionlessSymName + " ]";
+                    skipReason = "Versionless not found [ " + shortBaseName + " ]";
                 } else if (RepositoryUtil.isNoShip(versionlessDef)) {
-                    skipReason = "Versionless is no-ship [ " + versionlessSymName + " ]";
+                    skipReason = "Versionless is no-ship [ " + shortBaseName + " ]";
 
                 } else {
                     versionlessInternalSymName = RepositoryUtil.asInternalVersionlessFeatureName(symName);
@@ -279,7 +284,7 @@ public class BaselineResolutionUnitTest {
 
         VerifyCase newCase = new VerifyCase();
 
-        newCase.name = "versionless - " + versionlessSymName + " - from " + inputCase.name;
+        newCase.name = "versionless - " + shortName + " - from " + inputCase.name;
         newCase.description = "versionless - platform " + platform + " - from " + inputCase.description;
 
         newCase.durationNs = inputCase.durationNs;
@@ -288,29 +293,23 @@ public class BaselineResolutionUnitTest {
             newCase.input.setMultiple();
         }
 
-        if (inputCase.input.isClient) {
-            newCase.input.setClient();
-        } else if (inputCase.input.isServer) {
-            newCase.input.setServer();
-        }
-
         for (String kernelName : inputCase.input.kernel) {
             newCase.input.addKernel(kernelName);
         }
 
-        newCase.input.addRoot(versionlessSymName);
+        newCase.input.addRoot(shortBaseName);
         newCase.input.addPlatform(platform);
 
         newCase.output.add(ResultData.PLATFORM_RESOLVED, platform);
 
+        newCase.output.putVersionlessResolved(shortBaseName, shortName);
+
         newCase.output.addResolved(versionlessInternalSymName);
-        newCase.output.addResolved(versionlessSymName);
+        newCase.output.addResolved(shortBaseName);
 
         for (String featureName : inputCase.output.getResolved()) {
             newCase.output.addResolved(featureName);
         }
-
-        newCase.output.putVersionlessResolved(versionlessSymName, symName);
 
         return newCase;
     }
@@ -443,24 +442,8 @@ public class BaselineResolutionUnitTest {
                                 verifyCase.input.roots,
                                 Collections.<String> emptySet(), // pre-resolved feature names
                                 verifyCase.input.isMultiple,
-                                getProcessTypes(verifyCase),
+                                EnumSet.allOf(ProcessType.class),
                                 verifyCase.input.platforms);
-    }
-
-    public static EnumSet<ProcessType> getProcessTypes(VerifyCase verifyCase) {
-        if (verifyCase.input.isClient) {
-            if (verifyCase.input.isServer) {
-                return EnumSet.of(ProcessType.CLIENT, ProcessType.SERVER);
-            } else {
-                return EnumSet.of(ProcessType.CLIENT);
-            }
-        } else {
-            if (verifyCase.input.isServer) {
-                return EnumSet.of(ProcessType.SERVER);
-            } else {
-                return EnumSet.noneOf(ProcessType.class);
-            }
-        }
     }
 
     protected void testBanner(VerifyCase useTestCase) {

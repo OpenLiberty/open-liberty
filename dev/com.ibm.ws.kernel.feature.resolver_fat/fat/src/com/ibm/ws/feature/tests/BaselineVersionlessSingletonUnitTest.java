@@ -137,56 +137,57 @@ public class BaselineVersionlessSingletonUnitTest extends BaselineResolutionUnit
     protected static final String[][] ALLOWED_SUBSTITUTIONS = {
         // Simple removal
 
-        { "com.ibm.websphere.appserver.jcaInboundSecurity-1.0",
-          "io.openliberty.versionless.jcaInboundSecurity", "javaee-6.0",
+        { "jcaInboundSecurity-1.0",
+          "jcaInboundSecurity", "javaee-6.0",
           "com.ibm.websphere.appserver.eeCompatible-7.0", null },
 
-        { "io.openliberty.appAuthentication-3.1",
-          "io.openliberty.versionless.appAuthentication", "jakartaee-11.0",
+        { "appAuthentication-3.1",
+          "appAuthentication", "jakartaee-11.0",
           "io.openliberty.internal.versionless.appAuthentication-3.1", null },
 
-        { "io.openliberty.appAuthorization-3.0",
-          "io.openliberty.versionless.appAuthorization", "jakartaee-11.0",
+        { "appAuthorization-3.0",
+          "appAuthorization", "jakartaee-11.0",
           "io.openliberty.internal.versionless.appAuthorization-3.0", null },
 
         // eeCompatible version change
 
-        { "com.ibm.websphere.appserver.concurrent-1.0",
-          "io.openliberty.versionless.concurrent", "javaee-7.0",
+        { "concurrent-1.0",
+          "concurrent", "javaee-7.0",
           "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
 
-        { "com.ibm.websphere.appserver.jacc-1.5",
-          "io.openliberty.versionless.jacc", "javaee-7.0",
+        { "jacc-1.5",
+          "jacc", "javaee-7.0",
           "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
 
-        { "com.ibm.websphere.appserver.jaspic-1.1",
-          "io.openliberty.versionless.jaspic", "javaee-7.0",
+        { "jaspic-1.1",
+          "jaspic", "javaee-7.0",
           "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
 
-        { "com.ibm.websphere.appserver.javaMail-1.5",
-          "io.openliberty.versionless.javaMail", "javaee-7.0",
+        { "javaMail-1.5",
+          "javaMail", "javaee-7.0",
           "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
 
-        { "com.ibm.websphere.appserver.jdbc-4.1",
-          "io.openliberty.versionless.jdbc", "javaee-7.0",
+        { "jdbc-4.1",
+          "jdbc", "javaee-7.0",
           "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
 
-        { "com.ibm.websphere.appserver.jdbc-4.2",
-          "io.openliberty.versionless.jdbc", "javaee-8.0",
+        { "jdbc-4.2",
+          "jdbc", "javaee-8.0",
           "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-8.0" },
 
-        { "com.ibm.websphere.appserver.servlet-3.1",
-          "io.openliberty.versionless.servlet", "javaee-7.0",
+        { "servlet-3.1",
+          "servlet", "javaee-7.0",
           "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
 
-        { "com.ibm.websphere.appserver.wasJmsClient-2.0",
-          "io.openliberty.versionless.wasJmsClient", "javaee-7.0",
+        { "wasJmsClient-2.0",
+          "wasJmsClient", "javaee-7.0",
           "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
 
-        { "com.ibm.websphere.appserver.websocket-1.1",
-          "io.openliberty.versionless.websocket", "javaee-7.0",
+        { "websocket-1.1",
+          "websocket", "javaee-7.0",
           "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
     };
+
 
 /*
         // These are now handled by the initial feature substitution.
@@ -345,7 +346,14 @@ public class BaselineVersionlessSingletonUnitTest extends BaselineResolutionUnit
         String vFeature = testCase.input.roots.get(0); // Must be versionless; must be a singleton
         String platform = testCase.input.platforms.get(0); // Must be a singleton.
 
-        return VerifyDelta.getSubstitution(vFeature, platform, getAllowedSubstitutions());
+        String[] subs = VerifyDelta.getSubstitution(vFeature, platform, getAllowedSubstitutions());
+
+        if ( subs == null ) {
+            System.out.println("Feature [ " + vFeature + " ] Platform [ " + platform + " ] has no substitutions");
+        } else {
+            System.out.println("Feature [ " + vFeature + " ] Platform [ " + platform + " ]: Subs [ " + subs[3] + " to " + subs[4] +" ]");
+        }
+        return subs;
     }
 
     //@formatter:on

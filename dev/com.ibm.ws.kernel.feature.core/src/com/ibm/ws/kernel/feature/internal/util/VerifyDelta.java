@@ -227,7 +227,9 @@ public class VerifyDelta {
     public static final int NEW_FEATURE_OFFSET = 4;
 
     public static String substitutionKey(String vFeature, String platform) {
-        return vFeature + ":" + platform;
+        String sKey = vFeature + ":" + platform;
+        System.out.println("Substitution key [ " + sKey + " ]");
+        return sKey;
     }
 
     public static void putSubstitution(String[] substitution, Map<String, String[]> substitutions) {
@@ -248,26 +250,10 @@ public class VerifyDelta {
 
         ChangeMessages messages = new ChangeMessages();
 
-        compareResult(repo, expectedCase, actualCase, messages);
-
-        compareResolved(repo,
-                        expectedCase.output.getResolved(),
-                        expectedCase.output.kernelOnly,
-                        expectedCase.output.kernelBlocked,
-                        actualCase.output.getResolved(), actualUsedKernel,
-                        extra, missing,
-                        allowedSubstitution,
-                        messages);
-
-        return messages;
-    }
-
-    public static void compareResult(FeatureSupplier repo,
-                                     VerifyCase expectedCase,
-                                     VerifyCase actualCase,
-                                     ChangeMessages messages) {
-
         for (ResultData resultType : VerifyData.ResultData.values()) {
+            if (resultType == ResultData.FEATURE_RESOLVED) {
+                continue;
+            }
             compare(resultType.description,
                     expectedCase.output.get(resultType),
                     actualCase.output.get(resultType),
@@ -278,6 +264,18 @@ public class VerifyDelta {
                 expectedCase.output.getVersionlessResolved(),
                 actualCase.output.getVersionlessResolved(),
                 messages);
+
+        compareResolved(repo,
+                        ResultData.FEATURE_RESOLVED.description,
+                        expectedCase.output.getResolved(),
+                        expectedCase.output.kernelOnly,
+                        expectedCase.output.kernelBlocked,
+                        actualCase.output.getResolved(), actualUsedKernel,
+                        extra, missing,
+                        allowedSubstitution,
+                        messages);
+
+        return messages;
     }
 
     public static void compare(String description,
@@ -348,14 +346,6 @@ public class VerifyDelta {
         boolean dependsOnNoShip(String featureName);
     }
 
-    protected static String addType(FeatureSupplier repo, String featureName) {
-        if (repo == null) {
-            return featureName;
-        } else {
-            return featureName + " " + repo.getVisibility(featureName);
-        }
-    }
-
     private static void add(List<String> storage, String element) {
         if (storage != null) {
             storage.add(element);
@@ -412,7 +402,7 @@ public class VerifyDelta {
         public final List<String> info;
 
         public ChangeMessages() {
-            this(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+            this(new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>());
         }
 
         public ChangeMessages(List<String> errors, List<String> warnings, List<String> info) {
@@ -447,6 +437,7 @@ public class VerifyDelta {
     }
 
     public static void compareResolved(FeatureSupplier repo,
+                                       String description,
                                        List<String> expected,
                                        List<String> expectedKernelOnly,
                                        List<String> expectedKernelBlocked,
@@ -476,17 +467,23 @@ public class VerifyDelta {
         String expectedExtra = ((allowedSubstitution != null) ? allowedSubstitution[NEW_FEATURE_OFFSET] : null);
         String actualExtra = null;
 
+        if (expectedMissing != null) {
+            System.out.print("Expected missing [ " + expectedMissing + " ]");
+        }
+        if (expectedExtra != null) {
+            System.out.print("Expected extra [ " + expectedExtra + " ]");
+        }
+
         for (String expectedElement : expectedSet) {
             if (!actualSet.contains(expectedElement)) {
-                add(missing, expectedElement);
-
                 if (repo.isNoShip(expectedElement) || repo.dependsOnNoShip(expectedElement)) {
-                    messages.addWarning("Missing no-ship [ " + addType(repo, expectedElement) + " ]");
+                    messages.addWarning("Missing no-ship [ " + description + " ]: [ " + expectedElement + " ]");
                 } else {
                     if ((expectedMissing != null) && expectedElement.equals(expectedMissing)) {
                         actualMissing = expectedElement;
                     } else {
-                        messages.addError("Missing [ " + addType(repo, expectedElement) + " ]");
+                        add(missing, expectedElement);
+                        messages.addError("Missing [ " + description + " ]: [ " + expectedElement + " ]");
                     }
                 }
             }
@@ -499,9 +496,9 @@ public class VerifyDelta {
                 add(missing, expectedElement);
 
                 if (repo.isNoShip(expectedElement) || repo.dependsOnNoShip(expectedElement)) {
-                    messages.addWarning("Missing no-ship [ " + addType(repo, expectedElement) + " ]" + usedKernelTag);
+                    messages.addWarning("Missing no-ship [ " + description + " ]: [ " + expectedElement + " ]" + usedKernelTag);
                 } else {
-                    messages.addError("Missing [ " + addType(repo, expectedElement) + " ]" + usedKernelTag);
+                    messages.addError("Missing [ " + description + " ]: [ " + expectedElement + " ]" + usedKernelTag);
                 }
             }
         }
@@ -527,15 +524,14 @@ public class VerifyDelta {
             }
 
             if (extraTag != null) {
-                add(extra, actualElement);
-
                 if (repo.isNoShip(actualElement) || repo.dependsOnNoShip(actualElement)) {
-                    messages.addWarning(extraTag + " no-ship [ " + addType(repo, actualElement) + " ]");
+                    messages.addWarning(extraTag + " no-ship [ " + description + " ]: [ " + actualElement + " ]");
                 } else {
                     if ((expectedExtra != null) && actualElement.equals(expectedExtra)) {
                         actualExtra = actualElement;
                     } else {
-                        messages.addError(extraTag + " [ " + addType(repo, actualElement) + " ]");
+                        add(extra, actualElement);
+                        messages.addError(extraTag + " [ " + description + " ]: [ " + actualElement + " ]");
                     }
                 }
             }

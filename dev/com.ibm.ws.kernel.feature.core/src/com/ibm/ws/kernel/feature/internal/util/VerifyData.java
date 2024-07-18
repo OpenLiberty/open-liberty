@@ -129,7 +129,7 @@ public class VerifyData {
             durationNs = getTimeNs() - startNs;
         }
 
-        // Multiple Process:Client Kernel:kname1 Roots:rname1:rname2
+        // Multiple Kernel:kname1 Roots:rname1:rname2
 
         public String asKey(StringBuilder keyBuilder) {
             char spaceSep = ' ';
@@ -137,14 +137,6 @@ public class VerifyData {
 
             if (input.isMultiple) {
                 append(keyBuilder, "Multiple", spaceSep);
-            }
-
-            append(keyBuilder, "Process", spaceSep);
-            if (input.isClient) {
-                append(keyBuilder, "Client", colonSep);
-            }
-            if (input.isServer) {
-                append(keyBuilder, "Server", colonSep);
             }
 
             if (!input.kernel.isEmpty()) {
@@ -206,9 +198,6 @@ public class VerifyData {
     public static class VerifyInput {
         public boolean isMultiple;
 
-        public boolean isClient;
-        public boolean isServer;
-
         public final List<String> kernel = new ArrayList<>();
         public final List<String> roots = new ArrayList<>();
         public final List<String> platforms = new ArrayList<>();
@@ -216,14 +205,6 @@ public class VerifyData {
 
         public void setMultiple() {
             isMultiple = true;
-        }
-
-        public void setClient() {
-            isClient = true;
-        }
-
-        public void setServer() {
-            isServer = true;
         }
 
         public void addKernel(String feature) {
@@ -257,14 +238,6 @@ public class VerifyData {
 
             if (isMultiple) {
                 sb.append("Multiple");
-                sb.append('\n');
-            }
-            if (isClient) {
-                sb.append("Client");
-                sb.append('\n');
-            }
-            if (isServer) {
-                sb.append("Server");
                 sb.append('\n');
             }
 
@@ -310,12 +283,6 @@ public class VerifyData {
             if (source.isMultiple) {
                 setMultiple();
             }
-            if (source.isClient) {
-                setClient();
-            } else if (source.isServer) {
-                setServer();
-            }
-
             for (String kernelName : source.kernel) {
                 addKernel(kernelName);
             }
@@ -330,22 +297,10 @@ public class VerifyData {
         }
     }
 
-    //
-    // Result message cases:
-    // Set<String> getMissing();
-    // Set<String> getNonPublicRoots();
-    // Map<String, Chain> getWrongProcessTypes();
-    // Map<String, Collection<Chain>> getConflicts();
-    // Map<String, String> getVersionlessFeatures();
-    // Set<String> getResolvedPlatforms();
-    // Set<String> getMissingPlatforms();
-    // Map<String, Set<String>> getDuplicatePlatforms();
-    // Map<String, Set<String>> getNoPlatformVersionless();
-
     public static enum ResultData {
         PLATFORM_RESOLVED("Resolved platforms"),
         PLATFORM_MISSING("Missing platforms"),
-        PLATFORM_DUPLICATE("Duplicate platform versions"),
+        PLATFORM_DUPLICATE("Conflicted platforms"),
 
         FEATURE_VERSIONLESS_RESOLVED("Versionless feature resolutions"),
         FEATURE_VERSIONLESS_NO_PLATFORM("Versionless features without platforms"),
@@ -372,7 +327,11 @@ public class VerifyData {
 
         public List<String> get(ResultData dataType) {
             List<String> result = resultData.get(dataType);
-            return ((result == null) ? Collections.emptyList() : result);
+            if (result == null) {
+                return Collections.emptyList();
+            } else {
+                return result;
+            }
         }
 
         public void add(ResultData dataType, String value) {
@@ -416,6 +375,9 @@ public class VerifyData {
         }
 
         public void putAllVersionlessResolved(Map<String, String> resolved) {
+            for (Map.Entry<String, String> resolvedEntry : resolved.entrySet()) {
+                System.out.println("Versionless resolution [ " + resolvedEntry.getKey() + "=" + resolvedEntry.getValue() + " ]");
+            }
             versionlessResolved.putAll(resolved);
         }
 
@@ -530,15 +492,29 @@ public class VerifyData {
         public void copy(FeatureResolver.Result result) {
             addAll(ResultData.PLATFORM_RESOLVED, result.getResolvedPlatforms());
             addAll(ResultData.PLATFORM_MISSING, result.getMissingPlatforms());
-            // addAll(ResultData.PLATFORM_DUPLICATE, result.getDuplicatePlatforms().keySet());
 
-            addAll(ResultData.FEATURE_VERSIONLESS_RESOLVED, result.getVersionlessFeatures().values());
+            // Versioned platforms an appear in at most one platform collection.
+            // For now, don't check the versionless platform association.
+            for (Set<String> platforms : result.getDuplicatePlatforms().values()) {
+                addAll(ResultData.PLATFORM_DUPLICATE, platforms);
+            }
+
             putAllVersionlessResolved(result.getVersionlessFeatures());
+
+            // Versionless features can appear in at most one platform collection.
+            // For now, don't check the platform association.
+            for (Set<String> versionlessFeatures : result.getNoPlatformVersionless().values()) {
+                addAll(ResultData.FEATURE_VERSIONLESS_NO_PLATFORM, versionlessFeatures);
+            }
 
             addAll(ResultData.FEATURE_RESOLVED, result.getResolvedFeatures());
             addAll(ResultData.FEATURE_MISSING, result.getMissing());
             addAll(ResultData.FEATURE_NON_PUBLIC, result.getNonPublicRoots());
+
+            // For now, don't check the chain that reached each problem feature.
             addAll(ResultData.FEATURE_WRONG_PROCESS, result.getWrongProcessTypes().keySet());
+
+            // For now, don't check the chains that reach each problem feature.
             addAll(ResultData.FEATURE_CONFLICT, result.getConflicts().keySet());
         }
     }

@@ -19,8 +19,6 @@ package com.ibm.ws.kernel.feature.internal.util;
 //     <root>featureName</root>
 //     <platform>platformName</platform>
 //     <environment>name=value</environment>
-//     <client/>
-//     <server/>
 //   </input>
 //   <output>
 //     <dependent>FeatureName</dependent>
@@ -38,8 +36,6 @@ public interface VerifyXMLConstants {
 
     String INPUT_TAG = "input";
     String MULTIPLE_TAG = "multiple";
-    String CLIENT_TAG = "client";
-    String SERVER_TAG = "server";
     String KERNEL_TAG = "kernel";
     String ROOT_TAG = "root";
     String PLATFORM_TAG = "platform";
@@ -57,6 +53,7 @@ public interface VerifyXMLConstants {
 
     String VERSIONLESS_RESOLVED_TAG = "resolved-versionless";
     char RESOLVED_CHAR = '=';
+    String VERSIONLESS_NO_PLATFORM_TAG = "no-platform-versionless";
 
     String RESOLVED_FEATURE_TAG = "resolved-feature";
     String MISSING_FEATURE_TAG = "missing-feature";

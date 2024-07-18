@@ -104,6 +104,7 @@ public class RepositoryUtil {
     //
 
     public static final String FEATURES_PATH = "./lib/features";
+    public static final String ALT_FEATURES_PATH = "../com.ibm.websphere.appserver.features/visibility";
 
     private static String FEATURES_ABS_PATH;
     private static File FEATURES_FILE;
@@ -147,6 +148,9 @@ public class RepositoryUtil {
 
     protected static void basicSetupFeatureLocations() throws Exception {
         File featuresFile = new File(FEATURES_PATH);
+        if (!featuresFile.exists()) {
+            featuresFile = new File(ALT_FEATURES_PATH);
+        }
         FEATURES_ABS_PATH = featuresFile.getCanonicalPath();
         FEATURES_FILE = new File(FEATURES_ABS_PATH);
     }
@@ -441,11 +445,9 @@ public class RepositoryUtil {
      * @return feature definition of the versionless feature associated with the input featureName
      */
     public static ProvisioningFeatureDefinition getVersionlessFeatureDef(String featureName) {
-        String METHOD_NAME = "getVersionlessFeatureDef";
         if (versionlessFeatureDefs == null) {
             intializeVersionlessFeatureDefsMap();
         }
-
         return versionlessFeatureDefs.get(asVersionlessFeatureName(featureName));
     }
 

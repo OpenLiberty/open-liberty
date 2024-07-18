@@ -127,7 +127,7 @@ public class FeatureResolverImpl implements FeatureResolver {
      * Cache of parsed name and version values.
      *
      * Keys are versioned feature names, for example, "servlet-4.0".
-     * Values are the pair of the parsed base feature name plus the
+     * Values are the pair of the parsed feature name plus the
      * text of the version. Continuing the example, "servlet" and "4.0".
      * A value which does not have a version will be returned with
      * null version text. That is, "servlet" is stored as { "servlet", null }.
@@ -138,7 +138,7 @@ public class FeatureResolverImpl implements FeatureResolver {
     private static Map<String, String[]> parsedNAV = new HashMap<String, String[]>();
 
     /**
-     * Answer the base name of a versioned feature name.
+     * Answer the name of a versioned feature name.
      *
      * Use the parse cache to do this quickly.
      *
@@ -146,7 +146,7 @@ public class FeatureResolverImpl implements FeatureResolver {
      *
      * @param feature The versioned feature name which is to be parsed.
      *
-     * @return The base name of the feature name.
+     * @return The name of the feature name.
      */
     public static String parseName(String feature) {
         return parseNameAndVersion(feature)[0];
@@ -173,7 +173,7 @@ public class FeatureResolverImpl implements FeatureResolver {
     }
 
     /**
-     * Answer the base name and the version text of a versioned
+     * Answer the name and the version text of a versioned
      * feature name.
      *
      * Store null for the version text if the feature name does
@@ -187,7 +187,7 @@ public class FeatureResolverImpl implements FeatureResolver {
      *
      * @param feature The versioned feature name which is to be parsed.
      *
-     * @return The base name and version text of the feature name.
+     * @return The name and version text of the feature name.
      */
     @FFDCIgnore(IllegalArgumentException.class)
     public static String[] parseNameAndVersion(String feature) {
@@ -267,21 +267,20 @@ public class FeatureResolverImpl implements FeatureResolver {
 
             ProvisioningFeatureDefinition platformFeature = allCompatibilityFeatures.get(plat.toLowerCase());
 
-            if(platformFeature == null){
+            if (platformFeature == null) {
                 selectionContext.getResult().addMissingPlatform(plat);
                 continue;
             }
 
             String parsedPlatformName = parseName(platformFeature.getSymbolicName());
-            if(duplicates.containsKey(parsedPlatformName)){
+            if (duplicates.containsKey(parsedPlatformName)) {
                 duplicates.get(parsedPlatformName).add(plat);
-            }
-            else if(featureListContainsFeatureBaseName(compatibilityFeatures, parsedPlatformName)){
+            } else if (featureListContainsFeatureBaseName(compatibilityFeatures, parsedPlatformName)) {
                 Set<String> dupes = new HashSet<String>();
                 dupes.add(plat);
                 String removeDuplicate = "";
-                for(String compatibility : compatibilityFeatures){
-                    if(compatibility.startsWith(parsedPlatformName)){
+                for (String compatibility : compatibilityFeatures) {
+                    if (compatibility.startsWith(parsedPlatformName)) {
                         removeDuplicate = compatibility;
                         break;
                     }
@@ -289,13 +288,12 @@ public class FeatureResolverImpl implements FeatureResolver {
                 compatibilityFeatures.remove(removeDuplicate);
                 dupes.add(repo.getFeature(removeDuplicate).getPlatformName());
                 duplicates.put(parsedPlatformName, dupes);
-            }
-            else{
+            } else {
                 compatibilityFeatures.add(platformFeature.getSymbolicName());
             }
         }
 
-        for(Map.Entry<String, Set<String>> entry : duplicates.entrySet()){
+        for (Map.Entry<String, Set<String>> entry : duplicates.entrySet()) {
             selectionContext.getResult().addDuplicatePlatforms(entry.getKey(), entry.getValue());
         }
 
@@ -324,7 +322,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         Set<String> allPlatformBaseNames = selectionContext.compatibilityFeaturesBaseNames();
 
-        if(allPlatformBaseNames.size() == rootPlatforms.size()){
+        if (allPlatformBaseNames.size() == rootPlatforms.size()) {
             return Collections.emptyList();
         }
 
@@ -339,7 +337,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             if (platformFeature != null) {
                 String baseName = parseName(platformFeature.getSymbolicName());
 
-                if(!featureListContainsFeatureBaseName(rootPlatforms, baseName)){
+                if (!featureListContainsFeatureBaseName(rootPlatforms, baseName)) {
                     compatibilityFeatures.add(platformFeature.getSymbolicName());
                 }
             } else {
@@ -351,19 +349,19 @@ public class FeatureResolverImpl implements FeatureResolver {
     }
 
     /**
-     * Process the platforms within the WLP-Platform header of 
+     * Process the platforms within the WLP-Platform header of
      * all specified features within the server configuration.
      * Does an intersection of all the features platform values
      * and if the following conditions are satisfied, return it:
-     * 
-     *  * theres only one common platform for all features
-     *  * a platform value in rootPlatforms does not already exist
-     * 
+     *
+     * * theres only one common platform for all features
+     * * a platform value in rootPlatforms does not already exist
+     *
      *
      * This is almost the same as {@link #collectPlatformCompatibilityFeatures(com.ibm.ws.kernel.feature.resolver.FeatureResolverRepository)},
-     * except that the platform values are provided 
+     * except that the platform values are provided
      * using the features in the server configuration
-     * 
+     *
      * @param repo
      * @param rootPlatforms
      * @param rootFeatures
@@ -371,40 +369,39 @@ public class FeatureResolverImpl implements FeatureResolver {
      * @return The versioned compatibility feature names obtained from the
      *         platform values.
      */
-    private List<String> collectFeaturePlatforms(Repository repo, Collection<String> rootPlatforms, Collection<String> rootFeatures, SelectionContext selectionContext){
+    private List<String> collectFeaturePlatforms(Repository repo, Collection<String> rootPlatforms, Collection<String> rootFeatures, SelectionContext selectionContext) {
         //Loop through the features and do an intersection of all the platforms of the features
         Map<String, Set<String>> map = new HashMap<>();
-        for(String feature : rootFeatures){
+        for (String feature : rootFeatures) {
             ProvisioningFeatureDefinition rootFeatureDef = repo.getFeature(feature);
 
             //This gets handled later
-            if(rootFeatureDef == null){
+            if (rootFeatureDef == null) {
                 continue;
             }
 
             List<String> wlpPlatform = rootFeatureDef.getPlatformNames();
-            if(wlpPlatform != null && wlpPlatform.size() > 0){
+            if (wlpPlatform != null && wlpPlatform.size() > 0) {
                 String[] nav = parseNameAndVersion(wlpPlatform.get(0));
                 String compatibilityFeature = selectionContext.getCompatibilityBaseName(nav[0]);
                 List<String> featuresPlatforms = new ArrayList<String>();
-                for(String platform : wlpPlatform){
+                for (String platform : wlpPlatform) {
                     featuresPlatforms.add(allCompatibilityFeatures.get(platform.toLowerCase()).getSymbolicName());
                 }
-                if(map.containsKey(compatibilityFeature)){
+                if (map.containsKey(compatibilityFeature)) {
                     map.get(compatibilityFeature).retainAll(featuresPlatforms);
-                }
-                else{
+                } else {
                     map.put(compatibilityFeature, new HashSet<String>(featuresPlatforms));
                 }
             }
         }
         List<String> featurePlatforms = new ArrayList<String>();
-        for(String key : map.keySet()){
-            if(featureListContainsFeatureBaseName(rootPlatforms, key)){
+        for (String key : map.keySet()) {
+            if (featureListContainsFeatureBaseName(rootPlatforms, key)) {
                 continue;
             }
             Set<String> current = map.get(key);
-            if(current.size() == 1){
+            if (current.size() == 1) {
                 String compatibilitySymbolicName = current.toArray()[0].toString();
                 featurePlatforms.add(compatibilitySymbolicName);
             }
@@ -412,9 +409,9 @@ public class FeatureResolverImpl implements FeatureResolver {
         return featurePlatforms;
     }
 
-    private boolean featureListContainsFeatureBaseName(Collection<String> featureList, String containsFeature){
-        for(String feature : featureList){
-            if(feature.startsWith(containsFeature)){
+    private boolean featureListContainsFeatureBaseName(Collection<String> featureList, String containsFeature) {
+        for (String feature : featureList) {
+            if (feature.startsWith(containsFeature)) {
                 return true;
             }
         }
@@ -578,14 +575,14 @@ public class FeatureResolverImpl implements FeatureResolver {
         SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
 
         if (isBeta) {
-            if(hasRootVersionlessFeatures(repository, rootFeatures)){
+            if (hasRootVersionlessFeatures(repository, rootFeatures)) {
                 hasVersionlessFeatures = true;
                 processCompatibilityFeatures(repository.getFeatures());
 
                 rootPlatforms = collectConfiguredPlatforms(repository, rootPlatforms, selectionContext);
                 rootPlatforms.addAll(collectEnvironmentPlatforms(repository, rootPlatforms, selectionContext));
                 rootPlatforms.addAll(collectFeaturePlatforms(repository, rootPlatforms, rootFeatures, selectionContext));
-                for(String platform : rootPlatforms){
+                for (String platform : rootPlatforms) {
                     selectionContext.getResult().addResolvedPlatform(repository.getFeature(platform).getPlatformName());
                 }
             }
@@ -608,11 +605,11 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         //add versionless after normal resolution for packaging
         List<String> filteredVersionless = new ArrayList<>();
-        if(allowedMultipleVersions != null && hasVersionlessFeatures){
+        if (allowedMultipleVersions != null && hasVersionlessFeatures) {
             filteredVersionless = filterVersionless(rootFeaturesList, selectionContext);
         }
         //preresolve versionless features for regular resolution
-        else if(hasVersionlessFeatures){
+        else if (hasVersionlessFeatures) {
             preresolveVersionless(rootFeaturesList, selectionContext, rootPlatforms, filteredVersionless);
         }
 
@@ -641,35 +638,35 @@ public class FeatureResolverImpl implements FeatureResolver {
             }
             resolved = doResolveFeatures(rootFeaturesList, preResolved, selectionContext);
         } while (!!!(autoFeaturesToInstall = processAutoFeatures(kernelFeatures, resolved, seenAutoFeatures, selectionContext)).isEmpty());
-        
+
         //if we filtered versionless features in the pre resolution step, add them back after resolution is over.
-        if(!filteredVersionless.isEmpty()){
-            if(allowedMultipleVersions != null){
+        if (!filteredVersionless.isEmpty()) {
+            if (allowedMultipleVersions != null) {
                 addBackVersionless(filteredVersionless, selectionContext);
-            }
-            else{
+            } else {
                 finalizeVersionlessResults(selectionContext, filteredVersionless);
             }
         }
-        
+
         // Finally return the selected result
         return selectionContext.getResult();
     }
 
-    private boolean hasRootVersionlessFeatures(Repository repo, Collection<String> featureList){
-        for(String s : featureList){
+    private boolean hasRootVersionlessFeatures(Repository repo, Collection<String> featureList) {
+        for (String s : featureList) {
             ProvisioningFeatureDefinition feature = repo.getFeature(s);
             if (feature == null)
                 //Can't find the feature of that name - just skip for now....
                 continue;
-            if (feature.isVersionless()){
+            if (feature.isVersionless()) {
                 return true;
             }
         }
         return false;
     }
 
-    private List<String> checkRootsAreAccessibleAndSetFullName(List<String> rootFeatures, SelectionContext selectionContext, Set<String> preResolved, Collection<String> rootPlatforms) {
+    private List<String> checkRootsAreAccessibleAndSetFullName(List<String> rootFeatures, SelectionContext selectionContext, Set<String> preResolved,
+                                                               Collection<String> rootPlatforms) {
         ListIterator<String> iRootFeatures = rootFeatures.listIterator();
         while (iRootFeatures.hasNext()) {
             String rootFeatureName = iRootFeatures.next();
@@ -699,8 +696,8 @@ public class FeatureResolverImpl implements FeatureResolver {
 
     private List<String> getCompatibilityCandidates(String baseName, Collection<String> rootPlatforms) {
         List<String> candidates = new ArrayList<String>();
-        for(String plat : rootPlatforms){
-            if(plat.startsWith(baseName)){
+        for (String plat : rootPlatforms) {
+            if (plat.startsWith(baseName)) {
                 candidates.add(plat);
             }
         }
@@ -708,17 +705,17 @@ public class FeatureResolverImpl implements FeatureResolver {
     }
 
     /**
-     * Takes the specified versionless features and attempts to resolve them 
+     * Takes the specified versionless features and attempts to resolve them
      * to a versioned feature before resolution starts. Also does some processing
-     * of specified platforms where, if multiple exist (env var was used with 
+     * of specified platforms where, if multiple exist (env var was used with
      * multiple values), then store them to be postponed later.
-     * 
+     *
      * @param rootFeatures
      * @param selectionContext
      * @param rootPlatforms
      * @param filteredVersionless
      */
-    private void preresolveVersionless(Collection<String> rootFeatures, SelectionContext selectionContext, Collection<String> rootPlatforms, List<String> filteredVersionless){
+    private void preresolveVersionless(Collection<String> rootFeatures, SelectionContext selectionContext, Collection<String> rootPlatforms, List<String> filteredVersionless) {
         Set<String> addedRootFeatures = new HashSet<>();
         Set<String> removedVersionlessFeatures = new HashSet<>();
         Set<String> multiplePlatforms = new HashSet<>();
@@ -727,15 +724,15 @@ public class FeatureResolverImpl implements FeatureResolver {
         //Check if there is multiple rootPlatforms configured from the environment variable
         //if there are, we can't preresolve but instead we setup the compatibility feature to be postponed
         Set<String> usedPlatforms = new HashSet<>();
-        for(String rootPlatform : rootPlatforms){
+        for (String rootPlatform : rootPlatforms) {
             String baseCompatibilityName = parseName(rootPlatform);
-            if(usedPlatforms.contains(baseCompatibilityName)){
+            if (usedPlatforms.contains(baseCompatibilityName)) {
                 multiplePlatforms.add(baseCompatibilityName);
             }
             usedPlatforms.add(baseCompatibilityName);
         }
 
-        for(String multPlat : multiplePlatforms){
+        for (String multPlat : multiplePlatforms) {
             List<String> candidates = getCompatibilityCandidates(multPlat, rootPlatforms);
             rootFeatures.removeAll(candidates);
             rootPlatforms.removeAll(candidates);
@@ -743,9 +740,9 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         //Loop through the root features to get the versionless ones
-        for(String feature : rootFeatures){
+        for (String feature : rootFeatures) {
             ProvisioningFeatureDefinition rootFeatureDef = selectionContext.getRepository().getFeature(feature);
-            if(!rootFeatureDef.isVersionless()){
+            if (!rootFeatureDef.isVersionless()) {
                 continue;
             }
             Collection<FeatureResource> versionlessDeps = rootFeatureDef.getConstituents(SubsystemContentType.FEATURE_TYPE);
@@ -754,8 +751,8 @@ public class FeatureResolverImpl implements FeatureResolver {
                 String[] nav = parseNameAndVersion(privateVersionless.getSymbolicName());
                 versionlessLinkingFeatures.add(nav[0] + "-" + nav[1]);
 
-                if(privateVersionless.getTolerates() != null){
-                    for(String version : privateVersionless.getTolerates()) {
+                if (privateVersionless.getTolerates() != null) {
+                    for (String version : privateVersionless.getTolerates()) {
                         versionlessLinkingFeatures.add(nav[0] + "-" + version);
                     }
                 }
@@ -765,31 +762,31 @@ public class FeatureResolverImpl implements FeatureResolver {
             String platformBase = null;
             String linkingFeatureBase = null;
             // loops through the private features related to the versionless feature
-            for(String linkingFeature : versionlessLinkingFeatures){
+            for (String linkingFeature : versionlessLinkingFeatures) {
                 ProvisioningFeatureDefinition linkingDef = selectionContext.getRepository().getFeature(linkingFeature);
-                if(linkingDef == null){
+                if (linkingDef == null) {
                     continue;
                 }
                 linkingFeatureBase = parseName(linkingDef.getSymbolicName());
                 Collection<FeatureResource> featureDeps = linkingDef.getConstituents(SubsystemContentType.FEATURE_TYPE);
-            
+
                 // The dependencies of the linking feature, will be either public versioned feature, compatibility feature, or noship feature
                 // The logic in the loop makes sure to only handle the public versioned feature.
                 for (FeatureResource featureDep : featureDeps) {
                     ProvisioningFeatureDefinition versionedFeature = selectionContext.getRepository().getFeature(featureDep.getSymbolicName());
-                    if(versionedFeature == null || versionedFeature.getVisibility() != Visibility.PUBLIC || versionedFeature.getPlatformName() == null){
+                    if (versionedFeature == null || versionedFeature.getVisibility() != Visibility.PUBLIC || versionedFeature.getPlatformName() == null) {
                         continue;
                     }
                     platformBase = parseName(versionedFeature.getPlatformName());
                     String compatibilityBase = selectionContext.getCompatibilityBaseName(platformBase);
-                    
-                    if(multiplePlatforms.contains(compatibilityBase)){
+
+                    if (multiplePlatforms.contains(compatibilityBase)) {
                         hasMultiplePlatforms = true;
                         break;
                     }
 
-                    for(String platform : versionedFeature.getPlatformNames()){
-                        if(rootPlatforms.contains(allCompatibilityFeatures.get(platform.toLowerCase()).getSymbolicName())){
+                    for (String platform : versionedFeature.getPlatformNames()) {
+                        if (rootPlatforms.contains(allCompatibilityFeatures.get(platform.toLowerCase()).getSymbolicName())) {
                             //found a match to the platform, add the versioned feature and filter the versionless features
                             //to be added back later
                             addFeature = true;
@@ -802,12 +799,11 @@ public class FeatureResolverImpl implements FeatureResolver {
                 }
             }
             //if the feature was not added, filter it from the features list and set the result to null
-            if(!addFeature){
-                if(!usedPlatforms.contains(platformBase)){
-                    if(noPlatformFeatures.containsKey(platformBase)){
+            if (!addFeature) {
+                if (!usedPlatforms.contains(platformBase)) {
+                    if (noPlatformFeatures.containsKey(platformBase)) {
                         noPlatformFeatures.get(platformBase).add(rootFeatureDef.getFeatureName());
-                    }
-                    else{
+                    } else {
                         Set<String> featureWithoutPlatform = new HashSet<>();
                         featureWithoutPlatform.add(rootFeatureDef.getFeatureName());
                         noPlatformFeatures.put(platformBase, featureWithoutPlatform);
@@ -816,16 +812,16 @@ public class FeatureResolverImpl implements FeatureResolver {
                 filteredVersionless.add(rootFeatureDef.getFeatureName());
                 selectionContext.getResult().addVersionlessFeature(rootFeatureDef.getFeatureName(), null);
             }
-            if(!hasMultiplePlatforms){
+            if (!hasMultiplePlatforms) {
                 removedVersionlessFeatures.add(rootFeatureDef.getSymbolicName());
             }
             //if theres multiple platforms, store the platform to be postponed
-            else{
+            else {
                 linkingFeatureBaseNameToPlatform.put(linkingFeatureBase, platformBase);
             }
         }
 
-        for(Map.Entry<String, Set<String>> featuresWithoutPlatform : noPlatformFeatures.entrySet()){
+        for (Map.Entry<String, Set<String>> featuresWithoutPlatform : noPlatformFeatures.entrySet()) {
             selectionContext.getResult().addNoPlatformVersionless(featuresWithoutPlatform.getKey(), featuresWithoutPlatform.getValue());
         }
 
@@ -833,19 +829,19 @@ public class FeatureResolverImpl implements FeatureResolver {
         rootFeatures.removeAll(removedVersionlessFeatures);
     }
 
-    static Map<String, String> linkingFeatureBaseNameToPlatform = new HashMap<String,String>();
+    static Map<String, String> linkingFeatureBaseNameToPlatform = new HashMap<String, String>();
 
-    static private boolean isLinkingFeature(String basename){
+    static private boolean isLinkingFeature(String basename) {
         return linkingFeatureBaseNameToPlatform.keySet().contains(basename);
     }
 
-    static private String getLinkingFeaturesPlatform(String basename){
+    static private String getLinkingFeaturesPlatform(String basename) {
         return linkingFeatureBaseNameToPlatform.get(basename).toLowerCase();
     }
 
     /**
      * Take out versionless features from packaging
-     * 
+     *
      * @param rootFeatures
      * @param selectionContext
      * @return
@@ -855,7 +851,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         for (String feature : rootFeatures) {
             ProvisioningFeatureDefinition featureDef = selectionContext.getRepository().getFeature(feature);
-            if(featureDef.isVersionless()){
+            if (featureDef.isVersionless()) {
                 versionless.add(feature);
             }
         }
@@ -868,7 +864,7 @@ public class FeatureResolverImpl implements FeatureResolver {
     /**
      * adds back versionless features after resolution to whatever they got resolved to.
      * This is done when allowMultipleVersions is set.
-     * 
+     *
      * @param versionlessFeatures
      * @param selectionContext
      */
@@ -900,14 +896,14 @@ public class FeatureResolverImpl implements FeatureResolver {
                     Collection<FeatureResource> featureDeps = featureDef.getConstituents(SubsystemContentType.FEATURE_TYPE);
                     for (FeatureResource featureDep : featureDeps) { // could be multiple
                         ProvisioningFeatureDefinition versionedFeature = selectionContext.getRepository().getFeature(featureDep.getSymbolicName());
-                        if(versionedFeature == null){
+                        if (versionedFeature == null) {
                             continue;
                         }
-                        if(versionedFeature.isCompatibility()){
+                        if (versionedFeature.isCompatibility()) {
                             compatibleFeature = featureDep;
                         }
                         // if we resolved the public versioned feature, add the private versionless linking feature
-                        if(versionedFeature.getIbmShortName() != null && result._resolved.contains(versionedFeature.getIbmShortName())){
+                        if (versionedFeature.getIbmShortName() != null && result._resolved.contains(versionedFeature.getIbmShortName())) {
                             addFeature = true;
                         }
                     }
@@ -934,13 +930,13 @@ public class FeatureResolverImpl implements FeatureResolver {
     }
 
     /**
-     * Add back versionless features to the result after resolution is completed. 
+     * Add back versionless features to the result after resolution is completed.
      * Stores some versionless specific data into the result.
-     * 
+     *
      * @param selectionContext
      * @param filteredVersionless
      */
-    private void finalizeVersionlessResults(SelectionContext selectionContext, List<String> filteredVersionless){
+    private void finalizeVersionlessResults(SelectionContext selectionContext, List<String> filteredVersionless) {
         FeatureResolverResultImpl result = selectionContext.getResult();
         result._resolved.addAll(filteredVersionless);
 
@@ -949,27 +945,27 @@ public class FeatureResolverImpl implements FeatureResolver {
         Set<String> existingPlatforms = new HashSet<String>();
         existingPlatforms.addAll(result.getResolvedPlatforms());
         result.emptyResolvedPlatforms();
-        for(String feature : result.getResolvedFeatures()){
+        for (String feature : result.getResolvedFeatures()) {
             ProvisioningFeatureDefinition featureDef = selectionContext.getRepository().getFeature(feature);
-            if(featureDef.isCompatibility()){
-                if(existingPlatforms.contains(featureDef.getPlatformName())){
+            if (featureDef.isCompatibility()) {
+                if (existingPlatforms.contains(featureDef.getPlatformName())) {
                     result.addResolvedPlatform(featureDef.getPlatformName());
                 }
             }
         }
 
-        for(String versionless : filteredVersionless){
+        for (String versionless : filteredVersionless) {
             boolean added = false;
             ProvisioningFeatureDefinition versionlessFD = selectionContext.getRepository().getFeature(versionless);
-            if(!versionlessFD.isVersionless()){
+            if (!versionlessFD.isVersionless()) {
                 continue;
             }
             String linkingBaseName = "";
-            for(FeatureResource dependency : versionlessFD.getConstituents(null)){
+            for (FeatureResource dependency : versionlessFD.getConstituents(null)) {
                 linkingBaseName = parseName(dependency.getSymbolicName());
             }
-            for(String linking : filteredVersionless){
-                if(!linkingBaseName.equals(parseName(linking))){
+            for (String linking : filteredVersionless) {
+                if (!linkingBaseName.equals(parseName(linking))) {
                     continue;
                 }
                 for (FeatureResource versionedFeature : selectionContext.getRepository().getFeature(linking).getConstituents(null)) {
@@ -982,24 +978,23 @@ public class FeatureResolverImpl implements FeatureResolver {
                     added = true;
                 }
             }
-            if(!added){
+            if (!added) {
                 result.addVersionlessFeature(versionless, null);
             }
         }
         //if versionless features didn't resolve, make sure their result feature is null
         List<String> unresolvedVersionless = new ArrayList<String>();
-        for(Map.Entry<String, String> entry : result.getVersionlessFeatures().entrySet()){
+        for (Map.Entry<String, String> entry : result.getVersionlessFeatures().entrySet()) {
             //check symbolic name
-            if(entry.getValue() == null){
+            if (entry.getValue() == null) {
                 unresolvedVersionless.add(entry.getKey());
-            }
-            else if (!result._resolved.contains(entry.getValue())
-                && !result._resolved.contains(selectionContext.getRepository().getFeature(entry.getValue()).getFeatureName())){
-                
+            } else if (!result._resolved.contains(entry.getValue())
+                       && !result._resolved.contains(selectionContext.getRepository().getFeature(entry.getValue()).getFeatureName())) {
+
                 unresolvedVersionless.add(entry.getKey());
             }
         }
-        for(String unresolved : unresolvedVersionless){
+        for (String unresolved : unresolvedVersionless) {
             result.addVersionlessFeature(unresolved, null);
         }
     }
@@ -1007,10 +1002,10 @@ public class FeatureResolverImpl implements FeatureResolver {
     /**
      * create the compatibility features map
      */
-    private void processCompatibilityFeatures(List<ProvisioningFeatureDefinition> features){
+    private void processCompatibilityFeatures(List<ProvisioningFeatureDefinition> features) {
         allCompatibilityFeatures = new HashMap<>();
-        for(ProvisioningFeatureDefinition feature : features){
-            if(feature.isCompatibility()){
+        for (ProvisioningFeatureDefinition feature : features) {
+            if (feature.isCompatibility()) {
                 allCompatibilityFeatures.put(feature.getPlatformName().toLowerCase(), feature);
             }
         }
@@ -1113,16 +1108,16 @@ public class FeatureResolverImpl implements FeatureResolver {
         // TODO we should not have to do this, but it appears auto-features are pretty sensitive to being installed last
         Set<String> result = new LinkedHashSet<String>(preResolved.size());
 
-        for(String key : selectionContext.compatibilityFeaturesToPostpone.keySet()){
-            if(selectionContext.getSelected(key) == null && !selectionContext._current._postponed.containsKey(key)){
+        for (String key : selectionContext.compatibilityFeaturesToPostpone.keySet()) {
+            if (selectionContext.getSelected(key) == null && !selectionContext._current._postponed.containsKey(key)) {
                 Chain compatibilityChain = selectionContext.compatibilityFeaturesToPostpone.get(key);
 
-                selectionContext.processCandidates(compatibilityChain.getChain(), 
-                    compatibilityChain.getCandidates(),
-                    compatibilityChain.getFeatureRequirement(),
-                    key,
-                    compatibilityChain.getPreferredVersion().toString(),
-                    true);
+                selectionContext.processCandidates(compatibilityChain.getChain(),
+                                                   compatibilityChain.getCandidates(),
+                                                   compatibilityChain.getFeatureRequirement(),
+                                                   key,
+                                                   compatibilityChain.getPreferredVersion().toString(),
+                                                   true);
             }
         }
 
@@ -1297,8 +1292,8 @@ public class FeatureResolverImpl implements FeatureResolver {
         // process that candidate as a selection.
 
         //revisit with versionless updates
-        if ((candidateNames.size() == 1) && (!!!isLinkingFeature(baseSymbolicName) 
-            || (isLinkingFeature(baseSymbolicName) && (selectionContext.getSelected(baseSymbolicName) != null)))) {
+        if ((candidateNames.size() == 1) && (!!!isLinkingFeature(baseSymbolicName)
+                                             || (isLinkingFeature(baseSymbolicName) && (selectionContext.getSelected(baseSymbolicName) != null)))) {
 
             String selectedName = candidateNames.get(0);
             processSelected(selectionContext.getRepository().getFeature(selectedName),
@@ -1332,7 +1327,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
         // if it comes from a versionless feature
         if (isBeta) {
-            if(selectionContext.getRepository().getFeature(chain.peekFirst()).isVersionless()){
+            if (selectionContext.getRepository().getFeature(chain.peekFirst()).isVersionless()) {
                 return true;
             }
         }
@@ -1419,7 +1414,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 copy._result._missing.addAll(_result.getMissing());
                 copy._result._nonPublicRoots.addAll(_result.getNonPublicRoots());
 
-                // for versionless resolution, copy the missingPlatforms, resolvedPlatforms, 
+                // for versionless resolution, copy the missingPlatforms, resolvedPlatforms,
                 // noPlatformVersionless, and duplicatePlatforms
                 // The versionlessFeatures and resolvedPlatforms will get recalculated
                 copy._result._missingPlatforms.addAll(_result._missingPlatforms);
@@ -1443,6 +1438,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 return copy;
             }
         }
+
         final Map<String, Chain> compatibilityFeaturesToPostpone = new HashMap<String, Chain>();
         private final FeatureResolver.Repository _repository;
         private final Deque<Permutation> _permutations = new ArrayDeque<Permutation>(Arrays.asList(new Permutation()));
@@ -1544,10 +1540,10 @@ public class FeatureResolverImpl implements FeatureResolver {
             return _current._result;
         }
 
-        Set<String> compatibilityFeaturesBaseNames(){
+        Set<String> compatibilityFeaturesBaseNames() {
             Collection<ProvisioningFeatureDefinition> values = allCompatibilityFeatures.values();
             Set<String> baseNames = new HashSet<>();
-            for(ProvisioningFeatureDefinition value : values){
+            for (ProvisioningFeatureDefinition value : values) {
                 baseNames.add(parseNameAndVersion(value.getSymbolicName())[0]);
             }
             return baseNames;
@@ -1556,13 +1552,13 @@ public class FeatureResolverImpl implements FeatureResolver {
         /** Table mapping base platform names to base compatibility feature names. */
         private Map<String, String> platToCompat;
 
-        Map<String, String> platformToCompatibilityBaseName(){
-            if (platToCompat == null ) {
+        Map<String, String> platformToCompatibilityBaseName() {
+            if (platToCompat == null) {
                 Set<String> keys = allCompatibilityFeatures.keySet();
                 Map<String, String> usePlatToCompat = new HashMap<>();
-                for(String key : keys){
+                for (String key : keys) {
                     String baseKey = parseName(key);
-                    if(!usePlatToCompat.containsKey(baseKey)){
+                    if (!usePlatToCompat.containsKey(baseKey)) {
                         usePlatToCompat.put(baseKey, parseName(allCompatibilityFeatures.get(key).getSymbolicName()));
                     }
                 }
@@ -1573,7 +1569,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         String getCompatibilityBaseName(String plat) {
             Map<String, String> baseNames = platformToCompatibilityBaseName();
-            return ( (baseNames == null) ? null : baseNames.get(plat.toLowerCase()) );
+            return ((baseNames == null) ? null : baseNames.get(plat.toLowerCase()));
         }
 
         void processCandidates(Collection<String> chain,
@@ -1587,8 +1583,8 @@ public class FeatureResolverImpl implements FeatureResolver {
             // a specific compatibility feature.
 
             //if versionless, check if its corresponding compatibility feature has been resolved, otherwise postpone
-            if  (isLinkingFeature(baseSymbolicName) 
-                && getSelected(getCompatibilityBaseName(getLinkingFeaturesPlatform(baseSymbolicName))) == null){
+            if (isLinkingFeature(baseSymbolicName)
+                && getSelected(getCompatibilityBaseName(getLinkingFeaturesPlatform(baseSymbolicName))) == null) {
 
                 addPostponed(baseSymbolicName, new Chain(chain, candidateNames, preferredVersion, symbolicName));
                 return;
@@ -1633,7 +1629,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
             // must select this one
             String selectedName = candidateNames.get(0);
-            if(isLinkingFeature(baseSymbolicName)){
+            if (isLinkingFeature(baseSymbolicName)) {
                 for (FeatureResource versionedFeature : _repository.getFeature(selectedName).getConstituents(null)) {
                     //Find the right public feature (should only be one) - set the result
                     ProvisioningFeatureDefinition versionedFeatureDef = _repository.getFeature(versionedFeature.getSymbolicName());
@@ -1693,7 +1689,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         // Versionless features require eeCompatible to be resolved. In rare cases, eeCompatible will be resolved after
         // all versionles features have been postponed, and nothing else is postponed except for versionless features.
         // In that case we need to run the resolve loop one more time in order to not skip versionless features.
-        
+
         //I think we can delete this once we are done our changes with wlp platform, need to test
         boolean hasTriedVersionlessResolution() {
             if (!triedVersionless) {
@@ -1703,9 +1699,9 @@ public class FeatureResolverImpl implements FeatureResolver {
             return false;
         }
 
-        boolean hasAtLeastOneSelected(Set<String> baseNames){
-            for(String feature : baseNames){
-                if(getSelected(feature) != null){
+        boolean hasAtLeastOneSelected(Set<String> baseNames) {
+            for (String feature : baseNames) {
+                if (getSelected(feature) != null) {
                     return true;
                 }
             }
@@ -1737,7 +1733,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                         firstPostponedVersionless = postponedVersionlessIterator.next();
                         String plat = getLinkingFeaturesPlatform(firstPostponedVersionless.getKey());
 
-                        if(getSelected(getCompatibilityBaseName(plat)) != null){
+                        if (getSelected(getCompatibilityBaseName(plat)) != null) {
                             break;
                         }
                         firstPostponedVersionless = null;
@@ -1765,11 +1761,10 @@ public class FeatureResolverImpl implements FeatureResolver {
 
                 Chain selected = null;
                 String postponedBaseName = firstPostponed.getKey();
-                if(isBeta && hasVersionlessFeatures && !_current._postponedFeaturesTried.contains(postponedBaseName)){
+                if (isBeta && hasVersionlessFeatures && !_current._postponedFeaturesTried.contains(postponedBaseName)) {
                     _current._postponedFeaturesTried.add(postponedBaseName);
                     selected = firstPostponed.getValue().selectTryFirst(postponedBaseName, this);
-                }
-                else{
+                } else {
                     selected = firstPostponed.getValue().select(postponedBaseName, this);
                 }
 
@@ -1935,18 +1930,19 @@ public class FeatureResolverImpl implements FeatureResolver {
         //is part of the configured platform
         Chain selectTryFirst(String baseFeatureName, SelectionContext selectionContext) {
             for (Chain selectedChain : _chains) {
-                for(String candidate : selectedChain.getCandidates()){
+                for (String candidate : selectedChain.getCandidates()) {
                     ProvisioningFeatureDefinition feature = selectionContext.getRepository().getFeature(candidate);
-                    if(feature.getVisibility() != Visibility.PUBLIC || feature.getPlatformNames() == null){
+                    if (feature.getVisibility() != Visibility.PUBLIC || feature.getPlatformNames() == null) {
                         continue;
                     }
-                    for(String plat : feature.getPlatformNames()){
+                    for (String plat : feature.getPlatformNames()) {
                         Chain c = selectionContext.getSelected(selectionContext.getCompatibilityBaseName(parseName(plat)));
-                        if(c != null){
-                            if(c.getCandidates().size() == 1 && c.getCandidates().get(0).equals(allCompatibilityFeatures.get(plat.toLowerCase()).getSymbolicName())){
+                        if (c != null) {
+                            if (c.getCandidates().size() == 1 && c.getCandidates().get(0).equals(allCompatibilityFeatures.get(plat.toLowerCase()).getSymbolicName())) {
                                 Chain match = match(candidate, selectedChain, selectionContext);
-                                if(match != null){
-                                    return new Chain(selectedChain.getChain(), Collections.singletonList(candidate), feature.getVersion().toString(), selectedChain.getFeatureRequirement());
+                                if (match != null) {
+                                    return new Chain(selectedChain.getChain(), Collections.singletonList(candidate), feature.getVersion().toString(),
+                                                     selectedChain.getFeatureRequirement());
                                 }
                             }
                         }
