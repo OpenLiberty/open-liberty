@@ -194,6 +194,15 @@ public class EE9Features {
         features.removeAll(getMPFeatures());
         features.addAll(getCompatibleMPFeatures(EEVersion.EE9));
 
+        // mpTelemetry-1.1 and 2.0 are compatible with EE9 but not in Mp50.
+        features.add("mpTelemetry-1.1");
+        features.add("mpTelemetry-2.0");
+
+        // mpReactive features are not included on Java 8, but will resolve because Java version
+        // is not included in resolution.
+        features.add("mpReactiveStreams-3.0");
+        features.add("mpReactiveMessaging-3.0");
+
         // Value-add features which aren't compatible
         features.remove("openid-2.0"); // stabilized
         features.remove("openapi-3.1"); // depends on mpOpenAPI
@@ -280,6 +289,13 @@ public class EE9Features {
         // Conditionally remove features which have java dependencies:
 
         features.remove(JavaInfo.JAVA_VERSION < 9 ? "jdbc-4.3" : "jdbc-4.2");
+
+        if (JavaInfo.JAVA_VERSION < 11) {
+            features.remove("mpReactiveStreams-3.0");
+            features.remove("mpReactiveMessaging-3.0");
+            features.remove("mpTelemetry-1.1");
+            features.remove("mpTelemetry-2.0");
+        }
 
         if (JavaInfo.JAVA_VERSION < 17) {
             features.remove("nosql-1.0");
