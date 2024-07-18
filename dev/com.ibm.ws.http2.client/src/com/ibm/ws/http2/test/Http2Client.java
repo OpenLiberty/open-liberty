@@ -56,7 +56,7 @@ public class Http2Client {
     private final AtomicBoolean didTimeout = new AtomicBoolean(false);
     private final AtomicBoolean lockWaitFor = new AtomicBoolean(true);
     private boolean waitForAck = true;
-    private final long DEFAULT_TEST_TIMEOUT = 120000L;
+    private static final long DEFAULT_TEST_TIMEOUT = 120000L;
 
     private final Map<Frame, Frame> sendFrameConditional = new HashMap<Frame, Frame>();
     private final List<SimpleEntry<Frame, Frame>> sendFrameConditionalList = new LinkedList<AbstractMap.SimpleEntry<Frame, Frame>>();
@@ -64,7 +64,7 @@ public class Http2Client {
     private static final String CLASS_NAME = Http2Client.class.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
-    public Http2Client(String hostName, int httpDefaultPort, CountDownLatch blockUntilConnectionIsDone, long defaultTimeOutToSendFrame) {
+    public Http2Client(String hostName, int httpDefaultPort, CountDownLatch blockUntilConnectionIsDone, long defaultTimeOutToSendFrame, long defaultTestTimeOut) {
 
         this.hostName = hostName;
         this.httpDefaultPort = httpDefaultPort;
@@ -81,9 +81,13 @@ public class Http2Client {
 
         h2Connection.startAsyncRead();
 
-        TimeoutHelper timeoutHelper = new TimeoutHelper(blockUntilConnectionIsDone, DEFAULT_TEST_TIMEOUT);
+        TimeoutHelper timeoutHelper = new TimeoutHelper(blockUntilConnectionIsDone, defaultTestTimeOut);
         timeoutHelper.setPriority(Thread.MIN_PRIORITY);
         timeoutHelper.start();
+    }
+
+    public Http2Client(String hostName, int httpDefaultPort, CountDownLatch blockUntilConnectionIsDone, long defaultTimeOutToSendFrame) {
+        this(hostName, httpDefaultPort, blockUntilConnectionIsDone, defaultTimeOutToSendFrame, DEFAULT_TEST_TIMEOUT);
     }
 
     /**

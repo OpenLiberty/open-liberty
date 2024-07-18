@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -3234,6 +3234,9 @@ public class H2FATDriverServlet extends FATServlet {
 
     public void testInitialWindowSize1(HttpServletRequest request,
                                        HttpServletResponse response) throws InterruptedException, Exception {
+        // Tests that on a small window size where the data can not be sent, that the server pauses on sending data
+        // back to the client until a window update occurs. After 60 seconds a write timeout should occur so checks
+        // after 25 seconds of running the test that the stream hasn't been closed
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, this.getClass().getName(), "testInitialWindowSize1", "Started!");
             LOGGER.logp(Level.INFO, this.getClass().getName(), "testInitialWindowSize1",
@@ -3242,7 +3245,8 @@ public class H2FATDriverServlet extends FATServlet {
         boolean testPassed = false;
         String testName = "testInitialWindowSize1";
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, 1000L);
+        // Give the client 25 seconds to finish the connection and then stop the test to verify there was no data sent because of the window size
+        Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, defaultTimeoutToSendFrame, 25000L);
 
         String dataString = "ABC123";
         h2Client.addExpectedFrame(new FrameData(3, dataString.getBytes(), 0, false, false, false));
