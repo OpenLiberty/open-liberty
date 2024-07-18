@@ -3,6 +3,6 @@ symbolicName=io.openliberty.versionless.validation
 visibility=public
 IBM-ShortName: validation
 Subsystem-Name: validation
--features=io.openliberty.internal.versionless.beanValidation-1.0; ibm.tolerates:="1.1,2.0,3.0,3.1"
+-features=io.openliberty.internal.versionless.beanValidation-1.0; ibm.tolerates:="1.1,2.0,3.0"
 kind=ga
 edition=core
