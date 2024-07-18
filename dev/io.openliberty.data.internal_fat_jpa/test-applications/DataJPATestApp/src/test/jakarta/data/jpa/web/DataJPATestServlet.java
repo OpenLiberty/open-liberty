@@ -3159,6 +3159,71 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Use the JPQL version(entityVar) function as the sort property to perform
+     * an ascending sort.
+     */
+    @Test
+    public void testSortByVersionFunction() {
+        orders.deleteAll();
+
+        PurchaseOrder o1 = new PurchaseOrder();
+        o1.purchasedBy = "testSortByVersionFunction-Customer1";
+        o1.purchasedOn = OffsetDateTime.now();
+        o1.total = 21.99f;
+        o1 = orders.create(o1);
+
+        PurchaseOrder o2 = new PurchaseOrder();
+        o2.purchasedBy = "testSortByVersionFunction-Customer2";
+        o2.purchasedOn = OffsetDateTime.now();
+        o2.total = 22.99f;
+        o2 = orders.create(o2);
+
+        PurchaseOrder o3 = new PurchaseOrder();
+        o3.purchasedBy = "testSortByVersionFunction-Customer3";
+        o3.purchasedOn = OffsetDateTime.now();
+        o3.total = 23.99f;
+        o3 = orders.create(o3);
+
+        PurchaseOrder o4 = new PurchaseOrder();
+        o4.purchasedBy = "testSortByVersionFunction-Customer4";
+        o4.purchasedOn = OffsetDateTime.now();
+        o4.total = 24.99f;
+        o4 = orders.create(o4);
+
+        PurchaseOrder[] updated;
+
+        o3.total = 33.39f;
+        o1.total = 31.19f;
+        o2.total = 32.29f;
+        updated = orders.modifyAll(o3, o1, o2);
+        o3 = updated[0];
+        o1 = updated[1];
+        o2 = updated[2];
+
+        o3.total = 33.59f;
+        o1.total = 31.59f;
+        updated = orders.modifyAll(o3, o1);
+        o3 = updated[0];
+        o1 = updated[1];
+
+        o3.total = 33.99f;
+        updated = orders.modifyAll(o3);
+        o3 = updated[0];
+
+        assertEquals(List.of("testSortByVersionFunction-Customer4",
+                             "testSortByVersionFunction-Customer2",
+                             "testSortByVersionFunction-Customer1",
+                             "testSortByVersionFunction-Customer3"),
+                     orders.findAll(PageRequest.ofSize(10),
+                                    Order.by(Sort.asc("version(this)")))
+                                     .stream()
+                                     .map(o -> o.purchasedBy)
+                                     .collect(Collectors.toList()));
+
+        orders.deleteAll();
+    }
+
+    /**
      * Tests direct usage of StaticMetamodel auto-populated fields.
      */
     @Test

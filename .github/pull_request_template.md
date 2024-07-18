@@ -1,3 +1,8 @@
+
+- [ ] I have considered the risk of behavior change or other zero migration impact (https://github.com/OpenLiberty/open-liberty/wiki/Behavior-Changes).
+- [ ] If this PR fixes an Issue, the description includes "Fixes #FILLMEIN" or "Resolves #FILLMEIN" (verify `release bug` label if applicable: https://github.com/OpenLiberty/open-liberty/wiki/Open-Liberty-Conventions).
+- [ ] If this PR resolves an external Known Issue (including APARS), the description includes "Fixes #FILLMEIN" or "Resolves #FILLMEIN".
+
 ################################################################################################
 
 # Delete this section and fill in the remaining info from the template
@@ -23,7 +28,3 @@ Otherwise, a link to an issue or specific issue labels are optional.
 
 For full details, please see this wiki page: https://github.com/OpenLiberty/open-liberty/wiki/Open-Liberty-Conventions
 ################################################################################################
-
-- [ ] Considered risk of behavior change or other zero migration impact (https://github.com/OpenLiberty/open-liberty/wiki/Behavior-Changes)
-- [ ] Resolved Issues: Fixes #FILLMEIN... (verify `release bug` label if applicable: https://github.com/OpenLiberty/open-liberty/wiki/Open-Liberty-Conventions)
-- [ ] Resolved external Known Issues (including APARS): Fixes #FILLMEIN...

@@ -355,7 +355,7 @@ public class QueryInfo {
                         : Set.of(attribute);
 
         for (String name : names) {
-            name = entityInfo.getAttributeName(name, true);
+            name = getAttributeName(name, true);
 
             sorts.add(ignoreCase ? //
                             descending ? //
@@ -420,10 +420,10 @@ public class QueryInfo {
                     i--; // adjust for separate loop increment
 
                     if ("id".equalsIgnoreCase(str) && ql.regionMatches(true, i + 1, "(THIS)", 0, 6)) {
-                        q.append(o_).append(entityInfo.getAttributeName(By.ID, true));
+                        q.append(o_).append(getAttributeName(By.ID, true));
                         i += 6;
                     } else if ("this".equalsIgnoreCase(str)
-                               || entityInfo.getAttributeName(str, false) == null) {
+                               || getAttributeName(str, false) == null) {
                         q.append(str);
                     } else {
                         q.append(o_).append(str);
@@ -622,7 +622,7 @@ public class QueryInfo {
         if (attribute.length() == 0)
             throw new MappingException("Entity property name is missing."); // TODO possibly combine with unknown entity property name
 
-        String name = entityInfo.getAttributeName(attribute, true);
+        String name = getAttributeName(attribute, true);
         if (name == null) {
             if (entityInfo.idClassAttributeAccessors != null && ID.equals(attribute))
                 generateConditionsForIdClass(condition, ignoreCase, negated, q);
@@ -719,7 +719,7 @@ public class QueryInfo {
             if (++count != 1)
                 q.append(" AND ");
 
-            String name = entityInfo.getAttributeName(idClassAttr, true);
+            String name = getAttributeName(idClassAttr, true);
             if (ignoreCase)
                 q.append("LOWER(").append(o_).append(name).append(')');
             else
@@ -788,7 +788,7 @@ public class QueryInfo {
             for (String idClassAttrName : entityInfo.idClassAttributeAccessors.keySet()) {
                 if (++count != 1)
                     q.append(" AND ");
-                q.append(o_).append(entityInfo.getAttributeName(idClassAttrName, true)).append("=?").append(count);
+                q.append(o_).append(getAttributeName(idClassAttrName, true)).append("=?").append(count);
             }
         }
         return q.toString();
@@ -813,7 +813,7 @@ public class QueryInfo {
 
             q.append(" WHERE (");
 
-            String idName = entityInfo.getAttributeName(ID, true);
+            String idName = getAttributeName(ID, true);
             if (idName == null && entityInfo.idClassAttributeAccessors != null) {
                 boolean first = true;
                 for (String name : entityInfo.idClassAttributeAccessors.keySet()) {
@@ -1021,7 +1021,7 @@ public class QueryInfo {
                                                                " with the -parameters compiler option that preserves the parameter names."); // TODO NLS
                             }
 
-                            String name = entityInfo.getAttributeName(attribute, true);
+                            String name = getAttributeName(attribute, true);
 
                             q.append(first ? " " : ", ").append(o_).append(name).append("=");
                             first = false;
@@ -1093,7 +1093,7 @@ public class QueryInfo {
                     String[] idClassAttrNames = new String[entityInfo.idClassAttributeAccessors.size()];
                     int i = 0;
                     for (String idClassAttr : entityInfo.idClassAttributeAccessors.keySet())
-                        idClassAttrNames[i++] = entityInfo.getAttributeName(idClassAttr, true);
+                        idClassAttrNames[i++] = getAttributeName(idClassAttr, true);
 
                     compat.appendConditionsForIdClass(q, qp, method, p, o_, idClassAttrNames, annosForAllParams[p]);
                     paramCount += idClassAttrNames.length;
@@ -1102,7 +1102,7 @@ public class QueryInfo {
                     continue;
                 }
 
-                String name = entityInfo.getAttributeName(attribute, true);
+                String name = getAttributeName(attribute, true);
 
                 boolean isCollection = entityInfo.collectionElementTypes.containsKey(name);
 
@@ -1142,7 +1142,7 @@ public class QueryInfo {
         } else {
             cols = new String[selections.length];
             for (int i = 0; i < cols.length; i++) {
-                String name = entityInfo.getAttributeName(selections[i], true);
+                String name = getAttributeName(selections[i], true);
                 cols[i] = name == null ? selections[i] : name;
             }
         }
@@ -1187,7 +1187,7 @@ public class QueryInfo {
                     // TODO enable this once #29073 is fixed
                     //if (entityInfo.idClassAttributeAccessors != null && singleType.equals(entityInfo.idType)) {
                     //    // IdClass
-                    //    q.append("SELECT ID(THIS)");
+                    //    q.append("SELECT ID(").append(entityVar).append(')');
                     // } else
                     {
                         // Construct new instance for record
@@ -1205,7 +1205,7 @@ public class QueryInfo {
                             // The following guess of alphabetic order is not valid in most cases, but the
                             // whole code block that will be removed before GA, so there is no reason to correct it.
                             for (String idClassAttributeName : entityInfo.idClassAttributeAccessors.keySet()) {
-                                String name = entityInfo.getAttributeName(idClassAttributeName, true);
+                                String name = getAttributeName(idClassAttributeName, true);
                                 q.append(first ? "" : ", ").append(o_).append(name);
                                 first = false;
                             }
@@ -1265,7 +1265,16 @@ public class QueryInfo {
      */
     @Trivial
     void generateSort(StringBuilder q, Sort<?> sort, boolean sameDirection) {
-        q.append(sort.ignoreCase() ? "LOWER(" : "").append(entityVar_).append(sort.property());
+        String propName = sort.property();
+        if (sort.ignoreCase())
+            q.append("LOWER(");
+
+        if (propName.charAt(propName.length() - 1) == ')')
+            ; // id(o) or version(o) function
+        else
+            q.append(entityVar_);
+
+        q.append(propName);
 
         if (sort.ignoreCase())
             q.append(")");
@@ -1338,7 +1347,7 @@ public class QueryInfo {
                 next = div;
 
             String attribute = next == Integer.MAX_VALUE ? methodName.substring(u) : methodName.substring(u, next);
-            String name = entityInfo.getAttributeName(attribute, true);
+            String name = getAttributeName(attribute, true);
 
             if (name == null) {
                 if (op == '=') {
@@ -1382,7 +1391,7 @@ public class QueryInfo {
         String o_ = entityVar_;
         StringBuilder q;
 
-        String idName = entityInfo.getAttributeName(ID, true);
+        String idName = getAttributeName(ID, true);
         if (idName == null && entityInfo.idClassAttributeAccessors != null) {
             // TODO support this similar to what generateDeleteEntity does
             throw new MappingException("Update operations cannot be used on entities with composite IDs."); // TODO NLS
@@ -1435,7 +1444,7 @@ public class QueryInfo {
         int count = 0;
         for (String idClassAttr : entityInfo.idClassAttributeAccessors.keySet()) {
             count++;
-            String name = entityInfo.getAttributeName(idClassAttr, true);
+            String name = getAttributeName(idClassAttr, true);
 
             q.append(firstOperation ? " " : ", ").append(o_).append(name) //
                             .append("=?").append(++paramCount);
@@ -1468,6 +1477,69 @@ public class QueryInfo {
         }
         if (hasWhere)
             q.append(')');
+    }
+
+    @Trivial
+    String getAttributeName(String name, boolean failIfNotFound) {
+        String attributeName;
+        int len = name.length();
+        if (len > 6 && name.charAt(len - 1) == ')') {
+            // TODO It should be unnecessary to replace the id() and version() functions once #28925 is fixed
+            if (name.regionMatches(true, len - 6, "(this", 0, 5))
+                if (len == 8 && name.toLowerCase().regionMatches(true, 0, "id", 0, 2))
+                    if (entityInfo.idClassAttributeAccessors == null) {
+                        attributeName = entityInfo.attributeNames.get(By.ID);
+                        if (attributeName == null && failIfNotFound)
+                            throw new MappingException("Entity class " + entityInfo.getType().getName() +
+                                                       " does not have a property named " + name +
+                                                       " or which is designated as the @Id."); // TODO NLS
+                    } else {
+                        attributeName = null; // Special case for IdClass // TODO should be unnecessary
+                    }
+                else if (len == 13 && name.toLowerCase().regionMatches(true, 0, "version", 0, 7))
+                    if (entityInfo.versionAttributeName == null && failIfNotFound)
+                        throw new MappingException("Entity class " + entityInfo.getType().getName() +
+                                                   " does not have a property named " + name +
+                                                   " or which is designated as the @Version."); // TODO NLS
+                    else
+                        attributeName = entityInfo.versionAttributeName;
+                else
+                    attributeName = new StringBuilder(len - 4 + entityVar.length()) //
+                                    .append(name.substring(0, len - 5)) //
+                                    .append(entityVar) //
+                                    .append(')') //
+                                    .toString();
+            else
+                throw new MappingException("Entity class " + entityInfo.getType().getName() +
+                                           " does not have a property named " + name +
+                                           ". The following are valid property names for the entity: " +
+                                           entityInfo.attributeTypes.keySet()); // TODO NLS
+        } else {
+            String lowerName = name.toLowerCase();
+            attributeName = entityInfo.attributeNames.get(lowerName);
+            if (attributeName == null)
+                if (name.length() == 0)
+                    throw new MappingException("Error parsing method name or entity property name is missing."); // TODO NLS
+                else {
+                    // tolerate possible mixture of . and _ separators:
+                    lowerName = lowerName.replace('.', '_');
+                    attributeName = entityInfo.attributeNames.get(lowerName);
+                    if (attributeName == null) {
+                        // tolerate possible mixture of . and _ separators with lack of separators:
+                        lowerName = lowerName.replace("_", "");
+                        attributeName = entityInfo.attributeNames.get(lowerName);
+                        if (attributeName == null && failIfNotFound)
+                            // TODO If attempting to parse Query by Method Name without a By keyword, then the message
+                            // should also include the possibility that repository method is missing an annotation.
+                            throw new MappingException("Entity class " + entityInfo.getType().getName() + " does not have a property named " + name +
+                                                       ". The following are valid property names for the entity: " +
+                                                       entityInfo.attributeTypes.keySet()); // TODO NLS
+                    }
+                }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "getAttributeName " + name + ": " + attributeName);
+        return attributeName;
     }
 
     /**
@@ -1514,6 +1586,25 @@ public class QueryInfo {
         for (int index = 0; (index = jpql.indexOf(':', index)) >= 0;)
             positions.add(++index);
         return positions;
+    }
+
+    /**
+     * Creates a Sort instance with the corresponding entity attribute name
+     * or returns the existing instance if it already matches.
+     *
+     * @param name name provided by the user to sort by.
+     * @param sort the Sort to add.
+     * @return a Sort instance with the corresponding entity attribute name.
+     */
+    @Trivial
+    <T> Sort<T> getWithAttributeName(String name, Sort<T> sort) {
+        name = getAttributeName(name, true);
+        if (name == sort.property())
+            return sort;
+        else
+            return sort.isAscending() //
+                            ? sort.ignoreCase() ? Sort.ascIgnoreCase(name) : Sort.asc(name) //
+                            : sort.ignoreCase() ? Sort.descIgnoreCase(name) : Sort.desc(name);
     }
 
     /**
@@ -2271,7 +2362,7 @@ public class QueryInfo {
             type = Type.COUNT;
         } else if (methodName.startsWith("exists")) {
             String name = entityInfo.idClassAttributeAccessors == null ? ID : entityInfo.idClassAttributeAccessors.firstKey();
-            String attrName = entityInfo.getAttributeName(name, true);
+            String attrName = getAttributeName(name, true);
             q = new StringBuilder(200).append("SELECT ").append(entityVar_).append(attrName) //
                             .append(" FROM ").append(entityInfo.name).append(' ').append(o);
             if (by > 0 && methodName.length() > by + 2)
@@ -2341,7 +2432,7 @@ public class QueryInfo {
         } else if ("Exists".equals(methodTypeAnno.annotationType().getSimpleName())) {
             type = Type.EXISTS;
             String name = entityInfo.idClassAttributeAccessors == null ? ID : entityInfo.idClassAttributeAccessors.firstKey();
-            String attrName = entityInfo.getAttributeName(name, true);
+            String attrName = getAttributeName(name, true);
             q = new StringBuilder(200).append("SELECT ").append(o_).append(attrName) //
                             .append(" FROM ").append(entityInfo.name).append(' ').append(o);
             if (method.getParameterCount() > 0)
@@ -2746,7 +2837,7 @@ public class QueryInfo {
         int p = 0;
         for (String idClassAttr : entityInfo.idClassAttributeAccessors.keySet())
             setParameter(++p, query, entity,
-                         entityInfo.attributeAccessors.get(entityInfo.getAttributeName(idClassAttr, true)));
+                         entityInfo.attributeAccessors.get(getAttributeName(idClassAttr, true)));
 
         if (version != null) {
             if (trace && tc.isDebugEnabled())
@@ -2793,9 +2884,9 @@ public class QueryInfo {
                 throw new IllegalArgumentException("Sort: null");
             else if (hasIdClass && ID.equals(sort.property()))
                 for (String name : entityInfo.idClassAttributeAccessors.keySet())
-                    combined.add(entityInfo.getWithAttributeName(entityInfo.getAttributeName(name, true), sort));
+                    combined.add(getWithAttributeName(getAttributeName(name, true), sort));
             else
-                combined.add(entityInfo.getWithAttributeName(sort.property(), sort));
+                combined.add(getWithAttributeName(sort.property(), sort));
         }
         return combined;
     }
@@ -2819,9 +2910,9 @@ public class QueryInfo {
                 throw new IllegalArgumentException("Sort: null");
             else if (hasIdClass && ID.equals(sort.property()))
                 for (String name : entityInfo.idClassAttributeAccessors.keySet())
-                    combined.add(entityInfo.getWithAttributeName(entityInfo.getAttributeName(name, true), sort));
+                    combined.add(getWithAttributeName(getAttributeName(name, true), sort));
             else
-                combined.add(entityInfo.getWithAttributeName(sort.property(), sort));
+                combined.add(getWithAttributeName(sort.property(), sort));
         }
         return combined;
     }
@@ -2917,12 +3008,20 @@ public class QueryInfo {
      */
     @Trivial
     void validateSort(Sort<?> sort) {
-        Class<?> propertyClass = entityInfo.attributeTypes.get(sort.property());
+        String propName = sort.property();
+        if (propName.charAt(propName.length() - 1) == ')') {
+            // skip for version(o) and id(o), the latter of which which could be a composite value
+        } else {
+            Class<?> propertyClass = entityInfo.attributeTypes.get(propName);
 
-        if (sort.ignoreCase() == true && !propertyClass.equals(String.class))
-            throw new UnsupportedOperationException("The ignoreCase parameter in a Sort can only be true if the Entity" +
-                                                    " property being sorted is of type String. The property [" + sort.property() +
-                                                    "] is of type [" + propertyClass + "]"); //TODO NLS
+            if (sort.ignoreCase() //
+                && !CharSequence.class.isAssignableFrom(propertyClass)
+                && !char.class.equals(propertyClass)
+                && !Character.class.equals(propertyClass))
+                throw new UnsupportedOperationException("The ignoreCase parameter in a Sort can only be true if the Entity" +
+                                                        " property being sorted is a character sequence. The property [" + propName +
+                                                        "] is of type [" + propertyClass.getName() + "]"); //TODO NLS
+        }
     }
 
     /**
