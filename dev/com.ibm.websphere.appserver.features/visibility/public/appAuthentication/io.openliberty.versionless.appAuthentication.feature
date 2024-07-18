@@ -3,7 +3,7 @@ symbolicName=io.openliberty.versionless.appAuthentication
 visibility=public
 IBM-ShortName: appAuthentication
 Subsystem-Name: appAuthentication
--features=io.openliberty.internal.versionless.jaspic-1.1; ibm.tolerates:="2.0,3.0,3.1"
+-features=io.openliberty.internal.versionless.jaspic-1.1; ibm.tolerates:="2.0,3.0"
 kind=ga
 edition=core
 WLP-InstantOn-Enabled: true
