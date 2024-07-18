@@ -50,17 +50,17 @@ public interface Packages extends BasicRepository<Package, Integer> {
     @Query("DELETE FROM Package")
     int deleteEverything();
 
-    Optional<Integer> deleteFirst(Sort<Package> sort);
+    Optional<Integer> delete1(Limit limit, Sort<Package> sort);
 
-    int[] deleteFirst2(Sort<?>... sorts);
+    int[] delete2(Limit limit, Sort<?>... sorts);
 
-    LinkedList<?> deleteFirst2ByHeightLessThan(float maxHeight, Sort<?>... sorts);
+    LinkedList<?> delete2ByHeightLessThan(float maxHeight, Limit limit, Sort<?>... sorts);
 
-    long[] deleteFirst3(Sort<Package> sort); // invalid return type is not the entity or id
+    long[] delete3(Limit limit, Sort<Package> sort); // invalid return type is not the entity or id
 
-    List<String> deleteFirst4(Sort<Package> sort); // invalid return type is not the entity or id
+    List<String> delete4(Limit limit, Sort<Package> sort); // invalid return type is not the entity or id
 
-    Collection<Number> deleteFirst5(Sort<Package> sort); // invalid return type is not the entity or id
+    Collection<Number> delete5(Limit limit, Sort<Package> sort); // invalid return type is not the entity or id
 
     @Delete
     Object[] destroy(Limit limit, Sort<Package> sort);

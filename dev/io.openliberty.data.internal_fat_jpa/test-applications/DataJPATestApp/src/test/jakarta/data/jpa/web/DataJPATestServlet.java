@@ -652,7 +652,7 @@ public class DataJPATestServlet extends FATServlet {
         }
 
         Order<City> orderByCityName = supportsOrderByForUpdate ? Order.by(Sort.asc("name")) : Order.by();
-        Iterator<CityId> ids = cities.deleteFirst3ByStateName("South Dakota", orderByCityName).iterator();
+        Iterator<CityId> ids = cities.delete3ByStateName("South Dakota", Limit.of(3), orderByCityName).iterator();
         CityId id;
 
         assertEquals(true, ids.hasNext());
@@ -682,7 +682,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(false, ids.hasNext());
 
         Order<City> orderByPopulation = supportsOrderByForUpdate ? Order.by(Sort.asc("population")) : Order.by();
-        id = cities.deleteFirstByStateName("South Dakota", orderByPopulation).orElseThrow();
+        id = cities.delete1ByStateName("South Dakota", Limit.of(1), orderByPopulation).orElseThrow();
         assertEquals("South Dakota", id.getStateName());
         if (supportsOrderByForUpdate)
             assertEquals("Spearfish", id.name);

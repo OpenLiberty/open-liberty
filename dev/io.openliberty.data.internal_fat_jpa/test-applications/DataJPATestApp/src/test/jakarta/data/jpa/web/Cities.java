@@ -57,9 +57,9 @@ public interface Cities {
 
     CityId deleteByStateName(String state, Limit limitOf1);
 
-    Optional<CityId> deleteFirstByStateName(String state, Order<City> sorts);
+    Optional<CityId> delete1ByStateName(String state, Limit limit, Order<City> sorts);
 
-    Iterable<CityId> deleteFirst3ByStateName(String state, Order<City> sorts);
+    Iterable<CityId> delete3ByStateName(String state, Limit limit, Order<City> sorts);
 
     @Delete
     List<CityId> deleteSome(@By("stateName") String state,

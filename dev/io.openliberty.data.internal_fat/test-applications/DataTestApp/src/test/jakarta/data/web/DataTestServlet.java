@@ -1286,13 +1286,13 @@ public class DataTestServlet extends FATServlet {
         remaining.addAll(Set.of(80008, 80080, 80081, 80088));
 
         Sort<Package> sort = supportsOrderByForUpdate ? Sort.desc("width") : null;
-        Integer id = packages.deleteFirst(sort).orElseThrow();
+        Integer id = packages.delete1(Limit.of(1), sort).orElseThrow();
         if (supportsOrderByForUpdate)
             assertEquals(Integer.valueOf(80080), id);
         assertEquals("Found " + id + "; expected one of " + remaining, true, remaining.remove(id));
 
         Sort<?>[] sorts = supportsOrderByForUpdate ? new Sort[] { Sort.desc("height"), Sort.asc("length") } : null;
-        int[] ids = packages.deleteFirst2(sorts);
+        int[] ids = packages.delete2(Limit.of(2), sorts);
         assertEquals(Arrays.toString(ids), 2, ids.length);
         if (supportsOrderByForUpdate) {
             assertEquals(80081, ids[0]);
@@ -1302,7 +1302,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Found " + ids[1] + "; expected one of " + remaining, true, remaining.remove(ids[1]));
 
         // should have only 1 remaining
-        ids = packages.deleteFirst2(sorts);
+        ids = packages.delete2(Limit.of(2), sorts);
         assertEquals(Arrays.toString(ids), 1, ids.length);
         assertEquals(remaining.iterator().next(), Integer.valueOf(ids[0]));
     }
@@ -1320,21 +1320,21 @@ public class DataTestServlet extends FATServlet {
         Sort<Package> sort = Sort.asc("id");
 
         try {
-            long[] deleted = packages.deleteFirst3(sort);
+            long[] deleted = packages.delete3(Limit.of(3), sort);
             fail("Deleted with return type of long[]: " + Arrays.toString(deleted) + " even though the id type is int.");
         } catch (MappingException x) {
             // expected
         }
 
         try {
-            List<String> deleted = packages.deleteFirst4(sort);
+            List<String> deleted = packages.delete4(Limit.of(4), sort);
             fail("Deleted with return type of List<String>: " + deleted + " even though the id type is int.");
         } catch (MappingException x) {
             // expected
         }
 
         try {
-            Collection<Number> deleted = packages.deleteFirst5(sort);
+            Collection<Number> deleted = packages.delete5(Limit.of(5), sort);
             fail("Deleted with return type of Collection<Number>: " + deleted + " even though the id type is int.");
         } catch (MappingException x) {
             // expected
@@ -1377,7 +1377,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Found " + p.id + "; expected one of " + remaining, true, remaining.remove(p.id));
 
         Sort<?>[] sorts = supportsOrderByForUpdate ? new Sort[] { Sort.desc("height"), Sort.asc("length") } : null;
-        LinkedList<?> deletesList = packages.deleteFirst2ByHeightLessThan(8.0f, sorts);
+        LinkedList<?> deletesList = packages.delete2ByHeightLessThan(8.0f, Limit.of(2), sorts);
         assertEquals("Deleted " + deletesList, 2, deletesList.size());
         Package p0 = (Package) deletesList.get(0);
         Package p1 = (Package) deletesList.get(1);
@@ -3446,7 +3446,7 @@ public class DataTestServlet extends FATServlet {
                                      .collect(Collectors.toList()));
 
         assertEquals(List.of("Impreza", "HR-V"),
-                     vehicles.deleteFirst2FoundOrderByPriceAscVinIdAsc()
+                     vehicles.deleteFoundOrderByPriceAscVinIdAsc(Limit.of(2))
                                      .stream()
                                      .map(v -> v.model)
                                      .collect(Collectors.toList()));
