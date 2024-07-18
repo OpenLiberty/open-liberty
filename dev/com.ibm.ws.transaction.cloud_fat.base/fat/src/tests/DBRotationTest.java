@@ -387,10 +387,6 @@ public class DBRotationTest extends CloudFATServletClient {
 
             // Check that server1 is dead
             assertNotNull(longLeaseLogFailServer1.getServerName() + " did not shutdown", longLeaseLogFailServer1.waitForStringInLog("CWWKE0036I", FATUtils.LOG_SEARCH_TIMEOUT));
-
-            // The server has been halted but its status variable won't have been reset because we crashed it. In order to
-            // setup the server for a restart, set the server state manually.
-            longLeaseLogFailServer1.setStarted(false);
         }
     }
 
