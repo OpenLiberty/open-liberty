@@ -715,25 +715,14 @@ public class ExceptionUtils {
                 sb.append(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MISSING_PLATFORM_NAME", missing)).append("\n");
             }
         }
-        String missingFeatures = createMissingFeatureString(e.getTopLevelFeaturesNotResolved());
         if (!e.getMissingBasePlatforms().isEmpty()) {
-            sb.append(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_NO_DERIVED_PLATFORM", missingFeatures)).append("\n");
+            for (Map.Entry<String, Set<String>> noPlatformVersionless : e.getMissingBasePlatforms().entrySet()) {
+                sb.append(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_NO_DERIVED_PLATFORM", noPlatformVersionless.getValue())).append("\n");
+            }
         }
 
         String msg = sb.toString();
         return msg;
-    }
-
-    /**
-     * @param collection
-     * @return
-     */
-    protected static String createMissingFeatureString(Collection<String> missingFeatures) {
-        StringBuilder sb = new StringBuilder();
-        for (String missing : missingFeatures) {
-            sb.append(missing).append(" ");
-        }
-        return sb.toString().trim();
     }
 
     /**
