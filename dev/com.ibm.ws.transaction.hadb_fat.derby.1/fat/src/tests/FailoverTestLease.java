@@ -13,9 +13,7 @@
 package tests;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
-import java.time.Duration;
 import java.util.List;
 
 import org.junit.After;
@@ -27,7 +25,6 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
-import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -306,82 +303,5 @@ public class FailoverTestLease extends FATServletClient {
         }
 
         runTest(retriableCloudServer, SERVLET_NAME, "deleteStaleLease");
-    }
-
-    /**
-     * Mimic situation where a server's logs have been deleted but a lease log entry remains.
-     *
-     * @throws Exception
-     */
-    // This test should be moved to cloud_fat
-    @Test
-    public void testLeaseDeletion() throws Exception {
-        serversToStop = new LibertyServer[] { retriableCloudServer };
-
-        FATUtils.startServers(runner, retriableCloudServer);
-
-        // Tidy up any pre-existing tables
-        runTest(retriableCloudServer, SERVLET_NAME, "dropStaleRecoveryLogTables");
-
-        // Insert stale lease
-        runTest(retriableCloudServer, SERVLET_NAME, "insertStaleLease");
-
-        // Wait for string that shows we attempted to peer recover "cloudstale"
-        assertNotNull("peer recovery failed", retriableCloudServer
-                        .waitForStringInTrace("Peer server cloudstale has missing recovery log SQL tables", LOG_SEARCH_TIMEOUT));
-
-        String s;
-        if (FATSuite.isSQLServer()) {
-            s = "DELETE FROM WAS_LEASES_LOG WITH (ROWLOCK, UPDLOCK, HOLDLOCK) WHERE SERVER_IDENTITY='cloudstale'";
-        } else {
-            s = "DELETE FROM WAS_LEASES_LOG WHERE SERVER_IDENTITY='cloudstale'";
-        }
-        assertNotNull("Orphan lease not deleted", retriableCloudServer.waitForStringInTrace(s, LOG_SEARCH_TIMEOUT));
-    }
-
-    @Test
-    // Can get a benign InternalLogException if heartbeat happens at same time as lease claim
-    // This test should be moved to cloud_fat
-    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.InternalLogException" })
-    public void testBatchLeaseDeletion() throws Exception {
-        if (!TxTestContainerSuite.isDerby()) { // Exclude Derby
-            serversToStop = new LibertyServer[] { server1fastcheck, server2fastcheck };
-
-            FATUtils.startServers(runner, server1fastcheck);
-
-            server1fastcheck.setServerStartTimeout(30000);
-
-            // Insert stale leases
-            runTest(server1fastcheck, SERVLET_NAME, "setupBatchOfStaleLeases1");
-
-            server2fastcheck.useSecondaryHTTPPort();
-            FATUtils.startServers(runner, server2fastcheck);
-
-            // Insert more stale leases
-            runTest(server2fastcheck, SERVLET_NAME, "setupBatchOfStaleLeases2");
-
-            // Check peer recovery attempts for dummy servers
-            int server1Recoveries = 0;
-            int server2Recoveries = 0;
-            boolean foundThemAll = false;
-            int searchAttempts = 0;
-            while (!foundThemAll && searchAttempts < 60) {
-                List<String> recoveredAlready1 = server1fastcheck.findStringsInLogs("has missing recovery log SQL tables");
-                List<String> recoveredAlready2 = server2fastcheck.findStringsInLogs("has missing recovery log SQL tables");
-                // Check number of recovery attempts
-                if (recoveredAlready1 != null)
-                    server1Recoveries = recoveredAlready1.size();
-                if (recoveredAlready2 != null)
-                    server2Recoveries = recoveredAlready2.size();
-                if (server1Recoveries + server2Recoveries > 19)
-                    foundThemAll = true;
-                if (!foundThemAll) {
-                    searchAttempts++;
-                    Thread.sleep(Duration.ofSeconds(5).toMillis());
-                }
-            }
-            if (!foundThemAll)
-                fail("Did not attempt peer recovery for all servers");
-        }
     }
 }
