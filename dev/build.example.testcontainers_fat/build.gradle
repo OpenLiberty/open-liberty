@@ -15,22 +15,9 @@
  // This bundle is required both at compiletime and runtime.
  addRequiredLibraries.dependsOn copyTestContainers
  
- //TODO temporary while we switch from ojdbc8_g to ojdbc8
- task copyJdbcDriversOracleRename(type: Copy) {
-  mustRunAfter jar
-  from configurations.jdbcDrivers
-  into new File(autoFvtDir, 'publish/shared/resources/jdbc')
-  rename 'jcc.*.jar', 'jcc.jar'
-  rename 'derby-.*.jar', 'derby.jar'
-  rename 'derbyclient-.*.jar', 'derbyclient.jar'
-  rename 'ojdbc8_g.*.jar', 'ojdbc8.jar'
-  rename 'postgresql.*.jar', 'postgresql.jar'
-  rename 'mssql-jdbc.*.jar', 'mssql-jdbc.jar'
-}
- 
  // If you are preforming database testing use the copyJdbcDrivers
  // task to copy the common JDBC drivers into the
  // publish/shared/resources/jdbc directory 
- addRequiredLibraries.dependsOn copyJdbcDriversOracleRename
+ addRequiredLibraries.dependsOn copyJdbcDrivers
 
  addRequiredLibraries.dependsOn addJakartaTransformer

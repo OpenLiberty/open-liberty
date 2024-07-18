@@ -251,4 +251,11 @@ public class WebSocketVersionServiceManager {
         return false;
     }
 
+    public static boolean isWsoc22OrHigher() {
+        if (Double.parseDouble(WebSocketVersionServiceManager.LOADED_SPEC_LEVEL) >= 2.2) {
+            return true;
+        }
+        return false;
+    }
+
 }

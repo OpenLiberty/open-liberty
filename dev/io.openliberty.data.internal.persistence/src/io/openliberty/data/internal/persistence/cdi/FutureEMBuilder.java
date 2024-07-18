@@ -14,6 +14,7 @@ package io.openliberty.data.internal.persistence.cdi;
 
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -28,9 +29,11 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
+import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.provider.PUnitEMBuilder;
 import io.openliberty.data.internal.persistence.service.DBStoreEMBuilder;
@@ -66,14 +69,24 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
     private final J2EEName moduleName;
 
     /**
+     * Namespace prefix (such as java:module) of the Repository dataStore.
+     */
+    private final Namespace namespace;
+
+    /**
      * OSGi service component that provides the CDI extension for Data.
      */
-    private final DataExtensionProvider provider;
+    private final DataProvider provider;
 
     /**
      * The class loader for repository classes.
      */
     private final ClassLoader repositoryClassLoader;
+
+    /**
+     * Interface that is annotated with the Repository annotation.
+     */
+    private final Class<?> repositoryInterface;
 
     /**
      * Obtains entity manager instances from a persistence unit reference /
@@ -83,25 +96,36 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
      * @param repositoryClassLoader class loader of the repository interface.
      * @param emf                   entity manager factory.
      * @param dataStore             configured dataStore value of the Repository annotation.
-     * @param metaDataIdentifier    metadata identifier for the class loader of the repository interface.
-     * @param moduleName            JEE name of the module in which the repository interface is defined.
-     *                                  Module and component might be null or absent if not defined a module.
      */
-    FutureEMBuilder(DataExtensionProvider provider,
+    FutureEMBuilder(DataProvider provider,
+                    Class<?> repositoryInterface,
                     ClassLoader repositoryClassLoader,
-                    String dataStore,
-                    J2EEName moduleName) {
+                    String dataStore) {
         this.provider = provider;
+        this.repositoryInterface = repositoryInterface;
         this.repositoryClassLoader = repositoryClassLoader;
         this.dataStore = dataStore;
-        this.moduleName = moduleName;
+        this.moduleName = getModuleName(repositoryInterface, repositoryClassLoader, provider);
+        this.namespace = Namespace.of(dataStore);
 
-        boolean javaApp = dataStore.regionMatches(5, "app", 0, 3);
-        boolean javaModule = !javaApp && dataStore.regionMatches(5, "module", 0, 6);
-        boolean javaComp = !javaApp && !javaModule && dataStore.regionMatches(5, "comp", 0, 4);
-
-        application = javaApp || javaModule || javaComp ? moduleName.getApplication() : null;
-        module = javaModule || javaComp ? moduleName.getModule() : null;
+        if (Namespace.APP.isMoreGranularThan(namespace)) { // java:global or none
+            application = null;
+            module = null;
+        } else { // java:app, java:module, or java:comp
+            application = moduleName.getApplication();
+            if (Namespace.MODULE.isMoreGranularThan(namespace)) { // java:app
+                module = null;
+            } else { // java:module or java:comp
+                module = moduleName.getModule();
+                if (module == null)
+                    throw new IllegalArgumentException("The " + repositoryInterface.getName() +
+                                                       " repository that is defined in the " +
+                                                       moduleName.getApplication() +
+                                                       " application specifies " + "dataStore = " + dataStore +
+                                                       ", but " + namespace + " names are not accessible to" +
+                                                       " this location. Use a java:app name instead."); // TODO NLS
+            }
+        }
     }
 
     /**
@@ -127,21 +151,35 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
      * @throws Exception if an error occurs.
      */
     @FFDCIgnore(NamingException.class)
-    EntityManagerBuilder createEMBuilder() {
+    public EntityManagerBuilder createEMBuilder() {
         String resourceName = dataStore;
-        boolean isJNDIName = resourceName.startsWith("java:");
-
         String metadataIdentifier = getMetadataIdentifier();
+
+        // metadataIdentifier examples:
+        // WEB#MyApp#MyWebModule.war
+        // EJB#MyApp#MyEJBModule.jar#MyEJB
+        // DATA#MyApp
 
         ComponentMetaDataAccessorImpl accessor = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor();
         ComponentMetaData extMetadata = accessor.getComponentMetaData();
         ComponentMetaData repoMetadata = (ComponentMetaData) provider.metadataIdSvc.getMetaData(metadataIdentifier);
         boolean switchMetadata = repoMetadata != null &&
                                  (extMetadata == null || !extMetadata.getJ2EEName().equals(repoMetadata.getJ2EEName()));
+
+        if (metadataIdentifier.startsWith("EJB#") && namespace == Namespace.COMP)
+            throw new IllegalArgumentException("The " + repositoryInterface.getName() +
+                                               " repository that is defined in the " +
+                                               repoMetadata.getJ2EEName().getModule() +
+                                               " enterprise bean module of the " +
+                                               repoMetadata.getJ2EEName().getApplication() +
+                                               " application specifies " + "dataStore = " + resourceName +
+                                               ", but java:comp names are not accessible to the" +
+                                               " module. Use a java:app or java:module name instead."); // TODO NLS
+
         if (switchMetadata)
             accessor.beginContext(repoMetadata);
         try {
-            if (isJNDIName) {
+            if (namespace != null) {
                 try {
                     Object resource = InitialContext.doLookup(dataStore);
 
@@ -150,7 +188,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
 
                     if (resource instanceof EntityManagerFactory)
                         return new PUnitEMBuilder(provider, repositoryClassLoader, (EntityManagerFactory) resource, //
-                                        resourceName, metadataIdentifier, application, module, entityTypes);
+                                        resourceName, metadataIdentifier, entityTypes);
 
                 } catch (NamingException x) {
                     FFDCFilter.processException(x, this.getClass().getName() + ".createEMBuilder", "155", this, new Object[] { (switchMetadata ? repoMetadata : extMetadata) });
@@ -167,13 +205,13 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
                         Tr.debug(this, tc, javaCompName + " is the JNDI name for " + resource);
 
                     if (resource instanceof EntityManagerFactory)
-                        return new PUnitEMBuilder(provider, repositoryClassLoader, (EntityManagerFactory) resource, //
-                                        javaCompName, metadataIdentifier, application, module, entityTypes);
+                        return new PUnitEMBuilder(provider, repositoryClassLoader, //
+                                        (EntityManagerFactory) resource, //
+                                        javaCompName, metadataIdentifier, //
+                                        entityTypes);
 
-                    if (resource instanceof DataSource) {
-                        isJNDIName = true;
+                    if (resource instanceof DataSource)
                         resourceName = javaCompName;
-                    }
                 } catch (NamingException x) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, javaCompName + " is not available in JNDI");
@@ -186,12 +224,12 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
 
         ComponentMetaData mdata = (ComponentMetaData) provider.metadataIdSvc.getMetaData(metadataIdentifier);
         J2EEName jeeName = mdata == null ? null : mdata.getJ2EEName();
+        boolean javacolon = namespace != null || // any java: namespace
+                            resourceName != dataStore; // implicit java:comp
         return new DBStoreEMBuilder(provider, repositoryClassLoader, //
-                        resourceName, isJNDIName, metadataIdentifier, //
-                        new String[] { jeeName == null ? null : jeeName.getApplication(),
-                                       jeeName == null ? null : jeeName.getModule(),
-                                       jeeName == null ? null : jeeName.getComponent() }, // TODO clean this up and avoid duplication
-                        entityTypes);
+                        resourceName, //
+                        javacolon, //
+                        metadataIdentifier, jeeName, entityTypes);
     }
 
     @Override
@@ -241,6 +279,35 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
         }
 
         return mdIdentifier;
+    }
+
+    /**
+     * Obtains the module name in which the repository interface is defined.
+     *
+     * @param repositoryInterface   the repository interface.
+     * @param repositoryClassLoader class loader of the repository interface.
+     * @param provider              OSGi service that provides the CDI extension.
+     * @return AppName[#ModuleName] with only the application name if not defined
+     *         in a module.
+     */
+    private J2EEName getModuleName(Class<?> repositoryInterface,
+                                   ClassLoader repositoryClassLoader,
+                                   DataProvider provider) {
+        J2EEName moduleName;
+
+        Optional<J2EEName> moduleNameOptional = provider.cdiService.getModuleNameForClass(repositoryInterface);
+
+        if (moduleNameOptional.isPresent()) {
+            moduleName = moduleNameOptional.get();
+        } else {
+            // create component and module metadata based on the application metadata
+            ComponentMetaData cdata = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+            ApplicationMetaData adata = cdata == null ? null : cdata.getModuleMetaData().getApplicationMetaData();
+            cdata = provider.createComponentMetadata(adata, repositoryClassLoader);
+            moduleName = cdata.getModuleMetaData().getJ2EEName();
+        }
+
+        return moduleName;
     }
 
     @Override

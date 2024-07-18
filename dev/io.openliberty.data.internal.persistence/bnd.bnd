@@ -53,7 +53,7 @@ Include-Resource:\
 -cdiannotations:
 
 -dsannotations: \
-  io.openliberty.data.internal.persistence.cdi.DataExtensionProvider
+  io.openliberty.data.internal.persistence.DataProvider
 
 instrument.classesExcludes: io/openliberty/data/internal/persistence/resources/*.class
 

@@ -12,7 +12,8 @@ bVersion=1.0
 
 src: \
     fat/src,\
-    test-applications/session.war/src
+    test-applications/session.war/src,\
+    test-applications/maxMessage.war/src
 
 fat.project: true
 

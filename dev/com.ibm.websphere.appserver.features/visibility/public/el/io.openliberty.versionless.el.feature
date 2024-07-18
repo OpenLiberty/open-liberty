@@ -6,3 +6,4 @@ Subsystem-Name: el
 -features=io.openliberty.internal.versionless.el-3.0; ibm.tolerates:="4.0,5.0"
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true

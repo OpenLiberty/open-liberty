@@ -10,6 +10,23 @@
 
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.mtls.mutliple.multipleapp;
 
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleIncomingChannel;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleOutgoingChannel;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
+import static componenttest.topology.utils.FATServletClient.runTest;
+
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.config.SslConfigs;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties;
@@ -21,28 +38,13 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.mtls.mutliple.apps.M
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.mtls.mutliple.apps.MessagingBeanTwo;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.MtlsMultipleKeyStoresTests;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
+
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.config.SslConfigs;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleIncomingChannel;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleOutgoingChannel;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
-import static componenttest.topology.utils.FATServletClient.runTest;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -58,14 +60,14 @@ public class KafkaMtlsMultipleAppsTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10);
+    public static RepeatTests r = ReactiveMessagingActions.repeatDefault(SERVER_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {
 
         //Connector details are common for both applications as we aren't applying the certs at this level
         ConnectorProperties connectorProperties = new ConnectorProperties(ConnectorProperties.Direction.CONNECTOR, "liberty-kafka")
-                .addAll(MtlsMultipleKeyStoresTests.testConnectionProperties());
+                        .addAll(MtlsMultipleKeyStoresTests.testConnectionProperties());
 
         // When Kafka is initializing its producers and consumers, it also creates additional ones under the covers, in particular for metrics.
         // As consumers typically have group.id set, the client.id is a derivation of the `<group.id>-<some number>`
@@ -80,54 +82,54 @@ public class KafkaMtlsMultipleAppsTest {
 
         // App One Connection Properties
         ConnectorProperties outgoingProperties = simpleOutgoingChannel(null, MessagingBeanOne.CHANNEL_OUT)
-                .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.KEYSTORE_FILENAME)
-                .addProperty(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, MtlsMultipleKeyStoresTests.kafkaContainer.getKeystorePassword())
-                .addProperty(ProducerConfig.CLIENT_ID_CONFIG, "AppOne");
+                        .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.KEYSTORE_FILENAME)
+                        .addProperty(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, MtlsMultipleKeyStoresTests.kafkaContainer.getKeystorePassword())
+                        .addProperty(ProducerConfig.CLIENT_ID_CONFIG, "AppOne");
 
         ConnectorProperties incomingProperties = simpleIncomingChannel(null, MessagingBeanOne.CHANNEL_IN, APP_GROUP_ID1)
-                .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.KEYSTORE_FILENAME)
-                .addProperty(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, MtlsMultipleKeyStoresTests.kafkaContainer.getKeystorePassword());
+                        .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.KEYSTORE_FILENAME)
+                        .addProperty(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, MtlsMultipleKeyStoresTests.kafkaContainer.getKeystorePassword());
 
         // App Two Connection properties using different keystore
         ConnectorProperties outgoingProperties2 = simpleOutgoingChannel(null, MessagingBeanTwo.CHANNEL_OUT)
-                // Valid Keystore
-                .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.KEYSTORE2_FILENAME)
-                .addProperty(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, MtlsMultipleKeyStoresTests.kafkaContainer.getKeystorePassword())
-                .addProperty(ProducerConfig.CLIENT_ID_CONFIG, "AppTwo");
+                        // Valid Keystore
+                        .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.KEYSTORE2_FILENAME)
+                        .addProperty(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, MtlsMultipleKeyStoresTests.kafkaContainer.getKeystorePassword())
+                        .addProperty(ProducerConfig.CLIENT_ID_CONFIG, "AppTwo");
 
         ConnectorProperties incomingProperties2 = simpleIncomingChannel(null, MessagingBeanTwo.CHANNEL_IN, APP_GROUP_ID2)
-                // Valid Keystore
-                .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.KEYSTORE2_FILENAME)
-                .addProperty(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, MtlsMultipleKeyStoresTests.kafkaContainer.getKeystorePassword());
+                        // Valid Keystore
+                        .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.KEYSTORE2_FILENAME)
+                        .addProperty(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, MtlsMultipleKeyStoresTests.kafkaContainer.getKeystorePassword());
 
         // The Connection properties for the KafkaTestClient should include all certificates, so it uses the truststore as both trust and key stores so it has both client certs
         PropertiesAsset appConfig1 = new PropertiesAsset()
-                .addProperty(KafkaTestClientProvider.CONNECTION_PROPERTIES_KEY, KafkaTestClientProvider.encodeProperties(MtlsMultipleKeyStoresTests.connectionProperties()))
-                .include(incomingProperties)
-                .include(outgoingProperties)
-                .include(connectorProperties);
+                        .addProperty(KafkaTestClientProvider.CONNECTION_PROPERTIES_KEY, KafkaTestClientProvider.encodeProperties(MtlsMultipleKeyStoresTests.connectionProperties()))
+                        .include(incomingProperties)
+                        .include(outgoingProperties)
+                        .include(connectorProperties);
 
         PropertiesAsset appConfig2 = new PropertiesAsset()
-                .addProperty(KafkaTestClientProvider.CONNECTION_PROPERTIES_KEY, KafkaTestClientProvider.encodeProperties(MtlsMultipleKeyStoresTests.connectionProperties()))
-                .include(incomingProperties2)
-                .include(outgoingProperties2)
-                .include(connectorProperties);
+                        .addProperty(KafkaTestClientProvider.CONNECTION_PROPERTIES_KEY, KafkaTestClientProvider.encodeProperties(MtlsMultipleKeyStoresTests.connectionProperties()))
+                        .include(incomingProperties2)
+                        .include(outgoingProperties2)
+                        .include(connectorProperties);
 
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, APP1_NAME + ".war")
-                .addAsLibraries(kafkaClientLibs())
-                .addAsManifestResource(kafkaPermissions(), "permissions.xml")
-                .addClasses(KafkaMtlsTestServletOne.class, MessagingBeanOne.class)
-                .addPackage(AbstractKafkaTestServlet.class.getPackage())
-                .addPackage(KafkaTestConstants.class.getPackage())
-                .addAsResource(appConfig1, "META-INF/microprofile-config.properties");
+                        .addAsLibraries(kafkaClientLibs())
+                        .addAsManifestResource(kafkaPermissions(), "permissions.xml")
+                        .addClasses(KafkaMtlsTestServletOne.class, MessagingBeanOne.class)
+                        .addPackage(AbstractKafkaTestServlet.class.getPackage())
+                        .addPackage(KafkaTestConstants.class.getPackage())
+                        .addAsResource(appConfig1, "META-INF/microprofile-config.properties");
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, APP2_NAME + ".war")
-                .addAsLibraries(kafkaClientLibs())
-                .addAsManifestResource(kafkaPermissions(), "permissions.xml")
-                .addClasses(KafkaMtlsTestServletTwo.class, MessagingBeanTwo.class)
-                .addPackage(AbstractKafkaTestServlet.class.getPackage())
-                .addPackage(KafkaTestConstants.class.getPackage())
-                .addAsResource(appConfig2, "META-INF/microprofile-config.properties");
+                        .addAsLibraries(kafkaClientLibs())
+                        .addAsManifestResource(kafkaPermissions(), "permissions.xml")
+                        .addClasses(KafkaMtlsTestServletTwo.class, MessagingBeanTwo.class)
+                        .addPackage(AbstractKafkaTestServlet.class.getPackage())
+                        .addPackage(KafkaTestConstants.class.getPackage())
+                        .addAsResource(appConfig2, "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportDropinAppToServer(server, war1, SERVER_ONLY);
         ShrinkHelper.exportDropinAppToServer(server, war2, SERVER_ONLY);

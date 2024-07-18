@@ -1,20 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.streams.test.context;
 
 import static com.ibm.ws.microprofile.reactive.streams.test.suite.FATSuite.MP50_RS30_ID;
-import static com.ibm.ws.microprofile.reactive.streams.test.suite.FATSuite.MP60_RS30_ID;
-import static com.ibm.ws.microprofile.reactive.streams.test.suite.FATSuite.MP61_RS30_ID;
+import static componenttest.rules.repeater.MicroProfileActions.MP61_ID;
+import static componenttest.rules.repeater.MicroProfileActions.MP70_EE11_ID;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -125,7 +122,7 @@ public class ReactiveStreamsContextTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({ MP50_RS30_ID, MP60_RS30_ID, MP61_RS30_ID })
+    @SkipForRepeat({ MP50_RS30_ID, MP61_ID, MP70_EE11_ID })
     public void testGetCdiAfterResultBlocking() throws Exception {
         CompletableFuture<Void> latch = new CompletableFuture<>();
         CompletionStage<CDI<Object>> result = ReactiveStreams.of(1, 2, 3, 4, 5)
@@ -164,7 +161,7 @@ public class ReactiveStreamsContextTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({ MP50_RS30_ID, MP60_RS30_ID, MP61_RS30_ID })
+    @SkipForRepeat({ MP50_RS30_ID, MP61_ID, MP70_EE11_ID })
     public void testGetBeanManagerViaJndiAfterResultBlocking() {
         CompletableFuture<Void> latch = new CompletableFuture<>();
         CompletionStage<BeanManager> result = ReactiveStreams.of(1)
@@ -201,7 +198,7 @@ public class ReactiveStreamsContextTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({ MP50_RS30_ID, MP60_RS30_ID, MP61_RS30_ID })
+    @SkipForRepeat({ MP50_RS30_ID, MP61_ID, MP70_EE11_ID })
     public void testLoadClassFromTcclAfterResultBlocking() {
         CompletableFuture<Void> latch = new CompletableFuture<>();
         CompletionStage<Class<?>> result = ReactiveStreams.of(1)
@@ -236,7 +233,7 @@ public class ReactiveStreamsContextTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({ MP50_RS30_ID, MP60_RS30_ID, MP61_RS30_ID })
+    @SkipForRepeat({ MP50_RS30_ID, MP61_ID, MP70_EE11_ID })
     public void testGetConfigValueFromInjectedBeanAfterResultBlocking() {
         CompletableFuture<Void> latch = new CompletableFuture<>();
         CompletionStage<String> result = ReactiveStreams.of(1)

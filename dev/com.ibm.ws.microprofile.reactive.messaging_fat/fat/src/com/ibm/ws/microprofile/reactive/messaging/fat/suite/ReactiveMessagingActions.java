@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,27 +21,24 @@ import componenttest.rules.repeater.RepeatActions.SEVersion;
 import componenttest.rules.repeater.RepeatTests;
 
 public class ReactiveMessagingActions {
-    public static final String MP20_RM10_ID = MicroProfileActions.MP20_ID + "_RM10";
-    public static final String MP41_RM10_ID = MicroProfileActions.MP41_ID + "_RM10";
     public static final String MP50_RM30_ID = MicroProfileActions.MP50_ID + "_RM30";
-    public static final String MP60_RM30_ID = MicroProfileActions.MP60_ID + "_RM30";
-    public static final String MP61_RM30_ID = MicroProfileActions.MP61_ID + "_RM30";
-    public static final FeatureSet MP20_RM10 = MicroProfileActions.MP20.addFeature("mpReactiveMessaging-1.0").build(MP20_RM10_ID);
-    public static final FeatureSet MP41_RM10 = MicroProfileActions.MP41.addFeature("mpReactiveMessaging-1.0").build(MP41_RM10_ID);
     //MP50 runs on Java 8 but RM30 will only run on Java11 or higher
     public static final FeatureSet MP50_RM30 = MicroProfileActions.MP50.addFeature("mpReactiveMessaging-3.0").setMinJavaLevel(SEVersion.JAVA11).build(MP50_RM30_ID);
-    public static final FeatureSet MP60_RM30 = MicroProfileActions.MP60.addFeature("mpReactiveMessaging-3.0").build(MP60_RM30_ID);
-    public static final FeatureSet MP61_RM30 = MicroProfileActions.MP61.addFeature("mpReactiveMessaging-3.0").build(MP61_RM30_ID);
 
     //All MicroProfile ReactiveMessaging FeatureSets - must be descending order
-    private static final FeatureSet[] ALL_RM_SETS_ARRAY = { MP61_RM30, MP60_RM30, MP50_RM30, MP41_RM10, MP20_RM10 };
-    private static final List<FeatureSet> ALL_RM_SETS_LIST = Arrays.asList(ALL_RM_SETS_ARRAY);
+    private static final List<FeatureSet> ALL;
+
+    static {
+        ALL = new ArrayList<>(MicroProfileActions.ALL);
+        //put the updated FeatureSet in just before MP50
+        ALL.add(ALL.indexOf(MicroProfileActions.MP50), MP50_RM30);
+    }
 
     /**
      * Get a RepeatTests instance for the given FeatureSets. The first FeatureSet will be run in LITE mode. The others will be run in FULL.
      *
-     * @param server The server to repeat on
-     * @param firstFeatureSet The first FeatureSet
+     * @param server           The server to repeat on
+     * @param firstFeatureSet  The first FeatureSet
      * @param otherFeatureSets The other FeatureSets
      * @return a RepeatTests instance
      */
@@ -51,14 +49,22 @@ public class ReactiveMessagingActions {
     /**
      * Get a RepeatTests instance for the given FeatureSets. The first FeatureSet will be run in LITE mode. The others will be run in the mode specified.
      *
-     * @param server The server to repeat on
+     * @param server                   The server to repeat on
      * @param otherFeatureSetsTestMode The mode to run the other FeatureSets
-     * @param firstFeatureSet The first FeatureSet
-     * @param otherFeatureSets The other FeatureSets
+     * @param firstFeatureSet          The first FeatureSet
+     * @param otherFeatureSets         The other FeatureSets
      * @return a RepeatTests instance
      */
     public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
-        return RepeatActions.repeat(server, otherFeatureSetsTestMode, ALL_RM_SETS_LIST, firstFeatureSet, Arrays.asList(otherFeatureSets));
+        return RepeatActions.repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, Arrays.asList(otherFeatureSets));
+    }
+
+    public static RepeatTests repeatDefault(String server) {
+        return repeat(server,
+                      MicroProfileActions.MP70_EE11, //RM30 + EE11
+                      MicroProfileActions.MP61, //RM30 + EE10
+                      ReactiveMessagingActions.MP50_RM30, //RM30 + EE9
+                      MicroProfileActions.MP20); //RM10 + EE8
     }
 
 }

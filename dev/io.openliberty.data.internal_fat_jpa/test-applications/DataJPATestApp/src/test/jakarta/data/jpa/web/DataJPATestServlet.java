@@ -646,7 +646,7 @@ public class DataJPATestServlet extends FATServlet {
         cityNames.add("Pierre");
 
         //TODO Eclipse link SQL Generation bug on Oracle: https://github.com/OpenLiberty/open-liberty/issues/28545
-        if (jdbcJarName.startsWith("ojdbc8_g")) {
+        if (jdbcJarName.startsWith("ojdbc8")) {
             cities.removeByStateName("South Dakota"); //Cleanup Cities repository and skip the rest of these tests
             return;
         }
@@ -657,7 +657,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         if (supportsOrderByForUpdate)
             assertEquals("Aberdeen", id.name);
         // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
@@ -665,7 +665,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         if (supportsOrderByForUpdate)
             assertEquals("Brookings", id.name);
         // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
@@ -673,7 +673,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         if (supportsOrderByForUpdate)
             assertEquals("Mitchell", id.name);
         // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
@@ -683,14 +683,14 @@ public class DataJPATestServlet extends FATServlet {
 
         Order<City> orderByPopulation = supportsOrderByForUpdate ? Order.by(Sort.asc("population")) : Order.by();
         id = cities.deleteFirstByStateName("South Dakota", orderByPopulation).orElseThrow();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         if (supportsOrderByForUpdate)
             assertEquals("Spearfish", id.name);
         // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
         id = cities.deleteByStateName("South Dakota", Limit.of(1));
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
         List<CityId> some = cities.deleteSome("South Dakota", Limit.of(2));
@@ -698,12 +698,12 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
         assertEquals(false, ids.hasNext());
@@ -714,7 +714,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
         assertEquals(false, ids.hasNext());
@@ -741,15 +741,15 @@ public class DataJPATestServlet extends FATServlet {
 
         CityId id = ids.next();
         assertEquals("Davenport", id.name);
-        assertEquals("Iowa", id.stateName);
+        assertEquals("Iowa", id.getStateName());
 
         id = ids.next();
         assertEquals("Iowa City", id.name);
-        assertEquals("Iowa", id.stateName);
+        assertEquals("Iowa", id.getStateName());
 
         id = ids.next();
         assertEquals("Sioux City", id.name);
-        assertEquals("Iowa", id.stateName);
+        assertEquals("Iowa", id.getStateName());
 
         removed = cities.deleteByStateName("Iowa");
 
@@ -1905,7 +1905,7 @@ public class DataJPATestServlet extends FATServlet {
         // single result
         CityId cityId = cities.findFirstByNameOrderByPopulationDesc("Springfield");
         assertEquals("Springfield", cityId.name);
-        assertEquals("Missouri", cityId.stateName);
+        assertEquals("Missouri", cityId.getStateName());
 
         // Stream result
         assertIterableEquals(List.of("Springfield, Oregon",
@@ -3159,6 +3159,71 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Use the JPQL version(entityVar) function as the sort property to perform
+     * an ascending sort.
+     */
+    @Test
+    public void testSortByVersionFunction() {
+        orders.deleteAll();
+
+        PurchaseOrder o1 = new PurchaseOrder();
+        o1.purchasedBy = "testSortByVersionFunction-Customer1";
+        o1.purchasedOn = OffsetDateTime.now();
+        o1.total = 21.99f;
+        o1 = orders.create(o1);
+
+        PurchaseOrder o2 = new PurchaseOrder();
+        o2.purchasedBy = "testSortByVersionFunction-Customer2";
+        o2.purchasedOn = OffsetDateTime.now();
+        o2.total = 22.99f;
+        o2 = orders.create(o2);
+
+        PurchaseOrder o3 = new PurchaseOrder();
+        o3.purchasedBy = "testSortByVersionFunction-Customer3";
+        o3.purchasedOn = OffsetDateTime.now();
+        o3.total = 23.99f;
+        o3 = orders.create(o3);
+
+        PurchaseOrder o4 = new PurchaseOrder();
+        o4.purchasedBy = "testSortByVersionFunction-Customer4";
+        o4.purchasedOn = OffsetDateTime.now();
+        o4.total = 24.99f;
+        o4 = orders.create(o4);
+
+        PurchaseOrder[] updated;
+
+        o3.total = 33.39f;
+        o1.total = 31.19f;
+        o2.total = 32.29f;
+        updated = orders.modifyAll(o3, o1, o2);
+        o3 = updated[0];
+        o1 = updated[1];
+        o2 = updated[2];
+
+        o3.total = 33.59f;
+        o1.total = 31.59f;
+        updated = orders.modifyAll(o3, o1);
+        o3 = updated[0];
+        o1 = updated[1];
+
+        o3.total = 33.99f;
+        updated = orders.modifyAll(o3);
+        o3 = updated[0];
+
+        assertEquals(List.of("testSortByVersionFunction-Customer4",
+                             "testSortByVersionFunction-Customer2",
+                             "testSortByVersionFunction-Customer1",
+                             "testSortByVersionFunction-Customer3"),
+                     orders.findAll(PageRequest.ofSize(10),
+                                    Order.by(Sort.asc("version(this)")))
+                                     .stream()
+                                     .map(o -> o.purchasedBy)
+                                     .collect(Collectors.toList()));
+
+        orders.deleteAll();
+    }
+
+    /**
      * Tests direct usage of StaticMetamodel auto-populated fields.
      */
     @Test
@@ -3322,10 +3387,10 @@ public class DataJPATestServlet extends FATServlet {
 
         // Derby, Oracle, SQLServer  does not support comparisons of BLOB (IMAGE sqlserver) values
         // Derby JDBC Jar Name : derby.jar
-        // Oracle JDBC Jar Name : ojdbc8_g.jar
+        // Oracle JDBC Jar Name : ojdbc8.jar
         // SQLServer JDBC Jar Name : mssql-jdbc.jar
         String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
-        if (!(jdbcJarName.startsWith("derby") || jdbcJarName.startsWith("ojdbc8_g") || jdbcJarName.startsWith("mssql-jdbc"))) {
+        if (!(jdbcJarName.startsWith("derby") || jdbcJarName.startsWith("ojdbc8") || jdbcJarName.startsWith("mssql-jdbc"))) {
             // find one entity by zipcodes as Optional
             c = counties.findByZipCodes(wabashaZipCodes).orElseThrow();
             assertEquals("Wabasha", c.name);

@@ -748,6 +748,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
 
         HashSet<String> preInstalledAutoFeatures = new HashSet<String>();
         HashSet<String> preInstalledPublicAutoFeatures = new HashSet<String>();
+        Result result = null;
 
         try {
             switch (featureChange.provisioningMode) {
@@ -813,8 +814,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                 featureChange.features = getPublicFeatures(preInstalledFeatures, false).toArray(new String[] {});
             }
 
-            updateFeatures(locationService, provisioner, preInstalledFeatures, featureChange, featureUpdateNumber.incrementAndGet());
-
+            result = updateFeatures(locationService, provisioner, preInstalledFeatures, featureChange, featureUpdateNumber.incrementAndGet());
             // All done with the updates we could find...
             switch (featureChange.provisioningMode) {
                 case CONTENT_REQUEST:
@@ -861,7 +861,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             // Update/progress messages -- AFTER we've written cache files
 
             fixLock.set(false);
-            writeUpdateMessages(featureChange.provisioningMode, preInstalledFeatures, deletedAutoFeatures, deletedPublicAutoFeatures);
+            writeUpdateMessages(featureChange.provisioningMode, preInstalledFeatures, deletedAutoFeatures, deletedPublicAutoFeatures, result);
         }
     }
 
@@ -968,7 +968,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
      *                                      auto features have been deleted.
      */
     private void writeUpdateMessages(ProvisioningMode provisioningMode, Set<String> preInstalledFeatures, Set<String> deletedAutoFeatures,
-                                     Set<String> deletedPublicAutoFeatures) {
+                                     Set<String> deletedPublicAutoFeatures, Result result) {
         writeServiceMessages();
 
         Set<String> postInstalledFeatures = new HashSet<>(featureRepository.getResolvedFeatures());
@@ -976,29 +976,30 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             Tr.debug(tc, "all installed features " + postInstalledFeatures);
         }
 
-        if(isBeta){
-            for(String feature : postInstalledFeatures){
-                if(feature.indexOf("internal.versionless") == -1){
+        if(isBeta && result != null){
+            if(!result.getResolvedPlatforms().isEmpty()){
+                Tr.info(tc, "RESOLVED_PLATFORM", result.getResolvedPlatforms());
+            }
+
+            //checks if the resolved versionless features are in the postInstalledFeatures list
+            //if they are, they get displayed in the resolved versionless message
+            List<String> resolvedVersionless = new ArrayList<>();
+            List<String> resolvedVersioned = new ArrayList<>();
+            for (Map.Entry<String, String> versionlessResolved : result.getVersionlessFeatures().entrySet()) {
+                if(versionlessResolved.getValue() == null){
                     continue;
                 }
-                String featureName = feature.substring(36);
-                String alternateName = featureRepository.matchesAlternate(featureName);
-                if(postInstalledFeatures.contains(featureName)){
-                    if(postInstalledFeatures.contains(featureName.split("-")[0])){
-                        Tr.info(tc, "VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", featureName.split("-")[0], featureName);
-                    }
-                    else if(alternateName != null && postInstalledFeatures.contains(alternateName.split("-")[0])){
-                        Tr.info(tc, "VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", alternateName.split("-")[0], featureName);
-                    }
+                ProvisioningFeatureDefinition versionless = featureRepository.getFeature(versionlessResolved.getKey());
+                ProvisioningFeatureDefinition versioned = featureRepository.getFeature(versionlessResolved.getValue());
+                if((postInstalledFeatures.contains(versionless.getFeatureName()) || postInstalledFeatures.contains(versionless.getSymbolicName()))
+                    && (postInstalledFeatures.contains(versioned.getFeatureName()) || postInstalledFeatures.contains(versioned.getSymbolicName()))){
+                    
+                    resolvedVersionless.add(versionless.getFeatureName());
+                    resolvedVersioned.add(versioned.getFeatureName());
                 }
-                else if(alternateName != null && postInstalledFeatures.contains(alternateName)){
-                    if(postInstalledFeatures.contains(featureName.split("-")[0])){
-                        Tr.info(tc, "VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", featureName.split("-")[0], alternateName);
-                    }
-                    else if(postInstalledFeatures.contains(alternateName.split("-")[0])){
-                        Tr.info(tc, "VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", alternateName.split("-")[0], alternateName);
-                    }
-                }
+            }
+            if(!resolvedVersionless.isEmpty()){
+                Tr.info(tc, "VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", resolvedVersionless, resolvedVersioned);
             }
         }
 
@@ -1486,8 +1487,28 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             }
 
             @Override
-            public Set<String> getUnresolvedVersionless() {
+            public Map<String, String> getVersionlessFeatures(){
+                return Collections.emptyMap();
+            }
+
+            @Override
+            public Set<String> getResolvedPlatforms(){
                 return Collections.emptySet();
+            }
+
+            @Override
+            public Set<String> getMissingPlatforms(){
+                return Collections.emptySet();
+            }
+
+            @Override
+            public Map<String, Set<String>> getDuplicatePlatforms(){
+                return Collections.emptyMap();
+            }
+
+            @Override
+            public Map<String, Set<String>> getNoPlatformVersionless(){
+                return Collections.emptyMap();
             }
         };
     }
@@ -1502,7 +1523,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
      * @return true if no errors occurred during the update, false otherwise
      */
     @FFDCIgnore(Throwable.class)
-    protected boolean updateFeatures(WsLocationAdmin locService,
+    protected Result updateFeatures(WsLocationAdmin locService,
                                      Provisioner provisioner,
                                      Set<String> preInstalledFeatures,
                                      FeatureChange featureChange,
@@ -1510,6 +1531,8 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         // NOTE RE: FFDCIgnore above-- The catch block for Throwable below, stores
         // the exception in an InstallStatus object and calls FFDC at a more appropriate time.
         BundleList newBundleList = null;
+
+        Result result = null;
 
         // In 850 we were not case sensitive so we need to stay that way.
         // Use a set to eliminate duplicates.
@@ -1544,7 +1567,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                 // This will be populated by resolveFeatures if there are any restricted access attempts during resolution
                 Collection<String> restrictedAccessAttempts = new ArrayList<String>();
 
-                Result result = resolveFeatures(newConfiguredFeatures, restrictedAccessAttempts, featureChange.provisioningMode, newConfiguredPlatforms);
+                result = resolveFeatures(newConfiguredFeatures, restrictedAccessAttempts, featureChange.provisioningMode, newConfiguredPlatforms);
                 boolean reportedConfigurationErrors = reportErrors(result, restrictedAccessAttempts, newConfiguredFeatures, installStatus);
                 goodFeatures = result.getResolvedFeatures();
 
@@ -1689,7 +1712,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             eventAdminService.postEvent(e);
         }
 
-        return status;
+        return result;
     }
 
     /**
@@ -1982,10 +2005,70 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         }
 
         if(isBeta){
-            for(String versionlessFeature : result.getUnresolvedVersionless()){
-                reportedErrors = true;
-                Tr.error(tc, "UNRESOLVED_VERSIONLESS_FEATURE", getFeatureName(versionlessFeature));
+
+            if(!result.getDuplicatePlatforms().isEmpty()){
+                for(Map.Entry<String, Set<String>> duplicatePlatforms : result.getDuplicatePlatforms().entrySet()){
+                    Tr.error(tc, "DUPLICATE_PLATFORMS", duplicatePlatforms.getValue());
+                }
             }
+
+            if(!result.getMissingPlatforms().isEmpty()){
+                reportedErrors = true;
+                Set<String> remainingMissingPlatforms = new HashSet<String>();
+                if(platformEnvironmentVariable != null){
+                    for(String plat : result.getMissingPlatforms()){
+                        if(platformEnvironmentVariable.contains(plat)){
+                            Tr.error(tc, "UNKNOWN_PLATFORM_VALUE_ENV_VAR", plat);
+                        }
+                        else{
+                            remainingMissingPlatforms.add(plat);
+                        }
+                    }
+                }
+                else{
+                    remainingMissingPlatforms.addAll(result.getMissingPlatforms());
+                }
+                if(!remainingMissingPlatforms.isEmpty()){
+                    for(String missingPlat : remainingMissingPlatforms){
+                        Tr.error(tc, "UNKNOWN_PLATFORM_ELEMENT", missingPlat);
+                    }
+                }
+            }
+
+            if(!result.getNoPlatformVersionless().isEmpty()){
+                for (Map.Entry<String, Set<String>> noPlatformVersionless : result.getNoPlatformVersionless().entrySet()) {
+                    Tr.error(tc, "NO_RESOLVED_PLATFORM", noPlatformVersionless.getValue());
+                }
+            }
+
+            List<String> unresolvedVersionless = new ArrayList<>();
+            for (Map.Entry<String, String> versionlessResolved : result.getVersionlessFeatures().entrySet()) {
+                if(versionlessResolved.getValue() == null){
+                    String platformBaseName = featureRepository.getPlatformForVersionlessFeature(versionlessResolved.getKey());
+
+                    boolean compatibleWithPlatform = true;
+                    if(platformBaseName != null && !result.getResolvedPlatforms().isEmpty()){
+                        for(String resolvedPlat : result.getResolvedPlatforms()){
+                            if(resolvedPlat.toLowerCase().startsWith(platformBaseName.toLowerCase()) && 
+                                featureRepository.getVersionlessFeatureVersionForPlatform(versionlessResolved.getKey(), resolvedPlat) == null){
+
+                                Tr.error(tc, "INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM", getFeatureName(versionlessResolved.getKey()), resolvedPlat);
+                                compatibleWithPlatform = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    if(compatibleWithPlatform){
+                        unresolvedVersionless.add(getFeatureName(versionlessResolved.getKey()));
+                    }
+                }
+            }
+            if(!unresolvedVersionless.isEmpty()){
+                reportedErrors = true;
+                Tr.error(tc, "UNRESOLVED_VERSIONLESS_FEATURE", unresolvedVersionless);
+            }
+
         }
 
         List<Entry<String, Collection<Chain>>> sortedConflicts = new ArrayList<Entry<String, Collection<Chain>>>(result.getConflicts().entrySet());

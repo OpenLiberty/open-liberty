@@ -418,6 +418,30 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     }
 
     /**
+     * Return the versionless features platform association.
+     * ex. servlet would return javaee
+     * 
+     * @return String platformBaseName
+     */
+    public String getPlatformForVersionlessFeature(String versionlessFeatureName){
+        ProvisioningFeatureDefinition versionlessFeature = getFeature(versionlessFeatureName);
+
+        if (versionlessFeature != null && versionlessFeature.isVersionless()) {
+            for (ProvisioningFeatureDefinition child : findAllPossibleVersions(versionlessFeature)) {
+                if(child == null){
+                    continue;
+                }
+                String plat = child.getPlatformName();
+                if(plat != null && plat.indexOf("-") != -1){
+                    return getFeatureBaseName(plat);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Answer the versioned feature shortName if exists for the passed platform version or null if doesn't exist.
      *
      * @return String versionedFeatureName
@@ -445,7 +469,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         for (FeatureResource dependency : versionlessFeature.getConstituents(null)) {
             result.add(getVersionedFeature(dependency.getSymbolicName()));
 
-            String baseName = getFeatureBaseName(dependency.getSymbolicName());
+            String baseName = getFeatureBaseNameWithDash(dependency.getSymbolicName());
             List<String> tolerates = dependency.getTolerates();
             if (tolerates != null) {
                 for (String toleratedVersion : tolerates) {
@@ -486,7 +510,26 @@ public final class FeatureRepository implements FeatureResolver.Repository {
      * <p>
      * The version is presumed to start after the last dash character in the name.
      * <p>
-     * E.g. {@code getFeatureBaseName("com.example.featureA-1.0")} returns {@code "com.example.featureA-"}
+     * E.g. {@code getFeatureBaseNameWithDash("com.example.featureA-1.0")} returns {@code "com.example.featureA-"}
+     *
+     * @param nameAndVersion the feature symbolic name
+     * @return the feature symbolic name with any version stripped
+     */
+    private String getFeatureBaseNameWithDash(String nameAndVersion) {
+        int dashPosition = nameAndVersion.lastIndexOf('-');
+        if (dashPosition != -1) {
+            return nameAndVersion.substring(0, dashPosition + 1);
+        } else {
+            return nameAndVersion;
+        }
+    }
+
+        /**
+     * Removes the version from the end of a feature symbolic name
+     * <p>
+     * The version is presumed to start after the last dash character in the name.
+     * <p>
+     * E.g. {@code getFeatureBaseName("com.example.featureA-1.0")} returns {@code "com.example.featureA"}
      *
      * @param nameAndVersion the feature symbolic name
      * @return the feature symbolic name with any version stripped
@@ -494,7 +537,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     private String getFeatureBaseName(String nameAndVersion) {
         int dashPosition = nameAndVersion.lastIndexOf('-');
         if (dashPosition != -1) {
-            return nameAndVersion.substring(0, dashPosition + 1);
+            return nameAndVersion.substring(0, dashPosition);
         } else {
             return nameAndVersion;
         }

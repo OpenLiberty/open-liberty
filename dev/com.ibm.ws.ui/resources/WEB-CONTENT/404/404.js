@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -147,8 +147,8 @@ function parseQuery(qstr) {
 function setDefaultEnString() {
   'use strict';
   
-  document.getElementById('404_title_page').innerHTML = "404 Page Not Found"; 
-  //document.getElementById('redirecting_msg').innerHTML = "Redirecting in {0} seconds.";
+  document.getElementById('404_title_page').innerText = "404 Page Not Found";
+
   var element = document.getElementById('redirecting_msg');
   var translateMsg = "Redirecting in {0} seconds.";
   var counter = 10;
@@ -191,7 +191,7 @@ function replaceExternalizedStrings(responseText) {
     if (msgKey.valueOf() === "REDIRECTING_MESSAGE") {
        countdown(counter, element, translateMsg);
     } else {
-       element.innerHTML = translateMsg;
+       element.innerText = translateMsg;
     }
   }
 }
@@ -223,7 +223,7 @@ function countdown(counter, display, msg) {
         window.location = location + contextroot;
     } else {
         var strMsg = formatString(msg, [counter]);
-        display.innerHTML = strMsg;
+        display.innerText = strMsg;
     }
   }, 1000);
 }

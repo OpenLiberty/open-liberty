@@ -113,7 +113,15 @@ public interface FeatureResolver {
 
         Map<String, Collection<Chain>> getConflicts();
 
-        Set<String> getUnresolvedVersionless();
+        Map<String, String> getVersionlessFeatures();
+
+        Set<String> getResolvedPlatforms();
+
+        Set<String> getMissingPlatforms();
+
+        Map<String, Set<String>> getDuplicatePlatforms();
+
+        Map<String, Set<String>> getNoPlatformVersionless();
     }
 
     public static final List<String> EMPTY_STRINGS = Collections.emptyList();

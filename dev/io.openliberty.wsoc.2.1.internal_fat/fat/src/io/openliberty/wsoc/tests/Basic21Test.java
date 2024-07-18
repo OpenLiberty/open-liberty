@@ -96,10 +96,6 @@ public class Basic21Test {
         wt_secure = new WsocTest(LS, true);
         ssl = new SSLTest(wt_secure);
         bwst.setUp();
-
-        // Allow Jetty to finish starting up - https://github.com/OpenLiberty/open-liberty/issues/23172
-        // Updated to 5100 - Jan 2nd 2024
-        Thread.sleep(5100);
     }
 
     @AfterClass

@@ -6,3 +6,4 @@ Subsystem-Name: beanValidation
 -features=io.openliberty.internal.versionless.beanValidation-1.0; ibm.tolerates:="1.1,2.0,3.0"
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true

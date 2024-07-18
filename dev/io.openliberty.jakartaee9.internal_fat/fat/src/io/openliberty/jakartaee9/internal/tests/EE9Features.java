@@ -194,9 +194,6 @@ public class EE9Features {
         features.removeAll(getMPFeatures());
         features.addAll(getCompatibleMPFeatures(EEVersion.EE9));
 
-        // MpTelemetry-1.1 is compatible with EE9 but not in Mp50.
-        features.add("mpTelemetry-1.1");
-
         // Value-add features which aren't compatible
         features.remove("openid-2.0"); // stabilized
         features.remove("openapi-3.1"); // depends on mpOpenAPI
@@ -209,10 +206,6 @@ public class EE9Features {
         features.remove("springBoot-1.5");
         features.remove("springBoot-2.0");
         features.remove("springBoot-3.0"); // springBoot 3.0 only supports EE 10
-        features.remove("mpTelemetry-2.0"); //Not yet assigned to an MPXX_FEATURES_ARRAY
-        features.remove("mpFaultTolerance-4.1"); //MP70 is just a placeholder for now
-
-        features.remove("mpReactiveMessaging-3.0"); //still in development
 
         if (!openLiberty) {
             // These stabilized features are not compatible with EE9.
@@ -264,6 +257,7 @@ public class EE9Features {
         features.remove("passwordUtilities-1.1");
         features.remove("persistenceContainer-3.0");
         features.remove("mpOpenAPI-3.1");
+        features.remove("mpTelemetry-1.1");
 
         // Remove client features.
         features.remove("jakartaeeClient-9.1");
@@ -287,12 +281,6 @@ public class EE9Features {
 
         features.remove(JavaInfo.JAVA_VERSION < 9 ? "jdbc-4.3" : "jdbc-4.2");
 
-        if (JavaInfo.JAVA_VERSION < 11) {
-            features.remove("mpReactiveStreams-3.0");
-            features.remove("mpReactiveMessaging-3.0");
-            features.remove("mpTelemetry-1.1");
-        }
-
         if (JavaInfo.JAVA_VERSION < 17) {
             features.remove("nosql-1.0");
         }
@@ -306,10 +294,6 @@ public class EE9Features {
         Set<String> features = new HashSet<>(versionedFeatures);
 
         features.removeAll(compatibleFeatures);
-
-        features.remove("mpReactiveMessaging-3.0"); //still in development
-        features.remove("mpTelemetry-2.0"); //Not yet assigned to an MPXX_FEATURES_ARRAY
-        features.remove("mpFaultTolerance-4.1"); //MP70 is just a placeholder for now
 
         // Test features may or may not be compatible, we don't want to assert either way
         features.removeAll(getTestFeatures());

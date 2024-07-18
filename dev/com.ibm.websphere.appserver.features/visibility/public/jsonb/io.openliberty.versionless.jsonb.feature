@@ -6,3 +6,4 @@ Subsystem-Name: jsonb
 -features=io.openliberty.internal.versionless.jsonb-1.0; ibm.tolerates:="2.0,3.0"
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true

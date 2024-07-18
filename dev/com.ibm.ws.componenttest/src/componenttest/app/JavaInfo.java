@@ -17,7 +17,6 @@ public class JavaInfo {
 
     public static int JAVA_VERSION = majorVersion();
 
-    private final String JAVA_HOME;
     private final int MAJOR;
     private final int MINOR;
     private final int MICRO;
@@ -25,8 +24,6 @@ public class JavaInfo {
     private final int FIXPACK;
 
     private JavaInfo() {
-        JAVA_HOME = System.getProperty("java.home");
-
         String version = System.getProperty("java.version");
         String[] versionElements = version.split("\\D"); // split on non-digits
 
@@ -46,7 +43,7 @@ public class JavaInfo {
             MICRO = 0;
 
         // Parse service release
-        String buildInfo = System.getProperty("java.runtime.version");
+        String buildInfo = System.getProperty("java.specification.version");
         int sr = 0;
         int srloc = buildInfo.toLowerCase().indexOf("sr");
         if (srloc > (-1)) {
@@ -95,10 +92,6 @@ public class JavaInfo {
         return instance().MICRO;
     }
 
-    public static String javaHome() {
-        return instance().JAVA_HOME;
-    }
-
     public static int serviceRelease() {
         return instance().SERVICE_RELEASE;
     }
@@ -110,6 +103,6 @@ public class JavaInfo {
     @Override
     public String toString() {
         return "major=" + MAJOR + ", minor=" + MINOR + ", micro=" + MICRO + ", service release=" + SERVICE_RELEASE
-               + ", fixpack=" + FIXPACK + ", javaHome=" + JAVA_HOME;
+               + ", fixpack=" + FIXPACK;
     }
 }

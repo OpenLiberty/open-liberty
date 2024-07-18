@@ -98,6 +98,7 @@ instrument.classesExcludes: com/ibm/ws/wssecurity/resources/*.class
 	com.ibm.ws.artifact.overlay;version=latest,\
 	com.ibm.ws.artifact;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.crypto.common;version=latest,\
 	com.ibm.ws.crypto.passwordutil;version=latest,\
 	com.ibm.ws.injection;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\

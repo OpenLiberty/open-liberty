@@ -963,9 +963,8 @@ public class InstallKernelMap implements Map {
             if (!isInstallServerFeature) {
                 resolveResult = resolver.resolve((Collection<String>) data.get(InstallConstants.FEATURES_TO_RESOLVE));
             } else {
-                resolveResult = resolver.resolveAsSet((Collection<String>) data.get(InstallConstants.FEATURES_TO_RESOLVE));
-                // TODO - After Resolver changes, also start passing platforms
-                //         (Collection<String>) data.get(InstallConstants.PLATFORMS));
+                resolveResult = resolver.resolveAsSet((Collection<String>) data.get(InstallConstants.FEATURES_TO_RESOLVE),
+                                                      (Collection<String>) data.get(InstallConstants.PLATFORMS));
             }
 
             if (!resolveResult.isEmpty()) {

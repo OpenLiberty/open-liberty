@@ -15,6 +15,7 @@ Subsystem-Name: Web Service Security 1.1
   io.openliberty.wsSecurity1.1.internal.jaxws-2.2; ibm.tolerates:="3.0,4.0,11.0", \
   io.openliberty.org.bouncycastle
 -bundles=\
-  io.openliberty.org.apache.commons.logging
+  io.openliberty.org.apache.commons.logging, \
+  com.ibm.ws.crypto.common
 kind=ga
 edition=base

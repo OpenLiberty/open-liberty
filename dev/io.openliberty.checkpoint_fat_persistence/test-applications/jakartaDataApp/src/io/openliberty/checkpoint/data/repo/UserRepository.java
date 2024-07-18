@@ -10,26 +10,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.datastore.web;
+package io.openliberty.checkpoint.data.repo;
 
-import java.util.List;
-
-import jakarta.data.repository.By;
-import jakarta.data.repository.Find;
-import jakarta.data.repository.Insert;
-import jakarta.data.repository.OrderBy;
+import io.openliberty.checkpoint.data.entity.User;
+import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.Repository;
-import jakarta.persistence.EntityManager;
 
 @Repository
-public interface QualifiedPersistenceUnitRepo {
-    @ResourceQualifier
-    EntityManager entityManager();
-
-    @Insert
-    void add(List<PersistenceUnitEntity> entities);
-
-    @Find
-    @OrderBy("id")
-    List<PersistenceUnitEntity> getAll(@By("value") int val);
+public interface UserRepository extends BasicRepository<User, Long> {
 }

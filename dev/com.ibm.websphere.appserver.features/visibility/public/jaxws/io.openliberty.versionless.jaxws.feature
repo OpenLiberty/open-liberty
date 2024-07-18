@@ -6,3 +6,4 @@ Subsystem-Name: jaxws
 -features=io.openliberty.internal.versionless.jaxws-2.2; ibm.tolerates:="3.0,4.0"
 kind=ga
 edition=base
+WLP-InstantOn-Enabled: true

@@ -47,7 +47,7 @@ public class MonitorAppStateListener implements ApplicationStateListener{
     	if (!ProductInfo.getBetaEdition()) { 
     		return;
     	}
-		HttpStatsMonitor.getInstance().removeStat(appInfo.getDeploymentName());
+		HttpServerStatsMonitor.getInstance().removeStat(appInfo.getDeploymentName());
 		
 	}
 

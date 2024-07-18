@@ -18,6 +18,8 @@ public class VersionlessFeatureCreator {
     private final String checkExistingPublic = "visibility/public/";
     private final String checkExistingPrivate = "visibility/private/";
 
+    private final boolean createAll = false;
+
     public boolean createFeatureFiles(VersionlessFeatureDefinition feature, VersionlessFeatureDefinition akaFeature) throws IOException {
         File priv = new File(privatePath);
         if (!priv.exists()) {
@@ -84,10 +86,13 @@ public class VersionlessFeatureCreator {
 
     private boolean createPrivateVersionedFeature(String featureName, String akaFeatureName, String featureNum, String x, String y, String fullName, String edition) throws IOException {
         File checkExisting = new File(checkExistingPrivate + "io.openliberty.internal.versionless." + featureName + "-" + featureNum + ".feature");
-        if (checkExisting.exists()) {
+        if(createAll){
+            //skip checking, just create the feature
+        }
+        else if (checkExisting.exists()) {
             return false;
         }
-        if (akaFeatureName != null) {
+        else if (akaFeatureName != null) {
             checkExisting = new File(checkExistingPrivate + "io.openliberty.internal.versionless." + akaFeatureName + "-" + featureNum + ".feature");
             if (checkExisting.exists()) {
                 return false;
@@ -128,7 +133,7 @@ public class VersionlessFeatureCreator {
         //if we created a new private versionless feature we need to update the public feature with new dependencies
         if (checkExisting.exists()){
             existingVersions = validatePublicVersionlessFeature(feature, akaFeature);
-            if(existingVersions == null){
+            if(existingVersions == null && !createAll){
                 return false;
             }
         }
@@ -182,6 +187,8 @@ public class VersionlessFeatureCreator {
         writer.append("kind=ga");
         writer.newLine();
         writer.append("edition=" + feature.getEdition());
+        writer.newLine();
+        writer.append("WLP-InstantOn-Enabled: true");
         writer.newLine();
 
         writer.close();
@@ -278,6 +285,10 @@ public class VersionlessFeatureCreator {
             myReader.close();
         } catch (Exception e) {
             // We check if file exists before entering this function, should never reach this
+        }
+
+        if(createAll){
+            return existingFeatureVersions;
         }
 
         ArrayList<String> featureVersions = feature.getAllVersions();

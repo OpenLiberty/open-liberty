@@ -67,6 +67,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.Configuration;
 
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -77,9 +78,9 @@ import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.resource.ResourceFactory;
 
+import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.EntityInfo;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
-import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.Convert;
@@ -130,13 +131,13 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
      *                                  if obtained from CDI then the config.displayId of a dataSource.
      * @param isJNDIName            indicates if the dataStore name is a JNDI name (begins with java: or is inferred to be java:comp/env/...)
      * @param metaDataIdentifier    metadata identifier for the class loader of the repository interface.
-     * @param appModComp            application/module/component in which the repository interface is defined.
+     * @param jeeName               application/module/component in which the repository interface is defined.
      *                                  Module and component might be null or absent.
      * @param entityTypes           entity classes as known by the user, not generated.
      */
-    public DBStoreEMBuilder(DataExtensionProvider provider, ClassLoader repositoryClassLoader,
+    public DBStoreEMBuilder(DataProvider provider, ClassLoader repositoryClassLoader,
                             String dataStore, boolean isJNDIName,
-                            String metadataIdentifier, String[] appModComp,
+                            String metadataIdentifier, J2EEName jeeName,
                             Set<Class<?>> entityTypes) {
         super(provider, repositoryClassLoader);
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -144,24 +145,19 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
         try {
             String qualifiedName = null;
             boolean javaApp = false, javaModule = false, javaComp = false;
-            String application = appModComp.length < 1 ? null : appModComp[0];
-            String module = appModComp.length < 2 ? null : appModComp[1];
-            String component = appModComp.length < 3 ? null : appModComp[2];
+            String application = jeeName == null ? null : jeeName.getApplication();
+            String module = jeeName == null ? null : jeeName.getModule();
 
             // Qualify resource reference and DataSourceDefinition JNDI names with the application/module/component name to make them unique
             if (isJNDIName) {
                 javaApp = dataStore.regionMatches(5, "app", 0, 3);
                 javaModule = !javaApp && dataStore.regionMatches(5, "module", 0, 6);
-                // TODO detect web module metadata to avoid including component
                 javaComp = !javaApp && !javaModule && dataStore.regionMatches(5, "comp", 0, 4);
                 StringBuilder s = new StringBuilder(dataStore.length() + 80);
                 if (application != null && (javaApp || javaModule || javaComp)) {
                     s.append("application[").append(application).append(']').append('/');
-                    if (module != null && (javaModule || javaComp)) {
+                    if (module != null && (javaModule || javaComp))
                         s.append("module[").append(module).append(']').append('/');
-                        if (component != null && javaComp)
-                            s.append("component[").append(component).append(']').append('/');
-                    }
                 }
                 qualifiedName = s.append("databaseStore[").append(dataStore).append(']').toString();
 
@@ -178,15 +174,13 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
                 BundleContext bc = FrameworkUtil.getBundle(DatabaseStore.class).getBundleContext();
                 ServiceReference<ResourceFactory> dsRef = null;
                 if (isJNDIName) {
-                    // Look for DataSourceDefinition with jndiName and application/module/component matching
+                    // Look for DataSourceDefinition with jndiName and application/module matching
                     StringBuilder filter = new StringBuilder(200) //
                                     .append("(&(service.factoryPid=com.ibm.ws.jdbc.dataSource)");
                     if (application != null && (javaApp || javaModule || javaComp))
                         filter.append(FilterUtils.createPropertyFilter("application", application));
                     if (module != null && javaModule || javaComp)
                         filter.append(FilterUtils.createPropertyFilter("module", module));
-                    if (component != null && javaComp)
-                        filter.append(FilterUtils.createPropertyFilter("jndiName", dataStore));
                     filter.append(FilterUtils.createPropertyFilter("jndiName", dataStore)) //
                                     .append(')');
 
@@ -223,7 +217,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
                 }
                 if (dbStoreId == null) {
                     // Create a ResourceFactory that can delegate back to a resource reference lookup
-                    ResourceFactory delegator = new DelegatingResourceFactory(dataStore, metadataIdentifier, provider);
+                    ResourceFactory delegator = new ResRefDelegator(dataStore, metadataIdentifier, provider);
                     Hashtable<String, Object> svcProps = new Hashtable<String, Object>();
                     dbStoreId = isJNDIName ? qualifiedName : ("application[" + application + "]/databaseStore[" + dataStore + ']');
                     String id = dbStoreId + "/ResourceFactory";
@@ -512,15 +506,6 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
         return persistenceServiceUnit.createEntityManager();
     }
 
-    @Override
-    @Trivial
-    public boolean equals(Object o) {
-        DBStoreEMBuilder b;
-        return this == o || o instanceof DBStoreEMBuilder
-                            && databaseStoreId.equals((b = (DBStoreEMBuilder) o).databaseStoreId)
-                            && getRepositoryClassLoader().equals(b.getRepositoryClassLoader());
-    }
-
     /**
      * Initially copied from @nmittles pull #25248
      *
@@ -664,7 +649,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
         ResourceFactory dsFactory = bc.getService(dsFactoryRefs.iterator().next());
         try {
             ResourceConfig resRef = null;
-            if (!(dsFactory instanceof DelegatingResourceFactory)) {
+            if (!(dsFactory instanceof ResRefDelegator)) {
                 // Use a resource reference that includes the authDataRef of the databaseStore.
                 resRef = provider.resourceConfigFactory.createResourceConfig(DataSource.class.getName());
                 resRef.setSharingScope(ResourceConfig.SHARING_SCOPE_SHAREABLE);
@@ -726,13 +711,6 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
     @Trivial
     protected Class<?> getRecordClass(Class<?> generatedEntityClass) {
         return generatedToRecordClass.get(generatedEntityClass);
-    }
-
-    @Override
-    @Trivial
-    public int hashCode() {
-        return databaseStoreId.hashCode();
-
     }
 
     @Override

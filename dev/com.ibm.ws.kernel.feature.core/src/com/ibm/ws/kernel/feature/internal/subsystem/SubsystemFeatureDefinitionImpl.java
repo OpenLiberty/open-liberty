@@ -580,7 +580,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
      *
      * <ul><li>private</li>
      * <li>do not have a short name</li>
-     * <li>contain ".eeCompatible-" or ".mpCompatible-" in their symbolic name.</li>
+     * <li>contain a wlp platform value</li>
      * </ul>
      *
      * @return True or false telling if this is a versionless feature.
@@ -593,10 +593,6 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
             return false;
         }
         return (getPlatformName() != null);
-
-        // String symName = getSymbolicName();
-        // return (symName.contains(".eeCompatible-") ||
-        //         symName.contains(".mpVersion-"));
     }
 
     /**

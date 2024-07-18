@@ -17,7 +17,7 @@ Bundle-SymbolicName: com.ibm.ws.kernel.feature.core
 
 Export-Package: \
 	com.ibm.wsspi.kernel.feature,\
-	com.ibm.ws.kernel.feature,\
+	com.ibm.ws.kernel.feature;provide:=true,\
 	com.ibm.ws.kernel.feature.provisioning,\
 	com.ibm.ws.kernel.feature.resolver,\
 	com.ibm.ws.kernel.feature.internal,\
@@ -30,6 +30,7 @@ publish.wlp.jar.disabled: true
 -buildpath: \
 	org.eclipse.osgi;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.kernel.feature.common;version=latest,\
 	com.ibm.ws.kernel.boot.common;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.boot.nested;version=latest,\

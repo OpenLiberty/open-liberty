@@ -64,7 +64,11 @@
 				<scanJars entry="entry.point" filesToFind="${filesToFind}">
 					<fileset dir="${basedir}/build/lib" includes="**.jar" />
 				</scanJars>
+				
 				<echo message="entry point: ${entry.point}" />
+				
+				<property name="test.bucket.class" value="${entry.point}" />
+				<property name="test.bucket.name" value="${test.bucket.class}" />
 			</else>
 		</iff>
 	</target>
@@ -100,7 +104,7 @@
 		<!-- Work out the actual entry point based on the current java level and database properties -->
 		<echo message="Checking min java level for project based on bootstrapping.properties file..." />
 
-		<!-- Get fat.test.databases and fat.minimum.java.level properties-->
+		<!-- Get fat.minimum.java.level properties-->
 		<property file="${basedir}/fat.bnd.properties" />
 		<property file="${basedir}/fat.sys.properties" />
 		
@@ -126,43 +130,10 @@
 		<echo message="fat.minimum.java.level=${fat.minimum.java.level}" />
 		<echo message="java.specification.version=${java.specification.version}" />
 		<echo message="micro.version=${micro.version}" />
-
-		<!-- Enforce fat.test.databases.only rule.  If bucket is not enlisted in database rotation skip it -->
-		<condition property="skip.no.db.tests" value="true">
-			<and>
-				<istrue value="${fat.test.databases.only}" />
-				<not>
-					<isTrue value="${fat.test.databases}" />
-				</not>
-			</and>
-		</condition>
-
-		<!-- Determine if we are going to skip testing or not -->
-		<!-- Bypass the tests by invoking the always passes test instead of real FAT tests -->
-		<iff>
-			<or>
-				<istrue value="${skip.no.db.tests}" />
-				<istrue value="${skip.java.level}" />
-			</or>
-			<then>
-				<var name="test.bucket.class" unset="true" />
-				<var name="test.bucket.name" unset="true" />
-				<property name="test.bucket.class" value="componenttest.custom.junit.runner.AlwaysPassesTest" />
-				<property name="test.bucket.name" value="${test.bucket.class}" />
-
-				<echo message="FAT bucket WILL NOT run tests, due to the following properties:" />
-				<echo message="     Only run database rotation buckets:  ${fat.test.databases.only}" />
-				<echo message="     This bucket uses database rotation:  ${fat.test.databases}" />
-				<echo message="     This bucket uses java level:         ${fat.minimum.java.level}" />
-			</then>
-			<else>
-				<property name="test.bucket.class" value="${entry.point}" />
-			</else>
-		</iff>
-
+		
 		<!-- What will our entry point be? -->
 		<echo message="FAT entry point will be: ${test.bucket.class}" />
-
+		
 	</target>
 
 	<!-- Properties used: test.bucket.name, dir.log, dir.log.xml, dir.log.tmp, local.properties, logging.properties, acute.properties, test.bucket.path, test.bucket.class -->
@@ -691,25 +662,6 @@
 			<exclude name="${javacores.server.exclude}" />
 		</fileset>
 
-		<!-- Move any test javacores into the javacores directory that were piped to /var, there are two places to check -->
-		<fileset id="javacores.var" dir="/var/crash/">
-			<include name="javacore*" />
-			<include name="core*" />
-			<include name="heapdump*.phd" />
-			<include name="Snap*" />
-			<include name="*.hprof" />
-			<include name="hs_err*" />
-		</fileset>
-
-		<fileset id="javacores.var.apport" dir="/var/lib/apport/coredump/">
-			<include name="javacore*" />
-			<include name="core*" />
-			<include name="heapdump*.phd" />
-			<include name="Snap*" />
-			<include name="*.hprof" />
-			<include name="hs_err*" />
-		</fileset>
-
 		<iff>
 			<length property="total.length.of.all.javacores" mode="all" when="greater" length="0">
 				<fileset refid="javacores.test" />
@@ -723,40 +675,6 @@
 				</move>
 			</then>
 		</iff>
-		<iff>
-			<available file="/var/crash/" type="dir" />
-			<then>
-				<iff>
-					<length property="total.length.of.all.javacores.var.crash" mode="all" when="greater" length="0">
-						<fileset refid="javacores.var" />
-					</length>
-					<then>
-						<mkdir dir="${dir.log.javacores}" />
-						<move todir="${dir.log.javacores}">
-							<fileset refid="javacores.var" />
-						</move>
-					</then>
-				</iff>
-			</then>
-		</iff>	  
-		<iff>
-			<available file="/var/lib/apport/coredump/" type="dir" />
-			<then>
-				<iff>
-					<length property="total.length.of.all.javacores.apport.coredump" mode="all" when="greater" length="0">
-						<fileset refid="javacores.var.apport" />
-					</length>
-					<then>
-						<mkdir dir="${dir.log.javacores}" />
-						<move todir="${dir.log.javacores}">
-							<fileset refid="javacores.var.apport" />
-						</move>
-					</then>
-				</iff>
-			</then>
-		</iff>                           
-	
-
 
 	</target>
 

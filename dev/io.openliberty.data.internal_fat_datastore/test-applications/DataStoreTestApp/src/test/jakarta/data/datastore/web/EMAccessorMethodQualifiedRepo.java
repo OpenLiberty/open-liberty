@@ -19,24 +19,21 @@ import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
-
-import javax.sql.DataSource;
-
-import test.jakarta.data.datastore.lib.ServerDSEntity;
+import jakarta.persistence.EntityManager;
 
 /**
- * TODO enable this repository if we find a way to support qualified resource accessor methods
- * that are used to supply the data source.
+ * A repository that defaults to the default dataStore, but also has a qualifier
+ * annotation on its resource accessor method for an EntityManager.
  */
-//@Repository
-public interface QualifiedDSRepo {
-    @ResourceQualifier
-    DataSource dataSource();
+@Repository
+public interface EMAccessorMethodQualifiedRepo {
+    @ResourceQualifier // must be ignored
+    EntityManager entityManager();
 
     @Insert
-    void add(List<ServerDSEntity> entities);
+    void add(List<PersistenceUnitEntity> entities);
 
     @Find
     @OrderBy("id")
-    List<ServerDSEntity> getAll(@By("value") int val);
+    List<PersistenceUnitEntity> getAll(@By("value") int val);
 }
