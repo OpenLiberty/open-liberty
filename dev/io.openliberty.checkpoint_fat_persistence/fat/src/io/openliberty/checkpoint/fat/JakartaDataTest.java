@@ -20,6 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -87,6 +88,9 @@ public class JakartaDataTest extends FATServletClient {
         envVars.put("DB_HOST", postgre.getHost());
 
         ShrinkHelper.defaultApp(server, DATA_APP, "io.openliberty.checkpoint.data.app", "io.openliberty.checkpoint.data.entity", "io.openliberty.checkpoint.data.repo");
+
+        for (Entry<String, String> e : envVars.entrySet())
+            server.addEnvVar(e.getKey(), e.getValue());
 
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer();
