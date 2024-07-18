@@ -33,7 +33,6 @@ DynamicImport-Package: \
 Import-Package: \
   !*.internal.*, \
   !com.ibm.ws.beanvalidation.service, \
-  io.openliberty.data.internal.tracker, \
   io.openliberty.data.internal.version, \
   !jakarta.validation, \
   !jakarta.validation.executable, \

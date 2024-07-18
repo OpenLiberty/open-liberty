@@ -70,7 +70,6 @@ import io.openliberty.data.internal.persistence.cdi.DataExtension;
 import io.openliberty.data.internal.persistence.cdi.FutureEMBuilder;
 import io.openliberty.data.internal.persistence.metadata.DataComponentMetaData;
 import io.openliberty.data.internal.persistence.metadata.DataModuleMetaData;
-import io.openliberty.data.internal.tracker.ModuleTracker;
 import io.openliberty.data.internal.version.DataVersionCompatibility;
 import jakarta.data.Limit;
 import jakarta.data.Order;
@@ -154,10 +153,6 @@ public class DataProvider implements //
 
     @Reference
     public MetaDataIdentifierService metadataIdSvc;
-
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
-               target = "(component.name=io.openliberty.data.internal.ejb.EJBModuleTracker)")
-    public ModuleTracker moduleTracker;
 
     private final ConcurrentHashMap<String, DataComponentMetaData> metadatas = new ConcurrentHashMap<>();
 
