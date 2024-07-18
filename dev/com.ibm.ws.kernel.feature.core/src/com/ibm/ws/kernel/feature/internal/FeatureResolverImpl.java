@@ -780,10 +780,10 @@ public class FeatureResolverImpl implements FeatureResolver {
                     if(versionedFeature == null || versionedFeature.getVisibility() != Visibility.PUBLIC || versionedFeature.getPlatformName() == null){
                         continue;
                     }
-                    platformBase = parseName(versionedFeature.getPlatformName());
-                    String compatibilityBase = selectionContext.getCompatibilityBaseName(platformBase);
+
+                    platformBase = selectionContext.getCompatibilityBaseName(parseName(versionedFeature.getPlatformName()));
                     
-                    if(multiplePlatforms.contains(compatibilityBase)){
+                    if(multiplePlatforms.contains(platformBase)){
                         hasMultiplePlatforms = true;
                         break;
                     }

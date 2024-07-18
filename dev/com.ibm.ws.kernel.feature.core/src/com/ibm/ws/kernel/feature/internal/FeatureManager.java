@@ -2044,21 +2044,37 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             List<String> unresolvedVersionless = new ArrayList<>();
             for (Map.Entry<String, String> versionlessResolved : result.getVersionlessFeatures().entrySet()) {
                 if(versionlessResolved.getValue() == null){
-                    String platformBaseName = featureRepository.getPlatformForVersionlessFeature(versionlessResolved.getKey());
-
+                    Set<String> platforms = featureRepository.getPlatformsForVersionlessFeature(versionlessResolved.getKey());
                     boolean compatibleWithPlatform = true;
-                    if(platformBaseName != null && !result.getResolvedPlatforms().isEmpty()){
-                        for(String resolvedPlat : result.getResolvedPlatforms()){
-                            if(resolvedPlat.toLowerCase().startsWith(platformBaseName.toLowerCase()) && 
-                                featureRepository.getVersionlessFeatureVersionForPlatform(versionlessResolved.getKey(), resolvedPlat) == null){
 
+                    //get the compatibility feature base name tied to this versionless feature
+                    ProvisioningFeatureDefinition compatibility = null;
+                    if(platforms != null && !platforms.isEmpty()){
+                        for(String platform : platforms){
+                            compatibility = featureRepository.getCompatibilityFeature(platform);
+                            if(compatibility != null){
+                                break;
+                            }
+                        }
+                    }
+                    if(compatibility == null){
+                        break;
+                    }
+                    compatibility = featureRepository.getCompatibilityFeature(platforms.toArray()[0].toString());
+                    String compatibilityBaseName = featureRepository.getFeatureBaseName(compatibility.getFeatureName());
+
+                    //check if the versionless feature has a version tied to the resolved platform
+                    for(String resolvedPlat : result.getResolvedPlatforms()){
+                        String resolvedBaseName = featureRepository.getFeatureBaseName(featureRepository.getCompatibilityFeature(resolvedPlat).getFeatureName());
+                        if(compatibilityBaseName.equals(featureRepository.getFeatureBaseName(featureRepository.getCompatibilityFeature(resolvedPlat).getFeatureName()))){
+                            if(!platforms.contains(resolvedPlat)){
                                 Tr.error(tc, "INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM", getFeatureName(versionlessResolved.getKey()), resolvedPlat);
                                 compatibleWithPlatform = false;
                                 break;
                             }
                         }
                     }
-
+                    
                     if(compatibleWithPlatform){
                         unresolvedVersionless.add(getFeatureName(versionlessResolved.getKey()));
                     }
