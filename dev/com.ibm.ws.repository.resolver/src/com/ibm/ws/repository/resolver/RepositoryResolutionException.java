@@ -15,7 +15,6 @@ package com.ibm.ws.repository.resolver;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -44,7 +43,7 @@ public class RepositoryResolutionException extends RepositoryException {
     private final Map<String, Collection<Chain>> featureConflicts;
     private Set<String> resolvedPlatforms;
     private Set<String> missingPlatforms;
-    private List<String> missingBasePlatforms;
+    private Map<String, Set<String>> missingBasePlatforms;
 
     /**
      * @param cause
@@ -79,7 +78,7 @@ public class RepositoryResolutionException extends RepositoryException {
     public RepositoryResolutionException(ResolutionException cause, Collection<String> topLevelFeaturesNotResolved, Collection<String> allRequirementsNotFound,
                                          Collection<ProductRequirementInformation> missingProductInformation, Collection<MissingRequirement> allRequirementsResourcesNotFound,
                                          Map<String, Collection<Chain>> featureConflicts, Set<String> resolvedPlatforms, Set<String> missingPlatforms,
-                                         List<String> missingBasePlatforms) {
+                                         Map<String, Set<String>> missingBasePlatforms) {
         super(cause);
         this.topLevelFeaturesNotResolved = topLevelFeaturesNotResolved;
         this.allRequirementsNotFound = allRequirementsNotFound;
@@ -284,15 +283,6 @@ public class RepositoryResolutionException extends RepositoryException {
     public String getMessage() {
         StringBuilder sb = new StringBuilder();
 
-        if (!getMissingPlatforms().isEmpty()) {
-            for (String missing : getMissingPlatforms()) {
-                sb.append("Platform: ").append(missing).append(" couldn't be found, no versionless features will be resolved").append("\n");
-            }
-        }
-        if (getResolvedPlatforms().isEmpty() && getMissingPlatforms().isEmpty()) {
-            sb.append("Platform couldn't be determined, no versionless features will be resolved").append("\n");
-        }
-
         for (String missing : getTopLevelFeaturesNotResolved()) {
             sb.append("Top level feature not resolved: resource=").append(missing).append("\n");
         }
@@ -373,6 +363,7 @@ public class RepositoryResolutionException extends RepositoryException {
 
     /**
      * This states the target platforms that were used during the resolution
+     *
      * @return the resolvedPlatforms
      */
     public Set<String> getResolvedPlatforms() {
@@ -381,6 +372,7 @@ public class RepositoryResolutionException extends RepositoryException {
 
     /**
      * This describes missspelled or unknown platform names, official names are collected by the feature metadata
+     *
      * @return the missingPlatforms
      */
     public Set<String> getMissingPlatforms() {
@@ -388,10 +380,12 @@ public class RepositoryResolutionException extends RepositoryException {
     }
 
     /**
-     * This describes base platforms like "jakartaee" that are not derived, either by passed platform values, or by other included versioned features
+     * This describes a Map of base platforms like "jakartaee" (associated with versionless features) that are not derived, either by passed platform values, or by other included
+     * versioned features
+     *
      * @return the missingBasePlatforms
      */
-    public List<String> getMissingBasePlatforms() {
+    public Map<String, Set<String>> getMissingBasePlatforms() {
         return missingBasePlatforms;
     }
 

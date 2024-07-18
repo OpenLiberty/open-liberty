@@ -1052,8 +1052,10 @@ public class InstallKernelMap implements Map {
             data.put(InstallConstants.ACTION_RESULT, ERROR);
             InstallException ie = ExceptionUtils.create(e, e.getTopLevelFeaturesNotResolved(), (File) data.get(InstallConstants.RUNTIME_INSTALL_DIR), false, isOpenLiberty,
                                                         isFeatureUtility);
-            data.put(InstallConstants.ACTION_ERROR_MESSAGE, ie.getMessage());
-            data.put(InstallConstants.ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(ie));
+            if (ie != null) {
+                data.put(InstallConstants.ACTION_ERROR_MESSAGE, ie.getMessage());
+                data.put(InstallConstants.ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(ie));
+            }
         } catch (InstallException e) {
             data.put(InstallConstants.ACTION_RESULT, ERROR);
             data.put(InstallConstants.ACTION_ERROR_MESSAGE, e.getMessage());

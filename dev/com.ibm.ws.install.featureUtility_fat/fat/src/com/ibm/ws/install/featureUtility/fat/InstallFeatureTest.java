@@ -84,7 +84,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	public void beforeSetUp() throws Exception {
 	    copyFileToMinifiedRoot("etc",
 		    "publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
-	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo);
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo1);
 	}
 
 	@After
@@ -162,7 +162,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    String esaFile = String.format("/io/openliberty/features/json-1.0/%s/json-1.0-%s.esa", libertyVersion,
 		    libertyVersion);
 	    //copy json esa file from local Maven repo to a temporary location (wlp/tmp)
-	    copyFileToMinifiedRoot("tmp", mavenLocalRepo + esaFile);
+	    copyFileToMinifiedRoot("tmp", mavenLocalRepo1 + esaFile);
 	    // Begin Test
 	    String[] param1s = { "installFeature", minifiedRoot + "/tmp/" + String.format("json-1.0-%s.esa", libertyVersion), "--verbose" };
 	    String[] filesList = { "lib/features/com.ibm.websphere.appserver.json-1.0.mf" };
@@ -589,7 +589,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 	    
 	    //copy testesa1 esa file from local Maven repo to a temporary location (wlp/tmp)
-	    copyFileToMinifiedRoot("tmp", mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa");
+	    copyFileToMinifiedRoot("tmp", mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa");
 	    
 	    // Begin Test
 	    String[] param1s = { "installFeature", minifiedRoot + "/tmp/testesa1-19.0.0.8.esa", "json-1.0",
@@ -610,7 +610,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    Log.entering(c, METHOD_NAME);
 
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-		    mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
+		    mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
 
 	    String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
@@ -632,7 +632,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    final String METHOD_NAME = "testFeatureVerifySKIP";
 	    Log.entering(c, METHOD_NAME);
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-		    mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
+		    mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
 
 	    String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
@@ -709,7 +709,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    Log.entering(c, METHOD_NAME);
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-		    mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
+		    mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
 
 	    String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
@@ -732,7 +732,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    envProps.put("FEATURE_VERIFY", "all");
 
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-		    mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
+		    mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
 
 	    String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
@@ -784,15 +784,15 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    envProps.put("FEATURE_VERIFY", "all");
 
 	    // backup the valid user feature signature
-	    Files.move(Paths.get(mavenLocalRepo + userFeatureSigPath),
-		    Paths.get(mavenLocalRepo + userFeatureSigPath + ".bck"));
+	    Files.move(Paths.get(mavenLocalRepo1 + userFeatureSigPath),
+		    Paths.get(mavenLocalRepo1 + userFeatureSigPath + ".bck"));
 	    // overwrite with signature signed by revoked key
-	    Files.copy(Paths.get(mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/revoked/testesa1-19.0.0.8.esa.asc"),
-		    Paths.get(mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc"));
+	    Files.copy(Paths.get(mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/revoked/testesa1-19.0.0.8.esa.asc"),
+		    Paths.get(mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc"));
 
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-		    mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/revoked/revokedKey.asc");
+		    mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/revoked/revokedKey.asc");
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "2CB7FEADC826EA27");
 
 	    String[] param1s = { "installFeature", "testesa1",
@@ -800,8 +800,8 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
 	    // Change back to valid signature
-	    Files.move(Paths.get(mavenLocalRepo + userFeatureSigPath + ".bck"),
-		    Paths.get(mavenLocalRepo + userFeatureSigPath),
+	    Files.move(Paths.get(mavenLocalRepo1 + userFeatureSigPath + ".bck"),
+		    Paths.get(mavenLocalRepo1 + userFeatureSigPath),
 		    StandardCopyOption.REPLACE_EXISTING);
 
 	    checkCommandOutput(po, InstallException.SIGNATURE_VERIFICATION_FAILED, "CWWKF1510E", null);
@@ -821,15 +821,15 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    envProps.put("FEATURE_VERIFY", "all");
 
 	    // backup the valid user feature signature
-	    Files.move(Paths.get(mavenLocalRepo + userFeatureSigPath),
-		    Paths.get(mavenLocalRepo + userFeatureSigPath + ".bck"));
+	    Files.move(Paths.get(mavenLocalRepo1 + userFeatureSigPath),
+		    Paths.get(mavenLocalRepo1 + userFeatureSigPath + ".bck"));
 	    // overwrite with signature signed by expired key
-	    Files.copy(Paths.get(mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/expired/testesa1-19.0.0.8.esa.asc"),
-		    Paths.get(mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc"));
+	    Files.copy(Paths.get(mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/expired/testesa1-19.0.0.8.esa.asc"),
+		    Paths.get(mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc"));
 
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-		    mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/expired/expiredKey.asc");
+		    mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/expired/expiredKey.asc");
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "61B792CE2DAA8C02");
 
 	    String[] param1s = { "installFeature", "testesa1",
@@ -837,8 +837,8 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
 	    // Change back to valid signature
-	    Files.move(Paths.get(mavenLocalRepo + userFeatureSigPath + ".bck"),
-		    Paths.get(mavenLocalRepo + userFeatureSigPath), StandardCopyOption.REPLACE_EXISTING);
+	    Files.move(Paths.get(mavenLocalRepo1 + userFeatureSigPath + ".bck"),
+		    Paths.get(mavenLocalRepo1 + userFeatureSigPath), StandardCopyOption.REPLACE_EXISTING);
 
 	    checkCommandOutput(po, InstallException.SIGNATURE_VERIFICATION_FAILED, "CWWKF1511E", null);
 	    Log.exiting(c, METHOD_NAME);
@@ -857,7 +857,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-		    mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
+		    mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
 
 	    String[] param1s = { "installFeature", "testesa1",
 		    "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
@@ -930,25 +930,25 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    envProps.put("FEATURE_VERIFY", "all");
 
 	    // backup the valid user feature signature
-	    Files.move(Paths.get(mavenLocalRepo + userFeatureSigPath),
-		    Paths.get(mavenLocalRepo + userFeatureSigPath + ".bck"));
+	    Files.move(Paths.get(mavenLocalRepo1 + userFeatureSigPath),
+		    Paths.get(mavenLocalRepo1 + userFeatureSigPath + ".bck"));
 	    // overwrtie valid signature to invalid signature
 	    Files.copy(
-		    Paths.get(mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/invalidSig/testesa1-19.0.0.8.esa.asc"),
-		    Paths.get(mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc"));
+		    Paths.get(mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/invalidSig/testesa1-19.0.0.8.esa.asc"),
+		    Paths.get(mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc"));
 
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-		    mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
+		    mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
 
 	    String[] param1s = { "installFeature", "testesa1",
 		    "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
 	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
 	    // Change back to valid signature
-	    Files.move(Paths.get(mavenLocalRepo + userFeatureSigPath + ".bck"),
-		    Paths.get(mavenLocalRepo + userFeatureSigPath), StandardCopyOption.REPLACE_EXISTING);
+	    Files.move(Paths.get(mavenLocalRepo1 + userFeatureSigPath + ".bck"),
+		    Paths.get(mavenLocalRepo1 + userFeatureSigPath), StandardCopyOption.REPLACE_EXISTING);
 
 
 	    checkCommandOutput(po, InstallException.SIGNATURE_VERIFICATION_FAILED, "CWWKF1512E", null);

@@ -149,6 +149,10 @@ public class RepositoryResolver {
      * returns if versionless features are part of the resolution - used to skip extra processing
      */
     boolean includesVersionless;
+    /**
+     * Map of unresolved base platforms, and the associated passed versionless features
+     */
+    Map<String, Set<String>> missingBasePlatforms;
 
     /**
      * <p>
@@ -501,6 +505,7 @@ public class RepositoryResolver {
         missingRequirements = new ArrayList<>();
         resolverRepository = null;
         featureConflicts = new HashMap<>();
+        missingBasePlatforms = new HashMap<>();
         resolvedPlatforms = new HashSet<>();
         missingPlatforms = new HashSet<>();
         includesVersionless = false;
@@ -572,6 +577,7 @@ public class RepositoryResolver {
             includesVersionless = true;
             resolvedPlatforms = result.getResolvedPlatforms();
             missingPlatforms = result.getMissingPlatforms();
+            missingBasePlatforms = result.getNoPlatformVersionless();
         }
 
         for (String name : result.getResolvedFeatures()) {
@@ -997,25 +1003,6 @@ public class RepositoryResolver {
             && (!includesVersionless || ((!resolvedPlatforms.isEmpty()) && (missingPlatforms.isEmpty())))) {
             // Everything went fine!
             return;
-        }
-
-        List<String> missingBasePlatforms = new ArrayList<String>();
-
-        // Versionless features can't be resolved if a corresponding platform is not derived, making the choice ambiguous, and the feature won't be included in the resolved list.  -  will gather the associated platform unable to target.
-        if (includesVersionless) {
-            for (String name : missingTopLevelRequirements) {
-                ProvisioningFeatureDefinition feature = resolverRepository.getFeature(name);
-                if (feature != null && feature.isVersionless()) {
-                    List<ProvisioningFeatureDefinition> featureChildren = resolverRepository.findAllPossibleVersions(feature);
-                    if (!featureChildren.isEmpty()) {
-                        ProvisioningFeatureDefinition firstChild = featureChildren.get(0);
-                        String plat = firstChild.getPlatformName();
-                        if (plat != null) {//This will add just the platform name without version
-                            missingBasePlatforms.add(resolverRepository.getFeatureBaseName(plat));
-                        }
-                    }
-                }
-            }
         }
 
         Set<ProductRequirementInformation> missingProductInformation = new HashSet<>();
