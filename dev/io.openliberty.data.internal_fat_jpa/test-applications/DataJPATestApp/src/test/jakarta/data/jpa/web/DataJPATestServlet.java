@@ -144,6 +144,9 @@ public class DataJPATestServlet extends FATServlet {
     Rebates rebates;
 
     @Inject
+    Segments segments;
+
+    @Inject
     ShippingAddresses shippingAddresses;
 
     @Inject
@@ -1020,6 +1023,69 @@ public class DataJPATestServlet extends FATServlet {
                                              .stream()
                                              .map(b -> b.name)
                                              .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use an entity with embeddable attributes that are Java records.
+     */
+    // TODO enable when #29117 is fixed
+    //@Test
+    public void testEmbeddableRecord() {
+        Segment s1 = new Segment();
+        s1.pointA = new Point(0, 0);
+        s1.pointB = new Point(120, 209); // length 241
+        s1 = segments.addOrModify(s1);
+
+        Segment s2 = new Segment();
+        s2.pointA = new Point(-20, 0);
+        s2.pointB = new Point(120, 171); // length 221
+        s2 = segments.addOrModify(s2);
+
+        Segment s3 = new Segment();
+        s3.pointA = new Point(24, 7);
+        s3.pointB = new Point(180, 140); // length 205
+        s3 = segments.addOrModify(s3);
+
+        Segment s4 = new Segment();
+        s4.pointA = new Point(12, 45);
+        s4.pointB = new Point(180, 140); // length 193
+        s4 = segments.addOrModify(s4);
+
+        Segment s5 = new Segment();
+        s5.pointA = new Point(4, 3);
+        s5.pointB = new Point(180, 60); // length 185
+        s5 = segments.addOrModify(s5);
+
+        Segment s6 = new Segment();
+        s6.pointA = new Point(0, 41);
+        s6.pointB = new Point(180, 60); // length 181
+        s6 = segments.addOrModify(s6);
+
+        assertEquals(3, segments.countByPointAXLessThan(1));
+
+        assertEquals(List.of(s3.id, s4.id, s2.id, s1.id),
+                     segments.endingSouthOf(100)
+                                     .map(s -> s.id)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of(-20, 0, 24),
+                     segments.longerThan(200, Sort.asc("pointA.x"))
+                                     .stream()
+                                     .map(s -> s.pointA.x())
+                                     .collect(Collectors.toList()));
+
+        s3.pointB = new Point(s3.pointB.x() - s3.pointA.x(), s3.pointB.y() - s3.pointA.y());
+        s3.pointA = new Point(0, 0);
+        s3 = segments.addOrModify(s3);
+
+        // removes s1 and s3
+        assertEquals(2L, segments.removeStartingAt(0, 0));
+
+        Point s2pointB = segments.terminalPoint(s2.id).orElseThrow();
+        assertEquals(120, s2pointB.x());
+        assertEquals(171, s2pointB.y());
+
+        assertEquals(4L, segments.erase());
     }
 
     /**
