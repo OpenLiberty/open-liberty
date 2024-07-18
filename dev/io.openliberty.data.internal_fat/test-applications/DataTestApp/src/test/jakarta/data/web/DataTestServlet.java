@@ -634,6 +634,34 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Query by method name with deleteFirstX prefix - ensure First keywork is ignored
+     */
+    @Test
+    public void testDeleteIgnoresFirstKeywork() {
+        packages.deleteAll(); //cleanup before test
+
+        packages.save(new Package(10001, 10.0f, 13.0f, 4.0f, "testDeleteIgnoresFirstKeywork#10001"));
+        packages.save(new Package(10002, 11.0f, 12.4f, 4.0f, "testDeleteIgnoresFirstKeywork#10002"));
+        packages.save(new Package(10003, 12.0f, 11.0f, 4.0f, "testDeleteIgnoresFirstKeywork#10003"));
+        packages.save(new Package(10004, 13.0f, 10.0f, 4.0f, "testDeleteIgnoresFirstKeywork#10004"));
+
+        try {
+            Optional<Package> pkg = packages.deleteFirst();
+            fail("Expected packages.deleteFirst() to ignore the 'first' keyword and fail to return a signular result.");
+        } catch (NonUniqueResultException e) {
+            // pass
+        }
+
+        Package pkg = packages.deleteFirst5ByWidthLessThan(11.0f);
+        assertEquals(10004, pkg.id);
+
+        List<Package> pkgs = packages.deleteFirst2();
+        assertEquals(3, pkgs.size());
+
+        assertEquals(0, packages.deleteAll()); //cleanup after test
+    }
+
+    /**
      * Parameter-based query with the Delete annotation.
      */
     @Test
