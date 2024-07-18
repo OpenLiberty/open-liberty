@@ -33,7 +33,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import jakarta.data.Sort;
 import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.Inheritance;
 
@@ -138,41 +137,6 @@ public class EntityInfo {
         return value;
     }
 
-    @Trivial
-    String getAttributeName(String name, boolean failIfNotFound) {
-        String lowerName = name.toLowerCase();
-        String attributeName = attributeNames.get(lowerName);
-        if (attributeName == null)
-            if (ID.equals(lowerName))
-                if (idClassAttributeAccessors == null && failIfNotFound)
-                    throw new MappingException("Entity class " + getType().getName() + " does not have a property named " + name +
-                                               " or which is designated as the @Id."); // TODO NLS
-                else
-                    attributeName = null; // Special case for IdClass
-            else if (name.length() == 0)
-                throw new MappingException("Error parsing method name or entity property name is missing."); // TODO NLS
-            else {
-                // tolerate possible mixture of . and _ separators:
-                lowerName = lowerName.replace('.', '_');
-                attributeName = attributeNames.get(lowerName);
-                if (attributeName == null) {
-                    // tolerate possible mixture of . and _ separators with lack of separators:
-                    lowerName = lowerName.replace("_", "");
-                    attributeName = attributeNames.get(lowerName);
-                    if (attributeName == null && failIfNotFound)
-                        // TODO If attempting to parse Query by Method Name without a By keyword, then the message
-                        // should also include the possibility that repository method is missing an annotation.
-                        throw new MappingException("Entity class " + getType().getName() + " does not have a property named " + name +
-                                                   ". The following are valid property names for the entity: " +
-                                                   attributeTypes.keySet()); // TODO NLS
-                }
-            }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "getAttributeName " + name + ": " + attributeName);
-        return attributeName;
-    }
-
     Collection<String> getAttributeNames() {
         return attributeNames.values();
     }
@@ -261,25 +225,6 @@ public class EntityInfo {
     @Trivial
     Class<?> getType() {
         return recordClass == null ? entityClass : recordClass;
-    }
-
-    /**
-     * Creates a Sort instance with the corresponding entity attribute name
-     * or returns the existing instance if it already matches.
-     *
-     * @param name name provided by the user to sort by.
-     * @param sort the Sort to add.
-     * @return a Sort instance with the corresponding entity attribute name.
-     */
-    @Trivial
-    <T> Sort<T> getWithAttributeName(String name, Sort<T> sort) {
-        name = getAttributeName(name, true);
-        if (name == sort.property())
-            return sort;
-        else
-            return sort.isAscending() //
-                            ? sort.ignoreCase() ? Sort.ascIgnoreCase(name) : Sort.asc(name) //
-                            : sort.ignoreCase() ? Sort.descIgnoreCase(name) : Sort.desc(name);
     }
 
     /**
