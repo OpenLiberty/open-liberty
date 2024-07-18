@@ -50,13 +50,6 @@ public class OpenTelemetryAccessor {
         return openTelemetryInfo.orElseGet(ErrorOpenTelemetryInfo::new);
     }
 
-    public static OpenTelemetryInfo getOpenTelemetryInfo(String appName) {
-        Optional<OpenTelemetryInfo> openTelemetryInfo = openTelemetryInfoFactoryService.call((factory) -> {
-            return factory.getOpenTelemetryInfo(appName);
-        });
-        return openTelemetryInfo.orElseGet(ErrorOpenTelemetryInfo::new);
-    }
-
     /**
      * Gets or creates a tracer instance from the TracerProvider for the OpenTelemetry instance associated with this application.
      *
@@ -97,6 +90,13 @@ public class OpenTelemetryAccessor {
             return service.getInterceptorBindingsFromInvocationContext(context);
         });
         return bindings.orElseThrow(() -> new IllegalStateException("Unable to get CDIService"));
+    }
+
+    public static boolean isRuntimeEnabled() {
+        Optional<Object> isRuntimeEnabled = openTelemetryInfoFactoryService.call((factory) -> {
+            return factory.isRuntimeEnabled();
+        });
+        return (boolean) isRuntimeEnabled.orElse(false);
     }
 
 }

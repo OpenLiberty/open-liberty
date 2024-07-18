@@ -41,8 +41,8 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
     private static final double NANO_CONVERSION = 0.000000001;
 
     @Override
-    public void updateHttpMetrics(HttpStatAttributes httpStatAttributes, Duration duration, String appName) {
-        OpenTelemetry otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo((appName == null) ? OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME : appName).getOpenTelemetry();
+    public void updateHttpMetrics(HttpStatAttributes httpStatAttributes, Duration duration) {
+        OpenTelemetry otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo().getOpenTelemetry();
 
         /*
          * Even if the HTTP call is served by the server/runtime, the "appName" can be non null.
@@ -52,12 +52,11 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
          *
          */
         if (otelInstance == null) {
-            otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo(OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME).getOpenTelemetry();
+            otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo().getOpenTelemetry();
             if (otelInstance == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc,
-                             String.format("Unable to resolve an OpenTelemetry instance for the HttpStatAttributes [%s] with application name [%s]", httpStatAttributes.toString(),
-                                           appName));
+                             String.format("Unable to resolve an OpenTelemetry instance for the HttpStatAttributes [%s]", httpStatAttributes.toString()));
                 }
                 //do nothing - return
                 return;

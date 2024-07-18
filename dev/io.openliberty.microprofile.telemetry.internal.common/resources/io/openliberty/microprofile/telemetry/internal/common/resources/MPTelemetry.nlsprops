@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # -------------------------------------------------------------------------------------------------
 #*******************************************************************************
-# Copyright (c) 2023 IBM Corporation and others.
+# Copyright (c) 2023, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,4 +49,8 @@ CWMOT5003.factory.used.after.shutdown.useraction=Review the application to see w
 
 CWMOT5004.factory.used.without.metadata=CWMOT5004W: A request was made for an OpenTelemetry object but no application metadata, and no global OpenTelemetry object was available. 
 CWMOT5004.factory.used.without.metadata.explanation=CWMOT5004.factory.used.without.metadata.explanation=If there is no global OpenTelemetry object Liberty's MicroProfile Telemetry integration code will attempt to find the correct OpenTelemetry object for the current application by using the application metadata on the current thread. However as there was no metadata on the thread it was unable to do so. 
-CWMOT5004.factory.used.without.metadata.useraction=Review your code to see why it attempted to use MicroProfile Telemetry when there was no application metadata and server scoped OpenTelemetry object. The most likely case is that you are creating new threads without using Liberty's ManagedExecutorService and trying to acquire an OpenTelemetry object from within. If you are attempting to acquire an OpenTemetry object outside an application, ensure OpenTelemetry is enabled via an environment variable or system property.   
+CWMOT5004.factory.used.without.metadata.useraction=Review your code to see why the integration code attempted to use MicroProfile Telemetry without metadata and a server scoped OpenTelemetry object. The integration code most likely tries to create new threads without using the ManagedExecutorService interface and to acquire an OpenTelemetry object from within the application. To acquire an OpenTemetry object outside of an application, enable OpenTelemetry through an environment variable or a system property.
+
+CWMOT5005.mptelemetry.unknown.log.source=CWMOT5005W: The MicroProfile Telemetry logging feature does not recognize the [ {0} ] log source.
+CWMOT5005.mptelemetry.unknown.log.source.explanation=The Liberty runtime environment does not provide the specified log source.
+CWMOT5005.mptelemetry.unknown.log.source.useraction=Check the configuration information and specify one of the supported sources for MicroProfile Telemetry.

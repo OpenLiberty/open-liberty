@@ -1,0 +1,22 @@
+<!--
+    Copyright (c) 2024 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="system service">
+<logging traceSpecification="com.ibm.ws.threading.internal.ExecutorServiceImpl=fine" />
+	<featureManager>
+		<feature>mpTelemetry-2.0</feature>
+		<feature>componentTest-2.0</feature>
+	</featureManager>
+
+	<include location="../fatTestPorts.xml"/>
+	<mpTelemetry source="trace"/>
+</server>

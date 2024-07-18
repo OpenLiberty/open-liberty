@@ -75,7 +75,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
     private static final TraceComponent tc = Tr.register(OpenTelemetryInfoFactoryImpl.class);
 
     private final MetaDataSlot slotForOpenTelemetryInfoHolder;
-    Map<String, OpenTelemetry> otelMap = new HashMap<String, OpenTelemetry>();
+    private EnabledOpenTelemetryInfo runtimeInstance = null;
 
     //This contains API calls that change between the upstream open telemetry version.
     //We get a partially configued SDK Builder from OSGi becase we are in a static context
@@ -91,11 +91,15 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
         this.openTelemetryVersionedConfiguration = openTelemetryVersionedConfiguration;
 
         OpenTelemetry runtimeInstance = this.openTelemetryVersionedConfiguration.createServerOpenTelemetryInfo(getServerTelemetryProperties());
-        otelMap.put(OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME, runtimeInstance);
+        if (runtimeInstance != null) {
+            EnabledOpenTelemetryInfo runtimeOpenTelemetryInfo = new EnabledOpenTelemetryInfo(true, runtimeInstance, OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME);
+            this.runtimeInstance = runtimeOpenTelemetryInfo;
+        }
     }
 
     @Override
     public OpenTelemetryInfo getOpenTelemetryInfo() {
+
         try {
             ApplicationMetaData metaData = null;
             ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
@@ -109,20 +113,24 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
         }
     }
 
+    @Override
+    public boolean isRuntimeEnabled() {
+        return runtimeInstance != null;
+    }
+
     //A shortcut method to avoid fetching metadata more than we need to.
     @Override
     public OpenTelemetryInfo getOpenTelemetryInfo(ApplicationMetaData metaData) {
 
         //Return runtime instance if it exists, otherwise return the app instance.
-        if (otelMap.get(OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME) != null) {
+        if (this.runtimeInstance != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Returning {0} OTEL instance.", OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME);
             }
-            return new EnabledOpenTelemetryInfo(true, otelMap.get(OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME), metaData.getJ2EEName().getApplication());
+            return runtimeInstance;
         }
 
         if (metaData == null) {
-            Tr.warning(tc, "CWMOT5004.factory.used.without.metadata");
             return new DisabledOpenTelemetryInfo();
         }
 
@@ -155,7 +163,6 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
             if (AgentDetection.isAgentActive()) {
                 // If we're using the agent, it will have set GlobalOpenTelemetry and we must use its instance
                 // all config is handled by the agent in this case
-                otelMap.put(appName, GlobalOpenTelemetry.get());
                 return new EnabledOpenTelemetryInfo(true, GlobalOpenTelemetry.get(), appName);
             }
 
@@ -167,8 +174,6 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
                     return openTelemetryVersionedConfiguration.buildOpenTelemetry(telemetryProperties,
                                                                                   OpenTelemetryInfoFactoryImpl::customizeResource, Thread.currentThread().getContextClassLoader());
                 });
-
-                otelMap.put(appName, openTelemetry);
 
                 if (openTelemetry != null) {
                     return new EnabledOpenTelemetryInfo(true, openTelemetry, appName);
@@ -184,24 +189,6 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
             return new ErrorOpenTelemetryInfo();
-        }
-
-    }
-
-    @Override
-    public OpenTelemetryInfo getOpenTelemetryInfo(String appName) {
-        //Return runtime instance if it exists, otherwise return the app instance.
-        if (otelMap.get(OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME) != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Returning {0} OTEL instance.", OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME);
-            }
-            return new EnabledOpenTelemetryInfo(true, otelMap.get(OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME), appName);
-        } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Returning OTEL instance for appName= {0}", appName);
-            }
-            return new EnabledOpenTelemetryInfo(true, otelMap.get(appName), appName);
-
         }
 
     }
@@ -315,7 +302,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
         //We do not actually initilize on application starting, we do that lazily if this is needed.
 
         //We don't use app scoped OpenTelemetry objects if the server scoped object exists
-        if (otelMap.get(OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME) != null) {
+        if (runtimeInstance != null) {
             return;
         }
 
@@ -342,10 +329,10 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
         //We don't use app scoped OpenTelemetry objects if the server scoped object exists
-        if (otelMap.get(OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME) != null) {
+        if (runtimeInstance != null) {
             return;
         }
-        
+
         ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
         OpenTelemetryInfoReference oTelRef = (OpenTelemetryInfoReference) extAppInfo.getMetaData().getMetaData(slotForOpenTelemetryInfoHolder);
 
