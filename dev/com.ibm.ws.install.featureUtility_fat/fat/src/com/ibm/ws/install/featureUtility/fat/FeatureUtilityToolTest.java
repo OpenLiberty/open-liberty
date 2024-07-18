@@ -375,11 +375,13 @@ public abstract class FeatureUtilityToolTest {
     protected ProgramOutput runFeatureUtility(String testcase, String[] params, boolean debug) throws Exception {
         Properties envProps = new Properties();
 	//add beta property here
-	 envProps.put("JVM_ARGS", "-Dbeta.property=true");
+	 envProps.put("JVM_ARGS", "-Dcom.ibm.ws.beta.edition=true");
         return runFeatureUtility(testcase, params, envProps);
     }
 
     protected ProgramOutput runFeatureUtility(String testcase, String[] params, Properties envProps) throws Exception {
+    	//add beta property here
+   	 envProps.put("JVM_ARGS", "-Dcom.ibm.ws.beta.edition=true");
 	// always run feature utility with minified root
         return runCommand(minifiedRoot, testcase, "featureUtility", params, envProps);
     }

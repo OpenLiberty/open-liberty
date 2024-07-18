@@ -3,7 +3,7 @@
 
     <!-- Enable features -->
     <featureManager>
-        <platform>javaee-6.0</platform>
+        <platform>javaee-8.0</platform>
 	   <feature>servlet</feature>
     </featureManager>
 </server>

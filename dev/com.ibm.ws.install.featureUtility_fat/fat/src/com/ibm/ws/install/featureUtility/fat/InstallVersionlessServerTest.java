@@ -67,7 +67,6 @@ public class InstallVersionlessServerTest extends FeatureUtilityToolTest {
      *
      * @throws Exception
      */
-    @Ignore
     @Test
     public void testVersionlessWithBadPlatformFeatures() throws Exception {
 	final String METHOD_NAME = "testVersionlessWithBadPlatformFeatures";
@@ -88,7 +87,6 @@ public class InstallVersionlessServerTest extends FeatureUtilityToolTest {
      *
      * @throws Exception
      */
-    @Ignore
     @Test
     public void testVersionlessWithNoPlatformFeatures() throws Exception {
 	final String METHOD_NAME = "testVersionlessWithNoPlatformFeatures";
@@ -104,11 +102,10 @@ public class InstallVersionlessServerTest extends FeatureUtilityToolTest {
     }
 
      /**
-     * Test the install of versionless with  platform name. install servlet-6.0 feature
+     * Test the install of versionless with  platform name. install servlet-4.0 feature
      *
      * @throws Exception
      */
-    @Ignore
     @Test
     public void testVersionlessWithPlatformFeatures() throws Exception {
 	final String METHOD_NAME = "testVersionlessWithPlatformFeatures";
@@ -117,7 +114,7 @@ public class InstallVersionlessServerTest extends FeatureUtilityToolTest {
 	copyFileToMinifiedRoot("usr/servers/serverX", "publish/tmp/versionlessWithPlatform/server.xml");
 	
 	String[] param1s = { "installServerFeatures", "serverX", "--verify=skip", "--verbose" };
-	String[] filesList = { "/lib/features/com.ibm.websphere.appserver.servlet-6.0.mf" };
+	String[] filesList = { "/lib/features/com.ibm.websphere.appserver.servlet-4.0.mf" };
 	
 	ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
