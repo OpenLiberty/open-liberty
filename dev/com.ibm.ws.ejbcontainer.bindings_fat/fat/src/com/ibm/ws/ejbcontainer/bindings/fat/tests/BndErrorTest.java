@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2023 IBM Corporation and others.
+ * Copyright (c) 2007, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -278,7 +278,7 @@ public class BndErrorTest extends AbstractTest {
     @ExpectedFFDC(repeatAction = RepeatOnErrorEE8.ID_FAIL,
                   value = { "javax.ejb.EJBException", "com.ibm.ws.container.service.state.StateChangeException" })
     @ExpectedFFDC(repeatAction = { RepeatOnErrorEE9.ID_FAIL, RepeatOnErrorEE10.ID_FAIL },
-                  value = { "javax.ejb.EJBException", "com.ibm.ws.container.service.state.StateChangeException" })
+                  value = { "jakarta.ejb.EJBException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testNamepsaceInBindingName() throws Exception {
         testHelper(19, "CNTR0339W:.*ejblocal:local:ejb/myBean", false);
     }
