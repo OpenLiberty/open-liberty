@@ -270,11 +270,10 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
                                                                             moduleName.getModule(),
                                                                             null);
             } else {
-                String componentName = provider.moduleTracker.firstComponentName(moduleName);
                 mdIdentifier = provider.metadataIdSvc.getMetaDataIdentifier("EJB",
                                                                             moduleName.getApplication(),
                                                                             moduleName.getModule(),
-                                                                            componentName);
+                                                                            null);
             }
         }
 
@@ -324,11 +323,11 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
         StringBuilder b = new StringBuilder(27 + dataStore.length() +
                                             (application == null ? 4 : application.length()) +
                                             (module == null ? 4 : module.length())) //
-                                                            .append("FutureEMBuilder@") //
-                                                            .append(Integer.toHexString(hashCode())) //
-                                                            .append(":").append(dataStore) //
-                                                            .append(' ').append(application) //
-                                                            .append('#').append(module);
+                        .append("FutureEMBuilder@") //
+                        .append(Integer.toHexString(hashCode())) //
+                        .append(":").append(dataStore) //
+                        .append(' ').append(application) //
+                        .append('#').append(module);
         return b.toString();
     }
 }

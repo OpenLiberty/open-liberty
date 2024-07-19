@@ -28,7 +28,6 @@
   <AD id="dropTables"                        type="Boolean" default="false" name="%dropTables" description="%dropTables.desc"/>
   <!-- add name/description once implemented -->
   <AD id="logValues"                         type="String"  required="false" cardinality="-100" name="%logValues" description="%logValues.desc"/>
-  <AD id="moduleTracker.cardinality.minimum" type="String"  default="0" name="internal" description="internal use only"/>
  </OCD>
 
 </metatype:MetaData>
