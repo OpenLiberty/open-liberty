@@ -25,6 +25,8 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 public class BufferManagerImpl extends BufferManager {
 
     /* Package name in trace from BufferManagerImpl is changed in order to reduce the trace volume when traceSpecification is set to "com.ibm.ws.*" */
@@ -38,9 +40,11 @@ public class BufferManagerImpl extends BufferManager {
 	/* Map to keep track of the next event for a handler */
 	private final ConcurrentHashMap<String, HandlerStats> handlerEventMap = new ConcurrentHashMap<String, HandlerStats>();
 
-	protected Queue<Object> earlyMessageQueue;
+	protected volatile Queue<Object> earlyMessageQueue;
 
 	private static final int EARLY_MESSAGE_QUEUE_SIZE = 400;
+
+	private static final CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
 	
 	public BufferManagerImpl(int capacity, String sourceId) {
 		this(capacity,sourceId, true);
@@ -71,7 +75,10 @@ public class BufferManagerImpl extends BufferManager {
 		if (event == null)
 			throw new NullPointerException();
 
-		if (earlyMessageQueue != null) { // startup time
+		// Only store early messages if this is not before a checkpoint action;
+		// The restored method returns true when the process has been restored or
+		// when launching Liberty with no checkpoint action ("normal" launches)
+		if (checkpointPhase.restored() && earlyMessageQueue != null) { // startup time
 			/*
 			 * earlyMessageQueue was first checked to be not null but this "gap"
 			 * here may have allowed the earlyMessageQueue to be set to null
