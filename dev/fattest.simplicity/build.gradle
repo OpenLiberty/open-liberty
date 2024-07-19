@@ -43,39 +43,43 @@ task assembleBootstrap(type: Copy) {
     filter(ReplaceTokens, tokens: [JAVA_HOME: javaHome])
 }
 
-task assembleBinaryDependencies(type: Copy) {
+task assembleBinaryDependencyJar(type:Copy) {
+	from jar
+	into new File(buildDir, 'lib')
+	exclude 'buildfiles'
+}
+
+task assembleBinaryDependencyProject(type:Copy) {
+	from configurations.projectDependencies
+	into new File(buildDir, 'lib')
+	rename 'com.ibm.ws.common.encoder.jar', 'fattest.encoder.jar'
+}
+
+task assembleBinaryDependencyMaven(type:Copy) {
 	dependsOn ':cnf:copyMavenLibs'
-	
-	into(new File(buildDir, 'lib'))
-	
-	//fattest.simplicity.jar
-	from(jar) {
-	    exclude 'buildfiles'
-	}
-	
-	//Project dependencies
-	from(configurations.projectDependencies) {
-		rename 'com.ibm.ws.common.encoder.jar', 'fattest.encoder.jar'
-	}
-	
-	//Maven dependencies
-	from(cnf.file('mavenlibs')) {
-        include 'infra.buildtasks-core-7.0.2.jar'
-        include 'asm-all-5.2.jar'
-        include 'org.apache.aries.util-*.jar'
-        include 'osgi.core*.jar'
-        include 'jsch-*.jar'
-	}
-	
-	//Transitive dependencies (not from projects)
-	from(sourceSets.main.runtimeClasspath.findAll {
+	from cnf.file('mavenlibs')
+	into new File(buildDir, 'lib')
+	include 'infra.buildtasks-core-7.0.2.jar'
+	include 'asm-all-5.2.jar'
+	include 'org.apache.aries.util-*.jar'
+	include 'osgi.core*.jar'
+	include 'jsch-*.jar'
+}
+
+task assembleBinaryDependencySource(type:Copy) {
+	from sourceSets.main.runtimeClasspath.findAll {
 		it.getAbsolutePath().contains('.m2') ||
 		it.getAbsolutePath().contains('.ibmartifactory') ||
 		it.getAbsolutePath().contains('.ibmdhe')
-	})
-	
-	// Debug task
-	// eachFile { println it.sourcePath }
+	}
+	into new File(buildDir, 'lib')
+}
+
+task assembleBinaryDependencies() {
+	dependsOn assembleBinaryDependencySource
+	dependsOn assembleBinaryDependencyMaven
+	dependsOn assembleBinaryDependencyProject
+	dependsOn assembleBinaryDependencyJar
 }
 
 configurations {
@@ -117,11 +121,11 @@ task extractArquillianSupportJakartaFeature21(type:Sync) {
     }
 }
 
-jar {
+jar { // NOTE: this is called by fat.gradle:autoFVT
     dependsOn assembleBootstrap
     dependsOn extractArquillianSupportFeature
     dependsOn extractArquillianSupportJakartaFeature21
-    finalizedBy assembleBinaryDependencies
+    finalizedBy assembleBinaryDependencyJar
 }
 
 task publishArquillianSupportFeature(type:Copy) {
@@ -135,4 +139,5 @@ task publishArquillianSupportFeature(type:Copy) {
 
 assemble {
     dependsOn publishArquillianSupportFeature
+    dependsOn assembleBinaryDependencies
 }
