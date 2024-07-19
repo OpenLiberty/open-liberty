@@ -410,7 +410,7 @@ public class SRTInputStream31 extends SRTInputStream
 
     public boolean isAsyncReadOutstanding() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "isAsyncReadOutstanding" , "SRTInputStream31.isAsyncReadOutstanding() returning: " + this.asyncReadOutstanding);
+            Tr.debug(tc, "isAsyncReadOutstanding" , "SRTInputStream31.isAsyncReadOutstanding() returning: " + this.asyncReadOutstanding);
         }
         return this.asyncReadOutstanding;
     }
