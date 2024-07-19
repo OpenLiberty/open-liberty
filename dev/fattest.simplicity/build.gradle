@@ -125,7 +125,7 @@ jar { // NOTE: this is called by fat.gradle:autoFVT
     dependsOn assembleBootstrap
     dependsOn extractArquillianSupportFeature
     dependsOn extractArquillianSupportJakartaFeature21
-    finalizedBy assembleBinaryDependencyJar
+    finalizedBy assembleBinaryDependencies
 }
 
 task publishArquillianSupportFeature(type:Copy) {
@@ -139,5 +139,4 @@ task publishArquillianSupportFeature(type:Copy) {
 
 assemble {
     dependsOn publishArquillianSupportFeature
-    dependsOn assembleBinaryDependencies
 }
