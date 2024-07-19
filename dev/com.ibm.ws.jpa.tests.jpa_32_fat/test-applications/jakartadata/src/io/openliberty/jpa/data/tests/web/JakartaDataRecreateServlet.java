@@ -18,6 +18,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import io.openliberty.jpa.data.tests.models.AsciiCharacter;
 import io.openliberty.jpa.data.tests.models.Coordinate;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
@@ -77,6 +78,37 @@ public class JakartaDataRecreateServlet extends FATServlet {
         assertEquals(id, result.id);
         assertEquals(11, result.x, 0.001);
         assertEquals(5f, result.y, 0.001);
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28913")
+    public void testOLGH28913() throws Exception {
+        AsciiCharacter character = AsciiCharacter.of(80); //P
+        String result;
+
+        tx.begin();
+
+        try {
+            em.persist(character);
+
+            result = em.createQuery("SELECT hexadecimal FROM AsciiCharacter WHERE hexadecimal IS NOT NULL AND thisCharacter = ?1", String.class) //FAILURE PARSING QUERY HERE
+                            .setParameter(1, character.getThisCharacter())
+                            .getSingleResult();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+
+            /*
+             * Recreated
+             * java.lang.IllegalArgumentException: An exception occurred while creating a query in EntityManager:
+             * Exception Description: Problem compiling [SELECT hexadecimal FROM AsciiCharacter WHERE hexadecimal IS NOT NULL AND thisCharacter = ?1].
+             * [7, 18] The identification variable 'hexadecimal' is not defined in the FROM clause.
+             */
+            throw e;
+        }
+
+        assertEquals(character.getHexadecimal(), result);
     }
 
 }
