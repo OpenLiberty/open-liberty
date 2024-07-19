@@ -1,2 +1,15 @@
 <feature>microProfile-7.0</feature>
 <feature>localConnector-1.0</feature>
+<feature>cdi</feature>
+<feature>jsonb</feature>
+<feature>jsonp</feature>
+<feature>mpJwt</feature>
+<feature>mpTelemetry</feature>
+<feature>mpFaultTolerance</feature>
+<feature>mpOpenAPI</feature>
+<feature>mpRestClient</feature>
+<feature>mpHealth</feature>
+<feature>mpMetrics</feature>
+<feature>mpConfig</feature>
+<feature>restfulWS</feature>
+<feature>restfulWSClient</feature>
