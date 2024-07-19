@@ -46,7 +46,7 @@ task assembleBootstrap(type: Copy) {
 task assembleBinaryDependencyJar(type:Copy) {
 	from jar
 	into new File(buildDir, 'lib')
-	exclude 'buildfiles'
+	include 'fattest.simplicity.jar'
 }
 
 task assembleBinaryDependencyProject(type:Copy) {
