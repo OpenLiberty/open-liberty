@@ -20,6 +20,7 @@ import org.junit.Test;
 import componenttest.app.FATServlet;
 import io.openliberty.jpa.data.tests.models.AsciiCharacter;
 import io.openliberty.jpa.data.tests.models.Coordinate;
+import io.openliberty.jpa.data.tests.models.Person;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -109,6 +110,49 @@ public class JakartaDataRecreateServlet extends FATServlet {
         }
 
         assertEquals(character.getHexadecimal(), result);
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28908")
+    public void testOLGH28908() throws Exception {
+        Person p = new Person();
+        p.firstName = "John";
+        p.lastName = "Jacobs";
+        p.ssn_id = 111111111l;
+
+        Person result;
+
+        tx.begin();
+
+        try {
+            em.persist(p);
+
+            em.createQuery("UPDATE Person SET firstName=:newFirstName WHERE id(this)=:ssn")
+                            .setParameter("newFirstName", "Jack")
+                            .setParameter("ssn", p.ssn_id)
+                            .executeUpdate();
+
+            result = em.createQuery("SELECT Person WHERE ssn_id=:ssn", Person.class)
+                            .setParameter("ssn", p.ssn_id)
+                            .getSingleResult();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+
+            /*
+             * Recreated
+             * java.lang.IllegalArgumentException: An exception occurred while creating a query in EntityManager:
+             * Exception Description: Internal problem encountered while compiling [UPDATE Person SET firstName=:newFirstName WHERE id(this)=:ssn].
+             * Internal Exception: java.lang.NullPointerException: Cannot invoke "org.eclipse.persistence.internal.jpa.jpql.Declaration.getDescriptor()"
+             * because the return value of "org.eclipse.persistence.internal.jpa.jpql.JPQLQueryContext.getDeclaration(java.lang.String)" is null
+             */
+            throw e;
+        }
+
+        assertEquals(p.ssn_id, result.ssn_id);
+        assertEquals("Jack", result.firstName);
+        assertEquals(p.lastName, result.lastName);
     }
 
 }
