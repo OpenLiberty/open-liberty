@@ -34,7 +34,6 @@ import com.ibm.ws.sip.container.servlets.SipSessionImplementation;
 import com.ibm.ws.sip.container.servlets.WASXHttpSessionListener;
 import com.ibm.ws.sip.container.tu.TransactionUserWrapper;
 import com.ibm.ws.sip.container.was.WASHttpSessionListener;
-//import com.ibm.ws.sip.container.was.WASXTasksInvoker;
 import com.ibm.ws.sip.container.was.WebsphereInvoker;
 import com.ibm.ws.sip.properties.CoreProperties;
 import com.ibm.ws.sip.security.auth.SipSecurityManager;

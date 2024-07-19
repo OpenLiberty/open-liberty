@@ -1185,8 +1185,6 @@ public class ProxyBranchImpl extends BranchManager
 	 * should be used to send the request out.
 	 * 
 	 */
-
-	//remove synchronized as it caused deadlock 
 	public synchronized void proxyTimedOut(boolean isTimeout){
     	
     	if (c_logger.isTraceDebugEnabled()) {

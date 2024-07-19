@@ -670,9 +670,7 @@ public class SipSessionImplementation extends ReplicatableImpl implements IBMSip
     /**
      * Send notifications about invalidated SipSession
      */
-     //remove synchronized as it can cause deadlock
-     //see open-liberty issue #27282
-    public void invalidateSipSession() {
+    public synchronized void invalidateSipSession() {
     	if (c_logger.isTraceEntryExitEnabled()) {
     		c_logger.traceEntry(this, "invalidateSipSession", getId());
     	}

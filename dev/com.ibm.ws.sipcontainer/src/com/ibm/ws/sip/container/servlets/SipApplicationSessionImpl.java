@@ -516,8 +516,6 @@ implements SipApplicationSession {
 	 * @see javax.servlet.sip.SipApplicationSession#invalidate()
 	 */
 	public void invalidate() {
-		//remove synchronized as it has caused deadlocks
-		//see open-liberty issue #27282
 		synchronized (getSynchronizer()) {
 			if(m_duringInvalidate) {
 				checkIsSessionValid();
