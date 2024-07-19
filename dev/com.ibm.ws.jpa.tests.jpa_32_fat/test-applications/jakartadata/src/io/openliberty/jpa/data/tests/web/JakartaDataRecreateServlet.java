@@ -12,6 +12,8 @@ package io.openliberty.jpa.data.tests.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Ignore;
@@ -20,6 +22,7 @@ import org.junit.Test;
 import componenttest.app.FATServlet;
 import io.openliberty.jpa.data.tests.models.AsciiCharacter;
 import io.openliberty.jpa.data.tests.models.Coordinate;
+import io.openliberty.jpa.data.tests.models.NaturalNumber;
 import io.openliberty.jpa.data.tests.models.Person;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
@@ -153,6 +156,62 @@ public class JakartaDataRecreateServlet extends FATServlet {
         assertEquals(p.ssn_id, result.ssn_id);
         assertEquals("Jack", result.firstName);
         assertEquals(p.lastName, result.lastName);
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28874")
+    public void testOLGH28874() throws Exception {
+        NaturalNumber two = NaturalNumber.of(2);
+        NaturalNumber three = NaturalNumber.of(3);
+        NaturalNumber result1 = null, result2 = null;
+
+        List<Exception> exceptions = new ArrayList<>();
+
+        tx.begin();
+        em.persist(two);
+        em.persist(three);
+        tx.commit();
+
+        tx.begin();
+        try {
+            result1 = em.createQuery("FROM NaturalNumber WHERE isOdd = false AND numType = io.openliberty.jpa.data.tests.models.NaturalNumber.NumberType.PRIME",
+                                     NaturalNumber.class)
+                            .getSingleResult();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            exceptions.add(e);
+        }
+
+        tx.begin();
+        try {
+            result2 = em.createQuery("FROM NaturalNumber WHERE this.isOdd = false AND this.numType = io.openliberty.jpa.data.tests.models.NaturalNumber.NumberType.PRIME",
+                                     NaturalNumber.class)
+                            .getSingleResult();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            exceptions.add(e);
+        }
+
+        if (!exceptions.isEmpty()) {
+
+            /*
+             * Recreate
+             * Exception Description: Object comparisons can only be used with OneToOneMappings. Other mapping comparisons must be done through query keys or direct attribute level
+             * comparisons.
+             * Mapping: [org.eclipse.persistence.mappings.DirectToFieldMapping[numType-->NATURALNUMBER.NUMTYPE]]
+             * Expression: [
+             * Query Key numType
+             * Base io.openliberty.jpa.data.tests.models.NaturalNumber]
+             * Query: ReadAllQuery(referenceClass=NaturalNumber
+             * jpql="FROM NaturalNumber WHERE isOdd = false AND numType = io.openliberty.jpa.data.tests.models.NaturalNumber.NumberType.PRIME")
+             */
+            throw exceptions.get(0);
+        }
+
+        assertEquals(2l, result1.getId(), 0.001f);
+        assertEquals(2l, result2.getId(), 0.001f);
     }
 
 }
