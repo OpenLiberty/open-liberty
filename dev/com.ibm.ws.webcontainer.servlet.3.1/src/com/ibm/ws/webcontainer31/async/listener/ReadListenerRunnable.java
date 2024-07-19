@@ -12,6 +12,7 @@ package com.ibm.ws.webcontainer31.async.listener;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.webcontainer31.async.AsyncContext31Impl;
+import com.ibm.ws.webcontainer31.async.AsyncReadCallback;
 import com.ibm.ws.webcontainer31.async.ThreadContextManager;
 import com.ibm.ws.webcontainer31.osgi.osgi.WebContainerConstants;
 import com.ibm.ws.webcontainer31.srt.SRTInputStream31;
@@ -43,7 +44,7 @@ public class ReadListenerRunnable implements Runnable {
     @Override
     public void run() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "run " + Thread.currentThread().getName() + " " + this.in.getReadListener() + " " + this.asyncContext);
+            Tr.entry(tc, "run " + Thread.currentThread().getName() + " " + this.in.getReadListener() + " " + this.asyncContext + " " + this._callback);
         }
         
         try {     
@@ -59,7 +60,17 @@ public class ReadListenerRunnable implements Runnable {
                 //Call into the HttpInboundService context for the body data, passing in the callback and forcing
                 //the read to go asynchronous
                 //If there is data immediately available Channel will call the callback.complete before returning to this thread
-                _isc.getRequestBodyBuffer(_callback, true);
+                //Since the read is forced to go asynchronous, we need to notify the input stream so that multiple reads do not
+                //happen at once when verifying if the input is ready
+                synchronized (this.in.getLockObj()) {
+                    //Check if an async read has already been queued and don't start another one
+                    if (!this.in.isAsyncReadOutstanding()) {
+                        if(_callback instanceof AsyncReadCallback) {
+                            this.in.setAsyncReadOutstanding(true);
+                        }
+                        _isc.getRequestBodyBuffer(_callback, true);
+                    }
+                }
             }
         } catch (Exception e){
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
