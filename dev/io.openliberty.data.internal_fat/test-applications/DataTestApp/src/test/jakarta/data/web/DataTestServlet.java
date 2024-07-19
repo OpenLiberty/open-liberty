@@ -498,6 +498,16 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository method that performs a JDQL query using the String
+     * concatenation operator ||.
+     */
+    @Test
+    public void testConcatenationOperator() {
+        assertEquals(List.of("thirty-one", "twenty-three", "thirteen", "three", "two"),
+                     primes.concatAndMatch("%It%", Sort.desc(ID)));
+    }
+
+    /**
      * Count the number of matching entries in the database using query by method name.
      */
     @Test
@@ -2896,6 +2906,16 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository method that performs a JDQL query using LEFT function
+     * to obtain the beginning of a String value.
+     */
+    @Test
+    public void tesLeftFunction() {
+        assertEquals(List.of("seven", "seventeen"),
+                     primes.matchLeftSideOfName("seven"));
+    }
+
+    /**
      * Intermix two different types of entities in the same transaction.
      */
     @Test
@@ -4044,6 +4064,17 @@ public class DataTestServlet extends FATServlet {
                                              .map(o -> o.a)
                                              .sorted()
                                              .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use a repository method that performs a JDQL query using RIGHT function
+     * to obtain the end of a String value.
+     */
+    @Test
+    public void testRightFunction() {
+        assertEquals(List.of("thirty-seven", "thirteen", "seventeen",
+                             "seven", "nineteen", "eleven"),
+                     primes.matchRightSideOfName("en"));
     }
 
     /**
