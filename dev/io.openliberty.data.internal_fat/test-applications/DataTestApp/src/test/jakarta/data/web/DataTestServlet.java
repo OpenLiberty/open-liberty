@@ -115,6 +115,9 @@ public class DataTestServlet extends FATServlet {
     Packages packages;
 
     @Inject
+    Participants participants;
+
+    @Inject
     People people;
 
     @Inject
@@ -3638,6 +3641,30 @@ public class DataTestServlet extends FATServlet {
         assertEquals(true, receipts.deleteByTotalLessThan(1000000.0f));
 
         assertEquals(0L, receipts.count());
+    }
+
+    /**
+     * Test an unannotated entity that has an attribute which is a Java record,
+     * which should be inferred to be an embeddable, such that queries and sorting
+     * can be performed on the attributes of the embeddable.
+     */
+    @Test
+    public void testRecordAsEmbeddable() {
+        participants.remove("TestRecordAsEmbeddable");
+
+        participants.add(Participant.of("Steve", "TestRecordAsEmbeddable", 1),
+                         Participant.of("Sarah", "TestRecordAsEmbeddable", 2),
+                         Participant.of("Simon", "TestRecordAsEmbeddable", 3),
+                         Participant.of("Samantha", "TestRecordAsEmbeddable", 4));
+
+        assertEquals("Simon", participants.getFirstName(3).orElseThrow());
+
+        assertEquals(List.of("Samantha", "Sarah", "Simon", "Steve"),
+                     participants.withSurname("TestRecordAsEmbeddable")
+                                     .map(p -> p.name.first())
+                                     .collect(Collectors.toList()));
+
+        assertEquals(4L, participants.remove("TestRecordAsEmbeddable"));
     }
 
     /**
