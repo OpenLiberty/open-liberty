@@ -72,7 +72,11 @@ public class RepositoryUtil {
 
     private static void requireImageLocations() {
         if (!didSetupImageLocations) {
-            throw new IllegalStateException("RepositoryUtil.setupImageLocations has not been run.");
+            if (didSetupImageFailure) {
+                throw new IllegalStateException("Prior RepositoryUtil.setupImageLocations failure");
+            } else {
+                throw new IllegalStateException("RepositoryUtil.setupImageLocations has not been run.");
+            }
         }
     }
 
@@ -127,7 +131,11 @@ public class RepositoryUtil {
 
     private static void requireFeatureLocations() {
         if (!didSetupFeatureLocations) {
-            throw new IllegalStateException("RepositoryUtil.setupFeatureLocations has not been run.");
+            if (didSetupFeatureLocationsFailure) {
+                throw new IllegalStateException("Prior RepositoryUtil.setupFeatureLocations failure");
+            } else {
+                throw new IllegalStateException("RepositoryUtil.setupFeatureLocations has not been run.");
+            }
         }
     }
 
@@ -191,7 +199,11 @@ public class RepositoryUtil {
 
     private static void requireProfileLocations() {
         if (!didSetupProfileLocations) {
-            throw new IllegalStateException("RepositoryUtil.setupProfileLocations has not been run.");
+            if (didSetupProfileLocationsFailure) {
+                throw new IllegalStateException("Prior RepositoryUtil.setupProfileLocations failure");
+            } else {
+                throw new IllegalStateException("RepositoryUtil.setupProfileLocations has not been run.");
+            }
         }
     }
 
@@ -249,7 +261,11 @@ public class RepositoryUtil {
 
     private static void requireRepo() {
         if (!didSetupRepo) {
-            throw new IllegalStateException("RepositoryUtil.setupRepo has not been run.");
+            if (didSetupRepoFailure) {
+                throw new IllegalStateException("Prior RepositoryUtil.setupRepo failure");
+            } else {
+                throw new IllegalStateException("RepositoryUtil.setupRepo has not been run.");
+            }
         }
     }
 
@@ -340,7 +356,11 @@ public class RepositoryUtil {
 
     private static void requireFeatures() {
         if (!didSetupFeatures) {
-            throw new IllegalStateException("RepositoryUtil.setupFeatures has not been run.");
+            if (didSetupFeaturesFailure) {
+                throw new IllegalStateException("Prior RepositoryUtil.setupFeatures failure");
+            } else {
+                throw new IllegalStateException("RepositoryUtil.setupFeatures has not been run.");
+            }
         }
     }
 
@@ -400,7 +420,11 @@ public class RepositoryUtil {
 
     private static void requireProfiles() {
         if (!didSetupProfiles) {
-            throw new IllegalStateException("RepositoryUtil.setupProfiles has not been run.");
+            if (didSetupProfilesFailure) {
+                throw new IllegalStateException("Prior RepositoryUtil.setupProfiles failure");
+            } else {
+                throw new IllegalStateException("RepositoryUtil.setupProfiles has not been run.");
+            }
         }
     }
 

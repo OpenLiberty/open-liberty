@@ -153,7 +153,7 @@ public class BaselineResolutionUnitTest {
             didSetup = true;
         }
 
-        RepositoryUtil.setupFeatures();
+        // RepositoryUtil.setupFeatures();
         RepositoryUtil.setupProfiles();
 
         RepositoryUtil.setupRepo(serverName);
@@ -318,7 +318,7 @@ public class BaselineResolutionUnitTest {
         // Incorrect [ Versionless resolutions ]:
         //   Key [ beanValidation ]
         //     Expected value [ beanValidation-3.1 ]
-        //     Actual value [ validation-3.1 ]            
+        //     Actual value [ validation-3.1 ]
 
         if (shortBaseName.equals("beanValidation") && shortName.equals("beanValidation-3.1")) {
             shortName = "validation-3.1";

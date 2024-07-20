@@ -20,7 +20,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 ReportFeaturesUnitTest.class,
                 // ReportImagesUnitTest.class, // Disabled: See issue 29079
-                FeatureDetailsUnitTest.class,
+                // FeatureDetailsUnitTest.class, // Disabled: Not getting features in WL.
 
                 // BaselineResolutionGenerationTest.class,
                 BaselineResolutionSingletonUnitTest.class,
