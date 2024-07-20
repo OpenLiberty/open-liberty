@@ -325,13 +325,23 @@ public class BaselineResolutionUnitTest {
     }
 
     public static Collection<Object[]> asCases(VerifyData verifyData) {
+        return asCases(verifyData, null);
+    }
+
+    public static Collection<Object[]> asCases(VerifyData verifyData, CaseSelector selector) {
         List<? extends VerifyCase> cases = verifyData.getCases();
 
         List<Object[]> params = new ArrayList<>(cases.size());
         for (VerifyCase aCase : cases) {
-            params.add(new Object[] { aCase.name, aCase });
+            if ((selector == null) || selector.accept(aCase)) {
+                params.add(new Object[] { aCase.name, aCase });
+            }
         }
         return params;
+    }
+
+    public interface CaseSelector {
+        boolean accept(VerifyCase aCase);
     }
 
     public static VerifyData readData(File verifyDataFile) throws Exception {

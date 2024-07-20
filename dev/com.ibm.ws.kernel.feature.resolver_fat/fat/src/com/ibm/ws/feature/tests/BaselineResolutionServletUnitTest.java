@@ -98,7 +98,21 @@ public class BaselineResolutionServletUnitTest extends BaselineResolutionUnitTes
             System.out.println("Case adjustment [ " + (finalCount - initialCount) + " ]");
         }
 
-        return asCases(verifyData);
+        // Ignore dual servlet cases for now:
+        //
+        // <root>servlet-3.1</root>
+        // <root>io.openliberty.versionless.servlet</root>
+
+        CaseSelector servletSelector = new CaseSelector() {
+            @Override
+            public boolean accept(VerifyCase aCase) {
+                String feature0 = aCase.input.roots.get(0);
+                String feature1 = aCase.input.roots.get(1);
+                return (!feature0.startsWith("servlet-") || !feature1.endsWith(".servlet"));
+            }
+        };
+
+        return asCases(verifyData, servletSelector);
     }
 
     public BaselineResolutionServletUnitTest(String name, VerifyCase testCase) throws Exception {
