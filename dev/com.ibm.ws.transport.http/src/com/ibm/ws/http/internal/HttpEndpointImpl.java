@@ -154,7 +154,6 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
     private volatile String name = null;
     private volatile String pid = null;
     private volatile boolean useNetty = false;
-    private final Object activationLock = new Object();
 
     private BundleContext bundleContext = null;
 
@@ -178,8 +177,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     private final AtomicReference<AccessLog> accessLogger = new AtomicReference<AccessLog>(DisabledLogger.getRef());
 
-    private final Object actionLock = new Object() {
-    };
+    private final Object actionLock = new Object();
     private final LinkedList<Runnable> actionQueue = new LinkedList<Runnable>();
     private Future<?> actionFuture = null;
 
@@ -242,7 +240,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
                 if (endpointStarted && endpointState.get() == ENABLED && FrameworkState.isValid()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "EndpointAction: updating chains " + HttpEndpointImpl.this, httpChain, httpSecureChain);
+                        Tr.debug(this, tc, "EndpointAction: updating chains " + HttpEndpointImpl.this, getCurrentHttpChain(), getCurrentHttpsChain());
 
                     String resolvedHost = resolvedHostName;
                     
@@ -308,7 +306,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     @Deactivate
     protected void deactivate(ComponentContext ctx, int reason) {
-        synchronized(activationLock) {
+        
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "deactivate HttpEndpoint " + this + ", reason=" + reason);
         }
@@ -330,7 +328,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         sslFactoryProvider.deactivate(ctx);
         sslOptions.deactivate(ctx);
         eventService.deactivate(ctx);
-        }
+        
     }
 
     private void registerCheckResolvedHostHook(final Map<String, Object> configAtCheckpoint, String cfgDefaultHost) {
@@ -445,10 +443,45 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         }
     }
     
-    private void switchChains(boolean switchChainImplementation) {
-        performAction(stopAction);
-        useNetty = switchChainImplementation;
-        initializeChains();
+    private synchronized void switchChains(boolean switchToNetty) {
+        if(this.useNetty == switchToNetty) {
+            return;
+        }
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Switching chains from " + (this.useNetty ? "Netty" : "Legacy") + " to " + (switchToNetty ? "Netty" : "Legacy"));
+        }
+        
+        getCurrentHttpChain().stop();
+        getCurrentHttpsChain().stop();
+        
+        this.useNetty = switchToNetty;
+        
+        
+        if(switchToNetty) {
+            nettyChain.initNettyChain(name, netty);
+            nettySecureChain.initNettyChain(name, netty);
+            
+        } else {
+            httpChain.init(name, cid, chfw);
+            httpSecureChain.init(name, cid, chfw);
+        }
+        
+        if(httpPort >=0) {
+            getCurrentHttpChain().enable();
+        }
+        
+        if (httpsPort >= 0 && (useNetty ? nettyTlsProvider != null : sslFactoryProvider.getService() != null)) {
+            getCurrentHttpsChain().enable();
+        }
+        
+        if(endpointState.get() == ENABLED) {
+            processHttpChainWork(true, false);
+        }
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Finished switching chains. New HTTP chain: " + getCurrentHttpChain() + ", New HTTPS chain: " + getCurrentHttpsChain());
+        }
     }
 
     /**
@@ -458,6 +491,9 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      * @param isPause        True if this call is being made for pause endpoint processing.
      */
     public void processHttpChainWork(boolean enableEndpoint, boolean isPause) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Processing HTTP chain work: enableEndpoint=" + enableEndpoint + ", isPause=" + isPause);
+        }
         if (enableEndpoint) {
             // enable the endpoint if it is currently disabled
             // it's ok if the endpoint is stopped, the config update will occur @ next start
@@ -467,8 +503,22 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
                 getCurrentHttpChain().enable();
                 
             }
-            if (httpsPort >= 0 && sslFactoryProvider.getService() != null) {
-                getCurrentHttpsChain().enable();
+            if (httpsPort >= 0) {
+                boolean sslAvailable = useNetty ? (nettyTlsProvider != null) : (sslFactoryProvider.getService() != null);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "SSL availability: useNetty=" + useNetty + ", nettyTlsProvider=" + (nettyTlsProvider != null) + ", sslFactoryProvider=" + (sslFactoryProvider.getService() != null));
+                }
+                if(sslAvailable) {
+                    System.out.println("MSP -> enabling https");
+                    getCurrentHttpsChain().enable();
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "HTTPS chain enabled");
+                    }
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "HTTPS chain not enabled: Neither SSLFactoryProvider nor NettyTlsProvider is available");
+                }
             }
 
             if (!isPause) {
@@ -484,6 +534,9 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
             // The endpoint has been disabled-- stop it now
             endpointState.set(DISABLED);
+            
+            
+            
             if (!isPause) {
                 performAction(stopAction);
             } else {
@@ -586,11 +639,11 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
         // TODO Add logic to verify no Netty TLS provider is needed to start up the chain
         // if Netty is not enabled on this endpoint
-        if (endpointConfig != null && nettyTlsProvider != null) {
-            httpSecureChain.enable();
-            // If this is post-activate, drive the update action
-            performAction(updateAction);
-        }
+//        if (endpointConfig != null && nettyTlsProvider != null) {
+//            httpSecureChain.enable();
+//            // If this is post-activate, drive the update action
+//            performAction(updateAction);
+//        }
     }
 
     /**
@@ -937,12 +990,19 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
     @Reference(name = "nettyTlsProvider", policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY, unbind = "unbindTlsProviderService")
     protected void bindNettyTlsProvider(NettyTlsProvider tlsProvider) {
         System.out.println("Setting Netty TLS provider");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Setting Netty TLS provider: " + tlsProvider);
+        }
         this.nettyTlsProvider = tlsProvider;
-        if (endpointConfig != null && sslFactoryProvider.getReference() != null) {
-            httpSecureChain.enable();
-            // If this is post-activate, drive the update action
+        // Trigger an update to ensure the SSL chain is initialized
+        if (endpointConfig != null) {
             performAction(updateAction);
         }
+//        if (endpointConfig != null && sslFactoryProvider.getReference() != null) {
+//            httpSecureChain.enable();
+//            // If this is post-activate, drive the update action
+//            performAction(updateAction);
+//        }
     }
 
     protected void unbindTlsProviderService(NettyTlsProvider bundle) {
@@ -1236,7 +1296,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             // TCP Channel *** has been started and is now listening for requests on host ***  (IPv6) port ***.).
             processHttpChainWork(true, true);
             
-            int httpChainState = getCurrentHttpChain().getChainState();;
+            int httpChainState = getCurrentHttpChain().getChainState();
             int httpsChainState = getCurrentHttpsChain().getChainState();
 
             // Check the state of the HTTP chains. The expectation is that the HTTP and HTTPS chains states are either STARTED
