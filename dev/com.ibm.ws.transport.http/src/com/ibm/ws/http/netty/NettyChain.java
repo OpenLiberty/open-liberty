@@ -52,13 +52,6 @@ public class NettyChain extends HttpChain {
     private final AtomicReference<ChainState> state = new AtomicReference<>(ChainState.UNINITIALIZED);
 
     private volatile boolean enabled = false;
-    
-    
-    static {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "NettyChain class initialized");
-        }
-    }
 
     /**
      * Netty Http Chain constructor
@@ -149,9 +142,7 @@ public class NettyChain extends HttpChain {
 
     @Override
     public synchronized void update(String resolvedHostName) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "Updating Netty chain: " + this + ", resolvedHostName: " + resolvedHostName);
-        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.entry(this, tc, "Updating Netty Chain  " + endpointName + " Current state: " + state.get());
         }

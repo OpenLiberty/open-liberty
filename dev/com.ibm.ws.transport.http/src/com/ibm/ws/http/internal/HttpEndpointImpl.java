@@ -240,13 +240,40 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
                 if (endpointStarted && endpointState.get() == ENABLED && FrameworkState.isValid()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "EndpointAction: updating chains " + HttpEndpointImpl.this, getCurrentHttpChain(), getCurrentHttpsChain());
+                        Tr.debug(this, tc, "EndpointAction: updating chains " + HttpEndpointImpl.this);
 
                     String resolvedHost = resolvedHostName;
                     
                     getCurrentHttpChain().update(resolvedHost);
-                    getCurrentHttpsChain().update(resolvedHost);
+                    
+                    if (httpsPort >= 0) {
+                        if (useNetty && nettyTlsProvider != null) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(this, tc, "Enabling Netty HTTPS chain");
+                            }
+                            nettySecureChain.enable();
+                            nettySecureChain.update(resolvedHost);
+                        } else if (!useNetty && sslFactoryProvider.getService() != null) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(this, tc, "Enabling legacy HTTPS chain");
+                            }
+                            httpSecureChain.enable();
+                            httpSecureChain.update(resolvedHost);
+                        } else {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(this, tc, "HTTPS chain not enabled: SSL/TLS provider not available");
+                            }
+                            getCurrentHttpsChain().disable();
+                        }
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "HTTPS port not configured, disabling HTTPS chain");
+                        }
+                        getCurrentHttpsChain().disable();
+                    }
                 }
+                    
+                
             }
         }
     };
@@ -509,7 +536,6 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
                     Tr.debug(this, tc, "SSL availability: useNetty=" + useNetty + ", nettyTlsProvider=" + (nettyTlsProvider != null) + ", sslFactoryProvider=" + (sslFactoryProvider.getService() != null));
                 }
                 if(sslAvailable) {
-                    System.out.println("MSP -> enabling https");
                     getCurrentHttpsChain().enable();
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(this, tc, "HTTPS chain enabled");
@@ -636,14 +662,10 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             Tr.event(this, tc, "enable ssl support " + ref.getProperty("type"), this);
         }
         sslFactoryProvider.setReference(ref);
+        if(endpointConfig != null) {
+            performAction(updateAction);
+        }
 
-        // TODO Add logic to verify no Netty TLS provider is needed to start up the chain
-        // if Netty is not enabled on this endpoint
-//        if (endpointConfig != null && nettyTlsProvider != null) {
-//            httpSecureChain.enable();
-//            // If this is post-activate, drive the update action
-//            performAction(updateAction);
-//        }
     }
 
     /**
@@ -989,24 +1011,22 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     @Reference(name = "nettyTlsProvider", policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY, unbind = "unbindTlsProviderService")
     protected void bindNettyTlsProvider(NettyTlsProvider tlsProvider) {
-        System.out.println("Setting Netty TLS provider");
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "Setting Netty TLS provider: " + tlsProvider);
         }
         this.nettyTlsProvider = tlsProvider;
         // Trigger an update to ensure the SSL chain is initialized
-        if (endpointConfig != null) {
-            performAction(updateAction);
+        if (endpointConfig != null) {             
+            performAction(updateAction);           
         }
-//        if (endpointConfig != null && sslFactoryProvider.getReference() != null) {
-//            httpSecureChain.enable();
-//            // If this is post-activate, drive the update action
-//            performAction(updateAction);
-//        }
+
     }
 
     protected void unbindTlsProviderService(NettyTlsProvider bundle) {
         this.nettyTlsProvider = null;
+        if(endpointConfig != null) {
+            performAction(updateAction);
+        }
     }
 
     public NettyTlsProvider getNettyTlsProvider() {
