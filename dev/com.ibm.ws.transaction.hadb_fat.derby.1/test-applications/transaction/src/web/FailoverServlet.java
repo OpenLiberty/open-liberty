@@ -28,6 +28,8 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import javax.transaction.xa.XAResource;
 
@@ -37,8 +39,6 @@ import com.ibm.tx.jta.ut.util.TxTestUtils;
 import com.ibm.tx.jta.ut.util.XAResourceFactoryImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
-import com.informix.database.ConnectionManager;
-import com.informix.jdbcx.IfxConstants.TestType;
 
 import componenttest.app.FATServlet;
 
@@ -49,109 +49,113 @@ public class FailoverServlet extends FATServlet {
     @Resource(lookup = "jdbc/tranlogDataSource")
     private DataSource ds;
 
+    private enum TestType {
+        STARTUP, RUNTIME, DUPLICATE_RESTART, DUPLICATE_RUNTIME, HALT, CONNECT, LEASE
+    };
+
     /**
      * Lookup string that allows character digit lookup by index value.
      * ie _digits[9] == '9' etc.
      */
     private final static String _digits = "0123456789abcdef";
 
-    public void setupForRecoverableFailover() throws Exception {
+    public void setupForRecoverableFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForRecoverableFailover");
-        setupTestParameters(TestType.RUNTIME, -4498, 12, 1);
+        setupTestParameters(request, response, TestType.RUNTIME, -4498, 12, 1);
         System.out.println("FAILOVERSERVLET: setupForRecoverableFailover complete");
     }
 
-    public void setupForRecoverableFailureMultipleRetries() throws Exception {
+    public void setupForRecoverableFailureMultipleRetries(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForRecoverableFailureMultipleRetries");
-        setupTestParameters(TestType.RUNTIME, -4498, 12, 5); // Can fail up to 5 times
+        setupTestParameters(request, response, TestType.RUNTIME, -4498, 12, 5); // Can fail up to 5 times
         System.out.println("FAILOVERSERVLET: setupForRecoverableFailureMultipleRetries complete");
     }
 
-    public void setupForNonRecoverableFailover() throws Exception {
+    public void setupForNonRecoverableFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForNonRecoverableFailover");
-        setupTestParameters(TestType.RUNTIME, -3, 12, 1);
+        setupTestParameters(request, response, TestType.RUNTIME, -3, 12, 1);
         System.out.println("FAILOVERSERVLET: setupForNonRecoverableFailover complete");
     }
 
-    public void setupForNonRecoverableBatchFailover() throws Exception {
+    public void setupForNonRecoverableBatchFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForNonRecoverableBatchFailover");
-        setupTestParameters(TestType.RUNTIME, -33, 12, 1);
+        setupTestParameters(request, response, TestType.RUNTIME, -33, 12, 1);
         System.out.println("FAILOVERSERVLET: setupForNonRecoverableBatchFailover complete");
     }
 
-    public void setupForConnectFailover() throws Exception {
+    public void setupForConnectFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForConnectFailover");
-        setupTestParameters(TestType.CONNECT, 0, 0, 1);
+        setupTestParameters(request, response, TestType.CONNECT, 0, 0, 1);
         System.out.println("FAILOVERSERVLET: setupForConnectFailover complete");
     }
 
-    public void setupForMultiConnectFailover() throws Exception {
+    public void setupForMultiConnectFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForConnectFailover");
-        setupTestParameters(TestType.CONNECT, 0, 0, 3);
+        setupTestParameters(request, response, TestType.CONNECT, 0, 0, 3);
         System.out.println("FAILOVERSERVLET: setupForConnectFailover complete");
     }
 
-    public void setupForStartupFailover() throws Exception {
+    public void setupForStartupFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForStartupFailover");
-        setupTestParameters(TestType.STARTUP, -4498, 6, 1);
+        setupTestParameters(request, response, TestType.STARTUP, -4498, 6, 1);
         System.out.println("FAILOVERSERVLET: setupForStartupFailover complete");
     }
 
-    public void setupForNonRecoverableStartupFailover() throws Exception {
+    public void setupForNonRecoverableStartupFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForNonRecoverableStartupFailover");
-        setupTestParameters(TestType.STARTUP, -3, 6, 1);
+        setupTestParameters(request, response, TestType.STARTUP, -3, 6, 1);
         System.out.println("FAILOVERSERVLET: setupForNonRecoverableStartupFailover complete");
     }
 
-    public void setupForEarlyNonRecoverableStartupFailover() throws Exception {
+    public void setupForEarlyNonRecoverableStartupFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForNonRecoverableStartupFailover");
-        setupTestParameters(TestType.STARTUP, -3, 0, 1);
+        setupTestParameters(request, response, TestType.STARTUP, -3, 0, 1);
         System.out.println("FAILOVERSERVLET: setupForNonRecoverableStartupFailover complete");
     }
 
-    public void setupForDuplicationRestart() throws Exception {
+    public void setupForDuplicationRestart(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForDuplicationRestart");
-        setupTestParameters(TestType.DUPLICATE_RESTART, 0, 10, 1);
+        setupTestParameters(request, response, TestType.DUPLICATE_RESTART, 0, 10, 1);
         System.out.println("FAILOVERSERVLET: setupForDuplicationRestart complete");
     }
 
-    public void setupForDuplicationRuntime() throws Exception {
+    public void setupForDuplicationRuntime(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForDuplicationRuntime");
-        setupTestParameters(TestType.DUPLICATE_RUNTIME, 0, 10, 1);
+        setupTestParameters(request, response, TestType.DUPLICATE_RUNTIME, 0, 10, 1);
         System.out.println("FAILOVERSERVLET: setupForDuplicationRuntime complete");
     }
 
-    public void setupForHalt() throws Exception {
+    public void setupForHalt(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForHalt");
-        setupTestParameters(TestType.HALT, 0, 12, 1); // set the ioperation to the duplicate test value + 2
+        setupTestParameters(request, response, TestType.HALT, 0, 12, 1); // set the ioperation to the duplicate test value + 2
         System.out.println("FAILOVERSERVLET: setupForHalt complete");
     }
 
-    public void setupForLeaseUpdate() throws Exception {
+    public void setupForLeaseUpdate(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForLeaseUpdate");
-        setupTestParameters(TestType.LEASE, 0, 770, 1); // 770 interpreted as lease update
+        setupTestParameters(request, response, TestType.LEASE, 0, 770, 1); // 770 interpreted as lease update
         System.out.println("FAILOVERSERVLET: setupForLeaseUpdate complete");
     }
 
-    public void setupForLeaseDelete() throws Exception {
+    public void setupForLeaseDelete(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForLeaseDelete");
-        setupTestParameters(TestType.LEASE, 0, 771, 1); // 771 interpreted as lease delete
+        setupTestParameters(request, response, TestType.LEASE, 0, 771, 1); // 771 interpreted as lease delete
         System.out.println("FAILOVERSERVLET: setupForLeaseDelete complete");
     }
 
-    public void setupForLeaseClaim() throws Exception {
+    public void setupForLeaseClaim(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForLeaseClaim");
-        setupTestParameters(TestType.LEASE, 0, 772, 1); // 772 interpreted as lease claim
+        setupTestParameters(request, response, TestType.LEASE, 0, 772, 1); // 772 interpreted as lease claim
         System.out.println("FAILOVERSERVLET: setupForLeaseClaim complete");
     }
 
-    public void setupForLeaseGet() throws Exception {
+    public void setupForLeaseGet(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForLeaseGet");
-        setupTestParameters(TestType.LEASE, 0, 773, 1); // 773 interpreted as lease get
+        setupTestParameters(request, response, TestType.LEASE, 0, 773, 1); // 773 interpreted as lease get
         System.out.println("FAILOVERSERVLET: setupForLeaseGet complete");
     }
 
-    private void setupTestParameters(TestType testType,
+    private void setupTestParameters(HttpServletRequest request, HttpServletResponse response, TestType testType,
                                      int thesqlcode, int operationToFail, int numberOfFailures) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupTestParameters");
 
@@ -161,7 +165,7 @@ public class FailoverServlet extends FATServlet {
         // Allow a retry if the first attempt to set up the table fails.
         while (!setupDone && retries < 2) {
             try {
-                setupHATable(testType, thesqlcode, operationToFail, numberOfFailures);
+                setupHATable(request, response, testType, thesqlcode, operationToFail, numberOfFailures);
                 setupDone = true;
             } catch (Exception ex) {
                 System.out.println("FAILOVERSERVLET: caught exception in testSetup: " + ex);
@@ -173,38 +177,26 @@ public class FailoverServlet extends FATServlet {
             throw exToThrow;
     }
 
-    private void setupHATable(TestType testType,
+    private void setupHATable(HttpServletRequest request, HttpServletResponse response, TestType testType,
                               int thesqlcode, int operationToFail, int numberOfFailures) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupHATable");
 
         try (Connection con = getConnection(); Statement stmt = con.createStatement()) {
-
-            String q;
-            int ret = 0;
-            boolean isOracle = ConnectionManager.dbProductName.toLowerCase().contains("oracle");
-            if (isOracle) {
-                q = "drop table hatable";
-            } else {
-                q = "drop table if exists hatable";
-            }
             try {
-                ret = stmt.executeUpdate(q);
-            } catch (SQLException e) {
-                if (isOracle) {
-                    // table might not have existed
-                    if (942 != e.getErrorCode()) {
-                        throw e;
-                    }
-                }
+                System.out.println("FAILOVERSERVLET: drop hatable");
+                stmt.executeUpdate("drop table hatable");
+            } catch (SQLException x) {
+                // didn't exist
             }
-            System.out.println("FAILOVERSERVLET: " + q + " - " + ret);
 
-            q = "create table hatable (testtype int not null primary key, failingoperation int, numberoffailures int, simsqlcode int)";
-            ret = stmt.executeUpdate(q);
-            System.out.println("FAILOVERSERVLET: " + q + " - " + ret);
-
-            q = "insert into hatable values (" + testType.ordinal() + ", " + operationToFail + ", " + numberOfFailures + ", " + thesqlcode + ")";
-            ret = stmt.executeUpdate(q);
-            System.out.println("FAILOVERSERVLET: " + q + " - " + ret);
+            System.out.println("FAILOVERSERVLET: create hatable");
+            stmt.executeUpdate(
+                               "create table hatable (testtype int not null primary key, failingoperation int, numberoffailures int, simsqlcode int)");
+            // was col2 varchar(20)
+            System.out.println("FAILOVERSERVLET: insert row into hatable - type" + testType.ordinal()
+                               + ", operationtofail: " + operationToFail + ", sqlcode: " + thesqlcode);
+            stmt.executeUpdate("insert into hatable values (" + testType.ordinal() + ", " + operationToFail + ", " + numberOfFailures + ", "
+                               + thesqlcode + ")"); // was -4498
 
             // UserTransaction Commit
             con.setAutoCommit(false);
@@ -214,7 +206,7 @@ public class FailoverServlet extends FATServlet {
         }
     }
 
-    public void dropHATable() throws Exception {
+    public void dropHATable(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive dropHATable");
 
         try (Connection con = getConnection(); Statement stmt = con.createStatement()) {
@@ -233,7 +225,7 @@ public class FailoverServlet extends FATServlet {
         }
     }
 
-    public void dropStaleRecoveryLogTables() throws Exception {
+    public void dropStaleRecoveryLogTables(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive dropStaleRecoveryLogTables");
 
         try (Connection con = getConnection(); Statement stmt = con.createStatement()) {
@@ -266,7 +258,7 @@ public class FailoverServlet extends FATServlet {
      * @throws Exception
      *             if an error occurs.
      */
-    public void driveTransactions() throws Exception {
+    public void driveTransactions(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: driveTransactions");
 
         // Set the test parameters
@@ -277,7 +269,7 @@ public class FailoverServlet extends FATServlet {
             System.out.println("FAILOVERSERVLET: drive the Performance Test, resources: " + resources + ", batchSize: "
                                + batchSize);
 
-            simulateTransactions(batchSize, resources);
+            simulateTransactions(request, response, batchSize, resources);
 
         } catch (Exception e) {
             System.out.println("FAILOVERSERVLET: EXCEPTION: " + e);
@@ -285,7 +277,7 @@ public class FailoverServlet extends FATServlet {
         }
     }
 
-    public void driveSixTransactions() throws Exception {
+    public void driveSixTransactions(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: driveSixTransactions");
 
         // Set the test parameters
@@ -296,7 +288,7 @@ public class FailoverServlet extends FATServlet {
             System.out.println("FAILOVERSERVLET: drive the Performance Test, resources: " + resources + ", batchSize: "
                                + batchSize);
 
-            simulateTransactions(batchSize, resources);
+            simulateTransactions(request, response, batchSize, resources);
 
         } catch (Exception e) {
             System.out.println("FAILOVERSERVLET: EXCEPTION: " + e);
@@ -305,7 +297,7 @@ public class FailoverServlet extends FATServlet {
 
     }
 
-    public void driveTransactionsWithFailure() throws Exception {
+    public void driveTransactionsWithFailure(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: driveTransactionsWithFailure");
 
         // Set the test parameters
@@ -317,7 +309,7 @@ public class FailoverServlet extends FATServlet {
             System.out.println("FAILOVERSERVLET: drive a batch of transactions, resources: " + resources + ", batchSize: "
                                + batchSize);
 
-            simulateTransactions(batchSize, resources);
+            simulateTransactions(request, response, batchSize, resources);
             System.out.println("FAILOVERSERVLET: failed to throw SystemException");
             throw new Exception();
         } catch (javax.transaction.SystemException sysex) {
@@ -328,7 +320,7 @@ public class FailoverServlet extends FATServlet {
         }
     }
 
-    private void simulateTransactions(int batchSize, int resources) throws Exception {
+    private void simulateTransactions(HttpServletRequest request, HttpServletResponse response, int batchSize, int resources) throws Exception {
         final ExtendedTransactionManager tm = TransactionManagerFactory.getTransactionManager();
 
         System.out.println("FAILOVERSERVLET: Starting simulateTransactions");
@@ -364,7 +356,8 @@ public class FailoverServlet extends FATServlet {
 
     }
 
-    public void checkForDuplicates() throws Exception {
+    public void checkForDuplicates(HttpServletRequest request,
+                                   HttpServletResponse response) throws Exception {
         Set<List<Number>> resultSet;
         List<Number> row;
 
@@ -406,7 +399,8 @@ public class FailoverServlet extends FATServlet {
         }
     }
 
-    public void insertStaleLease() throws Exception {
+    public void insertStaleLease(HttpServletRequest request,
+                                 HttpServletResponse response) throws Exception {
 
         try (Connection con = getConnection()) {
             con.setAutoCommit(false);
@@ -530,17 +524,20 @@ public class FailoverServlet extends FATServlet {
         }
     }
 
-    public void setupBatchOfStaleLeases1() throws Exception {
+    public void setupBatchOfStaleLeases1(HttpServletRequest request,
+                                         HttpServletResponse response) throws Exception {
 
         setupBatchOfStaleLeases(0, 10);
     }
 
-    public void setupBatchOfStaleLeases2() throws Exception {
+    public void setupBatchOfStaleLeases2(HttpServletRequest request,
+                                         HttpServletResponse response) throws Exception {
 
         setupBatchOfStaleLeases(10, 20);
     }
 
-    public void deleteStaleLease() throws Exception {
+    public void deleteStaleLease(HttpServletRequest request,
+                                 HttpServletResponse response) throws Exception {
 
         try (Connection con = getConnection()) {
             con.setAutoCommit(false);
@@ -572,7 +569,8 @@ public class FailoverServlet extends FATServlet {
         }
     }
 
-    public void setupRec007() throws Exception {
+    public void setupRec007(HttpServletRequest request,
+                            HttpServletResponse response) throws Exception {
         final ExtendedTransactionManager tm = TransactionManagerFactory.getTransactionManager();
         XAResourceImpl.clear();
         final Serializable xaResInfo1 = XAResourceInfoFactory.getXAResourceInfo(0);
