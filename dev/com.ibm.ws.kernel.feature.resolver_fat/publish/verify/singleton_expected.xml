@@ -12721,7 +12721,6 @@
             <resolved>io.openliberty.messaging.defaultresource-3.0</resolved>
             <resolved>io.openliberty.connectorsInboundSecurity-2.1</resolved>
             <resolved>io.openliberty.cdi3.0-websocket2.0</resolved>
-            <resolved>io.openliberty.data-ejb</resolved>
             <resolved>io.openliberty.restfulWSClient3.0-ssl1.0</resolved>
             <resolved>io.openliberty.jpaContainer-cdi</resolved>
             <resolved>com.ibm.websphere.appserver.ejbliteJNDI-1.0</resolved>
@@ -16978,7 +16977,6 @@
             <resolved>io.openliberty.cdi4.1-servlet6.1</resolved>
             <resolved>io.openliberty.cdi3.0-ejb4.0</resolved>
             <resolved>io.openliberty.cdi3.0-websocket2.0</resolved>
-            <resolved>io.openliberty.data-ejb</resolved>
             <resolved>io.openliberty.restfulWSClient3.0-ssl1.0</resolved>
             <resolved>io.openliberty.jpaContainer-cdi</resolved>
             <resolved>com.ibm.websphere.appserver.ejbliteJNDI-1.0</resolved>

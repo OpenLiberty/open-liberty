@@ -12,7 +12,6 @@ package com.ibm.ws.feature.tests.util;
 import static com.ibm.ws.feature.tests.util.FeatureUtil.isPublic;
 import static com.ibm.ws.feature.tests.util.FeatureUtil.isTest;
 
-import java.beans.Visibility;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -24,6 +23,7 @@ import java.util.Map;
 
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.boot.internal.KernelUtils;
+import com.ibm.ws.kernel.feature.Visibility;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureRepository;
 import com.ibm.ws.kernel.feature.internal.util.ImageReader;
 import com.ibm.ws.kernel.feature.internal.util.Images;

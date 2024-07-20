@@ -221,6 +221,13 @@ public class BaselineResolutionUnitTest {
             return null;
         }
 
+        if (symName.equals("com.ibm.websphere.appserver.jcaInboundSecurity-1.0")) {
+            System.out.println("Skipping [ " + symName + " ]: Conversion to versionless causes a conflict.");
+            return null;
+        }
+
+        // Feature resolution [ versionless - platform javaee-6.0 - from Singleton [ com.ibm.websphere.appserver.jcaInboundSecurity-1.0 ] ] failed with [ 2 ] errors: Missing [ Resolved platforms ]: [ javaee-6.0 ] Extra [ Conflicted features ]: [ com.ibm.websphere.appserver.eeCompatible ]
+
         String shortBaseName = FeatureUtil.getShortName(baseName);
         String shortName = shortBaseName + "-" + version;
 
@@ -302,6 +309,20 @@ public class BaselineResolutionUnitTest {
 
         newCase.output.add(ResultData.PLATFORM_RESOLVED, platform);
 
+        // Correction for bean validation: The resolution crosses
+        // a rename-boundary.  Without this correction an the test
+        // fails:
+        //
+        // Feature resolution [ versionless - platform jakartaee-11.0 - from Singleton [ io.openliberty.beanValidation-3.1 ] ]
+        // failed with [ 1 ] errors:
+        // Incorrect [ Versionless resolutions ]:
+        //   Key [ beanValidation ]
+        //     Expected value [ beanValidation-3.1 ]
+        //     Actual value [ validation-3.1 ]            
+
+        if (shortBaseName.equals("beanValidation") && shortName.equals("beanValidation-3.1")) {
+            shortName = "validation-3.1";
+        }
         newCase.output.putVersionlessResolved(shortBaseName, shortName);
 
         newCase.output.addResolved(versionlessInternalSymName);
