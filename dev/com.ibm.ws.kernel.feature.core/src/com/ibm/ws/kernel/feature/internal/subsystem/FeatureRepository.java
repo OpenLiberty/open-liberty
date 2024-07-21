@@ -420,19 +420,19 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     /**
      * Return the versionless features platform association.
      * ex. servlet would return javaee
-     * 
+     *
      * @return String platformBaseName
      */
-    public String getPlatformForVersionlessFeature(String versionlessFeatureName){
+    public String getPlatformForVersionlessFeature(String versionlessFeatureName) {
         ProvisioningFeatureDefinition versionlessFeature = getFeature(versionlessFeatureName);
 
         if (versionlessFeature != null && versionlessFeature.isVersionless()) {
             for (ProvisioningFeatureDefinition child : findAllPossibleVersions(versionlessFeature)) {
-                if(child == null){
+                if (child == null) {
                     continue;
                 }
                 String plat = child.getPlatformName();
-                if(plat != null && plat.indexOf("-") != -1){
+                if (plat != null && plat.indexOf("-") != -1) {
                     return getFeatureBaseName(plat);
                 }
             }
@@ -524,7 +524,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         }
     }
 
-        /**
+    /**
      * Removes the version from the end of a feature symbolic name
      * <p>
      * The version is presumed to start after the last dash character in the name.
@@ -555,7 +555,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         for (String featureName : features) {
             ProvisioningFeatureDefinition versionedFeature = getFeature(featureName);
             if (versionedFeature != null && !versionedFeature.isVersionless()) {
-                Set featurePlatforms = new HashSet(versionedFeature.getPlatformNames());
+                Set<String> featurePlatforms = new HashSet<>(versionedFeature.getPlatformNames());
                 if (commonPlatforms == null)
                     commonPlatforms = featurePlatforms;
                 else {
@@ -1004,7 +1004,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             alternateFeatureNameToPublicName.put(s, attr.featureName);
         }
 
-        if(def.isCompatibility()){
+        if (def.isCompatibility()) {
             compatibilityFeatures.put(def.getPlatformName().toLowerCase(), def);
         }
 
@@ -1438,7 +1438,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
          * @return The associated feature definition (as a liberty feature).
          */
         @Override
-        public LibertyFeature getService(Bundle bundle, ServiceRegistration<LibertyFeature> registration) {
+        public LibertyFeature getService(Bundle bundle, ServiceRegistration<LibertyFeature> useRegistration) {
             SubsystemFeatureDefinitionImpl current = _featureDef;
             ProvisioningDetails details = current.getProvisioningDetails();
             if (details == null) {
@@ -1466,7 +1466,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
          *                            definition. Currently unused.
          */
         @Override
-        public void ungetService(Bundle bundle, ServiceRegistration<LibertyFeature> registration, LibertyFeature service) {
+        public void ungetService(Bundle bundle, ServiceRegistration<LibertyFeature> useRegistration, LibertyFeature service) {
             _featureDef.setProvisioningDetails(null);
         }
 
