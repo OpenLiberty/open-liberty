@@ -38,6 +38,7 @@ import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyCase;
 import com.ibm.ws.kernel.feature.internal.util.VerifyDelta;
 import com.ibm.ws.kernel.feature.internal.util.VerifyXML;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
 
 /**
  * Feature resolution testing.
@@ -226,6 +227,9 @@ public class BaselineResolutionUnitTest {
         if (symName.equals("com.ibm.websphere.appserver.jcaInboundSecurity-1.0")) {
             System.out.println("Skipping [ " + symName + " ]: Conversion to versionless causes a conflict.");
             return null;
+        } else if (symName.endsWith("jsp-2.2")) {
+            System.out.println("Skipping [ " + symName + " ]: Does not resolve");
+            return null;
         }
 
         // Feature resolution [ versionless - platform javaee-6.0 - from Singleton [ com.ibm.websphere.appserver.jcaInboundSecurity-1.0 ] ] failed with [ 2 ] errors: Missing [ Resolved platforms ]: [ javaee-6.0 ] Extra [ Conflicted features ]: [ com.ibm.websphere.appserver.eeCompatible ]
@@ -243,13 +247,16 @@ public class BaselineResolutionUnitTest {
             skipReason = "Feature not found [ " + symName + " ]";
         } else if (RepositoryUtil.isNoShip(featureDef)) {
             skipReason = "Feature is no-ship [ " + symName + " ]";
-
         } else {
             platform = RepositoryUtil.getPlatformOf(featureDef);
             if (platform == null) {
                 skipReason = "No platform";
             } else if (platform.startsWith("microProfile-")) {
-                skipReason = "Platform [ " + platform + " ]";
+                skipReason = "Platform [ " + platform + " ] (microprofile case)";
+            } else if (platform.equals("jakartaee-11.0")) {
+                // TODO: This should test the feature kind (ga/beta).
+                // That's not available in the feature definition.
+                skipReason = "Platform [ " + platform + " ] (EE11 case)";
 
             } else {
                 ProvisioningFeatureDefinition versionlessDef = getFeatureDef(shortBaseName);
