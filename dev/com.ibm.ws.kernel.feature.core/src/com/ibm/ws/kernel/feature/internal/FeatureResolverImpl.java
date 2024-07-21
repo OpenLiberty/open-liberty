@@ -385,8 +385,11 @@ public class FeatureResolverImpl implements FeatureResolver {
                 String[] nav = parseNameAndVersion(wlpPlatform.get(0));
                 String compatibilityFeature = selectionContext.getCompatibilityBaseName(nav[0]);
                 List<String> featuresPlatforms = new ArrayList<String>();
-                for (String platform : wlpPlatform) {
-                    featuresPlatforms.add(allCompatibilityFeatures.get(platform.toLowerCase()).getSymbolicName());
+                for(String platform : wlpPlatform){
+                    ProvisioningFeatureDefinition featureDef = allCompatibilityFeatures.get(platform.toLowerCase());
+                    if (featureDef != null) {
+                        featuresPlatforms.add(featureDef.getSymbolicName());
+                    }
                 }
                 if (map.containsKey(compatibilityFeature)) {
                     map.get(compatibilityFeature).retainAll(featuresPlatforms);
@@ -785,8 +788,9 @@ public class FeatureResolverImpl implements FeatureResolver {
                         break;
                     }
 
-                    for (String platform : versionedFeature.getPlatformNames()) {
-                        if (rootPlatforms.contains(allCompatibilityFeatures.get(platform.toLowerCase()).getSymbolicName())) {
+                    for(String platform : versionedFeature.getPlatformNames()){
+                        ProvisioningFeatureDefinition featureDef = allCompatibilityFeatures.get(platform.toLowerCase());
+                        if (featureDef != null && rootPlatforms.contains(featureDef.getSymbolicName())) {
                             //found a match to the platform, add the versioned feature and filter the versionless features
                             //to be added back later
                             addFeature = true;
