@@ -480,6 +480,9 @@ public class VerifyXML extends BaseXML {
             } else {
                 name = elementText.substring(0, sepOffset);
                 value = elementText.substring(sepOffset + 1);
+                if (value.equals("null")) {
+                    value = null;
+                }
             }
 
             verifyCase.output.putVersionlessResolved(name, value);
