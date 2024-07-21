@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,6 +37,7 @@ import java.security.PrivilegedExceptionAction;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -449,10 +451,10 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
     }
 
     @Override
-    protected void setupRedundantLease(String serverName) throws Exception {
-        final String method = "setupRedundantLease";
+    protected void setupOrphanLease(LibertyServer server, String path, String serverName) throws Exception {
+        final String method = "setupOrphanLease";
 
-        Path leasesDir = Paths.get(server2fastcheck.getInstallRoot(),
+        Path leasesDir = Paths.get(server.getInstallRoot(),
                                    "usr",
                                    "shared",
                                    "leases");
@@ -461,14 +463,17 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
         Files.createDirectories(leaseDir);
 
         Path controlFile = Paths.get(leaseDir.toString(), "control");
-        Files.createFile(controlFile);
-        Log.info(getClass(), method, "Created control file: " + controlFile);
+        try {
+            Files.createFile(controlFile);
+            Log.info(getClass(), method, "Created control file: " + controlFile);
+        } catch (FileAlreadyExistsException e) {
+        }
 
         leaseFile = FileSystems.getDefault().getPath(leaseDir.toString(), serverName);
         Files.createFile(leaseFile);
         Log.info(getClass(), method, "Created lease file: " + leaseFile);
 
-        final String leaseContents = server2fastcheck.getInstallRoot() +
+        final String leaseContents = server.getInstallRoot() +
                                      File.separator + "usr" +
                                      File.separator + "servers" +
                                      File.separator + serverName +
@@ -489,6 +494,7 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
             }
         });
 
+        // Set modification time to 5 minutes ago
         Files.setLastModifiedTime(leaseFile, FileTime.from(Instant.now().minus(5, ChronoUnit.MINUTES)));
     }
 
@@ -503,9 +509,25 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
     }
 
     @Override
-    protected boolean checkRedundantLeaseExists(String serverName) {
+    protected boolean checkOrphanLeaseExists(LibertyServer server, String path, String serverName) {
         final boolean result = leaseFile.toFile().exists();
-        Log.info(getClass(), "checkRedundantLeaseExists", "" + result);
+        Log.info(getClass(), "checkOrphanLeaseExists", "" + result);
         return result;
+    }
+
+    @Override
+    protected void setupBatchesOfOrphanLeases(LibertyServer server1, LibertyServer server2, String path) throws Exception {
+        Log.info(getClass(), "setupBatchesOfOrphanLeases", "");
+
+        // 20 leases for random servers
+        int i;
+        for (i = 0; i < 20; i++) {
+            setupOrphanLease(server1, null, UUID.randomUUID().toString().replaceAll("\\W", ""));
+        }
+    }
+
+    @Override
+    protected String logsMissingMarker() {
+        return "Doing peer recovery but .*tranlog is missing";
     }
 }
