@@ -181,13 +181,14 @@ public class VersionlessMessagesTest {
 
     // !!! This can/should be removed after GA
     private static void createJvmOptions(String directory) throws IOException {
+        System.out.println("JVM NOT set for beta.");
 
-        File file = new File(directory, "jvm.options");
-        try (FileWriter writer = new FileWriter(file)) {
-            writer.write("-Dcom.ibm.ws.beta.edition=true\n");
-        }
-        displayFile(file);
-
+        // System.out.println("JVM set for beta.")
+        // File file = new File(directory, "jvm.options");
+        // try (FileWriter writer = new FileWriter(file)) {
+        //     writer.write("-Dcom.ibm.ws.beta.edition=true\n");
+        // }
+        // displayFile(file);
     }
 
     private void initTest(String serverName, String platforms, String features, String preferredVersionsVariable) throws Exception {

@@ -38,7 +38,6 @@ import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyCase;
 import com.ibm.ws.kernel.feature.internal.util.VerifyDelta;
 import com.ibm.ws.kernel.feature.internal.util.VerifyXML;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
-import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
 
 /**
  * Feature resolution testing.
@@ -164,7 +163,10 @@ public class BaselineResolutionUnitTest {
     //
 
     public static void setupBeta() {
-        System.setProperty("com.ibm.ws.beta.edition", "true");
+        System.out.println("Beta system property NOT set.");
+
+        // System.out.println("Beta system property set.");
+        // System.setProperty("com.ibm.ws.beta.edition", "true");
     }
 
     //
