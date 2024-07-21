@@ -5372,7 +5372,7 @@
             <resolved-feature>com.ibm.websphere.appserver.classloading-1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.internal.optional.jaxb-2.2</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.basicRegistry-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.servlet.api-3.1</resolved-feature>
+            <resolved-feature>io.openliberty.servlet.api-3.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.securityInfrastructure-1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.builtinAuthorization-1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.channelfw-1.0</resolved-feature>
@@ -5386,7 +5386,6 @@
             <resolved-feature>io.openliberty.security.internal.ee-6.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.security-1.0</resolved-feature>
             <resolved-feature>appSecurity-2.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeeddSchema-1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.servlet-servletSpi1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.httptransport-1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.requestProbes-1.0</resolved-feature>
@@ -5394,9 +5393,8 @@
             <resolved-feature>com.ibm.websphere.appserver.appLifecycle-1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.appmanager-1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeePlatform-7.0</resolved-feature>
-            <resolved-feature>servlet-3.1</resolved-feature>
-            <resolved-feature>io.openliberty.servlet.internal-3.1</resolved-feature>
+            <resolved-feature>servlet-3.0</resolved-feature>
+            <resolved-feature>io.openliberty.servlet.internal-3.0</resolved-feature>
             <resolved-feature>jaspic-1.1</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved-feature>
             <resolved-feature>jndi-1.0</resolved-feature>
@@ -5405,7 +5403,6 @@
             <resolved-feature>io.openliberty.authFilter1.0.internal.ee-6.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.authFilter-1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.webAppSecurity-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved-feature>
         </output>
     </case>
@@ -6245,154 +6242,6 @@
         </output>
     </case>
     <case>
-        <name>io.openliberty.webProfile-11.0</name>
-        <description>Singleton [ io.openliberty.webProfile-11.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>io.openliberty.webProfile-11.0</root>
-        </input>
-        <output>
-            <resolved-feature>com.ibm.websphere.appserver.appLifecycle-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.artifact-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeedd-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.eeCompatible-11.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.annotation-3.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.anno-2.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.containerServices-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.classloading-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.appmanager-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeePlatform-7.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeePlatform-8.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakartaeePlatform-9.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakartaeePlatform-10.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakartaeePlatform-11.0</resolved-feature>
-            <resolved-feature>io.openliberty.servlet.api-6.1</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.contextService-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.enterpriseBeans-4.0</resolved-feature>
-            <resolved-feature>io.openliberty.jsonpImpl-2.1.1</resolved-feature>
-            <resolved-feature>io.openliberty.jsonpInternal-2.1</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.persistence.base-3.2</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.persistence-3.2</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.expressionLanguage-6.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.interceptor-2.2</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.cdi-4.1</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.activation-2.1</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.xmlBinding-4.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.xmlWS-4.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.pages-4.0</resolved-feature>
-            <resolved-feature>io.openliberty.jta-2.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.injection-2.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.connectors-2.1</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.transaction-2.0</resolved-feature>
-            <resolved-feature>cdi-4.1</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.websocket-2.2</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeeddSchema-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.channelfw-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.httptransport-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.requestProbes-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.servlet.internal-6.1</resolved-feature>
-            <resolved-feature>io.openliberty.servlet-servletSpi2.0</resolved-feature>
-            <resolved-feature>servlet-6.1</resolved-feature>
-            <resolved-feature>io.openliberty.facesProvider-4.1.0.MyFaces</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.validation-3.1</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.faces-4.1</resolved-feature>
-            <resolved-feature>expressionLanguage-6.0</resolved-feature>
-            <resolved-feature>faces-4.1</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.authentication-3.1</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.basicRegistry-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.securityInfrastructure-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.builtinAuthorization-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.certificateCreator-1.0</resolved-feature>
-            <resolved-feature>ssl-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.ltpa-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.jcache.internal1.1.ee-9.0</resolved-feature>
-            <resolved-feature>io.openliberty.jcache.internal-1.1</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.builtinAuthentication-2.0</resolved-feature>
-            <resolved-feature>io.openliberty.securityAPI.jakarta-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.security.internal.ee-9.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.security-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.security.enterprise-4.0</resolved-feature>
-            <resolved-feature>jsonp-2.1</resolved-feature>
-            <resolved-feature>jndi-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.distributedMapInternal-2.0</resolved-feature>
-            <resolved-feature>distributedMap-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.webAppSecurity-2.0</resolved-feature>
-            <resolved-feature>appSecurity-6.0</resolved-feature>
-            <resolved-feature>io.openliberty.xmlBinding.internal-4.0</resolved-feature>
-            <resolved-feature>noShip-1.0</resolved-feature>
-            <resolved-feature>appAuthentication-3.1</resolved-feature>
-            <resolved-feature>io.openliberty.jsonbImpl-3.0.1</resolved-feature>
-            <resolved-feature>io.openliberty.jsonbInternal-3.0</resolved-feature>
-            <resolved-feature>jsonb-3.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.optional.corba-1.5</resolved-feature>
-            <resolved-feature>io.openliberty.managedBeansCore-2.0</resolved-feature>
-            <resolved-feature>io.openliberty.ejbCore-2.0</resolved-feature>
-            <resolved-feature>io.openliberty.ejbLiteCore-2.0</resolved-feature>
-            <resolved-feature>enterpriseBeansLite-4.0</resolved-feature>
-            <resolved-feature>websocket-2.2</resolved-feature>
-            <resolved-feature>io.openliberty.connectionManager1.0.internal.ee-10.0</resolved-feature>
-            <resolved-feature>io.openliberty.jcaSecurity.internal.ee-9.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.jcaSecurity-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.connectionManagement-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.jdbc4.2.internal.ee-9.0</resolved-feature>
-            <resolved-feature>jdbc-4.2</resolved-feature>
-            <resolved-feature>persistenceContainer-3.2</resolved-feature>
-            <resolved-feature>persistence-3.2</resolved-feature>
-            <resolved-feature>io.openliberty.beanValidationCore-2.0</resolved-feature>
-            <resolved-feature>validation-3.1</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.mail-2.1</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.restfulWS-4.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.activation.internal-2.1</resolved-feature>
-            <resolved-feature>restfulWSClient-4.0</resolved-feature>
-            <resolved-feature>restfulWS-4.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.concurrencyPolicy-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.concurrency-3.1</resolved-feature>
-            <resolved-feature>concurrent-3.1</resolved-feature>
-            <resolved-feature>pages-4.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.data-1.0</resolved-feature>
-            <resolved-feature>data-1.0</resolved-feature>
-            <resolved-feature>webProfile-11.0</resolved-feature>
-            <resolved-feature>io.openliberty.emptyHandleListContext-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.restfulWS3.0-appSecurity4.0</resolved-feature>
-            <resolved-feature>transportSecurity-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.transportSecurity1.0.jakarta</resolved-feature>
-            <resolved-feature>io.openliberty.ejbSecurity-2.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.faces3.0-beanValidation3.0</resolved-feature>
-            <resolved-feature>io.openliberty.jpa3.0-bv3.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.cdi4.1-servlet6.1</resolved-feature>
-            <resolved-feature>io.openliberty.cdi3.0-ejb4.0</resolved-feature>
-            <resolved-feature>io.openliberty.cdi3.0-websocket2.0</resolved-feature>
-            <resolved-feature>io.openliberty.data-ejb</resolved-feature>
-            <resolved-feature>io.openliberty.restfulWSClient3.0-ssl1.0</resolved-feature>
-            <resolved-feature>io.openliberty.jpaContainer-cdi</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.ejbliteJNDI-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.restfulWS3.0-jsonb2.0</resolved-feature>
-            <resolved-feature>io.openliberty.cdi4.1-concurrent3.1</resolved-feature>
-            <resolved-feature>io.openliberty.cdi3.0-jndi1.0</resolved-feature>
-            <resolved-feature>io.openliberty.restfulWS4.0-validator3.1</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.securityContext-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.org.eclipse.persistence-3.2</resolved-feature>
-            <resolved-feature>io.openliberty.persistenceService-2.0</resolved-feature>
-            <resolved-feature>io.openliberty.data1.0-jdbc</resolved-feature>
-            <resolved-feature>io.openliberty.cdi4.1-expressionLanguage6.0</resolved-feature>
-            <resolved-feature>io.openliberty.ejbliteJPA-2.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.classloaderContext-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.beanValidationCDI-3.0</resolved-feature>
-            <resolved-feature>io.openliberty.cdi3.0-transaction2.0</resolved-feature>
-            <resolved-feature>io.openliberty.cdi3.0-appSecurity</resolved-feature>
-        </output>
-    </case>
-    <case>
         <name>com.ibm.websphere.appserver.servlet-4.0</name>
         <description>Singleton [ com.ibm.websphere.appserver.servlet-4.0 ]</description>
         <input>
@@ -6641,202 +6490,6 @@
             <resolved-feature>io.openliberty.cdi3.0-jndi1.0</resolved-feature>
             <resolved-feature>io.openliberty.cdi4.0-servlet6.0</resolved-feature>
             <resolved-feature>io.openliberty.cdi3.0-transaction2.0</resolved-feature>
-        </output>
-    </case>
-    <case>
-        <name>io.openliberty.jakartaee-11.0</name>
-        <description>Singleton [ io.openliberty.jakartaee-11.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>io.openliberty.jakartaee-11.0</root>
-        </input>
-        <output>
-            <resolved-feature>com.ibm.websphere.appserver.eeCompatible-11.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.activation-2.1</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.mail-2.1</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.artifact-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeedd-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.annotation-3.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.anno-2.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.containerServices-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.classloading-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.activation.internal-2.1</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.injection-2.0</resolved-feature>
-            <resolved-feature>mail-2.1</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.channelfw-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.appLifecycle-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.appmanager-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeePlatform-7.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeePlatform-8.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakartaeePlatform-9.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakartaeePlatform-10.0</resolved-feature>
-            <resolved-feature>io.openliberty.servlet.api-6.1</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.expressionLanguage-6.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.interceptor-2.2</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.cdi-4.1</resolved-feature>
-            <resolved-feature>io.openliberty.jta-2.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.connectors-2.1</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.transaction-2.0</resolved-feature>
-            <resolved-feature>io.openliberty.connectionManager1.0.internal.ee-10.0</resolved-feature>
-            <resolved-feature>io.openliberty.jcaSecurity.internal.ee-9.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.jcaSecurity-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.connectionManagement-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.xmlBinding-4.0</resolved-feature>
-            <resolved-feature>io.openliberty.xmlBinding.internal-4.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.contextService-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.connectors.internal-2.1</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.messaging-3.1</resolved-feature>
-            <resolved-feature>io.openliberty.messaging.internal-3.1</resolved-feature>
-            <resolved-feature>messagingClient-3.0</resolved-feature>
-            <resolved-feature>io.openliberty.appserver.connectors-2.1</resolved-feature>
-            <resolved-feature>connectors-2.1</resolved-feature>
-            <resolved-feature>io.openliberty.jdbc4.2.internal.ee-9.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.requestProbes-1.0</resolved-feature>
-            <resolved-feature>jdbc-4.2</resolved-feature>
-            <resolved-feature>io.openliberty.jakartaeePlatform-11.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeeddSchema-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.httptransport-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.servlet.internal-6.1</resolved-feature>
-            <resolved-feature>io.openliberty.servlet-servletSpi2.0</resolved-feature>
-            <resolved-feature>servlet-6.1</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved-feature>
-            <resolved-feature>jndi-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.jsonpImpl-2.1.1</resolved-feature>
-            <resolved-feature>io.openliberty.jsonpInternal-2.1</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.persistence.base-3.2</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.persistence-3.2</resolved-feature>
-            <resolved-feature>persistenceContainer-3.2</resolved-feature>
-            <resolved-feature>jsonp-2.1</resolved-feature>
-            <resolved-feature>persistence-3.2</resolved-feature>
-            <resolved-feature>io.openliberty.batch2.1.internal.ee-11.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.org.eclipse.persistence-3.2</resolved-feature>
-            <resolved-feature>io.openliberty.persistenceService-2.0</resolved-feature>
-            <resolved-feature>batch-2.1</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.enterpriseBeans-4.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.xmlWS-4.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.pages-4.0</resolved-feature>
-            <resolved-feature>cdi-4.1</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.websocket-2.2</resolved-feature>
-            <resolved-feature>io.openliberty.facesProvider-4.1.0.MyFaces</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.validation-3.1</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.faces-4.1</resolved-feature>
-            <resolved-feature>expressionLanguage-6.0</resolved-feature>
-            <resolved-feature>faces-4.1</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.authentication-3.1</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.basicRegistry-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.securityInfrastructure-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.builtinAuthorization-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.certificateCreator-1.0</resolved-feature>
-            <resolved-feature>ssl-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.ltpa-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.jcache.internal1.1.ee-9.0</resolved-feature>
-            <resolved-feature>io.openliberty.jcache.internal-1.1</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.builtinAuthentication-2.0</resolved-feature>
-            <resolved-feature>io.openliberty.securityAPI.jakarta-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.security.internal.ee-9.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.security-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.security.enterprise-4.0</resolved-feature>
-            <resolved-feature>io.openliberty.distributedMapInternal-2.0</resolved-feature>
-            <resolved-feature>distributedMap-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.webAppSecurity-2.0</resolved-feature>
-            <resolved-feature>appSecurity-6.0</resolved-feature>
-            <resolved-feature>noShip-1.0</resolved-feature>
-            <resolved-feature>appAuthentication-3.1</resolved-feature>
-            <resolved-feature>io.openliberty.jsonbImpl-3.0.1</resolved-feature>
-            <resolved-feature>io.openliberty.jsonbInternal-3.0</resolved-feature>
-            <resolved-feature>jsonb-3.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.optional.corba-1.5</resolved-feature>
-            <resolved-feature>io.openliberty.managedBeansCore-2.0</resolved-feature>
-            <resolved-feature>io.openliberty.ejbCore-2.0</resolved-feature>
-            <resolved-feature>io.openliberty.ejbLiteCore-2.0</resolved-feature>
-            <resolved-feature>enterpriseBeansLite-4.0</resolved-feature>
-            <resolved-feature>websocket-2.2</resolved-feature>
-            <resolved-feature>io.openliberty.beanValidationCore-2.0</resolved-feature>
-            <resolved-feature>validation-3.1</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.restfulWS-4.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0</resolved-feature>
-            <resolved-feature>restfulWSClient-4.0</resolved-feature>
-            <resolved-feature>restfulWS-4.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.concurrencyPolicy-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.concurrency-3.1</resolved-feature>
-            <resolved-feature>concurrent-3.1</resolved-feature>
-            <resolved-feature>pages-4.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.data-1.0</resolved-feature>
-            <resolved-feature>data-1.0</resolved-feature>
-            <resolved-feature>webProfile-11.0</resolved-feature>
-            <resolved-feature>messagingServer-3.0</resolved-feature>
-            <resolved-feature>messagingSecurity-3.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.authorization-3.0</resolved-feature>
-            <resolved-feature>appAuthorization-3.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.iiopcommon-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.iiopclient-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appclient.client-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.appclient.appClient-2.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.iioptransport-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.clientContainerRemoteSupportCommon-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.clientContainerRemoteSupport-1.0</resolved-feature>
-            <resolved-feature>appClientSupport-2.0</resolved-feature>
-            <resolved-feature>enterpriseBeansRemote-4.0</resolved-feature>
-            <resolved-feature>io.openliberty.persistentExecutorSubset-2.0</resolved-feature>
-            <resolved-feature>enterpriseBeansPersistentTimer-4.0</resolved-feature>
-            <resolved-feature>io.openliberty.mdb4.0.internal.ee-10.0</resolved-feature>
-            <resolved-feature>mdb-4.0</resolved-feature>
-            <resolved-feature>messaging-3.1</resolved-feature>
-            <resolved-feature>jakartaee-11.0</resolved-feature>
-            <resolved-feature>io.openliberty.emptyHandleListContext-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.cdi3.0-messaging3.0</resolved-feature>
-            <resolved-feature>io.openliberty.connectors.resourcedefinition.messaging-3.0</resolved-feature>
-            <resolved-feature>io.openliberty.restfulWS3.0-appSecurity4.0</resolved-feature>
-            <resolved-feature>io.openliberty.cdi4.0-batch2.1</resolved-feature>
-            <resolved-feature>transportSecurity-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.transportSecurity1.0.jakarta</resolved-feature>
-            <resolved-feature>io.openliberty.appAuthorizationEjb-2.0</resolved-feature>
-            <resolved-feature>io.openliberty.appAuthorizationWeb-2.0</resolved-feature>
-            <resolved-feature>io.openliberty.ejbSecurity-2.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.managedBeansWar-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.faces3.0-beanValidation3.0</resolved-feature>
-            <resolved-feature>io.openliberty.jpa3.0-bv3.0</resolved-feature>
-            <resolved-feature>io.openliberty.enterpriseBeansRemoteClientServer-2.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.cdi4.1-servlet6.1</resolved-feature>
-            <resolved-feature>io.openliberty.cdi3.0-ejb4.0</resolved-feature>
-            <resolved-feature>io.openliberty.messaging.defaultresource-3.0</resolved-feature>
-            <resolved-feature>io.openliberty.connectorsInboundSecurity-2.1</resolved-feature>
-            <resolved-feature>io.openliberty.cdi3.0-websocket2.0</resolved-feature>
-            <resolved-feature>io.openliberty.data-ejb</resolved-feature>
-            <resolved-feature>io.openliberty.restfulWSClient3.0-ssl1.0</resolved-feature>
-            <resolved-feature>io.openliberty.jpaContainer-cdi</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.ejbliteJNDI-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.restfulWS3.0-jsonb2.0</resolved-feature>
-            <resolved-feature>io.openliberty.cdi4.1-concurrent3.1</resolved-feature>
-            <resolved-feature>io.openliberty.cdi3.0-jndi1.0</resolved-feature>
-            <resolved-feature>io.openliberty.restfulWS4.0-validator3.1</resolved-feature>
-            <resolved-feature>io.openliberty.iioptransport.transaction-2.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.securityContext-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved-feature>
-            <resolved-feature>io.openliberty.enterpriseBeansRemote-appSecurity</resolved-feature>
-            <resolved-feature>io.openliberty.data1.0-jdbc</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.jndi1.0-iiop1.0</resolved-feature>
-            <resolved-feature>io.openliberty.cdi4.1-expressionLanguage6.0</resolved-feature>
-            <resolved-feature>io.openliberty.ejbliteJPA-2.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.classloaderContext-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.beanValidationCDI-3.0</resolved-feature>
-            <resolved-feature>io.openliberty.cdi3.0-transaction2.0</resolved-feature>
-            <resolved-feature>io.openliberty.cdi3.0-appSecurity</resolved-feature>
-            <resolved-feature>io.openliberty.webBundle.internal.ee-10.0</resolved-feature>
-            <resolved-feature>io.openliberty.webBundle.internal-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.authFilter1.0.internal.ee-9.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.authFilter-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.webBundleSecurity1.0.internal.ee-10.0</resolved-feature>
-            <resolved-feature>io.openliberty.webBundleSecurity.internal-1.0</resolved-feature>
-            <resolved-feature>com.ibm.wsspi.appserver.webBundle-1.0</resolved-feature>
-            <resolved-feature>com.ibm.wsspi.appserver.webBundleSecurity-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.batchSecurity-2.0</resolved-feature>
         </output>
     </case>
     <case>
