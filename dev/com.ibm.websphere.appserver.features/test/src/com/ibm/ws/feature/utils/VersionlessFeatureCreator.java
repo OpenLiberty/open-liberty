@@ -70,7 +70,7 @@ public class VersionlessFeatureCreator {
                 }
 
                 if (createPrivateVersionedFeature(feature.getFeatureName(), akaFeature == null ? null : akaFeature.getFeatureName(), features[0].split("-")[1], x, y,
-                                                  features[2], feature.getEdition())) {
+                                                  features[2], feature.getEdition(), feature.getKind())) {
                     generatedNewFile = true;
                 }
             }
@@ -84,15 +84,14 @@ public class VersionlessFeatureCreator {
         return generatedNewFile;
     }
 
-    private boolean createPrivateVersionedFeature(String featureName, String akaFeatureName, String featureNum, String x, String y, String fullName, String edition) throws IOException {
+    private boolean createPrivateVersionedFeature(String featureName, String akaFeatureName, String featureNum, String x, String y, String fullName,
+                                                  String edition, String kind) throws IOException {
         File checkExisting = new File(checkExistingPrivate + "io.openliberty.internal.versionless." + featureName + "-" + featureNum + ".feature");
-        if(createAll){
+        if (createAll) {
             //skip checking, just create the feature
-        }
-        else if (checkExisting.exists()) {
+        } else if (checkExisting.exists()) {
             return false;
-        }
-        else if (akaFeatureName != null) {
+        } else if (akaFeatureName != null) {
             checkExisting = new File(checkExistingPrivate + "io.openliberty.internal.versionless." + akaFeatureName + "-" + featureNum + ".feature");
             if (checkExisting.exists()) {
                 return false;
@@ -116,7 +115,7 @@ public class VersionlessFeatureCreator {
         }
         writer.append("    " + fullName);
         writer.newLine();
-        writer.append("kind=ga");
+        writer.append("kind=" + kind);
         writer.newLine();
         writer.append("edition=" + edition);
         writer.newLine();
@@ -131,13 +130,13 @@ public class VersionlessFeatureCreator {
         File checkExisting = new File(checkExistingPublic + feature.getFeatureName() + "/io.openliberty.versionless." + feature.getFeatureName() + ".feature");
         //Even if we already have an existing public versionless feature,
         //if we created a new private versionless feature we need to update the public feature with new dependencies
-        if (checkExisting.exists()){
+        if (checkExisting.exists()) {
             existingVersions = validatePublicVersionlessFeature(feature, akaFeature);
-            if(existingVersions == null && !createAll){
+            if (existingVersions == null && !createAll) {
                 return false;
             }
         }
-        
+
         File dir = new File(publicPath + feature.getFeatureName());
         if (!dir.exists()) {
             dir.mkdirs();
@@ -163,18 +162,17 @@ public class VersionlessFeatureCreator {
             toleratesFeature = feature.getAlsoKnownAs();
         }
         String[] versions = null;
-        if(existingVersions != null){
+        if (existingVersions != null) {
             ArrayList<String> allVersions = new ArrayList<>();
-            for(String s : feature.getAllVersions()){
+            for (String s : feature.getAllVersions()) {
                 allVersions.add(s);
-                if(existingVersions.contains(s)){
+                if (existingVersions.contains(s)) {
                     existingVersions.remove(s);
                 }
             }
             allVersions.addAll(existingVersions);
             versions = feature.getPreferredAndTolerates(allVersions);
-        }
-        else{
+        } else {
             versions = feature.getPreferredAndTolerates();
         }
 
@@ -184,7 +182,7 @@ public class VersionlessFeatureCreator {
             writer.append("-features=io.openliberty.internal.versionless." + toleratesFeature + "-" + versions[0] + "; ibm.tolerates:=\"" + versions[1] + "\"");
         }
         writer.newLine();
-        writer.append("kind=ga");
+        writer.append("kind=" + feature.getKind());
         writer.newLine();
         writer.append("edition=" + feature.getEdition());
         writer.newLine();
@@ -287,7 +285,7 @@ public class VersionlessFeatureCreator {
             // We check if file exists before entering this function, should never reach this
         }
 
-        if(createAll){
+        if (createAll) {
             return existingFeatureVersions;
         }
 
