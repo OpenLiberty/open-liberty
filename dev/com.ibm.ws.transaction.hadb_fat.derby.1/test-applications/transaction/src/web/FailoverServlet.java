@@ -492,52 +492,7 @@ public class FailoverServlet extends FATServlet {
         }
     }
 
-    public void setupBatchOfStaleLeases(int lower, int upper) throws Exception {
-
-        try (Connection con = getConnection(); Statement claimPeerlockingStmt = con.createStatement()) {
-
-            con.setAutoCommit(false);
-            System.out.println("setupBatchOfStaleLeases1");
-
-            for (int i = lower; i < upper; i++) {
-                String insertString = "INSERT INTO WAS_LEASES_LOG" +
-                                      " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
-                                      " VALUES (?,?,?,?)";
-
-                final long fiveMinutesAgo = Instant.now().minus(5, ChronoUnit.MINUTES).toEpochMilli();
-                String serverid = "cloudstale" + i;
-                System.out.println("setupBatchOfStaleLeases1: Using - " + insertString + ", and time: " + TxTestUtils.traceTime(fiveMinutesAgo));
-
-                try (PreparedStatement specStatement = con.prepareStatement(insertString)) {
-                    specStatement.setString(1, serverid);
-                    specStatement.setString(2, "defaultGroup");
-                    specStatement.setString(3, serverid);
-                    specStatement.setLong(4, fiveMinutesAgo);
-
-                    int ret = specStatement.executeUpdate();
-
-                    System.out.println("setupBatchOfStaleLeases1: Have inserted Server row with return: " + ret);
-                }
-            }
-
-            con.commit();
-        }
-    }
-
-    public void setupBatchOfStaleLeases1(HttpServletRequest request,
-                                         HttpServletResponse response) throws Exception {
-
-        setupBatchOfStaleLeases(0, 10);
-    }
-
-    public void setupBatchOfStaleLeases2(HttpServletRequest request,
-                                         HttpServletResponse response) throws Exception {
-
-        setupBatchOfStaleLeases(10, 20);
-    }
-
-    public void deleteStaleLease(HttpServletRequest request,
-                                 HttpServletResponse response) throws Exception {
+    public void deleteStaleLease() throws Exception {
 
         try (Connection con = getConnection()) {
             con.setAutoCommit(false);

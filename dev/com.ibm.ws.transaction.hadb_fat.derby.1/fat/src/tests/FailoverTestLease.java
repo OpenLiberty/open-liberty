@@ -13,7 +13,6 @@
 package tests;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -24,10 +23,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
-import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -176,9 +173,13 @@ public class FailoverTestLease extends FATServletClient {
         }
     };
 
+    private LibertyServer[] serversToStop;
+
     @After
     public void cleanup() throws Exception {
+        FATUtils.stopServers(serversToStop);
         FailoverTest.commonCleanup(this.getClass().getName());
+        serversToStop = null;
     }
 
     /**
@@ -186,39 +187,21 @@ public class FailoverTestLease extends FATServletClient {
      */
     @Test
     public void testHADBLeaseUpdateFailover() throws Exception {
-        final String method = "testHADBLeaseUpdateFailover";
-        StringBuilder sb = null;
+        serversToStop = new LibertyServer[] { retriableCloudServer };
 
         FATUtils.startServers(runner, retriableCloudServer);
 
-        Log.info(this.getClass(), method, "Call setupForLeaseUpdate");
-
-        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "setupForLeaseUpdate");
-
-        Log.info(this.getClass(), method, "setupForLeaseUpdate returned: " + sb);
-        Log.info(this.getClass(), method, "Call stopserver on " + retriableCloudServer);
+        runTest(retriableCloudServer, SERVLET_NAME, "setupForLeaseUpdate");
 
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
 
-        Log.info(this.getClass(), method, "set timeout");
-        retriableCloudServer.setServerStartTimeout(30000);
-
-        Log.info(this.getClass(), method, "call startserver");
         FATUtils.startServers(runner, retriableCloudServer);
 
-        Log.info(this.getClass(), method, "Call driveTransactions");
-
-        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "driveTransactions");
+        runTest(retriableCloudServer, SERVLET_NAME, "driveTransactions");
 
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when updating server lease for server with identity cloud0011
         assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException when updating server lease"));
-
-        // cleanup HATable
-        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "dropHATable");
-        Log.info(this.getClass(), method, "dropHATable returned: " + sb);
-
-        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
     }
 
     /**
@@ -226,37 +209,22 @@ public class FailoverTestLease extends FATServletClient {
      */
     @Test
     public void testHADBLeaseDeleteFailover() throws Exception {
-        final String method = "testHADBLeaseDeleteFailover";
-        StringBuilder sb = null;
+        serversToStop = new LibertyServer[] { retriableCloudServer, staleCloudServer };
 
         FATUtils.startServers(runner, retriableCloudServer);
 
-        Log.info(this.getClass(), method, "Call setupForLeaseDelete");
-
-        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "setupForLeaseDelete");
-
-        Log.info(this.getClass(), method, "setupForLeaseDelete returned: " + sb);
-        Log.info(this.getClass(), method, "Call stopserver on " + retriableCloudServer);
+        runTest(retriableCloudServer, SERVLET_NAME, "setupForLeaseDelete");
 
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
 
         // Ensure that the tables for a stale cloud server have been created
         // And set the com.ibm.ws.recoverylog.disablehomelogdeletion property for the stale server to ensure they survive shutdown.
-        Log.info(this.getClass(), method, "call startserver for staleCloudServer");
         FATUtils.startServers(runner, staleCloudServer);
-        Log.info(this.getClass(), method, "Call stopserver on " + staleCloudServer);
-
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, staleCloudServer);
 
-        Log.info(this.getClass(), method, "set timeout");
-        retriableCloudServer.setServerStartTimeout(30000);
-
-        Log.info(this.getClass(), method, "call startserver");
         FATUtils.startServers(runner, retriableCloudServer);
 
-        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "insertStaleLease");
-
-        Log.info(this.getClass(), method, "insertStaleLease returned: " + sb);
+        runTest(retriableCloudServer, SERVLET_NAME, "insertStaleLease");
 
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when deleting server lease for server with identity cloud0011
@@ -266,15 +234,7 @@ public class FailoverTestLease extends FATServletClient {
             assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException when deleting server lease"));
         }
 
-        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "deleteStaleLease");
-
-        Log.info(this.getClass(), method, "deleteStaleLease returned: " + sb);
-
-        // cleanup HATable
-        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "dropHATable");
-        Log.info(this.getClass(), method, "dropHATable returned: " + sb);
-
-        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
+        runTest(retriableCloudServer, SERVLET_NAME, "deleteStaleLease");
     }
 
     /**
@@ -282,37 +242,22 @@ public class FailoverTestLease extends FATServletClient {
      */
     @Test
     public void testHADBLeaseClaimFailover() throws Exception {
-        final String method = "testHADBLeaseClaimFailover";
-        StringBuilder sb = null;
+        serversToStop = new LibertyServer[] { retriableCloudServer, staleCloudServer };
 
         FATUtils.startServers(runner, retriableCloudServer);
 
-        Log.info(this.getClass(), method, "Call setupForLeaseClaim");
-
-        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "setupForLeaseClaim");
-
-        Log.info(this.getClass(), method, "setupForLeaseClaim returned: " + sb);
-        Log.info(this.getClass(), method, "Call stopserver on " + retriableCloudServer);
+        runTest(retriableCloudServer, SERVLET_NAME, "setupForLeaseClaim");
 
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
 
         // Ensure that the tables for a stale cloud server have been created
         // And set the com.ibm.ws.recoverylog.disablehomelogdeletion property for the stale server to ensure they survive shutdown.
-        Log.info(this.getClass(), method, "call startserver for staleCloudServer");
         FATUtils.startServers(runner, staleCloudServer);
-        Log.info(this.getClass(), method, "Call stopserver on " + staleCloudServer);
-
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, staleCloudServer);
 
-        Log.info(this.getClass(), method, "set timeout");
-        retriableCloudServer.setServerStartTimeout(30000);
-
-        Log.info(this.getClass(), method, "call startserver");
         FATUtils.startServers(runner, retriableCloudServer);
 
-        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "insertStaleLease");
-
-        Log.info(this.getClass(), method, "insertStaleLease returned: " + sb);
+        runTest(retriableCloudServer, SERVLET_NAME, "insertStaleLease");
 
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when deleting server lease for server with identity cloud0011
@@ -322,15 +267,7 @@ public class FailoverTestLease extends FATServletClient {
             assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException for server with recovery identity"));
         }
 
-        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "deleteStaleLease");
-
-        Log.info(this.getClass(), method, "deleteStaleLease returned: " + sb);
-
-        // cleanup HATable
-        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "dropHATable");
-        Log.info(this.getClass(), method, "dropHATable returned: " + sb);
-
-        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
+        runTest(retriableCloudServer, SERVLET_NAME, "deleteStaleLease");
     }
 
     /**
@@ -338,37 +275,24 @@ public class FailoverTestLease extends FATServletClient {
      */
     @Test
     public void testHADBLeaseGetFailover() throws Exception {
-        final String method = "testHADBLeaseGetFailover";
-        StringBuilder sb = null;
+        serversToStop = new LibertyServer[] { retriableCloudServer, staleCloudServer };
 
         FATUtils.startServers(runner, retriableCloudServer);
 
-        Log.info(this.getClass(), method, "Call setupForLeaseGet");
-
-        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "setupForLeaseGet");
-
-        Log.info(this.getClass(), method, "setupForLeaseGet returned: " + sb);
-        Log.info(this.getClass(), method, "Call stopserver on " + retriableCloudServer);
+        runTest(retriableCloudServer, SERVLET_NAME, "setupForLeaseGet");
 
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
 
         // Ensure that the tables for a stale cloud server have been created
         // And set the com.ibm.ws.recoverylog.disablehomelogdeletion property for the stale server to ensure they survive shutdown.
-        Log.info(this.getClass(), method, "call startserver for staleCloudServer");
         FATUtils.startServers(runner, staleCloudServer);
-        Log.info(this.getClass(), method, "Call stopserver on " + staleCloudServer);
-
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, staleCloudServer);
 
-        Log.info(this.getClass(), method, "set timeout");
         retriableCloudServer.setServerStartTimeout(30000);
 
-        Log.info(this.getClass(), method, "call startserver");
         FATUtils.startServers(runner, retriableCloudServer);
 
-        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "insertStaleLease");
-
-        Log.info(this.getClass(), method, "insertStaleLease returned: " + sb);
+        runTest(retriableCloudServer, SERVLET_NAME, "insertStaleLease");
 
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when deleting server lease for server with identity cloud0011
@@ -378,102 +302,6 @@ public class FailoverTestLease extends FATServletClient {
             assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException when retrieving server leases"));
         }
 
-        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "deleteStaleLease");
-
-        Log.info(this.getClass(), method, "deleteStaleLease returned: " + sb);
-
-        // cleanup HATable
-        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "dropHATable");
-        Log.info(this.getClass(), method, "dropHATable returned: " + sb);
-
-        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
+        runTest(retriableCloudServer, SERVLET_NAME, "deleteStaleLease");
     }
-
-    /**
-     * Mimic situation where a server's logs have been deleted but a lease log entry remains.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testLeaseDeletion() throws Exception {
-        final String method = "testLeaseDeletion";
-        if (!TxTestContainerSuite.isDerby()) { // Exclude Derby
-            StringBuilder sb = null;
-
-            FATUtils.startServers(runner, retriableCloudServer);
-
-            Log.info(this.getClass(), method, "set timeout");
-            retriableCloudServer.setServerStartTimeout(30000);
-
-            // Tidy up any pre-existing tables
-            sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "dropStaleRecoveryLogTables");
-            Log.info(this.getClass(), method, "dropStaleRecoveryLogTables returned: " + sb);
-
-            // Insert stale lease
-            sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "insertStaleLease");
-            Log.info(this.getClass(), method, "insertStaleLease returned: " + sb);
-
-            // Wait for string that shows we attempted to peer recover "cloudstale"
-            assertNotNull("peer recovery failed", retriableCloudServer
-                            .waitForStringInTrace("Peer server cloudstale has missing recovery log SQL tables", LOG_SEARCH_TIMEOUT));
-
-            FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
-        }
-        Log.info(this.getClass(), method, "test complete");
-    }
-
-    @Test
-    // Can get a benign InternalLogException if heartbeat happens at same time as lease claim
-    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.InternalLogException" })
-    public void testBatchLeaseDeletion() throws Exception {
-        final String method = "testBatchLeaseDeletion";
-        if (!TxTestContainerSuite.isDerby()) { // Exclude Derby
-            StringBuilder sb = null;
-
-            FATUtils.startServers(runner, server1fastcheck);
-
-            Log.info(this.getClass(), method, "set timeout");
-            server1fastcheck.setServerStartTimeout(30000);
-
-            // Insert stale leases
-            sb = runTestWithResponse(server1fastcheck, SERVLET_NAME, "setupBatchOfStaleLeases1");
-            Log.info(this.getClass(), method, "setupBatchOfStaleLeases1 returned: " + sb);
-            server2fastcheck.useSecondaryHTTPPort();
-            FATUtils.startServers(runner, server2fastcheck);
-
-            Log.info(this.getClass(), method, "set timeout");
-            server2fastcheck.setServerStartTimeout(30000);
-            // Insert more stale leases
-            sb = runTestWithResponse(server2fastcheck, SERVLET_NAME, "setupBatchOfStaleLeases2");
-            Log.info(this.getClass(), method, "setupBatchOfStaleLeases1 returned: " + sb);
-
-            // Check peer recovery attempts for dummy servers
-            int server1Recoveries = 0;
-            int server2Recoveries = 0;
-            boolean foundThemAll = false;
-            int searchAttempts = 0;
-            while (!foundThemAll && searchAttempts < 60) {
-                List<String> recoveredAlready1 = server1fastcheck.findStringsInLogs("has missing recovery log SQL tables");
-                List<String> recoveredAlready2 = server2fastcheck.findStringsInLogs("has missing recovery log SQL tables");
-                // Check number of recovery attempts
-                if (recoveredAlready1 != null)
-                    server1Recoveries = recoveredAlready1.size();
-                if (recoveredAlready2 != null)
-                    server2Recoveries = recoveredAlready2.size();
-                if (server1Recoveries + server2Recoveries > 19)
-                    foundThemAll = true;
-                if (!foundThemAll) {
-                    searchAttempts++;
-                    Thread.sleep(1000 * 5);
-                }
-                Log.info(this.getClass(), method, "testBatchLeaseDeletion found " + server1Recoveries +
-                                                  " in server1 logs and " + server2Recoveries + " in server2 logs");
-            }
-            if (!foundThemAll)
-                fail("Did not attempt peer recovery for all servers");
-            FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, server1fastcheck, server2fastcheck);
-        }
-        Log.info(this.getClass(), method, "test complete");
-    }
-
 }

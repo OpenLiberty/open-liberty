@@ -17,6 +17,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.util.List;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +28,7 @@ import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
+import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.topology.impl.LibertyServer;
@@ -232,36 +236,83 @@ public abstract class CloudFATServletClient extends CloudTestBase {
         }
     }
 
-    protected abstract void setupRedundantLease(String serverName) throws Exception;
+    protected abstract void setupOrphanLease(LibertyServer server, String path, String serverName) throws Exception;
 
-    protected abstract boolean checkRedundantLeaseExists(String serverName) throws Exception;
+    protected abstract boolean checkOrphanLeaseExists(LibertyServer server, String path, String serverName) throws Exception;
 
     /*
      * Setup a lease for a non-existant server and check it gets deleted without creating bogus new recovery logs
      */
     @Test
-    public void testRedundantLeaseDeletion() throws Exception {
+    public void testOrphanLeaseDeletion() throws Exception {
 
-        if (this.getClass().getCanonicalName().contains("DBRotationTest")) {
-            Log.info(CloudFATServletClient.class, "testRedundantLeaseDeletion", "Not implemented for DB tests yet");
-            return;
-        }
+        final String nonexistantServerName = UUID.randomUUID().toString().replaceAll("\\W", "");
 
-        final String nonexistantServerName = "nonexistant";
+        serversToCleanup = new LibertyServer[] { server1 };
 
-        serversToCleanup = new LibertyServer[] { server2fastcheck };
+        FATUtils.startServers(_runner, server1);
 
-        setupRedundantLease(nonexistantServerName);
+        setupOrphanLease(server1, SERVLET_NAME, nonexistantServerName);
 
-        // Now start server2
-        server2fastcheck.setHttpDefaultPort(Integer.getInteger("HTTP_secondary"));
-        FATUtils.startServers(_runner, server2fastcheck);
+        assertNotNull(server1.getServerName() + " did not perform peer recovery",
+                      server1.waitForStringInTrace("< peerRecoverServers Exit"));
 
-        assertNotNull(server2fastcheck.getServerName() + " did not perform peer recovery",
-                      server2fastcheck.waitForStringInTrace("< peerRecoverServers Exit"));
-
-        assertFalse("Redundant lease was not deleted", checkRedundantLeaseExists(nonexistantServerName));
+        assertFalse("Orphan lease was not deleted", checkOrphanLeaseExists(server1, SERVLET_NAME, nonexistantServerName));
     }
+
+    @Test
+    // Can get a benign InternalLogException if heartbeat happens at same time as lease claim
+    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.InternalLogException" })
+    public void testBatchLeaseDeletion() throws Exception {
+        if (!TxTestContainerSuite.isDerby()) { // Exclude Derby
+            serversToCleanup = new LibertyServer[] { server1, server2 };
+
+            server2.useSecondaryHTTPPort();
+            FATUtils.startServers(_runner, server1, server2);
+
+            setupBatchesOfOrphanLeases(server1, server2, SERVLET_NAME);
+
+            // Check peer recovery attempts for dummy servers
+            int server1Recoveries = 0;
+            int server2Recoveries = 0;
+            boolean foundThemAll = false;
+            int searchAttempts = 0;
+            final String logsMissingMarker = logsMissingMarker();
+            Log.info(getClass(), "testBatchLeaseDeletion", "Will search for lines like this: " + logsMissingMarker);
+            while (!foundThemAll && searchAttempts < 60) {
+                List<String> recoveredAlready1 = server1.findStringsInTrace(logsMissingMarker);
+                List<String> recoveredAlready2 = server2.findStringsInTrace(logsMissingMarker);
+                // Check number of recovery attempts
+                if (recoveredAlready1 != null)
+                    server1Recoveries = recoveredAlready1.size();
+                if (recoveredAlready2 != null)
+                    server2Recoveries = recoveredAlready2.size();
+                if (server1Recoveries + server2Recoveries > 19)
+                    foundThemAll = true;
+                Log.info(getClass(), "testBatchLeaseDeletion", server1.getServerName() + " has recovered " + server1Recoveries + " servers, " + server2.getServerName()
+                                                               + " has recovered " + server2Recoveries + " servers");
+                if (!foundThemAll) {
+                    searchAttempts++;
+                    Thread.sleep(Duration.ofSeconds(5).toMillis());
+                }
+            }
+            if (!foundThemAll)
+                fail("Did not attempt peer recovery for all servers");
+        }
+    }
+
+    /**
+     * @return
+     */
+    protected abstract String logsMissingMarker();
+
+    /**
+     * @param server1
+     * @param server2
+     * @param path
+     * @throws Exception
+     */
+    protected abstract void setupBatchesOfOrphanLeases(LibertyServer server1, LibertyServer server2, String path) throws Exception;
 
     public static void setDerby() {
         _isDerby = true;

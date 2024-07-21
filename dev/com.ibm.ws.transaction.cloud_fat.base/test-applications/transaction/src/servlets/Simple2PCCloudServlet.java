@@ -19,9 +19,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.annotation.Resource.AuthenticationType;
@@ -33,6 +36,7 @@ import javax.transaction.xa.XAResource;
 
 import com.ibm.tx.jta.ExtendedTransactionManager;
 import com.ibm.tx.jta.TransactionManagerFactory;
+import com.ibm.tx.jta.ut.util.TxTestUtils;
 import com.ibm.tx.jta.ut.util.XAResourceFactoryImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
@@ -340,6 +344,98 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
         }
     }
 
+    public void insertOrphanLease() throws Exception {
+
+        try (Connection con = getConnection(dsTranLog)) {
+            con.setAutoCommit(false);
+            DatabaseMetaData mdata = con.getMetaData();
+            String dbName = mdata.getDatabaseProductName();
+            System.out.println("insertOrphanLease with cleanup");
+            // Access the Database
+            boolean isPostgreSQL = false;
+            boolean isSQLServer = false;
+            if (dbName.toLowerCase().contains("postgresql")) {
+                // we are PostgreSQL
+                isPostgreSQL = true;
+                System.out.println("insertOrphanLease: This is a PostgreSQL Database");
+            } else if (dbName.toLowerCase().contains("microsoft sql")) {
+                // we are MS SQL Server
+                isSQLServer = true;
+                System.out.println("insertOrphanLease: This is an MS SQL Server Database");
+            }
+
+            String queryString = "SELECT LEASE_TIME" +
+                                 " FROM WAS_LEASES_LOG" +
+                                 (isSQLServer ? " WITH (UPDLOCK)" : "") +
+                                 " WHERE SERVER_IDENTITY='nonexistant'" +
+                                 (isSQLServer ? "" : " FOR UPDATE") +
+                                 (isSQLServer || isPostgreSQL ? "" : " OF LEASE_TIME");
+            System.out.println("insertOrphanLease: Attempt to select the row for UPDATE using - " + queryString);
+
+            try (Statement claimPeerlockingStmt = con.createStatement(); ResultSet claimPeerLockingRS = claimPeerlockingStmt.executeQuery(queryString)) {
+
+                final long fiveMinutesAgo = Instant.now().minus(5, ChronoUnit.MINUTES).toEpochMilli();
+
+                // see if we acquired the row
+                if (claimPeerLockingRS.next()) {
+                    // We found an existing lease row
+                    long storedLease = claimPeerLockingRS.getLong(1);
+                    System.out.println("insertOrphanLease: Acquired server row, stored lease value is: " + storedLease);
+
+                    // Construct the UPDATE string
+                    String updateString = "UPDATE WAS_LEASES_LOG" +
+                                          " SET LEASE_OWNER = ?, LEASE_TIME = ?" +
+                                          " WHERE SERVER_IDENTITY='nonexistant'";
+
+                    System.out.println("insertOrphanLease: update lease for nonexistant");
+
+                    try (PreparedStatement claimPeerUpdateStmt = con.prepareStatement(updateString)) {
+
+                        // Set the Lease_time
+                        claimPeerUpdateStmt.setString(1, "nonexistant");
+                        claimPeerUpdateStmt.setLong(2, fiveMinutesAgo);
+
+                        System.out.println("insertOrphanLease: Ready to UPDATE using string - " + updateString + " and time: " + TxTestUtils.traceTime(fiveMinutesAgo));
+
+                        int ret = claimPeerUpdateStmt.executeUpdate();
+
+                        System.out.println("insertOrphanLease: Have updated server row with return: " + ret);
+                        con.commit();
+                    } catch (Exception ex) {
+                        System.out.println("insertOrphanLease: caught exception in testSetup: " + ex);
+                        // attempt rollback
+                        con.rollback();
+                    }
+                } else {
+                    // We didn't find the row in the table
+                    System.out.println("insertOrphanLease: Could not find row");
+
+                    String insertString = "INSERT INTO WAS_LEASES_LOG" +
+                                          " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
+                                          " VALUES (?,?,?,?)";
+
+                    System.out.println("insertOrphanLease: Using - " + insertString + ", and time: " + TxTestUtils.traceTime(fiveMinutesAgo));
+
+                    try (PreparedStatement specStatement = con.prepareStatement(insertString)) {
+                        specStatement.setString(1, "nonexistant");
+                        specStatement.setString(2, "defaultGroup");
+                        specStatement.setString(3, "nonexistant");
+                        specStatement.setLong(4, fiveMinutesAgo);
+
+                        int ret = specStatement.executeUpdate();
+
+                        System.out.println("insertOrphanLease: Have inserted Server row with return: " + ret);
+                        con.commit();
+                    } catch (Exception ex) {
+                        System.out.println("insertOrphanLease: caught exception in testSetup: " + ex);
+                        // attempt rollback
+                        con.rollback();
+                    }
+                }
+            }
+        }
+    }
+
     public void setupNonUniqueLeaseLog(HttpServletRequest request,
                                        HttpServletResponse response) throws Exception {
 
@@ -482,5 +578,82 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
         // Give the test something to search for
         XAResourceImpl.dumpState();
         Runtime.getRuntime().halt(XAResourceImpl.DIE);
+    }
+
+    public void checkOrphanLeaseAbsence() throws Exception {
+
+        try (Connection con = getConnection(dsTranLog)) {
+            con.setAutoCommit(false);
+            DatabaseMetaData mdata = con.getMetaData();
+            String dbName = mdata.getDatabaseProductName();
+
+            // Access the Database
+            boolean isPostgreSQL = false;
+            boolean isSQLServer = false;
+            if (dbName.toLowerCase().contains("postgresql")) {
+                // we are PostgreSQL
+                isPostgreSQL = true;
+            } else if (dbName.toLowerCase().contains("microsoft sql")) {
+                // we are MS SQL Server
+                isSQLServer = true;
+            }
+
+            String queryString = "SELECT LEASE_TIME" +
+                                 " FROM WAS_LEASES_LOG" +
+                                 (isSQLServer ? " WITH (UPDLOCK)" : "") +
+                                 " WHERE SERVER_IDENTITY='nonexistant'" +
+                                 (isSQLServer ? "" : " FOR UPDATE") +
+                                 (isSQLServer || isPostgreSQL ? "" : " OF LEASE_TIME");
+
+            try (Statement claimPeerlockingStmt = con.createStatement(); ResultSet claimPeerLockingRS = claimPeerlockingStmt.executeQuery(queryString)) {
+
+                // see if we acquired the row
+                if (claimPeerLockingRS.next()) {
+                    throw new Exception();
+                    // We found an existing lease row
+                }
+            }
+        }
+    }
+
+    public void setupBatchOfOrphanLeases(int lower, int upper) throws Exception {
+
+        try (Connection con = getConnection(dsTranLog); Statement claimPeerlockingStmt = con.createStatement()) {
+
+            con.setAutoCommit(false);
+
+            for (int i = lower; i < upper; i++) {
+                String insertString = "INSERT INTO WAS_LEASES_LOG" +
+                                      " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
+                                      " VALUES (?,?,?,?)";
+
+                final long fiveMinutesAgo = Instant.now().minus(5, ChronoUnit.MINUTES).toEpochMilli();
+                String serverid = UUID.randomUUID().toString().replaceAll("\\W", "");
+                System.out.println("setupBatchOfOrphanLeases: Using - " + insertString + ", and time: " + TxTestUtils.traceTime(fiveMinutesAgo));
+
+                try (PreparedStatement specStatement = con.prepareStatement(insertString)) {
+                    specStatement.setString(1, serverid);
+                    specStatement.setString(2, "defaultGroup");
+                    specStatement.setString(3, serverid);
+                    specStatement.setLong(4, fiveMinutesAgo);
+
+                    int ret = specStatement.executeUpdate();
+
+                    System.out.println("setupBatchOfOrphanLeases: Have inserted Server row with return: " + ret);
+                }
+            }
+
+            con.commit();
+        }
+    }
+
+    public void setupBatchOfOrphanLeases1() throws Exception {
+
+        setupBatchOfOrphanLeases(0, 10);
+    }
+
+    public void setupBatchOfOrphanLeases2() throws Exception {
+
+        setupBatchOfOrphanLeases(10, 20);
     }
 }
