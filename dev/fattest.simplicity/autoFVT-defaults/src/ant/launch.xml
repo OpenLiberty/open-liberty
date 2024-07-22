@@ -131,6 +131,20 @@
 		<echo message="java.specification.version=${java.specification.version}" />
 		<echo message="micro.version=${micro.version}" />
 		
+		<iff>
+			<istrue value="${skip.java.level}" />
+			<then>
+				<var name="test.bucket.class" unset="true" />
+				<var name="test.bucket.name" unset="true" />
+				
+				<property name="test.bucket.class" value="componenttest.custom.junit.runner.AlwaysPassesTest" />
+				<property name="test.bucket.name" value="${test.bucket.class}" />
+
+				<echo message="FAT bucket WILL NOT run tests, due to the following properties:" />
+				<echo message="     This bucket uses java level:         ${fat.minimum.java.level}" />
+			</then>
+		</iff>
+		
 		<!-- What will our entry point be? -->
 		<echo message="FAT entry point will be: ${test.bucket.class}" />
 		
