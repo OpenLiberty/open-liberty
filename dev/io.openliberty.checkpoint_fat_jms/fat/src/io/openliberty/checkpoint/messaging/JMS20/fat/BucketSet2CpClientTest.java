@@ -68,7 +68,6 @@ public class BucketSet2CpClientTest {
         engineServer.copyFileToLibertyInstallRoot(
             "lib/features",
             "features/testjmsinternals-1.0.mf");
-        engineServer.setServerConfigurationFile("Lite2Engine.xml");
 
         // Prepare the server which runs the messaging client and which
         // runs the test application.
@@ -76,7 +75,6 @@ public class BucketSet2CpClientTest {
         clientServer.copyFileToLibertyInstallRoot(
             "lib/features",
             "features/testjmsinternals-1.0.mf");
-        clientServer.setServerConfigurationFile("Lite2Client.xml");
 
         TestUtils.addDropinsWebApp(clientServer, CONSUMER_118077_APPNAME, CONSUMER_118077_PACKAGES);
         TestUtils.addDropinsWebApp(clientServer, CONSUMER_118076_APPNAME, CONSUMER_118076_PACKAGES);

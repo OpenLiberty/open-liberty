@@ -68,7 +68,6 @@ public class BucketSet1CpClientTest {
         engineServer.copyFileToLibertyInstallRoot(
             "lib/features",
             "features/testjmsinternals-1.0.mf");
-        engineServer.setServerConfigurationFile("Lite1Engine.xml");
 
         // Prepare the server which runs the messaging client and which
         // runs the test application.
@@ -77,7 +76,6 @@ public class BucketSet1CpClientTest {
             "lib/features",
             "features/testjmsinternals-1.0.mf");
         TestUtils.addDropinsWebApp(clientServer, producerAppName, "jmsproducer.web");
-        clientServer.setServerConfigurationFile("Lite1Client.xml");
 
         // postCheckpointLogic: get ports specified in FAT file testport.properties and add to server.env.
         // This will drive a post restore config update, updating ports unspecified at checkpoint 
