@@ -1,11 +1,10 @@
 <cases>
 
 <case>
-    <name>MP Case 1: Multiple [ false ] Process [ SERVER ]</name>
+    <name>MP Case 1: Multiple [ false ]</name>
     <description>MP Case 1</description>
     <duration>0.106762100 s</duration>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-5.0</root>
@@ -13,6 +12,10 @@
         <root>mpMetrics</root>
     </input>
     <output>
+        <resolved-platform>microProfile-5.0</resolved-platform>
+        <resolved-platform>jakartaee-9.1</resolved-platform>
+        <resolved-versionless>io.openliberty.versionless.mpHealth=io.openliberty.mpHealth-4.0</resolved-versionless>
+        <resolved-versionless>io.openliberty.versionless.mpMetrics=io.openliberty.mpMetrics-4.0</resolved-versionless>
         <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
         <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
         <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
@@ -36,6 +39,7 @@
         <resolved>com.ibm.websphere.appserver.requestProbes-1.0</resolved>
         <resolved>servlet-5.0</resolved>
         <resolved>io.openliberty.mpCompatible-5.0</resolved>
+        <resolved>io.openliberty.internal.mpVersion-5.0</resolved>
         <resolved>io.openliberty.jakarta.expressionLanguage-4.0</resolved>
         <resolved>io.openliberty.jakarta.interceptor-2.0</resolved>
         <resolved>io.openliberty.jakarta.cdi-3.0</resolved>
@@ -115,11 +119,10 @@
 </case>
 
 <case>
-    <name>MP Case 2: Multiple [ false ] Process [ SERVER ]</name>
+    <name>MP Case 2: Multiple [ false ]</name>
     <description>MP Case 2</description>
     <duration>0.055599500 s</duration>
     <input>
-        <server/>
         <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
         <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
         <root>servlet-6.0</root>
@@ -127,6 +130,10 @@
         <root>mpMetrics</root>
     </input>
     <output>
+        <resolved-platform>jakartaee-10.0</resolved-platform>
+        <resolved-platform>microProfile-6.1</resolved-platform>
+        <resolved-versionless>io.openliberty.versionless.mpHealth=io.openliberty.mpHealth-4.0</resolved-versionless>
+        <resolved-versionless>io.openliberty.versionless.mpMetrics=io.openliberty.mpMetrics-5.1</resolved-versionless>
         <resolved>com.ibm.websphere.appserver.eeCompatible-10.0</resolved>
         <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
         <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
@@ -152,6 +159,7 @@
         <resolved>io.openliberty.servlet-servletSpi2.0</resolved>
         <resolved>servlet-6.0</resolved>
         <resolved>io.openliberty.mpCompatible-6.1</resolved>
+        <resolved>io.openliberty.internal.mpVersion-6.1</resolved>
         <resolved>io.openliberty.jakarta.expressionLanguage-5.0</resolved>
         <resolved>io.openliberty.jakarta.interceptor-2.1</resolved>
         <resolved>io.openliberty.jakarta.cdi-4.0</resolved>
@@ -174,6 +182,7 @@
         <resolved>cdi-4.0</resolved>
         <resolved>jndi-1.0</resolved>
         <resolved>json-1.0</resolved>
+        <resolved>io.openliberty.org.eclipse.microprofile.config.3.1.ee-10.0</resolved>
         <resolved>io.openliberty.org.eclipse.microprofile.config-3.1</resolved>
         <resolved>mpConfig-3.1</resolved>
         <resolved>jsonp-2.1</resolved>
@@ -209,6 +218,7 @@
         <resolved>io.openliberty.internal.versionless.mpMetrics-5.1</resolved>
         <resolved>mpMetrics</resolved>
         <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
+        <resolved>io.openliberty.httpStat-monitor1.0.jakarta</resolved>
         <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
         <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
         <resolved>com.ibm.websphere.appserver.sessionMonitor-1.0</resolved>

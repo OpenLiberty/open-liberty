@@ -23,6 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.ws.feature.tests.util.RepositoryUtil;
 import com.ibm.ws.kernel.feature.internal.util.VerifyData;
 import com.ibm.ws.kernel.feature.internal.util.VerifyDelta;
 import com.ibm.ws.kernel.feature.internal.util.VerifyEnv;
@@ -44,20 +45,20 @@ public class BaselineResolutionGenerationTest {
     public static final String REPO_PATH_OL = "output/verify/repository.xml";
     public static final String REPO_PATH_WL = "output/verify/repository_WL.xml";
 
-    public static final String SINGLETON_ACTUAL_PATH_OL = "output/verify/singleton_actual.xml";
-    public static final String SINGLETON_ACTUAL_PATH_WL = "output/verify/singleton_actual_WL.xml";
+    public static final String SINGLETON_ACTUAL_PATH_OL = "output/servers/verify/singleton_actual.xml";
+    public static final String SINGLETON_ACTUAL_PATH_WL = "output/servers/verify/singleton_actual_WL.xml";
 
-    public static final String SINGLETON_DURATIONS_PATH_OL = "output/verify/singleton_durations.txt";
-    public static final String SINGLETON_DURATIONS_PATH_WL = "output/verify/singleton_durations_WL.txt";
+    public static final String SINGLETON_DURATIONS_PATH_OL = "output/servers/verify/singleton_durations.txt";
+    public static final String SINGLETON_DURATIONS_PATH_WL = "output/servers/verify/singleton_durations_WL.txt";
 
     public static final String SINGLETON_EXPECTED_PATH_OL = "publish/verify/singleton_expected.xml";
     public static final String SINGLETON_EXPECTED_PATH_WL = "publish/verify/singleton_expected_WL.xml";
 
-    public static final String SERVLET_ACTUAL_PATH_OL = "output/verify/servlet_actual.xml";
-    public static final String SERVLET_ACTUAL_PATH_WL = "output/verify/servlet_actual_WL.xml";
+    public static final String SERVLET_ACTUAL_PATH_OL = "output/servers/verify/servlet_actual.xml";
+    public static final String SERVLET_ACTUAL_PATH_WL = "output/servers/verify/servlet_actual_WL.xml";
 
-    public static final String SERVLET_DURATIONS_PATH_OL = "output/verify/servlet_durations.txt";
-    public static final String SERVLET_DURATIONS_PATH_WL = "output/verify/servlet_durations_WL.txt";
+    public static final String SERVLET_DURATIONS_PATH_OL = "output/servers/verify/servlet_durations.txt";
+    public static final String SERVLET_DURATIONS_PATH_WL = "output/servers/verify/servlet_durations_WL.txt";
 
     public static final String SERVLET_EXPECTED_PATH_OL = "publish/verify/servlet_expected.xml";
     public static final String SERVLET_EXPECTED_PATH_WL = "publish/verify/servlet_expected_WL.xml";
@@ -345,7 +346,9 @@ public class BaselineResolutionGenerationTest {
                     System.out.println("Actual singleton cases [ " + singletonActualResults.cases.size() + " ]");
 
                     System.out.println("Expected [ " + singletonExpectedResultsPath_OL + " ]; Actual [ " + singletonActualResultsPath + " ]");
-                    singletonErrors = VerifyDelta.compare(singletonExpectedResults_OL, singletonActualResults, !VerifyDelta.UPDATED_USED_KERNEL);
+                    singletonErrors = VerifyDelta.compare(RepositoryUtil.getSupplier(),
+                                                          singletonExpectedResults_OL,
+                                                          singletonActualResults, !VerifyDelta.UPDATED_USED_KERNEL);
                 }
             }
         }
@@ -371,7 +374,9 @@ public class BaselineResolutionGenerationTest {
                     System.out.println("Actual servlet cases [ " + servletActualResults.cases.size() + " ]");
 
                     System.out.println("Expected [ " + servletExpectedResultsPath_OL + " ]; Actual [ " + servletActualResultsPath + " ]");
-                    servletErrors = VerifyDelta.compare(servletExpectedResults_OL, servletActualResults, !VerifyDelta.UPDATED_USED_KERNEL);
+                    servletErrors = VerifyDelta.compare(RepositoryUtil.getSupplier(),
+                                                        servletExpectedResults_OL,
+                                                        servletActualResults, !VerifyDelta.UPDATED_USED_KERNEL);
                 }
             }
         }
