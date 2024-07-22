@@ -2038,7 +2038,6 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             }
         }
 
-        List<String> unresolvedVersionless = new ArrayList<>();
         for (Map.Entry<String, String> versionlessResolvedEntry : result.getVersionlessFeatures().entrySet()) {
             String versionlessResolved = versionlessResolvedEntry.getKey();
             String versionedResolved = versionlessResolvedEntry.getValue();
@@ -2049,7 +2048,6 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
 
             Set<String> platforms = featureRepository.getPlatformsForVersionlessFeature(versionlessResolved);
             if ((platforms == null) || platforms.isEmpty()) {
-                unresolvedVersionless.add(getFeatureName(versionlessResolved));
                 continue; // Compatibility or linking features are not installed.  The image is incomplete.
             }
 
@@ -2061,11 +2059,8 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                 }
             }
             if (compatibility == null) {
-                unresolvedVersionless.add(getFeatureName(versionlessResolved));
                 continue; // Compatibility features are not installed.  The image is incomplete.
             }
-
-            boolean isIncompatible = false;
 
             String compatibilityBaseName = featureRepository.getFeatureBaseName(compatibility.getFeatureName());
             for(String resolvedPlat : result.getResolvedPlatforms()){
@@ -2073,20 +2068,11 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                 if(compatibilityBaseName.equals(resolvedBaseName)){
                     if(!platforms.contains(resolvedPlat)){
                         Tr.error(tc, "INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM", getFeatureName(versionlessResolved), resolvedPlat);
-                        isIncompatible = true;
                         break;
                     }
                 }
             }
-
-            if(!isIncompatible){
-                unresolvedVersionless.add(getFeatureName(versionlessResolved));
-            }
        }
-        if(!unresolvedVersionless.isEmpty()){
-            reportedErrors = true;
-            Tr.error(tc, "UNRESOLVED_VERSIONLESS_FEATURE", unresolvedVersionless);
-        }
 
         List<Entry<String, Collection<Chain>>> sortedConflicts = new ArrayList<Entry<String, Collection<Chain>>>(result.getConflicts().entrySet());
         sortedConflicts.sort(new ConflictComparator()); // order by importance
