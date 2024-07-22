@@ -37,6 +37,9 @@ public class MappingTable {
 	public static final String LONG_COUNTER = "LONGCOUNTER";
 	public static final String LONG_GAUGE = "LONGGAUGE";
 	
+	public static final String REQUEST_UNIT = "{request}";
+	public static final String THREAD_UNIT = "{thread}";
+	public static final String SESSION_UNIT = "{session}";
 
 
 	private static MappingTable singleton = null;
@@ -55,34 +58,34 @@ public class MappingTable {
 	private MappingTable() {
 
 		String[][] requestTimeTable = new String[][] {
-				{ "request_timing.requests", "requestTiming.requestCount.description", LONG_COUNTER, null,
+				{ "request_timing.count", "requestTiming.requestCount.description", LONG_COUNTER, REQUEST_UNIT,
 						"RequestCount", null, null },
-				{ "request_timing.active_request.count", "requestTiming.activeRequestCount.description",
-						LONG_UP_DOWN_COUNTER, null, "ActiveRequestCount", null, null },
-				{ "request_timing.slow_request.count", "requestTiming.slowRequestCount.description",
-						LONG_UP_DOWN_COUNTER, null, "SlowRequestCount", null, null },
-				{ "request_timing.hung_request.count", "requestTiming.hungRequestCount.description",
-						LONG_UP_DOWN_COUNTER, null, "HungRequestCount", null, null } };
+				{ "request_timing.active", "requestTiming.activeRequestCount.description",
+						LONG_UP_DOWN_COUNTER, REQUEST_UNIT, "ActiveRequestCount", null, null },
+				{ "request_timing.slow", "requestTiming.slowRequestCount.description",
+						LONG_UP_DOWN_COUNTER, REQUEST_UNIT, "SlowRequestCount", null, null },
+				{ "request_timing.hung", "requestTiming.hungRequestCount.description",
+						LONG_UP_DOWN_COUNTER, REQUEST_UNIT, "HungRequestCount", null, null } };
 		mappingTable.put("WebSphere:type=RequestTimingStats,name=*", requestTimeTable);
 
 		String[][] threadPoolTable = new String[][] {
-				{ "threadpool.active_thread.count", "threadpool.activeThreads.description", LONG_UP_DOWN_COUNTER, null,
+				{ "threadpool.active_threads", "threadpool.activeThreads.description", LONG_UP_DOWN_COUNTER, THREAD_UNIT,
 						"ActiveThreads", null, THREADPOOL_TAG_NAME },
-				{ "threadpool.size", "threadpool.size.description", LONG_GAUGE, null, "PoolSize", null,
+				{ "threadpool.size", "threadpool.size.description", LONG_GAUGE, THREAD_UNIT, "PoolSize", null,
 						THREADPOOL_TAG_NAME } };
 		mappingTable.put("WebSphere:type=ThreadPoolStats,name=*", threadPoolTable);
 
 		String[][] sessionTable = new String[][] {
-				{ "session.creates", "session.create.total.description", LONG_COUNTER, null, "CreateCount", null,
+				{ "session.created", "session.create.total.description", LONG_COUNTER, SESSION_UNIT, "CreateCount", null,
 						SESSION_TAG_NAME },
-				{ "session.live_session.count", "session.liveSessions.description", LONG_UP_DOWN_COUNTER, null,
+				{ "session.live", "session.liveSessions.description", LONG_UP_DOWN_COUNTER, SESSION_UNIT,
 						"LiveCount", null, SESSION_TAG_NAME },
-				{ "session.active_session.count", "session.activeSessions.description", LONG_UP_DOWN_COUNTER, null,
+				{ "session.active", "session.activeSessions.description", LONG_UP_DOWN_COUNTER, SESSION_UNIT,
 						"ActiveCount", null, SESSION_TAG_NAME },
-				{ "session.invalidated", "session.invalidated.total.description", LONG_COUNTER, null,
+				{ "session.invalidated", "session.invalidated.total.description", LONG_COUNTER, SESSION_UNIT,
 						"InvalidatedCount", null, SESSION_TAG_NAME },
 				{ "session.invalidated_by_timeout", "session.invalidatedbyTimeout.total.description", LONG_COUNTER,
-						null, "InvalidatedCountbyTimeout", null, SESSION_TAG_NAME } };
+							SESSION_UNIT, "InvalidatedCountbyTimeout", null, SESSION_TAG_NAME } };
 		mappingTable.put("WebSphere:type=SessionStats,name=*", sessionTable);
 
 	}

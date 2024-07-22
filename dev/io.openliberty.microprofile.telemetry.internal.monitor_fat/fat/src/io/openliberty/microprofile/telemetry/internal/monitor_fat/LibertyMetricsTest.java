@@ -79,12 +79,12 @@ public class LibertyMetricsTest extends BaseTestClass {
 		TimeUnit.SECONDS.sleep(4);
 
 		checkStrings(getContainerCollectorMetrics(container), new String[] {
-				"io_openliberty_threadpool_active_thread_count{io_openliberty_pool=\"Default_Executor\",job=\"io.openliberty.microprofile.telemetry.runtime\"}",
-				"io_openliberty_threadpool_size{io_openliberty_pool=\"Default_Executor\",job=\"io.openliberty.microprofile.telemetry.runtime\"}",
-				"io_openliberty_request_timing_active_request_count",
-				"io_openliberty_request_timing_slow_request_count",
-				"io_openliberty_request_timing_hung_request_count",
-				"io_openliberty_request_timing_requests"});
+				"io_openliberty_threadpool_active_threads{io_openliberty_pool=\"Default Executor\",job=\"io.openliberty.microprofile.telemetry.runtime\"}",
+				"io_openliberty_threadpool_size{io_openliberty_pool=\"Default Executor\",job=\"io.openliberty.microprofile.telemetry.runtime\"}",
+				"io_openliberty_request_timing_active",
+				"io_openliberty_request_timing_slow",
+				"io_openliberty_request_timing_hung",
+				"io_openliberty_request_timing_count"});
 
 	}
 	
@@ -111,11 +111,11 @@ public class LibertyMetricsTest extends BaseTestClass {
 		TimeUnit.SECONDS.sleep(4);
 
         checkStrings(getContainerCollectorMetrics(container),
-                new String[] { "io_openliberty_session_creates_total{io_openliberty_appname=\"default_host_testSessionApp\",job=\"io.openliberty.microprofile.telemetry.runtime\"}",
-                        "io_openliberty_session_live_session_count{io_openliberty_appname=\"default_host_testSessionApp\",job=\"io.openliberty.microprofile.telemetry.runtime\"}",
-                        "io_openliberty_session_active_session_count{io_openliberty_appname=\"default_host_testSessionApp\",job=\"io.openliberty.microprofile.telemetry.runtime\"}",
-                        "io_openliberty_session_invalidated_total{io_openliberty_appname=\"default_host_testSessionApp\",job=\"io.openliberty.microprofile.telemetry.runtime\"}",
-                        "io_openliberty_session_invalidated_by_timeout_total{io_openliberty_appname=\"default_host_testSessionApp\",job=\"io.openliberty.microprofile.telemetry.runtime\"}" });
+                new String[] { "io_openliberty_session_created_total{io_openliberty_appname=\"default_host/testSessionApp\",job=\"io.openliberty.microprofile.telemetry.runtime\"}",
+                        "io_openliberty_session_live{io_openliberty_appname=\"default_host/testSessionApp\",job=\"io.openliberty.microprofile.telemetry.runtime\"}",
+                        "io_openliberty_session_active{io_openliberty_appname=\"default_host/testSessionApp\",job=\"io.openliberty.microprofile.telemetry.runtime\"}",
+                        "io_openliberty_session_invalidated_total{io_openliberty_appname=\"default_host/testSessionApp\",job=\"io.openliberty.microprofile.telemetry.runtime\"}",
+                        "io_openliberty_session_invalidated_by_timeout_total{io_openliberty_appname=\"default_host/testSessionApp\",job=\"io.openliberty.microprofile.telemetry.runtime\"}" });
 
 	}
 	
