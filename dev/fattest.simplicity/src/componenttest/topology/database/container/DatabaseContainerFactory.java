@@ -13,10 +13,7 @@
 package componenttest.topology.database.container;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Method;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.function.Consumer;
 
@@ -35,7 +32,7 @@ import componenttest.custom.junit.runner.FATRunner;
  *
  * The {fat.bucket.db.type} property is set to different databases
  * by our test infrastructure when a fat-suite is enlisted in
- * database rotation by setting 'databaseRotation' on the tested.features property in bnd.bnd.</br>
+ * database rotation by setting the property {fat.test.databases} to true.</br>
  *
  * <br> Container Information: <br>
  * Derby: Uses a derby no-op test container <br>
@@ -50,9 +47,6 @@ import componenttest.custom.junit.runner.FATRunner;
 public class DatabaseContainerFactory {
     private static final Class<DatabaseContainerFactory> c = DatabaseContainerFactory.class;
 
-    // Features in fat-metadata.json are transformed to lowercase by default
-    private static final String databaseRotationTestFeature = "databaserotation";
-
     /**
      * Used for <b>database rotation testing</b>.
      *
@@ -65,7 +59,7 @@ public class DatabaseContainerFactory {
      *
      * @return                          JdbcDatabaseContainer - The test container.
      *
-     * @throws IllegalArgumentException - if databaseRotation is not set on tested.features,
+     * @throws IllegalArgumentException - if database rotation {fat.test.databases} is not set or is false,
      *                                      or database type {fat.bucket.db.type} is unsupported.
      */
     public static JdbcDatabaseContainer<?> create() throws IllegalArgumentException {
@@ -79,25 +73,14 @@ public class DatabaseContainerFactory {
      *      This should mainly be used if you want to use derby client instead of derby embedded as your default.
      */
     public static JdbcDatabaseContainer<?> create(DatabaseContainerType defaultType) throws IllegalArgumentException {
-        Path testedFeatures = new File("fat-metadata.json").toPath();
+        String dbRotation = System.getProperty("fat.test.databases");
         String dbProperty = System.getProperty("fat.bucket.db.type", defaultType.name());
 
-        boolean validateDatabaseRotationFeature;
-        try {
-            validateDatabaseRotationFeature = Files.lines(testedFeatures)
-                            .filter(line -> line.contains(databaseRotationTestFeature))
-                            .count() > 0;
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Unable to validate tested features", e);
-        }
-
-        Log.info(c, "create", "fat-metadata.json: contains databaseRoation " + validateDatabaseRotationFeature);
+        Log.info(c, "create", "System property: fat.test.databases is " + dbRotation);
         Log.info(c, "create", "System property: fat.bucket.db.type is " + dbProperty);
 
-        if (!validateDatabaseRotationFeature) {
-            // TODO throw this exception once WL is updated
-//            throw new IllegalArgumentException("To use a generic database, the FAT must be opted into database rotation by setting 'testedFeatures: " //
-//                                               + databaseRotationTestFeature + "' in the FAT project's bnd.bnd file");
+        if (!"true".equals(dbRotation)) {
+            throw new IllegalArgumentException("To use a generic database, the FAT must be opted into database rotation by setting 'fat.test.databases: true' in the FAT project's bnd.bnd file");
         }
 
         DatabaseContainerType type = null;
