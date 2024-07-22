@@ -29,6 +29,7 @@ import io.openliberty.jpa.data.tests.models.Business;
 import io.openliberty.jpa.data.tests.models.Coordinate;
 import io.openliberty.jpa.data.tests.models.NaturalNumber;
 import io.openliberty.jpa.data.tests.models.Person;
+import io.openliberty.jpa.data.tests.models.Prime;
 import io.openliberty.jpa.data.tests.models.Rebate;
 import io.openliberty.jpa.data.tests.models.Rebate.Status;
 import jakarta.annotation.Resource;
@@ -336,6 +337,49 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
         assertEquals("IBM Rochester", result.name);
         assertEquals(55901, result.location.address.zip);
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28925")
+    public void testOLGH28925() throws Exception {
+        Prime two = Prime.of(2, "II", "two");
+        Prime three = Prime.of(3, "III", "three");
+        Prime five = Prime.of(5, "V", "five");
+        Prime seven = Prime.of(7, "VII", "seven");
+
+        List<Prime> primes;
+
+        tx.begin();
+        em.persist(two);
+        em.persist(three);
+        em.persist(five);
+        em.persist(seven);
+        tx.commit();
+
+        tx.begin();
+        try {
+            primes = em.createQuery("SELECT ID(THIS) FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR ID(THIS)=:num) ORDER BY o.numberId",
+                                    Prime.class)
+                            .setParameter("numberName", "two")
+                            .setParameter("numeral", "III")
+                            .setParameter("hex", "5")
+                            .setParameter("num", 7)
+                            .getResultList();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+
+            /*
+             * Recreate
+             * Exception Description: Problem compiling [SELECT ID(THIS) FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR ID(THIS)=:num) ORDER
+             * BY o.numberId].
+             * [10, 14] The identification variable 'THIS' is not defined in the FROM clause.
+             * [108, 112] The identification variable 'THIS' is not defined in the FROM clause.
+             */
+            throw e;
+        }
+
+        assertEquals(4, primes.size());
     }
 
 }
