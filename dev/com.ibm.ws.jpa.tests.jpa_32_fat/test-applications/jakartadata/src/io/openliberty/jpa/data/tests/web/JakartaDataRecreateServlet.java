@@ -25,6 +25,7 @@ import org.junit.Test;
 import componenttest.app.FATServlet;
 import io.openliberty.jpa.data.tests.models.AsciiCharacter;
 import io.openliberty.jpa.data.tests.models.Box;
+import io.openliberty.jpa.data.tests.models.Business;
 import io.openliberty.jpa.data.tests.models.Coordinate;
 import io.openliberty.jpa.data.tests.models.NaturalNumber;
 import io.openliberty.jpa.data.tests.models.Person;
@@ -301,7 +302,40 @@ public class JakartaDataRecreateServlet extends FATServlet {
         assertEquals(2, wall.length); // 1+1
         assertEquals(0, wall.length); // 1-1
         assertEquals(2, wall.height); // 1*2
+    }
 
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28931")
+    public void testOLGH28931() throws Exception {
+        Business ibmRoc = Business.of(44.05887f, -92.50355f, "Rochester", "Minnesota", 55901, 2800, "37th St", "NW", "IBM Rochester");
+        Business ibmRTP = Business.of(35.90481f, -78.85026f, "Durham", "North Carolina", 27703, 4204, "Miami Blvd", "S", "IBM RTP");
+
+        Business result;
+
+        tx.begin();
+        em.persist(ibmRoc);
+        em.persist(ibmRTP);
+        tx.commit();
+
+        tx.begin();
+        try {
+            result = em.createQuery("FROM Business WHERE location.address.city=?1 ORDER BY name", Business.class)
+                            .setParameter(1, "Rochester")
+                            .getSingleResult();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+
+            /*
+             * Recreate
+             * Exception Description: Internal problem encountered while compiling [FROM Business WHERE location.address.city=?1 ORDER BY name].
+             * Internal Exception: java.lang.IndexOutOfBoundsException: Index 1 out of bounds for length 1
+             */
+            throw e;
+        }
+
+        assertEquals("IBM Rochester", result.name);
+        assertEquals(55901, result.location.address.zip);
     }
 
 }
