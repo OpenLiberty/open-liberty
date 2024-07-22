@@ -29,9 +29,9 @@ public class MappingTable {
 	public static final int MBEAN_SECOND_ATTRIBUTE = 7;
 	public static final int MBEAN_SECOND_SUBATTRIBUTE = 8;
 
-	public static final String THREADPOOL_TAG_NAME = "pool";
+	public static final String THREADPOOL_TAG_NAME = "threadpool.name";
 
-	public static final String SESSION_TAG_NAME = "appname";
+	public static final String SESSION_TAG_NAME = "application.name";
 
 	public static final String LONG_UP_DOWN_COUNTER = "LONGUPDOWNCOUNTER";
 	public static final String LONG_COUNTER = "LONGCOUNTER";
