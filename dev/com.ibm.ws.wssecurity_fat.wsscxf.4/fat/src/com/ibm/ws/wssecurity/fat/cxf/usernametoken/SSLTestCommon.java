@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -124,7 +124,7 @@ public class SSLTestCommon {
         server.waitForStringInLog("port " + portNumber, 60 * 1000); // 1 minute
         server.waitForStringInLog("port " + portNumberSecure, 60 * 1000); // 1 minute
 
-        assertNotNull("SSL Service is not ready.", server.waitForStringInLog("CWWKO0219I.*ssl"));
+        assertNotNull("SSL Service is not ready.", server.waitForStringInLog("CWWKO0219I.*ssl", 60 * 1000)); // 1 minute
 
         //portNumber = "9085" ;
         untClientUrl = "http://localhost:" + portNumber
