@@ -2337,7 +2337,6 @@ public class QueryInfo {
                                                             " return type is not supported for the " + methodName +
                                                             " repository method."); // TODO NLS
                 type = Type.FIND_AND_DELETE;
-                parseDeleteBy(by);
                 q = generateSelectClause().append(" FROM ").append(entityInfo.name).append(' ').append(o);
                 jpqlDelete = generateDeleteById();
             } else { // DELETE
@@ -2503,20 +2502,6 @@ public class QueryInfo {
                                    " cannot be used with sort criteria of " + sorts +
                                    " because they have different numbers of elements. The keyset size is " + keysetCursor.size() +
                                    " and the sort criteria size is " + sorts.size() + "."); // TODO NLS
-    }
-
-    /**
-     * Parses and handles the text between delete___By of a repository method.
-     * Currently this is only "First" or "First#".
-     *
-     * @param by index of first occurrence of "By" in the method name. -1 if "By" is absent.
-     */
-    private void parseDeleteBy(int by) {
-        String methodName = method.getName();
-        if (methodName.regionMatches(6, "First", 0, 5)) {
-            int endBefore = by == -1 ? methodName.length() : by;
-            parseFirst(11, endBefore);
-        }
     }
 
     /**
