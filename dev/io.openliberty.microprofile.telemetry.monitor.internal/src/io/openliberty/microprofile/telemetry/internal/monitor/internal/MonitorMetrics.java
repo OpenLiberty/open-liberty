@@ -29,6 +29,7 @@ import org.eclipse.microprofile.config.ConfigProvider;
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
@@ -70,6 +71,12 @@ public class MonitorMetrics {
 	}
 
 	public void createMetrics(String[][] data) {
+		/*
+		 * Just in case - If beta flag not enabled, do not do anything.
+		 */
+		if (!ProductInfo.getBetaEdition()) {
+			return;
+		}
 		String appName = getApplicationName();
 
 		/*

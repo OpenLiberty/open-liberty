@@ -33,6 +33,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.microprofile.telemetry.internal.monitor.internal.MappingTable;
 import io.openliberty.microprofile.telemetry.internal.monitor.internal.MonitorMetrics;
@@ -50,6 +51,12 @@ public class MonitorMetricsHandler {
 
 	@Activate
 	protected void activate(ComponentContext context) {
+		/*
+		 * If beta flag not enabled, do not do anything.
+		 */
+		if (!ProductInfo.getBetaEdition()) {
+			return;
+		}
 		this.mappingTable = MappingTable.getInstance();
 		register();
 		addMBeanListener();
@@ -66,6 +73,12 @@ public class MonitorMetricsHandler {
 
 	@Deactivate
 	protected void deactivate(ComponentContext context) {
+		/*
+		 * If beta flag not enabled, do not do anything.
+		 */
+		if (!ProductInfo.getBetaEdition()) {
+			return;
+		}
 		MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 		if (listener != null) {
 			try {
@@ -118,6 +131,12 @@ public class MonitorMetricsHandler {
 	}
 
 	protected void unregister(String objectName) {
+		/*
+		 * Just in case - If beta flag not enabled, do not do anything.
+		 */
+		if (!ProductInfo.getBetaEdition()) {
+			return;
+		}
 		Set<MonitorMetrics> removeSet = new HashSet<MonitorMetrics>();
 		for (MonitorMetrics mm : mmonitorMetricsSet) {
 			if (mm.getObjectName().equals(objectName)) {
@@ -134,6 +153,12 @@ public class MonitorMetricsHandler {
 	}
 
 	protected void register() {
+		/*
+		 * Just in case - If beta flag not enabled, do not do anything.
+		 */
+		if (!ProductInfo.getBetaEdition()) {
+			return;
+		}
 		MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 		for (String sName : mappingTable.getKeys()) {
 			Set<ObjectInstance> mBeanObjectInstanceSet;
@@ -178,6 +203,12 @@ public class MonitorMetricsHandler {
 	}
 
 	private synchronized void registerMbeanObjects(Set<ObjectInstance> mBeanObjectInstanceSet) {
+		/*
+		 * Just in case - If beta flag not enabled, do not do anything.
+		 */
+		if (!ProductInfo.getBetaEdition()) {
+			return;
+		}
 		for (ObjectInstance objInstance : mBeanObjectInstanceSet) {
 			String objectName = objInstance.getObjectName().toString();
 			String[][] data = mappingTable.getData(objectName);
@@ -188,6 +219,12 @@ public class MonitorMetricsHandler {
 	}
 
 	protected synchronized void register(String objectName, String[][] data) {
+		/*
+		 * Just in case - If beta flag not enabled, do not do anything.
+		 */
+		if (!ProductInfo.getBetaEdition()) {
+			return;
+		}
 		MonitorMetrics monitorMetricsInsts = null;
 		if (!containMetrics(objectName)) {
 			monitorMetricsInsts = new MonitorMetrics(objectName);
