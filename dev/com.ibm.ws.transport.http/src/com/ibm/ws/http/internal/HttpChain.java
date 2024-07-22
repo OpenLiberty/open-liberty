@@ -670,6 +670,9 @@ public class HttpChain implements ChainEventListener {
         if (oldState > ChainState.QUIESCED.val) {
             quiesceChain();
         }
+        // Wake up anything waiting for the chain to stop
+        // (see the update method for one example)
+        stopWait.notifyStopped();
     }
 
     private void quiesceChain() {
@@ -950,7 +953,7 @@ public class HttpChain implements ChainEventListener {
 
             // If, as far as we know, the chain hasn't been stopped yet, wait for
             // the stop notification for at most the timeout amount of time.
-            while (chainState.get() == ChainState.STARTED.val && waited < interval) {
+            while (chainState.get() > ChainState.STOPPED.val && waited < interval) {
                 long start = System.nanoTime();
                 try {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
