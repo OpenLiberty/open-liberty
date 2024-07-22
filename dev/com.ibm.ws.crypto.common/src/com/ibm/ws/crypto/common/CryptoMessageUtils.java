@@ -32,6 +32,13 @@ public class CryptoMessageUtils {
         }
     }
 
+    public static void logInsecureProvider(String provider, String insecureAlgorithm) {
+        // TODO remove beta check
+        if (isRunningBetaMode()) {
+            Tr.warning(tc, "CRYPTO_INSECURE_PROVIDER", provider, insecureAlgorithm);
+        }
+    }
+    
     // TODO remove beta check
     static boolean isRunningBetaMode() {
         return ProductInfo.getBetaEdition();
