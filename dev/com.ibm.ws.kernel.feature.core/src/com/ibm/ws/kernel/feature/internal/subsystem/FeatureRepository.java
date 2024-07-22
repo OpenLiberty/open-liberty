@@ -414,27 +414,25 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     }
 
     /**
-     * Return the versionless features platform association.
-     * ex. servlet would return javaee
-     *
-     * @return String platformBaseName
+     * Return all the platforms the versionless feature is a part of.
+     * ex. servlet would return javaee-6.0 through jakartaee-10.0
+     * 
+     * @return Set<String> platforms
      */
-    public String getPlatformForVersionlessFeature(String versionlessFeatureName) {
+    public Set<String> getPlatformsForVersionlessFeature(String versionlessFeatureName){
         ProvisioningFeatureDefinition versionlessFeature = getFeature(versionlessFeatureName);
+        Set<String> platforms = new HashSet<String>();
 
         if (versionlessFeature != null && versionlessFeature.isVersionless()) {
             for (ProvisioningFeatureDefinition child : findAllPossibleVersions(versionlessFeature)) {
                 if (child == null) {
                     continue;
                 }
-                String plat = child.getPlatformName();
-                if (plat != null && plat.indexOf("-") != -1) {
-                    return getFeatureBaseName(plat);
-                }
+                platforms.addAll(child.getPlatformNames());
             }
         }
 
-        return null;
+        return platforms;
     }
 
     /**
@@ -530,7 +528,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
      * @param nameAndVersion the feature symbolic name
      * @return the feature symbolic name with any version stripped
      */
-    private String getFeatureBaseName(String nameAndVersion) {
+    public String getFeatureBaseName(String nameAndVersion) {
         int dashPosition = nameAndVersion.lastIndexOf('-');
         if (dashPosition != -1) {
             return nameAndVersion.substring(0, dashPosition);

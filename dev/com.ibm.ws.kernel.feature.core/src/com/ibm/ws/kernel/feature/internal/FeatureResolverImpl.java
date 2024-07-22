@@ -583,9 +583,9 @@ public class FeatureResolverImpl implements FeatureResolver {
             for(String platform : rootPlatforms){
                 selectionContext.getResult().addResolvedPlatform(repository.getFeature(platform).getPlatformName());
             }
-            else{
-                hasVersionlessFeatures = false;
-            }
+        }
+        else{
+            hasVersionlessFeatures = false;
         }
 
         // this checks if the pre-resolved exists in the repo;
