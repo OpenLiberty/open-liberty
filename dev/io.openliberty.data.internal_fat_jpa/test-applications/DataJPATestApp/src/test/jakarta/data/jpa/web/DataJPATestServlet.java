@@ -2153,6 +2153,52 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Use repository methods with JDQL that specifies LOCAL DATE, LOCAL DATETIME,
+     * and LOCAL TIME.
+     */
+    @Test
+    public void testLocalDateAndTimeFunctions() {
+
+        Rebate r1 = new Rebate(21, 1.01, "testLocalDateAndTimeFunctions-CustomerA", //
+                        LocalTime.of(10, 51, 0), //
+                        LocalDate.of(2024, Month.JULY, 19), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2024, Month.JULY, 19, 13, 10, 0), //
+                        null);
+
+        Rebate r2 = new Rebate(22, 2.02, "testLocalDateAndTimeFunctions-CustomerB", //
+                        LocalTime.of(14, 28, 52), //
+                        LocalDate.of(2024, Month.JULY, 18), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2024, Month.JULY, 20, 8, 2, 59), //
+                        null);
+
+        Rebate r3 = new Rebate(23, 1.23, "testLocalDateAndTimeFunctions-CustomerB", //
+                        LocalTime.of(16, 33, 53), //
+                        LocalDate.of(2024, Month.JUNE, 30), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2024, Month.JULY, 20, 13, 3, 0), //
+                        null);
+
+        Rebate r4 = new Rebate(24, 1.44, "testLocalDateAndTimeFunctions-CustomerA", //
+                        LocalTime.of(16, 4, 44), //
+                        LocalDate.of(2024, Month.JULY, 13), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2024, Month.JULY, 16, 18, 42, 0), //
+                        null);
+
+        Rebate[] all = rebates.addAll(r1, r2, r3, r4);
+
+        assertEquals(List.of(r2.id(), r4.id(), r3.id(), r1.id()),
+                     rebates.notRecentlyUpdated("testLocalDateAndTimeFunctions-%"));
+
+        assertEquals(List.of(r4.id(), r1.id(), r2.id(), r3.id()),
+                     rebates.purchasedInThePast("testLocalDateAndTimeFunctions-%"));
+
+        rebates.removeAll(all);
+    }
+
+    /**
      * Use a custom join query so that a ManyToMany association can query by attributes of the many side of the relationship.
      */
     @Test

@@ -12,6 +12,8 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import static jakarta.data.repository.By.ID;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -60,6 +62,12 @@ public interface Rebates { // Do not allow this interface to inherit from other 
     @Update
     List<Rebate> modifyMultiple(List<Rebate> r);
 
+    @Query("SELECT ID(THIS)" +
+           "  FROM Rebate" +
+           " WHERE updatedAt <> LOCAL DATETIME AND customerId LIKE ?1")
+    @OrderBy(value = "amount", descending = true)
+    List<Integer> notRecentlyUpdated(String customerIdPattern);
+
     @Query("WHERE customerId=?1 AND status=test.jakarta.data.jpa.web.Rebate.Status.PAID ORDER BY amount DESC, id ASC")
     List<Rebate> paidTo(String customerId);
 
@@ -68,6 +76,14 @@ public interface Rebates { // Do not allow this interface to inherit from other 
 
     @Save
     Rebate[] processAll(Rebate... r);
+
+    @Query("SELECT id " +
+           " WHERE customerId LIKE ?1" +
+           "   AND (purchaseMadeAt < LOCAL TIME AND purchaseMadeOn = LOCAL DATE" +
+           "     OR purchaseMadeOn < LOCAL DATE)")
+    @OrderBy("updatedAt")
+    @OrderBy(ID)
+    List<Integer> purchasedInThePast(String customerIdPattern);
 
     @Find
     Optional<PurchaseTime> purchaseTime(int id);

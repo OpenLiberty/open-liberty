@@ -2938,7 +2938,7 @@ public class DataTestServlet extends FATServlet {
      * to obtain the beginning of a String value.
      */
     @Test
-    public void tesLeftFunction() {
+    public void testLeftFunction() {
         assertEquals(List.of("seven", "seventeen"),
                      primes.matchLeftSideOfName("seven"));
     }
