@@ -12,6 +12,9 @@ package io.openliberty.jpa.data.tests.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +27,8 @@ import io.openliberty.jpa.data.tests.models.AsciiCharacter;
 import io.openliberty.jpa.data.tests.models.Coordinate;
 import io.openliberty.jpa.data.tests.models.NaturalNumber;
 import io.openliberty.jpa.data.tests.models.Person;
+import io.openliberty.jpa.data.tests.models.Rebate;
+import io.openliberty.jpa.data.tests.models.Rebate.Status;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -72,7 +77,6 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
             /*
              * Recreated
-             * java.lang.IllegalArgumentException: An exception occurred while creating a query in EntityManager:
              * Exception Description: Syntax error parsing [UPDATE Coordinate SET x = :newX, y = y / :yDivisor WHERE id = :id].
              * [37, 38] The left expression is not an arithmetic expression.
              */
@@ -105,7 +109,6 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
             /*
              * Recreated
-             * java.lang.IllegalArgumentException: An exception occurred while creating a query in EntityManager:
              * Exception Description: Problem compiling [SELECT hexadecimal FROM AsciiCharacter WHERE hexadecimal IS NOT NULL AND thisCharacter = ?1].
              * [7, 18] The identification variable 'hexadecimal' is not defined in the FROM clause.
              */
@@ -145,7 +148,6 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
             /*
              * Recreated
-             * java.lang.IllegalArgumentException: An exception occurred while creating a query in EntityManager:
              * Exception Description: Internal problem encountered while compiling [UPDATE Person SET firstName=:newFirstName WHERE id(this)=:ssn].
              * Internal Exception: java.lang.NullPointerException: Cannot invoke "org.eclipse.persistence.internal.jpa.jpql.Declaration.getDescriptor()"
              * because the return value of "org.eclipse.persistence.internal.jpa.jpql.JPQLQueryContext.getDeclaration(java.lang.String)" is null
@@ -212,6 +214,56 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
         assertEquals(2l, result1.getId(), 0.001f);
         assertEquals(2l, result2.getId(), 0.001f);
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28920")
+    public void testOLGH28920() throws Exception {
+        Rebate r1 = Rebate.of(10.00, "testOLGH28920", LocalTime.now().minusHours(1), LocalDate.now(), Status.SUBMITTED, LocalDateTime.now(), 1);
+        Rebate r2 = Rebate.of(12.00, "testOLGH28920", LocalTime.now().minusHours(1), LocalDate.now(), Status.PAID, LocalDateTime.now(), 2);
+        Rebate r3 = Rebate.of(14.00, "testOLGH28920", LocalTime.now().minusHours(1), LocalDate.now(), Status.PAID, LocalDateTime.now(), 2);
+
+        List<Rebate> paidRebates;
+
+        tx.begin();
+        em.persist(r1);
+        em.persist(r2);
+        em.persist(r3);
+        tx.commit();
+
+        tx.begin();
+        try {
+
+            paidRebates = em.createQuery(
+                                         "SELECT NEW io.openliberty.jpa.data.tests.models.Rebate(id, amount, customerId, purchaseMadeAt, purchaseMadeOn, status, updatedAt, version) "
+                                         + "FROM Rebate "
+                                         + "WHERE customerId=?1 AND status=io.openliberty.jpa.data.tests.models.Rebate.Status.PAID "
+                                         + "ORDER BY amount DESC, id ASC", Rebate.class)
+                            .setParameter(1, "testOLGH28920")
+                            .getResultList();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+
+            /*
+             * Recreate
+             * Exception Description: Syntax error parsing [SELECT NEW io.openliberty.jpa.data.tests.models.Rebate(id, amount, customerId, purchaseMadeAt, purchaseMadeOn, status,
+             * updatedAt, version) FROM Rebate WHERE customerId=?1 AND status=io.openliberty.jpa.data.tests.models.Rebate.Status.PAID ORDER BY amount DESC, id ASC].
+             * [55, 57] The identification variable 'id' cannot be a reserved word.
+             * [130, 137] The identification variable 'version' cannot be a reserved word.
+             */
+            throw e;
+        }
+
+        assertEquals(2, paidRebates.size());
+        assertEquals(14.00, paidRebates.get(0).amount, 0.001);
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28909")
+    public void testOLGH28909() throws Exception {
+
     }
 
 }
