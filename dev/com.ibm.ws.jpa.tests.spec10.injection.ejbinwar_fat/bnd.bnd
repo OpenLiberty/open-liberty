@@ -20,7 +20,8 @@ src: \
     test-applications/injection_ejbinwar_javacomp/src
 
 fat.project: true
-tested.features: databaseRotation, jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0, persistence-3.0, persistence-3.1, xmlbinding-4.0, servlet-6.0
+fat.test.databases: true
+tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0, persistence-3.0, persistence-3.1, xmlbinding-4.0, servlet-6.0
 
 # Uncomment to test against alternative databases
 # Options: Derby, Postgres, DB2, Oracle, SQLServer
