@@ -115,6 +115,9 @@ public class DataTestServlet extends FATServlet {
     Packages packages;
 
     @Inject
+    Participants participants;
+
+    @Inject
     People people;
 
     @Inject
@@ -492,6 +495,16 @@ public class DataTestServlet extends FATServlet {
 
         assertNotNull(sum = sums.poll());
         assertEquals(Long.valueOf(2L), sum);
+    }
+
+    /**
+     * Use a repository method that performs a JDQL query using the String
+     * concatenation operator ||.
+     */
+    @Test
+    public void testConcatenationOperator() {
+        assertEquals(List.of("thirty-one", "twenty-three", "thirteen", "three", "two"),
+                     primes.concatAndMatch("%It%", Sort.desc(ID)));
     }
 
     /**
@@ -2921,6 +2934,16 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository method that performs a JDQL query using LEFT function
+     * to obtain the beginning of a String value.
+     */
+    @Test
+    public void tesLeftFunction() {
+        assertEquals(List.of("seven", "seventeen"),
+                     primes.matchLeftSideOfName("seven"));
+    }
+
+    /**
      * Intermix two different types of entities in the same transaction.
      */
     @Test
@@ -3669,6 +3692,30 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Test an unannotated entity that has an attribute which is a Java record,
+     * which should be inferred to be an embeddable, such that queries and sorting
+     * can be performed on the attributes of the embeddable.
+     */
+    @Test
+    public void testRecordAsEmbeddable() {
+        participants.remove("TestRecordAsEmbeddable");
+
+        participants.add(Participant.of("Steve", "TestRecordAsEmbeddable", 1),
+                         Participant.of("Sarah", "TestRecordAsEmbeddable", 2),
+                         Participant.of("Simon", "TestRecordAsEmbeddable", 3),
+                         Participant.of("Samantha", "TestRecordAsEmbeddable", 4));
+
+        assertEquals("Simon", participants.getFirstName(3).orElseThrow());
+
+        assertEquals(List.of("Samantha", "Sarah", "Simon", "Steve"),
+                     participants.withSurname("TestRecordAsEmbeddable")
+                                     .map(p -> p.name.first())
+                                     .collect(Collectors.toList()));
+
+        assertEquals(4L, participants.remove("TestRecordAsEmbeddable"));
+    }
+
+    /**
      * Tests that a record entity can be specified in the FROM clause of JDQL.
      */
     @Test
@@ -4045,6 +4092,17 @@ public class DataTestServlet extends FATServlet {
                                              .map(o -> o.a)
                                              .sorted()
                                              .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use a repository method that performs a JDQL query using RIGHT function
+     * to obtain the end of a String value.
+     */
+    @Test
+    public void testRightFunction() {
+        assertEquals(List.of("thirty-seven", "thirteen", "seventeen",
+                             "seven", "nineteen", "eleven"),
+                     primes.matchRightSideOfName("en"));
     }
 
     /**

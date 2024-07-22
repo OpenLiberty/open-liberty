@@ -36,9 +36,9 @@ public record Rating(
             this.email = email;
         }
     }
-    // TODO switch the above class to the following record after JPA 3.2 adds support for records as embeddables
+    // TODO switch the above class to the following record after 29117 is fixed
     //public static record Reviewer(
-    //                String firstName,
+    //                String firstName, // TODO nested record embeddable for Name(first, last) ?
     //                String lastName,
     //                String email) {
     //}

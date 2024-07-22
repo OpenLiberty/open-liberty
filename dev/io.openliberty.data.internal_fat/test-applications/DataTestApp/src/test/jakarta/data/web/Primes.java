@@ -52,6 +52,9 @@ public interface Primes {
     @Query("SELECT (num.name) FROM Prime As num")
     Page<String> all(Sort<Prime> sort, PageRequest pagination);
 
+    @Query("SELECT name WHERE numberId < 35 AND romanNumeral || name LIKE :pattern")
+    List<String> concatAndMatch(String pattern, Sort<?> sort);
+
     Integer countByNumberIdBetween(long first, long last);
 
     @Asynchronous
@@ -226,6 +229,16 @@ public interface Primes {
 
     @Query("SELECT o.numberId FROM Prime o WHERE (o.name = ?1 OR o.numberId=:num)")
     Collection<Long> matchAnyWithMixedUsageOfPositionalAndNamed(String name, long num);
+
+    @Query("SELECT name WHERE numberId < 50 AND LEFT(name, LENGTH(:s)) = :s")
+    @OrderBy("name")
+    List<String> matchLeftSideOfName(@Param("s") String searchFor);
+
+    @Query("SELECT name" +
+           " WHERE numberId < 40" +
+           "   AND RIGHT(name, LENGTH(:searchFor)) = :searchFor" +
+           " ORDER BY name DESC")
+    List<String> matchRightSideOfName(String searchFor);
 
     @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
     Deque<Double> minMaxSumCountAverageDeque(long numBelow);
