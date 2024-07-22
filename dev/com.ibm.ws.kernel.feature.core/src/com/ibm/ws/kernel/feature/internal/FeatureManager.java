@@ -2039,44 +2039,50 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         }
 
         List<String> unresolvedVersionless = new ArrayList<>();
-        for (Map.Entry<String, String> versionlessResolved : result.getVersionlessFeatures().entrySet()) {
-            if(versionlessResolved.getValue() == null){
-                Set<String> platforms = featureRepository.getPlatformsForVersionlessFeature(versionlessResolved.getKey());
-                boolean compatibleWithPlatform = true;
+        for (Map.Entry<String, String> versionlessResolvedEntry : result.getVersionlessFeatures().entrySet()) {
+            String versionlessResolved = versionlessResolvedEntry.getKey();
+            String versionedResolved = versionlessResolvedEntry.getValue();
 
-                //get the compatibility feature base name tied to this versionless feature
-                ProvisioningFeatureDefinition compatibility = null;
-                if(platforms != null && !platforms.isEmpty()){
-                    for(String platform : platforms){
-                        compatibility = featureRepository.getCompatibilityFeature(platform);
-                        if(compatibility != null){
-                            break;
-                        }
-                    }
-                }
-                if(compatibility == null){
+            if(versionedResolved != null){
+                continue; // Sucessfully resolved.  Nothing to check.
+            }
+
+            Set<String> platforms = featureRepository.getPlatformsForVersionlessFeature(versionlessResolved);
+            if ((platforms == null) || platforms.isEmpty()) {
+                unresolvedVersionless.add(getFeatureName(versionlessResolved));
+                continue; // Compatibility or linking features are not installed.  The image is incomplete.
+            }
+
+            ProvisioningFeatureDefinition compatibility = null;
+            for (String platform : platforms) {
+                compatibility = featureRepository.getCompatibilityFeature(platform);
+                if(compatibility != null){
                     break;
                 }
-                compatibility = featureRepository.getCompatibilityFeature(platforms.toArray()[0].toString());
-                String compatibilityBaseName = featureRepository.getFeatureBaseName(compatibility.getFeatureName());
+            }
+            if (compatibility == null) {
+                unresolvedVersionless.add(getFeatureName(versionlessResolved));
+                continue; // Compatibility features are not installed.  The image is incomplete.
+            }
 
-                //check if the versionless feature has a version tied to the resolved platform
-                for(String resolvedPlat : result.getResolvedPlatforms()){
-                    String resolvedBaseName = featureRepository.getFeatureBaseName(featureRepository.getCompatibilityFeature(resolvedPlat).getFeatureName());
-                    if(compatibilityBaseName.equals(featureRepository.getFeatureBaseName(featureRepository.getCompatibilityFeature(resolvedPlat).getFeatureName()))){
-                        if(!platforms.contains(resolvedPlat)){
-                            Tr.error(tc, "INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM", getFeatureName(versionlessResolved.getKey()), resolvedPlat);
-                            compatibleWithPlatform = false;
-                            break;
-                        }
+            boolean isIncompatible = false;
+
+            String compatibilityBaseName = featureRepository.getFeatureBaseName(compatibility.getFeatureName());
+            for(String resolvedPlat : result.getResolvedPlatforms()){
+                String resolvedBaseName = featureRepository.getFeatureBaseName(featureRepository.getCompatibilityFeature(resolvedPlat).getFeatureName());
+                if(compatibilityBaseName.equals(resolvedBaseName)){
+                    if(!platforms.contains(resolvedPlat)){
+                        Tr.error(tc, "INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM", getFeatureName(versionlessResolved), resolvedPlat);
+                        isIncompatible = true;
+                        break;
                     }
                 }
-                
-                if(compatibleWithPlatform){
-                    unresolvedVersionless.add(getFeatureName(versionlessResolved.getKey()));
-                }
             }
-        }
+
+            if(!isIncompatible){
+                unresolvedVersionless.add(getFeatureName(versionlessResolved));
+            }
+       }
         if(!unresolvedVersionless.isEmpty()){
             reportedErrors = true;
             Tr.error(tc, "UNRESOLVED_VERSIONLESS_FEATURE", unresolvedVersionless);

@@ -218,8 +218,6 @@ public class FeatureResolverImpl implements FeatureResolver {
 
     private static String preferredPlatformVersions = System.getenv(PREFERRED_PLATFORM_VERSIONS_ENV_VAR);
 
-    private static boolean hasVersionlessFeatures = false;
-
     private static HashMap<String, ProvisioningFeatureDefinition> allCompatibilityFeatures = new HashMap<>();
 
     /**
@@ -574,7 +572,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
 
         if(hasRootVersionlessFeatures(repository, rootFeatures)){
-            hasVersionlessFeatures = true;
+            selectionContext.setHasVersionlessFeatures();
             processCompatibilityFeatures(repository.getFeatures());
 
             rootPlatforms = collectConfiguredPlatforms(repository, rootPlatforms, selectionContext);
@@ -583,9 +581,6 @@ public class FeatureResolverImpl implements FeatureResolver {
             for(String platform : rootPlatforms){
                 selectionContext.getResult().addResolvedPlatform(repository.getFeature(platform).getPlatformName());
             }
-        }
-        else{
-            hasVersionlessFeatures = false;
         }
 
         // this checks if the pre-resolved exists in the repo;
@@ -599,17 +594,17 @@ public class FeatureResolverImpl implements FeatureResolver {
         // This will ensure that the root and pre-resolved features do not conflict
         Collection<String> rootFeaturesList = new ArrayList<String>(rootFeatures);
         //Implementation for platform element
-        if (rootPlatforms != null && hasVersionlessFeatures) {
+        if (rootPlatforms != null && selectionContext.getHasVersionlessFeatures()) {
             rootFeaturesList.addAll(rootPlatforms);
         }
 
         //add versionless after normal resolution for packaging
         List<String> filteredVersionless = new ArrayList<>();
-        if (allowedMultipleVersions != null && hasVersionlessFeatures) {
+        if(allowedMultipleVersions != null && selectionContext.getHasVersionlessFeatures()){
             filteredVersionless = filterVersionless(rootFeaturesList, selectionContext);
         }
         //preresolve versionless features for regular resolution
-        else if (hasVersionlessFeatures) {
+        else if(selectionContext.getHasVersionlessFeatures()){
             preresolveVersionless(rootFeaturesList, selectionContext, rootPlatforms, filteredVersionless);
         }
 
@@ -643,7 +638,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         if(!filteredVersionless.isEmpty() && allowedMultipleVersions != null){
             addBackVersionless(filteredVersionless, selectionContext);
         }
-        else if(hasVersionlessFeatures){
+        else if(selectionContext.getHasVersionlessFeatures()){
             finalizeVersionlessResults(selectionContext, filteredVersionless);
         }
 
@@ -1446,6 +1441,15 @@ public class FeatureResolverImpl implements FeatureResolver {
         private final Map<String, Collection<Chain>> _preResolveConflicts = new HashMap<String, Collection<Chain>>();
         private Permutation _current = _permutations.getFirst();
         private boolean triedVersionless = false;
+        private boolean hasVersionlessFeatures = false;
+
+        void setHasVersionlessFeatures(){
+            hasVersionlessFeatures = true;
+        }
+
+        boolean getHasVersionlessFeatures(){
+            return hasVersionlessFeatures;
+        }
 
         SelectionContext(FeatureResolver.Repository repository, Set<String> allowedMultipleVersions, EnumSet<ProcessType> supportedProcessTypes) {
             this._repository = repository;
