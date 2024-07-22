@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import componenttest.app.FATServlet;
 import io.openliberty.jpa.data.tests.models.AsciiCharacter;
+import io.openliberty.jpa.data.tests.models.Box;
 import io.openliberty.jpa.data.tests.models.Coordinate;
 import io.openliberty.jpa.data.tests.models.NaturalNumber;
 import io.openliberty.jpa.data.tests.models.Person;
@@ -138,7 +139,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
                             .setParameter("ssn", p.ssn_id)
                             .executeUpdate();
 
-            result = em.createQuery("SELECT Person WHERE ssn_id=:ssn", Person.class)
+            result = em.createQuery("SELECT Person WHERE ssn_id = :ssn", Person.class)
                             .setParameter("ssn", p.ssn_id)
                             .getSingleResult();
 
@@ -263,6 +264,43 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Test
     @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28909")
     public void testOLGH28909() throws Exception {
+        Box cube = Box.of("testOLGH28909", 1, 1, 1);
+
+        Box wall; //box with no width
+
+        tx.begin();
+        em.persist(cube);
+        tx.commit();
+
+        tx.begin();
+        try {
+            em.createQuery("UPDATE Box SET length = length + ?1, width = width - ?1, height = height * ?2")
+                            .setParameter(1, 1)
+                            .setParameter(2, 2)
+                            .executeUpdate();
+
+            wall = em.createQuery("SELECT Box WHERE boxIdentifier = :id", Box.class)
+                            .setParameter("id", "testOLGH28909")
+                            .getSingleResult();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+
+            /*
+             * Recreate
+             * Exception Description: Syntax error parsing [UPDATE Box SET length = length + ?1, width = width - ?1, height = height * ?2].
+             * [30, 30] The left parenthesis is missing from the LENGTH expression.
+             * [45, 50] The left expression is not an arithmetic expression.
+             * [66, 72] The left expression is not an arithmetic expression.
+             */
+            throw e;
+        }
+
+        assertEquals("testOLGH28909", wall.boxIdentifier);
+        assertEquals(2, wall.length); // 1+1
+        assertEquals(0, wall.length); // 1-1
+        assertEquals(2, wall.height); // 1*2
 
     }
 
