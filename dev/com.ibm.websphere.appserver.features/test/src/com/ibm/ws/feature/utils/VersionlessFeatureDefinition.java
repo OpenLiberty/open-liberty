@@ -1,69 +1,69 @@
 package com.ibm.ws.feature.utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
-
-import com.ibm.ws.feature.tests.VersionlessTest;
 
 public class VersionlessFeatureDefinition {
 
-	private String featureName;
-	private String subsystemName;
-	private ArrayList<String[]> featuresAndPlatform;
+    private final String featureName;
+    private final String subsystemName;
+    private final ArrayList<String[]> featuresAndPlatform;
     private String alsoKnownAs;
     private String akaFutureFeature;
-    private String edition;
+    private final String edition;
+    private final String kind;
 
-	public VersionlessFeatureDefinition(String featureName, String subsystemName, ArrayList<String[]> featuresAndPlatform, String editon) {
-		this.featureName = featureName;
-		this.subsystemName = subsystemName;
-		this.featuresAndPlatform = featuresAndPlatform;
+    public VersionlessFeatureDefinition(String featureName, String subsystemName, ArrayList<String[]> featuresAndPlatform, String editon, String kind) {
+        this.featureName = featureName;
+        this.subsystemName = subsystemName;
+        this.featuresAndPlatform = featuresAndPlatform;
         this.edition = editon;
-	}
+        this.kind = kind;
+    }
 
-	public VersionlessFeatureDefinition(String featureName, String subsystemName, String[] featureAndPlatform, String edition) {
-		this.featureName = featureName;
-		this.subsystemName = subsystemName;
-		this.featuresAndPlatform = new ArrayList<String[]>();
+    public VersionlessFeatureDefinition(String featureName, String subsystemName, String[] featureAndPlatform, String edition, String kind) {
+        this.featureName = featureName;
+        this.subsystemName = subsystemName;
+        this.featuresAndPlatform = new ArrayList<String[]>();
         featuresAndPlatform.add(featureAndPlatform);
         this.edition = edition;
-	}
+        this.kind = kind;
+    }
 
     /**
      * Get the Feature Name for this feature.
-     * 
+     *
      * @return
      */
     public String getFeatureName() {
-    	return this.featureName;
+        return this.featureName;
     }
 
-    public String getEdition(){
+    public String getEdition() {
         return this.edition;
     }
 
     /**
      * Get the Feature Name for this feature.
-     * 
+     *
      * @return
      */
     public String getSubsystemName() {
-    	return this.subsystemName;
+        return this.subsystemName;
     }
 
-    public String getAlsoKnownAs(){
+    public String getAlsoKnownAs() {
         return alsoKnownAs;
     }
 
-    public void setAlsoKnownAs(String alsoKnownAs){
+    public void setAlsoKnownAs(String alsoKnownAs) {
         this.alsoKnownAs = alsoKnownAs;
     }
 
-    public String getAKAFutureFeature(){
+    public String getAKAFutureFeature() {
         return akaFutureFeature;
     }
 
-    public void setAKAFutureFeature(String futureFeature){
+    public void setAKAFutureFeature(String futureFeature) {
         this.akaFutureFeature = futureFeature;
     }
 
@@ -72,11 +72,11 @@ public class VersionlessFeatureDefinition {
      * EX:
      * jpa-2.2, jakartaPlatform-8.0
      * persistence-3.0, JakartaPlatform-9.1
-     *  
+     *
      * @return
      */
     public ArrayList<String[]> getFeaturesAndPlatform() {
-    	return this.featuresAndPlatform;
+        return this.featuresAndPlatform;
     }
 
     public void addFeaturePlatform(String[] featurePlatform) {
@@ -89,107 +89,113 @@ public class VersionlessFeatureDefinition {
 
     /**
      * Gets all versions of this feature so the 'ibm.tolerates:="2.0,2.1,2.2,3.0,3.1,3.2"' can be created
+     *
      * @return
      */
     public String[] getPreferredAndTolerates() {
-    	ArrayList<String> versions = new ArrayList<String>();
+        ArrayList<String> versions = new ArrayList<String>();
 
-    	for(String[] featAndPlat : featuresAndPlatform) {
-            if(!versions.contains(featAndPlat[0].split("-")[1])){
+        for (String[] featAndPlat : featuresAndPlatform) {
+            if (!versions.contains(featAndPlat[0].split("-")[1])) {
                 versions.add(featAndPlat[0].split("-")[1]);
             }
-    	}
+        }
         return getPreferredAndTolerates(versions);
     }
 
-    public String[] getPreferredAndTolerates(ArrayList<String> versions){
+    public String[] getPreferredAndTolerates(ArrayList<String> versions) {
         String tolerates = "";
         String first = "";
         versions.sort(VersionlessFeatureDefinition::compareVersions);
-        for(String version : versions){
-            if(first.equals("")){
+        for (String version : versions) {
+            if (first.equals("")) {
                 first = version;
-            }
-            else{
+            } else {
                 tolerates += version + ",";
             }
         }
 
-    	if(tolerates.equals("")){
+        if (tolerates.equals("")) {
             return new String[] { first };
         }
 
-    	tolerates = tolerates.substring(0, tolerates.length()-1);
+        tolerates = tolerates.substring(0, tolerates.length() - 1);
 
-    	return new String[] { first, tolerates };
+        return new String[] { first, tolerates };
     }
 
     public ArrayList<String> getAllVersions() {
-    	ArrayList<String> versions = new ArrayList<String>();
+        ArrayList<String> versions = new ArrayList<String>();
 
-    	for(String[] featAndPlat : featuresAndPlatform) {
-            if(!versions.contains(featAndPlat[0].split("-")[1])){
+        for (String[] featAndPlat : featuresAndPlatform) {
+            if (!versions.contains(featAndPlat[0].split("-")[1])) {
                 versions.add(featAndPlat[0].split("-")[1]);
             }
-    	}
+        }
 
-    	return versions;
+        return versions;
     }
-
 
     /**
      * Gets every version of a dependency that a versioned feature uses.
-     * Ex. Servlet-4.0 can be used on mp1.0, mp-1.1, mp1.2, mp1.3 and so on. 
+     * Ex. Servlet-4.0 can be used on mp1.0, mp-1.1, mp1.2, mp1.3 and so on.
      * This gets the lowest version of the dependency at index 0. For the above example it would be "1.0"
-     * This gathers all versions, except the lowest, of the dependency at index 1. 
+     * This gathers all versions, except the lowest, of the dependency at index 1.
      * For the above example it would be "1.1,1.2,1.3"
+     *
      * @return
      */
     public String[] getAllDependencyVersions(String versionedFeature, String dependency) {
         String result = "";
         String currentLow = "" + Double.MAX_VALUE;
 
-        for(int i = 0; i < featuresAndPlatform.size(); i++){
+        for (int i = 0; i < featuresAndPlatform.size(); i++) {
             String[] fnp = featuresAndPlatform.get(i);
-            if(fnp[0].equals(versionedFeature)){
-                if(fnp[1].contains(dependency + "-")){
+            if (fnp[0].equals(versionedFeature)) {
+                if (fnp[1].contains(dependency + "-")) {
                     //Should leave you with "(version number).feature" ex. "1.2"
                     String temp = fnp[1].split("-")[1];
                     int compare = compareVersions(currentLow, temp);
-                    if(compare == 1){
-                        if(!currentLow.equals("" + Double.MAX_VALUE)){
+                    if (compare == 1) {
+                        if (!currentLow.equals("" + Double.MAX_VALUE)) {
                             result += currentLow + ",";
                         }
                         currentLow = temp;
-                    }
-                    else if(compare == -1){
+                    } else if (compare == -1) {
                         result += temp + ",";
                     }
                     //We ignore any instance where the versions are the same, as this means its a repeat
                 }
             }
         }
-        if(result.length() > 0){
-            result = result.substring(0, result.length()-1);
+        if (result.length() > 0) {
+            result = result.substring(0, result.length() - 1);
         }
-        return new String[] {currentLow, result};
+        return new String[] { currentLow, result };
     }
 
     /**
-     * Compares the two versions. If version 1 is higher it will return true. 
+     * Compares the two versions. If version 1 is higher it will return true.
      * Otherwise it will return false
+     *
      * @param version1
      * @param version2
      * @return
      */
-    public static int compareVersions(String version1, String version2){
-        if(Double.parseDouble(version1) > Double.parseDouble(version2)){
+    public static int compareVersions(String version1, String version2) {
+        if (Double.parseDouble(version1) > Double.parseDouble(version2)) {
             return 1;
-        }
-        else if(Double.parseDouble(version1) == Double.parseDouble(version2)){
+        } else if (Double.parseDouble(version1) == Double.parseDouble(version2)) {
             return 0;
         }
 
         return -1;
+    }
+
+    /**
+     * @return the kind
+     */
+    public String getKind() {
+        return kind;
     }
 }

@@ -75,7 +75,7 @@ public class PackageProcessor implements ArchiveProcessor {
 
     private final Set<String> processContent;
 
-    private boolean containsManualVersionlessEnvVariable;
+    private final boolean containsManualVersionlessEnvVariable;
 
     final File installRoot;
     final String wlpProperty = "/lib/versions/WebSphereApplicationServer.properties";
@@ -87,8 +87,6 @@ public class PackageProcessor implements ArchiveProcessor {
     public boolean isServerRootOptionSet = false;
 
     private static final String PPV_KEY = "PREFERRED_PLATFORM_VERSIONS";
-
-    public static boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
 
     public PackageProcessor(String processName, File packageFile, BootstrapConfig bootProps, List<Pair<PackageOption, String>> options, Set<String> processContent) {
         this.processName = processName;
@@ -111,9 +109,7 @@ public class PackageProcessor implements ArchiveProcessor {
         this.workAreaTmpDir = new File(bootProps.get(BootstrapConstants.LOC_PROPERTY_SRVTMP_DIR));
         this.workAreaTmpDir.mkdirs();
 
-        if (isBeta) {
-            this.containsManualVersionlessEnvVariable = checkManualPPVEnvVariable();
-        }
+        this.containsManualVersionlessEnvVariable = checkManualPPVEnvVariable();
     }
 
     /**
@@ -204,11 +200,9 @@ public class PackageProcessor implements ArchiveProcessor {
 
     public ReturnCode execute(boolean runtimeOnly) {
 
-        if (isBeta) {
-            // WARN if manual PPV env variable is included.
-            if (containsManualVersionlessEnvVariable == true) {
-                System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.manual.PPV.env.var"), processName));
-            }
+        // WARN if manual PPV env variable is included.
+        if (containsManualVersionlessEnvVariable == true) {
+            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.manual.PPV.env.var"), processName));
         }
 
         Archive archive = null;

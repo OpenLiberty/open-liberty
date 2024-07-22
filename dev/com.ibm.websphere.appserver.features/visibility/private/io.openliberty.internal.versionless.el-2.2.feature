@@ -1,8 +1,8 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.internal.versionless.jms-2.0
+symbolicName=io.openliberty.internal.versionless.el-2.2
 visibility=private
 singleton=true
 -features= \
-    com.ibm.websphere.appserver.jms-2.0
+    com.ibm.websphere.appserver.jsp-2.2
 kind=ga
-edition=base
+edition=core

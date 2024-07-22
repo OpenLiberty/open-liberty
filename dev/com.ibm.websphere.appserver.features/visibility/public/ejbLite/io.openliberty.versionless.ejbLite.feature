@@ -4,6 +4,6 @@ visibility=public
 IBM-ShortName: ejbLite
 Subsystem-Name: ejbLite
 -features=io.openliberty.internal.versionless.ejbLite-3.1; ibm.tolerates:="3.2,4.0"
-kind=beta
+kind=ga
 edition=core
 WLP-InstantOn-Enabled: true
