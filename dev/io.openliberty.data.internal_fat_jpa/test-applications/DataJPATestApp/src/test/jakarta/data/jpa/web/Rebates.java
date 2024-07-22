@@ -15,6 +15,8 @@ package test.jakarta.data.jpa.web;
 import static jakarta.data.repository.By.ID;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -47,11 +49,19 @@ public interface Rebates { // Do not allow this interface to inherit from other 
     @OrderBy("amount")
     List<Double> amounts(String customerId);
 
+    // It should be acceptable for the return type to be more general
+    // when using @Query
+    @Query("SELECT purchaseMadeOn WHERE ID(THIS) = :id")
+    Optional<Temporal> dayOfPurchase(int id);
+
     List<LocalDate> findByCustomerIdOrderByPurchaseMadeOnDesc(String customer);
 
     @OrderBy("purchaseMadeOn")
     @OrderBy("purchaseMadeAt")
     PurchaseTime[] findTimeOfPurchaseByCustomerId(String customer);
+
+    @Find
+    Optional<LocalDateTime> lastUpdated(int id);
 
     @Update
     Rebate modify(Rebate r);

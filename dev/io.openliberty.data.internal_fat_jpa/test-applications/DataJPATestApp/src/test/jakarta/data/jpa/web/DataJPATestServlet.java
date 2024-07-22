@@ -2177,7 +2177,7 @@ public class DataJPATestServlet extends FATServlet {
                         LocalTime.of(16, 33, 53), //
                         LocalDate.of(2024, Month.JUNE, 30), //
                         Rebate.Status.PAID, //
-                        LocalDateTime.of(2024, Month.JULY, 20, 13, 3, 0), //
+                        LocalDateTime.of(2024, Month.JULY, 20, 13, 3, 31), //
                         null);
 
         Rebate r4 = new Rebate(24, 1.44, "testLocalDateAndTimeFunctions-CustomerA", //
@@ -2194,6 +2194,20 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(List.of(r4.id(), r1.id(), r2.id(), r3.id()),
                      rebates.purchasedInThePast("testLocalDateAndTimeFunctions-%"));
+
+        LocalDateTime lastUpdate = rebates.lastUpdated(r3.id()).orElseThrow();
+        assertEquals(2024, lastUpdate.getYear());
+        assertEquals(Month.JULY, lastUpdate.getMonth());
+        assertEquals(20, lastUpdate.getDayOfMonth());
+        assertEquals(13, lastUpdate.getHour());
+        assertEquals(3, lastUpdate.getMinute());
+        assertEquals(31, lastUpdate.getSecond());
+
+        LocalDate dayOfPurchase = (LocalDate) rebates.dayOfPurchase(r2.id())
+                        .orElseThrow();
+        assertEquals(2024, dayOfPurchase.getYear());
+        assertEquals(Month.JULY, dayOfPurchase.getMonth());
+        assertEquals(18, dayOfPurchase.getDayOfMonth());
 
         rebates.removeAll(all);
     }
