@@ -225,16 +225,31 @@ public class ContextParameterInjector implements ValueInjector
          final SecurityManager sm = System.getSecurityManager();
          if (sm == null) {
              // liberty change - use this classloader
-            //clazzLoader = delegate == null ? rawType.getClassLoader() : delegate.getClass().getClassLoader();
-            clazzLoader = this.getClass().getClassLoader();
+             clazzLoader = delegate == null ? rawType.getClassLoader() : delegate.getClass().getClassLoader();
+             // The class loader may be null for primitives, void or the type was loaded from the bootstrap class loader.
+             // In such cases we should use the TCCL.
+             if (clazzLoader == null) {
+                clazzLoader = Thread.currentThread().getContextClassLoader();
+             }
+             if (clazzLoader == null) {
+                clazzLoader = this.getClass().getClassLoader();
+             }
          } else {
-            clazzLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-               @Override
-               public ClassLoader run() {
-                  //return delegate == null ? rawType.getClassLoader() : delegate.getClass().getClassLoader();
-                  return this.getClass().getClassLoader(); //liberty change
-               }
-            });
+             clazzLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                 @Override
+                 public ClassLoader run() {
+                     ClassLoader result = delegate == null ? rawType.getClassLoader() : delegate.getClass().getClassLoader();
+                     // The class loader may be null for primitives, void or the type was loaded from the bootstrap class loader.
+                     // In such cases we should use the TCCL.
+                     if (result == null) {
+                     result = Thread.currentThread().getContextClassLoader();
+                     }
+                     if (result == null) {
+                     result = this.getClass().getClassLoader(); //liberty change
+                     }
+                     return result;
+                 }
+             });
          }
          return Proxy.newProxyInstance(clazzLoader, intfs, new GenericDelegatingProxy());
       }
