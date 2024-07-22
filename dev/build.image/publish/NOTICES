@@ -1,8 +1,9 @@
-Begin NOTICES AND INFORMATION FOR Open Liberty @LIBERTY_VERSION@
+Begin NOTICES AND INFORMATION FOR Open Liberty 24.0.0.8
 Copyright 1999-2024 IBM Corporation and others
 This product includes software developed at
-The Open Liberty @LIBERTY_VERSION@ Project (https://openliberty.io/).
+The Open Liberty 24.0.0.8 Project (https://openliberty.io/).
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 TABLE OF CONTENTS
 
 THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING SECTIONS:
@@ -10,7 +11,6 @@ THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING SECTIONS:
 Apache License, Version 2.0 (APACHE V2)
 BSD 2 Clause license (BSD-2-CLAUSE)
 BSD 3 Clause license (BSD-3-CLAUSE)
-BSD Zero Clause license (BSD)
 Bouncy Castle License (Bouncy Castle)
 COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1 (CDDL V1)
 COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1.1 (CDDL V1.1)
@@ -239,9 +239,10 @@ OpenTelemetry Java [opentelemetry-exporter-jaeger],
 OpenTelemetry Java [opentelemetry-exporter-logging],
 OpenTelemetry Java [opentelemetry-exporter-zipkin],
 OpenTelemetry Java [opentelemetry-context],
-OpenTelemetry Java [opentelemetry-api], OpenTracing API [opentracing-api],
-OpenTracing-noop [opentracing-noop], OpenTracing-util [opentracing-util],
-Prometheus Java Simpleclient [simpleclient],
+OpenTelemetry Java [opentelemetry-api],
+OpenTelemetry Semantic Conventions Java [opentelemetry-semconv],
+OpenTracing API [opentracing-api], OpenTracing-noop [opentracing-noop],
+OpenTracing-util [opentracing-util], Prometheus Java Simpleclient [simpleclient],
 Prometheus Java Simpleclient Common [simpleclient_common],
 Prometheus Java Span Context Supplier - Common [simpleclient_tracer_common],
 Prometheus Java Span Context Supplier - OpenTelemetry [simpleclient_tracer_otel],
@@ -714,37 +715,12 @@ POSSIBILITY OF SUCH DAMAGE.
 END OF BSD 3 Clause license NOTICES AND INFORMATION
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-BSD Zero Clause license
-
-The Program includes some or all of the following that IBM obtained
-under the BSD Zero Clause license:
-
-tslib [tslib-2.6.2.tgz] (Copyright Microsoft Corporation)
-
-Permission to use, copy, modify, and/or distribute this software for any 
-purpose with or without fee is hereby granted.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES 
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR 
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES 
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN 
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF 
-OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-END OF BSD Zero Clause license NOTICES AND INFORMATION
-
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Bouncy Castle License
 
 The Program includes some or all of the following that IBM obtained
 under the Bouncy Castle License:
 
-Bouncy Castle ASN.1 Extension and Utility APIs [bcutil-jdk18on],
-Bouncy Castle OpenPGP API [bcpg-jdk18on],
-Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs [bcpkix-jdk15on],
-Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs [bcpkix-jdk18on],
-Bouncy Castle Provider [bcprov-jdk15on], Bouncy Castle Provider [bcprov-jdk18on]
+Bouncy Castle OpenPGP API [bcpg-jdk18on], Bouncy Castle Provider [bcprov-jdk15on]
 
 
 Copyright (c) 2000 - 2023 The Legion of the Bouncy Castle Inc. 
@@ -839,6 +815,7 @@ javax.interceptor API [javax.interceptor-api] http://interceptors-spec.java.net
 javax.json.bind-api https://javaee.github.io/jsonb-spec
 javax.resource API [javax.resource-api] http://connector-spec.java.net
 javax.ws.rs-api http://jax-rs-spec.java.net
+javax.ws.rs-api http://www.oracle.com/
 javax.xml.soap API [javax.xml.soap-api] https://javaee.github.io/javaee-spec/
 jdeparser http://www.jboss.org
 jsr181-api https://www.ebi.ac.uk/intact/maven/nexus/content/repositories/public/javax/jws/jsr181-api/1.0-MR1
@@ -891,10 +868,8 @@ Eclipse Compiler for Java(TM) [ecj] http://www.eclipse.org/jdt
 Eclipse Compiler for Java(TM) [ecj] https://projects.eclipse.org/projects/eclipse.jdt
 Eclipse Parsson [parsson] https://repo.maven.apache.org/maven2/org/eclipse/parsson/parsson/1.1.0
 Eclipse Parsson [parsson] https://repo.maven.apache.org/maven2/org/eclipse/parsson/parsson/1.1.4
-EclipseLink ANTLR [org.eclipse.persistence.antlr] http://www.eclipse.org/eclipselink
 EclipseLink ASM [org.eclipse.persistence.asm] http://www.eclipse.org/eclipselink
 EclipseLink Core [org.eclipse.persistence.core] http://www.eclipse.org/eclipselink
-EclipseLink Hermes JPQL Parser [org.eclipse.persistence.jpa.jpql] http://www.eclipse.org/eclipselink
 EclipseLink Hermes Parser [org.eclipse.persistence.jpa.jpql] http://www.eclipse.org/eclipselink
 EclipseLink JPA [org.eclipse.persistence.jpa] http://www.eclipse.org/eclipselink
 Expression Language 3.0 API [jboss-el-api_3.0_spec] https://projects.eclipse.org/projects/ee4j.el
@@ -908,7 +883,6 @@ Jakarta Authentication [jakarta.authentication-api] https://github.com/eclipse-e
 Jakarta Authentication [jakarta.authentication-api] https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0
 Jakarta Authorization [jakarta.authorization-api] https://github.com/
 Jakarta Authorization [jakarta.authorization-api] https://repo.maven.apache.org/maven2/jakarta/authorization/jakarta.authorization-api/2.1.0
-Jakarta Concurrency [jakarta.enterprise.concurrent-api] https://github.com/jakartaee/concurrency
 Jakarta Enterprise Beans API [jakarta.ejb-api] https://github.com/eclipse-ee4j/ejb-api
 Jakarta Enterprise Beans API [jakarta.ejb-api] https://repo.maven.apache.org/maven2/jakarta/ejb/jakarta.ejb-api/4.0.1
 Jakarta Expression Language API [jakarta.el-api] https://projects.eclipse.org/projects/ee4j.el
