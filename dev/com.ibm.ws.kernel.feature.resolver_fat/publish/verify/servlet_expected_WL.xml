@@ -34,6 +34,7 @@
             <resolved-feature>appAuthentication</resolved-feature>
         </output>
     </case>
+
     <case>
         <name>servlet-3.0_io.openliberty.versionless.appAuthorization</name>
         <description>Feature pair [ servlet-3.0, io.openliberty.versionless.appAuthorization ]</description>
@@ -16210,6 +16211,8 @@
             <resolved-feature>io.openliberty.internal.versionless.jaxws-4.0</resolved-feature>
         </output>
     </case>
+
+<!--
     <case>
         <name>servlet-6.1_io.openliberty.versionless.appAuthentication</name>
         <description>Feature pair [ servlet-6.1, io.openliberty.versionless.appAuthentication ]</description>
@@ -19932,4 +19935,6 @@
             <resolved-feature>io.openliberty.internal.versionless.jaxws-4.0</resolved-feature>
         </output>
     </case>
+  -->
+
 </cases>

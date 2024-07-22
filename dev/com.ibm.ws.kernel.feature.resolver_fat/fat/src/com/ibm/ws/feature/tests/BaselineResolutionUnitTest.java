@@ -230,6 +230,9 @@ public class BaselineResolutionUnitTest {
         } else if (symName.endsWith("jsp-2.2")) {
             System.out.println("Skipping [ " + symName + " ]: Does not resolve");
             return null;
+        } else if (symName.endsWith("jaspic-1.1")) {
+            System.out.println("Skipping [ " + symName + " ]: Changes between OL and WL");
+            return null;
         }
 
         // Feature resolution [ versionless - platform javaee-6.0 - from Singleton [ com.ibm.websphere.appserver.jcaInboundSecurity-1.0 ] ] failed with [ 2 ] errors: Missing [ Resolved platforms ]: [ javaee-6.0 ] Extra [ Conflicted features ]: [ com.ibm.websphere.appserver.eeCompatible ]
