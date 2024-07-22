@@ -23,12 +23,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.topology.impl.LibertyServer;
 
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                  DummyTest.class,
+                  AlwaysPassesTest.class,
                   BucketSet1CpClientTest.class,
                   BucketSet2CpClientTest.class,
                   BucketSet1CpEngineTest.class,
