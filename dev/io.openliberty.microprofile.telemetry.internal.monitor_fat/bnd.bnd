@@ -1,0 +1,61 @@
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 11
+javac.target: 11
+
+src: \
+	fat/src,\
+	test-applications/testSessionApp/src,\
+	test-applications/testJDBCApp/src,\
+	test-applications/testJaxWsApp/src
+
+fat.project: true
+
+tested.features:\
+	mpTelemetry-2.0,\
+	cdi-4.0,\
+	mpConfig-3.1,\
+	restfulwsclient-4.0,\
+	restfulws-4.0,\
+	cdi-4.1,\
+	servlet-6.1
+	
+# Uncomment to use remote docker host to simulate continuous build behavior.
+#fat.test.use.remote.docker: true
+
+fat.test.container.images: otel/opentelemetry-collector-contrib:0.103.0
+	
+# To define a global minimum java level for the FAT, use the following property.
+# If unspecified, the default value is ${javac.source}
+# fat.minimum.java.level: 11
+# Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
+#      or binaries from Artifactory (e.g. org.apache.derby:derbynet)
+# For all project names that match the pattern "*_fat*", dependencies for junit,
+# fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
+-buildpath: \
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+	io.openliberty.jakarta.jws.3.0;version=latest,\
+	io.openliberty.jakarta.xmlBinding.3.0;version=latest,\
+	io.openliberty.jakarta.xmlWS.3.0;version=latest,\
+	io.openliberty.jakarta.annotation.2.0;version=latest,\
+	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
+	org.jmock:jmock-junit4;strategy=exact;version='2.5.1',\
+	org.jmock:jmock;strategy=exact;version='2.5.1',\
+	com.ibm.ws.org.apache.commons.compress;version=latest,\
+	com.ibm.ws.org.apache.commons.io;version=latest, \
+	com.ibm.websphere.rest.handler;version=latest,\
+	io.openliberty.jakarta.servlet.6.0;version=latest,\
+	io.openliberty.jakarta.cdi.4.0;version=latest,\
+	io.openliberty.org.eclipse.microprofile.metrics.5.0;version=latest,\
+	io.openliberty.jakarta.restfulWS.3.1,\
+	io.openliberty.org.testcontainers;version=latest
