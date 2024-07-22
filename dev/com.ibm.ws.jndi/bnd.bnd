@@ -57,7 +57,8 @@ instrument.classesExcludes: com/ibm/ws/jndi/internal/resources/*.class
 	com.ibm.ws.org.apache.aries.jndi.api;version=latest,\
 	org.eclipse.osgi,\
 	com.ibm.ws.classloading;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.kernel.boot.common;version=latest
 
 -testpath: \
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \

@@ -181,8 +181,8 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @Component(service = { ApplicationStateListener.class, DeferredMetaDataFactory.class, EJBRuntimeImpl.class, ServerQuiesceListener.class },
            configurationPid = "com.ibm.ws.ejbcontainer.runtime",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           property = { "deferredMetaData=EJB"}) //EJB must shut down after CDI but the default service ranking achieves that. This is because EJBs can have a cdi application scope and according to the CDI spec "jakarta.enterprise.event.Shutdown is not after @BeforeDestroyed(ApplicationScoped.class)
-                                                 //The default service.ranking of zero satisfies this requirement.
+           property = { "deferredMetaData=EJB" }) //EJB must shut down after CDI but the default service ranking achieves that. This is because EJBs can have a cdi application scope and according to the CDI spec "jakarta.enterprise.event.Shutdown is not after @BeforeDestroyed(ApplicationScoped.class)
+                                                                                                                                                                                                                                                                                                      //The default service.ranking of zero satisfies this requirement.
 public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationStateListener, DeferredMetaDataFactory, ServerQuiesceListener {
     private static final String CLASS_NAME = EJBRuntimeImpl.class.getName();
     private static final TraceComponent tc = Tr.register(EJBRuntimeImpl.class);
@@ -244,6 +244,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     private final AtomicServiceReference<ManagedObjectService> managedObjectServiceRef = new AtomicServiceReference<ManagedObjectService>(REFERENCE_MANAGED_OBJECT_SERVICE);
 
     private volatile CountDownLatch remoteFeatureLatch = null;
+    private volatile boolean remoteFeatureConfigured = false;
     private volatile boolean ejbRuntimeActive = false;
     private volatile boolean serverStopping = false;
 
@@ -1691,15 +1692,30 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         container.setPMICollaboratorFactory(null);
     }
 
+//    @Reference(name = "features", cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+//    protected void setLibertyFeature(ServiceReference<LibertyFeature> feature) {
+//        // If the remote runtime hasn't come up yet, but remote is configured,
+//        // then create a latch to support a pause in starting remote EJBs.
+//        if (remoteFeatureLatch == null && ejbRemoteRuntimeServiceRef.getReference() == null) {
+//            String featureName = (String) feature.getProperty("ibm.featureName");
+//            if (featureName != null && (featureName.startsWith("enterpriseBeansRemote") || featureName.startsWith("ejbRemote"))) {
+//                remoteFeatureConfigured = true;
+//                if (CheckpointPhase.getPhase() == CheckpointPhase.INACTIVE) {// Don't wait for remote runtime in checkpoint/restore
+//                    remoteFeatureLatch = new CountDownLatch(1);
+//                }
+//            }
+//        }
+//    }
+
     @Reference(name = "features", cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setLibertyFeature(ServiceReference<LibertyFeature> feature) {
+        String featureName = (String) feature.getProperty("ibm.featureName");
+        remoteFeatureConfigured |= featureName != null && (featureName.startsWith("enterpriseBeansRemote") || featureName.startsWith("ejbRemote"));
+
         // If the remote runtime hasn't come up yet, but remote is configured,
         // then create a latch to support a pause in starting remote EJBs.
-        if (remoteFeatureLatch == null && ejbRemoteRuntimeServiceRef.getReference() == null) {
-            String featureName = (String) feature.getProperty("ibm.featureName");
-            if (featureName != null && (featureName.startsWith("enterpriseBeansRemote") || featureName.startsWith("ejbRemote"))) {
-                remoteFeatureLatch = new CountDownLatch(1);
-            }
+        if (remoteFeatureConfigured && remoteFeatureLatch == null && ejbRemoteRuntimeServiceRef.getReference() == null) {
+            remoteFeatureLatch = new CountDownLatch(1);
         }
     }
 
@@ -1816,6 +1832,9 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
 
     @Override
     public boolean isRemoteSupported() {
+        if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE) {
+            return remoteFeatureConfigured;
+        }
         if (remoteFeatureLatch != null || ejbRemoteRuntimeServiceRef.getReference() != null) {
             return true;
         }

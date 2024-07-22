@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2021 IBM Corporation and others.
+ * Copyright (c) 2015,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,15 +34,20 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.propertytypes.SatisfyingConditionTarget;
 
 import com.ibm.ws.transport.iiop.spi.IIOPEndpoint;
 import com.ibm.ws.transport.iiop.spi.ReadyListener;
 import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+import org.osgi.service.condition.Condition;
+
 /**
  * Provides access to the ORB.
  */
 @Component(configurationPolicy = REQUIRE, service = {}, property = { "service.vendor=IBM", "service.ranking:Integer=5" })
+@SatisfyingConditionTarget("(" + Condition.CONDITION_ID + "=" + CheckpointPhase.CONDITION_PROCESS_RUNNING_ID + ")")
 public final class ORBWrapper {
     public static final String pid = ORBWrapperInternal.class.getName();
     private final ReadyListenerImpl readyListener;
