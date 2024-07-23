@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Ignore;
@@ -28,6 +29,8 @@ import componenttest.app.FATServlet;
 import io.openliberty.jpa.data.tests.models.AsciiCharacter;
 import io.openliberty.jpa.data.tests.models.Box;
 import io.openliberty.jpa.data.tests.models.Business;
+import io.openliberty.jpa.data.tests.models.City;
+import io.openliberty.jpa.data.tests.models.CityId;
 import io.openliberty.jpa.data.tests.models.Coordinate;
 import io.openliberty.jpa.data.tests.models.NaturalNumber;
 import io.openliberty.jpa.data.tests.models.Package;
@@ -564,6 +567,40 @@ public class JakartaDataRecreateServlet extends FATServlet {
         assertEquals(3, lengths.get(0).intValue()); // III
         assertEquals(2, lengths.get(1).intValue()); // II
         assertEquals(1, lengths.get(2).intValue()); // V
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29073")
+    public void testOLGH29073() throws Exception {
+        City RochesterMN = City.of("Rochester", "Minnesota", 121878, Set.of(55901, 55902, 55903, 55904, 55906));
+        City RochesterNY = City.of("Rochester", "New York", 209352, Set.of(14601, 14602, 14603, 14604, 14606));
+
+        List<CityId> rochesters;
+
+        tx.begin();
+        em.persist(RochesterMN);
+        em.persist(RochesterNY);
+        tx.commit();
+
+        tx.begin();
+        try {
+            rochesters = em.createQuery("SELECT ID(THIS) FROM City WHERE (name=?1) ORDER BY population DESC", CityId.class)
+                            .setParameter(1, "Rochester")
+                            .getResultList();
+        } catch (Exception e) {
+            tx.rollback();
+
+            /*
+             * Recreate
+             * io.openliberty.jpa.data.tests.web.JakartaDataRecreateServlet
+             * java.lang.ClassCastException: java.lang.String incompatible with io.openliberty.jpa.data.tests.models.CityId
+             */
+            throw e;
+        }
+
+        assertEquals(2, rochesters.size());
+        assertEquals("New York", rochesters.get(0).getStateName());
+        assertEquals("Minnesota", rochesters.get(1).getStateName());
 
     }
 
