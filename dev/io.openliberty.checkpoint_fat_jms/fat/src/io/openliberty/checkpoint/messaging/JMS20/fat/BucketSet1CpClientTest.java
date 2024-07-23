@@ -82,13 +82,15 @@ public class BucketSet1CpClientTest {
         // This will drive a post restore config update, updating ports unspecified at
         // checkpoint
         // to those of the runtime environment.
+        final FATSuite.PortSetting setting = new FATSuite.PortSetting("jms.1", 17011, "jms_port_1");
         Consumer<LibertyServer> postCheckpointLogic = checkpointServer -> {
-            FATSuite.PortSetting setting = new FATSuite.PortSetting("jms.1", 17011, "jms_port_1");
             FATSuite.addServerEnvPorts(checkpointServer, new ArrayList<>(Collections.singletonList(setting)));
         };
 
         // Start both servers, engine first, so that its resources are available when
         // the client starts.
+        // Specify ports for engine
+        FATSuite.addServerEnvPorts(engineServer, new ArrayList<>(Collections.singletonList(setting)));
         engineServer.startServer("BucketSet1CpClientTest1_Engine.log");
 
         clientServer.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, postCheckpointLogic);

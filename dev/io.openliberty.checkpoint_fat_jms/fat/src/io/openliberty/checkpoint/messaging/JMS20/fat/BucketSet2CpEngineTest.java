@@ -99,23 +99,17 @@ public class BucketSet2CpEngineTest {
         // This will drive a post restore config update, updating ports unspecified at
         // checkpoint time
         // to those of the runtime environment.
+        FATSuite.PortSetting setting = new FATSuite.PortSetting("bvt.prop.jms.1", 17010, "jms_port_1");
         Consumer<LibertyServer> postCheckpointLogic = checkpointServer -> {
-            FATSuite.PortSetting setting = new FATSuite.PortSetting("bvt.prop.jms.1", 17010, "bvt.prop.jms");
             FATSuite.addServerEnvPorts(checkpointServer, new ArrayList<>(Collections.singletonList(setting)));
         };
 
         // Start both servers. Start the engine first, so that its resources
         // are available when the client starts.
-
-        // Due to a known issue, 26587, the post checkpoint config update to
-        // "wasJmsEndpoint " does not work on wasServer-1.0
-        // so commenting out the postCheckpoint logic for now.
-        // engineServer.setCheckpoint(CheckpointPhase.AFTER_APP_START, true,
-        // postCheckpointLogic);
-        engineServer.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, null);
+        engineServer.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, postCheckpointLogic);
         engineServer.startServer("LiteBucketSet2_Engine.log");
         // Specify ports for client
-        FATSuite.PortSetting setting = new FATSuite.PortSetting("bvt.prop.jms.1", 17010, "jms_port_1");
+
         FATSuite.addServerEnvPorts(clientServer, new ArrayList<>(Collections.singletonList(setting)));
         clientServer.startServer("LiteBucketSet2_Client.log");
     }

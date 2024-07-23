@@ -31,7 +31,8 @@
   </iiopEndpoint>
 
   <!-- Set the JMS endpoint port configuration to values which are known to the client. -->
-  <wasJmsEndpoint host="*" wasJmsPort="${bvt.prop.jms.1}" wasJmsSSLPort="${bvt.prop.jms.ssl}"/> 
+  <variable name="jms_port_1" defaultValue="9999" />
+  <wasJmsEndpoint host="*" wasJmsPort="${jms_port_1}" wasJmsSSLPort="${bvt.prop.jms.ssl}"/> 
 
   <!-- JMS engine configuration -->
 
