@@ -508,11 +508,32 @@ public class DBRotationTest extends CloudFATServletClient {
     }
 
     @Override
-    protected void setupRedundantLease(String serverName) throws Exception {
+    protected void setupOrphanLease(LibertyServer server, String path, String serverName) throws Exception {
+        runTest(server, path, "insertOrphanLease");
     }
 
     @Override
-    protected boolean checkRedundantLeaseExists(String serverName) throws Exception {
-        return false;
+    protected boolean checkOrphanLeaseExists(LibertyServer server, String path, String serverName) throws Exception {
+        try {
+            runTest(server, path, "checkOrphanLeaseAbsence");
+            return false;
+        } catch (Exception e) {
+        }
+        return true;
+    }
+
+    @Override
+    protected void setupBatchesOfOrphanLeases(LibertyServer server1, LibertyServer server2, String path) throws Exception {
+
+        // Insert stale leases
+        runTest(server1, path, "setupBatchOfOrphanLeases1");
+
+        // Insert more stale leases
+        runTest(server2, path, "setupBatchOfOrphanLeases2");
+    }
+
+    @Override
+    protected String logsMissingMarker() {
+        return "WTRN0107W: Peer server .* has missing recovery log SQL tables. Delete its lease";
     }
 }
