@@ -24,10 +24,10 @@
 # -------------------------------------------------------------------------------------------------
 
 #Message prefix block: CWWKS5900 - CWWKS5910
-CRYPTO_UNSECURE=CWWKS5900W: El elemento de configuraci\u00f3n {0} especifica el algoritmo criptogr\u00e1fico no seguro {1} .  Considere la posibilidad de utilizar el algoritmo seguro {2} en su lugar.
-CRYPTO_UNSECURE.explanation=El algoritmo configurado ya no se considera criptogr\u00e1ficamente seguro.
-CRYPTO_UNSECURE.useraction=Utilice el algoritmo de seguridad sugerido.
+CRYPTO_INSECURE=CWWKS5900W: El {0} El elemento de configuraci\u00f3n especifica el {1} Algoritmo criptogr\u00e1fico inseguro.  Considere usar el {2} algoritmo seguro en su lugar.
+CRYPTO_INSECURE.explanation=El algoritmo configurado ya no se considera criptogr\u00e1ficamente seguro.
+CRYPTO_INSECURE.useraction=Utilice el algoritmo seguro sugerido.
 
-CRYPTO_UNSECURE_REPLACED=CWWKS5901W: El elemento de configuraci\u00f3n {0} especifica el algoritmo criptogr\u00e1fico no seguro {1} .  En su lugar se utiliza el algoritmo seguro {2} .
-CRYPTO_UNSECURE_REPLACED.explanation=El algoritmo criptogr\u00e1fico no seguro se ha sustituido por el algoritmo seguro.
-CRYPTO_UNSECURE_REPLACED.useraction=No se requiere ninguna acci\u00f3n.
+CRYPTO_INSECURE_REPLACED=CWWKS5901W: El {0} El elemento de configuraci\u00f3n especifica el {1} Algoritmo criptogr\u00e1fico inseguro.  El {2} En su lugar se utiliza un algoritmo seguro.
+CRYPTO_INSECURE_REPLACED.explanation=El algoritmo criptogr\u00e1fico inseguro fue reemplazado por el algoritmo seguro.
+CRYPTO_INSECURE_REPLACED.useraction=No se requiere ninguna acci\u00f3n.

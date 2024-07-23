@@ -639,6 +639,5 @@
 
 7359=Nincs el\u00e9rhet\u0151 ASM szolg\u00e1ltat\u00e1s.
 
-7360=Az adatb\u00e1zis jelsz\u00f3t az elavult algoritmus titkos\u00edtotta.
-Reencrypt A "passwordUpdate.sh" a eclipselink.zip k\u00f6tegb\u0151l.
+7360=Az adatb\u00e1zis jelszav\u00e1t egy elavult algoritmus titkos\u00edtotta. \u00dajratitkos\u00edtja `passwordUpdate.sh` innen eclipselink.zip csomag.
 

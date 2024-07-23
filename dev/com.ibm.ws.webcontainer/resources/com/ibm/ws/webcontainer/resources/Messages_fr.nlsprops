@@ -1557,8 +1557,8 @@ servlet.with.same.name.already.exists.explanation=Un servlet portant le m\u00eam
 servlet.with.same.name.already.exists.useraction=Aucune action n'est requise.  Recherchez les conflits dans le descripteur de d\u00e9ploiement, les annotations, et le code source qui pourraient emp\u00eacher l'ajout dynamique de cette configuration de servlet. 
 
 servlet.feature.not.loaded.correctly=SRVE8501E: Le conteneur de servlet ne s'est pas charg\u00e9 avec une version acceptable.
-servlet.feature.not.loaded.correctly.explanation=Le conteneur de servlet est charg\u00e9 avec une version correspondant \u00e0 la sp\u00e9cification Java EE de cette fonction de servlet. Le conteneur a \u00e9t\u00e9 charg\u00e9 sans version d\u00e9finie.
-servlet.feature.not.loaded.correctly.useraction=V\u00e9rifiez dans le fichier server.xml l'existence d'une fonction servlet-3.0 ou servlet-3.1. L'une de ces fonctions doit \u00eatre d\u00e9finie, mais non pas les deux.
+servlet.feature.not.loaded.correctly.explanation=Le conteneur de servlet charg\u00e9 sans version acceptable. Le comportement de l'application peut \u00eatre diff\u00e9rent de celui attendu.
+servlet.feature.not.loaded.correctly.useraction=V\u00e9rifier la server.xml fichier pour l'existence de plusieurs fonctionnalit\u00e9s de servlet.  Le fichier ne doit pas sp\u00e9cifier plus d'une fonctionnalit\u00e9 de servlet.
 
 filter.failed.app.destroyed=SRVE8502W: La demande de {0} ne peut pas \u00eatre trait\u00e9e car l''application s''est arr\u00eat\u00e9e.
 filter.failed.app.destroyed.explanation=L'application Web est en cours d'arr\u00eat et la demande ne peut pas \u00eatre trait\u00e9e. Cette action peut \u00eatre due au serveur qui est en cours d'arr\u00eat alors la demande est en cours de traitement.

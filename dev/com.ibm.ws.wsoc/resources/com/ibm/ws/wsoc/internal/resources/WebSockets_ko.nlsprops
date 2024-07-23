@@ -1,17 +1,12 @@
 ###############################################################################
-# Copyright (c) 2002, 2022 IBM Corporation and others.
+# Copyright (c) 2002, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
-#
-
 
 #COMPONENTPREFIX CWWKH
 #COMPONENTNAMEFOR CWWKH WebSphere WebSocket
@@ -228,9 +223,9 @@ missingslashornull.uri=CWWKH0052E: \uc11c\ubc84 \uc5d4\ub4dc\ud3ec\uc778\ud2b8: 
 missingslashornull.uri.explanation=\uc5d4\ub4dc\ud3ec\uc778\ud2b8 URI\uac00 \ub110\uc774\uac70\ub098 \uc5d4\ub4dc\ud3ec\uc778\ud2b8 \ud074\ub798\uc2a4\uc5d0\uc11c /\ub85c \uc2dc\uc791\ub418\uc9c0 \uc54a\uc73c\ubbc0\ub85c ServerEndpoint\uac00 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc694\uccad\uc5d0 \ub300\ud574 WebSocket \uc5d0\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 missingslashornull.uri.useraction=/\ub85c \uc2dc\uc791\ud558\uace0 \ub110\uc774 \uc544\ub2cc \uc5d4\ub4dc\ud3ec\uc778\ud2b8 URI\ub97c \uc815\uc758\ud558\uc2ed\uc2dc\uc624. \ubb38\uc81c\uc810\uc744 \ud574\uacb0\ud55c \ud6c4 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \ub2e4\uc2dc \ubc30\uce58\ud558\uc2ed\uc2dc\uc624.
 
-wsoc.feature.not.loaded.correctly=CWWKH0053E: websocket \uae30\ub2a5\uc774 \ud5c8\uc6a9\ub418\ub294 \ubc84\uc804\uc73c\ub85c \ub85c\ub4dc\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
-wsoc.feature.not.loaded.correctly.explanation=websocket \uae30\ub2a5\uc740 \ud574\ub2f9 websocket \uae30\ub2a5\uc758 Java [Jakarta] EE \uc2a4\ud399\uc5d0 \ud574\ub2f9\ud558\ub294 \ubc84\uc804\uc73c\ub85c \ub85c\ub4dc\ub429\ub2c8\ub2e4. \uc774 \uae30\ub2a5\uc774 \ubc84\uc804\uc774 \uc815\uc758\ub418\uc9c0 \uc54a\uc740 \uc0c1\ud0dc\uc5d0\uc11c \ub85c\ub4dc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
-wsoc.feature.not.loaded.correctly.useraction=\uc5ec\ub7ec websocket \uae30\ub2a5\uc774 \uc788\ub294\uc9c0 server.xml \ud30c\uc77c\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \ud558\ub098\ub9cc \uc9c0\uc815\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+wsoc.feature.not.loaded.correctly=CWWKH0053E: \uc6f9\uc18c\ucf13 \ucee8\ud14c\uc774\ub108\uac00 \ud5c8\uc6a9\ub418\ub294 \ubc84\uc804\uc73c\ub85c \ub85c\ub4dc\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+wsoc.feature.not.loaded.correctly.explanation=\ud5c8\uc6a9\ub418\ub294 \ubc84\uc804 \uc5c6\uc774 \uc6f9\uc18c\ucf13 \ucee8\ud14c\uc774\ub108\uac00 \ub85c\ub4dc\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc608\uc0c1\uacfc \ub2e4\ub974\uac8c \uc791\ub3d9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+wsoc.feature.not.loaded.correctly.useraction=\uc5ec\ub7ec websocket \uae30\ub2a5\uc774 \uc788\ub294\uc9c0 server.xml \ud30c\uc77c\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \ud30c\uc77c\uc740 \uc6f9\uc18c\ucf13 \uae30\ub2a5\uc744 \ud558\ub098\ub9cc \uc9c0\uc815\ud574\uc57c \ud569\ub2c8\ub2e4.
 
 scheme.incorrect.error=CWWKH0054E: {0} URI\uc5d0\uc11c \uc2dd\ubcc4\ub418\uc9c0 \uc54a\uc740 \uc2a4\ud0b4\uc774 \uc0ac\uc6a9\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 scheme.incorrect.error.explanation=\uc694\uccad \ucc98\ub9ac \uc911\uc5d0 \uc2dd\ubcc4\ub418\uc9c0 \uc54a\uc740 \uc2a4\ud0b4\uc774 \ubc1c\uacac\ub418\uc5c8\uc2b5\ub2c8\ub2e4. 

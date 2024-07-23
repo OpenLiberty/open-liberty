@@ -24,10 +24,10 @@
 # -------------------------------------------------------------------------------------------------
 
 #Message prefix block: CWWKS5900 - CWWKS5910
-CRYPTO_UNSECURE=CWWKS5900W: Element konfiguracji {0} okre\u015bla niezabezpieczony algorytm szyfrowania {1} .  Zamiast niego nale\u017cy rozwa\u017cy\u0107 u\u017cycie bezpiecznego algorytmu {2} .
-CRYPTO_UNSECURE.explanation=Skonfigurowany algorytm nie jest ju\u017c uwa\u017cany za bezpieczny kryptograficznie.
-CRYPTO_UNSECURE.useraction=U\u017cyj sugerowanego algorytmu zabezpiecze\u0144.
+CRYPTO_INSECURE=CWWKS5900W: The {0} element konfiguracji okre\u015bla {1} niepewny algorytm kryptograficzny.  Rozwa\u017c u\u017cycie {2} zamiast tego bezpieczny algorytm.
+CRYPTO_INSECURE.explanation=Skonfigurowany algorytm nie jest ju\u017c uwa\u017cany za bezpieczny kryptograficznie.
+CRYPTO_INSECURE.useraction=U\u017cyj sugerowanego bezpiecznego algorytmu.
 
-CRYPTO_UNSECURE_REPLACED=CWWKS5901W: Element konfiguracji {0} okre\u015bla niezabezpieczony algorytm szyfrowania {1} .  Zamiast niego u\u017cywany jest algorytm zabezpiecze\u0144 {2} .
-CRYPTO_UNSECURE_REPLACED.explanation=Algorytm szyfrowania niezabezpieczonego zosta\u0142 zast\u0105piony algorytmem zabezpieczonym.
-CRYPTO_UNSECURE_REPLACED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+CRYPTO_INSECURE_REPLACED=CWWKS5901W: The {0} element konfiguracji okre\u015bla {1} niepewny algorytm kryptograficzny.  The {2} zamiast tego u\u017cywany jest bezpieczny algorytm.
+CRYPTO_INSECURE_REPLACED.explanation=Niepewny algorytm kryptograficzny zosta\u0142 zast\u0105piony algorytmem bezpiecznym.
+CRYPTO_INSECURE_REPLACED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

@@ -225,19 +225,50 @@ UPDATE_DISABLED_FEATURES_ON_CONFLICT=CWWKF0046W: Die Konfiguration enth\u00e4lt 
 UPDATE_DISABLED_FEATURES_ON_CONFLICT.explanation=Die Konfiguration enth\u00e4lt eine nicht kompatible Kombination von Features. Der Feature-Manager hat alle Features inaktiviert, um ung\u00fcltiges Verhalten zu vermeiden.
 UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Geben Sie eine andere Version der konfigurierten Features an, die den Konflikt verursacht haben.
 
-# CWWK0044E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2 {6} EePlaformCommonToProgModels
+# CWWK0047E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2 {6} EePlatformCommonToProgModels
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: Die Features {2} und {3} k\u00f6nnen nicht gleichzeitig geladen werden. Das Feature {2} von {0} ist nicht kompatibel mit dem Feature {3} von {1}. Die Konfiguration enth\u00e4lt eine nicht kompatible Kombination von {6}-Features, die nicht unterst\u00fctzt wird. Die konfigurierten Features {4} und {5} enthalten eine nicht kompatible Kombination von Features. Ihre Konfiguration wird nicht unterst\u00fctzt. Aktualisieren Sie die Konfiguration so, dass kompatible Versionen der konfigurierten Features verwendet werden, die {0} oder die {1}-Programmiermodelle unterst\u00fctzen.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=Die Serverkonfiguration enth\u00e4lt eine nicht kompatible Kombination von Features f\u00fcr die angegebenen Programmiermodelle. Dieser Konflikt kann auftreten, wenn die zwei nicht kompatiblen Features direkt in der Serverkonfiguration konfiguriert werden, oder wenn die konfigurierten Features unterschiedliche Versionen eines Features enthalten, die nicht kompatibel sind.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Versuchen Sie, eine kompatible Version f\u00fcr die konfigurierten Features anzugeben, die den Konflikt in der Datei server.xml verursacht haben. Wenn keine anderen Versionen verf\u00fcgbar sind, sind die konfigurierten Features nicht miteinander kompatibel und k\u00f6nnen nicht gleichzeitig konfiguriert werden.
 
-UPDATE_MISSING_VERSIONLESS_ENV_VAR=CWWKF0048E: F\u00fcr die Umgebungsvariable PREFERRED_FEATURE_VERSIONS konnte kein Wert gefunden werden.
-UPDATE_MISSING_VERSIONLESS_ENV_VAR.explanation=Sie haben versionslose Features in Ihrer Konfiguration und die Umgebungsvariable PREFERRED_FEATURE_VERSIONS konnte nicht gefunden werden
-UPDATE_MISSING_VERSIONLESS_ENV_VAR.useraction=\u00dcberpr\u00fcfen Sie, ob die Umgebungsvariable PREFERRED_FEATURE_VERSIONS vorhanden und korrekt geschrieben ist.
+# CWWKF0048E  {0} = the unknown platform value in the environment variable
+UNKNOWN_PLATFORM_VALUE_ENV_VAR=CWWKF0048E: Der {0} Der Wert der Plattformumgebungsvariablen PREFERRED_PLATFORM_VERSIONS enth\u00e4lt keine g\u00fcltige Version.
+UNKNOWN_PLATFORM_VALUE_ENV_VAR.explanation=Jeder Wert in der Plattformumgebungsvariablen muss eine bekannte Plattform sein. Die bekannten Plattformen sind eine Version von javaee, jakartaee oder microProfile.
+UNKNOWN_PLATFORM_VALUE_ENV_VAR.useraction=\u00dcberpr\u00fcfen Sie, dass die Umgebungsvariable nur bekannte Plattformen enth\u00e4lt.
 
-# CWWKF0049E  {0} = the feature that needs to be specified within PREFERRED_FEATURE_VERSIONS
-UPDATE_MISSING_VERSIONLESS_FEATURE_VAL=CWWKF0049E: Die Umgebungsvariable PREFERRED_FEATURE_VERSIONS enth\u00e4lt keinen Wert f\u00fcr {0}
-UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.explanation=F\u00fcr jedes versionslose Feature in Ihrer Konfiguration muss in PREFERRED_FEATURE_VERSIONS ein bevorzugter Versionswert vorhanden sein.
-UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.useraction=Wert in PREFERRED_FEATURE_VERSIONS f\u00fcr das Feature hinzuf\u00fcgen
+# CWWKF0049E  {0} = set of duplicate platforms
+DUPLICATE_PLATFORMS=CWWKF0049E: Die folgenden konfigurierten Plattformversionen stehen im Konflikt: {0}.
+DUPLICATE_PLATFORMS.explanation=F\u00fcr dieselbe Plattform wurde mehr als eine Version angegeben.
+DUPLICATE_PLATFORMS.useraction=Entfernen Sie alle Plattformversionen bis auf eine.
+
+# CWWKF0050E  {0} = the versionless features that cannot be resolved
+UNRESOLVED_VERSIONLESS_FEATURE=CWWKF0050E: Der {0} Versionslose Features k\u00f6nnen nicht aufgel\u00f6st werden
+UNRESOLVED_VERSIONLESS_FEATURE.explanation=Versionslose Funktionen ben\u00f6tigen eine bestimmte Plattform, bevor sie aufgel\u00f6st werden k\u00f6nnen.
+UNRESOLVED_VERSIONLESS_FEATURE.useraction=Stellen Sie sicher, dass f\u00fcr Ihre Funktion ein Plattformelement angegeben ist.
+
+# CWWKF0051I  {0} = the versionless features: {1} = the features that were resolved from the versionless features
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE=CWWKF0051I: Der {0} versionslose Funktionen aufgel\u00f6st in {1}
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.explanation=Die versionierten Features, die aus den versionslosen Features aufgel\u00f6st wurden.
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.useraction=Es ist keine Aktion erforderlich.
+
+# CWWKF0052E  {0} = the unknown platform
+UNKNOWN_PLATFORM_ELEMENT=CWWKF0052E: Der {0} Plattform ist ung\u00fcltig
+UNKNOWN_PLATFORM_ELEMENT.explanation=Das angegebene Plattformelement ist keine bekannte Plattform. Die bekannten Plattformen sind eine Version von javaee, jakartaee oder microProfile
+UNKNOWN_PLATFORM_ELEMENT.useraction=Stellen Sie sicher, dass die konfigurierte Plattform eine bekannte Plattform ist.
+
+# CWWKF0053I  {0} = the resolved platforms
+RESOLVED_PLATFORM=CWWKF0053I: Feature-Aufl\u00f6sung ausgew\u00e4hlt die {0} Plattformen.
+RESOLVED_PLATFORM.explanation=Die Plattformversionen wurden ausgew\u00e4hlt, um die Aufl\u00f6sung versionsloser Funktionen zu erm\u00f6glichen. Die Plattformversionen wurden aus Plattformelementen, aus versionierten Funktionen oder aus einer Umgebungsvariable abgerufen.
+RESOLVED_PLATFORM.useraction=Es ist keine Aktion erforderlich.
+
+# CWWKF0054E  {0} = the versionless feature that cannot be resolved: {1} = the resolved platform
+INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM=CWWKF0054E: Der {0} Versionsloses Feature hat keine Version, die zum {1} Plattform.
+INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM.explanation=F\u00fcr die Plattformversion ist keine Version der Funktion verf\u00fcgbar. Die Funktionsaufl\u00f6sung wurde abgeschlossen, es wurde jedoch keine Version der Funktion ausgew\u00e4hlt.
+INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM.useraction=Entfernen Sie entweder die versionslose Funktion, geben Sie eine andere Plattformversion an oder verwenden Sie eine versionierte Funktion.
+
+# CWWKF0055E  {0} = the versionless features
+NO_RESOLVED_PLATFORM=CWWKF0055E: Der {0} Versionenlose Funktionen haben keine konfigurierte Plattform.
+NO_RESOLVED_PLATFORM.explanation=F\u00fcr jeden Typ versionsloser Funktion ist eine konfigurierte Plattform erforderlich. Wenn versionslose JavaEE- oder JakartaEE-Funktionen konfiguriert sind, erfordern sie eine entsprechende JavaEE- oder JakartaEE-Plattform. Wenn microProfile Wenn versionslose Features konfiguriert sind, ben\u00f6tigen sie eine microProfile Plattform.
+NO_RESOLVED_PLATFORM.useraction=F\u00fcgen Sie entweder ein Plattformelement, eine versionierte Funktion oder eine Umgebungsvariable hinzu.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 

@@ -1,17 +1,12 @@
 ###############################################################################
-# Copyright (c) 2002, 2022 IBM Corporation and others.
+# Copyright (c) 2002, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
-#
-
 
 #COMPONENTPREFIX CWWKH
 #COMPONENTNAMEFOR CWWKH WebSphere WebSocket
@@ -228,9 +223,9 @@ missingslashornull.uri=CWWKH0052E: Se ha producido una excepci\u00f3n durante el
 missingslashornull.uri.explanation=ServerEndpoint no es v\u00e1lido debido porque el URI de punto es nulo o no empieza por / en la clase de punto final. La aplicaci\u00f3n WebSocket no est\u00e1 disponible para las solicitudes.
 missingslashornull.uri.useraction=Defina un URI de punto final no nulo que empiece por /. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
 
-wsoc.feature.not.loaded.correctly=CWWKH0053E: La caracter\u00edstica websocket no se ha cargado con una versi\u00f3n aceptable.
-wsoc.feature.not.loaded.correctly.explanation=La caracter\u00edstica websocket se ha cargado con una versi\u00f3n que se corresponde con la especificaci\u00f3n Java [Jakarta] EE de dicha caracter\u00edstica. La caracter\u00edstica se ha cargado sin ninguna versi\u00f3n definida.
-wsoc.feature.not.loaded.correctly.useraction=Compruebe en el archivo server.xml la existencia de varias caracter\u00edsticas websocket. Solo se debe especificar una.
+wsoc.feature.not.loaded.correctly=CWWKH0053E: El contenedor websocket no se carg\u00f3 con una versi\u00f3n aceptable.
+wsoc.feature.not.loaded.correctly.explanation=El contenedor websocket se carg\u00f3 sin una versi\u00f3n aceptable. La aplicaci\u00f3n puede comportarse de forma diferente a la esperada.
+wsoc.feature.not.loaded.correctly.useraction=Compruebe en el archivo server.xml la existencia de varias caracter\u00edsticas websocket. El archivo no debe especificar m\u00e1s de una caracter\u00edstica de websocket.
 
 scheme.incorrect.error=CWWKH0054E: Se ha utilizado un esquema no identificado en el URI {0}.
 scheme.incorrect.error.explanation=Se encontr\u00f3 un esquema no identificado durante el manejo de la solicitud. 

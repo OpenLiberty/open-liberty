@@ -24,10 +24,10 @@
 # -------------------------------------------------------------------------------------------------
 
 #Message prefix block: CWWKS5900 - CWWKS5910
-CRYPTO_UNSECURE=CWWKS5900W: L''\u00e9l\u00e9ment de configuration {0} sp\u00e9cifie l''algorithme de cryptographie non s\u00e9curis\u00e9 {1} .  Envisagez d''utiliser l''algorithme s\u00e9curis\u00e9 {2} \u00e0 la place.
-CRYPTO_UNSECURE.explanation=L'algorithme configur\u00e9 n'est plus consid\u00e9r\u00e9 comme s\u00e9curis\u00e9 sur le plan cryptographique.
-CRYPTO_UNSECURE.useraction=Utilisez l'algorithme s\u00e9curis\u00e9 sugg\u00e9r\u00e9.
+CRYPTO_INSECURE=CWWKS5900W: Le {0} L''\u00e9l\u00e9ment de configuration sp\u00e9cifie le {1} algorithme cryptographique non s\u00e9curis\u00e9.  Pensez \u00e0 utiliser le {2} algorithme s\u00e9curis\u00e9 \u00e0 la place.
+CRYPTO_INSECURE.explanation=L\u2019algorithme configur\u00e9 n\u2019est plus consid\u00e9r\u00e9 comme s\u00e9curis\u00e9 du point de vue cryptographique.
+CRYPTO_INSECURE.useraction=Utilisez l\u2019algorithme s\u00e9curis\u00e9 sugg\u00e9r\u00e9.
 
-CRYPTO_UNSECURE_REPLACED=CWWKS5901W: L''\u00e9l\u00e9ment de configuration {0} sp\u00e9cifie l''algorithme de cryptographie non s\u00e9curis\u00e9 {1} .  L''algorithme s\u00e9curis\u00e9 {2} est utilis\u00e9 \u00e0 la place.
-CRYPTO_UNSECURE_REPLACED.explanation=L'algorithme de cryptographie non s\u00e9curis\u00e9 a \u00e9t\u00e9 remplac\u00e9 par l'algorithme s\u00e9curis\u00e9.
-CRYPTO_UNSECURE_REPLACED.useraction=Aucune action n'est requise.
+CRYPTO_INSECURE_REPLACED=CWWKS5901W: Le {0} L''\u00e9l\u00e9ment de configuration sp\u00e9cifie le {1} algorithme cryptographique non s\u00e9curis\u00e9.  Le {2} un algorithme s\u00e9curis\u00e9 est utilis\u00e9 \u00e0 la place.
+CRYPTO_INSECURE_REPLACED.explanation=L'algorithme cryptographique non s\u00e9curis\u00e9 a \u00e9t\u00e9 remplac\u00e9 par l'algorithme s\u00e9curis\u00e9.
+CRYPTO_INSECURE_REPLACED.useraction=Aucune action n'est requise.

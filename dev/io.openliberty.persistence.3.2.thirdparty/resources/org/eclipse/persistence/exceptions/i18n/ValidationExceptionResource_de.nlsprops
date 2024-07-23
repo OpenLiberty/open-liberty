@@ -639,6 +639,5 @@
 
 7359=Kein ASM-Service verf\u00fcgbar.
 
-7360=Das Datenbankkennwort wurde mit einem veralteten Algorithmus verschl\u00fcsselt.
-Reencrypt durch ''passwordUpdate.sh'' aus dem Paket eclipselink.zip .
+7360=Das Datenbankkennwort wurde mit einem veralteten Algorithmus verschl\u00fcsselt. Verschl\u00fcsseln Sie es erneut durch `passwordUpdate.sh` von eclipselink.zip b\u00fcndeln.
 

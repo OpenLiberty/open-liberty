@@ -639,6 +639,5 @@
 
 7359=Brak dost\u0119pnej us\u0142ugi ASM.
 
-7360=Has\u0142o bazy danych zosta\u0142o zaszyfrowane przy u\u017cyciu nieaktualnego algorytmu.
-Reencrypt przez `passwordUpdate.sh ` z pakunku eclipselink.zip .
+7360=Has\u0142o bazy danych zosta\u0142o zaszyfrowane przy u\u017cyciu przestarza\u0142ego algorytmu. Zaszyfruj go ponownie `passwordUpdate.sh` z eclipselink.zip pakiet.
 

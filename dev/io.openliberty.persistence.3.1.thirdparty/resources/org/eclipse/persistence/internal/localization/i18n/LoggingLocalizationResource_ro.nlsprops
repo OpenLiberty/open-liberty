@@ -117,7 +117,7 @@ connected_user_database_driver=Conectat: {0}{6}Utilizator: {1}{6}Baz\u0103 de da
 
 corrupt_object=obiect corupt: {0}
 
-corrupt_object_referenced_through_mapping=Urm\u0103torul obiect corupt este referit prin maparea: {0}.
+corrupt_object_referenced_through_mapping=Urm\u0103torul obiect corupt este referit prin mapare: {0}
 
 corrupted_session_announcement=SessionID: {0} Managerul de descoperire a primit un anun\u0163 de sesiune corupt - se ignor\u0103.
 
@@ -168,6 +168,12 @@ ejb_jar_xml_not_found_in_input=ejb-jar.xml nu este prezent \u00een directorul de
 elements={0}{1} elemente
 
 enable_batch_operations_as_true_not_supported=Setarea WLS native CMP "enable-batch-operations-as-true" nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+encryptor_script_description=Aceast\u0103 aplica\u021bie decripteaz\u0103 intern o veche parol\u0103 criptat\u0103 care a fost folosit\u0103 de o parol\u0103 anterioar\u0103 EclipseLink versiune \u0219i o cripteaz\u0103 cu cel mai recent algoritm.
+
+encryptor_script_output=Parola recriptat\u0103 este: {0}
+
+encryptor_script_usage=Utilizarea este `passwordUpdate.sh|.cmd -ip <parol\u0103 criptat\u0103 veche>`
 
 entity_manager_ignores_jta_data_source=Unitatea de persisten\u0163\u0103 nu utilizeaz\u0103 JTA, prin urmare, EntityManager ignor\u0103 sursa de date jta. 
 
@@ -709,7 +715,12 @@ toplink_warning=[EL Warning]:
 
 unit_of_work_thread_info=Unitatea curent\u0103 de lucru din sesiunea ({0}) a fost creat\u0103 de un fir (id: {1} nume: {2}), diferit de firul curent (id: {3} nume: {4})
 
-unit_of_work_thread_info_thread_dump=Creare fir (id: {0} nume: {1}): urm\u0103rire stiv\u0103 {2}Fir curent (id: {3} nume: {4}): urm\u0103rire stiv\u0103 {5}\n
+unit_of_work_thread_info_thread_dump=Fir de creare (id: {0} Nume: {1}) urma stivei:
+#{2}
+
+Current thread (id: {3} Nume: {4}) urma stivei:
+#{5}
+
 unitofwork_identity_hashcode={0}Cod hash identitate UnitOfWork: {1}
 
 update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery nu poate folosi legarea pe aceast\u0103 platform\u0103 de baz\u0103 de date. S-a modificat setarea interog\u0103rii pentru execu\u0163ie f\u0103r\u0103 legare.

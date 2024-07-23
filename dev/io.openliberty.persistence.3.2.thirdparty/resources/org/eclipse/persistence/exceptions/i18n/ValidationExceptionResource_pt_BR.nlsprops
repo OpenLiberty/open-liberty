@@ -639,6 +639,5 @@
 
 7359=Nenhum servi\u00e7o ASM dispon\u00edvel.
 
-7360=A senha do banco de dados foi criptografada pelo algoritmo descontinuado..
-Reencrypt por `passwordUpdate.sh ` do pacote configur\u00e1vel eclipselink.zip .
+7360=A senha do banco de dados foi criptografada por um algoritmo obsoleto. Recriptografe-o por `passwordUpdate.sh` de eclipselink.zip pacote.
 
