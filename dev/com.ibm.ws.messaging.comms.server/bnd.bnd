@@ -55,13 +55,15 @@ instrument.disabled: true
 	com.ibm.ws.serialization;version=latest,\
 	com.ibm.ws.messaging.common;version=latest,\
 	com.ibm.ws.messaging.comms.client;version=latest,\
-	com.ibm.ws.messaging.utils;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-	com.ibm.websphere.security;version=latest, \
-	io.openliberty.io.netty;version=latest, \
-	io.openliberty.netty.internal;version=latest, \
-	io.openliberty.netty.internal.impl;version=latest, \
-	io.netty.handler, \
-	io.openliberty.endpoint, \
-	com.ibm.ws.kernel.boot.core
+	com.ibm.ws.messaging.utils;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	io.openliberty.io.netty;version=latest,\
+	io.openliberty.netty.internal;version=latest,\
+	io.openliberty.netty.internal.impl;version=latest,\
+	io.netty.handler,\
+	io.openliberty.endpoint,\
+	com.ibm.ws.kernel.boot.core,\
+	com.ibm.ws.kernel.boot.common,\
+	com.ibm.wsspi.org.osgi.core
 	
