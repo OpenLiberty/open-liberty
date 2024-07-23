@@ -673,16 +673,9 @@ public class FeatureResolverBaseline {
         // For now, only handle the distinction between null and an empty set.
         boolean allowMultiple = (allowedMultiple != null);
 
-        VerifyCase verifyCase = new VerifyCase();
-
-        verifyCase.name = name;
-        verifyCase.description = description;
+        VerifyCase verifyCase = new VerifyCase(name, description, allowMultiple);
 
         verifyCase.durationNs = durationNs;
-
-        if ( allowMultiple ) {
-            verifyCase.input.setMultiple();
-        }
 
         for ( ProvisioningFeatureDefinition kernelDef : kernelFeatures ) {
             verifyCase.input.addKernel(kernelDef.getSymbolicName());

@@ -30,7 +30,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
                 VersionlessJavaEEToMicroProfileTest.class,
                 VersionlessServletToMicroProfileTest.class,
-                VersionlessMessagesTest.class
+                VersionlessMessagesTest.class,
+                VersionlessPlatformTest.class
 })
 
 public class FATSuite {

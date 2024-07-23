@@ -38,6 +38,7 @@ import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyCase;
 import com.ibm.ws.kernel.feature.internal.util.VerifyDelta;
 import com.ibm.ws.kernel.feature.internal.util.VerifyXML;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
 
 /**
@@ -301,16 +302,11 @@ public class BaselineResolutionUnitTest {
             return null;
         }
 
-        VerifyCase newCase = new VerifyCase();
-
-        newCase.name = "versionless - " + shortName + " - from " + inputCase.name;
-        newCase.description = "versionless - platform " + platform + " - from " + inputCase.description;
+        String name = "versionless - " + shortName + " - from " + inputCase.name;
+        String description = "versionless - platform " + platform + " - from " + inputCase.description;
+        VerifyCase newCase = new VerifyCase(name, description, inputCase.input.isMultiple);
 
         newCase.durationNs = inputCase.durationNs;
-
-        if (inputCase.input.isMultiple) {
-            newCase.input.setMultiple();
-        }
 
         for (String kernelName : inputCase.input.kernel) {
             newCase.input.addKernel(kernelName);
@@ -378,10 +374,16 @@ public class BaselineResolutionUnitTest {
     }
 
     public static VerifyData readData(File verifyDataFile) throws Exception {
-        VerifyData verifyData = VerifyXML.read(verifyDataFile);
-        System.out.println("Read [ " + verifyData.getCases().size() + " ]" +
-                           " test cases from [ " + verifyDataFile.getCanonicalPath() + " ]");
-        return verifyData;
+        if (!verifyDataFile.exists()) {
+            System.out.println("Test data file does not exist [ " + verifyDataFile.getCanonicalPath() + " ]");
+            return new VerifyData();
+
+        } else {
+            VerifyData verifyData = VerifyXML.read(verifyDataFile);
+            System.out.println("Read [ " + verifyData.getCases().size() + " ]" +
+                               " test cases from [ " + verifyDataFile.getCanonicalPath() + " ]");
+            return verifyData;
+        }
     }
 
     //
@@ -480,6 +482,8 @@ public class BaselineResolutionUnitTest {
     }
 
     public Result resolveFeatures(VerifyCase verifyCase, List<String> rootErrors) throws Exception {
+        setEnvironment(verifyCase, resolver);
+
         return resolver.resolve(RepositoryUtil.getRepository(),
                                 RepositoryUtil.ignoreFeatures("Kernel", verifyCase.input.kernel),
                                 verifyCase.input.roots,
@@ -487,6 +491,18 @@ public class BaselineResolutionUnitTest {
                                 verifyCase.input.isMultiple,
                                 EnumSet.allOf(ProcessType.class),
                                 verifyCase.input.platforms);
+    }
+
+    protected void setEnvironment(VerifyCase verifyCase, FeatureResolverImpl resolver) {
+        String preferredPlatforms;
+        Map<String, String> envMap = verifyCase.input.envMap;
+        if (envMap == null) {
+            preferredPlatforms = null;
+        } else {
+            preferredPlatforms = envMap.get(FeatureResolver.PREFERRED_PLATFORM_VERSIONS_PROPERTY_NAME);
+        }
+        System.out.println("Setting preferred platforms [ " + preferredPlatforms + " ]");
+        FeatureResolverImpl.setPreferredPlatforms(preferredPlatforms);
     }
 
     protected void testBanner(VerifyCase useTestCase) {

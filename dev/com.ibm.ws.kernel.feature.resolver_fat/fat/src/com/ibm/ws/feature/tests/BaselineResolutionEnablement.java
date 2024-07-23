@@ -21,4 +21,6 @@ public interface BaselineResolutionEnablement {
 
     boolean enableMicroProfile = true;
     boolean enableServlet = true;
+
+    boolean enablePlatforms = true;
 }
