@@ -196,6 +196,7 @@ public class HttpChannelConfig {
     protected Map<String, String> sameSiteStringPatterns = null;
     protected Map<Pattern, String> sameSitePatterns = null;
     protected boolean onlySameSiteStar = false;
+
     /* Identifies if the partitioned cookie attribute should be set */
     protected boolean isPartitioned = false;
 
