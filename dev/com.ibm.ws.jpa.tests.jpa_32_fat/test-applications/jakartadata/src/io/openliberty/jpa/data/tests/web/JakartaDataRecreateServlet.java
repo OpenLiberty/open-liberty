@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.jpa.data.tests.web;
 
+import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -22,12 +23,14 @@ import java.util.UUID;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import io.openliberty.jpa.data.tests.models.AsciiCharacter;
 import io.openliberty.jpa.data.tests.models.Box;
 import io.openliberty.jpa.data.tests.models.Business;
 import io.openliberty.jpa.data.tests.models.Coordinate;
 import io.openliberty.jpa.data.tests.models.NaturalNumber;
+import io.openliberty.jpa.data.tests.models.Package;
 import io.openliberty.jpa.data.tests.models.Person;
 import io.openliberty.jpa.data.tests.models.Prime;
 import io.openliberty.jpa.data.tests.models.Rebate;
@@ -35,6 +38,7 @@ import io.openliberty.jpa.data.tests.models.Rebate.Status;
 import io.openliberty.jpa.data.tests.models.Segment;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.UserTransaction;
@@ -343,6 +347,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Test
     @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28925")
     public void testOLGH28925() throws Exception {
+        deleteAllEntities(Prime.class); // Cleanup any left over entities
+
         Prime two = Prime.of(2, "II", "two");
         Prime three = Prime.of(3, "III", "three");
         Prime five = Prime.of(5, "V", "five");
@@ -372,8 +378,9 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
             /*
              * Recreate
-             * Exception Description: Problem compiling [SELECT ID(THIS) FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR ID(THIS)=:num) ORDER
-             * BY o.numberId].
+             * Exception Description: Problem compiling [SELECT ID(THIS) FROM Prime o
+             * WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR ID(THIS)=:num)
+             * ORDER BY o.numberId].
              * [10, 14] The identification variable 'THIS' is not defined in the FROM clause.
              * [108, 112] The identification variable 'THIS' is not defined in the FROM clause.
              */
@@ -396,6 +403,183 @@ public class JakartaDataRecreateServlet extends FATServlet {
             tx.rollback();
             throw e;
         }
+    }
+
+    @Test
+    @SkipIfSysProp(DB_Oracle) // Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28545
+    public void testOLGH28545_1() throws Exception {
+        deleteAllEntities(Package.class); // Cleanup any left over entities
+
+        Package p1 = Package.of(1, 1.0f, 1.0f, 1.0f, "testOLGH28545-1");
+        Package p2 = Package.of(2, 1.0f, 2.0f, 1.0f, "testOLGH28545-2");
+
+        Package result;
+
+        tx.begin();
+        em.persist(p1);
+        em.persist(p2);
+        tx.commit();
+
+        tx.begin();
+        try {
+            result = em.createQuery("SELECT o FROM Package o ORDER BY o.width DESC", Package.class)
+                            .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                            .setMaxResults(1)
+                            .getSingleResult();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+
+        /**
+         * Reproduce
+         * Generated SQL:
+         *
+         * <pre>
+         *   SELECT ID AS a1, DESCRIPTION AS a2, HEIGHT AS a3, LENGTH AS a4, WIDTH AS a5
+         *   FROM PACKAGE
+         *   WHERE (ID) IN (
+         *   SELECT a1 FROM (
+         *       SELECT a1, ROWNUM rnum  FROM (
+         *         SELECT ID AS a1, DESCRIPTION AS a2, HEIGHT AS a3, LENGTH AS a4, WIDTH AS a5
+         *         FROM PACKAGE
+         *         ORDER BY a1  // This nested order is what determines the result, instead of the outer order, when limiting the results.
+         *       ) WHERE ROWNUM <= ?
+         *     ) WHERE rnum > ?
+         *   )  ORDER BY WIDTH DESC FOR UPDATE
+         * </pre>
+         */
+        assertEquals(p2.description, result.description);
+    }
+
+    @Test
+    @SkipIfSysProp(DB_Oracle) // Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28545
+    public void testOLGH28545_2() throws Exception {
+        deleteAllEntities(Package.class); // Cleanup any left over entities
+
+        Package p1 = Package.of(1, 1.0f, 1.0f, 1.0f, "testOLGH28545-1");
+        Package p2 = Package.of(2, 1.0f, 2.0f, 1.0f, "testOLGH28545-2");
+
+        List<Integer> results;
+
+        tx.begin();
+        em.persist(p1);
+        em.persist(p2);
+        tx.commit();
+
+        tx.begin();
+        try {
+            results = em.createQuery("SELECT o.id FROM Package o ORDER BY o.width DESC", Integer.class)
+                            .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                            .setMaxResults(1)
+                            .getResultList();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+
+        /**
+         * Reproduce
+         * Generated SQL:
+         *
+         * <pre>
+         *   SELECT ID AS a1
+         *   FROM PACKAGE
+         *   WHERE (ID) IN (
+         *     SELECT null FROM (  // ID will never be IN the result of a SELECT NULL statement therefore no results will ever be returned
+         *       SELECT null, ROWNUM rnum  FROM (
+         *         SELECT ID AS a1
+         *         FROM PACKAGE
+         *         ORDER BY null
+         *       ) WHERE ROWNUM <= ?
+         *     ) WHERE rnum > ?
+         *   )  ORDER BY WIDTH DESC FOR UPDATE
+         * </pre>
+         */
+        assertEquals(1, results.size());
+        assertEquals(2, results.get(0).intValue());
+
+    }
+
+    @Test
+    @SkipIfSysProp(DB_Oracle) // Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28545
+    public void testOLGH28545_3() throws Exception {
+        deleteAllEntities(Prime.class);
+
+        Prime two = Prime.of(2, "II", "two");
+        Prime three = Prime.of(3, "III", "three");
+        Prime five = Prime.of(5, "V", "five");
+        Prime seven = Prime.of(7, "VII", "seven");
+
+        List<Integer> lengths;
+
+        tx.begin();
+        em.persist(two);
+        em.persist(three);
+        em.persist(five);
+        em.persist(seven);
+        tx.commit();
+
+        tx.begin();
+        try {
+            lengths = em.createQuery("SELECT DISTINCT LENGTH(p.romanNumeral) FROM Prime p "
+                                     + "WHERE p.numberId <= ?1 ORDER BY LENGTH(p.romanNumeral) DESC", Integer.class)
+                            .setParameter(1, 5)
+                            .setMaxResults(4)
+                            .getResultList();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+
+            /**
+             * Recreate
+             *
+             * Internal Exception: java.sql.SQLSyntaxErrorException: ORA-00918: LENGTH(ROMANNUMERAL): column ambiguously specified - appears in and
+             * https://docs.oracle.com/error-help/db/ora-00918/
+             * Error Code: 918
+             * Call:
+             *
+             * <pre>
+             *   SELECT * FROM (
+             *     SELECT a.*, ROWNUM rnum  FROM (
+             *       SELECT DISTINCT LENGTH(ROMANNUMERAL), LENGTH(ROMANNUMERAL)
+             *       FROM PRIME
+             *       WHERE (NUMBERID <= ?)
+             *       ORDER BY LENGTH(ROMANNUMERAL) DESC
+             *     ) a WHERE ROWNUM <= ?
+             *   ) WHERE rnum > ?
+             * </pre>
+             *
+             * bind => [3 parameters bound]
+             */
+            throw e;
+        }
+
+        assertEquals(3, lengths.size());
+        assertEquals(3, lengths.get(0).intValue()); // III
+        assertEquals(2, lengths.get(1).intValue()); // II
+        assertEquals(1, lengths.get(2).intValue()); // V
+
+    }
+
+    /**
+     * Utility method to drop all entities from table.
+     *
+     * Order to tests is not guaranteed and thus we should be pessimistic and
+     * delete all entities when we reuse an entity between tests.
+     *
+     * @param clazz - the entity class
+     */
+    private void deleteAllEntities(Class<?> clazz) throws Exception {
+        tx.begin();
+        em.createQuery("DELETE FROM " + clazz.getSimpleName())
+                        .executeUpdate();
+        tx.commit();
     }
 
 }
