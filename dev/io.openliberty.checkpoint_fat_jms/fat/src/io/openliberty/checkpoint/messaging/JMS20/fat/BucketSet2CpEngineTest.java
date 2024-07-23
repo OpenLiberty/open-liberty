@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,24 +15,24 @@ package io.openliberty.checkpoint.messaging.JMS20.fat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.function.Consumer;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import componenttest.annotation.SkipForRepeat;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+
 import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -43,6 +43,11 @@ public class BucketSet2CpEngineTest {
 
     private static LibertyServer clientServer = LibertyServerFactory.getLibertyServer("LiteSet2Client");
     private static LibertyServer engineServer = LibertyServerFactory.getLibertyServer("LiteSet2Engine");
+
+    private static String[] servers = { "LiteSet2Client", "LiteSet2Engine" };
+    @ClassRule
+    public static RepeatTests r1 = EERepeatActions.repeat(servers, TestMode.FULL, false, EERepeatActions.EE11,
+                                                          EERepeatActions.EE10, EERepeatActions.EE9, EERepeatActions.EE8);
 
     private static final int clientPort = clientServer.getHttpDefaultPort();
     private static final String clientHostName = clientServer.getHostname();
@@ -61,7 +66,8 @@ public class BucketSet2CpEngineTest {
 
     private static final String CONTEXT_INJECT_CONTEXT_ROOT = "JMSContextInject";
     private static final String CONTEXT_INJECT_APPNAME = "JMSContextInject";
-    private static final String[] CONTEXT_INJECT_PACKAGES = new String[] { "jmscontextinject.web", "jmscontextinject.ejb" };
+    private static final String[] CONTEXT_INJECT_PACKAGES = new String[] { "jmscontextinject.web",
+                                                                           "jmscontextinject.ejb" };
 
     private static final String PRODUCER_118073_CONTEXT_ROOT = "JMSProducer_118073";
     private static final String PRODUCER_118073_APPNAME = "JMSProducer_118073";
@@ -72,41 +78,45 @@ public class BucketSet2CpEngineTest {
         // Prepare the server which runs the messaging engine.
 
         engineServer.copyFileToLibertyInstallRoot(
-            "lib/features",
-            "features/testjmsinternals-1.0.mf");
+                                                  "lib/features",
+                                                  "features/testjmsinternals-1.0.mf");
 
         // Prepare the server which runs the messaging client and which
         // runs the test application.
 
         clientServer.copyFileToLibertyInstallRoot(
-            "lib/features",
-            "features/testjmsinternals-1.0.mf");
+                                                  "lib/features",
+                                                  "features/testjmsinternals-1.0.mf");
 
+        ShrinkHelper.cleanAllExportedArchives();
         TestUtils.addDropinsWebApp(clientServer, CONSUMER_118077_APPNAME, CONSUMER_118077_PACKAGES);
         TestUtils.addDropinsWebApp(clientServer, CONSUMER_118076_APPNAME, CONSUMER_118076_PACKAGES);
         TestUtils.addDropinsWebApp(clientServer, CONTEXT_INJECT_APPNAME, CONTEXT_INJECT_PACKAGES);
         TestUtils.addDropinsWebApp(clientServer, PRODUCER_118073_APPNAME, PRODUCER_118073_PACKAGES);
 
-        // postCheckpointLogic: get ports specified in FAT file testport.properties and add to server.env.
-        // This will drive a post restore config update, updating ports unspecified at checkpoint time
+        // postCheckpointLogic: get ports specified in FAT file testport.properties and
+        // add to server.env.
+        // This will drive a post restore config update, updating ports unspecified at
+        // checkpoint time
         // to those of the runtime environment.
         Consumer<LibertyServer> postCheckpointLogic = checkpointServer -> {
-        	FATSuite.PortSetting setting = new FATSuite.PortSetting("bvt.prop.jms.1",17010,"bvt.prop.jms");
-        	FATSuite.addServerEnvPorts(checkpointServer, new ArrayList<>(Collections.singletonList(setting))); 
+            FATSuite.PortSetting setting = new FATSuite.PortSetting("bvt.prop.jms.1", 17010, "bvt.prop.jms");
+            FATSuite.addServerEnvPorts(checkpointServer, new ArrayList<>(Collections.singletonList(setting)));
         };
 
- 
-        // Start both servers.  Start the engine first, so that its resources
+        // Start both servers. Start the engine first, so that its resources
         // are available when the client starts.
 
-        // Due to a known issue, 26587, the post checkpoint config update to "wasJmsEndpoint " does not work on wasServer-1.0
+        // Due to a known issue, 26587, the post checkpoint config update to
+        // "wasJmsEndpoint " does not work on wasServer-1.0
         // so commenting out the postCheckpoint logic for now.
-        //    engineServer.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, postCheckpointLogic);
+        // engineServer.setCheckpoint(CheckpointPhase.AFTER_APP_START, true,
+        // postCheckpointLogic);
         engineServer.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, null);
         engineServer.startServer("LiteBucketSet2_Engine.log");
-        //Specify ports for client
-      	FATSuite.PortSetting setting = new FATSuite.PortSetting("bvt.prop.jms.1",17010,"jms_port_1");
-        FATSuite.addServerEnvPorts(clientServer, new ArrayList<>(Collections.singletonList(setting))); 
+        // Specify ports for client
+        FATSuite.PortSetting setting = new FATSuite.PortSetting("bvt.prop.jms.1", 17010, "jms_port_1");
+        FATSuite.addServerEnvPorts(clientServer, new ArrayList<>(Collections.singletonList(setting)));
         clientServer.startServer("LiteBucketSet2_Client.log");
     }
 
@@ -115,14 +125,14 @@ public class BucketSet2CpEngineTest {
         // Stop the messaging client ...
         try {
             clientServer.stopServer();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         // ... then stop the messaging engine.
         try {
             engineServer.stopServer();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -217,9 +227,9 @@ public class BucketSet2CpEngineTest {
         assertTrue("testGetMessageSelector_TcpIp_SecOff failed ", result);
     }
 
-    //end of tests from JMSConsumerTest_118076
+    // end of tests from JMSConsumerTest_118076
 
-    //start of JMSProducer_Test118073
+    // start of JMSProducer_Test118073
 
     @Test
     public void testSetGetJMSReplyTo_B_SecOff() throws Exception {
