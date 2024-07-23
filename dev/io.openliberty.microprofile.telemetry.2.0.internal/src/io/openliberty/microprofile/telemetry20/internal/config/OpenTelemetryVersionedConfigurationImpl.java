@@ -15,11 +15,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import org.osgi.service.component.annotations.Component;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-
-import org.osgi.service.component.annotations.Component;
 
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
@@ -27,6 +27,11 @@ import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryI
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.common.AttributeKey;
+import io.opentelemetry.instrumentation.resources.ContainerResource;
+import io.opentelemetry.instrumentation.resources.HostResource;
+import io.opentelemetry.instrumentation.resources.OsResource;
+import io.opentelemetry.instrumentation.resources.ProcessResource;
+import io.opentelemetry.instrumentation.resources.ProcessRuntimeResource;
 import io.opentelemetry.instrumentation.runtimemetrics.java8.Classes;
 import io.opentelemetry.instrumentation.runtimemetrics.java8.Cpu;
 import io.opentelemetry.instrumentation.runtimemetrics.java8.GarbageCollector;
@@ -90,7 +95,7 @@ public class OpenTelemetryVersionedConfigurationImpl implements OpenTelemetryInf
             //Builds tracer provider if user has enabled tracing aspects with config properties
             if (!checkDisabled(telemetryProperties)) {
                 OpenTelemetry openTelemetry = AccessController.doPrivileged((PrivilegedAction<OpenTelemetry>) () -> {
-                    return buildOpenTelemetry(telemetryProperties, OpenTelemetryVersionedConfigurationImpl::customizeResource, classLoader);
+                    return buildOpenTelemetry(telemetryProperties, this::customizeResource, classLoader);
                 });
 
                 if (openTelemetry != null) {
@@ -122,7 +127,8 @@ public class OpenTelemetryVersionedConfigurationImpl implements OpenTelemetryInf
 
     }
 
-    private static Resource customizeResource(Resource resource, ConfigProperties c) {
+    private Resource customizeResource(Resource resource, ConfigProperties c) {
+        resource = mergeInOtelResources(resource);
         ResourceBuilder builder = resource.toBuilder();
         builder.put(AttributeKey.stringKey("service.name"), OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME);
 
@@ -137,6 +143,14 @@ public class OpenTelemetryVersionedConfigurationImpl implements OpenTelemetryInf
             return Boolean.valueOf(oTelConfigs.get(OpenTelemetryConstants.CONFIG_DISABLE_PROPERTY));
         }
         return true;
+    }
+
+    private Resource mergeInOtelResources(Resource resource) {
+        return resource.merge(ContainerResource.get())
+                        .merge(HostResource.get())
+                        .merge(OsResource.get())
+                        .merge(ProcessResource.get())
+                        .merge(ProcessRuntimeResource.get());
     }
 
     @FFDCIgnore(ClassNotFoundException.class)

@@ -119,6 +119,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 	io.opentelemetry:opentelemetry-sdk-metrics;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-sdk-trace;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry.semconv:opentelemetry-semconv;version='${alphaSemconvOpenTelemetryVersion}';strategy=exact,\
+	io.opentelemetry.instrumentation:opentelemetry-resources;version='${alphaOpenTelemetryInstrumentationVersion}';strategy=exact,\
 	com.ibm.ws.classloading;version=latest,\
 	org.eclipse.osgi;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\

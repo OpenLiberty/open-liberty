@@ -172,7 +172,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
             if (!checkDisabled(telemetryProperties)) {
                 OpenTelemetry openTelemetry = AccessController.doPrivileged((PrivilegedAction<OpenTelemetry>) () -> {
                     return openTelemetryVersionedConfiguration.buildOpenTelemetry(telemetryProperties,
-                                                                                  OpenTelemetryInfoFactoryImpl::customizeResource, Thread.currentThread().getContextClassLoader());
+                                                                                  this::customizeResource, Thread.currentThread().getContextClassLoader());
                 });
 
                 if (openTelemetry != null) {
@@ -350,7 +350,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
     }
 
     //Adds the service name to the resource attributes
-    private static Resource customizeResource(Resource resource, ConfigProperties c) {
+    private Resource customizeResource(Resource resource, ConfigProperties c) {
         ResourceBuilder builder = resource.toBuilder();
         builder.put(AttributeKey.stringKey("service.name"), getServiceName(c));
         return builder.build();
