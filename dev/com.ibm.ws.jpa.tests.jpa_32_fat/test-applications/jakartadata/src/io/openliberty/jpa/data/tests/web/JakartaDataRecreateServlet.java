@@ -32,6 +32,7 @@ import io.openliberty.jpa.data.tests.models.Person;
 import io.openliberty.jpa.data.tests.models.Prime;
 import io.openliberty.jpa.data.tests.models.Rebate;
 import io.openliberty.jpa.data.tests.models.Rebate.Status;
+import io.openliberty.jpa.data.tests.models.Segment;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -380,6 +381,21 @@ public class JakartaDataRecreateServlet extends FATServlet {
         }
 
         assertEquals(4, primes.size());
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29117")
+    public void testOLGH29117() throws Exception {
+        Segment unitRadius = Segment.of(0, 0, 0, 1);
+
+        tx.begin();
+        try {
+            em.persist(unitRadius);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
     }
 
 }
