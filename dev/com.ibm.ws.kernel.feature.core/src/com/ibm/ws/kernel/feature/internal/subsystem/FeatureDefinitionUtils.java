@@ -771,7 +771,9 @@ public class FeatureDefinitionUtils {
                 List<NameValuePair> data = ManifestHeaderProcessor.parseExportString(contents);
                 result = new ArrayList<FeatureResource>(data.size());
                 Set<String> preventDups = new HashSet<>();
-                for (NameValuePair content : data) {
+
+                for (int idx = 0, size = data.size(); idx < size; ++idx) {
+                    NameValuePair content = data.get(idx);
                     if (preventDups.add(content.getName())) {
                         result.add(new FeatureResourceImpl(content.getName(), content.getAttributes(), iAttr.bundleRepositoryType, iAttr.featureName, iAttr.activationType));
                     }
@@ -781,10 +783,11 @@ public class FeatureDefinitionUtils {
             }
 
             if (type != null) {
-                Collection<FeatureResource> unfiltered = result;
+                List<FeatureResource> unfiltered = result;
 
                 result = new ArrayList<FeatureResource>();
-                for (FeatureResource resource : unfiltered) {
+                for (int idx = 0, size = unfiltered.size(); idx < size; idx++) {
+                    FeatureResource resource = unfiltered.get(idx);
                     if (resource.isType(type)) {
                         result.add(resource);
                     }
