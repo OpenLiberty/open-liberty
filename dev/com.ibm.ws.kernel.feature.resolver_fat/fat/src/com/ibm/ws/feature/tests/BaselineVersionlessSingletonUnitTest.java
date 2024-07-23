@@ -14,7 +14,9 @@ package com.ibm.ws.feature.tests;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -27,6 +29,7 @@ import org.junit.runners.Parameterized;
 import com.ibm.ws.feature.tests.util.RepositoryUtil;
 import com.ibm.ws.kernel.feature.internal.util.VerifyData;
 import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyCase;
+import com.ibm.ws.kernel.feature.internal.util.VerifyDelta;
 
 /**
  * Baseline public singleton resolution.
@@ -53,7 +56,7 @@ public class BaselineVersionlessSingletonUnitTest extends BaselineResolutionUnit
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        doTearDownClass();
+        doTearDownClass(BaselineVersionlessSingletonUnitTest.class);
     }
 
     public static final String DATA_FILE_PATH_OL = "publish/verify/singleton_expected.xml";
@@ -128,4 +131,230 @@ public class BaselineVersionlessSingletonUnitTest extends BaselineResolutionUnit
         }
         doTestResolve();
     }
+
+    //@formatter:off
+
+    protected static final String[][] ALLOWED_SUBSTITUTIONS = {
+        // Simple removal
+
+        { "jcaInboundSecurity-1.0",
+          "jcaInboundSecurity", "javaee-6.0",
+          "com.ibm.websphere.appserver.eeCompatible-7.0", null },
+
+        { "appAuthentication-3.1",
+          "appAuthentication", "jakartaee-11.0",
+          "io.openliberty.internal.versionless.appAuthentication-3.1", null },
+
+        { "appAuthorization-3.0",
+          "appAuthorization", "jakartaee-11.0",
+          "io.openliberty.internal.versionless.appAuthorization-3.0", null },
+
+        // eeCompatible version change
+
+        { "concurrent-1.0",
+          "concurrent", "javaee-7.0",
+          "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
+
+        { "jacc-1.5",
+          "jacc", "javaee-7.0",
+          "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
+
+        { "jaspic-1.1",
+          "jaspic", "javaee-7.0",
+          "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
+
+        { "javaMail-1.5",
+          "javaMail", "javaee-7.0",
+          "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
+
+        { "jdbc-4.1",
+          "jdbc", "javaee-7.0",
+          "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
+
+        { "jdbc-4.2",
+          "jdbc", "javaee-8.0",
+          "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-8.0" },
+
+        { "servlet-3.1",
+          "servlet", "javaee-7.0",
+          "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
+
+        { "wasJmsClient-2.0",
+          "wasJmsClient", "javaee-7.0",
+          "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
+
+        { "websocket-1.1",
+          "websocket", "javaee-7.0",
+          "com.ibm.websphere.appserver.eeCompatible-6.0", "com.ibm.websphere.appserver.eeCompatible-7.0" },
+    };
+
+
+/*
+        // These are now handled by the initial feature substitution.
+        //
+        // feature rename across versions
+
+        { "io.openliberty.appAuthentication-2.0",
+          "io.openliberty.versionless.appAuthentication", "jakartaee-9.1",
+          "io.openliberty.internal.versionless.appAuthentication-2.0", "io.openliberty.internal.versionless.jaspic-2.0" },
+        { "io.openliberty.appAuthentication-3.0",
+          "io.openliberty.versionless.appAuthentication", "jakartaee-10.0",
+          "io.openliberty.internal.versionless.appAuthentication-3.0", "io.openliberty.internal.versionless.jaspic-3.0" },
+
+        { "io.openliberty.appAuthorization-2.0",
+          "io.openliberty.versionless.appAuthorization", "jakartaee-9.1",
+          "io.openliberty.internal.versionless.appAuthorization-2.0", "io.openliberty.internal.versionless.jacc-2.0" },
+        { "io.openliberty.appAuthorization-2.1",
+           "io.openliberty.versionless.appAuthorization", "jakartaee-10.0",
+           "io.openliberty.internal.versionless.appAuthorization-2.1", "io.openliberty.internal.versionless.jacc-2.1" },
+
+        { "io.openliberty.connectors-2.0",
+          "io.openliberty.versionless.connectors", "jakartaee-9.1",
+          "io.openliberty.internal.versionless.connectors-2.0", "io.openliberty.internal.versionless.jca-2.0" },
+        { "io.openliberty.connectors-2.1",
+          "io.openliberty.versionless.connectors", "jakartaee-10.0",
+          "io.openliberty.internal.versionless.connectors-2.1", "io.openliberty.internal.versionless.jca-2.1" },
+
+        { "io.openliberty.connectorsInboundSecurity-2.0",
+          "io.openliberty.versionless.connectorsInboundSecurity", "jakartaee-9.1",
+          "io.openliberty.internal.versionless.connectorsInboundSecurity-2.0", "io.openliberty.internal.versionless.jcaInboundSecurity-2.0" },
+
+        { "io.openliberty.enterpriseBeans-4.0",
+          "io.openliberty.versionless.enterpriseBeans", "jakartaee-9.1",
+          "io.openliberty.internal.versionless.enterpriseBeans-4.0", "io.openliberty.internal.versionless.ejb-4.0" },
+        { "io.openliberty.enterpriseBeansHome-4.0",
+          "io.openliberty.versionless.enterpriseBeansHome", "jakartaee-9.1",
+          "io.openliberty.internal.versionless.enterpriseBeansHome-4.0", "io.openliberty.internal.versionless.ejbHome-4.0" },
+        { "io.openliberty.enterpriseBeansLite-4.0",
+          "io.openliberty.versionless.enterpriseBeansLite", "jakartaee-9.1",
+          "io.openliberty.internal.versionless.enterpriseBeansLite-4.0", "io.openliberty.internal.versionless.ejbLite-4.0" },
+        { "io.openliberty.enterpriseBeansRemote-4.0",
+          "io.io.openliberty.versionless.enterpriseBeansRemote", "jakartaee-9.1",
+          "openliberty.internal.versionless.enterpriseBeansRemote-4.0", "io.openliberty.internal.versionless.ejbRemote-4.0" },
+
+        { "io.openliberty.expressionLanguage-4.0",
+          "io.openliberty.versionless.expressionLanguage", "jakartaee-9.1",
+          "io.openliberty.internal.versionless.expressionLanguage-4.0", "io.openliberty.internal.versionless.el-4.0" },
+        { "io.openliberty.expressionLanguage-5.0",
+          "io.openliberty.versionless.expressionLanguage", "jakartaee-10.0",
+          "io.openliberty.internal.versionless.expressionLanguage-5.0", "io.openliberty.internal.versionless.el-5.0" },
+        { "io.openliberty.expressionLanguage-6.0",
+          "io.openliberty.versionless.expressionLanguage", "jakartaee-11.0",
+          "io.openliberty.internal.versionless.expressionLanguage-6.0", "io.openliberty.internal.versionless.el-6.0" },
+
+        { "io.openliberty.faces-3.0",
+          "io.openliberty.versionless.faces", "jakartaee-9.1",
+          "io.openliberty.internal.versionless.faces-3.0", "io.openliberty.internal.versionless.jsf-3.0" },
+        { "io.openliberty.faces-4.0",
+          "io.openliberty.versionless.faces", "jakartaee-10.0",
+          "io.openliberty.internal.versionless.faces-4.0", "io.openliberty.internal.versionless.jsf-4.0" },
+        { "io.openliberty.faces-4.1",
+          "io.openliberty.versionless.faces", "jakartaee-11.0",
+          "io.openliberty.internal.versionless.faces-4.1", "io.openliberty.internal.versionless.jsf-4.1" },
+
+        { "io.openliberty.mail-2.0",
+          "io.openliberty.versionless.mail", "jakartaee-9.1",
+          "io.openliberty.internal.versionless.mail-2.0", "io.openliberty.internal.versionless.javaMail-2.0" },
+        { "io.openliberty.mail-2.1",
+          "io.openliberty.versionless.mail", "jakartaee-10.0",
+          "io.openliberty.internal.versionless.mail-2.1", "io.openliberty.internal.versionless.javaMail-2.1" },
+
+        { "io.openliberty.messaging-3.0",
+          "io.openliberty.versionless.messaging", "jakartaee-9.1",
+          "io.openliberty.internal.versionless.messaging-3.0", "io.openliberty.internal.versionless.jms-3.0" },
+        { "io.openliberty.messaging-3.1",
+          "io.openliberty.versionless.messaging", "jakartaee-10.0",
+          "io.openliberty.internal.versionless.messaging-3.1", "io.openliberty.internal.versionless.jms-3.1" },
+        { "io.openliberty.messagingClient-3.0",
+          "io.openliberty.versionless.messagingClient", "jakartaee-9.1",
+          "io.openliberty.internal.versionless.messagingClient-3.0", "io.openliberty.internal.versionless.wasJmsClient-3.0" },
+        { "io.openliberty.messagingSecurity-3.0",
+          "io.openliberty.versionless.messagingSecurity", "jakartaee-9.1",
+          "io.openliberty.internal.versionless.messagingSecurity-3.0", "io.openliberty.internal.versionless.wasJmsSecurity-3.0" },
+        { "io.openliberty.messagingServer-3.0",
+          "io.openliberty.versionless.messagingServer", "jakartaee-9.1",
+          "io.openliberty.internal.versionless.messagingServer-3.0", "io.openliberty.internal.versionless.wasJmsServer-3.0" },
+
+        { "io.openliberty.pages-3.0",
+          "io.openliberty.versionless.pages", "jakartaee-9.1",
+          "io.openliberty.internal.versionless.pages-3.0", "io.openliberty.internal.versionless.jsp-3.0" },
+        { "io.openliberty.pages-3.1",
+          "io.openliberty.versionless.pages", "jakartaee-10.0",
+          "io.openliberty.internal.versionless.pages-3.1", "io.openliberty.internal.versionless.jsp-3.1" },
+        { "io.openliberty.pages-4.0",
+          "io.openliberty.versionless.pages", "jakartaee-11.0",
+          "io.openliberty.internal.versionless.pages-4.0", "io.openliberty.internal.versionless.jsp-4.0" },
+
+        { "io.openliberty.persistence-3.0",
+          "io.openliberty.versionless.persistence", "jakartaee-9.1",
+          "io.openliberty.internal.versionless.persistence-3.0", "io.openliberty.internal.versionless.jpa-3.0" },
+        { "io.openliberty.persistence-3.1",
+          "io.openliberty.versionless.persistence", "jakartaee-10.0",
+          "io.openliberty.internal.versionless.persistence-3.1", "io.openliberty.internal.versionless.jpa-3.1" },
+
+        { "io.openliberty.restfulWS-3.0",
+          "io.openliberty.versionless.restfulWS", "jakartaee-9.1",
+          "io.openliberty.internal.versionless.restfulWS-3.0", "io.openliberty.internal.versionless.jaxrs-3.0" },
+        { "io.openliberty.restfulWS-3.1",
+          "io.openliberty.versionless.restfulWS", "jakartaee-10.0",
+          "io.openliberty.internal.versionless.restfulWS-3.1", "io.openliberty.internal.versionless.jaxrs-3.1" },
+        { "io.openliberty.restfulWS-4.0",
+          "io.openliberty.versionless.restfulWS", "jakartaee-11.0",
+          "io.openliberty.internal.versionless.restfulWS-4.0", "io.openliberty.internal.versionless.jaxrs-4.0" },
+        { "io.openliberty.restfulWSClient-3.0",
+          "io.openliberty.versionless.restfulWSClient", "jakartaee-9.1",
+          "io.openliberty.internal.versionless.restfulWSClient-3.0", "io.openliberty.internal.versionless.jaxrsClient-3.0" },
+        { "io.openliberty.restfulWSClient-3.1",
+          "io.openliberty.versionless.restfulWSClient", "jakartaee-10.0",
+          "io.openliberty.internal.versionless.restfulWSClient-3.1", "io.openliberty.internal.versionless.jaxrsClient-3.1" },
+        { "io.openliberty.restfulWSClient-4.0",
+          "io.openliberty.versionless.restfulWSClient", "jakartaee-11.0",
+          "io.openliberty.internal.versionless.restfulWSClient-4.0", "io.openliberty.internal.versionless.jaxrsClient-4.0" },
+
+        { "io.openliberty.xmlBinding-3.0",
+          "io.openliberty.versionless.xmlBinding", "jakartaee-9.1",
+          "io.openliberty.internal.versionless.xmlBinding-3.0", "io.openliberty.internal.versionless.jaxb-3.0" },
+        { "io.openliberty.xmlBinding-4.0",
+          "io.openliberty.versionless.xmlBinding", "jakartaee-10.0",
+          "io.openliberty.internal.versionless.xmlBinding-4.0", "io.openliberty.internal.versionless.jaxb-4.0" },
+
+        { "io.openliberty.xmlWS-3.0",
+          "io.openliberty.versionless.xmlWS", "jakartaee-9.1",
+          "io.openliberty.internal.versionless.xmlWS-3.0", "io.openliberty.internal.versionless.jaxws-3.0" },
+        { "io.openliberty.xmlWS-4.0",
+          "io.openliberty.versionless.xmlWS", "jakartaee-10.0",
+          "io.openliberty.internal.versionless.xmlWS-4.0", "io.openliberty.internal.versionless.jaxws-4.0" }
+*/
+
+    protected static final Map<String, String[]> allowedSubstitutions;
+
+    static {
+        Map<String, String[]> useSubstitutions = new HashMap<>(ALLOWED_SUBSTITUTIONS.length);
+        for ( String[] substitution : ALLOWED_SUBSTITUTIONS ) {
+            VerifyDelta.putSubstitution(substitution, useSubstitutions);
+        }
+        allowedSubstitutions = useSubstitutions;
+    }
+
+    @Override
+    public Map<String, String[]> getAllowedSubstitutions() {
+        return allowedSubstitutions;
+    }
+
+    @Override
+    public String[] getAllowedSubstitution(VerifyCase testCase) {
+        String vFeature = testCase.input.roots.get(0); // Must be versionless; must be a singleton
+        String platform = testCase.input.platforms.get(0); // Must be a singleton.
+
+        String[] subs = VerifyDelta.getSubstitution(vFeature, platform, getAllowedSubstitutions());
+
+        if ( subs == null ) {
+            System.out.println("Feature [ " + vFeature + " ] Platform [ " + platform + " ] has no substitutions");
+        } else {
+            System.out.println("Feature [ " + vFeature + " ] Platform [ " + platform + " ]: Subs [ " + subs[3] + " to " + subs[4] +" ]");
+        }
+        return subs;
+    }
+
+    //@formatter:on
 }

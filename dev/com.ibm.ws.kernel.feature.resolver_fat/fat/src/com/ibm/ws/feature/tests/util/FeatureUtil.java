@@ -208,6 +208,11 @@ public class FeatureUtil {
         return ((version == null) ? baseName : (baseName + "-" + version));
     }
 
+    public static String getShortName(String baseName) {
+        int lastDot = baseName.lastIndexOf('.');
+        return ((lastDot >= 0) ? baseName.substring(lastDot + 1) : baseName);
+    }
+
     /**
      * Tests are placing several test related features in the server features
      * repository. Ignore these for now:

@@ -52,7 +52,7 @@ public class BaselineResolutionMicroProfileUnitTest extends BaselineResolutionUn
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        doTearDownClass();
+        doTearDownClass(BaselineResolutionMicroProfileUnitTest.class);
     }
 
     public static final String DATA_FILE_PATH_OL = "publish/verify/microprofile_expected.xml";

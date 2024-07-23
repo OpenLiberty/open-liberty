@@ -150,14 +150,22 @@ public class FeatureResolverBaseline {
 
     private final FeatureResolverImpl resolver;
 
+    public FeatureResolverImpl getResolver() {
+        return resolver;
+    }
+
     //
 
     private final Repository repository;
 
+    public Repository getRepository() {
+        return repository;
+    }
+
     private static final String WAS_LIBERTY_FEATURE_NAME = "apiDiscovery-1.0";
 
     private boolean isOpenLiberty() {
-        return (repository.getFeature(WAS_LIBERTY_FEATURE_NAME) == null);
+        return (getRepository().getFeature(WAS_LIBERTY_FEATURE_NAME) == null);
     }
 
     private static final String SERVLET_VERSIONLESS_PREFIX = "servlet-";
@@ -193,6 +201,11 @@ public class FeatureResolverBaseline {
             if ( !featureName.startsWith(VERSIONLESS_PREFIX) ) {
 //                System.out.println("Skip: Missing prefix [ " + featureName + " ]");
                 continue;
+            }
+
+            String platformName = featureDef.getPlatformName();
+            if ( (platformName != null) && platformName.equals("jakartaee-11.0")) {
+                continue; // Skip EE11 for now.
             }
 
             String addReason;
@@ -234,7 +247,7 @@ public class FeatureResolverBaseline {
         info("Writing feature repository to [ " + repoFilePath + " ] ...");
 
         try {
-            RepoXML.write(new File(repoFileName), repository);
+            RepoXML.write(new File(repoFileName), getRepository());
             info("Writing feature repository to [ " + repoFilePath + " ] ... done");
 
         } catch (Exception e) {
@@ -359,7 +372,7 @@ public class FeatureResolverBaseline {
          * Use a case insensitive comparison.
          *
          * @param def1 A feature definition which is to be compared.
-         * @param def2 Another feature definition which is to be compared.
+         * @param def2 Another feature definition which is to be
          *
          * @return The features compared by their symbolic name.
          */
@@ -409,9 +422,6 @@ public class FeatureResolverBaseline {
      * results for each single public feature and for each supported process
      * type of that feature.
      *
-     * The results placed with server results then with client results.
-     * Both results collections are sorted by feature short name.
-     *
      * @param allowedMultiple Control parameters: When non-null, allow
      *     multiple features.
      * @param kernelFeatures Kernel features to be used to perform the
@@ -427,62 +437,28 @@ public class FeatureResolverBaseline {
                                                 !RepoXML.IS_VERSIONLESS_FEATURE,
                                                 !RepoXML.IS_TEST_FEATURE);
 
-        List<ProvisioningFeatureDefinition> featureDefs = select(repository, selector);
+        List<ProvisioningFeatureDefinition> featureDefs = select(getRepository(), selector);
 
         int numDefs = featureDefs.size();
         ProvisioningFeatureDefinition[] defsArray = featureDefs.toArray( new ProvisioningFeatureDefinition[numDefs]);
         Arrays.sort(defsArray, COMPARE_SYMBOLIC);
 
-        List<ProvisioningFeatureDefinition> serverDefs = new ArrayList<>(numDefs);
-        List<ProvisioningFeatureDefinition> clientDefs = new ArrayList<>(numDefs);
-
-        for ( ProvisioningFeatureDefinition def : defsArray ) {
-            if ( RepoXML.isServer(def) ) {
-                serverDefs.add(def);
-            }
-            if ( RepoXML.isClient(def) ) {
-                clientDefs.add(def);
-            }
-        }
-
-        final Transformer<ProvisioningFeatureDefinition, VerifyCase> createServerResult =
+        final Transformer<ProvisioningFeatureDefinition, VerifyCase> createResult =
             new Transformer<ProvisioningFeatureDefinition, VerifyCase>() {
                 @Override
                 public VerifyCase apply(ProvisioningFeatureDefinition rootDef) {
-                    return createSingletonResult(allowedMultiple,
-                                                 kernelFeatures, rootDef,
-                                                 ProcessType.SERVER);
+                    return createSingletonResult(allowedMultiple, kernelFeatures, rootDef);
                 }
         };
 
-        final Transformer<ProvisioningFeatureDefinition, VerifyCase> createClientResult =
-            new Transformer<ProvisioningFeatureDefinition, VerifyCase>() {
-                @Override
-                public VerifyCase apply(ProvisioningFeatureDefinition rootDef) {
-                    return createSingletonResult(allowedMultiple,
-                                                 kernelFeatures, rootDef,
-                                                 ProcessType.CLIENT);
-                }
-        };
+        List<LazySupplierImpl<VerifyCase>> cases = new ArrayList<>(numDefs);
 
-        List<LazySupplierImpl<VerifyCase>> cases = new ArrayList<>( serverDefs.size() + clientDefs.size() );
-
-        for (ProvisioningFeatureDefinition def : serverDefs ) {
+        for (ProvisioningFeatureDefinition def : featureDefs ) {
             final ProvisioningFeatureDefinition useDef = def;
             cases.add( new LazySupplierImpl<VerifyCase>() {
                 @Override
                 public VerifyCase produce() {
-                    return createServerResult.apply(useDef);
-                }
-            });
-        }
-
-        for (ProvisioningFeatureDefinition def : clientDefs ) {
-            final ProvisioningFeatureDefinition useDef = def;
-            cases.add( new LazySupplierImpl<VerifyCase>() {
-                @Override
-                public VerifyCase produce() {
-                    return createClientResult.apply(useDef);
+                    return createResult.apply(useDef);
                 }
             });
         }
@@ -494,9 +470,6 @@ public class FeatureResolverBaseline {
      * Generate resolution results for the specified parameters.  Generate
      * results for each single public feature and for each supported process
      * type of that feature.
-     *
-     * The results placed with server results then with client results.
-     * Both results collections are sorted by feature short name.
      *
      * @param allowedMultiple Control parameters: When non-null, allow
      *     multiple features.
@@ -531,8 +504,7 @@ public class FeatureResolverBaseline {
                     return createResult(allowedMultiple,
                                                kernelFeatures,
                                                element0Desc, element1Desc,
-                                               feature0, feature1,
-                                               ProcessType.SERVER);
+                                               feature0, feature1);
                 }
         };
 
@@ -566,19 +538,16 @@ public class FeatureResolverBaseline {
      *     resolution.
      * @param feature0 A versioned servlet feature name.
      * @param feature1 A versionless feature.
-     * @param processType Control parameter: Sets the process type active
-     *     during resolution.
      *
      * @return The resolution result converted into a verification case.
      */
     private VerifyCase createResult(Set<String> allowedMultiple,
                                     Collection<ProvisioningFeatureDefinition> kernelFeatures,
                                     String feature0Desc, String feature1Desc,
-                                    String feature0, String feature1,
-                                    ProcessType processType) {
+                                    String feature0, String feature1) {
 
         Set<String> preResolved = Collections.emptySet();
-        EnumSet<ProcessType> processTypes = EnumSet.of(processType);
+        Set<String> profiles = Collections.emptySet();
 
         List<String> rootFeatures = new ArrayList<>(2);
         rootFeatures.add(feature0);
@@ -590,16 +559,16 @@ public class FeatureResolverBaseline {
 
         long startTimeNs = VerifyData.getTimeNs();
 
-        Result resultWithKernel = resolver.doResolve(repository,
-                                                     kernelFeatures, rootFeatures, preResolved,
-                                                     allowedMultiple, processTypes,
-                                                     null);
+        Result resultWithKernel = getResolver().doResolve(getRepository(),
+                                                          kernelFeatures, rootFeatures, preResolved,
+                                                          allowedMultiple, EnumSet.allOf(ProcessType.class),
+                                                          profiles);
 
         Collection<ProvisioningFeatureDefinition> emptyDefs = Collections.emptySet();
-        Result resultWithoutKernel = resolver.doResolve(repository,
-                                                        emptyDefs, rootFeatures, preResolved,
-                                                        allowedMultiple, processTypes,
-                                                        null);
+        Result resultWithoutKernel = getResolver().doResolve(getRepository(),
+                                                             emptyDefs, rootFeatures, preResolved,
+                                                             allowedMultiple, EnumSet.allOf(ProcessType.class),
+                                                             profiles);
 
         long endTimeNs = VerifyData.getTimeNs();
         long durationNs = endTimeNs - startTimeNs;
@@ -614,7 +583,7 @@ public class FeatureResolverBaseline {
                                (allowMultiple ? " [ Multiple ]" : "");
 
         return asCase(name, description,
-                      allowedMultiple, processType,
+                      allowedMultiple,
                       kernelFeatures, rootFeatures,
                       resultWithKernel, resultWithoutKernel,
                       durationNs);
@@ -630,34 +599,31 @@ public class FeatureResolverBaseline {
      *     resolution.
      * @param featureDef A single public feature used as the root resolution
      *     feature.
-     * @param processType Control parameter: Sets the process type active
-     *     during resolution.
      *
      * @return The resolution result converted into a verification case.
      */
     private VerifyCase createSingletonResult(Set<String> allowedMultiple,
                                              Collection<ProvisioningFeatureDefinition> kernelFeatures,
-                                             ProvisioningFeatureDefinition featureDef,
-                                             ProcessType processType) {
+                                             ProvisioningFeatureDefinition featureDef) {
 
         Collection<String> rootFeatures = Collections.singleton(featureDef.getSymbolicName());
         Set<String> preResolved = Collections.emptySet();
-        EnumSet<ProcessType> processTypes = EnumSet.of(processType);
+        Set<String> profiles = Collections.emptySet();
 
         info("Creating singleton test result ... ");
 
         long startTimeNs = VerifyData.getTimeNs();
 
-        Result resultWithKernel = resolver.doResolve(repository,
-                                                     kernelFeatures, rootFeatures, preResolved,
-                                                     allowedMultiple, processTypes,
-                                                     null);
+        Result resultWithKernel = getResolver().doResolve(getRepository(),
+                                                          kernelFeatures, rootFeatures, preResolved,
+                                                          allowedMultiple, EnumSet.allOf(ProcessType.class),
+                                                          profiles);
 
         Collection<ProvisioningFeatureDefinition> emptyDefs = Collections.emptySet();
-        Result resultWithoutKernel = resolver.doResolve(repository,
-                                                        emptyDefs, rootFeatures, preResolved,
-                                                        allowedMultiple, processTypes,
-                                                        null);
+        Result resultWithoutKernel = getResolver().doResolve(getRepository(),
+                                                             emptyDefs, rootFeatures, preResolved,
+                                                             allowedMultiple, EnumSet.allOf(ProcessType.class),
+                                                             profiles);
 
         long endTimeNs = VerifyData.getTimeNs();
         long durationNs = endTimeNs - startTimeNs;
@@ -666,18 +632,14 @@ public class FeatureResolverBaseline {
 
         boolean allowMultiple = (allowedMultiple != null);
 
-        String name = featureDef.getSymbolicName() +
-                      "_" + processType +
-                      (allowMultiple ? "_n" : "");
-
+        String name = featureDef.getSymbolicName() + (allowMultiple ? "_n" : "");
         String description = "Singleton [ " + featureDef.getSymbolicName() + " ]" +
-                             " [ " + processType + " ]" +
                              (allowMultiple ? " [ Multiple ]" : "");
 
         List<String> rootFeatureNames = Collections.singletonList( featureDef.getSymbolicName() );
 
         return asCase(name, description,
-                      allowedMultiple, processType,
+                      allowedMultiple,
                       kernelFeatures, rootFeatureNames,
                       resultWithKernel, resultWithoutKernel,
                       durationNs);
@@ -691,8 +653,6 @@ public class FeatureResolverBaseline {
      * @param description The description to assign to the case.
      * @param allowedMultiple Control parameters: When non-null, allow
      *     multiple features.
-     * @param processType Control parameter: Sets the process type active
-     *     during resolution.
      * @param kernelFeatures Kernel features to be used to perform the
      *     resolution.
      * @param rootFeatures The root feature names which were resolved.
@@ -704,7 +664,7 @@ public class FeatureResolverBaseline {
      *     the resolution result.
      */
     public VerifyCase asCase(String name, String description,
-                             Set<String> allowedMultiple, ProcessType processType,
+                             Set<String> allowedMultiple,
                              Collection<ProvisioningFeatureDefinition> kernelFeatures,
                              Collection<String> rootFeatures,
                              Result resultWithKernel, Result resultWithoutKernel,
@@ -724,21 +684,14 @@ public class FeatureResolverBaseline {
             verifyCase.input.setMultiple();
         }
 
-        if (processType == ProcessType.CLIENT) {
-            verifyCase.input.setClient();
-        } else if (processType == ProcessType.SERVER) {
-            verifyCase.input.setServer();
-        }
-
         for ( ProvisioningFeatureDefinition kernelDef : kernelFeatures ) {
             verifyCase.input.addKernel(kernelDef.getSymbolicName());
         }
         for ( String rootFeature: rootFeatures ) {
             verifyCase.input.addRoot(rootFeature);
         }
-        for ( String resolvedFeature : resultWithKernel.getResolvedFeatures() ) {
-            verifyCase.output.addResolved(resolvedFeature);
-        }
+
+        verifyCase.output.copy(resultWithKernel);
 
         verifyCase.kernelAdjust(VerifyDelta.ORIGINAL_USED_KERNEL,
                                 resultWithoutKernel.getResolvedFeatures(),

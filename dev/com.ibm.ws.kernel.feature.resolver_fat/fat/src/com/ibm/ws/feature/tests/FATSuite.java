@@ -18,25 +18,19 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                ReportFeaturesUnitTest.class,
+                // ReportImagesUnitTest.class, // Disabled: See issue 29079
+                // FeatureDetailsUnitTest.class, // Disabled: Not getting features in WL.
 
-// Needs to be refactored into normal build test suite - not as FAT's
-/*
- * ReportFeaturesUnitTest.class,
- * ReportImagesUnitTest.class,
- *
- * FeatureDetailsUnitTest.class,
- *
- * BaselineResolutionSingletonUnitTest.class,
- * BaselineResolutionServletUnitTest.class,
- * BaselineResolutionMicroProfileUnitTest.class,
- *
- * BaselineResolutionGenerationTest.class,
- * BaselineVersionlessSingletonUnitTest.class
- */
+                // BaselineResolutionGenerationTest.class,
+                BaselineResolutionSingletonUnitTest.class,
+                BaselineVersionlessSingletonUnitTest.class,
+                BaselineResolutionServletUnitTest.class, // servlet + servlet-x.x disabled: See issue 29137
+                // BaselineResolutionMicroProfileUnitTest.class, Disabled: See issue 29136
+
+                VersionlessJavaEEToMicroProfileTest.class,
+                VersionlessServletToMicroProfileTest.class,
                 VersionlessMessagesTest.class
-// VersionlessServletToMicroProfileTest.class,
-// VersionlessJavaEEToMicroProfileTest.class,
-// VersionlessEnvVarErrorTest.class
 })
 
 public class FATSuite {

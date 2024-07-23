@@ -13,12 +13,12 @@
 
 package com.ibm.ws.kernel.feature.internal.util;
 
-import static com.ibm.ws.kernel.feature.internal.util.ImageXMLConstants.*;
+import static com.ibm.ws.kernel.feature.internal.util.ImageXMLConstants.XML_INPUT_FEATURE;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -41,10 +41,10 @@ public class ImageReader {
         File[] imageFiles = rootFile.listFiles();
 
         List<File[]> imageDirs = new ArrayList<>(imageFiles.length);
-        for ( File imageFile : imageFiles ) {
-            if (imageFile.isDirectory() ) {
+        for (File imageFile : imageFiles) {
+            if (imageFile.isDirectory()) {
                 File featuresFile = new File(imageFile, FEATURES_FILE_NAME);
-                if ( featuresFile.exists() ) {
+                if (featuresFile.exists()) {
                     imageDirs.add(new File[] { imageFile, featuresFile });
                 }
             }
@@ -62,7 +62,7 @@ public class ImageReader {
 
             String imageName = imageDir.getName();
             List<String> features = readFeatures(imageFile);
-            images.put( new ImageInfo(imageName, features) );
+            images.put(new ImageInfo(imageName, features));
         }
 
         return images;
@@ -74,19 +74,19 @@ public class ImageReader {
     public static List<String> readFeatures(File imageFile) throws IOException {
         List<String> features = new ArrayList<>();
 
-        try ( InputStream inputStream = new FileInputStream(imageFile);
-              InputStreamReader baseReader = new InputStreamReader(inputStream, "UTF-8");
-              BufferedReader reader = new BufferedReader(baseReader) ) {
+        try (InputStream inputStream = new FileInputStream(imageFile);
+                        InputStreamReader baseReader = new InputStreamReader(inputStream, "UTF-8");
+                        BufferedReader reader = new BufferedReader(baseReader)) {
 
             String nextLine;
-            while ( (nextLine = reader.readLine()) != null ) {
+            while ((nextLine = reader.readLine()) != null) {
                 nextLine = nextLine.trim();
-                if ( nextLine.isEmpty() ) {
+                if (nextLine.isEmpty()) {
                     continue;
                 }
-                if ( !nextLine.startsWith(XML_INPUT_FEATURE_OPEN) ) {
+                if (!nextLine.startsWith(XML_INPUT_FEATURE_OPEN)) {
                     continue;
-                } else if ( !nextLine.endsWith(XML_INPUT_FEATURE_CLOSE) ) {
+                } else if (!nextLine.endsWith(XML_INPUT_FEATURE_CLOSE)) {
                     continue;
                 }
 

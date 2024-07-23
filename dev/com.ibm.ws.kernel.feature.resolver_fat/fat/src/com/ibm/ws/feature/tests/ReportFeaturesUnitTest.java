@@ -41,7 +41,7 @@ public class ReportFeaturesUnitTest {
             didSetup = true;
         }
 
-        RepositoryUtil.setupFeatures();
+        // RepositoryUtil.setupFeatures();
         RepositoryUtil.setupRepo(SERVER_NAME);
     }
 
@@ -65,7 +65,7 @@ public class ReportFeaturesUnitTest {
         return new File(absOutputPath);
     }
 
-    @Test
+    // @Test
     public void report_featureInfoTest() throws Exception {
         File xmlOutputFile = setupOutput("Features output", FEATURES_XML_OUTPUT_PATH);
 
