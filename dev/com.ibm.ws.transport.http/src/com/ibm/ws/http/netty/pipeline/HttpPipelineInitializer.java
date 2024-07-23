@@ -31,6 +31,7 @@ import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpObjectAggregator;
 import com.ibm.ws.http.netty.pipeline.inbound.TransportInboundHandler;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -284,7 +285,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 // If this handler is hit then no upgrade has been attempted and the client is just talking HTTP 1.1.
                 ctx.pipeline().addBefore("chunkLoggingHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
                 ctx.pipeline().addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, "objectAggregator",
-                                        new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
+                                        new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? 8190 : httpConfig.getMessageSizeLimit()));
                 ctx.pipeline().remove(HttpServerUpgradeHandler.class);
                 ctx.fireChannelRead(ReferenceCountUtil.retain(msg, 1));
                 // Remove unused handlers

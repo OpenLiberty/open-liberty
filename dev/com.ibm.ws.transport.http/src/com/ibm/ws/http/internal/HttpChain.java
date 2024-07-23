@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.osgi.framework.Constants;
+import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
 import com.ibm.websphere.channelfw.ChainData;
@@ -28,7 +30,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.http.channel.h2internal.Constants;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherConfig;
 import com.ibm.wsspi.channelfw.ChainEventListener;

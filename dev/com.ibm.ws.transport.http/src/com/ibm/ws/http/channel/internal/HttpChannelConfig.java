@@ -196,8 +196,8 @@ public class HttpChannelConfig {
     protected Map<String, String> sameSiteCookies = null;
     protected Set<String> sameSiteErrorCookies = null;
     protected Map<String, String> sameSiteStringPatterns = null;
-    private Map<Pattern, String> sameSitePatterns = null;
-    private boolean onlySameSiteStar = false;
+    protected Map<Pattern, String> sameSitePatterns = null;
+    protected boolean onlySameSiteStar = false;
 
     /* Identifies if the partitioned cookie attribute should be set */
     private boolean isPartitioned = false;
@@ -1281,7 +1281,7 @@ public class HttpChannelConfig {
 
     private void parseCookiesSameSitePartitioned(Map<Object, Object> props) {
         Object value = props.get(HttpConfigConstants.PROPNAME_SAMESITE_PARTITIONED);
-        if (null != value && this.useSameSiteConfig) {
+        if (null != value && this.useSameSiteConfig()) {
 
             if (value instanceof Boolean) {
                 Boolean partitionedValue = (Boolean) value;
@@ -1289,7 +1289,7 @@ public class HttpChannelConfig {
                     this.isPartitioned = true;
                 }
             }
-            if (this.useSameSiteConfig && (TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+            if (this.useSameSiteConfig() && (TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
                 Tr.event(tc, "Http Channel Config: SameSite Partitioned configuration parsed.");
             }
         }

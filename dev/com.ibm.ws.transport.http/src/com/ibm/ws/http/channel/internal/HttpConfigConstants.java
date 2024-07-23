@@ -344,6 +344,7 @@ public class HttpConfigConstants {
     public static final int MIN_TIMEOUT = 0;
     /** Minimum allowed setting for the limit on the field size */
     public static final int MIN_LIMIT_FIELDSIZE = 50;
+    public static final int MAX_LIMIT_FIELDSIZE = 8190;
 
     /** Maximum buffer size allowed to be allocated */
     public static final int MAX_BUFFER_SIZE = 1048576;
@@ -469,7 +470,7 @@ public class HttpConfigConstants {
             this.name = name;
         }
 
-        private String name;
+        private final String name;
 
         public String getName() {
             return this.name;
@@ -488,7 +489,7 @@ public class HttpConfigConstants {
             this.name = name;
         }
 
-        private String name;
+        private final String name;
 
         public String getName() {
             return this.name;
