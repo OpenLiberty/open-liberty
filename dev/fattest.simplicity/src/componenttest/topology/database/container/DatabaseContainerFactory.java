@@ -95,7 +95,7 @@ public class DatabaseContainerFactory {
         Log.info(c, "create", "System property: fat.bucket.db.type is " + dbProperty);
 
         if (!validateDatabaseRotationFeature) {
-            throw new IllegalArgumentException("To use a generic database, the FAT must be opted into database rotation by setting 'testedFeatures: " //
+            throw new IllegalArgumentException("To use a generic database, the FAT must be opted into database rotation by setting 'tested.features: " //
                                                + databaseRotationTestFeature + "' in the FAT project's bnd.bnd file");
         }
 
