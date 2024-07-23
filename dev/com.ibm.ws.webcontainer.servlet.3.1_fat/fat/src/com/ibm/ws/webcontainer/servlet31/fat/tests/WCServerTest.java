@@ -14,6 +14,8 @@ import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE8_OR_LATER_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_OR_LATER_FEATURES;
 import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileReader;
@@ -22,27 +24,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.WebContainerElement;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
-import com.ibm.ws.fat.util.browser.WebResponse;
-import com.meterware.httpunit.GetMethodWebRequest;
-import com.meterware.httpunit.WebConversation;
-import com.meterware.httpunit.WebRequest;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.SkipForRepeat;
@@ -50,14 +43,19 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEEAction;
+import componenttest.annotation.Server;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.Header;
 
 /**
  * All Servlet 3.1 tests with all applicable server features enabled.
  */
 @RunWith(FATRunner.class)
-public class WCServerTest extends LoggingTest {
+public class WCServerTest {
 
     @SuppressWarnings("unused")
     private static final Logger LOG = Logger.getLogger(WCServerTest.class.getName());
@@ -78,8 +76,8 @@ public class WCServerTest extends LoggingTest {
     private static final String TEST_SERVLET_MAPPING_APP_NAME = "TestServletMapping";
     private static final String TEST_SERVLET_MAPPING_ANNO_APP_NAME = "TestServletMappingAnno";
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("servlet31_wcServer");
+    @Server("servlet31_wcServer")
+    public static LibertyServer LS;
 
     @BeforeClass
     public static void setupClass() throws Exception {
@@ -132,71 +130,39 @@ public class WCServerTest extends LoggingTest {
                                                                             "com.ibm.ws.webcontainer.servlet_31_fat.testservletmappinganno.war.servlets");
         TestServletMappingAnnoApp = (WebArchive) ShrinkHelper.addDirectory(TestServletMappingAnnoApp, "test-applications/TestServletMappingAnno.war/resources");
 
-        // Verify if the apps are in the server before trying to deploy them
-        if (SHARED_SERVER.getLibertyServer().isStarted()) {
-            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(TEST_SERVLET_31_APP_NAME);
-            LOG.info("addAppToServer : " + TEST_SERVLET_31_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), TestServlet31App);
+        // Export the applications
+        ShrinkHelper.exportDropinAppToServer(LS, TestServlet31App);
+        ShrinkHelper.exportDropinAppToServer(LS, TestMetadataCompleteApp);
+        ShrinkHelper.exportDropinAppToServer(LS, SessionIdAddListenerApp);
+        ShrinkHelper.exportDropinAppToServer(LS, SessionIdListenerApp);
+        ShrinkHelper.exportDropinAppToServer(LS, ServletContextAddListenerApp);
+        ShrinkHelper.exportDropinAppToServer(LS, ServletContextCreateListenerApp);
+        ShrinkHelper.exportAppToServer(LS, TestServletMappingApp, DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(LS, TestServletMappingAnnoApp, DISABLE_VALIDATION);
 
-            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(SESSION_ID_LISTENER_APP_NAME);
-            LOG.info("addAppToServer : " + SESSION_ID_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), SessionIdListenerApp);
+        // Start the server and use the class name so we can find logs easily.
+        LS.startServer(WCServerTest.class.getSimpleName() + ".log");
 
-            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(SESSION_ID_ADD_LISTENER_APP_NAME);
-            LOG.info("addAppToServer : " + SESSION_ID_ADD_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), SessionIdAddListenerApp);
-
-            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(SERVLET_CONTEXT_ADD_LISTENER_APP_NAME);
-            LOG.info("addAppToServer : " + SERVLET_CONTEXT_ADD_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), ServletContextAddListenerApp);
-
-            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(SERVLET_CONTEXT_CREATE_LISTENER_APP_NAME);
-            LOG.info("addAppToServer : " + SERVLET_CONTEXT_CREATE_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), ServletContextCreateListenerApp);
-
-            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(TEST_METADATA_COMPLETE_APP_NAME);
-            LOG.info("addAppToServer : " + TEST_METADATA_COMPLETE_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), TestMetadataCompleteApp);
-
-            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(TEST_SERVLET_MAPPING_APP_NAME);
-            LOG.info("addAppToServer : " + TEST_SERVLET_MAPPING_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportAppToServer(SHARED_SERVER.getLibertyServer(), TestServletMappingApp, DISABLE_VALIDATION);
-
-            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(TEST_SERVLET_MAPPING_ANNO_APP_NAME);
-            LOG.info("addAppToServer : " + TEST_SERVLET_MAPPING_ANNO_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportAppToServer(SHARED_SERVER.getLibertyServer(), TestServletMappingAnnoApp, DISABLE_VALIDATION);
-        }
-
-        SHARED_SERVER.startIfNotStarted();
-
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + TEST_SERVLET_31_APP_NAME);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + SESSION_ID_ADD_LISTENER_APP_NAME);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + SERVLET_CONTEXT_ADD_LISTENER_APP_NAME);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + SERVLET_CONTEXT_CREATE_LISTENER_APP_NAME);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + SESSION_ID_LISTENER_APP_NAME);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + TEST_METADATA_COMPLETE_APP_NAME);
+        LS.waitForStringInLog("CWWKZ0001I.* " + TEST_SERVLET_31_APP_NAME);
+        LS.waitForStringInLog("CWWKZ0001I.* " + SESSION_ID_ADD_LISTENER_APP_NAME);
+        LS.waitForStringInLog("CWWKZ0001I.* " + SERVLET_CONTEXT_ADD_LISTENER_APP_NAME);
+        LS.waitForStringInLog("CWWKZ0001I.* " + SERVLET_CONTEXT_CREATE_LISTENER_APP_NAME);
+        LS.waitForStringInLog("CWWKZ0001I.* " + SESSION_ID_LISTENER_APP_NAME);
+        LS.waitForStringInLog("CWWKZ0001I.* " + TEST_METADATA_COMPLETE_APP_NAME);
 
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup
-        if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().stopServer("SRVE9016E:.*", "CWWKZ0002E:.*", "SRVE8015E:.*", "SRVE9002E:.*", "SRVE9014E:.*");
+        if (LS != null && LS.isStarted()) {
+            LS.stopServer("SRVE9016E:.*", "CWWKZ0002E:.*", "SRVE8015E:.*", "SRVE9002E:.*", "SRVE9014E:.*");
         }
     }
 
-    protected String parseResponse(WebResponse wr, String beginText, String endText) {
+    protected String parseResponse(String text, String beginText, String endText) {
         String s;
-        String body = wr.getResponseBody();
+        String body = text;
         int beginTextIndex = body.indexOf(beginText);
         if (beginTextIndex < 0)
             return "begin text, " + beginText + ", not found";
@@ -218,11 +184,15 @@ public class WCServerTest extends LoggingTest {
     @Test
     @SkipForRepeat(EE8_OR_LATER_FEATURES)
     public void test_Servlet31() throws Exception {
-        WebResponse response = this.verifyResponse("/TestServlet31/MyServlet", "Hello World");
+        Header[] headers = verifyStringsInResponse_getResponseHeaders(new HttpClient(), "/TestServlet31", "/MyServlet", new String[] {"Hello World"});
 
         // verify the X-Powered-By Response header
-        response.verifyResponseHeaderEquals("X-Powered-By", false, "Servlet/3.1",
-                                            true, false);
+        for(Header h : headers){
+            if (h.getName().equals("X-Powered-By")) {
+                LOG.info("X-Powered-By Header Found");
+                assertEquals("X-Powered-By Response header was not 'Servlet/3.1'.", h.getValue(), "Servlet/3.1");
+            }
+        }
     }
 
     @Test
@@ -230,30 +200,22 @@ public class WCServerTest extends LoggingTest {
         // 130998: This tests that the servlet that was programmatically
         // added with a different servlet name in "MyServletContextListener"
         // was created and is accessible.
-        this.verifyResponse("/TestServlet31/ProgrammaticServlet", "Hello World");
+        verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/ProgrammaticServlet", new String[] {"Hello World"});
     }
 
     @Test
     public void test_MetadataCompleteHandlesTypesServlet() throws Exception {
-        WebBrowser wb = createWebBrowserForTestCase();
-        this.verifyResponse(wb, "/TestMetadataComplete/DisplayInits",
-                            new String[] { "ParentServletInitializer: com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacomplete.war.servlets.DisplayInits",
-                                           "HashSetChildInitializer: com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacomplete.war.stack.HelperMethodChild",
-                                           "HashSetChildInitializer: com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacomplete.war.stack.HelperMethod" });
+        verifyStringsInResponse(new HttpClient(), "/TestMetadataComplete", "/DisplayInits", 
+                                new String[] { "ParentServletInitializer: com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacomplete.war.servlets.DisplayInits",
+                                                "HashSetChildInitializer: com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacomplete.war.stack.HelperMethodChild",
+                                                "HashSetChildInitializer: com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacomplete.war.stack.HelperMethod" });
     }
 
     //This isn't duplicating testMetadataCompleteHandlesTypesServlet since we want granularity on the functions.
     //This is for excluded JARs only, the one above is for general SCI function.
     @Test
     public void test_MetadataCompleteExcludedHandlesTypesServlet() throws Exception {
-        WebBrowser wb = createWebBrowserForTestCase();
-
-        String[] expected = new String[] {};
-
-        String[] unexpected = new String[] { "ExcludedServletInitializer: servlets.ExcludedServlet", "ExcludedServletInitializer: servlets.DisplayInits",
-                                             "ParentServletInitializer: servlets.ExcludedServlet" };
-
-        this.verifyResponse(wb, "/TestMetadataComplete/DisplayInits", expected, unexpected);
+        verifyStringsInResponse(new HttpClient(), "/TestMetadataComplete", "/DisplayInits", new String[] {});
     }
 
     /**
@@ -301,29 +263,22 @@ public class WCServerTest extends LoggingTest {
      * Common test code for HttpSessionIdListener tests.
      */
     private void test_SessionIdListener(String url) throws Exception {
-        this.verifyResponse(url, "Expected IllegalStateException");
-        WebBrowser wb = createWebBrowserForTestCase();
-        WebResponse wr = this.verifyResponse(wb, url + "?getSessionFirst=true",
-                                             new String[] { "Session id returned from changeSessionId",
-                                                            "Change count = 1" });
-        String oldSessionId = parseResponse(wr, "Original session id = <sessionid>", "</sessionid>");
-        String newSessionId = parseResponse(wr, "Session id returned from changeSessionId = <sessionid>", "</sessionid>");
+        verifyStringsInResponse(new HttpClient(), url, "", new String[] {"Expected IllegalStateException" });
+        HttpClient client = new HttpClient();
+        String responseBody = verifyStringsInResponse_getResponseBody(client, url, "?getSessionFirst=true", new String[] {"Session id returned from changeSessionId", "Change count = 1"});
+        String oldSessionId = parseResponse(responseBody, "Original session id = <sessionid>", "</sessionid>");
+        String newSessionId = parseResponse(responseBody, "Session id returned from changeSessionId = <sessionid>", "</sessionid>");
         Assert.assertTrue("ids are equal: old=" + oldSessionId + ":new=" + newSessionId, !oldSessionId.equals(newSessionId));
-        this.verifyResponse(wb, url, "Original session id = <sessionid>" + newSessionId + "</sessionid>");
+        verifyStringsInResponse(client, url, "", new String[] {"Original session id = <sessionid>" + newSessionId + "</sessionid>"});
     }
 
     @Test
     public void test_RequestedSessionId() throws Exception {
-        WebBrowser wb = createWebBrowserForTestCase();
-        this.verifyResponse(wb, "/TestServlet31/SessionIdTest;jsessionid=mysessionid",
-                            new String[] { "Requested session id was mysessionid",
-                                           "Requested Session id is invalid" });
+        verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/SessionIdTest;jsessionid=mysessionid", new String[] { "Requested session id was mysessionid", "Requested Session id is invalid" });
     }
 
     @Test
     public void test_GetServerInfo() throws Exception {
-        WebBrowser wb = createWebBrowserForTestCase();
-
         String v = System.getProperty("version", "");
         File f = new File("../build.image/wlp/lib/versions/WebSphereApplicationServer.properties");
         if (f.exists()) {
@@ -334,8 +289,7 @@ public class WCServerTest extends LoggingTest {
             } catch (IOException e) {
             }
         }
-
-        this.verifyResponse(wb, "/TestServlet31/GetServerInfoTest", "GetServerInfoTest: ServletContext.getServerInfo()=IBM WebSphere Liberty/" + v);
+        verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/GetServerInfoTest", new String[] { "GetServerInfoTest: ServletContext.getServerInfo()=IBM WebSphere Liberty/" + v });
     }
 
     /**
@@ -346,22 +300,18 @@ public class WCServerTest extends LoggingTest {
      */
     @Test
     public void test_ResponseReset() throws Exception {
-        WebBrowser wb = createWebBrowserForTestCase();
+        HttpClient client = new HttpClient();
         String url = "/TestServlet31/ResponseReset?firstType=pWriter&secondType=pWriter";
-        WebResponse wr = this.verifyResponse(wb, url, "SUCCESS");
-        String body = wr.getResponseBody();
+        String body = verifyStringsInResponse_getResponseBody(new HttpClient(), url, "", new String[] { "SUCCESS" });
         Assert.assertTrue("contained content before the reset: url=" + url + "::" + body, body.indexOf("FAILURE") == -1);
         url = "/TestServlet31/ResponseReset?firstType=pWriter&secondType=outputStream";
-        wr = this.verifyResponse(wb, url, "SUCCESS");
-        body = wr.getResponseBody();
+        body = verifyStringsInResponse_getResponseBody(new HttpClient(), url, "", new String[] { "SUCCESS" });
         Assert.assertTrue("contained content before the reset: url=" + url + "::" + body, body.indexOf("FAILURE") == -1);
         url = "/TestServlet31/ResponseReset?firstType=outputStream&secondType=pWriter";
-        wr = this.verifyResponse(wb, url, "SUCCESS");
-        body = wr.getResponseBody();
+        body = verifyStringsInResponse_getResponseBody(new HttpClient(), url, "", new String[] { "SUCCESS" });
         Assert.assertTrue("contained content before the reset: url=" + url + "::" + body, body.indexOf("FAILURE") == -1);
         url = "/TestServlet31/ResponseReset?firstType=outputStream&secondType=outputStream";
-        wr = this.verifyResponse(wb, url, "SUCCESS");
-        body = wr.getResponseBody();
+        body = verifyStringsInResponse_getResponseBody(new HttpClient(), url, "", new String[] { "SUCCESS" });
         Assert.assertTrue("contained content before the reset: url=" + url + "::" + body, body.indexOf("FAILURE") == -1);
     }
 
@@ -376,10 +326,7 @@ public class WCServerTest extends LoggingTest {
     @Test
     @SkipForRepeat(EE8_OR_LATER_FEATURES)
     public void test_ServletContextMinorMajorVersion() throws Exception {
-        this.verifyResponse("/TestServlet31/MyServlet?TestMajorMinorVersion=true",
-                            "majorVersion: 3");
-        this.verifyResponse("/TestServlet31/MyServlet?TestMajorMinorVersion=true",
-                            "minorVersion: 1");
+        verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/MyServlet?TestMajorMinorVersion=true", new String[] { "majorVersion: 3", "minorVersion: 1" });
     }
 
     /**
@@ -392,13 +339,16 @@ public class WCServerTest extends LoggingTest {
     @ExpectedFFDC({ "com.ibm.wsspi.adaptable.module.UnableToAdaptException", "com.ibm.ws.container.service.metadata.MetaDataException" })
     public void test_ServletMapping() throws Exception {
 
-        LibertyServer wlp = SHARED_SERVER.getLibertyServer();
+        LibertyServer wlp = LS;
         wlp.setMarkToEndOfLog();
 
         wlp.saveServerConfiguration();
+        ServerConfiguration configuration = wlp.getServerConfiguration();
+        LOG.info("Server configuration that was saved: " + configuration);
         // copy server.xml for TestServletMapping.war
         // should use updateServerConfiguration(wlp.getServerRoot() +
         wlp.setServerConfigurationFile("TestServletMapping/server.xml");
+        wlp.waitForConfigUpdateInLogUsingMark(null);
         // check for error message
         String logmsg = wlp.waitForStringInLogUsingMark("CWWKZ0002E:.*TestServletMapping");
         Assert.assertNotNull("TestServletMapping application should have failed to start ", logmsg);
@@ -408,10 +358,31 @@ public class WCServerTest extends LoggingTest {
         Assert.assertNotNull("TestServletMapping application deployment did not result in  message SRVE9016E: ", logmsg);
 
         wlp.setMarkToEndOfLog();
+        wlp.updateServerConfiguration(configuration);
+        wlp.waitForConfigUpdateInLogUsingMark(null);
+    }
+
+        /**
+     * Verify that a duplicate <servlet-mapping> element results in a deployment error. Servlet 3.1 spec, section 12.2
+     *
+     * @throws Exception
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    @ExpectedFFDC({ "com.ibm.wsspi.adaptable.module.UnableToAdaptException", "com.ibm.ws.container.service.metadata.MetaDataException" })
+    public void test_ServletMappingAnno() throws Exception {
+
+        LibertyServer wlp = LS;
+        wlp.setMarkToEndOfLog();
+
+        wlp.saveServerConfiguration();
+        ServerConfiguration configuration = wlp.getServerConfiguration();
+        LOG.info("Server configuration that was saved: " + configuration);
         // copy server.xml for TestServletMappingAnno.war
         wlp.setServerConfigurationFile("TestServletMappingAnno/server.xml");
+        wlp.waitForConfigUpdateInLogUsingMark(null);
         // check for error message
-        logmsg = wlp.waitForStringInLogUsingMark("CWWKZ0002E:.*TestServletMappingAnno");
+        String logmsg = wlp.waitForStringInLogUsingMark("CWWKZ0002E:.*TestServletMappingAnno");
         Assert.assertNotNull("TestServletMappingAnno application should have failed to start ", logmsg);
 
         // application failed to start, verify that it is because of a duplicate servlet-mapping
@@ -419,7 +390,7 @@ public class WCServerTest extends LoggingTest {
         Assert.assertNotNull("TestServletMappingAnno application deployment did not result in  message SRVE9016E ", logmsg);
 
         wlp.setMarkToEndOfLog();
-        wlp.restoreServerConfiguration();
+        wlp.updateServerConfiguration(configuration);
         wlp.waitForConfigUpdateInLogUsingMark(null);
     }
 
@@ -434,10 +405,10 @@ public class WCServerTest extends LoggingTest {
 
         // Make sure the test framework knows that SRVE8015E is expected
 
-        this.verifyResponse("/ServletContextAddListener/SimpleTestServlet", "Hello World");
+        verifyStringsInResponse(new HttpClient(), "/ServletContextAddListener", "/SimpleTestServlet", new String[] { "Hello World" });
 
         // application should be initialized with the above request, now check the logs for the proper output.
-        Assert.assertNotNull(SHARED_SERVER.getLibertyServer().findStringsInLogs("SRVE8015E:.*ThisListenerDoesNotExist"));
+        Assert.assertNotNull(LS.findStringsInLogs("SRVE8015E:.*ThisListenerDoesNotExist"));
     }
 
     /**
@@ -451,10 +422,11 @@ public class WCServerTest extends LoggingTest {
         // Make sure the test framework knows that SRVE9014E is expected
 
         // Drive a request to the SimpleTestServlet to initialize the application
-        this.verifyResponse("/ServletContextCreateListener/SimpleTestServlet", "Hello World");
+        verifyStringsInResponse(new HttpClient(), "/ServletContextCreateListener", "/SimpleTestServlet", new String[] { "Hello World" });
+
 
         // Ensure that the proper exception was output
-        LibertyServer server = SHARED_SERVER.getLibertyServer();
+        LibertyServer server = LS;
         List<String> logMessage = server.findStringsInLogs("SRVE8014E:");
 
         Assert.assertNotNull("The correct message was not logged.", logMessage);
@@ -475,7 +447,7 @@ public class WCServerTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
     public void test_DecodeUrlPlusSignDefault_Servlet5() throws Exception {
-        this.verifyResponse("/TestServlet31/plus+sign.html", "This file has a plus sign in the name");
+        verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/plus+sign.html", new String[] { "This file has a plus sign in the name" });
     }
 
     /**
@@ -486,7 +458,7 @@ public class WCServerTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @SkipForRepeat(EE9_OR_LATER_FEATURES)
     public void test_DecodeUrlPlusSignDefault() throws Exception {
-        this.verifyResponse("/TestServlet31/noplus+sign.html", "This file has a space in the name");
+        verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/noplus+sign.html", new String[] { "This file has a space in the name" });
     }
 
     /**
@@ -501,7 +473,7 @@ public class WCServerTest extends LoggingTest {
     @Mode(TestMode.FULL)
     public void test_DecodeUrlPlusSign() throws Exception {
 
-        LibertyServer wlp = SHARED_SERVER.getLibertyServer();
+        LibertyServer wlp = LS;
         wlp.saveServerConfiguration();
 
         ServerConfiguration configuration = wlp.getServerConfiguration();
@@ -526,13 +498,13 @@ public class WCServerTest extends LoggingTest {
 
         try {
             if (JakartaEEAction.isEE9OrLaterActive())
-                this.verifyResponse("/TestServlet31/noplus+sign.html", "This file has a space in the name");
+                verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/noplus+sign.html", new String[] {"This file has a space in the name"});
             else
-                this.verifyResponse("/TestServlet31/plus+sign.html", "This file has a plus sign in the name");
+                verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/plus+sign.html", new String[] {"This file has a plus sign in the name"});
         } finally {
             // Reset the server.xml.
             wlp.setMarkToEndOfLog();
-            wlp.restoreServerConfiguration();
+            wlp.updateServerConfiguration(configuration);
             wlp.waitForConfigUpdateInLogUsingMark(null);
         }
     }
@@ -561,27 +533,43 @@ public class WCServerTest extends LoggingTest {
     private void verifyResponseStringLength(String path, String target) throws Exception {
         LOG.info("Expected text: " + target + " length: " + target.length());
 
-        LibertyServer server = SHARED_SERVER.getLibertyServer();
-        WebConversation wc = new WebConversation();
-        wc.setExceptionsThrownOnErrorStatus(false);
-        WebRequest request = new GetMethodWebRequest("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + path);
-        com.meterware.httpunit.WebResponse response = wc.getResponse(request);
-        Assert.assertEquals("Expected " + 200 + " status code was not returned!", 200, response.getResponseCode());
+        LibertyServer server = LS;
+        HttpClient client = new HttpClient();
+        GetMethod get = new GetMethod("http://" + LS.getHostname() + ":" + LS.getHttpDefaultPort() + path);
+        int responseCode = client.executeMethod(get);
+        String responseBody = get.getResponseBodyAsString().trim();
+        Assert.assertEquals("Expected " + 200 + " status code was not returned!", 200, responseCode);
+        LOG.info("Response text: " + responseBody + " length: " + responseBody.length());
 
-        String responseText = response.getText().trim();
-        LOG.info("Response text: " + responseText + " length: " + responseText.length());
-
-        Assert.assertTrue("The response length was incorrect: " + responseText.length() + " != " + target.length(),
-                          responseText.length() == target.length());
+        Assert.assertTrue("The response length was incorrect: " + responseBody.length() + " != " + target.length(),
+                          responseBody.length() == target.length());
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
+    private void verifyStringsInResponse(HttpClient client, String contextRoot, String path, String[] expectedResponseStrings) throws Exception {
+        getResponse(client, contextRoot, path, expectedResponseStrings);
+    }
+
+    private Header[] verifyStringsInResponse_getResponseHeaders(HttpClient client, String contextRoot, String path, String[] expectedResponseStrings) throws Exception {
+        return getResponse(client, contextRoot, path, expectedResponseStrings).getResponseHeaders();
+    }
+
+    private String verifyStringsInResponse_getResponseBody(HttpClient client, String contextRoot, String path, String[] expectedResponseStrings) throws Exception {
+        return getResponse(client, contextRoot, path, expectedResponseStrings).getResponseBodyAsString();
+    }
+    
+    private GetMethod getResponse(HttpClient client, String contextRoot, String path, String[] expectedResponseStrings) throws Exception {
+        GetMethod get = new GetMethod("http://" + LS.getHostname() + ":" + LS.getHttpDefaultPort() + contextRoot + path);
+        int responseCode = client.executeMethod(get);
+        String responseBody = get.getResponseBodyAsString();
+        LOG.info("Response : " + responseBody);
+  
+        assertEquals("Expected " + 200 + " status code was not returned!",
+                     200, responseCode);
+  
+        for (String expectedResponse : expectedResponseStrings) {
+            assertTrue("The response did not contain: " + expectedResponse, responseBody.contains(expectedResponse));
+        }
+
+        return get;
     }
 }
