@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.RecordComponent;
+import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -107,6 +108,8 @@ public class EntityInfo {
         this.versionAttributeName = versionAttributeName;
 
         inheritance = entityClass.getAnnotation(Inheritance.class) != null;
+
+        validate();
     }
 
     /**
@@ -269,5 +272,23 @@ public class EntityInfo {
                         .append(name).append(' ') //
                         .append(attributeTypes.keySet()) //
                         .toString();
+    }
+
+    /**
+     * Performs validation on the entity information, such as checking for
+     * unsupportable entity attribute types.
+     */
+    @Trivial
+    private void validate() {
+        for (Class<?> attrType : attributeTypes.values())
+            // ZonedDateTime is not one of the supported Temporal types
+            // Jakarta Data and Jakarta Persistence and does not behave
+            // correctly in EclipseLink where we have observed reading back
+            // a different value from the database than was persisted.
+            // If proper support is added for it in the future, then this
+            // can be removed.
+            if (ZonedDateTime.class.equals(attrType))
+                throw new MappingException("The " + getType().getName() + " entity has an attribute of type " +
+                                           ZonedDateTime.class.getName() + ", which is not supported."); // TODO NLS
     }
 }
