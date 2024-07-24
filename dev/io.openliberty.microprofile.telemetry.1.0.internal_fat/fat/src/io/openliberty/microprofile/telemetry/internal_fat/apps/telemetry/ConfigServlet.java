@@ -21,10 +21,7 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
-import componenttest.rules.repeater.MicroProfileActions;
-import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
@@ -52,8 +49,6 @@ public class ConfigServlet extends FATServlet {
 
     //Tests otel.service.name is overrideDone instead of overrideThis*Property
     @Test
-    @SkipForRepeat({ MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID,
-                     TelemetryActions.MP14_MPTEL20_ID })
     public void testServiceNameConfig() {
         Tracer tracer = openTelemetry.getTracer("config-test", "1.0.0");
         Span span = tracer.spanBuilder("testSpan").startSpan();

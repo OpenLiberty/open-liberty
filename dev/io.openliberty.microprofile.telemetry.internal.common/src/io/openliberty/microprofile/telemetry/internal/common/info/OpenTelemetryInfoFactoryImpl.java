@@ -352,20 +352,29 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
     //Adds the service name to the resource attributes
     private Resource customizeResource(Resource resource, ConfigProperties c) {
         ResourceBuilder builder = resource.toBuilder();
+
+        //Don't use ResourceAttributes.SERVICE_NAME due to semcov moving the class around
         builder.put(AttributeKey.stringKey("service.name"), getServiceName(c));
         return builder.build();
     }
 
     //Uses application name if the user has not given configured service.name resource attribute
-    private static String getServiceName(ConfigProperties c) {
-        String appName = c.getString(OpenTelemetryConstants.SERVICE_NAME_PROPERTY);
-        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        if (appName == null) {
-            if (cmd != null) {
-                appName = cmd.getModuleMetaData().getApplicationMetaData().getName();
+    private String getServiceName(ConfigProperties c) {
+        String serviceName = c.getString(OpenTelemetryConstants.SERVICE_NAME_PROPERTY);
+        if (serviceName == null) {
+
+            if (!isRuntimeEnabled()) {
+                ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+                if (cmd != null) {
+                    serviceName = cmd.getModuleMetaData().getApplicationMetaData().getName();
+                }
+            }
+
+            if (serviceName == null) {
+                serviceName = "unkown_service";
             }
         }
-        return appName;
+        return serviceName;
     }
 
     //Interfaces and private classes only relevent to this factory.

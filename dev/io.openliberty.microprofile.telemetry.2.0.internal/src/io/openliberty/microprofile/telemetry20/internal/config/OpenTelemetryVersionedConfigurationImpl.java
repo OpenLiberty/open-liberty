@@ -124,15 +124,23 @@ public class OpenTelemetryVersionedConfigurationImpl implements OpenTelemetryInf
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
             return null;
         }
-
     }
 
+    //TODO This and the next method should be refactored into the factory.
     private Resource customizeResource(Resource resource, ConfigProperties c) {
         resource = mergeInOtelResources(resource);
         ResourceBuilder builder = resource.toBuilder();
-        builder.put(AttributeKey.stringKey("service.name"), OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME);
+        builder.put(AttributeKey.stringKey("service.name"), getServiceName(c));
 
         return builder.build();
+    }
+
+    private String getServiceName(ConfigProperties c) {
+        String serviceName = c.getString(OpenTelemetryConstants.SERVICE_NAME_PROPERTY);
+        if (serviceName == null) {
+            serviceName = "unkown_service";
+        }
+        return serviceName;
     }
 
     private static boolean checkDisabled(Map<String, String> oTelConfigs) {
