@@ -77,7 +77,6 @@ public class MonitorMetrics {
 		if (!ProductInfo.getBetaEdition()) {
 			return;
 		}
-		String appName = getApplicationName();
 
 		/*
 		 * Upon initial bundle start up (Which will start with mpTelemetry=2.x and up),
@@ -93,11 +92,10 @@ public class MonitorMetrics {
 		 * retrieve an OpenTelemetry instance and continue even if under the server
 		 * context. Otherwise we will get an null instance an do nothing.
 		 */
-		OpenTelemetry otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo(appName).getOpenTelemetry();
+		OpenTelemetry otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo().getOpenTelemetry();
 		if (otelInstance == null) {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, String.format("Unable to resolve an OpenTelemetry instance for the application name [%s]",
-						appName));
+				Tr.debug(tc, String.format("Unable to resolve an OpenTelemetry instance when regstering metrics for Mbean[%s]"), objectName);
 			}
 			return;
 		}
@@ -254,18 +252,6 @@ public class MonitorMetrics {
 				}
 			}
 		}
-	}
-
-	private String getApplicationName() {
-		ComponentMetaData metaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor()
-				.getComponentMetaData();
-		if (metaData != null) {
-			J2EEName name = metaData.getJ2EEName();
-			if (name != null) {
-				return name.getApplication();
-			}
-		}
-		return null;
 	}
 
 }

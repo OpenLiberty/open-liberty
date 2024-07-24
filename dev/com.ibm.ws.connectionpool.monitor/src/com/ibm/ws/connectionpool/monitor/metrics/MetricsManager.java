@@ -22,11 +22,8 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
-import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.runtime.metadata.ComponentMetaData;
-import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 @Component(configurationPolicy = IGNORE, immediate = true)
 public class MetricsManager {
@@ -66,7 +63,7 @@ public class MetricsManager {
      * @param duration recorded Duration of the wait time
      */
     public void updateWaitTimeMetrics(String poolName, Duration duration) {
-        metricRuntimes.stream().forEach(adapters -> adapters.updateWaitTimeMetrics(poolName, duration, getApplicationName()));
+        metricRuntimes.stream().forEach(adapters -> adapters.updateWaitTimeMetrics(poolName, duration));
     }
 
     /**
@@ -75,18 +72,7 @@ public class MetricsManager {
      * @param Duration recorded Duration of the (in) use time.
      */
     public void updateInUseTimeMetrics(String poolName, Duration duration) {
-        metricRuntimes.stream().forEach(adapters -> adapters.updateInUseTimeMetrics(poolName, duration, getApplicationName()));
-    }
-
-    private String getApplicationName() {
-        ComponentMetaData metaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        if (metaData != null) {
-            J2EEName name = metaData.getJ2EEName();
-            if (name != null) {
-                return name.getApplication();
-            }
-        }
-        return null;
+        metricRuntimes.stream().forEach(adapters -> adapters.updateInUseTimeMetrics(poolName, duration));
     }
 
 }

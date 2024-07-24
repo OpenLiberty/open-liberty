@@ -24,7 +24,7 @@ public interface ConnectionPoolMetricAdapter {
      * @param duration
      * @param appName  This value can be `null` to indicate that we're updating metrics relating to the server. Not all Implementations may need the appname value.
      */
-    public void updateWaitTimeMetrics(String poolName, Duration duration, String appName);
+    public void updateWaitTimeMetrics(String poolName, Duration duration);
 
     /**
      * Given the Connection pool's (JNDI) name , update the Connection pool in use time metric of the respective Metrics runtime
@@ -33,5 +33,5 @@ public interface ConnectionPoolMetricAdapter {
      * @param duration
      * @param appName  This value can be `null` to indicate that we're updating metrics relating to the server. Not all Implementations may need the appname value.
      */
-    public void updateInUseTimeMetrics(String poolName, Duration duration, String appName);
+    public void updateInUseTimeMetrics(String poolName, Duration duration);
 }

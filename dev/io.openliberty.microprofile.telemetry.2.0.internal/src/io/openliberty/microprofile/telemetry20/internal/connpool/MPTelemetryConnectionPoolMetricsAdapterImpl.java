@@ -35,9 +35,9 @@ public class MPTelemetryConnectionPoolMetricsAdapterImpl implements ConnectionPo
 
     private static final double NANO_CONVERSION = 0.000000001;
 
-    public void updateHistogramMetric(String metricName, String description, String poolName, Duration duration, String appName) {
+    public void updateHistogramMetric(String metricName, String description, String poolName, Duration duration) {
 
-        OpenTelemetry otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo((appName == null) ? OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME : appName).getOpenTelemetry();
+        OpenTelemetry otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo().getOpenTelemetry();
 
         /*
          * AppName is retrived through component metadata.
@@ -46,16 +46,14 @@ public class MPTelemetryConnectionPoolMetricsAdapterImpl implements ConnectionPo
          *
          */
         if (otelInstance == null) {
-            otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo(OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME).getOpenTelemetry();
-            if (otelInstance == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc,
-                             String.format("Unable to resolve an OpenTelemetry instance for the ConnectionPool [%s] with application name [%s]", poolName,
-                                           appName));
-                }
-                //do nothing - return
-                return;
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc,
+                         String.format("Unable to resolve an OpenTelemetry instance for the ConnectionPool [%s]", poolName));
             }
+            //do nothing - return
+            return;
+
         }
 
         //Use boundaries specified by Otel DB metrics  semantic convention
@@ -74,15 +72,14 @@ public class MPTelemetryConnectionPoolMetricsAdapterImpl implements ConnectionPo
 
     /** {@inheritDoc} */
     @Override
-    public void updateWaitTimeMetrics(String poolName, Duration duration, String appName) {
-        updateHistogramMetric(OpenTelemetryConstants.NAME_SPACE_PREFIX + OpenTelemetryConstants.WAIT_TIME_NAME, OpenTelemetryConstants.WAIT_TIME_DESC, poolName, duration, appName);
+    public void updateWaitTimeMetrics(String poolName, Duration duration) {
+        updateHistogramMetric(OpenTelemetryConstants.NAME_SPACE_PREFIX + OpenTelemetryConstants.WAIT_TIME_NAME, OpenTelemetryConstants.WAIT_TIME_DESC, poolName, duration);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void updateInUseTimeMetrics(String poolName, Duration duration, String appName) {
-        updateHistogramMetric(OpenTelemetryConstants.NAME_SPACE_PREFIX + OpenTelemetryConstants.IN_USE_TIME_NAME, OpenTelemetryConstants.IN_USE_TIME_DESC, poolName, duration,
-                              appName);
+    public void updateInUseTimeMetrics(String poolName, Duration duration) {
+        updateHistogramMetric(OpenTelemetryConstants.NAME_SPACE_PREFIX + OpenTelemetryConstants.IN_USE_TIME_NAME, OpenTelemetryConstants.IN_USE_TIME_DESC, poolName, duration);
     }
 
 }
