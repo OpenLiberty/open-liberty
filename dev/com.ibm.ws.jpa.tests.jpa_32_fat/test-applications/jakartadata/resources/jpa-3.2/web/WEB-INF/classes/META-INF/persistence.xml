@@ -21,7 +21,8 @@
     <persistence-unit name="RecreatePersistenceUnit">
     	<properties>
 			<!-- EclipseLink should create the database schema automatically -->
-			<property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
+			<property name="jakarta.persistence.schema-generation.database.action" value="create" />
+			<property name="eclipselink.logging.parameters" value="true"/>
 		</properties>
     </persistence-unit>
 </persistence>

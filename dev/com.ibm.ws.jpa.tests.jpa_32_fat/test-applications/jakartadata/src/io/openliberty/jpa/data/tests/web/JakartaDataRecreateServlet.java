@@ -15,9 +15,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +37,7 @@ import io.openliberty.jpa.data.tests.models.Business;
 import io.openliberty.jpa.data.tests.models.City;
 import io.openliberty.jpa.data.tests.models.CityId;
 import io.openliberty.jpa.data.tests.models.Coordinate;
+import io.openliberty.jpa.data.tests.models.DemographicInfo;
 import io.openliberty.jpa.data.tests.models.NaturalNumber;
 import io.openliberty.jpa.data.tests.models.Package;
 import io.openliberty.jpa.data.tests.models.Person;
@@ -648,6 +652,51 @@ public class JakartaDataRecreateServlet extends FATServlet {
             tx.rollback();
             throw e; // Unexpected
         }
+    }
+
+    @Test // Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28813
+    public void testOLGH28813() throws Exception {
+        final ZoneId EASTERN = ZoneId.of("America/New_York");
+
+        DemographicInfo US2024 = DemographicInfo.of(2024, 4, 30, 133809000, 7136033799632.56, 27480960216618.32);
+        DemographicInfo US2023 = DemographicInfo.of(2023, 4, 28, 134060000, 6852746625848.93, 24605068022566.94);
+        DemographicInfo US2022 = DemographicInfo.of(2022, 4, 29, 132250000, 6526909395140.41, 23847245116757.60);
+        DemographicInfo US2007 = DemographicInfo.of(2007, 4, 30, 121090000, 3833110332444.19, 5007058051986.64);
+
+        tx.begin();
+        em.persist(US2024);
+        em.persist(US2023);
+        em.persist(US2022);
+        em.persist(US2007);
+        tx.commit();
+
+        List<DemographicInfo> results;
+
+        tx.begin();
+        try {
+            results = em.createQuery("SELECT o FROM DemographicInfo o WHERE (o.publicDebt BETWEEN ?1 AND ?2) ORDER BY o.publicDebt", DemographicInfo.class)
+                            .setParameter(1, BigDecimal.valueOf(5000000000000.00))
+                            .setParameter(2, BigDecimal.valueOf(10000000000000.00))
+                            .getResultList();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+
+            /*
+             * TODO unable to recreate issue
+             * Exception Description: The object [2007-04-30 11:00:00.0], of class [class java.lang.String],
+             * from mapping [org.eclipse.persistence.mappings.DirectToFieldMapping[collectedOn-->WLPDemographicInfo.COLLECTEDON]]
+             * with descriptor [RelationalDescriptor(test.jakarta.data.jpa.web.DemographicInfo --> [DatabaseTable(WLPDemographicInfo)])],
+             * could not be converted to [class java.time.Instant].
+             * Internal Exception: java.time.format.DateTimeParseException: Text '2007-04-30 11:00:00.0' could not be parsed at index 10
+             */
+            throw e;
+        }
+
+        assertEquals(1, results.size());
+        assertEquals(2007, results.get(0).collectedOn.atZone(EASTERN).get(ChronoField.YEAR));
+
+        System.out.println(results.get(0).toString());
     }
 
     /**
