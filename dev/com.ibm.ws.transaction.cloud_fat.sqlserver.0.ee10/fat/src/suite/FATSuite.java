@@ -27,19 +27,16 @@ import tests.DBRotationTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	//Ensure failures in @BeforeClass do not result in zero tests run
-	AlwaysPassesTest.class,
-	DBRotationTest.class,
+    //Ensure failures in @BeforeClass do not result in zero tests run
+    AlwaysPassesTest.class,
+    DBRotationTest.class,
 })
 public class FATSuite extends TxTestContainerSuite {
 
 	static {
-		DBRotationTest.setDerby();
-		beforeSuite(DatabaseContainerType.Derby);
+		beforeSuite(DatabaseContainerType.SQLServer);
 	}
 
 	@ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(DBRotationTest.serverNames))
-    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11).forServers(DBRotationTest.serverNames));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE10_FEATURES().forServers(DBRotationTest.serverNames));
 }
