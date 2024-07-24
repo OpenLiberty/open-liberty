@@ -13,6 +13,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.BiFunction;
 
 import org.osgi.service.component.annotations.Component;
@@ -131,6 +132,7 @@ public class OpenTelemetryVersionedConfigurationImpl implements OpenTelemetryInf
         resource = mergeInOtelResources(resource);
         ResourceBuilder builder = resource.toBuilder();
         builder.put(AttributeKey.stringKey("service.name"), getServiceName(c));
+        builder.put(OpenTelemetryConstants.KEY_SERVICE_INSTANCE_ID, UUID.randomUUID().toString());
 
         return builder.build();
     }
