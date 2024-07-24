@@ -38,7 +38,9 @@ public class VerifyData {
         Map<String, VerifyCase> inputCases = mapCases();
         Map<String, VerifyCase> outputCases = output.mapCases();
 
-        int maxCases = Integer.max(inputCases.size(), outputCases.size());
+        int inputSize = inputCases.size();
+        int outputSize = outputCases.size();
+        int maxCases = ((inputSize > outputSize) ? inputSize : outputSize);
         Map<String, VerifyCase> mergedCases = new HashMap<>(maxCases);
 
         for (Map.Entry<String, VerifyCase> inputEntry : inputCases.entrySet()) {
