@@ -1,98 +1,128 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.feature.tests;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import com.ibm.ws.feature.tests.util.RepositoryUtil;
+import com.ibm.ws.kernel.feature.internal.util.VerifyData;
 import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyCase;
 
 /**
- * Test cases for variations on setting the platform.
- *
- * Test plan:
- *
- * <pre>
-* Base configurations:
-* 1: f servlet, f jsp
-* 2: f mpMetrics, f mpHealth
-* 3: f servlet, f jsp, f mpMetrics, f mpHealth
-* Case 0: No platforms anywhere
-*   Base 1, 2, 3
-* Case 1: With platforms
-*   Base 1, 2, 3
-*   1: p javaee-7.0
-*   2: p microProfile-3.2
-*   3: p javaee-7.0, p microProfile-3.2
-* Case 2: With environment variables
-*   Base 1, 2, 3
-*   1: e javaee-7.0
-*   2: e microProfile-3.2
-*   3: e javaee-7.0, e microProfile-3.2
-* Case 3: With versioned features
-*   1: v servlet-5.0 [Base 1, 3 only]
-*   2: v mpMetrics-2.2 [Base 2, 3 only]
-*   3: v servlet-5.0, v mpMetrics-2.2 Base 1, 2, 3
-* Case 1-2: Mixing platforms and environment variables
-*   Base 1, 2, 3
-*   1: p javaee-7.0, e javaee-7.0
-*   2: p microProfile-3.2, e microProfile-3.2
-*   3: p javaee-7.0, e javaee-7.0, p microProfile-3.2, e microProfile-3.2
-* Case 1-3: Mixing platforms and versioned features
-*   Base 1, 2, 3
-*   1: p javaee-7.0, v servlet-5.0
-*   2: p microProfile-3.2, v mpMetrics-2.2
-*   3: p javaee-7.0, v servlet-5.0, p microProfile-3.2, v mpMetrics-2.2
-* Case 2-3: Mixing environment variables and versioned features
-*   Base 1, 2, 3
-*   1: e javaee-7.0, v servlet-5.0
-*   2: e microProfile-3.2, v mpMetrics-2.2
-*   3: e javaee-7.0, v servlet-5.0, e microProfile-3.2, v mpMetrics-2.2
-* Case 1-2': Overriding environment variable with platform
-*   1: e javaee-7.0, p javaee-8.0 [Base 1]
-*   2: e microProfile-3.2, p microProfile-4.0 [Base 2]
-*   3: e javaee-7.0, p javaee-8.0, e microProfile-3.2, p microProfile-4.0 [Base 3]
- * </pre>
+ * Baseline public singleton resolution.
  */
-public class VersionlessPlatformTest {
+@RunWith(Parameterized.class)
+public class VersionlessPlatformTest extends BaselineResolutionUnitTest {
+    /** Control parameter: Used to disable this unit test. */
+    public static final boolean IS_ENABLED = BaselineResolutionEnablement.enablePlatforms;
 
-    /*
-     * 1: f servlet, f jsp
-     * 2: f mpMetrics, f mpHealth
-     * 3: f servlet, f jsp, f mpMetrics, f mpHealth
-     */
-    public void features_case1(VerifyCase testCase) {
-        testCase.input.addRoot("servlet");
-        testCase.input.addRoot("jsp");
+    // 'data()' is invoked before the '@BeforeClass' method.
+    // @BeforeClass
+    public static void setupClass() throws Exception {
+        doSetupClass();
+        setupExpected(); // Must be after 'doSetupClass'
     }
 
-    public void features_case2(VerifyCase testCase) {
-        testCase.input.addRoot("mpMetrics");
-        testCase.input.addRoot("mpHealth");
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        doTearDownClass(VersionlessPlatformTest.class);
     }
 
-    public void features_case3(VerifyCase testCase) {
-        features_case1(testCase);
-        features_case2(testCase);
+    public static final String DATA_FILE_PATH_OL = "publish/verify/platform_expected.xml";
+    public static final String DATA_FILE_PATH_WL = "publish/verify/platform_expected_WL.xml";
+
+    public static File getDataFile_OL() {
+        return new File(DATA_FILE_PATH_OL);
     }
 
-    public void platforms_case0(VerifyCase testCase) {
-        // None!
+    public static File getDataFile_WL() {
+        return new File(DATA_FILE_PATH_WL);
     }
 
-    public void platforms_case1(VerifyCase testCase) {
-        // None!
+    public static VerifyData recordedData;
+
+    public static VerifyData getRecordedData() {
+        return recordedData;
     }
 
-    public void platforms_case2(VerifyCase testCase) {
-        // None!
+    public static void setupExpected() throws Exception {
+        VerifyData verifyData = readData(getDataFile_OL());
+        int olCount = verifyData.getCases().size();
+        System.out.println("OL data [ " + DATA_FILE_PATH_OL + " ]: [ " + olCount + " ]");
+
+        // WAS liberty adds and modifies the Open liberty cases.
+        if (RepositoryUtil.isWASLiberty()) {
+            VerifyData verifyData_WL = readData(getDataFile_WL());
+            int wlCount = verifyData_WL.getCases().size();
+            System.out.println("WL data [ " + DATA_FILE_PATH_WL + " ]: [ " + wlCount + " ]");
+
+            verifyData = verifyData.add(verifyData_WL);
+            int finalCount = verifyData.getCases().size();
+            System.out.println("Merged data [ " + (finalCount - olCount) + " ]");
+        }
+
+        recordedData = verifyData;
     }
 
-    public void platforms_case3(VerifyCase testCase) {
-        // None!
+    public static VerifyData getBareInput() throws Exception {
+        return new VerifyData(VersionlessPlatformTestData.getCases().values());
+    }
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() throws Exception {
+        setupClass();
+
+        if (!IS_ENABLED) {
+            return nullCases("platform resolution");
+        } else {
+            return asCases(getBareInput().splice(getRecordedData()));
+        }
+    }
+
+    public VersionlessPlatformTest(String name, VerifyCase testCase) throws Exception {
+        super(name, testCase);
+    }
+
+    @Before
+    public void setupTest() throws Exception {
+        doSetupResolver();
+    }
+
+    @After
+    public void tearDownTest() throws Exception {
+        doClearResolver();
+    }
+
+    @Override
+    public List<String> detectFeatureErrors(List<String> rootFeatures) {
+        return null;
+    }
+
+    @Test
+    public void versionless_platformTest() throws Exception {
+        if (!IS_ENABLED) {
+            nullResult();
+            return;
+        }
+        doTestResolve();
     }
 }

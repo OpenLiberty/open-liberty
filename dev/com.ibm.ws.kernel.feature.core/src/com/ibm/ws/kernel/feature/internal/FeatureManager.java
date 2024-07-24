@@ -2038,33 +2038,46 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             }
         }
 
-        List<String> unresolvedVersionless = new ArrayList<>();
-        for (Map.Entry<String, String> versionlessResolved : result.getVersionlessFeatures().entrySet()) {
-            if(versionlessResolved.getValue() == null){
-                String platformBaseName = featureRepository.getPlatformForVersionlessFeature(versionlessResolved.getKey());
+        for (Map.Entry<String, String> versionlessResolvedEntry : result.getVersionlessFeatures().entrySet()) {
+            String versionlessResolved = versionlessResolvedEntry.getKey();
+            String versionedResolved = versionlessResolvedEntry.getValue();
 
-                boolean compatibleWithPlatform = true;
-                if(platformBaseName != null && !result.getResolvedPlatforms().isEmpty()){
-                    for(String resolvedPlat : result.getResolvedPlatforms()){
-                        if(resolvedPlat.toLowerCase().startsWith(platformBaseName.toLowerCase()) && 
-                            featureRepository.getVersionlessFeatureVersionForPlatform(versionlessResolved.getKey(), resolvedPlat) == null){
+            if(versionedResolved != null){
+                continue; // Sucessfully resolved.  Nothing to check.
+            }
 
-                            Tr.error(tc, "INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM", getFeatureName(versionlessResolved.getKey()), resolvedPlat);
-                            compatibleWithPlatform = false;
-                            break;
-                        }
-                    }
-                }
+            Set<String> platforms = featureRepository.getPlatformsForVersionlessFeature(versionlessResolved);
+            if ((platforms == null) || platforms.isEmpty()) {
+                continue; // Compatibility or linking features are not installed.  The image is incomplete.
+            }
 
-                if(compatibleWithPlatform){
-                    unresolvedVersionless.add(getFeatureName(versionlessResolved.getKey()));
+            ProvisioningFeatureDefinition compatibility = null;
+            for (String platform : platforms) {
+                compatibility = featureRepository.getCompatibilityFeature(platform);
+                if(compatibility != null){
+                    break;
                 }
             }
-        }
-        if(!unresolvedVersionless.isEmpty()){
-            reportedErrors = true;
-            Tr.error(tc, "UNRESOLVED_VERSIONLESS_FEATURE", unresolvedVersionless);
-        }
+            if (compatibility == null) {
+                continue; // Compatibility features are not installed.  The image is incomplete.
+            }
+
+            String compatibilityBaseName = featureRepository.getFeatureBaseName(compatibility.getFeatureName());
+            for(String resolvedPlat : result.getResolvedPlatforms()){
+                ProvisioningFeatureDefinition compatibilityFeature = featureRepository.getCompatibilityFeature(resolvedPlat);
+                if(compatibilityFeature == null){
+                    continue; 
+                }
+                String resolvedBaseName = featureRepository.getFeatureBaseName(compatibilityFeature.getFeatureName());
+
+                if(compatibilityBaseName.equals(resolvedBaseName)){
+                    if(!platforms.contains(resolvedPlat)){
+                        Tr.error(tc, "INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM", getFeatureName(versionlessResolved), resolvedPlat);
+                        break;
+                    }
+                }
+            }
+       }
 
         List<Entry<String, Collection<Chain>>> sortedConflicts = new ArrayList<Entry<String, Collection<Chain>>>(result.getConflicts().entrySet());
         sortedConflicts.sort(new ConflictComparator()); // order by importance
@@ -2366,6 +2379,9 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
     }
 
     private String getPreferredEePlatform(String symbolicName, String compatibleFeatureBase) {
+        if(symbolicName.startsWith(compatibleFeatureBase)){
+            return getEeCompatiblePlatform(symbolicName, false); // include ee version
+        }
         ProvisioningFeatureDefinition fdefinition = featureRepository.getFeature(symbolicName);
         for (FeatureResource fr : fdefinition.getConstituents(SubsystemContentType.FEATURE_TYPE)) {
             if (fr.getSymbolicName().startsWith(compatibleFeatureBase)) {

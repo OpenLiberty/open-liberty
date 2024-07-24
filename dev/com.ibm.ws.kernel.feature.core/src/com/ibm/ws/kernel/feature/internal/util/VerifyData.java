@@ -25,8 +25,6 @@ import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 
 public class VerifyData {
 
-    //
-
     public VerifyData add(VerifyData other) {
         Map<String, VerifyCase> mappedCases = mapCases();
         Map<String, VerifyCase> otherMappedCases = other.mapCases();
@@ -34,6 +32,36 @@ public class VerifyData {
         mappedCases.putAll(otherMappedCases);
 
         return new VerifyData(mappedCases.values());
+    }
+
+    public VerifyData splice(VerifyData output) {
+        Map<String, VerifyCase> inputCases = mapCases();
+        Map<String, VerifyCase> outputCases = output.mapCases();
+
+        int inputSize = inputCases.size();
+        int outputSize = outputCases.size();
+        int maxCases = ((inputSize > outputSize) ? inputSize : outputSize);
+        Map<String, VerifyCase> mergedCases = new HashMap<>(maxCases);
+
+        for (Map.Entry<String, VerifyCase> inputEntry : inputCases.entrySet()) {
+            String inputKey = inputEntry.getKey();
+            VerifyCase inputCase = inputEntry.getValue();
+
+            VerifyCase outputCase = outputCases.get(inputKey);
+
+            VerifyCase mergedCase;
+
+            if (outputCase == null) {
+                System.out.println("Stubbing [ " + inputCase.name + " ]: No output case");
+                mergedCase = inputCase;
+            } else {
+                mergedCase = inputCase.splice(outputCase);
+            }
+
+            mergedCases.put(inputKey, mergedCase);
+        }
+
+        return new VerifyData(mergedCases.values());
     }
 
     //
@@ -89,6 +117,12 @@ public class VerifyData {
         builder.append(text);
     }
 
+    public VerifyCase addCase(String name, String description, boolean isMultiple) {
+        VerifyCase verifyCase = new VerifyCase(name, description, isMultiple);
+        cases.add(verifyCase);
+        return verifyCase;
+    }
+
     public VerifyCase addCase() {
         VerifyCase verifyCase = new VerifyCase();
         cases.add(verifyCase);
@@ -108,11 +142,20 @@ public class VerifyData {
         public String description;
         public long durationNs;
 
-        public final VerifyInput input = new VerifyInput();
-        public final VerifyOutput output = new VerifyOutput();
+        public final VerifyInput input;
+        public final VerifyOutput output;
 
         public VerifyCase() {
-            // EMPTY
+            this.input = new VerifyInput();
+            this.output = new VerifyOutput();
+        }
+
+        public VerifyCase(String name, String description, boolean isMultiple) {
+            this.name = name;
+            this.description = description;
+
+            this.input = new VerifyInput(isMultiple);
+            this.output = new VerifyOutput();
         }
 
         public VerifyCase(VerifyCase inputCase, FeatureResolver.Result result, long durationNs) {
@@ -121,12 +164,12 @@ public class VerifyData {
 
             this.durationNs = durationNs;
 
-            this.input.copy(inputCase.input);
-            this.output.copy(result);
+            this.input = inputCase.input.copy();
+            this.output = new VerifyOutput(result);
         }
 
-        public void setDuration(long startNs) {
-            durationNs = getTimeNs() - startNs;
+        public void setDurationNs(long durationNs) {
+            this.durationNs = durationNs;
         }
 
         // Multiple Kernel:kname1 Roots:rname1:rname2
@@ -193,18 +236,55 @@ public class VerifyData {
         public VerifyCase getSupplied() {
             return this;
         }
+
+        //
+
+        public VerifyCase splice(VerifyCase other) {
+            return new VerifyCase(this, other);
+        }
+
+        public VerifyCase(VerifyCase thisCase, VerifyCase otherCase) {
+            this.name = thisCase.name;
+            this.description = thisCase.description;
+
+            this.input = thisCase.input.copy();
+            this.output = otherCase.output.copy();
+        }
     }
 
     public static class VerifyInput {
+        public VerifyInput(boolean isMultiple) {
+            this();
+
+            this.isMultiple = isMultiple;
+        }
+
+        public VerifyInput() {
+            this.isMultiple = false;
+
+            this.kernel = new ArrayList<>();
+            this.roots = new ArrayList<>();
+            this.platforms = new ArrayList<>();
+            this.envMap = new HashMap<>();
+        }
+
         public boolean isMultiple;
 
-        public final List<String> kernel = new ArrayList<>();
-        public final List<String> roots = new ArrayList<>();
-        public final List<String> platforms = new ArrayList<>();
-        public final Map<String, String> envMap = new HashMap<>();
+        public final List<String> kernel;
+        public final List<String> roots;
+        public final List<String> platforms;
+        public final Map<String, String> envMap;
 
-        public void setMultiple() {
-            isMultiple = true;
+        public void addKernel(Collection<String> features) {
+            kernel.addAll(features);
+        }
+
+        public void addRoots(Collection<String> newRoots) {
+            this.roots.addAll(newRoots);
+        }
+
+        public void putEnv(Map<String, String> newEnv) {
+            envMap.putAll(newEnv);
         }
 
         public void addKernel(String feature) {
@@ -215,8 +295,20 @@ public class VerifyData {
             roots.add(name);
         }
 
+        public void addPlatForms(Collection<String> newPlatforms) {
+            this.platforms.addAll(newPlatforms);
+        }
+
         public void addPlatform(String name) {
             platforms.add(name);
+        }
+
+        public void putEnv(String name, String value) {
+            envMap.put(name, value);
+        }
+
+        public void putAllEnv(Map<String, String> map) {
+            envMap.putAll(map);
         }
 
         public void putEnvironment(String name, String value) {
@@ -279,21 +371,19 @@ public class VerifyData {
             return sb.toString();
         }
 
-        public void copy(VerifyInput source) {
-            if (source.isMultiple) {
-                setMultiple();
-            }
-            for (String kernelName : source.kernel) {
-                addKernel(kernelName);
-            }
-            for (String rootName : source.roots) {
-                addRoot(rootName);
-            }
-            for (String platform : source.platforms) {
-                addPlatform(platform);
-            }
+        //
 
-            putAllEnvironment(source.envMap);
+        public VerifyInput copy() {
+            return new VerifyInput(this);
+        }
+
+        public VerifyInput(VerifyInput other) {
+            this(other.isMultiple);
+
+            this.addKernel(other.kernel);
+            this.addRoots(other.roots);
+            this.addPlatForms(other.platforms);
+            this.putAllEnvironment(other.envMap);
         }
     }
 
@@ -323,6 +413,25 @@ public class VerifyData {
     }
 
     public static class VerifyOutput {
+
+        public VerifyOutput() {
+            // EMPTY
+        }
+
+        public VerifyOutput copy() {
+            return new VerifyOutput(this);
+        }
+
+        public VerifyOutput(VerifyOutput other) {
+            for (ResultData valueType : ResultData.values()) {
+                if (valueType == ResultData.FEATURE_VERSIONLESS_RESOLVED) {
+                    this.putAllVersionlessResolved(other.getVersionlessResolved());
+                } else {
+                    this.addAll(valueType, other.get(valueType));
+                }
+            }
+        }
+
         public EnumMap<ResultData, List<String>> resultData = new EnumMap<>(ResultData.class);
 
         public List<String> get(ResultData dataType) {
@@ -346,7 +455,7 @@ public class VerifyData {
         public void addAll(ResultData dataType, Collection<String> newValues) {
             List<String> values = resultData.get(dataType);
             if (values == null) {
-                values = new ArrayList<>();
+                values = new ArrayList<>(newValues.size());
                 resultData.put(dataType, values);
             }
             values.addAll(newValues);
@@ -488,6 +597,11 @@ public class VerifyData {
 
         // FEATURE_CONFLICT("Conflicted features");
         // Map<String, Collection<Chain>> getConflicts(); [ feature -> Collection<Chain> ]
+
+        public VerifyOutput(FeatureResolver.Result result) {
+            this();
+            this.copy(result);
+        }
 
         public void copy(FeatureResolver.Result result) {
             addAll(ResultData.PLATFORM_RESOLVED, result.getResolvedPlatforms());
