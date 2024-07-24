@@ -581,6 +581,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Test
     @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29073")
     public void testOLGH29073() throws Exception {
+        deleteAllEntities(City.class);
+
         City RochesterMN = City.of("Rochester", "Minnesota", 121878, Set.of(55901, 55902, 55903, 55904, 55906));
         City RochesterNY = City.of("Rochester", "New York", 209352, Set.of(14601, 14602, 14603, 14604, 14606));
 
@@ -745,6 +747,114 @@ public class JakartaDataRecreateServlet extends FATServlet {
         assertEquals(10.00f, maxPrice, 0.01f);
         assertEquals(0.50f, minPrice, 0.01f);
         assertEquals(5.833f, avgPrice, 0.01f);
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28589")
+    public void testOLGH28589_1() throws Exception {
+        deleteAllEntities(City.class);
+
+        City RochesterMN = City.of("Rochester", "Minnesota", 121878, Set.of(55901, 55902, 55903, 55904, 55906));
+        City RochesterNY = City.of("Rochester", "New York", 209352, Set.of(14601, 14602, 14603, 14604, 14606));
+
+        List<Set> RochesterAreaCodes;
+
+        tx.begin();
+        em.persist(RochesterMN);
+        em.persist(RochesterNY);
+        tx.commit();
+
+        tx.begin();
+        try {
+            RochesterAreaCodes = em.createQuery("SELECT o.areaCodes FROM City o WHERE (o.name=?1)", Set.class)
+                            .setParameter(1, "Rochester")
+                            .getResultList();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+
+        System.out.println(RochesterAreaCodes);
+        System.out.println(RochesterAreaCodes.get(0));
+
+        /**
+         * Recreate
+         * expected: <2> but was:<10>
+         * Expected: [[55901, 55902, 55903, 55904, 55906], [14601, 14602, 14603, 14604, 14606]]
+         * Actual: [[55901], [55902], [55903], [55904], [55906], [14601], [14602], [14603], [14604], [14606]]
+         */
+        assertEquals(2, RochesterAreaCodes.size());
+        assertTrue(RochesterAreaCodes.contains(Set.of(55901, 55902, 55903, 55904, 55906)));
+        assertTrue(RochesterAreaCodes.contains(Set.of(14601, 14602, 14603, 14604, 14606)));
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28589")
+    public void testOLGH28589_2() throws Exception {
+        deleteAllEntities(City.class);
+
+        City RedWingMN = City.of("Red Wing", "Minnesota", 16672, Set.of(55066));
+
+        Set<Integer> RedWingAreaCodes;
+
+        tx.begin();
+        em.persist(RedWingMN);
+        tx.commit();
+
+        tx.begin();
+        try {
+            RedWingAreaCodes = em.createQuery("SELECT o.areaCodes FROM City o WHERE (o.name=?1)", Set.class)
+                            .setParameter(1, "Red Wing")
+                            .getSingleResult();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+
+            /*
+             * Recreate
+             * java.lang.ClassCastException: java.lang.Integer incompatible with java.util.Set
+             */
+            throw e;
+        }
+
+        assertEquals(1, RedWingAreaCodes.size());
+        assertEquals(55066, RedWingAreaCodes.stream().findFirst());
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28589")
+    public void testOLGH28589_3() throws Exception {
+        deleteAllEntities(City.class);
+
+        City RochesterMN = City.of("Rochester", "Minnesota", 121878, Set.of(55901, 55902, 55903, 55904, 55906));
+
+        Set<Integer> RochesterAreaCodes;
+
+        tx.begin();
+        em.persist(RochesterMN);
+        tx.commit();
+
+        tx.begin();
+        try {
+            RochesterAreaCodes = em.createQuery("SELECT o.areaCodes FROM City o WHERE (o.name=?1)", Set.class)
+                            .setParameter(1, "Rochester")
+                            .getSingleResult();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            /*
+             * Recreate
+             * jakarta.persistence.NonUniqueResultException: More than one result was returned from Query.getSingleResult()
+             */
+            throw e;
+        }
+
+        assertEquals(5, RochesterAreaCodes.size());
+        assertTrue(RochesterAreaCodes.containsAll(Set.of(55901, 55902, 55903, 55904, 55906)));
     }
 
     /**
