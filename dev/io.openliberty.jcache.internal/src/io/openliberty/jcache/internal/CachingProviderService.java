@@ -38,6 +38,7 @@ import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.library.Library;
 
 import io.openliberty.checkpoint.spi.CheckpointPhase;
+import io.openliberty.checkpoint.spi.CheckpointPhase.OnRestore;
 
 /**
  * Service that configures a {@link CachingProvider} to use with JCache caching.
@@ -69,6 +70,7 @@ public class CachingProviderService {
      * @throws Exception If the component could not activate.
      */
     @Activate
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void activate(Map<String, Object> configProps) throws Exception {
         closeSyncObject = new Object();
 
@@ -81,19 +83,23 @@ public class CachingProviderService {
          * TODO???? No doPriv due to limitations in OSGi and security manager. If
          * running with SecurityManager, permissions will need to be granted explicitly.
          */
-        CheckpointPhase.onRestore(0, () -> {
-            try {
-                ClassLoader classloader = getUnifiedClassLoader();
-                if (cachingProviderClass != null && !cachingProviderClass.trim().isEmpty()) {
-                    cachingProvider = Caching.getCachingProvider(cachingProviderClass, classloader);
-                } else {
-                    cachingProvider = Caching.getCachingProvider(classloader);
+        CheckpointPhase.onRestore(0, new OnRestore() {
+            @Override
+            public void call() throws Throwable {
+                try {
+                    ClassLoader classloader = getUnifiedClassLoader();
+                    if (cachingProviderClass != null && !cachingProviderClass.trim().isEmpty()) {
+                        cachingProvider = Caching.getCachingProvider(cachingProviderClass, classloader);
+                    } else {
+                        cachingProvider = Caching.getCachingProvider(classloader);
+                    }
+                } catch (Throwable e) {
+                    Tr.error(tc, "CWLJC0004_GET_PROVIDER_FAILED", id, e);
+                    throw e;
                 }
-            } catch (Throwable e) {
-                Tr.error(tc, "CWLJC0004_GET_PROVIDER_FAILED", id, e);
-                throw e;
             }
         });
+
     }
 
     @Modified
