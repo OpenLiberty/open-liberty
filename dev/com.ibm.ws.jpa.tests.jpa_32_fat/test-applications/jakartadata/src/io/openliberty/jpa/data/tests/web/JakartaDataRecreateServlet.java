@@ -38,6 +38,7 @@ import io.openliberty.jpa.data.tests.models.City;
 import io.openliberty.jpa.data.tests.models.CityId;
 import io.openliberty.jpa.data.tests.models.Coordinate;
 import io.openliberty.jpa.data.tests.models.DemographicInfo;
+import io.openliberty.jpa.data.tests.models.Item;
 import io.openliberty.jpa.data.tests.models.NaturalNumber;
 import io.openliberty.jpa.data.tests.models.Package;
 import io.openliberty.jpa.data.tests.models.Person;
@@ -697,6 +698,53 @@ public class JakartaDataRecreateServlet extends FATServlet {
         assertEquals(2007, results.get(0).collectedOn.atZone(EASTERN).get(ChronoField.YEAR));
 
         System.out.println(results.get(0).toString());
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28928")
+    public void testOLGH28928() throws Exception {
+        Item apple = Item.of("testOLGH28928-a", "apple", 7.00f);
+        Item ball = Item.of("testOLGH28928-b", "ball", 10.00f);
+        Item carrot = Item.of("testOLGH28928-c", "carrot", 0.50f);
+
+        Float maxPrice;
+        Float minPrice;
+        Float avgPrice;
+
+        tx.begin();
+        em.persist(apple);
+        em.persist(ball);
+        em.persist(carrot);
+        tx.commit();
+
+        tx.begin();
+        try {
+
+            maxPrice = em.createQuery("SELECT MAX(price) FROM Item", Float.class)
+                            .getSingleResult();
+
+            minPrice = em.createQuery("SELECT MIN(price) FROM Item", Float.class)
+                            .getSingleResult();
+
+            avgPrice = em.createQuery("SELECT AVG(price) FROM Item", Float.class)
+                            .getSingleResult();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+
+            /*
+             * Recreate
+             * java.lang.IllegalArgumentException: An exception occurred while creating a query in EntityManager:
+             * Exception Description: Syntax error parsing [SELECT MAX(price) FROM Item].
+             * [11, 16] The encapsulated expression is not a valid expression.
+             */
+            throw e;
+        }
+
+        assertEquals(10.00f, maxPrice, 0.01f);
+        assertEquals(0.50f, minPrice, 0.01f);
+        assertEquals(5.833f, avgPrice, 0.01f);
     }
 
     /**
