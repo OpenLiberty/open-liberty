@@ -10,7 +10,9 @@
 package io.openliberty.jpa.data.tests.web;
 
 import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
+import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
@@ -36,6 +38,7 @@ import io.openliberty.jpa.data.tests.models.NaturalNumber;
 import io.openliberty.jpa.data.tests.models.Package;
 import io.openliberty.jpa.data.tests.models.Person;
 import io.openliberty.jpa.data.tests.models.Prime;
+import io.openliberty.jpa.data.tests.models.PurchaseOrder;
 import io.openliberty.jpa.data.tests.models.Rebate;
 import io.openliberty.jpa.data.tests.models.Rebate.Status;
 import io.openliberty.jpa.data.tests.models.Segment;
@@ -44,6 +47,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.transaction.RollbackException;
 import jakarta.transaction.UserTransaction;
 
 @SuppressWarnings("serial")
@@ -601,7 +605,49 @@ public class JakartaDataRecreateServlet extends FATServlet {
         assertEquals(2, rochesters.size());
         assertEquals("New York", rochesters.get(0).getStateName());
         assertEquals("Minnesota", rochesters.get(1).getStateName());
+    }
 
+    @Test
+    @SkipIfSysProp(DB_Postgres) //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28368
+    public void testOLGH28368() throws Exception {
+        PurchaseOrder order1 = PurchaseOrder.of("testOLGH28368-1", 12.55f);
+        PurchaseOrder order2 = PurchaseOrder.of("testOLGH28368-2", 12.55f);
+
+        tx.begin();
+        em.persist(order1);
+        em.persist(order2);
+        tx.commit();
+
+        assertNotNull(order1.id); //order1 is now detached
+
+        tx.begin();
+        try {
+            List<PurchaseOrder> results = em.createQuery("SELECT p FROM Orders p WHERE p.id=?1", PurchaseOrder.class)
+                            .setParameter(1, order1.id)
+                            .getResultList();
+
+            assertEquals(1, results.size());
+            assertEquals(order1.purchasedBy, results.get(0).purchasedBy);
+
+            em.remove(results.get(0));
+
+            tx.commit();
+        } catch (RollbackException x) {
+            /*
+             * Recreate
+             * Internal Exception: org.postgresql.util.PSQLException: ERROR: operator does not exist: character varying = uuid
+             * Hint: No operator matches the given name and argument types. You might need to add explicit type casts.
+             * Position: 31
+             * Error Code: 0
+             * Call: DELETE FROM ORDERS WHERE ((ID = ?) AND (VERSIONNUM = ?))
+             * bind => [2 parameters bound]
+             * Query: DeleteObjectQuery(io.openliberty.jpa.data.tests.models.PurchaseOrder@b659d1ca)
+             */
+            throw x;
+        } catch (Exception e) {
+            tx.rollback();
+            throw e; // Unexpected
+        }
     }
 
     /**
