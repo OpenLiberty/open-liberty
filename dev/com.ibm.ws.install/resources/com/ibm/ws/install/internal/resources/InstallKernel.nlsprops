@@ -949,12 +949,12 @@ ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: The {0} public key ID does not match th
 ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=The public key might have changed. 
 ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=If the public key is a local file, make sure to provide the correct file.
 
-ERROR_MISSING_PLATFORM_NAME=CWWKF1515E: The {0} platform couldn't be found.
-ERROR_MISSING_PLATFORM_NAME.explanation=The platform name that is specified by the configuration or environment variable wasn't found.
+ERROR_MISSING_PLATFORM_NAME=CWWKF1515E: The {0} platform could not be found.
+ERROR_MISSING_PLATFORM_NAME.explanation=The platform name that is specified by the configuration or environment variable was not found.
 ERROR_MISSING_PLATFORM_NAME.useraction=Check the spelling of the platform name and version, for example, microProfile-6.1.
 
-ERROR_NO_DERIVED_PLATFORM=CWWKF1516E: The platform couldn't be determined. The following versionless features can't be installed: {0}.
-ERROR_NO_DERIVED_PLATFORM.explanation= The platform was not set or couldn't be derived from existing versioned features. 
+ERROR_NO_DERIVED_PLATFORM=CWWKF1516E: The platform could not be determined. The following versionless features cannot be installed: {0}.
+ERROR_NO_DERIVED_PLATFORM.explanation= The platform was not set or could not be derived from existing versioned features. 
 ERROR_NO_DERIVED_PLATFORM.useraction=Add a platform for versionless features.
 
 LOG_INSTALL_WITH_PLATFORM=CWWKF1314I: Installing using the following platforms: {0}.
