@@ -234,10 +234,10 @@ public class EsaResourceImpl extends RepositoryResourceImpl implements EsaResour
             return;
         }
 
-        String minJava21 = "Java SE 21, Java SE 22";
-        String minJava17 = "Java SE 17, Java SE 21, Java SE 22";
-        String minJava11 = "Java SE 11, Java SE 17, Java SE 21, Java SE 22";
-        String minJava8 = "Java SE 8, Java SE 11, Java SE 17, Java SE 21, Java SE 22";
+        String minJava21 = "Java SE 21, Java SE 23";
+        String minJava17 = "Java SE 17, Java SE 21, Java SE 23";
+        String minJava11 = "Java SE 11, Java SE 17, Java SE 21, Java SE 23";
+        String minJava8 = "Java SE 8, Java SE 11, Java SE 17, Java SE 21, Java SE 23";
 
         // The min version should have been validated when the ESA was constructed
         // so checking for the version string should be safe
