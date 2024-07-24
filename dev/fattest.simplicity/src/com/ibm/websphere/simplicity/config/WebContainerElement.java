@@ -105,6 +105,7 @@ public class WebContainerElement extends ConfigElement {
     private Boolean deferServletRequestListenerDestroyOnError; //PI26908
     private Boolean allowExpressionFactoryPerApp; // PI31922
     private Boolean useMaxRequestsizeforMultipart; //PI75528
+    private Boolean allowAbsoluteFileNameForPartWrite; //PH62271
 
     /**
      * @return the listeners
@@ -635,6 +636,13 @@ public class WebContainerElement extends ConfigElement {
         return useMaxRequestsizeforMultipart;
     }
 
+    /*
+     * @return the allowAbsoluteFileNameForPartWrite
+     */
+    public Boolean getAllowAbsoluteFileNameForPartWrite(){
+        return allowAbsoluteFileNameForPartWrite;
+    }
+
     @XmlAttribute(name = "listeners")
     public void setListeners(String s) {
         this.listeners = s;
@@ -1102,6 +1110,14 @@ public class WebContainerElement extends ConfigElement {
         this.useMaxRequestsizeforMultipart = useMaxRequestsizeforMultipart;
     }//PI75528
 
+    /**
+     * @param allowAbsoluteFileNameForPartWrite the allowAbsoluteFileNameForPartWrite to set
+     */
+    @XmlAttribute(name = "com.ibm.ws.webcontainer.allowAbsoluteFileNameForPartWrite")
+    public void setAllowAbsoluteFileNameForPartWrite(Boolean allowAbsoluteFileNameForPartWrite) {
+        this.allowAbsoluteFileNameForPartWrite = allowAbsoluteFileNameForPartWrite;
+    }
+
     /*
      * listeners
      * decodeurlasutf8
@@ -1332,6 +1348,10 @@ public class WebContainerElement extends ConfigElement {
         //PI75528
         if (useMaxRequestsizeforMultipart != null)
             buf.append("useMaxRequestsizeforMultipart=\"" + useMaxRequestsizeforMultipart + "\" ");
+
+        //PH62271
+        if (allowAbsoluteFileNameForPartWrite != null)
+            buf.append("allowAbsoluteFileNameForPartWrite=\"" + allowAbsoluteFileNameForPartWrite + "\" ");
 
         buf.append("}");
         return buf.toString();
