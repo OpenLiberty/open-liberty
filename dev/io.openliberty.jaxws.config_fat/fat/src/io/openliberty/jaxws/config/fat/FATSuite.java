@@ -21,6 +21,7 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
 	EnableSchemaValidationTest.class,
+        EnableSchemaValidationWebServiceTest.class,
 	IgnoreUnexpectedElementConfigTest.class,
 	WebServiceBndServiceRefPropertiesConfigTest.class
 })

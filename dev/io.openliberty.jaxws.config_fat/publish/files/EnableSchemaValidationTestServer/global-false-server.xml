@@ -7,9 +7,7 @@
     <include location="../fatTestPorts.xml"/>
     
     <webServiceClient enableSchemaValidation="false" />
-    
     	
-    
     <javaPermission className="java.security.AllPermission" name="*" actions="*"/>
     
 </server>

@@ -4,10 +4,7 @@
         <feature>jaxws-2.2</feature>
     </featureManager>
     
-   
-
     <include location="../fatTestPorts.xml"/>
-    
     
     <webServiceClient serviceName="SayHelloService"  enableSchemaValidation="true" />
     
