@@ -45,6 +45,7 @@ Service-Component: \
 Import-Package: \
 	!io.openliberty.http.monitor,\
 	!io.openliberty.http.monitor.metrics,\
+	!com.ibm.ws.connectionpool.monitor.metrics,\
 	io.opentelemetry.api.common;version="[1.2,3)",\
 	io.openliberty.microprofile.telemetry.internal.common.resources,\
 	javax.annotation;version="[1.2,2)",\
@@ -59,7 +60,8 @@ Import-Package: \
 
 DynamicImport-Package: \
     io.openliberty.http.monitor,\
-    io.openliberty.http.monitor.metrics
+    io.openliberty.http.monitor.metrics,\
+    com.ibm.ws.connectionpool.monitor.metrics
 
 # Export-Package and Private-Package specified in sub-bundles
 # because bundles have different contents in addition to being transformed
@@ -84,6 +86,7 @@ DynamicImport-Package: \
 	io.openliberty.io.opentelemetry.2.0;version=latest,\
 	io.opentelemetry.semconv:opentelemetry-semconv;version='1.25.0.alpha';strategy=exact,\
 	com.ibm.ws.kernel.boot.common;version=latest,\
-	io.openliberty.http.monitor
+	io.openliberty.http.monitor,\
+	com.ibm.ws.connectionpool.monitor
 
 WS-TraceGroup: TELEMETRY

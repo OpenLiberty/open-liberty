@@ -38,13 +38,15 @@ IBM-API-Package: \
   io.opentelemetry.exporter.otlp.logs;type="third-party",\
   io.opentelemetry.exporter.otlp;type="third-party"
 -features=\
-  io.openliberty.mpTelemetry2.0.ee-10.0; ibm.tolerates:= "11.0, 9.0, 8.0, 7.0"
+  io.openliberty.mpTelemetry2.0.ee-10.0; ibm.tolerates:= "11.0, 9.0, 8.0, 7.0",\
+  com.ibm.websphere.appserver.monitor-1.0
 -bundles=\
   io.openliberty.com.squareup.okhttp,\
   io.openliberty.com.squareup.okio-jvm,\
   io.openliberty.org.jetbrains.kotlin,\
   io.openliberty.org.jetbrains.annotation,\
-  io.openliberty.io.zipkin.zipkin2.2.0
+  io.openliberty.io.zipkin.zipkin2.2.0,\
+  io.openliberty.microprofile.telemetry.monitor.internal
 -jars=io.openliberty.mpTelemetry.2.0.thirdparty; location:="dev/api/third-party/,lib/"
 kind=beta
 edition=core

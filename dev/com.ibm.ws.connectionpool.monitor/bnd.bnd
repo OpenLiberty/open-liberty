@@ -20,9 +20,11 @@ Bundle-Description: ConnectionPool Management; version=${bVersion}
 
 
 Export-Package: \
-    com.ibm.websphere.connectionpool.monitor
+    com.ibm.websphere.connectionpool.monitor,\
+    com.ibm.ws.connectionpool.monitor.metrics
     
 Import-Package: \
+	com.ibm.ws.connectionpool.monitor.metrics,\
     !*.internal.*,*
 
 Private-Package: \
@@ -31,6 +33,8 @@ Private-Package: \
 Include-Resource: \
     com/ibm/ws/connectionpool/monitor/xml/j2cModule.xml=resources/com/ibm/ws/connectionpool/monitor/xml/j2cModule.xml
 
+-dsannotations: \
+  com.ibm.ws.connectionpool.monitor.metrics.MetricsManager
 
 DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
  com.ibm.websphere.monitor.annotation;version="1.0.0", \
@@ -49,4 +53,7 @@ instrument.disabled: true
 	com.ibm.ws.monitor;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.jca.cm;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.wsspi.org.osgi.service.event;version=latest,\
+	com.ibm.ws.container.service.compat;version=latest
