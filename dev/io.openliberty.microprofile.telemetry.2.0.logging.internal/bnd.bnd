@@ -43,6 +43,12 @@ Import-Package: \
     com.ibm.ws.collector*,\
     io.openliberty.microprofile.telemetry.internal.common,\
     *
+    
+Private-Package: \
+	io.openliberty.microprofile.telemetry.internal.common.resources
+    
+Include-Resource: \
+        OSGI-INF=resources/OSGI-INF
 
 -dsannotations: \
         io.openliberty.microprofile.telemetry20.logging.internal.OpenTelemetryLogHandler	

@@ -6,12 +6,19 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
-@org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "TELEMETRY", messageBundle = "io.openliberty.microprofile.telemetry.internal.common.resources.MPTelemetry")
-package io.openliberty.microprofile.telemetry20.logging.internal;
+package io.openliberty.microprofile.telemetry.logging.internal_fat;
 
-import com.ibm.websphere.ras.annotation.TraceOptions;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
+@RunWith(Suite.class)
+@SuiteClasses({
+                TelemetryMessagesTest.class,
+                TelemetryTraceTest.class
+})
+
+public class FATSuite {
+
+}
