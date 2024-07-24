@@ -18,7 +18,7 @@
 		<slf4j.version>2.0.6</slf4j.version>
 
         <opentelemetry.version>1.35.0</opentelemetry.version>
-        <mptelemetry.version>2.0-RC1</mptelemetry.version>
+        <mptelemetry.version>2.0</mptelemetry.version>
 
         <!-- the below is used in arquillian.xml -->
         <wlp>${wlp}</wlp>
@@ -33,6 +33,14 @@
         <targetDirectory>${project.basedir}/target</targetDirectory>
         
     </properties>
+
+    <repositories>
+        <repository>
+            <id>sonatype</id>
+            <name>sonatype repository with the staged version of the tcks</name>
+            <url>https://oss.sonatype.org/content/repositories/orgeclipsemicroprofile-1712/</url>
+        </repository>
+    </repositories>
 
     <groupId>io.openliberty.microprofile.telemetry</groupId>
     <artifactId>tck.runner.tck</artifactId>

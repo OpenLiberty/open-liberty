@@ -58,7 +58,7 @@
             <id>artifactory</id>
             <name>wasliberty-open-liberty</name>
             <url>https://${env.ARTIFACTORY_SERVER}:443/artifactory/wasliberty-open-liberty</url>
-            <mirrorOf>!central,!central-mirror,!plugin-central-mirror,external:*</mirrorOf> <!-- Should only be the DHE olrepo -->
+            <mirrorOf>!sonatype,!central,!central-mirror,!plugin-central-mirror,external:*</mirrorOf> <!-- Should only be the DHE olrepo -->
         </mirror>
     </mirrors>
 </settings>
