@@ -13,6 +13,7 @@ import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
 import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
@@ -39,6 +40,8 @@ import io.openliberty.jpa.data.tests.models.CityId;
 import io.openliberty.jpa.data.tests.models.Coordinate;
 import io.openliberty.jpa.data.tests.models.DemographicInfo;
 import io.openliberty.jpa.data.tests.models.Item;
+import io.openliberty.jpa.data.tests.models.Line;
+import io.openliberty.jpa.data.tests.models.Line.Point;
 import io.openliberty.jpa.data.tests.models.NaturalNumber;
 import io.openliberty.jpa.data.tests.models.Package;
 import io.openliberty.jpa.data.tests.models.Person;
@@ -855,6 +858,46 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
         assertEquals(5, RochesterAreaCodes.size());
         assertTrue(RochesterAreaCodes.containsAll(Set.of(55901, 55902, 55903, 55904, 55906)));
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/24926")
+    public void testOLGH24926() throws Exception {
+        Line unitRadius = Line.of(0, 0, 1, 1);
+
+        Line origin;
+
+        tx.begin();
+        em.persist(unitRadius);
+        tx.commit();
+
+        tx.begin();
+        em.createQuery("UPDATE Line o SET o.pointB = ?1 WHERE (o.id=?2)")
+                        .setParameter(1, null)
+                        .setParameter(2, unitRadius.id)
+                        .executeUpdate(); // UPDATE LINE SET x_B = ? WHERE (ID = ?) bind => [null, 5]
+        tx.commit();
+
+        tx.begin();
+        try {
+            origin = em.createQuery("SELECT o FROM Line o WHERE (o.id=?1)", Line.class)
+                            .setParameter(1, unitRadius.id)
+                            .getSingleResult();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+
+        assertEquals(Point.of(0, 0), origin.pointA);
+
+        /*
+         * Recreate
+         * Expected: null
+         * Actual: Point [x=0, y=1]
+         */
+        assertNull("PointB was not null, instead: " + origin.pointB, origin.pointB);
     }
 
     /**
