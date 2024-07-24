@@ -13827,7 +13827,7 @@
         </output>
     </case>
     <case>
-        <name>data</name>
+        <name>servlet-6.1_io.openliberty.versionless.data</name>
         <description>Feature pair [ servlet-6.1, io.openliberty.versionless.data ]</description>
         <input>
             <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
