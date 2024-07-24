@@ -75,7 +75,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
     private static final TraceComponent tc = Tr.register(OpenTelemetryInfoFactoryImpl.class);
 
     private final MetaDataSlot slotForOpenTelemetryInfoHolder;
-    private EnabledOpenTelemetryInfo runtimeInstance = null;
+    private EnabledOpenTelemetryInfo otelRuntimeInstance = null;
 
     //This contains API calls that change between the upstream open telemetry version.
     //We get a partially configued SDK Builder from OSGi becase we are in a static context
@@ -93,7 +93,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
         OpenTelemetry runtimeInstance = this.openTelemetryVersionedConfiguration.createServerOpenTelemetryInfo(getServerTelemetryProperties());
         if (runtimeInstance != null) {
             EnabledOpenTelemetryInfo runtimeOpenTelemetryInfo = new EnabledOpenTelemetryInfo(true, runtimeInstance, OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME);
-            this.runtimeInstance = runtimeOpenTelemetryInfo;
+            this.otelRuntimeInstance = runtimeOpenTelemetryInfo;
         }
     }
 
@@ -115,7 +115,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
 
     @Override
     public boolean isRuntimeEnabled() {
-        return runtimeInstance != null;
+        return otelRuntimeInstance != null;
     }
 
     //A shortcut method to avoid fetching metadata more than we need to.
@@ -123,11 +123,11 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
     public OpenTelemetryInfo getOpenTelemetryInfo(ApplicationMetaData metaData) {
 
         //Return runtime instance if it exists, otherwise return the app instance.
-        if (this.runtimeInstance != null) {
+        if (this.otelRuntimeInstance != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Returning {0} OTEL instance.", OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME);
             }
-            return runtimeInstance;
+            return otelRuntimeInstance;
         }
 
         if (metaData == null) {
@@ -302,7 +302,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
         //We do not actually initilize on application starting, we do that lazily if this is needed.
 
         //We don't use app scoped OpenTelemetry objects if the server scoped object exists
-        if (runtimeInstance != null) {
+        if (otelRuntimeInstance != null) {
             return;
         }
 
@@ -329,7 +329,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
         //We don't use app scoped OpenTelemetry objects if the server scoped object exists
-        if (runtimeInstance != null) {
+        if (otelRuntimeInstance != null) {
             return;
         }
 

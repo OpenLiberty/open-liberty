@@ -16,6 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 TelemetryMessagesTest.class,
+                TelemetryFFDCTest.class,
                 TelemetryTraceTest.class
 })
 

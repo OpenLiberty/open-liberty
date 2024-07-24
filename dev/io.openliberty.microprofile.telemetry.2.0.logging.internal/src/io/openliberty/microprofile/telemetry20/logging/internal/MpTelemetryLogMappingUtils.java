@@ -259,6 +259,9 @@ public class MpTelemetryLogMappingUtils {
         return sb.toString();
     }
 
+    /*
+     * Removes leading new line spaces from strings
+     */
     private static String removeSpace(String s) {
         StringBuilder sb = new StringBuilder();
         boolean isLine = false;

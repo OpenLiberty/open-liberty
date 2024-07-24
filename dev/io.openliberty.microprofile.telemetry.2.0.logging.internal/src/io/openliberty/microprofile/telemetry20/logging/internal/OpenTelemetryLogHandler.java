@@ -54,7 +54,7 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
     // Config Source attribute name
     private static final String SOURCE_LIST_KEY = "source";
 
-    private OpenTelemetryInfo openTelemetry;
+    private OpenTelemetryInfo runtimeOtelInfo;
 
     private List<String> sourcesList = new ArrayList<String>();
 
@@ -65,10 +65,11 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
         }
 
         // Get the Runtime OpenTelemetry instance, if it is configured.
-        this.openTelemetry = OpenTelemetryAccessor.getOpenTelemetryInfo();
+        this.runtimeOtelInfo = OpenTelemetryAccessor.getOpenTelemetryInfo();
 
         // Validate the configured sources
         this.sourcesList = validateSources(configuration);
+
     }
 
     @Deactivate
@@ -113,7 +114,9 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
 
             sourcesList = newSources; //new primary sourcesList
         } catch (Exception e) {
-            e.printStackTrace();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught an exception when subscribing/unsubscribing the Collector Manager", e);
+            }
         }
 
     }
@@ -126,7 +129,9 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
             collectorMgr.subscribe(this, convertToSourceIDList(sourcesList));
             isInit = true;
         } catch (Exception e) {
-            e.printStackTrace();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught an exception when subscribing to Collector Manager", e);
+            }
         }
 
     }
@@ -153,7 +158,7 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
         OpenTelemetryInfo otelInstance = null;
         if (OpenTelemetryAccessor.isRuntimeEnabled()) {
             // Runtime OpenTelemetry instance
-            otelInstance = this.openTelemetry;
+            otelInstance = this.runtimeOtelInfo;
         } else {
             // Application OpenTelemetry Instance
             otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo();

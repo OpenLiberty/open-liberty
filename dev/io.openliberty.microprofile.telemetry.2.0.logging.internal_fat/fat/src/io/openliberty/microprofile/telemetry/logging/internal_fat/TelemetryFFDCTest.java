@@ -10,6 +10,7 @@
 package io.openliberty.microprofile.telemetry.logging.internal_fat;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,19 +22,18 @@ import java.net.URL;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
-/**
- * HTTP request tracing tests
- */
 @RunWith(FATRunner.class)
 public class TelemetryFFDCTest extends FATServletClient {
 
@@ -63,24 +63,26 @@ public class TelemetryFFDCTest extends FATServletClient {
         }
     }
 
-//Disabling test for now
-//    @Test
-//    @ExpectedFFDC("java.lang.ArithmeticException")
-//    public void testTelemetryMessages() throws Exception {
-//        hitWebPage("ffdc-servlet", "FFDCServlet", true, "?generateFFDC=true");
-//
-//        String logLevelLine = server.waitForStringInLog(".*scopeInfo.*", server.getConsoleLogFile());
-//        String exceptionTraceLine = server.waitForStringInLog("exception.message=", server.getConsoleLogFile());
-//        String exceptionMessageLine = server.waitForStringInLog("exception.stacktrace=\"java.lang.ArithmeticException", server.getConsoleLogFile());
-//        String exceptionTypeLine = server.waitForStringInLog("exception.type=\"java.lang.ArithmeticException\"", server.getConsoleLogFile());
-//
-//        assertTrue("FFDC Log level was not logged by MPTelemetry", logLevelLine.contains("WARN "));
-//        assertNotNull("FFDC Exception.message was not logged by MPTelemetry", exceptionMessageLine);
-//        assertNotNull("FFDC Exception.stacktrace was not logged by MPTelemetry", exceptionTraceLine);
-//        assertTrue("FFDC Exception.stacktrace did not contain error message", exceptionTraceLine.contains("by zero"));
-//        assertNotNull("FFDC Exception.type was not logged by MPTelemetry", exceptionTypeLine);
-//
-//    }
+    /**
+     * Triggers an FFDC and ensures exception messages are present.
+     */
+    @Test
+    @ExpectedFFDC("java.lang.ArithmeticException")
+    public void testTelemetryFFDCMessages() throws Exception {
+        hitWebPage("ffdc-servlet", "FFDCServlet", true, "?generateFFDC=true");
+
+        String logLevelLine = server.waitForStringInLog(".*scopeInfo.*", server.getConsoleLogFile());
+        String exceptionTraceLine = server.waitForStringInLog("exception.message=", server.getConsoleLogFile());
+        String exceptionMessageLine = server.waitForStringInLog("exception.stacktrace=\"java.lang.ArithmeticException", server.getConsoleLogFile());
+        String exceptionTypeLine = server.waitForStringInLog("exception.type=\"java.lang.ArithmeticException\"", server.getConsoleLogFile());
+
+        assertTrue("FFDC Log level was not logged by MPTelemetry", logLevelLine.contains("WARN "));
+        assertNotNull("FFDC Exception.message was not logged by MPTelemetry", exceptionMessageLine);
+        assertNotNull("FFDC Exception.stacktrace was not logged by MPTelemetry", exceptionTraceLine);
+        assertTrue("FFDC Exception.stacktrace did not contain error message", exceptionTraceLine.contains("by zero"));
+        assertNotNull("FFDC Exception.type was not logged by MPTelemetry", exceptionTypeLine);
+
+    }
 
     @After
     public void cleanUp() throws Exception {
