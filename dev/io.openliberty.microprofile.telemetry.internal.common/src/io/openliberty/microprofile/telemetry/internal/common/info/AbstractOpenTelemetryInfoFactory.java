@@ -41,7 +41,7 @@ public abstract class AbstractOpenTelemetryInfoFactory implements OpenTelemetryI
     private static final String OS_BEAN_HOTSPOT = "com.sun.management.OperatingSystemMXBean";
 
     @Override
-    public OpenTelemetryInfo createOpenTelemetryInfo(boolean runtimeEnabled) {
+    public OpenTelemetryInfoInternal createOpenTelemetryInfo(boolean runtimeEnabled) {
         try {
 
             String instanceName = runtimeEnabled ? OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME : ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor()
@@ -122,7 +122,7 @@ public abstract class AbstractOpenTelemetryInfoFactory implements OpenTelemetryI
                                                         ClassLoader classLoader);
 
     @Override
-    public OpenTelemetryInfo createDisposedOpenTelemetryInfo() {
+    public OpenTelemetryInfoInternal createDisposedOpenTelemetryInfo() {
         try {
             String appName = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getJ2EEName().getApplication();
             return new DisposedOpenTelemetryInfo(appName); //Getting appName like this was easier than writing a functional interface
@@ -134,7 +134,7 @@ public abstract class AbstractOpenTelemetryInfoFactory implements OpenTelemetryI
     }
 
     @Override
-    public OpenTelemetryInfo createDisabledOpenTelemetryInfo() {
+    public OpenTelemetryInfoInternal createDisabledOpenTelemetryInfo() {
         try {
             return new DisabledOpenTelemetryInfo();
         } catch (Exception e) {

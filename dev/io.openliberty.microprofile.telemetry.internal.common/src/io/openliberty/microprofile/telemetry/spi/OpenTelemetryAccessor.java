@@ -17,12 +17,12 @@ import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
 
 import io.openliberty.microprofile.telemetry.internal.common.info.ErrorOpenTelemetryInfo;
-import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryInfoFactory;
+import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryLifecycleManager;
 
 public class OpenTelemetryAccessor {
     private static final TraceComponent tc = Tr.register(OpenTelemetryAccessor.class);
 
-    private static final ServiceCaller<OpenTelemetryInfoFactory> openTelemetryInfoFactoryService = new ServiceCaller<OpenTelemetryInfoFactory>(OpenTelemetryAccessor.class, OpenTelemetryInfoFactory.class);
+    private static final ServiceCaller<OpenTelemetryLifecycleManager> openTelemetryLifecycleManagerService = new ServiceCaller<OpenTelemetryLifecycleManager>(OpenTelemetryAccessor.class, OpenTelemetryLifecycleManager.class);
     private static boolean issuedBetaMessage = false;
 
     //See https://github.com/open-telemetry/opentelemetry-java-docs/blob/main/otlp/src/main/java/io/opentelemetry/example/otlp/ExampleConfiguration.java
@@ -39,7 +39,7 @@ public class OpenTelemetryAccessor {
     public static OpenTelemetryInfo getOpenTelemetryInfo() {
 
         if (ProductInfo.getBetaEdition()) {
-            Optional<OpenTelemetryInfo> openTelemetryInfo = openTelemetryInfoFactoryService.call((factory) -> {
+            Optional<OpenTelemetryInfo> openTelemetryInfo = openTelemetryLifecycleManagerService.call((factory) -> {
                 return factory.getOpenTelemetryInfo();
             });
 

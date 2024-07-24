@@ -72,7 +72,7 @@ Import-Package: \
 	io.openliberty.io.opentelemetry;version=latest,\
 	io.openliberty.org.jboss.resteasy.common;version=latest,\
 	io.opentelemetry.semconv:opentelemetry-semconv;version='${alphaSemconvOpenTelemetryVersion}';strategy=exact,\
-        com.ibm.ws.kernel.boot.core,\
+	com.ibm.ws.kernel.boot.core,\
 	com.ibm.ws.kernel.boot.common,\
 	io.openliberty.io.opentelemetry.2.0,\
 	com.ibm.ws.kernel.feature

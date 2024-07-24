@@ -35,6 +35,7 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.userfeature.UserFeatureServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -58,7 +59,7 @@ public class TelemetryUserFeatureAppScopedTest extends FATServletClient {
 
     //App Scope only exists on MpTel20 and later
     @ClassRule
-    public static RepeatTests r = FATSuite.allMPRepeatsWithMPTel20OrLater(SERVER_NAME);
+    public static RepeatTests r = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {
