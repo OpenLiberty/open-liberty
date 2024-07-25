@@ -34,8 +34,6 @@ public class JSPApplicationTest extends BaseTestClass {
 
     private static Class<?> c = JSPApplicationTest.class;
 
-    static final String CONTEXT_ROOT = "/jspApp";
-
     @Server("JSPServer")
     public static LibertyServer server;
 
@@ -76,14 +74,14 @@ public class JSPApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = CONTEXT_ROOT + "/unconfigured.jsp";
-        String expectedRoute = CONTEXT_ROOT + "/\\*.jsp";
+        String route = Constants.JSP_CONTEXT_ROOT + "/unconfigured.jsp";
+        String expectedRoute = Constants.JSP_CONTEXT_ROOT + "/\\*.jsp";
         String requestMethod = HttpMethod.GET;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
 
     }
 
@@ -92,13 +90,13 @@ public class JSPApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = CONTEXT_ROOT + "/configured";
+        String route = Constants.JSP_CONTEXT_ROOT + "/configured";
         String requestMethod = HttpMethod.GET;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), route, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod));
 
     }
 
@@ -107,8 +105,8 @@ public class JSPApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = CONTEXT_ROOT;
-        String expectedRoute = CONTEXT_ROOT + "/";
+        String route = Constants.JSP_CONTEXT_ROOT;
+        String expectedRoute = Constants.JSP_CONTEXT_ROOT + "/";
         String requestMethod = HttpMethod.GET;
         String responseStatus = "200";
 
@@ -118,13 +116,13 @@ public class JSPApplicationTest extends BaseTestClass {
          * If 200 isn't present. The server may have redirected the request to the default page
          * and issued a 302.
          */
-        if (!validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod)) {
+        if (!validateMpMetricsHttp(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod)) {
             responseStatus = "302";
-            assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+            assertTrue(validateMpMetricsHttp(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
         }
 
-        route = CONTEXT_ROOT + "/Testhtml.html";
-        expectedRoute = CONTEXT_ROOT + "/\\*";
+        route = Constants.JSP_CONTEXT_ROOT + "/Testhtml.html";
+        expectedRoute = Constants.JSP_CONTEXT_ROOT + "/\\*";
         requestMethod = HttpMethod.GET;
         responseStatus = "200";
 
@@ -134,10 +132,11 @@ public class JSPApplicationTest extends BaseTestClass {
          * If 200 isn't present. The server may have redirected the request to the default page
          * and issued a 302.
          */
-        if (!validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod)) {
+        if (!validateMpMetricsHttp(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod)) {
             responseStatus = "302";
-            assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+            assertTrue(validateMpMetricsHttp(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
         }
+
     }
 
 }

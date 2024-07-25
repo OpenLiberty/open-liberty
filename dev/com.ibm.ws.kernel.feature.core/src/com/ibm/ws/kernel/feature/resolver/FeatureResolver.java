@@ -43,6 +43,8 @@ public interface FeatureResolver {
         boolean test(T input);
     }
 
+    String PREFERRED_PLATFORM_VERSIONS_PROPERTY_NAME = "PREFERRED_PLATFORM_VERSIONS";
+
     //
 
     /**
@@ -112,6 +114,16 @@ public interface FeatureResolver {
         Map<String, Chain> getWrongProcessTypes();
 
         Map<String, Collection<Chain>> getConflicts();
+
+        Map<String, String> getVersionlessFeatures();
+
+        Set<String> getResolvedPlatforms();
+
+        Set<String> getMissingPlatforms();
+
+        Map<String, Set<String>> getDuplicatePlatforms();
+
+        Map<String, Set<String>> getNoPlatformVersionless();
     }
 
     public static final List<String> EMPTY_STRINGS = Collections.emptyList();
@@ -162,6 +174,17 @@ public interface FeatureResolver {
             this._preferredVersion = parseVersion(preferredVersion);
 
             this._candidates = Collections.singletonList(candidate);
+
+            this.toString = getString();
+        }
+
+        public Chain(List<String> candidates, String preferredVersion, String featureName) {
+            this._chain = EMPTY_STRINGS;
+
+            this._featureName = featureName;
+            this._preferredVersion = parseVersion(preferredVersion);
+
+            this._candidates = candidates;
 
             this.toString = getString();
         }

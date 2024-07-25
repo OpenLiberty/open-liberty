@@ -18,10 +18,12 @@ import com.ibm.ws.fat.util.FatLogHandler;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import io.openliberty.wsoc22.tests.Spec185GetSessionTest;
+import io.openliberty.wsoc22.tests.Spec274MaxMessageTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                Spec185GetSessionTest.class
+                Spec185GetSessionTest.class,
+                Spec274MaxMessageTest.class
 })
 public class FATSuite {
 

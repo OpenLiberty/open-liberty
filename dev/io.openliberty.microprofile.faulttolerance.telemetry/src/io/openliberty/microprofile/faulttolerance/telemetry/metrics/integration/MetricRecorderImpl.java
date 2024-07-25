@@ -26,6 +26,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryResultCategory;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 
+import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.metrics.LongCounter;
@@ -38,7 +39,8 @@ import io.opentelemetry.api.metrics.ObservableLongMeasurement;
 /**
  * Records Fault Tolerance metrics for the FT 4.1 spec
  * <p>
- * The 4.1 spec supports both MPMetrics and MPTelemetry, this class only handles MP telemetry. Unlike MPMetrics tags (attributes in MP Telemetry parlance) do not need to be unique to a counter
+ * The 4.1 spec supports both MPMetrics and MPTelemetry, this class only handles MP telemetry. Unlike MPMetrics tags (attributes in MP Telemetry parlance) do not need to be unique
+ * to a counter
  * so we initialize one object for every metric, and then attach attributes every time we add a value into that object.
  * <p>
  * This class initializes all of the metrics for the method up front in the constructor and stores them in fields so that we don't have to register or look up metrics while the
@@ -51,6 +53,15 @@ import io.opentelemetry.api.metrics.ObservableLongMeasurement;
 public class MetricRecorderImpl implements MetricRecorder {
 
     private static final TraceComponent tc = Tr.register(MetricRecorderImpl.class);
+    private static final AttributeKey<String> BULKHEAD_RESULT = AttributeKey.stringKey("bulkheadResult");
+    private static final AttributeKey<String> CIRCUIT_BREAKER_RESULT = AttributeKey.stringKey("circuitBreakerResult");
+    private static final AttributeKey<String> FALLBACK = AttributeKey.stringKey("fallback");
+    private static final AttributeKey<String> RESULT = AttributeKey.stringKey("result");
+    private static final AttributeKey<String> RETRIED = AttributeKey.stringKey("retried");
+    private static final AttributeKey<String> RETRY_RESULT = AttributeKey.stringKey("retryResult");
+    private static final AttributeKey<String> STATE = AttributeKey.stringKey("state");
+    private static final AttributeKey<String> TIMED_OUT = AttributeKey.stringKey("timedOut");
+    private static final AttributeKey<String> METHOD = AttributeKey.stringKey("method");
 
     // Every metric uses this tag to identify the method it's reporting metrics for
     private final Attributes methodAttribute;
@@ -98,14 +109,14 @@ public class MetricRecorderImpl implements MetricRecorder {
     private LongSupplier concurrentExecutionCountSupplier = null;
 
     public MetricRecorderImpl(String classAndMethod, Meter meter, RetryPolicy retryPolicy, CircuitBreakerPolicy circuitBreakerPolicy,
-                                      TimeoutPolicy timeoutPolicy,
-                                      BulkheadPolicy bulkheadPolicy, FallbackPolicy fallbackPolicy, AsyncType isAsync) {
+                              TimeoutPolicy timeoutPolicy,
+                              BulkheadPolicy bulkheadPolicy, FallbackPolicy fallbackPolicy, AsyncType isAsync) {
 
         /*
          * Register all of the metrics required for this method and store them in fields
          */
 
-        methodAttribute = Attributes.builder().put("method", classAndMethod).build();
+        methodAttribute = Attributes.builder().put(METHOD, classAndMethod).build();
 
         if (retryPolicy != null || timeoutPolicy != null || circuitBreakerPolicy != null || bulkheadPolicy != null || fallbackPolicy != null) {
             ftInvocationsTotal = meter.counterBuilder("ft.invocations.total").setDescription(Tr.formatMessage(tc, "ft.invocations.total.description")).build();
@@ -125,16 +136,20 @@ public class MetricRecorderImpl implements MetricRecorder {
 
         if (timeoutPolicy != null) {
             ftTimeoutCallsTotal = meter.counterBuilder("ft.timeout.calls.total").setDescription(Tr.formatMessage(tc, "ft.timeout.calls.total.description")).build();
-            ftTimeoutExecutionDuration = meter.histogramBuilder("ft.timeout.executionDuration").setDescription(Tr.formatMessage(tc, "ft.timeout.executionDuration.description")).ofLongs().setUnit("nanoseconds").build();
+            ftTimeoutExecutionDuration = meter.histogramBuilder("ft.timeout.executionDuration").setDescription(Tr.formatMessage(tc,
+                                                                                                                                "ft.timeout.executionDuration.description")).ofLongs().setUnit("nanoseconds").build();
         } else {
             ftTimeoutCallsTotal = null;
             ftTimeoutExecutionDuration = null;
         }
 
         if (circuitBreakerPolicy != null) {
-            ftCircuitbreakerCallsTotal = meter.counterBuilder("ft.circuitbreaker.calls.total").setDescription(Tr.formatMessage(tc, "ft.circuitbreaker.calls.total.description")).build();
-            ftCircuitbreakerStateTotal = meter.counterBuilder("ft.circuitbreaker.state.total").setUnit("nanoseconds").setDescription(Tr.formatMessage(tc, "ft.circuitbreaker.state.total.description")).buildWithCallback(this::getCircuitBreakerAccumulatedTimes);
-            ftCircuitbreakerOpenedTotal = meter.counterBuilder("ft.circuitbreaker.opened.total").setDescription(Tr.formatMessage(tc, "ft.circuitbreaker.opened.total.description")).build();
+            ftCircuitbreakerCallsTotal = meter.counterBuilder("ft.circuitbreaker.calls.total").setDescription(Tr.formatMessage(tc,
+                                                                                                                               "ft.circuitbreaker.calls.total.description")).build();
+            ftCircuitbreakerStateTotal = meter.counterBuilder("ft.circuitbreaker.state.total").setUnit("nanoseconds").setDescription(Tr.formatMessage(tc,
+                                                                                                                                                      "ft.circuitbreaker.state.total.description")).buildWithCallback(this::getCircuitBreakerAccumulatedTimes);
+            ftCircuitbreakerOpenedTotal = meter.counterBuilder("ft.circuitbreaker.opened.total").setDescription(Tr.formatMessage(tc,
+                                                                                                                                 "ft.circuitbreaker.opened.total.description")).build();
         } else {
             ftCircuitbreakerCallsTotal = null;
             ftCircuitbreakerStateTotal = null;
@@ -143,12 +158,16 @@ public class MetricRecorderImpl implements MetricRecorder {
 
         if (bulkheadPolicy != null) {
             ftBulkheadCallsTotal = meter.counterBuilder("ft.bulkhead.calls.total").setDescription(Tr.formatMessage(tc, "ft.bulkhead.calls.total.description")).build();
-            ftBulkheadExecutionsRunning = meter.gaugeBuilder("ft.bulkhead.executionsRunning").ofLongs().setDescription(Tr.formatMessage(tc, "ft.bulkhead.executionsRunning.description")).buildWithCallback(this::getConcurrentExecutions);
-            ftBulkheadRunningDuration = meter.histogramBuilder("ft.bulkhead.runningDuration").setDescription(Tr.formatMessage(tc, "ft.bulkhead.runningDuration.description")).ofLongs().setUnit("nanoseconds").build();
+            ftBulkheadExecutionsRunning = meter.gaugeBuilder("ft.bulkhead.executionsRunning").ofLongs().setDescription(Tr.formatMessage(tc,
+                                                                                                                                        "ft.bulkhead.executionsRunning.description")).buildWithCallback(this::getConcurrentExecutions);
+            ftBulkheadRunningDuration = meter.histogramBuilder("ft.bulkhead.runningDuration").setDescription(Tr.formatMessage(tc,
+                                                                                                                              "ft.bulkhead.runningDuration.description")).ofLongs().setUnit("nanoseconds").build();
 
             if (isAsync == AsyncType.ASYNC) {
-                ftBulkheadExecutionsWaiting = meter.gaugeBuilder("ft.bulkhead.executionsWaiting").ofLongs().setDescription(Tr.formatMessage(tc, "ft.bulkhead.executionsWaiting.description")).buildWithCallback(this::getQueuePopulation);
-                ftBulkheadWaitingDuration = meter.histogramBuilder("ft.bulkhead.waitingDuration").setDescription(Tr.formatMessage(tc, "ft.bulkhead.waitingDuration.description")).ofLongs().setUnit("nanoseconds").build();
+                ftBulkheadExecutionsWaiting = meter.gaugeBuilder("ft.bulkhead.executionsWaiting").ofLongs().setDescription(Tr.formatMessage(tc,
+                                                                                                                                            "ft.bulkhead.executionsWaiting.description")).buildWithCallback(this::getQueuePopulation);
+                ftBulkheadWaitingDuration = meter.histogramBuilder("ft.bulkhead.waitingDuration").setDescription(Tr.formatMessage(tc,
+                                                                                                                                  "ft.bulkhead.waitingDuration.description")).ofLongs().setUnit("nanoseconds").build();
             } else {
                 ftBulkheadExecutionsWaiting = null;
                 ftBulkheadWaitingDuration = null;
@@ -181,17 +200,17 @@ public class MetricRecorderImpl implements MetricRecorder {
         AttributesBuilder ab = Attributes.builder().putAll(methodAttribute);
 
         if (!fallbackDefined) {
-            ab.put("fallback", "notDefined");
+            ab.put(FALLBACK, "notDefined");
         } else if (fallbackOccurred == FallbackOccurred.WITH_FALLBACK) {
-            ab.put("fallback", "applied");
+            ab.put(FALLBACK, "applied");
         } else {
-            ab.put("fallback", "notApplied");
+            ab.put(FALLBACK, "notApplied");
         }
 
         if (invocationSucceeded) {
-            ab.put("result", "valueReturned");
+            ab.put(RESULT, "valueReturned");
         } else {
-            ab.put("result", "exceptionThrown");
+            ab.put(RESULT, "exceptionThrown");
         }
 
         if (ftInvocationsTotal != null) {
@@ -208,29 +227,29 @@ public class MetricRecorderImpl implements MetricRecorder {
             AttributesBuilder ab = Attributes.builder().putAll(methodAttribute);
 
             if (retriesOccurred == RetriesOccurred.WITH_RETRIES) {
-                ab.put("retried", "true");
+                ab.put(RETRIED, "true");
             } else {
-                ab.put("retried", "false");
+                ab.put(RETRIED, "false");
             }
 
             switch (resultCategory) {
                 case NO_EXCEPTION:
-                    ab.put("retryResult", "valueReturned");
+                    ab.put(RETRY_RESULT, "valueReturned");
                     break;
                 case EXCEPTION_NOT_IN_RETRY_ON:
-                    ab.put("retryResult", "exceptionNotRetryable");
+                    ab.put(RETRY_RESULT, "exceptionNotRetryable");
                     break;
                 case EXCEPTION_IN_RETRY_ON:
                     //Unreachable. This method captures the result of the final retry. If there was an exception marked RetryOn another retry will be triggered.
                     break;
                 case EXCEPTION_IN_ABORT_ON:
-                    ab.put("retryResult", "exceptionNotRetryable");
+                    ab.put(RETRY_RESULT, "exceptionNotRetryable");
                     break;
                 case MAX_RETRIES_REACHED:
-                    ab.put("retryResult", "maxRetriesReached");
+                    ab.put(RETRY_RESULT, "maxRetriesReached");
                     break;
                 case MAX_DURATION_REACHED:
-                    ab.put("retryResult", "maxDurationReached");
+                    ab.put(RETRY_RESULT, "maxDurationReached");
                     break;
                 case NO_RETRY:
                     //Unreachable. This method captures the result of a retried method. Obviously you can't have NO_RETRY in a retried method.
@@ -264,7 +283,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     @Override
     public void incrementTimeoutTrueCount() {
         if (ftTimeoutCallsTotal != null) {
-            ftTimeoutCallsTotal.add(1, Attributes.builder().putAll(methodAttribute).put("timedOut", "true").build());
+            ftTimeoutCallsTotal.add(1, Attributes.builder().putAll(methodAttribute).put(TIMED_OUT, "true").build());
         }
     }
 
@@ -273,7 +292,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     @Override
     public void incrementTimeoutFalseCount() {
         if (ftTimeoutCallsTotal != null) {
-            ftTimeoutCallsTotal.add(1, Attributes.builder().putAll(methodAttribute).put("timedOut", "false").build());
+            ftTimeoutCallsTotal.add(1, Attributes.builder().putAll(methodAttribute).put(TIMED_OUT, "false").build());
         }
     }
 
@@ -282,7 +301,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     @Override
     public void incrementCircuitBreakerCallsCircuitOpenCount() {
         if (ftCircuitbreakerCallsTotal != null) {
-            ftCircuitbreakerCallsTotal.add(1, Attributes.builder().putAll(methodAttribute).put("circuitBreakerResult", "circuitBreakerOpen").build());
+            ftCircuitbreakerCallsTotal.add(1, Attributes.builder().putAll(methodAttribute).put(CIRCUIT_BREAKER_RESULT, "circuitBreakerOpen").build());
         }
     }
 
@@ -291,7 +310,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     @Override
     public void incrementCircuitBreakerCallsSuccessCount() {
         if (ftCircuitbreakerCallsTotal != null) {
-            ftCircuitbreakerCallsTotal.add(1, Attributes.builder().putAll(methodAttribute).put("circuitBreakerResult", "success").build());
+            ftCircuitbreakerCallsTotal.add(1, Attributes.builder().putAll(methodAttribute).put(CIRCUIT_BREAKER_RESULT, "success").build());
         }
     }
 
@@ -300,7 +319,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     @Override
     public void incrementCircuitBreakerCallsFailureCount() {
         if (ftCircuitbreakerCallsTotal != null) {
-            ftCircuitbreakerCallsTotal.add(1, Attributes.builder().putAll(methodAttribute).put("circuitBreakerResult", "failure").build());
+            ftCircuitbreakerCallsTotal.add(1, Attributes.builder().putAll(methodAttribute).put(CIRCUIT_BREAKER_RESULT, "failure").build());
         }
     }
 
@@ -309,7 +328,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     @Override
     public void incrementBulkheadRejectedCount() {
         if (ftBulkheadCallsTotal != null) {
-            ftBulkheadCallsTotal.add(1, Attributes.builder().putAll(methodAttribute).put("bulkheadResult", "rejected").build());
+            ftBulkheadCallsTotal.add(1, Attributes.builder().putAll(methodAttribute).put(BULKHEAD_RESULT, "rejected").build());
         }
     }
 
@@ -318,7 +337,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     @Override
     public void incrementBulkeadAcceptedCount() {
         if (ftBulkheadCallsTotal != null) {
-            ftBulkheadCallsTotal.add(1, Attributes.builder().putAll(methodAttribute).put("bulkheadResult", "accepted").build());
+            ftBulkheadCallsTotal.add(1, Attributes.builder().putAll(methodAttribute).put(BULKHEAD_RESULT, "accepted").build());
         }
     }
 
@@ -390,9 +409,9 @@ public class MetricRecorderImpl implements MetricRecorder {
                 break;
         }
 
-        measurement.record(closedNanosLocal, Attributes.builder().putAll(methodAttribute).put("state", "closed").build());
-        measurement.record(halfOpenNanosLocal, Attributes.builder().putAll(methodAttribute).put("state", "halfOpen").build());
-        measurement.record(openNanosLocal, Attributes.builder().putAll(methodAttribute).put("state", "open").build());
+        measurement.record(closedNanosLocal, Attributes.builder().putAll(methodAttribute).put(STATE, "closed").build());
+        measurement.record(halfOpenNanosLocal, Attributes.builder().putAll(methodAttribute).put(STATE, "halfOpen").build());
+        measurement.record(openNanosLocal, Attributes.builder().putAll(methodAttribute).put(STATE, "open").build());
     }
 
     @Trivial

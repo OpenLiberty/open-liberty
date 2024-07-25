@@ -14,7 +14,9 @@ package io.openliberty.data.internal.persistence;
 
 import static jakarta.data.repository.By.ID;
 
-import java.lang.reflect.Field;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +40,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.Attribute;
 import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
@@ -65,7 +66,7 @@ public abstract class EntityManagerBuilder {
     /**
      * OSGi service component that provides the CDI extension for Data.
      */
-    public final DataExtensionProvider provider;
+    public final DataProvider provider;
 
     /**
      * The class loader for repository classes.
@@ -80,7 +81,7 @@ public abstract class EntityManagerBuilder {
      * @param entityTypes
      */
     @Trivial
-    protected EntityManagerBuilder(DataExtensionProvider provider, ClassLoader repositoryClassLoader) {
+    protected EntityManagerBuilder(DataProvider provider, ClassLoader repositoryClassLoader) {
         this.provider = provider;
         this.repositoryClassLoader = repositoryClassLoader;
     }
@@ -107,7 +108,6 @@ public abstract class EntityManagerBuilder {
                 Queue<List<Member>> relationAccessors = new LinkedList<>();
                 Class<?> recordClass = getRecordClass(entityType.getJavaType());
                 Class<?> idType = null;
-                SortedMap<String, Member> idClassAttributeAccessors = null;
                 String versionAttrName = null;
 
                 for (Attribute<?, ?> attr : entityType.getAttributes()) {
@@ -206,6 +206,7 @@ public abstract class EntityManagerBuilder {
                     }
                 }
 
+                SortedMap<String, Member> idClassAttributeAccessors = null;
                 if (!entityType.hasSingleIdAttribute()) {
                     // Per JavaDoc, the above means there is an IdClass.
                     // An EclipseLink extension that allows an Id on an embeddable of an entity
@@ -217,14 +218,7 @@ public abstract class EntityManagerBuilder {
                         if (idClassAttributes != null) {
                             attributeNames.remove(ID);
                             idType = idClassType.getJavaType();
-                            idClassAttributeAccessors = new TreeMap<>();
-                            for (SingularAttribute<?, ?> attr : idClassAttributes) {
-                                Member entityMember = attr.getJavaMember();
-                                Member idClassMember = entityMember instanceof Field //
-                                                ? idType.getField(entityMember.getName()) //
-                                                : idType.getMethod(entityMember.getName());
-                                idClassAttributeAccessors.put(attr.getName().toLowerCase(), idClassMember);
-                            }
+                            idClassAttributeAccessors = getIdClassAccessors(idType, idClassAttributes);
                         }
                     }
                 }
@@ -268,6 +262,35 @@ public abstract class EntityManagerBuilder {
      * @throws UnsupportedOperationException if the DataSource cannot be obtained from the EntityManager.
      */
     public abstract DataSource getDataSource();
+
+    @FFDCIgnore(NoSuchFieldException.class)
+    private static final SortedMap<String, Member> getIdClassAccessors(Class<?> idType,
+                                                                       Set<SingularAttribute<?, ?>> idClassAttributes) //
+                    throws IntrospectionException, NoSuchFieldException, NoSuchMethodException, SecurityException {
+        SortedMap<String, Member> accessors = new TreeMap<>();
+        boolean isIdClassRecord = idType.isRecord();
+        for (SingularAttribute<?, ?> attr : idClassAttributes) {
+            String entityAttrName = attr.getName();
+            Member idClassMember = null;;
+            if (isIdClassRecord)
+                idClassMember = idType.getMethod(entityAttrName);
+            else
+                try {
+                    idClassMember = idType.getField(entityAttrName);
+                } catch (NoSuchFieldException x) {
+                    for (PropertyDescriptor pd : Introspector.getBeanInfo(idType).getPropertyDescriptors())
+                        if (entityAttrName.equals(pd.getName())) {
+                            idClassMember = pd.getReadMethod();
+                            break;
+                        }
+                    if (idClassMember == null)
+                        throw x;
+                }
+
+            accessors.put(entityAttrName.toLowerCase(), idClassMember);
+        }
+        return accessors;
+    }
 
     /**
      * Returns the record class that corresponds to the specified generated entity class.

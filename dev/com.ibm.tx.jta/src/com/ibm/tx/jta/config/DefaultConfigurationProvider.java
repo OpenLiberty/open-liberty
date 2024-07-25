@@ -481,4 +481,9 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     public String getTransactionLogDBName() {
         return "";
     }
+
+    @Override
+    public String getUserDir() {
+        return System.getenv("WLP_USER_DIR");
+    }
 }

@@ -18,3 +18,7 @@
 #ISMESSAGEFILE FALSE
 #NLS_ENCODING=UNICODE
 # cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+AUDIT_EVENT_MISSING_REST_ENDPOINT=CWWKS5856E: O nome do evento de auditoria {0} n\u00e3o \u00e9 suportado porque o terminal REST n\u00e3o est\u00e1 ativado.
+AUDIT_EVENT_MISSING_REST_ENDPOINT.explanation=Para usar o evento de auditoria especificado, o Terminal REST precisa ser ativado
+AUDIT_EVENT_MISSING_REST_ENDPOINT.useraction=Assegure que um recurso que ativa o Terminal REST esteja ativado na configura\u00e7\u00e3o server.xml .

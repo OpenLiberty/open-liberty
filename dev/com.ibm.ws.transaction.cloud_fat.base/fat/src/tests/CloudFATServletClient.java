@@ -12,9 +12,14 @@
  *******************************************************************************/
 package tests;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.util.List;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +28,7 @@ import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
+import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.topology.impl.LibertyServer;
@@ -188,8 +194,6 @@ public abstract class CloudFATServletClient extends CloudTestBase {
     @Test
     @AllowedFFDC(value = { "com.ibm.tx.jta.XAResourceNotAvailableException", "java.lang.RuntimeException" }) // should be expected but..... Derby
     public void testAggressiveTakeover2() throws Exception {
-        final String method = "testAggressiveTakeover2";
-        StringBuilder sb = null;
 
         if (!isDerby()) { // Embedded Derby cannot support tests with concurrent server startup
             serversToCleanup = new LibertyServer[] { longLeaseCompeteServer1, server2fastcheck };
@@ -198,31 +202,117 @@ public abstract class CloudFATServletClient extends CloudTestBase {
 
             try {
                 // We expect this to fail since it is gonna crash the server
-                sb = runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "setupRecForAggressiveTakeover2");
+                runTest(longLeaseCompeteServer1, SERVLET_NAME, "setupRecForAggressiveTakeover2");
+                fail();
             } catch (IOException e) {
             }
-            Log.info(this.getClass(), method, "back from runTestWithResponse, sb is " + sb);
 
             // wait for 1st server to have gone away
-            assertNotNull(longLeaseCompeteServer1.getServerName() + " did not crash", longLeaseCompeteServer1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
+            assertNotNull(longLeaseCompeteServer1.getServerName() + " did not crash",
+                          longLeaseCompeteServer1.waitForStringInLog(XAResourceImpl.DUMP_STATE, FATUtils.LOG_SEARCH_TIMEOUT));
             longLeaseCompeteServer1.postStopServerArchive(); // must explicitly collect since crashed server
             // The server has been halted but its status variable won't have been reset because we crashed it. In order to
             // setup the server for a restart, set the server state manually.
             longLeaseCompeteServer1.setStarted(false);
 
-            // Now start server2
+            // Now start server2. This will continually try and fail to recover server1
             server2fastcheck.setHttpDefaultPort(Integer.getInteger("HTTP_secondary"));
             FATUtils.startServers(_runner, server2fastcheck);
+            server2fastcheck.resetLogMarks();
 
-            // Now start server1. This will continually try and fail to recover server1
+            assertNotNull(server2fastcheck.getServerName() + " didn't try to recover for " + longLeaseCompeteServer1.getServerName(),
+                          server2fastcheck.waitForStringInTraceUsingMark("CWRLS0011I: Performing recovery processing for a peer WebSphere server", FATUtils.LOG_SEARCH_TIMEOUT));
+
+            // Now start server1
             FATUtils.startServers(_runner, longLeaseCompeteServer1);
 
             // Server appears to have started ok. Check for key string to see whether recovery has succeeded, irrespective of what server2fastcheck has done
             assertNotNull("Local recovery failed", longLeaseCompeteServer1.waitForStringInLog("CWRLS0012I:", FATUtils.LOG_SEARCH_TIMEOUT));
 
+            // Stop server2 so it doesn't grab the lease again
+            FATUtils.stopServers(server2fastcheck);
+
             FATUtils.runWithRetries(() -> runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "checkRecAggressiveTakeover").toString());
         }
     }
+
+    protected abstract void setupOrphanLease(LibertyServer server, String path, String serverName) throws Exception;
+
+    protected abstract boolean checkOrphanLeaseExists(LibertyServer server, String path, String serverName) throws Exception;
+
+    /*
+     * Setup a lease for a non-existant server and check it gets deleted without creating bogus new recovery logs
+     */
+    @Test
+    public void testOrphanLeaseDeletion() throws Exception {
+
+        final String nonexistantServerName = UUID.randomUUID().toString().replaceAll("\\W", "");
+
+        serversToCleanup = new LibertyServer[] { server1 };
+
+        FATUtils.startServers(_runner, server1);
+
+        setupOrphanLease(server1, SERVLET_NAME, nonexistantServerName);
+
+        assertNotNull(server1.getServerName() + " did not perform peer recovery",
+                      server1.waitForStringInTrace("< peerRecoverServers Exit"));
+
+        assertFalse("Orphan lease was not deleted", checkOrphanLeaseExists(server1, SERVLET_NAME, nonexistantServerName));
+    }
+
+    @Test
+    // Can get a benign InternalLogException if heartbeat happens at same time as lease claim
+    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.InternalLogException" })
+    public void testBatchLeaseDeletion() throws Exception {
+        if (!TxTestContainerSuite.isDerby()) { // Exclude Derby
+            serversToCleanup = new LibertyServer[] { server1, server2 };
+
+            server2.useSecondaryHTTPPort();
+            FATUtils.startServers(_runner, server1, server2);
+
+            setupBatchesOfOrphanLeases(server1, server2, SERVLET_NAME);
+
+            // Check peer recovery attempts for dummy servers
+            int server1Recoveries = 0;
+            int server2Recoveries = 0;
+            boolean foundThemAll = false;
+            int searchAttempts = 0;
+            final String logsMissingMarker = logsMissingMarker();
+            Log.info(getClass(), "testBatchLeaseDeletion", "Will search for lines like this: " + logsMissingMarker);
+            while (!foundThemAll && searchAttempts < 60) {
+                List<String> recoveredAlready1 = server1.findStringsInTrace(logsMissingMarker);
+                List<String> recoveredAlready2 = server2.findStringsInTrace(logsMissingMarker);
+                // Check number of recovery attempts
+                if (recoveredAlready1 != null)
+                    server1Recoveries = recoveredAlready1.size();
+                if (recoveredAlready2 != null)
+                    server2Recoveries = recoveredAlready2.size();
+                if (server1Recoveries + server2Recoveries > 19)
+                    foundThemAll = true;
+                Log.info(getClass(), "testBatchLeaseDeletion", server1.getServerName() + " has recovered " + server1Recoveries + " servers, " + server2.getServerName()
+                                                               + " has recovered " + server2Recoveries + " servers");
+                if (!foundThemAll) {
+                    searchAttempts++;
+                    Thread.sleep(Duration.ofSeconds(5).toMillis());
+                }
+            }
+            if (!foundThemAll)
+                fail("Did not attempt peer recovery for all servers");
+        }
+    }
+
+    /**
+     * @return
+     */
+    protected abstract String logsMissingMarker();
+
+    /**
+     * @param server1
+     * @param server2
+     * @param path
+     * @throws Exception
+     */
+    protected abstract void setupBatchesOfOrphanLeases(LibertyServer server1, LibertyServer server2, String path) throws Exception;
 
     public static void setDerby() {
         _isDerby = true;

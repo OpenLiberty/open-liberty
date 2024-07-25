@@ -105,13 +105,29 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
         }
         
 
-        // Enable or disable schema validation as long as property is non-null
+        // As long as property is non-null:
+        // Enable enhanced schema validation if true, or disable it along with default validation if false 
         if ( enableSchemaValidation != null) {
-            message.put("schema-validation-enabled", (boolean) enableSchemaValidation);
+            if ((boolean) enableSchemaValidation == true) {
+                // enable Schema Validation 
+                message.put("schema-validation-enabled", true);
+                
+                if (debug) {
+                    Tr.debug(tc, "Set schema-validation-enabled to " + true);
 
-            if (debug) {
-                Tr.debug(tc, "Set schema-validation-enabled to " + (boolean) enableSchemaValidation);
+                }
+            } else if ((boolean) enableSchemaValidation == false) {
+                // Make sure schema validation is disabled
+                message.put("schema-validation-enabled", false);
+                // Disable the default vaildation as well
+                message.put(JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, false);
+                
 
+                
+                if (debug) {
+                    Tr.debug(tc, "Set schema-validation-enabled to " + false + " and " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " to " + false);
+
+                }
             }
         } else {
 

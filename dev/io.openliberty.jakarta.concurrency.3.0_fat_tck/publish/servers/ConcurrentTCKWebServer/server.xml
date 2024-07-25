@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2022, 2023 IBM Corporation and others.
+    Copyright (c) 2022, 2024 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -43,7 +43,7 @@
     <library id="global">
                <fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
                <fileset dir="${shared.resource.dir}/testng/7.5.1" includes="*.jar"/>
-               <fileset dir="${shared.resource.dir}/sigtest/1.6" includes="*.jar"/>
+               <fileset dir="${shared.resource.dir}/sigtest/2.3" includes="*.jar"/>
     </library>
 
     <!--Java2 security-->
@@ -57,10 +57,10 @@
     <javaPermission codeBase="${server.config.dir}/dropins/signatureTest.war" className="java.security.AllPermission"/>
 	
     <!-- Signature test plugin permissions -->
-    <javaPermission codeBase="${shared.resource.dir}/sigtest/1.6/sigtest.jar" className="java.security.AllPermission" />
-    <javaPermission codeBase="${shared.resource.dir}/sigtest/1.6/sigtest.jar" className="java.lang.RuntimePermission"  name="accessClassInPackage.jdk.internal" />
-    <javaPermission codeBase="${shared.resource.dir}/sigtest/1.6/sigtest.jar" className="java.lang.RuntimePermission"  name="accessClassInPackage.jdk.internal.reflect" />
-    <javaPermission codeBase="${shared.resource.dir}/sigtest/1.6/sigtest.jar" className="java.lang.RuntimePermission"  name="accessClassInPackage.jdk.internal.vm.annotation" />
+    <javaPermission codeBase="${shared.resource.dir}/sigtest/2.3/sigtest.jar" className="java.security.AllPermission" />
+    <javaPermission codeBase="${shared.resource.dir}/sigtest/2.3/sigtest.jar" className="java.lang.RuntimePermission"  name="accessClassInPackage.jdk.internal" />
+    <javaPermission codeBase="${shared.resource.dir}/sigtest/2.3/sigtest.jar" className="java.lang.RuntimePermission"  name="accessClassInPackage.jdk.internal.reflect" />
+    <javaPermission codeBase="${shared.resource.dir}/sigtest/2.3/sigtest.jar" className="java.lang.RuntimePermission"  name="accessClassInPackage.jdk.internal.vm.annotation" />
 
     <!-- Ensure JSP can handle lamdas -->
     <jspEngine jdkSourceLevel="18"/>

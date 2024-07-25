@@ -33,6 +33,7 @@ tested.features: mpfaulttolerance-1.0,\
                  cdi-2.0,\
                  cdi-3.0,\
                  cdi-4.0,\
+                 cdi-4.1,\
                  appsecurity-3.0,\
                  el-3.0,\
                  mpmetrics-1.0,\
@@ -45,7 +46,10 @@ tested.features: mpfaulttolerance-1.0,\
                  mpMetrics-5.1,\
                  servlet-5.0,\
                  servlet-6.0,\
+                 servlet-6.1,\
                  mpTelemetry-2.0,\
+                 restfulwsclient-4.0,\
+                 restfulws-4.0
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

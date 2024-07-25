@@ -80,7 +80,8 @@ DynamicImport-Package: com.sun.xml.bind.v2, \
   com.ibm.ws.jaxws.threading.LibertyThreadPoolAdapter,\
   com.ibm.ws.jaxws.client.injection.ServiceRefObjectFactory,\
   com.ibm.ws.jaxws.JaxwsConduitConfigActivator, \
-  com.ibm.ws.jaxws.client.WebServiceClientConfigImpl
+  com.ibm.ws.jaxws.client.WebServiceClientConfigImpl, \
+  com.ibm.ws.jaxws.endpoint.WebServiceConfigImpl
   
 # include the service providers and metatype
 Include-Resource: \

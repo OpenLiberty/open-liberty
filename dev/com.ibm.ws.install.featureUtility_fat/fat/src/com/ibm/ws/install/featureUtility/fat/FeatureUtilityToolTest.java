@@ -50,7 +50,8 @@ public abstract class FeatureUtilityToolTest {
 
     protected static String libertyVersion = "23.0.0.2";
     // ${buildDir}/publish/repo
-    protected static String mavenLocalRepo = Paths.get("publish/repo/").toAbsolutePath().toString();
+    protected static String mavenLocalRepo1 = Paths.get("publish/repo/").toAbsolutePath().toString();
+    protected static String mavenLocalRepo2 = Paths.get("publish/repo2/").toAbsolutePath().toString();
     public static LibertyServer server;
     private static String installRoot;
     static String minifiedRoot;
@@ -94,7 +95,8 @@ public abstract class FeatureUtilityToolTest {
         minifiedRoot = exportWlp(installRoot, installRoot + "/../temp/wlp.zip", installRoot + relativeMinifiedRoot);
         Log.info(c, methodName, "minified root: " + minifiedRoot);
 
-	Log.info(c, methodName, "mavenLocalRepo : " + mavenLocalRepo.toString());
+        Log.info(c, methodName, "mavenLocalRepo1 : " + mavenLocalRepo1.toString());
+        Log.info(c, methodName, "mavenLocalRepo2 : " + mavenLocalRepo2.toString());
 
         if(!new File(minifiedRoot).exists()){
             throw new Exception("The minified root does not exist!");
@@ -372,13 +374,16 @@ public abstract class FeatureUtilityToolTest {
 
     protected ProgramOutput runFeatureUtility(String testcase, String[] params, boolean debug) throws Exception {
         Properties envProps = new Properties();
+	      //add beta property here
+	      envProps.put("JVM_ARGS", "-Dcom.ibm.ws.beta.edition=true");
         return runFeatureUtility(testcase, params, envProps);
     }
 
     protected ProgramOutput runFeatureUtility(String testcase, String[] params, Properties envProps) throws Exception {
     		// add beta property here
-	    envProps.put("JVM_ARGS", "-DfeatureUtility.beta=true");    
-    		// always run feature utility with minified root
+	     envProps.put("JVM_ARGS", "-DfeatureUtility.beta=true");    
+   	   envProps.put("JVM_ARGS", "-Dcom.ibm.ws.beta.edition=true");
+	      // always run feature utility with minified root
         return runCommand(minifiedRoot, testcase, "featureUtility", params, envProps);
     }
 
@@ -418,8 +423,10 @@ public abstract class FeatureUtilityToolTest {
     }
     
     protected static boolean deleteRepo(String methodName) throws IOException {
-	boolean repo = TestUtils.deleteFolder(new File(mavenLocalRepo));
-	Log.info(c, methodName, "DELETED REPO : " + mavenLocalRepo + "?" + repo);
+	boolean repo = TestUtils.deleteFolder(new File(mavenLocalRepo1));
+	Log.info(c, methodName, "DELETED REPO : " + mavenLocalRepo1 + "?" + repo);
+	repo  = TestUtils.deleteFolder(new File(mavenLocalRepo2));
+	Log.info(c, methodName, "DELETED REPO : " + mavenLocalRepo2 + "?" + repo);
     	return repo;
     }
 
@@ -507,18 +514,6 @@ public abstract class FeatureUtilityToolTest {
 
     }
 
-    /*
-     * / Copy Maven central features and signatures to local repository
-     */
-    protected static void constructLocalMavenRepo(Path artifactPath) throws Exception {
-	Log.info(c, "constructLocalMavenRepo",
-		"Creating local repository using " + artifactPath.toAbsolutePath().toString());
-
-	ZipFile zipFile = new ZipFile(artifactPath.toFile());
-	TestUtils.unzipFileIntoDirectory(zipFile, Paths.get(mavenLocalRepo).toFile());
-	Log.info(c, "constructLocalMavenRepo", "Unzipped to " + Paths.get(mavenLocalRepo).toAbsolutePath().toString());
-
-    }
 
     /**
      * @param METHOD_NAME
@@ -540,6 +535,19 @@ public abstract class FeatureUtilityToolTest {
 		}
 		String[] param1s = { "installFeature", "jsp-2.2", "jsp-2.3", "--verbose" };
 		runFeatureUtility(METHOD_NAME, param1s);
+	}
+
+	/*
+	 * / Copy Maven central features and signatures to local repository
+	 */
+	protected static void constructLocalMavenRepo(String repoPath,Path artifactPath) throws Exception {
+	Log.info(c, "constructLocalMavenRepo",
+		"Creating local repository using " + artifactPath.toAbsolutePath().toString());
+	
+	ZipFile zipFile = new ZipFile(artifactPath.toFile());
+	TestUtils.unzipFileIntoDirectory(zipFile, Paths.get(repoPath).toFile());
+	Log.info(c, "constructLocalMavenRepo", "Unzipped to " + Paths.get(repoPath).toAbsolutePath().toString());
+	
 	}
 
 

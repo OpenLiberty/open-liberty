@@ -22,4 +22,14 @@
         <Object ocdref="com.ibm.ws.jaxws.clientConfig.metatype" />
     </Designate>
    
+    <OCD id="com.ibm.ws.jaxws.config.metatype" description="%webservice.desc" name="%webservice" ibm:alias="webService" ibm:beta="true" >
+         <AD id="portName" name="%portName" description="%portName.desc" required="false" type="String" />
+         <AD id="ignoreUnexpectedElements" name="%ignoreUnexpectedElements" description="%ignoreUnexpectedElements.desc" required="false" type="Boolean" default="false" />
+         <AD id="enableSchemaValidation" name="%enableSchemaValidation" description="%enableSchemaValidation.desc" required="false" type="Boolean"/>
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.jaxws.config">
+        <Object ocdref="com.ibm.ws.jaxws.config.metatype" />
+    </Designate>
+   
 </metatype:MetaData>

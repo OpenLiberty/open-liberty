@@ -92,4 +92,11 @@ public class OpenTelemetryAccessor {
         return bindings.orElseThrow(() -> new IllegalStateException("Unable to get CDIService"));
     }
 
+    public static boolean isRuntimeEnabled() {
+        Optional<Object> isRuntimeEnabled = openTelemetryInfoFactoryService.call((factory) -> {
+            return factory.isRuntimeEnabled();
+        });
+        return (boolean) isRuntimeEnabled.orElse(false);
+    }
+
 }

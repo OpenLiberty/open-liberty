@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2023 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,8 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.crypto.common.CryptoMessageUtils;
+import com.ibm.ws.crypto.common.CryptoUtils;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.filemonitor.FileBasedActionable;
@@ -249,6 +251,9 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
         allowCustomCacheKey = (Boolean) props.get(KEY_allowCustomCacheKey);
         wantAssertionsSigned = (Boolean) props.get(KEY_wantAssertionsSigned);
         signatureMethodAlgorithm = trim((String) props.get(KEY_signatureMethodAlgorithm));
+        if (CryptoUtils.isAlgorithmInsecure(signatureMethodAlgorithm)) {
+            CryptoMessageUtils.logInsecureAlgorithm(KEY_signatureMethodAlgorithm, signatureMethodAlgorithm);
+        }
         authnRequestsSigned = (Boolean) props.get(KEY_authnRequestsSigned);
         includeX509InSPMetadata = (Boolean) props.get(KEY_includeX509InSPMetadata);
         forceAuthn = (Boolean) props.get(KEY_forceAuthn);

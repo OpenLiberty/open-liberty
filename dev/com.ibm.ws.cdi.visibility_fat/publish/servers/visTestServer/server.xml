@@ -16,6 +16,10 @@
         <classloader commonLibraryRef="visTestCommonLib" privateLibraryRef="visTestPrivateLib" />
     </enterpriseApplication>
     
+    <webApplication location="visTestStandaloneWar.war">
+        <classloader commonLibraryRef="visTestCommonLib" privateLibraryRef="visTestPrivateLib" />
+    </webApplication>
+
     <library id="visTestPrivateLib">
        <fileset includes="visTestPrivateLib.jar"/>
     </library>

@@ -41,17 +41,17 @@ IBM-API-Package: \
   io.openliberty.org.eclipse.microprofile.openapi-4.0,\
   io.openliberty.jandex.internal-3.0
 -bundles=\
-    io.openliberty.io.smallrye.openapi3.core, \
-    io.openliberty.io.smallrye.openapi3.jaxrs, \
+    io.openliberty.io.smallrye.openapi4.core, \
+    io.openliberty.io.smallrye.openapi4.jaxrs, \
     io.openliberty.microprofile.openapi.2.0.internal.jakarta, \
     io.openliberty.microprofile.openapi.2.0.internal.servlet.jakarta, \
-    io.openliberty.microprofile.openapi.3.1.internal.services, \
+    io.openliberty.microprofile.openapi.4.0.internal.services, \
     com.ibm.ws.microprofile.openapi.ui, \
     io.openliberty.microprofile.openapi.internal.common,\
     io.openliberty.com.fasterxml.jackson, \
     com.ibm.ws.org.jboss.logging
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
 WLP-Platform: microProfile-7.0

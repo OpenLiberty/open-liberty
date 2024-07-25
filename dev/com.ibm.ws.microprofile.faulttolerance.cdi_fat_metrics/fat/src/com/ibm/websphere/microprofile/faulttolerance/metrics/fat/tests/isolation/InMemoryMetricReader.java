@@ -69,6 +69,7 @@ public class InMemoryMetricReader implements MetricReader {
         return collectionRegistration.collectAllMetrics().stream()
                         .filter(
                                 metric -> !metric.getName().equals("queueSize")) //Filter out a metric that's always present
+                        .filter(metric -> metric.getName().startsWith("ft")) //We are testing ft metrics, ignore JVM, HTTP, etc metrics
                         .count() == 0;
     }
 }

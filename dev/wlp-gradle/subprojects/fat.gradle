@@ -57,7 +57,7 @@ dependencies {
 		'com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8',
 		'org.apache.derby:derbyclient:10.11.1.1',
 		'org.apache.derby:derby:10.11.1.1',
-		'com.oracle.database.jdbc.debug:ojdbc8_g:21.8.0.0'
+		'com.oracle.database.jdbc:ojdbc8:23.4.0.24.05'
 
   jakartaTransformer 'commons-cli:commons-cli:1.5.0',
        project(':com.ibm.ws.org.slf4j.api'),
@@ -127,7 +127,7 @@ task copyJdbcDrivers(type: Copy) {
   rename 'jcc.*.jar', 'jcc.jar'
   rename 'derby-.*.jar', 'derby.jar'
   rename 'derbyclient-.*.jar', 'derbyclient.jar'
-  rename 'ojdbc8_g.*.jar', 'ojdbc8_g.jar'
+  rename 'ojdbc8.*.jar', 'ojdbc8.jar'
   rename 'postgresql.*.jar', 'postgresql.jar'
   rename 'mssql-jdbc.*.jar', 'mssql-jdbc.jar'
 }
@@ -152,7 +152,7 @@ task autoFVT {
   dependsOn ':cnf:copyMavenLibs'
   dependsOn addRequiredLibraries
   dependsOn copyFeatureBundles
-  dependsOn ':fattest.simplicity:assembleBinaryDependencies'
+  dependsOn ':fattest.simplicity:jar'
   enabled project.file('fat').exists()
 
   ext.getFeature = { line ->

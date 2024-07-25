@@ -18,17 +18,21 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                BaselineSingletonUnitTest.class,
-                //BaselineServletUnitTest.class, // fix unit tests
-                //MicroProfileCrossPlatformUnitTest.class, // fix unit tests
+                ReportFeaturesUnitTest.class,
+                // ReportImagesUnitTest.class, // Disabled: See issue 29079
+                // FeatureDetailsUnitTest.class, // Disabled: Not getting features in WL.
 
-                //VersionlessEnvVarErrorTest.class, // fix error tests
+                // BaselineResolutionGenerationTest.class,
+                BaselineResolutionSingletonUnitTest.class,
+                BaselineVersionlessSingletonUnitTest.class,
+                BaselineResolutionServletUnitTest.class, // servlet + servlet-x.x disabled: See issue 29137
+                // BaselineResolutionMicroProfileUnitTest.class, Disabled: See issue 29136
 
-                //VersionlessResolutionTest.class, // needs servlet-3.0 cases
-
-                VersionlessServletToMicroProfileTest.class,
                 VersionlessJavaEEToMicroProfileTest.class,
+                VersionlessServletToMicroProfileTest.class,
+                VersionlessMessagesTest.class
 })
+
 public class FATSuite {
     // EMPTY
 }

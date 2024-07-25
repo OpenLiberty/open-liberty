@@ -4,5 +4,6 @@ visibility=public
 IBM-ShortName: wasJmsServer
 Subsystem-Name: wasJmsServer
 -features=io.openliberty.internal.versionless.wasJmsServer-1.0; ibm.tolerates:="3.0"
-kind=beta
+kind=ga
 edition=base
+WLP-InstantOn-Enabled: true

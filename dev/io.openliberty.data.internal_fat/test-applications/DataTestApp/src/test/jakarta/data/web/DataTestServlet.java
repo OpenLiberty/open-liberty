@@ -70,6 +70,7 @@ import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Cursor;
+import jakarta.data.repository.By;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -112,6 +113,9 @@ public class DataTestServlet extends FATServlet {
 
     @Inject
     Packages packages;
+
+    @Inject
+    Participants participants;
 
     @Inject
     People people;
@@ -494,6 +498,16 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository method that performs a JDQL query using the String
+     * concatenation operator ||.
+     */
+    @Test
+    public void testConcatenationOperator() {
+        assertEquals(List.of("thirty-one", "twenty-three", "thirteen", "three", "two"),
+                     primes.concatAndMatch("%It%", Sort.desc(ID)));
+    }
+
+    /**
      * Count the number of matching entries in the database using query by method name.
      */
     @Test
@@ -634,6 +648,34 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Query by method name with deleteFirstX prefix - ensure First keywork is ignored
+     */
+    @Test
+    public void testDeleteIgnoresFirstKeywork() {
+        packages.deleteAll(); //cleanup before test
+
+        packages.save(new Package(10001, 10.0f, 13.0f, 4.0f, "testDeleteIgnoresFirstKeywork#10001"));
+        packages.save(new Package(10002, 11.0f, 12.4f, 4.0f, "testDeleteIgnoresFirstKeywork#10002"));
+        packages.save(new Package(10003, 12.0f, 11.0f, 4.0f, "testDeleteIgnoresFirstKeywork#10003"));
+        packages.save(new Package(10004, 13.0f, 10.0f, 4.0f, "testDeleteIgnoresFirstKeywork#10004"));
+
+        try {
+            Optional<Package> pkg = packages.deleteFirst();
+            fail("Expected packages.deleteFirst() to ignore the 'first' keyword and fail to return a signular result.");
+        } catch (NonUniqueResultException e) {
+            // pass
+        }
+
+        Package pkg = packages.deleteFirst5ByWidthLessThan(11.0f);
+        assertEquals(10004, pkg.id);
+
+        List<Package> pkgs = packages.deleteFirst2();
+        assertEquals(3, pkgs.size());
+
+        assertEquals(0, packages.deleteAll()); //cleanup after test
+    }
+
+    /**
      * Parameter-based query with the Delete annotation.
      */
     @Test
@@ -723,6 +765,37 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Year.of(2022), h.sold);
 
         assertEquals(1, houses.dropAll());
+    }
+
+    /**
+     * Repository delete method with query language (JPQL) that contains
+     * an entity identifier variable.
+     */
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  https://github.com/OpenLiberty/open-liberty/issues/28368
+    @Test
+    public void testDeleteQueryWithEntityIdentifierVariable() {
+        products.purge("TestDeleteQueryWithEntityIdentifierVariable-Product-%");
+
+        Product prod1 = new Product();
+        prod1.pk = UUID.nameUUIDFromBytes("TestDeleteQueryWithEntityIdentifierVariable-1".getBytes());
+        prod1.name = "TestDeleteQueryWithEntityIdentifierVariable-Product-1";
+        prod1.price = 1.99f;
+
+        Product prod2 = new Product();
+        prod2.pk = UUID.nameUUIDFromBytes("TestDeleteQueryWithEntityIdentifierVariable-2".getBytes());
+        prod2.name = "TestDeleteQueryWithEntityIdentifierVariable-Product-2";
+        prod2.price = 2.39f;
+
+        Product prod3 = new Product();
+        prod3.pk = UUID.nameUUIDFromBytes("TestDeleteQueryWithEntityIdentifierVariable-3".getBytes());
+        prod3.name = "TestDeleteQueryWithEntityIdentifierVariable-Product-3";
+        prod3.price = 3.89f;
+
+        products.saveMultiple(prod1, prod2, prod3);
+
+        assertEquals(3, products.purge("TestDeleteQueryWithEntityIdentifierVariable-Product-%"));
+
+        assertEquals(0, products.purge("TestDeleteQueryWithEntityIdentifierVariable-Product-%"));
     }
 
     /**
@@ -1255,13 +1328,13 @@ public class DataTestServlet extends FATServlet {
         remaining.addAll(Set.of(80008, 80080, 80081, 80088));
 
         Sort<Package> sort = supportsOrderByForUpdate ? Sort.desc("width") : null;
-        Integer id = packages.deleteFirst(sort).orElseThrow();
+        Integer id = packages.delete1(Limit.of(1), sort).orElseThrow();
         if (supportsOrderByForUpdate)
             assertEquals(Integer.valueOf(80080), id);
         assertEquals("Found " + id + "; expected one of " + remaining, true, remaining.remove(id));
 
         Sort<?>[] sorts = supportsOrderByForUpdate ? new Sort[] { Sort.desc("height"), Sort.asc("length") } : null;
-        int[] ids = packages.deleteFirst2(sorts);
+        int[] ids = packages.delete2(Limit.of(2), sorts);
         assertEquals(Arrays.toString(ids), 2, ids.length);
         if (supportsOrderByForUpdate) {
             assertEquals(80081, ids[0]);
@@ -1271,7 +1344,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Found " + ids[1] + "; expected one of " + remaining, true, remaining.remove(ids[1]));
 
         // should have only 1 remaining
-        ids = packages.deleteFirst2(sorts);
+        ids = packages.delete2(Limit.of(2), sorts);
         assertEquals(Arrays.toString(ids), 1, ids.length);
         assertEquals(remaining.iterator().next(), Integer.valueOf(ids[0]));
     }
@@ -1289,21 +1362,21 @@ public class DataTestServlet extends FATServlet {
         Sort<Package> sort = Sort.asc("id");
 
         try {
-            long[] deleted = packages.deleteFirst3(sort);
+            long[] deleted = packages.delete3(Limit.of(3), sort);
             fail("Deleted with return type of long[]: " + Arrays.toString(deleted) + " even though the id type is int.");
         } catch (MappingException x) {
             // expected
         }
 
         try {
-            List<String> deleted = packages.deleteFirst4(sort);
+            List<String> deleted = packages.delete4(Limit.of(4), sort);
             fail("Deleted with return type of List<String>: " + deleted + " even though the id type is int.");
         } catch (MappingException x) {
             // expected
         }
 
         try {
-            Collection<Number> deleted = packages.deleteFirst5(sort);
+            Collection<Number> deleted = packages.delete5(Limit.of(5), sort);
             fail("Deleted with return type of Collection<Number>: " + deleted + " even though the id type is int.");
         } catch (MappingException x) {
             // expected
@@ -1346,7 +1419,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Found " + p.id + "; expected one of " + remaining, true, remaining.remove(p.id));
 
         Sort<?>[] sorts = supportsOrderByForUpdate ? new Sort[] { Sort.desc("height"), Sort.asc("length") } : null;
-        LinkedList<?> deletesList = packages.deleteFirst2ByHeightLessThan(8.0f, sorts);
+        LinkedList<?> deletesList = packages.delete2ByHeightLessThan(8.0f, Limit.of(2), sorts);
         assertEquals("Deleted " + deletesList, 2, deletesList.size());
         Package p0 = (Package) deletesList.get(0);
         Package p1 = (Package) deletesList.get(1);
@@ -2861,6 +2934,16 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository method that performs a JDQL query using LEFT function
+     * to obtain the beginning of a String value.
+     */
+    @Test
+    public void testLeftFunction() {
+        assertEquals(List.of("seven", "seventeen"),
+                     primes.matchLeftSideOfName("seven"));
+    }
+
+    /**
      * Intermix two different types of entities in the same transaction.
      */
     @Test
@@ -3415,7 +3498,7 @@ public class DataTestServlet extends FATServlet {
                                      .collect(Collectors.toList()));
 
         assertEquals(List.of("Impreza", "HR-V"),
-                     vehicles.deleteFirst2FoundOrderByPriceAscVinIdAsc()
+                     vehicles.deleteFoundOrderByPriceAscVinIdAsc(Limit.of(2))
                                      .stream()
                                      .map(v -> v.model)
                                      .collect(Collectors.toList()));
@@ -3606,6 +3689,30 @@ public class DataTestServlet extends FATServlet {
         assertEquals(true, receipts.deleteByTotalLessThan(1000000.0f));
 
         assertEquals(0L, receipts.count());
+    }
+
+    /**
+     * Test an unannotated entity that has an attribute which is a Java record,
+     * which should be inferred to be an embeddable, such that queries and sorting
+     * can be performed on the attributes of the embeddable.
+     */
+    @Test
+    public void testRecordAsEmbeddable() {
+        participants.remove("TestRecordAsEmbeddable");
+
+        participants.add(Participant.of("Steve", "TestRecordAsEmbeddable", 1),
+                         Participant.of("Sarah", "TestRecordAsEmbeddable", 2),
+                         Participant.of("Simon", "TestRecordAsEmbeddable", 3),
+                         Participant.of("Samantha", "TestRecordAsEmbeddable", 4));
+
+        assertEquals("Simon", participants.getFirstName(3).orElseThrow());
+
+        assertEquals(List.of("Samantha", "Sarah", "Simon", "Steve"),
+                     participants.withSurname("TestRecordAsEmbeddable")
+                                     .map(p -> p.name.first())
+                                     .collect(Collectors.toList()));
+
+        assertEquals(4L, participants.remove("TestRecordAsEmbeddable"));
     }
 
     /**
@@ -3985,6 +4092,17 @@ public class DataTestServlet extends FATServlet {
                                              .map(o -> o.a)
                                              .sorted()
                                              .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use a repository method that performs a JDQL query using RIGHT function
+     * to obtain the end of a String value.
+     */
+    @Test
+    public void testRightFunction() {
+        assertEquals(List.of("thirty-seven", "thirteen", "seventeen",
+                             "seven", "nineteen", "eleven"),
+                     primes.matchRightSideOfName("en"));
     }
 
     /**
@@ -4385,6 +4503,19 @@ public class DataTestServlet extends FATServlet {
                              slice.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
         assertEquals(false, slice.hasNext());
+    }
+
+    /**
+     * Use the JDQL id(entityVar) function as the sort property to perform a
+     * descending sort.
+     */
+    @Test
+    public void testSortByIdFunction() {
+        assertEquals(List.of(31L, 29L, 23L, 19L, 17L, 13L),
+                     primes.findByNumberIdBetween(12, 36, Sort.desc(By.ID))
+                                     .stream()
+                                     .map(p -> p.numberId)
+                                     .collect(Collectors.toList()));
     }
 
     /**

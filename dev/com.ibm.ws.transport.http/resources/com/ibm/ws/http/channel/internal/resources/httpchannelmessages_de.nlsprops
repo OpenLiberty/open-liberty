@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2002, 2022 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #
 #COMPONENTPREFIX CWWKT
@@ -210,3 +207,8 @@ log.rollover.start.time.format.warning.useraction=Stellen Sie sicher, dass der E
 log.rollover.interval.too.short.warning=CWWKT0046W: Das Protokollumlaufintervall darf nicht k\u00fcrzer als 1 Minute sein. Wenn ein Wert kleiner als 1 Minute angegeben wird, wird das Protokoll\u00fcberlaufintervall auf einen Standardwert von 1 Tag gesetzt.
 log.rollover.interval.too.short.warning.explanation=Das Protokollumlaufintervall darf nicht k\u00fcrzer als 1 Minute sein.
 log.rollover.interval.too.short.warning.useraction=Geben Sie ein Protokollumlaufintervall an, das gr\u00f6\u00dfer-gleich 1 Minute ist.
+
+#only if the Set-Cookie is added with the response set/addHeader API.  The best practice is to use Cookie() API which already has this check and uses its own message.
+cookie.attribute.name.invalid=CWWKT0047E: Das Cookieattribut [{0}] enth\u00e4lt ein ung\u00fcltiges Zeichen.
+cookie.attribute.name.invalid.explanation=Der Cookieattributname darf kein Sonderzeichen [ () < > @,;: \\/ []? = {}] enthalten.
+cookie.attribute.name.invalid.useraction=Korrigieren Sie den Cookieattributnamen so, dass kein Sonderzeichen verwendet wird.

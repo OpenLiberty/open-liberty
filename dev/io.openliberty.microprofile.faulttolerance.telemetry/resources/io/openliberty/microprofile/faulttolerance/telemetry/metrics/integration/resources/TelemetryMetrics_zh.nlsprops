@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Descriptions of metrics used by Fault Tolerance. 
+# See https://download.eclipse.org/microprofile/microprofile-fault-tolerance-4.0.2/microprofile-fault-tolerance-spec-4.0.2.html#_integration_with_microprofile_metrics
+#-----------------------------------------------------------------------------------------------------------------------------
+
+ft.invocations.total.description=\u8c03\u7528\u65b9\u6cd5\u7684\u6b21\u6570\u3002
+
+ft.retry.calls.total.description=\u8fd0\u884c\u91cd\u8bd5\u903b\u8f91\u7684\u6b21\u6570\u3002 \u8fd9\u5c06\u59cb\u7ec8\u662f\u6bcf\u4e2a\u65b9\u6cd5\u8c03\u7528\u4e00\u6b21\u3002
+
+ft.retry.retries.total.description=\u91cd\u8bd5\u65b9\u6cd5\u7684\u6b21\u6570\u3002
+
+ft.timeout.calls.total.description=\u8fd0\u884c\u8d85\u65f6\u903b\u8f91\u7684\u6b21\u6570\u3002 \u8fd9\u901a\u5e38\u662f\u6bcf\u4e2a\u65b9\u6cd5\u8c03\u7528\u4e00\u6b21\uff0c\u4f46\u5982\u679c\u65ad\u8def\u5668\u963b\u6b62\u6267\u884c\uff0c\u90a3\u4e48\u53ef\u80fd\u662f\u96f6\u6b21\uff0c\u5982\u679c\u91cd\u8bd5\u8be5\u65b9\u6cd5\uff0c\u90a3\u4e48\u53ef\u80fd\u662f\u591a\u6b21\u3002
+
+ft.timeout.executionDuration.description=\u65b9\u6cd5\u7684\u6267\u884c\u65f6\u95f4\u76f4\u65b9\u56fe\u3002
+
+ft.circuitbreaker.calls.total.description=\u65ad\u8def\u5668\u903b\u8f91\u8fd0\u884c\u7684\u6b21\u6570\u3002 \u8fd9\u901a\u5e38\u662f\u6bcf\u4e2a\u65b9\u6cd5\u8c03\u7528\u4e00\u6b21\uff0c\u4f46\u5982\u679c\u91cd\u8bd5\u8be5\u65b9\u6cd5\u8c03\u7528\uff0c\u90a3\u4e48\u53ef\u80fd\u4e0d\u6b62\u4e00\u6b21\u3002
+
+ft.circuitbreaker.state.total.description=\u65ad\u8def\u5668\u5728\u6bcf\u79cd\u72b6\u6001\u4e0b\u6240\u8017\u7528\u7684\u65f6\u95f4\u91cf\u3002
+
+ft.circuitbreaker.opened.total.description=\u65ad\u8def\u5668\u4ece\u5173\u95ed\u72b6\u6001\u79fb\u52a8\u5230\u6253\u5f00\u72b6\u6001\u7684\u6b21\u6570\u3002
+
+ft.bulkhead.calls.total.description=\u8fd0\u884c\u8231\u58c1\u903b\u8f91\u7684\u6b21\u6570\u3002 \u8fd9\u901a\u5e38\u662f\u6bcf\u6b21\u65b9\u6cd5\u8c03\u7528\u4e00\u6b21\uff0c\u4f46\u5982\u679c\u65ad\u8def\u5668\u963b\u6b62\u6267\u884c\uff0c\u90a3\u4e48\u53ef\u80fd\u662f\u96f6\u6b21\uff0c\u5982\u679c\u91cd\u8bd5\u65b9\u6cd5\u8c03\u7528\uff0c\u90a3\u4e48\u53ef\u80fd\u662f\u591a\u6b21\u3002
+
+ft.bulkhead.executionsRunning.description=\u5f53\u524d\u6b63\u5728\u8fd0\u884c\u7684\u6267\u884c\u6570\u3002
+
+ft.bulkhead.executionsWaiting.description=\u961f\u5217\u4e2d\u5f53\u524d\u6b63\u5728\u7b49\u5f85\u7684\u6267\u884c\u6570\u3002
+
+ft.bulkhead.runningDuration.description=\u65b9\u6cd5\u6267\u884c\u8fd0\u884c\u6240\u82b1\u8d39\u65f6\u95f4\u7684\u76f4\u65b9\u56fe\u3002
+
+ft.bulkhead.waitingDuration.description=\u65b9\u6cd5\u6267\u884c\u5728\u961f\u5217\u4e2d\u7b49\u5f85\u7684\u65f6\u95f4\u7684\u76f4\u65b9\u56fe\u3002

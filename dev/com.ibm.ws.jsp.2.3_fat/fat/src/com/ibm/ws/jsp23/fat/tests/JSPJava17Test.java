@@ -33,6 +33,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.rules.repeater.JakartaEEAction;
 
 /**
  * JSP 2.3 tests which use Java 17 specific features.
@@ -196,6 +197,13 @@ public class JSPJava17Test {
                      200, response.getResponseCode());
         assertTrue("The response did not contain: success", response.getText().contains("success-text-block"));
         assertTrue("The response did not contain: success", response.getText().contains("success-pattern-matching"));
+
+        //Wait for FFDC to be produced when Java 2 Security is enabled so that it doesn't leak into another test when Jakarta EE 11 and later is not active
+        //Java2 Security is not enabled for Jakarta EE11 and above
+
+        if (!JakartaEEAction.isEE11OrLaterActive() && server.isJava2SecurityEnabled()){
+            assertTrue("The expected FFDC was not produced!",server.waitForStringInLogUsingMark("FFDC1015I")!=null);
+        }
     }
 
     /**

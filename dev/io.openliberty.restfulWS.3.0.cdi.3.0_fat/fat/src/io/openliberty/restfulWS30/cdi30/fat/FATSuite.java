@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -43,7 +43,7 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests r = 
         RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-        .andWith(new JakartaEE10Action().withID("EE10").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
-        .andWith(FeatureReplacementAction.EE11_FEATURES().withID("EE11"));
+        .andWith(new JakartaEE10Action().setSkipTransformation(true).conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+        .andWith(FeatureReplacementAction.EE11_FEATURES().setSkipTransformation(true));
 
 }

@@ -11,6 +11,41 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+configurations {
+  db2
+  derbyClient
+  postgres
+}
+
+dependencies {
+  db2 'com.ibm.db2:jcc:11.1.4.4'
+  derbyClient 'org.apache.derby:derbyclient:10.11.1.1'
+  requiredLibs 'org.apache.derby:derbynet:10.11.1.1'
+  postgres 'org.postgresql:postgresql:42.7.2'
+}
+
+task copyDB2(type: Copy) {
+  shouldRunAfter jar
+  from configurations.db2
+  into new File(autoFvtDir, 'publish/shared/resources/db2')
+}
+
+task addDerbyClient(type: Copy) {
+  shouldRunAfter jar
+  from configurations.derbyClient
+  into new File(autoFvtDir, 'publish/shared/resources/derbyclient')
+  rename 'derbyclient.*.jar', 'derbyclient.jar'
+}
+
+// NOTE: placing the postgresql.jar in shared/resources places
+// the driver on the classpath of the FAT test
+task copySharedPostgres(type: Copy) {
+  mustRunAfter jar
+  from configurations.postgres
+  into new File(autoFvtDir, 'publish/shared/resources/postgres')
+  rename 'postgresql-.*.jar', 'postgresql.jar'
+}
+
 task copyBundles {
   dependsOn jar
   enabled project.file('test-bundles').exists()
@@ -27,38 +62,10 @@ task copyBundles {
 }
 
 addRequiredLibraries {
-    dependsOn addJakartaTransformer
-	dependsOn copyBundles
-}
-
-addRequiredLibraries.dependsOn copyTestContainers
-
-
-configurations {
-  db2
-  derbyClient
-}
-
-dependencies {
-  db2 'com.ibm.db2:jcc:11.1.4.4'
-  derbyClient 'org.apache.derby:derbyclient:10.11.1.1'
-  requiredLibs 'org.apache.derby:derbynet:10.11.1.1'
-}
-
-task copyDB2(type: Copy) {
-  shouldRunAfter jar
-  from configurations.db2
-  into new File(autoFvtDir, 'publish/shared/resources/db2')
-}
-
-task addDerbyClient(type: Copy) {
-  shouldRunAfter jar
-  from configurations.derbyClient
-  into new File(autoFvtDir, 'publish/shared/resources/derbyclient')
-  rename 'derbyclient.*.jar', 'derbyclient.jar'
-}
-
-addRequiredLibraries {
+  dependsOn addJakartaTransformer
+  dependsOn copyBundles
+  dependsOn copySharedPostgres
+  dependsOn copyTestContainers
   dependsOn addDerby
   dependsOn addDerbyClient
   dependsOn copyDB2

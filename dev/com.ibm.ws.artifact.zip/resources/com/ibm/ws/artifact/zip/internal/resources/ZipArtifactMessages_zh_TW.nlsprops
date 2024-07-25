@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -118,3 +118,8 @@ reaper.reopen.active.useraction=\u8acb\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668
 missing.zip.file=CWWKM0128E: \u907a\u6f0f {0} zip \u6a94\u3002
 missing.zip.file.explanation=\u4fdd\u5b58\u8655\u7406\u671f\u9593\u767c\u751f\u7570\u5e38\u72c0\u6cc1\uff0c\u56e0\u70ba\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u6a94\u6848\u3002
 missing.zip.file.useraction=\u8acb\u6aa2\u67e5\u6307\u5b9a\u7684\u6a94\u6848\u662f\u5426\u7d50\u675f\uff0c\u4ee5\u53ca\u5177\u6709\u4f3a\u670d\u5668\u53ef\u8b80\u53d6\u7684\u8a31\u53ef\u6b0a\u3002
+
+# # {0} A jar: URL.
+CWWKM0129W.missing.dir.entry=CWWKM0129W: \u6a94\u6848{0}\u6c92\u6709\u9810\u671f\u7684\u76ee\u9304\u689d\u76ee\u8def\u5f91\uff1a {1}
+CWWKM0129W.missing.dir.entry.explanation=\u8cc7\u6e90 URL \u4e2d\u4f7f\u7528\u7684\u5b58\u6a94\u5177\u6709\u76ee\u9304\u4e2d\u5305\u542b\u7684\u689d\u76ee\uff0c\u4f46\u5b58\u6a94\u7f3a\u5c11\u76ee\u9304\u672c\u8eab\u7684\u689d\u76ee\u3002 \u4e0d\u8fd4\u56de\u76ee\u9304 URL\u3002 \u6b64\u907a\u6f0f\u53ef\u80fd\u6703\u5c0e\u81f4\u67d0\u4e9b\u6383\u63cf\u8cc7\u6e90\u7684\u61c9\u7528\u7a0b\u5f0f\u7121\u6cd5\u5728\u5b58\u6a94\u6a94\u6848\u4e2d\u627e\u5230\u67d0\u4e9b\u8cc7\u6e90\u3002
+CWWKM0129W.missing.dir.entry.useraction=\u5fc5\u9808\u5efa\u7acb\u5b58\u6a94\u6a94\u6848\u4ee5\u5305\u542b\u6240\u6709\u76ee\u9304\u689d\u76ee\u3002

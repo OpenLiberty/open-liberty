@@ -26,6 +26,7 @@ dependencies {
       project(':com.ibm.ws.kernel.feature.core'),
       project(':com.ibm.ws.runtime.update'),
       project(':com.ibm.websphere.org.osgi.core'),
+      project(':com.ibm.websphere.appserver.features'),
       project(':com.ibm.websphere.org.osgi.service.cm'),
       project(':com.ibm.websphere.org.osgi.service.component'),
       project(':com.ibm.wsspi.org.osgi.namespace.service'),
@@ -33,7 +34,8 @@ dependencies {
       project(':com.ibm.wsspi.org.osgi.service.event'),
       project(':com.ibm.ws.org.eclipse.equinox.region'),
       project(':com.ibm.ws.org.apache.aries.util'),
-      project(':com.ibm.ws.org.osgi.annotation.versioning')
+      project(':com.ibm.ws.org.osgi.annotation.versioning'),
+      'biz.aQute.bnd:biz.aQute.bnd:6.4.1'
 }
 
 task addJunitdependencies(type: Copy) {
@@ -41,8 +43,29 @@ task addJunitdependencies(type: Copy) {
   into "${buildDir}/autoFVT/lib/"
 }
 
+// TODO: Maybe, delete / copy might be replaced with sync.
+
+task deleteFeatures() {
+  doLast {
+    delete "${buildDir}/autoFVT/lib/features"
+  }
+}
+
+task copyFeatures() {
+  mustRunAfter deleteFeatures
+
+  doLast {
+    copy {
+      from(fileTree(project(':com.ibm.websphere.appserver.features').file('visibility')))
+      into "${buildDir}/autoFVT/lib/features"
+    }
+  }
+}
+
 addRequiredLibraries {
   dependsOn addDerby
   dependsOn addJunitdependencies
+  dependsOn deleteFeatures
+  dependsOn copyFeatures
 }
 

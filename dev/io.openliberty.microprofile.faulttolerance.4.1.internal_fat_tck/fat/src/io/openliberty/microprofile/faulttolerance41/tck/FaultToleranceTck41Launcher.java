@@ -43,7 +43,6 @@ import componenttest.topology.utils.tck.TCKRunner;
  * location.
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.EXPERIMENTAL) //Enable this test when the fault tolerence 4.1 tck is published
 public class FaultToleranceTck41Launcher {
 
     private static final String SERVER_NAME = "FaultTolerance41TCKServer";
@@ -51,7 +50,7 @@ public class FaultToleranceTck41Launcher {
     private static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP70_EE10);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP70_EE10, MicroProfileActions.MP70_EE11);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

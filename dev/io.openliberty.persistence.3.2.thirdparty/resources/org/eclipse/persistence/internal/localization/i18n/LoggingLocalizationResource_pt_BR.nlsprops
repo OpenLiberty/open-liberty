@@ -117,7 +117,7 @@ connected_user_database_driver=Conectado: {0}{6}Usu\u00e1rio: {1}{6}Banco de Dad
 
 corrupt_object=objeto corrompido: {0}
 
-corrupt_object_referenced_through_mapping=O objeto corrompido a seguir \u00e9 referenciado por mapeamento: {0}.
+corrupt_object_referenced_through_mapping=O objeto corrompido a seguir \u00e9 referenciado por mapeamento: {0}
 
 corrupted_session_announcement=SessionID: {0} O gerenciador de descoberta recebeu um an\u00fancio de sess\u00e3o corrompida - ignorando.
 
@@ -169,6 +169,14 @@ elements={0}{1} elementos
 
 enable_batch_operations_as_true_not_supported=A configura\u00e7\u00e3o do CMP \u201cativar-opera\u00e7\u00f5es-de-lote-como-verdadeiras\u201d do WLS nativo n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
+encryptor_script_description=Esse aplicativo tem uma senha criptografada antiga que foi usada por uma vers\u00e3o anterior do EclipseLink Criptografe novamente com o algoritmo mais recente.
+
+encryptor_script_output=A senha criptografada novamente \u00e9: {0}
+
+encryptor_script_usage=O uso \u00e9 `passwordUpdate.sh | .cmd -ip < old encrypted password> `.
+
+entity_manager_has_multiple_connections=A unidade de persist\u00eancia possui v\u00e1rias conex\u00f5es, retornando a primeira da lista..
+
 entity_manager_ignores_jta_data_source=A unidade de persist\u00eancia n\u00e3o usa JTA; portanto, o EntityManager ignora a origem de dados JTA. 
 
 entity_manager_ignores_nonjta_data_source=A unidade de persist\u00eancia usa JTA; portanto, o EntityManager ignora a origem de dados n\u00e3o JTA. 
@@ -192,6 +200,8 @@ error_in_create=Erro ao criar.
 error_in_remove=Erro ao remover.
 
 error_loading_xml_file=Exce\u00e7\u00e3o ao carregar o arquivo xml ORM: {0}: {1}
+
+error_queryTimeoutParse=N\u00e3o \u00e9 poss\u00edvel analisar o valor da propriedade {0} jakarta.persistence.query.timeout : {1}
 
 exception_loading_entity_class=Uma exce\u00e7\u00e3o ocorreu ao tentar inicializar persist\u00eancia.  {1} ocorreu ao tentar carregar a classe de entidade: {0}.
 
@@ -647,6 +657,18 @@ retreived_null_message=Recuperada mensagem nula do t\u00f3pico: {0}; ignorando
 
 retreived_unknown_message_type=Tipo de mensagem desconhecida recuperado: {0} do t\u00f3pico: {1}; ignorando
 
+schema_default_create_tables_failed=Falha ao criar tabelas no esquema de tabela padr\u00e3o: {0}
+
+schema_default_drop_tables_failed=Falha ao eliminar tabelas no esquema de tabela padr\u00e3o: {0}
+
+schema_default_extend_tables_failed=Falha ao estender tabelas no esquema de tabela padr\u00e3o: {0}
+
+schema_default_replace_tables_failed=Falha ao substituir tabelas no esquema de tabela padr\u00e3o: {0}
+
+schema_default_truncate_tables_failed=Falha ao truncar tabelas no esquema de tabela padr\u00e3o: {0}
+
+schema_drop_object_failed=Falha ao descartar objeto no esquema de tabela padr\u00e3o: {0}
+
 sdo_classgenerator_exception={2} Um [{0}] Exce\u00e7\u00e3o ocorreu \u2013 a mensagem \u00e9 [{1}]
 
 sdo_error_deserialization=Tentativa de desserializa\u00e7\u00e3o desautorizada com a classe {0}.
@@ -716,6 +738,8 @@ Current encadeamento (ID: {3} nome: {4}) rastreio de pilha:
 #{5}
 
 unitofwork_identity_hashcode={0}C\u00f3digo hash de identidade UnitOfWork: {1}
+
+unknown_property_type=Tipo {0} desconhecido da propriedade de persist\u00eancia {1}
 
 update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery n\u00e3o pode usar liga\u00e7\u00e3o nessa plataforma de banco de dados. Conjunto da consulta alterado para executar sem liga\u00e7\u00e3o.
 

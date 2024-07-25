@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -39,8 +39,7 @@ public class FATSuite extends TxTestContainerSuite {
 	}
 
 	@ClassRule
-    public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
+    public static RepeatTests r = RepeatTests.withoutModification()
     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(DBRotationTest.serverNames))
-    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11).forServers(DBRotationTest.serverNames))
-    .andWith(FeatureReplacementAction.EE10_FEATURES().forServers(DBRotationTest.serverNames));
+    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11).forServers(DBRotationTest.serverNames));
 }

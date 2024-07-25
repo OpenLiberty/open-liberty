@@ -1,17 +1,12 @@
 ###############################################################################
-# Copyright (c) 2002, 2022 IBM Corporation and others.
+# Copyright (c) 2002, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
-#
-
 
 #COMPONENTPREFIX CWWKH
 #COMPONENTNAMEFOR CWWKH WebSphere WebSocket
@@ -228,9 +223,9 @@ missingslashornull.uri=CWWKH0052E: Une exception s''est produite lors du d\u00e9
 missingslashornull.uri.explanation=ServerEndpoint n'est pas valide car l'URI du noeud final est null ou ne commence pas par / dans la classe de noeud final. L'application WebSocket n'est pas disponible pour les demandes.
 missingslashornull.uri.useraction=D\u00e9finissez un URI de noeud final non null commen\u00e7ant par /. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
 
-wsoc.feature.not.loaded.correctly=CWWKH0053E: La fonction websocket n'a pas \u00e9t\u00e9 charg\u00e9e avec une version acceptable.
-wsoc.feature.not.loaded.correctly.explanation=La fonction websocket est charg\u00e9e avec une version qui correspond \u00e0 la sp\u00e9cification Java [Jakarta] EE de cette fonction WebSocket. La fonction a \u00e9t\u00e9 charg\u00e9e sans version d\u00e9finie.
-wsoc.feature.not.loaded.correctly.useraction=Recherchez dans le fichier server.xml l'existence de plusieurs fonctions WebSocket. Vous devez sp\u00e9cifier une seule fonction.
+wsoc.feature.not.loaded.correctly=CWWKH0053E: Le conteneur Websocket ne s'est pas charg\u00e9 avec une version acceptable.
+wsoc.feature.not.loaded.correctly.explanation=Le conteneur Websocket charg\u00e9 sans version acceptable. Le comportement de l'application peut \u00eatre diff\u00e9rent de celui attendu.
+wsoc.feature.not.loaded.correctly.useraction=Recherchez dans le fichier server.xml l'existence de plusieurs fonctions WebSocket. Le fichier ne doit pas sp\u00e9cifier plus d\u2019une fonctionnalit\u00e9 Websocket.
 
 scheme.incorrect.error=CWWKH0054E: Un sch\u00e9ma non identifi\u00e9 a \u00e9t\u00e9 utilis\u00e9 dans l''URI {0}.
 scheme.incorrect.error.explanation=Un sch\u00e9ma non identifi\u00e9 a \u00e9t\u00e9 trouv\u00e9 lors du traitement de la demande. 

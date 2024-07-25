@@ -62,7 +62,7 @@ public class NoAppTest extends BaseTestClass {
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), route, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod));
 
     }
 

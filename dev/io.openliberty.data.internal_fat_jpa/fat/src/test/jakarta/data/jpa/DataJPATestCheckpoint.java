@@ -12,6 +12,9 @@
  *******************************************************************************/
 package test.jakarta.data.jpa;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -48,29 +51,27 @@ public class DataJPATestCheckpoint extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Get driver type
-        DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
-        server.addEnvVar("DB_DRIVER", type.getDriverName());
-
         // Set up server DataSource properties
-        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
+        DatabaseContainerUtil.setupDataSourcePropertiesForCheckpoint(server, testContainer);
 
         WebArchive war = ShrinkHelper.buildDefaultApp("DataJPATestApp", "test.jakarta.data.jpa.web");
         ShrinkHelper.exportAppToServer(server, war);
-        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, null);
-        server.addCheckpointRegexIgnoreMessage("DSRA8020E.*data.createTables");
-        server.addCheckpointRegexIgnoreMessage("DSRA8020E.*data.dropTables");
-        server.addCheckpointRegexIgnoreMessage("DSRA8020E.*data.tablePrefix");
+
+        Map<String, String> envVars = new HashMap<>();
+        envVars.put("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer();
+
+        //Server started, application started, checkpoint taken, server is now stopped.
+        //Configure environment variable used by servlet
+        server.addEnvVarsForCheckpoint(envVars);
+
+        server.checkpointRestore();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        // TODO if we decide to add the ability to put Jakarta Data properties onto DataSourceDefinition properties,
-        // then an update will be needed to com.ibm.ws.jdbc.internal.JDBCDriverService.create to ignore them for the data source:
-        // W DSRA8020E: Warning: The property 'data.createTables' does not exist on the DataSource class ...
-        server.stopServer("DSRA8020E.*data.createTables",
-                          "DSRA8020E.*data.dropTables",
-                          "DSRA8020E.*data.tablePrefix");
+        server.stopServer();
     }
 }

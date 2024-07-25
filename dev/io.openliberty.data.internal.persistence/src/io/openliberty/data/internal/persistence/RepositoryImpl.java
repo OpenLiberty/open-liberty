@@ -62,8 +62,8 @@ import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.data.internal.persistence.QueryInfo.Type;
 import io.openliberty.data.internal.persistence.cdi.DataExtension;
-import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import io.openliberty.data.internal.persistence.cdi.FutureEMBuilder;
 import jakarta.data.Limit;
 import jakarta.data.Order;
@@ -95,12 +95,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
     private final AtomicBoolean isDisposed = new AtomicBoolean();
     final CompletableFuture<EntityInfo> primaryEntityInfoFuture;
-    final DataExtensionProvider provider;
+    final DataProvider provider;
     final Map<Method, CompletableFuture<QueryInfo>> queries = new HashMap<>();
     final Class<R> repositoryInterface;
     final EntityValidator validator;
 
-    public RepositoryImpl(DataExtensionProvider provider, DataExtension extension, FutureEMBuilder futureEMBuilder,
+    public RepositoryImpl(DataProvider provider, DataExtension extension, FutureEMBuilder futureEMBuilder,
                           Class<R> repositoryInterface, Class<?> primaryEntityClass,
                           Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
         EntityManagerBuilder builder = futureEMBuilder.join();
@@ -109,7 +109,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         this.primaryEntityInfoFuture = primaryEntityClass == null ? null : builder.entityInfoMap.computeIfAbsent(primaryEntityClass, EntityInfo::newFuture);
         this.provider = provider;
         this.repositoryInterface = repositoryInterface;
-        Object validation = provider.validationService();
+        Object validation = provider.validationService;
         this.validator = validation == null ? null : EntityValidator.newInstance(validation, repositoryInterface);
 
         List<CompletableFuture<EntityInfo>> entityInfoFutures = new ArrayList<>();
@@ -435,7 +435,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
         }
 
-        Object id = entityInfo.getAttribute(e, entityInfo.getAttributeName(ID, true));
+        Object id = entityInfo.getAttribute(e, queryInfo.getAttributeName(ID, true));
         if (id == null) {
             jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
             if (version != null)
@@ -686,7 +686,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), args);
+            Tr.entry(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(),
+                     provider.loggable(repositoryInterface, method, args));
         try {
             if (isDisposed.get())
                 throw new IllegalStateException("Repository instance " + repositoryInterface.getName() +
@@ -1236,8 +1237,18 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 }
             }
 
-            if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), returnValue);
+            if (trace && tc.isEntryEnabled()) {
+                boolean hideValue = queryInfo.type == Type.FIND
+                                    || queryInfo.type == Type.FIND_AND_DELETE
+                                    || queryInfo.type == Type.INSERT
+                                    || queryInfo.type == Type.SAVE
+                                    || queryInfo.type == Type.UPDATE_WITH_ENTITY_PARAM_AND_RESULT;
+                Object valueToLog = hideValue //
+                                ? provider.loggable(repositoryInterface, method, returnValue) //
+                                : returnValue;
+                Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(),
+                        valueToLog);
+            }
             return returnValue;
         } catch (Throwable x) {
             if (!isDefaultMethod && x instanceof Exception)
@@ -1312,7 +1323,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         Object id = null;
         if (entityInfo.idClassAttributeAccessors == null) {
-            id = entityInfo.getAttribute(e, entityInfo.getAttributeName(ID, true));
+            id = entityInfo.getAttribute(e, queryInfo.getAttributeName(ID, true));
             if (id == null) {
                 jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
                 if (version != null)
@@ -1671,7 +1682,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
         }
 
-        Object id = entityInfo.getAttribute(e, entityInfo.getAttributeName(ID, true));
+        Object id = entityInfo.getAttribute(e, queryInfo.getAttributeName(ID, true));
         if (id == null) {
             jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
             if (version != null)

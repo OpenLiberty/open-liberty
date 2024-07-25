@@ -142,7 +142,8 @@ Export-Package: \
   org.apache.cxf.ws.addressing.wsdl;version=${exportVer}, \
   org.apache.cxf.wsdl.http;version=${exportVer}, \
   com.ibm.ws.cxf.client;version=${exportVer}, \
-  com.ibm.ws.cxf.client.component;version=${exportVer}
+  com.ibm.ws.cxf.client.component;version=${exportVer}, \
+  io.openliberty.cxf.logging;version=${exportVer}
 
 DynamicImport-Package: \
   com.ctc.wstx.*, \
@@ -168,7 +169,9 @@ instrument.classesExcludes: \
   org/apache/cxf/phase/*.class, \
   org/apache/cxf/interceptor/*.class, \
   org/apache/cxf/service/model/*.class, \
-  org/apache/cxf/staxutils/*.class
+  org/apache/cxf/staxutils/*.class, \
+  org/apache/cxf/common/logging/*.class, \
+  io/openliberty/cxf/logging/*.class
 
 -buildpath: \
   javax.activation:activation;version=1.1, \

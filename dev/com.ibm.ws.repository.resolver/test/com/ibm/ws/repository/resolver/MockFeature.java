@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -201,7 +201,14 @@ public class MockFeature implements ProvisioningFeatureDefinition {
 
     /** {@inheritDoc} */
     @Override
-    public List<String> getPlatforms() {
+    public List<String> getPlatformNames() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getPlatformName() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -226,12 +233,4 @@ public class MockFeature implements ProvisioningFeatureDefinition {
         // TODO Auto-generated method stub
         return false;
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getPlatformValue() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

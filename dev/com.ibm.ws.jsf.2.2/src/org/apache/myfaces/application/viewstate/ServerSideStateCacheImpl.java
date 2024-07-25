@@ -681,8 +681,9 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     {
         if (_useFlashScopePurgeViewsInSession == null)
         {
-            _useFlashScopePurgeViewsInSession = WebConfigParamUtils.getBooleanInitParameter(
-                    externalContext, USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION, false);
+            _useFlashScopePurgeViewsInSession = !MyfacesConfig.getCurrentInstance(externalContext).isFlashScopeDisabled()
+                    && WebConfigParamUtils.getBooleanInitParameter(externalContext, USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION,
+                            false);
         }
         return _useFlashScopePurgeViewsInSession;
     }

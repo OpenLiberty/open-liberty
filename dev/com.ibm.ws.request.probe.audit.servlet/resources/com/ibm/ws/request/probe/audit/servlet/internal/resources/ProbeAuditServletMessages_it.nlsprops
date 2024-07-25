@@ -18,3 +18,7 @@
 #ISMESSAGEFILE FALSE
 #NLS_ENCODING=UNICODE
 # cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+AUDIT_EVENT_MISSING_REST_ENDPOINT=CWWKS5856E: Il nome dell''evento di verifica {0} non \u00e8 supportato perch\u00e9 l''endpoint REST non \u00e8 abilitato.
+AUDIT_EVENT_MISSING_REST_ENDPOINT.explanation=Per utilizzare l'evento di verifica specificato, \u00e8 necessario abilitare l'endpoint REST.
+AUDIT_EVENT_MISSING_REST_ENDPOINT.useraction=Assicurarsi che una funzione che abilita l'endpoint REST sia abilitata nella configurazione server.xml .

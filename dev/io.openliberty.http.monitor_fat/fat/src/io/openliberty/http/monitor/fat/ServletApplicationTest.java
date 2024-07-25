@@ -37,18 +37,6 @@ public class ServletApplicationTest extends BaseTestClass {
 
     private static Class<?> c = ServletApplicationTest.class;
 
-    static final String SIMPLE_APP_CONTEXT_ROOT = "/ServletApp";
-
-    static final String WILDCARD_APP_CONTEXT_ROOT = "/WildCardServlet";
-
-    static final String SIMPLE_SERVLET_URL = SIMPLE_APP_CONTEXT_ROOT + "/simpleServlet";
-
-    static final String FAIL_SERVLET_URL = SIMPLE_APP_CONTEXT_ROOT + "/failServlet";
-
-    static final String SUB1_SERVLET_URL = SIMPLE_APP_CONTEXT_ROOT + "/sub";
-
-    static final String SUB2_SERVLET_URL = SIMPLE_APP_CONTEXT_ROOT + "/sub/sub";
-
     @Server("SimpleServletServer")
     public static LibertyServer server;
 
@@ -90,13 +78,13 @@ public class ServletApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_SERVLET_URL;
+        String route = Constants.SIMPLE_SERVLET_URL;
         String requestMethod = HttpMethod.GET;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), route, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod));
 
     }
 
@@ -104,13 +92,13 @@ public class ServletApplicationTest extends BaseTestClass {
     public void s1_simplePathPost() throws Exception {
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_SERVLET_URL;
+        String route = Constants.SIMPLE_SERVLET_URL;
         String requestMethod = HttpMethod.POST;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), route, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod));
 
     }
 
@@ -119,13 +107,13 @@ public class ServletApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_SERVLET_URL;
+        String route = Constants.SIMPLE_SERVLET_URL;
         String requestMethod = HttpMethod.PUT;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), route, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod));
 
     }
 
@@ -134,13 +122,13 @@ public class ServletApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_SERVLET_URL;
+        String route = Constants.SIMPLE_SERVLET_URL;
         String requestMethod = HttpMethod.DELETE;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), route, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod));
 
     }
 
@@ -149,13 +137,13 @@ public class ServletApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_SERVLET_URL;
+        String route = Constants.SIMPLE_SERVLET_URL;
         String requestMethod = HttpMethod.OPTIONS;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), route, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod));
 
     }
 
@@ -164,13 +152,13 @@ public class ServletApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_SERVLET_URL;
+        String route = Constants.SIMPLE_SERVLET_URL;
         String requestMethod = HttpMethod.HEAD;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), route, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod));
 
     }
 
@@ -180,14 +168,14 @@ public class ServletApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = FAIL_SERVLET_URL;
+        String route = Constants.FAIL_SERVLET_URL;
         String requestMethod = HttpMethod.GET;
         String responseStatus = "500";
         String errorType = responseStatus;
 
         String res = requestHttpServlet(route, server, requestMethod, "failMode=zero");
 
-        assertTrue(validatePrometheusHTTPMetricWithErrorType(getVendorMetrics(server), route, responseStatus, requestMethod, errorType));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod, errorType));
 
     }
 
@@ -197,14 +185,14 @@ public class ServletApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = SIMPLE_APP_CONTEXT_ROOT + "/nonExistent";
+        String route = Constants.SERVLET_CONTEXT_ROOT + "/nonExistent";
         String requestMethod = HttpMethod.GET;
         String responseStatus = "404";
-        String resolvedRoute = SIMPLE_APP_CONTEXT_ROOT + "/\\*";
+        String resolvedRoute = Constants.SERVLET_CONTEXT_ROOT + "/\\*";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), resolvedRoute, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), resolvedRoute, responseStatus, requestMethod));
 
     }
 
@@ -213,13 +201,13 @@ public class ServletApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = FAIL_SERVLET_URL;
+        String route = Constants.FAIL_SERVLET_URL;
         String requestMethod = HttpMethod.GET;
         String responseStatus = "456";
 
         String res = requestHttpServlet(route, server, requestMethod, "failMode=custom");
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), route, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod));
 
     }
 
@@ -229,14 +217,14 @@ public class ServletApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = FAIL_SERVLET_URL;
+        String route = Constants.FAIL_SERVLET_URL;
         String requestMethod = HttpMethod.GET;
         String responseStatus = "500";
         String errorType = responseStatus;
 
         String res = requestHttpServlet(route, server, requestMethod, "failMode=io");
 
-        assertTrue(validatePrometheusHTTPMetricWithErrorType(getVendorMetrics(server), route, responseStatus, requestMethod, errorType));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod, errorType));
 
     }
 
@@ -246,14 +234,14 @@ public class ServletApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = FAIL_SERVLET_URL;
+        String route = Constants.FAIL_SERVLET_URL;
         String requestMethod = HttpMethod.GET;
         String responseStatus = "500";
         String errorType = responseStatus;
 
         String res = requestHttpServlet(route, server, requestMethod, "failMode=iae");
 
-        assertTrue(validatePrometheusHTTPMetricWithErrorType(getVendorMetrics(server), route, responseStatus, requestMethod, errorType));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod, errorType));
 
     }
 
@@ -263,14 +251,14 @@ public class ServletApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = WILDCARD_APP_CONTEXT_ROOT + "/anythingGoes";
-        String expectedRoute = WILDCARD_APP_CONTEXT_ROOT + "/\\*";
+        String route = Constants.WILDCARD_APP_CONTEXT_ROOT + "/anythingGoes";
+        String expectedRoute = Constants.WILDCARD_APP_CONTEXT_ROOT + "/\\*";
         String requestMethod = HttpMethod.GET;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
 
     }
 
@@ -280,14 +268,14 @@ public class ServletApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = WILDCARD_APP_CONTEXT_ROOT + "/sub/aloha";
-        String expectedRoute = WILDCARD_APP_CONTEXT_ROOT + "/sub/\\*";
+        String route = Constants.WILDCARD_APP_CONTEXT_ROOT + "/sub/aloha";
+        String expectedRoute = Constants.WILDCARD_APP_CONTEXT_ROOT + "/sub/\\*";
         String requestMethod = HttpMethod.GET;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
 
     }
 
@@ -297,14 +285,14 @@ public class ServletApplicationTest extends BaseTestClass {
 
         assertTrue(server.isStarted());
 
-        String route = WILDCARD_APP_CONTEXT_ROOT + "/sub/sub/bonjourno";
-        String expectedRoute = WILDCARD_APP_CONTEXT_ROOT + "/sub/sub/\\*";
+        String route = Constants.WILDCARD_APP_CONTEXT_ROOT + "/sub/sub/bonjourno";
+        String expectedRoute = Constants.WILDCARD_APP_CONTEXT_ROOT + "/sub/sub/\\*";
         String requestMethod = HttpMethod.GET;
         String responseStatus = "200";
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validatePrometheusHTTPMetric(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
 
     }
 

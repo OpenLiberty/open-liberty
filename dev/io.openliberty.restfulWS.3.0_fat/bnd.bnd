@@ -32,7 +32,7 @@ tested.features: \
   expressionlanguage-5.0,\
   expressionlanguage-6.0,\
   xmlbinding-4.0,\
-  beanvalidation-3.1,\
+  validation-3.1,\
   noship-1.0
 
 -buildpath: \

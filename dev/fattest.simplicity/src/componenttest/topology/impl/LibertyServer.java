@@ -61,6 +61,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Set;
@@ -543,6 +544,27 @@ public class LibertyServer implements LogMonitorClient {
         return this;
     }
 
+    public void addEnvVarsForCheckpoint(Map<String, String> props) throws Exception {
+        File serverEnvFile;
+        if (fileExistsInLibertyServerRoot("server.env")) {
+            serverEnvFile = new File(getFileFromLibertyServerRoot("server.env").getAbsolutePath());
+        } else {
+            serverEnvFile = new File(getServerRoot() + "/" + "server.env");
+            serverEnvFile.createNewFile();
+        }
+        Properties mergeProps = new Properties();
+        try (InputStream in = new FileInputStream(serverEnvFile)) {
+            mergeProps.load(in);
+        }
+        mergeProps.putAll(props);
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(serverEnvFile), "8859_1"))) {
+            for (Entry<Object, Object> entry : mergeProps.entrySet()) {
+                bw.write(entry.getKey() + "=" + entry.getValue());
+                bw.newLine();
+            }
+        }
+    }
+
     public static class CheckpointInfo {
         final Consumer<LibertyServer> defaultPreCheckpointLambda = (LibertyServer s) -> {
             Log.debug(c, "No preCheckpointLambda supplied.");
@@ -980,6 +1002,69 @@ public class LibertyServer implements LogMonitorClient {
         w.close();
         //Now we need to copy file overwriting existing server.xml and delete the temp
         tempServerXML.copyToDest(serverXML, false, true);
+        tempServerXML.delete();
+    }
+
+    /**
+     * Set the platform / feature elements of the server.xml to the new platform / features values specified.
+     * Each String should be the only platform or feature name, e.g. jakartaee-10.0 or servlet-3.0. If the
+     * server.xml has no <featureManager> tag this method will simply duplicate the existing server.xml content.
+     *
+     * @param  newPlatforms
+     * @param  newFeatures
+     * @return
+     * @throws Exception
+     */
+    public void changePlatformsAndFeatures(List<String> newPlatforms, List<String> newFeatures) throws Exception {
+        RemoteFile serverXML = machine.getFile(serverRoot + "/" + SERVER_CONFIG_FILE_NAME);
+        LocalFile tempServerXML = new LocalFile(SERVER_CONFIG_FILE_NAME);
+
+        Writer w = new OutputStreamWriter(tempServerXML.openForWriting(false));
+        InputStream originalOutput = serverXML.openForReading();
+        InputStreamReader in2 = new InputStreamReader(originalOutput);
+        Scanner s2 = new Scanner(in2);
+
+        while (s2.hasNextLine()) {
+            String line = s2.nextLine();
+            // We've reached  the platform/feature elements
+            if (line.contains("<featureManager>")) {
+                // Skip until we reach the end tag
+                while (s2.hasNextLine()) {
+                    line = s2.nextLine();
+                    if (line.contains("</featureManager>")) {
+                        break;
+                    }
+                }
+
+                // Now write the <featureManager> snippet to the temp xml
+                w.write("   <featureManager>");
+                w.write("\n");
+                if (newPlatforms != null || newPlatforms.size() > 0) {
+                    for (String platform : newPlatforms) {
+                        w.write("               <platform>" + platform.trim() + "</platform>");
+                        w.write("\n");
+                    }
+                }
+                if (newFeatures != null || newFeatures.size() > 0) {
+                    for (String feature : newFeatures) {
+                        w.write("               <feature>" + feature.trim() + "</feature>");
+                        w.write("\n");
+                    }
+                }
+                w.write("   </featureManager>");
+                w.write("\n");
+            } else {
+                w.write(line);
+                w.write("\n");
+            }
+        }
+
+        s2.close();
+        originalOutput.close();
+        w.flush();
+        w.close();
+        //Now we need to copy file overwriting existing server.xml and delete the temp
+        boolean rc = tempServerXML.copyToDest(serverXML, false, true);
         tempServerXML.delete();
     }
 
@@ -1856,7 +1941,7 @@ public class LibertyServer implements LogMonitorClient {
                     Log.info(c, method, "Return code from script is: " + rc);
                 }
             } else {
-                if (shouldFail) {
+                if (shouldFail && doCheckpoint()) {
                     Exception fail = new Exception("Checkpoint should have failed.");
                     Log.error(c, fail.getMessage(), fail);
                     throw fail;

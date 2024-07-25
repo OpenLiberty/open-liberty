@@ -24,7 +24,7 @@ configurations {
 dependencies {
   hibernateJPA32 "org.hibernate.orm:hibernate-core:${hibernateVersion}"
 
-  //Annotation processor - generages .java files in build/libs/generated/sources
+  //Annotation processor - generates .java files in build/libs/generated/sources
   //Some generated .java files import hibernate dependencies, need this compileOnly dependency
   annotationProcessor "org.hibernate.orm:hibernate-jpamodelgen:${hibernateVersion}"
   compileOnly "org.hibernate.orm:hibernate-core:${hibernateVersion}"
@@ -52,4 +52,12 @@ apply plugin: 'java'
 
 compileJava {
   options.compilerArgs << '-parameters'
+}
+
+assemble.doLast {
+  // update the generated-src dir with the generated code
+  copy {
+    from "build/libs/generated/sources/annotationProcessor/java/main"
+      into "generated-src"
+  }
 }

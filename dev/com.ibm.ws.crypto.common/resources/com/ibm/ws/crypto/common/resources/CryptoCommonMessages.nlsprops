@@ -24,10 +24,10 @@
 # -------------------------------------------------------------------------------------------------
 
 #Message prefix block: CWWKS5900 - CWWKS5910
-CRYPTO_UNSECURE=CWWKS5900W: The {0} configuration element specifies the {1} unsecure cryptographic algorithm.  Consider using the {2} secure algorithm instead.
-CRYPTO_UNSECURE.explanation=The configured algorithm is no longer considered cryptographically secure.
-CRYPTO_UNSECURE.useraction=Use the suggested secure algorithm.
+CRYPTO_INSECURE=CWWKS5900W: The {0} configuration element specifies the {1} insecure cryptographic algorithm.  Consider using the {2} secure algorithm instead.
+CRYPTO_INSECURE.explanation=The configured algorithm is no longer considered cryptographically secure.
+CRYPTO_INSECURE.useraction=Use the suggested secure algorithm.
 
-CRYPTO_UNSECURE_REPLACED=CWWKS5901W: The {0} configuration element specifies the {1} unsecure cryptographic algorithm.  The secure algorithm {2} is used instead.
-CRYPTO_UNSECURE_REPLACED.explanation=The unsecure cryptographic algorithm was replaced with the secure algorithm.
-CRYPTO_UNSECURE_REPLACED.useraction=No action is required.
+CRYPTO_INSECURE_REPLACED=CWWKS5901W: The {0} configuration element specifies the {1} insecure cryptographic algorithm.  The {2} secure algorithm is used instead.
+CRYPTO_INSECURE_REPLACED.explanation=The insecure cryptographic algorithm was replaced with the secure algorithm.
+CRYPTO_INSECURE_REPLACED.useraction=No action is required.

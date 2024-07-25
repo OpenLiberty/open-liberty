@@ -38,7 +38,6 @@ src: \
 tested.features:\
     expressionlanguage-6.0,\
     faces-4.1,\
-    noship-1.0,\
     cdi-4.1,\
     servlet-6.1,\
     websocket-2.2

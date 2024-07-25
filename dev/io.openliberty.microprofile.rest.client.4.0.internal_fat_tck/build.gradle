@@ -1,0 +1,50 @@
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
+configurations {
+  wiremockAndJetty
+  httpcore
+}
+
+configurations.wiremockAndJetty {
+  transitive = false
+}
+
+dependencies {
+  wiremockAndJetty 'org.wiremock:wiremock-standalone:3.0.1',
+    'org.eclipse.jetty:jetty-http:11.0.21',
+    'org.eclipse.jetty:jetty-io:11.0.21',
+    'org.eclipse.jetty:jetty-server:11.0.21',
+    'org.eclipse.jetty:jetty-util:11.0.21'
+  httpcore 'org.apache.httpcomponents.core5:httpcore5:5.2'
+}
+
+task addWiremockAndJetty(type: Copy) {
+  from configurations.wiremockAndJetty
+  into "${buildDir}/autoFVT/publish/servers/FATServer/"
+}
+
+task addHttpcore(type: Copy) {
+  from configurations.httpcore
+  into "${buildDir}/autoFVT/publish/servers/FATServer/lib/global"
+}
+
+addRequiredLibraries {
+  dependsOn addWiremockAndJetty
+  dependsOn addHttpcore
+}
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+

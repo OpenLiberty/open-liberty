@@ -2,7 +2,8 @@
 symbolicName=io.openliberty.internal.mpVersion-2.0
 visibility=private
 singleton=true
-kind=beta
+-features=io.openliberty.mpCompatible-0.0
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-Platform: microProfile-2.0

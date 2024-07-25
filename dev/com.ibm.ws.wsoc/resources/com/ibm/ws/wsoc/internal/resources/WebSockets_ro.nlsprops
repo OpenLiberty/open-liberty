@@ -1,17 +1,12 @@
 ###############################################################################
-# Copyright (c) 2002, 2022 IBM Corporation and others.
+# Copyright (c) 2002, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
-#
-
 
 #COMPONENTPREFIX CWWKH
 #COMPONENTNAMEFOR CWWKH WebSphere WebSocket
@@ -228,9 +223,9 @@ missingslashornull.uri=CWWKH0052E: A ap\u0103rut o excep\u021bie \u00een timpul 
 missingslashornull.uri.explanation=ServerEndpoint este invalid deoarece URI-ul punctului final este fie null, fie nu \u00eencepe cu / \u00een clasa endpoint. Aplica\u0163ia WebSocket nu este disponibil\u0103 pentru pentru cereri.
 missingslashornull.uri.useraction=Defini\u0163i URI-ul punct final non-null care \u00eencepe cu /. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
 
-wsoc.feature.not.loaded.correctly=CWWKH0053E: Caracteristica de WebSocket nu s-a \u00eenc\u0103rcat cu o versiune acceptabil\u0103.
-wsoc.feature.not.loaded.correctly.explanation=Caracteristica WebSocket este \u00eenc\u0103rcat\u0103 cu o versiune care corespunde specifica\u021biei Java [Jakarta] EE a caracteristicii WebSocket. Caracteristica a fost \u00eenc\u0103rcat\u0103 f\u0103r\u0103 nicio versiune definit\u0103.
-wsoc.feature.not.loaded.correctly.useraction=Verifica\u021bi fi\u0219ierul server.xml pentru existen\u021ba mai multor caracteristici WebSocket. Doar una trebuie s\u0103 fie specificat\u0103.
+wsoc.feature.not.loaded.correctly=CWWKH0053E: Containerul websocket nu s-a \u00eenc\u0103rcat cu o versiune acceptabil\u0103.
+wsoc.feature.not.loaded.correctly.explanation=Containerul websocket a fost \u00eenc\u0103rcat f\u0103r\u0103 o versiune acceptabil\u0103. Este posibil ca aplica\u021bia s\u0103 nu se comporte a\u0219a cum era de a\u0219teptat.
+wsoc.feature.not.loaded.correctly.useraction=Verifica\u021bi fi\u0219ierul server.xml pentru existen\u021ba mai multor caracteristici WebSocket. Fi\u0219ierul trebuie s\u0103 specifice nu mai mult de o caracteristic\u0103 websocket.
 
 scheme.incorrect.error=CWWKH0054E: \u00cen URI-ul {0} a fost folosit\u0103 o schem\u0103 neidentificat\u0103.
 scheme.incorrect.error.explanation=A fost g\u0103sit\u0103 o schem\u0103 neidentificat\u0103 \u00een timpul trat\u0103rii cererii. 

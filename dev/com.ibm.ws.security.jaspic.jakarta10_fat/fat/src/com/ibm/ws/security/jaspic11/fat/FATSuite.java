@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,38 +25,33 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.EmptyAction;
-import componenttest.rules.repeater.JakartaEE9Action;
-import componenttest.rules.repeater.JakartaEE10Action;
-
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
-@SuiteClasses({ 
-                AlwaysPassesTest.class,
-		JASPIServerAuthRegistrationModuleTest.class
-                })
-
+@SuiteClasses({
+        AlwaysPassesTest.class,
+        JASPIServerAuthRegistrationModuleTest.class
+})
 
 public class FATSuite {
 
     private static final Set<String> EE78_FEATURES;
     private static final String[] EE78_FEATURES_ARRAY = {
-                                                          "usr:jaspicUserTestFeature-1.0",
-                                                          "usr:jaccTestProvider-1.0"
+            "usr:jaspicUserTestFeature-1.0",
+            "usr:jaccTestProvider-1.0"
     };
 
     private static final Set<String> EE9_FEATURES;
     private static final String[] EE9_FEATURES_ARRAY = {
-                                                         "usr:jaspicUserTestFeature-2.0",
-                                                         "usr:jaccTestProvider-2.0"
+            "usr:jaspicUserTestFeature-2.0",
+            "usr:jaccTestProvider-2.0"
     };
 
     private static final Set<String> EE10_FEATURES;
     private static final String[] EE10_FEATURES_ARRAY = {
-
-                                                         "usr:jaspicUserTestFeature-3.0",
-                                                         "usr:jaccTestProvider-2.1"
-
+            "usr:jaspicUserTestFeature-3.0",
+            "usr:jaccTestProvider-2.1"
     };
     static {
         EE78_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE78_FEATURES_ARRAY)));
@@ -65,9 +60,9 @@ public class FATSuite {
     }
 
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new JakartaEE10Action());
-    
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_17)).
+                                                   andWith(FeatureReplacementAction.EE11_FEATURES().setSkipTransformation(true));
+
     //public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE10Action().removeFeatures(EE78_FEATURES).removeFeatures(EE9_FEATURES).addFeatures(EE10_FEATURES));
 
-   
 }

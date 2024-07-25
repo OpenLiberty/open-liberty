@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2023 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -875,7 +875,7 @@ WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Corrija las condiciones indicadas po
 
 WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: La solicitud de punto de comprobaci\u00f3n del servidor ha fallado porque el servicio de transacciones no puede iniciar una transacci\u00f3n.
 WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=Liberty no admite aplicaciones que empiecen o requieran una transacci\u00f3n mientras la aplicaci\u00f3n se inicia cuando se solicita un punto de comprobaci\u00f3n de servidor.
-WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Utilice la opci\u00f3n de punto de comprobaci\u00f3n del servidor at=deployment o modifique la aplicaci\u00f3n para iniciar las transacciones despu\u00e9s de que se haya iniciado.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Configure el punto de comprobaci\u00f3n para que se produzca antes de que se inicie la aplicaci\u00f3n utilizando la opci\u00f3n beforeAppIniciar punto de comprobaci\u00f3n del servidor o modifique la aplicaci\u00f3n para que empiece las transacciones despu\u00e9s de que se haya iniciado.
 
 # 0 - Stack trace of call to create new tx
 WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Una aplicaci\u00f3n ha iniciado o ha requerido una transacci\u00f3n durante la solicitud de punto de comprobaci\u00f3n del servidor. Se ha capturado el siguiente rastreo de pila para esta hebra al crear la transacci\u00f3n: {0}

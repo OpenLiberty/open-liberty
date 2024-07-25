@@ -95,10 +95,7 @@ import test.jakarta.data.jpa.web.CreditCard.Issuer;
                       user = "${repository.database.user}",
                       password = "${repository.database.password}",
                       properties = {
-                                     "createDatabase=create",
-                                     "data.createTables=${repository.database.tables.create}",
-                                     "data.dropTables=${repository.database.tables.drop}",
-                                     "data.tablePrefix=${repository.database.tables.prefix}"
+                                     "createDatabase=create"
                       })
 @SuppressWarnings("serial")
 @WebServlet("/*")
@@ -145,6 +142,9 @@ public class DataJPATestServlet extends FATServlet {
 
     @Inject
     Rebates rebates;
+
+    @Inject
+    Segments segments;
 
     @Inject
     ShippingAddresses shippingAddresses;
@@ -279,7 +279,8 @@ public class DataJPATestServlet extends FATServlet {
      * Use a repository method comparing a BigDecimal value on an entity that includes BigDecimal attributes.
      * This includes both a comparison in the query conditions as well as ordering on the BigDecimal attribute.
      */
-    @Test
+    // TODO re-enable once 28813 (java.time.Instant DateTimeParseException) is fixed
+    //@Test
     public void testBigDecimal() {
         final ZoneId EASTERN = ZoneId.of("America/New_York");
 
@@ -307,7 +308,8 @@ public class DataJPATestServlet extends FATServlet {
      * Use a repository method comparing a BigInteger value on an entity that includes BigInteger attributes.
      * This includes both a comparison in the query conditions as well as ordering on the BigInteger attribute.
      */
-    @Test
+    // TODO re-enable once 28813 (java.time.Instant DateTimeParseException) is fixed
+    //@Test
     public void testBigInteger() {
         ZoneId ET = ZoneId.of("America/New_York");
 
@@ -647,18 +649,18 @@ public class DataJPATestServlet extends FATServlet {
         cityNames.add("Pierre");
 
         //TODO Eclipse link SQL Generation bug on Oracle: https://github.com/OpenLiberty/open-liberty/issues/28545
-        if (jdbcJarName.startsWith("ojdbc8_g")) {
+        if (jdbcJarName.startsWith("ojdbc8")) {
             cities.removeByStateName("South Dakota"); //Cleanup Cities repository and skip the rest of these tests
             return;
         }
 
         Order<City> orderByCityName = supportsOrderByForUpdate ? Order.by(Sort.asc("name")) : Order.by();
-        Iterator<CityId> ids = cities.deleteFirst3ByStateName("South Dakota", orderByCityName).iterator();
+        Iterator<CityId> ids = cities.delete3ByStateName("South Dakota", Limit.of(3), orderByCityName).iterator();
         CityId id;
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         if (supportsOrderByForUpdate)
             assertEquals("Aberdeen", id.name);
         // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
@@ -666,7 +668,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         if (supportsOrderByForUpdate)
             assertEquals("Brookings", id.name);
         // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
@@ -674,7 +676,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         if (supportsOrderByForUpdate)
             assertEquals("Mitchell", id.name);
         // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
@@ -683,15 +685,15 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(false, ids.hasNext());
 
         Order<City> orderByPopulation = supportsOrderByForUpdate ? Order.by(Sort.asc("population")) : Order.by();
-        id = cities.deleteFirstByStateName("South Dakota", orderByPopulation).orElseThrow();
-        assertEquals("South Dakota", id.stateName);
+        id = cities.delete1ByStateName("South Dakota", Limit.of(1), orderByPopulation).orElseThrow();
+        assertEquals("South Dakota", id.getStateName());
         if (supportsOrderByForUpdate)
             assertEquals("Spearfish", id.name);
         // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
         id = cities.deleteByStateName("South Dakota", Limit.of(1));
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
         List<CityId> some = cities.deleteSome("South Dakota", Limit.of(2));
@@ -699,12 +701,12 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
         assertEquals(false, ids.hasNext());
@@ -715,7 +717,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
         assertEquals(false, ids.hasNext());
@@ -742,15 +744,15 @@ public class DataJPATestServlet extends FATServlet {
 
         CityId id = ids.next();
         assertEquals("Davenport", id.name);
-        assertEquals("Iowa", id.stateName);
+        assertEquals("Iowa", id.getStateName());
 
         id = ids.next();
         assertEquals("Iowa City", id.name);
-        assertEquals("Iowa", id.stateName);
+        assertEquals("Iowa", id.getStateName());
 
         id = ids.next();
         assertEquals("Sioux City", id.name);
-        assertEquals("Iowa", id.stateName);
+        assertEquals("Iowa", id.getStateName());
 
         removed = cities.deleteByStateName("Iowa");
 
@@ -1021,6 +1023,69 @@ public class DataJPATestServlet extends FATServlet {
                                              .stream()
                                              .map(b -> b.name)
                                              .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use an entity with embeddable attributes that are Java records.
+     */
+    // TODO enable when #29117 is fixed
+    //@Test
+    public void testEmbeddableRecord() {
+        Segment s1 = new Segment();
+        s1.pointA = new Point(0, 0);
+        s1.pointB = new Point(120, 209); // length 241
+        s1 = segments.addOrModify(s1);
+
+        Segment s2 = new Segment();
+        s2.pointA = new Point(-20, 0);
+        s2.pointB = new Point(120, 171); // length 221
+        s2 = segments.addOrModify(s2);
+
+        Segment s3 = new Segment();
+        s3.pointA = new Point(24, 7);
+        s3.pointB = new Point(180, 140); // length 205
+        s3 = segments.addOrModify(s3);
+
+        Segment s4 = new Segment();
+        s4.pointA = new Point(12, 45);
+        s4.pointB = new Point(180, 140); // length 193
+        s4 = segments.addOrModify(s4);
+
+        Segment s5 = new Segment();
+        s5.pointA = new Point(4, 3);
+        s5.pointB = new Point(180, 60); // length 185
+        s5 = segments.addOrModify(s5);
+
+        Segment s6 = new Segment();
+        s6.pointA = new Point(0, 41);
+        s6.pointB = new Point(180, 60); // length 181
+        s6 = segments.addOrModify(s6);
+
+        assertEquals(3, segments.countByPointAXLessThan(1));
+
+        assertEquals(List.of(s3.id, s4.id, s2.id, s1.id),
+                     segments.endingSouthOf(100)
+                                     .map(s -> s.id)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of(-20, 0, 24),
+                     segments.longerThan(200, Sort.asc("pointA.x"))
+                                     .stream()
+                                     .map(s -> s.pointA.x())
+                                     .collect(Collectors.toList()));
+
+        s3.pointB = new Point(s3.pointB.x() - s3.pointA.x(), s3.pointB.y() - s3.pointA.y());
+        s3.pointA = new Point(0, 0);
+        s3 = segments.addOrModify(s3);
+
+        // removes s1 and s3
+        assertEquals(2L, segments.removeStartingAt(0, 0));
+
+        Point s2pointB = segments.terminalPoint(s2.id).orElseThrow();
+        assertEquals(120, s2pointB.x());
+        assertEquals(171, s2pointB.y());
+
+        assertEquals(4L, segments.erase());
     }
 
     /**
@@ -1906,7 +1971,7 @@ public class DataJPATestServlet extends FATServlet {
         // single result
         CityId cityId = cities.findFirstByNameOrderByPopulationDesc("Springfield");
         assertEquals("Springfield", cityId.name);
-        assertEquals("Missouri", cityId.stateName);
+        assertEquals("Missouri", cityId.getStateName());
 
         // Stream result
         assertIterableEquals(List.of("Springfield, Oregon",
@@ -2085,6 +2150,66 @@ public class DataJPATestServlet extends FATServlet {
         // at org.eclipse.persistence.internal.sessions.ArrayRecord.get(ArrayRecord.java:139) ...
 
         assertEquals(2L, accounts.deleteByOwnerEndsWith("TestLiteralDouble"));
+    }
+
+    /**
+     * Use repository methods with JDQL that specifies LOCAL DATE, LOCAL DATETIME,
+     * and LOCAL TIME.
+     */
+    @Test
+    public void testLocalDateAndTimeFunctions() {
+
+        Rebate r1 = new Rebate(21, 1.01, "testLocalDateAndTimeFunctions-CustomerA", //
+                        LocalTime.of(10, 51, 0), //
+                        LocalDate.of(2024, Month.JULY, 19), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2024, Month.JULY, 19, 13, 10, 0), //
+                        null);
+
+        Rebate r2 = new Rebate(22, 2.02, "testLocalDateAndTimeFunctions-CustomerB", //
+                        LocalTime.of(14, 28, 52), //
+                        LocalDate.of(2024, Month.JULY, 18), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2024, Month.JULY, 20, 8, 2, 59), //
+                        null);
+
+        Rebate r3 = new Rebate(23, 1.23, "testLocalDateAndTimeFunctions-CustomerB", //
+                        LocalTime.of(16, 33, 53), //
+                        LocalDate.of(2024, Month.JUNE, 30), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2024, Month.JULY, 20, 13, 3, 31), //
+                        null);
+
+        Rebate r4 = new Rebate(24, 1.44, "testLocalDateAndTimeFunctions-CustomerA", //
+                        LocalTime.of(16, 4, 44), //
+                        LocalDate.of(2024, Month.JULY, 13), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2024, Month.JULY, 16, 18, 42, 0), //
+                        null);
+
+        Rebate[] all = rebates.addAll(r1, r2, r3, r4);
+
+        assertEquals(List.of(r2.id(), r4.id(), r3.id(), r1.id()),
+                     rebates.notRecentlyUpdated("testLocalDateAndTimeFunctions-%"));
+
+        assertEquals(List.of(r4.id(), r1.id(), r2.id(), r3.id()),
+                     rebates.purchasedInThePast("testLocalDateAndTimeFunctions-%"));
+
+        LocalDateTime lastUpdate = rebates.lastUpdated(r3.id()).orElseThrow();
+        assertEquals(2024, lastUpdate.getYear());
+        assertEquals(Month.JULY, lastUpdate.getMonth());
+        assertEquals(20, lastUpdate.getDayOfMonth());
+        assertEquals(13, lastUpdate.getHour());
+        assertEquals(3, lastUpdate.getMinute());
+        assertEquals(31, lastUpdate.getSecond());
+
+        LocalDate dayOfPurchase = (LocalDate) rebates.dayOfPurchase(r2.id())
+                        .orElseThrow();
+        assertEquals(2024, dayOfPurchase.getYear());
+        assertEquals(Month.JULY, dayOfPurchase.getMonth());
+        assertEquals(18, dayOfPurchase.getDayOfMonth());
+
+        rebates.removeAll(all);
     }
 
     /**
@@ -3160,6 +3285,71 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Use the JPQL version(entityVar) function as the sort property to perform
+     * an ascending sort.
+     */
+    @Test
+    public void testSortByVersionFunction() {
+        orders.deleteAll();
+
+        PurchaseOrder o1 = new PurchaseOrder();
+        o1.purchasedBy = "testSortByVersionFunction-Customer1";
+        o1.purchasedOn = OffsetDateTime.now();
+        o1.total = 21.99f;
+        o1 = orders.create(o1);
+
+        PurchaseOrder o2 = new PurchaseOrder();
+        o2.purchasedBy = "testSortByVersionFunction-Customer2";
+        o2.purchasedOn = OffsetDateTime.now();
+        o2.total = 22.99f;
+        o2 = orders.create(o2);
+
+        PurchaseOrder o3 = new PurchaseOrder();
+        o3.purchasedBy = "testSortByVersionFunction-Customer3";
+        o3.purchasedOn = OffsetDateTime.now();
+        o3.total = 23.99f;
+        o3 = orders.create(o3);
+
+        PurchaseOrder o4 = new PurchaseOrder();
+        o4.purchasedBy = "testSortByVersionFunction-Customer4";
+        o4.purchasedOn = OffsetDateTime.now();
+        o4.total = 24.99f;
+        o4 = orders.create(o4);
+
+        PurchaseOrder[] updated;
+
+        o3.total = 33.39f;
+        o1.total = 31.19f;
+        o2.total = 32.29f;
+        updated = orders.modifyAll(o3, o1, o2);
+        o3 = updated[0];
+        o1 = updated[1];
+        o2 = updated[2];
+
+        o3.total = 33.59f;
+        o1.total = 31.59f;
+        updated = orders.modifyAll(o3, o1);
+        o3 = updated[0];
+        o1 = updated[1];
+
+        o3.total = 33.99f;
+        updated = orders.modifyAll(o3);
+        o3 = updated[0];
+
+        assertEquals(List.of("testSortByVersionFunction-Customer4",
+                             "testSortByVersionFunction-Customer2",
+                             "testSortByVersionFunction-Customer1",
+                             "testSortByVersionFunction-Customer3"),
+                     orders.findAll(PageRequest.ofSize(10),
+                                    Order.by(Sort.asc("version(this)")))
+                                     .stream()
+                                     .map(o -> o.purchasedBy)
+                                     .collect(Collectors.toList()));
+
+        orders.deleteAll();
+    }
+
+    /**
      * Tests direct usage of StaticMetamodel auto-populated fields.
      */
     @Test
@@ -3323,10 +3513,10 @@ public class DataJPATestServlet extends FATServlet {
 
         // Derby, Oracle, SQLServer  does not support comparisons of BLOB (IMAGE sqlserver) values
         // Derby JDBC Jar Name : derby.jar
-        // Oracle JDBC Jar Name : ojdbc8_g.jar
+        // Oracle JDBC Jar Name : ojdbc8.jar
         // SQLServer JDBC Jar Name : mssql-jdbc.jar
         String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
-        if (!(jdbcJarName.startsWith("derby") || jdbcJarName.startsWith("ojdbc8_g") || jdbcJarName.startsWith("mssql-jdbc"))) {
+        if (!(jdbcJarName.startsWith("derby") || jdbcJarName.startsWith("ojdbc8") || jdbcJarName.startsWith("mssql-jdbc"))) {
             // find one entity by zipcodes as Optional
             c = counties.findByZipCodes(wabashaZipCodes).orElseThrow();
             assertEquals("Wabasha", c.name);

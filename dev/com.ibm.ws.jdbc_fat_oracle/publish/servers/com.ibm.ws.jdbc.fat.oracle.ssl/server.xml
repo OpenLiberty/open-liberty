@@ -63,7 +63,7 @@
     	<properties.oracle URL="${env.SSL_URL}" connectionProperties="${oracle.conn.props.jks}" />
     </dataSource>
 
-    <javaPermission codebase="${shared.resource.dir}/ssl/ojdbc8_g.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/ssl/ojdbc8.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${server.config.dir}/apps/oraclesslfat.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
     <javaPermission className="java.security.SecurityPermission" name="putProviderProperty.OraclePKI"/>
     <javaPermission className="java.security.SecurityPermission" name="insertProvider"/>

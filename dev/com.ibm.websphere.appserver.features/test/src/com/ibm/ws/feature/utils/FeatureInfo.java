@@ -340,7 +340,7 @@ public class FeatureInfo {
             String platformString = builder.getProperty("WLP-Platform");
 
             if (platformString != null) {
-                String[] platformArray = platformString.split(",'");
+                String[] platformArray = platformString.split(",");
                 for (String platform : platformArray) {
                     platforms.add(platform);
                 }

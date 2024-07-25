@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -226,39 +226,74 @@ public class KernelResolverEsa implements ProvisioningFeatureDefinition {
         throw new UnsupportedOperationException();
     }
 
-    /** {@inheritDoc} */
+    //
+
     @Override
-    public List<String> getPlatforms() {
-        // TODO Auto-generated method stub
-        return null;
+    public List<String> getPlatformNames() {
+
+        return esaResource.getPlatforms() == null ? new ArrayList() : new ArrayList(esaResource.getPlatforms());
     }
 
-    /** {@inheritDoc} */
+    @Override
+    public String getPlatformName() {
+        return (!getPlatformNames().isEmpty() ? getPlatformNames().get(0) : null);
+    }
+
+    /**
+     * Tell if this is a versionless feature.
+     *
+     * Currently these are:
+     *
+     * <ul><li>public</li>
+     * <li>platformless</li>
+     * <li>have a short name that is equal to the feature name</li>
+     * <li>contain ".versionless." in their symbolic name.</li>
+     * <li>does not contain ".internal.versionless." in their symbolic name.</li>
+     * </ul>
+     *
+     * @return True or false telling if this is a versionless feature.
+     */
     @Override
     public boolean isVersionless() {
-        // TODO Auto-generated method stub
-        return false;
+        if (!getVisibility().equals(Visibility.PUBLIC) || (getPlatformName() != null)) {
+            return false;
+        }
+
+        String shortName = getIbmShortName();
+        if ((shortName == null) || !shortName.equals(getFeatureName())) {
+            return false;
+        }
+
+        if (getSymbolicName().contains(".versionless.")
+                && !getSymbolicName().contains(".internal.")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isConvenience() {
-        // TODO Auto-generated method stub
-        return false;
+        return false; // TODO
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Tell if this is a compatibility feature.
+     *
+     * <ul><li>private</li>
+     * <li>do not have a short name</li>
+     * <li>has a platform value</li>
+     * </ul>
+     *
+     * @return True or false telling if this is a versionless feature.
+     */
     @Override
     public boolean isCompatibility() {
-        // TODO Auto-generated method stub
-        return false;
+        if (!getVisibility().equals(Visibility.PRIVATE)) {
+            return false;
+        } else if (getIbmShortName() != null) {
+            return false;
+        }
+        return (getPlatformName() != null);
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getPlatformValue() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

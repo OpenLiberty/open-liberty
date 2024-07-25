@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -118,3 +118,8 @@ reaper.reopen.active.useraction=Zrestartuj serwer.  Gdy aktualizujesz pliki apli
 missing.zip.file=CWWKM0128E: Brak pliku zip {0}.
 missing.zip.file.explanation=Podczas przetwarzania archiwum wyst\u0105pi\u0142 wyj\u0105tek, poniewa\u017c nie znaleziono okre\u015blonego pliku. 
 missing.zip.file.useraction=Upewnij si\u0119, \u017ce okre\u015blony plik istnieje i serwer ma uprawnienia do odczytu tego pliku.
+
+# # {0} A jar: URL.
+CWWKM0129W.missing.dir.entry=CWWKM0129W: Archiwum {0} nie ma oczekiwanej \u015bcie\u017cki wpisu do katalogu: {1}
+CWWKM0129W.missing.dir.entry.explanation=Archiwum u\u017cyte w adresie URL zasobu zawiera wpisy zawarte w katalogu, ale w archiwum brakuje wpisu dotycz\u0105cego samego katalogu. Adres URL katalogu nie jest zwracany. To pomini\u0119cie mo\u017ce spowodowa\u0107, \u017ce niekt\u00f3re aplikacje skanuj\u0105ce w poszukiwaniu zasob\u00f3w nie znajd\u0105 niekt\u00f3rych zasob\u00f3w w pliku archiwum.
+CWWKM0129W.missing.dir.entry.useraction=Plik archiwum musi zosta\u0107 zbudowany tak, aby zawiera\u0142 wszystkie wpisy katalogu.

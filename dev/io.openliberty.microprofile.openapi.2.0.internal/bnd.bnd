@@ -20,17 +20,21 @@ src: src, resources
 
 Import-Package: \
     org.eclipse.microprofile.config.*;version="[1.0,3)",\
+    org.eclipse.microprofile.openapi.models.media;version="[2,4)",\
     io.openliberty.microprofile.openapi.internal.resources,\
     io.openliberty.microprofile.openapi.internal.resources.validation,\
     javax.xml.bind.annotation;version=!,\
-    io.smallrye.openapi.*;version="[2.0,4.0)",\
+    io.smallrye.openapi.*;version="[2.0,5.0)",\
     org.jboss.jandex;version="[2.4,4)",\
     *
 
 Export-Package: \
     com.ibm.ws.microprofile.openapi.servlet.filter, \
+    io.openliberty.microprofile.openapi20.internal,\
+    io.openliberty.microprofile.openapi20.internal.merge,\
     io.openliberty.microprofile.openapi20.internal.services,\
-    io.openliberty.microprofile.openapi20.internal.utils
+    io.openliberty.microprofile.openapi20.internal.utils,\
+    io.openliberty.microprofile.openapi20.internal.validation
 
 Private-Package: \
     io.openliberty.microprofile.openapi20.internal.*

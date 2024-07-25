@@ -28,7 +28,7 @@ import javax.sql.DataSource;
 
 import test.jakarta.data.datastore.lib.ServerDSEntity;
 
-@DataSourceDefinition(name = "java:global/jdbc/DataSourceDef", // TODO java:module
+@DataSourceDefinition(name = "java:module/jdbc/DataSourceDef",
                       className = "org.apache.derby.jdbc.EmbeddedXADataSource",
                       databaseName = "memory:testdb",
                       user = "ejbuser1",
@@ -42,8 +42,7 @@ public class DataStoreTestEJB {
 
     // also exists in both web modules, but with different
     // container managed auth alias user id
-    @Resource(// TODO name = "java:module/env/jdbc/ServerDataSourceRef",
-              name = "java:app/env/jdbc/ServerDataSourceRef", // TODO replace with above
+    @Resource(name = "java:module/env/jdbc/ServerDataSourceRef",
               lookup = "jdbc/ServerDataSource")
     DataSource serverDSResRef;
 

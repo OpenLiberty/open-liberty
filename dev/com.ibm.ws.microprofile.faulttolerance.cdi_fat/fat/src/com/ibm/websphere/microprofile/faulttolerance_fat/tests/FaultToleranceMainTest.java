@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.websphere.microprofile.faulttolerance_fat.tests;
 
@@ -92,7 +89,7 @@ public class FaultToleranceMainTest extends FATServletClient {
     @Rule
     public AnnotationFilter filter = AnnotationFilter
                     .requireAnnotations(BasicTest.class)
-                    .forAllRepeatsExcept(MicroProfileActions.MP61_ID)
+                    .forAllRepeatsExcept(MicroProfileActions.MP70_EE10_ID)
                     .inModes(TestMode.LITE);
 
     @BeforeClass
@@ -214,7 +211,9 @@ public class FaultToleranceMainTest extends FATServletClient {
                      MicroProfileActions.MP41_ID,
                      MicroProfileActions.MP50_ID,
                      MicroProfileActions.MP60_ID,
-                     MicroProfileActions.MP61_ID }) // FT 3.0+ does not close executors until the application shuts down
+                     MicroProfileActions.MP61_ID,// FT 3.0+ does not close executors until the application shuts down
+                     MicroProfileActions.MP70_EE10_ID,
+                     MicroProfileActions.MP70_EE11_ID}) 
     @Test
     public void testExecutorsClose() throws Exception {
 

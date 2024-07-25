@@ -1,0 +1,13 @@
+- stepName: Compile Liberty Images
+  coreStep: true
+  workType: RTC
+  timeoutInMinutes: 1440
+  dependsOn:
+    - stepName: Compile FATs
+      awaitOutputProperties: true
+  properties:
+    build.stub.target: build.CachedWSCD.CompileImageOnly
+    skip.fat.tests: true
+    upload.buckets.with.uuid: ${Compile FATs:execution_id}
+  includeProperties:
+    - file: compile.properties

@@ -322,6 +322,11 @@ public class FeatureList {
                 }
             }
         }
+        
+        //Add platforms if exist
+        for (String platformElement : fd.getPlatformNames()) {
+            writer.writeTextElement("platform", platformElement);
+        }
 
         for (FeatureResource included : fd.getConstituents(SubsystemContentType.FEATURE_TYPE)) {
 

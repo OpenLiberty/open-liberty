@@ -633,9 +633,11 @@
 
 7356=Proceduru [{1}] nelze prov\u00e9st, proto\u017ee {0} aktu\u00e1ln\u011b nepodporuje v\u00edce v\u00fdstupn\u00edch parametr\u016f.
 
-7357=Adresa URL [{0}] pro prost\u0159edek [{1}] nepat\u0159\u00ed do platn\u00e9ho ko\u0159ene perzistence, jak je definov\u00e1n specifikac\u00ed JPA.
+7357="[{0} ]\u201c URL pro \u201e[{1} ]" zdroj nepat\u0159\u00ed do platn\u00e9ho ko\u0159ene persistence, jak je definov\u00e1no specifikac\u00ed Jakarta Persistence
 
 7358=Byl zad\u00e1n nespr\u00e1vn\u00fd n\u00e1zev slu\u017eby ASM.
 
 7359=\u017d\u00e1dn\u00e1 slu\u017eba ASM nen\u00ed k dispozici.
+
+7360=Heslo datab\u00e1ze bylo za\u0161ifrov\u00e1no zastaral\u00fdm algoritmem. Znovu to za\u0161ifrujte pomoc\u00ed `passwordUpdate.sh` od eclipselink.zip svazek
 

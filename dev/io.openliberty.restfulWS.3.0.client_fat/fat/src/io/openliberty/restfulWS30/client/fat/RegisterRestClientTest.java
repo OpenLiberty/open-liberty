@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,7 +27,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import annotation.test.rest.RestApplication;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -36,7 +35,6 @@ import componenttest.topology.utils.FATServletClient;
  * Tests that @RegisterRestClient does not cause an UnsatisfiedResolutionException, see https://github.com/OpenLiberty/open-liberty/issues/21547
  */
 @AllowedFFDC
-@SkipForRepeat("EE11") // Skip until MicroProfile supports Jakarta EE 11
 @RunWith(FATRunner.class)
 public class RegisterRestClientTest extends FATServletClient {
 

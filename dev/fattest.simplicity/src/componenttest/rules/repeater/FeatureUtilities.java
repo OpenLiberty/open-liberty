@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package componenttest.rules.repeater;
 
@@ -18,13 +15,13 @@ import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.common.apiservices.LocalMachine;
 import componenttest.rules.repeater.RepeatActions.EEVersion;
+import componenttest.topology.impl.JavaInfo;
 
 /**
  * Utility methods for obtaining features associated with
@@ -113,8 +110,7 @@ public class FeatureUtilities {
      * @return the set of short names
      */
     public static Set<String> allMpFeatures() {
-        return Stream.concat(MicroProfileActions.ALL.stream(),
-                             MicroProfileActions.STANDALONE_ALL.stream())
+        return MicroProfileActions.ALL.stream()
                         .flatMap(s -> s.getFeatures().stream())
                         .collect(Collectors.toSet());
     }
@@ -130,11 +126,28 @@ public class FeatureUtilities {
      * @return           the set of compatible MP feature short names
      */
     public static Set<String> compatibleMpFeatures(EEVersion eeVersion) {
-        return Stream.concat(MicroProfileActions.ALL.stream(),
-                             MicroProfileActions.STANDALONE_ALL.stream())
+        Set<String> features = MicroProfileActions.ALL.stream()
                         .filter(s -> s.getEEVersion() == eeVersion)
                         .flatMap(s -> s.getFeatures().stream())
-                        .collect(Collectors.toSet());
+                        .collect(Collectors.toCollection(HashSet::new));
+
+        //MP RM is compatible with EE9+ but only with Java11+
+        if (eeVersion.compareTo(EEVersion.EE9) >= 0 && JavaInfo.JAVA_VERSION >= 11) {
+            features.add("mpReactiveStreams-3.0");
+            features.add("mpReactiveMessaging-3.0");
+        }
+
+        // MP Telemetry 1.1 is compatible with EE7 - EE10 but only with Java11+
+        if (eeVersion.compareTo(EEVersion.EE7) >= 0 && eeVersion.compareTo(EEVersion.EE10) <= 0 && JavaInfo.JAVA_VERSION >= 11) {
+            features.add("mpTelemetry-1.1");
+        }
+
+        // MP Telemetry 2.0 is compatible with EE7 - EE11 but only with Java11+
+        if (eeVersion.compareTo(EEVersion.EE7) >= 0 && eeVersion.compareTo(EEVersion.EE11) <= 0 && JavaInfo.JAVA_VERSION >= 11) {
+            features.add("mpTelemetry-2.0");
+        }
+
+        return features;
     }
 
     /**
@@ -160,7 +173,7 @@ public class FeatureUtilities {
      * Tell if a feature a public, non-test feature.
      *
      * @param  featureFile A feature file.
-     * @return                    the list of public short names
+     * @return             the list of public short names
      */
     public static boolean isPublicFeature(File featureFile) {
         String name = featureFile.getName();

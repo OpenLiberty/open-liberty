@@ -52,18 +52,15 @@ public class ConcurrentTckLauncherFull {
     public static void setUp() throws Exception {
         //Comment out to use snapshot version
         additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
-        additionalProps.put("jakarta.concurrent.tck.version", "3.1.0-RC2");
+        additionalProps.put("jakarta.concurrent.tck.version", "3.1.1");
 
         //Jakarta TCK platform
-        additionalProps.put("jakarta.tck.platform", "full");
+        additionalProps.put("jakarta.tck.platform", "platform");
+        additionalProps.put("jimage.dir", server.getServerSharedPath() + "jimage/output/");
 
         if (!FATSuite.shouldRunSignatureTests(ConcurrentTckLauncherFull.class)) {
-            additionalProps.put("jakarta.tck.platform", "full & !signature");
+            additionalProps.put("jakarta.tck.platform", "platform & !signature");
         }
-
-        Map<String, String> opts = server.getJvmOptionsAsMap();
-        opts.put("-Djimage.dir", server.getServerSharedPath() + "jimage/output/");
-        server.setJvmOptions(opts);
 
         //Finally start the server
         server.startServer();

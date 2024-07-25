@@ -28,15 +28,7 @@ public class CreditCard {
         AmericanExtravagance, Discrooger, MonsterCard, Feesa
     }
 
-    public static class CardId {
-        public Issuer issuer;
-        public long number;
-
-        public CardId(Issuer issuer, long number) {
-            this.issuer = issuer;
-            this.number = number;
-        }
-
+    public static record CardId(Issuer issuer, long number) {
         @Override
         public String toString() {
             return issuer + " card #" + number;

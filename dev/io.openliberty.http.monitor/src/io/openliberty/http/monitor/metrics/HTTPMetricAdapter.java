@@ -18,7 +18,7 @@ import io.openliberty.http.monitor.HttpStatAttributes;
  * Implemented by subsequent Metric run-times in their respective bundles.
  */
 public interface HTTPMetricAdapter {
-
+	
 	/**
 	 * Given the HttpStatAttributes, update the HTTP metric of the respective Metrics runtime
 	 * 

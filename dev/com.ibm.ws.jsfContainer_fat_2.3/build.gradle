@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 configurations {
@@ -19,6 +16,8 @@ configurations {
     myfaces30
     mojarra40
     myfaces40
+    mojarra41
+    myfaces41
 }
 
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
@@ -106,7 +105,11 @@ dependencies {
     // Do not update since newer JS (in MyFaces 4.0.0-RC5+) is not supported 
     myfaces40 'org.apache.myfaces.core:myfaces-api:4.0.1',
       'org.apache.myfaces.core:myfaces-impl:4.0.1'
+    mojarra41 'org.glassfish:jakarta.faces:4.1.0'
+    myfaces41 'org.apache.myfaces.core:myfaces-api:4.1.0-RC2',
+      'org.apache.myfaces.core:myfaces-impl:4.1.0-RC2'
     }
+    
 
 task addMojarra(type: Copy) {
     from configurations.mojarra
@@ -121,6 +124,11 @@ task addMojarra30(type: Copy) {
 task addMojarra40(type: Copy) {
     from configurations.mojarra40
     into "${buildDir}/autoFVT/publish/files/mojarra40/"
+}
+
+task addMojarra41(type: Copy) {
+    from configurations.mojarra41
+    into "${buildDir}/autoFVT/publish/files/mojarra41/"
 }
 
 task addMyFaces(type: Copy) {
@@ -138,6 +146,11 @@ task addMyFaces40(type: Copy) {
     into "${buildDir}/autoFVT/publish/files/myfaces40"
 }
 
+task addMyFaces41(type: Copy) {
+    from configurations.myfaces41
+    into "${buildDir}/autoFVT/publish/files/myfaces41"
+}
+
 task addMyFacesLibs(type: Copy) {
     from configurations.myfacesLibs
     into "${buildDir}/autoFVT/publish/files/myfaces-libs"
@@ -152,9 +165,11 @@ addRequiredLibraries {
     dependsOn addMojarra
     dependsOn addMojarra30
     dependsOn addMojarra40
+    dependsOn addMojarra41
     dependsOn addMyFaces
     dependsOn addMyFaces30
     dependsOn addMyFaces40
+    dependsOn addMyFaces41
     dependsOn addMyFacesLibs
     dependsOn copyPermissionFile
     dependsOn addJakartaTransformer

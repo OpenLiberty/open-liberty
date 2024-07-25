@@ -34,6 +34,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.microprofile.openapi20.internal.services.ApplicationRegistry;
+import io.openliberty.microprofile.openapi20.internal.services.OpenAPIModelOperations;
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
 import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
@@ -47,6 +48,7 @@ public class ApplicationServlet extends OpenAPIServletBase {
     private static final TraceComponent tc = Tr.register(ApplicationServlet.class);
 
     private ServiceTracker<ApplicationRegistry, ApplicationRegistry> appRegistryTracker;
+    private ServiceTracker<OpenAPIModelOperations, OpenAPIModelOperations> modelOperationsTracker;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -54,12 +56,15 @@ public class ApplicationServlet extends OpenAPIServletBase {
         BundleContext bundleContext = (BundleContext) config.getServletContext().getAttribute("osgi-bundlecontext");
         appRegistryTracker = new ServiceTracker<>(bundleContext, ApplicationRegistry.class, null);
         appRegistryTracker.open();
+        modelOperationsTracker = new ServiceTracker<>(bundleContext, OpenAPIModelOperations.class, null);
+        modelOperationsTracker.open();
     }
 
     @Override
     public void destroy() {
         super.destroy();
         appRegistryTracker.close();
+        modelOperationsTracker.close();
     }
 
     /** {@inheritDoc} */
@@ -87,7 +92,7 @@ public class ApplicationServlet extends OpenAPIServletBase {
             if (currentProvider != null) {
 
                 // Take a shallow copy of the model so we can change the servers and info
-                OpenAPI model = OpenAPIUtils.shallowCopy(currentProvider.getModel());
+                OpenAPI model = modelOperationsTracker.getService().shallowCopy(currentProvider.getModel());
 
                 if (OpenAPIUtils.containsServersDefinition(currentProvider.getModel())) {
                     if (LoggingUtils.isEventEnabled(tc)) {

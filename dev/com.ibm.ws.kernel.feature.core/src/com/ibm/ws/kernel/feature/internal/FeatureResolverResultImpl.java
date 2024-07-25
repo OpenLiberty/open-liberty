@@ -44,6 +44,15 @@ public class FeatureResolverResultImpl implements Result {
 
         this._conflicts = new HashMap<>(0);
 
+        this._missingPlatforms = new HashSet<String>(0);
+        this._duplicatePlatforms = new HashMap<>(0);
+
+        this._noPlatformVersionless = new HashMap<>(0);
+
+        this._versionlessFeatures = new HashMap<>(0);
+
+        this._resolvedPlatforms = new HashSet<>(0);
+
         this._resolved = new LinkedHashSet<>();
     }
 
@@ -54,7 +63,10 @@ public class FeatureResolverResultImpl implements Result {
         return !(_missing.isEmpty() &&
                  _nonPublicRoots.isEmpty() &&
                  _wrongProcessTypes.isEmpty() &&
-                 _conflicts.isEmpty());
+                 _conflicts.isEmpty() && 
+                 !_versionlessFeatures.values().contains(null) &&
+                 _missingPlatforms.isEmpty() &&
+                 _duplicatePlatforms.isEmpty());
     }
 
     //
@@ -313,6 +325,83 @@ public class FeatureResolverResultImpl implements Result {
     }
 
     //
+
+    protected final HashMap<String, String> _versionlessFeatures;
+
+    /**
+     * The versionless feature specified and the versioned feature it resolved to
+     * 
+     * Key: versionless feature shortname
+     * Value: versioned feature shortname
+     */
+    @Override
+    public HashMap<String, String> getVersionlessFeatures(){
+        return _versionlessFeatures;
+    }
+
+    protected void addVersionlessFeature(String versionlessFeature, String versionedFeature){
+        _versionlessFeatures.put(versionlessFeature, versionedFeature);
+    }
+
+    protected final HashSet<String> _resolvedPlatforms;
+
+    @Override
+    public HashSet<String> getResolvedPlatforms(){
+        return _resolvedPlatforms;
+    }
+
+    protected void addResolvedPlatform(String platform){
+        _resolvedPlatforms.add(platform);
+    }
+
+    protected void emptyResolvedPlatforms(){
+        _resolvedPlatforms.clear();
+    }
+
+    protected final HashSet<String> _missingPlatforms;
+
+    @Override
+    public HashSet<String> getMissingPlatforms(){
+        return _missingPlatforms;
+    }
+
+    protected void addMissingPlatform(String platform){
+        _missingPlatforms.add(platform);
+    }
+
+    protected final Map<String, Set<String>> _duplicatePlatforms;
+
+    /**
+     * Duplicate platforms specified in the config
+     * 
+     * Key: compatibility feature base name associated with the duplicates
+     * Value: the set of platforms that are duplicates, same platform different version
+     */
+    @Override
+    public Map<String, Set<String>> getDuplicatePlatforms(){
+        return _duplicatePlatforms;
+    }
+
+    protected void addDuplicatePlatforms(String compatibleFeature, Set<String> platforms){
+        _duplicatePlatforms.put(compatibleFeature, platforms);
+    }
+
+    protected final Map<String, Set<String>> _noPlatformVersionless;
+
+    /**
+     * Features without platforms
+     * 
+     * Key: the platform baseName
+     * Value: the set of versionless features that do not have a configured platform
+     */
+    @Override
+    public Map<String, Set<String>> getNoPlatformVersionless(){
+        return _noPlatformVersionless;
+    }
+
+    protected void addNoPlatformVersionless(String compatibleFeature, Set<String> features){
+        _noPlatformVersionless.put(compatibleFeature, features);
+    }
 
     // Remember the resolved in resolution order.
     // This used to be necessary, but is now less necessary

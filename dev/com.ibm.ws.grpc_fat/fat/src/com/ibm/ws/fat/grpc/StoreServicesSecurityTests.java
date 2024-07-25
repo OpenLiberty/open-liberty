@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.fat.grpc;
 
@@ -28,6 +25,7 @@ import com.ibm.testapp.g3store.restConsumer.client.ConsumerEndpointJWTCookieFATS
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -37,6 +35,8 @@ import componenttest.topology.utils.FATServletClient;
  *
  */
 @RunWith(FATRunner.class)
+// Skip for EE11: OpenAPI NPE due to @OAuthScope having a name but no description in ConsumerRestAppWrapper.
+@SkipForRepeat(SkipForRepeat.EE11_FEATURES)
 public class StoreServicesSecurityTests extends FATServletClient {
 
     protected static final Class<?> c = StoreServicesSecurityTests.class;

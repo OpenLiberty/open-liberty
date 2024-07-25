@@ -7,6 +7,6 @@ Subsystem-Version: 2.1.0
 Subsystem-ManifestVersion: 1.0
 Subsystem-SymbolicName: jaccTestProvider-2.1;visibility:=public
 IBM-App-ForceRestart: install,uninstall
-Subsystem-Content: io.openliberty.appAuthorization-2.1;version="[1,1.1)"; type="osgi.subsystem.feature",
+Subsystem-Content: io.openliberty.appAuthorization-2.1;ibm.tolerates:="3.0"; type="osgi.subsystem.feature",
  com.ibm.ws.security.authorization.jacc.testprovider.jakarta; version="[1,1.1)"
 

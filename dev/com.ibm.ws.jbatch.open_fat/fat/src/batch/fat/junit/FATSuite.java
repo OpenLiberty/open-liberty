@@ -52,6 +52,7 @@ import componenttest.rules.repeater.RepeatTests;
         BatchNoSecurityTest.class,
         BatchTransactionalMiscTest.class,
         CDITest.class,
+        CDITestCheckpoint.class,
         ChunkTest.class,
         JdbcConfigTest.class,
         LocalServerJobRecoveryAtStartUpTest.class,

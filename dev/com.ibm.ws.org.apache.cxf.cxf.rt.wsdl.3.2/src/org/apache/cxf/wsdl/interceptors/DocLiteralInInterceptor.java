@@ -54,6 +54,8 @@ import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.constants.Constants;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
     public static final String KEEP_PARAMETERS_WRAPPER = DocLiteralInInterceptor.class.getName()
         + ".DocLiteralInInterceptor.keep-parameters-wrapper";
@@ -64,7 +66,7 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
         super(Phase.UNMARSHAL);
     }
 
-    public void handleMessage(Message message) {
+    public void handleMessage(@Sensitive Message message) {
         if (isGET(message) && message.getContent(List.class) != null) {
             if(LOG.isLoggable(Level.FINEST)) { // Liberty Change 
                 LOG.finest("DocLiteralInInterceptor: HTTP GET method, returning");
@@ -279,7 +281,7 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
         }
     }
 
-    private BindingOperationInfo getBindingOperationInfo(DepthXMLStreamReader xmlReader, Exchange exchange,
+    private BindingOperationInfo getBindingOperationInfo(@Sensitive DepthXMLStreamReader xmlReader, Exchange exchange,
                                                          BindingOperationInfo bop, boolean client) {
         //bop might be a unwrapped, wrap it back so that we can get correct info
         if (bop != null && bop.isUnwrapped()) {
