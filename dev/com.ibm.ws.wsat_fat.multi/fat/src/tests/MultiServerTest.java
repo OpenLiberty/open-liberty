@@ -116,7 +116,7 @@ public class MultiServerTest extends WSATTest {
 	 */
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
-	public void composite() throws Exception {
+	public void compositeTest() throws Exception {
 		String method = "composite";
 		Log.info(getClass(), method, "Running testThreeServerTwoCallParticipant1VotingRollback");
 		testThreeServerTwoCallParticipant1VotingRollback();
