@@ -216,6 +216,33 @@ public class VersionlessPlatformTestData {
                 VersionlessPlatformTestData::features_mixed,
                 VersionlessPlatformTestData::platforms_ep_mixed_override);
 
+
+        // conflicting cases ...
+
+        mapCase(useCases, "platforms_p_conflicting_high_ee",
+                VersionlessPlatformTestData::features_mixed,
+                VersionlessPlatformTestData::platforms_p_conflicting_high_ee);
+
+        mapCase(useCases, "platforms_p_conflicting_high_mp",
+                VersionlessPlatformTestData::features_mixed,
+                VersionlessPlatformTestData::platforms_p_conflicting_high_mp);
+
+        mapCase(useCases, "platforms_p_missing_ee",
+                VersionlessPlatformTestData::features_mixed,
+                VersionlessPlatformTestData::platforms_p_missing_ee);
+
+        mapCase(useCases, "platforms_p_missing_mp",
+                VersionlessPlatformTestData::features_mixed,
+                VersionlessPlatformTestData::platforms_p_missing_mp);
+
+        mapCase(useCases, "platforms_p_conflicting_servlet_ee",
+                VersionlessPlatformTestData::features_ee,
+                VersionlessPlatformTestData::platforms_p_conflicting_servlet_ee);
+
+        mapCase(useCases, "platforms_p_conflicting_mpMetrics_mp",
+                VersionlessPlatformTestData::features_mp,
+                VersionlessPlatformTestData::platforms_p_conflicting_mpMetrics_mp);
+
         platformCases = useCases;
     }
     // @formatter:on
@@ -227,12 +254,14 @@ public class VersionlessPlatformTestData {
      */
 
     public static final String SERVLET = "servlet";
-    public static final String SERVLET_50 = "servlet-5.0";
+    public static final String SERVLET_31 = "servlet-3.1"; //ee7
+    public static final String SERVLET_60 = "servlet-6.0"; //ee10
 
     public static final String JSP = "jsp";
 
     public static final String MPMETRICS = "mpMetrics";
-    public static final String MPMETRICS_22 = "mpMetrics-2.2";
+    public static final String MPMETRICS_22 = "mpMetrics-2.2"; //mp3.2
+    public static final String MPMETRICS_50 = "mpMetrics-5.0"; //mp6.0
 
     public static final String MPHEALTH = "mpHealth";
 
@@ -273,9 +302,11 @@ public class VersionlessPlatformTestData {
 
     public static final String JAVAEE_70 = "javaee-7.0";
     public static final String JAVAEE_80 = "javaee-8.0";
+    public static final String JAKARTAEE_10 = "jakartaee-10.0";
 
     public static final String MICROPROFILE_32 = "microProfile-3.2";
     public static final String MICROPROFILE_40 = "microProfile-4.0";
+    public static final String MICROPROFILE_60 = "microProfile-6.0";
 
     public static void platforms_none(VerifyCase testCase) {
         // None!
@@ -336,7 +367,7 @@ public class VersionlessPlatformTestData {
      */
 
     public static void platforms_v_servlet(VerifyCase testCase) {
-        testCase.input.addRoot(SERVLET_50);
+        testCase.input.addRoot(SERVLET_31);
     }
 
     public static void platforms_v_mpMetrics(VerifyCase testCase) {
@@ -380,7 +411,7 @@ public class VersionlessPlatformTestData {
 
     public static void platforms_pv_ee(VerifyCase testCase) {
         testCase.input.addPlatform(JAVAEE_70);
-        testCase.input.addRoot(SERVLET_50);
+        testCase.input.addRoot(SERVLET_31);
     }
 
     public static void platforms_pv_mp(VerifyCase testCase) {
@@ -404,7 +435,7 @@ public class VersionlessPlatformTestData {
 
     public static void platforms_ev_ee(VerifyCase testCase) {
         testCase.input.putEnv(PLATFORM_ENV_VAR, JAVAEE_70);
-        testCase.input.addRoot(SERVLET_50);
+        testCase.input.addRoot(SERVLET_31);
     }
 
     public static void platforms_ev_mp(VerifyCase testCase) {
@@ -414,7 +445,7 @@ public class VersionlessPlatformTestData {
 
     public static void platforms_ev_mixed(VerifyCase testCase) {
         testCase.input.putEnv(PLATFORM_ENV_VAR, delimit(',', JAVAEE_70, MICROPROFILE_32));
-        testCase.input.addRoot(SERVLET_50);
+        testCase.input.addRoot(SERVLET_31);
         testCase.input.addRoot(MPMETRICS_22);
     }
 
@@ -439,5 +470,44 @@ public class VersionlessPlatformTestData {
         testCase.input.putEnv(PLATFORM_ENV_VAR, delimit(',', JAVAEE_70, MICROPROFILE_32));
         testCase.input.addPlatform(JAVAEE_80);
         testCase.input.addPlatform(MICROPROFILE_40);
+    }
+
+    /*
+     * Conflicting test cases, expecting resolution to encounter conflicts/errors
+     * 1: ee10 x mp3.2
+     * 2: ee7 x mp6.0
+     * 3: missing ee x mp3.2
+     * 4: ee7 x missing mp
+     * 5: servlet6 x ee7
+     * 6: mpMetrics2.2 x mp6.0
+     * 7: tbd
+     */
+
+    public static void platforms_p_conflicting_high_ee(VerifyCase testCase){
+        testCase.input.addPlatform(JAKARTAEE_10);
+        testCase.input.addPlatform(MICROPROFILE_32);
+    }
+
+    public static void platforms_p_conflicting_high_mp(VerifyCase testCase){
+        testCase.input.addPlatform(JAVAEE_70);
+        testCase.input.addPlatform(MICROPROFILE_60);
+    }
+
+    public static void platforms_p_missing_ee(VerifyCase testCase){
+        testCase.input.addPlatform(MICROPROFILE_32);
+    }
+
+    public static void platforms_p_missing_mp(VerifyCase testCase){
+        testCase.input.addPlatform(JAVAEE_70);
+    }
+
+    public static void platforms_p_conflicting_servlet_ee(VerifyCase testCase){
+        testCase.input.addPlatform(JAVAEE_70);
+        testCase.input.addRoot(SERVLET_60);
+    }
+
+    public static void platforms_p_conflicting_mpMetrics_mp(VerifyCase testCase){
+        testCase.input.addPlatform(MICROPROFILE_60);
+        testCase.input.addRoot(MPMETRICS_22);
     }
 }
