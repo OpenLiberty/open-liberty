@@ -435,8 +435,11 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
     }
 
     @Override
-    public void logoutIfSessionInvalidated(HttpServletRequest req) {
-        String provider = getOidcProvider(req);
+    public void logoutIfSessionInvalidated(HttpServletRequest req) {       
+        String selectByProviderHint = null;
+        boolean selectByIssuer = false;
+        //select provider only through auth filter. Do not look at request header or parameters here
+        String provider = getProviderConfig(selectByProviderHint, selectByIssuer, req);
         PostParameterHelper.restorePostParams((IExtendedRequest) req);
         if (provider == null) {
             if (tc.isDebugEnabled()) {
@@ -582,7 +585,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
      * @return
      */
     protected String getProviderConfig(Iterator<OidcClientConfig> oidcClientConfigs, String reqProviderHint, HttpServletRequest req) {
-        return getProviderConfig(reqProviderHint, req);
+        return getProviderConfig(reqProviderHint, true, req); //select provider by provider hint , issuer, auth filter 
     }
 
     protected String getProviderConfigCurrent(Iterator<OidcClientConfig> oidcClientConfigs,
@@ -613,7 +616,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         return null;
     }
 
-    protected String getProviderConfig(String reqProviderHint, HttpServletRequest req) {
+    protected String getProviderConfig(String reqProviderHint, boolean selectByIssuer, HttpServletRequest req) {
         String provider = null;
 
         if (reqProviderHint != null) {
@@ -621,7 +624,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         } else {
             provider = selectByAuthFilter(req);
 
-            if (provider == null) {
+            if (provider == null && selectByIssuer) {
                 provider = selectByIssuer(req);
             }
 
