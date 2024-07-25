@@ -656,10 +656,34 @@ public class FeatureUtility {
 		fine("action.exception.stacktrace: " + map.get(InstallConstants.ACTION_EXCEPTION_STACKTRACE));
                 throw new InstallException(exceptionMessage);
             }
-        }
+        } else
+        	if (!isInstallServerFeature) {
+        		String installingFeature = featuresToInstall.get(0);
+        		for( String aFeature : resolvedFeatures) {
+        			String shortName = aFeature.split(":")[1];
+        			if (installingFeature.equals(shortName) && isBaseVersionless(aFeature)) {
+        				throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_VERSIONLESS_INSTALL"), InstallException.BAD_ARGUMENT);
+        			}	
+        		}
+        	}
     }
 
-    private List<File> downloadFeaturesFrom(Collection<String> resolvedFeatures, File fromDir) throws InstallException {
+    /**
+     * @param aFeature
+     * @return if the feature coordinates represents a versionless feature
+     */
+    private boolean isBaseVersionless(String aFeature) {
+    	String[] featureCoordinates = aFeature.split(":");
+    	if (featureCoordinates.length >= 2) {
+    		String groupName = featureCoordinates[0];
+    		String shortName = featureCoordinates[1];
+    		if (!shortName.contains("-") && (groupName.equals("io.openliberty.features")))
+    			return true;
+    	}
+		return false;
+	}
+
+	private List<File> downloadFeaturesFrom(Collection<String> resolvedFeatures, File fromDir) throws InstallException {
 	map.put(InstallConstants.FROM_REPO, fromDir.toString());
         return downloadFeatureEsas(resolvedFeatures);
     }

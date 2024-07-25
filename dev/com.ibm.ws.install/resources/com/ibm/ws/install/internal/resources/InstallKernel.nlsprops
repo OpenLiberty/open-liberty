@@ -957,6 +957,10 @@ ERROR_NO_DERIVED_PLATFORM=CWWKF1516E: The platform could not be determined. The 
 ERROR_NO_DERIVED_PLATFORM.explanation= The platform was not set or could not be derived from existing versioned features. 
 ERROR_NO_DERIVED_PLATFORM.useraction=Add a platform for versionless features.
 
+ERROR_VERSIONLESS_INSTALL=CWWKF1517E: The installFeature command does not support versionless features.
+ERROR_VERSIONLESS_INSTALL.explanation=  The feature that you tried to install using the installFeature command does not have a version specified in the feature name.
+ERROR_VERSIONLESS_INSTALL.useraction=Use the installServerFeatures command, which supports versionless features, or install a different feature that is not versionless.
+
 LOG_INSTALL_WITH_PLATFORM=CWWKF1314I: Installing using the following platforms: {0}.
 LOG_INSTALL_WITH_PLATFORM.explanation=The specified platform versions was used to resolve versionless features.
 LOG_INSTALL_WITH_PLATFORM.useraction=No action is required.
