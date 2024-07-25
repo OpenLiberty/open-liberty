@@ -1007,6 +1007,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Test
     //"Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28078
     public void testOLGH28078() throws Exception {
+        deleteAllEntities(Account.class);
+
         Account Checking = Account.of(123456, 123456, "Wells Fargo", true, 1000.00, "Jimmy Cricket");
         Account Savings = Account.of(654321, 123456, "Wells Fargo", false, 8569.15, "Jimmy Cricket");
 
@@ -1031,6 +1033,54 @@ public class JakartaDataRecreateServlet extends FATServlet {
         assertEquals(1, results.size());
         assertEquals(1000.00, results.get(0).balance, 0.01);
 
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/27696")
+    public void testOLGH27696() throws Exception {
+        deleteAllEntities(Account.class);
+
+        Account a1 = Account.of(1005380, 70081, "Think Bank", true, 552.18, "Aaron testOLGH27696");
+        Account a2 = Account.of(1004470, 70081, "Think Bank", true, 443.94, "Brian testOLGH27696");
+        Account a3 = Account.of(1006380, 70081, "Think Bank", true, 160.63, "Cole testOLGH27696");
+        Account a4 = Account.of(1007590, 70081, "Think Bank", true, 793.30, "Dean testOLGH27696");
+
+        List<Account> accounts;
+
+        tx.begin();
+        em.persist(a1);
+        em.persist(a2);
+        em.persist(a3);
+        em.persist(a4);
+        tx.commit();
+
+        tx.begin();
+        try {
+            accounts = em.createQuery("SELECT o FROM Account o WHERE (o.accountId IN ?1 OR o.owner=?2) ORDER BY o.owner DESC", Account.class)
+                            .setParameter(1, Set.of(AccountId.of(1005380, 70081), AccountId.of(1004470, 70081), AccountId.of(1006380, 70081)))
+                            .setParameter(2, "Elizabeth testOLGH27696")
+                            .getResultList();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+
+            /*
+             * Recreate
+             * Internal Exception: java.sql.SQLSyntaxErrorException: Syntax error: Encountered "," at line 1, column 99.
+             * Error Code: 20000
+             * Call: SELECT BALANCE, BANKNAME, CHECKING, OWNER, ACCOUNTNUM, ROUTINGNUM FROM ACCOUNT WHERE (((ACCOUNTNUM, ROUTINGNUM) IN (AccountId:1006380:70081,
+             * AccountId:1005380:70081, AccountId:1004470:70081)) OR (OWNER = 'Elizabeth testOLGH27696')) ORDER BY OWNER DESC
+             * Query: ReadAllQuery(referenceClass=Account
+             * sql="SELECT BALANCE, BANKNAME, CHECKING, OWNER, ACCOUNTNUM, ROUTINGNUM FROM ACCOUNT WHERE (((ACCOUNTNUM, ROUTINGNUM) IN ?) OR (OWNER = ?)) ORDER BY OWNER DESC")
+             */
+            throw e;
+        }
+
+        assertEquals(4, accounts.size());
+        assertEquals(a4.owner, accounts.get(0).owner);
+        assertEquals(a3.owner, accounts.get(1).owner);
+        assertEquals(a2.owner, accounts.get(2).owner);
+        assertEquals(a1.owner, accounts.get(3).owner);
     }
 
     /**
