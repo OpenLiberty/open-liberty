@@ -11,12 +11,15 @@ package io.openliberty.jpa.data.tests.web;
 
 import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
 import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
+import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -54,6 +57,7 @@ import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PersistenceException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.RollbackException;
 import jakarta.transaction.UserTransaction;
@@ -286,6 +290,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Test
     @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28909")
     public void testOLGH28909() throws Exception {
+        deleteAllEntities(Box.class);
+
         Box cube = Box.of("testOLGH28909", 1, 1, 1);
 
         Box wall; //box with no width
@@ -898,6 +904,44 @@ public class JakartaDataRecreateServlet extends FATServlet {
          * Actual: Point [x=0, y=1]
          */
         assertNull("PointB was not null, instead: " + origin.pointB, origin.pointB);
+    }
+
+    @Test
+    @SkipIfSysProp({ DB_Postgres, DB_SQLServer }) //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28737
+    public void testOLGH28737() throws Exception {
+        deleteAllEntities(Box.class);
+
+        Box cube = Box.of("testOLGH28737", 1, 1, 1);
+        Box wall = Box.of("testOLGH28737", 1, 0, 1);
+
+        tx.begin();
+        try {
+            em.persist(cube);
+            em.persist(wall);
+            tx.commit();
+        } catch (RollbackException e) {
+            assertTrue(e.getCause() instanceof PersistenceException);
+            Throwable cause = e.getCause();
+
+            //Ensure PersistenceException was caused by SQLIntegrityConstraintViolationException
+            while (cause != null) {
+                if (cause instanceof SQLIntegrityConstraintViolationException) {
+                    return; // passing result
+                }
+                cause = cause.getCause();
+            }
+
+            /*
+             * Recreate - !! NOT AN ECLIPSELINK ISSUE !!
+             * Caused by the PostgreSQL and Microsoft SQLServer drivers not throwing SQLIntegrityConstraintViolationException
+             * PostgreSQL: https://github.com/pgjdbc/pgjdbc/issues/963
+             * SQLServer: https://github.com/microsoft/mssql-jdbc/issues/1199
+             */
+            fail("Caught PersistenceException, but it was not caused by SQLIntegrityConstraintViolationException");
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
     }
 
     /**

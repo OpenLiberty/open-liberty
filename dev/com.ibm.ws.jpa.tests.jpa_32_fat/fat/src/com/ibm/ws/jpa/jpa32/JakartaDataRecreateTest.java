@@ -80,6 +80,7 @@ public class JakartaDataRecreateTest {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer("CWWJP9991W",
+                          "WTRN0074E: Exception caught from before_completion synchronization operation", // RuntimeException test, expected
                           "Missing PostgreSQL10JsonPlatform"); // Generated with postgres db, since we don't include the postgres plugin);
     }
 
