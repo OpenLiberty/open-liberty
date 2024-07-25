@@ -20,7 +20,7 @@ import jakarta.persistence.IdClass;
 import jakarta.persistence.Version;
 
 /**
- * Recreate from io.openliberty.data.internal_fat_jpa
+ *
  */
 @Entity
 @IdClass(CityId.class)
