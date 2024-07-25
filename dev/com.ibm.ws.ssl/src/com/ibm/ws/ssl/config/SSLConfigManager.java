@@ -557,38 +557,36 @@ public class SSLConfigManager {
             alias = prop;
         }
 
-        boolean isCollectiveCertSanExist = true;
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.debug(tc, "keyStoreRef: " + keyStoreRef);
             Tr.debug(tc, "keyStoreName: " + keyStoreName);
             Tr.debug(tc, "sslAlias: " + alias);
         }
 
-        if (SERVER_IDENTITY.equalsIgnoreCase(keyStoreName) &&
-            (CONTROLLER_SSL_CONFIG.equalsIgnoreCase(alias) || MEMBER_SSL_CONFIG.equalsIgnoreCase(alias))) {
-            isCollectiveCertSanExist = wsks_key.isCollectiveCertSubjectAltNamesExist(wsks_key, keyStoreName);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.debug(tc, alias + " Collective certificate subject alternative name exist: " + isCollectiveCertSanExist);
-            }
-        }
+        Boolean hostnameVerification = (Boolean) map.get("verifyHostname");
+        if (hostnameVerification != null && hostnameVerification) {
+            sslprops.setProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "true");
 
-        if (!isCollectiveCertSanExist) {
+            if (SERVER_IDENTITY.equalsIgnoreCase(keyStoreName) &&
+                (CONTROLLER_SSL_CONFIG.equalsIgnoreCase(alias) || MEMBER_SSL_CONFIG.equalsIgnoreCase(alias))) {
+                boolean isCollectiveCertSanExist = wsks_key.isCollectiveCertSubjectAltNamesExist(wsks_key, keyStoreName);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.debug(tc, alias + " isCollectiveCertSanExist: " + isCollectiveCertSanExist);
+                }
+                if (!isCollectiveCertSanExist) { //collective certificates do not have SAN so disable hostnameVerification
+                    sslprops.setProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "false");
+                    //Tr.warning(tc, "ssl.san.warning.CWPKI0050W", new Object[] { alias, ksName });
+                }
+            }
+
+            String skipHostnameVerificationForHosts = (String) map.get("skipHostnameVerificationForHosts");
+            if (skipHostnameVerificationForHosts != null && !skipHostnameVerificationForHosts.isEmpty())
+                sslprops.setProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS, skipHostnameVerificationForHosts);
+
+        } else {
             sslprops.setProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "false");
-        } else { // Get it from the SSL configuration
-            Boolean hostnameVerification = (Boolean) map.get("verifyHostname");
-            if (null != hostnameVerification) {
-                sslprops.setProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, hostnameVerification.toString());
-            }
-        }
-
-        if ("false".equalsIgnoreCase(sslprops.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION))) {
             Tr.warning(tc, "ssl.hnv.disabled.warning.CWPKI0063W", new Object[] { alias });
         }
-
-        String skipHostnameVerificationForHosts = (String) map.get("skipHostnameVerificationForHosts");
-        if (skipHostnameVerificationForHosts != null && !skipHostnameVerificationForHosts.isEmpty())
-            sslprops.setProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_LIST, skipHostnameVerificationForHosts);
 
         Boolean useDefaultCerts = (Boolean) map.get("trustDefaultCerts");
         if (null != useDefaultCerts) {
