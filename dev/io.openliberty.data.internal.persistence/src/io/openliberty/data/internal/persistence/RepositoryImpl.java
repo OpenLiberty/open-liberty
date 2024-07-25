@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -1672,7 +1673,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         String jpql = queryInfo.jpql;
         EntityInfo entityInfo = queryInfo.entityInfo;
-        LinkedHashSet<String> attrsToUpdate = entityInfo.getAttributeNamesForEntityUpdate();
+        Set<String> attrsToUpdate = entityInfo.attributeNamesForEntityUpdate;
 
         int versionParamIndex = attrsToUpdate.size() + 2;
         Object version = null;
@@ -1697,7 +1698,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         // parameters for entity attributes to update:
 
         int p = 0;
-        for (String attrName : entityInfo.getAttributeNamesForEntityUpdate())
+        for (String attrName : attrsToUpdate)
             QueryInfo.setParameter(++p, update, e,
                                    entityInfo.attributeAccessors.get(attrName));
 

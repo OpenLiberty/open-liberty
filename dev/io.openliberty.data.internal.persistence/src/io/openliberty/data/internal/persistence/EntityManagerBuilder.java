@@ -29,7 +29,9 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -100,6 +102,7 @@ public abstract class EntityManagerBuilder {
             for (EntityType<?> entityType : model.getEntities()) {
                 Map<String, String> attributeNames = new HashMap<>();
                 Map<String, List<Member>> attributeAccessors = new HashMap<>();
+                SortedSet<String> attributeNamesForUpdate = new TreeSet<>();
                 SortedMap<String, Class<?>> attributeTypes = new TreeMap<>();
                 Map<String, Class<?>> collectionElementTypes = new HashMap<>();
                 Map<Class<?>, List<String>> relationAttributeNames = new HashMap<>();
@@ -113,13 +116,25 @@ public abstract class EntityManagerBuilder {
                 for (Attribute<?, ?> attr : entityType.getAttributes()) {
                     String attributeName = attr.getName();
                     PersistentAttributeType attributeType = attr.getPersistentAttributeType();
-                    if (PersistentAttributeType.EMBEDDED.equals(attributeType) ||
-                        PersistentAttributeType.ONE_TO_ONE.equals(attributeType) ||
-                        PersistentAttributeType.MANY_TO_ONE.equals(attributeType)) {
-                        relationAttributeNames.put(attr.getJavaType(), new ArrayList<>());
-                        relationships.add(attr);
-                        relationPrefixes.add(attributeName);
-                        relationAccessors.add(Collections.singletonList(attr.getJavaMember()));
+                    switch (attributeType) {
+                        case BASIC:
+                        case ELEMENT_COLLECTION:
+                            attributeNamesForUpdate.add(attributeName);
+                            break;
+                        case EMBEDDED:
+                        case ONE_TO_ONE:
+                        case MANY_TO_ONE:
+                            relationAttributeNames.put(attr.getJavaType(), new ArrayList<>());
+                            relationships.add(attr);
+                            relationPrefixes.add(attributeName);
+                            relationAccessors.add(Collections.singletonList(attr.getJavaMember()));
+                            break;
+                        case ONE_TO_MANY:
+                        case MANY_TO_MANY:
+                            attributeNamesForUpdate.add(attributeName); // TODO is this correct?
+                            break;
+                        default:
+                            throw new RuntimeException(); // unreachable unless more types are added
                     }
 
                     Member accessor = recordClass == null ? attr.getJavaMember() : recordClass.getMethod(attributeName);
@@ -164,13 +179,25 @@ public abstract class EntityManagerBuilder {
                         relAttributeList.add(fullAttributeName);
 
                         PersistentAttributeType attributeType = relAttr.getPersistentAttributeType();
-                        if (PersistentAttributeType.EMBEDDED.equals(attributeType) ||
-                            PersistentAttributeType.ONE_TO_ONE.equals(attributeType) ||
-                            PersistentAttributeType.MANY_TO_ONE.equals(attributeType)) {
-                            relationAttributeNames.put(relAttr.getJavaType(), new ArrayList<>());
-                            relationships.add(relAttr);
-                            relationPrefixes.add(fullAttributeName);
-                            relationAccessors.add(relAccessors);
+                        switch (attributeType) {
+                            case BASIC:
+                            case ELEMENT_COLLECTION:
+                                attributeNamesForUpdate.add(fullAttributeName);
+                                break;
+                            case EMBEDDED:
+                            case ONE_TO_ONE:
+                            case MANY_TO_ONE:
+                                relationAttributeNames.put(relAttr.getJavaType(), new ArrayList<>());
+                                relationships.add(relAttr);
+                                relationPrefixes.add(fullAttributeName);
+                                relationAccessors.add(relAccessors);
+                                break;
+                            case ONE_TO_MANY:
+                            case MANY_TO_MANY:
+                                attributeNamesForUpdate.add(fullAttributeName); // TODO is this correct?
+                                break;
+                            default:
+                                throw new RuntimeException(); // unreachable unless more types are added
                         }
 
                         // Allow the simple attribute name if it doesn't overlap
@@ -206,6 +233,13 @@ public abstract class EntityManagerBuilder {
                     }
                 }
 
+                attributeNamesForUpdate.remove(ID);
+                String idAttrName = attributeNames.get(ID);
+                if (idAttrName != null)
+                    attributeNamesForUpdate.remove(idAttrName);
+                if (versionAttrName != null)
+                    attributeNamesForUpdate.remove(versionAttrName);
+
                 SortedMap<String, Member> idClassAttributeAccessors = null;
                 if (!entityType.hasSingleIdAttribute()) {
                     // Per JavaDoc, the above means there is an IdClass.
@@ -232,6 +266,7 @@ public abstract class EntityManagerBuilder {
                                 recordClass, //
                                 attributeAccessors, //
                                 attributeNames, //
+                                attributeNamesForUpdate, //
                                 attributeTypes, //
                                 collectionElementTypes, //
                                 relationAttributeNames, //
