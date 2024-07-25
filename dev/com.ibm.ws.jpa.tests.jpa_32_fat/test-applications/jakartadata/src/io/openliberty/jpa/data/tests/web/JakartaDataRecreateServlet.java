@@ -56,6 +56,7 @@ import io.openliberty.jpa.data.tests.models.PurchaseOrder;
 import io.openliberty.jpa.data.tests.models.Rebate;
 import io.openliberty.jpa.data.tests.models.Rebate.Status;
 import io.openliberty.jpa.data.tests.models.Segment;
+import io.openliberty.jpa.data.tests.models.Triangle;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
@@ -1081,6 +1082,48 @@ public class JakartaDataRecreateServlet extends FATServlet {
         assertEquals(a3.owner, accounts.get(1).owner);
         assertEquals(a2.owner, accounts.get(2).owner);
         assertEquals(a1.owner, accounts.get(3).owner);
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28905")
+    public void testOLGH28905() throws Exception {
+        Triangle t1_0 = Triangle.of((byte) 13, (byte) 84, (byte) 85);
+
+        Triangle t1_1;
+
+        tx.begin();
+        em.persist(t1_0);
+        tx.commit();
+
+        assertNotNull(t1_0.distinctKey); //t1_0 is detached
+
+        tx.begin();
+        try {
+            em.createQuery("UPDATE Triangle SET this.sides=?2, this.perimeter=?3 WHERE this.distinctKey=?1")
+                            .setParameter(1, t1_0.distinctKey)
+                            .setParameter(2, new byte[] { 36, 77, 85 })
+                            .setParameter(3, (short) (198))
+                            .executeUpdate();
+
+            t1_1 = em.createQuery("SELECT o FROM Triangle o WHERE o.distinctKey=?1", Triangle.class)
+                            .setParameter(0, t1_0.distinctKey)
+                            .getSingleResult();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            /*
+             * Recreate
+             * java.lang.IllegalArgumentException: An exception occurred while creating a query in EntityManager:
+             * Exception Description: Problem compiling [UPDATE Triangle SET this.sides=?2, this.perimeter=?3 WHERE this.distinctKey=?1].
+             * [20, 30] The state field cannot be resolved.
+             * [37, 51] The state field cannot be resolved.
+             */
+            throw e;
+        }
+
+        assertEquals(198, t1_1.perimeter);
+
     }
 
     /**
