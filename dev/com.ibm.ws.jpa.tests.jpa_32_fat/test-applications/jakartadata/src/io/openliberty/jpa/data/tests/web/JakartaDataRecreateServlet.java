@@ -55,6 +55,7 @@ import io.openliberty.jpa.data.tests.models.Prime;
 import io.openliberty.jpa.data.tests.models.PurchaseOrder;
 import io.openliberty.jpa.data.tests.models.Rebate;
 import io.openliberty.jpa.data.tests.models.Rebate.Status;
+import io.openliberty.jpa.data.tests.models.Reciept;
 import io.openliberty.jpa.data.tests.models.Segment;
 import io.openliberty.jpa.data.tests.models.Triangle;
 import jakarta.annotation.Resource;
@@ -1123,7 +1124,45 @@ public class JakartaDataRecreateServlet extends FATServlet {
         }
 
         assertEquals(198, t1_1.perimeter);
+    }
 
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28898")
+    public void testOLGH28898() throws Exception {
+        Reciept r1 = Reciept.of(00012, "Billy", 12.5f);
+        Reciept r2 = Reciept.of(00013, "Bobby", 9.75f);
+
+        int count;
+
+        tx.begin();
+        em.persist(r1);
+        em.persist(r2);
+        tx.commit();
+
+        tx.begin();
+        try {
+            count = em.createQuery("DELETE FROM Reciept WHERE this.total < :max")
+                            .setParameter("max", 10.00f)
+                            .executeUpdate();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+
+            /*
+             * Recreate
+             * org.eclipse.persistence.exceptions.QueryException
+             * Exception Description: Object comparisons can only use the equal() or notEqual() operators. Other comparisons must be done through query keys or direct attribute
+             * level comparisons.
+             * Expression: [
+             * Relation operator [ < ]
+             * Base io.openliberty.jpa.data.tests.models.Reciept
+             * Parameter max]
+             * Query: DeleteAllQuery(referenceClass=Reciept jpql="DELETE FROM Reciept WHERE this.total < :max")
+             */
+            throw e;
+        }
+
+        assertEquals(1, count);
     }
 
     /**
