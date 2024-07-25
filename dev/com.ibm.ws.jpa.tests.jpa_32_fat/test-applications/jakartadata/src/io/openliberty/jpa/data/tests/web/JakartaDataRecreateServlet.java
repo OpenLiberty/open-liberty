@@ -52,6 +52,7 @@ import io.openliberty.jpa.data.tests.models.NaturalNumber;
 import io.openliberty.jpa.data.tests.models.Package;
 import io.openliberty.jpa.data.tests.models.Person;
 import io.openliberty.jpa.data.tests.models.Prime;
+import io.openliberty.jpa.data.tests.models.Product;
 import io.openliberty.jpa.data.tests.models.PurchaseOrder;
 import io.openliberty.jpa.data.tests.models.Rebate;
 import io.openliberty.jpa.data.tests.models.Rebate.Status;
@@ -1158,6 +1159,43 @@ public class JakartaDataRecreateServlet extends FATServlet {
              * Base io.openliberty.jpa.data.tests.models.Reciept
              * Parameter max]
              * Query: DeleteAllQuery(referenceClass=Reciept jpql="DELETE FROM Reciept WHERE this.total < :max")
+             */
+            throw e;
+        }
+
+        assertEquals(1, count);
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28895")
+    public void testOLGH28895() throws Exception {
+        Product p1 = Product.of("testOLGH28895-1", "Ball", 12.50f);
+        Product p2 = Product.of("testOLGH28895-2", "Skate", 15.50f);
+
+        tx.begin();
+        em.persist(p1);
+        em.persist(p2);
+        tx.commit();
+
+        int count;
+
+        tx.begin();
+        try {
+            count = em.createQuery("DELETE FROM Product WHERE this.name LIKE ?1")
+                            .setParameter(1, "B%")
+                            .executeUpdate();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+
+            /*
+             * Recreate
+             * org.eclipse.persistence.exceptions.DatabaseException
+             * Internal Exception: java.sql.SQLSyntaxErrorException: Syntax error: Encountered "LIKE" at line 1, column 28.
+             * Error Code: 20000
+             * Call: DELETE FROM PRODUCT WHERE LIKE ?
+             * bind => [B%]
+             * Query: DeleteAllQuery(referenceClass=Product sql="DELETE FROM PRODUCT WHERE LIKE ?")
              */
             throw e;
         }
