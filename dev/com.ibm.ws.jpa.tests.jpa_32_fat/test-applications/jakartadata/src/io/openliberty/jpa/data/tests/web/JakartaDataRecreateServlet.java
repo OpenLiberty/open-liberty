@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.jpa.data.tests.web;
 
+import static componenttest.annotation.SkipIfSysProp.DB_DB2;
 import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
 import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
@@ -942,6 +943,79 @@ public class JakartaDataRecreateServlet extends FATServlet {
             tx.rollback();
             throw e;
         }
+    }
+
+    @Test
+    @SkipIfSysProp(DB_DB2) //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28289
+    public void testOLGH28289() throws Exception {
+        deleteAllEntities(Package.class);
+
+        Package p1 = Package.of(70071, 17.0f, 17.1f, 7.7f, "testOLGH28289#70071"); // tallest and smallest length
+        Package p2 = Package.of(70077, 77.0f, 17.7f, 7.7f, "testOLGH28289#70077"); // tallest and largest length
+        Package p3 = Package.of(70007, 70.0f, 10.7f, 0.7f, "testOLGH28289#70007");
+
+        List<Package> tallToShort;
+
+        tx.begin();
+        em.persist(p1);
+        em.persist(p2);
+        em.persist(p3);
+        tx.commit();
+
+        tx.begin();
+        try {
+            tallToShort = em.createQuery("SELECT o FROM Package o WHERE (o.height<?1) ORDER BY o.height DESC, o.length", Package.class)
+                            .setParameter(1, 8.0)
+                            .setLockMode(LockModeType.PESSIMISTIC_WRITE) //Cause of issue
+                            .setMaxResults(2)
+                            .getResultList();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+
+        System.out.println(tallToShort);
+
+        assertEquals(2, tallToShort.size());
+
+        /**
+         * Recreate
+         *
+         * <pre>
+         * SELECT * FROM (
+         *   SELECT * FROM (
+         *     SELECT EL_TEMP.*, ROWNUMBER() OVER() AS EL_ROWNM
+         *     FROM (
+         *       SELECT ID AS a1, DESCRIPTION AS a2, HEIGHT AS a3, LENGTH AS a4, WIDTH AS a5
+         *       FROM PACKAGE
+         *       WHERE (HEIGHT < ?)
+         *       ORDER BY HEIGHT DESC, LENGTH
+         *     ) AS EL_TEMP
+         *   ) AS EL_TEMP2 WHERE EL_ROWNM <= ?
+         * ) AS EL_TEMP3 WHERE EL_ROWNM > ?
+         * FOR READ ONLY WITH RS USE AND KEEP UPDATE LOCKS // When this is added to query the ordering is ignored
+         *
+         * bind => [8.0, 2, 0]
+         * </pre>
+         */
+        assertEquals(70071, tallToShort.get(0).id);
+        assertEquals(70077, tallToShort.get(1).id);
+    }
+
+    /**
+     * Utility method to drop all entities from table.
+     *
+     * Order to tests is not guaranteed and thus we should be pessimistic and
+     * delete all entities when we reuse an entity between tests.
+     *
+     * @param clazz - the entity class
+     * @param aka   - "also known as" if the table has a different name than the entity
+     */
+    private void deleteAllEntities(Class<?> clazz, String aka) throws Exception {
+        tx.begin();
+        em.createQuery("DELETE FROM " + aka)
+                        .executeUpdate();
+        tx.commit();
     }
 
     /**
