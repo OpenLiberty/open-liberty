@@ -36,6 +36,8 @@ import org.junit.Test;
 
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
+import io.openliberty.jpa.data.tests.models.Account;
+import io.openliberty.jpa.data.tests.models.AccountId;
 import io.openliberty.jpa.data.tests.models.AsciiCharacter;
 import io.openliberty.jpa.data.tests.models.Box;
 import io.openliberty.jpa.data.tests.models.Business;
@@ -1000,6 +1002,35 @@ public class JakartaDataRecreateServlet extends FATServlet {
          */
         assertEquals(70071, tallToShort.get(0).id);
         assertEquals(70077, tallToShort.get(1).id);
+    }
+
+    @Test
+    //"Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28078
+    public void testOLGH28078() throws Exception {
+        Account Checking = Account.of(123456, 123456, "Wells Fargo", true, 1000.00, "Jimmy Cricket");
+        Account Savings = Account.of(654321, 123456, "Wells Fargo", false, 8569.15, "Jimmy Cricket");
+
+        List<Account> results;
+
+        tx.begin();
+        em.persist(Checking);
+        em.persist(Savings);
+        tx.commit();
+
+        tx.begin();
+        try {
+            results = em.createQuery("SELECT o FROM Account o WHERE (o.accountId=?1)", Account.class)
+                            .setParameter(1, AccountId.of(123456, 123456))
+                            .getResultList(); //Unable to recreate
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+
+        assertEquals(1, results.size());
+        assertEquals(1000.00, results.get(0).balance, 0.01);
+
     }
 
     /**
