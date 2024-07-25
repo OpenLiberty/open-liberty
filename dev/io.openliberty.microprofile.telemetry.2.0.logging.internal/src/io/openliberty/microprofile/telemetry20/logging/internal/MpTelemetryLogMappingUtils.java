@@ -245,7 +245,7 @@ public class MpTelemetryLogMappingUtils {
         // Get the extensionName substring without the "ext_" prefix and data type suffix.
         String extName = "";
         int extStartIdx = extKey.indexOf("_");
-        int extEndIdx = extKey.lastIndexOf("_", extStartIdx + 1);
+        int extEndIdx = extKey.indexOf("_", extStartIdx + 1);
         if (extEndIdx != -1) {
             // The "_<dataType>" is appended to the extension name, remove it.
             extName = extKey.substring(extStartIdx + 1, extEndIdx);
