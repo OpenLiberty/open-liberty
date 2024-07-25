@@ -356,39 +356,11 @@ public final class ThreadPoolController {
     private static final int deepQueuePoolIncrementMultiple;
 
     /**
-     * Pool size on initial startup, until "ready to run" - after the server reports that it has
-     * started, the pool size will be set to coreThreads and will auto-adjust as usual
-     */
-    private static final int startupPoolSize;
-
-    /**
-     * When server and app startup reports that it has started, this will be set "true" so
-     * that if the thread pool is recreated due to a config action, the new pool will not use
-     * startupPoolSize but rather will use coreThreads and maxThreads.
-     */
-    private static boolean initialStartupCompleted = false;
-
-    /**
      * Read in applicable system properties, use defaults if the property is not present
      * These system properties will not be documented, and are intended for diagnostic and/or
      * triage use by support.
      */
     static {
-        String tpcStartupPoolSize = getSystemProperty("tpcStartupPoolSize");
-        if (tpcStartupPoolSize == null) {
-            startupPoolSize = 6;
-        } else {
-            int cfgStartupPoolSize = Integer.parseInt(tpcStartupPoolSize);
-            if (cfgStartupPoolSize == -1) {
-                // escape - don't run startupPoolSize logic
-                initialStartupCompleted = true;
-                startupPoolSize = -1;
-            } else {
-                // make sure startupPoolSize is not set to be less than less than MINIMUM_POOL_SIZE
-                startupPoolSize = Math.max(ExecutorServiceImpl.MINIMUM_POOL_SIZE, cfgStartupPoolSize);
-            }
-        }
-
         String tpcResetDistroStdDevEwmaRatio = getSystemProperty("tpcResetDistroStdDevEwmaRatio");
         resetDistroStdDevEwmaRatio = (tpcResetDistroStdDevEwmaRatio == null) ? 0.10 : Double.parseDouble(tpcResetDistroStdDevEwmaRatio);
 
@@ -701,28 +673,14 @@ public final class ThreadPoolController {
         this.currentMinimumPoolSize = this.coreThreads;
         this.maxThreads = pool.getMaximumPoolSize();
         this.threadRange = this.maxThreads - this.coreThreads;
-        if (!initialStartupCompleted) {
-            // make sure pool size during startup is not greater than maxThreads
-            setPoolSize(Math.min(startupPoolSize, this.maxThreads));
-            // controller cycle only needs to run during startup to monitor for possible hang condition,
-            // and checking for hang is only useful if increasing the pool size is permitted
-            if (startupPoolSize < maxThreads) {
-                activeTask = new IntervalTask(this);
-                timer.schedule(activeTask, interval, interval);
-            }
-        } else {
-            setPoolSize(coreThreads);
-            if (coreThreads != maxThreads) {
-                // start controller cycle, if not already running
-                if (activeTask == null) {
-                    activeTask = new IntervalTask(this);
-                    timer.schedule(activeTask, interval, interval);
-                }
-            }
-        }
-
+        setPoolSize(coreThreads);
         targetPoolSize = coreThreads;
         resetStatistics(true);
+        // nothing to do if core == max
+        if (coreThreads < maxThreads) {
+            activeTask = new IntervalTask(this);
+            timer.schedule(activeTask, interval, interval);
+        }
         numberCpus = CpuInfo.getAvailableProcessors().get();
         /**
          * if coreThreads has been configured to a small value, we will use the
@@ -755,31 +713,6 @@ public final class ThreadPoolController {
 
         if (tc.isEventEnabled()) {
             reportSystemProperties();
-        }
-    }
-
-    /**
-     * Switch to regular pool sizing after startup completes
-     */
-    void startupCompleted() {
-        // if pool hung during startup, we will already have moved out of startup
-        // pool size mode, so check that first
-        if (!initialStartupCompleted) {
-            initialStartupCompleted = true;
-            setPoolSize(coreThreads);
-            // no need to run the controller cycle if there will be no pool size changes
-            if (coreThreads < maxThreads) {
-                if (activeTask == null) {
-                    activeTask = new IntervalTask(this);
-                    timer.schedule(activeTask, interval, interval);
-                }
-            } else {
-                // fixed pool size, cancel the controller cycle if it is running
-                if (activeTask != null) {
-                    activeTask.cancel();
-                    activeTask = null;
-                }
-            }
         }
     }
 
@@ -1405,7 +1338,7 @@ public final class ThreadPoolController {
 
         // we can't even think about adjusting the pool size until the underlying executor has aggressively
         // grown the pool to the coreThreads value, so if that hasn't happened yet we should just bail
-        if (poolSize < coreThreads && initialStartupCompleted) {
+        if (poolSize < coreThreads) {
             return "poolSize < coreThreads";
         }
 
@@ -1413,22 +1346,9 @@ public final class ThreadPoolController {
         long completedWork = threadPool.getCompletedTaskCount();
 
         // Calculate work done for the current interval
-        long deltaCompleted = completedWork - previousCompleted;
-        // check for hang during server/app startup
-        if (!initialStartupCompleted) {
-            if (deltaCompleted <= 0) {
-                // startup has hung - switch to post-startup mode to allow hang resolution to work
-                initialStartupCompleted = true;
-                setPoolSize(coreThreads);
-                poolSize = threadPool.getPoolSize();
-            } else {
-                return "server startup in progress";
-            }
-        }
-
         long deltaTime = Math.max(currentTime - lastTimerPop, interval);
+        long deltaCompleted = completedWork - previousCompleted;
         double throughput = 1000.0 * deltaCompleted / deltaTime;
-
         try {
             queueDepth = threadPool.getQueue().size();
             boolean queueEmpty = (queueDepth <= 0);
