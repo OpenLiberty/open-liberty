@@ -137,7 +137,7 @@ public class AgentTestResource extends Application {
                 content += "\n";
             }
 
-            assertEquals("OK", content);
+            assertEquals("OK", content.trim());
         } finally {
             if (in != null) {
                 in.close();
