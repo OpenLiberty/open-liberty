@@ -1941,7 +1941,7 @@ public class LibertyServer implements LogMonitorClient {
                     Log.info(c, method, "Return code from script is: " + rc);
                 }
             } else {
-                if (shouldFail) {
+                if (shouldFail && doCheckpoint()) {
                     Exception fail = new Exception("Checkpoint should have failed.");
                     Log.error(c, fail.getMessage(), fail);
                     throw fail;
