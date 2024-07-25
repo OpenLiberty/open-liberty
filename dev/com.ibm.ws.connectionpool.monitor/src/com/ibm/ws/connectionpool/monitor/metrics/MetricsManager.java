@@ -24,6 +24,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 @Component(configurationPolicy = IGNORE, immediate = true)
 public class MetricsManager {
@@ -47,6 +48,12 @@ public class MetricsManager {
     }
 
     public static MetricsManager getInstance() {
+
+        //beta - return no instance
+        if (!ProductInfo.getBetaEdition()) {
+            return null;
+        }
+
         if (instance != null) {
             return instance;
         }
@@ -63,7 +70,11 @@ public class MetricsManager {
      * @param duration recorded Duration of the wait time
      */
     public void updateWaitTimeMetrics(String poolName, Duration duration) {
-        metricRuntimes.stream().forEach(adapters -> adapters.updateWaitTimeMetrics(poolName, duration));
+        //just in case
+        if (!ProductInfo.getBetaEdition()) {
+            metricRuntimes.stream().forEach(adapters -> adapters.updateWaitTimeMetrics(poolName, duration));
+        }
+
     }
 
     /**
@@ -72,7 +83,11 @@ public class MetricsManager {
      * @param Duration recorded Duration of the (in) use time.
      */
     public void updateInUseTimeMetrics(String poolName, Duration duration) {
-        metricRuntimes.stream().forEach(adapters -> adapters.updateInUseTimeMetrics(poolName, duration));
+        //just in case
+        if (!ProductInfo.getBetaEdition()) {
+            metricRuntimes.stream().forEach(adapters -> adapters.updateInUseTimeMetrics(poolName, duration));
+        }
+
     }
 
 }
