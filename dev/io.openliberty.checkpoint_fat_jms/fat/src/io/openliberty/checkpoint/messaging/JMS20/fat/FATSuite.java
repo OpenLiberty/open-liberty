@@ -17,7 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.UncheckedIOException;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -33,12 +33,13 @@ import componenttest.topology.impl.LibertyServer;
                 BucketSet2CpClientTest.class,
                 BucketSet1CpEngineTest.class,
                 BucketSet2CpEngineTest.class,
+                JMSMDBTest.class
 
 })
 
 public class FATSuite {
 
-    public static void addServerEnvPorts(LibertyServer server, ArrayList<PortSetting> portSettings) {
+    public static void addServerEnvPorts(LibertyServer server, List<PortSetting> portSettings) {
 
         File serverEnvFile = new File(server.getServerRoot() + "/server.env");
         try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile, true))) {
