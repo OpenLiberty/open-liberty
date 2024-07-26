@@ -34,9 +34,9 @@ public class VersionlessFeatureCreator {
             // this feature is the older version of an newer feature
             // ex. ejb
             // in this scenario we add the future feature versions
-            ArrayList<String[]> temp = akaFeature.getFeaturesAndPlatform();
+            ArrayList<String[]> temp = akaFeature.getFeaturesAndPlatformAndKind();
             for (String[] featAndPlat : temp) {
-                feature.addFeaturePlatform(featAndPlat);
+                feature.addFeaturePlatformAndKind(featAndPlat);
             }
         } else {
             if (feature.getAKAFutureFeature() != null) {
@@ -54,7 +54,7 @@ public class VersionlessFeatureCreator {
         //  features[1] == the name of the platform it depends on ex. jakartaPlatform-8.0
         //  features[2] == the full name of the feature ex. com.ibm.ws.servlet-4.0
         if (feature.getAlsoKnownAs() == null) {
-            for (String[] features : feature.getFeaturesAndPlatform()) {
+            for (String[] features : feature.getFeaturesAndPlatformAndKind()) {
                 //Code for utilizing the ee/mp versions to add within the private feature defs
                 String[] dependencyVersions = feature.getAllDependencyVersions(features[0], features[1].split("-")[0]);
 
@@ -70,7 +70,7 @@ public class VersionlessFeatureCreator {
                 }
 
                 if (createPrivateVersionedFeature(feature.getFeatureName(), akaFeature == null ? null : akaFeature.getFeatureName(), features[0].split("-")[1], x, y,
-                                                  features[2], feature.getEdition(), feature.getKind())) {
+                                                  features[2], feature.getEdition(), features[3])) {
                     generatedNewFile = true;
                 }
             }
@@ -109,6 +109,10 @@ public class VersionlessFeatureCreator {
         writer.newLine();
         writer.append("-features= \\");
         writer.newLine();
+        if ("noship".equals(kind)) {
+            writer.append("    io.openliberty.noShip-1.0, \\");
+            writer.newLine();
+        }
         if (x != null && y != null) {
             writer.append("    " + x + "-" + y + ", \\");
             writer.newLine();
@@ -117,7 +121,7 @@ public class VersionlessFeatureCreator {
         writer.newLine();
         writer.append("kind=" + kind);
         writer.newLine();
-        writer.append("edition=" + edition);
+        writer.append("edition=" + ("noship".equals(kind) ? "full" : edition));
         writer.newLine();
 
         writer.close();
