@@ -10,6 +10,7 @@
 package io.openliberty.microprofile.telemetry.logging.internal_fat;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -56,6 +57,7 @@ public class TelemetryMessagesTest extends FATServletClient {
 
         assertEquals("Messages.log and Telemetry console logs don't match.", linesMessagesLog.size(), linesConsoleLog.size());
 
+        assertNotNull("CWWKF0011I log could not be found.", line);
         assertTrue("MPTelemetry did not log the correct message", line.contains("The TelemetryMessageNoApp server is ready to run a smarter planet."));
         assertTrue("MPTelemetry did not log server messageID field", line.contains("io.openliberty.message_id=\"CWWKF0011I\""));
         assertTrue("MPTelemetry did not log server module field", line.contains("io.openliberty.module=\"com.ibm.ws.kernel.feature.internal.FeatureManager\""));

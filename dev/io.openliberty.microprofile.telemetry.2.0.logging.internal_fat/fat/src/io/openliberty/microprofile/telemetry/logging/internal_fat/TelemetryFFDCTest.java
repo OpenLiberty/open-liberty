@@ -72,10 +72,11 @@ public class TelemetryFFDCTest extends FATServletClient {
         hitWebPage("ffdc-servlet", "FFDCServlet", true, "?generateFFDC=true");
 
         String logLevelLine = server.waitForStringInLog(".*scopeInfo.*", server.getConsoleLogFile());
-        String exceptionTraceLine = server.waitForStringInLog("exception.message=", server.getConsoleLogFile());
-        String exceptionMessageLine = server.waitForStringInLog("exception.stacktrace=\"java.lang.ArithmeticException", server.getConsoleLogFile());
+        String exceptionMessageLine = server.waitForStringInLog("exception.message=", server.getConsoleLogFile());
+        String exceptionTraceLine = server.waitForStringInLog("exception.stacktrace=\"java.lang.ArithmeticException", server.getConsoleLogFile());
         String exceptionTypeLine = server.waitForStringInLog("exception.type=\"java.lang.ArithmeticException\"", server.getConsoleLogFile());
 
+        assertNotNull("FFDC log could not be found.", logLevelLine);
         assertTrue("FFDC Log level was not logged by MPTelemetry", logLevelLine.contains("WARN "));
         assertNotNull("FFDC Exception.message was not logged by MPTelemetry", exceptionMessageLine);
         assertNotNull("FFDC Exception.stacktrace was not logged by MPTelemetry", exceptionTraceLine);
