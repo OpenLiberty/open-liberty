@@ -72,8 +72,9 @@ public class MetricsManager {
     public void updateWaitTimeMetrics(String poolName, Duration duration) {
         //just in case
         if (!ProductInfo.getBetaEdition()) {
-            metricRuntimes.stream().forEach(adapters -> adapters.updateWaitTimeMetrics(poolName, duration));
+            return;
         }
+        metricRuntimes.stream().forEach(adapters -> adapters.updateWaitTimeMetrics(poolName, duration));
 
     }
 
@@ -85,9 +86,9 @@ public class MetricsManager {
     public void updateInUseTimeMetrics(String poolName, Duration duration) {
         //just in case
         if (!ProductInfo.getBetaEdition()) {
-            metricRuntimes.stream().forEach(adapters -> adapters.updateInUseTimeMetrics(poolName, duration));
+            return;
         }
-
+        metricRuntimes.stream().forEach(adapters -> adapters.updateInUseTimeMetrics(poolName, duration));
     }
 
 }
