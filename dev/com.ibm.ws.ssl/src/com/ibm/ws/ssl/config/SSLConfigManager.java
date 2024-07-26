@@ -588,6 +588,10 @@ public class SSLConfigManager {
             Tr.warning(tc, "ssl.hnv.disabled.warning.CWPKI0063W", new Object[] { alias });
         }
 
+        String skipHostnameVerificationForHosts = (String) map.get("skipHostnameVerificationForHosts");
+        if (skipHostnameVerificationForHosts != null && !skipHostnameVerificationForHosts.isEmpty())
+            sslprops.setProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS, skipHostnameVerificationForHosts);
+
         Boolean useDefaultCerts = (Boolean) map.get("trustDefaultCerts");
         if (null != useDefaultCerts) {
             sslprops.setProperty(Constants.SSLPROP_USE_DEFAULTCERTS, useDefaultCerts.toString());

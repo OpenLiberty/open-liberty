@@ -449,7 +449,7 @@ public class SocketFactory extends SocketFactoryHelper {
         // Check to see if hostname verification needs to be enabled
         boolean verifyHostname = Boolean.valueOf(sslProps.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "true"));
         if (verifyHostname) {
-            String skipHostList = sslProps.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_LIST);
+            String skipHostList = sslProps.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS);
             if (!Constants.isSkipHostnameVerificationForHosts(host, skipHostList)) {
                 params.setEndpointIdentificationAlgorithm("HTTPS");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

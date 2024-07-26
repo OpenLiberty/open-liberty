@@ -215,7 +215,7 @@ public class SSLPropertyUtils {
 
         String verifyHostname = properties.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "true");
         if ("true".equalsIgnoreCase(verifyHostname)) {
-            String allowHostList = properties.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_LIST, "");
+            String allowHostList = properties.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS, "");
             InetAddress remoteInetAddr = null;
             if (sslSocket != null)
                 remoteInetAddr = sslSocket.getInetAddress();
@@ -229,7 +229,7 @@ public class SSLPropertyUtils {
                 }
             }
             else {
-                if (tc.isDebugEnabled()) Tr.debug(tc, "remoteInetAddr is NULL, Socket is not connected at this moment. " + Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_LIST + " property is not used.");
+                if (tc.isDebugEnabled()) Tr.debug(tc, "remoteInetAddr is NULL, Socket is not connected at this moment. " + Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS + " property is not used.");
             }
         } else {
             endpointId = null;

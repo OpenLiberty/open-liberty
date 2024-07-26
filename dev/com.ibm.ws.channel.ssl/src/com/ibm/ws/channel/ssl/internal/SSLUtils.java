@@ -1292,17 +1292,20 @@ public class SSLUtils {
     }
 
     private static String getEndpointIdentificationAlgorithm(Properties properties, SSLEngine engine) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.entry(tc, "getEndpointIdentificationAlgorithm");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "getEndpointIdentificationAlgorithm");
         String endpointId = "HTTPS";
 
         String verifyHostname = properties.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "true");
         if ("true".equalsIgnoreCase(verifyHostname)) {
-            String allowHostList = properties.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_LIST, "");
+            String allowHostList = properties.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS, "");
             String remoteHostname = engine.getPeerHost();
             if (remoteHostname == null) {
-                if (tc.isDebugEnabled()) Tr.debug(tc, "remoteHostname is NULL, SSLEngine is not connected at this moment. " + Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_LIST + " property is not used.");
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc,
+                             "remoteHostname is NULL, SSLEngine is not connected at this moment. " + Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS + " property is not used.");
             }
-            if (Constants.isSkipHostnameVerificationForHosts(remoteHostname, allowHostList) ) {
+            if (Constants.isSkipHostnameVerificationForHosts(remoteHostname, allowHostList)) {
                 endpointId = null;
             }
         } else {
@@ -1310,7 +1313,8 @@ public class SSLUtils {
         }
 
         // endpointId == null means Hostname Verification is DISABLED
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.exit(tc, "getEndpointIdentificationAlgorithm " + endpointId);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "getEndpointIdentificationAlgorithm " + endpointId);
         return endpointId;
     }
 

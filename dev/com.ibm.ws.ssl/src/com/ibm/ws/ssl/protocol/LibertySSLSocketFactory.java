@@ -816,7 +816,7 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
 
         String verifyHostname = properties.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "true");
         if ("true".equalsIgnoreCase(verifyHostname)) {
-            String allowHostList = properties.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_LIST, "");
+            String allowHostList = properties.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS, "");
             InetAddress remoteInetAddr = socket.getInetAddress();
             if (remoteInetAddr != null) {
                 if (Constants.isSkipHostnameVerificationForHosts(remoteInetAddr.getHostName(), allowHostList) ||
@@ -825,7 +825,7 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
                 }
             }
             else {
-                if (tc.isDebugEnabled()) Tr.debug(tc, "remoteInetAddr is NULL, Socket is not connected at this moment. " + Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_LIST + " property is not used.");
+                if (tc.isDebugEnabled()) Tr.debug(tc, "remoteInetAddr is NULL, Socket is not connected at this moment. " + Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS + " property is not used.");
             }
         } else {
             endpointId = null;
