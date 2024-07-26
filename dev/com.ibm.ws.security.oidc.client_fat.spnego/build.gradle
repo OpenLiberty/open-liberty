@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,8 @@ dependencies {
                'org.apache.httpcomponents:httpclient:4.1.2',
                'org.apache.httpcomponents:httpcore:4.1.2',
                project(':io.openliberty.org.apache.commons.logging'), // 1.2 (was 1.1.1)
-               project(':com.ibm.ws.org.apache.commons.lang3') // 3.8 (was ????)
+               project(':com.ibm.ws.org.apache.commons.lang3'), // 3.8 (was ????)
+               project(':com.ibm.ws.security.spnego.fat.common')
 }
 
 /******************************************************************
