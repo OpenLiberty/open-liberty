@@ -91,7 +91,7 @@ public class VersionlessMessagesTest {
         initTest(SERVER_NAME_RESOLVED_PLATFORMS, "javaee-8.0", "jsp", null);
 
         // Expect message: CWWKF0053I: Feature resolution selected the {0} platforms.
-        allowedMessages = new String[] { "CWWKF0050E", "CWWKF0053I" };
+        allowedMessages = new String[] { "CWWKF0053I" };
         startServer_CheckLogs("CWWKF0053I:");
     }
 
@@ -140,7 +140,6 @@ public class VersionlessMessagesTest {
         File file = new File(directory, "server.xml");
         try (FileWriter writer = new FileWriter(file)) {
             writer.write("<server>\n");
-            writer.write("    <include location=\"../fatTestPorts.xml\"/>\n");
             writer.write("\n");
             writer.write("    <featureManager>\n");
             if (platforms != null) {

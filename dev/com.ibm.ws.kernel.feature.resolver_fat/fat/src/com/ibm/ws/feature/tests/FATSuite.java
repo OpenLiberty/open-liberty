@@ -30,6 +30,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
                 VersionlessJavaEEToMicroProfileTest.class,
                 VersionlessServletToMicroProfileTest.class,
+                VersionlessCachingTest.class,
                 VersionlessMessagesTest.class
 })
 
