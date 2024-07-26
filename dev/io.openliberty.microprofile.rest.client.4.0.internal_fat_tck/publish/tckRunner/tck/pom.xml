@@ -18,8 +18,16 @@
     <version>4.0</version>
     <name>MicroProfile RestClient 4.0 TCK Runner TCK Module</name>
 
+   <repositories>
+        <repository>
+            <id>sonatype</id>
+            <name>sonatype repository with the staged version of the tcks</name>
+            <url>https://oss.sonatype.org/content/repositories/orgeclipsemicroprofile-1702/</url>
+        </repository>
+    </repositories>
+
     <properties>
-        <microprofile.rest.client.version>4.0-RC2</microprofile.rest.client.version>
+<microprofile.rest.client.version>4.0</microprofile.rest.client.version>
         <arquillian.version>1.7.0.Final</arquillian.version>
 		<arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
 		<testng.version>7.8.0</testng.version>

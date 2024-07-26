@@ -1,3 +1,3 @@
 -Dcom.ibm.tools.attach.enable=yes
 -Dorg.eclipse.microprofile.rest.client.tck.timeoutCushion=60000
--Xmx1024m
+-Xmx4096m

@@ -10,7 +10,7 @@
     <name>MicroProfile OpenAPI TCK Runner</name>
     
     <properties>
-        <microprofile.openapi.version>4.0-RC3</microprofile.openapi.version>
+        <microprofile.openapi.version>4.0</microprofile.openapi.version>
 
         <surefire.version>2.17</surefire.version> <!-- Any changes to the surefire version must be tested against ZOS-->
 
@@ -28,6 +28,14 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>sonatype</id>
+            <name>sonatype repository with the staged version of the tcks</name>
+            <url>https://oss.sonatype.org/content/repositories/orgeclipsemicroprofile-1705/</url>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
