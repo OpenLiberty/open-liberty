@@ -438,9 +438,8 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
     public void logoutIfSessionInvalidated(HttpServletRequest req) {       
         String selectByProviderHint = null;
         boolean selectByIssuer = false;
-        //select provider only through auth filter. Do not look at request header or parameters here
+        //select provider only through auth filter or generic configuration. Do not look at request header or parameters here
         String provider = getProviderConfig(selectByProviderHint, selectByIssuer, req);
-        PostParameterHelper.restorePostParams((IExtendedRequest) req);
         if (provider == null) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Could not get oidc provider.");

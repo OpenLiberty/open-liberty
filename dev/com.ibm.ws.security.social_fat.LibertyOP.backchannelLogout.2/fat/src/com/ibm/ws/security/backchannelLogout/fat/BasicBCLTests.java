@@ -34,7 +34,7 @@ import componenttest.topology.impl.LibertyServerWrapper;
 @RunWith(FATRunner.class)
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
-@AllowedFFDC({ "org.apache.http.NoHttpResponseException", "com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidTokenException", "java.io.IOException", "com.ibm.ws.security.registry.EntryNotFoundException" })
+@AllowedFFDC({ "org.apache.http.NoHttpResponseException", "com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidTokenException", "com.ibm.ws.security.registry.EntryNotFoundException" })
 public class BasicBCLTests extends com.ibm.ws.security.backchannelLogout.fat.CommonTests.BasicBCLTests {
 
     @ClassRule
