@@ -371,7 +371,7 @@ public class SSLConfig {
             return null;
         }
 
-        return sslProps.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS);
+        return sslProps.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_LIST);
     }
 
     /**

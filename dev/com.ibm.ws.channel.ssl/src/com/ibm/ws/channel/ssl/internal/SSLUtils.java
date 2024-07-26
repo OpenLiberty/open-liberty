@@ -17,6 +17,7 @@ import java.nio.ByteBuffer;
 import java.nio.ReadOnlyBufferException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
@@ -1268,21 +1269,10 @@ public class SSLUtils {
         } else {
             // Update engine with client side specific config parameters.
             engine.setUseClientMode(true);
-            boolean verifyHostname = config.getBooleanProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "verifyHostname:  " + verifyHostname);
-            }
-            if (verifyHostname) {
-                String peerHostname = engine.getPeerHost();
-                config.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS);
-                String skipHostList = config.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS);
-                if (!Constants.isSkipHostnameVerificationForHosts(peerHostname, skipHostList)) {
-                    sslParameters.setEndpointIdentificationAlgorithm("HTTPS"); // enable hostname verification
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Hostname verification is enabled");
-                    }
-                }
-            }
+
+            // Set hostname verification
+            String endpointIdentificationAlgorithm = getEndpointIdentificationAlgorithm(config.getProperties(), engine);
+            sslParameters.setEndpointIdentificationAlgorithm(endpointIdentificationAlgorithm);
 
             //set the ssl parameters collected on the engine
             engine.setSSLParameters(sslParameters);
@@ -1299,6 +1289,29 @@ public class SSLUtils {
                 Tr.event(tc, "Error while starting handshake; " + se);
             }
         }
+    }
+
+    private static String getEndpointIdentificationAlgorithm(Properties properties, SSLEngine engine) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.entry(tc, "getEndpointIdentificationAlgorithm");
+        String endpointId = "HTTPS";
+
+        String verifyHostname = properties.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "true");
+        if ("true".equalsIgnoreCase(verifyHostname)) {
+            String allowHostList = properties.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_LIST, "");
+            String remoteHostname = engine.getPeerHost();
+            if (remoteHostname == null) {
+                if (tc.isDebugEnabled()) Tr.debug(tc, "remoteHostname is NULL, SSLEngine is not connected at this moment. " + Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_LIST + " property is not used.");
+            }
+            if (Constants.isSkipHostnameVerificationForHosts(remoteHostname, allowHostList) ) {
+                endpointId = null;
+            }
+        } else {
+            endpointId = null;
+        }
+
+        // endpointId == null means Hostname Verification is DISABLED
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.exit(tc, "getEndpointIdentificationAlgorithm " + endpointId);
+        return endpointId;
     }
 
     /**

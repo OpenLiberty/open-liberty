@@ -588,7 +588,7 @@ public class SSLConfigManager {
 
         String skipHostnameVerificationForHosts = (String) map.get("skipHostnameVerificationForHosts");
         if (skipHostnameVerificationForHosts != null && !skipHostnameVerificationForHosts.isEmpty())
-            sslprops.setProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS, skipHostnameVerificationForHosts);
+            sslprops.setProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_LIST, skipHostnameVerificationForHosts);
 
         Boolean useDefaultCerts = (Boolean) map.get("trustDefaultCerts");
         if (null != useDefaultCerts) {

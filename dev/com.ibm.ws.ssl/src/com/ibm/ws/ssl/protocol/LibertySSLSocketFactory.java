@@ -721,22 +721,9 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
             if (protocols != null)
                 p.setProtocols(protocols);
 
-            //Enable hostname verification
-            String verifyHostname = sslprops.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION);
-            if (verifyHostname != null && verifyHostname.equalsIgnoreCase("true")) {
-                if (tc.isDebugEnabled()) Tr.debug(tc, "verifyHostname = " + verifyHostname);
-                String skipHostList = sslprops.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS);
-                if (!Constants.isSkipHostnameVerificationForHosts(remoteHostname, skipHostList)) {
-                    p.setEndpointIdentificationAlgorithm(ENDPOINT_ALGORITHM);
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Hostname verification is enabled");
-                    }
-                } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Hostname verification is disabled");
-                    }
-                }
-            }
+            //Set hostname verification
+            String endpointIdentificationAlgorithm = getEndpointIdentificationAlgorithm(sslprops, socket);
+            p.setEndpointIdentificationAlgorithm(endpointIdentificationAlgorithm);
         }
 
         if (tc.isEntryEnabled())
@@ -821,5 +808,31 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
                 throw (com.ibm.websphere.ssl.SSLException) cause;
             }
         }
+    }
+
+    private static String getEndpointIdentificationAlgorithm(Properties properties, SSLSocket socket) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.entry(tc, "getEndpointIdentificationAlgorithm");
+        String endpointId = "HTTPS";
+
+        String verifyHostname = properties.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "true");
+        if ("true".equalsIgnoreCase(verifyHostname)) {
+            String allowHostList = properties.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_LIST, "");
+            InetAddress remoteInetAddr = socket.getInetAddress();
+            if (remoteInetAddr != null) {
+                if (Constants.isSkipHostnameVerificationForHosts(remoteInetAddr.getHostName(), allowHostList) ||
+                    Constants.isSkipHostnameVerificationForHosts(remoteInetAddr.getHostAddress(), allowHostList)) {
+                    endpointId = null;
+                }
+            }
+            else {
+                if (tc.isDebugEnabled()) Tr.debug(tc, "remoteInetAddr is NULL, Socket is not connected at this moment. " + Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_LIST + " property is not used.");
+            }
+        } else {
+            endpointId = null;
+        }
+
+        // endpointId == null means Hostname Verification is DISABLED
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.exit(tc, "getEndpointIdentificationAlgorithm " + endpointId);
+        return endpointId;
     }
 }
