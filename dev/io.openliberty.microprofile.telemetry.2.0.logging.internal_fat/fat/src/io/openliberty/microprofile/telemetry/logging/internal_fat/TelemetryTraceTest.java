@@ -40,6 +40,9 @@ public class TelemetryTraceTest extends FATServletClient {
         server.startServer();
     }
 
+    /**
+     * Ensures trace logs are bridged and all attributes are present.
+     */
     @Test
     public void testTelemetryTrace() throws Exception {
         String line = server.waitForStringInLog("server start complete.", server.getConsoleLogFile());

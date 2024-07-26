@@ -25,9 +25,6 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 
-/**
- * HTTP request tracing tests
- */
 @RunWith(FATRunner.class)
 public class TelemetryMessagesTest extends FATServletClient {
 
@@ -48,6 +45,9 @@ public class TelemetryMessagesTest extends FATServletClient {
         server.startServer();
     }
 
+    /**
+     * Ensures Liberty messages are correctly bridged and all attributes are present.
+     */
     @Test
     public void testTelemetryMessages() throws Exception {
         String line = server.waitForStringInLog("CWWKF0011I", server.getConsoleLogFile());
