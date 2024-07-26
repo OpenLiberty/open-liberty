@@ -12,25 +12,22 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
-import static jakarta.data.repository.By.ID;
-
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.RecordComponent;
+import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.concurrent.CompletableFuture;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import jakarta.data.exceptions.MappingException;
@@ -40,7 +37,6 @@ import jakarta.persistence.Inheritance;
  * Entity information
  */
 public class EntityInfo {
-    private static final TraceComponent tc = Tr.register(EntityInfo.class);
 
     /**
      * Suffix for generated record class names. The name used for a generated
@@ -59,6 +55,12 @@ public class EntityInfo {
 
     // lower case attribute name --> properly cased/qualified JPQL attribute name
     final Map<String, String> attributeNames;
+
+    // names of attributes to use for entity update.
+    // excludes id and version.
+    // excludes inner relation attributes, such as location.address when there is also a location.address.zipcode
+    // TODO updates (and probably deletes) of entities with an embeddable id is not implemented yet.
+    final SortedSet<String> attributeNamesForEntityUpdate;
 
     // properly cased/qualified JPQL attribute name --> type
     final SortedMap<String, Class<?>> attributeTypes;
@@ -86,6 +88,7 @@ public class EntityInfo {
                Class<?> recordClass,
                Map<String, List<Member>> attributeAccessors,
                Map<String, String> attributeNames,
+               SortedSet<String> attributeNamesForUpdate,
                SortedMap<String, Class<?>> attributeTypes,
                Map<String, Class<?>> collectionElementTypes,
                Map<Class<?>, List<String>> relationAttributeNames,
@@ -98,6 +101,7 @@ public class EntityInfo {
         this.entityClass = entityClass;
         this.attributeAccessors = attributeAccessors;
         this.attributeNames = attributeNames;
+        this.attributeNamesForEntityUpdate = attributeNamesForUpdate;
         this.attributeTypes = attributeTypes;
         this.collectionElementTypes = collectionElementTypes;
         this.relationAttributeNames = relationAttributeNames;
@@ -107,6 +111,8 @@ public class EntityInfo {
         this.versionAttributeName = versionAttributeName;
 
         inheritance = entityClass.getAnnotation(Inheritance.class) != null;
+
+        validate();
     }
 
     /**
@@ -139,37 +145,6 @@ public class EntityInfo {
 
     Collection<String> getAttributeNames() {
         return attributeNames.values();
-    }
-
-    /**
-     * Returns the list of entity attribute names, suitable for use in JPQL, when updating an entity.
-     * This excludes the id and version. It also excludes embeddable and relation attribute names,
-     * but leaves the outermost name (for example, removes location.address, but preserves location.address.cityName).
-     * TODO The above is for embeddables. Decide what to do for relations other than embeddable.
-     * TODO It's inefficient to keep recomputing this. Consider doing it just once, maybe in EntityDefiner
-     * where we can build the list correctly from the start rather than later excluding. Maybe the pre-computed list
-     * can be null when there are relation attributes to indicate that update by entity isn't supported for that type of entity.
-     * TODO updates (and probably deletes) to entities with an embeddable id is not implemented yet.
-     *
-     * @return list of entity attribute names.
-     */
-    LinkedHashSet<String> getAttributeNamesForEntityUpdate() {
-        LinkedHashSet<String> names = new LinkedHashSet<>(attributeNames.size());
-
-        for (String name : attributeTypes.keySet())
-            names.add(name);
-
-        names.remove(ID);
-        names.remove(attributeNames.get(ID));
-        names.remove(versionAttributeName);
-
-        for (String name : attributeTypes.keySet()) {
-            int ldot = name.lastIndexOf('.');
-            if (ldot > 0)
-                names.remove(name.substring(0, ldot));
-        }
-
-        return names;
     }
 
     /**
@@ -269,5 +244,23 @@ public class EntityInfo {
                         .append(name).append(' ') //
                         .append(attributeTypes.keySet()) //
                         .toString();
+    }
+
+    /**
+     * Performs validation on the entity information, such as checking for
+     * unsupportable entity attribute types.
+     */
+    @Trivial
+    private void validate() {
+        for (Class<?> attrType : attributeTypes.values())
+            // ZonedDateTime is not one of the supported Temporal types
+            // Jakarta Data and Jakarta Persistence and does not behave
+            // correctly in EclipseLink where we have observed reading back
+            // a different value from the database than was persisted.
+            // If proper support is added for it in the future, then this
+            // can be removed.
+            if (ZonedDateTime.class.equals(attrType))
+                throw new MappingException("The " + getType().getName() + " entity has an attribute of type " +
+                                           ZonedDateTime.class.getName() + ", which is not supported."); // TODO NLS
     }
 }

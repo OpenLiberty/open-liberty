@@ -1406,7 +1406,7 @@ public class QueryInfo {
                             .append(" SET ");
 
             boolean first = true;
-            for (String name : entityInfo.getAttributeNamesForEntityUpdate()) {
+            for (String name : entityInfo.attributeNamesForEntityUpdate) {
                 if (first)
                     first = false;
                 else
