@@ -9,6 +9,16 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry20.internal.http;
 
+import static io.opentelemetry.semconv.ErrorAttributes.ERROR_TYPE;
+import static io.opentelemetry.semconv.HttpAttributes.HTTP_REQUEST_METHOD;
+import static io.opentelemetry.semconv.HttpAttributes.HTTP_RESPONSE_STATUS_CODE;
+import static io.opentelemetry.semconv.HttpAttributes.HTTP_ROUTE;
+import static io.opentelemetry.semconv.NetworkAttributes.NETWORK_PROTOCOL_NAME;
+import static io.opentelemetry.semconv.NetworkAttributes.NETWORK_PROTOCOL_VERSION;
+import static io.opentelemetry.semconv.ServerAttributes.SERVER_ADDRESS;
+import static io.opentelemetry.semconv.ServerAttributes.SERVER_PORT;
+import static io.opentelemetry.semconv.UrlAttributes.URL_SCHEME;
+
 import java.time.Duration;
 import java.util.List;
 
@@ -79,22 +89,22 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
     private Attributes retrieveAttributes(HttpStatAttributes httpStatAttributes) {
 
         AttributesBuilder attributesBuilder = Attributes.builder();
-        attributesBuilder.put(OpenTelemetryConstants.HTTP_REQUEST_METHOD, httpStatAttributes.getRequestMethod());
-        attributesBuilder.put(OpenTelemetryConstants.URL_SCHEME, httpStatAttributes.getScheme());
+        attributesBuilder.put(HTTP_REQUEST_METHOD, httpStatAttributes.getRequestMethod());
+        attributesBuilder.put(URL_SCHEME, httpStatAttributes.getScheme());
 
-        Integer status = httpStatAttributes.getResponseStatus().orElse(-1);
-        attributesBuilder.put(OpenTelemetryConstants.HTTP_RESPONSE_STATUS_CODE, status == -1 ? "" : status.toString().trim());
+        Long status = Long.valueOf(httpStatAttributes.getResponseStatus().orElse(-1));
+        attributesBuilder.put(HTTP_RESPONSE_STATUS_CODE, status);
 
-        attributesBuilder.put(OpenTelemetryConstants.HTTP_ROUTE, httpStatAttributes.getHttpRoute().orElse(""));
+        attributesBuilder.put(HTTP_ROUTE, httpStatAttributes.getHttpRoute().orElse(""));
 
-        attributesBuilder.put(OpenTelemetryConstants.NETWORK_PROTOCOL_NAME, httpStatAttributes.getNetworkProtocolName());
-        attributesBuilder.put(OpenTelemetryConstants.NETWORK_PROTOCOL_VERSION, httpStatAttributes.getNetworkProtocolVersion());
+        attributesBuilder.put(NETWORK_PROTOCOL_NAME, httpStatAttributes.getNetworkProtocolName());
+        attributesBuilder.put(NETWORK_PROTOCOL_VERSION, httpStatAttributes.getNetworkProtocolVersion());
 
-        attributesBuilder.put(OpenTelemetryConstants.SERVER_ADDRESS, httpStatAttributes.getServerName());
-        attributesBuilder.put(OpenTelemetryConstants.SERVER_PORT, String.valueOf(httpStatAttributes.getServerPort()));
+        attributesBuilder.put(SERVER_ADDRESS, httpStatAttributes.getServerName());
+        attributesBuilder.put(SERVER_PORT, Long.valueOf(httpStatAttributes.getServerPort()));
 
         if (httpStatAttributes.getErrorType().isPresent()) {
-            attributesBuilder.put(OpenTelemetryConstants.ERROR_TYPE, httpStatAttributes.getErrorType().get());
+            attributesBuilder.put(ERROR_TYPE, httpStatAttributes.getErrorType().get());
         }
 
         return attributesBuilder.build();
