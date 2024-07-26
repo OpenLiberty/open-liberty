@@ -251,6 +251,9 @@ public class DataJPATestServlet extends FATServlet {
         demographics.write(new DemographicInfo(2004, 4, 30, 114520000, 2974811477645.08, 4158978012936.35));
         demographics.write(new DemographicInfo(2003, 4, 30, 113320000, 2757535748111.21, 3702844997678.07));
         demographics.write(new DemographicInfo(2002, 4, 30, 112700000, 2582340471146.16, 3402336886067.70));
+
+        // TODO remove this workaround for intermittent issue triggered by test ordering once 28078 is fixed
+        testLiteralDouble();
     }
 
     /**
@@ -2128,10 +2131,10 @@ public class DataJPATestServlet extends FATServlet {
      * Use a repository method with a Query that hard codes a literal for a double value in E notation,
      * as is done in an example within the spec.
      */
-    @Test
+    // enable once 28078 is fixed @Test
     public void testLiteralDouble() {
         // Clear out data before test
-        accounts.deleteByOwnerEndsWith("testLiteralDouble");
+        accounts.deleteByOwnerEndsWith("TestLiteralDouble");
 
         accounts.create(new Account(1006520, 28002, "Think Bank", true, 21.04, "Lester TestLiteralDouble"));
         accounts.create(new Account(2003291, 28002, "Think Bank", true, 331.01, "Laura TestLiteralDouble"));
