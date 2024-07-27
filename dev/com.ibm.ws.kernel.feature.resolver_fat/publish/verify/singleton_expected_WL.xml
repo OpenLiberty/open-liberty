@@ -215,6 +215,11 @@
             <resolved-feature>io.openliberty.cdi3.0-jndi1.0</resolved-feature>
             <resolved-feature>io.openliberty.cdi4.0-servlet6.0</resolved-feature>
             <resolved-feature>io.openliberty.cdi3.0-transaction2.0</resolved-feature>
+            <resolved-feature>io.openliberty.servlet5.0-monitor1.0</resolved-feature>
+            <resolved-feature>io.openliberty.restfulWS3.0-monitor1.0</resolved-feature>
+            <resolved-feature>io.openliberty.httpStat-monitor1.0.jakarta</resolved-feature>
+            <resolved-feature>monitor-1.0</resolved-feature>
+            <resolved-feature>com.ibm.websphere.appserver.sessionMonitor-1.0</resolved-feature>
         </output>
     </case>
     <case>
@@ -7292,6 +7297,12 @@
             <resolved-feature>io.openliberty.mpJwtPropagation-2.1</resolved-feature>
             <resolved-feature>io.openliberty.cdi3.0-transaction2.0</resolved-feature>
             <resolved-feature>io.openliberty.cdi3.0-appSecurity</resolved-feature>
+            <resolved-feature>io.openliberty.servlet5.0-monitor1.0</resolved-feature>
+            <resolved-feature>com.ibm.websphere.appserver.distributedMapPMI-1.0</resolved-feature>
+            <resolved-feature>io.openliberty.restfulWS3.0-monitor1.0</resolved-feature>
+            <resolved-feature>io.openliberty.httpStat-monitor1.0.jakarta</resolved-feature>
+            <resolved-feature>monitor-1.0</resolved-feature>
+            <resolved-feature>com.ibm.websphere.appserver.sessionMonitor-1.0</resolved-feature>
         </output>
     </case>
     <case>
