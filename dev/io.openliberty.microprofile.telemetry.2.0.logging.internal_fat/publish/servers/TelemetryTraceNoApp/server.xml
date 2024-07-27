@@ -10,8 +10,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="system service">
-<logging traceSpecification="com.ibm.ws.threading.internal.ExecutorServiceImpl=fine" />
+<server description="Telemetry Server to test Trace logs">
 	<featureManager>
 		<feature>mpTelemetry-2.0</feature>
 		<feature>componentTest-2.0</feature>

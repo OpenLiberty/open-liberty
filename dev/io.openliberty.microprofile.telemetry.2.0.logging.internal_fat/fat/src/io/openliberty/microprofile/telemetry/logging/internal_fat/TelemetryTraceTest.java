@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal_fat;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.AfterClass;
@@ -45,11 +46,13 @@ public class TelemetryTraceTest extends FATServletClient {
      */
     @Test
     public void testTelemetryTrace() throws Exception {
-        String line = server.waitForStringInLog("server start complete.", server.getConsoleLogFile());
+        String line = server.waitForStringInLog("Returning io.openliberty.microprofile.telemetry.runtime OTEL instance.", server.getConsoleLogFile());
 
-        assertTrue("MPTelemetry did not log the correct log level", line.contains("DEBUG2"));
-        assertTrue("MPTelemetry did not log the correct message", line.contains("server start complete."));
-        assertTrue("MPTelemetry did not log server module field", line.contains("io.openliberty.module=\"com.ibm.ws.threading.internal.ExecutorServiceImpl\""));
+        assertNotNull("Returning otel instance log could not be found.", line);
+        assertTrue("MPTelemetry did not log the correct log level", line.contains("TRACE"));
+        assertTrue("MPTelemetry did not log the correct message", line.contains("Returning io.openliberty.microprofile.telemetry.runtime OTEL instance."));
+        assertTrue("MPTelemetry did not log server module field",
+                   line.contains("io.openliberty.module=\"io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfoFactoryImpl\""));
         assertTrue("MPTelemetry did not log server sequence field", line.contains("io.openliberty.sequence=\""));
         assertTrue("MPTelemetry did not log server type field", line.contains("io.openliberty.type=\"liberty_trace\""));
         assertTrue("MPTelemetry did not log server threadID field", line.contains("thread.id"));
