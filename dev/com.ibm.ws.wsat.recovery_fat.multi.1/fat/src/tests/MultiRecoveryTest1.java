@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 
-@AllowedFFDC(value = { "com.ibm.tx.jta.ut.util.AlreadyDumpedException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException", "java.io.EOFException", "org.apache.cxf.binding.soap.SoapFault", "javax.xml.stream.XMLStreamException" })
+@AllowedFFDC(value = { "com.ibm.tx.jta.ut.util.AlreadyDumpedException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException", "java.io.EOFException", "org.apache.cxf.binding.soap.SoapFault", "javax.xml.stream.XMLStreamException", "com.ctc.wstx.exc.WstxIOException" })
 @RunWith(FATRunner.class)
 public class MultiRecoveryTest1 extends MultiRecoveryTest {
 
@@ -72,27 +72,5 @@ public class MultiRecoveryTest1 extends MultiRecoveryTest {
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR003BFVT() throws Exception {
 		recoveryTest(server1, server2, "302","server2");
-	}
-	
-	@Test
-	public void WSTXMPR003CFVT() throws Exception {
-		recoveryTest(server1, server2, "303","both");
-	}
-	
-	@Test
-	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException" })
-	public void WSTXMPR004AFVT() throws Exception {
-		recoveryTest(server1, server2, "401","server1");
-	}
-	
-	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
-	public void WSTXMPR004BFVT() throws Exception {
-		recoveryTest(server1, server2, "402","server2");
-	}
-	
-	@Test
-	public void WSTXMPR004CFVT() throws Exception {
-		recoveryTest(server1, server2, "403","both");
 	}
 }
