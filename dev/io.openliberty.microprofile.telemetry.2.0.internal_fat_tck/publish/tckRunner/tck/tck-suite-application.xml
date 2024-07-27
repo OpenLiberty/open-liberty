@@ -20,11 +20,13 @@
         <packages>
             <package name="org.eclipse.microprofile.telemetry.metrics.tck.application.*"></package>
         </packages>
-        <class name="org.eclipse.microprofile.telemetry.metrics.tck.application.http.HttpHistogramTest"> <!-- disabled until we move past telemetry metrics TCK RC2 -->
-            <methods>
-                <exclude name=".*" />
-            </methods>
-        </class>
+        <classes>
+            <class name="org.eclipse.microprofile.telemetry.metrics.tck.application.http.HttpHistogramTest"> <!-- disabled until we move past telemetry metrics TCK RC2 -->
+                <methods>
+                    <exclude name=".*" />
+                </methods>
+            </class>
+        </classes>
     </test>
     <test name="tck-package-org.eclipse.microprofile.telemetry.logs.tck.application">
         <packages>
