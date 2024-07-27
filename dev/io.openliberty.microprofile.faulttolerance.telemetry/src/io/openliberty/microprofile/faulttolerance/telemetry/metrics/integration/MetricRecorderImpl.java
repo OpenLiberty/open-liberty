@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.faulttolerance.telemetry.metrics.integration;
 
+import java.util.List;
 import java.util.function.LongSupplier;
 
 import com.ibm.websphere.ras.Tr;
@@ -29,12 +30,12 @@ import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.common.AttributesBuilder;
+import io.opentelemetry.api.metrics.DoubleHistogram;
 import io.opentelemetry.api.metrics.LongCounter;
-import io.opentelemetry.api.metrics.LongHistogram;
 import io.opentelemetry.api.metrics.Meter;
 import io.opentelemetry.api.metrics.ObservableLongCounter;
-import io.opentelemetry.api.metrics.ObservableLongGauge;
 import io.opentelemetry.api.metrics.ObservableLongMeasurement;
+import io.opentelemetry.api.metrics.ObservableLongUpDownCounter;
 
 /**
  * Records Fault Tolerance metrics for the FT 4.1 spec
@@ -62,6 +63,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     private static final AttributeKey<String> STATE = AttributeKey.stringKey("state");
     private static final AttributeKey<String> TIMED_OUT = AttributeKey.stringKey("timedOut");
     private static final AttributeKey<String> METHOD = AttributeKey.stringKey("method");
+    private static final List<Double> HISTOGRAM_BUCKETS = List.of(0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0, 2.5, 5.0, 7.5, 10.0);
 
     // Every metric uses this tag to identify the method it's reporting metrics for
     private final Attributes methodAttribute;
@@ -76,7 +78,7 @@ public class MetricRecorderImpl implements MetricRecorder {
 
     //Fields for @Timeout Metrics
     private final LongCounter ftTimeoutCallsTotal;
-    private final LongHistogram ftTimeoutExecutionDuration;
+    private final DoubleHistogram ftTimeoutExecutionDuration;
 
     //Fields for @CircuitBreaker Metrics
     private final LongCounter ftCircuitbreakerCallsTotal;
@@ -99,11 +101,11 @@ public class MetricRecorderImpl implements MetricRecorder {
     //Fields for @Bulkhead Metrics
     private final LongCounter ftBulkheadCallsTotal;
     @SuppressWarnings("unused") //This object will be passed into open telemetry by the builder and used there.
-    private final ObservableLongGauge ftBulkheadExecutionsRunning;
+    private final ObservableLongUpDownCounter ftBulkheadExecutionsRunning;
     @SuppressWarnings("unused") //This object will be passed into open telemetry by the builder and used there.
-    private final ObservableLongGauge ftBulkheadExecutionsWaiting;
-    private final LongHistogram ftBulkheadRunningDuration;
-    private final LongHistogram ftBulkheadWaitingDuration;
+    private final ObservableLongUpDownCounter ftBulkheadExecutionsWaiting;
+    private final DoubleHistogram ftBulkheadRunningDuration;
+    private final DoubleHistogram ftBulkheadWaitingDuration;
 
     private LongSupplier queuePopulationSupplier = null;
     private LongSupplier concurrentExecutionCountSupplier = null;
@@ -137,7 +139,7 @@ public class MetricRecorderImpl implements MetricRecorder {
         if (timeoutPolicy != null) {
             ftTimeoutCallsTotal = meter.counterBuilder("ft.timeout.calls.total").setDescription(Tr.formatMessage(tc, "ft.timeout.calls.total.description")).build();
             ftTimeoutExecutionDuration = meter.histogramBuilder("ft.timeout.executionDuration").setDescription(Tr.formatMessage(tc,
-                                                                                                                                "ft.timeout.executionDuration.description")).ofLongs().setUnit("nanoseconds").build();
+                                                                                                                                "ft.timeout.executionDuration.description")).setUnit("seconds").setExplicitBucketBoundariesAdvice(HISTOGRAM_BUCKETS).build();
         } else {
             ftTimeoutCallsTotal = null;
             ftTimeoutExecutionDuration = null;
@@ -158,16 +160,16 @@ public class MetricRecorderImpl implements MetricRecorder {
 
         if (bulkheadPolicy != null) {
             ftBulkheadCallsTotal = meter.counterBuilder("ft.bulkhead.calls.total").setDescription(Tr.formatMessage(tc, "ft.bulkhead.calls.total.description")).build();
-            ftBulkheadExecutionsRunning = meter.gaugeBuilder("ft.bulkhead.executionsRunning").ofLongs().setDescription(Tr.formatMessage(tc,
-                                                                                                                                        "ft.bulkhead.executionsRunning.description")).buildWithCallback(this::getConcurrentExecutions);
+            ftBulkheadExecutionsRunning = meter.upDownCounterBuilder("ft.bulkhead.executionsRunning").setDescription(Tr.formatMessage(tc,
+                                                                                                                                      "ft.bulkhead.executionsRunning.description")).buildWithCallback(this::getConcurrentExecutions);
             ftBulkheadRunningDuration = meter.histogramBuilder("ft.bulkhead.runningDuration").setDescription(Tr.formatMessage(tc,
-                                                                                                                              "ft.bulkhead.runningDuration.description")).ofLongs().setUnit("nanoseconds").build();
+                                                                                                                              "ft.bulkhead.runningDuration.description")).setUnit("seconds").setExplicitBucketBoundariesAdvice(HISTOGRAM_BUCKETS).build();
 
             if (isAsync == AsyncType.ASYNC) {
-                ftBulkheadExecutionsWaiting = meter.gaugeBuilder("ft.bulkhead.executionsWaiting").ofLongs().setDescription(Tr.formatMessage(tc,
-                                                                                                                                            "ft.bulkhead.executionsWaiting.description")).buildWithCallback(this::getQueuePopulation);
+                ftBulkheadExecutionsWaiting = meter.upDownCounterBuilder("ft.bulkhead.executionsWaiting").setDescription(Tr.formatMessage(tc,
+                                                                                                                                          "ft.bulkhead.executionsWaiting.description")).buildWithCallback(this::getQueuePopulation);
                 ftBulkheadWaitingDuration = meter.histogramBuilder("ft.bulkhead.waitingDuration").setDescription(Tr.formatMessage(tc,
-                                                                                                                                  "ft.bulkhead.waitingDuration.description")).ofLongs().setUnit("nanoseconds").build();
+                                                                                                                                  "ft.bulkhead.waitingDuration.description")).setUnit("seconds").setExplicitBucketBoundariesAdvice(HISTOGRAM_BUCKETS).build();
             } else {
                 ftBulkheadExecutionsWaiting = null;
                 ftBulkheadWaitingDuration = null;
@@ -274,7 +276,8 @@ public class MetricRecorderImpl implements MetricRecorder {
     @Override
     public void recordTimeoutExecutionTime(long executionNanos) {
         if (ftTimeoutExecutionDuration != null) {
-            ftTimeoutExecutionDuration.record(executionNanos, methodAttribute);
+            double seconds = executionNanos / 1_000_000_000d;
+            ftTimeoutExecutionDuration.record(seconds, methodAttribute);
         }
     }
 
@@ -418,7 +421,8 @@ public class MetricRecorderImpl implements MetricRecorder {
     @Override
     public void reportQueueWaitTime(long queueWaitNanos) {
         if (ftBulkheadWaitingDuration != null) {
-            ftBulkheadWaitingDuration.record(queueWaitNanos, methodAttribute);
+            double seconds = queueWaitNanos / 1_000_000_000d;
+            ftBulkheadWaitingDuration.record(seconds, methodAttribute);
         }
     }
 
@@ -486,7 +490,8 @@ public class MetricRecorderImpl implements MetricRecorder {
     @Override
     public void recordBulkheadExecutionTime(long executionTime) {
         if (ftBulkheadRunningDuration != null) {
-            ftBulkheadRunningDuration.record(executionTime, methodAttribute);
+            double seconds = executionTime / 1_000_000_000d;
+            ftBulkheadRunningDuration.record(seconds, methodAttribute);
         }
     }
 
