@@ -79,8 +79,8 @@ public class LibertyMetricsTest extends BaseTestClass {
 		TimeUnit.SECONDS.sleep(4);
 
 		checkStrings(getContainerCollectorMetrics(container), new String[] {
-				"io_openliberty_threadpool_active_threads{io_openliberty_threadpool_name=\"Default Executor\",job=\"io.openliberty.microprofile.telemetry.runtime\"}",
-				"io_openliberty_threadpool_size{io_openliberty_threadpool_name=\"Default Executor\",job=\"io.openliberty.microprofile.telemetry.runtime\"}",
+				"io_openliberty_threadpool_active_threads{io_openliberty_threadpool_name=\"Default Executor\",job=\"unkown_service\"}",
+				"io_openliberty_threadpool_size{io_openliberty_threadpool_name=\"Default Executor\",job=\"unkown_service\"}",
 				"io_openliberty_request_timing_active",
 				"io_openliberty_request_timing_slow",
 				"io_openliberty_request_timing_hung",
