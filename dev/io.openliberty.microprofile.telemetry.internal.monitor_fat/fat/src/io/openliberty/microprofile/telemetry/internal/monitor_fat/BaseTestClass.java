@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Scanner;
+
 import org.junit.Assert;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
@@ -84,12 +86,34 @@ public abstract class BaseTestClass {
     
     
     protected void checkStrings(String metricsText, String[] expectedString) {
-        for (String m : expectedString) {
-            if (!metricsText.contains(m)) {
-                Log.info(c, "checkStrings", "Failed:\n" + metricsText);
-                Assert.fail("Did not contain string: " + m);
-            }
-        }
+      for (String m : expectedString) {
+          if (!metricsText.contains(m)) {
+              Log.info(c, "checkStrings", "Failed:\n" + metricsText);
+              Assert.fail("Did not contain string: " + m);
+          }
+      }
+     
+  }
+    
+    
+    protected void matchStrings(String metricsText, String[] expectedString) {
+        
+		for (String m : expectedString) {
+			try (Scanner sc = new Scanner(metricsText)) {
+				boolean isFound = false;
+				while (sc.hasNextLine()) {
+					String line = sc.nextLine();
+					if (line.matches(m)) {
+						isFound=true;
+						break;
+					}
+				}//while
+				if (!isFound) {
+					Log.info(c, "checkStrings", "Failed:\n" + metricsText);
+					Assert.fail("Did not contain string: " + m);
+				}
+			}//try
+		}//for
     }
    
     
