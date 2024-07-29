@@ -62,9 +62,16 @@ public class OpenTelemetryVersionedConfigurationImpl implements OpenTelemetryInf
 
         openTelemetryProperties.putAll(getTelemetryPropertyDefaults());
 
+        //TODO refactor this
+        BiFunction<? super Resource, ConfigProperties, ? extends Resource> updatedMethod = resourceCustomiser.andThen(resource -> {
+            ResourceBuilder builder = resource.toBuilder();
+            builder.put(OpenTelemetryConstants.KEY_SERVICE_INSTANCE_ID, UUID.randomUUID().toString());
+            return builder.build();
+        });
+
         OpenTelemetrySdk openTelemetry = AutoConfiguredOpenTelemetrySdk.builder()
                         .addPropertiesCustomizer(x -> openTelemetryProperties) //Overrides OpenTelemetry's property order
-                        .addResourceCustomizer(resourceCustomiser) //Defaults service name to application name
+                        .addResourceCustomizer(updatedMethod) //Defaults service name to application name
                         .setServiceClassLoader(classLoader)
                         .disableShutdownHook()
                         .build()
