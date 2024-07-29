@@ -90,7 +90,7 @@ public class OutboundSSLLDAPTest {
     @After
     public void tearDown() throws Exception {
         Log.info(c, "tearDown", "Stopping the server...");
-        myServer.stopServer("CWPKI0022E:", "CWPKI0823E:", "CWPKI0815W");
+        myServer.stopServer("CWPKI0022E:", "CWPKI0823E:", "CWPKI0815W", "CWPKI0063W");
     }
 
     /**

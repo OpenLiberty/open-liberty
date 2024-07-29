@@ -28,7 +28,7 @@
 	<keyStore id="DefaultTrustStore" location="${server.config.dir}/DefaultServerTrustFile.jks" type="JKS" password="Liberty" />
 
 	<!-- AlternateSSLSettings contains the trust needed to access the LDAP server -->
-	<ssl id="AlternateSSLSettings" keyStoreRef="AlternateKeyStore" trustStoreRef="AlternateTrustStore" sslProtocol="TLSv1.2" >
+	<ssl id="AlternateSSLSettings" keyStoreRef="AlternateKeyStore" trustStoreRef="AlternateTrustStore" sslProtocol="TLSv1.2" verifyHostname="false" >
     </ssl>
 	<keyStore id="AlternateKeyStore" location="${server.config.dir}/AlternateServerKeyFile.jks" type="JKS" password="ytrebiL" />
 	<keyStore id="AlternateTrustStore" location="${server.config.dir}/AlternateServerTrustFile.jks" type="JKS" password="ytrebiL" />

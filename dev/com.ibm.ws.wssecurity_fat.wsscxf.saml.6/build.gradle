@@ -283,6 +283,11 @@ autoFVT.doLast {
       from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
+
+    copy {
+      from project.file('publish/files/envVars/jvm.options')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
   }    
 
 /* Copy files for specific server */

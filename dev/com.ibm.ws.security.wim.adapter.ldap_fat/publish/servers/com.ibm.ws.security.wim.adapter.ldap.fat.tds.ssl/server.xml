@@ -82,10 +82,10 @@
     </federatedRepository>
     
     <sslDefault sslRef="DefaultSSLSettings" />
-	<ssl id="LDAPSSLSettings" keyStoreRef="LDAPKeyStore" trustStoreRef="LDAPTrustStore" verifyHostname="false" />
+	<ssl id="LDAPSSLSettings" keyStoreRef="LDAPKeyStore" trustStoreRef="LDAPTrustStore" />
 	<keyStore id="LDAPKeyStore" location="${server.config.dir}/LdapSSLKeyStore.jks" type="JKS" password="{xor}CDo9Hgw=" />
 	<keyStore id="LDAPTrustStore" location="${server.config.dir}/truststore.p12" type="PKCS12" password="LDAPpassword" />
 
-	<ssl id="DefaultSSLSettings" keyStoreRef="defaultKeyStore" verifyHostname="false" />
+	<ssl id="DefaultSSLSettings" keyStoreRef="defaultKeyStore" />
 	<keyStore id="defaultKeyStore" location="key.jks" type="JKS" password="default" />
 </server>

@@ -87,7 +87,7 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
     public static void afterAllTests() throws Exception {
         if (dynamicUpdate) {
             if (server != null && server.isStarted()) {
-                server.stopServer("CWPKI0023E.*", "CWWKW0601E.*", "CWPKI0022E.*", "CWWKO0801E.*");
+                server.stopServer("CWPKI0023E.*", "CWWKW0601E.*", "CWPKI0022E.*", "CWWKO0801E.*", "CWPKI0063W");
             }
         }
     }
@@ -96,7 +96,7 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
     public void afterTest() throws Exception {
         if (!dynamicUpdate) {
             if (server != null && server.isStarted()) {
-                server.stopServer("CWPKI0023E.*", "CWWKW0601E.*", "CWPKI0022E.*", "CWWKO0801E.*"); // trust stop server to ensure server
+                server.stopServer("CWPKI0023E.*", "CWWKW0601E.*", "CWPKI0022E.*", "CWWKO0801E.*", "CWPKI0063W"); // trust stop server to ensure server
                 // is stopped
             }
         }
