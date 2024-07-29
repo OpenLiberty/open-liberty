@@ -271,7 +271,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
      * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#deleteServerLease(java.lang.String)
      */
     @Override
-    @FFDCIgnore(NoSuchFileException.class)
+    @FFDCIgnore({ NoSuchFileException.class, Throwable.class })
     public void deleteServerLease(final String recoveryIdentity, boolean isPeerServer) throws Exception {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "deleteServerLease", this, recoveryIdentity, isPeerServer);
@@ -303,6 +303,9 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                     Tr.debug(tc, "Prepare to delete file {0}", leaseFile);
                 Files.deleteIfExists(leaseFile);
             }
+        } catch (FileNotFoundException | NoSuchFileException e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "{0} is already deleted", _serverInstallLeaseLogDir);
         } catch (IOException e) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Exception locking lease control file: ", e);
