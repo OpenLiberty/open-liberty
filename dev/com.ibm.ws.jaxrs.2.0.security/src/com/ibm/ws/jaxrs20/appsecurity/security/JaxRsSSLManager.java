@@ -117,7 +117,7 @@ public class JaxRsSSLManager {
                         return jsseHelper.getSSLContext(sslRef, connectionInfo, null, false);
                     } else {
                         // get the default ssl config
-                        return jsseHelper.getSSLContext(null, null, null);
+                        return jsseHelper.getSSLContext(connectionInfo, null);
                     }
                 }
             });
