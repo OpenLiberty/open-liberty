@@ -11,8 +11,10 @@ package io.openliberty.jaxws.fat.stubclient;
 
 import javax.jws.WebService;
 
-@WebService
-public class SimpleEcho {
+import io.openliberty.jaxws.fat.stubclient.client.SimpleEcho;
+
+@WebService(serviceName="SimpleEchoService", portName="SimpleEchoPort")
+public class SimpleEchoImpl implements SimpleEcho {
 
     public String echo(String value) {
         return value;

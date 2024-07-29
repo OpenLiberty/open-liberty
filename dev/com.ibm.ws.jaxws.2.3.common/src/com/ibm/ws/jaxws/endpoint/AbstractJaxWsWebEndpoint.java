@@ -29,6 +29,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.namespace.QName;
 import javax.xml.ws.handler.Handler;
 
 import org.apache.cxf.catalog.OASISCatalogManager;
@@ -289,12 +290,14 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
      */
     private void configureWebServicesConfig() {
         
-        // Get the portName from the Liberty's EndpointInfo
-        String portName = endpointInfo.getPortComponentName();
         boolean debug = tc.isDebugEnabled();
         
         // Use CXF's EndpointInfo to set the configuration properties
         org.apache.cxf.service.model.EndpointInfo cxfEndpointInfo = destination.getEndpointInfo();
+        
+        // Get the portName from the Liberty's EndpointInfo
+        QName portNameQname = endpointInfo.getWsdlPort();
+        String portName = portNameQname.getLocalPart();
         
         if (debug) {
             Tr.debug(tc, portName + " will be used to find webService Configuration");

@@ -3,10 +3,12 @@
         <feature>jsp-2.2</feature>
         <feature>jaxws-2.2</feature>
     </featureManager>
-
+    
     <include location="../fatTestPorts.xml"/>
     
-    <webServiceClient enableSchemaValidation="true" />
+    <webService portName="SimpleEchoPort"  enableSchemaValidation="false" />
+    
+    <webService enableSchemaValidation="true" />
     
     <javaPermission className="java.security.AllPermission" name="*" actions="*"/>
     

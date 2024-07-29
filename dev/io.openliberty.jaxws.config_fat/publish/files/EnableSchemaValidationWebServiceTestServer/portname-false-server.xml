@@ -6,7 +6,7 @@
 
     <include location="../fatTestPorts.xml"/>
     
-    <webServiceClient enableSchemaValidation="true" />
+    <webService portName="SimpleEchoPort"  enableSchemaValidation="false" />
     
     <javaPermission className="java.security.AllPermission" name="*" actions="*"/>
     

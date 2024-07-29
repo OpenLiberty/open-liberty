@@ -13,6 +13,7 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
 
@@ -27,8 +28,8 @@ public interface SimpleEcho {
      */
     @WebMethod
     @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "echo", targetNamespace = "http://stubclient.fat.jaxws.openliberty.io/", className = "com.ibm.ws.test.stubclient.client.Echo")
-    @ResponseWrapper(localName = "echoResponse", targetNamespace = "http://stubclient.fat.jaxws.openliberty.io/", className = "com.ibm.ws.test.stubclient.client.EchoResponse")
+    @RequestWrapper(localName = "echo", targetNamespace = "http://stubclient.fat.jaxws.openliberty.io/", className = "com.ibm.jaxws.properties.echo.client.Echo")
+    @ResponseWrapper(localName = "echoResponse", targetNamespace = "http://stubclient.fat.jaxws.openliberty.io/", className = "com.ibm.jaxws.properties.echo.client.EchoResponse")
     public String echo(
                        @WebParam(name = "arg0", targetNamespace = "") String arg0);
 
