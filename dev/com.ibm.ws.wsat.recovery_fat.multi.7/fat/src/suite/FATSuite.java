@@ -18,11 +18,11 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
-import tests.ReroutePeerRecoveryTest;
+import tests.RerouteRecoveryTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	ReroutePeerRecoveryTest.class,
+	RerouteRecoveryTest.class,
 })
 public class FATSuite {
     @ClassRule

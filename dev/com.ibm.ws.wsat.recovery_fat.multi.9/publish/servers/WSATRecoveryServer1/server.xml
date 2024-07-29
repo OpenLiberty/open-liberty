@@ -14,20 +14,20 @@
   <include location="../fatTestCommon.xml" />
 
   <httpEndpoint host="*"
-                httpPort="${bvt.prop.HTTP_default}"
-                httpsPort="${bvt.prop.HTTP_default.secure}"
+                httpPort="${bvt.prop.HTTP_secondary}"
+                httpsPort="${bvt.prop.HTTP_secondary.secure}"
                 id="defaultHttpEndpoint">
     <tcpOptions portOpenRetries="100000"/>
   </httpEndpoint>
 
   <transaction
-    backendURL="http://localhost:${bvt.prop.HTTP_default}"
+    backendURL="http://localhost:${bvt.prop.HTTP_secondary}"
+    leaseLength="2m"
+    clientInactivityTimeout="15m"
     heuristicRetryInterval="10"
-    leaseExpiryThreshold="5"
-    leaseLength="10m"
     recoverOnStartup="true"
-    recoveryGroup="recovery-group-1"
-    recoveryIdentity="WSATRecoveryClient1"
+    recoveryGroup="server-group"
+    recoveryIdentity="WSATRecoveryServer1"
     waitForRecovery="false"
   />
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,16 +16,16 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.containers.TestContainerSuite;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
-import tests.MultiRecoveryTest6;
+import tests.DBRerouteRecoveryTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	MultiRecoveryTest6.class,
+	DBRerouteRecoveryTest.class,
 })
-public class FATSuite {
-
+public class FATSuite extends TestContainerSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
