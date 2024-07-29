@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,6 +13,7 @@
 package jpabootstrap.web;
 
 import org.junit.Assert;
+import org.junit.Test;
 
 import componenttest.app.FATServlet;
 import jakarta.annotation.Resource;
@@ -31,6 +32,7 @@ public class TestJPABootstrapServlet extends FATServlet {
     @Resource
     private UserTransaction tx;
 
+    @Test
     public void testPersistenceUnitBootstrap() throws Exception {
         tx.begin();
         SimpleTestEntity entity = new SimpleTestEntity();

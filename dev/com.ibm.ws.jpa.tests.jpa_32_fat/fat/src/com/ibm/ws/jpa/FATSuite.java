@@ -20,6 +20,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.ws.jpa.jpa32.JPABootstrapTest;
+import com.ibm.ws.jpa.jpa32.JakartaDataRecreateTest;
 
 import componenttest.containers.TestContainerSuite;
 import componenttest.rules.repeater.RepeatTests;
@@ -28,6 +29,7 @@ import componenttest.topology.database.container.DatabaseContainerFactory;
 @RunWith(Suite.class)
 @SuiteClasses({
                 JPABootstrapTest.class,
+                JakartaDataRecreateTest.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 
