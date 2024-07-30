@@ -11,6 +11,7 @@ package io.openliberty.microprofile.telemetry.logging.internal_fat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -20,24 +21,28 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
-public class TelemetryMessagesTest extends FATServletClient {
+@CheckpointTest
+public class TelemetryMessagesCheckpointTest extends FATServletClient {
 
     public static final String APP_NAME = "TelemetryServletTestApp";
     public static final String SERVER_NAME = "TelemetryMessageNoApp";
 
-    public static LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);;
+    public static LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
 
     private static final String MESSAGE_LOG = "logs/messages.log";
     private static final String CONSOLE_LOG = "logs/console.log";
 
     @BeforeClass
     public static void initialSetup() throws Exception {
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START);
         server.startServer();
     }
 
@@ -49,6 +54,10 @@ public class TelemetryMessagesTest extends FATServletClient {
         String line = server.waitForStringInLog("CWWKF0011I", server.getConsoleLogFile());
         List<String> linesMessagesLog = server.findStringsInFileInLibertyServerRoot("^(?!.*scopeInfo).*\\[.*$", MESSAGE_LOG);
         List<String> linesConsoleLog = server.findStringsInFileInLibertyServerRoot(".*scopeInfo.*", CONSOLE_LOG);
+
+        // for checkpoint we expect to NOT see the message:
+        // CWWKC0451I: A server checkpoint "beforeAppStart" was requested.
+        assertNull("Should not container early message from checkpoint", linesConsoleLog.stream().filter((l) -> l.contains("CWWKC0451I")).findFirst().orElse(null));
 
         assertEquals("Messages.log and Telemetry console logs don't match.", linesMessagesLog.size(), linesConsoleLog.size());
 

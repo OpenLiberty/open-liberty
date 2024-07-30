@@ -25,7 +25,7 @@ src: \
 
 fat.project: true
 
-tested.features=mpTelemetry-2.0,pages-3.1
+tested.features=mpTelemetry-2.0,pages-3.1,checkpoint
 
 -buildpath: \
 	com.ibm.ws.componenttest.2.0,\
