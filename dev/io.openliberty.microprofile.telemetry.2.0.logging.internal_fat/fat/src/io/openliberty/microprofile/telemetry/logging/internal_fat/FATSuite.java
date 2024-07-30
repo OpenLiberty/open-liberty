@@ -17,7 +17,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 TelemetryMessagesTest.class,
                 TelemetryFFDCTest.class,
-                TelemetryTraceTest.class
+                TelemetryTraceTest.class,
+                TelemetryAgentJULMessagesTest.class
 })
 
 public class FATSuite {
