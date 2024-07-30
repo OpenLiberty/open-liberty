@@ -2188,7 +2188,7 @@ public class LibertyServer implements LogMonitorClient {
         // that makes the file the restore message is in not predictable.
         RemoteFile logToCheck = getConsoleLogFile();
         // App validation needs the info messages in messages.log
-        if (!logToCheck.exists()) {
+        if (!logToCheck.exists() || new File(logToCheck.getAbsolutePath()).length() == 0) {
             // try the messages log
             Log.info(c, method, "WARNING: console.log does not exist-- trying app verification step with messages.log");
             logToCheck = machine.getFile(messageAbsPath);
