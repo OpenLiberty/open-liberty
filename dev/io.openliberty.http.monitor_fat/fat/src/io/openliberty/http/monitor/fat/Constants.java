@@ -53,5 +53,5 @@ public class Constants {
     //other
     static final String UNKOWN_SERVICE = "unknown_service:java";
 
-    static final String RUNTIME_INSTANCE_SERVICE = "io.openliberty.microprofile.telemetry.runtime";
+    static final String OTEL_SERVICE_NOT_SET = "unkown_service";
 }

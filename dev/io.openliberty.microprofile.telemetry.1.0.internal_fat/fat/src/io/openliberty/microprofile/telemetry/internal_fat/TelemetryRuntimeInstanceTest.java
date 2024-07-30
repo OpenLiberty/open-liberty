@@ -1,17 +1,21 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal_fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -24,38 +28,42 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.ConfigServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.RuntimeInstanceServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
+import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
+import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporterProvider;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.spans.AbstractSpanMatcher;
+import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
 
-@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class TelemetryConfigEnvTest extends FATServletClient {
+public class TelemetryRuntimeInstanceTest extends FATServletClient {
 
-    public static final String SERVER_NAME = "Telemetry10ConfigEnv";
-    public static final String APP_NAME = "TelemetryApp";
+    public static final String SERVER_NAME = "Telemetry10ResourceAttributes";
+    public static final String APP_NAME = "TelemetryResourcesApp";
 
     @Server(SERVER_NAME)
     @TestServlets({
-                    @TestServlet(servlet = ConfigServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = RuntimeInstanceServlet.class, contextRoot = APP_NAME),
     })
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
+    public static RepeatTests r = FATSuite.allMPRepeatsWithMPTel20OrLater(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addAsResource(ConfigServlet.class.getResource("microprofile-config.properties"), "META-INF/microprofile-config.properties")
-                        .addClasses(ConfigServlet.class);
+                        .addAsResource(new StringAsset("otel.traces.exporter=in-memory\notel.bsp.schedule.delay=100"),
+                                       "META-INF/microprofile-config.properties")
+                        .addClasses(InMemorySpanExporter.class, InMemorySpanExporterProvider.class, RuntimeInstanceServlet.class)
+                        .addPackage(TestSpans.class.getPackage())
+                        .addPackage(AbstractSpanMatcher.class.getPackage())
+                        .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class);
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
-        //These variables take priority
-        server.addEnvVar("OTEL_SERVICE_NAME", "overrideDone");
         server.addEnvVar("OTEL_SDK_DISABLED", "false");
         server.startServer();
     }

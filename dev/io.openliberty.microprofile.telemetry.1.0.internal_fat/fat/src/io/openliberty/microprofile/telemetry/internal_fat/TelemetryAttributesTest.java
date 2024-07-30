@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,34 +29,32 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.ConfigServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.ResourceServlet;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class TelemetryConfigSystemPropTest extends FATServletClient {
+public class TelemetryAttributesTest extends FATServletClient {
 
-    public static final String SERVER_NAME = "Telemetry10ConfigSystemProp";
-    public static final String APP_NAME = "TelemetryApp";
+    public static final String SERVER_NAME = "Telemetry10ResourceAttributes";
+    public static final String APP_NAME = "TelemetryResourcesApp";
 
     @Server(SERVER_NAME)
     @TestServlets({
-                    @TestServlet(servlet = ConfigServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = ResourceServlet.class, contextRoot = APP_NAME),
     })
     public static LibertyServer server;
 
+    //This test tests resources that were added to Liberty in MPTel 2.0
     @ClassRule
-    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
+    public static RepeatTests r = FATSuite.allMPRepeatsWithMPTel20OrLater(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addAsResource(ConfigServlet.class.getResource("microprofile-config.properties"), "META-INF/microprofile-config.properties")
-                        .addClasses(ConfigServlet.class);
+                        .addClasses(ResourceServlet.class);
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
-        // These should be overridden by the values in bootstrap.properties
-        server.addEnvVar("OTEL_SERVICE_NAME", "overrideThisEnvVar");
-        server.addEnvVar("OTEL_SDK_DISABLED", "true");
+        server.addEnvVar("OTEL_SDK_DISABLED", "false");
         server.startServer();
     }
 

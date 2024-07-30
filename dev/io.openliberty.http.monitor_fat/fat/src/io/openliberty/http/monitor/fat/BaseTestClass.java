@@ -268,14 +268,16 @@ public abstract class BaseTestClass {
                                + requestMethod
                                + "\",http_response_status_code=\"" + responseStatus
                                + "\",http_route=\"" + route
-                               + "\",job=\"" + appName
+                               + "\",instance=\"[a-zA-Z0-9-]*\""
+                               + ",job=\"" + appName
                                + "\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
 
             sumMatchString = "http_server_request_duration_seconds_sum\\{http_request_method=\""
                              + requestMethod
                              + "\",http_response_status_code=\"" + responseStatus
                              + "\",http_route=\"" + route
-                             + "\",job=\"" + appName
+                             + "\",instance=\"[a-zA-Z0-9-]*\""
+                             + ",job=\"" + appName
                              + "\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
         } else {
             countMatchString = "http_server_request_duration_seconds_count\\{error_type=\"" + errorType
@@ -283,7 +285,8 @@ public abstract class BaseTestClass {
                                + requestMethod
                                + "\",http_response_status_code=\"" + responseStatus
                                + "\",http_route=\"" + route
-                               + "\",job=\"" + appName
+                               + "\",instance=\"[a-zA-Z0-9-]*\""
+                               + ",job=\"" + appName
                                + "\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
 
             sumMatchString = "http_server_request_duration_seconds_sum\\{error_type=\"" + errorType
@@ -291,7 +294,8 @@ public abstract class BaseTestClass {
                              + requestMethod
                              + "\",http_response_status_code=\"" + responseStatus
                              + "\",http_route=\"" + route
-                             + "\",job=\"" + appName
+                             + "\",instance=\"[a-zA-Z0-9-]*\""
+                             + ",job=\"" + appName
                              + "\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
         }
 

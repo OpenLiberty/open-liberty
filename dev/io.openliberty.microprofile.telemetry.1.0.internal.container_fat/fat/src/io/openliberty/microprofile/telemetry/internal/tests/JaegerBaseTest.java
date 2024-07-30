@@ -113,7 +113,7 @@ public abstract class JaegerBaseTest {
                                  .withAttribute(HTTP_REQUEST_METHOD, "GET"));
 
         // This is mostly just to check that getSpansForServiceName works for TracingNotEnabledTest
-        List<Span> allSpans = client.getSpansForServiceName("io.openliberty.microprofile.telemetry.runtime");
+        List<Span> allSpans = client.getSpansForServiceName("Test service");
         assertThat(allSpans, hasItem(span));
     }
 

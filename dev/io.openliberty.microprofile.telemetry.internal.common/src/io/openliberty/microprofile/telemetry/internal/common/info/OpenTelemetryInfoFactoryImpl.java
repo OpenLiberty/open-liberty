@@ -45,7 +45,6 @@ import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelem
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryInfoFactory;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.OpenTelemetry;
-import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.sdk.autoconfigure.spi.ConfigProperties;
 import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.resources.ResourceBuilder;
@@ -172,7 +171,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
             if (!checkDisabled(telemetryProperties)) {
                 OpenTelemetry openTelemetry = AccessController.doPrivileged((PrivilegedAction<OpenTelemetry>) () -> {
                     return openTelemetryVersionedConfiguration.buildOpenTelemetry(telemetryProperties,
-                                                                                  OpenTelemetryInfoFactoryImpl::customizeResource, Thread.currentThread().getContextClassLoader());
+                                                                                  this::customizeResource, Thread.currentThread().getContextClassLoader());
                 });
 
                 if (openTelemetry != null) {
@@ -350,22 +349,31 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
     }
 
     //Adds the service name to the resource attributes
-    private static Resource customizeResource(Resource resource, ConfigProperties c) {
+    private Resource customizeResource(Resource resource, ConfigProperties c) {
         ResourceBuilder builder = resource.toBuilder();
-        builder.put(AttributeKey.stringKey("service.name"), getServiceName(c));
+
+        //Don't use ResourceAttributes.SERVICE_NAME due to semcov moving the class around
+        builder.put(OpenTelemetryConstants.KEY_SERVICE_NAME, getServiceName(c));
         return builder.build();
     }
 
     //Uses application name if the user has not given configured service.name resource attribute
-    private static String getServiceName(ConfigProperties c) {
-        String appName = c.getString(OpenTelemetryConstants.SERVICE_NAME_PROPERTY);
-        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        if (appName == null) {
-            if (cmd != null) {
-                appName = cmd.getModuleMetaData().getApplicationMetaData().getName();
+    private String getServiceName(ConfigProperties c) {
+        String serviceName = c.getString(OpenTelemetryConstants.SERVICE_NAME_PROPERTY);
+        if (serviceName == null) {
+
+            if (!isRuntimeEnabled()) {
+                ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+                if (cmd != null) {
+                    serviceName = cmd.getModuleMetaData().getApplicationMetaData().getName();
+                }
+            }
+
+            if (serviceName == null) {
+                serviceName = "unkown_service";
             }
         }
-        return appName;
+        return serviceName;
     }
 
     //Interfaces and private classes only relevent to this factory.

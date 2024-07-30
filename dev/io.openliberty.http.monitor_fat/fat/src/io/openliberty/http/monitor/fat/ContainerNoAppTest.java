@@ -78,7 +78,7 @@ public class ContainerNoAppTest extends BaseTestClass {
         String res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
         TimeUnit.SECONDS.sleep(4);
-        assertTrue(validateMpTelemetryHttp(Constants.RUNTIME_INSTANCE_SERVICE, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
+        assertTrue(validateMpTelemetryHttp(Constants.OTEL_SERVICE_NOT_SET, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
 
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,9 +27,9 @@ import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 
 @SuppressWarnings("serial")
-@WebServlet("/testConfig")
+@WebServlet("/testRuntime")
 @ApplicationScoped
-public class ConfigServlet extends FATServlet {
+public class RuntimeInstanceServlet extends FATServlet {
 
     @Inject
     Tracer tracer;
@@ -42,23 +42,21 @@ public class ConfigServlet extends FATServlet {
 
     private static final String INVALID_SPAN_ID = "0000000000000000";
 
-    //Scenario 1 (Telemetry10): appProperties in server.xml should override all other properties and variables
-    //Scenario 2 (Telemetry10ConfigServerVar): variables in server.xml should override all other properties and variables
-    //Scenario 3 (Telemetry10ConfigSystemProp): properties in bootstrap.properties should override all other properties and variables
-    //Scenario 4 (Telemetry10ConfigEnv) environment variables should override all other properties and variables
-
-    //Tests otel.service.name is overrideDone instead of overrideThis*Property
+    //Tests otel.service.name is undefined on the runtime instance if we do not set it an environment variable or system property
+    //See ConfigServlet for the tests that ensure it is correct when it is defined.
+    //See also ServiceNameServlet which shows what happens when it is undefind on Tel 2.0 but we
+    //are not using the runtime instance.
     @Test
-    public void testServiceNameConfig() {
+    public void testServiceNameUnkownOnRuntimeInstance() {
         Tracer tracer = openTelemetry.getTracer("config-test", "1.0.0");
         Span span = tracer.spanBuilder("testSpan").startSpan();
         span.end();
-        assertThat(openTelemetry.toString(), containsString("service.name=\"overrideDone\""));
+        assertThat(openTelemetry.toString(), containsString("service.name=\"unkown_service\""));
     }
 
-    //Tests otel.sdk.disabled is false
+    //Tests otel.sdk.disabled and spans work using the runtime mode
     @Test
-    public void testSDKDisabledConfig() {
+    public void testSDKNotDisabledOnRuntimeInstanceServlet() {
         Tracer tracer = openTelemetry.getTracer("config-test", "1.0.0");
         Span span = tracer.spanBuilder("testSpan").startSpan();
         assertThat(span.getSpanContext().getSpanId(), not(equalTo(INVALID_SPAN_ID)));
