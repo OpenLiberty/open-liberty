@@ -175,6 +175,7 @@ instrument.classesExcludes: \
   org/jboss/resteasy/plugins/delegates/CookieHeaderDelegate.class, \
   org/jboss/resteasy/plugins/delegates/LinkDelegate.class, \
   org/jboss/resteasy/plugins/delegates/MediaTypeHeaderDelegate.class, \
+  org/jboss/resteasy/plugins/delegates/NewCookieHeaderDelegate.class, \
   org/jboss/resteasy/plugins/providers/multipart/IAttachmentImpl.class, \
   org/jboss/resteasy/specimpl/MultivaluedTreeMap.class, \
   org/jboss/resteasy/spi/EntityOutputStream.class, \
