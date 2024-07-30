@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -81,6 +81,7 @@ public class FeatureList {
     private final static boolean writingJavaVersion = Boolean.getBoolean("ibm.javaVersion");
     private static final List<Map<String, Object>> possibleJavaVersions = new ArrayList<Map<String, Object>>();
     private static final Map<String, Collection<GenericMetadata>> eeToCapability = new HashMap<String, Collection<GenericMetadata>>();
+    private static final Map<String, List<MetaTypeInformationSpecification>> metaTypes = new HashMap<>();
 
     private static File installDir;
     private static boolean gaBuild = true;
@@ -297,19 +298,25 @@ public class FeatureList {
                     elements.add("variable");
                 }
                 boolean includeInternal = options.getIncludeInternals();
-                SchemaMetaTypeParser parser = new SchemaMetaTypeParser(Locale.getDefault(), new ArrayList<File>(bundles), productName);
-                List<MetaTypeInformationSpecification> info = parser.getMetatypeInformation();
-                for (MetaTypeInformationSpecification spec : info) {
-                    for (ObjectClassDefinitionSpecification ocds : spec.getObjectClassSpecifications()) {
-                        if (includeInternal || !!!"internal".equals(ocds.getName())) {
-                            if (ocds.getExtensionUris().contains(XMLConfigConstants.METATYPE_EXTENSION_URI)) {
-                                Map<String, String> attribs = ocds.getExtensionAttributes(XMLConfigConstants.METATYPE_EXTENSION_URI);
-                                if (attribs != null) {
-                                    String isBeta = attribs.get("beta");
-                                    if ( ! (gaBuild && "true".equals(isBeta))) {
-                                        String alias = attribs.get("alias");
-                                        if (alias != null && !attribs.containsKey("childAlias")) {
-                                            elements.add(alias);
+                for (File bundle : bundles) {
+                    List<MetaTypeInformationSpecification> info = metaTypes.get(bundle.getAbsolutePath());
+                    if (info == null) {
+                        SchemaMetaTypeParser parser = new SchemaMetaTypeParser(Locale.getDefault(), Collections.singletonList(bundle), productName);
+                        info = parser.getMetatypeInformation();
+                        metaTypes.put(bundle.getAbsolutePath(), info);
+                    }
+                    for (MetaTypeInformationSpecification spec : info) {
+                        for (ObjectClassDefinitionSpecification ocds : spec.getObjectClassSpecifications()) {
+                            if (includeInternal || !!!"internal".equals(ocds.getName())) {
+                                if (ocds.getExtensionUris().contains(XMLConfigConstants.METATYPE_EXTENSION_URI)) {
+                                    Map<String, String> attribs = ocds.getExtensionAttributes(XMLConfigConstants.METATYPE_EXTENSION_URI);
+                                    if (attribs != null) {
+                                        String isBeta = attribs.get("beta");
+                                        if ( ! (gaBuild && "true".equals(isBeta))) {
+                                            String alias = attribs.get("alias");
+                                            if (alias != null && !attribs.containsKey("childAlias")) {
+                                                elements.add(alias);
+                                            }
                                         }
                                     }
                                 }
