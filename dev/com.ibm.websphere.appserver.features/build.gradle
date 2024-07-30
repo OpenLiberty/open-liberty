@@ -362,10 +362,16 @@ publishing {
     }
 }
 
+task cleanSingleJsonRepo {
+    doLast {
+        delete project.file('build/temp/SingleJson.json')
+    }
+}
 if (isAutomatedBuild) {
     def singleOpenLibertyJsonRepo = project.file('build/temp/SingleJson.json')
     task generateSingleJsonRepo {
         dependsOn publishFeatureResources
+        dependsOn cleanSingleJsonRepo
         inputs.dir new File(project.buildDir, 'repo')
         outputs.file singleOpenLibertyJsonRepo
         doLast {
