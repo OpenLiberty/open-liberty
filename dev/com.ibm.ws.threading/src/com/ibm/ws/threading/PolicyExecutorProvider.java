@@ -74,9 +74,12 @@ public class PolicyExecutorProvider implements ServerQuiesceListener {
      * @throws NullPointerException  if the specified identifier is null
      */
     public PolicyExecutor create(Map<String, Object> props) {
-        PolicyExecutor executor = new PolicyExecutorImpl((ExecutorServiceImpl) libertyThreadPool, (String) props.get("config.displayId"), null, policyExecutors, virtualThreadOps);
-        executor.updateConfig(props);
-        return executor;
+        return new PolicyExecutorImpl( //
+                        (ExecutorServiceImpl) libertyThreadPool, //
+                        (String) props.get("config.displayId"), //
+                        policyExecutors, //
+                        virtualThreadOps, //
+                        props);
     }
 
     /**
