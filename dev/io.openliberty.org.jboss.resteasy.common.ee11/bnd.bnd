@@ -171,10 +171,11 @@ instrument.classesExcludes: \
   org/jboss/resteasy/core/interception/jaxrs/ContainerResponseContextImpl.class, \
   org/jboss/resteasy/core/providerfactory/ResteasyProviderFactoryImpl.class, \
   org/jboss/resteasy/core/ResteasyContext.class, \
+  org/jboss/resteasy/plugins/delegates/CacheControlDelegate.class, \
   org/jboss/resteasy/plugins/delegates/CookieHeaderDelegate.class, \
+  org/jboss/resteasy/plugins/delegates/LinkDelegate.class, \
   org/jboss/resteasy/plugins/delegates/MediaTypeHeaderDelegate.class, \
   org/jboss/resteasy/plugins/providers/multipart/IAttachmentImpl.class, \
-  org/jboss/resteasy/specimpl/LinkBuilderImpl, \
   org/jboss/resteasy/specimpl/MultivaluedTreeMap.class, \
   org/jboss/resteasy/spi/EntityOutputStream.class, \
   org/jboss/resteasy/util/snapshot/SnapshotMap.class, \
