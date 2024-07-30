@@ -40,7 +40,6 @@ public class OracleTraceTest extends FATServletClient {
     public static final String JEE_APP = "oracletracefat";
     public static final String SERVLET_NAME = "OracleTraceTestServlet";
     private static final String SSL_PASSWORD = "{xor}Lz4sLCgwLTtubw==";
-    private static final String DB_PASSWORD = "PassW0rd";
 
     @Server("com.ibm.ws.jdbc.fat.oracle.trace")
     @TestServlet(servlet = OracleTraceTestServlet.class, path = JEE_APP + "/" + SERVLET_NAME)
@@ -75,13 +74,11 @@ public class OracleTraceTest extends FATServletClient {
         }
     }
 
-    //@Test TODO test not running since the docker oracle image we are using
-    //      does not come with a script to update system password.  If we switch
-    //      oracle images in the future this would be a good test to have.
+    @Test
     public void testDBPasswordNotLogged() throws Exception {
-        int passwords = server.findStringsInTrace(Pattern.quote(DB_PASSWORD)).size();
+        int passwords = server.findStringsInTrace(Pattern.quote(oracle.getPassword())).size();
         if (passwords > 0)
-            fail("Database password logged in trace " + passwords + " times. Password: " + DB_PASSWORD);
+            fail("Database password logged in trace " + passwords + " times. Password: " + oracle.getPassword());
     }
 
     @Test
