@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (c) 2022, 2024 IBM Corporation and others. All rights reserved.
+    This program and the accompanying materials are made available under the 
+    terms of the Eclipse Public License 2.0 which accompanies this distribution, 
+    and is available at 
+        http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0 
+    Contributors: 
+        IBM Corporation - initial API and implementation
+-->
+<!-- NOTE: This pom is used for Dev Testing -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.openliberty.jakarta.validation</groupId>
+    <artifactId>tck.runner.tck</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>Jakarta Validation TCK Runner TCK Module</name>
+
+    <properties>
+    	<!-- These properties can be overwritten by users if they want to test against a snapshot version-->
+        <jakarta.validation.tck.groupid>jakarta.validation</jakarta.validation.tck.groupid>
+        <jakarta.validation.tck.version>3.1.0</jakarta.validation.tck.version>
+        <jakarta.validation.version>3.1.0</jakarta.validation.version>
+        
+        <arquillian.version>1.7.0.Alpha13</arquillian.version>
+        <arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
+        <testng.version>7.5.1</testng.version>
+        <slf4j.version>2.0.6</slf4j.version>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+
+        <!--  the below is used in arquillian.xml -->
+        <wlp>${wlp}</wlp>
+        
+        <targetDirectory>${project.basedir}/target</targetDirectory>
+    </properties>
+
+	<repositories>
+		<!-- For artifacts not yet in Maven Central -->
+		<!-- Enable the following during development of a vNext release to use a staged TCK rather than a local -SNAPSHOT
+		-->
+		
+		<repository>
+			<id>sonatype-nexus-staging</id>
+			<name>Sonatype Nexus Staging</name>
+			<url>https://jakarta.oss.sonatype.org/content/repositories/staging/jakarta/validation/validation-tck-tests/3.1.0/validation-tck-tests-3.1.0.jar</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		
+	</repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${arquillian.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- This will point to build/libs/autoFVT/lib/fattest.simplicity.jar -->
+        <dependency>
+            <groupId>com.ibm.ws</groupId>
+            <artifactId>fattest.simplicity</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../../../lib/fattest.simplicity.jar</systemPath> 
+        </dependency>
+        <!-- TCK Dependency -->
+         <!-- Needs to be updated to validation TCK -->
+        <dependency>
+		    <groupId>${jakarta.validation.tck.groupid}</groupId>
+		    <artifactId>validation-tck-tests</artifactId>
+		    <version>${jakarta.validation.tck.version}</version>
+        </dependency>
+        <!-- API Dependency -->
+        <!-- API Dependency - updated to validation API -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>${jakarta.validation.version}</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.jakarta.validation.3.1}</systemPath>
+        </dependency>
+		<!-- Other API Dependencies -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.1.0</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.jakarta.servlet.6.1}</systemPath>
+        </dependency>
+	    <!-- TEST DEPENDENCIES -->
+        <dependency>
+            <groupId>io.openliberty.arquillian</groupId>
+            <artifactId>arquillian-liberty-managed-jakarta-testng</artifactId>
+            <version>${arquillian.liberty.managed.jakarta.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.beust</groupId>
+                    <artifactId>jcommander</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <version>1.78</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+         <!-- TOOD - needs to be checked if needs to be updated-->
+        <dependency>
+            <groupId>org.netbeans.tools</groupId>
+            <artifactId>sigtest-maven-plugin</artifactId>
+            <version>1.6</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <directory>${targetDirectory}</directory>
+        <defaultGoal>clean test</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <id>build-classpath</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>build-classpath</goal>
+                        </goals>
+                        <configuration>
+                            <!-- configure the plugin here -->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.17</version> <!-- Any changes to the surefire version must be tested against ZOS -->
+                <configuration>
+                    <argLine>-Dfile.encoding=${project.build.sourceEncoding} -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). Attach is needed becuase because arquillian uses com.sun.tools.attach to find VMs -->
+                    <systemPropertyVariables>
+                        <wlp>${wlp}</wlp>
+                        <tck_server>${tck_server}</tck_server>
+                        <tck_port>${tck_port}</tck_port>
+                        <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
+                        <java.util.logging.config.file>${basedir}/../logging.properties</java.util.logging.config.file>
+                    </systemPropertyVariables>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile> <!-- provided by MvnUtils.runTCKMvnCmd -->
+                    </suiteXmlFiles>
+                    <reportNameSuffix>${jakarta.tck.platform}</reportNameSuffix>
+                    <!-- TOOD - needs to be checked if needs to be updated-->
+                    <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
