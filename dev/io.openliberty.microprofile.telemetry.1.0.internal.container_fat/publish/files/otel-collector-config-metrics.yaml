@@ -20,8 +20,4 @@ service:
     metrics:
       receivers: [otlp]
       processors: [batch]
-<<<<<<< HEAD
       exporters: [prometheus]
-=======
-      exporters: [logging]
->>>>>>> 520a56a139 (TelemetryAloneTest requires Java 11)
