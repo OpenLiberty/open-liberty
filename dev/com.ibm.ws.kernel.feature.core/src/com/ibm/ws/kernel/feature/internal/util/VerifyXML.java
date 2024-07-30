@@ -418,7 +418,7 @@ public class VerifyXML extends BaseXML {
             } else if (oldLast.equals(INPUT_TAG)) {
                 // ignore
             } else if (oldLast.contentEquals(MULTIPLE_TAG)) {
-                verifyCase.input.setMultiple();
+                verifyCase.input.isMultiple = true;
             } else if (oldLast.equals(KERNEL_TAG)) {
                 verifyCase.input.addKernel(elementText);
             } else if (oldLast.equals(ROOT_TAG)) {
