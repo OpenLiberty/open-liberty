@@ -12,3 +12,4 @@ Subsystem-Name: Jakarta JSON Processing 2.1 Container
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-Platform: jakartaee-10.0,jakartaee-11.0

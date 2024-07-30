@@ -99,9 +99,17 @@ public class VersionlessTest {
                 System.out.println("        [ " + depName + " ** NOT FOUND ** ]");
                 // Only include dependent features that do not have tolerates.  If a feature depends on particular version it will have been
                 // included in the convenience feature due to how tolerates works to not be transitive.
-            } else if (!attr.containsKey("ibm.tolerates:") || depName.startsWith("com.ibm.websphere.appserver.jdbc-") || !depInfo.getKind().equals("ga")) {
+            } else if (!attr.containsKey("ibm.tolerates:") || depName.startsWith("com.ibm.websphere.appserver.jdbc-")) {
                 if (depInfo.isPublic()) {
                     publicDepFeatures.add(depInfo);
+                    // Check for a Container feature and add it to the list of features
+                    String possibleContainerFeature = depInfo.getBaseName() + "Container-" + depInfo.getVersion();
+                    FeatureInfo containerFeatureInfo = getFeature(possibleContainerFeature);
+                    if (containerFeatureInfo != null) {
+                        if (processedDepFeatures.add(containerFeatureInfo.getName())) {
+                            publicDepFeatures.add(containerFeatureInfo);
+                        }
+                    }
                 }
                 processFeatureInfo(depInfo, publicDepFeatures, processedDepFeatures);
             }
@@ -428,42 +436,39 @@ public class VersionlessTest {
                     //each feature dependency of the platform
                     Set<FeatureInfo> publicDepFeatures = getAllPublicDependentFeatures(featureInfo);
                     for (FeatureInfo depInfo : publicDepFeatures) {
-                        //Only process features in "ga"
-                        if (depInfo.getKind().equals("ga")) {
-                            System.out.println("        [ " + depInfo.getBaseName() + " - " + depInfo.getVersion() + " ]");
+                        System.out.println("        [ " + depInfo.getBaseName() + " - " + depInfo.getVersion() + " ]");
 
-                            if (depInfo.isAlsoKnownAsSet()) {
-                                System.out.println("            [ AKA: " + depInfo.getAlsoKnownAs() + " ]");
-                            }
+                        if (depInfo.isAlsoKnownAsSet()) {
+                            System.out.println("            [ AKA: " + depInfo.getAlsoKnownAs() + " ]");
+                        }
 
-                            //
-                            String featureTitle = depInfo.getShortName().split("-")[0]; //Just the name not the version
+                        //
+                        String featureTitle = depInfo.getShortName().split("-")[0]; //Just the name not the version
 
-                            //add features to our map and add data on its platform-version link
-                            if (versionlessFeatures.containsKey(featureTitle)) {
-                                versionlessFeatures.get(featureTitle)
-                                                   .addFeaturePlatform(new String[] { depInfo.getShortName(), baseName.replace("javaee", "jakartaee") + "-" + version,
-                                                                                      depInfo.getName() });
-                            } else {
-                                versionlessFeatures.put(featureTitle,
-                                                        new VersionlessFeatureDefinition(featureTitle, featureTitle,
-                                                                                         new String[] { depInfo.getShortName(),
-                                                                                                        baseName.replace("javaee", "jakartaee") + "-" + version,
-                                                                                                        depInfo.getName() },
-                                                                                         depInfo.getEdition(),
-                                                                                         depInfo.getKind()));
-                            }
+                        //add features to our map and add data on its platform-version link
+                        if (versionlessFeatures.containsKey(featureTitle)) {
+                            versionlessFeatures.get(featureTitle)
+                                               .addFeaturePlatformAndKind(new String[] { depInfo.getShortName(), baseName.replace("javaee", "jakartaee") + "-" + version,
+                                                                                         depInfo.getName(), depInfo.getKind() });
+                        } else {
+                            versionlessFeatures.put(featureTitle,
+                                                    new VersionlessFeatureDefinition(featureTitle, featureTitle,
+                                                                                     new String[] { depInfo.getShortName(),
+                                                                                                    baseName.replace("javaee", "jakartaee") + "-" + version,
+                                                                                                    depInfo.getName(),
+                                                                                                    depInfo.getKind() },
+                                                                                     depInfo.getEdition()));
+                        }
 
-                            //Keep track of features with updated names via the alsoknownas metadata
-                            if (depInfo.isAlsoKnownAsSet()) {
-                                String aka = depInfo.getAlsoKnownAs().split("-")[0];
-                                if (!aka.equals(featureTitle)) {
-                                    if (versionlessFeatures.get(featureTitle).getAlsoKnownAs() == null) {
-                                        versionlessFeatures.get(featureTitle).setAlsoKnownAs(aka);
-                                    }
-                                    if (versionlessFeatures.containsKey(aka)) {
-                                        versionlessFeatures.get(aka).setAKAFutureFeature(featureTitle);
-                                    }
+                        //Keep track of features with updated names via the alsoknownas metadata
+                        if (depInfo.isAlsoKnownAsSet()) {
+                            String aka = depInfo.getAlsoKnownAs().split("-")[0];
+                            if (!aka.equals(featureTitle)) {
+                                if (versionlessFeatures.get(featureTitle).getAlsoKnownAs() == null) {
+                                    versionlessFeatures.get(featureTitle).setAlsoKnownAs(aka);
+                                }
+                                if (versionlessFeatures.containsKey(aka)) {
+                                    versionlessFeatures.get(aka).setAKAFutureFeature(featureTitle);
                                 }
                             }
                         }
@@ -559,9 +564,7 @@ public class VersionlessTest {
                                                                                   "opentracing",
                                                                                   "jndi",
                                                                                   "restConnector", // restConnector-2.0 was erroneously added to jakartaee-9.1
-                                                                                  "jpaContainer", // jpa depends on jpaContainer
-                                                                                  "persistenceContainer" // persistence depends on persistenceContainer.
-    ));
+                                                                                  "bells"));
 
     private static Map<String, int[]> versions = new HashMap<>();
 

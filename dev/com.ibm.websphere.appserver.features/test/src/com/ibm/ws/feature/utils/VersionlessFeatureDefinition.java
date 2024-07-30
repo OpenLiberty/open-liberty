@@ -6,27 +6,24 @@ public class VersionlessFeatureDefinition {
 
     private final String featureName;
     private final String subsystemName;
-    private final ArrayList<String[]> featuresAndPlatform;
+    private final ArrayList<String[]> featuresAndPlatformAndKind;
     private String alsoKnownAs;
     private String akaFutureFeature;
     private final String edition;
-    private final String kind;
 
-    public VersionlessFeatureDefinition(String featureName, String subsystemName, ArrayList<String[]> featuresAndPlatform, String editon, String kind) {
+    public VersionlessFeatureDefinition(String featureName, String subsystemName, ArrayList<String[]> featuresAndPlatformAndKind, String editon) {
         this.featureName = featureName;
         this.subsystemName = subsystemName;
-        this.featuresAndPlatform = featuresAndPlatform;
+        this.featuresAndPlatformAndKind = featuresAndPlatformAndKind;
         this.edition = editon;
-        this.kind = kind;
     }
 
-    public VersionlessFeatureDefinition(String featureName, String subsystemName, String[] featureAndPlatform, String edition, String kind) {
+    public VersionlessFeatureDefinition(String featureName, String subsystemName, String[] featureAndPlatformAndKind, String edition) {
         this.featureName = featureName;
         this.subsystemName = subsystemName;
-        this.featuresAndPlatform = new ArrayList<String[]>();
-        featuresAndPlatform.add(featureAndPlatform);
+        this.featuresAndPlatformAndKind = new ArrayList<String[]>();
+        featuresAndPlatformAndKind.add(featureAndPlatformAndKind);
         this.edition = edition;
-        this.kind = kind;
     }
 
     /**
@@ -70,21 +67,21 @@ public class VersionlessFeatureDefinition {
     /**
      * Get the features mapped to their platform dependency
      * EX:
-     * jpa-2.2, jakartaPlatform-8.0
-     * persistence-3.0, JakartaPlatform-9.1
+     * jpa-2.2, jakartaPlatform-8.0, ga
+     * persistence-3.0, JakartaPlatform-9.1, ga
      *
      * @return
      */
-    public ArrayList<String[]> getFeaturesAndPlatform() {
-        return this.featuresAndPlatform;
+    public ArrayList<String[]> getFeaturesAndPlatformAndKind() {
+        return this.featuresAndPlatformAndKind;
     }
 
-    public void addFeaturePlatform(String[] featurePlatform) {
-        featuresAndPlatform.add(featurePlatform);
+    public void addFeaturePlatformAndKind(String[] featurePlatformAndKind) {
+        featuresAndPlatformAndKind.add(featurePlatformAndKind);
     }
 
-    public void addFeaturePlatform(String feature, String platform) {
-        featuresAndPlatform.add(new String[] { feature, platform });
+    public void addFeaturePlatformAndKind(String feature, String platform, String kind) {
+        featuresAndPlatformAndKind.add(new String[] { feature, platform, kind });
     }
 
     /**
@@ -95,7 +92,7 @@ public class VersionlessFeatureDefinition {
     public String[] getPreferredAndTolerates() {
         ArrayList<String> versions = new ArrayList<String>();
 
-        for (String[] featAndPlat : featuresAndPlatform) {
+        for (String[] featAndPlat : featuresAndPlatformAndKind) {
             if (!versions.contains(featAndPlat[0].split("-")[1])) {
                 versions.add(featAndPlat[0].split("-")[1]);
             }
@@ -127,7 +124,7 @@ public class VersionlessFeatureDefinition {
     public ArrayList<String> getAllVersions() {
         ArrayList<String> versions = new ArrayList<String>();
 
-        for (String[] featAndPlat : featuresAndPlatform) {
+        for (String[] featAndPlat : featuresAndPlatformAndKind) {
             if (!versions.contains(featAndPlat[0].split("-")[1])) {
                 versions.add(featAndPlat[0].split("-")[1]);
             }
@@ -149,8 +146,8 @@ public class VersionlessFeatureDefinition {
         String result = "";
         String currentLow = "" + Double.MAX_VALUE;
 
-        for (int i = 0; i < featuresAndPlatform.size(); i++) {
-            String[] fnp = featuresAndPlatform.get(i);
+        for (int i = 0; i < featuresAndPlatformAndKind.size(); i++) {
+            String[] fnp = featuresAndPlatformAndKind.get(i);
             if (fnp[0].equals(versionedFeature)) {
                 if (fnp[1].contains(dependency + "-")) {
                     //Should leave you with "(version number).feature" ex. "1.2"
@@ -196,6 +193,19 @@ public class VersionlessFeatureDefinition {
      * @return the kind
      */
     public String getKind() {
+        String kind = "noship";
+        for (int i = 0; i < featuresAndPlatformAndKind.size(); i++) {
+            if ("ga".equals(kind)) {
+                break;
+            }
+            String[] fnp = featuresAndPlatformAndKind.get(i);
+            String versionKind = fnp[3];
+            // If current kind is noship, then just set it to what versionKind is.  It is going to either be noship, beta or ga
+            // If version kind is ga, then set kind to version kind.  Otherwise leave it be beta or ga because it wouldn't change
+            if ("noship".equals(kind) || "ga".equals(versionKind)) {
+                kind = versionKind;
+            }
+        }
         return kind;
     }
 }

@@ -24,3 +24,4 @@ IBM-API-Package: org.jboss.weld;type="internal",\
 kind=beta
 edition=core
 WLP-Activation-Type: parallel
+WLP-Platform: jakartaee-11.0
