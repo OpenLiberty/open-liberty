@@ -21,4 +21,5 @@
 
     <!-- For HttpURLConnection -->
     <javaPermission className="java.net.URLPermission" name="http://localhost:-/-" actions="GET:" />
+    <javaPermission className="java.util.PropertyPermission" name="jaxws.http.autoredirect" actions="read"/>
 </server>
