@@ -203,8 +203,8 @@ public class VersionlessCachingTest {
      * - start server
      *
      * test:
-     * - change plaform to jakartaee-10.0
-     * - check for feature servlet-6.0
+     * - change plaform to jakartaee-9.1
+     * - check for feature servlet-5.0
      */
     @Test
     public void changeInPlatformIsNoticedWhileServerRunning() throws Exception {
@@ -213,13 +213,13 @@ public class VersionlessCachingTest {
         startServer(CLEAN_START, SET_LOG_MARK);
 
         // UPDATE CONFIG - server running
-        displayHeading('*', "Update config by adding changing platform to  \"jakartaee-10.0\"");
-        List<String> platforms = Arrays.asList("jakartaee-10.0");
+        displayHeading('*', "Update config by adding changing platform to  \"jakartaee-9.1\"");
+        List<String> platforms = Arrays.asList("jakartaee-9.1");
         List<String> features = Arrays.asList("jsp");
         createServerXml(server.getServerRoot(), platforms, features);
 
         // WAIT FOR RESULT
-        String expectedFeature = "servlet-6.0";
+        String expectedFeature = "servlet-5.0";
         String lineInLog = waitForStringInLog(RESOLUTION_MSG);
         assertNotNull("Resolution message, " + RESOLUTION_MSG + " not found.", lineInLog);
         assertTrue("Resolution message should contain " + expectedFeature + ".", lineInLog.contains(expectedFeature));
@@ -239,9 +239,9 @@ public class VersionlessCachingTest {
      * - start & stop server
      *
      * test:
-     * - change plaform to jakartaee-10.0
+     * - change plaform to jakartaee-9.1
      * - start server (dirty)
-     * - check for feature servlet-6.0
+     * - check for feature servlet-5.0
      */
     @Test
     public void changeInPlatformIsNoticedAfterServerStart() throws Exception {
@@ -252,15 +252,15 @@ public class VersionlessCachingTest {
         stopServer(allowedMessages);
 
         // UPDATE CONFIG - server stopped
-        displayHeading('*', "Update config by changing platform to  \"jakartaee-10.0\"");
-        List<String> platforms = Arrays.asList("jakartaee-10.0");
+        displayHeading('*', "Update config by changing platform to  \"jakartaee-9.1\"");
+        List<String> platforms = Arrays.asList("jakartaee-9.1");
         List<String> features = Arrays.asList("jsp");
         createServerXml(server.getServerRoot(), platforms, features);
 
         startServer(DIRTY_START, DONT_SET_LOG_MARK);
 
         // WAIT FOR RESULT
-        String expectedFeature = "servlet-6.0";
+        String expectedFeature = "servlet-5.0";
         String lineInLog = waitForStringInLog(RESOLUTION_MSG);
         assertNotNull("Resolution message, " + RESOLUTION_MSG + " not found.", lineInLog);
         assertTrue("Resolution message should contain " + expectedFeature + ".", lineInLog.contains(expectedFeature));
@@ -281,9 +281,9 @@ public class VersionlessCachingTest {
      * - start and stop server.
      *
      * part 1:
-     * - change env var to jakartaee-11.0 in server.env
+     * - change env var to jakartaee-9.1 in server.env
      * - start server (must be dirty start)
-     * - check that servlet 6.0 is installed
+     * - check that servlet 5.0 is installed
      * - stop server
      *
      * part 2:
@@ -311,13 +311,13 @@ public class VersionlessCachingTest {
         stopServer(allowedMessages);
 
         // PART 1: UPDATE CONFIG - while server stopped. Add environment variable
-        displayHeading('*', "Part 1: Update config by changing PREFERRED_PLATFORM_VERSIONS to \"jakartaee-10.0\"");
-        createServerEnv(server.getInstallRoot() + "/usr/servers/" + SERVER_NAME, "jakartaee-10.0");
+        displayHeading('*', "Part 1: Update config by changing PREFERRED_PLATFORM_VERSIONS to \"jakartaee-9.1\"");
+        createServerEnv(server.getInstallRoot() + "/usr/servers/" + SERVER_NAME, "jakartaee-9.1");
 
         startServerUsingServerScript(null);
 
         // WAIT FOR RESULT
-        String expectedFeature = "servlet-6.0";
+        String expectedFeature = "servlet-5.0";
         String lineInLog = waitForStringInLog(RESOLUTION_MSG);
         assertNotNull("Resolution message, " + RESOLUTION_MSG + " not found.", lineInLog);
         assertTrue("Resolution message should contain " + expectedFeature + ".", lineInLog.contains(expectedFeature));
@@ -353,10 +353,10 @@ public class VersionlessCachingTest {
      * setup:
      * - platform in server.xml AND environment variable set to a different platform
      * (note server.xml overrides the environment variable.
-     * - platform in server.xml set to jakartaee-10
+     * - platform in server.xml set to jakartaee-9.1
      * - env var set to javaee-8.0
      * - feature set to jsp
-     * - start server - assert servlet-6.0 installed
+     * - start server - assert servlet-5.0 installed
      * - stop server
      *
      * test:
@@ -378,11 +378,11 @@ public class VersionlessCachingTest {
         }
 
         // SETUP
-        createServer("jakartaee-10.0", "jsp", "javaee-8.0");
+        createServer("jakartaee-9.1", "jsp", "javaee-8.0");
         displayFile(new File(server.getInstallRoot() + "/usr/servers/" + SERVER_NAME, "server.xml"));
         startServerUsingServerScript(null);
         assertTrue("the server should have been started", server.isStarted());
-        String expectedFeature = "servlet-6.0";
+        String expectedFeature = "servlet-5.0";
         String lineInLog = waitForStringInLog(RESOLUTION_MSG);
         assertNotNull("Resolution message, " + RESOLUTION_MSG + " not found.", lineInLog);
         assertTrue("Resolution message should contain " + expectedFeature + ".", lineInLog.contains(expectedFeature));
@@ -419,9 +419,9 @@ public class VersionlessCachingTest {
      * - start server - assert servlet-4.0 installed
      * - stop server
      * test:
-     * - add platform (jakartaee-10.0) to server.xml
+     * - add platform (jakartaee-9.1) to server.xml
      * - start server (must be dirty start)
-     * - check that servlet 6.0 is installed since we'll be using jakartaee-10.0 from the server.xml
+     * - check that servlet 5.0 is installed since we'll be using jakartaee-9.1 from the server.xml
      */
     @Test
     public void addPlatformIsNoticedAfterServerStart() throws Exception {
@@ -449,13 +449,13 @@ public class VersionlessCachingTest {
         // UPDATE CONFIG - while server stopped. Remove platform from server.xml
         displayHeading('*', "Update config by removing platform from server.xml");
         createServerXml(server.getInstallRoot() + "/usr/servers/" + SERVER_NAME,
-                        Arrays.asList("jakartaee-10.0"), // platform
+                        Arrays.asList("jakartaee-9.1"), // platform
                         Arrays.asList("jsp")); // feature
 
         startServerUsingServerScript(null);
 
         // WAIT FOR RESULT
-        expectedFeature = "servlet-6.0"; // because platform is now in server.xml
+        expectedFeature = "servlet-5.0"; // because platform is now in server.xml
         lineInLog = waitForStringInLog(RESOLUTION_MSG);
         assertNotNull("Resolution message, " + RESOLUTION_MSG + " not found.", lineInLog);
         assertTrue("Resolution message should contain " + expectedFeature + ".", lineInLog.contains(expectedFeature));
@@ -476,9 +476,9 @@ public class VersionlessCachingTest {
      * - start server - assert servlet-4.0 installed
      * - stop server
      * test:
-     * - update preferred platform versions in server.env to (jakartaee-10.0, javaee-8.0) to server.xml
+     * - update preferred platform versions in server.env to (jakartaee-9.1, javaee-8.0) to server.xml
      * - start server (must be dirty start)
-     * - check that servlet 6.0 is installed since we'll be using jakartaee-10.0from the env var
+     * - check that servlet 5.0 is installed since we'll be using jakartaee-9.1 from the env var
      */
     @Test
     public void preferredPatformValueChangeIsNoticedAfterServerStart() throws Exception {
@@ -505,12 +505,12 @@ public class VersionlessCachingTest {
 
         // UPDATE CONFIG - while server stopped. Remove platform from server.xml
         displayHeading('*', "Update config by changing variable PREFERRED_PLATFORM_VERSIONS");
-        createServerEnv(server.getInstallRoot() + "/usr/servers/" + SERVER_NAME, "jakartaee-10.0,javaee-8.0");
+        createServerEnv(server.getInstallRoot() + "/usr/servers/" + SERVER_NAME, "jakartaee-9.1,javaee-8.0");
 
         startServerUsingServerScript(null);
 
         // WAIT FOR RESULT
-        expectedFeature = "servlet-6.0"; // because platform is now in server.xml
+        expectedFeature = "servlet-5.0"; // because platform is now in server.xml
         lineInLog = waitForStringInLog(RESOLUTION_MSG);
         assertNotNull("Resolution message, " + RESOLUTION_MSG + " not found.", lineInLog);
         assertTrue("Resolution message should contain " + expectedFeature + ".", lineInLog.contains(expectedFeature));
