@@ -13,6 +13,7 @@
 <server>
 
   <featureManager>
+    <!-- Do not add CDI. The concurrent feature must be able to run without it. -->
     <feature>componenttest-2.0</feature>
     <feature>concurrent-3.1</feature>
     <feature>jndi-1.0</feature>
