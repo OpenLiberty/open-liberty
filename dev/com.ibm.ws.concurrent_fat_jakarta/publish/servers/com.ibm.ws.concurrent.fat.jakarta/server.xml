@@ -76,6 +76,10 @@
                                    concurrencyPolicyRef="max2virtual">
   </managedScheduledExecutorService>
 
+  <managedThreadFactory id="virtualThreadFactory" jndiName="concurrent/virtualThreadFactory"
+                        virtual="true">
+  </managedThreadFactory>
+
   <!-- needed by ForkJoinPool, which the test application uses -->
   <javaPermission codebase="${server.config.dir}/apps/ConcurrencyTestApp.ear" className="java.lang.RuntimePermission" name="modifyThread"/>
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -217,11 +217,17 @@ public class ConcurrencyTestServlet extends FATServlet {
     @Resource(lookup = "java:app/concurrent/lowPriorityThreads")
     ManagedThreadFactory lowPriorityThreads;
 
-    @Resource(name = "java:comp/env/concurrent/virtualExec1Ref", lookup = "concurrent/virtualExec1")
+    @Resource(name = "java:comp/env/concurrent/virtualExec1Ref",
+              lookup = "concurrent/virtualExec1")
     ManagedExecutorService virtualExecutor1;
 
-    @Resource(name = "java:module/env/concurrent/virtualExec2Ref", lookup = "concurrent/virtualExec2")
+    @Resource(name = "java:module/env/concurrent/virtualExec2Ref",
+              lookup = "concurrent/virtualExec2")
     ManagedScheduledExecutorService virtualExecutor2;
+
+    @Resource(name = "java:comp/env/concurrent/virtualThreadFactoryRef",
+              lookup = "concurrent/virtualThreadFactory")
+    ManagedThreadFactory virtualThreadFactory;
 
     //Do not use for any other tests
     @EJB
@@ -3125,7 +3131,9 @@ public class ConcurrencyTestServlet extends FATServlet {
     public void testVirtualThreadedExecutors() throws Exception {
         String version = System.getProperty("java.version");
         System.out.println("java.version is \"" + version + "\"");
-        boolean supportsVirtualThreads = Integer.parseInt(version.substring(0, version.indexOf('.'))) >= 21;
+        int dot = version.indexOf('.');
+        String major = dot < 0 ? version : version.substring(0, dot);
+        boolean supportsVirtualThreads = Integer.parseInt(major) >= 21;
 
         if (supportsVirtualThreads) {
             CountDownLatch twoStarted = new CountDownLatch(2);
@@ -3230,6 +3238,55 @@ public class ConcurrencyTestServlet extends FATServlet {
                 });
                 fail("ManagedScheduledExecutorService must reject virtual=true prior to Java 21. Instead: " + future);
             } catch (IllegalArgumentException x) {
+                if (x.getMessage().indexOf("virtual") >= 0)
+                    ; // expected that virtual=true is not allowed prior to Java 21
+                else
+                    throw x;
+            }
+        }
+    }
+
+    /**
+     * Use a server-defined ManagedThreadFactory resource that is configured to
+     * create virtual threads. In Java 21+, it should create virtual threads.
+     * Prior to Java 21, this must result in an error because virtual threads are
+     * not available.
+     */
+    @Test
+    public void testVirtualThreadFactory() throws Exception {
+        String version = System.getProperty("java.version");
+        System.out.println("java.version is \"" + version + "\"");
+        int dot = version.indexOf('.');
+        String major = dot < 0 ? version : version.substring(0, dot);
+        boolean supportsVirtualThreads = Integer.parseInt(major) >= 21;
+
+        if (supportsVirtualThreads) {
+            CompletableFuture<String> thread1result = new CompletableFuture<>();
+            Thread thread1 = virtualThreadFactory.newThread(() -> {
+                try {
+                    InitialContext.doLookup("java:comp/env/concurrent/virtualExec1Ref");
+                    thread1result.complete(Thread.currentThread().toString());
+                } catch (Throwable x) {
+                    thread1result.completeExceptionally(x);
+                }
+            });
+
+            thread1.start();
+
+            String s1;
+            s1 = thread1.toString();
+            assertEquals(s1, true, s1.startsWith("VirtualThread["));
+
+            s1 = thread1result.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(s1, true, s1.startsWith("VirtualThread["));
+        } else {
+            Thread thread1;
+            try {
+                thread1 = virtualThreadFactory.newThread(() -> {
+                    System.out.println("Running on thread " + Thread.currentThread());
+                });
+                fail("ManagedThreadFactory must reject virtual=true prior to Java 21. Instead: " + thread1);
+            } catch (UnsupportedOperationException x) {
                 if (x.getMessage().indexOf("virtual") >= 0)
                     ; // expected that virtual=true is not allowed prior to Java 21
                 else
