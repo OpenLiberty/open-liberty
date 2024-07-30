@@ -9,18 +9,9 @@
  *******************************************************************************/
 package com.ibm.ws.jaxws.client;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
 import org.apache.cxf.interceptor.Fault;
-import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.jaxb.JAXBDataBinding;
 import org.apache.cxf.message.Message;
-import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
 
@@ -61,6 +52,9 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
         Object enableSchemaValidation = null;
 
         Object ignoreUnexpectedElements = null;
+        
+        Object enableDefaultValidation = null;
+        
 
         // if messageServiceName != null, try to get the values from configuration using it
         if (messageServiceName != null) {
@@ -88,16 +82,34 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
             }
 
             
+            // if messageServiceName != null, try to get the values from configuration using it
+            if (messageServiceName != null) {
+                // if messageServiceName != null, try to get enableSchemaValidation value from configuration, if it's == null try it to get the default configuration value
+                if(WebServicesClientConfigHolder.getEnableDefaultValidation(messageServiceName) != null) {
+                    
+                    enableDefaultValidation = WebServicesClientConfigHolder.getEnableDefaultValidation(messageServiceName);
+                    
+                } else if (WebServicesClientConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) {
+                    
+                    enableDefaultValidation = WebServicesClientConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP);
+                    
+                }
+            }
+            
         } else {
             // if messageSevice == null then try to get the global configuration values, if its not set keep values null
             enableSchemaValidation = (WebServicesClientConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesClientConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP) : null;
 
             ignoreUnexpectedElements = (WebServicesClientConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesClientConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) : null;            
+            
+            enableDefaultValidation = (WebServicesClientConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesClientConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) : null;
 
         }
+        Tr.info(tc,"~enableSchemaValidation: " + enableSchemaValidation);
+        Tr.info(tc,"~ignoreUnexpectedElements: " + ignoreUnexpectedElements);
+        Tr.info(tc,"~enableDefaultValidation: " + enableSchemaValidation);
         
-        
-        if ((enableSchemaValidation == null && ignoreUnexpectedElements == null)) {
+        if ((enableSchemaValidation == null && ignoreUnexpectedElements == null && enableDefaultValidation == null)) {
             if (debug) {
                 Tr.debug(tc, "No webServiceClient configuration found. returning.");
             }

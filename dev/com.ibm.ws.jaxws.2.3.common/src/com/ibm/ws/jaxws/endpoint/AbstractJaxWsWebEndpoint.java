@@ -56,16 +56,11 @@ import com.ibm.ws.jaxws.metadata.JaxWsModuleMetaData;
 import com.ibm.ws.jaxws.support.JaxWsInstanceManager;
 import com.ibm.ws.jaxws.support.JaxWsInstanceManager.InterceptException;
 import com.ibm.ws.jaxws.support.LibertyJaxWsCompatibleWSDLGetInterceptor;
-import com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor;
-import com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor;
 import com.ibm.ws.jaxws.utils.JaxWsUtils;
 import com.ibm.ws.jaxws.utils.StringUtils;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
-import com.ibm.ws.kernel.service.util.JavaInfo;
-
 import io.openliberty.jaxws.jaxb.IgnoreUnexpectedElementValidationEventHandler;
 
-import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.Bus;
 
 public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
@@ -307,6 +302,8 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
 
         Object ignoreUnexpectedElements = null;
 
+        Object enableDefaultValidation = null;
+                
         // if portName != null, try to get the values from configuration using it
         if (portName != null) {
             // if portName != null, try to get enableSchemaValidation value from configuration, if it's == null try it to get the default configuration value
@@ -332,17 +329,28 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
                 
             }
 
+            // if portName != null, try to get enableSchemaValidation value from configuration, if it's == null try it to get the default configuration value
+            if(WebServicesConfigHolder.getEnableDefaultValidation(portName) != null) {
+                
+                enableDefaultValidation = WebServicesConfigHolder.getEnableDefaultValidation(portName);
+                
+            } else if (WebServicesConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) {
+                
+                enableDefaultValidation = WebServicesConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP);
+                
+            }
             
         } else {
             // if portName == null then try to get the global configuration values, if its not set keep values null
             enableSchemaValidation = (WebServicesConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP) : null;
 
             ignoreUnexpectedElements = (WebServicesConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) : null;            
-
+            
+            enableDefaultValidation = (WebServicesConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) : null;            
         }
         
         
-        if ((enableSchemaValidation == null && ignoreUnexpectedElements == null)) {
+        if ((enableSchemaValidation == null && ignoreUnexpectedElements == null && enableDefaultValidation == null)) {
             if (debug) {
                 Tr.debug(tc, "No webService configuration found. returning.");
             }
@@ -384,6 +392,23 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
         } else {
             if (debug) {
                 Tr.debug(tc, "ignoreUnexpectedElements was " + ignoreUnexpectedElements + " not configuring ignoreUnexpectedElements on the Web Service Endpoint");
+
+            }
+        }
+        
+        
+        // Enable or disable default validation as long as property is non-null
+        if ( enableDefaultValidation != null) {
+            cxfEndpointInfo.setProperty("default-validation-enabled",  enableDefaultValidation);
+
+            if (debug) {
+                Tr.debug(tc, "Set default-validation-enabled to " + enableDefaultValidation);
+
+            }
+        } else {
+
+            if (debug) {
+                Tr.debug(tc, "enableDefaultValidation was null, not configuring default-validation-enabled on the Web Service Endpoint");
 
             }
         }

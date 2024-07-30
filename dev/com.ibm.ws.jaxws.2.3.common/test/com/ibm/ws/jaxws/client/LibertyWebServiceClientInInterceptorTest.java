@@ -54,6 +54,8 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.internal.WebServiceConfigConstants;
 
 import test.common.SharedOutputManager;
@@ -63,6 +65,8 @@ import test.common.SharedOutputManager;
  *      the webServiceClient configuration is set.
  */
 public class LibertyWebServiceClientInInterceptorTest {
+    
+    private static final TraceComponent tc = Tr.register(LibertyWebServiceClientInInterceptorTest.class);
     
     // Property that LibertyWebServiceClientInInterceptor uses to set schema validation on the message
     final String SCHEMA_VALIDATION = "schema-validation-enabled";
@@ -185,7 +189,7 @@ public class LibertyWebServiceClientInInterceptorTest {
      */
     @Test
     public void testHandleMessageWithDefaultEnableSchemaValidationSetToFalse() {
-
+Tr.info(tc,"LibertyWebServiceClientInInterceptorTest","~testHandleMessageWithDefaultEnableSchemaValidationSetToFalse");
         // Clear props first to ensure correct values are set. 
         webServiceClientDefaultProps.clear();
 
@@ -208,7 +212,7 @@ public class LibertyWebServiceClientInInterceptorTest {
      */
     @Test
     public void testHandleMessageWithDefaultIgnoreUnexpectedElemntsSetToFalse() {
-
+Tr.info(tc,"LibertyWebServiceClientInInterceptorTest","~testHandleMessageWithDefaultIgnoreUnexpectedElemntsSetToFalse");
         // Clear props first to ensure correct values are set. 
         webServiceClientDefaultProps.clear();
 
@@ -232,7 +236,7 @@ public class LibertyWebServiceClientInInterceptorTest {
      */
     @Test
     public void testHandleMessageWithDefaultEnableSchemaValidationSetToTrue() {
-
+Tr.info(tc,"LibertyWebServiceClientInInterceptorTest","~testHandleMessageWithDefaultEnableSchemaValidationSetToTrue");
         // Clear props first to ensure correct values are set. 
         webServiceClientDefaultProps.clear();
 
@@ -255,7 +259,7 @@ public class LibertyWebServiceClientInInterceptorTest {
      */
     @Test
     public void testHandleMessageWithDefaultIgnoreUnexpectedElemntsSetToTrue() {
-
+Tr.info(tc,"LibertyWebServiceClientInInterceptorTest","~testHandleMessageWithDefaultIgnoreUnexpectedElemntsSetToTrue");
         // Clear props first to ensure correct values are set. 
         webServiceClientDefaultProps.clear();
         
@@ -279,7 +283,7 @@ public class LibertyWebServiceClientInInterceptorTest {
      */
     @Test
     public void testHandleMessageWithDefaultBothSetToFalse() {
-
+Tr.info(tc,"LibertyWebServiceClientInInterceptorTest","~testHandleMessageWithDefaultBothSetToFalse");
         // Clear props first to ensure correct values are set. 
         webServiceClientDefaultProps.clear();
         
@@ -307,7 +311,7 @@ public class LibertyWebServiceClientInInterceptorTest {
      */
     @Test
     public void testHandleMessageWithDefaultSetToTrue() {
-
+Tr.info(tc,"LibertyWebServiceClientInInterceptorTest","~testHandleMessageWithDefaultSetToTrue");
         // Clear props first to ensure correct values are set. 
         webServiceClientDefaultProps.clear();
         
@@ -341,7 +345,7 @@ public class LibertyWebServiceClientInInterceptorTest {
      */
     @Test
     public void testHandleMessageWithServiceNameEnableSchemaValidationSetToFalse() {
-
+Tr.info(tc,"LibertyWebServiceClientInInterceptorTest","~testHandleMessageWithServiceNameEnableSchemaValidationSetToFalse");
         // Clear props first to ensure correct values are set. 
         webServiceClientServiceNameProps.clear();
         
@@ -364,7 +368,7 @@ public class LibertyWebServiceClientInInterceptorTest {
      */
     @Test
     public void testHandleMessageWithServiceNameEnableSchemaValidationSetToTrue() {
-
+Tr.info(tc,"LibertyWebServiceClientInInterceptorTest","~testHandleMessageWithServiceNameEnableSchemaValidationSetToTrue");
         // Clear props first to ensure correct values are set. 
         webServiceClientServiceNameProps.clear();
         
@@ -389,7 +393,7 @@ public class LibertyWebServiceClientInInterceptorTest {
      */
     @Test
     public void testHandleMessageWithServiceNameIgnoreUnexpectedElemntsSetToFalse() {
-
+Tr.info(tc,"LibertyWebServiceClientInInterceptorTest","~testHandleMessageWithServiceNameIgnoreUnexpectedElemntsSetToFalse");
         // Clear props first to ensure correct values are set. 
         webServiceClientServiceNameProps.clear();
         
@@ -414,7 +418,7 @@ public class LibertyWebServiceClientInInterceptorTest {
      */
     @Test
     public void testHandleMessageWithServiceNameIgnoreUnexpectedElemntsSetToTrue() {
-
+Tr.info(tc,"LibertyWebServiceClientInInterceptorTest","~testHandleMessageWithServiceNameIgnoreUnexpectedElemntsSetToTrue");
         // Clear props first to ensure correct values are set. 
         webServiceClientServiceNameProps.clear();
         
@@ -435,7 +439,7 @@ public class LibertyWebServiceClientInInterceptorTest {
     
     @Test
     public void testHandleMessageWithServiceNameBothSetToFalse() {
-
+Tr.info(tc,"LibertyWebServiceClientInInterceptorTest","~testHandleMessageWithServiceNameBothSetToFalse");
         // Clear props first to ensure correct values are set. 
         webServiceClientServiceNameProps.clear();
         
@@ -457,7 +461,7 @@ public class LibertyWebServiceClientInInterceptorTest {
     
     @Test
     public void testHandleMessageWithServiceNameBothSetToTrue() {
-
+Tr.info(tc,"LibertyWebServiceClientInInterceptorTest","~testHandleMessageWithServiceNameBothSetToTrue");
         // Clear props first to ensure correct values are set. 
         webServiceClientServiceNameProps.clear();
         
@@ -492,7 +496,7 @@ public class LibertyWebServiceClientInInterceptorTest {
      */
     @Test
     public void testHandleMessageWithServiceNameSetToFalseGlobalSetToTrue() {
-
+Tr.info(tc,"LibertyWebServiceClientInInterceptorTest","~testHandleMessageWithServiceNameSetToFalseGlobalSetToTrue");
         // Clear props first to ensure correct values are set. 
         webServiceClientDefaultProps.clear();
         webServiceClientServiceNameProps.clear();
@@ -528,7 +532,7 @@ public class LibertyWebServiceClientInInterceptorTest {
      */
     @Test
     public void testHandleMessageWithServiceNameSetToTrueGlobalSetToFalse() {
-
+Tr.info(tc,"LibertyWebServiceClientInInterceptorTest","~testHandleMessageWithServiceNameSetToTrueGlobalSetToFalse");
         // Clear props first to ensure correct values are set. 
         webServiceClientDefaultProps.clear();
         webServiceClientServiceNameProps.clear();
@@ -563,7 +567,7 @@ public class LibertyWebServiceClientInInterceptorTest {
      */
     @Test
     public void testHandleMessageWithServiceNameEnableSchemaValidationSetToFalseGlobalIgnoreUnexpectedElemntsSetToTrue() {
-
+Tr.info(tc,"LibertyWebServiceClientInInterceptorTest","~testHandleMessageWithServiceNameEnableSchemaValidationSetToFalseGlobalIgnoreUnexpectedElemntsSetToTrue");
         // Clear props first to ensure correct values are set. 
         webServiceClientDefaultProps.clear();
         webServiceClientServiceNameProps.clear();
@@ -599,7 +603,7 @@ public class LibertyWebServiceClientInInterceptorTest {
      */
     @Test
     public void testHandleMessageWithServiceNameIgnoreUnexpectedElemntsSetToFalseGlobalEnableSchemaValidationSetToTrue() {
-
+Tr.info(tc,"LibertyWebServiceClientInInterceptorTest","~testHandleMessageWithServiceNameIgnoreUnexpectedElemntsSetToFalseGlobalEnableSchemaValidationSetToTrue");
         // Clear props first to ensure correct values are set. 
         webServiceClientDefaultProps.clear();
         webServiceClientServiceNameProps.clear();

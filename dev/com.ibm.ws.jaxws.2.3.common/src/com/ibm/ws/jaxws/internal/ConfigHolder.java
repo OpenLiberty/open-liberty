@@ -146,6 +146,35 @@ public class ConfigHolder {
             
         }
     }
+    
+    /**
+     * Get the value of enableDefaultValidation from all known property maps using the name (serviceName/portName) provided.
+     *
+     * @param name - either the serviceName or portName depending on which configuration is being used to get the enableDefaultValidation
+     * 
+     * @return value of enableDefaultValidation if set, or null if the configuration doesn't contain the property
+     */
+    public static Object getEnableDefaultValidation(String name) {
+        
+        Map<String, Object> props = getNameProps(name);
+        
+        if (props != null) {
+
+            Object enableDefaultValidation = props.get(WebServiceConfigConstants.ENABLE_DEFAULT_VALIDATION_PROP);
+            
+            if(getDebugEnabled()) {
+                Tr.debug(tc, "getEnableDefaultValidation is returning: " + enableDefaultValidation);
+            }
+            return enableDefaultValidation;
+        } else {
+            
+            if(getDebugEnabled()) {
+                Tr.debug(tc, "getEnableDefaultValidation is returning null because no properties exist for name - " + name);
+            }
+            return null; // No properties exist so return null
+            
+        }
+    }
 
     /**
      * This method uses the prpvided name (serviceName/portName) to find the associated property map

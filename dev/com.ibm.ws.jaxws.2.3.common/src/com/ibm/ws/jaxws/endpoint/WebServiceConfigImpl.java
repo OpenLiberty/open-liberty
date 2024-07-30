@@ -160,6 +160,10 @@ public class WebServiceConfigImpl extends WebServiceConfig {
                 if (!ConfigValidation.validateIgnoreUnexpectedElements((boolean) props.get(key)))
                     continue;
             }
+            if (key.compareTo(WebServiceConfigConstants.ENABLE_DEFAULT_VALIDATION_PROP) == 0) {
+                if (!ConfigValidation.validateEnableDefaultValidation((boolean) props.get(key)))
+                    continue;
+            }
             filteredProps.put(key, props.get(key));
 
         }
