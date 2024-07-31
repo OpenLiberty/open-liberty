@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -216,6 +216,18 @@ public class ConcurrencyTestServlet extends FATServlet {
 
     @Resource(lookup = "java:app/concurrent/lowPriorityThreads")
     ManagedThreadFactory lowPriorityThreads;
+
+    @Resource(name = "java:comp/env/concurrent/virtualExec1Ref",
+              lookup = "concurrent/virtualExec1")
+    ManagedExecutorService virtualExecutor1;
+
+    @Resource(name = "java:module/env/concurrent/virtualExec2Ref",
+              lookup = "concurrent/virtualExec2")
+    ManagedScheduledExecutorService virtualExecutor2;
+
+    @Resource(name = "java:comp/env/concurrent/virtualThreadFactoryRef",
+              lookup = "concurrent/virtualThreadFactory")
+    ManagedThreadFactory virtualThreadFactory;
 
     //Do not use for any other tests
     @EJB
@@ -3105,6 +3117,181 @@ public class ConcurrencyTestServlet extends FATServlet {
             String message = x.getMessage();
             if (message == null || !message.contains("CWWKC1204E") || !message.contains("Timestamp") || !message.contains("ZipCode"))
                 throw x;
+        }
+    }
+
+    /**
+     * Use server-defined ManagedExecutorService and ManagedScheduledExecutorService
+     * resources that are configured to share a concurrency policy that specifies
+     * to run on virtual threads. In Java 21+, it should run on virtual threads.
+     * Prior to Java 21, this must result in an error because virtual threads are
+     * not available.
+     */
+    @Test
+    public void testVirtualThreadedExecutors() throws Exception {
+        String version = System.getProperty("java.version");
+        System.out.println("java.version is \"" + version + "\"");
+        int dot = version.indexOf('.');
+        String major = dot < 0 ? version : version.substring(0, dot);
+        boolean supportsVirtualThreads = Integer.parseInt(major) >= 21;
+
+        if (supportsVirtualThreads) {
+            CountDownLatch twoStarted = new CountDownLatch(2);
+            CountDownLatch blocker = new CountDownLatch(1);
+
+            try {
+                Future<String> future1 = virtualExecutor1.submit(() -> {
+                    twoStarted.countDown();
+                    InitialContext.doLookup("java:comp/env/concurrent/virtualExec1Ref");
+                    assertEquals(true, blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+                    return Thread.currentThread().toString();
+                });
+
+                Future<String> future2 = virtualExecutor2.submit(() -> {
+                    twoStarted.countDown();
+                    InitialContext.doLookup("java:module/env/concurrent/virtualExec2Ref");
+                    assertEquals(true, blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+                    return Thread.currentThread().toString();
+                });
+
+                // max=2 allows 2 to run at once
+                assertEquals(true, twoStarted.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+                // maxQueueSize=3 allows 3 more to queue
+                Future<String> future3 = virtualExecutor1.submit(() -> {
+                    return Thread.currentThread().toString();
+                });
+
+                Future<String> future4 = virtualExecutor2.submit(() -> {
+                    return Thread.currentThread().toString();
+                });
+
+                Future<String> future5 = virtualExecutor1.submit(() -> {
+                    return Thread.currentThread().toString();
+                });
+
+                try {
+                    Future<String> future6 = virtualExecutor2.submit(() -> {
+                        return Thread.currentThread().getName();
+                    });
+                    fail("6th task should not be allowed. " + future6);
+                } catch (RejectedExecutionException x) {
+                    // expected, no more queue positions are available
+                }
+
+                try {
+                    future3.get(100, TimeUnit.MILLISECONDS);
+                    fail("3rd task should not run yet with max=2.");
+                } catch (TimeoutException x) {
+                    // expected, concurrency is limited to max of 2
+                }
+
+                try {
+                    future4.get(4, TimeUnit.MILLISECONDS);
+                    fail("4th task should not run yet with max=2.");
+                } catch (TimeoutException x) {
+                    // expected, concurrency is limited to max of 2
+                }
+
+                try {
+                    future5.get(5, TimeUnit.MILLISECONDS);
+                    fail("5th task should not run yet with max=2.");
+                } catch (TimeoutException x) {
+                    // expected, concurrency is limited to max of 2
+                }
+
+                blocker.countDown();
+
+                String thread1name = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                assertEquals(thread1name, true, thread1name.startsWith("VirtualThread["));
+
+                String thread2name = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                assertEquals(thread2name, true, thread2name.startsWith("VirtualThread["));
+
+                String thread3name = future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                assertEquals(thread3name, true, thread3name.startsWith("VirtualThread["));
+
+                String thread4name = future4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                assertEquals(thread4name, true, thread4name.startsWith("VirtualThread["));
+
+                String thread5name = future5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                assertEquals(thread5name, true, thread5name.startsWith("VirtualThread["));
+            } finally {
+                blocker.countDown();
+            }
+        } else {
+            try {
+                Future<String> future = virtualExecutor1.submit(() -> {
+                    return Thread.currentThread().toString();
+                });
+                fail("ManagedExecutorService must reject virtual=true prior to Java 21. Instead: " + future);
+            } catch (IllegalArgumentException x) {
+                if (x.getMessage().indexOf("virtual") >= 0)
+                    ; // expected that virtual=true is not allowed prior to Java 21
+                else
+                    throw x;
+            }
+
+            try {
+                Future<String> future = virtualExecutor2.submit(() -> {
+                    return Thread.currentThread().toString();
+                });
+                fail("ManagedScheduledExecutorService must reject virtual=true prior to Java 21. Instead: " + future);
+            } catch (IllegalArgumentException x) {
+                if (x.getMessage().indexOf("virtual") >= 0)
+                    ; // expected that virtual=true is not allowed prior to Java 21
+                else
+                    throw x;
+            }
+        }
+    }
+
+    /**
+     * Use a server-defined ManagedThreadFactory resource that is configured to
+     * create virtual threads. In Java 21+, it should create virtual threads.
+     * Prior to Java 21, this must result in an error because virtual threads are
+     * not available.
+     */
+    @Test
+    public void testVirtualThreadFactory() throws Exception {
+        String version = System.getProperty("java.version");
+        System.out.println("java.version is \"" + version + "\"");
+        int dot = version.indexOf('.');
+        String major = dot < 0 ? version : version.substring(0, dot);
+        boolean supportsVirtualThreads = Integer.parseInt(major) >= 21;
+
+        if (supportsVirtualThreads) {
+            CompletableFuture<String> thread1result = new CompletableFuture<>();
+            Thread thread1 = virtualThreadFactory.newThread(() -> {
+                try {
+                    InitialContext.doLookup("java:comp/env/concurrent/virtualExec1Ref");
+                    thread1result.complete(Thread.currentThread().toString());
+                } catch (Throwable x) {
+                    thread1result.completeExceptionally(x);
+                }
+            });
+
+            thread1.start();
+
+            String s1;
+            s1 = thread1.toString();
+            assertEquals(s1, true, s1.startsWith("VirtualThread["));
+
+            s1 = thread1result.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(s1, true, s1.startsWith("VirtualThread["));
+        } else {
+            Thread thread1;
+            try {
+                thread1 = virtualThreadFactory.newThread(() -> {
+                    System.out.println("Running on thread " + Thread.currentThread());
+                });
+                fail("ManagedThreadFactory must reject virtual=true prior to Java 21. Instead: " + thread1);
+            } catch (UnsupportedOperationException x) {
+                if (x.getMessage().indexOf("virtual") >= 0)
+                    ; // expected that virtual=true is not allowed prior to Java 21
+                else
+                    throw x;
+            }
         }
     }
 

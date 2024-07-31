@@ -157,7 +157,10 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     protected VirtualThreadOps virtualThreadOps;
 
     /**
-     * Factory that creates virtual threads. Null if not configured to create virtual threads.
+     * Factory that creates virtual threads if greater than Java 21
+     * or raises an error if configured to create virtual threads
+     * on less than Java 21.
+     * Null if not configured to create virtual threads.
      */
     private ThreadFactory virtualThreadFactory;
 
@@ -203,14 +206,17 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
         threadGroup = AccessController.doPrivileged(new CreateThreadGroupAction(name + " Thread Group", maxPriority),
                                                     threadGroupTracker.serverAccessControlContext);
 
-        //Ignore virtual configuration unless Java 21+
-        boolean virtual = JavaInfo.majorVersion() >= 21 ? Boolean.TRUE.equals(properties.get(VIRTUAL)) : false;
+        boolean virtual = Boolean.TRUE.equals(properties.get(VIRTUAL));
 
         // TODO check the SPI to override virtual=true for CICS
 
-        virtualThreadFactory = virtual //
-                        ? virtualThreadOps.createFactoryOfVirtualThreads(properties.get(CONFIG_ID) + ":", 1L, false, null) //
-                        : null;
+        if (virtual)
+            if (JavaInfo.majorVersion() >= 21)
+                virtualThreadFactory = virtualThreadOps.createFactoryOfVirtualThreads(properties.get(CONFIG_ID) + ":", 1L, false, null);
+            else
+                virtualThreadFactory = new VirtualThreadsUnsupported();
+        else
+            virtualThreadFactory = null;
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "activate");
@@ -542,6 +548,20 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
             // Return false if our identity is null (even if the current component's metadata or metadata identity is also null).
             ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
             return identifier != null && metadataIdentifierService != null && identifier.equals(metadataIdentifierService.getMetaDataIdentifier(cData));
+        }
+    }
+
+    /**
+     * Raises an error if the application requests a virtual threads.
+     */
+    @Trivial
+    private class VirtualThreadsUnsupported implements ThreadFactory {
+
+        @Override
+        public Thread newThread(Runnable r) {
+            throw new UnsupportedOperationException("The " + name + " ManagedThreadFactory is configured with" +
+                                                    " virtual=true, but virtual threads are not available prior" +
+                                                    " to Java 21."); // TODO NLS
         }
     }
 }
