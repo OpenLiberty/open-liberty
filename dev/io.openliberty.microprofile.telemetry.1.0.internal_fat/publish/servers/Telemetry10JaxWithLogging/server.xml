@@ -16,4 +16,6 @@
 
     <logging traceSpecification="TELEMETRY=all"/>
 
+    <javaPermission className="java.util.PropertyPermission" name="jaxws.http.autoredirect" actions="read"/>
+
 </server>

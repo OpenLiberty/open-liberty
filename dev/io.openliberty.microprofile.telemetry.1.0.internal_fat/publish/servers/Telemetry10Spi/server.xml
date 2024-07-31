@@ -28,4 +28,5 @@
 		<classloader apiTypeVisibility="+third-party" />
 	</application>
 
+	<javaPermission className="java.util.PropertyPermission" name="jaxws.http.autoredirect" actions="read"/>
 </server>
