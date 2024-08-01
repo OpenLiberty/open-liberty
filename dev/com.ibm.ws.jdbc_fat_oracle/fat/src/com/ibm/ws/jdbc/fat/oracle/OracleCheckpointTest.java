@@ -9,11 +9,13 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.oracle;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.testcontainers.oracle.OracleContainer;
 
@@ -22,6 +24,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -37,10 +40,16 @@ public class OracleCheckpointTest {
     @TestServlet(servlet = OracleTestServlet.class, path = JEE_APP + "/" + SERVLET_NAME)
     public static LibertyServer server;
 
-    public static final OracleContainer oracle = FATSuite.createOracleContainer();
+    @ClassRule
+    public static final OracleContainer oracle = new OracleContainer(FATSuite.ORACLE_IMAGE_NAME)
+                    .usingSid()
+                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25))
+                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Oracle"));
 
     @BeforeClass
     public static void setUp() throws Exception {
+        FATSuite.initDatabaseTables(oracle);
+
         // Set server environment variables
         Map<String, String> envVars = new HashMap<>();
         envVars.put("ORACLE_URL", oracle.getJdbcUrl());

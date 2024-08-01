@@ -42,39 +42,30 @@ import oracle.jdbc.pool.OracleDataSource;
 })
 public class FATSuite extends TestContainerSuite {
 
-    private static final DockerImageName ORACLE_IMAGE_NAME = DockerImageName.parse("gvenzl/oracle-free:23.3-slim-faststart");
-    public static OracleContainer oracle = createOracleContainer0();
+    public static final DockerImageName ORACLE_IMAGE_NAME = DockerImageName.parse("gvenzl/oracle-free:23.3-slim-faststart");
+
+    private static OracleContainer sharedContainer = new OracleContainer(ORACLE_IMAGE_NAME)
+                    .usingSid()
+                    .withPassword("VeRyUniqu3P@ssw0rd")
+                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25))
+                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Oracle"));
 
     public static OracleContainer getSharedOracleContainer() {
-        if (!oracle.isRunning()) {
-            oracle.start();
+        if (!sharedContainer.isRunning()) {
+            sharedContainer.start();
         }
-        initDatabaseTables(oracle);
-        return oracle;
-    }
-
-    public static OracleContainer createOracleContainer() {
-        OracleContainer result = createOracleContainer0();
-        result.start();
-        initDatabaseTables(result);
-        return result;
-    }
-
-    private static OracleContainer createOracleContainer0() {
-        return new OracleContainer(ORACLE_IMAGE_NAME)
-                        .usingSid()
-                        .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25))
-                        .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Oracle"));
+        initDatabaseTables(sharedContainer);
+        return sharedContainer;
     }
 
     @AfterClass
     public static void cleanupContainer() {
-        if (oracle.isRunning()) {
-            oracle.stop();
+        if (sharedContainer.isRunning()) {
+            sharedContainer.stop();
         }
     }
 
-    private static void initDatabaseTables(OracleContainer container) {
+    static void initDatabaseTables(OracleContainer container) {
         Properties connProps = new Properties();
         // This property prevents "ORA-01882: timezone region not found" errors due to
         // the Oracle DB not understanding
