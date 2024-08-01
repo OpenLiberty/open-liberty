@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,21 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/**
- * @version 1.0.16
- */
-@org.osgi.annotation.versioning.Version("1.0.16")
-@TraceOptions(traceGroup = com.ibm.wsspi.persistence.internal.PersistenceServiceConstants.TRACE_GROUP,
-              messageBundle = com.ibm.wsspi.persistence.internal.PersistenceServiceConstants.MESSAGE_BUNDLE)
-package com.ibm.wsspi.persistence;
+package test.jakarta.data.datastore.web;
 
-import com.ibm.websphere.ras.annotation.TraceOptions;
+import java.sql.Connection;
 
+import jakarta.data.repository.DataRepository;
+import jakarta.data.repository.Insert;
+import jakarta.data.repository.Repository;
+
+@Repository(dataStore = "java:comp/DefaultDataSource")
+public interface DefaultDSRepo2 extends DataRepository<DefaultDSEntity2, Long> {
+
+    Connection connect();
+
+    @Insert
+    void insert(DefaultDSEntity2 e);
+
+    boolean existsByIdAndValue(long id, String value);
+}

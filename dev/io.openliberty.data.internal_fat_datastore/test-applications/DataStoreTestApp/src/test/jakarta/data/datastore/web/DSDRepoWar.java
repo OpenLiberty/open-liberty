@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.datastore.lib;
+package test.jakarta.data.datastore.web;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -23,13 +23,13 @@ import jakarta.data.repository.Save;
 
 /**
  * A repository that uses a DataSourceDefinition that is defined in
- * a servlet, but may be accessed from servlets in multiple WAR modules.
+ * the current WAR module in the java:app namespace.
  */
 @Repository(dataStore = "java:app/jdbc/DataSourceDef")
-public interface DSDRepo {
+public interface DSDRepoWar {
 
     @Find
-    Optional<DSDEntity> get(@By("id") int id);
+    Optional<DSDEntityWar> get(@By("id") int id);
 
     Connection getConnection();
 
@@ -38,5 +38,5 @@ public interface DSDRepo {
     }
 
     @Save
-    void put(DSDEntity e);
+    void put(DSDEntityWar e);
 }

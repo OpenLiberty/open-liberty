@@ -55,7 +55,13 @@ public class DataStoreTestServlet extends FATServlet {
     DefaultDSRepo defaultDSRepo;
 
     @Inject
+    DefaultDSRepo2 defaultDSRepo2;
+
+    @Inject
     DSDRepo dsdRepo;
+
+    @Inject
+    DSDRepoWar dsdRepoWar;
 
     @Inject
     DSAccessorMethodQualifiedRepo dsAccessorQualifiedRepo;
@@ -96,9 +102,22 @@ public class DataStoreTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository defined in a WAR module of the application that uses
+     * a java:app scoped DataSourceDefinition defined in the same WAR module.
+     */
+    @Test
+    public void testDataSourceDefinitionWar() throws SQLException {
+        dsdRepoWar.put(DSDEntityWar.of(16, "sixteen"));
+
+        assertEquals("servletuser1", dsdRepoWar.getUser());
+    }
+
+    /**
      * Use a repository that specifies the Jakarta EE default data source by its JNDI name: java:comp/DefaultDataSource.
      * Verifies that the Table(name=...) JPA annotation can be used to specify the table name, and that no prefix is added
      * because a databaseStore is not explicitly used.
+     * Also verifies that multiple repositories are supported using the same JNDI name, mostly to
+     * ensure that ddlgen includes the create table commands for both in the same ddl file.
      */
     @Test
     public void testDefaultDataSourceByJNDIName() throws SQLException {
@@ -113,6 +132,25 @@ public class DataStoreTestServlet extends FATServlet {
                          con.getMetaData().getUserName().toLowerCase());
 
             String sql = "SELECT value FROM DefDSEntity WHERE id = 25";
+            ResultSet result = con
+                            .createStatement()
+                            .executeQuery(sql);
+            assertEquals(true, result.next());
+            assertEquals("twenty-five", result.getString(1));
+        }
+
+        // Verify a second repository in the same datastore works as well
+        assertEquals(false, defaultDSRepo2.existsByIdAndValue(25L, "twenty-five"));
+
+        defaultDSRepo2.insert(DefaultDSEntity2.of(25L, "twenty-five"));
+
+        assertEquals(true, defaultDSRepo2.existsByIdAndValue(25L, "twenty-five"));
+
+        try (Connection con = defaultDSRepo2.connect()) {
+            assertEquals("defaultuser1",
+                         con.getMetaData().getUserName().toLowerCase());
+
+            String sql = "SELECT value FROM DefDSEntity2 WHERE id = 25";
             ResultSet result = con
                             .createStatement()
                             .executeQuery(sql);
@@ -348,5 +386,16 @@ public class DataStoreTestServlet extends FATServlet {
     @Test
     public void testServerDataSourceByResRefInEJBModule() throws SQLException {
         testEJB.testServerDataSourceByResRefInEJBModule();
+    }
+
+    /**
+     * Use a repository, defined in an EJB, that specifies the JNDI name of a
+     * DataSourceDefinition, defined by a servlet in a WAR module, which has
+     * user id servletuser1. Use a resource accessor method to obtain a connection
+     * to the data source and verify the user name matches.
+     */
+    @Test
+    public void testDataSourceDefinitionInWARModuleFromEJB() throws SQLException {
+        testEJB.testDataSourceDefinitionInWARModuleFromEJB();
     }
 }
