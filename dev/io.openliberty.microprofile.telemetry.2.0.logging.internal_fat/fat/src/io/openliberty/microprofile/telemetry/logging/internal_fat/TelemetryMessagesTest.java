@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -46,9 +47,17 @@ public class TelemetryMessagesTest extends FATServletClient {
      */
     @Test
     public void testTelemetryMessages() throws Exception {
-        String line = server.waitForStringInLog("CWWKF0011I", server.getConsoleLogFile());
-        List<String> linesMessagesLog = server.findStringsInFileInLibertyServerRoot("^(?!.*scopeInfo).*\\[.*$", MESSAGE_LOG);
-        List<String> linesConsoleLog = server.findStringsInFileInLibertyServerRoot(".*scopeInfo.*", CONSOLE_LOG);
+        testTelemetryMessages(server, null);
+    }
+
+    static void testTelemetryMessages(LibertyServer s, Consumer<List<String>> consoleConsumer) throws Exception {
+        String line = s.waitForStringInLog("CWWKF0011I", s.getConsoleLogFile());
+        List<String> linesMessagesLog = s.findStringsInFileInLibertyServerRoot("^(?!.*scopeInfo).*\\[.*$", MESSAGE_LOG);
+        List<String> linesConsoleLog = s.findStringsInFileInLibertyServerRoot(".*scopeInfo.*", CONSOLE_LOG);
+
+        if (consoleConsumer != null) {
+            consoleConsumer.accept(linesConsoleLog);
+        }
 
         assertEquals("Messages.log and Telemetry console logs don't match.", linesMessagesLog.size(), linesConsoleLog.size());
 

@@ -12,25 +12,18 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal.fat.ffdc.servlet;
 
-import java.io.IOException;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/FFDCServlet")
-public class FFDCServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/FFDCInInitServlet", loadOnStartup = 1)
+public class FFDCInInitServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.getWriter().println("Test Servlet to generate FFDC");
-
-        String generateFFDC = request.getParameter("generateFFDC");
-
-        if ((generateFFDC != null) && (generateFFDC.equalsIgnoreCase("true"))) {
-            throw new ArithmeticException("FFDC_TEST_DOGET");
+    public void init() throws ServletException {
+        boolean ffdcEarly = Boolean.getBoolean("io.openliberty.microprofile.telemetry.ffdc.early");
+        if (ffdcEarly) {
+            throw new RuntimeException("FFDC_TEST_INIT");
         }
     }
 }

@@ -9,12 +9,8 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal_fat;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static io.openliberty.microprofile.telemetry.logging.internal_fat.TelemetryMessagesTest.testTelemetryMessages;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -37,9 +33,6 @@ public class TelemetryMessagesCheckpointTest extends FATServletClient {
 
     public static LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
 
-    private static final String MESSAGE_LOG = "logs/messages.log";
-    private static final String CONSOLE_LOG = "logs/console.log";
-
     @BeforeClass
     public static void initialSetup() throws Exception {
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START);
@@ -50,25 +43,12 @@ public class TelemetryMessagesCheckpointTest extends FATServletClient {
      * Ensures Liberty messages are correctly bridged and all attributes are present.
      */
     @Test
-    public void testTelemetryMessages() throws Exception {
-        String line = server.waitForStringInLog("CWWKF0011I", server.getConsoleLogFile());
-        List<String> linesMessagesLog = server.findStringsInFileInLibertyServerRoot("^(?!.*scopeInfo).*\\[.*$", MESSAGE_LOG);
-        List<String> linesConsoleLog = server.findStringsInFileInLibertyServerRoot(".*scopeInfo.*", CONSOLE_LOG);
-
-        // for checkpoint we expect to NOT see the message:
-        // CWWKC0451I: A server checkpoint "beforeAppStart" was requested.
-        assertNull("Should not container early message from checkpoint", linesConsoleLog.stream().filter((l) -> l.contains("CWWKC0451I")).findFirst().orElse(null));
-
-        assertEquals("Messages.log and Telemetry console logs don't match.", linesMessagesLog.size(), linesConsoleLog.size());
-
-        assertNotNull("CWWKF0011I log could not be found.", line);
-        assertTrue("MPTelemetry did not log the correct message", line.contains("The TelemetryMessageNoApp server is ready to run a smarter planet."));
-        assertTrue("MPTelemetry did not log server messageID field", line.contains("io.openliberty.message_id=\"CWWKF0011I\""));
-        assertTrue("MPTelemetry did not log server module field", line.contains("io.openliberty.module=\"com.ibm.ws.kernel.feature.internal.FeatureManager\""));
-        assertTrue("MPTelemetry did not log server sequence field", line.contains("io.openliberty.sequence=\""));
-        assertTrue("MPTelemetry did not log server type field", line.contains("io.openliberty.type=\"liberty_message\""));
-        assertTrue("MPTelemetry did not log server threadID field", line.contains("thread.id"));
-        assertTrue("MPTelemetry did not log server thread name field", line.contains("thread.name"));
+    public void testTelemetryMessagesCheckpoint() throws Exception {
+        testTelemetryMessages(server, (linesConsoleLog) -> {
+            // for checkpoint we expect to NOT see the message:
+            // CWWKC0451I: A server checkpoint "beforeAppStart" was requested.
+            assertNull("Should not contain early messages from checkpoint", linesConsoleLog.stream().filter((l) -> l.contains("CWWKC0451I")).findFirst().orElse(null));
+        });
     }
 
     @AfterClass
