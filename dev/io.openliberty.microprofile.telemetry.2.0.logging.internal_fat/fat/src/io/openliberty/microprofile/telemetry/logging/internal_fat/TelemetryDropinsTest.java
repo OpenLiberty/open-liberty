@@ -13,6 +13,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -68,24 +70,18 @@ public class TelemetryDropinsTest extends FATServletClient {
                         .addProperty("otel.logs.exporter", "logging")
                         .addProperty("otel.sdk.disabled", "false");
 
-        WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME, "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp")
-                        .addAsResource(app1Config, "META-INF/microprofile-config.properties");
+        WebArchive app = ShrinkWrap
+                        .create(WebArchive.class, "MpTelemetryLogApp.war")
+                        .addPackage(
+                                    "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp")
+                        .addAsManifestResource(new File("publish/resources/META-INF/microprofile-config.properties"),
+                                               "microprofile-config.properties");
 
         ShrinkHelper.exportDropinAppToServer(server, app);
 
-        String runtimeLine = server.waitForStringInLog("Returning io.openliberty.microprofile.telemetry.runtime OTEL instance.", 5000, server.getConsoleLogFile());
+        String runtimeLine = server.waitForStringInLog("Runtime OTEL instance is being configured", 10000, server.getConsoleLogFile());
         TestUtils.runApp(server, "logServlet");
-        String appLine = server.waitForStringInLog("finest trace", server.getConsoleLogFile());
-
-        Map<String, String> runtimeAttributeMap = new HashMap<String, String>() {
-            {
-                put("io.openliberty.type", "liberty_trace");
-                put("io.openliberty.module", "io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemtryLifecycleManagerImpl");
-                put("thread.id", "");
-                put("thread.name", "");
-                put("io.openliberty.sequence", "");
-            }
-        };
+        String appLine = server.waitForStringInLog("finest trace", 10000, server.getConsoleLogFile());
 
         Map<String, String> appAttributeMap = new HashMap<String, String>() {
             {
@@ -155,6 +151,9 @@ public class TelemetryDropinsTest extends FATServletClient {
         checkJsonMessage(appLine, appAttributeMap);
     }
 
+    /*
+     * Compares telemetry logs to the provided map to verify the bridged attributes and values match.
+     */
     private void checkJsonMessage(String line, Map<String, String> attributeMap) {
         final String method = "checkJsonMessage";
 

@@ -129,6 +129,9 @@ public class TelemetryApplicationConfigTest extends FATServletClient {
         checkJsonMessage(line, myMap);
     }
 
+    /*
+     * Compares telemetry logs to the provided map to verify the bridged attributes and values match.
+     */
     private void checkJsonMessage(String line, Map<String, String> attributeMap) {
         final String method = "checkJsonMessage";
 

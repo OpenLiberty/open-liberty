@@ -46,7 +46,7 @@ public class TelemetryTraceTest extends FATServletClient {
 
     private static Class<?> c = TelemetryTraceTest.class;
 
-    public static final String SERVER_NAME = "TelemetryTraceNoApp";
+    public static final String SERVER_NAME = "TelemetryTrace";
     public static final String APP_NAME = "MpTelemetryLogApp";
 
     public static LibertyServer server;
@@ -146,6 +146,9 @@ public class TelemetryTraceTest extends FATServletClient {
         checkJsonMessage(line, appAttributeMap);
     }
 
+    /*
+     * Compares telemetry logs to the provided map to verify the bridged attributes and values match.
+     */
     static void checkJsonMessage(String line, Map<String, String> attributeMap) {
         final String method = "checkJsonMessage";
 

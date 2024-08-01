@@ -10,7 +10,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="Telemetry Server to test Message logs">
+<server description="Telemetry Server to test all telemetry source attributes">
 	<featureManager>
 		<feature>mpTelemetry-2.0</feature>
 		<feature>componentTest-2.0</feature>
@@ -20,5 +20,4 @@
 	<include location="../fatTestPorts.xml"/>
 	<mpTelemetry source="message, trace, ffdc"/>
 	<application location="MpTelemetryLogApp.war"/>
-
 </server>

@@ -12,7 +12,6 @@
  -->
 <server description="Telemetry Server to test FFDC logs">
 	<include location="../fatTestPorts.xml"/>
-    
 	<featureManager>
 		<feature>pages-3.1</feature>
 		<feature>mpTelemetry-2.0</feature>
