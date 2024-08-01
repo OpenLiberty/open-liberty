@@ -16,10 +16,10 @@ import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.Repository;
 
 /**
- * Repository for a record entity that
- * TODO will have a composite primary key that is a record.
+ * Repository for a record entity that has a composite primary key that
+ * TODO will be a record.
  */
 @Repository(dataStore = "TestDataStore")
-public interface Parts extends BasicRepository<Part, Integer> {
+public interface Parts extends BasicRepository<Part, Part.Identifier> {
 
 }

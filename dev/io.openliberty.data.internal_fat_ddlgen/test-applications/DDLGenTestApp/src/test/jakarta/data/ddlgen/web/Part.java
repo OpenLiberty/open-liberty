@@ -12,9 +12,52 @@
  *******************************************************************************/
 package test.jakarta.data.ddlgen.web;
 
+import java.util.Objects;
+
 /**
  * A record entity with a composite id.
- * TODO use a composite id that is a record
  */
-public record Part(int id, String name, float price) {
+public record Part(Identifier id, String name, float price) {
+    /**
+     * Composite id for the Part entity.
+     * TODO switch to a record once #29117 is fixed
+     */
+    public static class Identifier {
+        public String partNum;
+        public String vendor;
+
+        public Identifier() {
+        }
+
+        public Identifier(String partNum, String vendor) {
+            this.partNum = partNum;
+            this.vendor = vendor;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            Identifier o;
+            return other instanceof Identifier &&
+                   Objects.equals((o = (Identifier) other).partNum, partNum) &&
+                   Objects.equals(o.vendor, vendor);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(partNum, vendor);
+        }
+
+        public String partNum() {
+            return partNum;
+        }
+
+        @Override
+        public String toString() {
+            return vendor + ":" + partNum;
+        }
+
+        public String vendor() {
+            return vendor;
+        }
+    }
 }

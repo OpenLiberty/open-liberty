@@ -35,7 +35,7 @@ import test.jakarta.data.ddlgen.web.DDLGenTestServlet;
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
 public class DDLGenTest extends FATServletClient {
-    // TODO uncomment testcontainers when it isn't down
+    // TODO enable testcontainers code once ddlgen is used
     //@ClassRule
     //public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 

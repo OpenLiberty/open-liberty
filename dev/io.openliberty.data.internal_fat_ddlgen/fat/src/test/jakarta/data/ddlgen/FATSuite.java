@@ -24,6 +24,6 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 AlwaysPassesTest.class,
                 DDLGenTest.class
 })
-// TODO uncomment testcontainers when it isn't down
+// TODO uncomment once ddlgen is used
 public class FATSuite { //extends TestContainerSuite {
 }
