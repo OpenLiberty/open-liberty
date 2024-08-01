@@ -71,7 +71,7 @@ public class TelemetryFFDCTest extends FATServletClient {
         assertTrue("FFDC Log level was not logged by MPTelemetry", logLevelLine.contains("WARN "));
         assertNotNull("FFDC Exception.message was not logged by MPTelemetry", exceptionMessageLine);
         assertNotNull("FFDC Exception.stacktrace was not logged by MPTelemetry", exceptionTraceLine);
-        assertTrue("FFDC Exception.stacktrace did not contain error message", exceptionTraceLine.contains("java.lang.String.toString()"));
+        assertTrue("FFDC Exception.stacktrace did not contain error message", exceptionTraceLine.contains("Cannot invoke"));
         assertNotNull("FFDC Exception.type was not logged by MPTelemetry", exceptionTypeLine);
     }
 

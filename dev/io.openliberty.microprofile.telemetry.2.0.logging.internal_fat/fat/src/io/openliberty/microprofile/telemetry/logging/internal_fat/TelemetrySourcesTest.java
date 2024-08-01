@@ -220,6 +220,9 @@ public class TelemetrySourcesTest extends FATServletClient {
         assertNotNull("Unknown log source warning was not found.", messageLine);
     }
 
+    /*
+     * Compares telemetry logs to the provided map to verify the bridged attributes and values match.
+     */
     private void checkJsonMessage(String line, Map<String, String> attributeMap) {
         final String method = "checkJsonMessage";
 

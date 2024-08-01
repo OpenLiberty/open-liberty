@@ -22,8 +22,8 @@
 	
 	<application location="MpTelemetryLogApp.war">
 		<appProperties>
-            <property name="otel.logs.exporter" value="logging" />
-            <property name="otel.sdk.disabled" value="false" />
-        </appProperties>	
+			<property name="otel.logs.exporter" value="logging" />
+			<property name="otel.sdk.disabled" value="false" />
+		</appProperties>	
 	</application>
 </server>
