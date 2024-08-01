@@ -3287,6 +3287,7 @@ public class DataJPATestServlet extends FATServlet {
      * Use the JPQL version(entityVar) function as the sort property to perform
      * an ascending sort.
      */
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testSortByVersionFunction() {
         orders.deleteAll();
