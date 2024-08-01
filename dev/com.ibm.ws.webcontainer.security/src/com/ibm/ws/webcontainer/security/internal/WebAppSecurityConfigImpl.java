@@ -201,9 +201,11 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
 
         String partValue = (String) newProperties.get(CFG_KEY_PARTITIONED_COOKIE);
         if ("true".equalsIgnoreCase(partValue)||"false".equalsIgnoreCase(partValue)) {
-            //we want partitionedCookie to be null unless the value is true or false
+            // we want partitionedCookie to be null unless the value is true or false
+            // defer is the default value which mean that the channel config determines the partitioned value
+            // if the value is true / false then this config was explicltly set by the user
             partitionedCookie = getBooleanValue(CFG_KEY_PARTITIONED_COOKIE, partValue);
-        } else {
+        } else { // defer scenario - partitioned should not set on any cookies by the security code
             partitionedCookie = null;
         }
 
