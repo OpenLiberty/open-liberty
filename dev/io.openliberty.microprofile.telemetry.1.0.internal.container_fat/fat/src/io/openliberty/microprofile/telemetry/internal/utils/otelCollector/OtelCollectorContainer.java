@@ -36,6 +36,8 @@ import org.testcontainers.utility.ImageNameSubstitutor;
 public class OtelCollectorContainer extends GenericContainer<OtelCollectorContainer> {
 
     public static final int OTLP_GRPC_PORT = 4317;
+    public static final int METRIC_PORT = 8888;
+    public static final int PROMETHEUS_METRIC_PORT = 3131;
 
     public OtelCollectorContainer(File configFile) {
         this(TestConstants.DOCKER_IMAGE_OPENTELEMETRY_COLLECTOR, configFile);
@@ -53,7 +55,7 @@ public class OtelCollectorContainer extends GenericContainer<OtelCollectorContai
                                                                                     .copy("/etc/otel-collector-config.yaml", "/etc/otel-collector-config.yaml")
                                                                                     .build())
                                        .withFileFromFile("/etc/otel-collector-config.yaml", configFile, 0644));
-        withExposedPorts(OTLP_GRPC_PORT);
+        withExposedPorts(OTLP_GRPC_PORT,METRIC_PORT, PROMETHEUS_METRIC_PORT);
         withCommand("--config=/etc/otel-collector-config.yaml");
     }
 
@@ -69,7 +71,7 @@ public class OtelCollectorContainer extends GenericContainer<OtelCollectorContai
                                        .withFileFromFile("/etc/otel-collector-config.yaml", configFile, 0644)
                                        .withFileFromFile("/etc/certificate.crt", tlsCert, 0644)
                                        .withFileFromFile("/etc/private.key", tlsKey, 0644));
-        withExposedPorts(OTLP_GRPC_PORT);
+        withExposedPorts(OTLP_GRPC_PORT,METRIC_PORT, PROMETHEUS_METRIC_PORT);
         withCommand("--config=/etc/otel-collector-config.yaml");
     }
 
@@ -82,6 +84,28 @@ public class OtelCollectorContainer extends GenericContainer<OtelCollectorContai
      */
     public int getOtlpGrpcPort() {
         return getMappedPort(OTLP_GRPC_PORT);
+    }
+
+        /**
+     * Get the port to use to send OTLP spans via gRPC
+     * <p>
+     * Only valid when the container is started
+     *
+     * @return the OTLP gRPC port
+     */
+    public int getMetricPort() {
+        return getMappedPort(METRIC_PORT);
+    }
+
+            /**
+     * Get the port to use to send OTLP spans via gRPC
+     * <p>
+     * Only valid when the container is started
+     *
+     * @return the OTLP gRPC port
+     */
+    public int getPrometheusMetricPort() {
+        return getMappedPort(PROMETHEUS_METRIC_PORT);
     }
 
     /**
@@ -104,5 +128,16 @@ public class OtelCollectorContainer extends GenericContainer<OtelCollectorContai
      */
     public String getSecureOtlpGrpcUrl() {
         return "https://" + getHost() + ":" + getOtlpGrpcPort();
+    }
+
+    /**
+     * Get the URL to use to send OTLP spans via gRPC
+     * <p>
+     * Only valid when the container is started
+     *
+     * @return the OTLP gRPC URL
+     */
+    public String getApiBaseUrl() {
+        return "http://" + getHost() + ":" + getPrometheusMetricPort();
     }
 }
