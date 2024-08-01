@@ -9,8 +9,8 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal_fat;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -37,25 +38,24 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
-/**
- * HTTP request tracing tests
- */
 @RunWith(FATRunner.class)
-public class TelemetryTraceTest extends FATServletClient {
+public class TelemetryApplicationConfigTest extends FATServletClient {
 
-    private static Class<?> c = TelemetryTraceTest.class;
+    private static Class<?> c = TelemetryApplicationConfigTest.class;
 
-    public static final String SERVER_NAME = "TelemetryTraceNoApp";
     public static final String APP_NAME = "MpTelemetryLogApp";
+    public static final String SERVER_NAME = "TelemetryAppConfig";
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    public static final String SERVER_XML_ALL_SOURCES = "allSources.xml";
+    public static final String SERVER_XML_NO_TELEMETRY_ATTRIBUTE = "noTelemetryAttribute.xml";
 
     @Before
     public void testSetup() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp");
         server.startServer();
-
     }
 
     @After
@@ -65,30 +65,20 @@ public class TelemetryTraceTest extends FATServletClient {
         }
     }
 
-    /**
-     * Ensures trace logs are bridged and all attributes are present. Also ensures that both runtime
-     * and app trace logs are routed when the runtime OTel SDK instance is used.
+    /*
+     * Ensure that application logs are configured correctly with an application SDK
      */
     @Test
-    public void testTelemetryTrace() throws Exception {
-        String runtimeLine = server.waitForStringInLog("Returning io.openliberty.microprofile.telemetry.runtime OTEL instance.", server.getConsoleLogFile());
+    public void testTelemetryApplicationMessages() throws Exception {
         TestUtils.runApp(server, "logServlet");
-        String appLine = server.waitForStringInLog("finest trace", server.getConsoleLogFile());
 
-        Map<String, String> runtimeAttributeMap = new HashMap<String, String>() {
-            {
-                put("io.openliberty.type", "liberty_trace");
-                put("io.openliberty.module", "io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfoFactoryImpl");
-                put("thread.id", "");
-                put("thread.name", "");
-                put("io.openliberty.sequence", "");
-            }
-        };
+        String runtimeLine = server.waitForStringInLog("CWWKF0011I", 5000, server.getConsoleLogFile());
+        String appLine = server.waitForStringInLog("info message", server.getConsoleLogFile());
 
-        Map<String, String> appAttributeMap = new HashMap<String, String>() {
+        Map<String, String> myMap = new HashMap<String, String>() {
             {
                 put("io.openliberty.ext.app_name", "MpTelemetryLogApp");
-                put("io.openliberty.type", "liberty_trace");
+                put("io.openliberty.type", "liberty_message");
                 put("io.openliberty.module", "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp.MpTelemetryServlet");
                 put("thread.id", "");
                 put("thread.name", "");
@@ -96,29 +86,36 @@ public class TelemetryTraceTest extends FATServletClient {
             }
         };
 
-        assertNotNull("Returning otel instance log could not be found.", runtimeLine);
-        assertTrue("MPTelemetry did not log the correct log level", runtimeLine.contains("TRACE"));
-        assertTrue("MPTelemetry did not log the correct message", runtimeLine.contains("Returning io.openliberty.microprofile.telemetry.runtime OTEL instance."));
-        checkJsonMessage(runtimeLine, runtimeAttributeMap);
+        assertNotNull("info message log could not be found.", appLine);
+        assertTrue("MPTelemetry did not log the correct message", appLine.contains("info message"));
+        assertTrue("MPTelemetry did not log the correct log level", appLine.contains("INFO"));
+        checkJsonMessage(appLine, myMap);
 
-        assertNotNull("App Trace message could not be found.", appLine);
-        assertTrue("MPTelemetry did not log the correct message", appLine.contains("finest trace"));
-        assertTrue("MPTelemetry did not log the correct log level", appLine.contains("TRACE"));
-        checkJsonMessage(appLine, appAttributeMap);
+        assertNull("MPTelemetry incorrectly bridged runtime logs.", runtimeLine);
     }
 
-    /**
-     * Checks for populated span and trace ID for application logs
+    /*
+     * Ensure that the LogRecordContext extensions configured by an application are correctly mapped.
      */
     @Test
-    public void testTelemetryTraceID() throws Exception {
-        TestUtils.runApp(server, "logServlet");
-        String line = server.waitForStringInLog("finest trace", server.getConsoleLogFile());
+    public void testTelemetryLogRecordContext() throws Exception {
+        TestUtils.runApp(server, "extension");
 
-        Map<String, String> appAttributeMap = new HashMap<String, String>() {
+        String line = server.waitForStringInLog("Test Extension Message", server.getConsoleLogFile());
+
+        Map<String, String> myMap = new HashMap<String, String>() {
             {
                 put("io.openliberty.ext.app_name", "MpTelemetryLogApp");
-                put("io.openliberty.type", "liberty_trace");
+                put("io.openliberty.ext.correctbooleanextension", "true");
+                put("io.openliberty.ext.correctbooleanextension2", "false");
+                put("io.openliberty.ext.correctfloatextension", "100.12300109863281");
+                put("io.openliberty.ext.correctfloatextension2", "-100.12300109863281");
+                put("io.openliberty.ext.correctintextension", "12345");
+                put("io.openliberty.ext.correctintextension2", "-12345");
+                put("io.openliberty.ext.correctstringextension", "Testing string 1234");
+                put("io.openliberty.method_name", "Method.Info");
+
+                put("io.openliberty.type", "liberty_message");
                 put("io.openliberty.module", "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp.MpTelemetryServlet");
                 put("thread.id", "");
                 put("thread.name", "");
@@ -126,13 +123,10 @@ public class TelemetryTraceTest extends FATServletClient {
             }
         };
 
-        assertNotNull("App Trace message could not be found.", line);
-        assertTrue("MPTelemetry did not log the correct message", line.contains("finest trace"));
-        assertTrue("MPTelemetry did not log the correct log level", line.contains("TRACE"));
-        assertFalse("MPTelemetry did not populate the trace ID.", line.contains("00000000000000000000000000000000"));
-        assertFalse("MPTelemetry did not populate the span ID.", line.contains("0000000000000000"));
-
-        checkJsonMessage(line, appAttributeMap);
+        assertNotNull("info message log could not be found.", line);
+        assertTrue("MPTelemetry did not log the correct message", line.contains("Test Extension Message"));
+        assertTrue("MPTelemetry did not log the correct log level", line.contains("INFO"));
+        checkJsonMessage(line, myMap);
     }
 
     private void checkJsonMessage(String line, Map<String, String> attributeMap) {
@@ -143,6 +137,8 @@ public class TelemetryTraceTest extends FATServletClient {
 
         line = line.substring(index + delimeter.length()).strip();
         line = fixJSON(line);
+
+        Log.info(c, method, "My line: " + line);
 
         JsonReader reader = Json.createReader(new StringReader(line));
         JsonObject jsonObj = reader.readObject();
@@ -183,6 +179,12 @@ public class TelemetryTraceTest extends FATServletClient {
                         .replaceAll("=([0-9]+)", ":$1");
 
         return processed;
+    }
+
+    private static String setConfig(String fileName, RemoteFile logFile, LibertyServer server) throws Exception {
+        server.setMarkToEndOfLog(logFile);
+        server.setServerConfigurationFile(fileName);
+        return server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");
     }
 
     @AfterClass

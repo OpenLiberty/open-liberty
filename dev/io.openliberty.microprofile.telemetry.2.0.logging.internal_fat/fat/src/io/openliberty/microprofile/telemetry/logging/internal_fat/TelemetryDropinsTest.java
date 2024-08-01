@@ -9,8 +9,8 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal_fat;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
@@ -22,13 +22,15 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.PropertiesAsset;
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -37,26 +39,16 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
-/**
- * HTTP request tracing tests
- */
 @RunWith(FATRunner.class)
-public class TelemetryTraceTest extends FATServletClient {
+public class TelemetryDropinsTest extends FATServletClient {
 
-    private static Class<?> c = TelemetryTraceTest.class;
+    private static Class<?> c = TelemetryDropinsTest.class;
 
-    public static final String SERVER_NAME = "TelemetryTraceNoApp";
     public static final String APP_NAME = "MpTelemetryLogApp";
+    public static final String SERVER_NAME = "TelemetryDropins";
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
-
-    @Before
-    public void testSetup() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp");
-        server.startServer();
-
-    }
 
     @After
     public void testTearDown() throws Exception {
@@ -65,13 +57,69 @@ public class TelemetryTraceTest extends FATServletClient {
         }
     }
 
-    /**
-     * Ensures trace logs are bridged and all attributes are present. Also ensures that both runtime
-     * and app trace logs are routed when the runtime OTel SDK instance is used.
+    /*
+     * Test an application exported to dropins with an application SDK and ensure only application logs are bridged.
      */
     @Test
-    public void testTelemetryTrace() throws Exception {
-        String runtimeLine = server.waitForStringInLog("Returning io.openliberty.microprofile.telemetry.runtime OTEL instance.", server.getConsoleLogFile());
+    public void testTelemetryDropinAppSDK() throws Exception {
+        server.startServer();
+
+        PropertiesAsset app1Config = new PropertiesAsset()
+                        .addProperty("otel.logs.exporter", "logging")
+                        .addProperty("otel.sdk.disabled", "false");
+
+        WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME, "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp")
+                        .addAsResource(app1Config, "META-INF/microprofile-config.properties");
+
+        ShrinkHelper.exportDropinAppToServer(server, app);
+
+        String runtimeLine = server.waitForStringInLog("Returning io.openliberty.microprofile.telemetry.runtime OTEL instance.", 5000, server.getConsoleLogFile());
+        TestUtils.runApp(server, "logServlet");
+        String appLine = server.waitForStringInLog("finest trace", server.getConsoleLogFile());
+
+        Map<String, String> runtimeAttributeMap = new HashMap<String, String>() {
+            {
+                put("io.openliberty.type", "liberty_trace");
+                put("io.openliberty.module", "io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfoFactoryImpl");
+                put("thread.id", "");
+                put("thread.name", "");
+                put("io.openliberty.sequence", "");
+            }
+        };
+
+        Map<String, String> appAttributeMap = new HashMap<String, String>() {
+            {
+                put("io.openliberty.ext.app_name", "MpTelemetryLogApp");
+                put("io.openliberty.type", "liberty_trace");
+                put("io.openliberty.module", "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp.MpTelemetryServlet");
+                put("thread.id", "");
+                put("thread.name", "");
+                put("io.openliberty.sequence", "");
+            }
+        };
+
+        assertNull("Returning otel instance message was incorrectly bridged.", runtimeLine);
+
+        assertNotNull("App Trace message could not be found.", appLine);
+        assertTrue("MPTelemetry did not log the correct message", appLine.contains("finest trace"));
+        assertTrue("MPTelemetry did not log the correct log level", appLine.contains("TRACE"));
+        checkJsonMessage(appLine, appAttributeMap);
+    }
+
+    /*
+     * Test an application exported to dropins with a Runtime SDK and ensure both application and runtime logs are bridged.
+     */
+    @Test
+    public void testTelemetryDropinRuntimeSDK() throws Exception {
+        server.addEnvVar("OTEL_LOGS_EXPORTER", "logging");
+        server.addEnvVar("OTEL_SDK_DISABLED", "false");
+        server.startServer();
+
+        WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME, "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp");
+        ShrinkHelper.exportDropinAppToServer(server, app);
+
+        String runtimeLine = server.waitForStringInLog("Returning io.openliberty.microprofile.telemetry.runtime OTEL instance.", 5000, server.getConsoleLogFile());
+
         TestUtils.runApp(server, "logServlet");
         String appLine = server.waitForStringInLog("finest trace", server.getConsoleLogFile());
 
@@ -105,34 +153,6 @@ public class TelemetryTraceTest extends FATServletClient {
         assertTrue("MPTelemetry did not log the correct message", appLine.contains("finest trace"));
         assertTrue("MPTelemetry did not log the correct log level", appLine.contains("TRACE"));
         checkJsonMessage(appLine, appAttributeMap);
-    }
-
-    /**
-     * Checks for populated span and trace ID for application logs
-     */
-    @Test
-    public void testTelemetryTraceID() throws Exception {
-        TestUtils.runApp(server, "logServlet");
-        String line = server.waitForStringInLog("finest trace", server.getConsoleLogFile());
-
-        Map<String, String> appAttributeMap = new HashMap<String, String>() {
-            {
-                put("io.openliberty.ext.app_name", "MpTelemetryLogApp");
-                put("io.openliberty.type", "liberty_trace");
-                put("io.openliberty.module", "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp.MpTelemetryServlet");
-                put("thread.id", "");
-                put("thread.name", "");
-                put("io.openliberty.sequence", "");
-            }
-        };
-
-        assertNotNull("App Trace message could not be found.", line);
-        assertTrue("MPTelemetry did not log the correct message", line.contains("finest trace"));
-        assertTrue("MPTelemetry did not log the correct log level", line.contains("TRACE"));
-        assertFalse("MPTelemetry did not populate the trace ID.", line.contains("00000000000000000000000000000000"));
-        assertFalse("MPTelemetry did not populate the span ID.", line.contains("0000000000000000"));
-
-        checkJsonMessage(line, appAttributeMap);
     }
 
     private void checkJsonMessage(String line, Map<String, String> attributeMap) {
@@ -185,9 +205,17 @@ public class TelemetryTraceTest extends FATServletClient {
         return processed;
     }
 
+    private static String setConfig(String fileName, RemoteFile logFile, LibertyServer server) throws Exception {
+        server.setMarkToEndOfLog(logFile);
+        server.setServerConfigurationFile(fileName);
+        return server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");
+    }
+
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
+        }
     }
 
 }

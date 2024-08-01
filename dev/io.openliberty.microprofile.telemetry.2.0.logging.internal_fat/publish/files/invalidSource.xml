@@ -14,8 +14,11 @@
 	<featureManager>
 		<feature>mpTelemetry-2.0</feature>
 		<feature>componentTest-2.0</feature>
+		<feature>servlet-6.0</feature>
 	</featureManager>
 	
 	<include location="../fatTestPorts.xml"/>
-	<mpTelemetry source="message"/>
+	<mpTelemetry source="msg"/>
+	<application location="MpTelemetryLogApp.war"/>
+
 </server>
