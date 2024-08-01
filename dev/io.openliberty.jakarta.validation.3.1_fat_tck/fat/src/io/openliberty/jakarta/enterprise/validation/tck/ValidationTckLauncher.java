@@ -82,6 +82,6 @@ public class ValidationTckLauncher {
         String testName = this.getClass() + ":launchValidation31TCK";
         Type type = Type.JAKARTA;
         String specName = "Validation ";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, "Test.xml", additionalProps);
+        TCKRunner.runTCK(server, bucketName, testName, type, specName, "validation-tck-tests-suite.xml", additionalProps);
     }
 }

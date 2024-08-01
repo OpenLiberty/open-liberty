@@ -14,15 +14,16 @@
     <featureManager>
         <!-- Features being tested -->
         <feature>validation-3.1</feature>
+        
+        <!-- Protocol used by Arquillian -->
+        <feature>servlet-6.1</feature>
+        
+        <!-- Needed by test infrastructure -->
         <feature>timedexit-1.0</feature>
+        
+        <!-- Optional feature for better arquillian support -->
         <feature>arquillian-support-jakarta-2.1</feature>
-        <!-- Minimum features required 
-        	<feature>concurrent-3.0</feature>
-			<feature>enterpriseBeansLite-4.0</feature>
-			<feature>jdbc-4.3</feature>
-			<feature>appSecurity-5.0</feature>
-			<feature>pages-3.1</feature>
-        -->
+
         <!-- Features needed for arquillan support -->
         <feature>localConnector-1.0</feature>
     </featureManager>
@@ -63,8 +64,5 @@
     <javaPermission codeBase="${shared.resource.dir}/sigtest/2.3/sigtest.jar" className="java.lang.RuntimePermission"  name="accessClassInPackage.jdk.internal" />
     <javaPermission codeBase="${shared.resource.dir}/sigtest/2.3/sigtest.jar" className="java.lang.RuntimePermission"  name="accessClassInPackage.jdk.internal.reflect" />
     <javaPermission codeBase="${shared.resource.dir}/sigtest/2.3/sigtest.jar" className="java.lang.RuntimePermission"  name="accessClassInPackage.jdk.internal.vm.annotation" />
-
-   
-
    
 </server>

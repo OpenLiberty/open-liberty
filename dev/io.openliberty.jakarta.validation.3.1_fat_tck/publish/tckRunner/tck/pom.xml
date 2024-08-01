@@ -38,17 +38,20 @@
         <wlp>${wlp}</wlp>
         
         <targetDirectory>${project.basedir}/target</targetDirectory>
+        
+        <!-- Copied out of the tck jar -->
+        <tck.suite.file>../../../results/tck_validation-tck-tests-suite/dependency/validation-tck-tests-suite.xml</tck.suite.file>
+        
+        <validation.provider>org.hibernate.validator.HibernateValidator</validation.provider>
     </properties>
 
 	<repositories>
 		<!-- For artifacts not yet in Maven Central -->
-		<!-- Enable the following during development of a vNext release to use a staged TCK rather than a local -SNAPSHOT
-		-->
-		
+		<!-- Enable the following during development of a vNext release to use a staged TCK rather than a local -SNAPSHOT -->
 		<repository>
 			<id>sonatype-nexus-staging</id>
 			<name>Sonatype Nexus Staging</name>
-			<url>https://jakarta.oss.sonatype.org/content/repositories/staging/jakarta/validation/validation-tck-tests/3.1.0/validation-tck-tests-3.1.0.jar</url>
+			<url>https://jakarta.oss.sonatype.org/content/repositories/staging/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -56,7 +59,6 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-		
 	</repositories>
 
     <dependencyManagement>
@@ -153,6 +155,12 @@
     <build>
         <directory>${targetDirectory}</directory>
         <defaultGoal>clean test</defaultGoal>
+        <testResources>
+            <testResource>
+                <filtering>true</filtering>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -180,6 +188,32 @@
                     <target>17</target>
                 </configuration>
             </plugin>
+            <!-- We are using the dependency plugin to download and install the TestNG suite file locally -->
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <executions>
+                    <execution>
+                        <id>copy-tck-test-suite-file</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <stripVersion>true</stripVersion>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${jakarta.validation.tck.groupid}</groupId>
+                                    <artifactId>validation-tck-tests</artifactId>
+                                    <type>xml</type>
+                                    <classifier>suite</classifier>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -192,12 +226,13 @@
                         <tck_port>${tck_port}</tck_port>
                         <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
                         <java.util.logging.config.file>${basedir}/../logging.properties</java.util.logging.config.file>
+                        <!-- TODO do we need this? -->
+                        <validation.provider>${validation.provider}</validation.provider>
                     </systemPropertyVariables>
                     <suiteXmlFiles>
-                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile> <!-- provided by MvnUtils.runTCKMvnCmd -->
+                        <suiteXmlFile>${tck.suite.file}</suiteXmlFile> <!-- Extracted from TCK -->
                     </suiteXmlFiles>
                     <reportNameSuffix>${jakarta.tck.platform}</reportNameSuffix>
-                    <!-- TOOD - needs to be checked if needs to be updated-->
                     <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
                 </configuration>
             </plugin>
