@@ -209,7 +209,8 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                     Map<String, FFDCInfo> unexpectedFFDCs = null;
                     ArrayList<String> errors = new ArrayList<String>();
 
-                    List<String> expectedFFDCs = getExpectedFFDCAnnotationFromTest(method);
+                    //Uses Set to avoid duplicates of the FFDC header
+                    Set<String> expectedFFDCs = getExpectedFFDCAnnotationFromTest(method);
                     /*
                      * Encountering an occasional timing issue where the expectedFFDC isn't found in time and either fails
                      * the test expecting the FFDC or it bleeds over into another test. Attempting to mitigate with a short
@@ -674,9 +675,9 @@ public class FATRunner extends BlockJUnit4ClassRunner {
         return ffdcList;
     }
 
-    public List<String> getExpectedFFDCAnnotationFromTest(FrameworkMethod m) {
+    public Set<String> getExpectedFFDCAnnotationFromTest(FrameworkMethod m) {
 
-        ArrayList<String> annotationListPerClass = new ArrayList<String>();
+        Set<String> annotationListPerClass = new HashSet<String>();
         ExpectedFFDC[] ffdcs = m.getMethod().getAnnotationsByType(ExpectedFFDC.class);
 
         for (ExpectedFFDC ffdc : ffdcs) {
