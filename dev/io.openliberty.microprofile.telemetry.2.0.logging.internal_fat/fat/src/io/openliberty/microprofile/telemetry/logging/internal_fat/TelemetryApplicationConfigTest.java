@@ -9,16 +9,14 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal_fat;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -35,22 +33,24 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-public class TelemetryMessagesTest extends FATServletClient {
+public class TelemetryApplicationConfigTest extends FATServletClient {
 
-    private static Class<?> c = TelemetryMessagesTest.class;
+    private static Class<?> c = TelemetryApplicationConfigTest.class;
 
     public static final String APP_NAME = "MpTelemetryLogApp";
-    public static final String SERVER_NAME = "TelemetryMessage";
+    public static final String SERVER_NAME = "TelemetryAppConfig";
 
-    public static LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);;
+    @Server(SERVER_NAME)
+    public static LibertyServer server;
 
     public static final String SERVER_XML_ALL_SOURCES = "allSources.xml";
+    public static final String SERVER_XML_NO_TELEMETRY_ATTRIBUTE = "noTelemetryAttribute.xml";
 
     @Before
     public void testSetup() throws Exception {
@@ -65,49 +65,15 @@ public class TelemetryMessagesTest extends FATServletClient {
         }
     }
 
-    /**
-     * Ensures Liberty messages are correctly bridged and all attributes are present.
-     */
-    @Test
-    public void testTelemetryMessages() throws Exception {
-        testTelemetryMessages(server, null);
-    }
-
-    static void testTelemetryMessages(LibertyServer s, Consumer<List<String>> consoleConsumer) throws Exception {
-        String line = s.waitForStringInLog("CWWKF0011I", s.getConsoleLogFile());
-        List<String> linesMessagesLog = s.findStringsInLogs("^(?!.*scopeInfo).*\\[.*$", server.getDefaultLogFile());
-        List<String> linesConsoleLog = s.findStringsInLogs(".*scopeInfo.*", server.getConsoleLogFile());
-
-        if (consoleConsumer != null) {
-            consoleConsumer.accept(linesConsoleLog);
-        }
-
-        assertEquals("Messages.log and Telemetry console logs don't match.", linesMessagesLog.size(), linesConsoleLog.size());
-
-        Map<String, String> myMap = new HashMap<String, String>() {
-            {
-                put("io.openliberty.type", "liberty_message");
-                put("io.openliberty.message_id", "CWWKF0011I");
-                put("io.openliberty.module", "com.ibm.ws.kernel.feature.internal.FeatureManager");
-                put("thread.id", "");
-                put("thread.name", "");
-                put("io.openliberty.sequence", "");
-            }
-        };
-
-        assertNotNull("CWWKF0011I log could not be found.", line);
-        assertTrue("MPTelemetry did not log the correct message", line.contains("The TelemetryMessage server is ready to run a smarter planet."));
-        checkJsonMessage(line, myMap);
-    }
-
     /*
-     * Ensures application messages are bridged.
+     * Ensure that application logs are configured correctly with an application SDK
      */
     @Test
     public void testTelemetryApplicationMessages() throws Exception {
         TestUtils.runApp(server, "logServlet");
 
-        String line = server.waitForStringInLog("info message", server.getConsoleLogFile());
+        String runtimeLine = server.waitForStringInLog("CWWKF0011I", 5000, server.getConsoleLogFile());
+        String appLine = server.waitForStringInLog("info message", server.getConsoleLogFile());
 
         Map<String, String> myMap = new HashMap<String, String>() {
             {
@@ -120,63 +86,50 @@ public class TelemetryMessagesTest extends FATServletClient {
             }
         };
 
-        assertNotNull("info message log could not be found.", line);
-        assertTrue("MPTelemetry did not log the correct message", line.contains("info message"));
-        assertTrue("MPTelemetry did not log the correct log level", line.contains("INFO"));
+        assertNotNull("info message log could not be found.", appLine);
+        assertTrue("MPTelemetry did not log the correct message", appLine.contains("info message"));
+        assertTrue("MPTelemetry did not log the correct log level", appLine.contains("INFO"));
+        checkJsonMessage(appLine, myMap);
 
-        checkJsonMessage(line, myMap);
-
+        assertNull("MPTelemetry incorrectly bridged runtime logs.", runtimeLine);
     }
 
     /*
-     * Ensures all log types have the correct log levels.
+     * Ensure that the LogRecordContext extensions configured by an application are correctly mapped.
      */
     @Test
-    public void testTelemetryLogLevels() throws Exception {
-        RemoteFile consoleLogFile = server.getConsoleLogFile();
-        setConfig(SERVER_XML_ALL_SOURCES, consoleLogFile, server);
+    public void testTelemetryLogRecordContext() throws Exception {
+        TestUtils.runApp(server, "extension");
 
-        TestUtils.runApp(server, "logServlet");
-        String infoLine = server.waitForStringInLog("info message", server.getConsoleLogFile());
-        String severeLine = server.waitForStringInLog("severe message", server.getConsoleLogFile());
-        String warningLine = server.waitForStringInLog("warning message", server.getConsoleLogFile());
-        String sysOutLine = server.waitForStringInLog("^(?=.*System.out.println)(?=.*scopeInfo).*$", server.getConsoleLogFile());
-        String sysErrLine = server.waitForStringInLog("^(?=.*System.err.println)(?=.*scopeInfo).*$", server.getConsoleLogFile());
-        String configTraceLine = server.waitForStringInLog("config trace", server.getConsoleLogFile());
-        String fineLine = server.waitForStringInLog("fine trace", server.getConsoleLogFile());
-        String finerLine = server.waitForStringInLog("finer trace", server.getConsoleLogFile());
-        String finestLine = server.waitForStringInLog("finest trace", server.getConsoleLogFile());
+        String line = server.waitForStringInLog("Test Extension Message", server.getConsoleLogFile());
 
-        assertNotNull("Info message could not be found.", infoLine);
-        assertTrue("Incorrect log level was logged.", infoLine.contains("INFO"));
+        Map<String, String> myMap = new HashMap<String, String>() {
+            {
+                put("io.openliberty.ext.app_name", "MpTelemetryLogApp");
+                put("io.openliberty.ext.correctbooleanextension", "true");
+                put("io.openliberty.ext.correctbooleanextension2", "false");
+                put("io.openliberty.ext.correctfloatextension", "100.12300109863281");
+                put("io.openliberty.ext.correctfloatextension2", "-100.12300109863281");
+                put("io.openliberty.ext.correctintextension", "12345");
+                put("io.openliberty.ext.correctintextension2", "-12345");
+                put("io.openliberty.ext.correctstringextension", "Testing string 1234");
+                put("io.openliberty.method_name", "Method.Info");
 
-        assertNotNull("Severe message could not be found.", severeLine);
-        assertTrue("Incorrect log level was logged.", severeLine.contains("ERROR"));
+                put("io.openliberty.type", "liberty_message");
+                put("io.openliberty.module", "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp.MpTelemetryServlet");
+                put("thread.id", "");
+                put("thread.name", "");
+                put("io.openliberty.sequence", "");
+            }
+        };
 
-        assertNotNull("Warning message could not be found.", warningLine);
-        assertTrue("Incorrect log level was logged.", warningLine.contains("WARN"));
-
-        assertNotNull("System.out.println message could not be found.", sysOutLine);
-        assertTrue("Incorrect log level was logged.", sysOutLine.contains("INFO"));
-
-        assertNotNull("System.err.println message could not be found.", sysErrLine);
-        assertTrue("Incorrect log level was logged.", sysErrLine.contains("WARN"));
-
-        assertNotNull("Config trace message could not be found.", configTraceLine);
-        assertTrue("Incorrect log level was logged.", configTraceLine.contains("DEBUG4"));
-
-        assertNotNull("Fine trace message could not be found.", fineLine);
-        assertTrue("Incorrect log level was logged.", fineLine.contains("DEBUG2"));
-
-        assertNotNull("Finer trace message could not be found.", finerLine);
-        assertTrue("Incorrect log level was logged.", finerLine.contains("DEBUG"));
-
-        assertNotNull("Finest message could not be found.", finestLine);
-        assertTrue("Incorrect log level was logged.", finestLine.contains("TRACE"));
-
+        assertNotNull("info message log could not be found.", line);
+        assertTrue("MPTelemetry did not log the correct message", line.contains("Test Extension Message"));
+        assertTrue("MPTelemetry did not log the correct log level", line.contains("INFO"));
+        checkJsonMessage(line, myMap);
     }
 
-    static void checkJsonMessage(String line, Map<String, String> attributeMap) {
+    private void checkJsonMessage(String line, Map<String, String> attributeMap) {
         final String method = "checkJsonMessage";
 
         String delimeter = "scopeInfo: io.openliberty.microprofile.telemetry:]";
@@ -184,6 +137,8 @@ public class TelemetryMessagesTest extends FATServletClient {
 
         line = line.substring(index + delimeter.length()).strip();
         line = fixJSON(line);
+
+        Log.info(c, method, "My line: " + line);
 
         JsonReader reader = Json.createReader(new StringReader(line));
         JsonObject jsonObj = reader.readObject();
@@ -234,9 +189,7 @@ public class TelemetryMessagesTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        if (server != null && server.isStarted()) {
-            server.stopServer();
-        }
+        server.stopServer();
     }
 
 }

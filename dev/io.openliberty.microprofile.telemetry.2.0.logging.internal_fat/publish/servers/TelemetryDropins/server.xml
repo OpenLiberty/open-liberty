@@ -10,14 +10,13 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="Telemetry Server to test Trace logs">
+<server description="Telemetry Server to test Message logs">
 	<featureManager>
 		<feature>mpTelemetry-2.0</feature>
 		<feature>componentTest-2.0</feature>
 		<feature>servlet-6.0</feature>
 	</featureManager>
-
+	
 	<include location="../fatTestPorts.xml"/>
-	<mpTelemetry source="trace"/>
-	<application location="MpTelemetryLogApp.war"/>
+	<mpTelemetry source="message, trace"/>
 </server>

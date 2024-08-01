@@ -34,7 +34,10 @@ import componenttest.topology.utils.HttpUtils;
                 //TelemetryAgentJULMessagesTest.class, // To Do: Move this to the mpTelemetry logs container FAT
                 TelemetryFFDCCheckpointTest.class,
                 TelemetryTraceTest.class,
-                TelemetryTraceCheckpointTest.class
+                TelemetryTraceCheckpointTest.class,
+                TelemetrySourcesTest.class,
+                TelemetryApplicationConfigTest.class,
+                TelemetryDropinsTest.class
 })
 
 public class FATSuite {
