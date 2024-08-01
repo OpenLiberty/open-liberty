@@ -26,6 +26,7 @@ import com.ibm.ws.kernel.service.util.ServiceCaller;
 import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
 import io.openliberty.microprofile.telemetry.internal.common.info.ErrorOpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
+import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryLifecycleManager;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
@@ -34,6 +35,7 @@ public class OpenTelemetryAccessor {
 
     private static final TraceComponent tc = Tr.register(OpenTelemetryAccessor.class);
     private static final ServiceCaller<OpenTelemetryInfoFactory> openTelemetryInfoFactoryService = new ServiceCaller<OpenTelemetryInfoFactory>(OpenTelemetryAccessor.class, OpenTelemetryInfoFactory.class);
+    private static final ServiceCaller<OpenTelemetryLifecycleManager> openTelemetryLifecycleManagerService = new ServiceCaller<OpenTelemetryLifecycleManager>(OpenTelemetryAccessor.class, OpenTelemetryLifecycleManager.class);
     private static final ServiceCaller<CDIService> cdiService = new ServiceCaller<CDIService>(OpenTelemetryAccessor.class, CDIService.class);
 
     //See https://github.com/open-telemetry/opentelemetry-java-docs/blob/main/otlp/src/main/java/io/opentelemetry/example/otlp/ExampleConfiguration.java
@@ -44,8 +46,8 @@ public class OpenTelemetryAccessor {
      *         is disabled or the application has shut down.
      */
     public static OpenTelemetryInfo getOpenTelemetryInfo() {
-        Optional<OpenTelemetryInfo> openTelemetryInfo = openTelemetryInfoFactoryService.call((factory) -> {
-            return factory.getOpenTelemetryInfo();
+        Optional<OpenTelemetryInfo> openTelemetryInfo = openTelemetryLifecycleManagerService.call((lifecycle) -> {
+            return lifecycle.getOpenTelemetryInfo();
         });
         return openTelemetryInfo.orElseGet(ErrorOpenTelemetryInfo::new);
     }

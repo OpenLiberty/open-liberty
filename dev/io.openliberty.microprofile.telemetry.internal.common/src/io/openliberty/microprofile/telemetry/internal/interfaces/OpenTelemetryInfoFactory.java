@@ -9,8 +9,6 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.interfaces;
 
-import com.ibm.ws.runtime.metadata.ApplicationMetaData;
-
 import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 
 public interface OpenTelemetryInfoFactory {
@@ -18,17 +16,21 @@ public interface OpenTelemetryInfoFactory {
     /**
      * @return
      */
-    OpenTelemetryInfo getOpenTelemetryInfo();
+    OpenTelemetryInfo createOpenTelemetryInfo();
 
     /**
-     * @param metaData
      * @return
      */
-    OpenTelemetryInfo getOpenTelemetryInfo(ApplicationMetaData metaData);
+    OpenTelemetryInfo createDisposedOpenTelemetryInfo();
 
     /**
      * @return
      */
     boolean isRuntimeEnabled();
+
+    /**
+     * @return
+     */
+    OpenTelemetryInfo createDisabledOpenTelemetryInfo();
 
 }
