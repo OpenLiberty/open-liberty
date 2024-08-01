@@ -5059,6 +5059,16 @@ public class LibertyServer implements LogMonitorClient {
         return props;
     }
 
+    public void addBootstrapProperties(Map<String, String> properties) throws Exception {
+        Properties existing = getBootstrapProperties();
+        properties.forEach((k, v) -> existing.put(k, v));
+
+        RemoteFile serverBootStrapProps = machine.getFile(getServerRoot() + "/bootstrap.properties");
+        try (OutputStream out = serverBootStrapProps.openForWriting(false)) {
+            existing.store(out, null);
+        }
+    }
+
     public void addEnvVar(String key, String value) {
         if (!Pattern.matches("[a-zA-Z_]+[a-zA-Z0-9_]*", key)) {
             throw new IllegalArgumentException("Invalid environment variable key '" + key +
