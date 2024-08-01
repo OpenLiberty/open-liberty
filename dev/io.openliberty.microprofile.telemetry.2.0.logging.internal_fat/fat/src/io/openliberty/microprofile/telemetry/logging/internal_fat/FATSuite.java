@@ -31,7 +31,8 @@ import componenttest.topology.utils.HttpUtils;
                 TelemetryMessagesCheckpointTest.class,
                 TelemetryFFDCTest.class,
                 TelemetryFFDCCheckpointTest.class,
-                TelemetryTraceTest.class
+                TelemetryTraceTest.class,
+                TelemetryTraceCheckpointTest.class
 })
 
 public class FATSuite {

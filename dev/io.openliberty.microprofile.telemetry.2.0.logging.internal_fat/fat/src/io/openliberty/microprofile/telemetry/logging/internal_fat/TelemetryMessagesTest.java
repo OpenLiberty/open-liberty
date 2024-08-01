@@ -29,7 +29,6 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class TelemetryMessagesTest extends FATServletClient {
 
-    public static final String APP_NAME = "TelemetryServletTestApp";
     public static final String SERVER_NAME = "TelemetryMessageNoApp";
 
     public static LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);;

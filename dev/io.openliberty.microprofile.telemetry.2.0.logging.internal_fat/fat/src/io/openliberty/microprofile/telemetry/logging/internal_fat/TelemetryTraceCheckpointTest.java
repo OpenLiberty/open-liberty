@@ -9,7 +9,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal_fat;
 
-import static io.openliberty.microprofile.telemetry.logging.internal_fat.TelemetryMessagesTest.testTelemetryMessages;
+import static io.openliberty.microprofile.telemetry.logging.internal_fat.TelemetryTraceTest.testTelemetryTrace;
 import static org.junit.Assert.assertNull;
 
 import org.junit.AfterClass;
@@ -24,29 +24,32 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
+/**
+ * HTTP request tracing tests
+ */
 @RunWith(FATRunner.class)
 @CheckpointTest
-public class TelemetryMessagesCheckpointTest extends FATServletClient {
+public class TelemetryTraceCheckpointTest extends FATServletClient {
 
-    public static final String SERVER_NAME = "TelemetryMessageNoApp";
+    public static final String SERVER_NAME = "TelemetryTraceNoApp";
 
-    public static LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+    public static LibertyServer server;
 
     @BeforeClass
     public static void initialSetup() throws Exception {
+        server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START);
         server.startServer();
     }
 
     /**
-     * Ensures Liberty messages are correctly bridged and all attributes are present.
+     * Ensures trace logs are bridged and all attributes are present.
      */
     @Test
-    public void testTelemetryMessagesCheckpoint() throws Exception {
-        testTelemetryMessages(server, (linesConsoleLog) -> {
-            // for checkpoint we expect to NOT see the message:
-            // CWWKC0451I: A server checkpoint "beforeAppStart" was requested.
-            assertNull("Should not contain early messages from checkpoint", linesConsoleLog.stream().filter((l) -> l.contains("CWWKC0451I")).findFirst().orElse(null));
+    public void testTelemetryTraceCheckpoint() throws Exception {
+        testTelemetryTrace(server, (linesConsoleLog) -> {
+            assertNull("Should not contain early traces from checkpoint",
+                       linesConsoleLog.stream().filter((l) -> l.contains("Calling prepare hooks on this list")).findFirst().orElse(null));
         });
     }
 
