@@ -130,8 +130,13 @@
                     <include name="testTimeoutMetric"/>
                 </methods>
             </class>
-            <!-- AllAnnotationTelemetryTest excluded until TCK release with #641 is available -->
-            <!-- BulkheadTelemetryTest excluded until TCK release with #641 is available -->
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.telemetryMetrics.AllAnnotationTelemetryTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.telemetryMetrics.BulkheadTelemetryTest">
+                <methods>
+                    <include name="bulkheadMetricTest"/>
+                    <include name="bulkheadMetricRejectionTest"/>
+                </methods>
+            </class>
             <class name="org.eclipse.microprofile.fault.tolerance.tck.telemetryMetrics.CircuitBreakerTelemetryTest"></class>
             <class name="org.eclipse.microprofile.fault.tolerance.tck.telemetryMetrics.ClassLevelTelemetryTest"></class>
             <class name="org.eclipse.microprofile.fault.tolerance.tck.telemetryMetrics.FallbackTelemetryTest"></class>

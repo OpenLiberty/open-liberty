@@ -14,23 +14,5 @@
         <packages>
             <package name="org.eclipse.microprofile.fault.tolerance.tck.*"/>
         </packages>
-        <!-- Tests excluded until TCK release with #641 is available -->
-        <classes>
-            <class name="org.eclipse.microprofile.fault.tolerance.tck.telemetryMetrics.AllAnnotationTelemetryTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.eclipse.microprofile.fault.tolerance.tck.telemetryMetrics.BulkheadTelemetryTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.eclipse.microprofile.fault.tolerance.tck.telemetryMetrics.TimeoutTelemetryTest">
-                <methods>
-                    <exclude name="testMetricUnits"/>
-                </methods>
-            </class>
-        </classes>
     </test>
 </suite>
