@@ -26,6 +26,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -38,18 +41,14 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.WebContainerElement;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEEAction;
-import componenttest.annotation.Server;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.Header;
 
 /**
  * All Servlet 3.1 tests with all applicable server features enabled.
@@ -184,10 +183,10 @@ public class WCServerTest {
     @Test
     @SkipForRepeat(EE8_OR_LATER_FEATURES)
     public void test_Servlet31() throws Exception {
-        Header[] headers = verifyStringsInResponse_getResponseHeaders(new HttpClient(), "/TestServlet31", "/MyServlet", new String[] {"Hello World"});
+        Header[] headers = verifyStringsInResponse_getResponseHeaders(new HttpClient(), "/TestServlet31", "/MyServlet", new String[] { "Hello World" });
 
         // verify the X-Powered-By Response header
-        for(Header h : headers){
+        for (Header h : headers) {
             if (h.getName().equals("X-Powered-By")) {
                 LOG.info("X-Powered-By Header Found");
                 assertEquals("X-Powered-By Response header was not 'Servlet/3.1'.", h.getValue(), "Servlet/3.1");
@@ -200,15 +199,15 @@ public class WCServerTest {
         // 130998: This tests that the servlet that was programmatically
         // added with a different servlet name in "MyServletContextListener"
         // was created and is accessible.
-        verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/ProgrammaticServlet", new String[] {"Hello World"});
+        verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/ProgrammaticServlet", new String[] { "Hello World" });
     }
 
     @Test
     public void test_MetadataCompleteHandlesTypesServlet() throws Exception {
-        verifyStringsInResponse(new HttpClient(), "/TestMetadataComplete", "/DisplayInits", 
+        verifyStringsInResponse(new HttpClient(), "/TestMetadataComplete", "/DisplayInits",
                                 new String[] { "ParentServletInitializer: com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacomplete.war.servlets.DisplayInits",
-                                                "HashSetChildInitializer: com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacomplete.war.stack.HelperMethodChild",
-                                                "HashSetChildInitializer: com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacomplete.war.stack.HelperMethod" });
+                                               "HashSetChildInitializer: com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacomplete.war.stack.HelperMethodChild",
+                                               "HashSetChildInitializer: com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacomplete.war.stack.HelperMethod" });
     }
 
     //This isn't duplicating testMetadataCompleteHandlesTypesServlet since we want granularity on the functions.
@@ -263,18 +262,20 @@ public class WCServerTest {
      * Common test code for HttpSessionIdListener tests.
      */
     private void test_SessionIdListener(String url) throws Exception {
-        verifyStringsInResponse(new HttpClient(), url, "", new String[] {"Expected IllegalStateException" });
+        verifyStringsInResponse(new HttpClient(), url, "", new String[] { "Expected IllegalStateException" });
         HttpClient client = new HttpClient();
-        String responseBody = verifyStringsInResponse_getResponseBody(client, url, "?getSessionFirst=true", new String[] {"Session id returned from changeSessionId", "Change count = 1"});
+        String responseBody = verifyStringsInResponse_getResponseBody(client, url, "?getSessionFirst=true",
+                                                                      new String[] { "Session id returned from changeSessionId", "Change count = 1" });
         String oldSessionId = parseResponse(responseBody, "Original session id = <sessionid>", "</sessionid>");
         String newSessionId = parseResponse(responseBody, "Session id returned from changeSessionId = <sessionid>", "</sessionid>");
         Assert.assertTrue("ids are equal: old=" + oldSessionId + ":new=" + newSessionId, !oldSessionId.equals(newSessionId));
-        verifyStringsInResponse(client, url, "", new String[] {"Original session id = <sessionid>" + newSessionId + "</sessionid>"});
+        verifyStringsInResponse(client, url, "", new String[] { "Original session id = <sessionid>" + newSessionId + "</sessionid>" });
     }
 
     @Test
     public void test_RequestedSessionId() throws Exception {
-        verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/SessionIdTest;jsessionid=mysessionid", new String[] { "Requested session id was mysessionid", "Requested Session id is invalid" });
+        verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/SessionIdTest;jsessionid=mysessionid",
+                                new String[] { "Requested session id was mysessionid", "Requested Session id is invalid" });
     }
 
     @Test
@@ -289,7 +290,8 @@ public class WCServerTest {
             } catch (IOException e) {
             }
         }
-        verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/GetServerInfoTest", new String[] { "GetServerInfoTest: ServletContext.getServerInfo()=IBM WebSphere Liberty/" + v });
+        verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/GetServerInfoTest",
+                                new String[] { "GetServerInfoTest: ServletContext.getServerInfo()=IBM WebSphere Liberty/" + v });
     }
 
     /**
@@ -300,7 +302,6 @@ public class WCServerTest {
      */
     @Test
     public void test_ResponseReset() throws Exception {
-        HttpClient client = new HttpClient();
         String url = "/TestServlet31/ResponseReset?firstType=pWriter&secondType=pWriter";
         String body = verifyStringsInResponse_getResponseBody(new HttpClient(), url, "", new String[] { "SUCCESS" });
         Assert.assertTrue("contained content before the reset: url=" + url + "::" + body, body.indexOf("FAILURE") == -1);
@@ -362,7 +363,7 @@ public class WCServerTest {
         wlp.waitForConfigUpdateInLogUsingMark(null);
     }
 
-        /**
+    /**
      * Verify that a duplicate <servlet-mapping> element results in a deployment error. Servlet 3.1 spec, section 12.2
      *
      * @throws Exception
@@ -423,7 +424,6 @@ public class WCServerTest {
 
         // Drive a request to the SimpleTestServlet to initialize the application
         verifyStringsInResponse(new HttpClient(), "/ServletContextCreateListener", "/SimpleTestServlet", new String[] { "Hello World" });
-
 
         // Ensure that the proper exception was output
         LibertyServer server = LS;
@@ -498,9 +498,9 @@ public class WCServerTest {
 
         try {
             if (JakartaEEAction.isEE9OrLaterActive())
-                verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/noplus+sign.html", new String[] {"This file has a space in the name"});
+                verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/noplus+sign.html", new String[] { "This file has a space in the name" });
             else
-                verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/plus+sign.html", new String[] {"This file has a plus sign in the name"});
+                verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/plus+sign.html", new String[] { "This file has a plus sign in the name" });
         } finally {
             // Reset the server.xml.
             wlp.setMarkToEndOfLog();
@@ -533,7 +533,6 @@ public class WCServerTest {
     private void verifyResponseStringLength(String path, String target) throws Exception {
         LOG.info("Expected text: " + target + " length: " + target.length());
 
-        LibertyServer server = LS;
         HttpClient client = new HttpClient();
         GetMethod get = new GetMethod("http://" + LS.getHostname() + ":" + LS.getHttpDefaultPort() + path);
         int responseCode = client.executeMethod(get);
@@ -556,16 +555,16 @@ public class WCServerTest {
     private String verifyStringsInResponse_getResponseBody(HttpClient client, String contextRoot, String path, String[] expectedResponseStrings) throws Exception {
         return getResponse(client, contextRoot, path, expectedResponseStrings).getResponseBodyAsString();
     }
-    
+
     private GetMethod getResponse(HttpClient client, String contextRoot, String path, String[] expectedResponseStrings) throws Exception {
         GetMethod get = new GetMethod("http://" + LS.getHostname() + ":" + LS.getHttpDefaultPort() + contextRoot + path);
         int responseCode = client.executeMethod(get);
         String responseBody = get.getResponseBodyAsString();
         LOG.info("Response : " + responseBody);
-  
+
         assertEquals("Expected " + 200 + " status code was not returned!",
                      200, responseCode);
-  
+
         for (String expectedResponse : expectedResponseStrings) {
             assertTrue("The response did not contain: " + expectedResponse, responseBody.contains(expectedResponse));
         }

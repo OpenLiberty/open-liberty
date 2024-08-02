@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
@@ -21,12 +21,17 @@ import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
-import java.util.ArrayList;
-import java.util.Map;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.cookie.CookiePolicy;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpClientParams;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -36,18 +41,11 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.annotation.Server;
 import componenttest.topology.impl.LibertyServer;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpClientParams;
-import org.apache.commons.httpclient.cookie.CookiePolicy;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.Header;
 
 /**
  * CDI Tests
@@ -96,7 +94,7 @@ public class CDIUpgradeHandlerTest {
                                                                         "com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2upgrade.war.cdi.upgrade.handlers",
                                                                         "com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2upgrade.war.cdi.upgrade.servlets");
         CDI12TestV2UpgradeApp = CDI12TestV2UpgradeApp.addAsLibrary(CDI12TestV2Jar);
-        
+
         // Export the application.
         ShrinkHelper.exportDropinAppToServer(LS, CDI12TestV2UpgradeApp);
 
@@ -228,7 +226,7 @@ public class CDIUpgradeHandlerTest {
         String testName = "testCDINoUpgrade";
 
         logStart(methodName, testName);
-        
+
         HttpClientParams params = new HttpClientParams();
         params.setCookiePolicy(CookiePolicy.DEFAULT);
         HttpClient client = new HttpClient(params);
@@ -424,10 +422,6 @@ public class CDIUpgradeHandlerTest {
         LOG.info("Closed socket [ " + socket + " ] [ " + urlText + " ]");
     }
 
-    //
-
-    private static final String NULL_SESSION_ID = null;
-
     private void verifyOutputMatchesExpectedLog(String[] expectedLog) throws Exception {
         HttpClientParams params = new HttpClientParams();
         params.setCookiePolicy(CookiePolicy.DEFAULT);
@@ -448,7 +442,7 @@ public class CDIUpgradeHandlerTest {
         NameValuePair[] postParams = nameValuePairs.toArray(new NameValuePair[] {});
 
         verifyStringsInResponse(client, UPGRADE_CONTEXT_ROOT, UPGRADE_URL_FRAGMENT, expectedLog, postParams);
-        
+
     }
 
     private void verifyStringsInResponse(HttpClient client, String contextRoot, String path, String[] expectedResponseStrings, NameValuePair[] postParams) throws Exception {
@@ -457,10 +451,10 @@ public class CDIUpgradeHandlerTest {
         int responseCode = client.executeMethod(post);
         String responseBody = post.getResponseBodyAsString();
         LOG.info("Response : " + responseBody);
-  
+
         assertEquals("Expected " + 200 + " status code was not returned!",
                      200, responseCode);
-  
+
         for (String expectedResponse : expectedResponseStrings) {
             assertTrue("The response did not contain: " + expectedResponse, responseBody.contains(expectedResponse));
         }
