@@ -26,4 +26,9 @@ public interface OpenTelemetryLifecycleManager {
      */
     OpenTelemetryInfo getOpenTelemetryInfo(ApplicationMetaData metaData);
 
+    /**
+     * @return
+     */
+    boolean isRuntimeEnabled();
+
 }

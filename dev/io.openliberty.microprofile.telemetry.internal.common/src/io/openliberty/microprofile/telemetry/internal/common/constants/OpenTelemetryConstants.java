@@ -38,6 +38,9 @@ public class OpenTelemetryConstants {
     public static final AttributeKey<String> KEY_SERVICE_NAME = AttributeKey.stringKey("service.name");
     public static final AttributeKey<String> KEY_SERVICE_INSTANCE_ID = AttributeKey.stringKey("service.instance.id");
 
+    //Other OTel standards
+    public static final String UNKOWN_SERVICE = "unkown_service";
+
     //OpenLiberty namespace prefix
     public static final String NAME_SPACE_PREFIX = "io.openliberty.";
 

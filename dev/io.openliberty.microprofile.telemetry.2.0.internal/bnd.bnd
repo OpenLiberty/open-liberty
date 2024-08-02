@@ -33,6 +33,7 @@ app-resources= \
 Include-Resource: \
   META-INF=resources/META-INF
 
+# This creates a DeclarativeService using `com.ibm.wsspi.classloading.ResourceProvider` as the implementation class with the name `io.openliberty.microprofile.telemetry.internal.ResourceProvider` and its purpose is to expose `${app-resources}` on the app classloader.
 Service-Component: \
     io.openliberty.microprofile.telemetry.internal.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \

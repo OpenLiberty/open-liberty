@@ -52,7 +52,7 @@ public class OpenTelemetryProducer {
      *         is disabled or the application has shut down.
      */
     private OpenTelemetryInfo getOpenTelemetryInfo() {
-        Optional<OpenTelemetryLifecycleManager> openTelemetryInfo = openTelemetryInfoFactoryService.call((lifecycleManager) -> {
+        Optional<OpenTelemetryInfo> openTelemetryInfo = openTelemetryInfoFactoryService.call((lifecycleManager) -> {
             return lifecycleManager.getOpenTelemetryInfo(metaData);
         });
         return openTelemetryInfo.orElseGet(ErrorOpenTelemetryInfo::new);

@@ -34,7 +34,6 @@ import io.opentelemetry.api.trace.Tracer;
 public class OpenTelemetryAccessor {
 
     private static final TraceComponent tc = Tr.register(OpenTelemetryAccessor.class);
-    private static final ServiceCaller<OpenTelemetryInfoFactory> openTelemetryInfoFactoryService = new ServiceCaller<OpenTelemetryInfoFactory>(OpenTelemetryAccessor.class, OpenTelemetryInfoFactory.class);
     private static final ServiceCaller<OpenTelemetryLifecycleManager> openTelemetryLifecycleManagerService = new ServiceCaller<OpenTelemetryLifecycleManager>(OpenTelemetryAccessor.class, OpenTelemetryLifecycleManager.class);
     private static final ServiceCaller<CDIService> cdiService = new ServiceCaller<CDIService>(OpenTelemetryAccessor.class, CDIService.class);
 
@@ -95,8 +94,8 @@ public class OpenTelemetryAccessor {
     }
 
     public static boolean isRuntimeEnabled() {
-        Optional<Object> isRuntimeEnabled = openTelemetryInfoFactoryService.call((factory) -> {
-            return factory.isRuntimeEnabled();
+        Optional<Object> isRuntimeEnabled = openTelemetryLifecycleManagerService.call((lifecycle) -> {
+            return lifecycle.isRuntimeEnabled();
         });
         return (boolean) isRuntimeEnabled.orElse(false);
     }

@@ -9,9 +9,12 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.common.info;
 
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.lang3.concurrent.LazyInitializer;
+import org.apache.commons.lang3.function.FailableSupplier;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -27,6 +30,7 @@ import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.wsspi.kernel.feature.LibertyFeature;
 
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -39,43 +43,58 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
     private static final TraceComponent tc = Tr.register(OpenTelemtryLifecycleManagerImpl.class);
 
     private final MetaDataSlot slotForOpenTelemetryInfoHolder;
-    private final EnabledOpenTelemetryInfo otelRuntimeInstance = null;
+    private final OpenTelemetryInfoFactory openTelemetryInfoFactory;
 
-    LazyInitializer<OpenTelemetryInfo> runtimeInstance = null;
-
-    @Reference
-    private OpenTelemetryInfoFactory openTelemetryInfoFactory;
+    //These three are set during activation, and refreshed on checkpoint restore. (runtimeInstance is only set if we need one)
+    private boolean waitingForCheckpointRestore;
+    private boolean isRuntimeEnabled;
+    private LazyInitializer<OpenTelemetryInfo> runtimeInstance = null;
 
     @Activate
-    public OpenTelemtryLifecycleManagerImpl(@Reference MetaDataSlotService slotService) {
+    public OpenTelemtryLifecycleManagerImpl(@Reference MetaDataSlotService slotService, @Reference OpenTelemetryInfoFactory openTelemetryInfoFactory,
+                                            @Reference(service = LibertyFeature.class, target = "(ibm.featureName=mpTelemetry-*)") ServiceReference<LibertyFeature> featureRef) {
 
+        this.openTelemetryInfoFactory = openTelemetryInfoFactory;
         slotForOpenTelemetryInfoHolder = slotService.reserveMetaDataSlot(ApplicationMetaData.class);
+
+        String shortName = (String) featureRef.getProperty("ibm.featureName");
+        //the runtimeMode was added in 2.0
+        final boolean telemetry2OrLater = shortName.startsWith("mpTelemetry-1") ? false : true;
 
         CheckpointHook checkpointHook = new CheckpointHook() {
 
             @Override
             public void restore() {
-                if (openTelemetryInfoFactory.isRuntimeEnabled()) {
-                    runtimeInstance = LazyInitializer.<OpenTelemetryInfo> builder().setInitializer(openTelemetryInfoFactory::createOpenTelemetryInfo).get();
-                }
+                waitingForCheckpointRestore = false;
+                checkThenSetRuntimeFields(telemetry2OrLater);
             }
         };
 
-        //Create the runtime instance anyway because we do not know if the configuration will enable it later after a checkpoint restore.
-        //This does mean we must be very careful about not returning it in app mode because it will silently fail without warning to the customer
-        //And we cannot check for this generally because returning it is correct if we're in runtime instance mode and we're pre-checkpoint
-
-        //If checkpoint is enabled this will be replaced by the restore() method in the hook above.
-        //If checkpoint is disabled this will be replaced immediately below
-        runtimeInstance = LazyInitializer.<OpenTelemetryInfo> builder().setInitializer(openTelemetryInfoFactory::createDisabledOpenTelemetryInfo).get();
-
-        // If checkpoint is enabled this if statement will register the hook we created above, so runtimeInstance will be set after restore. Then it returns true.
-        // If checkpoint is disabled this if statement will return false, so runtimeInstance will be set right away.
+        // If checkpoint is enabled this statement will register the hook we created above. Then checkpoint returns true so the if statement is false.
+        // If checkpoint is disabled it does nothing and returns false, so the if statement will be true.
         if (!CheckpointPhase.getPhase().addMultiThreadedHook(checkpointHook)) {
-            if (openTelemetryInfoFactory.isRuntimeEnabled()) {
-                runtimeInstance = LazyInitializer.<OpenTelemetryInfo> builder().setInitializer(openTelemetryInfoFactory::createOpenTelemetryInfo).get();
-            }
+            //Checkpoint disabled
+            waitingForCheckpointRestore = false;
+            checkThenSetRuntimeFields(telemetry2OrLater);
+        } else {
+            //Checkpoint enabled, before restore.
+            waitingForCheckpointRestore = true;
         }
+    }
+
+    private void checkThenSetRuntimeFields(boolean telemetry2OrLater) {
+        HashMap<String, String> propreties = OpenTelemetryPropertiesReader.getRuntimeInstanceTelemetryProperties();
+        isRuntimeEnabled = telemetry2OrLater && !!!OpenTelemetryPropertiesReader.checkDisabled(propreties);
+
+        if (isRuntimeEnabled) {
+            runtimeInstance = LazyInitializer.<OpenTelemetryInfo> builder().setInitializer(curryInfoFactory(isRuntimeEnabled)).get();
+        }
+    }
+
+    private FailableSupplier<OpenTelemetryInfo, ? extends Exception> curryInfoFactory(final boolean runtimeEnabled) {
+        return () -> {
+            return openTelemetryInfoFactory.createOpenTelemetryInfo(runtimeEnabled);
+        };
     }
 
     /** {@inheritDoc} */
@@ -84,14 +103,14 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
         //We do not actually initialize on application starting, we do that lazily if this is needed.
 
         //We don't use app scoped OpenTelemetry objects if the server scoped object exists
-        if (otelRuntimeInstance != null) {
+        if (isRuntimeEnabled) {
             return;
         }
 
         ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
         OpenTelemetryInfoReference oTelRef = (OpenTelemetryInfoReference) extAppInfo.getMetaData().getMetaData(slotForOpenTelemetryInfoHolder);
 
-        LazyInitializer<OpenTelemetryInfo> newSupplier = LazyInitializer.<OpenTelemetryInfo> builder().setInitializer(openTelemetryInfoFactory::createOpenTelemetryInfo)
+        LazyInitializer<OpenTelemetryInfo> newSupplier = LazyInitializer.<OpenTelemetryInfo> builder().setInitializer(curryInfoFactory(isRuntimeEnabled))
                                                                         .setCloser(info -> info.dispose()).get();
 
         if (oTelRef == null) {
@@ -111,7 +130,7 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
         //We don't use app scoped OpenTelemetry objects if the server scoped object exists
-        if (otelRuntimeInstance != null) {
+        if (isRuntimeEnabled) {
             return;
         }
 
@@ -164,20 +183,35 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
     /** {@inheritDoc} */
     @Override
     public OpenTelemetryInfo getOpenTelemetryInfo(ApplicationMetaData metaData) {
-        //Return runtime instance if it exists, otherwise return the app instance.
 
-        if (openTelemetryInfoFactory.isRuntimeEnabled()) {
+        if (waitingForCheckpointRestore) {
+            //We always return a no-op when waiting for checkpoint
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Returning a disabled OTEL instance because we are waiting for a checkpoint restore .");
+            }
+            return openTelemetryInfoFactory.createDisabledOpenTelemetryInfo();
+        }
+
+        //Return runtime instance if it exists, otherwise return the app instance.
+        if (isRuntimeEnabled) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Returning {0} OTEL instance.", OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME);
             }
-            return otelRuntimeInstance;
+            try {
+                return runtimeInstance.get();
+            } catch (Exception e) {
+                Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+                return new ErrorOpenTelemetryInfo();
+            }
         }
 
         //If the runtime is disabled things that expect the runtime instance like the logging may try to acquire an
         //OTel anyway - they shouldn't, they should check if its enabled first and not grab an OpenTelemetry if its not
         //for performance - but they might so return a null.
         if (metaData == null) {
-            //TODO logging here
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Returning a disabled OTEL instance because metadata was null");
+            }
             return new DisabledOpenTelemetryInfo();
         }
 
@@ -200,5 +234,10 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
             return new ErrorOpenTelemetryInfo();
         }
+    }
+
+    @Override
+    public boolean isRuntimeEnabled() {
+        return isRuntimeEnabled;
     }
 }

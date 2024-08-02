@@ -16,7 +16,7 @@ public interface OpenTelemetryInfoFactory {
     /**
      * @return
      */
-    OpenTelemetryInfo createOpenTelemetryInfo();
+    OpenTelemetryInfo createOpenTelemetryInfo(boolean runtimeEnabled);
 
     /**
      * @return
@@ -26,11 +26,5 @@ public interface OpenTelemetryInfoFactory {
     /**
      * @return
      */
-    boolean isRuntimeEnabled();
-
-    /**
-     * @return
-     */
     OpenTelemetryInfo createDisabledOpenTelemetryInfo();
-
 }
