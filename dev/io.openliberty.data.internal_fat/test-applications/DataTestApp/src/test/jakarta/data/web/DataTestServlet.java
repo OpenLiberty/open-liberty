@@ -1354,10 +1354,45 @@ public class DataTestServlet extends FATServlet {
      * record class, or id class.
      */
     @Test
+    @SkipIfSysProp(DB_Oracle) //TODO Eclipse link SQL Generation bug on Oracle: https://github.com/OpenLiberty/open-liberty/issues/28545
     public void testFindAndDeleteReturnsInvalidTypes() {
         packages.deleteAll();
 
         packages.save(new Package(60006, 16.0f, 61.1f, 6.0f, "testFindAndDeleteReturnsInvalidTypes#60006"));
+
+        Sort<Package> sort = Sort.asc("id");
+
+        try {
+            long[] deleted = packages.delete3(Limit.of(3), sort);
+            fail("Deleted with return type of long[]: " + Arrays.toString(deleted) + " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            List<String> deleted = packages.delete4(Limit.of(4), sort);
+            fail("Deleted with return type of List<String>: " + deleted + " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            Collection<Number> deleted = packages.delete5(Limit.of(5), sort);
+            fail("Deleted with return type of Collection<Number>: " + deleted + " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Find-and-delete repository operations that return invalid types that are neither the entity class,
+     * record class, or id class.
+     * In this case the table is empty and no results will have been deleted,
+     * we should still throw a mapping exception.
+     */
+    @Test
+    public void testFindAndDeleteReturnsInvalidTypesEmpty() {
+        packages.deleteAll();
 
         Sort<Package> sort = Sort.asc("id");
 
