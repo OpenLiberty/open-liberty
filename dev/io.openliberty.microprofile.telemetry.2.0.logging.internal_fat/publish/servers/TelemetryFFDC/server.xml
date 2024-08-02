@@ -19,6 +19,8 @@
 		<feature>componentTest-2.0</feature>
 		<feature>usr:test.ffdc-1.0</feature>
 	</featureManager>
+	
+	<javaPermission className="java.util.PropertyPermission" name="io.openliberty.microprofile.telemetry.ffdc.early" actions="read"/>
 
 	<mpTelemetry source="ffdc"/>
 	

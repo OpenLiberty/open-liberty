@@ -62,7 +62,7 @@ public class TelemetryTraceTest extends FATServletClient {
         assertTrue("MPTelemetry did not log the correct log level", line.contains("TRACE"));
         assertTrue("MPTelemetry did not log the correct message", line.contains("Returning io.openliberty.microprofile.telemetry.runtime OTEL instance."));
         assertTrue("MPTelemetry did not log server module field",
-                   line.contains("io.openliberty.module=\"io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfoFactoryImpl\""));
+                   line.contains("io.openliberty.module=\"io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemtryLifecycleManagerImpl\""));
         assertTrue("MPTelemetry did not log server sequence field", line.contains("io.openliberty.sequence=\""));
         assertTrue("MPTelemetry did not log server type field", line.contains("io.openliberty.type=\"liberty_trace\""));
         assertTrue("MPTelemetry did not log server threadID field", line.contains("thread.id"));
