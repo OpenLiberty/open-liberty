@@ -14,13 +14,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -29,20 +29,15 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class TelemetryMessagesTest extends FATServletClient {
 
-    private static Class<?> c = TelemetryMessagesTest.class;
-
-    public static final String APP_NAME = "TelemetryServletTestApp";
     public static final String SERVER_NAME = "TelemetryMessageNoApp";
 
-    @Server(SERVER_NAME)
-    public static LibertyServer server;
+    public static LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);;
 
     private static final String MESSAGE_LOG = "logs/messages.log";
     private static final String CONSOLE_LOG = "logs/console.log";
 
     @BeforeClass
     public static void initialSetup() throws Exception {
-        server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
         server.startServer();
     }
 
@@ -51,9 +46,17 @@ public class TelemetryMessagesTest extends FATServletClient {
      */
     @Test
     public void testTelemetryMessages() throws Exception {
-        String line = server.waitForStringInLog("CWWKF0011I", server.getConsoleLogFile());
-        List<String> linesMessagesLog = server.findStringsInFileInLibertyServerRoot("^(?!.*scopeInfo).*\\[.*$", MESSAGE_LOG);
-        List<String> linesConsoleLog = server.findStringsInFileInLibertyServerRoot(".*scopeInfo.*", CONSOLE_LOG);
+        testTelemetryMessages(server, null);
+    }
+
+    static void testTelemetryMessages(LibertyServer s, Consumer<List<String>> consoleConsumer) throws Exception {
+        String line = s.waitForStringInLog("CWWKF0011I", s.getConsoleLogFile());
+        List<String> linesMessagesLog = s.findStringsInFileInLibertyServerRoot("^(?!.*scopeInfo).*\\[.*$", MESSAGE_LOG);
+        List<String> linesConsoleLog = s.findStringsInFileInLibertyServerRoot(".*scopeInfo.*", CONSOLE_LOG);
+
+        if (consoleConsumer != null) {
+            consoleConsumer.accept(linesConsoleLog);
+        }
 
         assertEquals("Messages.log and Telemetry console logs don't match.", linesMessagesLog.size(), linesConsoleLog.size());
 

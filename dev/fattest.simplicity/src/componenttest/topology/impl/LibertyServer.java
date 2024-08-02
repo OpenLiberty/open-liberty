@@ -2188,7 +2188,7 @@ public class LibertyServer implements LogMonitorClient {
         // that makes the file the restore message is in not predictable.
         RemoteFile logToCheck = getConsoleLogFile();
         // App validation needs the info messages in messages.log
-        if (!logToCheck.exists()) {
+        if (!logToCheck.exists() || consoleLogOff()) {
             // try the messages log
             Log.info(c, method, "WARNING: console.log does not exist-- trying app verification step with messages.log");
             logToCheck = machine.getFile(messageAbsPath);
@@ -2201,6 +2201,10 @@ public class LibertyServer implements LogMonitorClient {
         }
         Log.info(c, method, "Found restore message:" + found);
         return false;
+    }
+
+    private boolean consoleLogOff() {
+        return "OFF".equals(getBootstrapProperties().get("com.ibm.ws.logging.console.log.level"));
     }
 
     /**
@@ -5061,6 +5065,16 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         return props;
+    }
+
+    public void addBootstrapProperties(Map<String, String> properties) throws Exception {
+        Properties existing = getBootstrapProperties();
+        properties.forEach((k, v) -> existing.put(k, v));
+
+        RemoteFile serverBootStrapProps = machine.getFile(getServerRoot() + "/bootstrap.properties");
+        try (OutputStream out = serverBootStrapProps.openForWriting(false)) {
+            existing.store(out, null);
+        }
     }
 
     public void addEnvVar(String key, String value) {

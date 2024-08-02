@@ -20,16 +20,21 @@ fat.minimum.java.level: 11
 
 src: \
         fat/src,\
-        test-applications/ffdc-servlet/src
+        test-applications/ffdc-servlet/src,\
+        test-bundles/ffdc-bundle/src
 
 
 fat.project: true
 
-tested.features=mpTelemetry-2.0,pages-3.1
+tested.features=mpTelemetry-2.0,pages-3.1,checkpoint
 
 -buildpath: \
 	com.ibm.ws.componenttest.2.0,\
 	io.openliberty.microprofile.telemetry.internal_fat.common,\
 	io.openliberty.io.opentelemetry;version=latest,\
 	io.openliberty.io.opentelemetry.2.0;version=latest,\
-	io.openliberty.jakarta.servlet.6.1
+	io.openliberty.jakarta.servlet.6.1,\
+	com.ibm.wsspi.org.osgi.core;version=latest,\
+	com.ibm.ws.logging.core
+
+-sub: *.bnd
