@@ -56,7 +56,15 @@ public class Repository {
                                                          "com.ibm.ws:xalan:1.0.2",
                                                          "io.netty:netty-codec-http:4.1.107.Final",
                                                          "io.netty:netty-codec-http:4.1.94.Final",
-                                                         "org.bouncycastle:bcprov-jdk18on:1.77");
+                                                         "io.netty:netty-codec-http:4.1.90.Final",
+                                                         "org.bouncycastle:bcprov-jdk18on:1.77",
+                                                         "org.apache.cxf:cxf-rt-frontend-jaxrs:3.1.16",
+                                                         "org.apache.cxf:cxf-rt-rs-client:3.1.16",
+                                                         "org.apache.cxf:cxf-rt-rs-service-description:3.1.16",
+                                                         "org.apache.cxf:cxf-rt-transports-http:3.1.16",
+                                                         "org.apache.cxf:cxf-tools-common:3.1.16",
+                                                         "org.apache.cxf:cxf-tools-wadlto-jaxrs:3.1.16",
+                                                         "org.eclipse.parsson:parsson:1.1.0");
 
     private final Map<String, List<Module>> moduleMap = new HashMap<>();
 
