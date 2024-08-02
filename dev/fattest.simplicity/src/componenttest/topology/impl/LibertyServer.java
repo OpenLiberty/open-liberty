@@ -4267,6 +4267,10 @@ public class LibertyServer implements LogMonitorClient {
         return listDirectoryContents(LibertyServerUtils.makeJavaCompatible(serverRoot + "/logs/ffdc", machine), "exception_summary");
     }
 
+    public ArrayList<String> listDDLFiles(String server) throws Exception {
+        return listDirectoryContents(LibertyServerUtils.makeJavaCompatible(serverRoot + "/ddl", machine), "ddl");
+    }
+
     /* not called */
     public int getOsgiConsolePort() {
         return osgiConsolePort;

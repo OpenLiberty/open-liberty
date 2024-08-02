@@ -49,6 +49,9 @@ public class DataStoreTestEJB {
     @Inject
     EJBModuleDSResRefRepo serverDSResRefRepo;
 
+    @Inject
+    DSDRepoEJB dsdRepoEJB;
+
     /**
      * Use a repository, defined in an EJB, that specifies the JNDI name of a
      * DataSourceDefinition, also defined in the EJB, which has user id ejbuser1.
@@ -114,4 +117,21 @@ public class DataStoreTestEJB {
         assertEquals(97, ninety_seven.value);
         assertEquals("ninety-seven", ninety_seven.id);
     }
+
+    /**
+     * Use a repository, defined in an EJB, that specifies the JNDI name of a
+     * DataSourceDefinition, defined by a servlet in a WAR module, which has
+     * user id servletuser1. Use a resource accessor method to obtain a connection
+     * to the data source and verify the user name matches.
+     */
+    public void testDataSourceDefinitionInWARModuleFromEJB() {
+        dsdRepoEJB.put(DSDEntityEJB.of(14, "fourteen"));
+
+        try {
+            assertEquals("servletuser1", dsdRepoEJB.getUser());
+        } catch (SQLException ex) {
+            throw new EJBException(ex);
+        }
+    }
+
 }

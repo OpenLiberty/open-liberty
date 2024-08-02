@@ -26,6 +26,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
+import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -72,6 +73,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
+import com.ibm.wsspi.persistence.DDLGenerationParticipant;
 import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.persistence.InMemoryMappingFile;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
@@ -93,7 +95,7 @@ import jakarta.persistence.Table;
  * or a dataStore id is configured as the repository dataStore.
  * It creates entity managers from a PersistenceServiceUnit from the persistence service.
  */
-public class DBStoreEMBuilder extends EntityManagerBuilder {
+public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerationParticipant {
     static final String EOLN = String.format("%n");
     private static final long MAX_WAIT_FOR_SERVICE_NS = TimeUnit.SECONDS.toNanos(60);
     private static final TraceComponent tc = Tr.register(DBStoreEMBuilder.class);
@@ -413,6 +415,17 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
                                                                           entityClassNames.toArray(new String[entityClassNames.size()]));
 
             collectEntityInfo(entityTypes);
+
+            // Register as a DDL generator for use by the ddlGen command and add to list for cleanup on application stop
+            BundleContext thisbc = FrameworkUtil.getBundle(getClass()).getBundleContext();
+            ServiceRegistration<DDLGenerationParticipant> ddlgenreg = thisbc.registerService(DDLGenerationParticipant.class, this, null);
+            Queue<ServiceRegistration<DDLGenerationParticipant>> ddlgenRegistrations = provider.ddlgeneratorsAllApps.get(application);
+            if (ddlgenRegistrations == null) {
+                Queue<ServiceRegistration<DDLGenerationParticipant>> empty = new ConcurrentLinkedQueue<>();
+                if ((ddlgenRegistrations = provider.ddlgeneratorsAllApps.putIfAbsent(application, empty)) == null)
+                    ddlgenRegistrations = empty;
+            }
+            ddlgenRegistrations.add(ddlgenreg);
 
         } catch (RuntimeException x) {
             for (Class<?> entityClass : entityTypes)
@@ -835,5 +848,24 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
         }
 
         xml.append("  </attributes>").append(EOLN);
+    }
+
+    /**
+     * Generates DDL from the PersistenceServiceUnit obtained from the Persistence Service
+     * for creating EntityManagers, and writes it out.
+     *
+     * @param out a Writer where DDL will be written
+     */
+    @Override
+    public void generate(Writer out) throws Exception {
+        if (persistenceServiceUnit == null) {
+            throw new IllegalStateException("PersistenceUnit has not benn initialized.");
+        }
+        persistenceServiceUnit.generateDDL(out);
+    }
+
+    @Override
+    public String getDDLFileName() {
+        return databaseStoreId + "_repository";
     }
 }
