@@ -13,6 +13,7 @@
 package com.ibm.ws.wsat.common.impl;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.jaxws.wsat.Constants;
 
 /**
  * Represents a remote participant in a WSAT transaction.
@@ -31,8 +33,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 public class WSATParticipant extends WSATEndpoint implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private static final String CLASS_NAME = WSATParticipant.class.getName();
-    private static final TraceComponent TC = Tr.register(WSATParticipant.class);
+    private static final TraceComponent TC = Tr.register(WSATParticipant.class, Constants.TRACE_GROUP);
 
     /*
      * The transaction global id and the participant id are the only serializable
@@ -82,12 +83,32 @@ public class WSATParticipant extends WSATEndpoint implements Serializable {
         state = newState;
     }
 
+    @Trivial
     public synchronized void setResponse(WSATParticipantState newState) {
-        state = newState;
+
+        // If we're aborted, we're aborted
+        if (state != WSATParticipantState.ABORTED) {
+            if (TC.isDebugEnabled()) {
+                Tr.debug(TC, "Set response from " + state + " to " + newState);
+            }
+            state = newState;
+        } else {
+            if (TC.isDebugEnabled()) {
+                if (newState != WSATParticipantState.ABORTED) {
+                    Tr.debug(TC, "Not overriding " + WSATParticipantState.ABORTED + " with " + newState);
+                }
+            }
+        }
+
         notifyAll();
     }
 
+    @Trivial
     public synchronized WSATParticipantState waitResponse(long timeoutMills, WSATParticipantState... responses) {
+        if (TC.isEntryEnabled()) {
+            Tr.entry(TC, "waitResponse", this, timeoutMills, responses);
+        }
+
         final List<WSATParticipantState> responseList = Arrays.asList(responses);
 
         // Wait forever if timeout <= 0
@@ -99,17 +120,20 @@ public class WSATParticipant extends WSATEndpoint implements Serializable {
                 }
             }
         } else {
-            long now = System.nanoTime() / 1000000; // Use time in miiliseconds
-            final long expiry = now + timeoutMills;
-            while (now < expiry && !responseList.contains(state)) {
+            final Instant expiry = Instant.now().plusMillis(timeoutMills);
+            while (Instant.now().compareTo(expiry) < 0 && !responseList.contains(state)) {
                 try {
-                    wait(expiry - now);
+                    wait(expiry.minusMillis(Instant.now().toEpochMilli()).toEpochMilli());
                 } catch (InterruptedException e) {
                 }
-                now = System.nanoTime() / 1000000;
             }
         }
-        return responseList.contains(state) ? state : WSATParticipantState.TIMEOUT;
+
+        final WSATParticipantState ret = responseList.contains(state) ? state : WSATParticipantState.TIMEOUT;
+        if (TC.isEntryEnabled()) {
+            Tr.exit(TC, "waitResponse", ret);
+        }
+        return ret;
     }
 
     /*
@@ -144,6 +168,6 @@ public class WSATParticipant extends WSATEndpoint implements Serializable {
     // For debug
     @Override
     public String toString() {
-        return getClass().getSimpleName() + ": " + globalId + "/" + participantId + " (" + state + ")";
+        return getClass().getSimpleName() + ": " + globalId + "/" + participantId + " (" + state + ") " + Integer.toHexString(this.hashCode());
     }
 }
