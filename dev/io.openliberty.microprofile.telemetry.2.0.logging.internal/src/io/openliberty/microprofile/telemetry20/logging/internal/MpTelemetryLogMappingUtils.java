@@ -37,7 +37,8 @@ import io.opentelemetry.semconv.SemanticAttributes;
 @Trivial
 public class MpTelemetryLogMappingUtils {
 
-    private static final TraceComponent tc = Tr.register(OpenTelemetryLogHandler.class, "TELEMETRY", "io.openliberty.microprofile.telemetry.internal.common.resources.MPTelemetry");
+    private static final TraceComponent tc = Tr.register(MpTelemetryLogMappingUtils.class, "TELEMETRY",
+                                                         "io.openliberty.microprofile.telemetry.internal.common.resources.MPTelemetry");
 
     /**
      * Get the event type from the Liberty log source.

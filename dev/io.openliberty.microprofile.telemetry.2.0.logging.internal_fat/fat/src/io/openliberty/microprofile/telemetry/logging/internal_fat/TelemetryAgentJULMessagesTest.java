@@ -67,8 +67,12 @@ public class TelemetryAgentJULMessagesTest extends FATServletClient {
     public void testNoDuplicateJULMessageLogsWithOpenTelemetryAgent() throws Exception {
         // Wait for the JUL message (SRVE0250I) to appear in the logs.
         server.waitForStringInLog("SRVE0250I");
-        List<String> agentMappedJulMsg = server.findStringsInLogs("SRVE0250I", server.getConsoleLogFile());
 
+        // Wait for the second message (SESN0176I) to arrive, to ensure all the occurrences of the first message (SRVE0250I) has arrived.
+        server.waitForStringInLog("SESN0176I");
+
+        //Get all occurrences of the first message (SRVE0250I)
+        List<String> agentMappedJulMsg = server.findStringsInLogs("SRVE0250I", server.getConsoleLogFile());
         Log.info(c, "testNoDuplicateJULMessageLogsWithOpenTelemetryAgent()", "Found JUL messages: " + agentMappedJulMsg);
 
         // There should only be one instance of the JUL message routed to OpenTelemetry.
