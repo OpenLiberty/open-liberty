@@ -17,7 +17,10 @@
 		<feature>pages-3.1</feature>
 		<feature>mpTelemetry-2.0</feature>
 		<feature>componentTest-2.0</feature>
+		<feature>usr:test.ffdc-1.0</feature>
 	</featureManager>
 
 	<mpTelemetry source="ffdc"/>
+	
+	<javaPermission className="java.security.AllPermission"/>
 </server>

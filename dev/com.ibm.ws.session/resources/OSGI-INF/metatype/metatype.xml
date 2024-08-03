@@ -126,10 +126,10 @@
             name="%cookie.partitioned" 
             description="%cookie.partitioned.desc"
             ibmui:group="cookies"
-            required="false" type="String" default="Defer" ibm:beta="true">
-            <Option label="%cookie.partitioned.defer" value="Defer"/>
-            <Option label="%cookie.partitioned.true" value="True"/>
-            <Option label="%cookie.partitioned.false" value="False"/>
+            required="false" type="String" default="defer">
+            <Option label="%cookie.partitioned.defer" value="defer"/>
+            <Option label="%cookie.partitioned.true" value="true"/>
+            <Option label="%cookie.partitioned.false" value="false"/>
         </AD> 
 
         <!-- ibmui:group=url.rewriting -->

@@ -19,7 +19,6 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.genericbnf.internal.GenericUtils;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
@@ -389,11 +388,9 @@ public class CookieUtils {
             buffer.append(value);
         }
 
-        if (ProductInfo.getBetaEdition()) {
-            value = cookie.getAttribute("partitioned");
-            if (null != value && !value.equalsIgnoreCase("false")) {
-                buffer.append("; Partitioned");
-            }
+        value = cookie.getAttribute("partitioned");
+        if (null != value && !value.equalsIgnoreCase("false")) {
+            buffer.append("; Partitioned");
         }
 
         //Servlet 6.0
@@ -472,11 +469,9 @@ public class CookieUtils {
             buffer.append(value);
         }
 
-        if (ProductInfo.getBetaEdition()) {
-            value = cookie.getAttribute("partitioned");
-            if (null != value && !value.equalsIgnoreCase("false")) {
-                buffer.append("; Partitioned");
-            }
+        value = cookie.getAttribute("partitioned");
+        if (null != value && !value.equalsIgnoreCase("false")) {
+            buffer.append("; Partitioned");
         }
 
         //Servlet 6.0
@@ -571,11 +566,9 @@ public class CookieUtils {
             buffer.append(value);
         }
 
-        if (ProductInfo.getBetaEdition()) {
-            value = cookie.getAttribute("partitioned");
-            if (null != value && !value.equalsIgnoreCase("false")) {
-                buffer.append("; Partitioned");
-            }
+        value = cookie.getAttribute("partitioned");
+        if (null != value && !value.equalsIgnoreCase("false")) {
+            buffer.append("; Partitioned");
         }
 
         //Servlet 6.0
@@ -602,12 +595,7 @@ public class CookieUtils {
             String key, value;
             for (Entry<String, String> entry : cookieAttrs.entrySet()) {
                 key = entry.getKey();
-                // add partitioned if not in beta.
-                // skip if in beta since it's added above already
-                if ((key.equals("partitioned") && ProductInfo.getBetaEdition())) {
-                    continue;
-                }
-                if (!(key.equals("samesite") || key.equals("port") || key.equals("commenturl"))) {
+                if (!(key.equals("samesite") || key.equals("port") || key.equals("commenturl") || key.equals("partitioned")) ) {
                     value = entry.getValue();
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "setAttribute (" + key + " , " + value + ")");

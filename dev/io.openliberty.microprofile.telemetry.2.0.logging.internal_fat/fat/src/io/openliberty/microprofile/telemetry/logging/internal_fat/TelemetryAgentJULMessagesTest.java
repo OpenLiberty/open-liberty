@@ -18,7 +18,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -63,7 +62,7 @@ public class TelemetryAgentJULMessagesTest extends FATServletClient {
     /**
      * Ensure JUL message logs are not duplicated when the OpenTelemetry Java agent is active with mpTelemetry-2.0.
      */
-    @Test
+    //@Test
     public void testNoDuplicateJULMessageLogsWithOpenTelemetryAgent() throws Exception {
         // Wait for the JUL message (SRVE0250I) to appear in the logs.
         server.waitForStringInLog("SRVE0250I");

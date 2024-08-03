@@ -199,14 +199,14 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         useContextRootForSSOCookiePath = (Boolean) newProperties.get(CFG_KEY_USE_CONTEXT_ROOT_FOR_SSO_COOKIE_PATH);
         postParamMaxRequestBodySize = (Long) newProperties.get(CFG_KEY_MAX_CONTENT_LENGTH_TO_SAVE_POST_PARAMETERS);
 
-        if (ProductInfo.getBetaEdition()) {
-            String partValue = (String) newProperties.get(CFG_KEY_PARTITIONED_COOKIE);
-            if ("true".equalsIgnoreCase(partValue)||"false".equalsIgnoreCase(partValue)) {
-            //we want partitionedCookie to be null unless the value is true or false
+        String partValue = (String) newProperties.get(CFG_KEY_PARTITIONED_COOKIE);
+        if ("true".equalsIgnoreCase(partValue)||"false".equalsIgnoreCase(partValue)) {
+            // we want partitionedCookie to be null unless the value is true or false
+            // defer is the default value which mean that the channel config determines the partitioned value
+            // if the value is true / false then this config was explicltly set by the user
             partitionedCookie = getBooleanValue(CFG_KEY_PARTITIONED_COOKIE, partValue);
-            } else {
+        } else { // defer scenario - partitioned should not set on any cookies by the security code
             partitionedCookie = null;
-            }
         }
 
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(this);
