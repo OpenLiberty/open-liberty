@@ -36,3 +36,12 @@ Private-Package: \
 	com.ibm.ws.org.apache.aries.util;version=latest,\
 	com.ibm.ws.org.apache.ant;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest
+
+	-testpath: \
+	com.ibm.ws.repository;version=latest,\
+	com.ibm.ws.repository.test.utils;version=latest,\
+    org.hamcrest:hamcrest-all;version=1.3, \
+    ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+    com.ibm.ws.logging;version=latest, \
+    com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
+    com.ibm.ws.componenttest;version=latest

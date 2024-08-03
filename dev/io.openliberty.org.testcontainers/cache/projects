@@ -175,7 +175,7 @@ com.ibm.ws.transaction.hadb_fat.sqlserver.2
 com.ibm.ws.transaction.hadb_fat.sqlserver.lease
 com.ibm.ws.transaction.hadb_fat.sqlserver.retriablecodes
 com.ibm.ws.wsat.migration_fat.6
-com.ibm.ws.wsat.recovery_fat.multi.6
+com.ibm.ws.wsat.recovery_fat.multi.8
 fattest.simplicity
 io.openliberty.checkpoint_fat_jcache_hazelcast
 io.openliberty.checkpoint_fat_persistence
@@ -193,5 +193,6 @@ io.openliberty.microprofile.health.3.1.internal_fat
 io.openliberty.microprofile.openapi.ui.internal_fat
 io.openliberty.microprofile.reactive.messaging.internal_fat
 io.openliberty.microprofile.telemetry.1.0.internal.container_fat
+io.openliberty.microprofile.telemetry.internal.monitor_fat
 io.openliberty.org.apache.myfaces.4.0_fat
 io.openliberty.org.apache.myfaces.4.1_fat

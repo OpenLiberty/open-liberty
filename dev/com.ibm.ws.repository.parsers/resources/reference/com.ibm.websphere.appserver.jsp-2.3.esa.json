@@ -1,0 +1,145 @@
+    {
+        "description": "<div id=\"ibm-wasdev-feature-desc-content\">\nThis feature enables support for Java Server Pages (JSPs) that are written to the JSP 2.3 specification. This framework simplifies the construction of user interfaces. Enabling this feature also enables the Expression Language (EL) version 3.0 feature.  \n</div>\n<h2 id=\"ibm-wasdev-feature-instructions-title\">Command Line Install</h2>\n<div id=\"ibm-wasdev-feature-instructions-content\">\nTo install the feature from the command line, type:<br/><code>bin/installUtility install jsp-2.3</code> <br/>\nIf you are installing into 8.5.5.5 or earlier and the feature supports that version, use the featureManager command, for example:<br/><code>bin/featureManager install jsp-2.3 --when-file-exists=ignore</code>\n</div>\n <h2 id=\"ibm-wasdev-feature-notes-title\">Config Instructions</h2> \n<div id=\"ibm-wasdev-feature-notes-content\">\nTo use the feature at runtime add the following to your server.xml file<br/>\n<code>&lt;featureManager&gt;</br>\n&nbsp;&nbsp;&lt;feature&gt;jsp-2.3&lt;/feature&gt;</br>\n&lt;/featureManager&gt;</br></code> </div>\n <h2 id=\"ibm-wasdev-feature-notes-title\">Additional Information</h2> \n <div id=\"ibm-wasdev-feature-additional-information\">\n  <ul>\n   <li>For the complete feature documentation, see the <a href=\"http://www.ibm.com/support/knowledgecenter/SSAW57_liberty/com.ibm.websphere.wlp.nd.multiplatform.doc/ae/rwlp_feature_jsp-2.3.html\">jsp-2.3</a> feature description in IBM Knowledge Center.</li>\n   <li>For more detailed installation instructions, including using Installation Manager and WebSphere Developer Tools, see <a href=\"http://www.ibm.com/support/knowledgecenter/SSAW57_liberty/com.ibm.websphere.wlp.nd.multiplatform.doc/com.ibm.websphere.wlp.nd.multiplatform.doc/ae/twlp_inst_assets.html\">Installing Liberty Repository assets</a> in IBM Knowledge Center.</li>\n   <li>For offline installation from a directory-based repository using 8.5.5.8 or higher, see <a href=\"https://www.ibm.com/support/knowledgecenter/SSAW57_liberty/com.ibm.websphere.wlp.nd.multiplatform.doc/com.ibm.websphere.wlp.nd.multiplatform.doc/ae/t_install_assets_installUtility.html\">Installing assets using the installUtility command</a> in IBM Knowledge Center.</li>\n   <li>For system requirements, see <a href=\"http://www-969.ibm.com/software/reports/compatibility/clarity-reports/report/html/softwareReqsForProductByComponent?deliverableId=1337870535828&duComponent=Server_118F7A80A6C511E2A4CA497F0925FE1B\">WebSphere Application Server detailed system requirements</a>. Select the appropriate release, and click <b>WebSphere Application Server (all editions)</b>. Select the edition, and choose the offering you want in Requirements by component.</li>\n  </ul>\n</div>\n",
+        "licenseId": "https://www.eclipse.org/legal/epl-2.0/",
+        "licenseType": "UNSPECIFIED",
+        "name": "JavaServer Pages 2.3",
+        "provider": {
+            "name": "IBM Corp."
+        },
+        "shortDescription": "This feature enables support for Java Server Pages (JSPs) that are written to the JSP 2.3 specification. This framework simplifies the construction of user interfaces. Enabling this feature also enables the Expression Language (EL) version 3.0 feature.  ",
+        "type": "com.ibm.websphere.Feature",
+        "version": "1.0.0",
+        "wlpInformation": {
+            "appliesTo": "io.openliberty;productVersion=\"24.0.0.8\"",
+            "appliesToFilterInfo": [
+                {
+                    "editions": [
+                        "Liberty Core",
+                        "Base",
+                        "Express",
+                        "Developers",
+                        "ND",
+                        "z/OS"
+                    ],
+                    "hasMaxVersion": "true",
+                    "maxVersion": {
+                        "compatibilityLabel": "24.0.0.8",
+                        "inclusive": true,
+                        "label": "24.0.0",
+                        "value": "24.0.0.8"
+                    },
+                    "minVersion": {
+                        "compatibilityLabel": "24.0.0.8",
+                        "inclusive": true,
+                        "label": "24.0.0",
+                        "value": "24.0.0.8"
+                    },
+                    "productId": "io.openliberty"
+                }
+            ],
+            "displayPolicy": "VISIBLE",
+            "downloadPolicy": "INSTALLER",
+            "ibmInstallTo": "core",
+            "installPolicy": "MANUAL",
+            "javaSEVersionRequirements": {
+                "minVersion": "17.0.0",
+                "rawRequirements": [
+                    "com.ibm.ws.org.eclipse.jdt.core_1.0.92.jar: (&(osgi.ee=JavaSE)(version=1.8))",
+                    "com.ibm.ws.jsp_1.0.92.jar: (&(osgi.ee=JavaSE)(version=1.8))",
+                    "com.ibm.websphere.javaee.jstl.1.2_1.0.92.jar: (&(osgi.ee=JavaSE)(version=1.8))",
+                    "com.ibm.ws.jsp.jstl.facade_1.0.92.jar: (&(osgi.ee=JavaSE)(version=1.8))",
+                    "com.ibm.ws.jsp.2.3_1.0.92.jar: (&(osgi.ee=JavaSE)(version=1.8))",
+                    "io.openliberty.org.eclipse.jdt.core.java17_1.0.92.jar: (&(osgi.ee=JavaSE)(version=17))",
+                    "io.openliberty.org.eclipse.jdt.core.java11_1.0.92.jar: (&(osgi.ee=JavaSE)(version=11))",
+                    "com.ibm.ws.org.apache.taglibs.standard_1.0.92.jar: (&(osgi.ee=JavaSE)(version=1.8))"
+                ],
+                "versionDisplayString": "Java SE 17, Java SE 21, Java SE 23"
+            },
+            "links": [
+                {
+                    "label": "Features that this feature enables",
+                    "linkLabelProperty": "name",
+                    "query": [
+                        "wlpInformation.provideFeature=com.ibm.websphere.appserver.javax.jsp-2.3&wlpInformation.appliesToFilterInfo.minVersion.value=24.0.0.8&type=com.ibm.websphere.Feature",
+                        "wlpInformation.provideFeature=com.ibm.websphere.appserver.servlet-3.1&wlpInformation.appliesToFilterInfo.minVersion.value=24.0.0.8&type=com.ibm.websphere.Feature",
+                        "wlpInformation.provideFeature=io.openliberty.servlet.internal-3.1&wlpInformation.appliesToFilterInfo.minVersion.value=24.0.0.8&type=com.ibm.websphere.Feature",
+                        "wlpInformation.provideFeature=com.ibm.websphere.appserver.eeCompatible-7.0&wlpInformation.appliesToFilterInfo.minVersion.value=24.0.0.8&type=com.ibm.websphere.Feature",
+                        "wlpInformation.provideFeature=com.ibm.websphere.appserver.el-3.0&wlpInformation.appliesToFilterInfo.minVersion.value=24.0.0.8&type=com.ibm.websphere.Feature"
+                    ]
+                },
+                {
+                    "label": "Features that enable this feature",
+                    "linkLabelProperty": "name",
+                    "query": [
+                        "wlpInformation.requireFeature=com.ibm.websphere.appserver.jsp-2.3&wlpInformation.appliesToFilterInfo.minVersion.value=24.0.0.8&type=com.ibm.websphere.Feature"
+                    ]
+                },
+                {
+                    "label": "Features that this feature supersedes",
+                    "linkLabelProperty": "name",
+                    "query": [
+                        "wlpInformation.supersededBy=jsp-2.3&wlpInformation.appliesToFilterInfo.minVersion.value=24.0.0.8"
+                    ]
+                },
+                {
+                    "label": "Features that supersede this feature",
+                    "linkLabelProperty": "name"
+                },
+                {
+                    "label": "Features that supersede this feature",
+                    "linkLabelProperty": "name",
+                    "linkLabelSuffix": " (optional)"
+                }
+            ],
+            "lowerCaseShortName": "jsp-2.3",
+            "mainAttachmentSHA256": "d4970b8b5c243c6f6d99ec88293e663172f055e0745b9305d3514fd0d20bf428",
+            "mainAttachmentSize": 12724028,
+            "platforms": [
+                "javaee-7.0",
+                "javaee-8.0"
+            ],
+            "provideFeature": [
+                "com.ibm.websphere.appserver.jsp-2.3"
+            ],
+            "requireFeature": [
+                "com.ibm.websphere.appserver.javax.jsp-2.3",
+                "com.ibm.websphere.appserver.servlet-3.1",
+                "io.openliberty.servlet.internal-3.1",
+                "com.ibm.websphere.appserver.eeCompatible-7.0",
+                "com.ibm.websphere.appserver.el-3.0"
+            ],
+            "requireFeatureWithTolerates": [
+                {
+                    "feature": "com.ibm.websphere.appserver.eeCompatible-7.0",
+                    "tolerates": [
+                        "6.0",
+                        "8.0"
+                    ]
+                },
+                {
+                    "feature": "com.ibm.websphere.appserver.el-3.0"
+                },
+                {
+                    "feature": "com.ibm.websphere.appserver.javax.jsp-2.3"
+                },
+                {
+                    "feature": "com.ibm.websphere.appserver.servlet-3.1",
+                    "tolerates": [
+                        "4.0"
+                    ]
+                },
+                {
+                    "feature": "io.openliberty.servlet.internal-3.1",
+                    "tolerates": [
+                        "4.0"
+                    ]
+                }
+            ],
+            "shortName": "jsp-2.3",
+            "singleton": "true",
+            "typeLabel": "Feature",
+            "vanityRelativeURL": "features-com.ibm.websphere.appserver.jsp-2.3",
+            "visibility": "PUBLIC",
+            "webDisplayPolicy": "VISIBLE"
+        }
+    }
