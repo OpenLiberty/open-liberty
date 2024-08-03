@@ -45,6 +45,10 @@ com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:2.6.10.WAS-f
 com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen:2.6.10.WAS-f193aac
 com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa:2.6.10.WAS-f193aac
 com.ibm.ws.org.objenesis:objenesis:1.0
+com.ibm.ws.repository.parsers.test:anno-esa:1.0.0
+com.ibm.ws.repository.parsers.test:anno-metadata:1.0.0
+com.ibm.ws.repository.parsers.test:jsp-esa:2.3.0
+com.ibm.ws.repository.parsers.test:jsp-metadata:2.3.0
 com.ibm.ws:geronimo-validation:1.1
 io.openliberty.jakarta.ws.rs:jakarta-restful-ws-tck:3.1.2
 io.openliberty.org.codehaus.jackson:jackson-core-asl:1.9.13.1
