@@ -56,8 +56,8 @@ task validateNLS {
           include(name: '**/*Resource.nlsprops')
           exclude(name: '**/TraceLocalizationResource.nlsprops')
           exclude(name: '**/*Resource_*.nlsprops')
-          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 4.0.4
-          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 4.0.4
+          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 4.0.5
+          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 4.0.5
         }
       }
       delete fileTree(existingResourceDir){ 
@@ -68,8 +68,8 @@ task validateNLS {
           include(name: '**/*Resource.nlsprops')
           exclude(name: '**/TraceLocalizationResource.nlsprops')
           exclude(name: '**/*Resource_*.nlsprops')
-          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 4.0.4
-          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 4.0.4
+          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 4.0.5
+          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 4.0.5
         }
       }
     }
@@ -81,8 +81,8 @@ task validateNLS {
           include(name: '**/*Resource.nlsprops')
           exclude(name: '**/TraceLocalizationResource.nlsprops')
           exclude(name: '**/*Resource_*.nlsprops')
-          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 4.0.4
-          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 4.0.4
+          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 4.0.5
+          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 4.0.5
         }
       }
       delete fileTree(newResourcesDir){ 
@@ -93,8 +93,8 @@ task validateNLS {
           include(name: '**/*Resource.nlsprops')
           exclude(name: '**/TraceLocalizationResource.nlsprops')
           exclude(name: '**/*Resource_*.nlsprops')
-          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 4.0.4
-          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 4.0.4
+          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 4.0.5
+          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 4.0.5
         }
       }
     }
