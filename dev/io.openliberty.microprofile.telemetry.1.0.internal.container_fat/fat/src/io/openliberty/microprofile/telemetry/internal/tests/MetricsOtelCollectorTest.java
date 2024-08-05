@@ -59,7 +59,7 @@ public class MetricsOtelCollectorTest {
     private static final String SERVER_NAME = "spanTestServer";
 
     public static Network network = Network.newNetwork();
-    public static OtelCollectorContainer otelCollectorContainer = new OtelCollectorContainer(new File("lib/LibertyFATTestFiles/otel-collector-config-metrics.yaml"))
+    public static OtelCollectorContainer otelCollectorContainer = new OtelCollectorContainer(new File("lib/LibertyFATTestFiles/otel-collector-config-metrics.yaml"), 3131)
                                                                                                                                                                    .withNetwork(network)
                                                                                                                                                                    .withNetworkAliases("otel-collector-metrics")
                                                                                                                                                                    .withLogConsumer(new SimpleLogConsumer(MetricsOtelCollectorTest.class,
