@@ -42,6 +42,7 @@ import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
+import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 
 @Component(service = ResourceFactoryBuilder.class,
@@ -169,6 +170,11 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
         if (Boolean.TRUE.equals(threadFactoryProps.get("virtual")) &&
             JavaInfo.majorVersion() < 21) {
             threadFactoryProps.put("virtual", Boolean.FALSE);
+            Tr.info(tc, "CWWKC1217.no.virtual.threads",
+                    jndiName,
+                    ManagedThreadFactory.class.getSimpleName(),
+                    declaringMetadata.getName(),
+                    JavaInfo.majorVersion());
         }
 
         String managedThreadFactoryID = getManagedThreadFactoryID(application, module, component, jndiName);

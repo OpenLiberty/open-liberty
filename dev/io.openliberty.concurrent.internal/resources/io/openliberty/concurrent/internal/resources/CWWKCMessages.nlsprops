@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2023 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -46,6 +46,13 @@ CWWKC1204.not.serializable=CWWKC1204E: Cannot create a serializable contextual p
 CWWKC1204.not.serializable.explanation=Third-party thread context types are not compatible with serialization and cannot be configured to be propagated for serializable contextual proxies.
 CWWKC1204.not.serializable.useraction=Update the application to request a non-serializable contextual proxy or ensure that no third-party context types are configured to be propagated.
 
+CWWKC1217.no.virtual.threads=CWWKC1217I: The Concurrency specification requires \
+ virtual=true to be ignored on the {0} {1} definition in the {2} application \
+ artifact because Java {3} does not support virtual threads.
+CWWKC1217.no.virtual.threads.explanation=Virtual threads are not available prior \
+ to Java 21.
+CWWKC1217.no.virtual.threads.useraction=Update to Java 21 or higher to enable the \
+ use of virtual threads.
 
 
 # Messages for @Asynchronous that are shared with other bundles:

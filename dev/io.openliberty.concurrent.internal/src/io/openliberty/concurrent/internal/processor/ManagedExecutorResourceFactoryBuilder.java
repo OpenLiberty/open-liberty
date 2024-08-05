@@ -44,6 +44,7 @@ import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
 import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
 
 @Component(service = ResourceFactoryBuilder.class,
            property = "creates.objectClass=jakarta.enterprise.concurrent.ManagedExecutorService") //  TODO more types?
@@ -224,6 +225,13 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
             // TODO remove the following once unspecified is supported
             concurrencyPolicyProps.put("maxPolicy", "loose");
         } else {
+            if (Boolean.TRUE.equals(virtual))
+                Tr.info(tc, "CWWKC1217.no.virtual.threads",
+                        jndiName,
+                        ManagedExecutorService.class.getSimpleName(),
+                        declaringMetadata.getName(),
+                        JavaInfo.majorVersion());
+
             // virtual = false is the default
             concurrencyPolicyProps.put("maxPolicy", "loose");
         }
