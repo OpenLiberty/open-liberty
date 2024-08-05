@@ -77,7 +77,15 @@ public class WebProviderAuthenticatorHelper {
         }
 
         if (!mapIdentityToRegistryUser && !subject.isReadOnly()) {
-            removeSecurityNameAndUniquedIdFromHashtable(subject, customProperties, mapIdentityToRegistryUser);
+	    try {
+		removeSecurityNameAndUniquedIdFromHashtable(subject, customProperties, mapIdentityToRegistryUser);
+	    }
+	    catch (Exception e) {
+                // Even though isReadOnly is checked in the if condition,
+                // there's a very small time window where getCallerSubject() 
+                // could be called by application and make the subject readOnly.
+		// We clean up the hashtable the best we can and disregard the exception if it happens. 
+	    }
         }
 
         AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, subject);
