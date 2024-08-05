@@ -12,20 +12,20 @@
  -->
 <server>
     <featureManager>
-        <!-- Features being tested -->
-        <feature>validation-3.1</feature>
-        
-        <!-- Protocol used by Arquillian -->
-        <feature>servlet-6.1</feature>
-        
-        <!-- Needed by test infrastructure -->
-        <feature>timedexit-1.0</feature>
+    <feature>usr:valThirdParty-3.1</feature>
+        <feature>jakartaee-11.0</feature>
+        <feature>localConnector-1.0</feature>
         
         <!-- Optional feature for better arquillian support -->
         <feature>arquillian-support-jakarta-2.1</feature>
 
         <!-- Features needed for arquillan support -->
-        <feature>localConnector-1.0</feature>
+        
+       
+        
+        
+         
+         
     </featureManager>
     
     <include location="../fatTestPorts.xml" />

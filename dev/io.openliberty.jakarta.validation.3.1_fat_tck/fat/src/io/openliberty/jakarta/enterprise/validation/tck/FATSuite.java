@@ -12,9 +12,13 @@
  *******************************************************************************/
 package io.openliberty.jakarta.enterprise.validation.tck;
 
+
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 
@@ -24,6 +28,26 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 ValidationTckLauncher.class
 
 })
+
 public class FATSuite {
 
+   
+    private static final String FEATURE_NAME = "io.openliberty.valThirdParty-3.1.mf";
+    private static final String BUNDLE_NAME = "io.openliberty.valThirdParty-3.1.jar";
+   
+    @BeforeClass
+    public static void setUp() throws Exception {
+        LibertyServer server = LibertyServerFactory.getLibertyServer("ValidationTCKServer");
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/features", "features/" + FEATURE_NAME);
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/" + BUNDLE_NAME);
+        
+    }
+    
+
 }
+
+
+
+
+
+

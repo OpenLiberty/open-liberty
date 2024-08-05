@@ -52,7 +52,7 @@ public class ValidationTckLauncher {
         //Path that jimage will output modules for signature testing
         opts.put("-Djimage.dir", server.getServerSharedPath() + "jimage/output/");
         server.setJvmOptions(opts);
-
+       // server.installUserFeature("io.openliberty.valThirdParty-3.1");
         //Finally start the server
         server.startServer();
     }
