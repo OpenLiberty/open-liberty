@@ -34,4 +34,10 @@ Export-Package: \
   @${repo;org.apache.cxf:cxf-rt-rs-service-description;${cxfVersion}}!/!META-INF/*
 
 -buildpath: \
-  org.apache.cxf:cxf-rt-rs-service-description;version=${cxfVersion}
+	org.apache.cxf:cxf-rt-rs-service-description;version='${cxfVersion}',\
+	org.apache.ws.xmlschema:xmlschema-core;strategy=exact;version='2.0.3',\
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2,\
+	com.ibm.websphere.javaee.jaxb.2.2,\
+	com.ibm.websphere.javaee.jaxrs.2.1,\
+	com.ibm.websphere.javaee.servlet.3.1
