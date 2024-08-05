@@ -4659,6 +4659,7 @@
             <root>com.ibm.websphere.appserver.microProfile-3.3</root>
         </input>
         <output>
+            <resolved>io.openliberty.httpStat-monitor1.0</resolved>
             <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
@@ -4803,6 +4804,7 @@
             <root>com.ibm.websphere.appserver.microProfile-4.0</root>
         </input>
         <output>
+            <resolved>io.openliberty.httpStat-monitor1.0</resolved>
             <resolved>com.ibm.websphere.appserver.eeCompatible-8.0</resolved>
             <resolved>io.openliberty.servlet.api-4.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeeddSchema-1.0</resolved>
@@ -4944,6 +4946,7 @@
             <root>com.ibm.websphere.appserver.microProfile-4.1</root>
         </input>
         <output>
+            <resolved>io.openliberty.httpStat-monitor1.0</resolved>
             <resolved>com.ibm.websphere.appserver.eeCompatible-8.0</resolved>
             <resolved>io.openliberty.servlet.api-4.0</resolved>
             <resolved>com.ibm.websphere.appserver.javax.el-3.0</resolved>
@@ -6554,6 +6557,7 @@
             <root>com.ibm.websphere.appserver.mpMetrics-2.3</root>
         </input>
         <output>
+            <resolved>io.openliberty.httpStat-monitor1.0</resolved>
             <resolved>json-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.eeCompatible-7.0</resolved>
             <resolved>io.openliberty.servlet.api-3.1</resolved>
@@ -6644,6 +6648,7 @@
             <root>com.ibm.websphere.appserver.mpMetrics-3.0</root>
         </input>
         <output>
+            <resolved>io.openliberty.httpStat-monitor1.0</resolved>
             <resolved>json-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.eeCompatible-8.0</resolved>
             <resolved>io.openliberty.servlet.api-4.0</resolved>
@@ -13329,6 +13334,7 @@
             <root>io.openliberty.microProfile-5.0</root>
         </input>
         <output>
+            <resolved>io.openliberty.httpStat-monitor1.0.jakarta</resolved>
             <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
@@ -14548,6 +14554,7 @@
             <root>io.openliberty.mpMetrics-4.0</root>
         </input>
         <output>
+            <resolved>io.openliberty.httpStat-monitor1.0.jakarta</resolved>
             <resolved>json-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
