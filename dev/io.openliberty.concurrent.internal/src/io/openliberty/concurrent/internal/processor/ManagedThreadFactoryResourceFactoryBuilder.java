@@ -30,6 +30,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -162,6 +163,12 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
         if (qualifiers != null && qualifiers.length > 0) {
             qualifierNames = Arrays.asList(qualifiers);
             threadFactoryProps.put("qualifiers", qualifierNames);
+        }
+
+        // virtual threads are only available in Concurrency 3.1+ and Java 21+
+        if (Boolean.TRUE.equals(threadFactoryProps.get("virtual")) &&
+            JavaInfo.majorVersion() < 21) {
+            threadFactoryProps.put("virtual", Boolean.FALSE);
         }
 
         String managedThreadFactoryID = getManagedThreadFactoryID(application, module, component, jndiName);
