@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.DeploymentException;
@@ -215,39 +216,42 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
     public void applicationStarted(Application application) throws CDIException {
         CDIContainerEventManager eventManager = cdiRuntime.getCDIContainerEventManager();
         if (eventManager != null) {
-            WebSphereCDIDeployment deployment = getDeployment(application);
-            if (deployment != null) {
-                BeanDeploymentModules modules = deployment.getServices().get(BeanDeploymentModules.class);
-                if (modules != null) {
-                    for (BeanDeploymentModule module : modules) {
-                        if (!module.isWebModule()) {
-                            String id = module.getId();
-                            WebSphereBeanDeploymentArchive bda = deployment.getBeanDeploymentArchive(id);
-                            if (bda != null) {
-                                try (ContextBeginnerEnder contextBeginnerEnder = cdiRuntime.createContextBeginnerEnder().extractComponentMetaData(bda.getArchive())
-                                                                                           .extractTCCL(application).beginContext()) {
-                                    eventManager.fireStartupEvent(module);
-                                }
-                            } else {
-                                throw new IllegalStateException(Tr.formatMessage(tc, "no.bda.for.module.CWOWB1019E", module, module.getId()));
-                            }
-                        }
-                    }
-                }
-            }
+            runForEachNonWebModuleWithContext(eventManager::fireStartupEvent, application);
         }
     }
 
     public void applicationStopping(Application application) throws CDIException {
         CDIContainerEventManager eventManager = cdiRuntime.getCDIContainerEventManager();
         if (eventManager != null) {
-            WebSphereCDIDeployment deployment = getDeployment(application);
-            if (deployment != null) {
-                BeanDeploymentModules modules = deployment.getServices().get(BeanDeploymentModules.class);
-                if (modules != null) {
-                    for (BeanDeploymentModule module : modules) {
-                        if (!module.isWebModule()) {
-                            eventManager.fireShutdownEvent(module);
+            runForEachNonWebModuleWithContext(eventManager::fireShutdownEvent, application);
+        }
+    }
+
+    /**
+     * This method loops through each module (that is not a WebModule) in an application. For each one it sets
+     * the component metadata associated with that module as well as the TCCL associated with the application
+     * then it runs an action. The action is likely an event form CDIContainerEventManager
+     *
+     * @param action The action to run
+     * @param application the application to run actions
+     */
+    private void runForEachNonWebModuleWithContext(Consumer<BeanDeploymentModule> action, Application application) throws CDIException {
+        WebSphereCDIDeployment deployment = getDeployment(application);
+        if (deployment != null) {
+            BeanDeploymentModules modules = deployment.getServices().get(BeanDeploymentModules.class);
+            if (modules != null) {
+                for (BeanDeploymentModule module : modules) {
+                    // This method is used for CDI Startup and Shutdown events. In web modules those events are fired by the ServletContext being initialized or destroyed.
+                    if (!module.isWebModule()) {
+                        String id = module.getId();
+                        WebSphereBeanDeploymentArchive bda = deployment.getBeanDeploymentArchive(id);
+                        if (bda != null) {
+                            try (ContextBeginnerEnder contextBeginnerEnder = cdiRuntime.createContextBeginnerEnder().extractComponentMetaData(bda.getArchive())
+                                                                                       .extractTCCL(application).beginContext()) {
+                                action.accept(module);
+                            }
+                        } else {
+                            throw new IllegalStateException(Tr.formatMessage(tc, "no.bda.for.module.CWOWB1019E", module, module.getId()));
                         }
                     }
                 }
@@ -258,7 +262,9 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
     public void applicationStopped(Application application) throws CDIException {
         WebSphereCDIDeployment deployment = getDeployment(application);
         if (deployment != null) {
-            try {
+            try (ContextBeginnerEnder contextBeginnerEnder = cdiRuntime.createContextBeginnerEnder().extractComponentMetaData(application)
+                            .extractTCCL(application).beginContext()) {
+                
                 currentDeployment.set(deployment);
                 deployment.shutdown();
             } finally {

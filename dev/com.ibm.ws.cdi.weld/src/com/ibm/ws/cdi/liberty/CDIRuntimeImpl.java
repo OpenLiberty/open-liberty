@@ -467,8 +467,8 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
 
             ClassLoader appCL = getRealAppClassLoader(application);
             if (appCL != null) {
-                ClassLoader newCL = classLoadingSRRef.getServiceWithException().createThreadContextClassLoader(appCL);
-                application.setTCCL(newCL);
+                ClassLoader appTCCL = classLoadingSRRef.getServiceWithException().createThreadContextClassLoader(appCL);
+                application.setTCCL(appTCCL);
             }
 
             for (CDIArchive archive : application.getModuleArchives()) {
@@ -514,9 +514,9 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
             } finally {
                 // Clean up the application TCCL created for startup
                 // Must do this at shutdown since it's possible for the app to hold onto it and use it after startup
-                ClassLoader tccl = application.getTCCL();
-                if (tccl != null) {
-                    classLoadingSRRef.getServiceWithException().destroyThreadContextClassLoader(tccl);
+                ClassLoader appTCCL = application.getTCCL();
+                if (appTCCL != null) {
+                    classLoadingSRRef.getServiceWithException().destroyThreadContextClassLoader(appTCCL);
                 }
                 application.setTCCL(null);
             }
