@@ -130,4 +130,26 @@ public class EERepeatActions {
         return RepeatActions.repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, Arrays.asList(otherFeatureSets), skipTransformation);
     }
 
+    /**
+     * Get a RepeatTests instance for the given FeatureSets. The first FeatureSet will be run in LITE mode. The others will be run in the mode specified by otherFeatureSetsTestMode
+     * Usage: The following example will repeat the tests using EE versions 8, 9 and 10.
+     * 10 will be in LITE mode, the others in FULL mode.
+     *
+     * <pre>
+     * <code>
+     * &#64;ClassRule
+     * public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, TestMode.FULL, EERepeatActions.EE10, EERepeatActions.EE8, EERepeatActions.EE9);
+     * </code>
+     * </pre>
+     *
+     * @param  servers                  The servers to repeat on
+     * @param  otherFeatureSetsTestMode The test mode to run the otherFeatureSets
+     * @param  skipTransformation       Skip transformation for actions
+     * @param  firstFeatureSet          The first FeatureSet to repeat with. This is run in LITE mode.
+     * @param  otherFeatureSets         The other FeatureSets to repeat with. These are in the mode specified by otherFeatureSetsTestMode
+     * @return                          A RepeatTests instance
+     */
+    public static RepeatTests repeat(String[] servers, TestMode otherFeatureSetsTestMode, boolean skipTransformation, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
+        return RepeatActions.repeat(servers, otherFeatureSetsTestMode, ALL, firstFeatureSet, Arrays.asList(otherFeatureSets), skipTransformation);
+    }
 }

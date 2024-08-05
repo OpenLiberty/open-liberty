@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2016, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,11 +22,17 @@ import java.util.function.Consumer;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
+
 import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -37,6 +43,11 @@ public class BucketSet2CpClientTest {
 
     private static LibertyServer clientServer = LibertyServerFactory.getLibertyServer("LiteSet2Client");
     private static LibertyServer engineServer = LibertyServerFactory.getLibertyServer("LiteSet2Engine");
+
+    private static String[] servers = { "LiteSet2Client", "LiteSet2Engine" };
+    @ClassRule
+    public static RepeatTests r1 = EERepeatActions.repeat(servers, TestMode.FULL, false, EERepeatActions.EE11,
+                                                          EERepeatActions.EE10, EERepeatActions.EE9, EERepeatActions.EE8);
 
     private static final int clientPort = clientServer.getHttpDefaultPort();
     private static final String clientHostName = clientServer.getHostname();
@@ -55,7 +66,8 @@ public class BucketSet2CpClientTest {
 
     private static final String CONTEXT_INJECT_CONTEXT_ROOT = "JMSContextInject";
     private static final String CONTEXT_INJECT_APPNAME = "JMSContextInject";
-    private static final String[] CONTEXT_INJECT_PACKAGES = new String[] { "jmscontextinject.web", "jmscontextinject.ejb" };
+    private static final String[] CONTEXT_INJECT_PACKAGES = new String[] { "jmscontextinject.web",
+                                                                           "jmscontextinject.ejb" };
 
     private static final String PRODUCER_118073_CONTEXT_ROOT = "JMSProducer_118073";
     private static final String PRODUCER_118073_APPNAME = "JMSProducer_118073";
@@ -66,35 +78,38 @@ public class BucketSet2CpClientTest {
         // Prepare the server which runs the messaging engine.
 
         engineServer.copyFileToLibertyInstallRoot(
-            "lib/features",
-            "features/testjmsinternals-1.0.mf");
-        engineServer.setServerConfigurationFile("Lite2Engine.xml");
+                                                  "lib/features",
+                                                  "features/testjmsinternals-1.0.mf");
 
         // Prepare the server which runs the messaging client and which
         // runs the test application.
 
         clientServer.copyFileToLibertyInstallRoot(
-            "lib/features",
-            "features/testjmsinternals-1.0.mf");
-        clientServer.setServerConfigurationFile("Lite2Client.xml");
+                                                  "lib/features",
+                                                  "features/testjmsinternals-1.0.mf");
 
+        ShrinkHelper.cleanAllExportedArchives();
         TestUtils.addDropinsWebApp(clientServer, CONSUMER_118077_APPNAME, CONSUMER_118077_PACKAGES);
         TestUtils.addDropinsWebApp(clientServer, CONSUMER_118076_APPNAME, CONSUMER_118076_PACKAGES);
         TestUtils.addDropinsWebApp(clientServer, CONTEXT_INJECT_APPNAME, CONTEXT_INJECT_PACKAGES);
         TestUtils.addDropinsWebApp(clientServer, PRODUCER_118073_APPNAME, PRODUCER_118073_PACKAGES);
 
-        // postCheckpointLogic: get ports specified in FAT file testport.properties and add to server.env.
-        // This will drive a post restore config update, updating ports unspecified at checkpoint 
+        // postCheckpointLogic: get ports specified in FAT file testport.properties and
+        // add to server.env.
+        // This will drive a post restore config update, updating ports unspecified at
+        // checkpoint
         // to those of the runtime environment.
+        final FATSuite.PortSetting setting = new FATSuite.PortSetting("jms.1", 17011, "jms_port_1");
         Consumer<LibertyServer> postCheckpointLogic = checkpointServer -> {
-        	FATSuite.PortSetting setting = new FATSuite.PortSetting("jms.1",17011,"jms_port_1");
-            FATSuite.addServerEnvPorts(checkpointServer, new ArrayList<>(Collections.singletonList(setting))); 
+            FATSuite.addServerEnvPorts(checkpointServer, new ArrayList<>(Collections.singletonList(setting)));
         };
 
-        // Start both servers.  Start the engine first, so that its resources
+        // Start both servers. Start the engine first, so that its resources
         // are available when the client starts.
-
+        // Specify ports for engine
+        FATSuite.addServerEnvPorts(engineServer, new ArrayList<>(Collections.singletonList(setting)));
         engineServer.startServer("LiteBucketSet2_Engine.log");
+
         clientServer.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, postCheckpointLogic);
         clientServer.startServer("LiteBucketSet2_Client.log");
     }
@@ -104,14 +119,14 @@ public class BucketSet2CpClientTest {
         // Stop the messaging client ...
         try {
             clientServer.stopServer();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         // ... then stop the messaging engine.
         try {
             engineServer.stopServer();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -206,9 +221,9 @@ public class BucketSet2CpClientTest {
         assertTrue("testGetMessageSelector_TcpIp_SecOff failed ", result);
     }
 
-    //end of tests from JMSConsumerTest_118076
+    // end of tests from JMSConsumerTest_118076
 
-    //start of JMSProducer_Test118073
+    // start of JMSProducer_Test118073
 
     @Test
     public void testSetGetJMSReplyTo_B_SecOff() throws Exception {
