@@ -14,6 +14,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import javax.ws.rs.HttpMethod;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -32,8 +34,8 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import jakarta.ws.rs.HttpMethod;
 
 /**
  *
@@ -48,6 +50,9 @@ public class ContainerRestApplicationTest extends BaseTestClass {
 
     @Server("ContainerRestServer")
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests rt = FATSuite.testRepeatMPTel20("ContainerRestServer");
 
     @ClassRule
     public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
@@ -83,7 +88,8 @@ public class ContainerRestApplicationTest extends BaseTestClass {
     public static void afterClass() throws Exception {
         //catch if a server is still running.
         if (server != null && server.isStarted()) {
-            server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWPMI2006W", "CWMMC0013E", "CWWKG0033W", "SRVE0315E");
+            //CWWKW1001W is specifically for jaxrs-2.0 executions
+            server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWPMI2006W", "CWMMC0013E", "CWWKG0033W", "SRVE0315E", "SRVE0777E", "CWWKW1001W");
         }
     }
 

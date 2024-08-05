@@ -2,7 +2,7 @@
 <server>
     <featureManager>
         <feature>restfulWS-3.1</feature>
-    	<feature>mpMetrics-5.0</feature>
+    	<feature>mpMetrics-5.1</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml" />

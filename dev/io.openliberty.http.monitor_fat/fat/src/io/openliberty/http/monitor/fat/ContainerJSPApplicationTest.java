@@ -31,6 +31,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import jakarta.ws.rs.HttpMethod;
 
@@ -41,6 +42,9 @@ public class ContainerJSPApplicationTest extends BaseTestClass {
 
     @Server("ContainerJSPServer")
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests rt = FATSuite.testRepeatMPTel20("ContainerJSPServer");
 
     @ClassRule
     public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
@@ -91,7 +95,7 @@ public class ContainerJSPApplicationTest extends BaseTestClass {
         assertTrue(server.isStarted());
 
         String route = Constants.JSP_CONTEXT_ROOT + "/unconfigured.jsp";
-        String expectedRoute = Constants.JSP_CONTEXT_ROOT + "/\\*.jsp";
+        String expectedRoute = Constants.JSP_CONTEXT_ROOT + "/\\*";
         String requestMethod = HttpMethod.GET;
         String responseStatus = "200";
 
