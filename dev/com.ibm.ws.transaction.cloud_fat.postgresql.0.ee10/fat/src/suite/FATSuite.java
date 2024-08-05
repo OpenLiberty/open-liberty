@@ -55,5 +55,6 @@ public class FATSuite extends TxTestContainerSuite {
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE10_FEATURES().forServers(DBRotationTest.serverNames));
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().forServers(DBRotationTest.serverNames));
 }

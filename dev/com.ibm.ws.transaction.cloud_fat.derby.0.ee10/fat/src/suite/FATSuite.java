@@ -38,6 +38,7 @@ public class FATSuite extends TxTestContainerSuite {
 		beforeSuite(DatabaseContainerType.Derby);
 	}
 
-	@ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE10_FEATURES().forServers(DBRotationTest.serverNames));
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().forServers(DBRotationTest.serverNames));
 }
