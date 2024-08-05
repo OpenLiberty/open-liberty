@@ -15,6 +15,8 @@ import static org.junit.Assert.assertThat;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -32,11 +34,29 @@ import io.opentelemetry.api.trace.Tracer;
 @ApplicationScoped
 public class ResourceServlet extends FATServlet {
 
+    private final Map<String, String> osNameMap = new HashMap<String, String>();
+
     @Inject
     Tracer tracer;
 
     @Inject
     OpenTelemetry openTelemetry;
+
+    public ResourceServlet() {
+
+        //Keys come from https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/v2.1.0/instrumentation/resources/library/src/main/java/io/opentelemetry/instrumentation/resources/OsResource.java
+        //Values come from https://github.com/open-telemetry/semantic-conventions-java/blob/release/v1.26.0/semconv/src/main/java/io/opentelemetry/semconv/ResourceAttributes.java
+        osNameMap.put("windows", "windows");
+        osNameMap.put("linux", "linux");
+        osNameMap.put("mac", "mac");
+        osNameMap.put("netbsd", "netbsd");
+        osNameMap.put("openbsd", "openbsd");
+        osNameMap.put("dragonflybsd", "dragonflybsd");
+        osNameMap.put("hp-ux", "hpux");
+        osNameMap.put("aix", "aix");
+        osNameMap.put("solaris", "solaris");
+        osNameMap.put("z/os", "z/os");
+    }
 
     @Test
     public void testServiceNameConfig() throws UnknownHostException {
@@ -46,8 +66,8 @@ public class ResourceServlet extends FATServlet {
 
         String output = openTelemetry.toString().toLowerCase();
 
-        assertThat(output, containsString("host.arch=\"" + System.getProperty("os.arch") + "\"".toLowerCase()));
-        assertThat(output, containsString("host.name=\"" + InetAddress.getLocalHost().getHostName().toString() + "\"".toLowerCase()));
+        assertThat(output, containsString(("host.arch=\"" + System.getProperty("os.arch") + "\"").toLowerCase()));
+        assertThat(output, containsString(("host.name=\"" + InetAddress.getLocalHost().getHostName().toString() + "\"").toLowerCase()));
 
         //This may fail if we run on an OS that OpenTelemetry doesn't expect, but I do not believe we do
         String osName = System.getProperty("os.name");
@@ -56,7 +76,8 @@ public class ResourceServlet extends FATServlet {
         osVersion = osVersion != null ? osVersion.toLowerCase() : "";
         String osDescription = osVersion != null ? osName + ' ' + osVersion : osName;
 
-        assertThat(output, containsString("os.type=\"" + osName + "\""));
+        //os.type is the only value that uses the mapped name;
+        assertThat(output, containsString("os.type=\"" + mapOSName(osName) + "\""));
         assertThat(output, containsString("os.description=\"" + osDescription + "\""));
 
         //Keeping this simple since the reliable way to do this is java 9+
@@ -79,6 +100,18 @@ public class ResourceServlet extends FATServlet {
         assertThat(output, containsString("telemetry.sdk.name=\"opentelemetry\""));
         //Not testing telemetry.sdk.version for the obvious reason
 
+    }
+
+    /**
+     * Maps an OS Name in the same way that io.opentelemetry.instrumentation.resources.OsResource does
+     */
+    private String mapOSName(String osName) {
+        for (String key : osNameMap.keySet()) {
+            if (osName.startsWith(key)) {
+                return osNameMap.get(key);
+            }
+        }
+        return osName;
     }
 
 }
