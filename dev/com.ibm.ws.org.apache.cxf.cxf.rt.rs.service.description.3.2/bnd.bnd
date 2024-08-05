@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -31,13 +31,14 @@ Export-Package: \
   org.apache.cxf.jaxrs.model.wadl;version=${cxfVersion}
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-rs-service-description;${cxfVersion}}!/!META-INF/*
+  @${repo;org.apache.cxf:cxf-rt-rs-service-description;${cxfVersion}}!/!META-INF/*,\
+  org/apache/cxf=${bin}/org/apache/cxf
 
 -buildpath: \
-	org.apache.cxf:cxf-rt-rs-service-description;version='${cxfVersion}',\
-	org.apache.ws.xmlschema:xmlschema-core;strategy=exact;version='2.0.3',\
-	com.ibm.ws.org.apache.cxf.cxf.core.3.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2,\
-	com.ibm.websphere.javaee.jaxb.2.2,\
-	com.ibm.websphere.javaee.jaxrs.2.1,\
-	com.ibm.websphere.javaee.servlet.3.1
+  org.apache.cxf:cxf-rt-rs-service-description;version='${cxfVersion}',\
+  org.apache.ws.xmlschema:xmlschema-core;strategy=exact;version='2.0.3',\
+  com.ibm.ws.org.apache.cxf.cxf.core.3.2,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2,\
+  com.ibm.websphere.javaee.jaxb.2.2,\
+  com.ibm.websphere.javaee.jaxrs.2.1,\
+  com.ibm.websphere.javaee.servlet.3.1
