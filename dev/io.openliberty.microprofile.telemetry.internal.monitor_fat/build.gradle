@@ -23,7 +23,7 @@ assemble.doLast {
 addRequiredLibraries.dependsOn copyTestContainers
 
 def serverArray = new File[1]
-serverArray[0] = new File(autoFvtDir, 'publish/servers/LibertyMetricServer')
+serverArray[0] = new File(autoFvtDir, 'publish/servers/ConnPoolMetricsServer')
 
 task addDerbyToServerDir(type: Copy) {
   from configurations.derby

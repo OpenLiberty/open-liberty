@@ -30,8 +30,8 @@ public class MappingTable {
 	public static final int MBEAN_SECOND_SUBATTRIBUTE = 8;
 
 	public static final String THREADPOOL_TAG_NAME = "threadpool.name";
-	public static final String CONNECTIONPOOL_TAG_NAME = "datasource.jndi.name";
-	public static final String SESSION_TAG_NAME = "application.name";
+	public static final String CONNECTIONPOOL_TAG_NAME = "datasource.name";
+	public static final String SESSION_TAG_NAME = "app.name";
 
 
 	public static final String LONG_UP_DOWN_COUNTER = "LONGUPDOWNCOUNTER";
@@ -61,13 +61,13 @@ public class MappingTable {
 	private MappingTable() {
 
 		String[][] requestTimeTable = new String[][] {
-				{ "request_timing.count", "requestTiming.requestCount.description", LONG_COUNTER, REQUEST_UNIT,
+				{ "request_timing.processed", "requestTiming.processed.description", LONG_COUNTER, REQUEST_UNIT,
 						"RequestCount", null, null },
-				{ "request_timing.active", "requestTiming.activeRequestCount.description",
+				{ "request_timing.active", "requestTiming.active.description",
 						LONG_UP_DOWN_COUNTER, REQUEST_UNIT, "ActiveRequestCount", null, null },
-				{ "request_timing.slow", "requestTiming.slowRequestCount.description",
+				{ "request_timing.slow", "requestTiming.slow.description",
 						LONG_UP_DOWN_COUNTER, REQUEST_UNIT, "SlowRequestCount", null, null },
-				{ "request_timing.hung", "requestTiming.hungRequestCount.description",
+				{ "request_timing.hung", "requestTiming.hung.description",
 						LONG_UP_DOWN_COUNTER, REQUEST_UNIT, "HungRequestCount", null, null } };
 		mappingTable.put("WebSphere:type=RequestTimingStats,name=*", requestTimeTable);
 
@@ -79,33 +79,29 @@ public class MappingTable {
 		mappingTable.put("WebSphere:type=ThreadPoolStats,name=*", threadPoolTable);
 
 		String[][] sessionTable = new String[][] {
-				{ "session.created", "session.create.total.description", LONG_COUNTER, SESSION_UNIT, "CreateCount", null,
+				{ "session.created", "session.created.description", LONG_COUNTER, SESSION_UNIT, "CreateCount", null,
 						SESSION_TAG_NAME },
-				{ "session.live", "session.liveSessions.description", LONG_UP_DOWN_COUNTER, SESSION_UNIT,
+				{ "session.live", "session.live.description", LONG_UP_DOWN_COUNTER, SESSION_UNIT,
 						"LiveCount", null, SESSION_TAG_NAME },
 				{ "session.active", "session.activeSessions.description", LONG_UP_DOWN_COUNTER, SESSION_UNIT,
 						"ActiveCount", null, SESSION_TAG_NAME },
-				{ "session.invalidated", "session.invalidated.total.description", LONG_COUNTER, SESSION_UNIT,
+				{ "session.invalidated", "session.invalidated.description", LONG_COUNTER, SESSION_UNIT,
 						"InvalidatedCount", null, SESSION_TAG_NAME },
-				{ "session.invalidated_by_timeout", "session.invalidatedbyTimeout.total.description", LONG_COUNTER,
+				{ "session.invalidated_by_timeout", "session.invalidatedbyTimeout.description", LONG_COUNTER,
 							SESSION_UNIT, "InvalidatedCountbyTimeout", null, SESSION_TAG_NAME } };
 		mappingTable.put("WebSphere:type=SessionStats,name=*", sessionTable);
 
 		String[][] connectionPoolTable = new String[][] {
-				{ "connection_pool.connection.created", "connectionpool.create.total.description", LONG_COUNTER, CONNECTION_UNIT,
+				{ "connection_pool.connection.created", "connectionpool.connection.created.description", LONG_COUNTER, CONNECTION_UNIT,
 						"CreateCount", null, CONNECTIONPOOL_TAG_NAME },
-				{ "connection_pool.connection.destroyed", "connectionpool.destroy.total.description", LONG_COUNTER, CONNECTION_UNIT,
+				{ "connection_pool.connection.destroyed", "connectionpool.connection.destroyed.description", LONG_COUNTER, CONNECTION_UNIT,
 						"DestroyCount", null, CONNECTIONPOOL_TAG_NAME },
-				{ "connection_pool.connection.count", "connectionpool.managedConnections.description",
+				{ "connection_pool.connection.count", "connectionpool.connection.count.description",
 						LONG_UP_DOWN_COUNTER, CONNECTION_UNIT, "ManagedConnectionCount", null, CONNECTIONPOOL_TAG_NAME },
-				{ "connection_pool.handle.count", "connectionpool.connectionHandles.description",
+				{ "connection_pool.handle.count", "connectionpool.handle.count.description",
 						LONG_UP_DOWN_COUNTER, CONNECTION_HANDLE_UNIT, "ConnectionHandleCount", null, CONNECTIONPOOL_TAG_NAME },
-				{ "connection_pool.connection.free", "connectionpool.freeConnections.description",
-						LONG_UP_DOWN_COUNTER, CONNECTION_UNIT, "FreeConnectionCount", null, CONNECTIONPOOL_TAG_NAME },
-				{ "connection_pool.connection.queued_requests", "connectionpool.queuedRequests.total.description", LONG_COUNTER,
-							REQUEST_UNIT, "WaitTimeDetails", "count", CONNECTIONPOOL_TAG_NAME },
-				{ "connection_pool.connection.used", "connectionpool.usedConnections.total.description", LONG_COUNTER,
-						null, "InUseTimeDetails", "count", CONNECTIONPOOL_TAG_NAME }, };
+				{ "connection_pool.connection.free", "connectionpool.connection.free.description",
+						LONG_UP_DOWN_COUNTER, CONNECTION_UNIT, "FreeConnectionCount", null, CONNECTIONPOOL_TAG_NAME }};
 		mappingTable.put("WebSphere:type=ConnectionPoolStats,name=*", connectionPoolTable);
 
 	}

@@ -21,10 +21,12 @@ Export-Package: \
 Private-Package: \
 	io.openliberty.microprofile.telemetry20.internal.helper,\
 	io.openliberty.microprofile.telemetry20.internal.config,\
-	io.openliberty.microprofile.telemetry20.internal.rest.javax
+	io.openliberty.microprofile.telemetry20.internal.rest.javax,\
+	io.openliberty.microprofile.telemetry20.internal.connpool
 
 -dsannotations: \
   io.openliberty.microprofile.telemetry20.internal.cdi.SPIMetaData,\
   io.openliberty.microprofile.telemetry20.internal.config.OpenTelemetryVersionedConfigurationImpl,\
   io.openliberty.microprofile.telemetry20.internal.rest.TelemetryServletContainerInitializer,\
-  io.openliberty.microprofile.telemetry20.internal.rest.javax.TelemetryJaxRsProviderRegister
+  io.openliberty.microprofile.telemetry20.internal.rest.javax.TelemetryJaxRsProviderRegister,\
+  io.openliberty.microprofile.telemetry20.internal.connpool.MPTelemetryConnectionPoolMetricsAdapterImpl

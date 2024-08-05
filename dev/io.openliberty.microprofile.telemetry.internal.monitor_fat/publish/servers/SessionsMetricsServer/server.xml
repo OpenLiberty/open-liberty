@@ -2,7 +2,6 @@
     <featureManager>
         <feature>mpTelemetry-2.0</feature>
         <feature>servlet-6.1</feature>
-        <feature>requestTiming-1.0</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>

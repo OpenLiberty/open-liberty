@@ -13,7 +13,7 @@
 
 package io.openliberty.microprofile.telemetry.internal.monitor_fat.jaxws;
 
-import jakarta.jws.WebService;
+import javax.jws.WebService;
 
 @WebService
 public class SimpleEcho {
