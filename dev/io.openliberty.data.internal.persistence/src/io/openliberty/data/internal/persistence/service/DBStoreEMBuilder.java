@@ -819,15 +819,16 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
             Class<?> attributeType = attributeInfo.getValue();
             boolean isCollection = Collection.class.isAssignableFrom(attributeType);
             boolean isPrimitive = attributeType.isPrimitive();
+            boolean isId = keyAttributeName != null && keyAttributeName.equalsIgnoreCase(attributeName);
 
             String columnType;
             if (isPrimitive || attributeType.isInterface() || Serializable.class.isAssignableFrom(attributeType)) {
-                columnType = keyAttributeName != null && keyAttributeName.equalsIgnoreCase(attributeName) ? "id" : //
+                columnType = isId ? "id" : //
                                 "version".equalsIgnoreCase(attributeName) ? "version" : //
                                                 isCollection ? "element-collection" : // TODO add fetch-type eager
                                                                 "basic";
             } else {
-                columnType = "embedded";
+                columnType = isId ? "embedded-id" : "embedded";
                 embeddableTypesQueue.add(attributeType);
             }
 
