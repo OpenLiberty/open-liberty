@@ -1149,17 +1149,17 @@ public class QueryInfo {
 
         Class<?> singleType = this.singleType;
 
-        if (type == Type.FIND_AND_DELETE && !(entityInfo.idType.isAssignableFrom(singleType) ||
-                                              entityInfo.entityClass.isAssignableFrom(singleType) ||
-                                              (entityInfo.recordClass != null && entityInfo.recordClass.isAssignableFrom(singleType)))) {
+        if (singleType.isPrimitive())
+            singleType = wrapperClassIfPrimitive(singleType);
+
+        if (type == Type.FIND_AND_DELETE && !(singleType.isAssignableFrom(wrapperClassIfPrimitive(entityInfo.idType)) ||
+                                              singleType.isAssignableFrom(entityInfo.entityClass) ||
+                                              (entityInfo.recordClass != null && singleType.isAssignableFrom(entityInfo.recordClass)))) {
             throw new MappingException("Results for find-and-delete repository queries must be the entity class (" +
                                        (entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName() +
                                        ") or the id class (" + entityInfo.idType +
                                        "), not the " + singleType.getName() + " class."); // TODO NLS
         }
-
-        if (singleType.isPrimitive())
-            singleType = wrapperClassIfPrimitive(singleType);
 
         if (cols == null || cols.length == 0) {
             if (singleType.isAssignableFrom(entityInfo.entityClass)
