@@ -1,0 +1,26 @@
+receivers:
+  otlp:
+    protocols:
+        grpc:
+
+exporters:
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+  logging:
+    loglevel: debug
+  file:
+    path: ./collector.log
+
+processors:
+  batch:
+
+service:
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus, logging]
+    logs/dev:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging]

@@ -32,4 +32,6 @@ tested.features=mpTelemetry-2.0,pages-3.1
 	io.openliberty.microprofile.telemetry.internal_fat.common,\
 	io.openliberty.io.opentelemetry;version=latest,\
 	io.openliberty.io.opentelemetry.2.0;version=latest,\
+	io.openliberty.microprofile.telemetry20.logging.internal;version=latest,\
+	io.openliberty.microprofile.telemetry.2.0.logging.internal;version=latest,\
 	io.openliberty.jakarta.servlet.6.1
