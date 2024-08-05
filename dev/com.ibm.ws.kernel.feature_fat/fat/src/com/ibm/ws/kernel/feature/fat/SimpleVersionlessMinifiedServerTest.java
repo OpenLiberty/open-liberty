@@ -20,6 +20,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -44,6 +45,7 @@ public class SimpleVersionlessMinifiedServerTest {
     }
 
     @Test
+    @MinimumJavaLevel(javaLevel = 11)
     public void testStaticContentForDefaultServer() throws Exception {
         //a simple test, gets the static file, looks for the eyecatcher & pass lines.
         minifyUtils.testViaHttpGet(new URL(minifyUtils.staticUrlPrefix + "/test.txt"));
