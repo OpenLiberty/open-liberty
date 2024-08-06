@@ -49,7 +49,7 @@ CWWKC1204.not.serializable.useraction=Update the application to request a non-se
 CWWKC1217.no.virtual.threads=CWWKC1217I: The Concurrency specification requires \
  virtual=true to be ignored on the {0} {1} definition in the {2} application \
  artifact because Java {3} does not support virtual threads.
-CWWKC1217.no.virtual.threads.explanation=Virtual threads are not available prior \
+CWWKC1217.no.virtual.threads.explanation=Virtual threads are available only \
  to Java 21.
 CWWKC1217.no.virtual.threads.useraction=Update to Java 21 or later to enable the \
  use of virtual threads.
