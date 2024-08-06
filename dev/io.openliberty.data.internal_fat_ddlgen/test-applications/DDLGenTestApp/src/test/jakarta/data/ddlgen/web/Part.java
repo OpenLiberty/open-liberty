@@ -17,7 +17,15 @@ import java.util.Objects;
 /**
  * A record entity with a composite id.
  */
-public record Part(Identifier id, String name, float price) {
+public record Part(Identifier id, String name, float price, int modVersion) {
+
+    public static final Part of(String partNum,
+                                String vendor,
+                                String name,
+                                float price) {
+        return new Part(new Identifier(partNum, vendor), name, price, 0);
+    }
+
     /**
      * Composite id for the Part entity.
      * TODO switch to a record once #29117 is fixed

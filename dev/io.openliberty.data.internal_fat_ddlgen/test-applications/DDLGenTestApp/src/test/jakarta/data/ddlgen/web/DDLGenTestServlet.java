@@ -49,7 +49,7 @@ public class DDLGenTestServlet extends FATServlet {
     public void executeDDL() throws SQLException {
         // TODO read from ddlgen output file
         String[] ddl = new String[] {
-                                      "CREATE TABLE dbuser.TESTPartEntity (NAME VARCHAR(255), PRICE FLOAT NOT NULL, IDENTIFIERVENDOR VARCHAR(255) NOT NULL, IDENTIFIERPARTNUM VARCHAR(255) NOT NULL, PRIMARY KEY (IDENTIFIERVENDOR, IDENTIFIERPARTNUM))"
+                                      "CREATE TABLE dbuser.TESTPartEntity (MODVERSION INTEGER NOT NULL, NAME VARCHAR(255), PRICE FLOAT NOT NULL, IDENTIFIERVENDOR VARCHAR(255) NOT NULL, IDENTIFIERPARTNUM VARCHAR(255) NOT NULL, PRIMARY KEY (IDENTIFIERVENDOR, IDENTIFIERPARTNUM))"
         };
         try (Connection con = adminDataSource.getConnection()) {
             Statement stmt = con.createStatement();
@@ -61,20 +61,32 @@ public class DDLGenTestServlet extends FATServlet {
     }
 
     /**
-     * Query for a record entity based on its composite id using
-     * BasicRepository.findById.
+     * Modify and query for a record entity based on its composite id using
+     * BasicRepository.save and BasicRepository.findById.
      */
     @Test
-    public void testFindByEmbeddedId() {
-        Part part1 = parts.save(new Part(new Part.Identifier("EI3155-T", "IBM"), "First Part", 10.99f));
-        Part part2 = parts.save(new Part(new Part.Identifier("EI2303-W", "IBM"), "Second Part", 8.99f));
-        Part part3 = parts.save(new Part(new Part.Identifier("EI2303-W", "Acme"), "Third Part", 9.99f));
+    public void testSaveAndFindByEmbeddedId() {
+        Part part1 = parts.save(Part.of("EI3155-T", "IBM", "First Part", 10.99f));
+        Part part2 = parts.save(Part.of("EI2303-W", "IBM", "Second Part", 8.99f));
+        Part part3 = parts.save(Part.of("EI2303-W", "Acme", "Third Part", 9.99f));
+
+        int part2InitialModCount = part2.modVersion();
+
+        part2 = parts.save(new Part(//
+                        part2.id(), //
+                        part2.name(), //
+                        part2.price() + 0.50f, //
+                        part2InitialModCount));
+
+        // expect automatic update to version:
+        assertEquals(part2InitialModCount + 1, part2.modVersion());
 
         part2 = parts.findById(new Part.Identifier("EI2303-W", "IBM"))
                         .orElseThrow();
         assertEquals("Second Part", part2.name());
-        assertEquals(8.99f, part2.price(), 0.001f);
+        assertEquals(9.49f, part2.price(), 0.001f);
         assertEquals(new Part.Identifier("EI2303-W", "IBM"), part2.id());
+        assertEquals(part2InitialModCount + 1, part2.modVersion());
 
         Part.Identifier nonmatching = new Part.Identifier("EI3155-T", "Acme");
         assertEquals(false, parts.findById(nonmatching).isPresent());
