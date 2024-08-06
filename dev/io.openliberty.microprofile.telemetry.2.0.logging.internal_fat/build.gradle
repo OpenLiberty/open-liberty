@@ -10,3 +10,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
+configurations {
+  telemetryAgent
+}
+
+dependencies {
+  telemetryAgent 'io.opentelemetry.javaagent:opentelemetry-javaagent:2.6.0'
+}
+
+task addAgent(type: Copy) {
+  from configurations.telemetryAgent
+  into new File(autoFvtDir, 'publish/files/agent-260')
+  rename { 'opentelemetry-javaagent.jar' }
+}
+
+addRequiredLibraries.dependsOn addAgent

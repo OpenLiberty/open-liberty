@@ -10,17 +10,13 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="Telemetry Server to test FFDC logs">
-	<include location="../fatTestPorts.xml"/>
-    
+<server description="Telemetry Server to test JUL Message logs">
 	<featureManager>
-		<feature>pages-3.1</feature>
+		<feature>servlet-6.0</feature>
 		<feature>mpTelemetry-2.0</feature>
 		<feature>componentTest-2.0</feature>
-		<feature>usr:test.ffdc-1.0</feature>
 	</featureManager>
-
-	<mpTelemetry source="ffdc"/>
 	
-	<javaPermission className="java.security.AllPermission"/>
+	<include location="../fatTestPorts.xml"/>
+	<mpTelemetry source="message"/>
 </server>

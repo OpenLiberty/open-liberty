@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.logging.WsLevel;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.CollectorJsonHelpers;
@@ -34,6 +36,9 @@ import io.opentelemetry.semconv.SemanticAttributes;
  */
 @Trivial
 public class MpTelemetryLogMappingUtils {
+
+    private static final TraceComponent tc = Tr.register(MpTelemetryLogMappingUtils.class, "TELEMETRY",
+                                                         "io.openliberty.microprofile.telemetry.internal.common.resources.MPTelemetry");
 
     /**
      * Get the event type from the Liberty log source.
@@ -183,6 +188,9 @@ public class MpTelemetryLogMappingUtils {
         // Set FFDC log level to WARNING in the LogRecordBuilder
         builder.setSeverity(Severity.WARN);
 
+        // Set the body to the exception message
+        builder.setBody(ffdcData.getMessage());
+
         // Get Attributes builder to add additional Log fields
         AttributesBuilder attributes = Attributes.builder();
 
@@ -251,6 +259,10 @@ public class MpTelemetryLogMappingUtils {
             extName = extKey.substring(extStartIdx + 1, extEndIdx);
         } else {
             extName = extKey.substring(extStartIdx + 1);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Parsing the name from the following extension key: " + extKey + " to " + extName);
         }
 
         // Map extension name using OTel Attributes naming convention
