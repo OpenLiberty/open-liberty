@@ -1,9 +1,7 @@
 <server>
     <featureManager>
-    	<feature>xmlWS-4.0</feature>
         <feature>mpTelemetry-2.0</feature>
-        <feature>servlet-6.0</feature>
-        <feature>jdbc-4.2</feature>
+        <feature>servlet-6.1</feature>
         <feature>requestTiming-1.0</feature>
     </featureManager>
 
@@ -14,6 +12,5 @@
 
     <include location="../fatTestPorts.xml"/>
     <include location="serverConfig.xml"/>
-    <include location="serverJDBCConfig.xml"/>
 </server>
 

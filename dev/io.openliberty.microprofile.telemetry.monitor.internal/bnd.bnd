@@ -22,6 +22,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 Import-Package: \
 	jakarta.enterprise.*;version="[4.0,5)",\
 	jakarta.ws.rs.container;resolution:=optional,\
+	io.openliberty.microprofile.telemetry.internal.common.resources,\
 	*
 
 Export-Package: \

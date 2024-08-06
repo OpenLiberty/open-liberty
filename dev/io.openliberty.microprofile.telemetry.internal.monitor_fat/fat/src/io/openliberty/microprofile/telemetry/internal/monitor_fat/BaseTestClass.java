@@ -25,7 +25,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
-import jakarta.ws.rs.HttpMethod;
+import javax.ws.rs.HttpMethod;
 
 /**
  *
@@ -159,37 +159,5 @@ public abstract class BaseTestClass {
         }
 
     }
-    
-    protected void addSessionsJdbcJaxwsApps(LibertyServer server) throws Exception {
-        String testName = "add3Apps to " + server.toString();
-        // Sessions App
-        Log.info(c, testName, "------- Add session application ------");
-        ShrinkHelper.defaultDropinApp(server, "testSessionApp",
-                "io.openliberty.microprofile.telemetry.internal.monitor_fat.session.servlet");
-        Log.info(c, testName, "------- added testSessionApp to dropins -----");
-        // JDBC App
-        Log.info(c, testName, "------- Add JDBC application ------");
-        ShrinkHelper.defaultDropinApp(server, "testJDBCApp",
-                "io.openliberty.microprofile.telemetry.internal.monitor_fat.jdbc.servlet");
-        Log.info(c, testName, "------- added testJDBCApp to dropins -----");
-        // JAX-WS App
-        Log.info(c, testName, "------- Add jax-ws endpoint application ------");
-        ShrinkHelper.defaultDropinApp(server, "testJaxWsApp", "io.openliberty.microprofile.telemetry.internal.monitor_fat.jaxws",
-                "io.openliberty.microprofile.telemetry.internal.monitor_fat.jaxws.client");
-        Log.info(c, testName, "------- added testJaxWsApp to dropins -----");
-    }
-
-    protected void addSessionsJdbcApps(LibertyServer server) throws Exception {
-        String testName = "add2Apps to " + server.toString();
-        //Sessions app
-        Log.info(c, testName, "------- Add session application ------");
-        ShrinkHelper.defaultDropinApp(server, "testSessionApp",
-                "io.openliberty.microprofile.telemetry.internal.monitor_fat.session.servlet");
-        Log.info(c, testName, "------- added testSessionApp to dropins -----");
-        //JDBC app
-        Log.info(c, testName, "------- Add JDBC application ------");
-        ShrinkHelper.defaultDropinApp(server, "testJDBCApp",
-                "io.openliberty.microprofile.telemetry.internal.monitor_fat.jdbc.servlet");
-        Log.info(c, testName, "------- added testJDBCApp to dropins -----");
-    }
+   
 }

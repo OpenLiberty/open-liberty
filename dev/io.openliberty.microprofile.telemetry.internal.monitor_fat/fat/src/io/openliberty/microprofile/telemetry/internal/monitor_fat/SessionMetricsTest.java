@@ -13,6 +13,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -22,6 +24,10 @@ import org.junit.runner.RunWith;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
@@ -29,11 +35,11 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-public class LibertyMetricsTest extends BaseTestClass {
+public class SessionMetricsTest extends BaseTestClass {
 
-	private static Class<?> c = LibertyMetricsTest.class;
+	private static Class<?> c = SessionMetricsTest.class;
 
-	@Server("LibertyMetricServer")
+	@Server("SessionsMetricsServer")
 	public static LibertyServer server;
 
     @ClassRule
@@ -44,13 +50,23 @@ public class LibertyMetricsTest extends BaseTestClass {
 			.withDockerfileFromBuilder(builder -> builder.from(IMAGE_NAME).copy("/etc/otelcol-contrib/config.yaml",
 					"/etc/otelcol-contrib/config.yaml"))
 			.withFileFromFile("/etc/otelcol-contrib/config.yaml", new File(PATH_TO_AUTOFVT_TESTFILES + "config.yaml")))
-			.withLogConsumer(new SimpleLogConsumer(LibertyMetricsTest.class, "opentelemetry-collector-contrib"))
+			.withLogConsumer(new SimpleLogConsumer(SessionMetricsTest.class, "opentelemetry-collector-contrib"))
 			.withExposedPorts(8888, 8889, 4317);
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {
+		
+        WebArchive testWAR = ShrinkWrap
+                .create(WebArchive.class, "testSessionApp.war")
+                .addPackage(
+                            "io.openliberty.microprofile.telemetry.internal.monitor_fat.session.servlet");
+
+        ShrinkHelper.exportDropinAppToServer(server, testWAR,
+                                     DeployOptions.SERVER_ONLY);
+		
 		server.addEnvVar("OTEL_EXPORTER_OTLP_METRICS_ENDPOINT",
-				"http://" + container.getHost() + ":" + container.getMappedPort(4317));
+				"http://" + container.getHost() + ":" + container.getMappedPort(4317));        
+        
 		server.startServer();
 
 		// Read to run a smarter planet
@@ -65,29 +81,30 @@ public class LibertyMetricsTest extends BaseTestClass {
 			server.stopServer();
 		}
 	}
-
+	
+	
+	
 	@Test
-	public void threadPoolAndRequestTimingMetricsTest() throws Exception {
+	public void sessionsMetricTest() throws Exception { // -Dglobal.debug.java2.sec=false
 
-		/*
-		 * These metrics should be available from startup.
-		 *  - ThreadPool
-		 *  - RequestTiming
-		 */
+		String testName = "sessionsMetricTest";
 		
 		assertTrue(server.isStarted());
+
+        checkStrings(requestHttpServlet("/testSessionApp/testSessionServlet", server), new String[] { "Session id:" });
+        Log.info(c, testName, "------- session metrics should be available ------");
 
 		// Allow time for the collector to receive and expose metrics
 		TimeUnit.SECONDS.sleep(4);
 
-		matchStrings(getContainerCollectorMetrics(container), new String[] {
-				"io_openliberty_threadpool_active_threads\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_threadpool_name=\"Default Executor\",job=\"unkown_service\"\\}.*",
-				"io_openliberty_threadpool_size\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_threadpool_name=\"Default Executor\",job=\"unkown_service\"\\}.*",
-				"io_openliberty_request_timing_active.*",
-				"io_openliberty_request_timing_slow.*",
-				"io_openliberty_request_timing_hung.*",
-				"io_openliberty_request_timing_processed.*"});
+		matchStrings(getContainerCollectorMetrics(container),
+                new String[] { "io_openliberty_session_created_total\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unkown_service\"\\}.*",
+                        "io_openliberty_session_live\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unkown_service\"\\}.*",
+                        "io_openliberty_session_active\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unkown_service\"\\}.*",
+                        "io_openliberty_session_invalidated_total\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unkown_service\"\\}.*",
+                        "io_openliberty_session_invalidated_by_timeout_total\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unkown_service\"\\}.*" });
 
 	}
+	
 
 }

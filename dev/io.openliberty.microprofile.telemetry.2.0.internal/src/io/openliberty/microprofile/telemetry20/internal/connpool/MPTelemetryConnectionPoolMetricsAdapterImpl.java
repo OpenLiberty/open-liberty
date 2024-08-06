@@ -73,13 +73,16 @@ public class MPTelemetryConnectionPoolMetricsAdapterImpl implements ConnectionPo
     /** {@inheritDoc} */
     @Override
     public void updateWaitTimeMetrics(String poolName, Duration duration) {
-        updateHistogramMetric(OpenTelemetryConstants.NAME_SPACE_PREFIX + OpenTelemetryConstants.WAIT_TIME_NAME, OpenTelemetryConstants.WAIT_TIME_DESC, poolName, duration);
+
+        updateHistogramMetric(OpenTelemetryConstants.NAME_SPACE_PREFIX + OpenTelemetryConstants.WAIT_TIME_NAME,
+                              Tr.formatMessage(tc, "connectionpool.connection.useTime.description"), poolName, duration);
     }
 
     /** {@inheritDoc} */
     @Override
     public void updateInUseTimeMetrics(String poolName, Duration duration) {
-        updateHistogramMetric(OpenTelemetryConstants.NAME_SPACE_PREFIX + OpenTelemetryConstants.IN_USE_TIME_NAME, OpenTelemetryConstants.IN_USE_TIME_DESC, poolName, duration);
+        updateHistogramMetric(OpenTelemetryConstants.NAME_SPACE_PREFIX + OpenTelemetryConstants.IN_USE_TIME_NAME,
+                              Tr.formatMessage(tc, "connectionpool.connection.waitTime.description"), poolName, duration);
     }
 
 }
