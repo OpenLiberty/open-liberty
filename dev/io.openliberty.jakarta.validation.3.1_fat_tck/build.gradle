@@ -14,30 +14,12 @@
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 configurations {
-  testNG { transitive = false; }
   sigTest { transitive = false; } 
 }
 
-dependencies {
-  testNG 'org.testng:testng:7.5.1',
-       'org.slf4j:slf4j-api:2.0.6',
-       'org.slf4j:slf4j-jdk14:2.0.6',
-       'com.beust:jcommander:1.78',
-	   'org.apache-extras.beanshell:bsh:2.0b6'
-  
+dependencies {  
   sigTest 'jakarta.tck:sigtest-maven-plugin:2.3'
 
-}
-
-task copyTestNG(type: Copy) {
-  mustRunAfter jar
-  from configurations.testNG
-  into new File(autoFvtDir, 'publish/shared/resources/testng/7.5.1')
-  rename 'testng-.*.jar', 'testng.jar'
-  rename 'jcommander-.*.jar', 'jcommander.jar'
-  rename 'slf4j-api-.*.jar', 'slf4j-api.jar'
-  rename 'slf4j-jdk14-.*.jar', 'slf4j-jdk14.jar'
-  rename 'bsh-.*.jar', 'bsh.jar'
 }
 
 task copySigTest(type: Copy) {
@@ -48,5 +30,4 @@ task copySigTest(type: Copy) {
 }
 
 addRequiredLibraries.dependsOn addDerby
-addRequiredLibraries.dependsOn copyTestNG
 addRequiredLibraries.dependsOn copySigTest

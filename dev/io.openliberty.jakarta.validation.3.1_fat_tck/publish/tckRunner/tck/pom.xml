@@ -41,8 +41,6 @@
         
         <!-- Copied out of the tck jar -->
         <tck.suite.file>../../../results/tck_validation-tck-tests-suite/dependency/validation-tck-tests-suite.xml</tck.suite.file>
-        
-        <validation.provider>org.hibernate.validator.HibernateValidator</validation.provider>
     </properties>
 
 	<repositories>
@@ -226,7 +224,6 @@
                         <tck_port>${tck_port}</tck_port>
                         <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
                         <java.util.logging.config.file>${basedir}/../logging.properties</java.util.logging.config.file>
-                        <!-- TODO do we need this? -->
                         <validation.provider>${validation.provider}</validation.provider>
                     </systemPropertyVariables>
                     <suiteXmlFiles>

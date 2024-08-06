@@ -25,8 +25,8 @@ import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.tck.TCKRunner;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKRunner;
 
 /**
  * This is a test class that runs the entire Jakarta Validation TCK against Full Profile.
@@ -40,19 +40,34 @@ import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 @MinimumJavaLevel(javaLevel = 17)
 public class ValidationTckLauncher {
 
-    final static Map<String, String> additionalProps = new HashMap<>();
+    private final static Map<String, String> additionalProps = new HashMap<>();
+    private final static String validationProvider = "org.hibernate.validator.HibernateValidator";
+    private final static String validationCustomFeature = "io.openliberty.valThirdParty-3.1";
 
     @Server("ValidationTCKServer")
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-
+        /*
+         * Server config:
+         * - Path that jimage will output modules for signature testing
+         * - validation.provider for applications to use
+         */
         Map<String, String> opts = server.getJvmOptionsAsMap();
-        //Path that jimage will output modules for signature testing
         opts.put("-Djimage.dir", server.getServerSharedPath() + "jimage/output/");
+        opts.put("-Dvalidation.provider", validationProvider);
+
+        /*
+         * Client config:
+         * - validation.provider for client to use
+         */
+        additionalProps.put("validation.provider", validationProvider);
+
+        //Configure server and install user feature
         server.setJvmOptions(opts);
-       // server.installUserFeature("io.openliberty.valThirdParty-3.1");
+        server.installSystemFeature(validationCustomFeature);
+
         //Finally start the server
         server.startServer();
     }
@@ -64,6 +79,8 @@ public class ValidationTckLauncher {
                           "WLTC0033W", //Transaction rollback warning.
                           "CWWKS0901E" //Quickstart security
         );
+
+        server.uninstallSystemFeature(validationCustomFeature);
     }
 
     /**
