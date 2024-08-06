@@ -274,7 +274,7 @@ public class ServletFilter implements Filter {
 			if (pathInfo == null) {
 				
 				/*
-				 * Firt lets deal with JSPs
+				 * First lets deal with JSPs
 				 * There are TWO scenarios:
 				 * - Unconfigured JSP
 				 * - "Configured" JSP where they configured the path to end with a .jsp (weird!)
