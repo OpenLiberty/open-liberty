@@ -24,6 +24,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import com.ibm.ws.feature.tests.util.RepositoryUtil;
+
 import com.ibm.ws.kernel.feature.internal.util.VerifyData;
 import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyCase;
 
@@ -88,16 +90,13 @@ public class BaselineResolutionMicroProfileUnitTest extends BaselineResolutionUn
 
         VerifyData verifyData = readData(getDataFile_OL());
 
-        // Not yet enabled for WAS Liberty.
-        //
-        // WAS liberty adds and modifies the Open liberty cases.
-        // if (!RepositoryUtil.isWASLiberty()) {
-        //    int initialCount = verifyData.getCases().size();
-        //    VerifyData verifyData_WL = readData(getDataFile_OL());
-        //    verifyData = verifyData.add(verifyData_WL);
-        //    int finalCount = verifyData.getCases().size();
-        //    System.out.println("Case adjustment [ " + (finalCount - initialCount) + " ]");
-        // }
+        if (RepositoryUtil.isWASLiberty()) {
+           int initialCount = verifyData.getCases().size();
+           VerifyData verifyData_WL = readData(getDataFile_WL());
+           verifyData = verifyData.add(verifyData_WL);
+           int finalCount = verifyData.getCases().size();
+           System.out.println("Case adjustment [ " + (finalCount - initialCount) + " ]");
+        }
 
         return asCases(verifyData);
     }

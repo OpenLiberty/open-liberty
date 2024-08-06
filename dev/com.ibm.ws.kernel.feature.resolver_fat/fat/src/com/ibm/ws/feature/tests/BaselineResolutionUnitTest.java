@@ -482,7 +482,7 @@ public class BaselineResolutionUnitTest {
     }
 
     public Result resolveFeatures(VerifyCase verifyCase, List<String> rootErrors) throws Exception {
-        setEnvironment(verifyCase, resolver);
+        //setEnvironment(verifyCase, resolver);
 
         return resolver.resolve(RepositoryUtil.getRepository(),
                                 RepositoryUtil.ignoreFeatures("Kernel", verifyCase.input.kernel),
