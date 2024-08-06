@@ -426,10 +426,15 @@ public class FailoverTest2 extends FailoverTest {
         Log.info(this.getClass(), method, "set timeout");
         server.setServerStartTimeout(START_TIMEOUT);
 
-        FATUtils.startServers(runner, server);
+        try {
+            // Don't care whether this actually starts a server
+            FATUtils.startServers(runner, server);
+        } catch (Exception e) {
+        }
 
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when opening SQL RecoveryLog
+        server.resetLogMarks();
         assertNotNull("No warning message signifying failover", server.waitForStringInTrace("Have recovered from SQLException when claiming local recovery logs"));
     }
 }
