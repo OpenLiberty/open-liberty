@@ -62,7 +62,7 @@ CWMOT5005.mptelemetry.unknown.log.source.useraction=Check the configuration info
 threadpool.activeThreads.description=The number of threads that are actively running tasks.
 threadpool.size.description=The size of the thread pool.
 
-session.activeSessions.description=The number of concurrently active sessions. A session is considered active if the application server is processing a request that uses that user session.
+session.activeSessions.description=The number of concurrently active sessions. A session is active when the runtime is processing a request that uses that user session.
 session.created.description=The number of sessions logged in since this metric was enabled.
 session.invalidated.description=The number of sessions logged out since this metric was enabled.
 session.invalidatedbyTimeout.description=The number of sessions logged out because of a timeout since this metric was enabled.
@@ -74,7 +74,7 @@ connectionpool.connection.destroyed.description=The total number of managed conn
 connectionpool.connection.free.description=The number of managed connections that are available.
 connectionpool.connection.waitTime.description=The amount of time that connection requests waited for a connection.
 connectionpool.connection.useTime.description=The amount of time connections were used for.
-connectionpool.connection.count.description=The current sum of managed connections in the pool. This includes managed connections that are available as well as those that are in use. A single managed connection that is shared by multiple connections only counts once.
+connectionpool.connection.count.description=The current number of managed connections in the pool. This value includes managed connections that are available and those that are in use. A single managed connection that is shared by multiple connections counts only once.
 
 requestTiming.processed.description=The number of servlet requests since the server started.
 requestTiming.active.description=The number of servlet requests that are currently running.
