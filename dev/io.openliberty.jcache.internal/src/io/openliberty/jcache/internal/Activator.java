@@ -44,7 +44,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  *
  */
 public class Activator implements BundleActivator, ServiceTrackerCustomizer<Condition, Boolean>, ConfigurationListener, RuntimeUpdateListener {
-    public static final String CACHE_MANAGER_CONFIG_CONDITION = "jcache.cachemanager.config";
+    public static final String CACHE_CONFIG_CONDITION = "jcache.cache.config";
     private static final Set<String> pids = new HashSet<>(Arrays.asList("io.openliberty.jcache.cachemanager", "io.openliberty.jcache.cachingprovider", "io.openliberty.jcache.cache"));
     private final AtomicReference<ServiceRegistration<Condition>> conditionReg = new AtomicReference<>();
     volatile ServiceTracker<Condition, Boolean> runningConditionTracker;
@@ -128,7 +128,7 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Cond
                 reg.unregister();
             }
             return bc.registerService(Condition.class, Condition.INSTANCE,
-                                      FrameworkUtil.asDictionary(Collections.singletonMap(Condition.CONDITION_ID, CACHE_MANAGER_CONFIG_CONDITION)));
+                                      FrameworkUtil.asDictionary(Collections.singletonMap(Condition.CONDITION_ID, CACHE_CONFIG_CONDITION)));
         });
     }
 }
