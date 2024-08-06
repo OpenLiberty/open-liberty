@@ -135,8 +135,7 @@ public class JaxRsSSLManager {
                     if (sslRef != null) {
                         return jsseHelper.getSSLContext(sslRef, connectionInfo, null, false);
                     } else {
-                        // get the default ssl config with possible dynamic outbound
-//                        return jsseHelper.getSSLContext(connectionInfo, null);
+                        // get the default ssl context with possible dynamic outbound mapping
                         return jsseHelper.getSSLContext(connectionInfo, getSSLProperties(sslRef, connectionInfo));
                     }
                 }
