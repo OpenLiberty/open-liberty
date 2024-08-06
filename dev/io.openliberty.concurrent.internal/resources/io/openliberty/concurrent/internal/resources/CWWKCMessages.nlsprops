@@ -51,7 +51,7 @@ CWWKC1217.no.virtual.threads=CWWKC1217I: The Concurrency specification requires 
  artifact because Java {3} does not support virtual threads.
 CWWKC1217.no.virtual.threads.explanation=Virtual threads are not available prior \
  to Java 21.
-CWWKC1217.no.virtual.threads.useraction=Update to Java 21 or higher to enable the \
+CWWKC1217.no.virtual.threads.useraction=Update to Java 21 or later to enable the \
  use of virtual threads.
 
 
