@@ -1233,7 +1233,7 @@
         <resolved-feature>mpMetrics</resolved-feature>
         <resolved-feature>io.openliberty.internal.versionless.mpHealth-3.0</resolved-feature>
         <resolved-feature>mpHealth</resolved-feature>
-        <!--<resolved-feature>io.openliberty.httpStat-monitor1.0</resolved-feature>-->
+        <resolved-feature>io.openliberty.httpStat-monitor1.0</resolved-feature>
     </output>
 </case>
 
@@ -1626,7 +1626,7 @@
         <resolved-feature>mpMetrics</resolved-feature>
         <resolved-feature>io.openliberty.internal.versionless.mpHealth-3.0</resolved-feature>
         <resolved-feature>mpHealth</resolved-feature>
-        <!--<resolved-feature>io.openliberty.httpStat-monitor1.0</resolved-feature>-->
+        <resolved-feature>io.openliberty.httpStat-monitor1.0</resolved-feature>
     </output>
 </case>
 
@@ -2309,7 +2309,7 @@
         <resolved-feature>com.ibm.websphere.appserver.sessionMonitor-1.0</resolved-feature>
         <resolved-feature>com.ibm.websphere.appserver.webcontainerMonitor-1.0</resolved-feature>
         <resolved-feature>io.openliberty.internal.versionless.mpMetrics-5.0</resolved-feature>
-        <!--<resolved-feature>io.openliberty.httpStat-monitor1.0</resolved-feature>-->
+        <resolved-feature>io.openliberty.httpStat-monitor1.0</resolved-feature>
         <resolved-feature>mpMetrics</resolved-feature>
         <resolved-feature>io.openliberty.internal.versionless.mpHealth-4.0</resolved-feature>
         <resolved-feature>mpHealth</resolved-feature>
@@ -2491,7 +2491,7 @@
         <resolved-feature>mpMetrics</resolved-feature>
         <resolved-feature>io.openliberty.internal.versionless.mpHealth-4.0</resolved-feature>
         <resolved-feature>mpHealth</resolved-feature>
-        <!--<resolved-feature>io.openliberty.httpStat-monitor1.0</resolved-feature>-->
+        <resolved-feature>io.openliberty.httpStat-monitor1.0</resolved-feature>
         <conflict-feature>io.openliberty.servlet.api</conflict-feature>
         <conflict-feature>com.ibm.websphere.appserver.injection</conflict-feature>
         <conflict-feature>com.ibm.websphere.appserver.eeCompatible</conflict-feature>
