@@ -72,8 +72,8 @@ connectionpool.handle.count.description=The number of connections that are in us
 connectionpool.connection.created.description=The total number of managed connections that were created since the pool creation.
 connectionpool.connection.destroyed.description=The total number of managed connections that were destroyed since the pool creation.
 connectionpool.connection.free.description=The number of managed connections that are available.
-connectionpool.connection.waitTime.description=The amount of time that connection requests waited for a connection.
-connectionpool.connection.useTime.description=The amount of time connections were used for.
+connectionpool.connection.waitTime.description=The total amount of time that connection requests waited for a connection.
+connectionpool.connection.useTime.description=The total amount of time that all connections to the data source were in use.
 connectionpool.connection.count.description=The current number of managed connections in the pool. This value includes managed connections that are available and those that are in use. A single managed connection that is shared by multiple connections counts only once.
 
 requestTiming.processed.description=The number of servlet requests since the server started.
