@@ -83,6 +83,7 @@ import com.ibm.wsspi.resource.ResourceFactory;
 import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.EntityInfo;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
+import io.openliberty.data.internal.persistence.QueryInfo;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.Convert;
@@ -368,7 +369,6 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
 
             Set<Class<?>> embeddableTypes = new HashSet<>();
             for (Class<?> type; (type = embeddableTypesQueue.poll()) != null;)
-                // TODO what if the embeddable type is a record?
                 if (embeddableTypes.add(type)) { // only write each type once
                     StringBuilder xml = new StringBuilder(500).append(" <embeddable class=\"").append(type.getName()).append("\">").append(EOLN);
                     writeAttributes(xml, type, true, embeddableTypesQueue);
@@ -740,7 +740,8 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
      * Write attributes for the specified entity or embeddable to XML.
      *
      * @param xml                  XML for defining the entity attributes
-     * @param c                    entity class
+     * @param c                    entity class (never a record), or
+     *                                 embeddable class (can be a record)
      * @param isEmbeddable         indicates if the class is an embeddable type rather than an entity.
      * @param embeddableTypesQueue queue of embeddable types. This method adds to the queue when an embeddable type is found.
      */
@@ -749,60 +750,82 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
         // Identify attributes
         SortedMap<String, Class<?>> attributes = new TreeMap<>();
 
-        // TODO cover records once compiling against Java 17
+        if (isEmbeddable && c.isRecord()) {
+            for (RecordComponent r : c.getRecordComponents())
+                attributes.putIfAbsent(r.getName(), r.getType());
+        } else {
+            for (Field f : c.getFields())
+                attributes.putIfAbsent(f.getName(), f.getType());
 
-        for (Field f : c.getFields())
-            attributes.putIfAbsent(f.getName(), f.getType());
-
-        try {
-            PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(c).getPropertyDescriptors();
-            if (propertyDescriptors != null)
-                for (PropertyDescriptor p : propertyDescriptors) {
-                    Method setter = p.getWriteMethod();
-                    if (setter != null)
-                        attributes.putIfAbsent(p.getName(), p.getPropertyType());
-                }
-        } catch (IntrospectionException x) {
-            throw new MappingException(x);
+            try {
+                PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(c).getPropertyDescriptors();
+                if (propertyDescriptors != null)
+                    for (PropertyDescriptor p : propertyDescriptors) {
+                        Method setter = p.getWriteMethod();
+                        if (setter != null)
+                            attributes.putIfAbsent(p.getName(), p.getPropertyType());
+                    }
+            } catch (IntrospectionException x) {
+                throw new MappingException(x);
+            }
         }
 
         String keyAttributeName = null;
+        String versionAttributeName = null;
         if (!isEmbeddable) {
-            // Determine which attribute is the id.
-            // Precedence is:
-            // (1) has name of Id, or ID, or id.
-            // (2) name ends with Id.
-            // (3) name ends with ID.
+            // Determine which attribute is the id and version (optional).
+            // Id precedence:
+            // (1) name is id, ignoring case.
+            // (2) name ends with _id, ignoring case.
+            // (3) name ends with Id or ID.
             // (4) type is UUID.
-            // (5) name ends with id.
-            int precedence = 10;
+            // Version precedence (if also a valid version type):
+            // (1) name is version, ignoring case.
+            // (2) name ends with _version, ignoring case.
+            // (3) name ends with Version.
+            int idPrecedence = 10;
+            int vPrecedence = 10;
             for (Map.Entry<String, Class<?>> attribute : attributes.entrySet()) {
                 String name = attribute.getKey();
-                Class<?> type = attribute.getValue(); // TODO compare type against the repository key type if defined
-                if (name.length() > 2) {
-                    if (precedence > 2) {
-                        char i = name.charAt(name.length() - 2);
-                        if (i == 'I') {
-                            char d = name.charAt(name.length() - 1);
-                            if (d == 'd') {
-                                keyAttributeName = name;
-                                precedence = 2;
-                            } else if (d == 'D' && precedence > 3) {
-                                keyAttributeName = name;
-                                precedence = 3;
-                            }
-                        } else if (i == 'i' && precedence > 5 && name.charAt(name.length() - 1) == 'd') {
-                            keyAttributeName = name;
-                            precedence = 5;
-                        }
+                Class<?> type = attribute.getValue();
+                int len = name.length();
+
+                if (idPrecedence > 1 &&
+                    len >= 2 &&
+                    name.regionMatches(true, len - 2, "id", 0, 2)) {
+                    if (name.length() == 2) {
+                        keyAttributeName = name;
+                        idPrecedence = 1;
+                    } else if (idPrecedence > 2 &&
+                               name.charAt(len - 3) == '_') {
+                        keyAttributeName = name;
+                        idPrecedence = 2;
+                    } else if (idPrecedence > 3 &&
+                               name.charAt(len - 2) == 'I') {
+                        keyAttributeName = name;
+                        idPrecedence = 3;
                     }
-                } else if (name.equalsIgnoreCase("ID")) {
+                } else if (idPrecedence > 4 && UUID.class.equals(type)) {
                     keyAttributeName = name;
-                    precedence = 1;
-                    break;
-                } else if (precedence > 4 && UUID.class.equals(type)) {
-                    keyAttributeName = name;
-                    precedence = 4;
+                    idPrecedence = 4;
+                }
+
+                if (vPrecedence > 1 &&
+                    len >= 7 &&
+                    QueryInfo.VERSION_TYPES.contains(type) &&
+                    name.regionMatches(true, len - 7, "version", 0, 7)) {
+                    if (name.length() == 7) {
+                        versionAttributeName = name;
+                        vPrecedence = 1;
+                    } else if (vPrecedence > 2 &&
+                               name.charAt(len - 8) == '_') {
+                        versionAttributeName = name;
+                        vPrecedence = 2;
+                    } else if (vPrecedence > 3 &&
+                               name.endsWith("Version")) {
+                        versionAttributeName = name;
+                        vPrecedence = 3;
+                    }
                 }
             }
 
@@ -819,13 +842,13 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
             Class<?> attributeType = attributeInfo.getValue();
             boolean isCollection = Collection.class.isAssignableFrom(attributeType);
             boolean isPrimitive = attributeType.isPrimitive();
-            boolean isId = keyAttributeName != null && keyAttributeName.equalsIgnoreCase(attributeName);
+            boolean isId = attributeName.equals(keyAttributeName);
 
             String columnType;
             if (isPrimitive || attributeType.isInterface() || Serializable.class.isAssignableFrom(attributeType)) {
                 columnType = isId ? "id" : //
-                                "version".equalsIgnoreCase(attributeName) ? "version" : //
-                                                isCollection ? "element-collection" : // TODO add fetch-type eager
+                                isCollection ? "element-collection" : // TODO add fetch-type eager
+                                                attributeName.equals(versionAttributeName) ? "version" : //
                                                                 "basic";
             } else {
                 columnType = isId ? "embedded-id" : "embedded";
