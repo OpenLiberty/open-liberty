@@ -13,27 +13,20 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -49,6 +42,7 @@ public class TelemetryTraceTest extends FATServletClient {
     public static final String SERVER_NAME = "TelemetryTrace";
     public static final String APP_NAME = "MpTelemetryLogApp";
 
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @Before
@@ -110,19 +104,19 @@ public class TelemetryTraceTest extends FATServletClient {
         assertNotNull("Returning otel instance log could not be found.", runtimeLine);
         assertTrue("MPTelemetry did not log the correct log level", runtimeLine.contains("TRACE"));
         assertTrue("MPTelemetry did not log the correct message", runtimeLine.contains("Returning io.openliberty.microprofile.telemetry.runtime OTEL instance."));
-        checkJsonMessage(runtimeLine, runtimeAttributeMap);
+        TestUtils.checkJsonMessage(runtimeLine, runtimeAttributeMap);
 
         assertNotNull("App Trace message could not be found.", appLine);
         assertTrue("MPTelemetry did not log the correct message", appLine.contains("finest trace"));
         assertTrue("MPTelemetry did not log the correct log level", appLine.contains("TRACE"));
-        checkJsonMessage(appLine, appAttributeMap);
+        TestUtils.checkJsonMessage(appLine, appAttributeMap);
     }
 
     /**
      * Checks for populated span and trace ID for application logs
      */
     @Test
-    public void testTelemetryTraceID() throws Exception {
+    public void testTelemetryTraceSpanID() throws Exception {
         TestUtils.runApp(server, "logServlet");
         String line = server.waitForStringInLog("finest trace", server.getConsoleLogFile());
 
@@ -143,60 +137,7 @@ public class TelemetryTraceTest extends FATServletClient {
         assertFalse("MPTelemetry did not populate the trace ID.", line.contains("00000000000000000000000000000000"));
         assertFalse("MPTelemetry did not populate the span ID.", line.contains("0000000000000000"));
 
-        checkJsonMessage(line, appAttributeMap);
-    }
-
-    /*
-     * Compares telemetry logs to the provided map to verify the bridged attributes and values match.
-     */
-    static void checkJsonMessage(String line, Map<String, String> attributeMap) {
-        final String method = "checkJsonMessage";
-
-        String delimeter = "scopeInfo: io.openliberty.microprofile.telemetry:]";
-        int index = line.indexOf(delimeter);
-
-        line = line.substring(index + delimeter.length()).strip();
-        line = fixJSON(line);
-
-        JsonReader reader = Json.createReader(new StringReader(line));
-        JsonObject jsonObj = reader.readObject();
-        reader.close();
-        String value = null;
-        ArrayList<String> invalidFields = new ArrayList<String>();
-
-        for (String key : jsonObj.keySet()) {
-            if (attributeMap.containsKey((key))) {
-                value = jsonObj.get(key).toString();
-                Log.info(c, method, "key=" + key + ", value=" + (value.replace("\"", "")));
-
-                String mapValue = attributeMap.get(key);
-
-                if (!mapValue.equals("")) {
-                    if (mapValue.equals(value.replace("\"", "")))
-                        attributeMap.remove(key);
-                } else {
-                    attributeMap.remove(key);
-                }
-            }
-        }
-
-        if (attributeMap.size() > 0) {
-            Log.info(c, method, "Mandatory keys missing: " + attributeMap.toString());
-            Assert.fail("Mandatory keys missing: " + attributeMap.toString() + ". Actual JSON was: " + line);
-        }
-    }
-
-    /*
-     * Convert bridges Telemetry logs to valid JSON
-     */
-    private static String fixJSON(String input) {
-        String processed = input.replaceAll("([a-zA-Z0-9_.]+)=", "\"$1\":");
-
-        processed = processed.replaceAll("=([a-zA-Z_][a-zA-Z0-9_.]*)", ":\"$1\"")
-                        .replaceAll("=([0-9]+\\.[0-9]+)", ":$1")
-                        .replaceAll("=([0-9]+)", ":$1");
-
-        return processed;
+        TestUtils.checkJsonMessage(line, appAttributeMap);
     }
 
     @AfterClass

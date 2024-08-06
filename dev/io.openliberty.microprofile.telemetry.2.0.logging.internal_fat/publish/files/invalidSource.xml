@@ -20,5 +20,4 @@
 	<include location="../fatTestPorts.xml"/>
 	<mpTelemetry source="msg"/>
 	<application location="MpTelemetryLogApp.war"/>
-
 </server>

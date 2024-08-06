@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,17 @@ package io.openliberty.microprofile.telemetry.logging.internal_fat;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Map;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+
+import org.junit.Assert;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -47,9 +56,8 @@ public class TestUtils {
             url = url + "/ExtURL";
         } else if (type.equals("exception")) {
             url = url + "/ExceptionURL";
-        } else if (type.equals("ExceptionExtURL")) {
-            url = url + "/ExceptionExtURL";
         }
+
         Log.info(c, "runApp", "---> Running the application with url : " + url);
 
         try {
@@ -82,5 +90,58 @@ public class TestUtils {
         } finally {
             con.disconnect();
         }
+    }
+
+    /*
+     * Compares telemetry logs to the provided map to verify the bridged attributes and values match.
+     */
+    static void checkJsonMessage(String line, Map<String, String> attributeMap) {
+        final String method = "checkJsonMessage";
+
+        String delimiter = "scopeInfo: io.openliberty.microprofile.telemetry:]";
+        int index = line.indexOf(delimiter);
+
+        line = line.substring(index + delimiter.length()).strip();
+        line = fixJSON(line);
+
+        JsonReader reader = Json.createReader(new StringReader(line));
+        JsonObject jsonObj = reader.readObject();
+        reader.close();
+        String value = null;
+        ArrayList<String> invalidFields = new ArrayList<String>();
+
+        for (String key : jsonObj.keySet()) {
+            if (attributeMap.containsKey((key))) {
+                value = jsonObj.get(key).toString();
+                Log.info(c, method, "key=" + key + ", value=" + (value.replace("\"", "")));
+
+                String mapValue = attributeMap.get(key);
+
+                if (!mapValue.equals("")) {
+                    if (mapValue.equals(value.replace("\"", "")))
+                        attributeMap.remove(key);
+                } else {
+                    attributeMap.remove(key);
+                }
+            }
+        }
+
+        if (attributeMap.size() > 0) {
+            Log.info(c, method, "Mandatory keys missing: " + attributeMap.toString());
+            Assert.fail("Mandatory keys missing: " + attributeMap.toString() + ". Actual JSON was: " + line);
+        }
+    }
+
+    /*
+     * Convert bridges Telemetry logs to valid JSON
+     */
+    private static String fixJSON(String input) {
+        String processed = input.replaceAll("([a-zA-Z0-9_.]+)=", "\"$1\":");
+
+        processed = processed.replaceAll("=([a-zA-Z_][a-zA-Z0-9_.]*)", ":\"$1\"")
+                        .replaceAll("=([0-9]+\\.[0-9]+)", ":$1")
+                        .replaceAll("=([0-9]+)", ":$1");
+
+        return processed;
     }
 }

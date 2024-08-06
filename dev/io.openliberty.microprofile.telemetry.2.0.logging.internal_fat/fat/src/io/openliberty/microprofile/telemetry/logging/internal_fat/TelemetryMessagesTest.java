@@ -13,27 +13,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -97,7 +89,7 @@ public class TelemetryMessagesTest extends FATServletClient {
 
         assertNotNull("CWWKF0011I log could not be found.", line);
         assertTrue("MPTelemetry did not log the correct message", line.contains("The TelemetryMessage server is ready to run a smarter planet."));
-        checkJsonMessage(line, myMap);
+        TestUtils.checkJsonMessage(line, myMap);
     }
 
     /*
@@ -124,7 +116,7 @@ public class TelemetryMessagesTest extends FATServletClient {
         assertTrue("MPTelemetry did not log the correct message", line.contains("info message"));
         assertTrue("MPTelemetry did not log the correct log level", line.contains("INFO"));
 
-        checkJsonMessage(line, myMap);
+        TestUtils.checkJsonMessage(line, myMap);
 
     }
 
@@ -174,59 +166,6 @@ public class TelemetryMessagesTest extends FATServletClient {
         assertNotNull("Finest message could not be found.", finestLine);
         assertTrue("Incorrect log level was logged.", finestLine.contains("TRACE"));
 
-    }
-
-    /*
-     * Compares telemetry logs to the provided map to verify the bridged attributes and values match.
-     */
-    private void checkJsonMessage(String line, Map<String, String> attributeMap) {
-        final String method = "checkJsonMessage";
-
-        String delimeter = "scopeInfo: io.openliberty.microprofile.telemetry:]";
-        int index = line.indexOf(delimeter);
-
-        line = line.substring(index + delimeter.length()).strip();
-        line = fixJSON(line);
-
-        JsonReader reader = Json.createReader(new StringReader(line));
-        JsonObject jsonObj = reader.readObject();
-        reader.close();
-        String value = null;
-        ArrayList<String> invalidFields = new ArrayList<String>();
-
-        for (String key : jsonObj.keySet()) {
-            if (attributeMap.containsKey((key))) {
-                value = jsonObj.get(key).toString();
-                Log.info(c, method, "key=" + key + ", value=" + (value.replace("\"", "")));
-
-                String mapValue = attributeMap.get(key);
-
-                if (!mapValue.equals("")) {
-                    if (mapValue.equals(value.replace("\"", "")))
-                        attributeMap.remove(key);
-                } else {
-                    attributeMap.remove(key);
-                }
-            }
-        }
-
-        if (attributeMap.size() > 0) {
-            Log.info(c, method, "Mandatory keys missing: " + attributeMap.toString());
-            Assert.fail("Mandatory keys missing: " + attributeMap.toString() + ". Actual JSON was: " + line);
-        }
-    }
-
-    /*
-     * Convert bridges Telemetry logs to valid JSON
-     */
-    private static String fixJSON(String input) {
-        String processed = input.replaceAll("([a-zA-Z0-9_.]+)=", "\"$1\":");
-
-        processed = processed.replaceAll("=([a-zA-Z_][a-zA-Z0-9_.]*)", ":\"$1\"")
-                        .replaceAll("=([0-9]+\\.[0-9]+)", ":$1")
-                        .replaceAll("=([0-9]+)", ":$1");
-
-        return processed;
     }
 
     private static String setConfig(String fileName, RemoteFile logFile, LibertyServer server) throws Exception {

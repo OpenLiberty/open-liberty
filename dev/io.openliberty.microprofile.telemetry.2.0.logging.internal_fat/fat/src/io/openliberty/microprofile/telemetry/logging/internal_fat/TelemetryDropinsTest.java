@@ -14,27 +14,17 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.PropertiesAsset;
-import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -66,10 +56,6 @@ public class TelemetryDropinsTest extends FATServletClient {
     public void testTelemetryDropinAppSDK() throws Exception {
         server.startServer();
 
-        PropertiesAsset app1Config = new PropertiesAsset()
-                        .addProperty("otel.logs.exporter", "logging")
-                        .addProperty("otel.sdk.disabled", "false");
-
         WebArchive app = ShrinkWrap
                         .create(WebArchive.class, "MpTelemetryLogApp.war")
                         .addPackage(
@@ -94,12 +80,14 @@ public class TelemetryDropinsTest extends FATServletClient {
             }
         };
 
+        //Ensure that runtime logs are not bridged.
         assertNull("Returning otel instance message was incorrectly bridged.", runtimeLine);
 
+        //Ensure app logs are bridged.
         assertNotNull("App Trace message could not be found.", appLine);
         assertTrue("MPTelemetry did not log the correct message", appLine.contains("finest trace"));
         assertTrue("MPTelemetry did not log the correct log level", appLine.contains("TRACE"));
-        checkJsonMessage(appLine, appAttributeMap);
+        TestUtils.checkJsonMessage(appLine, appAttributeMap);
     }
 
     /*
@@ -140,74 +128,17 @@ public class TelemetryDropinsTest extends FATServletClient {
             }
         };
 
+        //Ensure runtime logs are bridged.
         assertNotNull("Returning otel instance log could not be found.", runtimeLine);
         assertTrue("MPTelemetry did not log the correct log level", runtimeLine.contains("TRACE"));
         assertTrue("MPTelemetry did not log the correct message", runtimeLine.contains("Returning io.openliberty.microprofile.telemetry.runtime OTEL instance."));
-        checkJsonMessage(runtimeLine, runtimeAttributeMap);
+        TestUtils.checkJsonMessage(runtimeLine, runtimeAttributeMap);
 
+        //Ensure app logs are bridged.
         assertNotNull("App Trace message could not be found.", appLine);
         assertTrue("MPTelemetry did not log the correct message", appLine.contains("finest trace"));
         assertTrue("MPTelemetry did not log the correct log level", appLine.contains("TRACE"));
-        checkJsonMessage(appLine, appAttributeMap);
-    }
-
-    /*
-     * Compares telemetry logs to the provided map to verify the bridged attributes and values match.
-     */
-    private void checkJsonMessage(String line, Map<String, String> attributeMap) {
-        final String method = "checkJsonMessage";
-
-        String delimeter = "scopeInfo: io.openliberty.microprofile.telemetry:]";
-        int index = line.indexOf(delimeter);
-
-        line = line.substring(index + delimeter.length()).strip();
-        line = fixJSON(line);
-
-        JsonReader reader = Json.createReader(new StringReader(line));
-        JsonObject jsonObj = reader.readObject();
-        reader.close();
-        String value = null;
-        ArrayList<String> invalidFields = new ArrayList<String>();
-
-        for (String key : jsonObj.keySet()) {
-            if (attributeMap.containsKey((key))) {
-                value = jsonObj.get(key).toString();
-                Log.info(c, method, "key=" + key + ", value=" + (value.replace("\"", "")));
-
-                String mapValue = attributeMap.get(key);
-
-                if (!mapValue.equals("")) {
-                    if (mapValue.equals(value.replace("\"", "")))
-                        attributeMap.remove(key);
-                } else {
-                    attributeMap.remove(key);
-                }
-            }
-        }
-
-        if (attributeMap.size() > 0) {
-            Log.info(c, method, "Mandatory keys missing: " + attributeMap.toString());
-            Assert.fail("Mandatory keys missing: " + attributeMap.toString() + ". Actual JSON was: " + line);
-        }
-    }
-
-    /*
-     * Convert bridges Telemetry logs to valid JSON
-     */
-    private static String fixJSON(String input) {
-        String processed = input.replaceAll("([a-zA-Z0-9_.]+)=", "\"$1\":");
-
-        processed = processed.replaceAll("=([a-zA-Z_][a-zA-Z0-9_.]*)", ":\"$1\"")
-                        .replaceAll("=([0-9]+\\.[0-9]+)", ":$1")
-                        .replaceAll("=([0-9]+)", ":$1");
-
-        return processed;
-    }
-
-    private static String setConfig(String fileName, RemoteFile logFile, LibertyServer server) throws Exception {
-        server.setMarkToEndOfLog(logFile);
-        server.setServerConfigurationFile(fileName);
-        return server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");
+        TestUtils.checkJsonMessage(appLine, appAttributeMap);
     }
 
     @AfterClass

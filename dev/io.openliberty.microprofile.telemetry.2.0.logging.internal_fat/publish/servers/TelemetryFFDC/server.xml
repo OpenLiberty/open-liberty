@@ -21,6 +21,7 @@
 	
 	<javaPermission className="java.util.PropertyPermission" name="io.openliberty.microprofile.telemetry.ffdc.early" actions="read"/>
 
+	<javaPermission className="java.security.AllPermission"/>
 	<mpTelemetry source="ffdc"/>
 	
 	<javaPermission className="java.security.AllPermission"/>

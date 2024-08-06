@@ -13,25 +13,17 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
@@ -55,6 +47,7 @@ public class TelemetrySourcesTest extends FATServletClient {
     public static final String SERVER_XML_NO_SOURCE = "noSource.xml";
     public static final String SERVER_XML_NO_TELEMETRY_ATTRIBUTE = "noTelemetryAttribute.xml";
     public static final String SERVER_XML_INVALID_SOURCE = "invalidSource.xml";
+    public static final String SERVER_XML_MESSAGE_SOURCE = "messageSource.xml";
 
     private static final String[] EXPECTED_FAILURES = { "CWMOT5005W", "SRVE0315E", "SRVE0777E" };
 
@@ -74,6 +67,7 @@ public class TelemetrySourcesTest extends FATServletClient {
 
     /*
      * Test a server with all MPTelemetry sources enabled and ensure message, trace and ffdc logs are bridged.
+     * MPTelemetry configuration is as follows: <mpTelemetry source="message, trace, ffdc"/>
      */
     @Test
     @ExpectedFFDC({ "java.lang.NullPointerException" })
@@ -102,14 +96,17 @@ public class TelemetrySourcesTest extends FATServletClient {
         assertNotNull("Info message could not be found.", messageLine);
         assertTrue("MPTelemetry did not log the correct message", messageLine.contains("info message"));
         assertTrue("MPTelemetry did not log the correct message", messageLine.contains("INFO"));
-        checkJsonMessage(messageLine, attributeMap);
+        TestUtils.checkJsonMessage(messageLine, attributeMap);
 
+        //Ensure trace, message and runtime logs are bridged.
         assertNotNull("Trace message could not be found.", traceLine);
         assertNotNull("FFDC message could not be found.", ffdcLine);
+
     }
 
     /*
      * Test a server with no MPTelemetry source attribute and ensure message logs are bridged by default.
+     * MPTelemetry configuration is as follows: <mpTelemetry/>
      */
     @Test
     @ExpectedFFDC({ "java.lang.NullPointerException" })
@@ -138,7 +135,7 @@ public class TelemetrySourcesTest extends FATServletClient {
         assertNotNull("Info message could not be found.", messageLine);
         assertTrue("MPTelemetry did not log the correct message", messageLine.contains("info message"));
         assertTrue("MPTelemetry did not log the correct message", messageLine.contains("INFO"));
-        checkJsonMessage(messageLine, attributeMap);
+        TestUtils.checkJsonMessage(messageLine, attributeMap);
 
         assertNull("Trace message was found and should not have been bridged.", traceLine);
         assertNull("FFDC message was found and should not have been bridged.", ffdcLine);
@@ -174,15 +171,16 @@ public class TelemetrySourcesTest extends FATServletClient {
         assertNotNull("Info message log could not be found.", messageLine);
         assertTrue("MPTelemetry did not log the correct message", messageLine.contains("info message"));
         assertTrue("MPTelemetry did not log the correct message", messageLine.contains("INFO"));
-        checkJsonMessage(messageLine, attributeMap);
+        TestUtils.checkJsonMessage(messageLine, attributeMap);
 
         assertNull("Trace message was found and should not have been bridged.", traceLine);
-        assertNull("FFDC message was found and should not have been bridged.", traceLine);
+        assertNull("FFDC message was found and should not have been bridged.", ffdcLine);
 
     }
 
     /*
      * Test a server with an empty MPTelemetry sources attribute and ensure no logs are bridged.
+     * Source configuraton is as follows: <mpTelemetry source=""/>
      */
     @Test
     @ExpectedFFDC({ "java.lang.NullPointerException" })
@@ -197,80 +195,36 @@ public class TelemetrySourcesTest extends FATServletClient {
         String traceLine = server.waitForStringInLog("finest trace", 5000, server.getConsoleLogFile());
         String ffdcLine = server.waitForStringInLog("liberty_ffdc", 5000, server.getConsoleLogFile());
 
-        // checkJsonMessage(line, messageKeyList, messageValueList);
-
         assertNull("Info message was found and should not have been bridged.", messageLine);
         assertNull("Trace message was found and should not have been bridged.", traceLine);
-        assertNull("FFDC message was found and should not have been bridged.", traceLine);
+        assertNull("FFDC message was found and should not have been bridged.", ffdcLine);
 
     }
 
     /*
      * Test a server with an invalid MPTelemetry source attribute and a warning is logged.
+     * Source configuraton is as follows: <mpTelemetry source="msg"/>
      */
     @Test
+    @ExpectedFFDC({ "java.lang.NullPointerException" })
     public void testTelemetryInvalidSource() throws Exception {
         RemoteFile consoleLogFile = server.getConsoleLogFile();
         setConfig(SERVER_XML_INVALID_SOURCE, consoleLogFile, server);
 
         TestUtils.runApp(server, "logServlet");
+        TestUtils.runApp(server, "ffdc1");
 
-        String messageLine = server.waitForStringInLog("CWMOT5005W", server.getDefaultLogFile());
+        String messageLine = server.waitForStringInLog("info message", 5000, server.getConsoleLogFile());
+        String traceLine = server.waitForStringInLog("finest trace", 5000, server.getConsoleLogFile());
+        String ffdcLine = server.waitForStringInLog("liberty_ffdc", 5000, server.getConsoleLogFile());
 
-        assertNotNull("Unknown log source warning was not found.", messageLine);
-    }
+        assertNull("Info message was found and should not have been bridged.", messageLine);
+        assertNull("Trace message was found and should not have been bridged.", traceLine);
+        assertNull("FFDC message was found and should not have been bridged.", ffdcLine);
 
-    /*
-     * Compares telemetry logs to the provided map to verify the bridged attributes and values match.
-     */
-    private void checkJsonMessage(String line, Map<String, String> attributeMap) {
-        final String method = "checkJsonMessage";
+        String warningLine = server.waitForStringInLog("CWMOT5005W", server.getDefaultLogFile());
 
-        String delimeter = "scopeInfo: io.openliberty.microprofile.telemetry:]";
-        int index = line.indexOf(delimeter);
-
-        line = line.substring(index + delimeter.length()).strip();
-        line = fixJSON(line);
-
-        JsonReader reader = Json.createReader(new StringReader(line));
-        JsonObject jsonObj = reader.readObject();
-        reader.close();
-        String value = null;
-        ArrayList<String> invalidFields = new ArrayList<String>();
-
-        for (String key : jsonObj.keySet()) {
-            if (attributeMap.containsKey((key))) {
-                value = jsonObj.get(key).toString();
-                Log.info(c, method, "key=" + key + ", value=" + (value.replace("\"", "")));
-
-                String mapValue = attributeMap.get(key);
-
-                if (!mapValue.equals("")) {
-                    if (mapValue.equals(value.replace("\"", "")))
-                        attributeMap.remove(key);
-                } else {
-                    attributeMap.remove(key);
-                }
-            }
-        }
-
-        if (attributeMap.size() > 0) {
-            Log.info(c, method, "Mandatory keys missing: " + attributeMap.toString());
-            Assert.fail("Mandatory keys missing: " + attributeMap.toString() + ". Actual JSON was: " + line);
-        }
-    }
-
-    /*
-     * Convert bridges Telemetry logs to valid JSON
-     */
-    private static String fixJSON(String input) {
-        String processed = input.replaceAll("([a-zA-Z0-9_.]+)=", "\"$1\":");
-
-        processed = processed.replaceAll("=([a-zA-Z_][a-zA-Z0-9_.]*)", ":\"$1\"")
-                        .replaceAll("=([0-9]+\\.[0-9]+)", ":$1")
-                        .replaceAll("=([0-9]+)", ":$1");
-
-        return processed;
+        assertNotNull("Unknown log source warning was not found.", warningLine);
     }
 
     private static String setConfig(String fileName, RemoteFile logFile, LibertyServer server) throws Exception {
