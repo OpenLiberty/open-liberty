@@ -301,6 +301,7 @@ public class VersionlessCachingTest {
         // There are some ASCII - EBCDIC issues that would have to be worked out for Z/OS.
         if (!OS.contains("linux") && !OS.contains("mac os")) {
             System.out.println("Returning.  Test not valid on " + OS);
+            TEST_PASSED = true;
             return;
         }
 
@@ -374,6 +375,7 @@ public class VersionlessCachingTest {
         // There are some ASCII - EBCDIC issues that would have to be worked out for Z/OS.
         if (!OS.contains("linux") && !OS.contains("mac os")) {
             System.out.println("Returning.  Test not valid on " + OS);
+            TEST_PASSED = true;
             return;
         }
 
@@ -433,6 +435,7 @@ public class VersionlessCachingTest {
         // There are some ASCII - EBCDIC issues that would have to be worked out for Z/OS.
         if (!OS.contains("linux") && !OS.contains("mac os")) {
             System.out.println("Returning.  Test not valid on " + OS);
+            TEST_PASSED = true;
             return;
         }
 
@@ -490,6 +493,7 @@ public class VersionlessCachingTest {
         // There are some ASCII - EBCDIC issues that would have to be worked out for Z/OS.
         if (!OS.contains("linux") && !OS.contains("mac os")) {
             System.out.println("Returning.  Test not valid on " + OS);
+            TEST_PASSED = true;
             return;
         }
 
