@@ -81,10 +81,10 @@ public class WebProviderAuthenticatorHelper {
 		removeSecurityNameAndUniquedIdFromHashtable(subject, customProperties, mapIdentityToRegistryUser);
 	    }
 	    catch (Exception e) {
-                // Even though isReadOnly is checked in the if condition,
-                // there's a very small time window where getCallerSubject() 
-                // could be called by application and make the subject readOnly.
-		// We clean up the hashtable the best we can and disregard the exception if it happens. 
+                // Even though isReadOnly is checked earlier in the if condition,
+                // there's a very small time window where getCallerSubject() could be called by applications  
+                // and make the subject readOnly before removeSecurity..() is called. This could cause an exception. 
+		// Here, we can disregard the exception if it happens. We aim to keep the hashtable size the best we can.  
 	    }
         }
 
