@@ -948,7 +948,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                     value = accessor instanceof Method ? ((Method) accessor).invoke(value) : ((Field) accessor).get(value);
                                             } else if (!entityInfo.idType.isInstance(value)) {
                                                 value = to(entityInfo.idType, result, false);
-                                                if (value == result) // unable to convert value
+                                                if (value == result) // unable to convert value - this should be unreachable since we validated the return type when we constructed the select query
                                                     throw new MappingException("Results for find-and-delete repository queries must be the entity class (" +
                                                                                (entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName() +
                                                                                ") or the id class (" + entityInfo.idType +
