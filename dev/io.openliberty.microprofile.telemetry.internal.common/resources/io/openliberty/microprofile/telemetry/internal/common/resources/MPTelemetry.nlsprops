@@ -80,3 +80,9 @@ requestTiming.processed.description=The number of servlet requests since the ser
 requestTiming.active.description=The number of servlet requests that are currently running.
 requestTiming.slow.description=The number of servlet requests that are currently running but are slow.
 requestTiming.hung.description=The number of servlet requests that are currently hung.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# HTTP Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+
+http.server.request.duration.description=Duration of HTTP server requests.
