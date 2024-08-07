@@ -192,7 +192,7 @@ public class QueryInfo {
     /**
      * Repository method to which this query information pertains.
      */
-    final Method method;
+    public final Method method;
 
     /**
      * The type of data structure that returns multiple results for this query.
