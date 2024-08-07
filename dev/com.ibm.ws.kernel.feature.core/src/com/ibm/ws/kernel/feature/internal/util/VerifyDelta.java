@@ -458,47 +458,30 @@ public class VerifyDelta {
         //     messages.addError("Incorrect count: expected [ " + expectedSize + " ] actual [ " + actualSize + " ]");
         // }
 
-        Set<String> actualSet = new HashSet<>(actual);
-        Set<String> expectedSet = new HashSet<>(expected);
-        Set<String> expectedExtraSet = new HashSet<>(actualUsedKernel ? expectedKernelOnly : expectedKernelBlocked);
-
-        String expectedMissing = ((allowedSubstitution != null) ? allowedSubstitution[OLD_FEATURE_OFFSET] : null);
-        String actualMissing = null;
-        String expectedExtra = ((allowedSubstitution != null) ? allowedSubstitution[NEW_FEATURE_OFFSET] : null);
-        String actualExtra = null;
-
-        if (expectedMissing != null) {
-            System.out.print("Expected missing [ " + expectedMissing + " ]");
+        Set<String> actualSet = new HashSet<>();
+        for(String actualFeature : actual){
+            if(repo.getVisibility(actualFeature).equals("PUBLIC")){
+                actualSet.add(actualFeature);
+            }
         }
-        if (expectedExtra != null) {
-            System.out.print("Expected extra [ " + expectedExtra + " ]");
+
+        Set<String> expectedSet = new HashSet<>();
+        for(String expectedFeature : expected){
+            if(repo.getVisibility(expectedFeature).equals("PUBLIC")){
+                expectedSet.add(expectedFeature);
+            }
         }
+
+        System.out.println("Expected: " + expectedSet);
+        System.out.println("Actual: " + actualSet);
 
         for (String expectedElement : expectedSet) {
             if (!actualSet.contains(expectedElement)) {
                 if (repo.isNoShip(expectedElement) || repo.dependsOnNoShip(expectedElement)) {
                     messages.addWarning("Missing no-ship [ " + description + " ]: [ " + expectedElement + " ]");
                 } else {
-                    if ((expectedMissing != null) && expectedElement.equals(expectedMissing)) {
-                        actualMissing = expectedElement;
-                    } else {
-                        add(missing, expectedElement);
-                        messages.addError("Missing [ " + description + " ]: [ " + expectedElement + " ]");
-                    }
-                }
-            }
-        }
-
-        String usedKernelTag = (actualUsedKernel ? "Kernel Only" : "Kernel Blocked");
-
-        for (String expectedElement : expectedExtraSet) {
-            if (!actualSet.contains(expectedElement)) {
-                add(missing, expectedElement);
-
-                if (repo.isNoShip(expectedElement) || repo.dependsOnNoShip(expectedElement)) {
-                    messages.addWarning("Missing no-ship [ " + description + " ]: [ " + expectedElement + " ]" + usedKernelTag);
-                } else {
-                    messages.addError("Missing [ " + description + " ]: [ " + expectedElement + " ]" + usedKernelTag);
+                    add(missing, expectedElement);
+                    messages.addError("Missing [ " + description + " ]: [ " + expectedElement + " ]");
                 }
             }
         }
@@ -527,40 +510,9 @@ public class VerifyDelta {
                 if (repo.isNoShip(actualElement) || repo.dependsOnNoShip(actualElement)) {
                     messages.addWarning(extraTag + " no-ship [ " + description + " ]: [ " + actualElement + " ]");
                 } else {
-                    if ((expectedExtra != null) && actualElement.equals(expectedExtra)) {
-                        actualExtra = actualElement;
-                    } else {
-                        add(extra, actualElement);
-                        messages.addError(extraTag + " [ " + description + " ]: [ " + actualElement + " ]");
-                    }
+                    add(extra, actualElement);
+                    messages.addError(extraTag + " [ " + description + " ]: [ " + actualElement + " ]");
                 }
-            }
-        }
-
-        if ((expectedExtra != null) && (expectedMissing != null)) {
-            String substitutionError;
-
-            if ((actualExtra == null) && (actualMissing == null)) {
-                substitutionError = "Missing substitution: [ " + expectedMissing + " ] with [ " + expectedExtra + " ]";
-            } else if (actualExtra == null) {
-                substitutionError = "Broken substitution: Removed [ " + expectedMissing + " ] but did not add [ " + expectedExtra + " ]";
-            } else if (actualMissing == null) {
-                substitutionError = "Broken substitution: Did not remove [ " + expectedMissing + " ] but did add [ " + expectedExtra + " ]";
-            } else {
-                substitutionError = null;
-            }
-            if (substitutionError != null) {
-                messages.addError(substitutionError);
-            }
-
-        } else if (expectedExtra != null) {
-            if (actualExtra == null) {
-                messages.addError("Did not add [ " + expectedExtra + " ]");
-            }
-
-        } else if (expectedMissing != null) {
-            if (actualMissing == null) {
-                messages.addError("Did not remove [ " + expectedMissing + " ]");
             }
         }
 
@@ -614,8 +566,7 @@ public class VerifyDelta {
             int expectedNo = 0;
             while ((orderMsg == null) && (actualNo < minSize) && (expectedNo < minSize)) {
                 String actualAt = actual.get(actualNo);
-                boolean skipActual = (expectedExtraSet.contains(actualAt) ||
-                                      (repo.isNoShip(actualAt) || repo.dependsOnNoShip(actualAt)));
+                boolean skipActual = ((repo.isNoShip(actualAt) || repo.dependsOnNoShip(actualAt)));
 
                 String expectedAt = expected.get(expectedNo);
                 boolean skipExpected = (repo.isNoShip(expectedAt) || repo.dependsOnNoShip(expectedAt));
