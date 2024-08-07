@@ -414,11 +414,6 @@ public class BaselineResolutionUnitTest {
 
     public void doSetupResolver() throws Exception {
         resolver = new FeatureResolverImpl();
-
-        String preferredPlatforms = getPreferredPlatforms();
-        if (preferredPlatforms != null) {
-            FeatureResolverImpl.setPreferredPlatforms(preferredPlatforms);
-        }
     }
 
     public void doClearResolver() throws Exception {
@@ -482,25 +477,36 @@ public class BaselineResolutionUnitTest {
     }
 
     public Result resolveFeatures(VerifyCase verifyCase, List<String> rootErrors) throws Exception {
-        setEnvironment(verifyCase, resolver);
+        setEnvironment(verifyCase);
 
-        return resolver.resolve(RepositoryUtil.getRepository(),
-                                RepositoryUtil.ignoreFeatures("Kernel", verifyCase.input.kernel),
-                                verifyCase.input.roots,
-                                Collections.<String> emptySet(), // pre-resolved feature names
-                                verifyCase.input.isMultiple,
-                                EnumSet.allOf(ProcessType.class),
-                                verifyCase.input.platforms);
+        try{
+            return resolver.resolve(RepositoryUtil.getRepository(),
+                                    RepositoryUtil.ignoreFeatures("Kernel", verifyCase.input.kernel),
+                                    verifyCase.input.roots,
+                                    Collections.<String> emptySet(), // pre-resolved feature names
+                                    verifyCase.input.isMultiple,
+                                    EnumSet.allOf(ProcessType.class),
+                                    verifyCase.input.platforms);
+        } finally {
+            clearEnviornment();
+        }
     }
 
-    protected void setEnvironment(VerifyCase verifyCase, FeatureResolverImpl resolver) {
-        String preferredPlatforms;
-        Map<String, String> envMap = verifyCase.input.envMap;
-        if (envMap == null) {
-            preferredPlatforms = null;
-        } else {
-            preferredPlatforms = envMap.get(FeatureResolver.PREFERRED_PLATFORM_VERSIONS_PROPERTY_NAME);
+    protected void clearEnviornment(){
+        FeatureResolverImpl.setPreferredPlatforms(null);
+    }
+
+    protected void setEnvironment(VerifyCase verifyCase) {
+        String preferredPlatforms = getPreferredPlatforms();
+        if (preferredPlatforms == null) {
+            Map<String, String> envMap = verifyCase.input.envMap;
+            if (envMap == null) {
+                preferredPlatforms = null;
+            } else {
+                preferredPlatforms = envMap.get(FeatureResolver.PREFERRED_PLATFORM_VERSIONS_PROPERTY_NAME);
+            }
         }
+
         System.out.println("Setting preferred platforms [ " + preferredPlatforms + " ]");
         FeatureResolverImpl.setPreferredPlatforms(preferredPlatforms);
     }
