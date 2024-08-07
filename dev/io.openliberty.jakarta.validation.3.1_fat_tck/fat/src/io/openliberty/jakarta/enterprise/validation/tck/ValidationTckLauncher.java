@@ -61,8 +61,10 @@ public class ValidationTckLauncher {
         /*
          * Client config:
          * - validation.provider for client to use
+         * - exclude.tests used for skipping tests if we find a TCK bug that needs a service release
          */
         additionalProps.put("validation.provider", validationProvider);
+        additionalProps.put("exclude.tests", "");
 
         //Configure server and install user feature
         server.setJvmOptions(opts);

@@ -18,6 +18,7 @@
     <!-- Feature integrations being tested -->
     <feature>cdi-4.1</feature>
     <feature>jndi-1.0</feature>
+    <feature>enterpriseBeans-4.0</feature>
     
     <!-- User feature to make Hibernate Validator public -->
     <feature>valThirdParty-3.1</feature>

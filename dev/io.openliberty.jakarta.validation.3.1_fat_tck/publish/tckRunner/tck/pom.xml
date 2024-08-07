@@ -22,11 +22,13 @@
     <properties>
     	<!-- These properties can be overwritten by users if they want to test against a snapshot version-->
         <jakarta.validation.tck.groupid>jakarta.validation</jakarta.validation.tck.groupid>
-        <jakarta.validation.tck.version>3.1.0</jakarta.validation.tck.version>
+        <!-- Service release 3.1.1 resolves bug: https://github.com/jakartaee/validation-tck/issues/197 -->
+        <jakarta.validation.tck.version>3.1.1</jakarta.validation.tck.version>
         <jakarta.validation.version>3.1.0</jakarta.validation.version>
         
         <arquillian.version>1.7.0.Alpha13</arquillian.version>
         <arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
+        <!-- Min version 7.7.1 for assertEquals(Integer, Integer): https://github.com/testng-team/testng/pull/2858 -->
         <testng.version>7.5.1</testng.version>
         <slf4j.version>2.0.6</slf4j.version>
 
@@ -229,6 +231,9 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>${tck.suite.file}</suiteXmlFile> <!-- Extracted from TCK -->
                     </suiteXmlFiles>
+                    <excludes>
+                        <exclude>${exclude.tests}</exclude> <!-- Used if we ever need to skip tests due to TCK bugs -->
+                    </excludes>
                     <reportNameSuffix>${jakarta.tck.platform}</reportNameSuffix>
                     <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
                 </configuration>
