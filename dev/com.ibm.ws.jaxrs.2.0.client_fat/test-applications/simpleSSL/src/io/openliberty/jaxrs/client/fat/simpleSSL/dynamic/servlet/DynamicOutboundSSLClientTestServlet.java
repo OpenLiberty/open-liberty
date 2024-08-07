@@ -30,7 +30,7 @@ import componenttest.app.FATServlet;
 @WebServlet(urlPatterns = "/DynamicOutboundSSLClientTestServlet")
 public class DynamicOutboundSSLClientTestServlet extends FATServlet {
 
-    private static final String SERVER_CONTEXT_ROOT = "https://localhost:" + Integer.getInteger("bvt.prop.HTTP_default.secure") + "/simpleSSL/";
+    private static final String SERVER_CONTEXT_ROOT = "https://localhost:" + Integer.getInteger("bvt.prop.HTTP_default.secure") + "/DynamicOutboundSSL/";
 
     private static Client client;
 

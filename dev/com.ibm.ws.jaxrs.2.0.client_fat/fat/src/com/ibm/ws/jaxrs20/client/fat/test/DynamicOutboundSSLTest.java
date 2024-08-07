@@ -32,9 +32,9 @@ import io.openliberty.jaxrs.client.fat.simpleSSL.dynamic.servlet.DynamicOutbound
 @RunWith(FATRunner.class)
 public class DynamicOutboundSSLTest extends FATServletClient {
 
-    private static final String appName = "simpleSSL";
+    private static final String appName = "DynamicOutboundSSL";
 
-    @Server("com.ibm.ws.jaxrs.2.0.client.fat.SimpleSSLTest")
+    @Server("com.ibm.ws.jaxrs.2.0.client.fat.DynamicOutboundSSLTest")
     @TestServlet(servlet = DynamicOutboundSSLClientTestServlet.class, contextRoot = appName)
     public static LibertyServer server;
 

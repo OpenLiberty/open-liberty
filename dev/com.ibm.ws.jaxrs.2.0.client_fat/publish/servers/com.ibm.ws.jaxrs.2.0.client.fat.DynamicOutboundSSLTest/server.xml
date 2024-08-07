@@ -11,6 +11,10 @@
     <!-- customize SSL configuration -->
     <ssl id="mySSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" />
 
+	<ssl id="dynamicOutboundConfig" keyStoreRef="clientKeyStore">
+          <outboundConnection host="localhost" port="${bvt.prop.HTTP_default.secure}"/>
+	</ssl>
+
     <keyStore id="clientKeyStore" location="key.jks" type="JKS" password="passw0rd" />
     <keyStore id="clientTrustStore" location="trust.jks" type="JKS" password="passw0rd" />
 
