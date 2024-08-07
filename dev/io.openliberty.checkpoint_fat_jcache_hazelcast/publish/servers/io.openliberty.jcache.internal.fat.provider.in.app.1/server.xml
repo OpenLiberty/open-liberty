@@ -44,7 +44,7 @@
 	<cacheManager id="CacheManager">
 
 		<properties
-			hazelcast.config.location="file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}" />
+			hazelcast.config.location="${uri_location}" />
 
 		<cachingProvider
 			jCacheLibraryRef="HazelcastLib" commonLibraryRef="CustomLoginLib" />
