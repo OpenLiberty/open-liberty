@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.javaee.dd;
 
@@ -79,6 +76,7 @@ public interface PlatformVersion {
             case 31:  return "3.1";
             case 32:  return "3.2";
             case 40:  return "4.0";
+            case 41:  return "4.1";
             case 50:  return "5.0";
             case 60:  return "6.0";
             case 61:  return "6.1";
@@ -111,6 +109,7 @@ public interface PlatformVersion {
             case 31:  return "3.1";
             case 32:  return "3.2";
             case 40:  return "4";
+            case 41:  return "4.1";
             case 50:  return "5";
             case 60:  return "6";
             case 61:  return "6.1";
@@ -144,6 +143,7 @@ public interface PlatformVersion {
             case "3.1" : return 31 ;
             case "3.2" : return 32 ;
             case "4.0" : return 40 ;
+            case "4.1" : return 41 ;
             case "5.0" : return 50 ;
             case "6.0" : return 60 ;
             case "6.1" : return 61 ;
