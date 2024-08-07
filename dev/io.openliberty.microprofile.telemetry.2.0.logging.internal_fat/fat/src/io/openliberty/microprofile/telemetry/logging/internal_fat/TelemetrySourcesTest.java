@@ -227,6 +227,131 @@ public class TelemetrySourcesTest extends FATServletClient {
         assertNotNull("Unknown log source warning was not found.", warningLine);
     }
 
+    /*
+     * Test a server with only the message sources enabled and only ensure message logs are bridged.
+     * MPTelemetry configuration is as follows: <mpTelemetry source="message"/>
+     * Dynamically update the configuration to include all log sources and ensure both message and ffdcs are bridged.
+     * MPTelemetry configuration is as follows: <mpTelemetry source="message, trace, ffdc"/>
+     */
+    @Test
+    @ExpectedFFDC({ "java.lang.NullPointerException", "java.lang.ArithmeticException" })
+    public void testTelemetryDynamicUpdateAllSources() throws Exception {
+        RemoteFile consoleLogFile = server.getConsoleLogFile();
+        RemoteFile messageLogFile = server.getDefaultLogFile();
+
+        setConfig(SERVER_XML_MESSAGE_SOURCE, messageLogFile, server);
+        server.setMarkToEndOfLog(consoleLogFile);
+
+        TestUtils.runApp(server, "logServlet");
+        TestUtils.runApp(server, "ffdc1");
+
+        String messageLine = server.waitForStringInLogUsingMark("info message", consoleLogFile);
+        String ffdcLine = server.waitForStringInLogUsingMark("liberty_ffdc", consoleLogFile);
+
+        Map<String, String> attributeMap = new HashMap<String, String>() {
+            {
+                put("io.openliberty.ext.app_name", "MpTelemetryLogApp");
+                put("io.openliberty.type", "liberty_message");
+                put("io.openliberty.module", "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp.MpTelemetryServlet");
+                put("thread.id", "");
+                put("thread.name", "");
+                put("io.openliberty.sequence", "");
+            }
+        };
+
+        assertNotNull("Info message could not be found.", messageLine);
+        assertTrue("MPTelemetry did not log the correct message", messageLine.contains("info message"));
+        assertTrue("MPTelemetry did not log the correct message", messageLine.contains("INFO"));
+        TestUtils.checkJsonMessage(messageLine, attributeMap);
+
+        assertNull("FFDC message was found and should not have been bridged.", ffdcLine);
+
+        //Update MPTelemetry sources to include messages, trace and ffdc.
+        setConfig(SERVER_XML_ALL_SOURCES, messageLogFile, server);
+        server.setMarkToEndOfLog(consoleLogFile);
+
+        TestUtils.runApp(server, "logServlet");
+        TestUtils.runApp(server, "ffdc2");
+
+        messageLine = server.waitForStringInLogUsingMark("info message", consoleLogFile);
+        ffdcLine = server.waitForStringInLogUsingMark("liberty_ffdc", consoleLogFile);
+
+        attributeMap = new HashMap<String, String>() {
+            {
+                put("io.openliberty.ext.app_name", "MpTelemetryLogApp");
+                put("io.openliberty.type", "liberty_message");
+                put("io.openliberty.module", "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp.MpTelemetryServlet");
+                put("thread.id", "");
+                put("thread.name", "");
+                put("io.openliberty.sequence", "");
+            }
+        };
+
+        assertNotNull("Info message could not be found.", messageLine);
+        assertTrue("MPTelemetry did not log the correct message", messageLine.contains("info message"));
+        assertTrue("MPTelemetry did not log the correct message", messageLine.contains("INFO"));
+        TestUtils.checkJsonMessage(messageLine, attributeMap);
+
+        assertNotNull("FFDC message could not be found.", ffdcLine);
+
+    }
+
+    /*
+     * Test a server with only the message sources enabled and only ensure message logs are bridged.
+     * MPTelemetry configuration is as follows: <mpTelemetry source="message"/>
+     * Dynamically update the configuration to exclude all log sources and ensure no messages are bridged.
+     * MPTelemetry configuration is as follows: <mpTelemetry source=""/>
+     */
+    @Test
+    @ExpectedFFDC({ "java.lang.NullPointerException" })
+    public void testTelemetryDynamicUpdateEmptySource() throws Exception {
+        RemoteFile consoleLogFile = server.getConsoleLogFile();
+        RemoteFile messageLogFile = server.getDefaultLogFile();
+
+        setConfig(SERVER_XML_MESSAGE_SOURCE, messageLogFile, server);
+        server.setMarkToEndOfLog(consoleLogFile);
+
+        TestUtils.runApp(server, "logServlet");
+        TestUtils.runApp(server, "ffdc1");
+
+        String messageLine = server.waitForStringInLogUsingMark("info message", consoleLogFile);
+        String ffdcLine = server.waitForStringInLogUsingMark("liberty_ffdc", consoleLogFile);
+
+        Map<String, String> attributeMap = new HashMap<String, String>() {
+            {
+                put("io.openliberty.ext.app_name", "MpTelemetryLogApp");
+                put("io.openliberty.type", "liberty_message");
+                put("io.openliberty.module", "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp.MpTelemetryServlet");
+                put("thread.id", "");
+                put("thread.name", "");
+                put("io.openliberty.sequence", "");
+            }
+        };
+
+        assertNotNull("Info message could not be found.", messageLine);
+        assertTrue("MPTelemetry did not log the correct message", messageLine.contains("info message"));
+        assertTrue("MPTelemetry did not log the correct message", messageLine.contains("INFO"));
+        TestUtils.checkJsonMessage(messageLine, attributeMap);
+
+        assertNull("FFDC message was found and should not have been bridged.", ffdcLine);
+
+        //Update MPTelemetry sources to exclude all sources
+        setConfig(SERVER_XML_EMPTY_SOURCE, messageLogFile, server);
+
+        server.setMarkToEndOfLog(consoleLogFile);
+
+        TestUtils.runApp(server, "logServlet");
+        TestUtils.runApp(server, "ffdc1");
+
+        messageLine = null;
+        messageLine = server.waitForStringInLogUsingMark("info message", 5000, consoleLogFile);
+        ffdcLine = server.waitForStringInLogUsingMark("liberty_ffdc", 5000, consoleLogFile);
+
+        assertNull("App message was found and should not have been bridged.", messageLine);
+        assertNull("FFDC message was found and should not have been bridged.", ffdcLine);
+
+    }
+
     private static String setConfig(String fileName, RemoteFile logFile, LibertyServer server) throws Exception {
         server.setMarkToEndOfLog(logFile);
         server.setServerConfigurationFile(fileName);
