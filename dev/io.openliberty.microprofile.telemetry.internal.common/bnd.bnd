@@ -14,12 +14,12 @@ alphaSemconvOpenTelemetryVersion=1.25.0.alpha
 
 -sub: *.bnd
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 src: src, resources
 
-javac.source: 11
-javac.target: 11
+javac.source: 1.8
+javac.target: 1.8
 
 #-cdiannotations:
 
