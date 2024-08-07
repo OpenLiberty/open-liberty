@@ -471,6 +471,9 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
     }
     
     private synchronized void switchChains(boolean switchToNetty) {
+
+        performSanityChecks();
+
         if(this.useNetty == switchToNetty) {
             return;
         }
@@ -521,6 +524,9 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "Processing HTTP chain work: enableEndpoint=" + enableEndpoint + ", isPause=" + isPause);
         }
+
+        performSanityChecks();
+
         if (enableEndpoint) {
             // enable the endpoint if it is currently disabled
             // it's ok if the endpoint is stopped, the config update will occur @ next start
@@ -547,6 +553,10 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
                 }
             }
 
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Enabling endpoint, useNetty=" + useNetty);
+            }
+
             if (!isPause) {
                 // Use an update action so they pick up the new settings
                 performAction(updateAction);
@@ -568,6 +578,20 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             } else {
                 stopAction.run();
             }
+        } 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(this, tc, "processHttpChainWork");
+        }
+        
+    }
+
+    private void logChainStates(){
+        if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+            HttpChain httpChain = getCurrentHttpChain();
+            HttpChain httpsChain = getCurrentHttpsChain();
+
+            Tr.debug(this, tc, "Chain states after resume - HTTP: " + ChainState.printState(httpChain.getChainState())
+                + ", HTTPS: " + ChainState.printState(httpsChain.getChainState()));
         }
     }
 
@@ -1310,26 +1334,94 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
     /** {@inheritDoc} */
     @Override
     public void resume() throws PauseableComponentException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(this, tc, "resume");
+        }
         try {
+
+            performSanityChecks();
+
             // Start the HTTP and HTTPS chains.
             // By the time this method exits, requests that target this endpoint will be accepted (CWWKO0219I:
             // TCP Channel *** has been started and is now listening for requests on host ***  (IPv6) port ***.).
             processHttpChainWork(true, true);
-            
-            int httpChainState = getCurrentHttpChain().getChainState();
-            int httpsChainState = getCurrentHttpsChain().getChainState();
 
-            // Check the state of the HTTP chains. The expectation is that the HTTP and HTTPS chains states are either STARTED
-            // or UNINITIALIZED (disabled).
-          
-            if (!(httpChainState == ChainState.STARTED.val && httpsChainState == ChainState.UNINITIALIZED.val ||
-                  httpChainState == ChainState.UNINITIALIZED.val && httpsChainState == ChainState.STARTED.val ||
-                  httpChainState == ChainState.STARTED.val && httpsChainState == ChainState.STARTED.val)) {
-                throw new PauseableComponentException("The request to resume HTTP endpoint " + name + " did not complete successfully. HTTPChain: " + httpChain.toString()
-                                                      + ". HTTPSChain: " + httpSecureChain.toString());
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Chain work processed, verifying states");
             }
+            logChainStates();
+            verifyResumedChainStates();
+            
         } catch (Throwable t) {
             throw new PauseableComponentException(t);
+        } finally{
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(this, tc, "resume");
+            }
+        }
+    }
+
+    private void verifyResumedChainStates() throws PauseableComponentException {
+        HttpChain httpChain = getCurrentHttpChain();
+        HttpChain httpsChain = getCurrentHttpsChain();
+
+        int httpChainState = httpChain.getChainState();
+        int httpsChainState = httpsChain.getChainState();
+
+        boolean isValid = 
+            (httpChainState == ChainState.STARTED.val && httpsChainState == ChainState.UNINITIALIZED.val) ||
+            (httpChainState == ChainState.UNINITIALIZED.val && httpsChainState == ChainState.STARTED.val) ||
+            (httpChainState == ChainState.STARTED.val && httpsChainState == ChainState.STARTED.val);
+
+        if (!isValid){
+            throw new PauseableComponentException("The request to resume HTTP endpoint " + name + 
+                " did not complete successfully. HTTPChain: " + httpChain.toString() + 
+                ". HTTPSChain: " + httpsChain.toString());
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Chain states after resume - HTTP: " + ChainState.printState(httpChainState) 
+                 + ", HTTPS: " + ChainState.printState(httpsChainState));
+        }
+    }
+
+    private void performSanityChecks() throws IllegalStateException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(this, tc, "performSanityChecks");
+        }
+
+        if (netty == null) {
+            throw new IllegalStateException("Netty framework is not initialized");
+        }
+        if (chfw == null) {
+            throw new IllegalStateException("Channel framework is not initialized");
+        }
+        if (executorService.getService() == null) {
+            throw new IllegalStateException("Executor service is not available");
+        }   
+        if (eventService.getService() == null) {
+            throw new IllegalStateException("Event service is not available");
+        }
+
+        // Check SSL components only if HTTPS is configured
+        if (httpsPort >= 0) {
+            if (useNetty && nettyTlsProvider == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                    Tr.warning(tc, "Netty TLS provider is not available, HTTPS will not be enabled");
+                }
+            } else if (!useNetty && sslFactoryProvider.getService() == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                    Tr.warning(tc, "SSL factory provider is not available, HTTPS will not be enabled");
+                }
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "All sanity checks passed");
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(this, tc, "performSanityChecks");
         }
     }
 
@@ -1357,10 +1449,12 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         return info;
     }
     
-    private HttpChain getCurrentHttpChain() {
+    private synchronized HttpChain getCurrentHttpChain() {
         return useNetty ? nettyChain: httpChain;
     }
-     private HttpChain getCurrentHttpsChain() {
-         return useNetty ? nettySecureChain: httpSecureChain;
-     }
+    private synchronized HttpChain getCurrentHttpsChain() {
+        return useNetty ? nettySecureChain: httpSecureChain;
+    }
+
+    
 }

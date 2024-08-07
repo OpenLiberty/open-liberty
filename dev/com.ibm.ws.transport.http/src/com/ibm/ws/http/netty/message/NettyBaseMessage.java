@@ -1138,7 +1138,7 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
                     }
 
                     // Set Partitioned Flag for SameSite=None Cookie
-                    if (config.getPartitioned() == Boolean.TRUE
+                    if (config.getPartitioned()
                         && sameSiteAttributeValue.equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName())) {
                         if (cookie.getAttribute("partitioned") == null) { // null means no value has been set yet
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1167,6 +1167,17 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
                         MSP.log("[2] Setting the Partitioned attribute for SameSite=None");
                         cookie.setAttribute("partitioned", "");
                     }
+                }
+            }
+
+            String partitionedValue = cookie.getAttribute("partitioned");
+            if(partitionedValue != null && !partitionedValue.equalsIgnoreCase("false")){
+                boolean sameSiteIsNotNone = true;
+                if(cookie.getAttribute("samesite") != null){
+                    sameSiteIsNotNone = !cookie.getAttribute("samesite").equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName());
+                }
+                if(sameSiteIsNotNone){
+                    cookie.setAttribute("partitioned", "false");
                 }
             }
 
