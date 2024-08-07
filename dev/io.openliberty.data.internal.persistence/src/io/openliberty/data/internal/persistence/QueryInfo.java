@@ -21,9 +21,10 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.RecordComponent;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -72,36 +73,54 @@ public class QueryInfo {
     /**
      * Return types for deleteBy that distinguish delete-only from find-and-delete.
      */
-    private static final Set<Class<?>> RETURN_TYPES_FOR_DELETE_ONLY = Set.of(void.class, Void.class,
-                                                                             boolean.class, Boolean.class,
-                                                                             int.class, Integer.class,
-                                                                             long.class, Long.class,
-                                                                             Number.class);
+    private static final Set<Class<?>> RETURN_TYPES_FOR_DELETE_ONLY = //
+                    Set.of(void.class, Void.class,
+                           boolean.class, Boolean.class,
+                           int.class, Integer.class,
+                           long.class, Long.class,
+                           Number.class);
 
     /**
      * Valid types for repository method parameters after the query parameters.
      */
-    static final Set<Class<?>> SPECIAL_PARAM_TYPES = new HashSet<>(Arrays.asList //
-    (Limit.class, Order.class, PageRequest.class, Sort.class, Sort[].class));
+    static final Set<Class<?>> SPECIAL_PARAM_TYPES = //
+                    Set.of(Limit.class, Order.class, PageRequest.class,
+                           Sort.class, Sort[].class);
 
     /**
      * Valid types for when a repository method computes an update count
      */
-    private static final Set<Class<?>> UPDATE_COUNT_TYPES = new HashSet<>(Arrays.asList //
-    (boolean.class, Boolean.class, int.class, Integer.class, long.class, Long.class, void.class, Void.class, Number.class));
+    private static final Set<Class<?>> UPDATE_COUNT_TYPES = //
+                    Set.of(boolean.class, Boolean.class,
+                           int.class, Integer.class,
+                           long.class, Long.class,
+                           void.class, Void.class,
+                           Number.class);
+
+    /**
+     * Valid types for jakarta.persistence.Version, except for
+     * java.sql.Timestamp, which is not a valid type in Jakarta Data.
+     */
+    public static final Set<Class<?>> VERSION_TYPES = //
+                    Set.of(Instant.class,
+                           int.class, Integer.class,
+                           LocalDateTime.class,
+                           long.class, Long.class,
+                           short.class, Short.class);
 
     /**
      * Mapping of Java primitive class to wrapper class.
      */
-    private static final Map<Class<?>, Class<?>> WRAPPER_CLASSES = Map.of(boolean.class, Boolean.class,
-                                                                          byte.class, Byte.class,
-                                                                          char.class, Character.class,
-                                                                          double.class, Double.class,
-                                                                          float.class, Float.class,
-                                                                          int.class, Integer.class,
-                                                                          long.class, Long.class,
-                                                                          short.class, Short.class,
-                                                                          void.class, Void.class);
+    private static final Map<Class<?>, Class<?>> WRAPPER_CLASSES = //
+                    Map.of(boolean.class, Boolean.class,
+                           byte.class, Byte.class,
+                           char.class, Character.class,
+                           double.class, Double.class,
+                           float.class, Float.class,
+                           int.class, Integer.class,
+                           long.class, Long.class,
+                           short.class, Short.class,
+                           void.class, Void.class);
 
     /**
      * Information about the type of entity to which the query pertains.
