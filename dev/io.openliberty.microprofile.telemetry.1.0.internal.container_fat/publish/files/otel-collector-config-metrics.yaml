@@ -1,0 +1,23 @@
+receivers:
+ otlp:
+   protocols:
+     grpc:
+
+exporters:
+ prometheus:
+  endpoint: otel-collector-metrics:3131
+
+
+processors:
+ batch:
+   timeout: 0s
+
+service:
+  telemetry:
+    logs:
+      level: "debug"
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus]
