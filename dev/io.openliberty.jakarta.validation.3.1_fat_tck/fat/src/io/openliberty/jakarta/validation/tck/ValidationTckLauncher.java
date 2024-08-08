@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.jakarta.enterprise.validation.tck;
+package io.openliberty.jakarta.validation.tck;
 
 import java.util.HashMap;
 import java.util.Map;
