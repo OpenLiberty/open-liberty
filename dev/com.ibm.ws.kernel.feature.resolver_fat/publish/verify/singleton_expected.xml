@@ -4659,7 +4659,7 @@
             <root>com.ibm.websphere.appserver.microProfile-3.3</root>
         </input>
         <output>
-            <resolved>io.openliberty.httpStat-monitor1.0</resolved>
+            <resolved>io.openliberty.servlet3.1-monitor1.0</resolved>
             <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
@@ -4804,7 +4804,7 @@
             <root>com.ibm.websphere.appserver.microProfile-4.0</root>
         </input>
         <output>
-            <resolved>io.openliberty.httpStat-monitor1.0</resolved>
+            <resolved>io.openliberty.servlet3.1-monitor1.0</resolved>
             <resolved>com.ibm.websphere.appserver.eeCompatible-8.0</resolved>
             <resolved>io.openliberty.servlet.api-4.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeeddSchema-1.0</resolved>
@@ -4946,7 +4946,7 @@
             <root>com.ibm.websphere.appserver.microProfile-4.1</root>
         </input>
         <output>
-            <resolved>io.openliberty.httpStat-monitor1.0</resolved>
+            <resolved>io.openliberty.servlet3.1-monitor1.0</resolved>
             <resolved>com.ibm.websphere.appserver.eeCompatible-8.0</resolved>
             <resolved>io.openliberty.servlet.api-4.0</resolved>
             <resolved>com.ibm.websphere.appserver.javax.el-3.0</resolved>
@@ -6557,7 +6557,7 @@
             <root>com.ibm.websphere.appserver.mpMetrics-2.3</root>
         </input>
         <output>
-            <resolved>io.openliberty.httpStat-monitor1.0</resolved>
+            <resolved>io.openliberty.servlet3.1-monitor1.0</resolved>
             <resolved>json-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.eeCompatible-7.0</resolved>
             <resolved>io.openliberty.servlet.api-3.1</resolved>
@@ -6648,7 +6648,7 @@
             <root>com.ibm.websphere.appserver.mpMetrics-3.0</root>
         </input>
         <output>
-            <resolved>io.openliberty.httpStat-monitor1.0</resolved>
+            <resolved>io.openliberty.servlet3.1-monitor1.0</resolved>
             <resolved>json-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.eeCompatible-8.0</resolved>
             <resolved>io.openliberty.servlet.api-4.0</resolved>
@@ -13334,7 +13334,6 @@
             <root>io.openliberty.microProfile-5.0</root>
         </input>
         <output>
-            <resolved>io.openliberty.httpStat-monitor1.0.jakarta</resolved>
             <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
@@ -13586,7 +13585,6 @@
             <resolved>mpRestClient-3.0</resolved>
             <resolved>mpTelemetry-1.0</resolved>
             <resolved>microProfile-6.0</resolved>
-            <resolved>io.openliberty.httpStat-monitor1.0.jakarta</resolved>
             <resolved>io.openliberty.mpRestClient3.0-mpFaultTolerance4.0</resolved>
             <resolved>io.openliberty.restfulWS3.1-mpMetrics-monitor1.0</resolved>
             <resolved>io.openliberty.restfulWSClient3.0-ssl1.0</resolved>
@@ -13723,7 +13721,6 @@
             <resolved>io.openliberty.mpTelemetry1.1.ee-10.0</resolved>
             <resolved>mpTelemetry-1.1</resolved>
             <resolved>microProfile-6.1</resolved>
-            <resolved>io.openliberty.httpStat-monitor1.0.jakarta</resolved>
             <resolved>io.openliberty.mpRestClient3.0-mpFaultTolerance4.0</resolved>
             <resolved>io.openliberty.restfulWS3.1-mpMetrics-monitor1.0</resolved>
             <resolved>io.openliberty.restfulWSClient3.0-ssl1.0</resolved>
@@ -13874,7 +13871,6 @@
             <resolved-feature>io.openliberty.servlet5.0-monitor1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.distributedMapPMI-1.0</resolved-feature>
             <resolved-feature>io.openliberty.restfulWS3.0-monitor1.0</resolved-feature>
-            <resolved-feature>io.openliberty.httpStat-monitor1.0.jakarta</resolved-feature>
             <resolved-feature>monitor-1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.sessionMonitor-1.0</resolved-feature>
         </output>
@@ -14554,7 +14550,6 @@
             <root>io.openliberty.mpMetrics-4.0</root>
         </input>
         <output>
-            <resolved>io.openliberty.httpStat-monitor1.0.jakarta</resolved>
             <resolved>json-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
@@ -14727,7 +14722,6 @@
             <resolved>monitor-1.0</resolved>
             <resolved>mpMetrics-5.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-            <resolved>io.openliberty.httpStat-monitor1.0.jakarta</resolved>
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.sessionMonitor-1.0</resolved>
@@ -14823,7 +14817,6 @@
             <resolved>monitor-1.0</resolved>
             <resolved>mpMetrics-5.1</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-            <resolved>io.openliberty.httpStat-monitor1.0.jakarta</resolved>
             <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.sessionMonitor-1.0</resolved>
@@ -15602,7 +15595,6 @@
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
             <resolved-feature>io.openliberty.servlet5.0-monitor1.0</resolved-feature>
             <resolved-feature>io.openliberty.restfulWS3.0-monitor1.0</resolved-feature>
-            <resolved-feature>io.openliberty.httpStat-monitor1.0.jakarta</resolved-feature>
             <resolved-feature>monitor-1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.sessionMonitor-1.0</resolved-feature>
         </output>
