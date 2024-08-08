@@ -115,7 +115,7 @@ public class WSATParticipant extends WSATEndpoint implements Serializable {
         if (timeoutMills <= 0) {
             while (!responseList.contains(state)) {
                 if (TC.isDebugEnabled()) {
-                    Tr.debug(TC, "Waiting 1 second for state (" + state + ") to be one of (" + joinParticipantStates(responses) + ")");
+                    Tr.debug(TC, "Waiting 1 second for state [" + state + "] to be one of " + Arrays.toString(responses));
                 }
                 try {
                     wait(1000);
@@ -127,10 +127,14 @@ public class WSATParticipant extends WSATEndpoint implements Serializable {
             while (Instant.now().compareTo(expiry) < 0 && !responseList.contains(state)) {
                 final long waitTime = expiry.minusMillis(Instant.now().toEpochMilli()).toEpochMilli();
                 if (TC.isDebugEnabled()) {
-                    Tr.debug(TC, "Waiting " + waitTime + " milliseconds for state (" + state + ") to be one of (" + joinParticipantStates(responses) + ")");
+                    Tr.debug(TC, "Waiting " + waitTime + " milliseconds for state [" + state + "] to be one of " + Arrays.toString(responses));
                 }
                 try {
-                    wait(waitTime);
+                    if (waitTime > 0) {
+                        wait(waitTime);
+                    } else {
+                        break;
+                    }
                 } catch (InterruptedException e) {
                 }
             }
@@ -141,25 +145,6 @@ public class WSATParticipant extends WSATEndpoint implements Serializable {
             Tr.exit(TC, "waitResponse", ret);
         }
         return ret;
-    }
-
-    /**
-     * @param responses
-     * @return
-     */
-    @Trivial
-    private String joinParticipantStates(WSATParticipantState[] states) {
-        if (states == null) {
-            return "";
-        }
-
-        final StringBuffer sb = new StringBuffer("" + states[0]);
-
-        for (int i = 1; i < states.length; i++) {
-            sb.append("," + states[i]);
-        }
-
-        return sb.toString();
     }
 
     /*
