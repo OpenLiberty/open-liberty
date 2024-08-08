@@ -246,6 +246,10 @@ public class HttpServerStatsMonitor extends StatisticActions {
 		HttpServerStats hss = HttpConnByRoute.get(key);
 		if (hss == null) {
 			hss = initializeHttpStat(key, httpStatAttributes, appName);
+			//Shutdown by the monitor-1.0 filter - shows over
+			if (hss == null) {
+				return;
+			}
 		}
 
 		//Monitor bundle when updating statistics will do synchronization
@@ -272,6 +276,11 @@ public class HttpServerStatsMonitor extends StatisticActions {
 
 		HttpServerStats httpMetricStats = new HttpServerStats(statAttri);
 		HttpConnByRoute.put(key, httpMetricStats);
+		
+		//Shut down by monitor-1.0 filter attribute
+		if (HttpConnByRoute.get(key) == null) {
+			return null;
+		}
 		
 		/*
 		 * null means from server.

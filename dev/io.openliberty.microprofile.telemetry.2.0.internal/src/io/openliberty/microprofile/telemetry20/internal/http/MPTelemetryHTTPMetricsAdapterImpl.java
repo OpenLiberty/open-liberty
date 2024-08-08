@@ -13,7 +13,6 @@ import static io.opentelemetry.semconv.ErrorAttributes.ERROR_TYPE;
 import static io.opentelemetry.semconv.HttpAttributes.HTTP_REQUEST_METHOD;
 import static io.opentelemetry.semconv.HttpAttributes.HTTP_RESPONSE_STATUS_CODE;
 import static io.opentelemetry.semconv.HttpAttributes.HTTP_ROUTE;
-import static io.opentelemetry.semconv.NetworkAttributes.NETWORK_PROTOCOL_NAME;
 import static io.opentelemetry.semconv.NetworkAttributes.NETWORK_PROTOCOL_VERSION;
 import static io.opentelemetry.semconv.ServerAttributes.SERVER_ADDRESS;
 import static io.opentelemetry.semconv.ServerAttributes.SERVER_PORT;
@@ -99,7 +98,6 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
 
         httpStatAttributes.getHttpRoute().ifPresent(route -> attributesBuilder.put(HTTP_ROUTE, route));
 
-        attributesBuilder.put(NETWORK_PROTOCOL_NAME, httpStatAttributes.getNetworkProtocolName());
         attributesBuilder.put(NETWORK_PROTOCOL_VERSION, httpStatAttributes.getNetworkProtocolVersion());
 
         attributesBuilder.put(SERVER_ADDRESS, httpStatAttributes.getServerName());

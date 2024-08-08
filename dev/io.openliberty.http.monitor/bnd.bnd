@@ -62,6 +62,8 @@ DynamicImport-Package: \
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.ws.channelfw;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.container.service,\
 	com.ibm.ws.kernel.boot.core;version=latest
