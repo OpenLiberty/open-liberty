@@ -13,9 +13,12 @@
 package io.openliberty.microprofile.telemetry.internal.tests;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -28,6 +31,7 @@ import org.junit.runner.RunWith;
 import org.testcontainers.containers.Network;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
@@ -35,7 +39,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
-import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
+import io.openliberty.microprofile.telemetry.internal.apps.metricTest.TestResource;
 import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.otelCollector.OtelCollectorContainer;
@@ -45,15 +49,17 @@ import io.openliberty.microprofile.telemetry.internal.utils.otelCollector.OtelCo
  * Test exporting metrics to a OpenTelemetry Collector
  */
 @RunWith(FATRunner.class)
-public class MetricsOtelCollectorTest {
+public class MetricsApiOtelCollectorTest {
 
     private static final String SERVER_NAME = "spanTestServer";
+
+    private static final Class<?> c = MetricsApiOtelCollectorTest.class;
 
     public static Network network = Network.newNetwork();
     public static OtelCollectorContainer otelCollectorContainer = new OtelCollectorContainer(new File("lib/LibertyFATTestFiles/otel-collector-config-metrics.yaml"), 3131)
                                                                                                                                                                           .withNetwork(network)
                                                                                                                                                                           .withNetworkAliases("otel-collector-metrics")
-                                                                                                                                                                          .withLogConsumer(new SimpleLogConsumer(MetricsOtelCollectorTest.class,
+                                                                                                                                                                          .withLogConsumer(new SimpleLogConsumer(MetricsApiOtelCollectorTest.class,
                                                                                                                                                                                                                  "otelCol"));
     public static RepeatTests repeat = FATSuite.telemetry20Repeats(SERVER_NAME);
 
@@ -91,14 +97,66 @@ public class MetricsOtelCollectorTest {
     }
 
     @Test
-    public void testBasicTelemetry2() throws Exception {
+    public void testLongUpDownCounter() throws Exception {
+        HttpRequest request = new HttpRequest(server, "/spanTest/longUpDownCounterCreated");
+        String response = request.run(String.class);
 
-        HttpRequest request = new HttpRequest(server, "/spanTest/waitForGarbageCollection");
-        @SuppressWarnings("unused")
-        String notUsed = request.run(String.class);
-
-        Thread.sleep(10000);
-        assertEquals("pass", client.getJVMMetrics());
+        Log.info(c, "testLongUpDownCounter", "response: " + response);
+        Thread.sleep(3000);
+        getApiMetrics("testLongUpDownCounter", "gauge", "-20");
     }
 
+    @Test
+    public void testCounter() throws Exception {
+        HttpRequest request = new HttpRequest(server, "/spanTest/longCounterCreated");
+        String response = request.run(String.class);
+        Log.info(c, "testCounter", "response: " + response);
+        Thread.sleep(3000);
+        getApiMetrics("testLongCounter", "counter", "20");
+    }
+
+    @Test
+    public void testLongHistogram() throws Exception {
+        HttpRequest request = new HttpRequest(server, "/spanTest/longHistogramCreated");
+        String response = request.run(String.class);
+        Thread.sleep(3000);
+        Log.info(c, "testLongHistogram", "response: " + response);
+        getApiMetrics("testLongHistogram", "histogram", "20");
+    }
+
+    @Test
+    public void testDoubleCounter() throws Exception {
+        HttpRequest request = new HttpRequest(server, "/spanTest/doubleCounterCreated");
+        String response = request.run(String.class);
+        Thread.sleep(3000);
+        Log.info(c, "testDoubleCounter", "response: " + response);
+        getApiMetrics("testDoubleCounter", "counter", "40");
+    }
+
+    @Test
+    public void testDoubleUpDownCounter() throws Exception {
+        HttpRequest request = new HttpRequest(server, "/spanTest/doubleUpDownCounterCreated");
+        String response = request.run(String.class);
+        Thread.sleep(3000);
+        Log.info(c, "testDoubleUpDownCounter", "response: " + response);
+        getApiMetrics("testDoubleUpDownCounter", "counter", "-40");
+    }
+    /**
+     * Gets metrics from otelcollector:3131/metrics in the prometheus format.
+     * For more info on the Prometheus metrics format: 
+     * https://github.com/prometheus/docs/blob/main/content/docs/instrumenting/exposition_formats.md#text-format-details
+     */
+    public void getApiMetrics(String name, String type, String value) throws Exception {
+        String result = client.dumpMetrics();
+        List<String> splits = Arrays.asList(result.split("((?=# HELP))"));
+        for (String s : splits) {
+            if (s.contains(name)) {
+                System.out.println(s);
+                assertTrue(s.contains(type));
+                assertTrue(s.contains(value));
+                return;
+            }
+        }
+        fail(name + " not found in OpenTelemetry Collector output");
+    }
 }
