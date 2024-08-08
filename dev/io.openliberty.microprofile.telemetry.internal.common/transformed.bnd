@@ -28,5 +28,5 @@ Private-Package: \
 	io.openliberty.microprofile.telemetry.internal.common.rest.jakarta
 
 -dsannotations: \
-	io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfoFactoryImpl,\
+	io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemtryLifecycleManagerImpl,\
 	io.openliberty.microprofile.telemetry.internal.common.rest.jakarta.TelemetryClientAsyncTaskWrapper

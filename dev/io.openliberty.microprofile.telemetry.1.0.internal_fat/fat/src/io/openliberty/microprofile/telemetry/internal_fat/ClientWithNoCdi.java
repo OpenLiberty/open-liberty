@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -71,13 +71,13 @@ public class ClientWithNoCdi {
 
     //This test does not use open telemetry directly, but it does trigger io.openliberty.microprofile.telemetry.internal.rest.TelemetryClientFilter.java for an app with no CDI and ensures it does not throw an exception
 
-    //This test also ensures that we actually call the started and shutdown methods in OpenTelemetryInfoFactoryImpl
+    //This test also ensures that we actually call the started and shutdown methods in OpenTelemtryLifecycleManagerImpl
     //I'm putting it in here to avoid creating an extra server that enables trace. And in an existing method because
     //Our version of junit doesn't allow fixed test ordering.
     @Test
     @SkipForRepeat({ MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID,
         TelemetryActions.MP14_MPTEL20_ID })
-    public void testClientWithNoCDIAndFactoryStarupShutdownCalled() throws Exception {
+    public void testClientWithNoCDIAndLifecycleStarupShutdownCalled() throws Exception {
         HttpRequest httpRequest = new HttpRequest(server, "/" + NO_CDI_APP_NAME + "/ClientTriggeringServlet");
         assertEquals(io.openliberty.microprofile.telemetry.internal_fat.apps.clientnocdi.ClientInvokedServlet.TEST_PASSED, httpRequest.run(String.class));
 
@@ -86,11 +86,11 @@ public class ClientWithNoCdi {
 
         server.deleteDirectoryFromLibertyServerRoot("apps");
 
-        assertNotNull("OpenTelemetryInfoFactoryImpl.applicationStarting was not invoked",
-                      server.waitForStringInLog("OpenTelemetryInfoFactoryImpl > applicationStarting Entry", server.getDefaultTraceFile()));
+        assertNotNull("OpenTelemtryLifecycleManagerImpl.applicationStarting was not invoked",
+                      server.waitForStringInLog("OpenTelemtryLifecycleManagerImpl > applicationStarting Entry", server.getDefaultTraceFile()));
 
-        assertNotNull("OpenTelemetryInfoFactoryImpl.applicationStopped was not invoked",
-                      server.waitForStringInLog("OpenTelemetryInfoFactoryImpl > applicationStopped", server.getDefaultTraceFile()));
+        assertNotNull("OpenTelemtryLifecycleManagerImpl.applicationStopped was not invoked",
+                      server.waitForStringInLog("OpenTelemtryLifecycleManagerImpl > applicationStopped Entry", server.getDefaultTraceFile()));
 
         assertNotNull("OpenTelemetryInfoImpl was not disposed",
                       server.waitForStringInLog("EnabledOpenTelemetryInfo > dispose Entry", server.getDefaultTraceFile()));

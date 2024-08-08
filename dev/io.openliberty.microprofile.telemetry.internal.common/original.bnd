@@ -26,4 +26,4 @@ Export-Package: \
 
 
 -dsannotations: \
-	io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfoFactoryImpl
+	io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemtryLifecycleManagerImpl
