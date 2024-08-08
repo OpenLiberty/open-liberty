@@ -2941,31 +2941,21 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * A repository might define a method that returns a keyset-aware page without specifying a PageRequest,
-     * specifying the sort criteria separately.
+     * A repository might attempt to define a method that returns a CursoredPage
+     * without specifying a PageRequest. This is not supported by the spec.
+     * Expect UnsupportedOperationException.
      */
     @Test
     public void testKeysetWithoutPageRequest() {
-        // This is not a recommended pattern. Testing to see how it is handled.
-        CursoredPage<Prime> page = primes.findByNumberIdBetweenAndBinaryDigitsNotNull(30L, 40L, Sort.asc(ID));
-        assertEquals(31L, page.content().get(0).numberId);
-
-        // Obtain PageRequest for previous entries from the CursoredPage
-        PageRequest pagination = page.previousPageRequest().size(5);
-        page = primes.findByNumberIdBetween(0L, 40L, pagination);
-        assertIterableEquals(List.of(13L, 17L, 19L, 23L, 29L),
-                             page.stream()
-                                             .map(p -> p.numberId)
-                                             .collect(Collectors.toList()));
-
-        pagination = page.previousPageRequest();
-        page = primes.findByNumberIdBetween(0L, 40L, pagination);
-        assertIterableEquals(List.of(2L, 3L, 5L, 7L, 11L),
-                             page.stream()
-                                             .map(p -> p.numberId)
-                                             .collect(Collectors.toList()));
-
-        assertEquals(false, page.hasPrevious());
+        CursoredPage<Prime> page;
+        try {
+            page = primes.findByNumberIdBetweenAndBinaryDigitsNotNull(30L, //
+                                                                      40L, //
+                                                                      Sort.asc(ID));
+            fail("Able to obtain CursoredPage without a PageRequest: " + page);
+        } catch (UnsupportedOperationException x) {
+            // pass
+        }
     }
 
     /**

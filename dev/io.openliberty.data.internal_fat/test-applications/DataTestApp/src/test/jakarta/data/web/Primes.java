@@ -119,7 +119,8 @@ public interface Primes {
 
     List<Prime> findByNumberIdBetween(long min, long max, Sort<?>... orderBy);
 
-    CursoredPage<Prime> findByNumberIdBetweenAndBinaryDigitsNotNull(long min, long max, Sort<?>... orderBy); // Lacks PageRequest
+    // Unsupported pattern: lacks PageRequest parameter.
+    CursoredPage<Prime> findByNumberIdBetweenAndBinaryDigitsNotNull(long min, long max, Sort<?>... orderBy);
 
     CursoredPage<Prime> findByNumberIdBetweenAndEvenFalse(long min, long max, PageRequest pagination, Order<Prime> order);
 
