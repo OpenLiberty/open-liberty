@@ -73,15 +73,15 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
         EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
         try {
             String jpql = cursor.isEmpty() ? queryInfo.jpql : //
-                            isForward ? queryInfo.jpqlAfterKeyset : //
-                                            queryInfo.jpqlBeforeKeyset;
+                            isForward ? queryInfo.jpqlAfterCursor : //
+                                            queryInfo.jpqlBeforeCursor;
 
             @SuppressWarnings("unchecked")
             TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, queryInfo.entityInfo.entityClass);
             queryInfo.setParameters(query, args);
 
             if (cursor.isPresent())
-                queryInfo.setKeysetParameters(query, cursor.get());
+                queryInfo.setParametersFromCursor(query, cursor.get());
 
             query.setFirstResult(firstResult);
             query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1)); // extra position is for knowing whether to expect another page
@@ -271,7 +271,7 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
         int maxPageSize = pageRequest.size();
         int endingResultIndex = Math.min(maxPageSize, results.size()) - 1; // CURSOR_PREVIOUS that reads a partial page can have a next page
 
-        return PageRequest.afterCursor(Cursor.forKey(queryInfo.getKeysetValues(results.get(endingResultIndex))),
+        return PageRequest.afterCursor(Cursor.forKey(queryInfo.getCursorValues(results.get(endingResultIndex))),
                                        pageRequest.page() == Long.MAX_VALUE ? Long.MAX_VALUE : pageRequest.page() + 1,
                                        maxPageSize,
                                        pageRequest.requestTotal());
@@ -284,7 +284,7 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
                                              "true result of CursoredPage.hasPrevious before attempting this method."); // TODO NLS
 
         // Decrement page number by 1 unless it would go below 1.
-        return PageRequest.beforeCursor(Cursor.forKey(queryInfo.getKeysetValues(results.get(0))),
+        return PageRequest.beforeCursor(Cursor.forKey(queryInfo.getCursorValues(results.get(0))),
                                         pageRequest.page() == 1 ? 1 : pageRequest.page() - 1,
                                         pageRequest.size(),
                                         pageRequest.requestTotal());

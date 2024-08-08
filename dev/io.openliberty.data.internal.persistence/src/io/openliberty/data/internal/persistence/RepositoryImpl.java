@@ -839,10 +839,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             }
 
                             if (pagination == null || pagination.mode() == PageRequest.Mode.OFFSET) {
-                                queryInfo = queryInfo.withJPQL(q.append(order).toString(), sortList); // offset pagination can be a starting point for keyset pagination
+                                // offset pagination can be a starting point for cursor pagination
+                                queryInfo = queryInfo.withJPQL(q.append(order).toString(), sortList);
                             } else { // CURSOR_NEXT or CURSOR_PREVIOUS
                                 queryInfo = queryInfo.withJPQL(null, sortList);
-                                queryInfo.generateKeysetQueries(q, forward ? order : null, forward ? null : order);
+                                queryInfo.generateCursorQueries(q, forward ? order : null, forward ? null : order);
                             }
                         }
 
