@@ -1789,10 +1789,11 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Use keyset pagination with the OrderBy annotation on a composite id that is defined by an IdClass attribute.
+     * Use cursor-based pagination with the OrderBy annotation on a composite id
+     * that is defined by an IdClass attribute.
      */
     @Test
-    public void testIdClassOrderByAnnotationWithKeysetPagination() {
+    public void testIdClassOrderByAnnotationWithCursorPagination() {
         PageRequest pagination = PageRequest
                         .ofSize(3)
                         .withoutTotal()
@@ -1821,10 +1822,11 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Use keyset pagination with the OrderBy query-by-method pattern on a composite id that is defined by an IdClass attribute.
+     * Use cursor-based pagination with the OrderBy query-by-method pattern on a
+     * composite id that is defined by an IdClass attribute.
      */
     @Test
-    public void testIdClassOrderByNamePatternWithKeysetPagination() {
+    public void testIdClassOrderByNamePatternWithCursorPagination() {
         PageRequest pagination = PageRequest.ofSize(5).withoutTotal();
 
         CursoredPage<City> slice1 = cities.findByStateNameNotNull(pagination, Order.by());
@@ -1864,11 +1866,12 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Use keyset pagination with the OrderBy query-by-method pattern in descending direction
-     * on a composite id that is defined by an IdClass attribute.
+     * Use cursor-based pagination with the OrderBy query-by-method pattern in
+     * descending direction on a composite id that is defined by an IdClass
+     * attribute.
      */
     @Test
-    public void testIdClassOrderByNamePatternWithKeysetPaginationDescending() {
+    public void testIdClassOrderByNamePatternWithCursorPaginationDescending() {
         PageRequest pagination = PageRequest.ofSize(3)
                         .withTotal()
                         .afterCursor(Cursor.forKey(CityId.of("Springfield", "Tennessee")));
@@ -1901,10 +1904,11 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Use keyset pagination with the pagination sort criteria on a composite id that is defined by an IdClass attribute.
+     * Use cursor-based pagination with the pagination sort criteria on a
+     * composite id that is defined by an IdClass attribute.
      */
     @Test
-    public void testIdClassOrderByPaginationWithKeyset() {
+    public void testIdClassOrderByPaginationWithCursor() {
         // ascending:
         Order<City> asc = Order.by(Sort.asc(ID));
         PageRequest pagination = PageRequest.ofSize(5);
@@ -2476,7 +2480,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(false, it.hasNext());
         assertEquals(false, it.hasNext());
 
-        // Iterator with keyset pagination:
+        // Iterator with cursor-based pagination:
         try {
             it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofSize(2)
                             .afterCursor(Cursor.forKey(t8key)));
@@ -2485,7 +2489,8 @@ public class DataJPATestServlet extends FATServlet {
             // expected
         }
 
-        // Iterator with keyset pagination obtaining pages in the previous page direction
+        // Iterator with cursor-based pagination obtaining pages in the
+        // previous page direction
         try {
             it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofSize(2)
                             .beforeCursor(Cursor.forKey(t2key)));
