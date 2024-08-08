@@ -484,7 +484,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         
         getCurrentHttpChain().stop();
         getCurrentHttpsChain().stop();
-        
+   
         this.useNetty = switchToNetty;
         
         
@@ -1362,27 +1362,65 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
     }
 
     private void verifyResumedChainStates() throws PauseableComponentException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(this, tc, "verifyResumedChainStates");
+        }
+
         HttpChain httpChain = getCurrentHttpChain();
         HttpChain httpsChain = getCurrentHttpsChain();
 
-        int httpChainState = httpChain.getChainState();
-        int httpsChainState = httpsChain.getChainState();
+        int httpChainState = ChainState.UNINITIALIZED.val;
+        int httpsChainState = ChainState.UNINITIALIZED.val;
 
-        boolean isValid = 
-            (httpChainState == ChainState.STARTED.val && httpsChainState == ChainState.UNINITIALIZED.val) ||
-            (httpChainState == ChainState.UNINITIALIZED.val && httpsChainState == ChainState.STARTED.val) ||
-            (httpChainState == ChainState.STARTED.val && httpsChainState == ChainState.STARTED.val);
+        long startTime = System.currentTimeMillis();
+        long timeout = 10000; // TODO - testing with ten seconds, but probably want this to be more aggressive
 
-        if (!isValid){
-            throw new PauseableComponentException("The request to resume HTTP endpoint " + name + 
-                " did not complete successfully. HTTPChain: " + httpChain.toString() + 
-                ". HTTPSChain: " + httpsChain.toString());
+        while (System.currentTimeMillis() - startTime < timeout) {
+            httpChainState = httpChain.getChainState();
+            httpsChainState = httpsChain.getChainState();
+
+            boolean isValid = 
+                (httpChainState == ChainState.STARTED.val && httpsChainState == ChainState.UNINITIALIZED.val) ||
+                (httpChainState == ChainState.UNINITIALIZED.val && httpsChainState == ChainState.STARTED.val) ||
+                (httpChainState == ChainState.STARTED.val && httpsChainState == ChainState.STARTED.val);
+
+            if (isValid) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Chain states verified successfully - HTTP: " + ChainState.printState(httpChainState) 
+                        + ", HTTPS: " + ChainState.printState(httpsChainState));
+                }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.exit(this, tc, "verifyResumedChainStates");
+                }
+                return;
+            }
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Chain state verification was interrupted");
+                }
+                break;
+            }
         }
+
+        // If we've reached here, the timeout has expired without reaching a valid state
+        PauseableComponentException exception = new PauseableComponentException("The request to resume HTTP endpoint " + name + 
+            " did not complete successfully within the timeout period. HTTPChain: " + httpChain.toString() + 
+            ". HTTPSChain: " + httpsChain.toString());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "Chain states after resume - HTTP: " + ChainState.printState(httpChainState) 
                  + ", HTTPS: " + ChainState.printState(httpsChainState));
         }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(this, tc, "verifyResumedChainStates", exception);
+        }
+
+        throw exception;
     }
 
     private void performSanityChecks() throws IllegalStateException {
