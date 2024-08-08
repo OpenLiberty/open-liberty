@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 #
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -35,11 +32,6 @@ Export-Package: \
     io.openliberty.security.jakartasec.tokens
 
 Import-Package: \
-    jakarta.security.enterprise.authentication.mechanism.http;version="[3.0,5)",\
-    jakarta.security.enterprise.authentication.mechanism.http.openid;version="[3.0,5)",\
-    jakarta.security.enterprise.credential;version="[3.0,5)",\
-    jakarta.security.enterprise.identitystore;version="[3.0,5)",\
-    jakarta.security.enterprise.identitystore.openid;version="[3.0,5)",\
     *
 
 instrument.classesExcludes: io/openliberty/security/jakartasec/internal/resources/resources/*.class
