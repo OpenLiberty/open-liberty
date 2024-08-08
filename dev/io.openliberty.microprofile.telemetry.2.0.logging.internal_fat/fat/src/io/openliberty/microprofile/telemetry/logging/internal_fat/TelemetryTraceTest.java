@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import org.junit.After;
@@ -70,7 +69,6 @@ public class TelemetryTraceTest extends FATServletClient {
     }
 
     static void testTelemetryTrace(LibertyServer s, Consumer<List<String>> consoleConsumer) throws Exception {
-        TimeUnit.SECONDS.sleep(5);
         String runtimeLine = s.waitForStringInLog("Returning io.openliberty.microprofile.telemetry.runtime OTEL instance.", s.getConsoleLogFile());
 
         if (consoleConsumer != null) {
