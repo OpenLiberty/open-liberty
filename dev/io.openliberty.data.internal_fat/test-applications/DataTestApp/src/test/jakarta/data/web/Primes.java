@@ -111,6 +111,7 @@ public interface Primes {
 
     Prime findByNumberIdBetween(long min, long max);
 
+    // Unsupported pattern: lacks PageRequest parameter.
     @OrderBy("numberId")
     CursoredPage<Prime> findByNumberIdBetween(long min, long max, Limit limit);
 

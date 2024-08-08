@@ -854,7 +854,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         Class<?> multiType = queryInfo.multiType;
 
                         if (CursoredPage.class.equals(multiType)) {
-                            returnValue = new CursoredPageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
+                            returnValue = new CursoredPageImpl<>(queryInfo, pagination, args);
                         } else if (Page.class.equals(multiType)) {
                             returnValue = new PageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
                         } else if (pagination != null && !PageRequest.Mode.OFFSET.equals(pagination.mode())) {
