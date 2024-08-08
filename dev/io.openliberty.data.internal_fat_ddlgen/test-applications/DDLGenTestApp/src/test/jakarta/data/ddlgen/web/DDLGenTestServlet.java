@@ -91,6 +91,12 @@ public class DDLGenTestServlet extends FATServlet {
         Part.Identifier nonmatching = new Part.Identifier("EI3155-T", "Acme");
         assertEquals(false, parts.findById(nonmatching).isPresent());
 
-        parts.deleteAll(List.of(part1, part2, part3));
+        assertEquals(true, parts.findById(part1.id()).isPresent());
+
+        parts.deleteById(part1.id());
+
+        assertEquals(false, parts.findById(part1.id()).isPresent());
+
+        parts.deleteAll(List.of(part2, part3));
     }
 }

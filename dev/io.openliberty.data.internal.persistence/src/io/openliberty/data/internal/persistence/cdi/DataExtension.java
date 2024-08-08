@@ -13,7 +13,6 @@
 package io.openliberty.data.internal.persistence.cdi;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedParameterizedType;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -175,25 +174,10 @@ public class DataExtension implements Extension {
                                           Map<Class<?>, List<QueryInfo>> queriesPerEntity,
                                           Class<?>[] primaryEntityClassReturnValue) {
         Class<?> repositoryInterface = repositoryType.getJavaClass();
-        Class<?> primaryEntityClass = null;
+        Class<?> primaryEntityClass = getPrimaryEntityType(repositoryInterface);
         Set<Class<?>> lifecycleMethodEntityClasses = new HashSet<>();
         List<QueryInfo> queriesWithQueryAnno = new ArrayList<>();
-        List<QueryInfo> additionalQueriesForPrimaryEntity = new ArrayList<>();
-
-        // Look for parameterized type variable of the repository interface, for example,
-        // public interface MyRepository extends DataRepository<MyEntity, IdType>
-        for (java.lang.reflect.AnnotatedType interfaceType : repositoryInterface.getAnnotatedInterfaces()) {
-            if (interfaceType instanceof AnnotatedParameterizedType) {
-                AnnotatedParameterizedType parameterizedType = (AnnotatedParameterizedType) interfaceType;
-                java.lang.reflect.AnnotatedType typeParams[] = parameterizedType.getAnnotatedActualTypeArguments();
-                Type firstParamType = typeParams.length > 0 ? typeParams[0].getType() : null;
-                if (firstParamType != null && firstParamType instanceof Class) {
-                    primaryEntityClass = (Class<?>) firstParamType;
-                    if (typeParams.length == 2 && parameterizedType.getType().getTypeName().startsWith(DataRepository.class.getPackageName()))
-                        break; // spec-defined repository interfaces take precedence if multiple interfaces are present
-                }
-            }
-        }
+        ArrayList<QueryInfo> additionalQueriesForPrimaryEntity = new ArrayList<>();
 
         for (Method method : repositoryInterface.getMethods()) {
             if (method.isDefault()) // skip default methods
@@ -243,8 +227,14 @@ public class DataExtension implements Extension {
                     }
                     type = null;
                 } else if (type instanceof GenericArrayType) {
-                    // TODO cover the possibility that the generic type could be for something other than the entity, such as the primary key?
-                    Class<?> arrayComponentType = primaryEntityClass;
+                    // The built-in repositories from the spec only allow generics
+                    // for the Entity class and Key/Id class of of these only uses
+                    // the Entity class in return types, not the key.
+                    // Custom repository interfaces are not allowed to use generics.
+                    Class<?> arrayComponentType = //
+                                    requirePrimaryEntity(primaryEntityClass,
+                                                         repositoryInterface,
+                                                         method);
                     returnTypeAtDepth.add(arrayComponentType.arrayType());
                     if (returnArrayComponentType == null) {
                         returnTypeAtDepth.add(returnArrayComponentType = arrayComponentType);
@@ -252,7 +242,9 @@ public class DataExtension implements Extension {
                     }
                     type = null;
                 } else {
-                    returnTypeAtDepth.add(primaryEntityClass);
+                    returnTypeAtDepth.add(requirePrimaryEntity(primaryEntityClass,
+                                                               repositoryInterface,
+                                                               method));
                     type = null;
                 }
             }
@@ -290,14 +282,16 @@ public class DataExtension implements Extension {
                     c = c.getComponentType();
                 }
                 if (Object.class.equals(c)) {
-                    // generic parameter like BasicRepository.save(S entity) or BasicRepository.deleteById(@By(ID) K id)
+                    // Generic parameter like BasicRepository.save(S entity)
+                    // or BasicRepository.deleteById(@By(ID) K id).
+                    // The specification does not allow custom repositories to use
+                    // generics, such as: @Delete customDeleteMethod(K key)
                     boolean isEntity = true;
                     for (Annotation anno : method.getParameterAnnotations()[0])
                         if (By.class.equals(anno.annotationType()))
                             isEntity = false;
                     if (isEntity)
                         entityParamType = c;
-                    // TODO is there any way to distinguish @Delete deleteById(K key) when @By is not present?
                 } else if (c != null &&
                            !c.isPrimitive() &&
                            !c.isInterface()) {
@@ -387,18 +381,17 @@ public class DataExtension implements Extension {
                 queriesPerEntity.put(primaryEntityClass, new ArrayList<>());
             }
 
-            if (!additionalQueriesForPrimaryEntity.isEmpty())
-                if (primaryEntityClass == null) {
-                    throw new MappingException("@Repository " + repositoryInterface.getName() + " does not specify an entity class." + // TODO NLS
-                                               " To correct this, have the repository interface extend DataRepository" + // TODO can we include example type vars?
-                                               " or another built-in repository interface and supply the entity class as the first parameter.");
-                } else {
-                    List<QueryInfo> queries = queriesPerEntity.get(primaryEntityClass);
-                    if (queries == null)
-                        queriesPerEntity.put(primaryEntityClass, additionalQueriesForPrimaryEntity);
-                    else
-                        queries.addAll(additionalQueriesForPrimaryEntity);
-                }
+            if (!additionalQueriesForPrimaryEntity.isEmpty()) {
+                Method method = additionalQueriesForPrimaryEntity.get(0).method;
+                Class<?> entityClass = requirePrimaryEntity(primaryEntityClass,
+                                                            repositoryInterface,
+                                                            method);
+                List<QueryInfo> queries = queriesPerEntity.get(entityClass);
+                if (queries == null)
+                    queriesPerEntity.put(entityClass, additionalQueriesForPrimaryEntity);
+                else
+                    queries.addAll(additionalQueriesForPrimaryEntity);
+            }
 
             if (!queriesWithQueryAnno.isEmpty())
                 queriesPerEntity.put(Query.class, queriesWithQueryAnno);
@@ -410,6 +403,65 @@ public class DataExtension implements Extension {
 
         primaryEntityClassReturnValue[0] = primaryEntityClass;
         return supportsAllEntities;
+    }
+
+    /**
+     * Look for parameterized type variable of the repository interface.
+     * For example,
+     *
+     * public interface MyRepository extends DataRepository<MyEntity, IdType>
+     *
+     * @param repositoryInterface the interface that is annotated with Repository.
+     * @return
+     */
+    private static Class<?> getPrimaryEntityType(Class<?> repositoryInterface) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        Class<?>[] interfaceClasses = repositoryInterface.getInterfaces();
+        for (java.lang.reflect.Type interfaceType : repositoryInterface.getGenericInterfaces()) {
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(tc, "checking " + interfaceType.getTypeName());
+
+            if (interfaceType instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) interfaceType;
+                for (Class<?> interfaceClass : interfaceClasses) {
+                    if (interfaceClass.equals(parameterizedType.getRawType())) {
+                        if (DataRepository.class.isAssignableFrom(interfaceClass)) {
+                            java.lang.reflect.Type typeParams[] = parameterizedType.getActualTypeArguments();
+                            Type firstParamType = typeParams.length > 0 ? typeParams[0] : null;
+                            if (firstParamType != null && firstParamType instanceof Class)
+                                return (Class<?>) firstParamType;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Require that a primary entity class is specified by the repository interface.
+     *
+     * @param primaryEntityClass  primary entity class or null.
+     * @param repositoryInterface interface that is annotated with Repository.
+     * @param method              repository method requiring a primary entity class
+     * @return the primary entity class.
+     * @throws MappingException with a helpful error message if no primary entity
+     *                              class is specified by the repository.
+     */
+    @Trivial
+    private static Class<?> requirePrimaryEntity(Class<?> primaryEntityClass,
+                                                 Class<?> repositoryInterface,
+                                                 Method method) {
+        if (primaryEntityClass == null)
+            throw new MappingException("An entity class is needed by the " + method.getName() +
+                                       " method, but the " + repositoryInterface.getName() +
+                                       " repository interface does not specify a primary entity class." +
+                                       " To correct this, have the " + repositoryInterface.getSimpleName() +
+                                       " interface extend one of the built-in repository supertypes," +
+                                       " such as DataRepository<EntityClass, KeyClass>, supplying the" +
+                                       " entity class as the first type parameter."); // TODO NLS
+        return primaryEntityClass;
     }
 
     /**
