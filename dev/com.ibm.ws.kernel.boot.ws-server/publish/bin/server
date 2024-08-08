@@ -548,6 +548,7 @@ serverEnvAndJVMOptions()
   fi
 
   # Determine location of Java Platform Module System (JPMS) modules directory
+  # Set JAVA_HOME if it is not already set.
   if [ -z "${JAVA_HOME}" ]; then
 
     # JAVA_HOME not set.  Locate java using the PATH.
@@ -555,6 +556,10 @@ serverEnvAndJVMOptions()
     if [ -n "${JAVA_PATH}" ] ; then
 
       REAL_JAVA_PATH=$(findRealPath "${JAVA_PATH}")
+      JAVA_HOME=$(dirname "${REAL_JAVA_PATH}")/..
+      # The "exit" will cause JAVA_HOME to be unset in the unlikely case that JAVA_HOME is not a directory
+      JAVA_HOME="$(unset CDPATH; cd "${JAVA_HOME}" || exit; pwd)"
+      export JAVA_HOME
 
       if [ -n "${REAL_JAVA_PATH}" ]; then
          JPMS_MODULE_FILE_LOCATION=$(dirname "$(dirname "${REAL_JAVA_PATH}")")/lib/modules
