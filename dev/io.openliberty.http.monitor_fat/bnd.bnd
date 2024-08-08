@@ -72,4 +72,5 @@ fat.test.container.images: otel/opentelemetry-collector-contrib:0.103.0
 	com.ibm.websphere.javaee.jaxrs.2.0,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-	io.openliberty.org.testcontainers;version=latest
+	io.openliberty.org.testcontainers;version=latest,\
+	io.openliberty.microprofile.telemetry.internal_fat.common

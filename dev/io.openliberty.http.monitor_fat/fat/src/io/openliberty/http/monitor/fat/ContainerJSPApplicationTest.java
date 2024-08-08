@@ -40,11 +40,14 @@ public class ContainerJSPApplicationTest extends BaseTestClass {
 
     private static Class<?> c = ContainerJSPApplicationTest.class;
 
-    @Server("ContainerJSPServer")
+    private static final String SERVER_NAME = "ContainerJSPServer";
+    private static final String SERVICE_NAME = FATSuite.getAppNameOrUnkownService(Constants.JSP_APP);
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests rt = FATSuite.testRepeatMPTel20("ContainerJSPServer");
+    public static RepeatTests rt = FATSuite.allMPRepeatsWithMPTel20OrLater(SERVER_NAME);
 
     @ClassRule
     public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
@@ -64,10 +67,9 @@ public class ContainerJSPApplicationTest extends BaseTestClass {
                         .add(new FileAsset(new File("test-applications/JspApp/resource/unconfigured.jsp")), "/unconfigured.jsp")
                         .add(new FileAsset(new File("test-applications/JspApp/resource/default.html")), "/default.html")
                         .add(new FileAsset(new File("test-applications/JspApp/resource/Testhtml.html")), "Testhtml.html")
-                        .addPackage(
-                                    "io.openliberty.http.monitor.fat.jspApp")
-                        .addAsManifestResource(new File("publish/resources/META-INF/microprofile-config.properties"),
-                                               "microprofile-config.properties");
+                        .addPackage("io.openliberty.http.monitor.fat.jspApp");
+
+        testWAR = FATSuite.setTelProperties(testWAR, server);
 
         // test-applications\JspApp\src\io\openliberty\http\monitor\fat\jspApp\resource
         ShrinkHelper.exportDropinAppToServer(server, testWAR,
@@ -102,7 +104,8 @@ public class ContainerJSPApplicationTest extends BaseTestClass {
         String res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
         TimeUnit.SECONDS.sleep(4);
-        assertTrue(validateMpTelemetryHttp(Constants.JSP_APP, getContainerCollectorMetrics(container), expectedRoute, responseStatus, requestMethod));
+        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRoute, responseStatus,
+                                           requestMethod));
 
     }
 
@@ -118,7 +121,7 @@ public class ContainerJSPApplicationTest extends BaseTestClass {
         String res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
         TimeUnit.SECONDS.sleep(4);
-        assertTrue(validateMpTelemetryHttp(Constants.JSP_APP, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
+        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
 
     }
 
@@ -135,7 +138,8 @@ public class ContainerJSPApplicationTest extends BaseTestClass {
         String res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
         TimeUnit.SECONDS.sleep(4);
-        assertTrue(validateMpTelemetryHttp(Constants.JSP_APP, getContainerCollectorMetrics(container), expectedRoute, responseStatus, requestMethod));
+        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRoute, responseStatus,
+                                           requestMethod));
 
         route = Constants.JSP_CONTEXT_ROOT + "/Testhtml.html";
         expectedRoute = Constants.JSP_CONTEXT_ROOT + "/\\*";
@@ -145,7 +149,8 @@ public class ContainerJSPApplicationTest extends BaseTestClass {
         res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
         TimeUnit.SECONDS.sleep(4);
-        assertTrue(validateMpTelemetryHttp(Constants.JSP_APP, getContainerCollectorMetrics(container), expectedRoute, responseStatus, requestMethod));
+        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRoute, responseStatus,
+                                           requestMethod));
     }
 
 }
