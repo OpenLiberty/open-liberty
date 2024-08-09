@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.BeforeDestroyed;
 import jakarta.enterprise.context.Destroyed;
 import jakarta.enterprise.context.Initialized;
 import jakarta.enterprise.context.SessionScoped;
@@ -62,6 +63,10 @@ public class FlowScopeContextualStorageHolder
     @Inject
     @Initialized(FlowScoped.class)
     private Event<Flow> flowInitializedEvent;
+
+    @Inject
+    @BeforeDestroyed(FlowScoped.class)
+    private Event<Flow> flowBeforeDestroyedEvent;
 
     @Inject
     @Destroyed(FlowScoped.class)
@@ -212,6 +217,7 @@ public class FlowScopeContextualStorageHolder
             activeFlowKeys.remove(flowMapKey);
         }
 
+        flowBeforeDestroyedEvent.fire(flow);
         flowDestroyedEvent.fire(flow);
     }
 

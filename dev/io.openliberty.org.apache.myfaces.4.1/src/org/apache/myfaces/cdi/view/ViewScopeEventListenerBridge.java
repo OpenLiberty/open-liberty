@@ -19,6 +19,7 @@
 package org.apache.myfaces.cdi.view;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.BeforeDestroyed;
 import jakarta.enterprise.context.Destroyed;
 import jakarta.enterprise.context.Initialized;
 import jakarta.enterprise.event.Event;
@@ -38,6 +39,10 @@ public class ViewScopeEventListenerBridge
     private Event<UIViewRoot> viewScopeInitializedEvent;
 
     @Inject
+    @BeforeDestroyed(ViewScoped.class)
+    private Event<UIViewRoot> viewScopeBeforeDestroyedEvent;
+
+    @Inject
     @Destroyed(ViewScoped.class)
     private Event<UIViewRoot> viewScopeDestroyedEvent;
 
@@ -50,6 +55,7 @@ public class ViewScopeEventListenerBridge
 
         if (event instanceof PreDestroyViewMapEvent)
         {
+            viewScopeBeforeDestroyedEvent.fire((UIViewRoot) event.getSource());
             viewScopeDestroyedEvent.fire((UIViewRoot) event.getSource());
         }
     }
