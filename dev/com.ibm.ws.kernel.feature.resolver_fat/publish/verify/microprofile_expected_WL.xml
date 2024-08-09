@@ -218,7 +218,6 @@
         <resolved-feature>mpMetrics-5.1</resolved-feature>
         <resolved-feature>io.openliberty.internal.versionless.mpMetrics-5.1</resolved-feature>
         <resolved-feature>mpMetrics</resolved-feature>
-        <resolved-feature>io.openliberty.httpStat-monitor1.0.jakarta</resolved-feature>
         <resolved-feature>io.openliberty.cdi3.0-jndi1.0</resolved-feature>
         <resolved-feature>io.openliberty.cdi4.0-servlet6.0</resolved-feature>
         <resolved-feature>com.ibm.websphere.appserver.distributedMapPMI-1.0</resolved-feature>
