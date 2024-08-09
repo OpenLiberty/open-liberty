@@ -231,14 +231,14 @@ public abstract class BaseTestClass {
                                   + requestMethod
                                   + "\",http_response_status_code=\"" + responseStatus
                                   + "\",http_route=\"" + route
-                                  + "\",mp_scope=\"vendor\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\",\\} ";
+                                  + "\",mp_scope=\"vendor\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\",\\} ";
 
         String sumMatchString = "http_server_request_duration_seconds_sum\\{error_type=\"" + errorType
                                 + "\",http_request_method=\""
                                 + requestMethod
                                 + "\",http_response_status_code=\"" + responseStatus
                                 + "\",http_route=\"" + route
-                                + "\",mp_scope=\"vendor\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\",\\} ";
+                                + "\",mp_scope=\"vendor\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\",\\} ";
 
         return validatePrometheusHTTPMetricCount(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, count, countMatchString) &&
                validatePrometheusHTTPMetricSum(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, count, sumMatchString);
@@ -270,7 +270,7 @@ public abstract class BaseTestClass {
                                + "\",http_route=\"" + route
                                + "\",instance=\"[a-zA-Z0-9-]*\""
                                + ",job=\"" + appName
-                               + "\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
+                               + "\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
 
             sumMatchString = "http_server_request_duration_seconds_sum\\{http_request_method=\""
                              + requestMethod
@@ -278,7 +278,7 @@ public abstract class BaseTestClass {
                              + "\",http_route=\"" + route
                              + "\",instance=\"[a-zA-Z0-9-]*\""
                              + ",job=\"" + appName
-                             + "\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
+                             + "\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
         } else {
             countMatchString = "http_server_request_duration_seconds_count\\{error_type=\"" + errorType
                                + "\",http_request_method=\""
@@ -287,7 +287,7 @@ public abstract class BaseTestClass {
                                + "\",http_route=\"" + route
                                + "\",instance=\"[a-zA-Z0-9-]*\""
                                + ",job=\"" + appName
-                               + "\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
+                               + "\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
 
             sumMatchString = "http_server_request_duration_seconds_sum\\{error_type=\"" + errorType
                              + "\",http_request_method=\""
@@ -296,7 +296,7 @@ public abstract class BaseTestClass {
                              + "\",http_route=\"" + route
                              + "\",instance=\"[a-zA-Z0-9-]*\""
                              + ",job=\"" + appName
-                             + "\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
+                             + "\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
         }
 
         return validatePrometheusHTTPMetricCount(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, count, countMatchString)
