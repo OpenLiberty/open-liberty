@@ -37,9 +37,6 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
-/**
- *
- */
 @RunWith(FATRunner.class)
 public class LoggingServletTest {
 
@@ -82,7 +79,6 @@ public class LoggingServletTest {
         //Read to run a smarter planet
         server.waitForStringInLogUsingMark("CWWKF0011I");
         server.setMarkToEndOfLog();
-
     }
 
     /*
@@ -90,8 +86,7 @@ public class LoggingServletTest {
      */
     @Test
     public void testBridgedLogs() throws Exception {
-
-        assertTrue(server.isStarted());
+        assertTrue("The server was not started successfully.", server.isStarted());
         TestUtils.runApp(server, "logs");
 
         //Allow time for the collector to receive and bridge logs.
@@ -113,8 +108,7 @@ public class LoggingServletTest {
      */
     @Test
     public void testMessageLogs() throws Exception {
-
-        assertTrue(server.isStarted());
+        assertTrue("The server was not started successfully.", server.isStarted());
 
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_ALL_SOURCES, messageLogFile, server);
@@ -137,7 +131,6 @@ public class LoggingServletTest {
         assertTrue("Squence message could not be found.", logs.contains("io.openliberty.sequence: Str"));
         assertTrue("Log type messagecould not be found.", logs.contains("io.openliberty.type: Str(liberty_message)"));
         assertTrue("Thread ID message could not be found.", logs.contains("thread.id: Int"));
-
     }
 
     /*
@@ -146,7 +139,7 @@ public class LoggingServletTest {
     @Test
     public void testTraceLogs() throws Exception {
 
-        assertTrue(server.isStarted());
+        assertTrue("The server was not started successfully.", server.isStarted());
 
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_TRACE_SOURCE, messageLogFile, server);
@@ -169,7 +162,6 @@ public class LoggingServletTest {
         assertTrue("Sequence message could not be found.", logs.contains("io.openliberty.sequence: Str"));
         assertTrue("Log type message could not be found.", logs.contains("io.openliberty.type: Str(liberty_trace)"));
         assertTrue("Thread ID message could not be found.", logs.contains("thread.id: Int"));
-
     }
 
     /*
@@ -179,7 +171,7 @@ public class LoggingServletTest {
     @ExpectedFFDC({ "java.lang.NullPointerException" })
     public void testFFDCLogs() throws Exception {
 
-        assertTrue(server.isStarted());
+        assertTrue("The server was not started successfully.", server.isStarted());
 
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_FFDC_SOURCE, messageLogFile, server);
@@ -205,7 +197,6 @@ public class LoggingServletTest {
         assertTrue("Sequence message could not be found.", logs.contains("io.openliberty.sequence: Str"));
         assertTrue("Log type message could not be found.", logs.contains("io.openliberty.type: Str(liberty_ffdc)"));
         assertTrue("Thread ID message could not be found.", logs.contains("thread.id: Int"));
-
     }
 
     @AfterClass

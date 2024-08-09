@@ -22,9 +22,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/*")
-public class MpTelemetryServlet extends HttpServlet {
+public class FFDCServlet extends HttpServlet {
 
-    String loggerName = "io.openliberty.microprofile.telemetry.logging.internal.container.fat.MpTelemetryLogApp.MpTelemetryServlet";
+    String loggerName = "io.openliberty.microprofile.telemetry.logging.internal.container.fat.MpTelemetryLogApp.FFDCServlet";
     String logMessage = "Test Telemetry Message";
     String isFFDC = "false";
 
