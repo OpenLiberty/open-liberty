@@ -52,7 +52,9 @@ tested.features:\
   expressionlanguage-4.0,\
   pages-3.0,\
   jsp-2.3,\
-  el-3.0
+  el-3.0,\
+  expressionlanguage-6.0,\
+  pages-4.0
 
 -buildpath: \
 	com.ibm.ws.componenttest;version=latest,\

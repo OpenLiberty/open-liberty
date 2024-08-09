@@ -36,6 +36,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
                 TelemetryConfigSystemPropTest.class,
                 TelemetryConfigEnvOnlyTest.class,
                 TelemetryConfigNullTest.class,
+                TelemetryConfigRuntimeModeIgnoresMPConfigTest.class,
                 TelemetryServiceNameTest.class,
                 TelemetryShimTest.class,
                 TelemetryLoggingExporterTest.class,
