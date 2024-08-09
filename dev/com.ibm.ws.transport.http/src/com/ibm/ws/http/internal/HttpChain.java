@@ -588,7 +588,7 @@ public class HttpChain implements ChainEventListener {
         }
     }
 
-    private void handleStartupError(Exception e, ActiveConfiguration cfg) {
+    public void handleStartupError(Exception e, ActiveConfiguration cfg) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "Error starting chain " + chainName, this, e);
         }
