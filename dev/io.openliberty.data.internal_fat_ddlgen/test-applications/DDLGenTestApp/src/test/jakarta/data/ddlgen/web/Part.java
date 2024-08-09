@@ -17,7 +17,7 @@ import java.util.Objects;
 /**
  * A record entity with a composite id.
  */
-public record Part(Identifier id, String name, float price, int modVersion) {
+public record Part(Identifier id, String name, float price, int version) {
 
     public static final Part of(String partNum,
                                 String vendor,

@@ -781,8 +781,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
             // (4) type is UUID.
             // Version precedence (if also a valid version type):
             // (1) name is version, ignoring case.
-            // (2) name ends with _version, ignoring case.
-            // (3) name ends with Version.
+            // (2) name is _version, ignoring case.
             int idPrecedence = 10;
             int vPrecedence = 10;
             for (Map.Entry<String, Class<?>> attribute : attributes.entrySet()) {
@@ -811,21 +810,17 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 }
 
                 if (vPrecedence > 1 &&
-                    len >= 7 &&
+                    len == 7 &&
                     QueryInfo.VERSION_TYPES.contains(type) &&
-                    name.regionMatches(true, len - 7, "version", 0, 7)) {
-                    if (name.length() == 7) {
-                        versionAttributeName = name;
-                        vPrecedence = 1;
-                    } else if (vPrecedence > 2 &&
-                               name.charAt(len - 8) == '_') {
-                        versionAttributeName = name;
-                        vPrecedence = 2;
-                    } else if (vPrecedence > 3 &&
-                               name.endsWith("Version")) {
-                        versionAttributeName = name;
-                        vPrecedence = 3;
-                    }
+                    "version".equalsIgnoreCase(name)) {
+                    versionAttributeName = name;
+                    vPrecedence = 1;
+                } else if (vPrecedence > 2 &&
+                           len == 8 &&
+                           QueryInfo.VERSION_TYPES.contains(type) &&
+                           "_version".equalsIgnoreCase(name)) {
+                    versionAttributeName = name;
+                    vPrecedence = 2;
                 }
             }
 
