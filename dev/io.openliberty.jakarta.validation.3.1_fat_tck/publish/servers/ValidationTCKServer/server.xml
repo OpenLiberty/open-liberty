@@ -48,25 +48,8 @@
         <writeDir>${server.config.dir}/dropins</writeDir>
     </remoteFileAccess>
 
-    <!-- Include derby in gloabl library to make it available to all dropin apps -->
-    <library id="global">
-        <fileset dir="${shared.resource.dir}/sigtest/2.3" includes="*.jar"/>
-    </library>
-
+   
     <!--Java2 security-->
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
-
-    <!-- Derby Permissions -->
-
-    <javaPermission codeBase="${shared.resource.dir}/sigtest/sigtest-maven-plugin.jar" className="java.security.AllPermission"/>
-
-    <!-- Signature test application permissions -->
-    <javaPermission codeBase="${server.config.dir}/dropins/signatureTest.war" className="java.security.AllPermission"/>
 	
-    <!-- Signature test plugin permissions -->
-    <javaPermission codeBase="${shared.resource.dir}/sigtest/2.3/sigtest.jar" className="java.security.AllPermission" />
-    <javaPermission codeBase="${shared.resource.dir}/sigtest/2.3/sigtest.jar" className="java.lang.RuntimePermission"  name="accessClassInPackage.jdk.internal" />
-    <javaPermission codeBase="${shared.resource.dir}/sigtest/2.3/sigtest.jar" className="java.lang.RuntimePermission"  name="accessClassInPackage.jdk.internal.reflect" />
-    <javaPermission codeBase="${shared.resource.dir}/sigtest/2.3/sigtest.jar" className="java.lang.RuntimePermission"  name="accessClassInPackage.jdk.internal.vm.annotation" />
-   
 </server>

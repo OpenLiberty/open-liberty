@@ -12,22 +12,3 @@
  *******************************************************************************/
  // Always pull from Maven Central so we don't have to upload transitive dependencies to artifactory
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
-
-configurations {
-  sigTest { transitive = false; } 
-}
-
-dependencies {  
-  sigTest 'jakarta.tck:sigtest-maven-plugin:2.3'
-
-}
-
-task copySigTest(type: Copy) {
-  mustRunAfter jar
-  from configurations.sigTest
-  into new File(autoFvtDir, 'publish/shared/resources/sigtest/2.3')
-  rename 'sigtest-maven-plugin-.*.jar', 'sigtest.jar'
-}
-
-addRequiredLibraries.dependsOn addDerby
-addRequiredLibraries.dependsOn copySigTest

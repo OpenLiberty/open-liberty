@@ -22,7 +22,7 @@
     <name>Jakarta Validation TCK Runner</name>
 
     <properties>
-        <arquillian.version>1.7.0.Alpha13</arquillian.version>
+        <arquillian.version>1.9.1.Final</arquillian.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>

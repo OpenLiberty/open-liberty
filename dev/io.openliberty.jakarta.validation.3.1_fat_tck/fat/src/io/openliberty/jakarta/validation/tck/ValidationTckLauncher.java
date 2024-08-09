@@ -25,8 +25,8 @@ import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 
 /**
  * This is a test class that runs the entire Jakarta Validation TCK against Full Profile.
@@ -76,11 +76,11 @@ public class ValidationTckLauncher {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer(
-                          "WLTC0032W", //Transaction rollback warning.
-                          "WLTC0033W", //Transaction rollback warning.
-                          "CWWKS0901E" //Quickstart security
-        );
+        server.stopServer( //ignoring warnings due to Hibernate Validator CDI integration and annotations
+                          "CWNBV0200W",
+                          "CWNEN0047W",
+                          "CWNEN0049W",
+                          "CWNEN0048W");
 
         server.uninstallSystemFeature(validationCustomFeature);
     }
