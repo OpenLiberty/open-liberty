@@ -13,15 +13,9 @@
 package io.openliberty.microprofile.telemetry.internal.tests;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalToIgnoringCase;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
-import static org.hamcrest.Matchers.containsString;
 
 import java.io.File;
-import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -34,14 +28,10 @@ import org.junit.runner.RunWith;
 import org.testcontainers.containers.Network;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
@@ -50,6 +40,7 @@ import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.otelCollector.OtelCollectorContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.otelCollector.OtelCollectorQueryClient;
+
 /**
  * Test exporting metrics to a OpenTelemetry Collector
  */
@@ -60,10 +51,10 @@ public class MetricsOtelCollectorTest {
 
     public static Network network = Network.newNetwork();
     public static OtelCollectorContainer otelCollectorContainer = new OtelCollectorContainer(new File("lib/LibertyFATTestFiles/otel-collector-config-metrics.yaml"), 3131)
-                                                                                                                                                                   .withNetwork(network)
-                                                                                                                                                                   .withNetworkAliases("otel-collector-metrics")
-                                                                                                                                                                   .withLogConsumer(new SimpleLogConsumer(MetricsOtelCollectorTest.class,
-                                                                                                                                                                                                          "otelCol"));
+                                                                                                                                                                          .withNetwork(network)
+                                                                                                                                                                          .withNetworkAliases("otel-collector-metrics")
+                                                                                                                                                                          .withLogConsumer(new SimpleLogConsumer(MetricsOtelCollectorTest.class,
+                                                                                                                                                                                                                 "otelCol"));
     public static RepeatTests repeat = FATSuite.telemetry20Repeats(SERVER_NAME);
 
     @ClassRule
@@ -101,8 +92,13 @@ public class MetricsOtelCollectorTest {
 
     @Test
     public void testBasicTelemetry2() throws Exception {
+
+        HttpRequest request = new HttpRequest(server, "/spanTest/waitForGarbageCollection");
+        @SuppressWarnings("unused")
+        String notUsed = request.run(String.class);
+
         Thread.sleep(10000);
-        assertEquals("pass",client.getJVMMetrics());
+        assertEquals("pass", client.getJVMMetrics());
 
     }
 
