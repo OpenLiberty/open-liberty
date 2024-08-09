@@ -21,6 +21,8 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,19 +36,30 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class TelemetryDropinsTest extends FATServletClient {
 
-    private static Class<?> c = TelemetryDropinsTest.class;
-
     public static final String APP_NAME = "MpTelemetryLogApp";
     public static final String SERVER_NAME = "TelemetryDropins";
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    @BeforeClass
+    public static void initialSetup() throws Exception {
+        server.saveServerConfiguration();
+    }
+
+    @Before
+    public void testSetup() throws Exception {
+        server.deleteAllDropinApplications();
+        server.removeAllInstalledAppsForValidation();
+    }
+
     @After
     public void testTearDown() throws Exception {
         if (server != null && server.isStarted()) {
             server.stopServer();
         }
+
+        server.restoreServerConfiguration();
     }
 
     /*

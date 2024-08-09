@@ -40,9 +40,6 @@ public class TelemetryApplicationConfigTest extends FATServletClient {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    public static final String SERVER_XML_ALL_SOURCES = "allSources.xml";
-    public static final String SERVER_XML_NO_TELEMETRY_ATTRIBUTE = "noTelemetryAttribute.xml";
-
     @Before
     public void testSetup() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp");

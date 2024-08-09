@@ -92,7 +92,6 @@ public class TelemetryFFDCTest extends FATServletClient {
 
     static void testTelemetryFFDCMessages(LibertyServer s, Consumer<List<String>> consoleConsumer) throws Exception {
         hitWebPage(s, "ffdc-servlet", "FFDCServlet", true, "?generateFFDC=true");
-        Thread.sleep(2000);
 
         String logLevelLine = s.waitForStringInLog(".*scopeInfo.*FFDC_TEST_DOGET", s.getConsoleLogFile());
         String exceptionMessageLine = s.waitForStringInLog("exception.message=\"FFDC_TEST_DOGET\"", s.getConsoleLogFile());
