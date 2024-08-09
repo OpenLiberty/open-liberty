@@ -24,6 +24,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static test.jakarta.data.web.Assertions.assertIterableEquals;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.Duration;
 import java.time.Year;
 import java.util.ArrayList;
@@ -508,18 +510,105 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Repository method that returns the count as a BigDecimal value.
+     */
+    @Test
+    public void testCountAsBigDecimal() {
+        assertEquals(BigDecimal.valueOf(14L), primes.countAsBigDecimalByNumberIdLessThan(45));
+    }
+
+    /**
+     * Repository method that returns the count as a BigInteger value.
+     */
+    @Test
+    public void testCountAsBigInteger() {
+        assertEquals(BigInteger.valueOf(13L), primes.countAsBigIntegerByNumberIdLessThan(43));
+    }
+
+    /**
+     * Repository method that returns the count as a boolean value,
+     * which is not an allowed return type. This must raise an error.
+     */
+    @Test
+    public void testCountAsBoolean() {
+        try {
+            boolean count = primes.countAsBooleanByNumberIdLessThan(42);
+            fail("Count queries cannot have a boolean return type: " + count);
+        } catch (MappingException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Repository method that returns the count as a byte value.
+     */
+    @Test
+    public void testCountAsByte() {
+        assertEquals((byte) 12, primes.countAsβyteByNumberIdLessThan(40));
+    }
+
+    /**
+     * Repository method that returns the count as a Byte value.
+     */
+    @Test
+    public void testCountAsByteWrapper() {
+        assertEquals(Byte.valueOf((byte) 10),
+                     primes.countAsβyteWrapperByNumberIdLessThan(30));
+    }
+
+    /**
+     * Repository method that returns the count as an int value.
+     */
+    @Test
+    public void testCountAsInt() {
+        assertEquals(9, primes.countAsIntByNumberIdLessThan(25));
+    }
+
+    /**
      * Count the number of matching entries in the database using query by method name.
      */
     @Test
-    public void testCount() throws ExecutionException, InterruptedException, TimeoutException {
+    public void testCountAsInteger() throws ExecutionException, InterruptedException, TimeoutException {
 
-        assertEquals(15, primes.countByNumberIdLessThan(50));
+        assertEquals(15L, primes.countAsLongByNumberIdLessThan(50));
 
-        assertEquals(Integer.valueOf(0), primes.countByNumberIdBetween(32, 36));
+        assertEquals(Integer.valueOf(0), primes.countAsIntegerByNumberIdBetween(32, 36));
 
-        assertEquals(Integer.valueOf(3), primes.countByNumberIdBetween(40, 50));
+        assertEquals(Integer.valueOf(3), primes.countAsIntegerByNumberIdBetween(40, 50));
 
         assertEquals(Short.valueOf((short) 14), primes.countByNumberIdBetweenAndEvenNot(0, 50, true).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+    }
+
+    /**
+     * Repository method that returns the count as a Long value.
+     */
+    @Test
+    public void testCountAsLongWrapper() {
+        assertEquals(Long.valueOf(8L), primes.countAsLongWrapperByNumberIdLessThan(20));
+    }
+
+    /**
+     * Repository method that returns the count as a Number.
+     */
+    @Test
+    public void testCountAsNumber() {
+        assertEquals(7L, primes.countAsNumberByNumberIdLessThan(18).longValue());
+    }
+
+    /**
+     * Repository method that returns the count as a short value.
+     */
+    @Test
+    public void testCountAsShort() {
+        assertEquals((short) 6, primes.countAsShortByNumberIdLessThan(15));
+    }
+
+    /**
+     * Repository method that returns the count as a Short value.
+     */
+    @Test
+    public void testCountAsShortWrapper() {
+        assertEquals(Short.valueOf((short) 5), primes.countAsShortWrapperByNumberIdLessThan(12));
     }
 
     /**

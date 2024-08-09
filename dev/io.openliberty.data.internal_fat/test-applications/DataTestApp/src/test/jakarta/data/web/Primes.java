@@ -14,6 +14,8 @@ package test.jakarta.data.web;
 
 import static jakarta.data.repository.By.ID;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
@@ -55,12 +57,35 @@ public interface Primes {
     @Query("SELECT name WHERE numberId < 35 AND romanNumeral || name LIKE :pattern")
     List<String> concatAndMatch(String pattern, Sort<?> sort);
 
-    Integer countByNumberIdBetween(long first, long last);
+    BigDecimal countAsBigDecimalByNumberIdLessThan(long number);
+
+    BigInteger countAsBigIntegerByNumberIdLessThan(long number);
+
+    // boolean return type is not allowed for count methods
+    boolean countAsBooleanByNumberIdLessThan(long number);
+
+    int countAsIntByNumberIdLessThan(long number);
+
+    Integer countAsIntegerByNumberIdBetween(long first, long last);
+
+    long countAsLongByNumberIdLessThan(long number);
+
+    Long countAsLongWrapperByNumberIdLessThan(long number);
+
+    Number countAsNumberByNumberIdLessThan(long number);
+
+    short countAsShortByNumberIdLessThan(long number);
+
+    Short countAsShortWrapperByNumberIdLessThan(long number);
+
+    // The β symbol is used here because Byte starts with the By keyword
+    byte countAsβyteByNumberIdLessThan(long number);
+
+    // The β symbol is used here because Byte starts with the By keyword
+    Byte countAsβyteWrapperByNumberIdLessThan(long number);
 
     @Asynchronous
     CompletableFuture<Short> countByNumberIdBetweenAndEvenNot(long first, long last, boolean isOdd);
-
-    long countByNumberIdLessThan(long number);
 
     @Find
     Stream<Prime> find(boolean even, int sumOfBits, Limit limit, Sort<?>... sorts);

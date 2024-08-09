@@ -22,6 +22,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -231,6 +233,83 @@ public class RepositoryImpl<R> implements InvocationHandler {
         else
             throw new IllegalArgumentException("The offset for " + pagination.page() + " pages of size " + maxPageSize +
                                                " exceeds Integer.MAX_VALUE (2147483647)."); // TODO
+    }
+
+    /**
+     * Execute a repository count query.
+     *
+     * @param em        entity manager.
+     * @param queryInfo query information.
+     * @param args      method parameters.
+     * @return the count, converted to a type that is compatible with the
+     *         method signature.
+     * @throws Exception        if an error occurs.
+     * @throws MappingException if the count cannot be converted to the
+     *                              requested type.
+     */
+    @Trivial
+    private Object count(EntityManager em,
+                         QueryInfo queryInfo,
+                         Object... args) throws Exception {
+        Class<?> type = queryInfo.singleType;
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "count", em, queryInfo,
+                     // method args have already been logged if loggable
+                     "to be returned as " + type.getName());
+
+        TypedQuery<Long> query = em.createQuery(queryInfo.jpql, Long.class);
+        queryInfo.setParameters(query, args);
+
+        Long count = query.getSingleResult();
+
+        Object returnValue;
+        if (long.class.equals(type) ||
+            Long.class.equals(type) ||
+            type.isAssignableFrom(Long.class)) {
+            returnValue = count;
+        } else {
+            if (int.class.equals(type) || Integer.class.equals(type))
+                if (count > Integer.MAX_VALUE)
+                    throw new MappingException("The " + count + " count value cannot be converted to " +
+                                               type.getName() + " because it exceeds " + Integer.MAX_VALUE + "."); // TODO NLS
+                else
+                    returnValue = count.intValue();
+            else if (short.class.equals(type) || Short.class.equals(type))
+                if (count > Short.MAX_VALUE)
+                    throw new MappingException("The " + count + " count value cannot be converted to " +
+                                               type.getName() + " because it exceeds " + Short.MAX_VALUE + "."); // TODO NLS
+                else
+                    returnValue = count.shortValue();
+            else if (byte.class.equals(type) || Byte.class.equals(type))
+                if (count > Byte.MAX_VALUE)
+                    throw new MappingException("The " + count + " count value cannot be converted to " +
+                                               type.getName() + " because it exceeds " + Byte.MAX_VALUE + "."); // TODO NLS
+                else
+                    returnValue = count.byteValue();
+            else if (BigInteger.class.equals(type))
+                returnValue = BigInteger.valueOf(count);
+            else if (BigDecimal.class.equals(type))
+                returnValue = BigDecimal.valueOf(count);
+            else
+                throw new MappingException("The resulting count value cannot be converted from Long type to " +
+                                           type.getName() + " type."); // TODO NLS
+        }
+
+        Class<?> returnType = queryInfo.method.getReturnType();
+        if (Optional.class.equals(returnType)) {
+            returnValue = Optional.of(returnValue);
+        } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
+            returnValue = CompletableFuture.completedFuture(returnValue);
+        }
+
+        if (trace && tc.isEntryEnabled())
+            if (count == returnValue)
+                Tr.exit(this, tc, "count", returnValue);
+            else
+                Tr.exit(this, tc, "count", count + " converted to " + returnValue);
+        return returnValue;
     }
 
     /**
@@ -1160,34 +1239,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     }
                     case COUNT: {
                         em = entityInfo.builder.createEntityManager();
-
-                        TypedQuery<Long> query = em.createQuery(queryInfo.jpql, Long.class);
-                        queryInfo.setParameters(query, args);
-
-                        Long result = query.getSingleResult();
-
-                        Class<?> type = queryInfo.singleType;
-
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "result " + result + " to be returned as " + type.getName());
-
-                        returnValue = result;
-
-                        if (!type.isInstance(result) && !type.isAssignableFrom(returnValue.getClass())) {
-                            // TODO these conversions are not all safe
-                            if (int.class.equals(type) || Integer.class.equals(type))
-                                returnValue = result.intValue();
-                            else if (short.class.equals(type) || Short.class.equals(type))
-                                returnValue = result.shortValue();
-                            else if (byte.class.equals(type) || Byte.class.equals(type))
-                                returnValue = result.byteValue();
-                        }
-
-                        if (Optional.class.equals(returnType)) {
-                            returnValue = Optional.of(returnValue);
-                        } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
-                            returnValue = CompletableFuture.completedFuture(returnValue);
-                        }
+                        returnValue = count(em, queryInfo, args);
                         break;
                     }
                     case EXISTS: {
