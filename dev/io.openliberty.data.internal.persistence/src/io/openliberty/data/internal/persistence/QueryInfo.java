@@ -163,14 +163,14 @@ public class QueryInfo {
     String jpql;
 
     /**
-     * JPQL for a find query after a keyset. Otherwise null.
+     * JPQL for a find query after a cursor. Otherwise null.
      */
-    String jpqlAfterKeyset;
+    String jpqlAfterCursor;
 
     /**
-     * JPQL for a find query before a keyset. Otherwise null.
+     * JPQL for a find query before a cursor. Otherwise null.
      */
-    String jpqlBeforeKeyset;
+    String jpqlBeforeCursor;
 
     /**
      * For counting the total number of results across all pages.
@@ -458,6 +458,24 @@ public class QueryInfo {
         }
 
         return q;
+    }
+
+    /**
+     * Raises an error because the number of cursor elements does not match the
+     * number of sort parameters.
+     *
+     * @param cursor cursor
+     */
+    @Trivial
+    private void cursorSizeMismatchError(PageRequest.Cursor cursor) {
+        List<String> keyTypes = new ArrayList<>();
+        for (int i = 0; i < cursor.size(); i++)
+            keyTypes.add(cursor.get(i) == null ? null : cursor.get(i).getClass().getName());
+
+        throw new MappingException("The cursor with element types " + keyTypes +
+                                   " cannot be used with sort criteria of " + sorts +
+                                   " because they have different numbers of elements. The cursor size is " + cursor.size() +
+                                   " and the sort criteria size is " + sorts.size() + "."); // TODO NLS
     }
 
     /**
@@ -789,6 +807,71 @@ public class QueryInfo {
     }
 
     /**
+     * Generates the queries for before/after a cursor and populates them into the
+     * query information.
+     * Example conditions to add for cursor next of (lastName, firstName, ssn):
+     * AND ((o.lastName > ?5)
+     * _ OR (o.lastName = ?5 AND o.firstName > ?6)
+     * _ OR (o.lastName = ?5 AND o.firstName = ?6 AND o.ssn > ?7) )
+     *
+     * @param q    query up to the WHERE clause, if present
+     * @param fwd  ORDER BY clause in forward page direction.
+     *                 Null if forward page direction is not needed.
+     * @param prev ORDER BY clause in previous page direction.
+     *                 Null if previous page direction is not needed.
+     */
+    void generateCursorQueries(StringBuilder q, StringBuilder fwd, StringBuilder prev) {
+        int numSorts = sorts.size();
+        String paramPrefix = paramNames == null ? "?" : ":cursor";
+        StringBuilder a = fwd == null ? null : new StringBuilder(200).append(hasWhere ? " AND (" : " WHERE (");
+        StringBuilder b = prev == null ? null : new StringBuilder(200).append(hasWhere ? " AND (" : " WHERE (");
+        String o_ = entityVar_;
+        for (int i = 0; i < numSorts; i++) {
+            if (a != null)
+                a.append(i == 0 ? "(" : " OR (");
+            if (b != null)
+                b.append(i == 0 ? "(" : " OR (");
+            for (int s = 0; s <= i; s++) {
+                Sort<?> sort = sorts.get(s);
+                String name = sort.property();
+                boolean asc = sort.isAscending();
+                boolean lower = sort.ignoreCase();
+                if (a != null)
+                    if (lower) {
+                        a.append(s == 0 ? "LOWER(" : " AND LOWER(").append(o_).append(name).append(')');
+                        a.append(s < i ? '=' : (asc ? '>' : '<'));
+                        a.append("LOWER(").append(paramPrefix).append(paramCount + 1 + s).append(')');
+                    } else {
+                        a.append(s == 0 ? "" : " AND ").append(o_).append(name);
+                        a.append(s < i ? '=' : (asc ? '>' : '<'));
+                        a.append(paramPrefix).append(paramCount + 1 + s);
+                    }
+                if (b != null)
+                    if (lower) {
+                        b.append(s == 0 ? "LOWER(" : " AND LOWER(").append(o_).append(name).append(')');
+                        b.append(s < i ? '=' : (asc ? '<' : '>'));
+                        b.append("LOWER(").append(paramPrefix).append(paramCount + 1 + s).append(')');
+                    } else {
+                        b.append(s == 0 ? "" : " AND ").append(o_).append(name);
+                        b.append(s < i ? '=' : (asc ? '<' : '>'));
+                        b.append(paramPrefix).append(paramCount + 1 + s);
+                    }
+            }
+            if (a != null)
+                a.append(')');
+            if (b != null)
+                b.append(')');
+        }
+        if (a != null)
+            jpqlAfterCursor = new StringBuilder(q).append(a).append(')').append(fwd).toString();
+        if (b != null)
+            jpqlBeforeCursor = new StringBuilder(q).append(b).append(')').append(prev).toString();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "forward & previous cursor queries", jpqlAfterCursor, jpqlBeforeCursor);
+    }
+
+    /**
      * Generates JQPL for deletion by id, for find-and-delete repository operations.
      */
     private String generateDeleteById() {
@@ -858,75 +941,13 @@ public class QueryInfo {
     }
 
     /**
-     * Generates the before/after keyset queries and populates them into the query information.
-     * Example conditions to add for forward keyset of (lastName, firstName, ssn):
-     * AND ((o.lastName > ?5)
-     * _ OR (o.lastName = ?5 AND o.firstName > ?6)
-     * _ OR (o.lastName = ?5 AND o.firstName = ?6 AND o.ssn > ?7) )
-     *
-     * @param q    query up to the WHERE clause, if present
-     * @param fwd  ORDER BY clause in forward page direction. Null if forward page direction is not needed.
-     * @param prev ORDER BY clause in previous page direction. Null if previous page direction is not needed.
-     */
-    void generateKeysetQueries(StringBuilder q, StringBuilder fwd, StringBuilder prev) {
-        int numKeys = sorts.size();
-        String paramPrefix = paramNames == null ? "?" : ":keyset";
-        StringBuilder a = fwd == null ? null : new StringBuilder(200).append(hasWhere ? " AND (" : " WHERE (");
-        StringBuilder b = prev == null ? null : new StringBuilder(200).append(hasWhere ? " AND (" : " WHERE (");
-        String o_ = entityVar_;
-        for (int i = 0; i < numKeys; i++) {
-            if (a != null)
-                a.append(i == 0 ? "(" : " OR (");
-            if (b != null)
-                b.append(i == 0 ? "(" : " OR (");
-            for (int k = 0; k <= i; k++) {
-                Sort<?> keyInfo = sorts.get(k);
-                String name = keyInfo.property();
-                boolean asc = keyInfo.isAscending();
-                boolean lower = keyInfo.ignoreCase();
-                if (a != null)
-                    if (lower) {
-                        a.append(k == 0 ? "LOWER(" : " AND LOWER(").append(o_).append(name).append(')');
-                        a.append(k < i ? '=' : (asc ? '>' : '<'));
-                        a.append("LOWER(").append(paramPrefix).append(paramCount + 1 + k).append(')');
-                    } else {
-                        a.append(k == 0 ? "" : " AND ").append(o_).append(name);
-                        a.append(k < i ? '=' : (asc ? '>' : '<'));
-                        a.append(paramPrefix).append(paramCount + 1 + k);
-                    }
-                if (b != null)
-                    if (lower) {
-                        b.append(k == 0 ? "LOWER(" : " AND LOWER(").append(o_).append(name).append(')');
-                        b.append(k < i ? '=' : (asc ? '<' : '>'));
-                        b.append("LOWER(").append(paramPrefix).append(paramCount + 1 + k).append(')');
-                    } else {
-                        b.append(k == 0 ? "" : " AND ").append(o_).append(name);
-                        b.append(k < i ? '=' : (asc ? '<' : '>'));
-                        b.append(paramPrefix).append(paramCount + 1 + k);
-                    }
-            }
-            if (a != null)
-                a.append(')');
-            if (b != null)
-                b.append(')');
-        }
-        if (a != null)
-            jpqlAfterKeyset = new StringBuilder(q).append(a).append(')').append(fwd).toString();
-        if (b != null)
-            jpqlBeforeKeyset = new StringBuilder(q).append(b).append(')').append(prev).toString();
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "forward & previous keyset queries", jpqlAfterKeyset, jpqlBeforeKeyset);
-    }
-
-    /**
      * Generates the JPQL ORDER BY clause. This method is common between the OrderBy annotation and keyword.
      */
     private void generateOrderBy(StringBuilder q) {
-        boolean needsKeysetQueries = CursoredPage.class.equals(multiType);
+        boolean needsCursorQueries = CursoredPage.class.equals(multiType);
 
-        StringBuilder fwd = needsKeysetQueries ? new StringBuilder(100) : q; // forward page order
-        StringBuilder prev = needsKeysetQueries ? new StringBuilder(100) : null; // previous page order
+        StringBuilder fwd = needsCursorQueries ? new StringBuilder(100) : q; // forward page order
+        StringBuilder prev = needsCursorQueries ? new StringBuilder(100) : null; // previous page order
 
         boolean first = true;
         for (Sort<?> sort : sorts) {
@@ -934,15 +955,15 @@ public class QueryInfo {
             fwd.append(first ? " ORDER BY " : ", ");
             generateSort(fwd, sort, true);
 
-            if (needsKeysetQueries) {
+            if (needsCursorQueries) {
                 prev.append(first ? " ORDER BY " : ", ");
                 generateSort(prev, sort, false);
             }
             first = false;
         }
 
-        if (needsKeysetQueries) {
-            generateKeysetQueries(q, fwd, prev);
+        if (needsCursorQueries) {
+            generateCursorQueries(q, fwd, prev);
             q.append(fwd);
         }
     }
@@ -1287,8 +1308,11 @@ public class QueryInfo {
      * For most properties, this will be of a form such as o.name or LOWER(o.name) DESC or ...
      *
      * @param q             builder for the JPQL query.
-     * @param Sort          sort criteria for a single attribute (name must already be converted to a valid entity attribute name).
-     * @param sameDirection indicate to append the Sort in the normal direction. Otherwise reverses it (for keyset pagination in previous page direction).
+     * @param Sort          sort criteria for a single attribute (name must already
+     *                          be converted to a valid entity attribute name).
+     * @param sameDirection indicate to append the Sort in the normal direction.
+     *                          Otherwise reverses it (for cursor pagination in the
+     *                          previous page direction).
      * @return the same builder for the JPQL query.
      */
     @Trivial
@@ -1571,35 +1595,37 @@ public class QueryInfo {
     }
 
     /**
-     * Obtains keyset cursor values for the specified entity.
+     * Obtains cursor values for the specified entity.
      *
      * @param entity the entity.
-     * @return keyset cursor values, ordering according to the sort criteria.
+     * @return cursor values, ordering according to the sort criteria.
      */
     @Trivial
-    Object[] getKeysetValues(Object entity) {
+    Object[] getCursorValues(Object entity) {
         if (!entityInfo.getType().isInstance(entity))
-            throw new MappingException("Unable to obtain keyset values from the " +
+            throw new MappingException("Unable to obtain a cursor from the " +
                                        (entity == null ? null : entity.getClass().getName()) +
-                                       " type query result. Queries that use keyset pagination must return results of the same type as the entity type, which is " +
+                                       " result that is returned by the " + method.getName() +
+                                       " method of the " + method.getDeclaringClass().getName() +
+                                       " repository. Queries that use cursor-based pagination must return results of the same type as the entity type, which is " +
                                        entityInfo.getType().getName() + "."); // TODO NLS
-        ArrayList<Object> keyValues = new ArrayList<>();
-        for (Sort<?> keyInfo : sorts)
+        ArrayList<Object> cursorValues = new ArrayList<>();
+        for (Sort<?> sort : sorts)
             try {
-                List<Member> accessors = entityInfo.attributeAccessors.get(keyInfo.property());
+                List<Member> accessors = entityInfo.attributeAccessors.get(sort.property());
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "getKeysetValues for " + entity, accessors);
+                    Tr.debug(this, tc, "getCursorValues for " + entity, accessors);
                 Object value = entity;
                 for (Member accessor : accessors)
                     if (accessor instanceof Method)
                         value = ((Method) accessor).invoke(value);
                     else
                         value = ((Field) accessor).get(value);
-                keyValues.add(value);
+                cursorValues.add(value);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException x) {
                 throw new DataException(x instanceof InvocationTargetException ? x.getCause() : x);
             }
-        return keyValues.toArray();
+        return cursorValues.toArray();
     }
 
     /**
@@ -1753,7 +1779,7 @@ public class QueryInfo {
             } else {
                 if (methodTypeAnno != null) {
                     // Query by Parameters
-                    q = initQueryByParameters(methodTypeAnno, countPages); // keyset queries before orderby
+                    q = initQueryByParameters(methodTypeAnno, countPages);
                 } else {
                     // Query by Method Name
                     q = initQueryByMethodName(countPages);
@@ -2516,23 +2542,6 @@ public class QueryInfo {
     }
 
     /**
-     * Raises an error because the number of keyset keys does not match the number of sort parameters.
-     *
-     * @param keysetCursor keyset cursor
-     */
-    @Trivial
-    private void keysetSizeMismatchError(PageRequest.Cursor keysetCursor) {
-        List<String> keyTypes = new ArrayList<>();
-        for (int i = 0; i < keysetCursor.size(); i++)
-            keyTypes.add(keysetCursor.get(i) == null ? null : keysetCursor.get(i).getClass().getName());
-
-        throw new MappingException("The keyset cursor with key types " + keyTypes +
-                                   " cannot be used with sort criteria of " + sorts +
-                                   " because they have different numbers of elements. The keyset size is " + keysetCursor.size() +
-                                   " and the sort criteria size is " + sorts.size() + "."); // TODO NLS
-    }
-
-    /**
      * Parses and handles the text between find___By or find___OrderBy or find___ of a repository method.
      * Currently this is only "First" or "First#" and entity property names to select.
      * "Distinct" is reserved for future use.
@@ -2710,64 +2719,6 @@ public class QueryInfo {
     }
 
     /**
-     * Sets query parameters from keyset values.
-     *
-     * @param query        the query
-     * @param keysetCursor keyset values
-     * @throws Exception if an error occurs
-     */
-    void setKeysetParameters(jakarta.persistence.Query query, PageRequest.Cursor keysetCursor) throws Exception {
-        int paramNum = paramCount; // set to position before the first keyset parameter
-        if (paramNames == null) // positional parameters
-            for (int i = 0; i < keysetCursor.size(); i++) {
-                Object value = keysetCursor.get(i);
-                if (entityInfo.idClassAttributeAccessors != null && entityInfo.idType.isInstance(value)) {
-                    for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
-                        Object v = accessor instanceof Field ? ((Field) accessor).get(value) : ((Method) accessor).invoke(value);
-                        if (++paramNum - paramCount > sorts.size())
-                            keysetSizeMismatchError(keysetCursor);
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "set keyset parameter ?" + paramNum + ' ' + value.getClass().getName() + "-->" +
-                                               (v == null ? null : v.getClass().getSimpleName()));
-                        query.setParameter(paramNum, v);
-                    }
-                } else {
-                    if (++paramNum - paramCount > sorts.size())
-                        keysetSizeMismatchError(keysetCursor);
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "set keyset parameter ?" + paramNum + ' ' +
-                                           (value == null ? null : value.getClass().getSimpleName()));
-                    query.setParameter(paramNum, value);
-                }
-            }
-        else // named parameters
-            for (int i = 0; i < keysetCursor.size(); i++) {
-                Object value = keysetCursor.get(i);
-                if (entityInfo.idClassAttributeAccessors != null && entityInfo.idType.isInstance(value)) {
-                    for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
-                        Object v = accessor instanceof Field ? ((Field) accessor).get(value) : ((Method) accessor).invoke(value);
-                        if (++paramNum - paramCount > sorts.size())
-                            keysetSizeMismatchError(keysetCursor);
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "set keyset parameter :keyset" + paramNum + ' ' + value.getClass().getName() + "-->" +
-                                               (v == null ? null : v.getClass().getSimpleName()));
-                        query.setParameter("keyset" + paramNum, v);
-                    }
-                } else {
-                    if (++paramNum - paramCount > sorts.size())
-                        keysetSizeMismatchError(keysetCursor);
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "set keyset parameter :keyset" + paramNum + ' ' +
-                                           (value == null ? null : value.getClass().getSimpleName()));
-                    query.setParameter("keyset" + paramNum, value);
-                }
-            }
-
-        if (sorts.size() > paramNum - paramCount) // not enough keyset values
-            keysetSizeMismatchError(keysetCursor);
-    }
-
-    /**
      * Sets the query parameter at the specified position to a value from the entity,
      * obtained via the accessor methods.
      *
@@ -2834,6 +2785,64 @@ public class QueryInfo {
                 }
             }
         }
+    }
+
+    /**
+     * Sets query parameters from cursor element values.
+     *
+     * @param query  the query
+     * @param cursor the cursor
+     * @throws Exception if an error occurs
+     */
+    void setParametersFromCursor(jakarta.persistence.Query query, PageRequest.Cursor cursor) throws Exception {
+        int paramNum = paramCount; // position before that of first cursor element
+        if (paramNames == null) // positional parameters
+            for (int i = 0; i < cursor.size(); i++) {
+                Object value = cursor.get(i);
+                if (entityInfo.idClassAttributeAccessors != null && entityInfo.idType.isInstance(value)) {
+                    for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
+                        Object v = accessor instanceof Field ? ((Field) accessor).get(value) : ((Method) accessor).invoke(value);
+                        if (++paramNum - paramCount > sorts.size())
+                            cursorSizeMismatchError(cursor);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "set [cursor] ?" + paramNum + ' ' + value.getClass().getName() + "-->" +
+                                               (v == null ? null : v.getClass().getSimpleName()));
+                        query.setParameter(paramNum, v);
+                    }
+                } else {
+                    if (++paramNum - paramCount > sorts.size())
+                        cursorSizeMismatchError(cursor);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "set [cursor] ?" + paramNum + ' ' +
+                                           (value == null ? null : value.getClass().getSimpleName()));
+                    query.setParameter(paramNum, value);
+                }
+            }
+        else // named parameters
+            for (int i = 0; i < cursor.size(); i++) {
+                Object value = cursor.get(i);
+                if (entityInfo.idClassAttributeAccessors != null && entityInfo.idType.isInstance(value)) {
+                    for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
+                        Object v = accessor instanceof Field ? ((Field) accessor).get(value) : ((Method) accessor).invoke(value);
+                        if (++paramNum - paramCount > sorts.size())
+                            cursorSizeMismatchError(cursor);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "set [cursor] :cursor" + paramNum + ' ' + value.getClass().getName() + "-->" +
+                                               (v == null ? null : v.getClass().getSimpleName()));
+                        query.setParameter("cursor" + paramNum, v);
+                    }
+                } else {
+                    if (++paramNum - paramCount > sorts.size())
+                        cursorSizeMismatchError(cursor);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "set [cursor] :cursor" + paramNum + ' ' +
+                                           (value == null ? null : value.getClass().getSimpleName()));
+                    query.setParameter("cursor" + paramNum, value);
+                }
+            }
+
+        if (sorts.size() > paramNum - paramCount) // not enough cursor elements
+            cursorSizeMismatchError(cursor);
     }
 
     /**
@@ -3047,8 +3056,8 @@ public class QueryInfo {
         q.entityVar_ = entityVar_;
         q.hasWhere = hasWhere;
         q.jpql = jpql;
-        q.jpqlAfterKeyset = jpqlAfterKeyset;
-        q.jpqlBeforeKeyset = jpqlBeforeKeyset;
+        q.jpqlAfterCursor = jpqlAfterCursor;
+        q.jpqlBeforeCursor = jpqlBeforeCursor;
         q.jpqlCount = jpqlCount;
         q.jpqlDelete = jpqlDelete; // TODO jpqlCount and jpqlDelete could potentially be combined because you will never need both at once
         q.maxResults = maxResults;

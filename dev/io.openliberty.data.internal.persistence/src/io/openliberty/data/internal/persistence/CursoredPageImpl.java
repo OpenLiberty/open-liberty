@@ -55,11 +55,15 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
     @FFDCIgnore(Exception.class)
     CursoredPageImpl(QueryInfo queryInfo, PageRequest pageRequest, Object[] args) {
 
+        if (pageRequest == null)
+            PageImpl.missingPageRequest(queryInfo);
+
         this.args = args;
         this.queryInfo = queryInfo;
-        this.pageRequest = pageRequest == null ? PageRequest.ofSize(100) : pageRequest;
+        this.pageRequest = pageRequest;
         this.isForward = this.pageRequest.mode() != PageRequest.Mode.CURSOR_PREVIOUS;
-        Optional<PageRequest.Cursor> keysetCursor = this.pageRequest.cursor();
+
+        Optional<PageRequest.Cursor> cursor = this.pageRequest.cursor();
 
         int maxPageSize = this.pageRequest.size();
         int firstResult = this.pageRequest.mode() == PageRequest.Mode.OFFSET //
@@ -68,24 +72,26 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
 
         EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
         try {
-            String jpql = keysetCursor.isEmpty() ? queryInfo.jpql : //
-                            isForward ? queryInfo.jpqlAfterKeyset : //
-                                            queryInfo.jpqlBeforeKeyset;
+            String jpql = cursor.isEmpty() ? queryInfo.jpql : //
+                            isForward ? queryInfo.jpqlAfterCursor : //
+                                            queryInfo.jpqlBeforeCursor;
 
             @SuppressWarnings("unchecked")
             TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, queryInfo.entityInfo.entityClass);
             queryInfo.setParameters(query, args);
 
-            if (keysetCursor.isPresent())
-                queryInfo.setKeysetParameters(query, keysetCursor.get());
+            if (cursor.isPresent())
+                queryInfo.setParametersFromCursor(query, cursor.get());
 
             query.setFirstResult(firstResult);
             query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1)); // extra position is for knowing whether to expect another page
 
             results = query.getResultList();
 
-            // Keyset pagination involves reversing the ORDER BY to obtain the previous page, but the entries
-            // on the page will also be in reverse order, so we need to reverse again to correct that
+            // Cursor-based pagination in the previous page direction is implemented
+            // by reversing the ORDER BY to obtain the previous page. A side-effect
+            // of that is that the resulting entries for the page are reversed,
+            // so we need to reverse again to correct that.
             if (!isForward)
                 for (int size = results.size(), i = 0, j = size - (size > maxPageSize ? 2 : 1); i < j; i++, j--)
                     Collections.swap(results, i, j);
@@ -265,7 +271,7 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
         int maxPageSize = pageRequest.size();
         int endingResultIndex = Math.min(maxPageSize, results.size()) - 1; // CURSOR_PREVIOUS that reads a partial page can have a next page
 
-        return PageRequest.afterCursor(Cursor.forKey(queryInfo.getKeysetValues(results.get(endingResultIndex))),
+        return PageRequest.afterCursor(Cursor.forKey(queryInfo.getCursorValues(results.get(endingResultIndex))),
                                        pageRequest.page() == Long.MAX_VALUE ? Long.MAX_VALUE : pageRequest.page() + 1,
                                        maxPageSize,
                                        pageRequest.requestTotal());
@@ -278,7 +284,7 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
                                              "true result of CursoredPage.hasPrevious before attempting this method."); // TODO NLS
 
         // Decrement page number by 1 unless it would go below 1.
-        return PageRequest.beforeCursor(Cursor.forKey(queryInfo.getKeysetValues(results.get(0))),
+        return PageRequest.beforeCursor(Cursor.forKey(queryInfo.getCursorValues(results.get(0))),
                                         pageRequest.page() == 1 ? 1 : pageRequest.page() - 1,
                                         pageRequest.size(),
                                         pageRequest.requestTotal());

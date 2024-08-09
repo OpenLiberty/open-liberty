@@ -42,15 +42,12 @@ public class PageImpl<T> implements Page<T> {
 
     @FFDCIgnore(Exception.class)
     PageImpl(QueryInfo queryInfo, PageRequest pageRequest, Object[] args) {
-        this.queryInfo = queryInfo;
-        this.pageRequest = pageRequest == null ? PageRequest.ofSize(100) : pageRequest;
-        this.args = args;
+        if (pageRequest == null)
+            missingPageRequest(queryInfo);
 
-        // BasicRepository.findAll(PageRequest, Order) requires NullPointerException when PageRequest is null.
-        // TODO Should this apply in general?
-        if (pageRequest == null && queryInfo.paramCount == 0 && queryInfo.method.getParameterCount() == 2
-            && PageRequest.class.equals(queryInfo.method.getParameterTypes()[0]))
-            throw new NullPointerException("PageRequest: null");
+        this.queryInfo = queryInfo;
+        this.pageRequest = pageRequest;
+        this.args = args;
 
         EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
         try {
@@ -135,6 +132,34 @@ public class PageImpl<T> implements Page<T> {
         int size = results.size();
         int max = pageRequest.size();
         return size > max ? new ResultIterator(max) : results.iterator();
+    }
+
+    /**
+     * Raise an error because the PageRequest is missing.
+     *
+     * @param queryInfo query information.
+     * @throws UnsupportedOperationException if the repository method signature
+     *                                           lacks a parameter for supplying a PageRequest
+     * @throws NullPointerException          if the user supplied a null PageRequest.
+     */
+    static void missingPageRequest(QueryInfo queryInfo) {
+        Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
+
+        // Check parameter positions after those used for query parameters
+        boolean hasPageRequest = false;
+        for (int i = queryInfo.paramCount - queryInfo.paramAddedCount; //
+                        i < paramTypes.length; //
+                        i++)
+            hasPageRequest |= PageRequest.class.equals(paramTypes[i]);
+
+        if (hasPageRequest)
+            throw new NullPointerException("PageRequest: null");
+        else
+            throw new UnsupportedOperationException("The " + queryInfo.method.getName() + " method of the " +
+                                                    queryInfo.method.getDeclaringClass().getName() +
+                                                    " repository has a " + queryInfo.method.getReturnType().getName() +
+                                                    " return type but does not have a " + PageRequest.class.getName() +
+                                                    " parameter."); // TODO NLS
     }
 
     @Override
