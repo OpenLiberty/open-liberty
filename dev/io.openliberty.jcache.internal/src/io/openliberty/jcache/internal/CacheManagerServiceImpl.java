@@ -12,7 +12,7 @@
  *******************************************************************************/
 package io.openliberty.jcache.internal;
 
-import static io.openliberty.jcache.internal.Activator.CACHE_MANAGER_CONFIG_CONDITION;
+import static io.openliberty.jcache.internal.Activator.CACHE_CONFIG_CONDITION;
 import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
 
 import java.io.IOException;
@@ -285,7 +285,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
         this.scheduledExecutorService = null;
     }
 
-    @Reference(name = "configCondition", service = Condition.class, target = "(" + Condition.CONDITION_ID + "=" + CACHE_MANAGER_CONFIG_CONDITION + ")")
+    @Reference(name = "configCondition", service = Condition.class, target = "(" + Condition.CONDITION_ID + "=" + CACHE_CONFIG_CONDITION + ")")
     protected void setConfigCondition(Condition configCondition) {
         // do nothing; this is just a reference that we use to force the component to recycle
     }

@@ -18,10 +18,10 @@ import java.net.URL;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
-import jakarta.xml.ws.Service;
-import jakarta.xml.ws.WebEndpoint;
-import jakarta.xml.ws.WebServiceClient;
-import jakarta.xml.ws.WebServiceFeature;
+import javax.xml.ws.Service;
+import javax.xml.ws.WebEndpoint;
+import javax.xml.ws.WebServiceClient;
+import javax.xml.ws.WebServiceFeature;
 
 
 @WebServiceClient(name = "SimpleEchoService", targetNamespace = "http://jaxws.monitor_fat.internal.telemetry.microprofile.openliberty.io/", wsdlLocation = "WEB-INF/wsdl/SimpleEchoService.wsdl")

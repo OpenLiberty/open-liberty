@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -131,6 +131,8 @@ public class TraceSource implements Source {
                     CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
                 }
             }
+            // Set if the WsLogRecord is logged using Tr or not.
+            traceData.setTr(wsLogRecord.isTr());
         } else {
             Map<String, String> extMap = new HashMap<String, String>();
             LogRecordContext.getExtensions(extMap);
@@ -140,6 +142,9 @@ public class TraceSource implements Source {
                     CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
                 }
             }
+
+            // Set the LogRecord is NOT using Tr, to log the trace. It is probably using JUL or another logging framework.
+            traceData.setTr(false);
         }
 
         traceData.setRawSequenceNumber(sequenceNumber.getRawSequenceNumber());

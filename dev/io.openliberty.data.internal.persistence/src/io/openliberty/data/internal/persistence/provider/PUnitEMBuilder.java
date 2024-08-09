@@ -36,33 +36,6 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
 
     private final String persistenceUnitRef;
 
-    // TODO this should be removed because the spec did not add the ability to use
-    // a resource access method with a qualifier to configure the EntityManager.
-    public PUnitEMBuilder(DataProvider provider,
-                          ClassLoader repositoryClassLoader,
-                          EntityManagerFactory emf,
-                          Set<Class<?>> entityTypes) {
-        super(provider, repositoryClassLoader);
-        this.emf = emf;
-        this.persistenceUnitRef = emf.toString();
-
-        try {
-            collectEntityInfo(entityTypes);
-        } catch (RuntimeException x) {
-            for (Class<?> entityClass : entityTypes)
-                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
-            throw x;
-        } catch (Exception x) {
-            for (Class<?> entityClass : entityTypes)
-                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
-            throw new RuntimeException(x);
-        } catch (Error x) {
-            for (Class<?> entityClass : entityTypes)
-                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
-            throw x;
-        }
-    }
-
     /**
      * Obtains entity manager instances from a persistence unit reference /
      * EntityManagerFactory.

@@ -14,7 +14,7 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "METRICS", messageBundle = "com.ibm.ws.microprofile.metrics.resources.Metrics")  //contains existing descriptions
+@TraceOptions(traceGroup = "TELEMETRY", messageBundle = "io.openliberty.microprofile.telemetry.internal.common.resources.MPTelemetry")
 package io.openliberty.microprofile.telemetry.internal.monitor.internal;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -77,7 +77,15 @@ public class WebProviderAuthenticatorHelper {
         }
 
         if (!mapIdentityToRegistryUser && !subject.isReadOnly()) {
-            removeSecurityNameAndUniquedIdFromHashtable(subject, customProperties, mapIdentityToRegistryUser);
+	    try {
+		removeSecurityNameAndUniquedIdFromHashtable(subject, customProperties, mapIdentityToRegistryUser);
+	    }
+	    catch (Exception e) {
+                // Even though isReadOnly is checked earlier in the if condition,
+                // there's a very small time window where getCallerSubject() could be called by applications  
+                // and make the subject readOnly before removeSecurity..() is called. This could cause an exception. 
+		// Here, we can disregard the exception if it happens. We aim to keep the hashtable size the best we can.  
+	    }
         }
 
         AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, subject);

@@ -17,6 +17,10 @@ import java.util.Collection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.junit.After;
+
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
 
 import com.ibm.ws.feature.tests.util.PlatformConstants;
 
@@ -30,6 +34,12 @@ public class VersionlessJavaEEToMicroProfileTest extends VersionlessTest {
     public static final String SERVER_NAME_EE10 = "ee10toMP";
 
     public static final String[] ALLOWED_ERRORS = { "CWWKF0001E", "CWWKF0048E" };
+
+    @After
+    public void after() throws Exception {
+        LibertyServer server = LibertyServerFactory.getLibertyServer(getTestCase().serverName);
+        server.stopServer(ALLOWED_ERRORS);
+    }
 
     public static TestCase[] TEST_CASES = new TestCase[] {
         new TestCase("ee7toHealthAndMetricsMax",

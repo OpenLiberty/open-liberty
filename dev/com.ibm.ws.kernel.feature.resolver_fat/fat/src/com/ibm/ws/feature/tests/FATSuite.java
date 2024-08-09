@@ -25,8 +25,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 // BaselineResolutionGenerationTest.class,
                 BaselineResolutionSingletonUnitTest.class,
                 BaselineVersionlessSingletonUnitTest.class,
-                BaselineResolutionServletUnitTest.class, // servlet + servlet-x.x disabled: See issue 29137
-                // BaselineResolutionMicroProfileUnitTest.class, Disabled: See issue 29136
+                BaselineResolutionServletUnitTest.class,
+                BaselineResolutionMicroProfileUnitTest.class,
 
                 VersionlessJavaEEToMicroProfileTest.class,
                 VersionlessServletToMicroProfileTest.class,

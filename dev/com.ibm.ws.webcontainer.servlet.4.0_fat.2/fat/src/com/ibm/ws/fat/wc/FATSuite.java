@@ -23,6 +23,7 @@ import com.ibm.ws.fat.wc.tests.WCPartitionedCookieAttributeSecurityTest;
 import com.ibm.ws.fat.wc.tests.WCResponseHeadersTest;
 import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeSecurityTest;
 import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeTests;
+import com.ibm.ws.fat.wc.tests.WCSameSiteIncompatibleClientsTests;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
@@ -51,7 +52,8 @@ import componenttest.rules.repeater.RepeatTests;
                 WCSameSiteCookieAttributeTests.class,
                 WCSameSiteCookieAttributeSecurityTest.class,
                 WCPartitionedAttributeTests.class,
-                WCPartitionedCookieAttributeSecurityTest.class
+                WCPartitionedCookieAttributeSecurityTest.class,
+                WCSameSiteIncompatibleClientsTests.class
 })
 
 public class FATSuite {

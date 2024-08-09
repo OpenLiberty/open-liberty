@@ -38,15 +38,16 @@ public class OpenTelemetryConstants {
     public static final AttributeKey<String> KEY_SERVICE_NAME = AttributeKey.stringKey("service.name");
     public static final AttributeKey<String> KEY_SERVICE_INSTANCE_ID = AttributeKey.stringKey("service.instance.id");
 
+    //Other OTel standards
+    public static final String UNKOWN_SERVICE = "unkown_service";
+
     //OpenLiberty namespace prefix
     public static final String NAME_SPACE_PREFIX = "io.openliberty.";
 
     //(Open Liberty) Connection Pool metric name + desc
     public static final String WAIT_TIME_NAME = "connection_pool.connection.wait_time";
-    public static final String WAIT_TIME_DESC = "The total wait time on all connection requests since the start of the server.";
 
     public static final String IN_USE_TIME_NAME = "connection_pool.connection.use_time";
-    public static final String IN_USE_TIME_DESC = "The total time that all connections are in-use since the start of the server.";
 
-    public static final String DATASOURCE_ATTRIBUTE = "datasource.jndi.name";
+    public static final String DATASOURCE_ATTRIBUTE = "datasource.name";
 }

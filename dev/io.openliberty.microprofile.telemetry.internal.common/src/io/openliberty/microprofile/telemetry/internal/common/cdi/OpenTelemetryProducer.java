@@ -12,6 +12,11 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.common.cdi;
 
+import java.util.Optional;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
@@ -21,22 +26,17 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
 import io.openliberty.microprofile.telemetry.internal.common.info.ErrorOpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
-import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryInfoFactory;
+import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryLifecycleManager;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 
-import java.util.Optional;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-
 @ApplicationScoped
 public class OpenTelemetryProducer {
 
     private static final TraceComponent tc = Tr.register(OpenTelemetryProducer.class);
-    private static final ServiceCaller<OpenTelemetryInfoFactory> openTelemetryInfoFactoryService = new ServiceCaller<OpenTelemetryInfoFactory>(OpenTelemetryProducer.class, OpenTelemetryInfoFactory.class);
+    private static final ServiceCaller<OpenTelemetryLifecycleManager> openTelemetryInfoFactoryService = new ServiceCaller<OpenTelemetryLifecycleManager>(OpenTelemetryProducer.class, OpenTelemetryLifecycleManager.class);
 
     private final ApplicationMetaData metaData;
 
@@ -52,7 +52,9 @@ public class OpenTelemetryProducer {
      *         is disabled or the application has shut down.
      */
     private OpenTelemetryInfo getOpenTelemetryInfo() {
-        Optional<OpenTelemetryInfo> openTelemetryInfo = openTelemetryInfoFactoryService.call( (factory) -> {return factory.getOpenTelemetryInfo(metaData); });
+        Optional<OpenTelemetryInfo> openTelemetryInfo = openTelemetryInfoFactoryService.call((lifecycleManager) -> {
+            return lifecycleManager.getOpenTelemetryInfo(metaData);
+        });
         return openTelemetryInfo.orElseGet(ErrorOpenTelemetryInfo::new);
     }
 

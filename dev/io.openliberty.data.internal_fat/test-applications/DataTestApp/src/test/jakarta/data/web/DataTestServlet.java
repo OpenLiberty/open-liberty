@@ -1354,10 +1354,45 @@ public class DataTestServlet extends FATServlet {
      * record class, or id class.
      */
     @Test
+    @SkipIfSysProp(DB_Oracle) //TODO Eclipse link SQL Generation bug on Oracle: https://github.com/OpenLiberty/open-liberty/issues/28545
     public void testFindAndDeleteReturnsInvalidTypes() {
         packages.deleteAll();
 
         packages.save(new Package(60006, 16.0f, 61.1f, 6.0f, "testFindAndDeleteReturnsInvalidTypes#60006"));
+
+        Sort<Package> sort = Sort.asc("id");
+
+        try {
+            long[] deleted = packages.delete3(Limit.of(3), sort);
+            fail("Deleted with return type of long[]: " + Arrays.toString(deleted) + " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            List<String> deleted = packages.delete4(Limit.of(4), sort);
+            fail("Deleted with return type of List<String>: " + deleted + " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            Collection<Number> deleted = packages.delete5(Limit.of(5), sort);
+            fail("Deleted with return type of Collection<Number>: " + deleted + " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Find-and-delete repository operations that return invalid types that are neither the entity class,
+     * record class, or id class.
+     * In this case the table is empty and no results will have been deleted,
+     * we should still throw a mapping exception.
+     */
+    @Test
+    public void testFindAndDeleteReturnsInvalidTypesEmpty() {
+        packages.deleteAll();
 
         Sort<Package> sort = Sort.asc("id");
 
@@ -2259,11 +2294,11 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Access pages in a forward direction while entities are being added and removed,
-     * using a keyset to avoid duplicates.
+     * Access pages in the next page direction while entities are being added and
+     * removed, using a cursor to avoid duplicates.
      */
     @Test
-    public void testKeysetForwardPagination() {
+    public void testCursorNext() {
         packages.deleteAll();
 
         packages.saveAll(List.of(new Package(114, 14.0f, 90.0f, 15.0f, "package#114"), // page1
@@ -2295,7 +2330,7 @@ public class DataTestServlet extends FATServlet {
         // should not appear on next page because we already read up to length 18.0:
         packages.save(new Package(117, 17.0f, 23.0f, 12.0f, "package#117"));
 
-        // should appear on next page because length 20.0 is beyond the keyset value of 18.0:
+        // should appear on next page because length 20.0 is beyond the cursor value of 18.0:
         packages.save(new Package(120, 20.0f, 23.0f, 12.0f, "package#120"));
 
         // Page 2
@@ -2307,7 +2342,8 @@ public class DataTestServlet extends FATServlet {
         // remove some entries that we already read:
         packages.deleteByIdIn(List.of(116, 118, 120, 122, 124));
 
-        // should appear on next page because length 22.0 matches the keyset value and width 70.0 is beyond the keyset value:
+        // should appear on next page because length 22.0 matches the cursor value
+        // and width 70.0 is beyond the cursor value:
         packages.save(new Package(130, 22.0f, 70.0f, 67.0f, "package#130"));
 
         // Page 3
@@ -2364,9 +2400,10 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(114, 144, 133, 151),
                              page.stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        packages.saveAll(List.of(new Package(128, 28.0f, 45.0f, 53.0f, "package#128"), // comes after the keyset values, should be included in next page
-                                 new Package(153, 53.0f, 45.0f, 28.0f, "package#153") // comes before the keyset values, should not be on next page
-        ));
+        packages.saveAll(List.of(// comes after the cursor values, should be included in next page
+                                 new Package(128, 28.0f, 45.0f, 53.0f, "package#128"),
+                                 // comes before the cursor values, should not be on next page
+                                 new Package(153, 53.0f, 45.0f, 28.0f, "package#153")));
 
         // Page 2
         page = packages.findByHeightGreaterThan(10.0f, page.nextPageRequest());
@@ -2427,11 +2464,12 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Access pages in a forward direction, but delete the remaining entries before accessing the next page.
-     * Expect the next page to be empty, and next/previous PageRequest from the empty page to be null.
+     * Access pages in the next page direction, but delete the remaining entries
+     * before accessing the next page. Expect the next page to be empty, and the
+     * next/previous PageRequest from the empty page to be null.
      */
     @Test
-    public void testKeysetForwardPaginationNextPageEmptyAfterDeletion() {
+    public void testCursorNextPageEmptyAfterDeletion() {
         packages.deleteAll();
 
         packages.saveAll(List.of(new Package(440, 40.0f, 44.0f, 40.0f, "package#440"), // page1
@@ -2463,17 +2501,17 @@ public class DataTestServlet extends FATServlet {
         assertEquals(0, page.numberOfElements());
         assertEquals(false, page.hasContent());
 
-        // An empty page lacks keyset values from which to request next/previous pages
+        // An empty page lacks cursor values from which to request next/previous pages
         assertEquals(false, page.hasNext());
         assertEquals(false, page.hasPrevious());
     }
 
     /**
-     * Obtain keyset cursors from a page of results and use them to obtain pages in forward
-     * and reverse directions.
+     * Obtain cursors from a page of results and use them to obtain pages in the
+     * next page and previous page directions.
      */
     @Test
-    public void testKeysetPaginationWithCursor() {
+    public void testCursorPagination() {
         // Expected order for OrderByEvenDescSumOfBitsDescNumberAsc:
         // num binary sum even?
         // 2,  10,     1, true
@@ -2529,10 +2567,10 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Access pages in reverse direction using a keyset.
+     * Access pages in the previous page direction using a cursor.
      */
     @Test
-    public void testKeysetPreviousPages() {
+    public void testCursorPrevious() {
         packages.deleteAll();
 
         packages.saveAll(List.of(new Package(210, 10.0f, 50.0f, 55.0f, "package#210"), // page 1
@@ -2594,26 +2632,26 @@ public class DataTestServlet extends FATServlet {
         // 240, 40.0f, 21.0f, 42.0f
 
         PageRequest.Cursor cursor = new PageRequest.Cursor() {
-            private final List<Object> keysetValues = List.of(21.0f, 42.0f, 240);
+            private final List<Object> cursorElements = List.of(21.0f, 42.0f, 240);
 
             @Override
             public List<?> elements() {
-                return keysetValues;
+                return cursorElements;
             }
 
             @Override
             public Object get(int index) {
-                return keysetValues.get(index);
+                return cursorElements.get(index);
             }
 
             @Override
             public int size() {
-                return keysetValues.size();
+                return cursorElements.size();
             }
 
             @Override
             public String toString() {
-                return "Custom cursor of " + keysetValues;
+                return "Custom cursor of " + cursorElements;
             }
         };
 
@@ -2730,11 +2768,11 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Access pages in reverse direction while entities are being added and removed,
-     * using a keyset to avoid duplicates.
+     * Access pages in the previous page direction while entities are being added
+     * and removed, using a cursor to avoid duplicates.
      */
     @Test
-    public void testKeysetReversePaginationWithUpdates() {
+    public void testCursorPreviousWithUpdates() {
         packages.deleteAll();
 
         // using @OrderBy width descending, height ascending, id descending:
@@ -2868,69 +2906,38 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * A repository might define a method that returns a keyset-aware page with a Limit parameter.
+     * A repository might attempt to define a method that returns a CursoredPage
+     * without specifying a PageRequest and attempt to use a Limit parameter
+     * instead. This is not supported by the spec.
+     * Expect UnsupportedOperationException.
      */
     @Test
-    public void testKeysetWithLimit() {
-        // This is not a recommended pattern. Testing to see how it is handled.
-        CursoredPage<Prime> page = primes.findByNumberIdBetween(15L, 45L, Limit.of(5));
-
-        assertEquals(1L, page.pageRequest().page());
-        assertEquals(5L, page.numberOfElements());
-        assertEquals(5L, page.pageRequest().size());
-        assertEquals(1L, page.pageRequest().page());
-        assertEquals(2L, page.totalPages());
-        assertEquals(8L, page.totalElements());
-
-        assertIterableEquals(List.of(17L, 19L, 23L, 29L, 31L),
-                             page.stream()
-                                             .map(p -> p.numberId)
-                                             .collect(Collectors.toList()));
-
-        assertIterableEquals(Collections.EMPTY_LIST,
-                             primes.findByNumberIdBetween(15L, 45L, page.previousPageRequest()));
-
-        page = primes.findByNumberIdBetween(15L, 45L, page.nextPageRequest());
-
-        assertEquals(3L, page.numberOfElements());
-        assertEquals(5L, page.pageRequest().size());
-        assertEquals(2L, page.pageRequest().page());
-        assertEquals(2L, page.totalPages());
-        assertEquals(8L, page.totalElements());
-        assertEquals(false, page.hasNext());
-
-        assertIterableEquals(List.of(37L, 41L, 43L),
-                             page.stream()
-                                             .map(p -> p.numberId)
-                                             .collect(Collectors.toList()));
+    public void testLacksPageRequestUseLimitInstead() {
+        CursoredPage<Prime> page;
+        try {
+            page = primes.findByNumberIdBetween(15L, 45L, Limit.of(5));
+            fail("Able to obtain CursoredPage without a PageRequest: " + page);
+        } catch (UnsupportedOperationException x) {
+            // pass
+        }
     }
 
     /**
-     * A repository might define a method that returns a keyset-aware page without specifying a PageRequest,
-     * specifying the sort criteria separately.
+     * A repository might attempt to define a method that returns a CursoredPage
+     * without specifying a PageRequest and attempt to use a Sort parameter instead.
+     * This is not supported by the spec. Expect UnsupportedOperationException.
      */
     @Test
-    public void testKeysetWithoutPageRequest() {
-        // This is not a recommended pattern. Testing to see how it is handled.
-        CursoredPage<Prime> page = primes.findByNumberIdBetweenAndBinaryDigitsNotNull(30L, 40L, Sort.asc(ID));
-        assertEquals(31L, page.content().get(0).numberId);
-
-        // Obtain PageRequest for previous entries from the CursoredPage
-        PageRequest pagination = page.previousPageRequest().size(5);
-        page = primes.findByNumberIdBetween(0L, 40L, pagination);
-        assertIterableEquals(List.of(13L, 17L, 19L, 23L, 29L),
-                             page.stream()
-                                             .map(p -> p.numberId)
-                                             .collect(Collectors.toList()));
-
-        pagination = page.previousPageRequest();
-        page = primes.findByNumberIdBetween(0L, 40L, pagination);
-        assertIterableEquals(List.of(2L, 3L, 5L, 7L, 11L),
-                             page.stream()
-                                             .map(p -> p.numberId)
-                                             .collect(Collectors.toList()));
-
-        assertEquals(false, page.hasPrevious());
+    public void testLacksPageRequestUseSortInstead() {
+        CursoredPage<Prime> page;
+        try {
+            page = primes.findByNumberIdBetweenAndBinaryDigitsNotNull(30L, //
+                                                                      40L, //
+                                                                      Sort.asc(ID));
+            fail("Able to obtain CursoredPage without a PageRequest: " + page);
+        } catch (UnsupportedOperationException x) {
+            // pass
+        }
     }
 
     /**
@@ -4547,8 +4554,8 @@ public class DataTestServlet extends FATServlet {
 
     /**
      * When sort criteria is specified statically via the Query annotation and
-     * dynamically via Sorts from keyset pagination, the static sort criteria is applied
-     * before the dynamic sort criteria.
+     * dynamically via Sorts from cursor-based pagination, the static sort criteria
+     * is applied before the dynamic sort criteria.
      */
     @Test
     public void testSortCriteriaOfOrderByAnnoTakesPrecedenceOverPaginationSortsOnCustomQueryUsingCursorPagination() {
@@ -4605,11 +4612,11 @@ public class DataTestServlet extends FATServlet {
 
     /**
      * When sort criteria is specified statically via the OrderBy keyword and
-     * dynamically via Sorts from keyset pagination, the static sort criteria is applied
-     * before the dynamic sort criteria.
+     * dynamically via Sorts from cursor-based pagination, the static sort criteria
+     * is applied before the dynamic sort criteria.
      */
     @Test
-    public void testSortCriteriaOfOrderByKeywordTakesPrecedenceOverKeysetPaginationSorts() {
+    public void testSortCriteriaOfOrderByKeywordTakesPrecedenceOverCursorPaginationSorts() {
 
         PageRequest pagination = PageRequest.ofSize(6).withoutTotal();
         CursoredPage<Prime> page1 = primes.findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(52L, pagination,
@@ -4894,10 +4901,11 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Obtain total counts of number of elements and pages when keyset pagination is used.
+     * Obtain total counts of number of elements and pages when cursor-based
+     * pagination is used.
      */
     @Test
-    public void testTotalCountsWithKeysetPagination() {
+    public void testTotalCountsWithCursorPagination() {
         CursoredPage<Prime> page3 = primes.findByNumberIdBetween(3L, 50L, PageRequest.ofPage(3)
                         .size(5)
                         .beforeCursor(Cursor.forKey(47L)));
@@ -4927,7 +4935,7 @@ public class DataTestServlet extends FATServlet {
         // In this case, the 14 elements are across 4 pages, not 3,
         // because the first and last pages ended up being partial.
         // But that doesn't become known until the first or last page is read.
-        // This is one of many reasons why keyset pagination documents that
+        // This is one of many reasons why CursoredPage documents that
         // page counts are inaccurate and cannot be relied upon.
         assertEquals(3L, page4.totalPages());
         assertEquals(14L, page4.totalElements());

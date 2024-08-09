@@ -36,6 +36,7 @@ import io.openliberty.microprofile.telemetry.internal.tests.JaegerSecureOtlpTest
 import io.openliberty.microprofile.telemetry.internal.tests.TracingNotEnabledTest;
 import io.openliberty.microprofile.telemetry.internal.tests.ZipkinOtelCollectorTest;
 import io.openliberty.microprofile.telemetry.internal.tests.ZipkinTest;
+import io.openliberty.microprofile.telemetry.internal.tests.MetricsOtelCollectorTest;
 import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @RunWith(Suite.class)
@@ -54,6 +55,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
                 JaegerOtelCollectorTest.class,
                 JaegerLegacyTest.class,
                 TracingNotEnabledTest.class,
+                MetricsOtelCollectorTest.class,
                 ZipkinOtelCollectorTest.class, 
                 ZipkinTest.class,
 

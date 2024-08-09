@@ -839,10 +839,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             }
 
                             if (pagination == null || pagination.mode() == PageRequest.Mode.OFFSET) {
-                                queryInfo = queryInfo.withJPQL(q.append(order).toString(), sortList); // offset pagination can be a starting point for keyset pagination
+                                // offset pagination can be a starting point for cursor pagination
+                                queryInfo = queryInfo.withJPQL(q.append(order).toString(), sortList);
                             } else { // CURSOR_NEXT or CURSOR_PREVIOUS
                                 queryInfo = queryInfo.withJPQL(null, sortList);
-                                queryInfo.generateKeysetQueries(q, forward ? order : null, forward ? null : order);
+                                queryInfo.generateCursorQueries(q, forward ? order : null, forward ? null : order);
                             }
                         }
 
@@ -853,7 +854,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         Class<?> multiType = queryInfo.multiType;
 
                         if (CursoredPage.class.equals(multiType)) {
-                            returnValue = new CursoredPageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
+                            returnValue = new CursoredPageImpl<>(queryInfo, pagination, args);
                         } else if (Page.class.equals(multiType)) {
                             returnValue = new PageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
                         } else if (pagination != null && !PageRequest.Mode.OFFSET.equals(pagination.mode())) {
@@ -948,7 +949,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                     value = accessor instanceof Method ? ((Method) accessor).invoke(value) : ((Field) accessor).get(value);
                                             } else if (!entityInfo.idType.isInstance(value)) {
                                                 value = to(entityInfo.idType, result, false);
-                                                if (value == result) // unable to convert value
+                                                if (value == result) // unable to convert value - this should be unreachable since we validated the return type when we constructed the select query
                                                     throw new MappingException("Results for find-and-delete repository queries must be the entity class (" +
                                                                                (entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName() +
                                                                                ") or the id class (" + entityInfo.idType +

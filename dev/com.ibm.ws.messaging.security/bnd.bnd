@@ -29,7 +29,9 @@ Private-Package:\
  com.ibm.ws.messaging.security.authentication.actions,\
  com.ibm.ws.messaging.security.utility
 
--dsannotations: com.ibm.ws.messaging.security.internal.MessagingSecurityServiceImpl
+-dsannotations: \
+ com.ibm.ws.messaging.security.internal.MessagingSecurityServiceImpl,\
+ com.ibm.ws.messaging.security.internal.LTPACondition
 
 instrument.disabled: true
 
@@ -47,4 +49,5 @@ instrument.disabled: true
 	com.ibm.ws.messaging.security.common;version=latest,\
 	com.ibm.ws.security.registry;version=latest,\
 	com.ibm.ws.security.token.ltpa;version=latest,\
-	com.ibm.ws.messaging.comms.client;version=latest
+	com.ibm.ws.messaging.comms.client;version=latest,\
+	com.ibm.ws.kernel.boot.common;version=latest

@@ -23,7 +23,7 @@ import jakarta.data.repository.Save;
 
 /**
  * A repository that uses a DataSourceDefinition that is defined in
- * both servlets, each with a different database user.
+ * a servlet, but may be accessed from servlets in multiple WAR modules.
  */
 @Repository(dataStore = "java:app/jdbc/DataSourceDef")
 public interface DSDRepo {

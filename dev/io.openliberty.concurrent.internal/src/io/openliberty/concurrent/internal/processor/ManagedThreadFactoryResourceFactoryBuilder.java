@@ -30,6 +30,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -41,6 +42,7 @@ import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
+import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 
 @Component(service = ResourceFactoryBuilder.class,
@@ -162,6 +164,17 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
         if (qualifiers != null && qualifiers.length > 0) {
             qualifierNames = Arrays.asList(qualifiers);
             threadFactoryProps.put("qualifiers", qualifierNames);
+        }
+
+        // virtual threads are only available in Concurrency 3.1+ and Java 21+
+        if (Boolean.TRUE.equals(threadFactoryProps.get("virtual")) &&
+            JavaInfo.majorVersion() < 21) {
+            threadFactoryProps.put("virtual", Boolean.FALSE);
+            Tr.info(tc, "CWWKC1217.no.virtual.threads",
+                    jndiName,
+                    ManagedThreadFactory.class.getSimpleName(),
+                    declaringMetadata.getName(),
+                    JavaInfo.majorVersion());
         }
 
         String managedThreadFactoryID = getManagedThreadFactoryID(application, module, component, jndiName);

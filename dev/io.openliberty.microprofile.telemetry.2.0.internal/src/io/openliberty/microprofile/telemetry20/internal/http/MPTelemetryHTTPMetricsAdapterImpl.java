@@ -92,10 +92,9 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
         attributesBuilder.put(HTTP_REQUEST_METHOD, httpStatAttributes.getRequestMethod());
         attributesBuilder.put(URL_SCHEME, httpStatAttributes.getScheme());
 
-        Long status = Long.valueOf(httpStatAttributes.getResponseStatus().orElse(-1));
-        attributesBuilder.put(HTTP_RESPONSE_STATUS_CODE, status);
+        httpStatAttributes.getResponseStatus().ifPresent(status -> attributesBuilder.put(HTTP_RESPONSE_STATUS_CODE, Long.valueOf(status)));
 
-        attributesBuilder.put(HTTP_ROUTE, httpStatAttributes.getHttpRoute().orElse(""));
+        httpStatAttributes.getHttpRoute().ifPresent(route -> attributesBuilder.put(HTTP_ROUTE, route));
 
         attributesBuilder.put(NETWORK_PROTOCOL_NAME, httpStatAttributes.getNetworkProtocolName());
         attributesBuilder.put(NETWORK_PROTOCOL_VERSION, httpStatAttributes.getNetworkProtocolVersion());
@@ -103,9 +102,7 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
         attributesBuilder.put(SERVER_ADDRESS, httpStatAttributes.getServerName());
         attributesBuilder.put(SERVER_PORT, Long.valueOf(httpStatAttributes.getServerPort()));
 
-        if (httpStatAttributes.getErrorType().isPresent()) {
-            attributesBuilder.put(ERROR_TYPE, httpStatAttributes.getErrorType().get());
-        }
+        httpStatAttributes.getErrorType().ifPresent(error -> attributesBuilder.put(ERROR_TYPE, error));
 
         return attributesBuilder.build();
     }

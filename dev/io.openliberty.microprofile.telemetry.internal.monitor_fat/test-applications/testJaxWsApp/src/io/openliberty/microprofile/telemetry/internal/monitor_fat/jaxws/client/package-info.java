@@ -11,5 +11,5 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-@jakarta.xml.bind.annotation.XmlSchema(namespace = "http://jaxws.monitor_fat.internal.telemetry.microprofile.openliberty.io/")
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://jaxws.monitor_fat.internal.telemetry.microprofile.openliberty.io/")
 package io.openliberty.microprofile.telemetry.internal.monitor_fat.jaxws.client;

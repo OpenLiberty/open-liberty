@@ -47,6 +47,20 @@ public class TestConstants {
     public static final String ENV_OTEL_EXPORTER_ZIPKIN_ENDPOINT = "OTEL_EXPORTER_ZIPKIN_ENDPOINT";
 
     /**
+     * Environment variable to set the metrics exporter
+     */
+    public static final String ENV_OTEL_METRICS_EXPORTER = "OTEL_METRICS_EXPORTER";
+
+    /**
+     * Environment variable to set the logs exporter
+     */
+    public static final String ENV_OTEL_LOGS_EXPORTER = "OTEL_LOGS_EXPORTER";
+
+    /**
+     * Environment variable to set the time interval to send metrics to the exporter
+     */
+    public static final String ENV_OTEL_METRIC_EXPORT_INTERVAL = "OTEL_METRIC_EXPORT_INTERVAL";
+    /**
      * Environment variable to set the maximum time to wait before sending a batch of traces to the trace server
      */
     public static final String ENV_OTEL_BSP_SCHEDULE_DELAY = "OTEL_BSP_SCHEDULE_DELAY";

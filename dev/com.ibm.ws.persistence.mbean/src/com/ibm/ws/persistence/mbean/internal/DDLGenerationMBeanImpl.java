@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,8 +18,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -49,24 +51,22 @@ import com.ibm.wsspi.kernel.service.utils.PathUtils;
 import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
 import com.ibm.wsspi.logging.TextFileOutputStreamFactory;
 import com.ibm.wsspi.persistence.DDLGenerationParticipant;
+import com.ibm.wsspi.persistence.DDLGenerationWriter;
 
-@Component(service = { DDLGenerationMBean.class, DynamicMBean.class },
-                immediate = true,
-                property = { "service.vendor=IBM",
-                            "jmx.objectname=" + DDLGenerationMBean.OBJECT_NAME })
+@Component(service = { DDLGenerationMBean.class, DynamicMBean.class }, immediate = true, property = { "service.vendor=IBM",
+                                                                                                      "jmx.objectname=" + DDLGenerationMBean.OBJECT_NAME })
 public class DDLGenerationMBeanImpl extends StandardMBean implements DDLGenerationMBean {
     private static final String OUTPUT_DIR = WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR + "ddl" + File.separator;
 
     private static final String KEY_GENERATOR = "generator";
 
-    private final ConcurrentServiceReferenceSet<DDLGenerationParticipant> generators = new ConcurrentServiceReferenceSet<DDLGenerationParticipant>(
-                    KEY_GENERATOR);
+    private final ConcurrentServiceReferenceSet<DDLGenerationParticipant> generators = new ConcurrentServiceReferenceSet<DDLGenerationParticipant>(KEY_GENERATOR);
 
     private final AtomicReference<WsLocationAdmin> locationService = new AtomicReference<WsLocationAdmin>();
 
     /**
      * Service constructor. Invokes super() for StandardMBean.
-     * 
+     *
      * @throws NotCompliantMBeanException
      */
     public DDLGenerationMBeanImpl() throws NotCompliantMBeanException {
@@ -119,7 +119,7 @@ public class DDLGenerationMBeanImpl extends StandardMBean implements DDLGenerati
             ddlOutputDirectory.create();
         }
 
-        // Try to put the canonical path to the DDL output directory in the results.  
+        // Try to put the canonical path to the DDL output directory in the results.
         // If we can't, then put the symbolic name.
         try {
             returnMap.put(OUTPUT_DIRECTORY, ddlOutputDirectory.asFile().getCanonicalPath());
@@ -129,7 +129,7 @@ public class DDLGenerationMBeanImpl extends StandardMBean implements DDLGenerati
         boolean success = true;
         int fileCount = 0;
 
-        Map<String, DDLGenerationParticipant> participants = new HashMap<String, DDLGenerationParticipant>();
+        Map<String, List<DDLGenerationParticipant>> participants = new HashMap<String, List<DDLGenerationParticipant>>();
         Iterator<ServiceAndServiceReferencePair<DDLGenerationParticipant>> i = generators.getServicesWithReferences();
         while (i.hasNext()) {
             // We'll request the DDL be written to a file whose name is chosen by the component providing the service.
@@ -145,12 +145,18 @@ public class DDLGenerationMBeanImpl extends StandardMBean implements DDLGenerati
                 throw new IllegalArgumentException("Service " + generator.toString() + " DDL file name: " + rawId);
             }
 
-            participants.put(id, generator);
+            // Support multiple participants choosing the same file name
+            List<DDLGenerationParticipant> participantList = participants.get(id);
+            if (participantList == null) {
+                participantList = new ArrayList<DDLGenerationParticipant>();
+                participants.put(id, participantList);
+            }
+            participantList.add(generator);
         }
 
-        for (Map.Entry<String, DDLGenerationParticipant> entry : participants.entrySet()) {
+        for (Map.Entry<String, List<DDLGenerationParticipant>> entry : participants.entrySet()) {
             String id = entry.getKey();
-            DDLGenerationParticipant participant = entry.getValue();
+            List<DDLGenerationParticipant> participantList = entry.getValue();
 
             // The path to the file is in the server's output directory.
             WsResource ddlOutputResource = locationService.get().resolveResource(OUTPUT_DIR + id + ".ddl");
@@ -169,19 +175,24 @@ public class DDLGenerationMBeanImpl extends StandardMBean implements DDLGenerati
             // does not appear to honor 'UTF-8' as an encoding, even though iconv
             // supports it.  The data on the disk will be correct in any case, the
             // customer may need to FTP it to a distributed machine, or use iconv,
-            // to be able to view the data.
+            // to be able to view the data. Also, the special DDL writer is used to
+            // prevent the JPA provider from closing the stream, which then allows
+            // multiple participants to write to the same stream and the addition
+            // of an exit command at the end before finally closing the stream.
             try {
                 TextFileOutputStreamFactory f = TrConfigurator.getFileOutputStreamFactory();
                 OutputStream os = f.createOutputStream(ddlOutputResource.asFile(), false);
                 BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                participant.generate(bw);
+                DDLGenerationWriter out = new DDLGenerationWriter(bw);
+                for (DDLGenerationParticipant participant : participantList) {
+                    participant.generate(out);
+                }
 
-                // The JPA code may close the stream for us.  Just make sure it's
-                // closed so that we flush any data out.
-                bw.close();
+                // Flush out an exit command if required and close the stream.
+                out.writeExitAndClose();
                 fileCount++;
             } catch (Throwable t) {
-                // We'll get an FFDC here... indicate that we had trouble. 
+                // We'll get an FFDC here... indicate that we had trouble.
                 success = false;
             }
         }

@@ -7,5 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-@com.ibm.websphere.ras.annotation.TraceOptions(traceGroup = "TELEMETRY")
+@TraceOptions(traceGroup = "TELEMETRY", messageBundle = "io.openliberty.microprofile.telemetry.internal.common.resources.MPTelemetry")
 package io.openliberty.microprofile.telemetry20.internal.connpool;
+
+import com.ibm.websphere.ras.annotation.TraceOptions;

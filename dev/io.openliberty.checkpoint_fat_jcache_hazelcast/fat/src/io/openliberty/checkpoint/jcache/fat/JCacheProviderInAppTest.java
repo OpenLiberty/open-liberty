@@ -12,9 +12,15 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.jcache.fat;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonMap;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+import java.io.PrintWriter;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.http.HttpStatus;
@@ -41,6 +47,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 
 /**
  * This test will test a JCache provider being used directly from an application.
@@ -78,6 +86,8 @@ public class JCacheProviderInAppTest extends BaseTestCase {
         if (JakartaEEAction.isEE9OrLaterActive()) {
             JakartaEEAction.transformApp(Paths.get(server1.getServerRoot() + "/apps/providerinapp.war"));
         }
+
+        TestPluginHelper.getTestPlugin().setupServer1(server1, groupName, null, null);
     }
 
     @After
@@ -92,7 +102,8 @@ public class JCacheProviderInAppTest extends BaseTestCase {
             /*
              * SESN0306E, CWWKE1102W and CWWKE1107W - Occur due to session cache invalidation reaper not shutting down during server shutdown.
              */
-            stopServer(server1, "SRVE0777E", "SESN0306E", "CWWKE1102W", "CWWKE1107W");
+            stopServer(server1, "SRVE0777E", "SESN0306E", "CWWKE1102W", "CWWKE1107W", "SESN0312W");
+            configureEnvVariable(server1, emptyMap());
         }
     }
 
@@ -107,7 +118,21 @@ public class JCacheProviderInAppTest extends BaseTestCase {
     public void providerInApp_default() throws Exception {
         final String METHOD_NAME = "providerInApp_default";
 
-        startServer1(server1, groupName, null, null);
+        server1.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
+        server1.startServer();
+        // Pass the uri_location as an environment variable after checkpoint
+        configureEnvVariable(server1, singletonMap("uri_location", "file:${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"));
+        server1.checkpointRestore();
+        /*
+         * Wait for each server to finish startup.
+         */
+        assertNotNull("Security service did not come up",
+                      server1.waitForStringInLog("CWWKS0008I")); // CWWKS0008I: The security service is ready.
+        assertNotNull("FeatureManager did not report update was complete",
+                      server1.waitForStringInLog("CWWKF0008I")); // CWWKF0008I: Feature update completed
+        assertNotNull("Server did not came up",
+                      server1.waitForStringInLog("CWWKF0011I")); // CWWKF0011I: The server is ready to run a smarter planet.
+
         waitForDefaultHttpsEndpoint(server1);
         waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
 
@@ -124,6 +149,15 @@ public class JCacheProviderInAppTest extends BaseTestCase {
         }
     }
 
+    static void configureEnvVariable(LibertyServer server, Map<String, String> newEnv) throws Exception {
+        File serverEnvFile = new File(server.getFileFromLibertyServerRoot("server.env").getAbsolutePath());
+        try (PrintWriter out = new PrintWriter(serverEnvFile)) {
+            for (Map.Entry<String, String> entry : newEnv.entrySet()) {
+                out.println(entry.getKey() + "=" + entry.getValue());
+            }
+        }
+    }
+
     /**
      * Test the JCache provider from within an application (which doesn't use our internal JCache services). We also
      * will be enabling the sessionCache feature to force use of both the gateway and core jcache bundles.
@@ -136,7 +170,6 @@ public class JCacheProviderInAppTest extends BaseTestCase {
                    "com.ibm.websphere.objectgrid.TransactionException" })
     public void providerInApp_sessioncache() throws Exception {
         final String METHOD_NAME = "providerInApp_sessioncache";
-
         /*
          * Configure the server to use sessionCache-1.0. This will use both the core and gateway jcache bundles.
          */
@@ -147,7 +180,21 @@ public class JCacheProviderInAppTest extends BaseTestCase {
         config.getHttpSessionCaches().add(sessionCache);
         server1.updateServerConfiguration(config);
 
-        startServer1(server1, groupName, null, null);
+        server1.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
+        server1.startServer();
+        // Pass the uri_location as an environment variable after checkpoint
+        configureEnvVariable(server1, singletonMap("uri_location", "file:${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"));
+        server1.checkpointRestore();
+        /*
+         * Wait for each server to finish startup.
+         */
+        assertNotNull("Security service did not come up",
+                      server1.waitForStringInLog("CWWKS0008I")); // CWWKS0008I: The security service is ready.
+        assertNotNull("FeatureManager did not report update was complete",
+                      server1.waitForStringInLog("CWWKF0008I")); // CWWKF0008I: Feature update completed
+        assertNotNull("Server did not came up",
+                      server1.waitForStringInLog("CWWKF0011I")); // CWWKF0011I: The server is ready to run a smarter planet.
+
         waitForDefaultHttpsEndpoint(server1);
         waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
 

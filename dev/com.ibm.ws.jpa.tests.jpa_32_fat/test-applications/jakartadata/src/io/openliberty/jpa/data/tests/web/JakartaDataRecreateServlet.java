@@ -951,7 +951,10 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @SkipIfSysProp(DB_DB2) //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28289
+    @SkipIfSysProp({
+                     DB_DB2, //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28289
+                     DB_Oracle //Also fails: https://github.com/OpenLiberty/open-liberty/issues/28545
+    })
     public void testOLGH28289() throws Exception {
         deleteAllEntities(Package.class);
 

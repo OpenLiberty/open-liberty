@@ -26,6 +26,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
+import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -72,6 +73,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
+import com.ibm.wsspi.persistence.DDLGenerationParticipant;
 import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.persistence.InMemoryMappingFile;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
@@ -81,6 +83,7 @@ import com.ibm.wsspi.resource.ResourceFactory;
 import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.EntityInfo;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
+import io.openliberty.data.internal.persistence.QueryInfo;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.Convert;
@@ -93,7 +96,7 @@ import jakarta.persistence.Table;
  * or a dataStore id is configured as the repository dataStore.
  * It creates entity managers from a PersistenceServiceUnit from the persistence service.
  */
-public class DBStoreEMBuilder extends EntityManagerBuilder {
+public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerationParticipant {
     static final String EOLN = String.format("%n");
     private static final long MAX_WAIT_FOR_SERVICE_NS = TimeUnit.SECONDS.toNanos(60);
     private static final TraceComponent tc = Tr.register(DBStoreEMBuilder.class);
@@ -366,7 +369,6 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
 
             Set<Class<?>> embeddableTypes = new HashSet<>();
             for (Class<?> type; (type = embeddableTypesQueue.poll()) != null;)
-                // TODO what if the embeddable type is a record?
                 if (embeddableTypes.add(type)) { // only write each type once
                     StringBuilder xml = new StringBuilder(500).append(" <embeddable class=\"").append(type.getName()).append("\">").append(EOLN);
                     writeAttributes(xml, type, true, embeddableTypesQueue);
@@ -413,6 +415,17 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
                                                                           entityClassNames.toArray(new String[entityClassNames.size()]));
 
             collectEntityInfo(entityTypes);
+
+            // Register as a DDL generator for use by the ddlGen command and add to list for cleanup on application stop
+            BundleContext thisbc = FrameworkUtil.getBundle(getClass()).getBundleContext();
+            ServiceRegistration<DDLGenerationParticipant> ddlgenreg = thisbc.registerService(DDLGenerationParticipant.class, this, null);
+            Queue<ServiceRegistration<DDLGenerationParticipant>> ddlgenRegistrations = provider.ddlgeneratorsAllApps.get(application);
+            if (ddlgenRegistrations == null) {
+                Queue<ServiceRegistration<DDLGenerationParticipant>> empty = new ConcurrentLinkedQueue<>();
+                if ((ddlgenRegistrations = provider.ddlgeneratorsAllApps.putIfAbsent(application, empty)) == null)
+                    ddlgenRegistrations = empty;
+            }
+            ddlgenRegistrations.add(ddlgenreg);
 
         } catch (RuntimeException x) {
             for (Class<?> entityClass : entityTypes)
@@ -727,7 +740,8 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
      * Write attributes for the specified entity or embeddable to XML.
      *
      * @param xml                  XML for defining the entity attributes
-     * @param c                    entity class
+     * @param c                    entity class (never a record), or
+     *                                 embeddable class (can be a record)
      * @param isEmbeddable         indicates if the class is an embeddable type rather than an entity.
      * @param embeddableTypesQueue queue of embeddable types. This method adds to the queue when an embeddable type is found.
      */
@@ -736,60 +750,77 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
         // Identify attributes
         SortedMap<String, Class<?>> attributes = new TreeMap<>();
 
-        // TODO cover records once compiling against Java 17
+        if (isEmbeddable && c.isRecord()) {
+            for (RecordComponent r : c.getRecordComponents())
+                attributes.putIfAbsent(r.getName(), r.getType());
+        } else {
+            for (Field f : c.getFields())
+                attributes.putIfAbsent(f.getName(), f.getType());
 
-        for (Field f : c.getFields())
-            attributes.putIfAbsent(f.getName(), f.getType());
-
-        try {
-            PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(c).getPropertyDescriptors();
-            if (propertyDescriptors != null)
-                for (PropertyDescriptor p : propertyDescriptors) {
-                    Method setter = p.getWriteMethod();
-                    if (setter != null)
-                        attributes.putIfAbsent(p.getName(), p.getPropertyType());
-                }
-        } catch (IntrospectionException x) {
-            throw new MappingException(x);
+            try {
+                PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(c).getPropertyDescriptors();
+                if (propertyDescriptors != null)
+                    for (PropertyDescriptor p : propertyDescriptors) {
+                        Method setter = p.getWriteMethod();
+                        if (setter != null)
+                            attributes.putIfAbsent(p.getName(), p.getPropertyType());
+                    }
+            } catch (IntrospectionException x) {
+                throw new MappingException(x);
+            }
         }
 
         String keyAttributeName = null;
+        String versionAttributeName = null;
         if (!isEmbeddable) {
-            // Determine which attribute is the id.
-            // Precedence is:
-            // (1) has name of Id, or ID, or id.
-            // (2) name ends with Id.
-            // (3) name ends with ID.
+            // Determine which attribute is the id and version (optional).
+            // Id precedence:
+            // (1) name is id, ignoring case.
+            // (2) name ends with _id, ignoring case.
+            // (3) name ends with Id or ID.
             // (4) type is UUID.
-            // (5) name ends with id.
-            int precedence = 10;
+            // Version precedence (if also a valid version type):
+            // (1) name is version, ignoring case.
+            // (2) name is _version, ignoring case.
+            int idPrecedence = 10;
+            int vPrecedence = 10;
             for (Map.Entry<String, Class<?>> attribute : attributes.entrySet()) {
                 String name = attribute.getKey();
-                Class<?> type = attribute.getValue(); // TODO compare type against the repository key type if defined
-                if (name.length() > 2) {
-                    if (precedence > 2) {
-                        char i = name.charAt(name.length() - 2);
-                        if (i == 'I') {
-                            char d = name.charAt(name.length() - 1);
-                            if (d == 'd') {
-                                keyAttributeName = name;
-                                precedence = 2;
-                            } else if (d == 'D' && precedence > 3) {
-                                keyAttributeName = name;
-                                precedence = 3;
-                            }
-                        } else if (i == 'i' && precedence > 5 && name.charAt(name.length() - 1) == 'd') {
-                            keyAttributeName = name;
-                            precedence = 5;
-                        }
+                Class<?> type = attribute.getValue();
+                int len = name.length();
+
+                if (idPrecedence > 1 &&
+                    len >= 2 &&
+                    name.regionMatches(true, len - 2, "id", 0, 2)) {
+                    if (name.length() == 2) {
+                        keyAttributeName = name;
+                        idPrecedence = 1;
+                    } else if (idPrecedence > 2 &&
+                               name.charAt(len - 3) == '_') {
+                        keyAttributeName = name;
+                        idPrecedence = 2;
+                    } else if (idPrecedence > 3 &&
+                               name.charAt(len - 2) == 'I') {
+                        keyAttributeName = name;
+                        idPrecedence = 3;
                     }
-                } else if (name.equalsIgnoreCase("ID")) {
+                } else if (idPrecedence > 4 && UUID.class.equals(type)) {
                     keyAttributeName = name;
-                    precedence = 1;
-                    break;
-                } else if (precedence > 4 && UUID.class.equals(type)) {
-                    keyAttributeName = name;
-                    precedence = 4;
+                    idPrecedence = 4;
+                }
+
+                if (vPrecedence > 1 &&
+                    len == 7 &&
+                    QueryInfo.VERSION_TYPES.contains(type) &&
+                    "version".equalsIgnoreCase(name)) {
+                    versionAttributeName = name;
+                    vPrecedence = 1;
+                } else if (vPrecedence > 2 &&
+                           len == 8 &&
+                           QueryInfo.VERSION_TYPES.contains(type) &&
+                           "_version".equalsIgnoreCase(name)) {
+                    versionAttributeName = name;
+                    vPrecedence = 2;
                 }
             }
 
@@ -806,15 +837,16 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
             Class<?> attributeType = attributeInfo.getValue();
             boolean isCollection = Collection.class.isAssignableFrom(attributeType);
             boolean isPrimitive = attributeType.isPrimitive();
+            boolean isId = attributeName.equals(keyAttributeName);
 
             String columnType;
             if (isPrimitive || attributeType.isInterface() || Serializable.class.isAssignableFrom(attributeType)) {
-                columnType = keyAttributeName != null && keyAttributeName.equalsIgnoreCase(attributeName) ? "id" : //
-                                "version".equalsIgnoreCase(attributeName) ? "version" : //
-                                                isCollection ? "element-collection" : // TODO add fetch-type eager
+                columnType = isId ? "id" : //
+                                isCollection ? "element-collection" : // TODO add fetch-type eager
+                                                attributeName.equals(versionAttributeName) ? "version" : //
                                                                 "basic";
             } else {
-                columnType = "embedded";
+                columnType = isId ? "embedded-id" : "embedded";
                 embeddableTypesQueue.add(attributeType);
             }
 
@@ -835,5 +867,24 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
         }
 
         xml.append("  </attributes>").append(EOLN);
+    }
+
+    /**
+     * Generates DDL from the PersistenceServiceUnit obtained from the Persistence Service
+     * for creating EntityManagers, and writes it out.
+     *
+     * @param out a Writer where DDL will be written
+     */
+    @Override
+    public void generate(Writer out) throws Exception {
+        if (persistenceServiceUnit == null) {
+            throw new IllegalStateException("PersistenceUnit has not benn initialized.");
+        }
+        persistenceServiceUnit.generateDDL(out);
+    }
+
+    @Override
+    public String getDDLFileName() {
+        return databaseStoreId + "_repository";
     }
 }

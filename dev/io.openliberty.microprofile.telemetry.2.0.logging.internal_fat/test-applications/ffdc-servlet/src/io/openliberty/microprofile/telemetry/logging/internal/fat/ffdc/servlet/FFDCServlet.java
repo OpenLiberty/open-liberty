@@ -30,8 +30,7 @@ public class FFDCServlet extends HttpServlet {
         String generateFFDC = request.getParameter("generateFFDC");
 
         if ((generateFFDC != null) && (generateFFDC.equalsIgnoreCase("true"))) {
-            // Divide by zero, to get an ArithmeticException, which will generate an FFDC
-            int i = 10 / 0;
+            throw new ArithmeticException("FFDC_TEST_DOGET");
         }
     }
 }

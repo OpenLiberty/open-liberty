@@ -23,6 +23,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.propertytypes.SatisfyingConditionTarget;
+import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -35,12 +37,15 @@ import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.Handler;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
+import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
 import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
 import io.opentelemetry.api.logs.LogRecordBuilder;
 
 @Component(name = OpenTelemetryLogHandler.COMPONENT_NAME, service = { Handler.class }, configurationPolicy = ConfigurationPolicy.OPTIONAL, property = { "service.vendor=IBM" })
+@SatisfyingConditionTarget("(" + Condition.CONDITION_ID + "=" + CheckpointPhase.CONDITION_PROCESS_RUNNING_ID + ")")
 public class OpenTelemetryLogHandler implements SynchronousHandler {
 
     private static final TraceComponent tc = Tr.register(OpenTelemetryLogHandler.class, "TELEMETRY", "io.openliberty.microprofile.telemetry.internal.common.resources.MPTelemetry");
@@ -148,7 +153,7 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
         // Get the Liberty event type
         String eventType = MpTelemetryLogMappingUtils.getLibertyEventType(source);
 
-        // Map the Liberty event to the Open Telemetry Logs Data Model
+        // Map the Liberty event to the OpenTelemetry Logs Data Model
         MpTelemetryLogMappingUtils.mapLibertyEventToOpenTelemetry(builder, eventType, event);
     }
 
@@ -156,6 +161,7 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
     @Override
     public void synchronousWrite(Object event) {
         OpenTelemetryInfo otelInstance = null;
+
         if (OpenTelemetryAccessor.isRuntimeEnabled()) {
             // Runtime OpenTelemetry instance
             otelInstance = this.runtimeOtelInfo;
@@ -184,6 +190,16 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
                     return;
                 }
 
+                // Check to see if the OpenTelemetry agent is active and if the received event is a Tr event or not.
+                if (AgentDetection.isAgentActive() && !isTrEvent(event)) {
+                    // If the agent and the event is NOT from Tr (mostly using JUL or another logging framework),
+                    // skip the mapping, since we do not want duplicate JUL messages/traces, from the agent and OpenLiberty.
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Agent is active, and received event is NOT logged by Tr.", event.toString());
+                    }
+                    return;
+                }
+
                 // Get the LogRecordBuilder from the OpenTelemetry Logs Bridge API.
                 LogRecordBuilder builder = otelInstance.getOpenTelemetry().getLogsBridge().loggerBuilder(OpenTelemetryConstants.INSTRUMENTATION_NAME).build().logRecordBuilder();
 
@@ -196,7 +212,6 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
                 }
             }
         }
-
     }
 
     /*
@@ -213,6 +228,22 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
         }
         isOTelMappedEvent = eventMsg.contains(MpTelemetryLogFieldConstants.OTEL_SCOPE_INFO);
         return isOTelMappedEvent;
+    }
+
+    /**
+     * Check to see if the received event is logged using Tr or not.
+     *
+     * @param event
+     * @return isTrEvent Returns if the event is logged using Tr or not.
+     */
+    private boolean isTrEvent(Object event) {
+        // Mostly all events will be using Tr, hence the default will be true.
+        boolean isTrEvent = true;
+        // Check if the Log or Trace Event is logged using Tr or not.
+        if (event instanceof LogTraceData) {
+            isTrEvent = ((LogTraceData) event).isTr();
+        }
+        return isTrEvent;
     }
 
     /*
