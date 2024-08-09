@@ -2513,18 +2513,6 @@
         </output>
     </case>
     <case>
-        <name>customTaiSample2-1.0</name>
-        <description>Singleton [ customTaiSample2-1.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>customTaiSample2-1.0</root>
-        </input>
-        <output>
-            <resolved-feature>customTaiSample2-1.0</resolved-feature>
-        </output>
-    </case>
-    <case>
         <name>com.ibm.websphere.appserver.mpContextPropagation-1.0</name>
         <description>Singleton [ com.ibm.websphere.appserver.mpContextPropagation-1.0 ]</description>
         <input>
@@ -4842,18 +4830,6 @@
             <resolved-feature>com.ibm.websphere.appserver.javax.cdi-2.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.jsonbImpl-1.0.0</resolved-feature>
             <resolved-feature>jsonbContainer-1.0</resolved-feature>
-        </output>
-    </case>
-    <case>
-        <name>customRegistrySample-1.0</name>
-        <description>Singleton [ customRegistrySample-1.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>customRegistrySample-1.0</root>
-        </input>
-        <output>
-            <resolved-feature>customRegistrySample-1.0</resolved-feature>
         </output>
     </case>
     <case>
@@ -15279,18 +15255,6 @@
         </input>
         <output>
             <resolved-feature>noShip-1.0</resolved-feature>
-        </output>
-    </case>
-    <case>
-        <name>customTaiSample-1.0</name>
-        <description>Singleton [ customTaiSample-1.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>customTaiSample-1.0</root>
-        </input>
-        <output>
-            <resolved-feature>customTaiSample-1.0</resolved-feature>
         </output>
     </case>
     <case>
