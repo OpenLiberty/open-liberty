@@ -114,6 +114,9 @@ public class WSATParticipant extends WSATEndpoint implements Serializable {
         // Wait forever if timeout <= 0
         if (timeoutMills <= 0) {
             while (!responseList.contains(state)) {
+                if (TC.isDebugEnabled()) {
+                    Tr.debug(TC, "Waiting 1 second for state [" + state + "] to be one of " + Arrays.toString(responses));
+                }
                 try {
                     wait(1000);
                 } catch (InterruptedException e) {
@@ -122,8 +125,16 @@ public class WSATParticipant extends WSATEndpoint implements Serializable {
         } else {
             final Instant expiry = Instant.now().plusMillis(timeoutMills);
             while (Instant.now().compareTo(expiry) < 0 && !responseList.contains(state)) {
+                final long waitTime = expiry.minusMillis(Instant.now().toEpochMilli()).toEpochMilli();
+                if (TC.isDebugEnabled()) {
+                    Tr.debug(TC, "Waiting " + waitTime + " milliseconds for state [" + state + "] to be one of " + Arrays.toString(responses));
+                }
                 try {
-                    wait(expiry.minusMillis(Instant.now().toEpochMilli()).toEpochMilli());
+                    if (waitTime > 0) {
+                        wait(waitTime);
+                    } else {
+                        break;
+                    }
                 } catch (InterruptedException e) {
                 }
             }
