@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,13 +29,14 @@ import componenttest.topology.utils.tck.TCKRunner;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 
 /**
- * This is a test class that runs the entire Jakarta Validation TCK against Full Profile.
+ * This is a test class that runs the entire Jakarta Validation TCK against Full
+ * Profile.
  *
- * The TCK results are copied in the results/junit directory before the Simplicity FAT framework
- * generates the html report - so there is detailed information on individual
- * tests as if they were running as simplicity junit FAT tests in the standard location.
+ * The TCK results are copied in the results/junit directory before the
+ * Simplicity FAT framework generates the html report - so there is detailed
+ * information on individual tests as if they were running as simplicity junit
+ * FAT tests in the standard location.
  */
-
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
 public class ValidationTckLauncher {
@@ -55,7 +56,6 @@ public class ValidationTckLauncher {
          * - validation.provider for applications to use
          */
         Map<String, String> opts = server.getJvmOptionsAsMap();
-        opts.put("-Djimage.dir", server.getServerSharedPath() + "jimage/output/");
         opts.put("-Dvalidation.provider", validationProvider);
 
         /*
@@ -77,10 +77,10 @@ public class ValidationTckLauncher {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer( //ignoring warnings due to Hibernate Validator CDI integration and annotations
-                          "CWNBV0200W",
-                          "CWNEN0047W",
-                          "CWNEN0049W",
-                          "CWNEN0048W");
+                "CWNBV0200W",
+                "CWNEN0047W",
+                "CWNEN0049W",
+                "CWNEN0048W");
 
         server.uninstallSystemFeature(validationCustomFeature);
     }
@@ -93,9 +93,10 @@ public class ValidationTckLauncher {
     public void launchValidation31TCK() throws Exception {
 
         /**
-         * The runTCKMvnCmd will set the following properties for use by arquillian
-         * [ wlp, tck_server, tck_port, tck_failSafeUndeployment, tck_appDeployTimeout, tck_appUndeployTimeout ]
-         * and then run the mvn test command.
+         * The runTCKMvnCmd will set the following properties for use by
+         * arquillian [ wlp, tck_server, tck_port, tck_failSafeUndeployment,
+         * tck_appDeployTimeout, tck_appUndeployTimeout ] and then run the mvn
+         * test command.
          */
         String bucketName = "io.openliberty.jakarta.validation.3.1_fat_tck";
         String testName = this.getClass() + ":launchValidation31TCK";
