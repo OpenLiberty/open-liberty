@@ -31,8 +31,8 @@ public class Segment {
         Segment inst = new Segment();
         inst.x1 = x1;
         inst.y1 = y1;
-        inst.x1 = x2;
-        inst.y1 = y2;
+        inst.x2 = x2;
+        inst.y2 = y2;
         return inst;
     }
 
