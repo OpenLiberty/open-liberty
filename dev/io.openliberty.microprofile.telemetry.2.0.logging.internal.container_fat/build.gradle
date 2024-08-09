@@ -9,6 +9,19 @@
  *******************************************************************************/
 
 
+configurations {
+  telemetryAgent
+}
+
+dependencies {
+  telemetryAgent 'io.opentelemetry.javaagent:opentelemetry-javaagent:2.6.0'
+}
+
+task addAgent(type: Copy) {
+  from configurations.telemetryAgent
+  into new File(autoFvtDir, 'publish/files/agent-260')
+  rename { 'opentelemetry-javaagent.jar' }
+}
 
 assemble.doLast {
     // update the generated-src dir with the new stubs that have been generated
@@ -19,3 +32,4 @@ assemble.doLast {
 }
 
 addRequiredLibraries.dependsOn copyTestContainers
+addRequiredLibraries.dependsOn addAgent

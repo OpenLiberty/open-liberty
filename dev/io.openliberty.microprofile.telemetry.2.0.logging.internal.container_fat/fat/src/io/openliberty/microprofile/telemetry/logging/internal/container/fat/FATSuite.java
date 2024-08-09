@@ -17,7 +17,9 @@ import componenttest.containers.TestContainerSuite;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                LoggingServletTest.class
+                LoggingServletTest.class,
+                JULDuplicateTest.class,
+                JULLogServletTest.class
 })
 
 public class FATSuite extends TestContainerSuite {
