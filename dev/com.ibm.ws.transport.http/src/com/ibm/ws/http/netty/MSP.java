@@ -15,7 +15,7 @@ package com.ibm.ws.http.netty;
 public final class MSP {
 
     static long counter = 0;
-    static boolean enabled = true;
+    static boolean enabled = false;
 
     public static void log(String msg) {
         if (enabled)
