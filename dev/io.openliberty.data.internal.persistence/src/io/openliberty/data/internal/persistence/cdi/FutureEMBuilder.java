@@ -214,7 +214,9 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
                         resourceName = javaCompName;
                 } catch (NamingException x) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(this, tc, javaCompName + " is not available in JNDI");
+                        Tr.debug(this, tc, javaCompName + " is not available in JNDI, ensure dataStore = "
+                                           + resourceName + " refers to a resource reference or persistence unit reference. "
+                                           + "Otherwise, we will assume this property refers to a datasource.");
                 }
             }
         } finally {

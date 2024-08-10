@@ -21,35 +21,24 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.database.container.DatabaseContainerType;
-import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import test.jakarta.data.jpa.hibernate.web.DataJPAHibernateTestServlet;
+import test.jakarta.data.jpa.hibernate.integration.web.DataJPAHibernateIntegrationTestServlet;
 
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
-@SkipIfSysProp(SkipIfSysProp.DB_Oracle) //TODO Hibernate fails to load oracle.jdbc.OracleConnection class
-public class DataJPAHibernateTest extends FATServletClient {
-    private static final String APP_NAME = "DataJPAHibernateTestApp";
+public class DataJPAHibernateIntegrationTest extends FATServletClient {
+    private static final String APP_NAME = "DataJPAHibernateIntegrationApp";
 
-    @Server("io.openliberty.data.internal.fat.jpa.hibernate")
-    @TestServlet(servlet = DataJPAHibernateTestServlet.class, contextRoot = APP_NAME)
+    @Server("io.openliberty.data.internal.fat.jpa.hibernate.integrate")
+    @TestServlet(servlet = DataJPAHibernateIntegrationTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Get driver type
-        DatabaseContainerType type = DatabaseContainerType.valueOf(FATSuite.testContainer);
-        server.addEnvVar("DB_DRIVER", type.getDriverName());
-
-        // Set up server DataSource properties
-        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, FATSuite.testContainer);
-
-        WebArchive war = ShrinkHelper.buildDefaultApp(APP_NAME, "test.jakarta.data.jpa.hibernate.web");
+        WebArchive war = ShrinkHelper.buildDefaultApp(APP_NAME, "test.jakarta.data.jpa.hibernate.integration.web");
         ShrinkHelper.exportAppToServer(server, war);
         server.startServer();
     }
