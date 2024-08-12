@@ -82,7 +82,8 @@ public class OpenTelemetryInfoFactoryImpl extends AbstractOpenTelemetryInfoFacto
     /** {@inheritDoc} */
     @Override
     protected void mergeInJVMMetrics(OpenTelemetry openTelemetry, boolean runtimeEnabled) {
-        //TODO why is this runtime only?
+        //JVM metrics are, naturally, created by the JVM and so are shared across apps.
+        //Thus we only output them in runtime mode where they will not be misleading.
         if (openTelemetry != null && runtimeEnabled && runningOnJ9OrHotspot()) {
             // Register observers for runtime metrics
             Classes.registerObservers(openTelemetry);
