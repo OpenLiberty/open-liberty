@@ -61,7 +61,7 @@ public abstract class AbstractOpenTelemetryInfoFactory implements OpenTelemetryI
 
             } else {
                 classLoader = Thread.currentThread().getContextClassLoader();
-                telemetryProperties = OpenTelemetryPropertiesReader.getTelemetryProperties();
+                telemetryProperties = OpenTelemetryPropertiesReader.getTelemetryProperties(runtimeEnabled);
             }
 
             //TODO check if "tracer provider" is accurate?

@@ -59,6 +59,15 @@ CWMOT5006.mptelemetry.using.app.mode=CWMOT5006W: Liberty is configured to create
 CWMOT5006.mptelemetry.using.app.mode.explanation In MPTelemetry 2.0 new features, such as JVM metrics, were created that require one shared instance of Open Telemetry across all applications. Because MPTelemetry is configured to have one instance per application these features will be disabled.
 CWMOT5006.mptelemetry.using.app.mode.useraction To enable runtime metrics and logs, transfer your Open Telemetry configuration properties into your system properties or environment variables.
 
+CWMOT5007.mptelemetry.conflicting.property=CWMOT5007W: The configuration property {0} is defined in both {1} and {2}. The value set in {1} will be used.
+CWMOT5007.mptelemetry.conflicting.property.explanation When a property is set in multiple places Open Telemetry uses the one with the highest priority. The order of precedence is: server.xml, System properties, environment variables, and finally microprofile-config.properties files. When Open Telemetry is configured into runtime mode server.xml and microprofile-config.properties are ignored.
+CWMOT5007.mptelemetry.conflicting.property.useraction Remove the configuration property from any redundant sources.
+
+CWMOT5008.mptelemetry.conflicting.property=CWMOT5008W: The configuration property {0} is defined in {1}. However this configuration source is not used when Open Telemetry is configured into runtime mode.
+CWMOT5008.mptelemetry.conflicting.property.explanation When Open Telemetry is configured into runtime mode microprofile-config.properties files are ignored because they are per application configuration, and configuration in server.xml is ignored because it is not part of the MicroProfile standard. 
+CWMOT5008.mptelemetry.conflicting.property.useraction Remove the configuration property from any redundant sources.
+
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
 #-----------------------------------------------------------------------------------------------------------------------------

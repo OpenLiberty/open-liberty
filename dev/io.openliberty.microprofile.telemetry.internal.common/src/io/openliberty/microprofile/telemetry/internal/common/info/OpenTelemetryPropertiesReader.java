@@ -11,7 +11,9 @@ package io.openliberty.microprofile.telemetry.internal.common.info;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -28,8 +30,29 @@ public class OpenTelemetryPropertiesReader {
 
     private static final TraceComponent tc = Tr.register(OpenTelemetryPropertiesReader.class);
 
+    private static final List<String> configSourcesIgnoredInRumtime;
+    private static final Map<String, String> configSourcesHumanReadableNames;
+
+    static {
+        // In https://github.com/eclipse/microprofile-config/blob/main/spec/src/main/asciidoc/configsources.asciidoc
+        // there is microprofile-config.properties, env variables, and system properties. We only want to ignore
+        // microprofile-config.properties (and server.xml)
+        configSourcesIgnoredInRumtime = new ArrayList<String>();
+        configSourcesIgnoredInRumtime.add("server.xml");
+        configSourcesIgnoredInRumtime.add("PropertiesConfigSource");
+
+        configSourcesHumanReadableNames = new HashMap<String, String>();
+        configSourcesHumanReadableNames.put("PropertiesConfigSource", "microprofile-config.properties");
+        configSourcesHumanReadableNames.put("server.xml.appproperties.config.source", "server.xml");
+        configSourcesHumanReadableNames.put("server.xml.variables.config.source", "server.xml");
+        configSourcesHumanReadableNames.put("server.xml.default.variables.config.source", "server.xml");
+        configSourcesHumanReadableNames.put("SysPropConfigSource", "system properties");
+        configSourcesHumanReadableNames.put("EnvConfigSource", "environment variables");
+        configSourcesHumanReadableNames.put("DefaultValuesConfigSource", "default values");
+    }
+
     //TODO document exactly how this is different from the other
-    public static HashMap<String, String> getTelemetryProperties() {
+    public static HashMap<String, String> getTelemetryProperties(boolean runtimeEnabled) {
         try {
             Config config = ConfigProvider.getConfig();
 
@@ -39,7 +62,8 @@ public class OpenTelemetryPropertiesReader {
 
             for (ConfigSource configSource : config.getConfigSources()) {
 
-                configSource.getName();
+                boolean ignoredConfigSource = runtimeEnabled && configSourcesIgnoredInRumtime.stream()
+                                                                                             .anyMatch(string -> configSource.getName().startsWith(string));
 
                 for (Entry<String, String> entry : configSource.getProperties().entrySet()) {
                     if (entry.getKey().startsWith("otel") || entry.getKey().startsWith("OTEL")) {
@@ -47,8 +71,12 @@ public class OpenTelemetryPropertiesReader {
                         config.getOptionalValue(normalizedName, String.class)
                               .ifPresent(value -> {
                                   telemetryProperties.putIfAbsent(normalizedName, value);
-                                  if (propertyLocation.containsKey(normalizedName)) {
-                                      //conflictingPropertyWarning.
+                                  if (ignoredConfigSource) {
+                                      Tr.warning(tc, "CWMOT5008.mptelemetry.conflicting.property=CWMOT5008W", entry.getKey(),
+                                                 configSourcesHumanReadableNames.get(configSource.getName()));
+                                  } else if (propertyLocation.containsKey(normalizedName)) {
+                                      Tr.warning(tc, "CWMOT5007.mptelemetry.conflicting.property", entry.getKey(),
+                                                 propertyLocation.get(normalizedName), configSourcesHumanReadableNames.get(configSource.getName()));
                                   } else {
                                       propertyLocation.put(normalizedName, configSource.getName());
                                   }

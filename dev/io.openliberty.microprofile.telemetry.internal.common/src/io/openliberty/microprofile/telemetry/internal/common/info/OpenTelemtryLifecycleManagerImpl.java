@@ -198,6 +198,11 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
 
         //Return runtime instance if it exists, otherwise return the app instance.
         if (isRuntimeEnabled) {
+
+            //These are the app mode properties, we don't use them in runtime mode. But run the method to generate
+            //warnings if needed.
+            OpenTelemetryPropertiesReader.getTelemetryProperties(isRuntimeEnabled);
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Returning {0} OTEL instance.", OpenTelemetryConstants.OTEL_RUNTIME_INSTANCE_NAME);
             }
