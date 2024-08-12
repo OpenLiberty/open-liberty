@@ -89,6 +89,10 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
         if (isRuntimeEnabled) {
             runtimeInstance = LazyInitializer.<OpenTelemetryInfo> builder().setInitializer(curryInfoFactory(isRuntimeEnabled)).get();
         }
+
+        if (telemetry2OrLater && !isRuntimeEnabled) {
+            Tr.warning(tc, "CWMOT5006.mptelemetry.using.app.mode");
+        }
     }
 
     private FailableSupplier<OpenTelemetryInfo, ? extends Exception> curryInfoFactory(final boolean runtimeEnabled) {

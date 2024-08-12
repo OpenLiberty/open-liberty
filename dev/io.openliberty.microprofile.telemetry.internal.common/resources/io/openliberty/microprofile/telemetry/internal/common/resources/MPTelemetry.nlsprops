@@ -55,6 +55,10 @@ CWMOT5005.mptelemetry.unknown.log.source=CWMOT5005W: The MicroProfile Telemetry 
 CWMOT5005.mptelemetry.unknown.log.source.explanation=The Liberty runtime environment does not provide the specified log source.
 CWMOT5005.mptelemetry.unknown.log.source.useraction=Check the configuration information and specify one of the supported sources for MicroProfile Telemetry.
 
+CWMOT5006.mptelemetry.using.app.mode=CWMOT5006W: Liberty is configured to create one instance of Open Telemetry per application. Runtime metrics and logs will not be enabled.
+CWMOT5006.mptelemetry.using.app.mode.explanation In MPTelemetry 2.0 new features, such as JVM metrics, were created that require one shared instance of Open Telemetry across all applications. Because MPTelemetry is configured to have one instance per application these features will be disabled.
+CWMOT5006.mptelemetry.using.app.mode.useraction To enable runtime metrics and logs, transfer your Open Telemetry configuration properties into your system properties or environment variables.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
 #-----------------------------------------------------------------------------------------------------------------------------

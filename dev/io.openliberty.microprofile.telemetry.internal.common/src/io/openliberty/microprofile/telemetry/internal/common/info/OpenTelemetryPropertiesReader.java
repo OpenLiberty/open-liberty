@@ -35,12 +35,24 @@ public class OpenTelemetryPropertiesReader {
 
             HashMap<String, String> telemetryProperties = new HashMap<>();
 
+            HashMap<String, String> propertyLocation = new HashMap<>();
+
             for (ConfigSource configSource : config.getConfigSources()) {
+
+                configSource.getName();
+
                 for (Entry<String, String> entry : configSource.getProperties().entrySet()) {
                     if (entry.getKey().startsWith("otel") || entry.getKey().startsWith("OTEL")) {
                         String normalizedName = entry.getKey().toLowerCase().replace('_', '.');
                         config.getOptionalValue(normalizedName, String.class)
-                              .ifPresent(value -> telemetryProperties.putIfAbsent(normalizedName, value));
+                              .ifPresent(value -> {
+                                  telemetryProperties.putIfAbsent(normalizedName, value);
+                                  if (propertyLocation.containsKey(normalizedName)) {
+                                      //conflictingPropertyWarning.
+                                  } else {
+                                      propertyLocation.put(normalizedName, configSource.getName());
+                                  }
+                              });
                     }
                 }
             }
