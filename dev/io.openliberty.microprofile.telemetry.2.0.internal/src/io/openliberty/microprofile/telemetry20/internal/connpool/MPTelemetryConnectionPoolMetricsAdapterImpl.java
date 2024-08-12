@@ -10,7 +10,7 @@
 package io.openliberty.microprofile.telemetry20.internal.connpool;
 
 import java.time.Duration;
-import java.util.List;
+import java.util.Arrays;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -56,11 +56,13 @@ public class MPTelemetryConnectionPoolMetricsAdapterImpl implements ConnectionPo
 
         }
 
+        Double[] bucketBoundaries = {0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1.0, 5.0, 10.0};
+        
         //Use boundaries specified by Otel DB metrics  semantic convention
         DoubleHistogram dHistogram = otelInstance.getMeterProvider().get(INSTR_SCOPE).histogramBuilder(metricName)
                         .setUnit(OpenTelemetryConstants.OTEL_SECONDS_UNIT)
                         .setDescription(description)
-                        .setExplicitBucketBoundariesAdvice(List.of(0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1.0, 5.0, 10.0)).build();
+                        .setExplicitBucketBoundariesAdvice(Arrays.asList(bucketBoundaries)).build();
 
         Context ctx = Context.current();
 
