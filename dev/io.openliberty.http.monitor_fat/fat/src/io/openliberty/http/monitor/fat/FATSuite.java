@@ -13,9 +13,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.containers.TestContainerSuite;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
+@MinimumJavaLevel(javaLevel = 11)
 @SuiteClasses({
                 NoAppTest.class,
                 JSPApplicationTest.class,
@@ -28,4 +32,19 @@ import componenttest.containers.TestContainerSuite;
 })
 
 public class FATSuite extends TestContainerSuite {
+
+    public static RepeatTests testRepeatMPTel20(String serverName) {
+        return RepeatTests.with(FeatureReplacementAction.EE11_FEATURES())
+                        .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly())
+                        .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
+                        .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+                        .andWith(FeatureReplacementAction.EE7_FEATURES().fullFATOnly());
+
+    }
+
+    public static RepeatTests testRepeatMPTMetrics5(String serverName) {
+        return RepeatTests.with(FeatureReplacementAction.EE11_FEATURES())
+                        .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly());
+
+    }
 }

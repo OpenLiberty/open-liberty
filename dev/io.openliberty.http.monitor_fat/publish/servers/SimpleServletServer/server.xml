@@ -1,8 +1,8 @@
 
 <server>
     <featureManager>
-        <feature>servlet-6.0</feature>
-    	<feature>mpMetrics-5.0</feature>
+        <feature>servlet-6.1</feature>
+    	<feature>mpMetrics-5.1</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml" />

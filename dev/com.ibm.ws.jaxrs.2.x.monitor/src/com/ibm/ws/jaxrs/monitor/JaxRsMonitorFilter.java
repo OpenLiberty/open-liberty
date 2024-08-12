@@ -124,11 +124,31 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
      */
     @Override
     public void filter(ContainerRequestContext reqCtx) throws IOException {
-        if (!MonitorAppStateListener.isRESTEnabled()) return;
+	
+        /*
+         * Attempt to resolve HTTP Route of Restful Resource.
+         * If value is resolved, set it into HttpServletRequest's
+         * attribute as "RESTFUL.HTTP.ROUTE"
+         * 
+         * We set this in the first filter because jaxrs-2.x
+         * when encountering an error will not proceed to second filter.
+         */
         Class<?> resourceClass = resourceInfo.getResourceClass();
+        Method resourceMethod = resourceInfo.getResourceMethod();
+        if (resourceClass != null && resourceMethod != null) {
+            String route = getRoute(reqCtx, resourceClass, resourceMethod);
+            if (route != null && !route.isEmpty()) {
+                servletRequest.setAttribute(REST_HTTP_ROUTE_ATTR, route);
+            }
+        }
         
-        if (resourceClass != null) {
-            Method resourceMethod = resourceInfo.getResourceMethod();
+        /*
+         * Above is for HTTP metrics.
+         * Below is for the REST MBean and REST metrics.
+         */
+        if (!MonitorAppStateListener.isRESTEnabled()) return;
+        
+        if (resourceClass != null && resourceMethod != null) {
             MonitorKey monitorKey = monitorKeyCache.getMonitorKey(resourceClass, resourceMethod);
 
             if (monitorKey == null) {
@@ -181,23 +201,6 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
      */
     @Override
     public void filter(ContainerRequestContext reqCtx, ContainerResponseContext respCtx) throws IOException {
-    	
-        Class<?> resourceClass = resourceInfo.getResourceClass();
-        Method resourceMethod = resourceInfo.getResourceMethod();
-    	
-        /*
-         * Attempt to resolve HTTP Route of Restful Resource.
-         * If value is resolved, set it into HttpServletRequest's
-         * attribute as "RESTFUL.HTTP.ROUTE"
-         */
-        if (resourceClass != null && resourceMethod != null) {
-            String route = getRoute(reqCtx, resourceClass, resourceMethod);
-
-            if (route != null && !route.isEmpty()) {
-                servletRequest.setAttribute(REST_HTTP_ROUTE_ATTR, route);
-            }
-        }
-
     	
         if (!MonitorAppStateListener.isRESTEnabled()) return;
         // Check that the StatsContext has been set on the request context.  This will happen when 

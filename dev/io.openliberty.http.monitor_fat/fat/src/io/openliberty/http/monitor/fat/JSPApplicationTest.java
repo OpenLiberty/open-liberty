@@ -18,6 +18,7 @@ import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -26,6 +27,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import jakarta.ws.rs.HttpMethod;
 
@@ -36,6 +38,9 @@ public class JSPApplicationTest extends BaseTestClass {
 
     @Server("JSPServer")
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests rt = FATSuite.testRepeatMPTMetrics5("JSPServer");
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -75,7 +80,7 @@ public class JSPApplicationTest extends BaseTestClass {
         assertTrue(server.isStarted());
 
         String route = Constants.JSP_CONTEXT_ROOT + "/unconfigured.jsp";
-        String expectedRoute = Constants.JSP_CONTEXT_ROOT + "/\\*.jsp";
+        String expectedRoute = Constants.JSP_CONTEXT_ROOT + "/\\*";
         String requestMethod = HttpMethod.GET;
         String responseStatus = "200";
 

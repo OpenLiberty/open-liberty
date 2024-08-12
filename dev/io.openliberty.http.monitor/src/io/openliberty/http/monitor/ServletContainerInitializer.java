@@ -17,20 +17,19 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 
-import jakarta.servlet.FilterRegistration;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletException;
+import javax.servlet.FilterRegistration;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 /**
  *
  */
 @Component(configurationPolicy = IGNORE)
-public class ServletContainerInitializer implements jakarta.servlet.ServletContainerInitializer {
+public class ServletContainerInitializer implements javax.servlet.ServletContainerInitializer {
 
 	// happens when app id deployed
 	@Override
 	public void onStartup(Set<Class<?>> c, ServletContext sc) throws ServletException {
-
 		/*
 		 * Just prevent Servlet filter registration. This bundle starts from an
 		 * auto-feature. User's are not explicitly enabling this so lets not throw an

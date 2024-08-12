@@ -218,7 +218,6 @@
         <resolved>io.openliberty.internal.versionless.mpMetrics-5.1</resolved>
         <resolved>mpMetrics</resolved>
         <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
-        <resolved>io.openliberty.httpStat-monitor1.0.jakarta</resolved>
         <resolved>com.ibm.websphere.appserver.jakarta-transactionContext-1.0</resolved>
         <resolved>com.ibm.websphere.appserver.classloaderContext-1.0</resolved>
         <resolved>com.ibm.websphere.appserver.sessionMonitor-1.0</resolved>

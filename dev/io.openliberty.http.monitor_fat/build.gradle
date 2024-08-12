@@ -19,3 +19,4 @@ assemble.doLast {
 }
 
 addRequiredLibraries.dependsOn copyTestContainers
+addRequiredLibraries.dependsOn addJakartaTransformer
