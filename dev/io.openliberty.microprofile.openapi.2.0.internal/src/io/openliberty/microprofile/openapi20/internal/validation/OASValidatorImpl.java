@@ -42,6 +42,7 @@ import org.eclipse.microprofile.openapi.models.security.SecurityScheme;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariable;
 import org.eclipse.microprofile.openapi.models.tags.Tag;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -61,13 +62,16 @@ import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageCon
 public class OASValidatorImpl implements OASValidator {
     private static final TraceComponent tc = Tr.register(OASValidatorImpl.class);
 
+    @Reference
+    protected OpenAPIModelWalker modelWalker;
+
     @Override
     public OASValidationResult validate(OpenAPI model) {
         ValidationOperation validator = new ValidationOperation(model);
         return validator.run();
     }
 
-    public static class ValidationOperation implements OpenAPIModelVisitor, ValidationHelper {
+    public class ValidationOperation implements OpenAPIModelVisitor, ValidationHelper {
         protected OASValidationResult result;
         protected final Set<String> operationIds = new HashSet<>();
         protected final Map<String, Set<String>> linkOperationIds = new HashMap<>();
@@ -81,8 +85,7 @@ public class OASValidatorImpl implements OASValidator {
             this.result = new OASValidationResult();
             operationIds.clear();
             linkOperationIds.clear();
-            OpenAPIModelWalker walker = new OpenAPIModelWalker(model);
-            walker.accept(this);
+            modelWalker.walk(model, this);
             validateLinkOperationIds();
             final OASValidationResult _result = result;
             result = null;
