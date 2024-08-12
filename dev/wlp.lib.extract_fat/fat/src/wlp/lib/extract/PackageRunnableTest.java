@@ -468,10 +468,10 @@ public class PackageRunnableTest {
                 while (proc.isAlive() && Duration.between(start, Instant.now()).toMinutes() < 3) {
                     Thread.sleep(1000);
                 }
-                File shutdownHookLog = new File(getLogsDir(extractDirectory), "shutdownHook.log");
+                File shutdownHookLog = new File(getLogsDir(new File(extractLoc)), "shutdownHook.log");
                 if (shutdownHookLog.exists()) {
                     List<String> logStrings = Files.readAllLines(shutdownHookLog.toPath(), StandardCharsets.UTF_8);
-                    Log.info(c, method, "shutdown log found, contents:\n" + logStrings.stream().collect(Collectors.joining("\n")));
+                    Log.info(c, method, "shutdown log found in " + shutdownHookLog.getAbsolutePath() + ", contents:\n" + logStrings.stream().collect(Collectors.joining("\n")));
                 } else {
                     Log.info(c, method, "shutdown hook log doesn't exist in: " + shutdownHookLog.getAbsolutePath());
 

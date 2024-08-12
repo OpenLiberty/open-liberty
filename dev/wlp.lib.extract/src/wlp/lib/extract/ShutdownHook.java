@@ -154,12 +154,16 @@ public class ShutdownHook implements Runnable {
 
     }
 
+    private void waitAndCloseStreams(Process proc) throws IOException, InterruptedException {
+        waitAndCloseStreams(proc, false, true);
+    }
+
     /**
      * @param proc
      * @throws Exception
      * @throws InterruptedException
      */
-    private void waitAndCloseStreams(Process proc) throws IOException, InterruptedException {
+    private void waitAndCloseStreams(Process proc, boolean writeStdoutToHookLog, boolean writeStderrToHookLog) throws IOException, InterruptedException {
         StringBuilder stdOut = new StringBuilder();
         StringBuilder stdErr = new StringBuilder();
         StringBuilder output = new StringBuilder();
@@ -183,10 +187,10 @@ public class ShutdownHook implements Runnable {
 
         proc.waitFor();
 
-        if (!stdoutEmpty) {
+        if (writeStdoutToHookLog && !stdoutEmpty) {
             output.append(stdOut.toString());
         }
-        if (!stderrEmpty) {
+        if (writeStderrToHookLog && !stderrEmpty) {
             if (!stdoutEmpty) {
                 output.append("\nStderr:\n");
             }
