@@ -167,14 +167,18 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
     public void addObserver(Observer observer) {
         super.addObserver(observer);
         if (countObservers() > 1) {
-//            super.deleteObserver(observer);
             AbstractConnectionFactoryService cfSvc = (AbstractConnectionFactoryService) observer;
             Object[] params = new Object[] { CONNECTION_MANAGER, name, cfSvc.getConfigElementName() };
+			// TODO - After adding additional automated testing to ensure the working behavior is valid, we may decide to remove this warning/failure,
+			// since customers may already be successfully using a mixed connection pool with ignore or warn.
             RuntimeException failure = connectorSvc.ignoreWarnOrFail(tc, null, UnsupportedOperationException.class, "CARDINALITY_ERROR_J2CA8040", params);
-            if (failure != null)
+            if (failure != null) {
+                super.deleteObserver(observer); // only delete observer if throwing exception
                 throw failure;
+            }
+            this.pm.mixedConnectionPool = true; // set mixedConnectionPool to true for added trace information in the poolmanager.
         }
-    }
+	}
 
     /**
      * Create and initialize the connection manager/pool configuration
