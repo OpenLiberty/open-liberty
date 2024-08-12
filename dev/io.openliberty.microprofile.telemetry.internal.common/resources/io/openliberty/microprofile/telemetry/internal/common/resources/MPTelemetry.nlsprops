@@ -55,6 +55,10 @@ CWMOT5005.mptelemetry.unknown.log.source=CWMOT5005W: The MicroProfile Telemetry 
 CWMOT5005.mptelemetry.unknown.log.source.explanation=The Liberty runtime environment does not provide the specified log source.
 CWMOT5005.mptelemetry.unknown.log.source.useraction=Check the configuration information and specify one of the supported sources for MicroProfile Telemetry.
 
+CWMOT5006.tel.enabled.conflict=CWMOT5006W: Conflicting configuration for otel.sdk.disabled detected.
+CWMOT5006.tel.enabled.conflict.explanation: When MicroProfile Telemetry is configured to run with a shared instance of OpenTelemetry for all applications, it ignores the server.xml file as a configuration source. The value of otel.sdk.disabled in the server.xml file conflicts with the value set as a system property or environment variable. System properties take precedence.    
+CWMOT5006.tel.enabled.conflict.useraction: Specify the settings to enable or disable OpenTelemetry instances using either environment variable/system property or server.xml variables, but not in both places.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
 #-----------------------------------------------------------------------------------------------------------------------------

@@ -86,6 +86,10 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
         HashMap<String, String> propreties = OpenTelemetryPropertiesReader.getRuntimeInstanceTelemetryProperties();
         isRuntimeEnabled = telemetry2OrLater && !!!OpenTelemetryPropertiesReader.checkDisabled(propreties);
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Configured runtime mode as ", isRuntimeEnabled);
+        }
+
         if (isRuntimeEnabled) {
             runtimeInstance = LazyInitializer.<OpenTelemetryInfo> builder().setInitializer(curryInfoFactory(isRuntimeEnabled)).get();
         }
@@ -104,6 +108,19 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
 
         //We don't use app scoped OpenTelemetry objects if the server scoped object exists
         if (isRuntimeEnabled) {
+
+            //Log a warning if we're in runtime mode but app mode would think we should disable Open Telemetry
+            //the only way app mode can runtime mode can disagree is if a value is set in server.xml
+            //otherwise the only other config source that is not shared between them is lower priority
+            //than config sources that are shared between them.
+
+            //We check the inverse condition inside the InfoFactory to avoid reading the properties twice
+
+            HashMap<String, String> propreties = OpenTelemetryPropertiesReader.getTelemetryProperties();
+            if (OpenTelemetryPropertiesReader.checkExplicitlyDisabled(propreties)) {
+                Tr.warning(tc, "CWMOT5006.tel.enabled.conflict");
+            }
+
             return;
         }
 
