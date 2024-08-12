@@ -24,9 +24,18 @@ Import-Package: \
   org.apache.ws.commons.schema.resolver, \
   org.apache.ws.commons.schema.utils, \
   org.xml.sax, \
+  !javax.xml.bind.*, \
   javax.xml.transform.sax, \
   *
 
+DynamicImport-Package: \
+  javax.xml.bind, \
+  javax.xml.bind.annotation, \
+  javax.xml.bind.annotation.adapters, \
+  javax.xml.bind.attachment, \
+  javax.xml.bind.helpers, \
+  javax.xml.bind.util
+ 
 Export-Package: \
   org.apache.cxf.jaxrs.model.wadl;version=${cxfVersion}
 
