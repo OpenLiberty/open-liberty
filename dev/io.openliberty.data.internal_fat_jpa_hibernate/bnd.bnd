@@ -15,7 +15,8 @@ bVersion=1.0
 
 src: \
   fat/src,\
-  test-applications/DataJPAHibernateTestApp/src
+  test-applications/DataJPAHibernateTestApp/src,\
+  test-applications/DataJPAHibernateIntegrationApp/src
 
 javac.source: 17
 javac.target: 17

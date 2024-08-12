@@ -99,7 +99,6 @@ public class MetricsOtelCollectorTest {
 
         Thread.sleep(10000);
         assertEquals("pass", client.getJVMMetrics());
-
     }
 
 }

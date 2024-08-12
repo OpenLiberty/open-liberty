@@ -111,7 +111,7 @@ public class TestResource {
                 // Do something with the weak string to be absolutely sure
                 // The JIT doesn't optimise it away
                 @SuppressWarnings("unused")
-                String alsoIgnored = fromWeakRef.strip();
+                String alsoIgnored = fromWeakRef.replaceAll("a", "A");
             }
 
             try {
