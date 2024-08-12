@@ -22,6 +22,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.jaxrs20.client.fat.test.BasicClientTest;
 import com.ibm.ws.jaxrs20.client.fat.test.ClientContextInjectionTest;
 import com.ibm.ws.jaxrs20.client.fat.test.ComplexClientTest;
+import com.ibm.ws.jaxrs20.client.fat.test.DynamicOutboundSSLTest;
 import com.ibm.ws.jaxrs20.client.fat.test.HandleResponsesTest;
 import com.ibm.ws.jaxrs20.client.fat.test.IBMJson4JProvidersTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRS20ClientAsyncInvokerTest;
@@ -65,6 +66,7 @@ import componenttest.rules.repeater.RepeatTests;
                 BasicClientTest.class,
                 ClientContextInjectionTest.class,
                 ComplexClientTest.class,
+                DynamicOutboundSSLTest.class,
                 HandleResponsesTest.class,
                 IBMJson4JProvidersTest.class,
                 JacksonProvidersTest.class,
