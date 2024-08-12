@@ -906,11 +906,17 @@ public class FeatureResolverImpl implements FeatureResolver {
                         addingFeatures.add(feature);
                         if (compatibleFeature != null) {
                             String[] nav = parseNameAndVersion(compatibleFeature.getSymbolicName());
-                            addingFeatures.add(nav[0] + "-" + nav[1]);
+                            String compatibleFeatureName = compatibleFeature.getSymbolicName();
+                            if(shouldAddCompatibleFeature(result, compatibleFeatureName, selectionContext)){
+                                addingFeatures.add(compatibleFeatureName);
+                            }
 
                             if (compatibleFeature.getTolerates() != null) {
                                 for (String version : compatibleFeature.getTolerates()) {
-                                    addingFeatures.add(nav[0] + "-" + version);
+                                    compatibleFeatureName = nav[0] + "-" + version;
+                                    if(shouldAddCompatibleFeature(result, compatibleFeatureName, selectionContext)){
+                                        addingFeatures.add(compatibleFeatureName);
+                                    }
                                 }
                             }
                         }
@@ -922,6 +928,34 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         result._resolved.addAll(addingFeatures);
+    }
+
+    /**
+     * Check result for dependencies of the compatibility feature 
+     * if the dependencies are included, return true
+     * 
+     * @param result
+     * @param featureName
+     * @return
+     */
+    private boolean shouldAddCompatibleFeature(FeatureResolverResultImpl result, String featureName, SelectionContext selectionContext){
+        ProvisioningFeatureDefinition feature = selectionContext.getRepository().getFeature(featureName);
+        if(feature == null){
+            return false;
+        }
+        Collection<FeatureResource> featureDeps = feature.getConstituents(SubsystemContentType.FEATURE_TYPE);
+
+        for (FeatureResource featureDep : featureDeps) { // only one
+            ProvisioningFeatureDefinition versionedFeature = selectionContext.getRepository().getFeature(featureDep.getSymbolicName());
+            if (versionedFeature == null) {
+                continue;
+            }
+            if(result.getResolvedFeatures().contains(versionedFeature.getFeatureName())){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
