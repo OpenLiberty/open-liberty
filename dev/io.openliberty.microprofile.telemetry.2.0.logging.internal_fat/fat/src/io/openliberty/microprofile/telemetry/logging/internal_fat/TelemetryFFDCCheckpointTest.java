@@ -25,10 +25,12 @@ import org.junit.runner.RunWith;
 
 import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @RunWith(FATRunner.class)
 @CheckpointTest
@@ -52,6 +54,7 @@ public class TelemetryFFDCCheckpointTest extends FATServletClient {
      */
     @Test
     @ExpectedFFDC({ "java.lang.ArithmeticException" })
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID }) //Checkpoint only supports MP4.1 and higher.
     public void testTelemetryFFDCMessagesCheckpoint() throws Exception {
         testTelemetryFFDCMessages(server, (linesConsoleLog) -> {
             // For checkpoint we expect to NOT see the early ffdc message:
