@@ -44,8 +44,8 @@ public class ContainerServletApplicationTest extends BaseTestClass {
     private static Class<?> c = ContainerServletApplicationTest.class;
 
     private static final String SERVER_NAME = "ContainerServletServer";
-    private static final String SERVICE_NAME = FATSuite.getAppNameOrUnkownService(Constants.SERVLET_APP);
-    private static final String WILDCARD_SERVICE_NAME = FATSuite.getAppNameOrUnkownService(Constants.WILDCARD_SERVLET_APP);
+    private static final String SERVICE_NAME = FATSuite.getAppNameOrUnknownService(Constants.SERVLET_APP);
+    private static final String WILDCARD_SERVICE_NAME = FATSuite.getAppNameOrUnknownService(Constants.WILDCARD_SERVLET_APP);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

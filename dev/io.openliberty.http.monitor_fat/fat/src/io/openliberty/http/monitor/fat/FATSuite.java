@@ -67,11 +67,11 @@ public class FATSuite extends TestContainerSuite {
         }
     }
 
-    public static String getAppNameOrUnkownService(String appName) {
+    public static String getAppNameOrUnknownService(String appName) {
         if (RepeatTestFilter.isAnyRepeatActionActive(MicroProfileActions.MP70_EE11_APP_MODE.getID())) {
             return appName;
         } else {
-            return "unkown_service";
+            return "unknown_service";
         }
     }
 }
