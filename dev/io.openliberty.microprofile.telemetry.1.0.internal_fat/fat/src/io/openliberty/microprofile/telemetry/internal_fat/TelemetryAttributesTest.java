@@ -51,7 +51,8 @@ public class TelemetryAttributesTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addClasses(ResourceServlet.class);
+                        .addClasses(ResourceServlet.class)
+                        .addAsManifestResource(TelemetryAttributesTest.class.getResource("permissions-TelemetryAttributesTest.xml"), "permissions.xml");
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
         server.addEnvVar("OTEL_SDK_DISABLED", "false");
