@@ -24,6 +24,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
+import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -42,6 +44,9 @@ public class TelemetryConfigServerVarTest extends FATServletClient {
     public static final String APP_NAME = "TelemetryApp";
 
     @Server(SERVER_NAME)
+    @TestServlets({
+                    @TestServlet(servlet = ConfigServlet.class, contextRoot = APP_NAME),
+    })
     public static LibertyServer server;
 
     @ClassRule
@@ -58,12 +63,6 @@ public class TelemetryConfigServerVarTest extends FATServletClient {
         server.addEnvVar("OTEL_SERVICE_NAME", "overrideThisEnvVar");
         server.addEnvVar("OTEL_SDK_DISABLED", "true");
         server.startServer();
-    }
-
-    @Test
-    public void testConfig() throws Exception {
-        runTest(server, APP_NAME + "/testConfig", "testServiceNameConfig");
-        runTest(server, APP_NAME + "/testConfig", "testSDKDisabledConfig");
     }
 
     @Test
