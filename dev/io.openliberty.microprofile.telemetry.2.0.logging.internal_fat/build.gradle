@@ -18,6 +18,7 @@ configurations {
 
 dependencies {
   telemetryAgent 'io.opentelemetry.javaagent:opentelemetry-javaagent:2.6.0'
+  requiredLibs project(':io.openliberty.microprofile.telemetry.internal_fat.common')
 }
 
 task addAgent(type: Copy) {
@@ -27,3 +28,4 @@ task addAgent(type: Copy) {
 }
 
 addRequiredLibraries.dependsOn addAgent
+addRequiredLibraries.dependsOn addJakartaTransformer
