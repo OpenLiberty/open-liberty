@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 
 import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -34,7 +35,8 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @CheckpointTest
 public class TelemetryFFDCCheckpointTest extends FATServletClient {
 
-    private static LibertyServer server;
+    @Server(SERVER_NAME)
+    public static LibertyServer server;
 
     @BeforeClass
     public static void initialSetup() throws Exception {

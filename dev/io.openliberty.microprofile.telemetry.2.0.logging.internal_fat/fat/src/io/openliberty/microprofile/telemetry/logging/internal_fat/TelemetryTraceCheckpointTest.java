@@ -9,6 +9,8 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal_fat;
 
+import static io.openliberty.microprofile.telemetry.logging.internal_fat.TelemetryTraceTest.SERVER_NAME;
+import static io.openliberty.microprofile.telemetry.logging.internal_fat.TelemetryTraceTest.setupApp;
 import static io.openliberty.microprofile.telemetry.logging.internal_fat.TelemetryTraceTest.testTelemetryTrace;
 import static org.junit.Assert.assertNull;
 
@@ -18,9 +20,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
@@ -31,13 +33,12 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @CheckpointTest
 public class TelemetryTraceCheckpointTest extends FATServletClient {
 
-    public static final String SERVER_NAME = "TelemetryTrace";
-
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass
     public static void initialSetup() throws Exception {
-        server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+        setupApp(server);
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START);
         server.startServer();
     }
