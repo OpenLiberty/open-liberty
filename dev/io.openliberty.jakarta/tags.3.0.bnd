@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2023 IBM Corporation and others.
+# Copyright (c) 2022, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -19,10 +19,10 @@ Bundle-SymbolicName: io.openliberty.jakarta.tags.3.0; singleton:=true
 Bundle-Description: Jakarta Standard Tag Library, version 3.0
 
 Export-Package: \
-	jakarta.servlet.jsp.jstl.core;version=3.0.0,\
-	jakarta.servlet.jsp.jstl.fmt;version=3.0.0,\
-	jakarta.servlet.jsp.jstl.sql;version=3.0.0,\
-	jakarta.servlet.jsp.jstl.tlv;version=3.0.0
+    jakarta.servlet.jsp.jstl.core;version=3.0.1,\
+    jakarta.servlet.jsp.jstl.fmt;version=3.0.1,\
+    jakarta.servlet.jsp.jstl.sql;version=3.0.1,\
+    jakarta.servlet.jsp.jstl.tlv;version=3.0.1
 
 # Updated the jakarta.el import to include Expression Language 6.0 (EE11) because Jakarta Tags is not changing for EE11.
 Import-Package:  jakarta.servlet.jsp.jstl.*;version="[3.0.0,4.0.0)", \
@@ -36,8 +36,8 @@ Import-Package:  jakarta.servlet.jsp.jstl.*;version="[3.0.0,4.0.0)", \
  jakarta.el; version="[5.0.0,7.0.0)"
 
 -includeresource: \
-  @${repo;jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api;3.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @${repo;jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
-   dep1;groupId=jakarta.servlet.jsp.jstl;artifactId=jakarta.servlet.jsp.jstl-api;version=3.0.0;scope=runtime
+   dep1;groupId=jakarta.servlet.jsp.jstl;artifactId=jakarta.servlet.jsp.jstl-api;version=3.0.1;scope=runtime
 
