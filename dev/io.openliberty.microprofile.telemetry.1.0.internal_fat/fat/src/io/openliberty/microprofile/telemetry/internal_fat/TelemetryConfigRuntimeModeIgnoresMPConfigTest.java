@@ -72,6 +72,10 @@ public class TelemetryConfigRuntimeModeIgnoresMPConfigTest extends FATServletCli
 
     @Test
     public void testConsole() throws Exception {
+        //Above mark because this is logged during startup
+        //Checks for a warning message because server.xml conflicts with the system properties and env variables.
+        assertNotNull(server.waitForStringInLogUsingMark("CWMOT5006W"));
+
         server.setMarkToEndOfLog();
 
         runTest(server, APP_NAME + "/LoggingServlet", "testLoggingExporter");
@@ -83,10 +87,11 @@ public class TelemetryConfigRuntimeModeIgnoresMPConfigTest extends FATServletCli
         assertNotNull(server.waitForStringInLogUsingMark("io.opentelemetry.exporter.logging.LoggingSpanExporter"));
         assertNotNull(server.waitForStringInLogUsingMark("'testSpan' : .* \\[tracer: logging-exporter-test:1.0.0\\]"));
         assertNotNull(server.waitForStringInLogUsingMark("GET /TelemetryServletTestApp/LoggingServle.*url.query=testMethod=testLoggingExporter"));
+
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWMOT5006W");
     }
 }
