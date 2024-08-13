@@ -23,8 +23,10 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import jakarta.ws.rs.HttpMethod;
@@ -33,15 +35,18 @@ import jakarta.ws.rs.HttpMethod;
  * This just tests hitting the splash page for the server.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat(MicroProfileActions.MP70_EE11_APP_MODE_ID)
 public class ContainerNoAppTest extends BaseTestClass {
 
     private static Class<?> c = ContainerNoAppTest.class;
 
-    @Server("ContainerJustServer")
+    private static final String SERVER_NAME = "ContainerJustServer";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests rt = FATSuite.testRepeatMPTel20("ContainerJustServer");
+    public static RepeatTests rt = FATSuite.allMPRepeatsWithMPTel20OrLater(SERVER_NAME);
 
     @ClassRule
     public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()

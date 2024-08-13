@@ -18,5 +18,9 @@ assemble.doLast {
     }
 }
 
+dependencies {
+  requiredLibs project(':io.openliberty.microprofile.telemetry.internal_fat.common')
+}
+
 addRequiredLibraries.dependsOn copyTestContainers
 addRequiredLibraries.dependsOn addJakartaTransformer
