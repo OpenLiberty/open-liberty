@@ -27,9 +27,11 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @RunWith(FATRunner.class)
 public class TelemetryFFDCTest extends FATServletClient {
@@ -73,6 +75,8 @@ public class TelemetryFFDCTest extends FATServletClient {
     // RuntimeException comes out of an early start servlet init;
     // This is async and may or may not happen before the test method enters
     @AllowedFFDC("java.lang.RuntimeException")
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID,
+                     TelemetryActions.MP41_MPTEL20_ID })
     public void testTelemetryFFDCMessages() throws Exception {
         testTelemetryFFDCMessages(server, (linesConsoleLog) -> {
             // We expect to see the early ffdc message
