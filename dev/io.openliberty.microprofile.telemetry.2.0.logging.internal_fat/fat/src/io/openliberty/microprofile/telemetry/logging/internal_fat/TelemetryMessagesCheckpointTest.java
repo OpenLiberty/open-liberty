@@ -18,11 +18,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @RunWith(FATRunner.class)
 @CheckpointTest
@@ -42,6 +44,7 @@ public class TelemetryMessagesCheckpointTest extends FATServletClient {
      * Ensures Liberty messages are correctly bridged and all attributes are present.
      */
     @Test
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID })
     public void testTelemetryMessagesCheckpoint() throws Exception {
         testTelemetryMessages(server, (linesConsoleLog) -> {
             // for checkpoint we expect to NOT see the message:
