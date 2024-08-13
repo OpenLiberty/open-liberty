@@ -510,6 +510,78 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use repository methods that convert a long value to other numeric types.
+     */
+    @Test
+    public void testConvertLongValue() throws Exception {
+        assertEquals(47L,
+                     primes.numberAsBigDecimal(47).longValue());
+
+        assertEquals(43L,
+                     primes.numberAsBigInteger(43).orElseThrow().longValue());
+
+        assertEquals((byte) 41,
+                     primes.numberAsByte(41));
+
+        try {
+            byte result = primes.numberAsByte(4021);
+            fail("Should not convert long value 4021 to byte value " + result);
+        } catch (MappingException x) {
+            // expected - out of range
+        }
+
+        assertEquals((byte) 37,
+                     primes.numberAsByteWrapper(37).orElseThrow().byteValue());
+
+        try {
+            Optional<Byte> result = primes.numberAsByteWrapper(4019);
+            fail("Should not convert long value 4019 to Byte value " + result);
+        } catch (MappingException x) {
+            // expected - out of range
+        }
+
+        try {
+            double result = primes.numberAsDouble(4003);
+            fail("Should not convert long value to double value " + result);
+        } catch (MappingException x) {
+            // expected - not convertible
+        }
+
+        try {
+            Optional<Float> result = primes.numberAsFloatWrapper(4001)
+                            .get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
+            fail("Should not convert long value to float value " + result);
+        } catch (ExecutionException x) {
+            if (x.getCause() instanceof MappingException)
+                ; // expected - not convertible
+            else
+                throw x;
+        }
+
+        assertEquals(31,
+                     primes.numberAsInt(31));
+
+        assertEquals(29,
+                     primes.numberAsInteger(29L).orElseThrow().intValue());
+
+        assertEquals(23L,
+                     primes.numberAsLong(23));
+
+        assertEquals(19L,
+                     primes.numberAsLongWrapper(19).orElseThrow().longValue());
+
+        assertEquals((short) 4013,
+                     primes.numberAsShort(4013));
+
+        assertEquals((short) 4007,
+                     primes.numberAsShortWrapper(4007).orElseThrow().shortValue());
+
+        assertEquals(false,
+                     primes.numberAsShortWrapper(27).isPresent());
+
+    }
+
+    /**
      * Repository method that returns the count as a BigDecimal value.
      */
     @Test

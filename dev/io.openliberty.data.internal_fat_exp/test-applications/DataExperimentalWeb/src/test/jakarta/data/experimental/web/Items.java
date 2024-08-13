@@ -75,7 +75,7 @@ public interface Items {
     float lowestPrice();
 
     @Query("SELECT AVG(price) FROM Item")
-    float meanPrice();
+    double meanPrice();
 
     @Update
     int reduceBy(@By(ID) UUID id,
@@ -102,7 +102,7 @@ public interface Items {
     int total();
 
     @Query("SELECT SUM(DISTINCT price) FROM Item")
-    float totalOfDistinctPrices();
+    double totalOfDistinctPrices();
 
     @Query("UPDATE Item SET price=price/?2, version=version-1 WHERE (pk IN ?1)")
     // TODO switch to annotated parameters once available for conditions

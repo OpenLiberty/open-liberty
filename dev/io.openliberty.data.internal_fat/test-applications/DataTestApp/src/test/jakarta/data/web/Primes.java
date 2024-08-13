@@ -304,6 +304,43 @@ public interface Primes {
     @OrderBy("numberId")
     Page<Object[]> namesWithHex(long maxNumber, PageRequest pagination);
 
+    @Query("SELECT numberId WHERE numberId=?1")
+    BigDecimal numberAsBigDecimal(long num);
+
+    @Query("SELECT numberId WHERE numberId=:num")
+    Optional<BigInteger> numberAsBigInteger(long num);
+
+    @Query("SELECT numberId WHERE numberId=?1")
+    byte numberAsByte(long num);
+
+    @Query("SELECT numberId WHERE numberId=:n")
+    Optional<Byte> numberAsByteWrapper(@Param("n") long num);
+
+    @Query("SELECT numberId WHERE ID(this)=?1")
+    double numberAsDouble(long num);
+
+    @Asynchronous
+    @Query("SELECT numberId WHERE id(THIS)=?1")
+    CompletableFuture<Optional<Float>> numberAsFloatWrapper(long num);
+
+    @Query("SELECT numberId WHERE Id(This)=?1")
+    int numberAsInt(long num);
+
+    @Query("SELECT numberId WHERE Id(This)=:num")
+    Optional<Integer> numberAsInteger(long num);
+
+    @Query("SELECT numberId WHERE id(this)=?1")
+    long numberAsLong(long num);
+
+    @Query("SELECT numberId WHERE id(this)=:num")
+    Optional<Long> numberAsLongWrapper(long num);
+
+    @Query("SELECT numberId WHERE ID(THIS)=?1")
+    short numberAsShort(long num);
+
+    @Query("SELECT numberId WHERE ID(THIS)=:num")
+    Optional<Short> numberAsShortWrapper(long num);
+
     @Insert
     void persist(Prime... primes);
 
