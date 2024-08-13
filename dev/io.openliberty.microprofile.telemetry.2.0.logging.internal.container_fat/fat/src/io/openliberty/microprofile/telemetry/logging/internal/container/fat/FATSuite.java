@@ -18,6 +18,7 @@ import componenttest.containers.TestContainerSuite;
 @RunWith(Suite.class)
 @SuiteClasses({
                 LoggingServletTest.class,
+                LoggingTraceSpanTest.class,
                 JULDuplicateTest.class,
                 JULLogServletTest.class
 })

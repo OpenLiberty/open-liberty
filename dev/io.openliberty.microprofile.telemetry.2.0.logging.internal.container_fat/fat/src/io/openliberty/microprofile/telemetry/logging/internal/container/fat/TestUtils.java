@@ -44,6 +44,8 @@ public class TestUtils {
             url = url + "/LogURL";
         } else if (type.equals("ffdc1")) {
             url = url + "?isFFDC=true";
+        } else if (type.equals("SingleLogURL")) {
+            url = url + "/SingleLogURL";
         }
 
         Log.info(c, "runApp", "---> Running the application with url : " + url);

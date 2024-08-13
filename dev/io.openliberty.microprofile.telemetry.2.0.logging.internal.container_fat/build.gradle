@@ -27,6 +27,7 @@ assemble.doLast {
     // update the generated-src dir with the new stubs that have been generated
     copy {
         from "fat/resource/config.yaml"
+        from "fat/resource/configMetrics.yaml"
         into "build/libs/autoFVT"
     }
 }
