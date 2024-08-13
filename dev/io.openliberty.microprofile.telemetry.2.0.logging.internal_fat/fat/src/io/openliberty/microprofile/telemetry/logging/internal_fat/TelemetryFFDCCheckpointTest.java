@@ -54,7 +54,7 @@ public class TelemetryFFDCCheckpointTest extends FATServletClient {
      */
     @Test
     @ExpectedFFDC({ "java.lang.ArithmeticException" })
-    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID })
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID }) //Checkpoint only supports MP4.1 and higher.
     public void testTelemetryFFDCMessagesCheckpoint() throws Exception {
         testTelemetryFFDCMessages(server, (linesConsoleLog) -> {
             // For checkpoint we expect to NOT see the early ffdc message:

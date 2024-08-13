@@ -44,7 +44,7 @@ public class TelemetryMessagesCheckpointTest extends FATServletClient {
      * Ensures Liberty messages are correctly bridged and all attributes are present.
      */
     @Test
-    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID })
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID }) //Checkpoint only supports MP4.1 and higher.
     public void testTelemetryMessagesCheckpoint() throws Exception {
         testTelemetryMessages(server, (linesConsoleLog) -> {
             // for checkpoint we expect to NOT see the message:

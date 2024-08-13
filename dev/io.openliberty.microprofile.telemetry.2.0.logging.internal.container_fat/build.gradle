@@ -16,6 +16,10 @@ configurations {
 dependencies {
   telemetryAgent 'io.opentelemetry.javaagent:opentelemetry-javaagent:2.6.0'
   requiredLibs project(':io.openliberty.microprofile.telemetry.internal_fat.common')
+<<<<<<< HEAD
+=======
+  
+>>>>>>> 51819edfc9 (Merge branch 'integration' of github.com:OpenLiberty/open-liberty into telemetryLoggingRepeats)
 }
 
 task addAgent(type: Copy) {
