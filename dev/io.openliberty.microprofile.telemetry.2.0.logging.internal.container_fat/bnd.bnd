@@ -33,4 +33,5 @@ fat.test.container.images: otel/opentelemetry-collector-contrib:0.103.0
 	com.ibm.ws.webcontainer.jakarta;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.logging.core,\
-	io.openliberty.org.testcontainers;version=latest
+	io.openliberty.org.testcontainers;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1
