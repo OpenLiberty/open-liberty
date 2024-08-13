@@ -32,26 +32,28 @@ import jakarta.ws.rs.HttpMethod;
  * This just tests hitting the splash page for the server.
  */
 @RunWith(FATRunner.class)
-public class NoAppTest extends BaseTestClass {
+public class NoAppMBeanTest extends BaseTestClass {
 
-    private static Class<?> c = NoAppTest.class;
+    private static Class<?> c = NoAppMBeanTest.class;
 
-    @Server("SimpleRestServer")
-    public static LibertyServer server;
+    public static final String SERVER_NAME = "MBeanServer";
 
     @ClassRule
-    public static RepeatTests rt = FATSuite.testRepeatMPTMetrics5("SimpleRestServer");
+    public static RepeatTests rt = FATSuite.testRepeatMBeanTests(SERVER_NAME);
+
+    @Server(SERVER_NAME)
+    public static LibertyServer server;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
         trustAll();
 
-        WebArchive testWAR = ShrinkWrap
+        WebArchive mbeanWar = ShrinkWrap
                         .create(WebArchive.class, "MBeanGetter.war")
                         .addPackage(
                                     "io.openliberty.http.monitor.fat.mbeanGetter");
 
-        ShrinkHelper.exportDropinAppToServer(server, testWAR,
+        ShrinkHelper.exportDropinAppToServer(server, mbeanWar,
                                              DeployOptions.SERVER_ONLY);
 
         server.startServer();
@@ -70,7 +72,7 @@ public class NoAppTest extends BaseTestClass {
     }
 
     @Test
-    public void noApp_splashPage() throws Exception {
+    public void m_noApp_splashPage() throws Exception {
 
         assertTrue(server.isStarted());
 
@@ -78,9 +80,12 @@ public class NoAppTest extends BaseTestClass {
         String requestMethod = HttpMethod.GET;
         String responseStatus = "200";
 
+        //create the hit
         String res = requestHttpServlet(route, server, requestMethod);
 
-        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod));
+        String objectName = "WebSphere:type=HttpServerStats,name=\"method:GET;status:200;httpRoute:/\"";
+
+        assertTrue(String.format("Could not find the expected MBean with object name[%s]", objectName), checkMBeanRegistered(server, objectName));
 
     }
 

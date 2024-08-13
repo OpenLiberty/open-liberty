@@ -129,6 +129,7 @@ public abstract class BaseTestClass {
             String sURL = "http://" + server.getHostname() + ":"
                           + server.getHttpDefaultPort() + servletPath
                           + ((query != null) ? ("?" + query) : "");
+
             URL checkerServletURL = new URL(sURL);
             con = (HttpURLConnection) checkerServletURL.openConnection();
             con.setDoInput(true);
@@ -403,5 +404,22 @@ public abstract class BaseTestClass {
         }
 
         return false;
+    }
+
+    protected boolean checkMBeanRegistered(LibertyServer server, String objectName) throws Exception {
+        //Get request automatically checks registration
+        boolean result = false;
+
+        String response = requestHttpServlet("/MBeanGetter/MBeanGetterServlet", server, HttpMethod.GET, "objectname=" + objectName);
+        response = response.trim();
+        if (response.equalsIgnoreCase("true")) {
+            result = true;
+        } else {
+            result = false;
+            Log.info(c, "checkMBeanRegistered", "Checking for Mbean registration failed. Here is the list of registered HTTP Mbeans: \n" + response);
+        }
+
+        return result;
+
     }
 }
