@@ -67,7 +67,7 @@ public abstract class AbstractOpenTelemetryInfoFactory implements OpenTelemetryI
                 //Checks if app mode thinks we're enabled and runtime thinks we're not
                 //The inverse condition is checked in the lifecycle manager. Because we won't create any
                 //OpenTelemetryInfo for apps in runtime mode.
-                warnIfAppEnabledAndRuntimeExplicitlyDisabled(telemetryProperties);
+                warnIfAppEnabledAndRuntimeExplicitlyDisabled(telemetryProperties, instanceName);
             }
 
             //TODO check if "tracer provider" is accurate?
@@ -104,13 +104,13 @@ public abstract class AbstractOpenTelemetryInfoFactory implements OpenTelemetryI
     }
 
     //No op in Telemetry 1.1 and 1.0
-    protected void warnIfAppEnabledAndRuntimeExplicitlyDisabled(Map<String, String> telemetryAppProperties) {
+    protected void warnIfAppEnabledAndRuntimeExplicitlyDisabled(Map<String, String> telemetryAppProperties, String appName) {
         //Log a warning if we're in app mode and OTel is enabled but the runtime mode would think we OTel should be disabled.
 
         HashMap<String, String> runtimePropreties = OpenTelemetryPropertiesReader.getRuntimeInstanceTelemetryProperties();
 
         if (!!!OpenTelemetryPropertiesReader.checkDisabled(telemetryAppProperties) && OpenTelemetryPropertiesReader.checkExplicitlyDisabled(runtimePropreties)) {
-            Tr.warning(tc, "CWMOT5006.tel.enabled.conflict");
+            Tr.warning(tc, "CWMOT5007.tel.enabled.conflict", appName);
         }
 
     }

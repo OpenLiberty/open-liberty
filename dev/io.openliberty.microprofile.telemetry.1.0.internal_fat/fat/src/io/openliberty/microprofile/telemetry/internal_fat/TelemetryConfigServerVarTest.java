@@ -73,11 +73,11 @@ public class TelemetryConfigServerVarTest extends FATServletClient {
         //Don't set the mark, as the warning comes from app startup.
 
         //Checks for a warning message because server.xml conflicts with the system properties and env variables.
-        assertNotNull(server.waitForStringInLogUsingMark("CWMOT5006W"));
+        assertNotNull(server.waitForStringInLogUsingMark("CWMOT5007W"));
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWMOT5006W");
+        server.stopServer("CWMOT5007W");
     }
 }

@@ -80,7 +80,7 @@ public class TelemetryGlobalOpenTelemetryTest extends FATServletClient {
     public static void tearDown() throws Exception {
         server.stopServer("CWMOT5000W", //Cannot get GlobalOpenTelemetry
                           "CWMOT5001E", //Cannot set GlobalOpenTelemetry
-                          "CWMOT5006W" //Warning about conflicting otel.sdk.enabled properties
+                          "CWMOT5007W" //Warning about conflicting otel.sdk.enabled properties
         );
 
     }

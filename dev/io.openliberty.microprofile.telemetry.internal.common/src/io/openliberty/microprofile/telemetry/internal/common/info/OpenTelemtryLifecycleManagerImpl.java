@@ -87,7 +87,7 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
         isRuntimeEnabled = telemetry2OrLater && !!!OpenTelemetryPropertiesReader.checkDisabled(propreties);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Configured runtime mode as ", isRuntimeEnabled);
+            Tr.debug(this, tc, "Configured runtime mode as ", isRuntimeEnabled);
         }
 
         if (isRuntimeEnabled) {
@@ -118,7 +118,9 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
 
             HashMap<String, String> propreties = OpenTelemetryPropertiesReader.getTelemetryProperties();
             if (OpenTelemetryPropertiesReader.checkExplicitlyDisabled(propreties)) {
-                Tr.warning(tc, "CWMOT5006.tel.enabled.conflict");
+
+                String appName = appInfo.getName();
+                Tr.warning(tc, "CWMOT5006.tel.enabled.conflict", appName);
             }
 
             return;

@@ -10,7 +10,7 @@
     </featureManager>
     
     <!-- ignored since we will run in runtime mode but this will cause a warning -->
-	<variable name="otel.sdk.disabled" value="true"/>
+    <variable name="otel.sdk.disabled" value="true"/>
 
     <application type="war" location="TelemetryServletTestApp.war">
         <classloader apiTypeVisibility="+third-party" />

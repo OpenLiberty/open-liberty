@@ -69,7 +69,7 @@ public class OpenTelemetryInfoFactoryImpl extends AbstractOpenTelemetryInfoFacto
     }
 
     @Override
-    protected void warnIfAppEnabledAndRuntimeExplicitlyDisabled(Map<String, String> telemetryAppProperties) {
+    protected void warnIfAppEnabledAndRuntimeExplicitlyDisabled(Map<String, String> telemetryAppProperties, String appName) {
         //No op before Telemetry 2.0
     }
 }

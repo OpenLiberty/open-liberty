@@ -94,6 +94,6 @@ public class Telemetry10 extends FATServletClient {
     @AfterClass
     //CWMOT5006W: Warning about conflicting otel.sdk.enabled properties. A conflicting value is set in bootstrap.properties and server.xml
     public static void tearDown() throws Exception {
-        server.stopServer("CWNEN0047W.*Telemetry10Servlet", "CWMOT5006W");
+        server.stopServer("CWNEN0047W.*Telemetry10Servlet", "CWMOT5007W");
     }
 }
