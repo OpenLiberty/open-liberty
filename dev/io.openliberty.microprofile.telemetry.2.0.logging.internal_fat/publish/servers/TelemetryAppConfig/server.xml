@@ -10,19 +10,20 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="Telemetry Server to test FFDC logs">
-	<include location="../fatTestPorts.xml"/>
+<server description="Telemetry Server to test App Telemetry logs">
 	<featureManager>
-		<feature>pages-3.1</feature>
 		<feature>mpTelemetry-2.0</feature>
 		<feature>componentTest-2.0</feature>
-		<feature>usr:test.ffdc-1.0</feature>
+		<feature>servlet-6.0</feature>
 	</featureManager>
 	
-	<javaPermission className="java.util.PropertyPermission" name="io.openliberty.microprofile.telemetry.ffdc.early" actions="read"/>
-
-	<javaPermission className="java.security.AllPermission"/>
-	<mpTelemetry source="ffdc"/>
+	<include location="../fatTestPorts.xml"/>
+	<mpTelemetry source="message"/>
 	
-	<javaPermission className="java.security.AllPermission"/>
+	<application location="MpTelemetryLogApp.war">
+		<appProperties>
+			<property name="otel.logs.exporter" value="logging" />
+			<property name="otel.sdk.disabled" value="false" />
+		</appProperties>	
+	</application>
 </server>

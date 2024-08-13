@@ -31,7 +31,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @CheckpointTest
 public class TelemetryTraceCheckpointTest extends FATServletClient {
 
-    public static final String SERVER_NAME = "TelemetryTraceNoApp";
+    public static final String SERVER_NAME = "TelemetryTrace";
 
     public static LibertyServer server;
 

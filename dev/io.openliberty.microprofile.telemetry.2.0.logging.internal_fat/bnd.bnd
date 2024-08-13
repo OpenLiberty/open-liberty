@@ -21,7 +21,8 @@ fat.minimum.java.level: 11
 src: \
         fat/src,\
         test-applications/ffdc-servlet/src,\
-        test-bundles/ffdc-bundle/src
+        test-bundles/ffdc-bundle/src,\
+        test-applications/MpTelemetryLogApp/src
 
 
 fat.project: true
@@ -35,6 +36,9 @@ tested.features=mpTelemetry-2.0,pages-3.1,checkpoint
 	io.openliberty.io.opentelemetry.2.0;version=latest,\
 	io.openliberty.jakarta.servlet.6.1,\
 	com.ibm.wsspi.org.osgi.core;version=latest,\
-	com.ibm.ws.logging.core
+	com.ibm.ws.logging.core,\
+	org.testng,\
+	io.openliberty.jakarta.jsonp.2.1,\
+	com.ibm.ws.logging
 
 -sub: *.bnd

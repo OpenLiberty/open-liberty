@@ -1,1 +1,2 @@
 -javaagent:opentelemetry-javaagent.jar
+-Dcom.ibm.ws.beta.edition=true
