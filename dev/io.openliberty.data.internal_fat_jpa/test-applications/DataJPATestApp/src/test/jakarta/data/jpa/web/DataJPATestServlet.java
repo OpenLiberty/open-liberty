@@ -2269,6 +2269,61 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Repository method that queries by an Instant attribute and retrieves an
+     * entity that includes the Instant attribute.
+     */
+    // TODO requires #28813 to fix java.time.Instant DateTimeParseException
+    //@Test
+    public void testInstant() {
+        final ZoneId EASTERN = ZoneId.of("America/New_York");
+        final Instant apr_28_2023 = ZonedDateTime.of(2023, 4, 28,
+                                                     12, 0, 0, 0,
+                                                     EASTERN)
+                        .toInstant();
+
+        DemographicInfo info = demographics.read(apr_28_2023).orElseThrow();
+
+        assertEquals(apr_28_2023,
+                     info.collectedOn);
+
+        assertEquals(134060000L,
+                     info.numFullTimeWorkers.longValue());
+
+        assertEquals(6852746625848.93,
+                     info.intragovernmentalDebt.doubleValue(),
+                     0.01);
+
+        assertEquals(24605068022566.94,
+                     info.publicDebt.doubleValue(),
+                     0.01);
+    }
+
+    /**
+     * Repository method that queries by the year component of an Instant attribute.
+     */
+    @Test
+    public void testInstantExtractYear() {
+
+        assertEquals(30189.32,
+                     demographics.publicDebtPerFullTimeWorker(2002)
+                                     .orElseThrow()
+                                     .doubleValue(),
+                     0.01);
+
+        assertEquals(102683.76,
+                     demographics.publicDebtPerFullTimeWorker(2013)
+                                     .orElseThrow()
+                                     .doubleValue(),
+                     0.01);
+
+        assertEquals(205374.53,
+                     demographics.publicDebtPerFullTimeWorker(2024)
+                                     .orElseThrow()
+                                     .doubleValue(),
+                     0.01);
+    }
+
+    /**
      * Use a repository method with a Query that hard codes a literal for a double value in E notation,
      * as is done in an example within the spec.
      */
