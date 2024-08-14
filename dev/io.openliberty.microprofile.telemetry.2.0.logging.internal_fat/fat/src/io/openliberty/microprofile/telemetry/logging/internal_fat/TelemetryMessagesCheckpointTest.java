@@ -9,6 +9,8 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal_fat;
 
+import static io.openliberty.microprofile.telemetry.logging.internal_fat.TelemetryMessagesTest.APP_NAME;
+import static io.openliberty.microprofile.telemetry.logging.internal_fat.TelemetryMessagesTest.SERVER_NAME;
 import static io.openliberty.microprofile.telemetry.logging.internal_fat.TelemetryMessagesTest.testTelemetryMessages;
 import static org.junit.Assert.assertNull;
 
@@ -17,7 +19,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
+
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -28,14 +33,19 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @CheckpointTest
 public class TelemetryMessagesCheckpointTest extends FATServletClient {
 
-    public static final String SERVER_NAME = "TelemetryMessage";
-
-    public static LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+    @Server(SERVER_NAME)
+    public static LibertyServer server;
 
     @BeforeClass
-    public static void initialSetup() throws Exception {
+    public static void testSetup() throws Exception {
+        setupServerApp(LibertyServerFactory.getLibertyServer(SERVER_NAME));
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START);
         server.startServer();
+    }
+
+    static LibertyServer setupServerApp(LibertyServer s) throws Exception {
+        ShrinkHelper.defaultApp(s, APP_NAME, "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp");
+        return s;
     }
 
     /**

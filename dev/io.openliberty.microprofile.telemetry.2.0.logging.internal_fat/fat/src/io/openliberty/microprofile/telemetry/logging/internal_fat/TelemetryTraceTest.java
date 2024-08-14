@@ -18,9 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -37,26 +36,20 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class TelemetryTraceTest extends FATServletClient {
 
-    private static Class<?> c = TelemetryTraceTest.class;
-
     public static final String SERVER_NAME = "TelemetryTrace";
     public static final String APP_NAME = "MpTelemetryLogApp";
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    @Before
-    public void testSetup() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp");
+    @BeforeClass
+    public static void testSetup() throws Exception {
+        setupApp(server);
         server.startServer();
-
     }
 
-    @After
-    public void testTearDown() throws Exception {
-        if (server != null && server.isStarted()) {
-            server.stopServer();
-        }
+    static void setupApp(LibertyServer s) throws Exception {
+        ShrinkHelper.defaultApp(s, APP_NAME, "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp");
     }
 
     /**
