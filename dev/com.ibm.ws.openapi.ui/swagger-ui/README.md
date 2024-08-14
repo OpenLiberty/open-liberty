@@ -25,11 +25,11 @@ There are slight differences between the UI presented for the `openapi-3.x` and 
 
 The code is not built as part of the liberty build. Instead, it's built locally and the built output is checked in (in the dist folder). During the liberty build, the built files are included into the bundles where they're needed by bnd.
 
-To build, first make sure you have npm 8.x installed and available on your path.
+To build, first make sure you have npm 10.x installed and available on your path.
 
 ```
 $ npm --version
-8.1.2
+10.5.0
 ```
 
 Then run
@@ -51,51 +51,14 @@ When started like this, it expects to be able to load an openapi document from `
 
 ### Updating dependencies
 
-1. make sure you have npm 8.x installed and available on your path.
+1. Make sure you have npm 10.x installed and available on your path.
 
    ```
    $ npm --version
-   8.1.2
+   10.5.0
    ```
 
-1. Check for outdated packages (note this command uses **`npx`** not `npm`. It may ask to install `npm-check-updates`)
-   ```
-   npx npm-check-updates
-   ```
-
-   This will list all of our dependencies which have updates, with the current version and the version they can be updated to.
-
-   Take note of whether there's an updated version of `swagger-ui`. If so, there will be an extra step later.
-
-1. Update all our dependencies to the latest compatible version
-   ```
-   npx npm-check-updates -u
-   npm update
-   ```
-   
-   `git status` should now show that `package.json` and `package-lock.json` have been updated.
-
-1. If there was an updated version of `swagger-ui`, you must update the files under `src/style/original` using **one** of the following two options:
-
-   1. Go to the [Swagger UI releases page][swagger-ui-releases] and download the source code zip for the release which matches the version of swagger-ui listed in `package.json`.
-      Extract the files from `src/style` in the release zip to `src/style/original` under this directory.
-
-   1. Run the following commands from this directory, replacing `X.Y.Z` with the version of swagger-ui listed in `package.json` (`git` newer than 1.6.5 is required):
-
-      ```
-      git clone --depth 1 -b vX.Y.Z git@github.com:swagger-api/swagger-ui.git swagger-ui-src
-      rm src/style/original/*
-      cp swagger-ui-src/src/style/* src/style/original
-      rm -rf swagger-ui-src
-      ```
-
-1. Rebuild our extended Swagger UI using the new dependencies:
-
-   ```
-   npm run build -- --mode=production
-   ```
-
-   This will update the files under `/dist`.
+1. Run `update-openapi-ui.sh`
 
 1. Rebuild the liberty bundles which include the built Swagger UI files. From the open-liberty `dev` directory:
    ```
@@ -110,7 +73,8 @@ When started like this, it expects to be able to load an openapi document from `
      * Deleting the existing `.css` file in `dist` and creating a new one with a different filename
    * Updating the `.html` files in `dist` with the new `.js` and `.css` file names
 
-1. Make a PR and run a personal build.
+1. Make a PR and run a personal build
+   * Add `#spawn.fullfat.buckets=io.openliberty.microprofile.openapi.ui.internal_fat,com.ibm.ws.openapi.ui_fat` to the request to run the Selenium UI tests
 
 1. Using the result of your personal build, follow the manual test plan available at https://github.com/OpenLiberty/openapi-ui-test-app
 
