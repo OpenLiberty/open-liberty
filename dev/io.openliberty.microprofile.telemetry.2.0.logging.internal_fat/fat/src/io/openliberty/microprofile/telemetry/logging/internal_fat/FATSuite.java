@@ -18,12 +18,18 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -36,10 +42,20 @@ import componenttest.topology.utils.HttpUtils;
                 TelemetrySourcesTest.class,
                 TelemetryApplicationConfigTest.class,
                 TelemetryDropinsTest.class
-                //TelemetryAgentJULMessagesTest.class, // To Do: Move this to the mpTelemetry logs container FAT
 })
 
 public class FATSuite {
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(FeatureReplacementAction.ALL_SERVERS,
+                                                             TestMode.FULL,
+                                                             MicroProfileActions.MP70_EE11,
+                                                             TelemetryActions.MP14_MPTEL20,
+                                                             TelemetryActions.MP41_MPTEL20,
+                                                             TelemetryActions.MP50_MPTEL20,
+                                                             TelemetryActions.MP50_MPTEL20_JAVA8,
+                                                             MicroProfileActions.MP70_EE10);
+
     private static final int CONN_TIMEOUT = 10;
 
     static void hitWebPage(LibertyServer server, String contextRoot, String servletName, boolean failureAllowed,
