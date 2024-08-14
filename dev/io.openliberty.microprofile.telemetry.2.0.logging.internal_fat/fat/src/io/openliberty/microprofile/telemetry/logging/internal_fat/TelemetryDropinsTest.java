@@ -69,8 +69,6 @@ public class TelemetryDropinsTest extends FATServletClient {
     public void testTelemetryDropinAppSDK() throws Exception {
         server.startServer();
 
-        String serverStartLine = server.waitForStringInLog("CWWKF0011I", 15000, server.getConsoleLogFile());
-
         WebArchive app = ShrinkWrap
                         .create(WebArchive.class, "MpTelemetryLogApp.war")
                         .addPackage(
@@ -79,8 +77,6 @@ public class TelemetryDropinsTest extends FATServletClient {
                                                "microprofile-config.properties");
 
         ShrinkHelper.exportDropinAppToServer(server, app);
-
-        String appStartLine = server.waitForStringInLog("CWWKZ0001I", 15000, server.getConsoleLogFile());
 
         String runtimeLine = server.waitForStringInLog("Runtime OTEL instance is being configured", 10000, server.getConsoleLogFile());
         TestUtils.runApp(server, "logServlet");
@@ -116,12 +112,8 @@ public class TelemetryDropinsTest extends FATServletClient {
         server.addEnvVar("OTEL_SDK_DISABLED", "false");
         server.startServer();
 
-        String serverStartLine = server.waitForStringInLog("CWWKF0011I", 15000, server.getConsoleLogFile());
-
         WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME, "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp");
         ShrinkHelper.exportDropinAppToServer(server, app);
-
-        String appStartLine = server.waitForStringInLog("CWWKZ0001I", 15000, server.getConsoleLogFile());
 
         String runtimeLine = server.waitForStringInLog("Returning io.openliberty.microprofile.telemetry.runtime OTEL instance.", 5000, server.getConsoleLogFile());
 

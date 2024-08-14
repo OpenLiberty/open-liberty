@@ -20,13 +20,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.CheckpointTest;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
-import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 /**
  * HTTP request tracing tests
@@ -49,7 +47,6 @@ public class TelemetryTraceCheckpointTest extends FATServletClient {
      * Ensures trace logs are bridged and all attributes are present.
      */
     @Test
-    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID }) //Checkpoint only supports MP4.1 and higher.
     public void testTelemetryTraceCheckpoint() throws Exception {
         testTelemetryTrace(server, (linesConsoleLog) -> {
             assertNull("Should not contain early traces from checkpoint",

@@ -12,9 +12,9 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal.fat.ffdc.servlet;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 
 @WebServlet(urlPatterns = "/FFDCInInitServlet", loadOnStartup = 1)
 public class FFDCInInitServlet extends HttpServlet {
