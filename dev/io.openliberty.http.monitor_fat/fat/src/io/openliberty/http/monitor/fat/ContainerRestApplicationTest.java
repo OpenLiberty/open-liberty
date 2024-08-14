@@ -49,7 +49,7 @@ public class ContainerRestApplicationTest extends BaseTestClass {
     private static Class<?> c = ContainerRestApplicationTest.class;
 
     private static final String SERVER_NAME = "ContainerRestServer";
-    private static final String SERVICE_NAME = FATSuite.getAppNameOrUnkownService(Constants.REST_APP);
+    private static final String SERVICE_NAME = FATSuite.getAppNameOrUnknownService(Constants.REST_APP);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

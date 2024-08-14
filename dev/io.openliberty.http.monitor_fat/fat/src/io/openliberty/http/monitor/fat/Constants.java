@@ -51,7 +51,7 @@ public class Constants {
     static final String JSP_CONTEXT_ROOT = "/jspApp";
 
     //other
-    static final String UNKOWN_SERVICE = "unknown_service:java";
+    static final String UNKNOWN_SERVICE = "unknown_service:java";
 
-    static final String OTEL_SERVICE_NOT_SET = "unkown_service";
+    static final String OTEL_SERVICE_NOT_SET = "unknown_service";
 }

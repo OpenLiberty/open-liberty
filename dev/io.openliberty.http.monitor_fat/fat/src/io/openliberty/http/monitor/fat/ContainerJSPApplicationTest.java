@@ -41,7 +41,7 @@ public class ContainerJSPApplicationTest extends BaseTestClass {
     private static Class<?> c = ContainerJSPApplicationTest.class;
 
     private static final String SERVER_NAME = "ContainerJSPServer";
-    private static final String SERVICE_NAME = FATSuite.getAppNameOrUnkownService(Constants.JSP_APP);
+    private static final String SERVICE_NAME = FATSuite.getAppNameOrUnknownService(Constants.JSP_APP);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

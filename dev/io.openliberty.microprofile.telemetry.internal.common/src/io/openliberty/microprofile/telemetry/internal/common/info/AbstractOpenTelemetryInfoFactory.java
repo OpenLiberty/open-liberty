@@ -162,7 +162,7 @@ public abstract class AbstractOpenTelemetryInfoFactory implements OpenTelemetryI
     }
 
     //In app mode uses application name if the user has not given configured service.name resource attribute
-    //In runtime mode it uses the constant "unkown_service"
+    //In runtime mode it uses the constant "unknown_service"
     private String getServiceName(ConfigProperties c, boolean runtimeEnabled) {
         String serviceName = c.getString(OpenTelemetryConstants.SERVICE_NAME_PROPERTY);
         if (serviceName == null) {
@@ -175,7 +175,7 @@ public abstract class AbstractOpenTelemetryInfoFactory implements OpenTelemetryI
             }
 
             if (serviceName == null) {
-                serviceName = OpenTelemetryConstants.UNKOWN_SERVICE;
+                serviceName = OpenTelemetryConstants.UNKNOWN_SERVICE;
             }
         }
         return serviceName;

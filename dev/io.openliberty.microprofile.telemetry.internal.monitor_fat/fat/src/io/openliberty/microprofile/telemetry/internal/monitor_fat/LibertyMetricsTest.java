@@ -81,8 +81,8 @@ public class LibertyMetricsTest extends BaseTestClass {
 		TimeUnit.SECONDS.sleep(4);
 
 		matchStrings(getContainerCollectorMetrics(container), new String[] {
-				"io_openliberty_threadpool_active_threads\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_threadpool_name=\"Default Executor\",job=\"unkown_service\"\\}.*",
-				"io_openliberty_threadpool_size\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_threadpool_name=\"Default Executor\",job=\"unkown_service\"\\}.*",
+				"io_openliberty_threadpool_active_threads\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_threadpool_name=\"Default Executor\",job=\"unknown_service\"\\}.*",
+				"io_openliberty_threadpool_size\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_threadpool_name=\"Default Executor\",job=\"unknown_service\"\\}.*",
 				"io_openliberty_request_timing_active.*",
 				"io_openliberty_request_timing_slow.*",
 				"io_openliberty_request_timing_hung.*",
