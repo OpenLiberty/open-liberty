@@ -314,12 +314,11 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
         InetAddress addr;
         try {
             addr = InetAddress.getByName(hostname);
-            if (addr != null && addr.toString().startsWith("/"))
-                ext = "SAN=ip:" + hostname;
-            else {
-                // If the hostname start with a digit keytool will not create a SAN with the value
-                if (!Character.isDigit(hostname.charAt(0)))
-                    ext = "SAN=dns:" + hostname;
+            if (addr != null) {
+                if (!Character.isDigit(hostname.charAt(0)) && !hostname.equals("localhost"))
+                    ext = "SAN=dns:" + hostname + ",";
+                ext += "dns:localhost,";
+                ext += "ip:" + addr.getHostAddress();
             }
         } catch (UnknownHostException e) {
             // use return null and not set SAN if there is an exception here
