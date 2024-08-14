@@ -31,3 +31,7 @@ CRYPTO_INSECURE.useraction=Utiliza\u021bi algoritmul securizat sugerat.
 CRYPTO_INSECURE_REPLACED=CWWKS5901W: The {0} elementul de configurare specific\u0103 {1} algoritm criptografic nesigur.  The {2} se folose\u0219te \u00een schimb algoritmul securizat.
 CRYPTO_INSECURE_REPLACED.explanation=Algoritmul criptografic nesigur a fost \u00eenlocuit cu algoritmul securizat.
 CRYPTO_INSECURE_REPLACED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+CRYPTO_INSECURE_PROVIDER=CWWKS5902W: Elementul de configurare {0} utilizeaz\u0103 algoritmul criptografic nesigur {1} . Lua\u021bi \u00een considerare \u00eenlocuirea configura\u021biei cu un alt furnizor dac\u0103 securitatea este o problem\u0103.
+CRYPTO_INSECURE_PROVIDER.explanation=Algoritmul nu mai este considerat sigur din punct de vedere criptografic.
+CRYPTO_INSECURE_PROVIDER.useraction=Lua\u021bi \u00een considerare \u00eenlocuirea configura\u021biei cu un alt furnizor dac\u0103 securitatea este o problem\u0103.

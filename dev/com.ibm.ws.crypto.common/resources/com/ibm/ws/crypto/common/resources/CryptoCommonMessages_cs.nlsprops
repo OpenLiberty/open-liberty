@@ -31,3 +31,7 @@ CRYPTO_INSECURE.useraction=Pou\u017eijte navrhovan\u00fd bezpe\u010dn\u00fd algo
 CRYPTO_INSECURE_REPLACED=CWWKS5901W: The {0} konfigura\u010dn\u00ed prvek ur\u010duje {1} nezabezpe\u010den\u00fd kryptografick\u00fd algoritmus.  The {2} m\u00edsto toho se pou\u017e\u00edv\u00e1 bezpe\u010dn\u00fd algoritmus.
 CRYPTO_INSECURE_REPLACED.explanation=Nezabezpe\u010den\u00fd kryptografick\u00fd algoritmus byl nahrazen zabezpe\u010den\u00fdm algoritmem.
 CRYPTO_INSECURE_REPLACED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+CRYPTO_INSECURE_PROVIDER=CWWKS5902W: Konfigura\u010dn\u00ed prvek {0} pou\u017e\u00edv\u00e1 nezabezpe\u010den\u00fd kryptografick\u00fd algoritmus {1} . Pokud jde o zabezpe\u010den\u00ed, zva\u017ete nahrazen\u00ed konfigurace jin\u00fdm poskytovatelem.
+CRYPTO_INSECURE_PROVIDER.explanation=Algoritmus ji\u017e nen\u00ed pova\u017eov\u00e1n za kryptograficky bezpe\u010dn\u00fd.
+CRYPTO_INSECURE_PROVIDER.useraction=Pokud jde o zabezpe\u010den\u00ed, zva\u017ete nahrazen\u00ed konfigurace jin\u00fdm poskytovatelem.

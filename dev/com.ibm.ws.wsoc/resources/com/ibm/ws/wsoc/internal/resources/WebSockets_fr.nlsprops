@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2023 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -234,3 +234,7 @@ scheme.incorrect.error.useraction=Le type de sch\u00e9ma doit \u00eatre http, ht
 upgradeHttpToWebSocket.failed=CWWKH0055E: L''appel jakarta.websocket.server.ServerContainer#upgradeHttpToWebSocket a \u00e9chou\u00e9 en raison de {0}. 
 upgradeHttpToWebSocket.failed.explanation=Le serveur n'a pas pu mettre \u00e0 niveau la demande HTTP ou HTTPS vers le protocole ws/wss.
 upgradeHttpToWebSocket.failed.useraction=Examinez l'erreur pour identifier la raison pour laquelle la demande n'a pas pu \u00eatre mise \u00e0 niveau.
+
+maxmessagesize.exceeded=CWWKH0056E: La maxMessageSize de la m\u00e9thode {0} d\u00e9passe Integer.MAX_VALUE de la classe {1}.
+maxmessagesize.exceeded.explanation=Le param\u00e8tre d'annotation maxMessageSize OnMessage d\u00e9finit la taille maximale du message en octets pour une m\u00e9thode. maxMessageSize ne peut \u00eatre fix\u00e9 qu'\u00e0 une valeur maximale de Integer.MAX_VALUE.
+maxmessagesize.exceeded.useraction=R\u00e9duire la valeur du param\u00e8tre maxMessageSize \u00e0 un maximum de Integer.MAX_VALUE.
