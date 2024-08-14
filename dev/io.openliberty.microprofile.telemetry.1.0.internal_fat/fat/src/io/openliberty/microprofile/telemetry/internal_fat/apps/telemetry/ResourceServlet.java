@@ -48,7 +48,7 @@ public class ResourceServlet extends FATServlet {
         //Values come from https://github.com/open-telemetry/semantic-conventions-java/blob/release/v1.26.0/semconv/src/main/java/io/opentelemetry/semconv/ResourceAttributes.java
         osNameMap.put("windows", "windows");
         osNameMap.put("linux", "linux");
-        osNameMap.put("mac", "mac");
+        osNameMap.put("mac", "darwin");
         osNameMap.put("netbsd", "netbsd");
         osNameMap.put("openbsd", "openbsd");
         osNameMap.put("dragonflybsd", "dragonflybsd");

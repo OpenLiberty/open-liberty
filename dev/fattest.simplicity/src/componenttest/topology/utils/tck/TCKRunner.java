@@ -746,6 +746,7 @@ public class TCKRunner {
         Log.entering(c, "genericResolveJarPath", new Object[] { jarName, wlpPathName });
         String dev = wlpPathName + "/dev/";
         String api = dev + "api/";
+        String thirdParty = api + "third-party/";
         String apiStable = api + "stable/";
         String apiSpec = api + "spec/";
         String lib = wlpPathName + "/lib/";
@@ -754,6 +755,7 @@ public class TCKRunner {
         places.add(apiStable);
         places.add(apiSpec);
         places.add(lib);
+        places.add(thirdParty);
 
         String jarPath = null;
         for (String dir : places) {

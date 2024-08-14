@@ -13,26 +13,22 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.containers.TestContainerSuite;
-import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
+
 @RunWith(Suite.class)
-@MinimumJavaLevel(javaLevel = 11)
 @SuiteClasses({ 
 				LibertyMetricsTest.class,
 				SessionMetricsTest.class,
 				ConnectionPoolMetricsTest.class})
 public class FATSuite extends TestContainerSuite {
-	
+
     public static RepeatTests testRepeatMPTel20(String serverName) {
-        return RepeatTests.with(FeatureReplacementAction.EE11_FEATURES())
-                        .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly())
-                        .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
-                        .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-                        .andWith(FeatureReplacementAction.EE7_FEATURES().fullFATOnly());
-
+        return TelemetryActions
+                .repeat(serverName, MicroProfileActions.MP70_EE11, MicroProfileActions.MP70_EE10,
+                        TelemetryActions.MP50_MPTEL20_JAVA8, TelemetryActions.MP41_MPTEL20, TelemetryActions.MP14_MPTEL20);
     }
-
 }

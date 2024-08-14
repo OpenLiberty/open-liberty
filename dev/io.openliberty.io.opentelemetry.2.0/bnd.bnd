@@ -14,10 +14,10 @@
 
 bVersion=1.0
 
-openTelemetryVersion=1.35.0
-alphaOpenTelemetryVersion=1.35.0.alpha
-openTelemetryInstrumentationVersion=2.1.0
-alphaOpenTelemetryInstrumentationVersion=2.1.0.alpha
+openTelemetryVersion=1.39.0
+alphaOpenTelemetryVersion=1.39.0.alpha
+openTelemetryInstrumentationVersion=2.5.0
+alphaOpenTelemetryInstrumentationVersion=2.5.0.alpha
 alphaSemconvOpenTelemetryVersion=1.25.0.alpha
 
 javac.source: 1.8
@@ -101,7 +101,6 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 	io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-semconv;version='1.32.0.alpha';strategy=exact,\
 	io.opentelemetry.instrumentation:opentelemetry-runtime-telemetry-java8;version='2.4.0.alpha';strategy=exact,\
 	io.opentelemetry:opentelemetry-api;version='${openTelemetryVersion}';strategy=exact,\
-	io.opentelemetry:opentelemetry-api-events;version='${alphaOpenTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-context;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-exporter-logging;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-exporter-otlp-common;version='${openTelemetryVersion}';strategy=exact,\
@@ -110,7 +109,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 	io.opentelemetry:opentelemetry-exporter-sender-okhttp;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-exporter-zipkin;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-extension-trace-propagators;version='${openTelemetryVersion}';strategy=exact,\
-	io.opentelemetry:opentelemetry-extension-incubator;version='${alphaOpenTelemetryVersion}';strategy=exact,\
+	io.opentelemetry:opentelemetry-api-incubator;version='${alphaOpenTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-sdk;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-sdk-common;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi;version='${openTelemetryVersion}';strategy=exact,\

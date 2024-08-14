@@ -129,6 +129,7 @@ public abstract class BaseTestClass {
             String sURL = "http://" + server.getHostname() + ":"
                           + server.getHttpDefaultPort() + servletPath
                           + ((query != null) ? ("?" + query) : "");
+
             URL checkerServletURL = new URL(sURL);
             con = (HttpURLConnection) checkerServletURL.openConnection();
             con.setDoInput(true);
@@ -231,14 +232,14 @@ public abstract class BaseTestClass {
                                   + requestMethod
                                   + "\",http_response_status_code=\"" + responseStatus
                                   + "\",http_route=\"" + route
-                                  + "\",mp_scope=\"vendor\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\",\\} ";
+                                  + "\",mp_scope=\"vendor\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\",\\} ";
 
         String sumMatchString = "http_server_request_duration_seconds_sum\\{error_type=\"" + errorType
                                 + "\",http_request_method=\""
                                 + requestMethod
                                 + "\",http_response_status_code=\"" + responseStatus
                                 + "\",http_route=\"" + route
-                                + "\",mp_scope=\"vendor\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\",\\} ";
+                                + "\",mp_scope=\"vendor\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\",\\} ";
 
         return validatePrometheusHTTPMetricCount(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, count, countMatchString) &&
                validatePrometheusHTTPMetricSum(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, count, sumMatchString);
@@ -270,7 +271,7 @@ public abstract class BaseTestClass {
                                + "\",http_route=\"" + route
                                + "\",instance=\"[a-zA-Z0-9-]*\""
                                + ",job=\"" + appName
-                               + "\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
+                               + "\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
 
             sumMatchString = "http_server_request_duration_seconds_sum\\{http_request_method=\""
                              + requestMethod
@@ -278,7 +279,7 @@ public abstract class BaseTestClass {
                              + "\",http_route=\"" + route
                              + "\",instance=\"[a-zA-Z0-9-]*\""
                              + ",job=\"" + appName
-                             + "\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
+                             + "\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
         } else {
             countMatchString = "http_server_request_duration_seconds_count\\{error_type=\"" + errorType
                                + "\",http_request_method=\""
@@ -287,7 +288,7 @@ public abstract class BaseTestClass {
                                + "\",http_route=\"" + route
                                + "\",instance=\"[a-zA-Z0-9-]*\""
                                + ",job=\"" + appName
-                               + "\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
+                               + "\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
 
             sumMatchString = "http_server_request_duration_seconds_sum\\{error_type=\"" + errorType
                              + "\",http_request_method=\""
@@ -296,7 +297,7 @@ public abstract class BaseTestClass {
                              + "\",http_route=\"" + route
                              + "\",instance=\"[a-zA-Z0-9-]*\""
                              + ",job=\"" + appName
-                             + "\",network_protocol_name=\"HTTP\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
+                             + "\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
         }
 
         return validatePrometheusHTTPMetricCount(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, count, countMatchString)
@@ -403,5 +404,22 @@ public abstract class BaseTestClass {
         }
 
         return false;
+    }
+
+    protected boolean checkMBeanRegistered(LibertyServer server, String objectName) throws Exception {
+        //Get request automatically checks registration
+        boolean result = false;
+
+        String response = requestHttpServlet("/MBeanGetter/MBeanGetterServlet", server, HttpMethod.GET, "objectname=" + objectName);
+        response = response.trim();
+        if (response.equalsIgnoreCase("true")) {
+            result = true;
+        } else {
+            result = false;
+            Log.info(c, "checkMBeanRegistered", "Checking for Mbean registration failed. Here is the list of registered HTTP Mbeans: \n" + response);
+        }
+
+        return result;
+
     }
 }

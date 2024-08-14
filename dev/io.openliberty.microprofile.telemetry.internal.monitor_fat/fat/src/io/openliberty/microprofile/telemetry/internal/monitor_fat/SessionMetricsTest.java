@@ -43,7 +43,7 @@ public class SessionMetricsTest extends BaseTestClass {
 	public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests rt = FATSuite.testRepeatMPTel20("LibertyMetricServer");
+    public static RepeatTests rt = FATSuite.testRepeatMPTel20("SessionsMetricsServer");
 	
 	@ClassRule
 	public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
@@ -98,11 +98,11 @@ public class SessionMetricsTest extends BaseTestClass {
 		TimeUnit.SECONDS.sleep(4);
 
 		matchStrings(getContainerCollectorMetrics(container),
-                new String[] { "io_openliberty_session_created_total\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unkown_service\"\\}.*",
-                        "io_openliberty_session_live\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unkown_service\"\\}.*",
-                        "io_openliberty_session_active\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unkown_service\"\\}.*",
-                        "io_openliberty_session_invalidated_total\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unkown_service\"\\}.*",
-                        "io_openliberty_session_invalidated_by_timeout_total\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unkown_service\"\\}.*" });
+                new String[] { "io_openliberty_session_created_total\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unknown_service\"\\}.*",
+                        "io_openliberty_session_live\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unknown_service\"\\}.*",
+                        "io_openliberty_session_active\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unknown_service\"\\}.*",
+                        "io_openliberty_session_invalidated_total\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unknown_service\"\\}.*",
+                        "io_openliberty_session_invalidated_by_timeout_total\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unknown_service\"\\}.*" });
 
 	}
 	

@@ -27,34 +27,36 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
 public class TelemetryMessagesTest extends FATServletClient {
 
-    private static Class<?> c = TelemetryMessagesTest.class;
-
     public static final String APP_NAME = "MpTelemetryLogApp";
     public static final String SERVER_NAME = "TelemetryMessage";
 
-    public static LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);;
+    @Server(SERVER_NAME)
+    public static LibertyServer server;
 
     public static final String SERVER_XML_ALL_SOURCES = "allSources.xml";
 
     @Before
     public void testSetup() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp");
+        setupServerApp(server);
         server.startServer();
+    }
+
+    static LibertyServer setupServerApp(LibertyServer s) throws Exception {
+        ShrinkHelper.defaultApp(s, APP_NAME, "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp");
+        return s;
     }
 
     @After
     public void testTearDown() throws Exception {
-        if (server != null && server.isStarted()) {
-            server.stopServer();
-        }
+        server.stopServer();
     }
 
     /**
@@ -67,8 +69,8 @@ public class TelemetryMessagesTest extends FATServletClient {
 
     static void testTelemetryMessages(LibertyServer s, Consumer<List<String>> consoleConsumer) throws Exception {
         String line = s.waitForStringInLog("CWWKF0011I", s.getConsoleLogFile());
-        List<String> linesMessagesLog = s.findStringsInLogs("^(?!.*scopeInfo).*\\[.*$", server.getDefaultLogFile());
-        List<String> linesConsoleLog = s.findStringsInLogs(".*scopeInfo.*", server.getConsoleLogFile());
+        List<String> linesMessagesLog = s.findStringsInLogs("^(?!.*scopeInfo).*\\[.*$", s.getDefaultLogFile());
+        List<String> linesConsoleLog = s.findStringsInLogs(".*scopeInfo.*", s.getConsoleLogFile());
 
         if (consoleConsumer != null) {
             consoleConsumer.accept(linesConsoleLog);

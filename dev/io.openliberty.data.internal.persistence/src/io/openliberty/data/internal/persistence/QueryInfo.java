@@ -71,6 +71,13 @@ public class QueryInfo {
     }
 
     /**
+     * Primitive types for numeric values.
+     */
+    static final Set<Class<?>> PRIMITIVE_NUMERIC_TYPES = //
+                    Set.of(long.class, int.class, short.class, byte.class,
+                           double.class, float.class);
+
+    /**
      * Return types for deleteBy that distinguish delete-only from find-and-delete.
      */
     private static final Set<Class<?>> RETURN_TYPES_FOR_DELETE_ONLY = //

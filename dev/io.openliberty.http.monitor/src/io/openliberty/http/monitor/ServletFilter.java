@@ -51,6 +51,16 @@ public class ServletFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
+
+
+		if (!MonitorAppStateListener.isHTTPEnabled()) {
+			/*
+			 * If HTTP is not part of the monitor-1.0 attribute, lets skip all this logic
+			 * to save on performance
+			 */
+			filterChain.doFilter(servletRequest, servletResponse);
+			return;
+		}
 		
 		String appName = servletRequest.getServletContext().getAttribute("com.ibm.websphere.servlet.enterprise.application.name").toString();
 
