@@ -16,7 +16,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -26,8 +25,11 @@ import componenttest.topology.impl.LibertyServer;
 import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @RunWith(Suite.class)
-@MinimumJavaLevel(javaLevel = 11)
 @SuiteClasses({
+                NoAppMBeanTest.class,
+                ServletApplicationMBeanTest.class,
+                RestApplicationMbeanTest.class,
+                JSPApplicationMBeanTest.class,
                 NoAppTest.class,
                 JSPApplicationTest.class,
                 RestApplicationTest.class,
@@ -44,6 +46,15 @@ public class FATSuite extends TestContainerSuite {
         return TelemetryActions
                         .repeat(serverName, MicroProfileActions.MP70_EE11, MicroProfileActions.MP70_EE11_APP_MODE, MicroProfileActions.MP70_EE10,
                                 TelemetryActions.MP50_MPTEL20, TelemetryActions.MP41_MPTEL20, TelemetryActions.MP14_MPTEL20);
+    }
+
+    //Mbean tests are non MP related
+    public static RepeatTests testRepeatMBeanTests(String serverName) {
+        return RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly())
+                        .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+                        .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                        .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+                        .andWith(FeatureReplacementAction.EE11_FEATURES());
     }
 
     public static RepeatTests testRepeatMPTMetrics5(String serverName) {

@@ -344,8 +344,8 @@ public class HttpServerStatsMonitor extends StatisticActions {
 			sb.append(";httpRoute:" + route.replace("*", "\\*"));
 		});
 
-		errorType.ifPresent(route -> {
-			sb.append(";errorType:" + errorType);
+		errorType.ifPresent(error -> {
+			sb.append(";errorType:" + error);
 		});
 
 		sb.append("\""); // ending quote
