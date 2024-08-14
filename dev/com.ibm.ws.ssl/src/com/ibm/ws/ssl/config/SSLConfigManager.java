@@ -96,6 +96,23 @@ public class SSLConfigManager {
     private static final List<String> unSavedCfgs = new ArrayList<>();
     private static boolean messageIssued = false;
 
+    /*
+     * The outbound connection from the collective member to the controller in the
+     * collective is protected by SSL. This SSL configuration also represents
+     * the SSL certificate authentication for the connection.
+     */
+    private static final String CONTROLLER_SSL_CONFIG = "controllerConnectionConfig";
+
+    /*
+     * The outbound connection from the collective controller to a member server is
+     * protected by SSL. This SSL configuration also represents the SSL
+     * certificate authentication for the connection.
+     */
+    private static final String MEMBER_SSL_CONFIG = "memberConnectionConfig";
+
+    // Collective controller and member serverIdentity
+    private static final String SERVER_IDENTITY = "serverIdentity";
+
     /**
      * Private constructor, use getInstance().
      */
@@ -433,16 +450,20 @@ public class SSLConfigManager {
 
         // READ KEYSTORE OBJECT(S)
         WSKeyStore wsks_key = null;
-        String keyStoreName = (String) map.get(LibertyConstants.KEY_KEYSTORE_REF);
-        if (null != keyStoreName) {
-            wsks_key = KeyStoreManager.getInstance().getKeyStore(keyStoreName);
+        String keyStoreName = null;
+        String alias = null;
+        String keyStoreRef = (String) map.get(LibertyConstants.KEY_KEYSTORE_REF);
+        if (null != keyStoreRef) {
+            wsks_key = KeyStoreManager.getInstance().getKeyStore(keyStoreRef);
         }
 
         if (wsks_key != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Adding keystore properties from KeyStore object.");
-            sslprops.setProperty(Constants.SSLPROP_KEY_STORE_NAME, keyStoreName);
+            sslprops.setProperty(Constants.SSLPROP_KEY_STORE_NAME, keyStoreRef);
             addSSLPropertiesFromKeyStore(wsks_key, sslprops);
+            //addSSLPorpertiesFromKeyStore actually set the SSL_PROP_KEY_STORE_NAME
+            keyStoreName = sslprops.getProperty(Constants.SSLPROP_KEY_STORE_NAME);
         }
 
         String trustStoreName = (String) map.get(LibertyConstants.KEY_TRUSTSTORE_REF);
@@ -533,12 +554,43 @@ public class SSLConfigManager {
         prop = (String) map.get("id");
         if (null != prop && !prop.isEmpty()) {
             sslprops.setProperty(Constants.SSLPROP_ALIAS, prop);
+            alias = prop;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.debug(tc, "keyStoreRef: " + keyStoreRef);
+            Tr.debug(tc, "keyStoreName: " + keyStoreName);
+            Tr.debug(tc, "sslAlias: " + alias);
         }
 
         Boolean hostnameVerification = (Boolean) map.get("verifyHostname");
-        if (null != hostnameVerification) {
-            sslprops.setProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, hostnameVerification.toString());
+        if (hostnameVerification != null && hostnameVerification) {
+            sslprops.setProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "true");
+
+            if (SERVER_IDENTITY.equalsIgnoreCase(keyStoreName) &&
+                (CONTROLLER_SSL_CONFIG.equalsIgnoreCase(alias) || MEMBER_SSL_CONFIG.equalsIgnoreCase(alias))) {
+                boolean isCollectiveCertSanExist = wsks_key.isCollectiveCertSubjectAltNamesExist(wsks_key, keyStoreName);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.debug(tc, alias + " isCollectiveCertSanExist: " + isCollectiveCertSanExist);
+                }
+                if (!isCollectiveCertSanExist) { //collective certificates do not have SAN so disable hostnameVerification
+                    sslprops.setProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "false");
+                    //Tr.warning(tc, "ssl.san.warning.CWPKI0050W", new Object[] { alias, ksName });
+                }
+            }
+
+            String skipHostnameVerificationForHosts = (String) map.get("skipHostnameVerificationForHosts");
+            if (skipHostnameVerificationForHosts != null && !skipHostnameVerificationForHosts.isEmpty())
+                sslprops.setProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS, skipHostnameVerificationForHosts);
+
+        } else {
+            sslprops.setProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "false");
+            Tr.warning(tc, "ssl.hnv.disabled.warning.CWPKI0063W", new Object[] { alias });
         }
+
+        String skipHostnameVerificationForHosts = (String) map.get("skipHostnameVerificationForHosts");
+        if (skipHostnameVerificationForHosts != null && !skipHostnameVerificationForHosts.isEmpty())
+            sslprops.setProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS, skipHostnameVerificationForHosts);
 
         Boolean useDefaultCerts = (Boolean) map.get("trustDefaultCerts");
         if (null != useDefaultCerts) {
@@ -573,8 +625,9 @@ public class SSLConfigManager {
             String value = wsks.getProperty(property);
             sslprops.setProperty(property, value);
         }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(tc, "addSSLPropertiesFromKeyStore");
+            Tr.exit(tc, "addSSLPropertiesFromKeyStore: " + sslprops.toString());
     }
 
     /**
@@ -1213,7 +1266,7 @@ public class SSLConfigManager {
 
         if (urlHostNameVerification == null || urlHostNameVerification.equalsIgnoreCase("false") || urlHostNameVerification.equalsIgnoreCase("no")) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "com.ibm.ssl.performURLHostNameVerification disabled");
+                Tr.debug(tc, "com.ibm.ssl.performURLHostNameVerification disabled, disabling HttpsURLConnection default verifier");
             HostnameVerifier verifier = new HostnameVerifier() {
                 @Override
                 public boolean verify(String urlHostname, SSLSession session) {

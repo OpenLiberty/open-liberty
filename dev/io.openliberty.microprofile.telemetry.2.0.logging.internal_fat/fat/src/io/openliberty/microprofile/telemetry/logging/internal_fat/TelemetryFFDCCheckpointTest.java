@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 
 import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
@@ -38,7 +39,8 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 @CheckpointTest
 public class TelemetryFFDCCheckpointTest extends FATServletClient {
 
-    private static LibertyServer server;
+    @Server(SERVER_NAME)
+    public static LibertyServer server;
 
     @ClassRule
     public static RepeatTests rt = FATSuite.testRepeatMPTel20();

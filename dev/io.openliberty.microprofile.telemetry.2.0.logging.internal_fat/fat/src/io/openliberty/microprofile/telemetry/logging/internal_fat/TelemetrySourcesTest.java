@@ -19,6 +19,7 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,9 +54,15 @@ public class TelemetrySourcesTest extends FATServletClient {
     public static final String SERVER_XML_NO_SOURCE = "noSource.xml";
     public static final String SERVER_XML_NO_TELEMETRY_ATTRIBUTE = "noTelemetryAttribute.xml";
     public static final String SERVER_XML_INVALID_SOURCE = "invalidSource.xml";
+    public static final String SERVER_XML_INVALID_AND_VALID_SOURCES = "invalidAndValidSources.xml";
     public static final String SERVER_XML_MESSAGE_SOURCE = "messageSource.xml";
 
     private static final String[] EXPECTED_FAILURES = { "CWMOT5005W", "SRVE0315E", "SRVE0777E" };
+
+    @BeforeClass
+    public static void initialSetup() throws Exception {
+        server.saveServerConfiguration();
+    }
 
     @Before
     public void testSetup() throws Exception {
@@ -70,6 +77,8 @@ public class TelemetrySourcesTest extends FATServletClient {
         if (server != null && server.isStarted()) {
             server.stopServer(EXPECTED_FAILURES);
         }
+
+        server.restoreServerConfiguration();
     }
 
     /*
@@ -232,6 +241,43 @@ public class TelemetrySourcesTest extends FATServletClient {
         String warningLine = server.waitForStringInLog("CWMOT5005W", server.getDefaultLogFile());
 
         assertNotNull("Unknown log source warning was not found.", warningLine);
+    }
+
+    /*
+     * Test a server with both invalid and valid MPTelemetry source attributes and ensure a warning is logged along with the messages being bridged.
+     * Source configuraton is as follows: <mpTelemetry source="message, fdc"/>
+     */
+    @Test
+    @ExpectedFFDC({ "java.lang.NullPointerException" })
+    public void testTelemetryInvalidAndValidSource() throws Exception {
+        RemoteFile consoleLogFile = server.getConsoleLogFile();
+        setConfig(SERVER_XML_INVALID_AND_VALID_SOURCES, consoleLogFile, server);
+
+        TestUtils.runApp(server, "logServlet");
+        TestUtils.runApp(server, "ffdc1");
+
+        String warningLine = server.waitForStringInLog("CWMOT5005W", server.getDefaultLogFile());
+        String messageLine = server.waitForStringInLog("info message", server.getConsoleLogFile());
+        String traceLine = server.waitForStringInLog("finest trace", 5000, server.getConsoleLogFile());
+        String ffdcLine = server.waitForStringInLog("liberty_ffdc", 5000, server.getConsoleLogFile());
+
+        Map<String, String> attributeMap = new HashMap<String, String>() {
+            {
+                put("io.openliberty.ext.app_name", "MpTelemetryLogApp");
+                put("io.openliberty.type", "liberty_message");
+                put("io.openliberty.module", "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp.MpTelemetryServlet");
+                put("thread.id", "");
+                put("thread.name", "");
+                put("io.openliberty.sequence", "");
+            }
+        };
+
+        assertNotNull("Unknown log source warning was not found.", warningLine);
+        assertNotNull("Info message log could not be found.", messageLine);
+        TestUtils.checkJsonMessage(messageLine, attributeMap);
+
+        assertNull("Trace message was found and should not have been bridged.", traceLine);
+        assertNull("FFDC message was found and should not have been bridged.", ffdcLine);
     }
 
     /*

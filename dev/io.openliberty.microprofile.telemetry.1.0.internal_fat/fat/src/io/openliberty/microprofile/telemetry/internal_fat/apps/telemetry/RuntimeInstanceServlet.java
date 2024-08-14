@@ -47,11 +47,11 @@ public class RuntimeInstanceServlet extends FATServlet {
     //See also ServiceNameServlet which shows what happens when it is undefind on Tel 2.0 but we
     //are not using the runtime instance.
     @Test
-    public void testServiceNameUnkownOnRuntimeInstance() {
+    public void testServiceNameUnknownOnRuntimeInstance() {
         Tracer tracer = openTelemetry.getTracer("config-test", "1.0.0");
         Span span = tracer.spanBuilder("testSpan").startSpan();
         span.end();
-        assertThat(openTelemetry.toString(), containsString("service.name=\"unkown_service\""));
+        assertThat(openTelemetry.toString(), containsString("service.name=\"unknown_service\""));
     }
 
     //Tests otel.sdk.disabled and spans work using the runtime mode

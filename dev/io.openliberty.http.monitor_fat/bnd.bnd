@@ -16,11 +16,12 @@ src: \
 	test-applications/RestApp/src,\
 	test-applications/ServletApp/src,\
 	test-applications/WildCardServletApp/src,\
-	test-applications/jspApp/src
+	test-applications/jspApp/src,\
+	test-applications/MBeanGetter/src
 
 fat.project: true
 
-fat.minimum.java.level: 11
+fat.minimum.java.level: 1.8
 
 tested.features:\
   restfulwsclient-3.0,\
@@ -53,8 +54,8 @@ tested.features:\
   jsp-2.2,\
   el-3.0
 
-javac.source: 11
-javac.target: 11
+javac.source: 1.8
+javac.target: 1.8
 
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
@@ -72,4 +73,5 @@ fat.test.container.images: otel/opentelemetry-collector-contrib:0.103.0
 	com.ibm.websphere.javaee.jaxrs.2.0,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-	io.openliberty.org.testcontainers;version=latest
+	io.openliberty.org.testcontainers;version=latest,\
+	io.openliberty.microprofile.telemetry.internal_fat.common

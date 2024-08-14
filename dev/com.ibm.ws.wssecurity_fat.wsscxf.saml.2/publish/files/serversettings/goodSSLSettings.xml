@@ -1,11 +1,12 @@
 <server>
-	<sslDefault sslRef="goodSSLConfig" />
+	<sslDefault sslRef="goodSSLConfig" httpHostNameVerification="false" />
 	<!--ssl id="goodSSLConfig" keyStoreRef="samlKeyStore" trustStoreRef="serverStore" 
 		/ -->
 	<ssl
 		id="goodSSLConfig"
 		keyStoreRef="samlKeyStore"
-		trustStoreRef="serverStore" />
+		trustStoreRef="serverStore"
+		verifyHostname="false" />
 	<keyStore
 		id="allKeyStore"
 		password="Liberty"

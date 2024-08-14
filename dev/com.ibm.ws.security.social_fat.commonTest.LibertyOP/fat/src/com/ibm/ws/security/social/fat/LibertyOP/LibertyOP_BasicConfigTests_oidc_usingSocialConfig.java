@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -114,7 +114,8 @@ public class LibertyOP_BasicConfigTests_oidc_usingSocialConfig extends Social_Ba
         "com.ibm.ws.security.social.error.SocialLoginException" })
     @Test
     public void Social_BasicConfigTests_hostNameVerificationEnabledTrue() throws Exception {
-
+        testOPServer.reconfigServer("op_server_hostNameVerify.xml", _testName, Constants.JUNIT_REPORTING, Constants.NO_EXTRA_MSGS);
+        genericTestServer.reconfigServer("server_LibertyOP_basicConfigTests_oidc_usingSocialConfig_hostNameVerify.xml", _testName, Constants.JUNIT_REPORTING, Constants.NO_EXTRA_MSGS);
         WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();

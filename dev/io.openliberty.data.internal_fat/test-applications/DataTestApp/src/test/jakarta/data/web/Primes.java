@@ -14,6 +14,8 @@ package test.jakarta.data.web;
 
 import static jakarta.data.repository.By.ID;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
@@ -55,12 +57,35 @@ public interface Primes {
     @Query("SELECT name WHERE numberId < 35 AND romanNumeral || name LIKE :pattern")
     List<String> concatAndMatch(String pattern, Sort<?> sort);
 
-    Integer countByNumberIdBetween(long first, long last);
+    BigDecimal countAsBigDecimalByNumberIdLessThan(long number);
+
+    BigInteger countAsBigIntegerByNumberIdLessThan(long number);
+
+    // boolean return type is not allowed for count methods
+    boolean countAsBooleanByNumberIdLessThan(long number);
+
+    int countAsIntByNumberIdLessThan(long number);
+
+    Integer countAsIntegerByNumberIdBetween(long first, long last);
+
+    long countAsLongByNumberIdLessThan(long number);
+
+    Long countAsLongWrapperByNumberIdLessThan(long number);
+
+    Number countAsNumberByNumberIdLessThan(long number);
+
+    short countAsShortByNumberIdLessThan(long number);
+
+    Short countAsShortWrapperByNumberIdLessThan(long number);
+
+    // The β symbol is used here because Byte starts with the By keyword
+    byte countAsβyteByNumberIdLessThan(long number);
+
+    // The β symbol is used here because Byte starts with the By keyword
+    Byte countAsβyteWrapperByNumberIdLessThan(long number);
 
     @Asynchronous
     CompletableFuture<Short> countByNumberIdBetweenAndEvenNot(long first, long last, boolean isOdd);
-
-    long countByNumberIdLessThan(long number);
 
     @Find
     Stream<Prime> find(boolean even, int sumOfBits, Limit limit, Sort<?>... sorts);
@@ -278,6 +303,43 @@ public interface Primes {
     @Query("SELECT prime.name, prime.hex FROM  Prime  prime  WHERE prime.numberId <= ?1")
     @OrderBy("numberId")
     Page<Object[]> namesWithHex(long maxNumber, PageRequest pagination);
+
+    @Query("SELECT numberId WHERE numberId=?1")
+    BigDecimal numberAsBigDecimal(long num);
+
+    @Query("SELECT numberId WHERE numberId=:num")
+    Optional<BigInteger> numberAsBigInteger(long num);
+
+    @Query("SELECT numberId WHERE numberId=?1")
+    byte numberAsByte(long num);
+
+    @Query("SELECT numberId WHERE numberId=:n")
+    Optional<Byte> numberAsByteWrapper(@Param("n") long num);
+
+    @Query("SELECT numberId WHERE ID(this)=?1")
+    double numberAsDouble(long num);
+
+    @Asynchronous
+    @Query("SELECT numberId WHERE id(THIS)=?1")
+    CompletableFuture<Optional<Float>> numberAsFloatWrapper(long num);
+
+    @Query("SELECT numberId WHERE Id(This)=?1")
+    int numberAsInt(long num);
+
+    @Query("SELECT numberId WHERE Id(This)=:num")
+    Optional<Integer> numberAsInteger(long num);
+
+    @Query("SELECT numberId WHERE id(this)=?1")
+    long numberAsLong(long num);
+
+    @Query("SELECT numberId WHERE id(this)=:num")
+    Optional<Long> numberAsLongWrapper(long num);
+
+    @Query("SELECT numberId WHERE ID(THIS)=?1")
+    short numberAsShort(long num);
+
+    @Query("SELECT numberId WHERE ID(THIS)=:num")
+    Optional<Short> numberAsShortWrapper(long num);
 
     @Insert
     void persist(Prime... primes);

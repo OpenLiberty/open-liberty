@@ -55,15 +55,13 @@ public class OpenTelemetryPropertiesReader {
     //TODO document exactly how this is different from the other
     public static HashMap<String, String> getRuntimeInstanceTelemetryProperties() {
         try {
-            HashMap<String, String> telemetryProperties = new HashMap<>();
+            final HashMap<String, String> telemetryProperties = new HashMap<>();
 
             AccessController.doPrivileged(new PrivilegedAction<String>() {
                 @Override
                 public String run() {
                     Map<String, String> envProperties = System.getenv();
                     Map<Object, Object> systemProperties = System.getProperties();
-
-                    HashMap<String, String> tempProperties = new HashMap<>();
 
                     //Check system environment for all configured OTEL properties
                     for (String propertyName : envProperties.keySet()) {
@@ -73,7 +71,7 @@ public class OpenTelemetryPropertiesReader {
                             String propertyValue = envProperties.get(propertyName);
 
                             if (propertyValue != null)
-                                tempProperties.put(normalizedName, propertyValue);
+                                telemetryProperties.put(normalizedName, propertyValue);
                         }
                     }
 
@@ -84,19 +82,13 @@ public class OpenTelemetryPropertiesReader {
                         if (normalizedName.startsWith("otel")) {
                             String propertyValue = (String) systemProperties.get(propertyName);
 
-                            if (tempProperties.containsKey(normalizedName))
-                                tempProperties.remove(normalizedName);
+                            if (telemetryProperties.containsKey(normalizedName))
+                                telemetryProperties.remove(normalizedName);
 
                             if (propertyValue != null)
-                                tempProperties.put(normalizedName, propertyValue);
+                                telemetryProperties.put(normalizedName, propertyValue);
                         }
 
-                    }
-
-                    //Only add telemetry properties if OTEL is enabled.
-                    if (tempProperties.containsKey(OpenTelemetryConstants.CONFIG_DISABLE_PROPERTY)
-                        && "false".equalsIgnoreCase(tempProperties.get(OpenTelemetryConstants.CONFIG_DISABLE_PROPERTY))) {
-                        telemetryProperties.putAll(tempProperties);
                     }
                     return null;
                 }
@@ -123,6 +115,22 @@ public class OpenTelemetryPropertiesReader {
             return Boolean.valueOf(oTelConfigs.get(OpenTelemetryConstants.CONFIG_DISABLE_PROPERTY));
         }
         return true;
+    }
+
+    /**
+     * Reads the oTelConfigs to see if open telemetry is explicitly disabled. Call this with the result of one of the two methods above
+     *
+     * @param oTelConfigs a map of open telemetry configuration properties acquired by {@link getTelemetryProperties} or {@link getRuntimeInstanceTelemetryProperties}
+     * @return true if Open Telemetry is explicitly disabled otherwise false
+     */
+    public static boolean checkExplicitlyDisabled(Map<String, String> oTelConfigs) {
+        //In order to enable any of the tracing aspects, the configuration otel.sdk.disabled=false must be specified in any of the configuration sources available via MicroProfile Config.
+        if (oTelConfigs.get(OpenTelemetryConstants.ENV_DISABLE_PROPERTY) != null) {
+            return Boolean.valueOf(oTelConfigs.get(OpenTelemetryConstants.ENV_DISABLE_PROPERTY));
+        } else if (oTelConfigs.get(OpenTelemetryConstants.CONFIG_DISABLE_PROPERTY) != null) {
+            return Boolean.valueOf(oTelConfigs.get(OpenTelemetryConstants.CONFIG_DISABLE_PROPERTY));
+        }
+        return false;
     }
 
 }

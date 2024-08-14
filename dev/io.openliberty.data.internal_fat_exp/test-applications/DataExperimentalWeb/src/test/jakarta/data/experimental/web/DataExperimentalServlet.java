@@ -158,9 +158,9 @@ public class DataExperimentalServlet extends FATServlet {
 
         assertEquals(104.99f, items.lowestPrice(), 0.001f);
 
-        assertEquals(200.99f, items.meanPrice(), 0.001f);
+        assertEquals(200.99, items.meanPrice(), 0.001f);
 
-        assertEquals(698.97f, items.totalOfDistinctPrices(), 0.001f);
+        assertEquals(698.97, items.totalOfDistinctPrices(), 0.001f);
 
         // EclipseLink says that multiple distinct attribute are not support at this time,
         // so we are testing this with distinct=false

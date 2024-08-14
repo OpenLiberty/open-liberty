@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,8 +41,9 @@ public class MessageConstants {
     public static final String SRVE8114W_CANNOT_SET_SESSION_COOKIE = "SRVE8114W";
 
     public static final String SSL_NOT_RESTARTED_PROPERLY = "SSL may not have started properly";
-    
+
     public static final String CWWKS5215E_NO_AVAILABLE_SP = "CWWKS5215E";
 
+    public static final String CWPKI0063W_HOSTNAME_VERIFICATION_DISABLED = "CWPKI0063W";
 
 }

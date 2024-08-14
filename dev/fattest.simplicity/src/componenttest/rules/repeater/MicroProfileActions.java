@@ -363,6 +363,7 @@ public class MicroProfileActions {
     public static final String MP61_ID = JakartaEE10Action.ID + "_MicroProfile_61";
     public static final String MP70_EE10_ID = JakartaEE10Action.ID + "_MicroProfile_70";
     public static final String MP70_EE11_ID = JakartaEE11Action.ID + "_MicroProfile_70";
+    public static final String MP70_EE11_APP_MODE_ID = MP70_EE11_ID + "_App_Mode";
 
     //The MicroProfile FeatureSets
     public static final FeatureSet MP10 = new FeatureSet(MP10_ID, MP10_FEATURE_SET, EEVersion.EE7);
@@ -382,6 +383,7 @@ public class MicroProfileActions {
     public static final FeatureSet MP61 = new FeatureSet(MP61_ID, MP61_FEATURE_SET, EEVersion.EE10);
     public static final FeatureSet MP70_EE10 = new FeatureSet(MP70_EE10_ID, MP70_EE10_FEATURE_SET, EEVersion.EE10);
     public static final FeatureSet MP70_EE11 = new FeatureSet(MP70_EE11_ID, MP70_EE11_FEATURE_SET, EEVersion.EE11);
+    public static final FeatureSet MP70_EE11_APP_MODE = new FeatureSet(MP70_EE11_APP_MODE_ID, MP70_EE11_FEATURE_SET, EEVersion.EE11);
 
     //All MicroProfile FeatureSets - must be descending order
     private static final FeatureSet[] ALL_SETS_ARRAY = { MP70_EE11, MP70_EE10, MP61, MP60, MP50, MP41, MP40, MP33, MP32, MP30, MP22, MP21, MP20, MP14, MP13, MP12, MP10 };

@@ -34,6 +34,7 @@ import java.time.OffsetDateTime;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -455,6 +456,142 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals("Springfield", list.get(1).name());
         assertEquals("Missouri", list.get(1).stateName());
         assertEquals(Set.of(417), list.get(1).areaCodes());
+    }
+
+    /**
+     * Use repository methods that convert a BigInteger value to other
+     * numeric types.
+     */
+    @Test
+    public void testConvertBigDecimalValue() {
+        ZoneId ET = ZoneId.of("America/New_York");
+        Instant when = ZonedDateTime.of(2024, 4, 30, 12, 0, 0, 0, ET)
+                        .toInstant();
+
+        assertEquals(27480960216618.32,
+                     demographics.publicDebtAsBigDecimal(when)
+                                     .doubleValue(),
+                     1.0);
+
+        try {
+            Optional<BigInteger> i = demographics.publicDebtAsBigInteger(when);
+            // TODO is BigDecimal.toBigIntegerExact() broken?
+            // or are the fractional digits not being included?
+            //fail("Should not convert BigDecimal 27480960216618.32 to BigInteger " + i);
+            assertEquals(27480960216618L,
+                         i.orElseThrow().longValue());
+        } catch (MappingException x) {
+            if (x.getCause() instanceof ArithmeticException)
+                ; // expected - out of range
+            else
+                throw x;
+        }
+
+        try {
+            byte b = demographics.publicDebtAsByte(when);
+            fail("Should not convert BigDecimal 27480960216618.32 to byte " + b);
+        } catch (MappingException x) {
+            if (x.getCause() instanceof ArithmeticException)
+                ; // expected - out of range
+            else
+                throw x;
+        }
+
+        try {
+            Double d = demographics.publicDebtAsDouble(when);
+            fail("Should not convert BigDecimal 27480960216618.32 to Double " + d);
+        } catch (MappingException x) {
+            // expected - out of range
+        }
+
+        try {
+            Optional<Float> f = demographics.publicDebtAsFloat(when);
+            fail("Should not convert BigDecimal 27480960216618.32 to Float " + f);
+        } catch (MappingException x) {
+            // expected - out of range
+        }
+
+        try {
+            int i = demographics.publicDebtAsInt(when);
+            fail("Should not convert BigDecimal 27480960216618.32 to int " + i);
+        } catch (MappingException x) {
+            // expected - out of range
+        }
+
+        try {
+            Long l = demographics.publicDebtAsLong(when);
+            // TODO is BigDecimal.longValueExact() broken?
+            // or are the fractional digits not being included?
+            //fail("Should not convert BigDecimal 27480960216618.32 to Long " + l);
+            assertEquals(Long.valueOf(27480960216618L),
+                         l);
+        } catch (MappingException x) {
+            // expected - out of range
+        }
+
+        try {
+            Optional<Short> s = demographics.publicDebtAsShort(when);
+            fail("Should not convert BigDecimal 27480960216618.32 to Short " + s);
+        } catch (MappingException x) {
+            // expected - out of range
+        }
+    }
+
+    /**
+     * Use repository methods that convert a BigInteger value to other
+     * numeric types.
+     */
+    @Test
+    public void testConvertBigIntegerValue() {
+        ZoneId ET = ZoneId.of("America/New_York");
+        Instant when = ZonedDateTime.of(2024, 4, 30, 12, 0, 0, 0, ET)
+                        .toInstant();
+
+        assertEquals(133809000L,
+                     demographics.numFullTimeWorkersAsBigDecimal(when)
+                                     .orElseThrow()
+                                     .longValueExact());
+
+        assertEquals(133809000L,
+                     demographics.numFullTimeWorkersAsBigInteger(when)
+                                     .longValueExact());
+
+        try {
+            Optional<Byte> b = demographics.numFullTimeWorkersAsByte(when);
+            fail("Should not convert BigInteger 133809000 to byte value " + b);
+        } catch (MappingException x) {
+            // expected - out of range
+        }
+
+        try {
+            Double d = demographics.numFullTimeWorkersAsDouble(when);
+            fail("Should not convert BigInteger 133809000 to Double value " + d);
+        } catch (MappingException x) {
+            // expected - not convertible
+        }
+
+        try {
+            float f = demographics.numFullTimeWorkersAsFloat(when);
+            fail("Should not convert BigInteger 133809000 to float value " + f);
+        } catch (MappingException x) {
+            // expected - not convertible
+        }
+
+        assertEquals(Integer.valueOf(133809000),
+                     demographics.numFullTimeWorkersAsInteger(when)
+                                     .toCompletableFuture()
+                                     .join()
+                                     .orElseThrow());
+
+        assertEquals(133809000L,
+                     demographics.numFullTimeWorkersAsLong(when));
+
+        try {
+            short s = demographics.numFullTimeWorkersAsShort(when);
+            fail("Should not convert BigInteger 133809000 to short value " + s);
+        } catch (MappingException x) {
+            // expected - out of range
+        }
     }
 
     /**

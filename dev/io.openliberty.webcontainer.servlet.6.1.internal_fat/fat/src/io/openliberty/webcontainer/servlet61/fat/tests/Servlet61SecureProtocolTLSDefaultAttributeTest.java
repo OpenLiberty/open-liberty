@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.BufferedReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -49,6 +50,7 @@ public class Servlet61SecureProtocolTLSDefaultAttributeTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        server.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
         LOG.info("Setup : servlet61_SecureProtocolTLSv1_3AttributeTest.");
         ShrinkHelper.defaultDropinApp(server, TEST_APP_NAME + ".war", "secureprotocol.servlets");
 

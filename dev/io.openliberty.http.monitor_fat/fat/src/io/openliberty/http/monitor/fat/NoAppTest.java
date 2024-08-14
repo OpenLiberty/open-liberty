@@ -11,11 +11,16 @@ package io.openliberty.http.monitor.fat;
 
 import static org.junit.Assert.assertTrue;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -40,6 +45,14 @@ public class NoAppTest extends BaseTestClass {
     @BeforeClass
     public static void beforeClass() throws Exception {
         trustAll();
+
+        WebArchive testWAR = ShrinkWrap
+                        .create(WebArchive.class, "MBeanGetter.war")
+                        .addPackage(
+                                    "io.openliberty.http.monitor.fat.mbeanGetter");
+
+        ShrinkHelper.exportDropinAppToServer(server, testWAR,
+                                             DeployOptions.SERVER_ONLY);
 
         server.startServer();
 

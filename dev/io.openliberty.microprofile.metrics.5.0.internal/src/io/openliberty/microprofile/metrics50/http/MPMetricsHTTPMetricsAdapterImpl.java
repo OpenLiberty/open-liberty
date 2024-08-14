@@ -24,6 +24,7 @@ import org.osgi.service.component.annotations.Reference;
 import io.openliberty.http.monitor.HttpStatAttributes;
 import io.openliberty.http.monitor.metrics.HTTPMetricAdapter;
 import io.openliberty.microprofile.metrics50.SharedMetricRegistries;
+import io.openliberty.microprofile.metrics50.helper.Constants;
 
 /**
  *
@@ -51,8 +52,8 @@ public class MPMetricsHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
 
         MetricRegistry vendorRegistry = sharedMetricRegistries.getOrCreate(MetricRegistry.VENDOR_SCOPE);
 
-        Metadata md = new MetadataBuilder().withName("http.server.request.duration")
-                .withDescription("Duration of HTTP server requests").build();
+        Metadata md = new MetadataBuilder().withName(Constants.HTTP_SERVER_REQUEST_DURATION_NAME)
+                .withDescription(Constants.HTTP_SERVER_REQUEST_DURATION_DESC).build();
 
         Timer httpTimer = vendorRegistry.timer(md, retrieveTags(httpStatAttributes));
         httpTimer.update(duration);
@@ -61,25 +62,25 @@ public class MPMetricsHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
 
     private Tag[] retrieveTags(HttpStatAttributes httpStatAttributes) {
 
-        Tag requestMethod = new Tag("http_request_method", httpStatAttributes.getRequestMethod());
-        Tag scheme = new Tag("url_scheme", httpStatAttributes.getScheme());
+        Tag requestMethodTag = new Tag(Constants.HTTP_REQUEST_METHOD, httpStatAttributes.getRequestMethod());
+        Tag urlSchemeTag = new Tag(Constants.URL_SCHEME, httpStatAttributes.getScheme());
 
         Integer status = httpStatAttributes.getResponseStatus().orElse(-1);
-        Tag responseStatusTag = new Tag("http_response_status_code", status == -1 ? "" : status.toString().trim());
+        Tag responseStatusTag = new Tag(Constants.HTTP_RESPONSE_STATUS_CODE,
+                status == -1 ? "" : status.toString().trim());
 
-        Tag httpRouteTag = new Tag("http_route", httpStatAttributes.getHttpRoute().orElse(""));
+        Tag httpRouteTag = new Tag(Constants.HTTP_ROUTE, httpStatAttributes.getHttpRoute().orElse(""));
 
-        Tag networkProtoclNameTag = new Tag("network_protocol_name", httpStatAttributes.getNetworkProtocolName());
-        Tag networkProtocolVersionTag = new Tag("network_protocol_version",
+        Tag networkProtocolVersionTag = new Tag(Constants.NETWORK_PROTOCOL_VERSION,
                 httpStatAttributes.getNetworkProtocolVersion());
 
-        Tag serverNameTag = new Tag("server_address", httpStatAttributes.getServerName());
-        Tag serverPortTag = new Tag("server_port", String.valueOf(httpStatAttributes.getServerPort()));
+        Tag serverNameTag = new Tag(Constants.SERVER_ADDRESS, httpStatAttributes.getServerName());
+        Tag serverPortTag = new Tag(Constants.SERVER_PORT, String.valueOf(httpStatAttributes.getServerPort()));
 
         String errorType = httpStatAttributes.getErrorType().orElse("");
-        Tag errorTypeTag = new Tag("error_type", errorType);
+        Tag errorTypeTag = new Tag(Constants.ERROR_TYPE, errorType);
 
-        Tag[] ret = new Tag[] { requestMethod, scheme, responseStatusTag, httpRouteTag, networkProtoclNameTag,
+        Tag[] ret = new Tag[] { requestMethodTag, urlSchemeTag, responseStatusTag, httpRouteTag,
                 networkProtocolVersionTag, serverNameTag, serverPortTag, errorTypeTag };
 
         return ret;

@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal_fat;
 
-import static componenttest.topology.impl.LibertyServerFactory.getLibertyServer;
 import static io.openliberty.microprofile.telemetry.logging.internal_fat.FATSuite.hitWebPage;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -29,6 +28,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -40,7 +40,8 @@ public class TelemetryFFDCTest extends FATServletClient {
     public static final String APP_NAME = "TelemetryServletTestApp";
     public static final String SERVER_NAME = "TelemetryFFDC";
 
-    private static LibertyServer server;
+    @Server(SERVER_NAME)
+    public static LibertyServer server;
 
     @ClassRule
     public static RepeatTests rt = FATSuite.testRepeatMPTel20();
@@ -66,7 +67,7 @@ public class TelemetryFFDCTest extends FATServletClient {
 
     @BeforeClass
     public static void initialSetup() throws Exception {
-        server = installUserFeatureAndApp(getLibertyServer(SERVER_NAME));
+        installUserFeatureAndApp(server);
 
         server.addBootstrapProperties(Collections.singletonMap("io.openliberty.microprofile.telemetry.ffdc.early", "true"));
         server.startServer();

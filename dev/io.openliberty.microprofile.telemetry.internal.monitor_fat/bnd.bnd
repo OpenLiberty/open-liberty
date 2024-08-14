@@ -10,11 +10,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 11
-javac.target: 11
-
-fat.minimum.java.level: 11
-
 src: \
 	fat/src,\
 	test-applications/testSessionApp/src,\
@@ -68,6 +63,7 @@ fat.test.container.images: otel/opentelemetry-collector-contrib:0.103.0
 # For all project names that match the pattern "*_fat*", dependencies for junit,
 # fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
 -buildpath: \
+	io.openliberty.microprofile.telemetry.internal_fat.common,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	io.openliberty.jakarta.jws.3.0;version=latest,\
 	io.openliberty.jakarta.xmlBinding.3.0;version=latest,\

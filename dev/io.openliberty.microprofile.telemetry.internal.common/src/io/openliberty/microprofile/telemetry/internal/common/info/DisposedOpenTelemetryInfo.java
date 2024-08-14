@@ -25,7 +25,7 @@ public class DisposedOpenTelemetryInfo implements OpenTelemetryInfo {
 
     private static final TraceComponent tc = Tr.register(DisposedOpenTelemetryInfo.class);
 
-    private String appName = "Unkown";
+    private String appName = "Unknown";
 
     public DisposedOpenTelemetryInfo() {}
 

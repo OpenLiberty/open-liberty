@@ -59,4 +59,9 @@ public class OpenTelemetryInfoFactoryImpl extends AbstractOpenTelemetryInfoFacto
     protected void mergeInJVMMetrics(OpenTelemetry openTelemetry, boolean runtimeEnabled) {
         //No op before Telemetry 2.0
     }
+
+    @Override
+    protected void warnIfAppEnabledAndRuntimeExplicitlyDisabled(Map<String, String> telemetryAppProperties, String appName) {
+        //No op before Telemetry 2.0
+    }
 }
