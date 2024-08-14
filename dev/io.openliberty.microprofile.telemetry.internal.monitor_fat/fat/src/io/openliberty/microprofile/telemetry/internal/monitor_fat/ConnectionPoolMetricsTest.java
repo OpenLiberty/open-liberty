@@ -43,7 +43,7 @@ public class ConnectionPoolMetricsTest extends BaseTestClass {
 	public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests rt = FATSuite.testRepeatMPTel20("LibertyMetricServer");
+    public static RepeatTests rt = FATSuite.testRepeatMPTel20("ConnPoolMetricsServer");
 	
 	@ClassRule
 	public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
