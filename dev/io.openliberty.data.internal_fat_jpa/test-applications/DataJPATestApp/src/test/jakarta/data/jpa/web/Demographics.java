@@ -14,6 +14,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
 import jakarta.data.repository.Find;
@@ -34,6 +36,60 @@ public interface Demographics {
 
     @OrderBy("publicDebt")
     List<DemographicInfo> findByPublicDebtBetween(BigDecimal min, BigDecimal max);
+
+    // Methods with conversion from BigInteger to other types:
+
+    @Query("SELECT numFullTimeWorkers WHERE collectedOn=:when")
+    Optional<BigDecimal> numFullTimeWorkersAsBigDecimal(Instant when);
+
+    @Query("SELECT numFullTimeWorkers WHERE collectedOn=:when")
+    BigInteger numFullTimeWorkersAsBigInteger(Instant when);
+
+    @Query("SELECT numFullTimeWorkers WHERE collectedOn=:when")
+    Optional<Byte> numFullTimeWorkersAsByte(Instant when);
+
+    @Query("SELECT numFullTimeWorkers WHERE collectedOn=:when")
+    Double numFullTimeWorkersAsDouble(Instant when);
+
+    @Query("SELECT numFullTimeWorkers WHERE collectedOn=:when")
+    float numFullTimeWorkersAsFloat(Instant when);
+
+    @Query("SELECT numFullTimeWorkers WHERE collectedOn=:when")
+    CompletionStage<Optional<Integer>> numFullTimeWorkersAsInteger(Instant when);
+
+    @Query("SELECT numFullTimeWorkers WHERE collectedOn=:when")
+    long numFullTimeWorkersAsLong(Instant when);
+
+    @Query("SELECT numFullTimeWorkers WHERE collectedOn=:when")
+    short numFullTimeWorkersAsShort(Instant when);
+
+    // Methods with conversion from BigDecimal to other types:
+
+    @Query("SELECT publicDebt WHERE collectedOn=:when")
+    BigDecimal publicDebtAsBigDecimal(Instant when);
+
+    @Query("SELECT publicDebt WHERE collectedOn=:when")
+    Optional<BigInteger> publicDebtAsBigInteger(Instant when);
+
+    @Query("SELECT publicDebt WHERE collectedOn=:when")
+    byte publicDebtAsByte(Instant when);
+
+    @Query("SELECT publicDebt WHERE collectedOn=:when")
+    Double publicDebtAsDouble(Instant when);
+
+    @Query("SELECT publicDebt WHERE collectedOn=:when")
+    Optional<Float> publicDebtAsFloat(Instant when);
+
+    @Query("SELECT publicDebt WHERE collectedOn=:when")
+    int publicDebtAsInt(Instant when);
+
+    @Query("SELECT publicDebt WHERE collectedOn=:when")
+    Long publicDebtAsLong(Instant when);
+
+    @Query("SELECT publicDebt WHERE collectedOn=:when")
+    Optional<Short> publicDebtAsShort(Instant when);
+
+    // End of type conversion methods
 
     // TODO support for Instant requires JPA 3.2, after which the following can be tried out:
 
