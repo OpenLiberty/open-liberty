@@ -4457,7 +4457,37 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Repository method with a SELECT clause but no FROM clause.
+     * Repository method having only a SELECT clause.
+     */
+    @Test
+    public void testSelectClauseOnly() {
+        products.clear();
+
+        assertEquals(List.of(),
+                     List.of(products.names()));
+
+        Product prod1 = new Product();
+        prod1.pk = UUID.nameUUIDFromBytes("TestSelectClauseOnly-1".getBytes());
+        prod1.name = "TestSelectClauseOnly-1";
+        prod1.description = "TestSelectClauseOnly description 1";
+        prod1.price = 18.99f;
+
+        Product prod2 = new Product();
+        prod2.pk = UUID.nameUUIDFromBytes("TestSelectClauseOnly-2".getBytes());
+        prod2.name = "TestSelectClauseOnly-2";
+        prod2.description = "TestSelectClauseOnly description 2";
+        prod2.price = 27.99f;
+
+        products.saveMultiple(prod1, prod2);
+
+        assertEquals(Set.of("TestSelectClauseOnly-1", "TestSelectClauseOnly-2"),
+                     Set.of(products.names()));
+
+        products.clear();
+    }
+
+    /**
+     * Repository method with a SELECT clause and WHERE clause, but no FROM clause.
      */
     @Test
     public void testSelectClauseWithoutFromClause() {
