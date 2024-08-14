@@ -13,7 +13,7 @@
 <server description="Telemetry Server to test FFDC logs">
 	<include location="../fatTestPorts.xml"/>
 	<featureManager>
-		<feature>servlet-6.0</feature>
+		<feature>servlet-6.1</feature>
 		<feature>mpTelemetry-2.0</feature>
 		<feature>componentTest-2.0</feature>
 		<feature>usr:test.ffdc-1.0</feature>

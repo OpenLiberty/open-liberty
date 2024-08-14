@@ -20,6 +20,7 @@ import java.util.Collections;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -27,6 +28,7 @@ import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -37,6 +39,9 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 public class TelemetryFFDCCheckpointTest extends FATServletClient {
 
     private static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests rt = FATSuite.testRepeatMPTel20();
 
     @BeforeClass
     public static void initialSetup() throws Exception {
