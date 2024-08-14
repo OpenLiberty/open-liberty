@@ -13,6 +13,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Arrays;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -57,6 +58,10 @@ public class StoreServicesSecurityTests extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        storeJWTSSoServer.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
+        consumerServer.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
+
         boolean isArchive = false;
         // To export the assembled services application archive files, set isArchive to true
         // run it locally , keep this false when merging

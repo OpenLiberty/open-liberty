@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package com.ibm.ws.jdbc.fat.postgresql;
 
 import java.sql.Connection;
 import java.sql.Statement;
+import java.util.Arrays;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -61,6 +62,10 @@ public class PostgreSQLSSLTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        serverLibertySSL.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
+        serverNativeSSL.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
+
         postgre.start();
 
         ShrinkHelper.defaultApp(serverLibertySSL, APP_NAME, "jdbc.fat.postgresql.web");

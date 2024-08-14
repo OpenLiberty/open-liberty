@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 - 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -90,7 +90,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     boolean ignoreAudClaimIfNotConfigured = false;
 
     public static final String CFG_KEY_HOST_NAME_VERIFICATION_ENABLED = "hostNameVerificationEnabled";
-    protected boolean hostNameVerificationEnabled = false;
+    protected boolean hostNameVerificationEnabled = true;
 
     public static final String KEY_TRUSTED_ALIAS = "keyName";
     private String trustAliasName = null;

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,8 @@
 package com.ibm.ws.fat.grpc;
 
 import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
@@ -45,6 +47,7 @@ public class HelloWorldTest extends HelloWorldBasicTest {
     @BeforeClass
     public static void setUp() throws Exception {
 
+        helloWorldServer.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
         // set exportApps = true and these apps will be saved under publish/savedApps/helloWorld/
         boolean exportApps = false;
         WebArchive helloWorldService = null;

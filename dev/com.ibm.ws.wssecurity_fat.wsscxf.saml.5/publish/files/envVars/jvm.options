@@ -1,2 +1,3 @@
 -Djava.security.debug=ibmjcefw
 -D-Xtrace:print=mt,methods={com/sun/jndi/ldap/Connection.<init>*},trigger=method{com/sun/jndi/ldap/Connection.<init>*,jstacktrace}
+-Dcom.ibm.ssl.performURLHostNameVerification=false

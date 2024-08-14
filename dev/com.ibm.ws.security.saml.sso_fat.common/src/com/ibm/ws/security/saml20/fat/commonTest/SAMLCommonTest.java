@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -391,6 +391,8 @@ public class SAMLCommonTest extends CommonTest {
             //			Log.info(thisClass, thisMethod, "Feature group chosen: " + featureConfigFile);
             //			String importsDir = aTestServer.getServer().getServerRoot() + File.separator + "imports";
             //			LibertyFileManager.copyFileIntoLiberty(aTestServer.getServer().getMachine(), importsDir, "saml_only_features.xml", importsDir + File.separator + featureConfigFile);
+
+            aTestServer.addIgnoredServerException(SAMLMessageConstants.CWPKI0063W_HOSTNAME_VERIFICATION_DISABLED);
 
             // start the server - if it fails to start the Junit flag is what causes the class to error immediately
             // SAML requires port 8020, so tell startServer to wait for it
