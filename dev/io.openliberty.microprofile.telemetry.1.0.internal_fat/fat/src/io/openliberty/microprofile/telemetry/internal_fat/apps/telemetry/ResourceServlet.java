@@ -55,7 +55,7 @@ public class ResourceServlet extends FATServlet {
         osNameMap.put("hp-ux", "hpux");
         osNameMap.put("aix", "aix");
         osNameMap.put("solaris", "solaris");
-        osNameMap.put("z/os", "z/os");
+        osNameMap.put("z/os", "z_os");
     }
 
     @Test
