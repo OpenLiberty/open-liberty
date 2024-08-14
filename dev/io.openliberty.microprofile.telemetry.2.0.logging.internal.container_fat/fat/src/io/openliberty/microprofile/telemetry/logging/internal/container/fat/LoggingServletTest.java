@@ -35,9 +35,7 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
-import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @RunWith(FATRunner.class)
 public class LoggingServletTest {
@@ -191,22 +189,14 @@ public class LoggingServletTest {
         assertTrue("Exception message could not be found.", logs.contains("exception.message: Str(Cannot invoke"));
         assertTrue("Exception Stacktrace  could not be found.", logs.contains("exception.stacktrace: Str(java.lang.NullPointerException"));
         assertTrue("Exception type could not be found.", logs.contains("exception.type: Str(java.lang.NullPointerException)"));
+        assertTrue("Class name could not be found.", logs.contains("io.openliberty.class_name: Str(io.openliberty.http.monitor.ServletFilter)"));
+        assertTrue("Object details could not be found.", logs.contains("io.openliberty.object_details: Str(Object type = io.openliberty.http.monitor.ServletFilter"));
         assertTrue("Probe ID could not be found.", logs.contains("io.openliberty.probe_id"));
         assertTrue("SeverityText message could not be found.", logs.contains("SeverityText:"));
         assertTrue("SeverityNumber message could not be found.", logs.contains("SeverityNumber: Warn(13)"));
         assertTrue("Sequence message could not be found.", logs.contains("io.openliberty.sequence: Str"));
         assertTrue("Log type message could not be found.", logs.contains("io.openliberty.type: Str(liberty_ffdc)"));
         assertTrue("Thread ID message could not be found.", logs.contains("thread.id: Int"));
-
-        //These older repeats cause the class name and object details to display different class names.
-        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_JAVA8_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID)
-            || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID)) {
-            assertTrue("Class name could not be found.", logs.contains("io.openliberty.class_name"));
-            assertTrue("Object details could not be found.", logs.contains("io.openliberty.object_details"));
-        } else {
-            assertTrue("Class name could not be found.", logs.contains("io.openliberty.class_name: Str(io.openliberty.http.monitor.ServletFilter)"));
-            assertTrue("Object details could not be found.", logs.contains("io.openliberty.object_details: Str(Object type = io.openliberty.http.monitor.ServletFilter"));
-        }
     }
 
     @AfterClass
