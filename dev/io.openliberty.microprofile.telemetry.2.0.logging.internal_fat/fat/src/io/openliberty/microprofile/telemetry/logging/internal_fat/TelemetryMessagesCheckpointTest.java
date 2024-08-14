@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.Server;
@@ -51,7 +52,7 @@ public class TelemetryMessagesCheckpointTest extends FATServletClient {
     }
 
     static LibertyServer setupServerApp(LibertyServer s) throws Exception {
-        ShrinkHelper.defaultApp(s, APP_NAME, "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp");
+        ShrinkHelper.defaultApp(s, APP_NAME, new DeployOptions[] { DeployOptions.SERVER_ONLY }, "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp");
         return s;
     }
 
