@@ -2072,6 +2072,9 @@ public class LibertyServer implements LogMonitorClient {
                 setStarted();
             }
         }
+
+        //TODO - consider validating that the application has started before running tests
+
         return output;
     }
 
