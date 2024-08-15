@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,13 +13,9 @@
 package com.ibm.ws.security.authorization.jacc.web.impl;
 
 import java.security.AccessController;
-import java.security.CodeSource;
 import java.security.Permission;
-import java.security.Policy;
-import java.security.Principal;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.security.ProtectionDomain;
 import java.util.HashMap;
 
 import javax.security.auth.Subject;
@@ -30,21 +26,21 @@ import javax.servlet.http.HttpServletRequest;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.authorization.jacc.common.PolicyContextHandlerImpl;
+import com.ibm.ws.security.authorization.jacc.common.PolicyProxy;
 import com.ibm.ws.security.authorization.jacc.web.WebSecurityValidator;
 
 public class WebSecurityValidatorImpl implements WebSecurityValidator {
     private static final TraceComponent tc = Tr.register(WebSecurityValidatorImpl.class);
     private static String[] jaccHandlerKeyArrayEe8 = new String[] { "javax.security.auth.Subject.container", "javax.servlet.http.HttpServletRequest" };
     private static String[] jaccHandlerKeyArrayEe9 = new String[] { "javax.security.auth.Subject.container", "jakarta.servlet.http.HttpServletRequest" };
-    private static ProtectionDomain nullPd = new ProtectionDomain(new CodeSource(null, (java.security.cert.Certificate[]) null), null, null, null);
-    private static CodeSource nullCs = new CodeSource(null, (java.security.cert.Certificate[]) null);
     private static PolicyContextHandlerImpl pch = PolicyContextHandlerImpl.getInstance();
 
-    public WebSecurityValidatorImpl() {}
+    public WebSecurityValidatorImpl() {
+    }
 
     /** {@inheritDoc} */
     @Override
-    public boolean checkDataConstraints(String contextId, Object httpServletRequest, WebUserDataPermission webUDPermission) {
+    public boolean checkDataConstraints(String contextId, Object httpServletRequest, WebUserDataPermission webUDPermission, PolicyProxy policyProxy) {
         HttpServletRequest req = null;
         if (httpServletRequest != null) {
             try {
@@ -78,7 +74,7 @@ public class WebSecurityValidatorImpl implements WebSecurityValidator {
                     PolicyContext.setHandlerData(handlerObjects);
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Calling JACC implies");
-                    return Boolean.valueOf((Policy.getPolicy().implies(nullPd, wudp)));
+                    return Boolean.valueOf(policyProxy.implies(null, wudp));
                 }
             });
 
@@ -92,7 +88,7 @@ public class WebSecurityValidatorImpl implements WebSecurityValidator {
 
     /** {@inheritDoc} */
     @Override
-    public boolean checkResourceConstraints(String contextId, Object httpServletRequest, Permission webPerm, Subject subject) {
+    public boolean checkResourceConstraints(String contextId, Object httpServletRequest, Permission webPerm, Subject subject, PolicyProxy policyProxy) {
         HttpServletRequest req = null;
         if (httpServletRequest != null) {
             try {
@@ -109,7 +105,7 @@ public class WebSecurityValidatorImpl implements WebSecurityValidator {
             final String cid = contextId;
             final Permission p = webPerm;
             final HttpServletRequest r = req;
-            result = checkResourceConstraints(cid, r, p, s, ho);
+            result = checkResourceConstraints(cid, r, p, s, ho, policyProxy);
         } catch (PrivilegedActionException e) {
             Tr.error(tc, "JACC_WEB_IMPLIES_FAILURE", new Object[] { contextId, e.getException() });
         }
@@ -120,7 +116,8 @@ public class WebSecurityValidatorImpl implements WebSecurityValidator {
                                              final HttpServletRequest req,
                                              final Permission permission,
                                              final Subject subject,
-                                             final HashMap<String, Object> handlerObjects) throws PrivilegedActionException {
+                                             final HashMap<String, Object> handlerObjects,
+                                             PolicyProxy policyProxy) throws PrivilegedActionException {
         Boolean result = Boolean.FALSE;
         result = AccessController.doPrivileged(
                                                new PrivilegedExceptionAction<Boolean>() {
@@ -143,21 +140,12 @@ public class WebSecurityValidatorImpl implements WebSecurityValidator {
                                                        handlerObjects.put(jaccHandlerKeyArrayEe9[0], subject);
                                                        handlerObjects.put(jaccHandlerKeyArrayEe9[1], req);
 
-                                                       ProtectionDomain pd = null;
-
-                                                       if (subject != null && subject.getPrincipals().size() > 0) {
-                                                           Principal[] principalArray = subject.getPrincipals().toArray(new Principal[subject.getPrincipals().size()]);
-                                                           pd = new ProtectionDomain(nullCs, null, null, principalArray);
-                                                       } else {
-                                                           pd = nullPd;
-                                                       }
-
                                                        if (tc.isDebugEnabled())
                                                            Tr.debug(tc, "Setting JACC handler data");
                                                        PolicyContext.setHandlerData(handlerObjects);
                                                        if (tc.isDebugEnabled())
-                                                           Tr.debug(tc, "Calling JACC implies. PD : " + pd);
-                                                       return Policy.getPolicy().implies(pd, permission);
+                                                           Tr.debug(tc, "Calling JACC implies. Subject : " + subject);
+                                                       return policyProxy.implies(subject, permission);
                                                    }
                                                });
         return result.booleanValue();

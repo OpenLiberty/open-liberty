@@ -1,26 +1,26 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.security.authorization.jacc.common;
 
-package com.ibm.ws.security.authorization.jacc.ejb;
+import java.security.Permission;
 
-public interface EJBService {
-    /**
-     * Returns the EJBSecurityPropagator class
-     */
-    public EJBSecurityPropagator getPropagator();
+import javax.security.auth.Subject;
 
-    /**
-     * Returns the EJBSecurityValidator class
-     */
-    public EJBSecurityValidator getValidator();
+/**
+ * Proxy interface to represent either a java.security.Policy or jakarta.security.jacc.Policy object
+ */
+public interface PolicyProxy {
+
+    public void refresh();
+
+    public void setPolicy();
+
+    public boolean implies(Subject subject, Permission permission);
 }
