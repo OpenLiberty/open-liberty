@@ -23,6 +23,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 @RunWith(Suite.class)
 @SuiteClasses({
                 LoggingServletTest.class,
+                LoggingBridgeServletTest.class,
                 JULDuplicateTest.class,
                 JULLogServletTest.class
 })

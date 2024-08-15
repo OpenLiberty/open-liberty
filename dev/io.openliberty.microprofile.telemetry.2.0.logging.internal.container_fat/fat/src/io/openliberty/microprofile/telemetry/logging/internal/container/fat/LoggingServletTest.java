@@ -9,11 +9,9 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal.container.fat;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -35,8 +33,6 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
@@ -83,29 +79,6 @@ public class LoggingServletTest {
         //Read to run a smarter planet
         server.waitForStringInLogUsingMark("CWWKF0011I");
         server.setMarkToEndOfLog();
-    }
-
-    /*
-     * Ensures all messages printed in the messages.log are bridged over to the otlp container.
-     */
-    @Test
-    @Mode(TestMode.FULL)
-    public void testBridgedLogs() throws Exception {
-        assertTrue("The server was not started successfully.", server.isStarted());
-        TestUtils.runApp(server, "logs");
-
-        //Allow time for the collector to receive and bridge logs.
-        TimeUnit.SECONDS.sleep(5);
-
-        List<String> linesMessagesLog = server.findStringsInLogs("^(?!.*scopeInfo).*\\[.*$", server.getDefaultLogFile());
-
-        final String logs = container.getLogs();
-
-        Log.info(c, "testBridgedLogs", logs);
-
-        int bridgedLogsCount = logs.split("LogRecord #").length - 1;
-
-        assertEquals("Messages.log and Telemetry console logs don't match.", linesMessagesLog.size(), bridgedLogsCount);
     }
 
     /*
