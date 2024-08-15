@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2023 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -46,6 +46,9 @@ CWWKC1204.not.serializable=CWWKC1204E: Impossible de cr\u00e9er un proxy context
 CWWKC1204.not.serializable.explanation=Les types de contexte d'unit\u00e9 d'ex\u00e9cution tiers ne sont pas compatibles avec la s\u00e9rialisation et ne peuvent pas \u00eatre configur\u00e9s pour \u00eatre propag\u00e9s pour les proxys contextuels s\u00e9rialisables.
 CWWKC1204.not.serializable.useraction=Mettez \u00e0 jour l'application pour demander un proxy contextuel non s\u00e9rialisable ou v\u00e9rifiez qu'aucun type de contexte tiers n'est configur\u00e9 pour \u00eatre propag\u00e9.
 
+CWWKC1217.no.virtual.threads=CWWKC1217I: La sp\u00e9cification Concurrency exige que virtual=true soit ignor\u00e9 dans la d\u00e9finition {0} {1} de l''artefact d''application {2} parce que Java {3} ne prend pas en charge les threads virtuels.
+CWWKC1217.no.virtual.threads.explanation=Les threads virtuels ne sont disponibles qu'\u00e0 partir de Java 21.
+CWWKC1217.no.virtual.threads.useraction=Mise \u00e0 jour vers Java 21 ou une version plus r\u00e9cente pour permettre l'utilisation de threads virtuels.
 
 
 # Messages for @Asynchronous that are shared with other bundles:

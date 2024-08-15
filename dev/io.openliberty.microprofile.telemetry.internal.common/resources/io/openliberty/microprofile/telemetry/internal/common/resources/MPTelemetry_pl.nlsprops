@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # -------------------------------------------------------------------------------------------------
 #*******************************************************************************
-# Copyright (c) 2023 IBM Corporation and others.
+# Copyright (c) 2023, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,4 +49,40 @@ CWMOT5003.factory.used.after.shutdown.useraction=Przejrzyj aplikacj\u0119, aby s
 
 CWMOT5004.factory.used.without.metadata=CWMOT5004W: Z\u0142o\u017cono wniosek o OpenTelemetry obiekt, ale bez metadanych aplikacji i bez danych globalnych OpenTelemetry obiekt by\u0142 dost\u0119pny. 
 CWMOT5004.factory.used.without.metadata.explanation=CWMOT5004.factory.used.without.metadata.explanation=If nie ma globala OpenTelemetry obiekt Liberty'S MicroProfile Kod integracji telemetrii podejmie pr\u00f3b\u0119 znalezienia prawid\u0142owego OpenTelemetry obiekt dla bie\u017c\u0105cej aplikacji przy u\u017cyciu metadanych aplikacji w bie\u017c\u0105cym w\u0105tku. Poniewa\u017c jednak w w\u0105tku nie by\u0142o metadanych, nie mo\u017cna by\u0142o tego zrobi\u0107. 
-CWMOT5004.factory.used.without.metadata.useraction=Przejrzyj sw\u00f3j kod, aby zobaczy\u0107, dlaczego pr\u00f3bowa\u0142 go u\u017cy\u0107 MicroProfile Telemetria w przypadku braku metadanych aplikacji i zasi\u0119gu serwera OpenTelemetry obiekt. Najbardziej prawdopodobny przypadek jest taki, \u017ce tworzysz nowe w\u0105tki bez u\u017cycia Liberty'S ManagedExecutorService i pr\u00f3buj\u0119 zdoby\u0107 OpenTelemetry obiekt od wewn\u0105trz. Je\u015bli pr\u00f3bujesz zdoby\u0107 OpenTemetry obiekt poza aplikacj\u0105, upewnij si\u0119 OpenTelemetry jest w\u0142\u0105czana poprzez zmienn\u0105 \u015brodowiskow\u0105 lub w\u0142a\u015bciwo\u015b\u0107 systemow\u0105.   
+CWMOT5004.factory.used.without.metadata.useraction=Przejrzyj sw\u00f3j kod, aby sprawdzi\u0107, dlaczego kod integracyjny pr\u00f3bowa\u0142 u\u017cy\u0107 MicroProfile Telemetry bez metadanych i obiektu OpenTelemetry o zakresie serwerowym. Kod integracji najprawdopodobniej pr\u00f3buje utworzy\u0107 nowe w\u0105tki bez korzystania z interfejsu ManagedExecutorService i pozyska\u0107 obiekt OpenTelemetry z poziomu aplikacji. Aby uzyska\u0107 obiekt OpenTemetry poza aplikacj\u0105, nale\u017cy w\u0142\u0105czy\u0107 OpenTelemetry za pomoc\u0105 zmiennej \u015brodowiskowej lub w\u0142a\u015bciwo\u015bci systemowej.
+
+CWMOT5005.mptelemetry.unknown.log.source=CWMOT5005W: Funkcja rejestrowania telemetrii MicroProfile nie rozpoznaje \u017ar\u00f3d\u0142a rejestrowania [ {0} ].
+CWMOT5005.mptelemetry.unknown.log.source.explanation=\u015arodowisko wykonawcze Liberty nie udost\u0119pnia okre\u015blonego \u017ar\u00f3d\u0142a dziennika.
+CWMOT5005.mptelemetry.unknown.log.source.useraction=Sprawd\u017a informacje o konfiguracji i okre\u015bl jedno z obs\u0142ugiwanych \u017ar\u00f3de\u0142 dla telemetrii MicroProfile .
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+
+threadpool.activeThreads.description=Liczba w\u0105tk\u00f3w, w kt\u00f3rych aktywnie wykonywane s\u0105 zadania.
+threadpool.size.description=Wielko\u015b\u0107 puli w\u0105tk\u00f3w.
+
+session.activeSessions.description=Liczba jednocze\u015bnie aktywnych sesji. Sesja jest aktywna, gdy \u015brodowisko wykonawcze przetwarza \u017c\u0105danie korzystaj\u0105ce z danej sesji u\u017cytkownika.
+session.created.description=Liczba sesji zalogowanych od momentu w\u0142\u0105czenia tej metryki.
+session.invalidated.description=Liczba sesji wylogowanych od momentu w\u0142\u0105czenia tej metryki.
+session.invalidatedbyTimeout.description=Liczba sesji, kt\u00f3re zosta\u0142y wylogowane z powodu przekroczenia limitu czasu od momentu w\u0142\u0105czenia tej metryki.
+session.live.description=Liczba u\u017cytkownik\u00f3w, kt\u00f3rzy s\u0105 obecnie zalogowani.
+
+connectionpool.handle.count.description=Liczba po\u0142\u0105cze\u0144, kt\u00f3re s\u0105 w u\u017cyciu. Liczba ta mo\u017ce obejmowa\u0107 wiele po\u0142\u0105cze\u0144 wsp\u00f3\u0142u\u017cytkowanych z jednego po\u0142\u0105czenia zarz\u0105dzanego.
+connectionpool.connection.created.description=\u0141\u0105czna liczba zarz\u0105dzanych po\u0142\u0105cze\u0144, kt\u00f3re utworzono od momentu utworzenia puli.
+connectionpool.connection.destroyed.description=\u0141\u0105czna liczba zarz\u0105dzanych po\u0142\u0105cze\u0144, kt\u00f3re zosta\u0142y zniszczone od momentu utworzenia puli.
+connectionpool.connection.free.description=Liczba dost\u0119pnych zarz\u0105dzanych po\u0142\u0105cze\u0144.
+connectionpool.connection.waitTime.description=Ca\u0142kowity czas oczekiwania \u017c\u0105da\u0144 po\u0142\u0105czenia na po\u0142\u0105czenie.
+connectionpool.connection.useTime.description=Ca\u0142kowity czas, w kt\u00f3rym wszystkie po\u0142\u0105czenia ze \u017ar\u00f3d\u0142em danych by\u0142y w u\u017cyciu.
+connectionpool.connection.count.description=Aktualna liczba zarz\u0105dzanych po\u0142\u0105cze\u0144 w puli. Warto\u015b\u0107 ta obejmuje zar\u00f3wno dost\u0119pne, jak i u\u017cywane po\u0142\u0105czenia zarz\u0105dzane. Pojedyncze zarz\u0105dzane po\u0142\u0105czenie wsp\u00f3\u0142dzielone przez wiele po\u0142\u0105cze\u0144 liczy si\u0119 tylko raz.
+
+requestTiming.processed.description=Liczba \u017c\u0105da\u0144 serwlet\u00f3w od uruchomienia serwera.
+requestTiming.active.description=Liczba \u017c\u0105da\u0144 serwletu, kt\u00f3re s\u0105 aktualnie uruchomione.
+requestTiming.slow.description=Liczba obecnie realizowanych, ale wolno dzia\u0142aj\u0105cych \u017c\u0105da\u0144 serwlet\u00f3w.
+requestTiming.hung.description=Liczba \u017c\u0105da\u0144 serwletu, kt\u00f3re s\u0105 aktualnie zawieszone.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# HTTP Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+
+http.server.request.duration.description=Czas trwania \u017c\u0105da\u0144 serwera HTTP.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2023 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -234,3 +234,7 @@ scheme.incorrect.error.useraction=Tipul de schem\u0103 trebuie s\u0103 fie http,
 upgradeHttpToWebSocket.failed=CWWKH0055E: Apelul jakarta.websocket.server.ServerContainer#upgradeHttpToWebSocket a e\u0219uat din cauza lui {0} 
 upgradeHttpToWebSocket.failed.explanation=Serverul nu a putut moderniza cererea HTTP sau HTTPS la protocolul ws/wss.
 upgradeHttpToWebSocket.failed.useraction=Examina\u021bi eroarea pentru a identifica de ce a e\u0219uat modernizarea cererii.
+
+maxmessagesize.exceeded=CWWKH0056E: maxMessageSize pentru metoda {0} dep\u0103\u0219e\u0219te Integer.MAX_VALUE pentru clasa {1} .
+maxmessagesize.exceeded.explanation=Parametrul de adnotare maxMessageSize OnMessage seteaz\u0103 dimensiunea maxim\u0103 a mesajului \u00een octe\u021bi pentru o metod\u0103. maxMessageSize poate fi setat numai la o valoare maxim\u0103 de Integer.MAX_VALUE .
+maxmessagesize.exceeded.useraction=Reduce\u021bi valoarea parametrului maxMessageSize la cel mult Integer.MAX_VALUE .

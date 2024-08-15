@@ -31,3 +31,7 @@ CRYPTO_INSECURE.useraction=Utilice el algoritmo seguro sugerido.
 CRYPTO_INSECURE_REPLACED=CWWKS5901W: El {0} El elemento de configuraci\u00f3n especifica el {1} Algoritmo criptogr\u00e1fico inseguro.  El {2} En su lugar se utiliza un algoritmo seguro.
 CRYPTO_INSECURE_REPLACED.explanation=El algoritmo criptogr\u00e1fico inseguro fue reemplazado por el algoritmo seguro.
 CRYPTO_INSECURE_REPLACED.useraction=No se requiere ninguna acci\u00f3n.
+
+CRYPTO_INSECURE_PROVIDER=CWWKS5902W: El elemento de configuraci\u00f3n {0} utiliza el algoritmo criptogr\u00e1fico inseguro {1}. Considere la posibilidad de sustituir la configuraci\u00f3n por un proveedor diferente si la seguridad es una preocupaci\u00f3n.
+CRYPTO_INSECURE_PROVIDER.explanation=El algoritmo ya no se considera criptogr\u00e1ficamente seguro.
+CRYPTO_INSECURE_PROVIDER.useraction=Considere la posibilidad de sustituir la configuraci\u00f3n por un proveedor diferente si la seguridad es una preocupaci\u00f3n.

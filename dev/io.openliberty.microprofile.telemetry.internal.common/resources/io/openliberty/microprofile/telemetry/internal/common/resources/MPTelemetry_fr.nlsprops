@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # -------------------------------------------------------------------------------------------------
 #*******************************************************************************
-# Copyright (c) 2023 IBM Corporation and others.
+# Copyright (c) 2023, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,4 +49,40 @@ CWMOT5003.factory.used.after.shutdown.useraction=Examinez l'application pour d\u
 
 CWMOT5004.factory.used.without.metadata=CWMOT5004W: Une demande a \u00e9t\u00e9 faite pour un OpenTelemetry objet mais pas de m\u00e9tadonn\u00e9es d'application et pas de global OpenTelemetry l'objet \u00e9tait disponible. 
 CWMOT5004.factory.used.without.metadata.explanation=CWMOT5004.factory.used.without.metadata.explanation=If il n'y a pas de global OpenTelemetry objet Liberty c'est MicroProfile Le code d'int\u00e9gration de t\u00e9l\u00e9m\u00e9trie tentera de trouver le bon OpenTelemetry objet pour l'application actuelle en utilisant les m\u00e9tadonn\u00e9es de l'application sur le thread actuel. Cependant, comme il n'y avait pas de m\u00e9tadonn\u00e9es sur le fil, il n'a pas pu le faire. 
-CWMOT5004.factory.used.without.metadata.useraction=Examinez votre code pour voir pourquoi il a tent\u00e9 d'\u00eatre utilis\u00e9 MicroProfile T\u00e9l\u00e9m\u00e9trie lorsqu'il n'y avait pas de m\u00e9tadonn\u00e9es d'application et de port\u00e9e du serveur OpenTelemetry objet. Le cas le plus probable est que vous cr\u00e9ez de nouveaux fils de discussion sans utiliser Liberty c'est ManagedExecutorService et essayer d'acqu\u00e9rir un OpenTelemetry objet de l\u2019int\u00e9rieur. Si vous tentez d'acqu\u00e9rir un OpenTemetry objet en dehors d'une application, assurez-vous OpenTelemetry est activ\u00e9 via une variable d\u2019environnement ou une propri\u00e9t\u00e9 syst\u00e8me.   
+CWMOT5004.factory.used.without.metadata.useraction=Examinez votre code pour voir pourquoi le code d'int\u00e9gration a tent\u00e9 d'utiliser la t\u00e9l\u00e9m\u00e9trie MicroProfile sans m\u00e9tadonn\u00e9es et un objet OpenTelemetry \u00e0 port\u00e9e du serveur. Le code d'int\u00e9gration tente tr\u00e8s probablement de cr\u00e9er de nouveaux threads sans utiliser l'interface ManagedExecutorService et d'acqu\u00e9rir un objet OpenTelemetry \u00e0 partir de l'application. Pour acqu\u00e9rir un objet OpenTemetry en dehors d'une application, activez OpenTelemetry par le biais d'une variable d'environnement ou d'une propri\u00e9t\u00e9 syst\u00e8me.
+
+CWMOT5005.mptelemetry.unknown.log.source=CWMOT5005W: La fonction d'enregistrement de t\u00e9l\u00e9m\u00e9trie MicroProfile ne reconna\u00eet pas la source d'enregistrement [ {0} ].
+CWMOT5005.mptelemetry.unknown.log.source.explanation=L'environnement d'ex\u00e9cution Liberty ne fournit pas la source d'enregistrement sp\u00e9cifi\u00e9e.
+CWMOT5005.mptelemetry.unknown.log.source.useraction=V\u00e9rifiez les informations de configuration et sp\u00e9cifiez l'une des sources prises en charge pour MicroProfile Telemetry.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+
+threadpool.activeThreads.description=Nombre d'unit\u00e9s d'ex\u00e9cution qui ex\u00e9cutent des t\u00e2ches.
+threadpool.size.description=Taille du pool d'unit\u00e9s d'ex\u00e9cution.
+
+session.activeSessions.description=Nombre de sessions simultan\u00e9ment actives. Une session est active lorsque le moteur d'ex\u00e9cution traite une requ\u00eate qui utilise cette session utilisateur.
+session.created.description=Le nombre de sessions connect\u00e9es depuis que cette mesure a \u00e9t\u00e9 activ\u00e9e.
+session.invalidated.description=Nombre de sessions d\u00e9connect\u00e9es depuis l'activation de cette mesure.
+session.invalidatedbyTimeout.description=Nombre de sessions d\u00e9connect\u00e9es en raison d'un d\u00e9passement de d\u00e9lai depuis que cette mesure a \u00e9t\u00e9 activ\u00e9e.
+session.live.description=Nombre d'utilisateurs actuellement connect\u00e9s.
+
+connectionpool.handle.count.description=Nombre de connexions actuellement utilis\u00e9es. Il peut inclure plusieurs connexions partag\u00e9es \u00e0 partir d'une seule connexion g\u00e9r\u00e9e.
+connectionpool.connection.created.description=Nombre total de connexions g\u00e9r\u00e9es cr\u00e9\u00e9es depuis la cr\u00e9ation du pool.
+connectionpool.connection.destroyed.description=Le nombre total de connexions g\u00e9r\u00e9es qui ont \u00e9t\u00e9 d\u00e9truites depuis la cr\u00e9ation du pool.
+connectionpool.connection.free.description=Nombre de connexions g\u00e9r\u00e9es disponibles.
+connectionpool.connection.waitTime.description=Le temps total pendant lequel les demandes de connexion ont attendu une connexion.
+connectionpool.connection.useTime.description=Dur\u00e9e totale d'utilisation de toutes les connexions \u00e0 la source de donn\u00e9es.
+connectionpool.connection.count.description=Nombre actuel de connexions g\u00e9r\u00e9es dans le pool. Cette valeur inclut les connexions g\u00e9r\u00e9es qui sont disponibles et celles qui sont en cours d'utilisation. Une connexion g\u00e9r\u00e9e unique partag\u00e9e par plusieurs connexions n'est comptabilis\u00e9e qu'une seule fois.
+
+requestTiming.processed.description=Nombre de demandes de servlet depuis que le serveur a d\u00e9marr\u00e9.
+requestTiming.active.description=Nombre de requ\u00eates de servlet en cours d'ex\u00e9cution.
+requestTiming.slow.description=Nombre de demandes de servlet en cours d'ex\u00e9cution mais qui sont lentes.
+requestTiming.hung.description=Nombre de requ\u00eates de servlet actuellement suspendues.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# HTTP Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+
+http.server.request.duration.description=Dur\u00e9e des requ\u00eates du serveur HTTP.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2023 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -46,6 +46,9 @@ CWWKC1204.not.serializable=CWWKC1204E: No se puede crear un proxy contextual ser
 CWWKC1204.not.serializable.explanation=Los tipos de contexto de hebra de terceros no son compatibles con la serializaci\u00f3n y no se pueden configurar para que se propaguen para proxies contextuales serializables.
 CWWKC1204.not.serializable.useraction=Actualice la aplicaci\u00f3n para solicitar un proxy contextual no serializable o aseg\u00farese de que no hay ning\u00fan tipo de contexto de terceros configurado para que se propague.
 
+CWWKC1217.no.virtual.threads=CWWKC1217I: La especificaci\u00f3n Concurrency requiere que virtual=true sea ignorado en la definici\u00f3n {0} {1} en el artefacto de aplicaci\u00f3n {2} porque Java {3} no soporta hilos virtuales.
+CWWKC1217.no.virtual.threads.explanation=Los hilos virtuales s\u00f3lo est\u00e1n disponibles en Java 21 y versiones posteriores.
+CWWKC1217.no.virtual.threads.useraction=Actualice a Java 21 o posterior para permitir el uso de hilos virtuales.
 
 
 # Messages for @Asynchronous that are shared with other bundles:

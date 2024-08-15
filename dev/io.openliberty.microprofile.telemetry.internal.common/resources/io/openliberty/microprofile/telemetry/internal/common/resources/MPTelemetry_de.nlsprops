@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # -------------------------------------------------------------------------------------------------
 #*******************************************************************************
-# Copyright (c) 2023 IBM Corporation and others.
+# Copyright (c) 2023, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,4 +49,40 @@ CWMOT5003.factory.used.after.shutdown.useraction=\u00dcberpr\u00fcfen Sie die An
 
 CWMOT5004.factory.used.without.metadata=CWMOT5004W: Es wurde eine Anfrage gestellt f\u00fcr eine OpenTelemetry Objekt, aber keine Anwendungsmetadaten und keine globalen OpenTelemetry Objekt war vorhanden. 
 CWMOT5004.factory.used.without.metadata.explanation=CWMOT5004.factory.used.without.metadata.explanation=If es gibt keine globale OpenTelemetry Objekt Liberty'S MicroProfile Der Telemetrieintegrationscode versucht, die richtige OpenTelemetry Objekt f\u00fcr die aktuelle Anwendung, indem die Anwendungsmetadaten im aktuellen Thread verwendet werden. Da jedoch keine Metadaten zum Thread vorhanden waren, war dies nicht m\u00f6glich. 
-CWMOT5004.factory.used.without.metadata.useraction=\u00dcberpr\u00fcfen Sie Ihren Code, um zu sehen, warum er versucht hat, MicroProfile Telemetrie, wenn keine Anwendungsmetadaten vorhanden waren und der Umfang auf den Server beschr\u00e4nkt war OpenTelemetry Objekt. Der wahrscheinlichste Fall ist, dass Sie neue Threads erstellen, ohne Liberty'S ManagedExecutorService und versuchen, eine OpenTelemetry Objekt von innen. Wenn Sie versuchen, eine OpenTemetry Objekt au\u00dferhalb einer Anwendung, stellen Sie sicher OpenTelemetry wird \u00fcber eine Umgebungsvariable oder Systemeigenschaft aktiviert.   
+CWMOT5004.factory.used.without.metadata.useraction=\u00dcberpr\u00fcfen Sie Ihren Code, um festzustellen, warum der Integrationscode versucht hat, MicroProfile Telemetrie ohne Metadaten und ein serverspezifisches OpenTelemetry Objekt zu verwenden. Der Integrationscode versucht h\u00f6chstwahrscheinlich, neue Threads zu erstellen, ohne die Schnittstelle ManagedExecutorService zu verwenden, und ein OpenTelemetry-Objekt aus der Anwendung zu erwerben. Um ein OpenTemetry-Objekt au\u00dferhalb einer Anwendung zu erfassen, aktivieren Sie OpenTelemetry \u00fcber eine Umgebungsvariable oder eine Systemeigenschaft.
+
+CWMOT5005.mptelemetry.unknown.log.source=CWMOT5005W: Die MicroProfile Telemetrie-Protokollierungsfunktion erkennt die [ {0} ] Protokollquelle nicht.
+CWMOT5005.mptelemetry.unknown.log.source.explanation=Die Liberty-Laufzeitumgebung stellt die angegebene Protokollquelle nicht zur Verf\u00fcgung.
+CWMOT5005.mptelemetry.unknown.log.source.useraction=\u00dcberpr\u00fcfen Sie die Konfigurationsinformationen und geben Sie eine der unterst\u00fctzten Quellen f\u00fcr MicroProfile Telemetrie an.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+
+threadpool.activeThreads.description=Die Anzahl der Threads, die aktiv die Tasks ausf\u00fchren.
+threadpool.size.description=Die Gr\u00f6\u00dfe des Thread-Pools.
+
+session.activeSessions.description=Die Anzahl der gleichzeitig aktiven Sitzungen. Eine Sitzung ist aktiv, wenn die Laufzeitumgebung eine Anfrage verarbeitet, die diese Benutzersitzung verwendet.
+session.created.description=Die Anzahl der Sitzungen, die angemeldet wurden, seit diese Metrik aktiviert wurde.
+session.invalidated.description=Die Anzahl der abgemeldeten Sitzungen, seit diese Metrik aktiviert wurde.
+session.invalidatedbyTimeout.description=Die Anzahl der Sitzungen, die aufgrund einer Zeit\u00fcberschreitung abgemeldet wurden, seit diese Metrik aktiviert wurde.
+session.live.description=Die Anzahl der Benutzer, die derzeit angemeldet sind.
+
+connectionpool.handle.count.description=Anzahl der genutzten Verbindungen. Dieser Wert kann mehrere Verbindungen enthalten, die von einer einzigen verwalteten Verbindung gemeinsam genutzt werden.
+connectionpool.connection.created.description=Die Gesamtzahl verwalteter Verbindungen, die seit der Poolerstellung erstellt wurden.
+connectionpool.connection.destroyed.description=Die Gesamtzahl der verwalteten Verbindungen, die seit der Erstellung des Pools zerst\u00f6rt wurden.
+connectionpool.connection.free.description=Die Anzahl der verwalteten Verbindungen, die verf\u00fcgbar sind.
+connectionpool.connection.waitTime.description=Die Gesamtzeit, die die Verbindungsanfragen auf eine Verbindung gewartet haben.
+connectionpool.connection.useTime.description=Die Gesamtzeit, in der alle Verbindungen zur Datenquelle genutzt wurden.
+connectionpool.connection.count.description=Die aktuelle Anzahl der verwalteten Verbindungen im Pool. Dieser Wert umfasst verwaltete Verbindungen, die verf\u00fcgbar sind, und solche, die in Gebrauch sind. Eine einzelne verwaltete Verbindung, die von mehreren Verbindungen gemeinsam genutzt wird, z\u00e4hlt nur einmal.
+
+requestTiming.processed.description=Die Anzahl der Servletanforderungen seit dem Serverstart.
+requestTiming.active.description=Die Anzahl der Servlet-Anfragen, die derzeit laufen.
+requestTiming.slow.description=Die Anzahl der Servletanforderungen, die momentan zwar ausgef\u00fchrt werden, deren Ausf\u00fchrung jedoch langsam ist.
+requestTiming.hung.description=Die Anzahl der Servlet-Anfragen, die derzeit aufgeh\u00e4ngt sind.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# HTTP Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+
+http.server.request.duration.description=Dauer der HTTP-Serveranfragen.

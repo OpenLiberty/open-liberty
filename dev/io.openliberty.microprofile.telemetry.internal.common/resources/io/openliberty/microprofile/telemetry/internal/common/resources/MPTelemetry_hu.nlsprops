@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # -------------------------------------------------------------------------------------------------
 #*******************************************************************************
-# Copyright (c) 2023 IBM Corporation and others.
+# Copyright (c) 2023, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,4 +49,40 @@ CWMOT5003.factory.used.after.shutdown.useraction=Tekintse \u00e1t az alkalmaz\u0
 
 CWMOT5004.factory.used.without.metadata=CWMOT5004W: K\u00e9relmet ny\u00fajtottak be egy OpenTelemetry objektum, de nincs alkalmaz\u00e1s metaadata \u00e9s nincs glob\u00e1lis OpenTelemetry objektum el\u00e9rhet\u0151 volt. 
 CWMOT5004.factory.used.without.metadata.explanation=CWMOT5004.factory.used.without.metadata.explanation=If nincs glob\u00e1lis OpenTelemetry t\u00e1rgy Liberty's MicroProfile A telemetriai integr\u00e1ci\u00f3s k\u00f3d megpr\u00f3b\u00e1lja megtal\u00e1lni a megfelel\u0151t OpenTelemetry objektum az aktu\u00e1lis alkalmaz\u00e1shoz az aktu\u00e1lis sz\u00e1l alkalmaz\u00e1s metaadatainak haszn\u00e1lat\u00e1val. Mivel azonban nem voltak metaadatok a sz\u00e1lon, ezt nem tudta megtenni. 
-CWMOT5004.factory.used.without.metadata.useraction=Tekintse \u00e1t a k\u00f3dot, hogy megtudja, mi\u00e9rt pr\u00f3b\u00e1lta haszn\u00e1lni MicroProfile Telemetria, amikor nem voltak alkalmaz\u00e1s metaadatai \u00e9s a szerver hat\u00f3k\u00f6re OpenTelemetry t\u00e1rgy. A legval\u00f3sz\u00edn\u0171bb eset az, hogy \u00faj sz\u00e1lakat hozol l\u00e9tre haszn\u00e1lat n\u00e9lk\u00fcl Liberty's ManagedExecutorService \u00e9s megpr\u00f3b\u00e1lja megszerezni egy OpenTelemetry t\u00e1rgy bel\u00fclr\u0151l. Ha megk\u00eds\u00e9rel egy OpenTemetry objektum alkalmaz\u00e1son k\u00edv\u00fcl, biztos\u00edtsa OpenTelemetry k\u00f6rnyezeti v\u00e1ltoz\u00f3n vagy rendszertulajdons\u00e1gon kereszt\u00fcl enged\u00e9lyezve van.   
+CWMOT5004.factory.used.without.metadata.useraction=Tekintse \u00e1t a k\u00f3dot, hogy megtudja, mi\u00e9rt pr\u00f3b\u00e1lta meg az integr\u00e1ci\u00f3s k\u00f3d MicroProfile Telemetry-t metaadatok \u00e9s egy szerver hat\u00f3k\u00f6r\u0171 OpenTelemetry objektum n\u00e9lk\u00fcl haszn\u00e1lni. Az integr\u00e1ci\u00f3s k\u00f3d val\u00f3sz\u00edn\u0171leg megpr\u00f3b\u00e1l \u00faj sz\u00e1lakat l\u00e9trehozni a ManagedExecutorService fel\u00fclet haszn\u00e1lata n\u00e9lk\u00fcl, \u00e9s egy OpenTelemetry objektumot beszerezni az alkalmaz\u00e1son bel\u00fcl. OpenTemetry objektum alkalmaz\u00e1son k\u00edv\u00fcli beszerz\u00e9s\u00e9hez enged\u00e9lyezze OpenTelemetry egy k\u00f6rnyezeti v\u00e1ltoz\u00f3n vagy egy rendszertulajdons\u00e1gon kereszt\u00fcl.
+
+CWMOT5005.mptelemetry.unknown.log.source=CWMOT5005W: A MicroProfile Telemetria napl\u00f3z\u00e1si szolg\u00e1ltat\u00e1sa nem ismeri fel a [ {0} ] napl\u00f3forr\u00e1st.
+CWMOT5005.mptelemetry.unknown.log.source.explanation=A Liberty fut\u00e1si k\u00f6rnyezet nem biztos\u00edtja a megadott napl\u00f3forr\u00e1st.
+CWMOT5005.mptelemetry.unknown.log.source.useraction=Ellen\u0151rizze a konfigur\u00e1ci\u00f3s inform\u00e1ci\u00f3kat, \u00e9s adja meg a MicroProfile Telemetry egyik t\u00e1mogatott forr\u00e1s\u00e1t.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+
+threadpool.activeThreads.description=Az akt\u00edvan feladatokat futtat\u00f3 sz\u00e1lak sz\u00e1ma.
+threadpool.size.description=A sz\u00e1lt\u00e1rol\u00f3 m\u00e9rete.
+
+session.activeSessions.description=A jelenleg akt\u00edv munkamenetek sz\u00e1ma. A munkamenet akkor akt\u00edv, amikor a fut\u00e1si k\u00f6rnyezet egy olyan k\u00e9r\u00e9st dolgoz fel, amely az adott felhaszn\u00e1l\u00f3i munkamenetet haszn\u00e1lja.
+session.created.description=A mutat\u00f3 enged\u00e9lyez\u00e9se \u00f3ta bejelentkezett munkamenetek sz\u00e1ma.
+session.invalidated.description=A mutat\u00f3 enged\u00e9lyez\u00e9se \u00f3ta kijelentkezett munkamenetek sz\u00e1ma.
+session.invalidatedbyTimeout.description=A m\u00e9r\u0151sz\u00e1m enged\u00e9lyez\u00e9se \u00f3ta eltelt id\u0151t\u00fall\u00e9p\u00e9s miatt kijelentkezett munkamenetek sz\u00e1ma.
+session.live.description=A jelenleg bejelentkezett felhaszn\u00e1l\u00f3k sz\u00e1ma.
+
+connectionpool.handle.count.description=A haszn\u00e1latban l\u00e9v\u0151 kapcsolatok sz\u00e1ma. A sz\u00e1m tartalmazhat t\u00f6bb kapcsolatot, amelyek egyetlen fel\u00fcgyelt kapcsolatb\u00f3l vannak megosztva.
+connectionpool.connection.created.description=A k\u00e9szlet l\u00e9trehoz\u00e1sa \u00f3ta l\u00e9trehozott fel\u00fcgyelt kapcsolatok teljes sz\u00e1ma.
+connectionpool.connection.destroyed.description=A k\u00e9szlet l\u00e9trehoz\u00e1sa \u00f3ta megsemmis\u00fclt fel\u00fcgyelt kapcsolatok teljes sz\u00e1ma.
+connectionpool.connection.free.description=Az el\u00e9rhet\u0151 fel\u00fcgyelt kapcsolatok sz\u00e1ma.
+connectionpool.connection.waitTime.description=Az a teljes id\u0151tartam, ameddig a csatlakoz\u00e1si k\u00e9relmek a csatlakoz\u00e1sra v\u00e1rtak.
+connectionpool.connection.useTime.description=Az a teljes id\u0151tartam, ameddig az adatforr\u00e1shoz vezet\u0151 \u00f6sszes kapcsolat haszn\u00e1latban volt.
+connectionpool.connection.count.description=A fel\u00fcgyelt kapcsolatok jelenlegi sz\u00e1ma a k\u00e9szletben. Ez az \u00e9rt\u00e9k tartalmazza az el\u00e9rhet\u0151 \u00e9s a haszn\u00e1latban l\u00e9v\u0151 fel\u00fcgyelt kapcsolatokat. Egyetlen fel\u00fcgyelt kapcsolat, amelyet t\u00f6bb kapcsolat is megoszt, csak egyszer sz\u00e1m\u00edt.
+
+requestTiming.processed.description=A szervletk\u00e9r\u00e9sek sz\u00e1ma a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
+requestTiming.active.description=A jelenleg fut\u00f3 szervlet-k\u00e9relmek sz\u00e1ma.
+requestTiming.slow.description=A jelenleg fut\u00f3, de lass\u00fa szervletk\u00e9r\u00e9sek sz\u00e1ma.
+requestTiming.hung.description=A jelenleg felf\u00fcggesztett szervlet-k\u00e9relmek sz\u00e1ma.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# HTTP Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+
+http.server.request.duration.description=A HTTP szerver k\u00e9r\u00e9sek id\u0151tartama.

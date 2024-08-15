@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2023 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -234,3 +234,7 @@ scheme.incorrect.error.useraction=\u65b9\u6848\u7c7b\u578b\u5fc5\u987b\u4e3a htt
 upgradeHttpToWebSocket.failed=CWWKH0055E: \u7531\u4e8e {0}\uff0cjakarta.websocket.server.ServerContainer#upgradeHttpToWebSocket \u8c03\u7528\u5931\u8d25\u3002 
 upgradeHttpToWebSocket.failed.explanation=\u670d\u52a1\u5668\u65e0\u6cd5\u5c06 HTTP \u6216 HTTPS \u8bf7\u6c42\u5347\u7ea7\u5230 ws/wss \u534f\u8bae\u3002
 upgradeHttpToWebSocket.failed.useraction=\u8bf7\u67e5\u770b\u9519\u8bef\u4ee5\u786e\u5b9a\u8bf7\u6c42\u65e0\u6cd5\u5347\u7ea7\u7684\u539f\u56e0\u3002
+
+maxmessagesize.exceeded=CWWKH0056E: {0} \u65b9\u6cd5\u7684 maxMessageSize \u8d85\u8fc7\u4e86 Integer.MAX_VALUE \u7c7b\u7684 {1} \u3002
+maxmessagesize.exceeded.explanation=maxMessageSize OnMessage \u6ce8\u89e3\u53c2\u6570\u8bbe\u7f6e\u4e86\u65b9\u6cd5\u7684\u6700\u5927\u6d88\u606f\u5927\u5c0f\uff08\u4ee5\u5b57\u8282\u4e3a\u5355\u4f4d\uff09\u3002 maxMessageSize \u53ea\u80fd\u8bbe\u7f6e\u4e3a Integer.MAX_VALUE \u7684\u6700\u5927\u503c\u3002
+maxmessagesize.exceeded.useraction=\u5c06 maxMessageSize \u53c2\u6570\u503c\u51cf\u5c0f\u5230\u4e0d\u8d85\u8fc7 Integer.MAX_VALUE \u3002
