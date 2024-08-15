@@ -57,11 +57,17 @@ public abstract class AbstractOpenTelemetryInfoFactory implements OpenTelemetryI
             final Map<String, String> telemetryProperties;
             final ClassLoader classLoader;
             if (runtimeEnabled) {
-                classLoader = OpenTelemetry.noop().getClass().getClassLoader();
+                classLoader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
+                    return OpenTelemetry.noop().getClass().getClassLoader();
+                });
+
                 telemetryProperties = OpenTelemetryPropertiesReader.getRuntimeInstanceTelemetryProperties();
 
             } else {
-                classLoader = Thread.currentThread().getContextClassLoader();
+                classLoader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
+                    return Thread.currentThread().getContextClassLoader();
+                });
+
                 telemetryProperties = OpenTelemetryPropertiesReader.getTelemetryProperties();
 
                 //Checks if app mode thinks we're enabled and runtime thinks we're not
