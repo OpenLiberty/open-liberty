@@ -20,15 +20,18 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -42,6 +45,9 @@ public class TelemetrySourcesTest extends FATServletClient {
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests rt = FATSuite.testRepeatMPTel20();
 
     public static final String SERVER_XML_ALL_SOURCES = "allSources.xml";
     public static final String SERVER_XML_EMPTY_SOURCE = "emptySource.xml";
@@ -60,7 +66,8 @@ public class TelemetrySourcesTest extends FATServletClient {
 
     @Before
     public void testSetup() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp");
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.SERVER_ONLY },
+                                "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp");
         server.startServer();
 
     }

@@ -9,11 +9,16 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal.container.fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.containers.TestContainerSuite;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -23,4 +28,9 @@ import componenttest.containers.TestContainerSuite;
 })
 
 public class FATSuite extends TestContainerSuite {
+
+    @ClassRule
+    public static RepeatTests r = TelemetryActions
+                    .repeat(FeatureReplacementAction.ALL_SERVERS, MicroProfileActions.MP70_EE11, MicroProfileActions.MP70_EE10,
+                            TelemetryActions.MP50_MPTEL20_JAVA8, TelemetryActions.MP41_MPTEL20, TelemetryActions.MP14_MPTEL20);
 }

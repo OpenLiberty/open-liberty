@@ -14,7 +14,7 @@
 	<featureManager>
 		<feature>mpTelemetry-2.0</feature>
 		<feature>componentTest-2.0</feature>
-		<feature>servlet-6.0</feature>
+		<feature>servlet-6.1</feature>
 	</featureManager>
 
 	<include location="../fatTestPorts.xml"/>

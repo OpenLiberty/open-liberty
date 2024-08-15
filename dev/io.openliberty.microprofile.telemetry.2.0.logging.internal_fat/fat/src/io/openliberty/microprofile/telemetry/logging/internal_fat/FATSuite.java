@@ -22,8 +22,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -36,10 +40,16 @@ import componenttest.topology.utils.HttpUtils;
                 TelemetrySourcesTest.class,
                 TelemetryApplicationConfigTest.class,
                 TelemetryDropinsTest.class
-                //TelemetryAgentJULMessagesTest.class, // To Do: Move this to the mpTelemetry logs container FAT
 })
 
 public class FATSuite {
+
+    public static RepeatTests testRepeatMPTel20() {
+        return TelemetryActions
+                        .repeat(FeatureReplacementAction.ALL_SERVERS, MicroProfileActions.MP70_EE11, MicroProfileActions.MP70_EE10,
+                                TelemetryActions.MP50_MPTEL20_JAVA8, TelemetryActions.MP41_MPTEL20, TelemetryActions.MP14_MPTEL20);
+    }
+
     private static final int CONN_TIMEOUT = 10;
 
     static void hitWebPage(LibertyServer server, String contextRoot, String servletName, boolean failureAllowed,

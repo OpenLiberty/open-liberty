@@ -101,7 +101,7 @@ public class TestUtils {
         String delimiter = "scopeInfo: io.openliberty.microprofile.telemetry:]";
         int index = line.indexOf(delimiter);
 
-        line = line.substring(index + delimiter.length()).strip();
+        line = line.substring(index + delimiter.length()).trim();
         line = fixJSON(line);
 
         JsonReader reader = Json.createReader(new StringReader(line));

@@ -19,15 +19,18 @@ import java.util.function.Consumer;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -40,6 +43,9 @@ public class TelemetryFFDCTest extends FATServletClient {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests rt = FATSuite.testRepeatMPTel20();
+
     private static final String USER_FEATURE_PATH = "usr/extension/lib/features/";
     private static final String USER_BUNDLE_PATH = "usr/extension/lib/";
     private static final String USER_FEATURE_USERTEST_MF = "features/test.ffdc-1.0.mf";
@@ -48,7 +54,8 @@ public class TelemetryFFDCTest extends FATServletClient {
     static LibertyServer installUserFeatureAndApp(LibertyServer s) throws Exception {
         s.copyFileToLibertyInstallRoot(USER_FEATURE_PATH, USER_FEATURE_USERTEST_MF);
         s.copyFileToLibertyInstallRoot(USER_BUNDLE_PATH, USER_FEATURE_USERTEST_JAR);
-        ShrinkHelper.defaultDropinApp(s, "ffdc-servlet", "io.openliberty.microprofile.telemetry.logging.internal.fat.ffdc.servlet");
+        ShrinkHelper.defaultDropinApp(s, "ffdc-servlet", new DeployOptions[] { DeployOptions.SERVER_ONLY },
+                                      "io.openliberty.microprofile.telemetry.logging.internal.fat.ffdc.servlet");
         return s;
     }
 
