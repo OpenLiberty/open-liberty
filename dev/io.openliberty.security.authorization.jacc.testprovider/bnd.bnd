@@ -1,23 +1,26 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2024 IBM Corporation and others.
+# Copyright (c) 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
-#
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 
--sub: *.bnd
-
 bVersion=1.0
 
+Bundle-Name: Liberty Jakarta Authorization Provider 3.0
+Bundle-SymbolicName: io.openliberty.security.authorization.jacc.testprovider
+Bundle-Description: Liberty Jakarta Authorization Provider, version=${bVersion}
+
 Bundle-ActivationPolicy: lazy
+
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 #
 # Generate an Jakarta EE compliant JAR for the bundle.
@@ -39,20 +42,20 @@ Import-Package: \
   com.ibm.ws.ffdc, \
   javax.security.auth, \
   javax.security.auth.login, \
-  javax.security.jacc, \
+  jakarta.security.jacc, \
   org.osgi.framework.*, \
   org.osgi.service.component.*
 
 Private-Package: com.ibm.ws.security.authorization.jacc.role
 
 Include-Resource: \
-  OSGI-INF=resources/OSGI-INF
+  @${repo;com.ibm.ws.security.authorization.jacc.testprovider.jakarta}!/(OSGI-INF/l10n/*|OSGI-INF/metatype/*)
 
 -dsannotations: \
   com.ibm.ws.security.authorization.jacc.service.ProviderServiceImpl
 
 -buildpath: \
-  com.ibm.websphere.javaee.jacc.1.5;version=latest,\
+  io.openliberty.jakarta.authorization.3.0;version=latest,\
   com.ibm.websphere.org.osgi.core;version=latest,\
   com.ibm.websphere.org.osgi.service.component;version=latest,\
   com.ibm.websphere.security;version=latest,\
@@ -61,5 +64,5 @@ Include-Resource: \
   com.ibm.ws.logging;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.security.authorization;version=latest,\
-  com.ibm.websphere.appserver.api.jacc;version=latest
-  
+  com.ibm.ws.security.authorization.jacc.testprovider.jakarta;version=latest,\
+  io.openliberty.jacc.3.0;version=latest
