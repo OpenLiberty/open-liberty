@@ -29,6 +29,7 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -47,13 +48,15 @@ public class TelemetryFFDCCheckpointTest extends FATServletClient {
 
     @BeforeClass
     public static void initialSetup() throws Exception {
-        server = installUserFeatureAndApp(getLibertyServer(SERVER_NAME));
+        if (!RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID)) {
+            server = installUserFeatureAndApp(getLibertyServer(SERVER_NAME));
 
-        server.setCheckpoint(CheckpointPhase.AFTER_APP_START);
-        server.addCheckpointRegexIgnoreMessages("com.ibm.ws.logging.fat.ffdc.servlet", "RuntimeException", "SRVE0207E");
-        server.addBootstrapProperties(Collections.singletonMap("io.openliberty.microprofile.telemetry.ffdc.early", "true"));
+            server.setCheckpoint(CheckpointPhase.AFTER_APP_START);
+            server.addCheckpointRegexIgnoreMessages("com.ibm.ws.logging.fat.ffdc.servlet", "RuntimeException", "SRVE0207E");
+            server.addBootstrapProperties(Collections.singletonMap("io.openliberty.microprofile.telemetry.ffdc.early", "true"));
 
-        server.startServer();
+            server.startServer();
+        }
     }
 
     /**
@@ -75,7 +78,9 @@ public class TelemetryFFDCCheckpointTest extends FATServletClient {
 
     @AfterClass
     public static void cleanUp() throws Exception {
-        removeUserFeaturesAndStopServer(server);
+        if (server != null && server.isStarted()) {
+            removeUserFeaturesAndStopServer(server);
+        }
     }
 
 }

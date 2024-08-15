@@ -27,6 +27,7 @@ import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -46,9 +47,11 @@ public class TelemetryMessagesCheckpointTest extends FATServletClient {
 
     @BeforeClass
     public static void testSetup() throws Exception {
-        setupServerApp(LibertyServerFactory.getLibertyServer(SERVER_NAME));
-        server.setCheckpoint(CheckpointPhase.AFTER_APP_START);
-        server.startServer();
+        if (!RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID)) {
+            setupServerApp(LibertyServerFactory.getLibertyServer(SERVER_NAME));
+            server.setCheckpoint(CheckpointPhase.AFTER_APP_START);
+            server.startServer();
+        }
     }
 
     static LibertyServer setupServerApp(LibertyServer s) throws Exception {
@@ -71,7 +74,9 @@ public class TelemetryMessagesCheckpointTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
+        }
     }
 
 }
