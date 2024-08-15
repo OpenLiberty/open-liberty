@@ -21,6 +21,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.Consumer;
 
@@ -107,6 +108,7 @@ public class DB2Test extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        server.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
         ShrinkHelper.defaultApp(server, APP_NAME, "io.openliberty.checkpoint.db2.web");
 
         initDB();

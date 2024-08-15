@@ -31,7 +31,8 @@
   <library id="DB2Lib">
     <fileset dir="${shared.resource.dir}/db2"/>
   </library>
-  
+
+  <ssl id="defaultSSLConfig" verifyHostname="false" />
   <keyStore id="defaultKeyStore" location="security/db2-keystore.p12" password="db2test" />
 
   <!-- these are place holders so we don't have to have the env set before checkpoint -->
