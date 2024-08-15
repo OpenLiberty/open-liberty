@@ -15,8 +15,7 @@
  * Configure Gradle Build Cache.
  * See: https://docs.gradle.org/current/userguide/build_cache.html
  */
-boolean isUsingArtifactory = 'true'.equalsIgnoreCase(gradle.userProps.getProperty('is.using.artifactory'))
-if (isUsingArtifactory) {
+if ('true'.equalsIgnoreCase(gradle.userProps.getProperty('is.using.artifactory'))) {
   String artifactoryServer = gradle.userProps.getProperty('artifactory.download.server')
   boolean isCIServer = 'true'.equalsIgnoreCase(gradle.userProps.getProperty('is.continuous.build'))
   if (isCIServer) {
@@ -25,11 +24,11 @@ if (isUsingArtifactory) {
   }
   buildCache {
     remote(HttpBuildCache) {
-      url = ('https://' + artifactoryServer + '/artifactory/wasliberty-generic-local/')
+      url = ('https://' + artifactoryServer + '/artifactory/hyc-wasliberty-team-waslib-infra-gradle-generic-local/')
       push = isCIServer
       credentials {
-        username = gradle.userProps.getProperty("artifactory.download.user")
-        password = gradle.userProps.getProperty("artifactory.download.token")
+        username = gradle.userProps.getProperty('artifactory.download.user')
+        password = gradle.userProps.getProperty('artifactory.download.token')
       }
     }
   }
