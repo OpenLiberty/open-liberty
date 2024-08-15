@@ -41,8 +41,10 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -59,6 +61,7 @@ import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
 import io.openliberty.microprofile.telemetry.internal.apps.agent.AgentSubResource;
 import io.openliberty.microprofile.telemetry.internal.apps.agent.AgentTestResource;
+import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
@@ -86,6 +89,9 @@ public class AgentTest {
     // so that it can check for any trace IDs not accounted for
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(repeat).around(jaegerContainer);
+
+    @Rule
+    public TestRule ignoreConnectionErrors = FATSuite.connectionWatcher.ignoreConnectivityFailures(server);
 
     private static JaegerQueryClient client;
     private static Set<String> traceIdsUsed;

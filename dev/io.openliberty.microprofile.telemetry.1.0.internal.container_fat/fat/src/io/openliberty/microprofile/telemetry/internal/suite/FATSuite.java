@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.suite;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -32,12 +33,13 @@ import io.openliberty.microprofile.telemetry.internal.tests.JaegerOtelCollectorT
 import io.openliberty.microprofile.telemetry.internal.tests.JaegerOtlpTest;
 import io.openliberty.microprofile.telemetry.internal.tests.JaegerSecureOtelCollectorTest;
 import io.openliberty.microprofile.telemetry.internal.tests.JaegerSecureOtlpTest;
+import io.openliberty.microprofile.telemetry.internal.tests.JvmMetricsOtelCollectorTest;
+import io.openliberty.microprofile.telemetry.internal.tests.MetricsApiOtelCollectorTest;
 import io.openliberty.microprofile.telemetry.internal.tests.TracingNotEnabledTest;
 import io.openliberty.microprofile.telemetry.internal.tests.ZipkinOtelCollectorTest;
 import io.openliberty.microprofile.telemetry.internal.tests.ZipkinTest;
-import io.openliberty.microprofile.telemetry.internal.tests.JvmMetricsOtelCollectorTest;
-import io.openliberty.microprofile.telemetry.internal.tests.MetricsApiOtelCollectorTest;
 import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.connectivity.ConnectionErrorWatcher;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -57,7 +59,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
                 TracingNotEnabledTest.class,
                 JvmMetricsOtelCollectorTest.class,
                 MetricsApiOtelCollectorTest.class,
-                ZipkinOtelCollectorTest.class, 
+                ZipkinOtelCollectorTest.class,
                 ZipkinTest.class,
 
 })
@@ -66,6 +68,9 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
  * Purpose: This suite collects and runs all known good test suites.
  */
 public class FATSuite extends TestContainerSuite {
+
+    @ClassRule
+    public static ConnectionErrorWatcher connectionWatcher = new ConnectionErrorWatcher();
 
     public static RepeatTests allMPRepeats(String serverName) {
         return TelemetryActions.repeat(serverName,
