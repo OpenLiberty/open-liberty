@@ -17,6 +17,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
+import componenttest.annotation.MaximumJavaLevel;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -54,6 +55,9 @@ import componenttest.containers.TestContainerSuite;
                 LibertyLoginModuleInvalidTest.class,
                 LibertyLoginModuleSpecialCharsTest.class,
 })
+// The Kafka Client SASL library uses Java Security Manager, which is no longer available as of Java 23
+// This should be removed when the test Kafka client jar is updated to a version that works with Java 23+
+@MaximumJavaLevel(javaLevel = 21)
 public class SaslPlainTests extends TestContainerSuite {
 
     public static final String ADMIN_USER = "admin";
