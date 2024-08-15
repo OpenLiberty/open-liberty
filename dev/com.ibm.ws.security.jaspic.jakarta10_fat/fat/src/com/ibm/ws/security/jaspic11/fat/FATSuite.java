@@ -36,32 +36,16 @@ import componenttest.rules.repeater.RepeatTests;
 
 public class FATSuite {
 
-    private static final Set<String> EE78_FEATURES;
-    private static final String[] EE78_FEATURES_ARRAY = {
-            "usr:jaspicUserTestFeature-1.0",
-            "usr:jaccTestProvider-1.0"
-    };
-
-    private static final Set<String> EE9_FEATURES;
-    private static final String[] EE9_FEATURES_ARRAY = {
-            "usr:jaspicUserTestFeature-2.0",
-            "usr:jaccTestProvider-2.0"
-    };
-
-    private static final Set<String> EE10_FEATURES;
-    private static final String[] EE10_FEATURES_ARRAY = {
-            "usr:jaspicUserTestFeature-3.0",
-            "usr:jaccTestProvider-2.1"
+    private static final Set<String> EE10_11_FEATURES;
+    private static final String[] EE10_11_FEATURES_ARRAY = {
+            "usr:jaspicUserTestFeature-3.0"
     };
     static {
-        EE78_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE78_FEATURES_ARRAY)));
-        EE9_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE9_FEATURES_ARRAY)));
-        EE10_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE10_FEATURES_ARRAY)));
+        EE10_11_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE10_11_FEATURES_ARRAY)));
     }
 
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_17)).
-                                                   andWith(FeatureReplacementAction.EE11_FEATURES().setSkipTransformation(true));
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_17)).andWith(FeatureReplacementAction.EE11_FEATURES().setSkipTransformation(true));
 
     //public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE10Action().removeFeatures(EE78_FEATURES).removeFeatures(EE9_FEATURES).addFeatures(EE10_FEATURES));
 
