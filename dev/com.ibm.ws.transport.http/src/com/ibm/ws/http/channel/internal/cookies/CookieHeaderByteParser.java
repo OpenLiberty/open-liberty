@@ -50,6 +50,7 @@ public class CookieHeaderByteParser {
      * 1. response addHeader/setHeader will not split the Set-Cookie header for arbitrary attributes
      * 2. setAttribute with empty value - only show attribute name itself; example : setAttribute("JustName", "") or setAttribute("JustName", "=") > JustName;
      * 3. setAttribute with null value - will remove that attribute
+     * 4. surrounding quotes are part of cookie's value
      */
     private boolean isEE11;
     private boolean hasDollarSign = false;
@@ -403,7 +404,6 @@ public class CookieHeaderByteParser {
      *                  The type of the CookieData attribute
      */
     private void parseValue(byte[] data, CookieData token) {
-
         int start = -1;
         int stop = -1;
         int pos = this.bytePosition;
@@ -460,7 +460,8 @@ public class CookieHeaderByteParser {
         }
 
         // filter out any surrounding quotes
-        if ('"' == data[start] && '"' == data[stop]) {
+        // Servlet 6.1 - surrounding quotes are part of cookie value
+        if (!isEE11 && '"' == data[start] && '"' == data[stop]) {
             start++;
             stop--;
         }
@@ -472,10 +473,9 @@ public class CookieHeaderByteParser {
             if (0 < len) {
                 System.arraycopy(data, start, this.value, 0, len);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "value: " + GenericUtils.nullOutPasswords(this.value, (byte) '&'));
+                    Tr.debug(tc, " parseValue, value: [" + GenericUtils.nullOutPasswords(this.value, (byte) '&') + "]");
                 }
             }
         }
     }
-
 }
