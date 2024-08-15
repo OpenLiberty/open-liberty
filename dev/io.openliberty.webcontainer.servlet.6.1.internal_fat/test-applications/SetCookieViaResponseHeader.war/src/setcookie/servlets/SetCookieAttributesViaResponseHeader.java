@@ -67,9 +67,11 @@ public class SetCookieAttributesViaResponseHeader extends HttpServlet {
             case "test_SetCookie_Attributes_EMPTY" : test_SetCookie_Attributes_EMPTY(); break;
             case "test_SetCookie_Attributes_NULL" : test_SetCookie_Attributes_NULL(); break;
             case "test_SetCookie_Illegal_Attribute_Name" : test_SetCookie_Illegal_Attribute_Name(); break;
+            case "test_RequestCookie_QuotedValue" : test_RequestCookie_QuotedValue(); break;
         }
 
         if (!responseSB.isEmpty()) {
+            LOG("Response Text [" + responseSB.toString() + "]");         //Look for this log even there is no enabled trace
             sos.println(responseSB.toString());
         }
 
@@ -181,6 +183,26 @@ public class SetCookieAttributesViaResponseHeader extends HttpServlet {
         wcCookieAtt.setHttpOnly(true);
 
         response.addCookie(wcCookieAtt);
+
+        LOGEXIT(method);
+    }
+
+    /*
+     * value with escape quote should retain after parsing
+     * "Cookie: name1=\"value1\";
+     *  > getName = name1
+     *  > getValue = "value1"  (quotes are part of the value)
+     *  
+     *  Client will assert the response text
+     */
+    private void test_RequestCookie_QuotedValue() throws IOException{
+        String method = new Object(){}.getClass().getEnclosingMethod().getName();
+        LOGENTER(method);
+
+        Cookie[] cookiesArray = request.getCookies();
+        for (Cookie c : cookiesArray) {
+            responseSB.append("Cookie name [" + c.getName() + "] , value [" + c.getValue() + "]\n");
+        }
 
         LOGEXIT(method);
     }
