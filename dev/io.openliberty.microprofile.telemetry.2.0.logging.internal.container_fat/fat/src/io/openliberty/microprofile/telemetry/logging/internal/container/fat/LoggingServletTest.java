@@ -35,6 +35,8 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
@@ -87,6 +89,7 @@ public class LoggingServletTest {
      * Ensures all messages printed in the messages.log are bridged over to the otlp container.
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testBridgedLogs() throws Exception {
         assertTrue("The server was not started successfully.", server.isStarted());
         TestUtils.runApp(server, "logs");
