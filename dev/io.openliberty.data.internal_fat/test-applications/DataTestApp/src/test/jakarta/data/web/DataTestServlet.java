@@ -4967,12 +4967,12 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Obtain total counts of number of elements and pages when JPQL is supplied via the Query annotation,
-     * with a count query automatically generated from the primary query of the Query annotation.
+     * Obtain total counts of number of elements and pages when JPQL with 4 clauses
+     * (SELECT, FROM, WHERE, ORDER BY) is supplied via the Query annotation, with a
+     * count query automatically generated from the primary query.
      */
-    // TODO re-enable once JPA 3.2 gives us COUNT(THIS) or if we improve the query parsing to better simulate it
-    // @Test
-    public void testTotalCountsForCountQuery() {
+    @Test
+    public void testTotalCountsForFullQuery() {
         Page<Map.Entry<Long, String>> page1 = primes.namesByNumber(47L, PageRequest.ofSize(5));
 
         assertEquals(15L, page1.totalElements());
@@ -5001,33 +5001,82 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Obtain total counts of number of elements and pages when JDQL is supplied via the Query annotation
-     * and the count query provided by the Query annotation only has a WHERE clause.
+     * Obtain total counts of elements when various JDQL queries are supplied
+     * that lack different optional clauses.
      */
     @Test
-    public void testTotalCountsForCountQueryWithWhereClauseOnly() {
+    public void testTotalCountsForQueriesWithSomeClausesOmitted() {
+        receipts.removeIfTotalUnder(Float.MAX_VALUE);
+
+        receipts.insertAll(List.of(new Receipt(5001, "TCFQWSCO-1", 51.01f),
+                                   new Receipt(5002, "TCFQWSCO-2", 52.42f),
+                                   new Receipt(5003, "TCFQWSCO-3", 50.33f),
+                                   new Receipt(5004, "TCFQWSCO-2", 52.24f),
+                                   new Receipt(5005, "TCFQWSCO-5", 56.95f)));
+
+        Page<Receipt> page1;
+        PageRequest page1req = PageRequest.ofSize(3).withTotal();
+
+        // query with no clauses
+        // TODO blocked by 28913
+        //page1 = receipts.all(page1req, Order.by(Sort.asc(ID)));
+        //assertEquals(5, page1.totalElements());
+
+        receipts.insert(new Receipt(5006, "TCFQWSCO-5", 56.56f));
+
+        // query with FROM clause only
+        // TODO blocked by 28913
+        //page1 = receipts.all(page1req, Sort.desc(ID));
+        //assertEquals(6, page1.totalElements());
+
+        receipts.insert(new Receipt(5007, "TCFQWSCO-7", 57.17f));
+
+        // query with FROM clause only
+        // TODO blocked by 28913
+        //page1 = receipts.sortedByTotalIncreasing(page1req);
+        //assertEquals(7, page1.totalElements());
+        //assertEquals(5003, page1.iterator().next().purchaseId());
+
+        receipts.insert(new Receipt(5008, "TCFQWSCO-8", 58.88f));
+
+        // query with SELECT clause only
+        Page<Float> amountsPage1;
+        amountsPage1 = receipts.totals(page1req, Sort.asc(ID));
+        assertEquals(8, amountsPage1.totalElements());
+
+        receipts.insert(new Receipt(5009, "TCFQWSCO-9", 59.09f));
+
+        // query with SELECT and ORDER BY clauses only
+        amountsPage1 = receipts.totalsDecreasing(page1req);
+        assertEquals(9, amountsPage1.totalElements());
+
+        assertEquals(9, receipts.removeIfTotalUnder(Float.MAX_VALUE));
+    }
+
+    /**
+     * Obtain total counts of number of elements and pages when JDQL is supplied via
+     * the Query annotation and the provided query lacks a FROM clause.
+     */
+    @Test
+    public void testTotalCountsForQueryWithInferredFromClause() {
         // The prime numbers less than 50 where the roman numeral length is at least
         // twice the name length are:
         // 2, 3, 7, 13, 37
 
-        Page<Prime> page1 = primes.lengthBasedQuery(PageRequest.ofSize(3));
+        Page<String> page1 = primes.lengthBasedQuery(PageRequest.ofSize(3));
 
         assertEquals(List.of("two", "three", "thirty-seven"),
-                     page1.stream()
-                                     .map(p -> p.name)
-                                     .collect(Collectors.toList()));
+                     page1.content());
 
         assertEquals(3, page1.numberOfElements());
         assertEquals(5L, page1.totalElements());
         assertEquals(2L, page1.totalPages());
         assertEquals(true, page1.hasNext());
 
-        Page<Prime> page2 = primes.lengthBasedQuery(page1.nextPageRequest());
+        Page<String> page2 = primes.lengthBasedQuery(page1.nextPageRequest());
 
         assertEquals(List.of("thirteen", "seven"),
-                     page2.stream()
-                                     .map(p -> p.name)
-                                     .collect(Collectors.toList()));
+                     page2.content());
 
         assertEquals(false, page2.hasNext());
     }

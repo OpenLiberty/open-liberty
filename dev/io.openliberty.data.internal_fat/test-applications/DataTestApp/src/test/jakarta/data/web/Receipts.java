@@ -39,6 +39,13 @@ public interface Receipts extends CrudRepository<Receipt, Long> {
     @Query("UPDATE Receipt SET total = total * (1.0 + :taxRate) WHERE purchaseId = :id")
     boolean addTax(long id, float taxRate);
 
+    // TODO should this be able to return CursoredPage even though it has no WHERE clause?
+    @Query(" ")
+    Page<Receipt> all(PageRequest req, Order<PageRequest> sorts);
+
+    @Query("FROM Receipt")
+    Page<Receipt> all(PageRequest req, Sort<?>... sorts);
+
     @Query("SELECT COUNT(this)")
     long count();
 
@@ -79,8 +86,17 @@ public interface Receipts extends CrudRepository<Receipt, Long> {
     @Query("DELETE FROM Receipt WHERE total < :max")
     int removeIfTotalUnder(float max);
 
+    @Query("ORDER BY total ASC")
+    Page<Receipt> sortedByTotalIncreasing(PageRequest req);
+
     @Query("SELECT total FROM Receipt WHERE purchaseId=:id")
     float totalOf(long id);
+
+    @Query("SELECT total")
+    Page<Float> totals(PageRequest req, Sort<?>... sorts);
+
+    @Query("SELECT total ORDER BY total DESC")
+    Page<Float> totalsDecreasing(PageRequest req);
 
     Receipt withPurchaseNum(long purchaseId);
 }

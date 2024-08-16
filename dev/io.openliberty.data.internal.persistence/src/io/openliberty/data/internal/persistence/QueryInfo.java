@@ -2265,6 +2265,9 @@ public class QueryInfo {
                         c.append("WHERE").append(ql.substring(where0, where0 + whereLen));
 
                 jpqlCount = c.toString();
+
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(tc, ql, "count query: " + jpqlCount);
             }
 
             if (isCursoredPage) {
