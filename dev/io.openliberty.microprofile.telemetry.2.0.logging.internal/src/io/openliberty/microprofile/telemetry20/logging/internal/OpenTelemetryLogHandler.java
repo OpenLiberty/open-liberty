@@ -37,8 +37,8 @@ import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.Handler;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
-import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
+import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
 import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
@@ -226,7 +226,9 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
         } else if (event instanceof FFDCData) {
             eventMsg = ((FFDCData) event).getMessage();
         }
-        isOTelMappedEvent = eventMsg.contains(MpTelemetryLogFieldConstants.OTEL_SCOPE_INFO);
+        if (eventMsg != null) {
+            isOTelMappedEvent = eventMsg.contains(MpTelemetryLogFieldConstants.OTEL_SCOPE_INFO);
+        }
         return isOTelMappedEvent;
     }
 
