@@ -1934,8 +1934,6 @@ public class QueryInfo {
         for (; startAt < length && Character.isWhitespace(firstChar = ql.charAt(startAt)); startAt++);
 
         if (firstChar == 'D' || firstChar == 'd') { // DELETE FROM EntityName[ WHERE ...]
-            // Temporarily simulate optional identifier names by inserting them.
-            // TODO remove when switched to Jakarta Persistence 3.2.
             if (startAt + 12 < length
                 && ql.regionMatches(true, startAt + 1, "ELETE", 0, 5)
                 && Character.isWhitespace(ql.charAt(startAt + 6))) {
@@ -1951,42 +1949,55 @@ public class QueryInfo {
                     StringBuilder entityName = new StringBuilder();
                     for (char ch; startAt < length && Character.isJavaIdentifierPart(ch = ql.charAt(startAt)); startAt++)
                         entityName.append(ch);
-                    if (entityName.length() > 0) {
+                    if (entityName.length() > 0)
                         setEntityInfo(entityName.toString(), entityInfos);
-                        // skip whitespace
-                        for (; startAt < length && Character.isWhitespace(ql.charAt(startAt)); startAt++);
-                        if (startAt >= length) {
-                            // Entity identifier variable is not present. Add it.
-                            entityVar = "this";
-                            entityVar_ = "";
-                            jpql = new StringBuilder(entityInfo.name.length() + 12) //
-                                            .append("DELETE FROM ").append(entityInfo.name).toString();
-                        } else if (startAt + 6 < length
-                                   && ql.regionMatches(true, startAt, "WHERE", 0, 5)
-                                   && !Character.isJavaIdentifierPart(ql.charAt(startAt + 5))) {
-                            // Entity identifier variable is not present. Add it.
-                            hasWhere = true;
-                            entityVar = "this";
-                            entityVar_ = "";
+                    else
+                        throw new UnsupportedOperationException("The entity name is missing from the " + "DELETE" +
+                                                                " query that is specified for the " + method.getName() +
+                                                                " method of the " + method.getDeclaringClass().getName() +
+                                                                " repository. In Jakarta Data Query Language, " +
+                                                                "DELETE" + " queries should be formed like: " +
+                                                                "DELETE FROM [entity_name] WHERE [conditional_expression]" +
+                                                                '.'); // TODO NLS
 
-                            // TODO remove this workaround for #28931 once fixed
-                            boolean insertEntityVar = !entityInfo.relationAttributeNames.isEmpty();
-                            if (insertEntityVar)
-                                entityVar_ = entityVar + ".";
+                    // skip whitespace
+                    for (; startAt < length && Character.isWhitespace(ql.charAt(startAt)); startAt++);
+                    if (startAt >= length) {
+                        // Entity identifier variable is not present.
+                        entityVar = "this";
+                        entityVar_ = "";
+                        if (entityInfo.recordClass != null)
+                            // Switch from record name to entity name
+                            jpql = new StringBuilder(entityInfo.name.length() + 18) //
+                                            .append("DELETE FROM ") //
+                                            .append(entityInfo.name) //
+                                            .toString();
+                    } else if (startAt + 6 < length
+                               && ql.regionMatches(true, startAt, "WHERE", 0, 5)
+                               && !Character.isJavaIdentifierPart(ql.charAt(startAt + 5))) {
+                        // Entity identifier variable is not present.
+                        hasWhere = true;
+                        entityVar = "this";
+                        entityVar_ = "";
 
-                            if (entityName.length() != entityInfo.name.length() || entityName.indexOf(entityInfo.name) != 0)
-                                if (insertEntityVar) {
-                                    StringBuilder q = new StringBuilder(ql.length() * 3 / 2) //
-                                                    .append("DELETE FROM ").append(entityInfo.name) //
-                                                    .append(' ').append(entityVar).append(" WHERE");
-                                    appendWithIdentifierName(ql, startAt + 5, ql.length(), entityVar_, q);
-                                    jpql = q.toString();
-                                } else
-                                    jpql = new StringBuilder(ql.length() * 3 / 2) //
-                                                    .append("DELETE FROM ").append(entityInfo.name).append(" WHERE") //
-                                                    .append(ql.substring(startAt + 5, ql.length())) //
-                                                    .toString();
-                        }
+                        // TODO remove this workaround for #28931 once fixed
+                        boolean insertEntityVar = !entityInfo.relationAttributeNames.isEmpty();
+                        if (insertEntityVar) {
+                            entityVar_ = entityVar + ".";
+                            StringBuilder q = new StringBuilder(ql.length() * 3 / 2) //
+                                            .append("DELETE FROM ").append(entityInfo.name) //
+                                            .append(' ').append(entityVar).append(" WHERE");
+                            appendWithIdentifierName(ql, startAt + 5, ql.length(), entityVar_, q);
+                            jpql = q.toString();
+                            // The following if block is not part of the workaround and is still needed:
+                        } else if (entityInfo.recordClass != null)
+                            // Switch from record name to entity name
+                            jpql = new StringBuilder(ql.length() + 6) //
+                                            .append("DELETE FROM ") //
+                                            .append(entityInfo.name) //
+                                            .append(" WHERE") //
+                                            .append(ql.substring(startAt + 5, ql.length())) //
+                                            .toString();
                     }
                 }
             }
@@ -2003,10 +2014,14 @@ public class QueryInfo {
                     entityName.append(ch);
                 if (entityName.length() > 0)
                     setEntityInfo(entityName.toString(), entityInfos);
-                else if (entityInfo == null)
-                    throw new MappingException("@Repository " + method.getDeclaringClass().getName() + " does not specify an entity class." + // TODO NLS
-                                               " To correct this, have the repository interface extend DataRepository" +
-                                               " or another built-in repository interface and supply the entity class as the first parameter.");
+                else
+                    throw new UnsupportedOperationException("The entity name is missing from the " + "UPDATE" +
+                                                            " query that is specified for the " + method.getName() +
+                                                            " method of the " + method.getDeclaringClass().getName() +
+                                                            " repository. In Jakarta Data Query Language, " +
+                                                            "UPDATE" + " queries should be formed like: " +
+                                                            "UPDATE [entity_name] SET [update_items] WHERE [conditional_expression]" +
+                                                            '.'); // TODO NLS
                 if (startAt + 1 < length && entityInfo.name.length() > 0 && Character.isWhitespace(ql.charAt(startAt))) {
                     for (startAt++; startAt < length && Character.isWhitespace(ql.charAt(startAt)); startAt++);
                     if (startAt + 4 < length
@@ -2182,6 +2197,16 @@ public class QueryInfo {
                             }
                         }
                     }
+                } else {
+                    String queryType = selectLen > 0 ? "SELECT" : "FROM";
+                    String example = (selectLen > 0 ? "SELECT [select_list] " : "") +
+                                     "FROM [entity_name] WHERE [conditional_expression]";
+                    throw new UnsupportedOperationException("The entity name is missing from the " + queryType +
+                                                            " query that is specified for the " + method.getName() +
+                                                            " method of the " + method.getDeclaringClass().getName() +
+                                                            " repository. In Jakarta Data Query Language, " +
+                                                            queryType + " queries should be formed like: " +
+                                                            example + '.'); // TODO NLS
                 }
             }
 
