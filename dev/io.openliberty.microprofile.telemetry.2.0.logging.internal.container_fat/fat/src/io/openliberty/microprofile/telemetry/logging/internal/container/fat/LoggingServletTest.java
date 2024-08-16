@@ -146,7 +146,7 @@ public class LoggingServletTest {
      * Ensures that an FFDC message from a Liberty application are bridged over to the otlp container.
      */
     @Test
-    @ExpectedFFDC({ "java.lang.NullPointerException" })
+    @ExpectedFFDC({ "java.lang.ArithmeticException" })
     public void testFFDCLogs() throws Exception {
 
         assertTrue("The server was not started successfully.", server.isStarted());
@@ -163,10 +163,10 @@ public class LoggingServletTest {
 
         Log.info(c, "testFFDCLogs", logs);
 
-        assertTrue("FFDC message log could not be found.", logs.contains("Body: Str(Cannot invoke"));
-        assertTrue("Exception message could not be found.", logs.contains("exception.message: Str(Cannot invoke"));
-        assertTrue("Exception Stacktrace  could not be found.", logs.contains("exception.stacktrace: Str(java.lang.NullPointerException"));
-        assertTrue("Exception type could not be found.", logs.contains("exception.type: Str(java.lang.NullPointerException)"));
+        assertTrue("FFDC message log could not be found.", logs.contains("Body: Str(FFDC_TEST_DOGET"));
+        assertTrue("Exception message could not be found.", logs.contains("exception.message: Str(FFDC_TEST_DOGET"));
+        assertTrue("Exception Stacktrace  could not be found.", logs.contains("exception.stacktrace: Str(java.lang.ArithmeticException"));
+        assertTrue("Exception type could not be found.", logs.contains("exception.type: Str(java.lang.ArithmeticException)"));
         assertTrue("Probe ID could not be found.", logs.contains("io.openliberty.probe_id"));
         assertTrue("SeverityText message could not be found.", logs.contains("SeverityText:"));
         assertTrue("SeverityNumber message could not be found.", logs.contains("SeverityNumber: Warn(13)"));
