@@ -39,11 +39,13 @@ public class SessionMetricsTest extends BaseTestClass {
 
 	private static Class<?> c = SessionMetricsTest.class;
 
-	@Server("SessionsMetricsServer")
+	private static final String SERVER_NAME = "SessionsMetricsServer";
+	
+	@Server(SERVER_NAME)
 	public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests rt = FATSuite.testRepeatMPTel20("SessionsMetricsServer");
+    public static RepeatTests rt = FATSuite.testRepeatMPTel20(SERVER_NAME);
 	
 	@ClassRule
 	public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
