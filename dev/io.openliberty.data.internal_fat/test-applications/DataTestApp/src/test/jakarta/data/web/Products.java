@@ -54,6 +54,9 @@ public interface Products {
     @Query("UPDATE Product SET price = price - (?2 * price) WHERE name LIKE CONCAT('%', ?1, '%')")
     long putOnSale(String nameContains, float discount);
 
+    @Query("SELECT name")
+    String[] names();
+
     // Custom repository method that combines multiple operations into a single transaction
     @Transactional
     default Product remove(UUID id) {

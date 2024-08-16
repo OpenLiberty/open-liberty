@@ -33,7 +33,6 @@ import java.sql.SQLSyntaxErrorException;
 import java.sql.SQLTransientConnectionException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
@@ -763,9 +762,22 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         if (resource instanceof AutoCloseable) {
             if (resources == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, type + " accessed outside the scope of repository default method",
-                             Arrays.toString(new Exception().getStackTrace())); // TODO log the stack without an exception
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+                    String thisClassName = getClass().getName();
+
+                    // skip Thread.getStackTrace and RepositoryImpl in stack,
+                    int s = 0;
+                    while (++s < stack.length &&
+                           stack[s].getClassName().equals(thisClassName));
+                    StackTraceElement[] shortened = //
+                                    new StackTraceElement[stack.length - s];
+                    System.arraycopy(stack, s, shortened, 0, shortened.length);
+
+                    Tr.debug(this, tc,
+                             type.getSimpleName() + " accessed outside of repository default method",
+                             (Object[]) shortened);
+                }
             } else {
                 resources.add((AutoCloseable) resource);
             }

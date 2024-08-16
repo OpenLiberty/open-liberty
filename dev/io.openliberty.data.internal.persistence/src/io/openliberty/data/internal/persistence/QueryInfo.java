@@ -2286,6 +2286,9 @@ public class QueryInfo {
                 } else {
                     q.append("SELECT").append(selection);
                 }
+                if (fromLen == 0 && whereLen == 0 && orderLen == 0 &&
+                    !Character.isWhitespace(q.charAt(q.length() - 1)))
+                    q.append(' ');
             } else {
                 q = generateSelectClause().append(' ');
             }
