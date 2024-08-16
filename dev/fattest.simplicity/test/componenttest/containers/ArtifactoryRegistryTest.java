@@ -411,9 +411,9 @@ public class ArtifactoryRegistryTest {
 
     @Test
     public void testArtifactoryAuthToken() throws Exception {
-        String testUsername = "test.email@gmail.com";
+        String testUsername = "test.email@example.com";
         String testToken = "aToTallyFakeTokenThaTWouldNeverBeUsed";
-        String expectedAuthToken = "dGVzdC5lbWFpbEBnbWFpbC5jb206YVRvVGFsbHlGYWtlVG9rZW5UaGFUV291bGROZXZlckJlVXNlZA==";
+        String expectedAuthToken = "dGVzdC5lbWFpbEBleGFtcGxlLmNvbTphVG9UYWxseUZha2VUb2tlblRoYVRXb3VsZE5ldmVyQmVVc2Vk";
 
         Method generateAuthToken = getGenerateAuthToken();
 
