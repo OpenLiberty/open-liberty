@@ -12,10 +12,14 @@ package componenttest.containers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Base64;
 import java.util.stream.Collectors;
 
 import org.junit.AfterClass;
@@ -357,6 +361,90 @@ public class ArtifactoryRegistryTest {
         assertTrue(result);
     }
 
+    @Test
+    public void testArtifactoryRegistry() throws Exception {
+        Method findRegistry = getFindRegistry();
+
+        // Unset
+        System.clearProperty(ArtifactoryRegistry.artifactoryRegistryKey);
+        try {
+            findRegistry.invoke(null);
+            fail("Should not have found registry when property " + ArtifactoryRegistry.artifactoryRegistryKey + " was unset");
+        } catch (InvocationTargetException e) {
+            assertTrue(e.getCause() instanceof IllegalStateException);
+        }
+
+        // Empty
+        System.setProperty(ArtifactoryRegistry.artifactoryRegistryKey, "");
+        try {
+            findRegistry.invoke(null);
+            fail("Should not have found registry when property " + ArtifactoryRegistry.artifactoryRegistryKey + " was empty");
+        } catch (InvocationTargetException e) {
+            assertTrue(e.getCause() instanceof IllegalStateException);
+        }
+
+        // Missing
+        System.setProperty(ArtifactoryRegistry.artifactoryRegistryKey, "${" + ArtifactoryRegistry.artifactoryRegistryKey.substring(9) + "}");
+        try {
+            findRegistry.invoke(null);
+            fail("Should not have found registry when property " + ArtifactoryRegistry.artifactoryRegistryKey + " was missing from gradle");
+        } catch (InvocationTargetException e) {
+            assertTrue(e.getCause() instanceof IllegalStateException);
+        }
+
+        // Null
+        System.setProperty(ArtifactoryRegistry.artifactoryRegistryKey, "null");
+        try {
+            findRegistry.invoke(null);
+            fail("Should not have found registry when property " + ArtifactoryRegistry.artifactoryRegistryKey + " was null");
+        } catch (InvocationTargetException e) {
+            assertTrue(e.getCause() instanceof IllegalStateException);
+        }
+
+        // Valid
+        String expected = "docker-na-public.artifactory.swg-devops.com";
+        System.setProperty(ArtifactoryRegistry.artifactoryRegistryKey, expected);
+        String actual = (String) findRegistry.invoke(null);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testArtifactoryAuthToken() throws Exception {
+        String testUsername = "test.email@gmail.com";
+        String testToken = "aToTallyFakeTokenThaTWouldNeverBeUsed";
+        String expectedAuthToken = "dGVzdC5lbWFpbEBnbWFpbC5jb206YVRvVGFsbHlGYWtlVG9rZW5UaGFUV291bGROZXZlckJlVXNlZA==";
+
+        Method generateAuthToken = getGenerateAuthToken();
+
+        // Ensure failure path
+        System.clearProperty(ArtifactoryRegistry.artifactoryRegistryUser);
+        System.clearProperty(ArtifactoryRegistry.artifactoryRegistryToken);
+
+        try {
+            generateAuthToken.invoke(null);
+            fail("Should not have generated authToken when property "
+                 + ArtifactoryRegistry.artifactoryRegistryUser + " and " + ArtifactoryRegistry.artifactoryRegistryToken + " were unset");
+        } catch (InvocationTargetException e) {
+            assertTrue(e.getCause() instanceof IllegalStateException);
+        }
+
+        // Ensure successful path
+        System.setProperty(ArtifactoryRegistry.artifactoryRegistryUser, testUsername);
+        System.setProperty(ArtifactoryRegistry.artifactoryRegistryToken, testToken);
+
+        String actualAuthToken = (String) generateAuthToken.invoke(null);
+
+        assertEquals(expectedAuthToken, actualAuthToken);
+
+        String actualAuthData = new String(Base64.getDecoder().decode(actualAuthToken.getBytes()), StandardCharsets.UTF_8);
+        String actualUsername = actualAuthData.split(":")[0];
+        String actualToken = actualAuthData.split(":")[1];
+
+        assertEquals(testUsername, actualUsername);
+        assertEquals(testToken, actualToken);
+    }
+
     private void assertJsonEquals(String initial, String expected, String actual, String testName) {
         System.out.println("### TestName: " + testName + " ###");
         System.out.println("initial: " + nl + initial);
@@ -378,6 +466,18 @@ public class ArtifactoryRegistryTest {
 
     private static Method getGenerateDockerConfig() throws Exception {
         Method method = ArtifactoryRegistry.class.getDeclaredMethod("generateDockerConfig", String.class, String.class, File.class);
+        method.setAccessible(true);
+        return method;
+    }
+
+    private static Method getFindRegistry() throws Exception {
+        Method method = ArtifactoryRegistry.class.getDeclaredMethod("findRegistry");
+        method.setAccessible(true);
+        return method;
+    }
+
+    private static Method getGenerateAuthToken() throws Exception {
+        Method method = ArtifactoryRegistry.class.getDeclaredMethod("generateAuthToken");
         method.setAccessible(true);
         return method;
     }
