@@ -49,8 +49,7 @@ public class FFDCServlet extends HttpServlet {
         PrintWriter out;
 
         if ((isFFDC != null) && isFFDC.equalsIgnoreCase("true")) {
-            String myString = null;
-            myString.toString();
+            throw new ArithmeticException("FFDC_TEST_DOGET");
         }
         String secondFFDC = req.getParameter("secondFFDC");
 
