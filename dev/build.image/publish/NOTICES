@@ -1,7 +1,7 @@
-Begin NOTICES AND INFORMATION FOR Open Liberty 24.0.0.8
+Begin NOTICES AND INFORMATION FOR Open Liberty @LIBERTY_VERSION@
 Copyright 1999-2024 IBM Corporation and others
 This product includes software developed at
-The Open Liberty 24.0.0.8 Project (https://openliberty.io/).
+The Open Liberty @LIBERTY_VERSION@ Project (https://openliberty.io/).
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TABLE OF CONTENTS
@@ -793,7 +793,6 @@ Java EE Security API [javax.security.enterprise-api] https://repo.maven.apache.o
 Java Servlet API [javax.servlet-api] http://servlet-spec.java.net
 Java Servlet API [javax.servlet-api] https://javaee.github.io/servlet-spec/
 Java(TM) EE Interceptors 1.2 API [jboss-interceptors-api_1.2_spec] http://www.jboss.org
-JavaBeans Activation Framework (JAF) [activation] http://java.sun.com/products/javabeans/jaf/index.jsp
 JavaBeans Activation Framework [javax.activation] https://repo.maven.apache.org/maven2/com/sun/activation/javax.activation/1.2.0
 JavaMail API [javax.mail] http://javaee.github.io/javamail
 JavaMail API [javax.mail] http://javamail.java.net
@@ -818,7 +817,6 @@ javax.ws.rs-api http://jax-rs-spec.java.net
 javax.ws.rs-api http://www.oracle.com/
 javax.xml.soap API [javax.xml.soap-api] https://javaee.github.io/javaee-spec/
 jdeparser http://www.jboss.org
-jsr181-api https://www.ebi.ac.uk/intact/maven/nexus/content/repositories/public/javax/jws/jsr181-api/1.0-MR1
 jsr181-api (https://github.com/javaee/javax.jws)
 policy http://policy.java.net/
 saaj-impl https://repo.maven.apache.org/maven2/com/sun/xml/messaging/saaj/saaj-impl/1.4.0
@@ -1306,7 +1304,7 @@ END OF Python License, Version 2 NOTICES AND INFORMATION
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-END OF IBM WEBSPHERE APPLICATION SERVER LIBERTY NOTICES AND INFORMATION
+END OF THE OPEN LIBERTY PROJECT NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 END OF NOTICES AND INFORMATION FILE
