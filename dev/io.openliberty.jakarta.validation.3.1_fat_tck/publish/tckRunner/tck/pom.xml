@@ -41,7 +41,7 @@
 		<targetDirectory>${project.basedir}/target</targetDirectory>
 		<!-- Copied out of the tck jar -->
 		<tck.suite.file>
-			../../../results/tck_validation-tck-tests-suite/dependency/validation-tck-tests-suite.xml</tck.suite.file>
+			../../../results/tck_validation-tck-tests-suite/dependency/tck-tests.xml</tck.suite.file>
 	</properties>
 
 	<repositories>
@@ -180,27 +180,36 @@
 					<target>17</target>
 				</configuration>
 			</plugin>
-			<!-- We are using the dependency plugin to download and install the
-			TestNG suite file locally -->
+			<!-- We are using the dependency plugin to copy TestNG suite file out of the TCK jar. -->
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<version>2.10</version>
 				<executions>
 					<execution>
-						<id>copy-tck-test-suite-file</id>
-						<phase>generate-test-sources</phase>
+						<id>unpack</id>
+						<phase>process-resources</phase>
 						<goals>
-							<goal>copy</goal>
+							<goal>unpack</goal>
 						</goals>
 						<configuration>
-							<stripVersion>true</stripVersion>
 							<artifactItems>
 								<artifactItem>
+									<!-- Specify the groupId, artifactId,
+									version, and type of the JAR you want to
+									extract from -->
 									<groupId>${jakarta.validation.tck.groupid}</groupId>
 									<artifactId>validation-tck-tests</artifactId>
-									<type>xml</type>
-									<classifier>suite</classifier>
-									<overWrite>false</overWrite>
+									<version>${jakarta.validation.tck.version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<!-- Specify the directory where the JAR
+									should be unpacked -->
+									<outputDirectory>
+										../../../results/tck_validation-tck-tests-suite/dependency</outputDirectory>
+									<!-- You can specify includes to limit which
+									files are unpacked -->
+									<includes>**/tck-tests.xml</includes>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
