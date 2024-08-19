@@ -4459,6 +4459,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Repository method having only a SELECT clause.
      */
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  https://github.com/OpenLiberty/open-liberty/issues/28368
     @Test
     public void testSelectClauseOnly() {
         products.clear();
