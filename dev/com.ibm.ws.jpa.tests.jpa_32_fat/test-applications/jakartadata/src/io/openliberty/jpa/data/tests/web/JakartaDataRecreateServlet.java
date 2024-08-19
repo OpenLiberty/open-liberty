@@ -14,19 +14,24 @@ import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
 import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
@@ -1251,6 +1256,53 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
         MathContext ctx = new MathContext(8, RoundingMode.UP); //Expect actual and expected result to be 205374.53
         assertEquals(US2024.publicDebt.divide(new BigDecimal(US2024.numFullTimeWorkers), ctx), result.round(ctx));
+    }
+
+    @Test
+    @SkipIfSysProp(DB_DB2) //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29443
+    public void testOLGH29443() throws Exception {
+        deleteAllEntities(DemographicInfo.class);
+
+        ZoneId ET = ZoneId.of("America/New_York");
+        Instant when = ZonedDateTime.of(2022, 4, 29, 12, 0, 0, 0, ET)
+                        .toInstant();
+
+        DemographicInfo US2022 = DemographicInfo.of(2022, 4, 29, 132250000, 6526909395140.41, 23847245116757.60);
+        DemographicInfo US2007 = DemographicInfo.of(2007, 4, 30, 121090000, 3833110332444.19, 5007058051986.64);
+
+        List<BigInteger> results;
+
+        tx.begin();
+        em.persist(US2022);
+        em.persist(US2007);
+        tx.commit();
+
+        List<Error> errors = new ArrayList<>();
+
+        Thread.sleep(Duration.ofSeconds(1).toMillis());
+
+        for (int i = 0; i < 10; i++) {
+            System.out.println("Executing SELECT query, iteration: " + i);
+
+            tx.begin();
+            results = em.createQuery("SELECT this.numFullTimeWorkers FROM DemographicInfo WHERE this.collectedOn=:when", BigInteger.class)
+                            .setParameter("when", when)
+                            .getResultList();
+            tx.commit();
+
+            try {
+                assertNotNull("Query should not have returned null after iteration " + i, results);
+                assertFalse("Query should not have returned an empty list after iteration " + i, results.isEmpty()); //Recreate - an empty list is returned
+                assertEquals("Query should not have returned more than one result after iteration " + i, 1, results.size());
+                assertEquals(US2022.numFullTimeWorkers, results.get(0));
+            } catch (AssertionError e) {
+                errors.add(e);
+            }
+        }
+
+        if (!errors.isEmpty()) {
+            throw new AssertionError("Executing the same query returned incorrect results " + errors.size() + " out of 10 executions", errors.get(0));
+        }
     }
 
     /**
