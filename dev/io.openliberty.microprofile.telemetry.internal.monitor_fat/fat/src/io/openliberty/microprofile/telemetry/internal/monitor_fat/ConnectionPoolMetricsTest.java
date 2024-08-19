@@ -36,16 +36,18 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 11)
 public class ConnectionPoolMetricsTest extends BaseTestClass {
 
 	private static Class<?> c = ConnectionPoolMetricsTest.class;
 
-	@Server("ConnPoolMetricsServer")
+	private static final String SERVER_NAME = "ConnPoolMetricsServer";
+
+	
+	@Server(SERVER_NAME)
 	public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests rt = FATSuite.testRepeatMPTel20("ConnPoolMetricsServer");
+    public static RepeatTests rt = FATSuite.testRepeatMPTel20(SERVER_NAME);
 	
 	@ClassRule
 	public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
