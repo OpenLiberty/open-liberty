@@ -20,6 +20,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -674,6 +676,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
     @Test // Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28813
     public void testOLGH28813() throws Exception {
+        deleteAllEntities(DemographicInfo.class);
+
         final ZoneId EASTERN = ZoneId.of("America/New_York");
 
         DemographicInfo US2024 = DemographicInfo.of(2024, 4, 30, 133809000, 7136033799632.56, 27480960216618.32);
@@ -1204,6 +1208,49 @@ public class JakartaDataRecreateServlet extends FATServlet {
         }
 
         assertEquals(1, count);
+    }
+
+    @Test
+    @SkipIfSysProp(DB_Postgres) //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29440
+    public void testOLGH29440() throws Exception {
+        deleteAllEntities(DemographicInfo.class);
+
+        DemographicInfo US2024 = DemographicInfo.of(2024, 4, 30, 133809000, 7136033799632.56, 27480960216618.32);
+        DemographicInfo US2023 = DemographicInfo.of(2023, 4, 28, 134060000, 6852746625848.93, 24605068022566.94);
+
+        tx.begin();
+        em.persist(US2024);
+        em.persist(US2023);
+        tx.commit();
+
+        BigDecimal result;
+
+        tx.begin();
+        try {
+
+            result = em.createQuery("SELECT this.publicDebt / this.numFullTimeWorkers FROM DemographicInfo WHERE EXTRACT (YEAR FROM this.collectedOn) = ?1", BigDecimal.class)
+                            .setParameter(1, 2024)
+                            .getSingleResult();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+
+            /*
+             * Recreate
+             * Exception [EclipseLink-4002] (Eclipse Persistence Services - 5.0.0.v202408071314-43356e84b79e71022b1656a5462b0a72d70787a4):
+             * org.eclipse.persistence.exceptions.DatabaseException
+             * Internal Exception: org.postgresql.util.PSQLException: ERROR: current transaction is aborted, commands ignored until end of transaction block
+             * Error Code: 0
+             * Call: SELECT (PUBLICDEBT / NUMFULLTIMEWORKERS) FROM DEMOGRAPHICINFO WHERE (EXTRACT(YEAR FROM COLLECTEDON) = ?)
+             * bind => [2024]
+             * Query: ReportQuery(referenceClass=DemographicInfo sql="SELECT (PUBLICDEBT / NUMFULLTIMEWORKERS) FROM DEMOGRAPHICINFO WHERE (EXTRACT(YEAR FROM COLLECTEDON) = ?)")
+             */
+            throw e;
+        }
+
+        MathContext ctx = new MathContext(8, RoundingMode.UP); //Expect actual and expected result to be 205374.53
+        assertEquals(US2024.publicDebt.divide(new BigDecimal(US2024.numFullTimeWorkers), ctx), result.round(ctx));
     }
 
     /**
