@@ -3251,11 +3251,8 @@ public class ConcurrencyTestServlet extends FATServlet {
      */
     @Test
     public void testVirtualThreadFactory() throws Exception {
-        String version = System.getProperty("java.version");
-        System.out.println("java.version is \"" + version + "\"");
-        int dot = version.indexOf('.');
-        String major = dot < 0 ? version : version.substring(0, dot);
-        boolean supportsVirtualThreads = Integer.parseInt(major) >= 21;
+        System.out.println("Runtime.version() is \"" + Runtime.version().toString() + "\"");
+        boolean supportsVirtualThreads = Runtime.version().feature() >= 21;
 
         if (supportsVirtualThreads) {
             CompletableFuture<String> thread1result = new CompletableFuture<>();
