@@ -2301,6 +2301,7 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Repository method that queries by the year component of an Instant attribute.
      */
+    @SkipIfSysProp(DB_Postgres) //TODO Failing due to Eclipselink Issue on PostgreSQL: https://github.com/OpenLiberty/open-liberty/issues/29440
     @Test
     public void testInstantExtractYear() {
 
