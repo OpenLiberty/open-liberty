@@ -1,0 +1,46 @@
+# This workflow will triage issues and apply a label based on the creator.
+#
+# To use this workflow, you will need to set up a .github/labeler.yml
+# file with configuration.  For more information, see:
+# https://github.com/actions/labeler
+
+name: Labeler
+# on: [pull_request_target]
+on:
+  issues:
+     types: [opened]
+  
+jobs:
+  add_label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: add label
+        uses: actions-ecosystem/action-add-labels@v1
+        if: 
+          ${{ 
+            contains(
+              fromJson('[
+                "wraschke"
+              ]'), 
+              github.actor
+            ) 
+          }}
+        with:
+          labels: "test label"
+
+#jobs:
+#  label:
+
+#    runs-on: ubuntu-latest
+#    permissions:
+#      contents: read
+#      # pull-requests: write
+#      issues: write
+
+#    steps:
+#    - uses: actions/labeler@v4
+#      with:
+#        repo-token: "${{ secrets.GITHUB_TOKEN }}"
