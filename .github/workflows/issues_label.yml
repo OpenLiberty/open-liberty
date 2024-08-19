@@ -4,18 +4,17 @@
 # file with configuration.  For more information, see:
 # https://github.com/actions/labeler
 
-name: Labeler
+name: Issues Labeler
 on:
   issues:
-     types: [opened]
-  
+     types: [opened, edited]
+
 jobs:
   add_label:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
         uses: actions/checkout@v2
-
       - name: add label
         uses: actions-ecosystem/action-add-labels@v1
         if: 
