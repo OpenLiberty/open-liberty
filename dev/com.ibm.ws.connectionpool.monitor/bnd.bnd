@@ -57,4 +57,5 @@ instrument.disabled: true
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.wsspi.org.osgi.service.event;version=latest,\
 	com.ibm.ws.container.service.compat;version=latest,\
-	com.ibm.ws.kernel.boot.core;version=latest
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest
