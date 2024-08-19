@@ -52,6 +52,8 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
     private static final Double[] BUCKET_BOUNDARIES = { 0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0, 2.5, 5.0, 7.5, 10.0 };
     private static final List<Double> BUCKET_BOUNDARIES_LIST = Arrays.asList(BUCKET_BOUNDARIES);
 
+    private DoubleHistogram httpHistogram = null;
+
     @Override
     public void updateHttpMetrics(HttpStatAttributes httpStatAttributes, Duration duration) {
         OpenTelemetry otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo().getOpenTelemetry();
@@ -75,16 +77,24 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
             }
         }
 
-        //Use boundaries specified by Otel HTTP Metric semantic convention
-        DoubleHistogram dHistogram = otelInstance.getMeterProvider().get(INSTR_SCOPE).histogramBuilder(OpenTelemetryConstants.HTTP_SERVER_REQUEST_DURATION_NAME)
-                        .setUnit(OpenTelemetryConstants.OTEL_SECONDS_UNIT)
-                        .setDescription(OpenTelemetryConstants.HTTP_SERVER_REQUEST_DURATION_DESC)
-                        .setExplicitBucketBoundariesAdvice(BUCKET_BOUNDARIES_LIST).build();
+        /*
+         * We can re-use the (histogram) Meter created here.
+         * The Meter is built using the same static values each time.
+         * The instrument that is recorded/updated is distinct for each
+         * http-route/response/method combination (corresponds with resolved attributes).
+         * 
+         */
+        if (httpHistogram == null) {
+            httpHistogram = otelInstance.getMeterProvider().get(INSTR_SCOPE).histogramBuilder(OpenTelemetryConstants.HTTP_SERVER_REQUEST_DURATION_NAME)
+                            .setUnit(OpenTelemetryConstants.OTEL_SECONDS_UNIT)
+                            .setDescription(OpenTelemetryConstants.HTTP_SERVER_REQUEST_DURATION_DESC)
+                            .setExplicitBucketBoundariesAdvice(BUCKET_BOUNDARIES_LIST).build();
+        }
 
         Context ctx = Context.current();
 
         double seconds = duration.toNanos() * NANO_CONVERSION;
-        dHistogram.record(seconds, retrieveAttributes(httpStatAttributes), ctx);
+        httpHistogram.record(seconds, retrieveAttributes(httpStatAttributes), ctx);
 
     }
 
