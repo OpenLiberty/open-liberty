@@ -17,14 +17,15 @@ jobs:
         uses: actions/checkout@v2
       - name: add label
         uses: actions-ecosystem/action-add-labels@v1
-        if: 
-          ${{ 
-            contains(
-              fromJson('[
-                "wraschke"
-              ]'), 
-              github.actor
-            ) 
-          }}
+        if: ${{ startsWith(github.actor, 'wraschke') }}
+        # if: 
+        #  ${{ 
+        #    contains(
+        #      fromJson('[
+        #        "wraschke"
+        #      ]'), 
+        #      github.actor
+        #    ) 
+        #  }}
         with:
           labels: "test label"
