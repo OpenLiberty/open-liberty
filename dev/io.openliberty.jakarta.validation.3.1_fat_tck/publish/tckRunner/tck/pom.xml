@@ -36,6 +36,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
+		<assertj-core.version>3.7.0</assertj-core.version>
+		<shrinkwrap.descriptors.version>2.0.0</shrinkwrap.descriptors.version>
 		<!--  the below is used in arquillian.xml -->
 		<wlp>${wlp}</wlp>
 		<targetDirectory>${project.basedir}/target</targetDirectory>
@@ -128,6 +130,18 @@
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
 			<version>${testng.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>${assertj-core.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.shrinkwrap.descriptors</groupId>
+			<artifactId>shrinkwrap-descriptors-impl-javaee</artifactId>
+			<version>${shrinkwrap.descriptors.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
