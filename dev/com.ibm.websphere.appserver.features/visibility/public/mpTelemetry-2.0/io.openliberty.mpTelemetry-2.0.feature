@@ -48,7 +48,7 @@ IBM-API-Package: \
   io.openliberty.io.zipkin.zipkin2.2.0,\
   io.openliberty.microprofile.telemetry.monitor.internal
 -jars=io.openliberty.mpTelemetry.2.0.thirdparty; location:="dev/api/third-party/,lib/"
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
