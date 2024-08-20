@@ -332,4 +332,103 @@ public class ServerCommandClient extends ServerCommand {
                      ReturnCode.SERVER_INACTIVE_STATUS,
                      ReturnCode.ERROR_SERVER_RESUME);
     }
+
+    /**
+     * Resume Inbound work to a server by issuing a "resume" request
+     * to the server.
+     */
+    public String compStatus(String targetArg) {
+        StringBuilder commandBuilder = new StringBuilder(COMP_STATUS_COMMAND);
+
+        char sep = DELIM;
+        if (targetArg != null) {
+            commandBuilder.append(sep).append(targetArg);
+        }
+
+        return writeCompStatus(commandBuilder.toString(),
+                     ReturnCode.SERVER_INACTIVE_STATUS,
+                     ReturnCode.ERROR_SERVER_COMP_STATUS);
+    }
+
+    /**
+     * Write a command to the server process.
+     *
+     * @param command the command to write
+     * @param notStartedRC the return code if the server could not be reached
+     * @param errorRC the return code if an error occurred while communicating
+     *            with the server
+     * @return {@link ReturnCode#OK} if the command was sent, notStartedRC if
+     *         the server could not be reached, timeoutRC if the client timed
+     *         out reading a response from the server, {@link ReturnCode#SERVER_COMMAND_PORT_DISABLED_STATUS} if the
+     *         server's command port listener is disabled, or errorRC if any
+     *         other communication error occurred
+     */
+    private String writeCompStatus(String command, ReturnCode notStartedRC, ReturnCode errorRC) {
+        SocketChannel channel = null;
+        try {
+            ServerCommandID commandID = createServerCommand(command);
+            if (commandID.getPort() > 0) {
+                channel = SelectorProvider.provider().openSocketChannel();
+                channel.connect(new InetSocketAddress(InetAddress.getByName(null), commandID.getPort()));
+                // Write command.
+                write(channel, commandID.getCommandString());
+
+                // Receive authorization challenge.
+                String authID = read(channel);
+
+                // Respond to authorization challenge.
+                File authFile = new File(commandAuthDir, authID);
+                // Delete a file created by the server (check for write access)
+                if (!authFile.delete()) {
+                    Debug.println("The command " + command + " could not be completed because the client could not delete the file " + authFile.getAbsolutePath());
+                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverCommandAuthFailure"), command, authFile.getAbsolutePath()));
+                    return errorRC.toString();
+                }
+
+                // respond to the server to indicate the delete has happened.
+                write(channel, authID);
+                
+                // Read command response.
+                String cmdResponse = read(channel), targetServerUUID = null, resultString = null;
+
+                if (cmdResponse.isEmpty()) {
+                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverCommandCommFailure"), command));
+
+                    // Something went wrong on the server side causing it to send an empty response
+                    Debug.println("The server returned an empty response to the " + command + " command.");
+                    return errorRC.toString();
+                }
+
+                if (cmdResponse.indexOf(DELIM) != -1) {
+                    targetServerUUID = cmdResponse.substring(0, cmdResponse.indexOf(DELIM));
+                    resultString = cmdResponse.substring(cmdResponse.indexOf(DELIM) + 1);
+                } else {
+                    targetServerUUID = cmdResponse;
+                }
+                if (!commandID.validateTarget(targetServerUUID)) {
+                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverCommandCommFailure"), command));
+                    Debug.println("The command can't be completed because the client and server UUID values do not match: " + commandID.getUUID() + ", " + targetServerUUID);
+                    return errorRC.toString();
+                }
+
+                return resultString;
+            }
+
+            if (commandID.getPort() == -1) {
+                return ReturnCode.SERVER_COMMAND_PORT_DISABLED_STATUS.toString();
+            }
+
+            return notStartedRC.toString();
+        } catch (ConnectException e) {
+            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverCommandCommFailure"), command));
+            Debug.printStackTrace(e);
+            return notStartedRC.toString();
+        } catch (IOException e) {
+            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverCommandCommFailure"), command));
+            Debug.printStackTrace(e);
+            return ReturnCode.ERROR_COMMUNICATE_SERVER.toString();
+        } finally {
+            Utils.tryToClose(channel);
+        }
+    }
 }

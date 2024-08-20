@@ -1499,4 +1499,28 @@ public class FrameworkManager {
 
         return ReturnCode.OK;
     }
+
+    public String compStatusListeners(String args) {
+
+        // A registered service for delivering pause/resume requests to interested Components.
+        PauseableComponentController pauseableComponentController;
+
+        ServiceReference<PauseableComponentController> reference = systemBundleCtx.getServiceReference(PauseableComponentController.class);
+        pauseableComponentController = reference == null ? null : systemBundleCtx.getService(reference);
+        if (pauseableComponentController == null) {
+            System.out.println("Error comp status request failed");
+            return ReturnCode.ERROR_SERVER_COMP_STATUS.toString();
+        }
+        String response = "";
+        if (args == null) {
+            response = pauseableComponentController.componentStatus("");
+
+        } else {
+            String targetList = args.substring(args.indexOf("=") + 1);
+            response = pauseableComponentController.componentStatus(targetList);
+        }
+
+
+        return response;
+    }
 }
