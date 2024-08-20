@@ -232,9 +232,12 @@ public interface Primes {
 
     Boolean existsByNumberIdBetween(Long first, Long last);
 
-    // TODO after JDQL SELECT is added: "Select name Where length(romanNumeral) * 2 >= length(name) Order By name Asc",
-    @Query(value = "Where numberId < 50 and romanNumeral is not null and length(romanNumeral) * 2 >= length(name) Order By name Desc")
-    Page<Prime> lengthBasedQuery(PageRequest pageRequest);
+    @Query(value = "Select name" +
+                   " Where numberId < 50 and" +
+                   "       romanNumeral is not null and" +
+                   "       length(romanNumeral) * 2 >= length(name)" +
+                   " Order By name Desc")
+    Page<String> lengthBasedQuery(PageRequest pageRequest);
 
     @OrderBy(ID)
     @Query("SELECT ID(THIS) FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR ID(THIS)=:num)")
