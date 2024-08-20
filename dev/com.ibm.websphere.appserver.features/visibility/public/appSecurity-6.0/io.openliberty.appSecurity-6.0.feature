@@ -42,7 +42,7 @@ Subsystem-Name: Application Security 6.0 (Jakarta Security 4.0)
   io.openliberty.security.jakartasec.2.0.internal, \
   io.openliberty.security.jakartasec.2.0.internal.cdi, \
   io.openliberty.security.oidcclientcore.internal.jakarta, \
-  io.openliberty.security.jakartasec.3.0.internal, \
+  io.openliberty.security.jakartasec.4.0.internal, \
   io.openliberty.security.jakartasec.3.0.internal.cdi, \
   io.openliberty.security.authentication.internal.filter, \
   io.openliberty.security.sso.internal, \
