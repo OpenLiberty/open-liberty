@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.DeploymentException;
@@ -41,7 +42,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.CDIService;
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.cdi.impl.weld.BDAFactory;
 import com.ibm.ws.cdi.impl.weld.WebSphereCDIDeploymentImpl;
 import com.ibm.ws.cdi.impl.weld.WebSphereEEModuleDescriptor;
@@ -215,39 +215,42 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
     public void applicationStarted(Application application) throws CDIException {
         CDIContainerEventManager eventManager = cdiRuntime.getCDIContainerEventManager();
         if (eventManager != null) {
-            WebSphereCDIDeployment deployment = getDeployment(application);
-            if (deployment != null) {
-                BeanDeploymentModules modules = deployment.getServices().get(BeanDeploymentModules.class);
-                if (modules != null) {
-                    for (BeanDeploymentModule module : modules) {
-                        if (!module.isWebModule()) {
-                            String id = module.getId();
-                            WebSphereBeanDeploymentArchive bda = deployment.getBeanDeploymentArchive(id);
-                            if (bda != null) {
-                                try (ContextBeginnerEnder contextBeginnerEnder = cdiRuntime.createContextBeginnerEnder().extractComponentMetaData(bda.getArchive())
-                                                                                           .extractTCCL(application).beginContext()) {
-                                    eventManager.fireStartupEvent(module);
-                                }
-                            } else {
-                                throw new IllegalStateException(Tr.formatMessage(tc, "no.bda.for.module.CWOWB1019E", module, module.getId()));
-                            }
-                        }
-                    }
-                }
-            }
+            runForEachNonWebModuleWithContext(eventManager::fireStartupEvent, application);
         }
     }
 
     public void applicationStopping(Application application) throws CDIException {
         CDIContainerEventManager eventManager = cdiRuntime.getCDIContainerEventManager();
         if (eventManager != null) {
-            WebSphereCDIDeployment deployment = getDeployment(application);
-            if (deployment != null) {
-                BeanDeploymentModules modules = deployment.getServices().get(BeanDeploymentModules.class);
-                if (modules != null) {
-                    for (BeanDeploymentModule module : modules) {
-                        if (!module.isWebModule()) {
-                            eventManager.fireShutdownEvent(module);
+            runForEachNonWebModuleWithContext(eventManager::fireShutdownEvent, application);
+        }
+    }
+
+    /**
+     * This method loops through each module (that is not a WebModule) in an application. For each one it sets
+     * the component metadata associated with that module as well as the TCCL associated with the application
+     * then it runs an action. The action is likely an event form CDIContainerEventManager
+     *
+     * @param action The action to run
+     * @param application the application to run actions
+     */
+    private void runForEachNonWebModuleWithContext(Consumer<BeanDeploymentModule> action, Application application) throws CDIException {
+        WebSphereCDIDeployment deployment = getDeployment(application);
+        if (deployment != null) {
+            BeanDeploymentModules modules = deployment.getServices().get(BeanDeploymentModules.class);
+            if (modules != null) {
+                for (BeanDeploymentModule module : modules) {
+                    // This method is used for CDI Startup and Shutdown events. In web modules those events are fired by the ServletContext being initialized or destroyed.
+                    if (!module.isWebModule()) {
+                        String id = module.getId();
+                        WebSphereBeanDeploymentArchive bda = deployment.getBeanDeploymentArchive(id);
+                        if (bda != null) {
+                            try (ContextBeginnerEnder contextBeginnerEnder = cdiRuntime.createContextBeginnerEnder().extractComponentMetaData(bda.getArchive())
+                                                                                       .extractTCCL(application).beginContext()) {
+                                action.accept(module);
+                            }
+                        } else {
+                            throw new IllegalStateException(Tr.formatMessage(tc, "no.bda.for.module.CWOWB1019E", module, module.getId()));
                         }
                     }
                 }
@@ -258,7 +261,9 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
     public void applicationStopped(Application application) throws CDIException {
         WebSphereCDIDeployment deployment = getDeployment(application);
         if (deployment != null) {
-            try {
+            try (ContextBeginnerEnder contextBeginnerEnder = cdiRuntime.createContextBeginnerEnder().extractComponentMetaData(application)
+                                                                       .extractTCCL(application).beginContext()) {
+
                 currentDeployment.set(deployment);
                 deployment.shutdown();
             } finally {
@@ -639,16 +644,17 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
      * @return
      * @throws CDIException
      */
+    @SuppressWarnings("deprecation") //Until nobody uses com.ibm.ws.cdi.extension.WebSphereCDIExtension we still need to read it
     private Set<ExtensionArchive> getExtensionArchives(WebSphereCDIDeployment applicationContext) throws CDIException {
 
         Set<ExtensionArchive> extensionSet = new HashSet<>();
 
         // get hold of the container for extension bundle
         //add create the bean deployment archive from the container
-        Iterator<ServiceAndServiceReferencePair<WebSphereCDIExtension>> extensions = cdiRuntime.getExtensionServices();
+        Iterator<ServiceAndServiceReferencePair<com.ibm.ws.cdi.extension.WebSphereCDIExtension>> extensions = cdiRuntime.getExtensionServices();
         while (extensions.hasNext()) {
-            ServiceAndServiceReferencePair<WebSphereCDIExtension> extension = extensions.next();
-            ServiceReference<WebSphereCDIExtension> sr = extension.getServiceReference();
+            ServiceAndServiceReferencePair<com.ibm.ws.cdi.extension.WebSphereCDIExtension> extension = extensions.next();
+            ServiceReference<com.ibm.ws.cdi.extension.WebSphereCDIExtension> sr = extension.getServiceReference();
             if (sr != null) {
                 Long serviceID = ServiceReferenceUtils.getId(sr);
                 ExtensionArchive extensionArchive = null;
@@ -708,7 +714,8 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
         return extensionSet;
     }
 
-    private ExtensionArchive newExtensionArchive(ServiceReference<WebSphereCDIExtension> sr) throws CDIException {
+    @SuppressWarnings("deprecation") //Until nobody uses com.ibm.ws.cdi.extension.WebSphereCDIExtension we still need to read it
+    private ExtensionArchive newExtensionArchive(ServiceReference<com.ibm.ws.cdi.extension.WebSphereCDIExtension> sr) throws CDIException {
         Bundle bundle = sr.getBundle();
 
         String extra_classes_blob = (String) sr.getProperty(EXTENSION_API_CLASSES);
@@ -743,7 +750,8 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
         return extensionArchive;
     }
 
-    public void removeRuntimeExtensionArchive(ServiceReference<WebSphereCDIExtension> sr) {
+    @SuppressWarnings("deprecation") //Until nobody uses com.ibm.ws.cdi.extension.WebSphereCDIExtension we still need to read it
+    public void removeRuntimeExtensionArchive(ServiceReference<com.ibm.ws.cdi.extension.WebSphereCDIExtension> sr) {
         synchronized (this) {
             Long serviceID = ServiceReferenceUtils.getId(sr);
             this.runtimeExtensionMap.remove(serviceID);
