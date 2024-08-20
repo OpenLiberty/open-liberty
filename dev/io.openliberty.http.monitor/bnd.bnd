@@ -13,12 +13,8 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
-
 -sub: *.bnd
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 Bundle-Name: io.openliberty.http.monitor
 Bundle-SymbolicName: io.openliberty.http.monitor
 Bundle-Description: io.openliberty.http.monitor; version=${bVersion}
