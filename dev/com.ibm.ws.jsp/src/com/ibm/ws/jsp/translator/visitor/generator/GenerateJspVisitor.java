@@ -292,8 +292,10 @@ public class GenerateJspVisitor extends GenerateVisitor {
         // end 228118: JSP container should recompile if debug enabled and jsp was not compiled in debug.
 
         if (!(jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool())) {
-            GeneratorUtils.generate_tagCleanUp_methods(writer, jspOptions); // PH49514
+            GeneratorUtils.generate_tagCleanUp_methods(writer, !jspOptions.isDisableResourceInjection()); // PH49514
         }
+
+        GeneratorUtils.generate_finalCleanUp_method(writer, jspOptions);
 
         if(!jspOptions.isDisableResourceInjection()){
             GeneratorUtils.generate_tagPostConstruct_method(writer);
@@ -563,7 +565,7 @@ public class GenerateJspVisitor extends GenerateVisitor {
 
         writer.println("this._jsp_performFinalCleanUp(_jspTagList, pageContext);");
 
-        //247815 Start
+        //247815 Start 
         if (jspOptions.isUsePageTagPool()) {
             writer.println("cleanupTaglibLookup(_jspx_TagLookup);");
         } else if (jspOptions.isUseThreadTagPool()) {

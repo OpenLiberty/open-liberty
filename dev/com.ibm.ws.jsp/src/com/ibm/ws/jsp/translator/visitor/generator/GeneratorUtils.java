@@ -605,9 +605,9 @@ public class GeneratorUtils {
         writer.println("}");
     }
 
-    public static void generate_tagCleanUp_methods(JavaCodeWriter writer, JspOptions jspOptions) {
+    public static void generate_tagCleanUp_methods(JavaCodeWriter writer, boolean resourceInjectionEnabled) {
         writer.println("public void _jsp_cleanUpTag(Object tag, java.util.ArrayList tagList) {");
-        if(!jspOptions.isDisableResourceInjection()) { // if not disabled, then the _jspx_iaHelper is not available
+        if(resourceInjectionEnabled) { // if not disabled, then the _jspx_iaHelper is not available
             writer.println("  _jspx_iaHelper.doPreDestroy(tag);");
             writer.println("  _jspx_iaHelper.cleanUpTagHandlerFromCdiMap(tag);");
         }
@@ -627,6 +627,12 @@ public class GeneratorUtils {
         writer.println("  }");
         writer.println("}");
         writer.println();
+    }
+
+   /*
+    *  Refectored in PH62212. Any clean up at the end of the jsp service method should invoked here.
+    */
+    public static void generate_finalCleanUp_method(JavaCodeWriter writer, JspOptions jspOptions) {
         writer.println("public void _jsp_performFinalCleanUp(java.util.ArrayList _jspTagList, PageContext pageContext) {");
         if (!(jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool())) {
             writer.println("_jsp_cleanUpTagArrayList(_jspTagList);");
@@ -635,7 +641,7 @@ public class GeneratorUtils {
         writer.println("}");
         writer.println();
     }
-
+    
     public static void generateVersionInformation(JavaCodeWriter writer, boolean isDebugClassFile) {
         writer.println("private static String _jspx_classVersion;");
         //		 begin 228118: JSP container should recompile if debug enabled and jsp was not compiled in debug.
