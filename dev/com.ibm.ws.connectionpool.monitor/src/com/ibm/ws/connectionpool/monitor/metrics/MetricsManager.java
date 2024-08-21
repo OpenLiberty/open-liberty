@@ -69,11 +69,6 @@ public class MetricsManager {
 
     public static MetricsManager getInstance() {
 
-        //beta - return no instance
-        if (!ProductInfo.getBetaEdition()) {
-            return null;
-        }
-
         if (instance != null) {
             return instance;
         }
@@ -90,10 +85,6 @@ public class MetricsManager {
      * @param duration recorded Duration of the wait time
      */
     public void updateWaitTimeMetrics(String poolName, Duration duration) {
-        //just in case
-        if (!ProductInfo.getBetaEdition()) {
-            return;
-        }
         if (isConnPoolEnabled) {
             metricRuntimes.stream().forEach(adapters -> adapters.updateWaitTimeMetrics(poolName, duration));
         }
@@ -106,10 +97,6 @@ public class MetricsManager {
      * @param Duration recorded Duration of the (in) use time.
      */
     public void updateInUseTimeMetrics(String poolName, Duration duration) {
-        //just in case
-        if (!ProductInfo.getBetaEdition()) {
-            return;
-        }
 
         if (isConnPoolEnabled) {
             metricRuntimes.stream().forEach(adapters -> adapters.updateInUseTimeMetrics(poolName, duration));
