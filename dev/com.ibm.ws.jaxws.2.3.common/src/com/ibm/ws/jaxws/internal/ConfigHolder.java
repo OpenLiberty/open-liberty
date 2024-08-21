@@ -146,7 +146,7 @@ public class ConfigHolder {
             
         }
     }
-    
+    // Liberty change begin
     /**
      * Get the value of enableDefaultValidation from all known property maps using the name (serviceName/portName) provided.
      *
@@ -175,6 +175,7 @@ public class ConfigHolder {
             
         }
     }
+    // Liberty change end
 
     /**
      * This method uses the prpvided name (serviceName/portName) to find the associated property map

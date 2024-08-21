@@ -77,10 +77,12 @@ public abstract class WebServiceConfig {
                             if (!ConfigValidation.validateIgnoreUnexpectedElements((boolean) props.get(key)))
                                     continue;
                     }
+                    // Liberty change begin
                     if (key.compareTo(WebServiceConfigConstants.ENABLE_DEFAULT_VALIDATION_PROP) == 0) {
                         if (!ConfigValidation.validateEnableDefaultValidation((boolean) props.get(key)))
                                 continue;
                     }
+                    // Liberty change end
                     filteredProps.put(key, props.get(key));
 
             }

@@ -16,7 +16,7 @@
          <AD id="serviceName" name="%serviceName" description="%serviceName.desc" required="false" type="String" />
          <AD id="ignoreUnexpectedElements" name="%ignoreUnexpectedElements" description="%ignoreUnexpectedElements.desc" required="false" type="Boolean" default="false" />
          <AD id="enableSchemaValidation" name="%enableSchemaValidation" description="%enableSchemaValidation.desc" required="false" type="Boolean"/>
-         <AD id="enableDefaultValidation" name="%enableDefaultValidation" description="%enableDefaultValidation.desc" required="false" type="Boolean" default="true"/>
+         <AD id="enableDefaultValidation" name="%enableDefaultValidation" description="%enableDefaultValidation.desc" required="false" type="Boolean"  default="true"/>
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.jaxws.clientConfig">
@@ -27,7 +27,7 @@
          <AD id="portName" name="%portName" description="%portName.desc" required="false" type="String" />
          <AD id="ignoreUnexpectedElements" name="%ignoreUnexpectedElements" description="%ignoreUnexpectedElements.desc" required="false" type="Boolean" default="false" />
          <AD id="enableSchemaValidation" name="%enableSchemaValidation" description="%enableSchemaValidation.desc" required="false" type="Boolean"/>
-         <AD id="enableDefaultValidation" name="%enableDefaultValidation" description="%enableDefaultValidation.desc" required="false" type="Boolean" default="false"/>
+         <AD id="enableDefaultValidation" name="%enableDefaultValidation" description="%enableDefaultValidation.desc" required="false" type="Boolean"  default="false"/>
     </OCD>
     
     <Designate factoryPid="com.ibm.ws.jaxws.config">

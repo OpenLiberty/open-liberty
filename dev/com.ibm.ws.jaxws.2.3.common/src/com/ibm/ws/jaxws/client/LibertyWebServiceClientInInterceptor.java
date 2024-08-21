@@ -28,9 +28,7 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
 
     private static final TraceComponent tc = Tr.register(LibertyWebServiceClientInInterceptor.class);
 
-    /**
-     * @param serviceName
-     */
+
     public LibertyWebServiceClientInInterceptor() {
         super(Phase.RECEIVE);
 
@@ -53,8 +51,7 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
 
         Object ignoreUnexpectedElements = null;
         
-        Object enableDefaultValidation = null;
-        
+        Object enableDefaultValidation = null; // Liberty change
 
         // if messageServiceName != null, try to get the values from configuration using it
         if (messageServiceName != null) {
@@ -81,35 +78,32 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
                 
             }
 
-            
+            // Liberty change begin
             // if messageServiceName != null, try to get the values from configuration using it
             if (messageServiceName != null) {
-                // if messageServiceName != null, try to get enableSchemaValidation value from configuration, if it's == null try it to get the default configuration value
-                if(WebServicesClientConfigHolder.getEnableDefaultValidation(messageServiceName) != null) {
+                // if messageServiceName != null, try to get getEnableDefaultValidation value from configuration, if it's == null try it to get the default configuration value
+                if (WebServicesClientConfigHolder.getEnableDefaultValidation(messageServiceName) != null) {
                     
                     enableDefaultValidation = WebServicesClientConfigHolder.getEnableDefaultValidation(messageServiceName);
                     
                 } else if (WebServicesClientConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) {
                     
                     enableDefaultValidation = WebServicesClientConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP);
-                    
                 }
             }
-            
+            // Liberty change end
         } else {
             // if messageSevice == null then try to get the global configuration values, if its not set keep values null
             enableSchemaValidation = (WebServicesClientConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesClientConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP) : null;
 
-            ignoreUnexpectedElements = (WebServicesClientConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesClientConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) : null;            
+            ignoreUnexpectedElements = (WebServicesClientConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesClientConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) : null;
             
-            enableDefaultValidation = (WebServicesClientConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesClientConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) : null;
+            enableDefaultValidation = (WebServicesClientConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesClientConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) : null; // Liberty change
 
         }
-        Tr.info(tc,"~enableSchemaValidation: " + enableSchemaValidation);
-        Tr.info(tc,"~ignoreUnexpectedElements: " + ignoreUnexpectedElements);
-        Tr.info(tc,"~enableDefaultValidation: " + enableSchemaValidation);
+
         
-        if ((enableSchemaValidation == null && ignoreUnexpectedElements == null && enableDefaultValidation == null)) {
+        if ((enableSchemaValidation == null && ignoreUnexpectedElements == null && enableDefaultValidation == null)) { // Liberty change
             if (debug) {
                 Tr.debug(tc, "No webServiceClient configuration found. returning.");
             }
@@ -131,9 +125,6 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
             } else if ((boolean) enableSchemaValidation == false) {
                 // Make sure schema validation is disabled
                 message.put("schema-validation-enabled", false);
-                // Disable the default vaildation as well
-                message.put(JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, false);
-                
 
                 
                 if (debug) {
@@ -152,21 +143,46 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
 
         // Set ignoreUnexpectedElements if true
         if (ignoreUnexpectedElements != null && (boolean) ignoreUnexpectedElements == true) {
-            // Enable validation handling in CXF
-            message.put(JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, (boolean) ignoreUnexpectedElements);
             
-            // Set our custom validation event handler
-            IgnoreUnexpectedElementValidationEventHandler unexpectedElementValidationEventHandler = new IgnoreUnexpectedElementValidationEventHandler();
-            message.put(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER, unexpectedElementValidationEventHandler); 
+                // Enable validation handling in CXF
+                message.put(JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, true);
 
+                // Set our custom validation event handler
+                IgnoreUnexpectedElementValidationEventHandler unexpectedElementValidationEventHandler = new IgnoreUnexpectedElementValidationEventHandler();
+                message.put(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER, unexpectedElementValidationEventHandler);
+                
+                if (enableDefaultValidation != null && (boolean)enableDefaultValidation == false) {
+                  // If ignoreUnexpectedElements is true, do not let  enableDefaultValidation false value 
+                  // to not set JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER to false
+                  return;   
+                } 
+            
             if (debug) {
-                Tr.debug(tc, "Set JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER to  " + (boolean) ignoreUnexpectedElements);
+                Tr.debug(tc, "Set JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER to  " + (boolean) ignoreUnexpectedElements + " for ignoreUnexpectedElements");
+                
             }
-
+            
         } else {
             if (debug) {
                 Tr.debug(tc, "ignoreUnexpectedElements was " + ignoreUnexpectedElements + " not configuring ignoreUnexpectedElements on the client");
+                
+            }
+        }
 
+        // As long as property is non-null:
+        // Enable default validation if true, or disable it along with default validation if false 
+        if (enableDefaultValidation != null) {
+            // JAXB's DefaultValidationEventHandler 
+            message.put(JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, enableDefaultValidation);
+            
+            if (debug) {
+                Tr.debug(tc, "Set JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER to " + enableDefaultValidation + " for enableDefaultValidation");
+            }
+            
+        } else {
+            if (debug) {
+                Tr.debug(tc, "enableDefaultValidation was " + enableDefaultValidation + " not configuring enableDefaultValidation on the client");
+                
             }
         }
     }

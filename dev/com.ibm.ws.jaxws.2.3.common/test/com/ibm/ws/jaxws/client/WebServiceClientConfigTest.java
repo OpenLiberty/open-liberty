@@ -58,6 +58,8 @@ public class WebServiceClientConfigTest {
         basicProps.put(WebServiceConfigConstants.SERVICE_NAME_PROP, "default");
         basicProps.put(WebServiceConfigConstants.ENABLE_SCHEMA_VALIDATION_PROP, true);
         basicProps.put(WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP, true);
+        basicProps.put(WebServiceConfigConstants.ENABLE_DEFAULT_VALIDATION_PROP, true); //Liberty change
+        
         
         WebServiceClientConfigImpl config = new WebServiceClientConfigImpl(basicProps);
         
@@ -69,6 +71,7 @@ public class WebServiceClientConfigTest {
         for (String serviceName : serviceNamesToTest) {
             Assert.assertTrue((boolean) WebServicesClientConfigHolder.getIgnoreUnexpectedElements(serviceName));
             Assert.assertTrue((boolean) WebServicesClientConfigHolder.getEnableSchemaValidation(serviceName));
+            Assert.assertTrue((boolean) WebServicesClientConfigHolder.getEnableDefaultValidation(serviceName));
 
         }
         config.deactivate();
@@ -83,9 +86,11 @@ public class WebServiceClientConfigTest {
         Map<String, Object> basicProps1 = new HashMap<String, Object>();
         Map<String, Object> basicProps2 = new HashMap<String, Object>();
         Map<String, Object> basicProps3 = new HashMap<String, Object>();
+        Map<String, Object> basicProps4 = new HashMap<String, Object>(); //Liberty change
         String serviceName = "default";
         String serviceName1 = "SimpleService";
         String serviceName2 = "SimpleService1";
+        String serviceName3 = "SimpleService2"; //Liberty change
 
         basicProps2.put(WebServiceConfigConstants.SERVICE_NAME_PROP, serviceName);
         basicProps2.put(WebServiceConfigConstants.ENABLE_SCHEMA_VALIDATION_PROP, true);
@@ -97,16 +102,25 @@ public class WebServiceClientConfigTest {
         basicProps1.put(WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP, true);
         config.modified(basicProps1);
 
-
         Assert.assertTrue((boolean) WebServicesClientConfigHolder.getIgnoreUnexpectedElements(serviceName1));
+        
+        //Liberty change begin
+        basicProps4.put(WebServiceConfigConstants.SERVICE_NAME_PROP, serviceName3);
+        basicProps4.put(WebServiceConfigConstants.ENABLE_DEFAULT_VALIDATION_PROP, true);
+        config.modified(basicProps4);
 
+        Assert.assertTrue((boolean) WebServicesClientConfigHolder.getEnableDefaultValidation(serviceName3));        
+        // Liberty change end
+        
         basicProps3.put(WebServiceConfigConstants.SERVICE_NAME_PROP, serviceName2);
         basicProps3.put(WebServiceConfigConstants.ENABLE_SCHEMA_VALIDATION_PROP, false);
         basicProps3.put(WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP, false);
+        basicProps3.put(WebServiceConfigConstants.ENABLE_DEFAULT_VALIDATION_PROP, false); //Liberty change
         config.modified(basicProps3);
 
         Assert.assertFalse((boolean) WebServicesClientConfigHolder.getEnableSchemaValidation(serviceName2));
         Assert.assertFalse((boolean) WebServicesClientConfigHolder.getIgnoreUnexpectedElements(serviceName2));
+        Assert.assertFalse((boolean) WebServicesClientConfigHolder.getEnableDefaultValidation(serviceName2)); //Liberty change
 
         config.deactivate();
 
@@ -123,10 +137,12 @@ public class WebServiceClientConfigTest {
         Map<String, Object> basicProps = new HashMap<String, Object>();
         Map<String, Object> basicProps1 = new HashMap<String, Object>();
         Map<String, Object> basicProps2 = new HashMap<String, Object>();
-
+        Map<String, Object> basicProps3 = new HashMap<String, Object>(); //Liberty change
+        
         String serviceName = "default";
         String serviceName1 = "SimpleService";
         String serviceName2 = "SimpleService1";
+        String serviceName3 = "SimpleService3"; //Liberty change
 
         basicProps.put(WebServiceConfigConstants.SERVICE_NAME_PROP, serviceName);
         basicProps.put(WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP, true);
@@ -138,18 +154,25 @@ public class WebServiceClientConfigTest {
         basicProps1.put(WebServiceConfigConstants.SERVICE_NAME_PROP, serviceName1);
         basicProps1.put(WebServiceConfigConstants.ENABLE_SCHEMA_VALIDATION_PROP, true);
         basicProps1.put(WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP, true);
+        basicProps1.put(WebServiceConfigConstants.ENABLE_DEFAULT_VALIDATION_PROP, true); //Liberty change
         
         WebServiceClientConfigImpl config1 = new WebServiceClientConfigImpl(basicProps1);
         basicProps2.put(WebServiceConfigConstants.SERVICE_NAME_PROP, serviceName2);
-        
         basicProps2.put(WebServiceConfigConstants.ENABLE_SCHEMA_VALIDATION_PROP, false);
         basicProps2.put(WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP, false);
+        basicProps2.put(WebServiceConfigConstants.ENABLE_DEFAULT_VALIDATION_PROP, false); //Liberty change
         
         WebServiceClientConfigImpl config2 = new WebServiceClientConfigImpl(basicProps2);
 
         Assert.assertTrue((boolean) WebServicesClientConfigHolder.getIgnoreUnexpectedElements(serviceName));
         Assert.assertTrue((boolean) WebServicesClientConfigHolder.getIgnoreUnexpectedElements(serviceName1));
+        Assert.assertTrue((boolean) WebServicesClientConfigHolder.getEnableSchemaValidation(serviceName1));
+        // Liberty change begin
+        Assert.assertTrue((boolean) WebServicesClientConfigHolder.getEnableDefaultValidation(serviceName1)); 
+        Assert.assertFalse((boolean) WebServicesClientConfigHolder.getIgnoreUnexpectedElements(serviceName2));
         Assert.assertFalse((boolean) WebServicesClientConfigHolder.getEnableSchemaValidation(serviceName2));
+        Assert.assertFalse((boolean) WebServicesClientConfigHolder.getEnableDefaultValidation(serviceName2));
+        // Liberty change end
 
         config.deactivate();
         config1.deactivate();

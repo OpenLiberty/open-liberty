@@ -35,6 +35,7 @@ public class ConfigValidation {
             return true;
         }
         
+        // Liberty change begin
         /**
          * @param value - key name
          * @return true since no need to validate booleans
@@ -42,4 +43,5 @@ public class ConfigValidation {
         public static boolean validateEnableDefaultValidation(boolean value) {
             return true;
         }
+        // Liberty change end
 }
