@@ -69,20 +69,23 @@ public class ResourceServlet extends FATServlet {
         assertThat(output, containsString(("host.arch=\"" + System.getProperty("os.arch") + "\"").toLowerCase()));
         assertThat(output, containsString(("host.name=\"" + InetAddress.getLocalHost().getHostName().toString() + "\"").toLowerCase()));
 
-        //This may fail if we run on an OS that OpenTelemetry doesn't expect, but I do not believe we do
         String osName = System.getProperty("os.name");
         osName = osName != null ? osName.toLowerCase() : "";
         String osVersion = System.getProperty("os.version");
         osVersion = osVersion != null ? osVersion.toLowerCase() : "";
         String osDescription = osVersion != null ? osName + ' ' + osVersion : osName;
 
-        //os.type is the only value that uses the mapped name;
-        assertThat(output, containsString("os.type=\"" + mapOSName(osName) + "\""));
+        //MicroProfile Telemetry won't output os.type unless its one it knows about.
+        if (osNameMap.containsKey(osName)) {
+            //os.type is the only value that uses the mapped name;
+            assertThat(output, containsString("os.type=\"" + mapOSName(osName) + "\""));
+        }
         assertThat(output, containsString("os.description=\"" + osDescription + "\""));
 
         //Keeping this simple since the reliable way to do this is java 9+
         assertThat(output, containsString("process.command_line"));
-        assertThat(output, containsString("ws-server.jar Telemetry10ResourceAttributes".toLowerCase()));
+        assertThat(output, containsString("ws-server.jar"));
+        assertThat(output, containsString("Telemetry10ResourceAttributes".toLowerCase()));
 
         //This will be too variable to predict a sensible
         assertThat(output, containsString("process.executable.path"));
