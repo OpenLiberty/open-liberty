@@ -64,6 +64,7 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
+import junit.framework.Assert;
 
 @RunWith(FATRunner.class)
 public class CDIAPITests extends FATServletClient {
@@ -215,6 +216,8 @@ public class CDIAPITests extends FATServletClient {
     @AllowedFFDC(STATE_CHANGE_EXCEPTION)
     public void testInjectInjectionPointXML() throws Exception {
         server.setMarkToEndOfLog();
+
+        Assert.assertNotNull(System.getProperty("personalBuild"));
 
         WebArchive injectInjectionPointXMLWar = ShrinkWrap.create(WebArchive.class, INJECT_IP_XML_APP_NAME + ".war")
                                                           .addClass(InjectInjectionPointXMLServlet.class)
