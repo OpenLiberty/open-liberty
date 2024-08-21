@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+IBM Confidential
+OCO Source Materials
+WLP Copyright IBM Corp. 2024
+The source code for this program is not published or otherwise divested
+of its trade secrets, irrespective of what has been deposited with the
+U.S. Copyright Office.
+-->
+<web-ext xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://websphere.ibm.com/xml/ns/javaee"
+    xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-ext_1_0.xsd" version="1.0">
+  <jsp-attribute name="keepgenerated" value="true"/>
+  <jsp-attribute name="useThreadTagPool" value="true"/>
+</web-ext>

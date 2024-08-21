@@ -68,6 +68,8 @@ public class JSPTests {
     private static final String OLGH20509_APP_NAME2 = "OLGH20509TDfalse";
     private static final String OLGH27779_APP_NAME = "OLGH27779";
     private static final String PH62212_APP_NAME = "PH62212";
+    private static final String PH62212_THREADPOOL_APP_NAME = "PH62212_ThreadPool";
+    private static final String PH62212_PAGEPOOL_APP_NAME = "PH62212_PagePool";
 
     @Server("jspServer")
     public static LibertyServer server;
@@ -95,6 +97,10 @@ public class JSPTests {
         ShrinkHelper.defaultDropinApp(server, OLGH27779_APP_NAME + ".war");
 
         ShrinkHelper.defaultDropinApp(server, PH62212_APP_NAME + ".war");
+
+        ShrinkHelper.defaultDropinApp(server, PH62212_THREADPOOL_APP_NAME + ".war");
+
+        ShrinkHelper.defaultDropinApp(server, PH62212_PAGEPOOL_APP_NAME + ".war");
 
         JavaArchive jspJar = ShrinkWrap.create(JavaArchive.class, "OLGH20509Include.jar");
         jspJar = (JavaArchive) ShrinkHelper.addDirectory(jspJar, "test-applications/includejar/resources");
@@ -1027,6 +1033,39 @@ public class JSPTests {
         assertEquals("Expected " + 200 + " status code was not returned!", 200, status);
     }
 
+    @Test
+    @Mode(TestMode.FULL)
+    public void testPH62212_ThreadPool() throws Exception {
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
+
+        WebRequest request = new GetMethodWebRequest(JSPUtils.createHttpUrlString(server, PH62212_THREADPOOL_APP_NAME, "large-jsp.jsp"));
+        WebResponse response = wc.getResponse(request);
+        
+        int status = response.getResponseCode();
+        
+        if(status != 200){
+            LOG.info("Response : " + response.getText());
+        }
+        assertEquals("Expected " + 200 + " status code was not returned!", 200, status);
+    }
+
+    @Test
+    @Mode(TestMode.FULL)
+    public void testPH62212_PagePool() throws Exception {
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
+
+        WebRequest request = new GetMethodWebRequest(JSPUtils.createHttpUrlString(server, PH62212_PAGEPOOL_APP_NAME, "large-jsp.jsp"));
+        WebResponse response = wc.getResponse(request);
+        
+        int status = response.getResponseCode();
+        
+        if(status != 200){
+            LOG.info("Response : " + response.getText());
+        }
+        assertEquals("Expected " + 200 + " status code was not returned!", 200, status);
+    }
     // Helper Methods
 
     public void makeConcurrentRequests(WebConversation wc1, WebRequest request1, int numberOfCalls) throws Exception {
