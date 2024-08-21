@@ -22,26 +22,11 @@ public record Rating(
                 Reviewer reviewer,
                 Set<String> comments) {
 
-    public static class Reviewer {
-        public String firstName;
-        public String lastName;
-        public String email;
-
-        public Reviewer() {
-        }
-
-        public Reviewer(String firstName, String lastName, String email) {
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.email = email;
-        }
+    public static record Reviewer(
+                    String firstName, // TODO nested record embeddable for Name(first, last) ?
+                    String lastName,
+                    String email) {
     }
-    // TODO switch the above class to the following record after 29117 is fixed
-    //public static record Reviewer(
-    //                String firstName, // TODO nested record embeddable for Name(first, last) ?
-    //                String lastName,
-    //                String email) {
-    //}
 
     public static class Item {
         public String name;

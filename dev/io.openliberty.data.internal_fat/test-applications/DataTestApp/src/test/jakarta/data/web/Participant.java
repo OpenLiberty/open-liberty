@@ -22,27 +22,7 @@ public class Participant {
 
     public Name name;
 
-    //public static record Name(String first, String last) {
-    //}
-    // TODO switch to the above and remove the following once 29117 is fixed
-    public static class Name {
-        public String first, last;
-
-        public Name() {
-        }
-
-        public Name(String first, String last) {
-            this.first = first;
-            this.last = last;
-        }
-
-        public String first() {
-            return first;
-        }
-
-        public String last() {
-            return last;
-        }
+    public static record Name(String first, String last) {
     }
 
     public static Participant of(String firstName, String lastName, int id) {

@@ -13,12 +13,8 @@ package test.jakarta.data.jpa.web;
 import jakarta.persistence.Embeddable;
 
 /**
- * Java record that is used as an Embeddable by the DirectedLineSegment entity.
+ * Java record that is used as an Embeddable by the Segment entity.
  */
 @Embeddable
 public record Point(int x, int y) {
-    // TODO remove once #29117 is fixed
-    public Point() {
-        this(0, 0);
-    }
 }

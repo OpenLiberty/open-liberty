@@ -1168,8 +1168,8 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Use an entity with embeddable attributes that are Java records.
      */
-    // TODO enable when #29117 is fixed
-    //@Test
+    // TODO enable once #29459 is fixed
+    // @Test
     public void testEmbeddableRecord() {
         Segment s1 = new Segment();
         s1.pointA = new Point(0, 0);
