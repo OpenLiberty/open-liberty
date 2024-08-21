@@ -1,0 +1,21 @@
+Created-By: 1.8.0 (IBM Corporation)
+IBM-API-Package: org.hibernate.validator; type=spec
+IBM-App-ForceRestart: install,
+  uninstall
+IBM-AppliesTo: io.openliberty;productVersion="20.0.0.8"
+IBM-Feature-Version: 2
+IBM-InstallTo: core
+IBM-ProductID: io.openliberty
+IBM-ShortName: valThirdParty-3.1
+Subsystem-Content: io.openliberty.beanValidation-3.1; type="osgi.subsystem.feature",
+ io.openliberty.expressionLanguage-4.0; ibm.tolerates:="6.0"; type="osgi.subsystem.feature"
+Subsystem-Description: %description
+Subsystem-License: https://www.eclipse.org/legal/epl-v10.html
+Subsystem-Localization: OSGI-INF/l10n/io.openliberty.valThirdParty-3.1
+Subsystem-ManifestVersion: 1
+Subsystem-Name: Expose Hibernate API
+Subsystem-SymbolicName: io.openliberty.valThirdParty-3.1; visibility:=public; singleton:=true
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Vendor: IBM Corp.
+Subsystem-Version: 1.0.0
+Tool: Bnd-3.5.0.201709291849
