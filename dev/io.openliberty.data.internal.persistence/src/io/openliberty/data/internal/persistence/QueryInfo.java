@@ -2035,12 +2035,6 @@ public class QueryInfo {
                         if (!insertEntityVar)
                             for (int i = startAt; !insertEntityVar && i < length; i++)
                                 switch (ql.charAt(i)) {
-                                    case '+':
-                                    case '-':
-                                    case '*':
-                                    case '/': // TODO remove this workaround for #28912 once fixed
-                                        insertEntityVar = true;
-                                        break;
                                     case '(': // TODO remove this workaround for #28908 once fixed
                                         insertEntityVar = ql.regionMatches(true, i - 2, "ID", 0, 2);
                                         break;
