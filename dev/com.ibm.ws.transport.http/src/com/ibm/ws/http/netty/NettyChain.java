@@ -33,6 +33,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
 import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
@@ -229,6 +230,7 @@ public synchronized void stop() {
                                 .with(ConfigElement.SAMESITE,owner.getSamesiteConfig())
                                 .build();
 
+                bootstrap.childOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
                 bootstrap.childHandler(httpPipeline);
 
                 serverChannel = nettyFramework.start(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
