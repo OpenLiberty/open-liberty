@@ -3403,7 +3403,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             public void operationComplete(ChannelFuture arg0) throws Exception {
 
                 if (nettyContext.pipeline().get(LibertyHttpRequestHandler.class) == null) {
-                    System.out.println("Could not verify pipelined request because of null handler! Is this HTTP2?");
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Could not verify pipelined request because of null handler on channel: " + nettyContext.channel() + " Is this HTTP2?");
+                    }
                 } else {
                     nettyContext.pipeline().get(LibertyHttpRequestHandler.class).processNextRequest();
                 }
