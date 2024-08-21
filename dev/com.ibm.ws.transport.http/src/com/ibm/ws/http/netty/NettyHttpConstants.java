@@ -31,5 +31,6 @@ public class NettyHttpConstants {
     public static final AttributeKey<Boolean> IS_OUTBOUND_KEY = AttributeKey.valueOf("isOutbound");
     public static final AttributeKey<String> PROTOCOL = AttributeKey.valueOf("protocol");
     public static final AttributeKey<String> ENDPOINT_PID = AttributeKey.valueOf("endpointPID");
+    public static final AttributeKey<Boolean> HANDLING_REQUEST = AttributeKey.valueOf("handlingRequest");
 
 }

@@ -14,8 +14,10 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpObjectAggregator;
+import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
 
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
@@ -66,8 +68,11 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
                                     new HttpServerCodec(8192, Integer.MAX_VALUE, httpConfig.getIncomingBodyBufferSize()));
             ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
             //TODO: this is a very large number, check best practice
-            ctx.pipeline().addAfter(HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME, null,
+            ctx.pipeline().addAfter(HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME, HttpPipelineInitializer.HTTP_AGGREGATOR_HANDLER_NAME,
                                     new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? HttpPipelineInitializer.maxContentLength : httpConfig.getMessageSizeLimit()));
+            ctx.pipeline().addAfter(HttpPipelineInitializer.HTTP_AGGREGATOR_HANDLER_NAME, HttpPipelineInitializer.HTTP_REQUEST_HANDLER_NAME, new LibertyHttpRequestHandler());
+            // Turn on half closure for H1
+            ctx.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
             System.out.println("Configured Http1 pipeline with " + ctx.pipeline().names());
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Configured pipeline with " + ctx.pipeline().names());

@@ -23,7 +23,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http2.Http2Connection;
-import io.netty.handler.codec.http2.Http2Exception;
 import io.netty.handler.codec.http2.Http2Exception.StreamException;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
@@ -39,9 +38,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
     // private HttpDispatcherLink link;
 
     public HttpDispatcherHandler(HttpChannelConfig config) {
-
         super(false);
-
         Objects.requireNonNull(config);
         this.config = config;
     }
@@ -53,6 +50,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
     }
 
     // Method to allow direct invocation
+    // TODO check if this can be cleaned up and removed
     public void processMessageDirectly(FullHttpRequest request) throws Exception {
         channelRead0(context, request);
     }
@@ -98,9 +96,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
         MSP.log("Exception caught in channel. Channel: {}, Reason: {} " + context.channel() + " " + cause.getMessage() + " " + cause);
-        if (cause instanceof Http2Exception.StreamException) {
+        if (cause instanceof StreamException) {
             System.out.println("Got a HTTP2 stream exception!! Need to close the stream");
-            StreamException c = (Http2Exception.StreamException) cause;
+            StreamException c = (StreamException) cause;
             HttpToHttp2ConnectionHandler handler = context.pipeline().get(HttpToHttp2ConnectionHandler.class);
             Http2Connection connection = handler.connection();
             connection.stream(c.streamId()).close();
