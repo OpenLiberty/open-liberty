@@ -62,6 +62,7 @@ import com.ibm.ws.http.netty.inbound.NettyTCPWriteRequestContext;
 import com.ibm.ws.http.netty.message.NettyResponseMessage;
 import com.ibm.ws.http.netty.pipeline.ResponseCompressionHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
+import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
 import com.ibm.ws.http.netty.pipeline.outbound.HeaderHandler;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
@@ -108,6 +109,7 @@ import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.VoidChannelPromise;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
@@ -2283,7 +2285,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if (getResponse() instanceof NettyResponseMessage) {
 
             response = ((NettyResponseMessage) getResponse()).getResponse();
-            
+
             MSP.log("&&& SEND HEADERS &&&");
             MSP.log("Headers: ");
             getResponse().getAllHeaders().forEach(header -> MSP.log(header.getName() + ": " + header.asString()));
@@ -2298,7 +2300,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 this.nettyContext.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(HttpUtil.getContentLength(response));
             }
             MSP.log("SENDING HEADERS");
-            
+
             MSP.log("Headers: ");
             getResponse().getAllHeaders().forEach(header -> MSP.log(header.getName() + ": " + header.asString()));
 
@@ -2314,7 +2316,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).set("WebSocket");
         }
         this.nettyContext.channel().writeAndFlush(response);
-        
+
         MSP.log("After flush Headers: ");
         response.headers().forEach(header -> MSP.log(header.getKey() + ": " + header.getValue()));
 
@@ -3395,6 +3397,18 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             System.out.println("SendfullOutgoing not doing anything!?!");
         }
         ChannelFuture flushFuture = this.nettyContext.channel().writeAndFlush(Unpooled.EMPTY_BUFFER);
+        flushFuture.addListener(new ChannelFutureListener() {
+
+            @Override
+            public void operationComplete(ChannelFuture arg0) throws Exception {
+
+                if (nettyContext.pipeline().get(LibertyHttpRequestHandler.class) == null) {
+                    System.out.println("Could not verify pipelined request because of null handler! Is this HTTP2?");
+                } else {
+                    nettyContext.pipeline().get(LibertyHttpRequestHandler.class).processNextRequest();
+                }
+            }
+        });
         //TODO: sync write
         System.out.println("Before await");
         flushFuture.awaitUninterruptibly();
