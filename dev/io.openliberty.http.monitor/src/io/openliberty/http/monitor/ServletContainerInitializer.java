@@ -35,9 +35,7 @@ public class ServletContainerInitializer implements javax.servlet.ServletContain
 		 * auto-feature. User's are not explicitly enabling this so lets not throw an
 		 * exception. We'll quietly get out of the way.
 		 */
-		if (!ProductInfo.getBetaEdition()) {
-			return;
-		}
+ 
 
 		FilterRegistration.Dynamic filterRegistration = sc.addFilter("io.openliberty.http.monitor.ServletFilter",
 				ServletFilter.class);
