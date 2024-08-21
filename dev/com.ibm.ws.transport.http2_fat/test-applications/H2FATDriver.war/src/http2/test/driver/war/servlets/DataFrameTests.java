@@ -51,7 +51,7 @@ public class DataFrameTests extends H2FATDriverServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         byte[] chfwDebugData = "DATA Frame Received in the wrong state of: IDLE".getBytes();
-        byte[] nettyDebugData = "Stream 3 does not exist".getBytes();
+        byte[] nettyDebugData = "Stream 3 does not exist for inbound frame DATA, endOfStream = false".getBytes();
         FrameGoAway errorFrame;
         if (USING_NETTY)
             errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
