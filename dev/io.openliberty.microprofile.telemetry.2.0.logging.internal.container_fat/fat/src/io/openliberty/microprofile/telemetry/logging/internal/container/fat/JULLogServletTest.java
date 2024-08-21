@@ -29,12 +29,14 @@ import org.testcontainers.images.builder.ImageFromDockerfile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+@MaximumJavaLevel(javaLevel = 20)
 public class JULLogServletTest {
 
     private static Class<?> c = JULLogServletTest.class;

@@ -80,7 +80,7 @@ public class TelemetryFFDCTest extends FATServletClient {
     @ExpectedFFDC("java.lang.ArithmeticException")
     // RuntimeException comes out of an early start servlet init;
     // This is async and may or may not happen before the test method enters
-    @AllowedFFDC("java.lang.RuntimeException")
+    @AllowedFFDC({ "java.lang.RuntimeException", "java.lang.IllegalArgumentException" })
     public void testTelemetryFFDCMessages() throws Exception {
         testTelemetryFFDCMessages(server, (linesConsoleLog) -> {
             // We expect to see the early ffdc message

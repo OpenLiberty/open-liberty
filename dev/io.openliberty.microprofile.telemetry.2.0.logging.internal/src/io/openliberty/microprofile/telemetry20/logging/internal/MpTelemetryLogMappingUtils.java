@@ -189,7 +189,13 @@ public class MpTelemetryLogMappingUtils {
         builder.setSeverity(Severity.WARN);
 
         // Set the body to the exception message
-        builder.setBody(ffdcData.getMessage());
+        String ffdcMsg = ffdcData.getMessage();
+        if (ffdcMsg != null) {
+            builder.setBody(ffdcMsg);
+        } else {
+            // If the message field is null, map the exception name to the body.
+            builder.setBody(ffdcData.getExceptionName());
+        }
 
         // Get Attributes builder to add additional Log fields
         AttributesBuilder attributes = Attributes.builder();

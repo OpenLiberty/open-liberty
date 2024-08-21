@@ -21,6 +21,7 @@ import java.util.function.Consumer;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +42,6 @@ public class TelemetryMessagesTest extends FATServletClient {
     public static final String APP_NAME = "MpTelemetryLogApp";
     public static final String SERVER_NAME = "TelemetryMessage";
 
-
     @ClassRule
     public static RepeatTests rt = FATSuite.testRepeatMPTel20();
 
@@ -49,6 +49,11 @@ public class TelemetryMessagesTest extends FATServletClient {
     public static LibertyServer server;
 
     public static final String SERVER_XML_ALL_SOURCES = "allSources.xml";
+
+    @BeforeClass
+    public static void initialSetup() throws Exception {
+        server.saveServerConfiguration();
+    }
 
     @Before
     public void testSetup() throws Exception {
@@ -64,6 +69,9 @@ public class TelemetryMessagesTest extends FATServletClient {
     @After
     public void testTearDown() throws Exception {
         server.stopServer();
+
+        // Restore the server configuration, after each test case.
+        server.restoreServerConfiguration();
     }
 
     /**
