@@ -17,11 +17,6 @@ Bundle-SymbolicName: io.openliberty.microprofile.telemetry.2.0.logging.internal
 Bundle-Description: MicroProfile.telemetry.logging, version 2.0
 WS-TraceGroup: TELEMETRY
 
-javac.source: 1.8
-javac.target: 1.8
-
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-
 -dsannotations-inherit: true
 
 Export-Package: io.openliberty.microprofile.telemetry20.logging.internal;provide:=true
