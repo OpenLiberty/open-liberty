@@ -45,7 +45,7 @@ import componenttest.topology.impl.LibertyServer;
 /**
  * Test the login module with an unencoded password - should still work
  */
-@MaximumJavaLevel(javaLevel = 21)
+@MaximumJavaLevel(javaLevel = 22)
 @RunWith(FATRunner.class)
 public class LibertyLoginModuleSpecialCharsTest {
 
