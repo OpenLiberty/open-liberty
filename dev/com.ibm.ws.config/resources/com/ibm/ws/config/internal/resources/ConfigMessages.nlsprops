@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -494,7 +494,7 @@ schemagen.info.schema.file.created=CWWKG0109I: The schema was created in the [{0
 schemagen.info.schema.file.created.explanation=The command completed successfully.
 schemagen.info.schema.file.created.useraction=No action is required.
 
-warning.config.root.deleted=CWWKG0110W: The configuration root was deleted. No configuration updates were made.
+warning.config.root.deleted=CWWKG0110W: A configuration update was detected but the configuration root, {0}, does not exist. No configuration updates were made.
 warning.config.root.deleted.explanation=The server.xml was deleted. To cause no disruptions to running apps, no configuration changes will be made.
 warning.config.root.deleted.useraction=Add the server.xml back to the server.
 

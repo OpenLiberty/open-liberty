@@ -97,26 +97,16 @@ public class ConfigRefresher {
 
     /*
      * Called after configuration change is detected.
-     * If the only deleted file is the server.xml, no config updates will be made.
+     * If the server.xml does not exist, no config updates will be made.
      * Otherwise, make config updates as normal.
      */
-    public void refreshConfigurationIfServerXMLNotDeleted(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles){
-        if(isOnlyServerXMLDeleted(createdFiles, modifiedFiles, deletedFiles)){
-            Tr.warning(tc, "warning.config.root.deleted");
+    public void refreshConfigurationIfServerXMLExists(){
+        if(!serverXMLConfig.configRootFile().exists()){
+            Tr.warning(tc, "warning.config.root.deleted", serverXMLConfig.configRootFile().getName());
         }
         else{
             refreshConfiguration();
         }
-    }
-
-    private boolean isOnlyServerXMLDeleted(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles){
-        if(createdFiles.isEmpty() && modifiedFiles.isEmpty() && deletedFiles.size() == 1){
-            if(deletedFiles.contains(serverXMLConfig.configRootFile())){
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public void refreshConfiguration() {
