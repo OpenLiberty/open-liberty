@@ -143,6 +143,7 @@ Export-Package: \
 Import-Package: \
  javax.security.auth,\
  jakarta.xml.ws;version="[4.0,5)",\
+ jakarta.servlet.descriptor,\
  jakarta.annotation,\
  jakarta.ejb;resolution:=optional,\
  jakarta.el;resolution:=optional,\
