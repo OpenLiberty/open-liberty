@@ -46,7 +46,7 @@ import componenttest.topology.impl.LibertyServer;
  * Basic test using a kafka broker with TLS enabled
  */
 @RunWith(FATRunner.class)
-@MaximumJavaLevel(javaLevel = 21)
+@MaximumJavaLevel(javaLevel = 22)
 public class KafkaSaslPlainTest {
 
     private static final String APP_NAME = "kafkaSaslTest";
