@@ -9,7 +9,7 @@
 </Designate>  
 
 <OCD name="%mpTelemetryLogging" description="%mpTelemetryLogging.desc" 
-			id="io.openliberty.microprofile.telemetry20.logging.internal.config" ibm:alias="mpTelemetry" ibm:beta="true">
+			id="io.openliberty.microprofile.telemetry20.logging.internal.config" ibm:alias="mpTelemetry">
 	<AD name="%source" description="%source.desc" id="source" required="false" type="String" default="message" cardinality="1024"/>
 </OCD>	
 

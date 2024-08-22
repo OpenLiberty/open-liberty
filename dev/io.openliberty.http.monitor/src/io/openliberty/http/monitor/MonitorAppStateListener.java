@@ -59,16 +59,6 @@ public class MonitorAppStateListener implements ApplicationStateListener{
 
 	@Override
 	public void applicationStopped(ApplicationInfo appInfo) {
-    	/*
-    	 * Just prevent this from happening.
-    	 * This bundle starts from an auto-feature.
-    	 * User's are not explicitly enabling this so
-    	 * lets not throw an exception. We'll
-    	 * quietly get out of the way.
-    	 */
-    	if (!ProductInfo.getBetaEdition()) { 
-    		return;
-    	}
 		HttpServerStatsMonitor.getInstance().removeStat(appInfo.getDeploymentName());
 		
 	}
