@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.config.xml.internal;
 
+import java.io.File;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -92,6 +93,30 @@ public class ConfigRefresher {
     void stop() {
         configurationMonitor.stopConfigurationMonitoring();
         runtimeUpdateManagerTracker.close();
+    }
+
+    /*
+     * Called after configuration change is detected.
+     * If the only deleted file is the server.xml, no config updates will be made.
+     * Otherwise, make config updates as normal.
+     */
+    public void refreshConfigurationIfServerXMLNotDeleted(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles){
+        if(isOnlyServerXMLDeleted(createdFiles, modifiedFiles, deletedFiles)){
+            Tr.warning(tc, "warning.config.root.deleted");
+        }
+        else{
+            refreshConfiguration();
+        }
+    }
+
+    private boolean isOnlyServerXMLDeleted(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles){
+        if(createdFiles.isEmpty() && modifiedFiles.isEmpty() && deletedFiles.size() == 1){
+            if(deletedFiles.contains(serverXMLConfig.configRootFile())){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void refreshConfiguration() {
