@@ -13,6 +13,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.cxf.jaxb.JAXBDataBinding;
 import org.apache.cxf.message.MessageUtils;
 import org.junit.Test;
@@ -27,6 +31,42 @@ import com.ibm.ws.jaxws.internal.WebServiceConfigConstants;
  */
 public class LibertyWebServiceClientInInterceptorDefaultTest extends LibertyWebServiceClientInInterceptorTestBase {
         
+    /*
+     * Tests that we get the expected values from the webServiceClient config when default is used
+     * and when no configuration is provided 
+     */
+    @Test
+    public void testHandleMessageWithDefault_NullConfiguration()       {
+        Map<String, Object> webServiceNullProps = null;
+        
+        config  = new WebServiceClientConfigImpl(webServiceNullProps);
+        
+        // invoke LibertyWebServiceClientInInterceptor.handleMessage(message)
+        interceptor.handleMessage(message);
+        
+        assertNull(MessageUtils.getContextualProperty(message, SCHEMA_VALIDATION, null)); 
+        assertNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 
+    }
+    
+    /*
+     * Tests that we get the expected values from the webServiceClient config when default is used
+     * and when no configuration is provided 
+     */
+    @Test
+    public void testHandleMessageWithDefault_EmptyConfiguration()       {
+        
+        // Clear props
+        webServiceClientProps.clear();
+        
+        config.modified(webServiceClientProps);
+        
+        // invoke LibertyWebServiceClientInInterceptor.handleMessage(message)
+        interceptor.handleMessage(message);
+        
+        assertNull(MessageUtils.getContextualProperty(message, SCHEMA_VALIDATION, null)); 
+        assertNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 
+    }
+    
     /*
      * Tests that we get the expected values from the webServiceClient config when default is used
      * and enableSchemaValidation only is set to false. 
@@ -74,7 +114,7 @@ public class LibertyWebServiceClientInInterceptorDefaultTest extends LibertyWebS
         assertNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 
     }
     
-    // Liberty change begin
+
     /*
      * Tests that we get the expected values from the webServiceClient config when default is used
      * and enableDefaultValidation only is set to false. 
@@ -96,7 +136,7 @@ public class LibertyWebServiceClientInInterceptorDefaultTest extends LibertyWebS
 
         // Assert message has the set values.
         assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to false", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
-    }// Liberty change end
+    }
     
     /*
      * Tests that we get the expected values from the webServiceClient config when default is used
@@ -145,7 +185,7 @@ public class LibertyWebServiceClientInInterceptorDefaultTest extends LibertyWebS
         assertNotNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 
     }
     
-    // Liberty change begin
+
     /*
      * Tests that we get the expected values from the webServiceClient config when default is used
      * and enableDefaultValidation only is set to true. 
@@ -168,14 +208,14 @@ public class LibertyWebServiceClientInInterceptorDefaultTest extends LibertyWebS
         // Assert message has the set values.
         assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to true", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
         assertNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER));
-    } // Liberty change end
+    }
 
     /*
      * Tests that we get the expected values from the webServiceClient config when default is used
      * and both config properties are set to false. 
      */
     @Test
-    public void testHandleMessageWithDefault_EnableSchemaValidationAndIgnoreUnexpectedElementsSetToFalse() { // Liberty change
+    public void testHandleMessageWithDefault_EnableSchemaValidationAndIgnoreUnexpectedElementsSetToFalse() {
 
         // Clear props first to ensure correct values are set. 
         webServiceClientProps.clear();
@@ -198,7 +238,7 @@ public class LibertyWebServiceClientInInterceptorDefaultTest extends LibertyWebS
         assertNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 
     }
     
-    // Liberty change begin
+    
     /*
      * Tests that we get the expected values from the webServiceClient config when default is used
      * and both config properties are set to false. 
@@ -435,7 +475,7 @@ public class LibertyWebServiceClientInInterceptorDefaultTest extends LibertyWebS
         webServiceClientProps.put(WebServiceConfigConstants.SERVICE_NAME_PROP, WebServiceConfigConstants.DEFAULT_PROP);
         webServiceClientProps.put(WebServiceConfigConstants.ENABLE_SCHEMA_VALIDATION_PROP, true);
         webServiceClientProps.put(WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP, true);
-        webServiceClientProps.put(WebServiceConfigConstants.ENABLE_DEFAULT_VALIDATION_PROP, true); // Liberty change
+        webServiceClientProps.put(WebServiceConfigConstants.ENABLE_DEFAULT_VALIDATION_PROP, true);
         
         config  = new WebServiceClientConfigImpl(webServiceClientProps);
        
@@ -447,6 +487,5 @@ public class LibertyWebServiceClientInInterceptorDefaultTest extends LibertyWebS
         assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + SCHEMA_VALIDATION + " property to true", MessageUtils.getContextualBoolean(message, SCHEMA_VALIDATION));
         assertNotNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER));
     }
-    // Liberty change end
-    
+
 }

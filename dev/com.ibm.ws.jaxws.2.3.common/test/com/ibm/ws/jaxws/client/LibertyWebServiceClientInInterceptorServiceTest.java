@@ -126,7 +126,7 @@ public class LibertyWebServiceClientInInterceptorServiceTest extends LibertyWebS
         assertNotNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 
     }
 
-    // Liberty change begin
+    
     /*
      * Tests that we get the expected values from the webServiceClient config when service name is used
      * and enableDefaultValidation only is set to false. 
@@ -173,14 +173,14 @@ public class LibertyWebServiceClientInInterceptorServiceTest extends LibertyWebS
         // Assert message has the set values.
         assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to true", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
     }
-    // Liberty change end
+    
     
     /*
      * Tests that we get the expected values from the webServiceClient config when service name is used
      * and both config properties are set to false. 
      */
     @Test
-    public void testHandleMessageWithServiceName_EnableSchemaValidationAndIgnoreUnexpectedElementsSetToFalse() { // Liberty change
+    public void testHandleMessageWithServiceName_EnableSchemaValidationAndIgnoreUnexpectedElementsSetToFalse() {
 
         // Clear props first to ensure correct values are set. 
         webServiceClientProps.clear();
@@ -201,7 +201,6 @@ public class LibertyWebServiceClientInInterceptorServiceTest extends LibertyWebS
         assertNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 
     }
     
-    // Liberty change begin
     /*
      * Tests that we get the expected values from the webServiceClient config when service name is used
      * and both config properties are set to false. 
@@ -255,7 +254,6 @@ public class LibertyWebServiceClientInInterceptorServiceTest extends LibertyWebS
         //  Because the  WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP boolean has to be flipped, we assertFalse when setting WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP to false
         assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to false", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
     } 
-    // Liberty change end
     
     
     /*
@@ -263,7 +261,7 @@ public class LibertyWebServiceClientInInterceptorServiceTest extends LibertyWebS
      * and both config properties are set to true. 
      */
     @Test
-    public void testHandleMessageWithServiceName_EnableSchemaValidationAndIgnoreUnexpectedElementsSetToTrue() { // Liberty change
+    public void testHandleMessageWithServiceName_EnableSchemaValidationAndIgnoreUnexpectedElementsSetToTrue() {
 
         // Clear props first to ensure correct values are set. 
         webServiceClientProps.clear();
@@ -284,8 +282,6 @@ public class LibertyWebServiceClientInInterceptorServiceTest extends LibertyWebS
         assertNotNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 
     }
    
-     
-    // Liberty change begin
     
     /*
      * Tests that we get the expected values from the webServiceClient config when service name is used
@@ -340,7 +336,6 @@ public class LibertyWebServiceClientInInterceptorServiceTest extends LibertyWebS
     }
    
     
-    // Liberty change begin
     /*
      * Tests that we get the expected values from the webServiceClient config when service name is used
      * and both config properties are set to false. 
@@ -393,7 +388,6 @@ public class LibertyWebServiceClientInInterceptorServiceTest extends LibertyWebS
         assertTrue("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to true", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
         assertNotNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 
     }
-    // Liberty change end
     
     /*
      * Tests that we get the expected values from the webServiceClient config when service name is used

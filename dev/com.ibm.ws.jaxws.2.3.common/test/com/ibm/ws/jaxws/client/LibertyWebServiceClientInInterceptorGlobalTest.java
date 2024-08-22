@@ -92,13 +92,13 @@ public class LibertyWebServiceClientInInterceptorGlobalTest extends LibertyWebSe
         webServiceClientProps.put(WebServiceConfigConstants.SERVICE_NAME_PROP, WebServiceConfigConstants.DEFAULT_PROP);
         webServiceClientProps.put(WebServiceConfigConstants.ENABLE_SCHEMA_VALIDATION_PROP, true);
         webServiceClientProps.put(WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP, true);
-        webServiceClientProps.put(WebServiceConfigConstants.ENABLE_DEFAULT_VALIDATION_PROP, true); //Liberty change
+        webServiceClientProps.put(WebServiceConfigConstants.ENABLE_DEFAULT_VALIDATION_PROP, true);
         
         // set the serviceName properties
         webServiceClientServiceNameProps.put(WebServiceConfigConstants.SERVICE_NAME_PROP, SERVICE_NAME);
         webServiceClientServiceNameProps.put(WebServiceConfigConstants.ENABLE_SCHEMA_VALIDATION_PROP, false);
         webServiceClientServiceNameProps.put(WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP, false);
-        webServiceClientServiceNameProps.put(WebServiceConfigConstants.ENABLE_DEFAULT_VALIDATION_PROP, false); //Liberty change
+        webServiceClientServiceNameProps.put(WebServiceConfigConstants.ENABLE_DEFAULT_VALIDATION_PROP, false);
         
         config  = new WebServiceClientConfigImpl(webServiceClientProps);
         config1  = new WebServiceClientConfigImpl(webServiceClientServiceNameProps);
@@ -128,13 +128,13 @@ public class LibertyWebServiceClientInInterceptorGlobalTest extends LibertyWebSe
         webServiceClientProps.put(WebServiceConfigConstants.SERVICE_NAME_PROP, WebServiceConfigConstants.DEFAULT_PROP);
         webServiceClientProps.put(WebServiceConfigConstants.ENABLE_SCHEMA_VALIDATION_PROP, false);
         webServiceClientProps.put(WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP, false);
-        webServiceClientProps.put(WebServiceConfigConstants.ENABLE_DEFAULT_VALIDATION_PROP, false); //Liberty change
+        webServiceClientProps.put(WebServiceConfigConstants.ENABLE_DEFAULT_VALIDATION_PROP, false);
         
         // set the serviceName properties
         webServiceClientServiceNameProps.put(WebServiceConfigConstants.SERVICE_NAME_PROP, SERVICE_NAME);
         webServiceClientServiceNameProps.put(WebServiceConfigConstants.ENABLE_SCHEMA_VALIDATION_PROP, true);
         webServiceClientServiceNameProps.put(WebServiceConfigConstants.IGNORE_UNEXPECTED_ELEMENTS_PROP, true);
-        webServiceClientServiceNameProps.put(WebServiceConfigConstants.ENABLE_DEFAULT_VALIDATION_PROP, true); //Liberty change
+        webServiceClientServiceNameProps.put(WebServiceConfigConstants.ENABLE_DEFAULT_VALIDATION_PROP, true);
         
         config  = new WebServiceClientConfigImpl(webServiceClientProps);
         config1  = new WebServiceClientConfigImpl(webServiceClientServiceNameProps);
@@ -149,7 +149,6 @@ public class LibertyWebServiceClientInInterceptorGlobalTest extends LibertyWebSe
     }
     
     
-    // Liberty change begin
     /*
      * This test verifies that with both global and a serviceName webServiceClient configurations 
      * where the config with serviceName set to true has enableSchemaValidation set to true and the 
@@ -218,7 +217,7 @@ public class LibertyWebServiceClientInInterceptorGlobalTest extends LibertyWebSe
         assertNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 
         
     }
-    // Liberty change end
+
 
     /*
      * This test verifies that with both global and a serviceName webServiceClient configurations 

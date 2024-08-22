@@ -40,6 +40,15 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
     @Override
     public void handleMessage(Message message) throws Fault {
         boolean debug = TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
+        
+        // Skip execution of the rest when no configuration found
+        if(!WebServicesClientConfigHolder.isConfigExists())      {
+            if (debug) {
+                Tr.debug(tc, "No configuration found. Returning.");
+            }
+            return;
+        }
+        
         // Get the serviceName from the message
         String messageServiceName = message.getExchange().getService().getName().getLocalPart();
 
@@ -51,7 +60,7 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
 
         Object ignoreUnexpectedElements = null;
         
-        Object enableDefaultValidation = null; // Liberty change
+        Object enableDefaultValidation = null;
 
         // if messageServiceName != null, try to get the values from configuration using it
         if (messageServiceName != null) {
@@ -78,32 +87,28 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
                 
             }
 
-            // Liberty change begin
-            // if messageServiceName != null, try to get the values from configuration using it
-            if (messageServiceName != null) {
-                // if messageServiceName != null, try to get getEnableDefaultValidation value from configuration, if it's == null try it to get the default configuration value
-                if (WebServicesClientConfigHolder.getEnableDefaultValidation(messageServiceName) != null) {
-                    
-                    enableDefaultValidation = WebServicesClientConfigHolder.getEnableDefaultValidation(messageServiceName);
-                    
-                } else if (WebServicesClientConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) {
-                    
-                    enableDefaultValidation = WebServicesClientConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP);
-                }
+            // if messageServiceName != null, try to get getEnableDefaultValidation value from configuration, if it's == null try it to get the default configuration value
+            if (WebServicesClientConfigHolder.getEnableDefaultValidation(messageServiceName) != null) {
+
+                enableDefaultValidation = WebServicesClientConfigHolder.getEnableDefaultValidation(messageServiceName);
+
+            } else if (WebServicesClientConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) {
+
+                enableDefaultValidation = WebServicesClientConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP);
             }
-            // Liberty change end
+            
         } else {
             // if messageSevice == null then try to get the global configuration values, if its not set keep values null
             enableSchemaValidation = (WebServicesClientConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesClientConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP) : null;
 
             ignoreUnexpectedElements = (WebServicesClientConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesClientConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) : null;
             
-            enableDefaultValidation = (WebServicesClientConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesClientConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) : null; // Liberty change
+            enableDefaultValidation = (WebServicesClientConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesClientConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) : null;
 
         }
 
         
-        if ((enableSchemaValidation == null && ignoreUnexpectedElements == null && enableDefaultValidation == null)) { // Liberty change
+        if ((enableSchemaValidation == null && ignoreUnexpectedElements == null && enableDefaultValidation == null)) {
             if (debug) {
                 Tr.debug(tc, "No webServiceClient configuration found. returning.");
             }
@@ -128,7 +133,7 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
 
                 
                 if (debug) {
-                    Tr.debug(tc, "Set schema-validation-enabled to " + false + " and " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " to " + false);
+                    Tr.debug(tc, "Set schema-validation-enabled to " + false);
 
                 }
             }
@@ -171,7 +176,7 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
 
         // As long as property is non-null:
         // Enable default validation if true, or disable it along with default validation if false 
-        if (enableDefaultValidation != null) {
+        if (enableDefaultValidation != null) {// && (boolean)enableDefaultValidation == true
             // JAXB's DefaultValidationEventHandler 
             message.put(JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, enableDefaultValidation);
             

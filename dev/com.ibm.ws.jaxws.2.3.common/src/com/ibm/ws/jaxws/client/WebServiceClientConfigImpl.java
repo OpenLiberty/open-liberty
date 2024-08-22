@@ -70,12 +70,7 @@ public class WebServiceClientConfigImpl extends WebServiceConfig {
             Tr.debug(tc, "WebServiceClientConfigImpl activate - " + properties);
         }
         
-        if (properties == null) {
-            
-            if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
-                Tr.debug(tc, "properties are null returning");
-            }
-            
+        if (!WebServicesClientConfigHolder.checkConfig(properties)) {
             return;
         }
         
@@ -96,17 +91,9 @@ public class WebServiceClientConfigImpl extends WebServiceConfig {
             Tr.debug(tc, "entering modified - " + properties);
         }
         
-        if (properties == null) {
-            
-            if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
-                Tr.debug(tc, "properties are null returning");
-            }
-            
+        if (!WebServicesClientConfigHolder.checkConfig(properties)) {
             return;
         }
-        
-
-        
         // Clear existing config
         WebServicesClientConfigHolder.removeConfig(this.toString());
         
@@ -162,12 +149,11 @@ public class WebServiceClientConfigImpl extends WebServiceConfig {
                 if (!ConfigValidation.validateIgnoreUnexpectedElements((boolean) props.get(key)))
                     continue;
             }
-            // Liberty change begin
             if (key.compareTo(WebServiceConfigConstants.ENABLE_DEFAULT_VALIDATION_PROP) == 0) {
                 if (!ConfigValidation.validateEnableDefaultValidation((boolean) props.get(key)))
                     continue;
             }
-            // Liberty change end
+
             filteredProps.put(key, props.get(key));
 
         }
@@ -188,5 +174,10 @@ public class WebServiceClientConfigImpl extends WebServiceConfig {
         } else {
             return WebServiceConfigConstants.DEFAULT_PROP;
         }
+    }
+
+    // For test purposes
+    protected boolean isConfigExists() {
+        return WebServicesClientConfigHolder.isConfigExists();
     }
 }

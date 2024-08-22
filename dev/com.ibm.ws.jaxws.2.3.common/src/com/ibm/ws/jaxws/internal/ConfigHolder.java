@@ -48,6 +48,9 @@ public class ConfigHolder {
     // a cached map of search results
     // that have been processed to look up the best match for the serviceName or portName strings
     private static volatile Map<String, Map<String, Object>> resolvedConfigInfoCacheByName = new HashMap<>();
+    
+    
+    private static volatile boolean configExists = false;
 
     /**
      * add a configuration for a name (serviceName/portName). We'd like a set of hashmaps keyed by name,
@@ -146,7 +149,8 @@ public class ConfigHolder {
             
         }
     }
-    // Liberty change begin
+
+    
     /**
      * Get the value of enableDefaultValidation from all known property maps using the name (serviceName/portName) provided.
      *
@@ -175,10 +179,10 @@ public class ConfigHolder {
             
         }
     }
-    // Liberty change end
+    
 
     /**
-     * This method uses the prpvided name (serviceName/portName) to find the associated property map
+     * This method uses the provided name (serviceName/portName) to find the associated property map
      * It will first check if the configInfo map is empty, if it is then we return null because there 
      * are no known configuration properties known to this class. Then if name is null, it will see if 
      * @param name - either the portName/serviceName used to look up the property map
@@ -286,5 +290,21 @@ public class ConfigHolder {
     // Set debug = getDebugEnabled() if multiple checks are needed per method
     private static boolean getDebugEnabled() {
         return tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled();
+    }
+    
+    public static boolean checkConfig(Map<String, Object> properties) {
+        if (properties == null || properties.isEmpty()) {
+            if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+                Tr.debug(tc, "properties are null or empty returning");
+            }
+            configExists = false;
+        } else {
+            configExists = true;
+        }
+        return configExists;
+    }
+    
+    public static boolean isConfigExists() {
+        return configExists;
     }
 }
