@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,13 +14,14 @@
 package com.ibm.ws.ejbcontainer.security.jacc_fat;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 
 /**
  *
@@ -55,14 +56,17 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * ibm-ejb-jar-ext.xml method level run-as settings are processed correctly with methods of the same name and different signature.
  * The SecurityEJBM07Bean invokes the SecurityEJBRunAsExtBean methods from within its methods based on the run-as user specified.
  */
-@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
+@CheckpointTest(alwaysRun = true)
 public class EJBJarMixExtInWarEarMergeConflictXMLBindingsTest extends EJBJarMixM07ExtBase {
 
     protected static Class<?> logClass = EJBJarMixExtInWarEarMergeConflictXMLBindingsTest.class;
 
     @Rule
     public TestName name = new TestName();
+
+    @ClassRule
+    public static RepeatTests r = FATSuite.defaultAndCheckpointRepeat(Constants.SERVER_EJBJAR_MERGE_BINDINGS);
 
     @BeforeClass
     public static void setUp() throws Exception {

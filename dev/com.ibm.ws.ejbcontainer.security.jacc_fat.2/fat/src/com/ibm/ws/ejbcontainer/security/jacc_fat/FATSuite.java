@@ -18,11 +18,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.rules.repeater.CheckpointEE10Action;
+import componenttest.rules.repeater.CheckpointEE11Action;
+import componenttest.rules.repeater.CheckpointEE8Action;
+import componenttest.rules.repeater.CheckpointEE9Action;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
@@ -48,18 +51,18 @@ import componenttest.rules.repeater.RepeatTests;
                 PureAnnMergeConflictXMLBindingsTest.class, //Modified not to run the PureAnnTestBase and also removed from the lite bucket
 })
 public class FATSuite {
-    private static final Set<String> EE78_FEATURES;
+    public static final Set<String> EE78_FEATURES;
     private static final String[] EE78_FEATURES_ARRAY = {
                                                           "appSecurity-1.0",
                                                           "usr:jaccTestProvider-1.0"
     };
 
-    private static final Set<String> EE9_FEATURES;
+    public static final Set<String> EE9_FEATURES;
     private static final String[] EE9_FEATURES_ARRAY = {
                                                          "usr:jaccTestProvider-2.0"
     };
 
-    private static final Set<String> EE10_FEATURES;
+    public static final Set<String> EE10_FEATURES;
     private static final String[] EE10_FEATURES_ARRAY = {
                                                           "usr:jaccTestProvider-2.1"
     };
@@ -79,6 +82,11 @@ public class FATSuite {
     /*
      * Run EE9 tests in LITE mode if Java 8, EE10 tests in LITE mode if >= Java 11, EE11 tests in LITE mode if >= Java 17 and run all tests in FULL mode.
      */
-    @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE9Action().removeFeatures(EE78_FEATURES).addFeatures(EE9_FEATURES).conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11)).andWith(new JakartaEE10Action().removeFeatures(EE78_FEATURES).removeFeatures(EE9_FEATURES).addFeatures(EE10_FEATURES).conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17)).andWith(FeatureReplacementAction.EE11_FEATURES().removeFeatures(EE78_FEATURES).removeFeatures(EE9_FEATURES).removeFeatures(EE10_FEATURES).addFeatures(EE11_FEATURES));
+    public static RepeatTests defaultRepeat(String serverName) {
+        return RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE9Action().removeFeatures(EE78_FEATURES).addFeatures(EE9_FEATURES).conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11)).andWith(new JakartaEE10Action().removeFeatures(EE78_FEATURES).removeFeatures(EE9_FEATURES).addFeatures(EE10_FEATURES).conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17)).andWith(FeatureReplacementAction.EE11_FEATURES().removeFeatures(EE78_FEATURES).removeFeatures(EE9_FEATURES).removeFeatures(EE10_FEATURES).addFeatures(EE11_FEATURES));
+    }
+
+    public static RepeatTests defaultAndCheckpointRepeat(String serverName) {
+        return defaultRepeat(serverName).andWith(new CheckpointEE8Action().forServers(serverName).removeFeatures(EE9_FEATURES).removeFeatures(EE10_FEATURES).addFeatures(EE78_FEATURES).fullFATOnly()).andWith(new CheckpointEE9Action().forServers(serverName).removeFeatures(EE78_FEATURES).removeFeatures(EE10_FEATURES).addFeatures(EE9_FEATURES).fullFATOnly()).andWith(new CheckpointEE10Action().forServers(serverName).removeFeatures(EE78_FEATURES).removeFeatures(EE9_FEATURES).addFeatures(EE10_FEATURES).fullFATOnly()).andWith(new CheckpointEE11Action().forServers(serverName).removeFeatures(EE78_FEATURES).removeFeatures(EE9_FEATURES).addFeatures(EE10_FEATURES));
+    }
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -168,5 +168,4 @@ public class Constants {
     public static final int DEFAULT_LOG_SEARCH_TIMEOUT = 120 * 1000;
     public static final int MESSAGE_NOT_EXPECTED_LOG_SEARCH_TIMEOUT = 30 * 1000;
     public final static List<String> NO_MSGS = null;
-
 }
