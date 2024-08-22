@@ -36,7 +36,7 @@ public class TagsMergeTest {
         doc1.addTag(OASFactory.createTag().name("dog"));
         doc1.addTag(OASFactory.createTag().name("cat"));
 
-        primaryOpenAPI = TestUtil.merge(doc1);
+        primaryOpenAPI = TestUtils.current().merge(doc1);
 
         Assert.assertNotNull("Tags is null", primaryOpenAPI.getTags());
         Assert.assertEquals(3, primaryOpenAPI.getTags().size());
@@ -47,7 +47,7 @@ public class TagsMergeTest {
         doc2.addTag(OASFactory.createTag().name("users"));
         doc2.addTag(OASFactory.createTag().name("events"));
 
-        primaryOpenAPI = TestUtil.merge(doc1, doc2);
+        primaryOpenAPI = TestUtils.current().merge(doc1, doc2);
 
         Assert.assertNotNull("Tags is null", primaryOpenAPI.getTags());
         Assert.assertEquals(5, primaryOpenAPI.getTags().size());
@@ -58,23 +58,23 @@ public class TagsMergeTest {
         doc3.addTag(OASFactory.createTag().name("feed"));
         doc3.addTag(OASFactory.createTag().name("status"));
 
-        primaryOpenAPI = TestUtil.merge(doc1, doc2, doc3);
+        primaryOpenAPI = TestUtils.current().merge(doc1, doc2, doc3);
 
         Assert.assertNotNull("Tags is null", primaryOpenAPI.getTags());
         Assert.assertEquals(7, primaryOpenAPI.getTags().size());
         validateTags(primaryOpenAPI.getTags(), "common", "dog", "cat", "users", "events", "feed", "status");
 
-        primaryOpenAPI = TestUtil.merge(doc1, doc3);
+        primaryOpenAPI = TestUtils.current().merge(doc1, doc3);
         Assert.assertNotNull("Tags is null", primaryOpenAPI.getTags());
         Assert.assertEquals(5, primaryOpenAPI.getTags().size());
         validateTags(primaryOpenAPI.getTags(), "common", "dog", "cat", "feed", "status");
 
-        primaryOpenAPI = TestUtil.merge(doc3);
+        primaryOpenAPI = TestUtils.current().merge(doc3);
         Assert.assertNotNull("Tags is null", primaryOpenAPI.getTags());
         Assert.assertEquals(3, primaryOpenAPI.getTags().size());
         validateTags(primaryOpenAPI.getTags(), "common", "feed", "status");
 
-        primaryOpenAPI = TestUtil.merge();
+        primaryOpenAPI = TestUtils.current().merge();
         Assert.assertNull("Tags is not null", primaryOpenAPI.getTags());
     }
 

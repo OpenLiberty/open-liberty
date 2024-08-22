@@ -91,7 +91,7 @@ public class ComponentsMergeTest {
         Map<String, T> doc2Map = (Map<String, T>) getter.invoke(doc2.getComponents());
         Map<String, T> doc3Map = (Map<String, T>) getter.invoke(doc3.getComponents());
 
-        primaryOpenAPI = TestUtil.merge(doc1);
+        primaryOpenAPI = TestUtils.current().merge(doc1);
 
         Assert.assertNotNull(primaryOpenAPI.getComponents());
         Map<String, T> primaryOpenAPIMap = (Map<String, T>) getter.invoke(primaryOpenAPI.getComponents());
@@ -101,35 +101,35 @@ public class ComponentsMergeTest {
 
         validateMap(primaryOpenAPIMap, doc1Map);
 
-        primaryOpenAPI = TestUtil.merge(doc1, doc2);
+        primaryOpenAPI = TestUtils.current().merge(doc1, doc2);
         primaryOpenAPIMap = (Map<String, T>) getter.invoke(primaryOpenAPI.getComponents());
 
         Assert.assertNotNull(primaryOpenAPIMap);
         Assert.assertEquals(5, primaryOpenAPIMap.size());
         validateMap(primaryOpenAPIMap, doc1Map, doc2Map);
 
-        primaryOpenAPI = TestUtil.merge(doc1, doc2, doc3);
+        primaryOpenAPI = TestUtils.current().merge(doc1, doc2, doc3);
         primaryOpenAPIMap = (Map<String, T>) getter.invoke(primaryOpenAPI.getComponents());
 
         Assert.assertNotNull(primaryOpenAPIMap);
         Assert.assertEquals(7, primaryOpenAPIMap.size());
         validateMap(primaryOpenAPIMap, doc1Map, doc2Map, doc3Map);
 
-        primaryOpenAPI = TestUtil.merge(doc1, doc3);
+        primaryOpenAPI = TestUtils.current().merge(doc1, doc3);
         primaryOpenAPIMap = (Map<String, T>) getter.invoke(primaryOpenAPI.getComponents());
 
         Assert.assertNotNull(primaryOpenAPIMap);
         Assert.assertEquals(5, primaryOpenAPIMap.size());
         validateMap(primaryOpenAPIMap, doc1Map, doc3Map);
 
-        primaryOpenAPI = TestUtil.merge(doc3);
+        primaryOpenAPI = TestUtils.current().merge(doc3);
         primaryOpenAPIMap = (Map<String, T>) getter.invoke(primaryOpenAPI.getComponents());
 
         Assert.assertNotNull(primaryOpenAPIMap);
         Assert.assertEquals(3, primaryOpenAPIMap.size());
         validateMap(primaryOpenAPIMap, doc3Map);
 
-        primaryOpenAPI = TestUtil.merge();
+        primaryOpenAPI = TestUtils.current().merge();
 
         //no data in components anymore should have been set to null
         Assert.assertNull(primaryOpenAPI.getComponents());

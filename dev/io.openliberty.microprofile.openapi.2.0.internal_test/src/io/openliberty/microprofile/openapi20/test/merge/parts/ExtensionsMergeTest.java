@@ -53,18 +53,18 @@ public class ExtensionsMergeTest {
         doc3.addExtension("x-ibm-5", new HashMap<>());
         doc3.addExtension("x-ibm-6", new HashMap<>());
 
-        primaryOpenAPI = TestUtil.merge(doc1);
+        primaryOpenAPI = TestUtils.current().merge(doc1);
         validateMap(primaryOpenAPI.getExtensions(), doc1.getExtensions());
-        primaryOpenAPI = TestUtil.merge(doc1, doc2);
+        primaryOpenAPI = TestUtils.current().merge(doc1, doc2);
         validateMap(primaryOpenAPI.getExtensions(), doc1.getExtensions(), doc2.getExtensions());
-        primaryOpenAPI = TestUtil.merge(doc1, doc2, doc3);
+        primaryOpenAPI = TestUtils.current().merge(doc1, doc2, doc3);
         validateMap(primaryOpenAPI.getExtensions(), doc1.getExtensions(), doc2.getExtensions(), doc3.getExtensions());
 
-        primaryOpenAPI = TestUtil.merge(doc1, doc3);
+        primaryOpenAPI = TestUtils.current().merge(doc1, doc3);
         validateMap(primaryOpenAPI.getExtensions(), doc1.getExtensions(), doc3.getExtensions());
-        primaryOpenAPI = TestUtil.merge(doc3);
+        primaryOpenAPI = TestUtils.current().merge(doc3);
         validateMap(primaryOpenAPI.getExtensions(), doc3.getExtensions());
-        primaryOpenAPI = TestUtil.merge();
+        primaryOpenAPI = TestUtils.current().merge();
         Assert.assertNull(primaryOpenAPI.getExtensions());
     }
 

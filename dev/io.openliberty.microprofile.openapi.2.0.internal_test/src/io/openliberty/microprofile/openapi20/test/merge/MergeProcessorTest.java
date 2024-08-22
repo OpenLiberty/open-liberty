@@ -33,14 +33,12 @@ import org.junit.Test;
 import io.openliberty.microprofile.openapi20.internal.merge.ModelCopy;
 import io.openliberty.microprofile.openapi20.internal.services.MergeProcessor;
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
-import io.openliberty.microprofile.openapi20.test.merge.parts.TestUtil;
-import io.smallrye.openapi.runtime.io.Format;
-import io.smallrye.openapi.runtime.io.OpenApiParser;
-import io.smallrye.openapi.runtime.io.OpenApiSerializer;
+import io.openliberty.microprofile.openapi20.test.merge.parts.TestUtil.Format;
+import io.openliberty.microprofile.openapi20.test.merge.parts.TestUtils;
 
 public class MergeProcessorTest {
 
-    MergeProcessor mergeProcessor = TestUtil.getMergeProcessor();
+    MergeProcessor mergeProcessor = TestUtils.current().getMergeProcessor();
 
     /**
      * Test merge where context roots should be prepended to the start of paths, avoiding a clash
@@ -96,7 +94,7 @@ public class MergeProcessorTest {
         assertThat(resultProvider.getApplicationPath(), is(nullValue()));
         assertThat(resultProvider.getMergeProblems(), is(empty()));
 
-        System.out.println(OpenApiSerializer.serialize(resultProvider.getModel(), Format.YAML));
+        System.out.println(TestUtils.current().serialize(resultProvider.getModel(), Format.YAML));
 
         OpenAPI expectedModel = loadModel("component-clash-merge.yaml");
         assertModelsEqual(expectedModel, result);
@@ -115,7 +113,7 @@ public class MergeProcessorTest {
         assertThat(resultProvider.getApplicationPath(), is(nullValue()));
         assertThat(resultProvider.getMergeProblems(), is(empty()));
 
-        System.out.println(OpenApiSerializer.serialize(resultProvider.getModel(), Format.YAML));
+        System.out.println(TestUtils.current().serialize(resultProvider.getModel(), Format.YAML));
 
         OpenAPI expectedModel = loadModel("component-merging-merge.yaml");
         assertModelsEqual(expectedModel, result);
@@ -153,7 +151,7 @@ public class MergeProcessorTest {
         assertThat(resultProvider.getApplicationPath(), is(nullValue()));
         assertThat(resultProvider.getMergeProblems(), is(empty()));
 
-        System.out.println(OpenApiSerializer.serialize(result, Format.YAML));
+        System.out.println(TestUtils.current().serialize(result, Format.YAML));
 
         OpenAPI expectedModel = loadModel("operationid-clash-merged.yaml");
         assertModelsEqual(expectedModel, result);
@@ -319,7 +317,7 @@ public class MergeProcessorTest {
     private OpenAPI loadModel(String modelResource) {
         try (InputStream is = MergeProcessorTest.class.getResourceAsStream(modelResource)) {
             Assert.assertNotNull("Test file not loaded: " + modelResource, is);
-            return OpenApiParser.parse(is, Format.YAML);
+            return TestUtils.current().parse(is, Format.YAML);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

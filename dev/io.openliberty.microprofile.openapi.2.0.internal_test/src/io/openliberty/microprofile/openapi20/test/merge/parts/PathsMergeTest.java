@@ -60,7 +60,7 @@ public class PathsMergeTest {
         Paths doc2Paths = doc2.getPaths();
         Paths doc3Paths = doc3.getPaths();
 
-        primaryOpenAPI = TestUtil.merge(doc1);
+        primaryOpenAPI = TestUtils.current().merge(doc1);
         validatePaths(primaryOpenAPI.getPaths(), doc1Paths);
 
         primaryOpenAPI = mergeAndAssertClashes(doc1, doc2);
@@ -69,25 +69,25 @@ public class PathsMergeTest {
         primaryOpenAPI = mergeAndAssertClashes(doc1, doc2, doc3);
         validatePaths(primaryOpenAPI.getPaths(), doc1Paths, doc3Paths);
 
-        primaryOpenAPI = TestUtil.merge(doc1, doc3);
+        primaryOpenAPI = TestUtils.current().merge(doc1, doc3);
         validatePaths(primaryOpenAPI.getPaths(), doc1Paths, doc3Paths);
 
-        primaryOpenAPI = TestUtil.merge(doc3);
+        primaryOpenAPI = TestUtils.current().merge(doc3);
         validatePaths(primaryOpenAPI.getPaths(), doc3Paths);
 
-        primaryOpenAPI = TestUtil.merge(doc2, doc3);
+        primaryOpenAPI = TestUtils.current().merge(doc2, doc3);
         validatePaths(primaryOpenAPI.getPaths(), doc2Paths, doc3Paths);
 
-        primaryOpenAPI = TestUtil.merge();
+        primaryOpenAPI = TestUtils.current().merge();
         Assert.assertNull(primaryOpenAPI.getPaths());
 
     }
 
     private OpenAPI mergeAndAssertClashes(OpenAPI... docs) {
         List<OpenAPIProvider> providers = Arrays.stream(docs)
-                                                .map(TestUtil::createProvider)
+                                                .map(TestUtils.current()::createProvider)
                                                 .collect(Collectors.toList());
-        OpenAPIProvider result = TestUtil.getMergeProcessor().mergeDocuments(providers);
+        OpenAPIProvider result = TestUtils.current().getMergeProcessor().mergeDocuments(providers);
 
         assertThat(result.getMergeProblems(), is(not(empty())));
 
