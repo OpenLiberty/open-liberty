@@ -61,7 +61,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  * Basic test using a kafka broker with TLS enabled
  */
 @RunWith(FATRunner.class)
-@MaximumJavaLevel(javaLevel = 21)
+@MaximumJavaLevel(javaLevel = 22)
 @CheckpointTest
 public class CheckpointKafkaSaslPlainTest {
 
