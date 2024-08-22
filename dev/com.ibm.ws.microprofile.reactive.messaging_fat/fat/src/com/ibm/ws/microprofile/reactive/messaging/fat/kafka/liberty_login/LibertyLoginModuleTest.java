@@ -49,7 +49,7 @@ import componenttest.topology.impl.LibertyServer;
  * Test the login module with an aes encoded password and configured encryption key
  */
 @RunWith(FATRunner.class)
-@MaximumJavaLevel(javaLevel = 21)
+@MaximumJavaLevel(javaLevel = 22)
 public class LibertyLoginModuleTest {
 
     private static final String APP_NAME = "kafkaLoginModuleTest";
