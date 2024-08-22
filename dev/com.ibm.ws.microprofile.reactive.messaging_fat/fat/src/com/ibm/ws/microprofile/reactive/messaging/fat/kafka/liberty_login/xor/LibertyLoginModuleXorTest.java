@@ -49,7 +49,7 @@ import componenttest.topology.impl.LibertyServer;
  * Test the login module with xor encoded password
  */
 @RunWith(FATRunner.class)
-@MaximumJavaLevel(javaLevel = 21)
+@MaximumJavaLevel(javaLevel = 22)
 @Mode(TestMode.FULL)
 public class LibertyLoginModuleXorTest {
 
