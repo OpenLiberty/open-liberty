@@ -2273,23 +2273,25 @@ public class QueryInfo {
                                                             " clause and instead use the " + "OrderBy" +
                                                             " annotation to specify static sort criteria."); // TODO NLS
 
-                if (where0 + whereLen != length)
-                    throw new UnsupportedOperationException("The " + ql + " query that is supplied to the " + method.getName() +
-                                                            " method of the " + method.getDeclaringClass().getName() +
-                                                            " repository must end in a WHERE clause because" +
-                                                            " the method returns a " + "CursoredPage" + ". There WHERE clause" +
-                                                            " ends at position " + (where0 + whereLen) + " but the length of the" +
-                                                            " query is " + length + "."); // TODO NLS
+                if (whereLen > 0) {
+                    if (where0 + whereLen != length)
+                        throw new UnsupportedOperationException("The " + ql + " query that is supplied to the " + method.getName() +
+                                                                " method of the " + method.getDeclaringClass().getName() +
+                                                                " repository must end in a WHERE clause because" +
+                                                                " the method returns a " + "CursoredPage" + ". There WHERE clause" +
+                                                                " ends at position " + (where0 + whereLen) + " but the length of the" +
+                                                                " query is " + length + "."); // TODO NLS
 
-                // Enclose the WHERE clause in parenthesis so that conditions can be appended.
-                boolean addSpace = ql.charAt(where0) != ' ';
-                ql = new StringBuilder(ql.length() + 2) //
-                                .append(ql.substring(0, where0)) //
-                                .append(" (") //
-                                .append(ql.substring(where0 + (addSpace ? 0 : 1), where0 + whereLen)) //
-                                .append(")") //
-                                .toString();
-                whereLen += 2 + (addSpace ? 1 : 0);
+                    // Enclose the WHERE clause in parenthesis so that conditions can be appended.
+                    boolean addSpace = ql.charAt(where0) != ' ';
+                    ql = new StringBuilder(ql.length() + 2) //
+                                    .append(ql.substring(0, where0)) //
+                                    .append(" (") //
+                                    .append(ql.substring(where0 + (addSpace ? 0 : 1), where0 + whereLen)) //
+                                    .append(")") //
+                                    .toString();
+                    whereLen += 2 + (addSpace ? 1 : 0);
+                }
             }
 
             StringBuilder q;
@@ -2331,6 +2333,8 @@ public class QueryInfo {
             }
 
             if (whereLen > 0)
+                // TODO once fixed, test #28931 by adding: && !"this.".equalsIgnoreCase(entityVar_)
+                // and running DataJPATestServlet.testCountQueryWithFromAndWhereClausesOnly
                 if (insertEntityVar) {
                     q.append("WHERE");
                     appendWithIdentifierName(ql, where0, where0 + whereLen, entityVar_, q);

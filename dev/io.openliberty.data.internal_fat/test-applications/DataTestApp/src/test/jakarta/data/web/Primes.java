@@ -51,6 +51,15 @@ import jakarta.enterprise.concurrent.Asynchronous;
  */
 @Repository
 public interface Primes {
+    @Find
+    CursoredPage<Prime> all(Order<Prime> sorts, PageRequest req);
+
+    @Query("")
+    CursoredPage<Prime> all(PageRequest req, Order<Prime> sorts);
+
+    @Query("FROM Prime")
+    CursoredPage<Prime> all(PageRequest req, Sort<?>... sorts);
+
     @Query("SELECT (num.name) FROM Prime As num")
     Page<String> all(Sort<Prime> sort, PageRequest pagination);
 
