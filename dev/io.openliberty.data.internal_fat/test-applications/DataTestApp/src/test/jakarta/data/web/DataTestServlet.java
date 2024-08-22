@@ -19,6 +19,7 @@ import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -3064,6 +3065,22 @@ public class DataTestServlet extends FATServlet {
         } catch (NoSuchElementException x) {
             // expected
         }
+    }
+
+    @Test
+    public void testFetchTypeDefault() {
+        ratings.clear();
+
+        Rating.Reviewer user1 = new Rating.Reviewer("Rex", "TestRecordWithEmbeddables", "rex@openliberty.io");
+        Rating.Item toaster = new Rating.Item("toaster", 28.98f);
+        Set<String> comments = Set.of("Burns everything.", "Often gets stuck.", "Bagels don't fit.");
+
+        ratings.add(new Rating(1000, toaster, 2, user1, comments));
+
+        Rating user1Rating = ratings.get(1000).orElseThrow();
+
+        assertFalse("Expected comments to be populated when using default fetch type lazy", user1Rating.comments().isEmpty());
+        assertTrue("Expected comments to be populated when using default fetch type lazy", user1Rating.comments().containsAll(comments));
     }
 
     /**

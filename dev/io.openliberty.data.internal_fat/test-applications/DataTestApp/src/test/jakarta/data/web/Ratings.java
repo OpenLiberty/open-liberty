@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -35,6 +36,9 @@ public interface Ratings {
 
     @Delete
     long clear();
+
+    @Find
+    Optional<Rating> get(int id);
 
     Stream<Rating> findByCommentsContainsOrderByIdDesc(String comment);
 
