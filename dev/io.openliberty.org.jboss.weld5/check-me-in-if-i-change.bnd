@@ -133,7 +133,6 @@ Export-Package: \
 # Automatically filled in by build.gradle
 Import-Package: \
  javax.security.auth,\
- jakarta.xml.ws;version="[4.0,5)",\
  jakarta.annotation,\
  jakarta.ejb;resolution:=optional,\
  jakarta.el;resolution:=optional,\

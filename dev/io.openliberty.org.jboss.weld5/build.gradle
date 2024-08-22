@@ -36,7 +36,6 @@ def additionalExports = """\
 
 def additionalImports = """\
  javax.security.auth,\\\\
- jakarta.xml.ws;version="[4.0,5)",\\\\
 """
 
 // Key is a property, value is an addition.
