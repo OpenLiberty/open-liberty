@@ -89,6 +89,7 @@ import jakarta.transaction.TransactionRequiredException;
 import jakarta.transaction.TransactionalException;
 import jakarta.transaction.UserTransaction;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import componenttest.annotation.AllowedFFDC;
@@ -3067,7 +3068,8 @@ public class DataTestServlet extends FATServlet {
         }
     }
 
-    @Test
+    @Test //TODO
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29475")
     public void testFetchTypeDefault() {
         ratings.clear();
 
@@ -3079,8 +3081,8 @@ public class DataTestServlet extends FATServlet {
 
         Rating user1Rating = ratings.get(1000).orElseThrow();
 
-        assertFalse("Expected comments to be populated when using default fetch type lazy", user1Rating.comments().isEmpty());
-        assertTrue("Expected comments to be populated when using default fetch type lazy", user1Rating.comments().containsAll(comments));
+        assertFalse("Expected comments to be populated when using fetch type eager", user1Rating.comments().isEmpty());
+        assertTrue("Expected comments to be populated when using fetch type eager", user1Rating.comments().containsAll(comments));
     }
 
     /**

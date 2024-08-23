@@ -1710,11 +1710,11 @@ public class DataJPATestServlet extends FATServlet {
         // Outside of transaction, returned entity should be detached
         Mobile johnsMobile = mobilePhones.findById(id).orElseThrow();
 
-        // Fetch type Lazy should be populated when accessing apps field
+        // Fetch type lazy should be populated when accessing apps field
         assertFalse("Expected apps to be populated when using fetch type lazy", johnsMobile.apps.isEmpty());
         assertTrue("Entity apps did not match expected apps", johnsMobile.apps.containsAll(apps));
 
-        // Fetch type eager should be pre-populated
+        // Fetch type eager emails field should be pre-populated
         assertFalse("Expected emails to be populated when using fetch type eager", johnsMobile.emails.isEmpty());
         assertTrue("Entity emails did not match expected apps", johnsMobile.emails.containsAll(emails));
 
