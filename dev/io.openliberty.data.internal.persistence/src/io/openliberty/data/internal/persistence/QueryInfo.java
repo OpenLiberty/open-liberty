@@ -302,7 +302,23 @@ public class QueryInfo {
      *                              <code>CompletionStage&lt;Product[]&gt; findByNameIgnoreCaseLike(String namePattern)</code>
      *                              which resolves to { CompletionStage.class, Product[].class, Product.class }
      */
+    @Trivial
     public QueryInfo(Method method, Class<?> entityParamType, Class<?> returnArrayType, List<Class<?>> returnTypeAtDepth) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled()) {
+            StringBuilder b = new StringBuilder(200) //
+                            .append(method.getGenericReturnType().getTypeName()).append(' ') //
+                            .append(method.getDeclaringClass().getName()).append('.') //
+                            .append(method.getName());
+            boolean first = true;
+            for (java.lang.reflect.Type p : method.getGenericParameterTypes()) {
+                b.append(first ? "(" : ", ").append(p.getTypeName());
+                first = false;
+            }
+            b.append(first ? "()" : ")");
+            Tr.entry(this, tc, "<init>", b.toString(), entityParamType, returnArrayType, returnTypeAtDepth);
+        }
+
         this.method = method;
         this.entityParamType = entityParamType;
         this.returnArrayType = returnArrayType;
@@ -346,11 +362,11 @@ public class QueryInfo {
 
         singleType = type;
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "result type information",
-                     "isOptional? " + isOptional,
-                     "multiType:  " + multiType,
-                     "singleType: " + singleType);
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "<init>", new Object[] { this,
+                                                       "result isOptional? " + isOptional,
+                                                       "result multiType:  " + multiType,
+                                                       "result singleType: " + singleType });
     }
 
     /**
@@ -1805,7 +1821,8 @@ public class QueryInfo {
                     throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
                                                             repository.repositoryInterface.getName() +
                                                             " repository interface cannot use the " +
-                                                            method.getReturnType().getName() + " return type for a delete operation.");
+                                                            method.getGenericReturnType().getTypeName() +
+                                                            " return type for a delete operation.");
                 }
             }
 
@@ -2540,8 +2557,8 @@ public class QueryInfo {
             if (method.getParameterCount() > 0)
                 generateQueryByParameters(q, methodTypeAnno, countPages);
         } else {
-            // TODO should be unreachable
-            throw new UnsupportedOperationException("Unexpected annotation " + methodTypeAnno + " for parameter-based query.");
+            // unreachable
+            throw new IllegalArgumentException(methodTypeAnno.toString());
         }
 
         if (trace && tc.isEntryEnabled())
@@ -2998,8 +3015,10 @@ public class QueryInfo {
     @Override
     @Trivial
     public String toString() {
-        StringBuilder b = new StringBuilder("QueryInfo@").append(Integer.toHexString(hashCode())) //
-                        .append(' ').append(method.getReturnType().getSimpleName()).append(' ').append(method.getName());
+        StringBuilder b = new StringBuilder("QueryInfo@") //
+                        .append(Integer.toHexString(hashCode())).append(' ') //
+                        .append(method.getGenericReturnType().getTypeName()).append(' ') //
+                        .append(method.getName());
         boolean first = true;
         for (Class<?> p : method.getParameterTypes()) {
             b.append(first ? "(" : ", ").append(p.getSimpleName());
@@ -3115,7 +3134,7 @@ public class QueryInfo {
         q.jpqlAfterCursor = jpqlAfterCursor;
         q.jpqlBeforeCursor = jpqlBeforeCursor;
         q.jpqlCount = jpqlCount;
-        q.jpqlDelete = jpqlDelete; // TODO jpqlCount and jpqlDelete could potentially be combined because you will never need both at once
+        q.jpqlDelete = jpqlDelete;
         q.maxResults = maxResults;
         q.paramCount = paramCount;
         q.paramAddedCount = paramAddedCount;
