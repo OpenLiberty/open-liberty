@@ -1712,11 +1712,11 @@ public class DataJPATestServlet extends FATServlet {
 
         // Fetch type lazy should be populated when accessing apps field
         assertFalse("Expected apps to be populated when using fetch type lazy", johnsMobile.apps.isEmpty());
-        assertTrue("Entity apps did not match expected apps", johnsMobile.apps.containsAll(apps));
+        assertEquals("Entity apps did not match expected apps", apps, johnsMobile.apps);
 
         // Fetch type eager emails field should be pre-populated
         assertFalse("Expected emails to be populated when using fetch type eager", johnsMobile.emails.isEmpty());
-        assertTrue("Entity emails did not match expected apps", johnsMobile.emails.containsAll(emails));
+        assertEquals("Entity emails did not match expected apps", emails, johnsMobile.emails);
 
     }
 
