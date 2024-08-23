@@ -3082,7 +3082,7 @@ public class DataTestServlet extends FATServlet {
         Rating user1Rating = ratings.get(1000).orElseThrow();
 
         assertFalse("Expected comments to be populated when using fetch type eager", user1Rating.comments().isEmpty());
-        assertTrue("Expected comments to be populated when using fetch type eager", user1Rating.comments().containsAll(comments));
+        assertEquals("Expected comments to be populated when using fetch type eager", comments, user1Rating.comments());
     }
 
     /**
