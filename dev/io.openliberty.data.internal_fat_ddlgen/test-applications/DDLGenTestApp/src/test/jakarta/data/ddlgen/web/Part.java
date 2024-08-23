@@ -28,7 +28,7 @@ public record Part(Identifier id, String name, float price, int version) {
 
     /**
      * Composite id for the Part entity.
-     * TODO switch to a record once #29117 is fixed
+     * TODO switch to a record once #29460 is fixed
      */
     public static class Identifier {
         public String partNum;

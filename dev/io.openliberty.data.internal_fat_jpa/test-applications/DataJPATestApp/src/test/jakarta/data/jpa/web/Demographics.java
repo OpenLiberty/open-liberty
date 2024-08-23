@@ -94,7 +94,7 @@ public interface Demographics {
     @Query("SELECT this.publicDebt / this.numFullTimeWorkers" +
            "  FROM DemographicInfo" +
            " WHERE EXTRACT (YEAR FROM this.collectedOn) = ?1")
-    // TODO once #28912 is fixed:
+    // TODO once #29457 is fixed:
     //@Query("SELECT publicDebt / numFullTimeWorkers" +
     //       "  FROM DemographicInfo" +
     //       " WHERE EXTRACT (YEAR FROM collectedOn) = ?1")
