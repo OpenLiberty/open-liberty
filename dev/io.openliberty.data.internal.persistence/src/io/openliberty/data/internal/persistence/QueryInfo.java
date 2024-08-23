@@ -1202,10 +1202,17 @@ public class QueryInfo {
         if (type == Type.FIND_AND_DELETE && !(singleType.isAssignableFrom(wrapperClassIfPrimitive(entityInfo.idType)) ||
                                               singleType.isAssignableFrom(entityInfo.entityClass) ||
                                               (entityInfo.recordClass != null && singleType.isAssignableFrom(entityInfo.recordClass)))) {
-            throw new MappingException("Results for find-and-delete repository queries must be the entity class (" +
+            throw new MappingException("The " + method.getGenericReturnType().getTypeName() +
+                                       " type cannot be used as a return type for the " +
+                                       method.getName() + " method of the " +
+                                       method.getDeclaringClass().getName() +
+                                       " repository inteface. The return type can be" +
+                                       " void to return no value, long or int for a deletion count," +
+                                       " boolean to indicate whether any entities were deleted," +
+                                       " or an array, Collection, or Optional of either the " +
                                        (entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName() +
-                                       ") or the id class (" + entityInfo.idType +
-                                       "), not the " + singleType.getName() + " class."); // TODO NLS
+                                       " entity class or the " + entityInfo.idType.getName() +
+                                       " Id class to return the deleted entities or entity Ids."); // TODO NLS
         }
 
         if (cols == null || cols.length == 0) {
@@ -1724,7 +1731,7 @@ public class QueryInfo {
      * @param repository  repository implementation.
      * @return information about the query.
      */
-    @FFDCIgnore(Throwable.class) // TODO look into these failures and decide if FFDC should be enabled
+    @FFDCIgnore(Throwable.class) // report invalid repository methods as errors instead
     @Trivial
     QueryInfo init(Map<String, CompletableFuture<EntityInfo>> entityInfos, RepositoryImpl<?> repository) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -1909,6 +1916,12 @@ public class QueryInfo {
         } catch (Throwable x) {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "init", x);
+            System.err.println("The " + method.getName() + " method of the " +
+                               method.getDeclaringClass().getName() +
+                               " repository interface encountered an error" +
+                               " and might not be a valid repository method." +
+                               " Refer to the cause exception: "); // TODO NLS
+            x.printStackTrace(); // TODO Tr.error instead
             throw x;
         }
 
@@ -2568,10 +2581,17 @@ public class QueryInfo {
                 && !type.equals(entityInfo.recordClass)
                 && !type.equals(Object.class)
                 && !wrapperClassIfPrimitive(singleType).equals(wrapperClassIfPrimitive(entityInfo.idType)))
-                throw new MappingException("Results for find-and-delete repository queries must be the entity class (" +
+                throw new MappingException("The " + method.getGenericReturnType().getTypeName() +
+                                           " type cannot be used as a return type for the " +
+                                           method.getName() + " method of the " +
+                                           method.getDeclaringClass().getName() +
+                                           " repository inteface. The return type can be" +
+                                           " void to return no value, long or int for a deletion count," +
+                                           " boolean to indicate whether any entities were deleted," +
+                                           " or an array, Collection, or Optional of either the " +
                                            (entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName() +
-                                           ") or the id class (" + entityInfo.idType +
-                                           "), not the " + method.getGenericReturnType() + " class."); // TODO NLS
+                                           " entity class or the " + entityInfo.idType.getName() +
+                                           " Id class to return the deleted entities or entity Ids."); // TODO NLS
         }
 
         return isFindAndDelete;
