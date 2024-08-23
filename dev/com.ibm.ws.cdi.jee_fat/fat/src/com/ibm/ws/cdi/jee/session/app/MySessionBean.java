@@ -19,6 +19,7 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -35,9 +36,8 @@ public class MySessionBean implements Serializable {
     @Inject
     private HttpServletRequest request;
 
-//    Removed until #29434 is fixed
-//    @Inject
-//    private ServletContext context;
+    @Inject
+    private ServletContext context;
 
     @Inject
     private BeanManager beanManager;
@@ -66,7 +66,7 @@ public class MySessionBean implements Serializable {
         // Just call a method on each bean to make sure it's really there
         session.getId();
         request.getServletPath();
-//      context.getContextPath(); //#29434
+        context.getContextPath();
         beanManager.isScope(RequestScoped.class);
         bean.getBeanClass();
         conversation.getId();
