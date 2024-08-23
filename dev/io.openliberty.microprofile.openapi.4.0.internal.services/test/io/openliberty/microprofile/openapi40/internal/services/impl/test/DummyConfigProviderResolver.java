@@ -20,6 +20,9 @@ import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.eclipse.microprofile.config.spi.Converter;
 
+/**
+ * A ConfigProviderResolver to satisfy the dependency on MP Config during unit tests.
+ */
 public class DummyConfigProviderResolver extends ConfigProviderResolver {
 
     @Override
