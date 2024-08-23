@@ -3073,7 +3073,7 @@ public class DataTestServlet extends FATServlet {
     public void testFetchTypeDefault() {
         ratings.clear();
 
-        Rating.Reviewer user1 = new Rating.Reviewer("Rex", "TestRecordWithEmbeddables", "rex@openliberty.io");
+        Rating.Reviewer user1 = new Rating.Reviewer("Rex", "TestFetchTypeDefault", "rex@openliberty.io");
         Rating.Item toaster = new Rating.Item("toaster", 28.98f);
         Set<String> comments = Set.of("Burns everything.", "Often gets stuck.", "Bagels don't fit.");
 
