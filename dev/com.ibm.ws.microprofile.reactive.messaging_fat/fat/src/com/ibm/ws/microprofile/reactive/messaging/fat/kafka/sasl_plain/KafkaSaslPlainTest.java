@@ -16,6 +16,7 @@ import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaU
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaStopServer;
 
+import componenttest.annotation.MaximumJavaLevel;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -45,6 +46,7 @@ import componenttest.topology.impl.LibertyServer;
  * Basic test using a kafka broker with TLS enabled
  */
 @RunWith(FATRunner.class)
+@MaximumJavaLevel(javaLevel = 22)
 public class KafkaSaslPlainTest {
 
     private static final String APP_NAME = "kafkaSaslTest";

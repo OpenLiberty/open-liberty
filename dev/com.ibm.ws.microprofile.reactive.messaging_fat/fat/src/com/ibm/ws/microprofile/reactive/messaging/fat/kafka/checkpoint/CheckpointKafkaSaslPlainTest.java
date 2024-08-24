@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import componenttest.annotation.MaximumJavaLevel;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -60,6 +61,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  * Basic test using a kafka broker with TLS enabled
  */
 @RunWith(FATRunner.class)
+@MaximumJavaLevel(javaLevel = 22)
 @CheckpointTest
 public class CheckpointKafkaSaslPlainTest {
 
