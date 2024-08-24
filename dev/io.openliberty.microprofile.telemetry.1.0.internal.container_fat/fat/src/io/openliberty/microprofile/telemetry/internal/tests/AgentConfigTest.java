@@ -37,6 +37,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
@@ -65,6 +66,7 @@ import io.openliberty.microprofile.telemetry.internal.utils.TestUtils;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
 import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.connectivity.ConnectionErrorWatcher.ConnectionErrorsRule;
 
 /**
  * Test all the ways the agent can be configured
@@ -86,6 +88,9 @@ public class AgentConfigTest {
 
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(jaegerContainer).around(repeat);
+
+    @Rule
+    public static ConnectionErrorsRule ignoreConnectivityFailures = FATSuite.connectionWatcher.ignoreConnectivityFailures(server);
 
     public static JaegerQueryClient client;
 
@@ -129,6 +134,7 @@ public class AgentConfigTest {
 
     @After
     public void ensureStopped() throws Exception {
+        ignoreConnectivityFailures.checkForConnectivityErrors();
         server.stopServer();
     }
 
@@ -237,7 +243,7 @@ public class AgentConfigTest {
      * Skipping for 1.4 and 4.1 as JavaAgent 1.29 currently will not return a span for methods annotated with @withSpan
      * (https://github.com/open-telemetry/opentelemetry-java-instrumentation/issues/10159)
      */
-    @SkipForRepeat({ TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID, TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID})
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID, TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID })
     public void testEnableSpecificInstrumentation() throws Exception {
         // Enable only @WithSpan instrumentation
         server.addEnvVar("OTEL_INSTRUMENTATION_COMMON_DEFAULT_ENABLED", "false");

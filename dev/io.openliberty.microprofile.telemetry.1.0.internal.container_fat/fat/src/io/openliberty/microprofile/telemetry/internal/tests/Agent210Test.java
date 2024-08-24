@@ -41,8 +41,10 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -88,6 +90,9 @@ public class Agent210Test {
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(repeat).around(jaegerContainer);
 
+    @Rule
+    public TestRule ignoreConnectionErrors = FATSuite.connectionWatcher.ignoreConnectivityFailures(server);
+
     private static JaegerQueryClient client;
     private static Set<String> traceIdsUsed;
 
@@ -103,9 +108,9 @@ public class Agent210Test {
         //The default OTLP protocol has been changed from grpc to http/protobuf in the Java Agent v2.1.0
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_PROTOCOL, "grpc");
 
-        server.addEnvVar("OTEL_INSTRUMENTATION_COMMON_EXPERIMENTAL_CONTROLLER_TELEMETRY_ENABLED","true"); //otel.instrumentation.common.experimental.controller-telemetry.enabled=true)
+        server.addEnvVar("OTEL_INSTRUMENTATION_COMMON_EXPERIMENTAL_CONTROLLER_TELEMETRY_ENABLED", "true"); //otel.instrumentation.common.experimental.controller-telemetry.enabled=true)
 
-        server.addEnvVar("OTEL_INSTRUMENTATION_COMMON_EXPERIMENTAL_VIEW_TELEMETRY_ENABLED","true"); //otel.instrumentation.common.experimental.controller-telemetry.enabled=true)
+        server.addEnvVar("OTEL_INSTRUMENTATION_COMMON_EXPERIMENTAL_VIEW_TELEMETRY_ENABLED", "true"); //otel.instrumentation.common.experimental.controller-telemetry.enabled=true)
 
         server.addEnvVar("OTEL_METRICS_EXPORTER", "none"); //TO DO: TEST METRICS
         server.addEnvVar("OTEL_LOGS_EXPORTER", "none");
