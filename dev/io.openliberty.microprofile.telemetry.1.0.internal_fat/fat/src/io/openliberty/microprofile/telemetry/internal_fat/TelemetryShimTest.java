@@ -36,6 +36,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.shim.OpenTracingShimServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.shim.TracedBean;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 /**
  * Test use of the Open Telemetry Autoconfigure Trace SPIs: https://www.javadoc.io/doc/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/latest/index.html
@@ -53,7 +54,7 @@ public class TelemetryShimTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
+    public static RepeatTests r = TelemetryActions.allMPRepeats(SERVER_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {

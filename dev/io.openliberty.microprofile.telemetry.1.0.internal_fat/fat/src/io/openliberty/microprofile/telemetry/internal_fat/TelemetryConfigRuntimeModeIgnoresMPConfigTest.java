@@ -32,6 +32,7 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.LoggingServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 /**
  * This test verifies that a property set in META-INF/microprofile-config.properties
@@ -52,7 +53,7 @@ public class TelemetryConfigRuntimeModeIgnoresMPConfigTest extends FATServletCli
 
     //This test will break in app mode, which is the only mode before OTel 2.0
     @ClassRule
-    public static RepeatTests r = FATSuite.allMPRepeatsWithMPTel20OrLater(SERVER_NAME);
+    public static RepeatTests r = TelemetryActions.telemetry20Repeats(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {

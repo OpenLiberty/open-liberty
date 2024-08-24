@@ -123,4 +123,38 @@ public class TelemetryActions {
         return RepeatActions.repeat(server, otherFeatureSetsTestMode, ALL_MPTEL_SETS_LIST, firstFeatureSet, Arrays.asList(otherFeatureSets));
     }
 
+    public static RepeatTests telemetry10and11Repeats(String serverName) {
+        return repeat(serverName, MicroProfileActions.MP61, MP14_MPTEL11, MP41_MPTEL11, MP50_MPTEL11,
+                      MicroProfileActions.MP60);
+    }
+
+    public static RepeatTests telemetry20Repeats(String serverName) {
+        return repeat(serverName, MicroProfileActions.MP70_EE11, MP14_MPTEL20, MP41_MPTEL20, MP50_MPTEL20,
+                      MP50_MPTEL20_JAVA8, MicroProfileActions.MP70_EE10);
+    }
+
+    public static RepeatTests telemetry20Repeats() {
+        return telemetry20Repeats(FeatureReplacementAction.ALL_SERVERS);
+    }
+
+    public static RepeatTests telemetry11Repeats(String serverName) {
+        return repeat(serverName, MP14_MPTEL11, MP41_MPTEL11, MP50_MPTEL11, MicroProfileActions.MP61);
+    }
+
+    public static RepeatTests mp60Repeat(String serverName) {
+        return repeat(serverName, MicroProfileActions.MP60);
+    }
+
+    public static RepeatTests allMPRepeats(String serverName) {
+        return repeat(serverName,
+                      MicroProfileActions.MP70_EE11,
+                      MicroProfileActions.MP60,
+                      MP14_MPTEL11,
+                      MP41_MPTEL11,
+                      MP50_MPTEL11,
+                      MicroProfileActions.MP61, MP14_MPTEL20, MP41_MPTEL20, MP50_MPTEL20,
+                      MP50_MPTEL20_JAVA8,
+                      MicroProfileActions.MP70_EE10);
+    }
+
 }

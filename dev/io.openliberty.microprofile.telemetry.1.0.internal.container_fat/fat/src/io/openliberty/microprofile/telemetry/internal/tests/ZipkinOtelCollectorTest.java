@@ -52,7 +52,6 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
-import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.otelCollector.OtelCollectorContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinContainer;
@@ -84,7 +83,7 @@ public class ZipkinOtelCollectorTest {
                                                                                                                                                                    .withNetworkAliases("otel-collector-zipkin")
                                                                                                                                                                    .withLogConsumer(new SimpleLogConsumer(ZipkinOtelCollectorTest.class,
                                                                                                                                                                                                           "otelCol"));
-    public static RepeatTests repeat = FATSuite.allMPRepeats(SERVER_NAME);
+    public static RepeatTests repeat = TelemetryActions.allMPRepeats(SERVER_NAME);
 
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(network)

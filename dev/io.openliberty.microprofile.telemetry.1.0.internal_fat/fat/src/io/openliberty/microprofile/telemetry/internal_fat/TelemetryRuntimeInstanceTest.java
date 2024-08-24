@@ -35,6 +35,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.Runtime
 import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporterProvider;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 import io.openliberty.microprofile.telemetry.internal_fat.shared.spans.AbstractSpanMatcher;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
 
@@ -51,7 +52,7 @@ public class TelemetryRuntimeInstanceTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = FATSuite.allMPRepeatsWithMPTel20OrLater(SERVER_NAME);
+    public static RepeatTests r = TelemetryActions.telemetry20Repeats(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {

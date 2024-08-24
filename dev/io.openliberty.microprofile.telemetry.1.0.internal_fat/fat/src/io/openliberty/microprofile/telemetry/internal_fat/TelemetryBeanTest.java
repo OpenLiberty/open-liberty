@@ -34,6 +34,7 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.bean.TelemetryBeanTestServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @RunWith(FATRunner.class)
 public class TelemetryBeanTest extends FATServletClient {
@@ -48,7 +49,7 @@ public class TelemetryBeanTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
+    public static RepeatTests r = TelemetryActions.allMPRepeats(SERVER_NAME);
     
     @BeforeClass
     public static void setUp() throws Exception {

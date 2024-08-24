@@ -63,7 +63,7 @@ public class TelemetryMisconfigTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
+    public static RepeatTests r = TelemetryActions.allMPRepeats(SERVER_NAME);
 
     private static WebArchive invalidExporterApp = null;
     private static WebArchive invalidJaegerEndpointApp = null;
