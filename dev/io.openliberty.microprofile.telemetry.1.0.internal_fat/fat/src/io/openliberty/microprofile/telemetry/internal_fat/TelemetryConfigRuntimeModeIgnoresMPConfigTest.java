@@ -51,7 +51,7 @@ public class TelemetryConfigRuntimeModeIgnoresMPConfigTest extends FATServletCli
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    //This test will break in app mode, which is the only mode before OTel 2.0
+    //This test is for the runtime mode, introduced in OTel 2.0
     @ClassRule
     public static RepeatTests r = TelemetryActions.telemetry20Repeats(SERVER_NAME);
 

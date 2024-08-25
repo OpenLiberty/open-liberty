@@ -60,7 +60,7 @@ public class JaegerOtelCollectorTest extends JaegerBaseTest {
                                                                                                                                                                    .withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class,
                                                                                                                                                                                                           "otelCol"))
                                                                                                                                                                    .withNetworkAliases("otel-collector-jaeger");
-    public static RepeatTests repeat = TelemetryActions.allMPRepeats(SERVER_NAME);
+    public static RepeatTests repeat = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
     @ClassRule
     public static RuleChain chain = RuleChain

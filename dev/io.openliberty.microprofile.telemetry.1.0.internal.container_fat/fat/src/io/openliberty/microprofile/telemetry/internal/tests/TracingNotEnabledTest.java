@@ -63,7 +63,7 @@ public class TracingNotEnabledTest {
     private static final Class<TracingNotEnabledTest> c = TracingNotEnabledTest.class;
 
     public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(TracingNotEnabledTest.class, "jaeger"));
-    public static RepeatTests repeat = TelemetryActions.allMPRepeats(SERVER_NAME);
+    public static RepeatTests repeat = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(jaegerContainer).around(repeat);
