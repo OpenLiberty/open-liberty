@@ -192,13 +192,18 @@ public class FATRunner extends BlockJUnit4ClassRunner {
         Statement statement = new Statement() {
             @Override
             public void evaluate() throws Throwable {
+                String m = "evaluate";
+
                 if (!RepeatTestFilter.shouldRun(method)) {
                     throw new AssumptionViolatedException("Test skipped for current RepeatAction");
                 }
                 Map<String, Long> tmpDirFilesBeforeTest = createDirectorySnapshot("/tmp");
                 try {
-                    Log.info(c, "evaluate", "entering " + getTestClass().getName() + "." + method.getName());
-
+                    Log.info(c, m, "***********************************");
+                    Log.info(c, m, "");
+                    Log.info(c, m, "entering " + getTestClass().getName() + "." + method.getName());
+                    Log.info(c, m, "");
+                    Log.info(c, m, "***********************************");
                     Map<String, FFDCInfo> ffdcBeforeTest = retrieveFFDCCounts();
 
                     superStatement.evaluate();
@@ -306,7 +311,11 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                 } finally {
                     Map<String, Long> tmpDirFilesAfterTest = createDirectorySnapshot("/tmp");
                     compareDirectorySnapshots("/tmp", tmpDirFilesBeforeTest, tmpDirFilesAfterTest);
-                    Log.info(c, "evaluate", "exiting " + getTestClass().getName() + "." + method.getName());
+                    Log.info(c, m, "***********************************");
+                    Log.info(c, m, "");
+                    Log.info(c, m, "exiting " + getTestClass().getName() + "." + method.getName());
+                    Log.info(c, m, "");
+                    Log.info(c, m, "***********************************");
                 }
             }
 
