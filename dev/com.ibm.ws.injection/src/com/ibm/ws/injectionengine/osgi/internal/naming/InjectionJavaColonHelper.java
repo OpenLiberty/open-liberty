@@ -157,7 +157,7 @@ public class InjectionJavaColonHelper implements JavaColonNamingHelper, RemoteJa
         // There is no comp namespace if there is no active component.
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
 
-        if (cmd == null) {
+        if (cmd == null && !Boolean.getBoolean("com.ibm.ws.container.service.naming.disableStrictEEJndiProtection")) {
             NamingException nex = new NamingException(Tr.formatMessage(tc, "JNDI_NON_JEE_THREAD_CWNEN1000E"));
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "getInjectionScopeData : (no CMD) : " + nex.toString(true));
