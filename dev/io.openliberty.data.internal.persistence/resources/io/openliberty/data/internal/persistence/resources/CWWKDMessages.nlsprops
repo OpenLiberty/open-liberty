@@ -58,7 +58,7 @@ CWWKD1003.lifecycle.rtrn.err=CWWKD1003E: The {0} return type of the {1} method \
  {3} method. Valid return types include: {4}.
 CWWKD1003.lifecycle.rtrn.err.explanation=The return type of the method is not \
  one of the supported return types for Insert, Update, and Save methods.
-CWWKD1003.lifecycle.rtrn.err.useraction=Refer to the JavaDoc of the Insert, \
+CWWKD1003.lifecycle.rtrn.err.useraction=Refer to the Jakarta Data JavaDoc of the Insert, \
  Update, and Save methods for valid return types.
 
 CWWKD1004.general.rtrn.err=CWWKD1004E: The {0} return type of the {1} method \
