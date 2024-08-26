@@ -15,6 +15,7 @@ package test.jakarta.data.web;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
@@ -26,6 +27,7 @@ import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
@@ -62,25 +64,28 @@ public interface Receipts extends CrudRepository<Receipt, Long> {
     @Asynchronous
     CompletableFuture<Receipt> findByPurchaseId(long purchaseId);
 
-    @Asynchronous
-    CompletionStage<Optional<Receipt>> findByPurchaseIdIfPresent(long purchaseId);
-
     Stream<Receipt> findByPurchaseIdIn(Iterable<Long> ids);
 
+    @Asynchronous
+    CompletionStage<Optional<Receipt>> findIfPresentByPurchaseId(long purchaseId);
+
+    @Find
     @OrderBy("purchaseId")
     Receipt[] forCustomer(String customer);
 
     @Asynchronous
+    @Find
     CompletableFuture<List<Receipt>> forCustomer(String customer, Order<Receipt> sorts);
 
+    @Find
     Page<Receipt> forCustomer(String customer, PageRequest req, Order<Receipt> sorts);
 
+    @Find
     CursoredPage<Receipt> forCustomer(String customer, PageRequest req, Sort<?>... sorts);
 
     long removeByPurchaseId(long purchaseId);
 
-    @OrderBy("purchaseId")
-    List<Long> removeByTotalBetween(float min, float max);
+    Set<Long> removeByTotalBetween(float min, float max);
 
     @Query("DELETE FROM Receipt WHERE total < :max")
     int removeIfTotalUnder(float max);
@@ -97,5 +102,6 @@ public interface Receipts extends CrudRepository<Receipt, Long> {
     @Query("SELECT total ORDER BY total DESC")
     Page<Float> totalsDecreasing(PageRequest req);
 
+    @Find
     Receipt withPurchaseNum(long purchaseId);
 }
