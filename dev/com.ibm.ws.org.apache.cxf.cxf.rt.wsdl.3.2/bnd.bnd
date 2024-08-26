@@ -35,6 +35,7 @@ Import-Package: \
   javax.xml.bind.annotation;version=!, \
   javax.xml.bind.annotation.adapters;version=!, \
   javax.xml.bind.attachment;version=!, \
+  javax.xml.ws;version=!, \
   *
 
 Export-Package: \
@@ -62,4 +63,5 @@ instrument.classesIncludes: \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
   com.ibm.ws.logging.core, \
   com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3, \
-  com.ibm.websphere.javaee.wsdl4j.1.2
+  com.ibm.websphere.javaee.wsdl4j.1.2, \
+  com.ibm.websphere.javaee.jaxws.2.2
