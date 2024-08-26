@@ -328,7 +328,15 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
 
             Queue<Class<?>> embeddableTypesQueue = new LinkedList<>();
 
-            Set<Class<?>> converterTypes = new HashSet<>(); // TODO why do we need to write converters to orm.xml at all?
+            /*
+             * Note: When creating a persistence unit, managed classes (such as entities) are declared in an
+             * all or nothing fashion. Therefore, if we create a persistence unit with a list of entities
+             * we are also required to provide a list of converters, otherwise the persistence provider
+             * will not use them. Ideally, our internal persistence service unit would have a method to
+             * include converter classes alongside entity classes, but the persistence provider API lacks
+             * such function so the converters need to be put into the generated orm.xml file.
+             */
+            Set<Class<?>> converterTypes = new HashSet<>();
 
             for (Class<?> c : entityTypes) {
                 if (c.isAnnotationPresent(Entity.class)) {
