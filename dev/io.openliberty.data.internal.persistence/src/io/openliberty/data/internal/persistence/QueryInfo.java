@@ -302,7 +302,23 @@ public class QueryInfo {
      *                              <code>CompletionStage&lt;Product[]&gt; findByNameIgnoreCaseLike(String namePattern)</code>
      *                              which resolves to { CompletionStage.class, Product[].class, Product.class }
      */
+    @Trivial
     public QueryInfo(Method method, Class<?> entityParamType, Class<?> returnArrayType, List<Class<?>> returnTypeAtDepth) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled()) {
+            StringBuilder b = new StringBuilder(200) //
+                            .append(method.getGenericReturnType().getTypeName()).append(' ') //
+                            .append(method.getDeclaringClass().getName()).append('.') //
+                            .append(method.getName());
+            boolean first = true;
+            for (java.lang.reflect.Type p : method.getGenericParameterTypes()) {
+                b.append(first ? "(" : ", ").append(p.getTypeName());
+                first = false;
+            }
+            b.append(first ? "()" : ")");
+            Tr.entry(this, tc, "<init>", b.toString(), entityParamType, returnArrayType, returnTypeAtDepth);
+        }
+
         this.method = method;
         this.entityParamType = entityParamType;
         this.returnArrayType = returnArrayType;
@@ -346,11 +362,11 @@ public class QueryInfo {
 
         singleType = type;
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "result type information",
-                     "isOptional? " + isOptional,
-                     "multiType:  " + multiType,
-                     "singleType: " + singleType);
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "<init>", new Object[] { this,
+                                                       "result isOptional? " + isOptional,
+                                                       "result multiType:  " + multiType,
+                                                       "result singleType: " + singleType });
     }
 
     /**
@@ -1202,10 +1218,17 @@ public class QueryInfo {
         if (type == Type.FIND_AND_DELETE && !(singleType.isAssignableFrom(wrapperClassIfPrimitive(entityInfo.idType)) ||
                                               singleType.isAssignableFrom(entityInfo.entityClass) ||
                                               (entityInfo.recordClass != null && singleType.isAssignableFrom(entityInfo.recordClass)))) {
-            throw new MappingException("Results for find-and-delete repository queries must be the entity class (" +
+            throw new MappingException("The " + method.getGenericReturnType().getTypeName() +
+                                       " type cannot be used as a return type for the " +
+                                       method.getName() + " method of the " +
+                                       method.getDeclaringClass().getName() +
+                                       " repository inteface. The return type can be" +
+                                       " void to return no value, long or int for a deletion count," +
+                                       " boolean to indicate whether any entities were deleted," +
+                                       " or an array, Collection, or Optional of either the " +
                                        (entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName() +
-                                       ") or the id class (" + entityInfo.idType +
-                                       "), not the " + singleType.getName() + " class."); // TODO NLS
+                                       " entity class or the " + entityInfo.idType.getName() +
+                                       " Id class to return the deleted entities or entity Ids."); // TODO NLS
         }
 
         if (cols == null || cols.length == 0) {
@@ -1724,7 +1747,7 @@ public class QueryInfo {
      * @param repository  repository implementation.
      * @return information about the query.
      */
-    @FFDCIgnore(Throwable.class) // TODO look into these failures and decide if FFDC should be enabled
+    @FFDCIgnore(Throwable.class) // report invalid repository methods as errors instead
     @Trivial
     QueryInfo init(Map<String, CompletableFuture<EntityInfo>> entityInfos, RepositoryImpl<?> repository) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -1798,7 +1821,8 @@ public class QueryInfo {
                     throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
                                                             repository.repositoryInterface.getName() +
                                                             " repository interface cannot use the " +
-                                                            method.getReturnType().getName() + " return type for a delete operation.");
+                                                            method.getGenericReturnType().getTypeName() +
+                                                            " return type for a delete operation.");
                 }
             }
 
@@ -1909,6 +1933,12 @@ public class QueryInfo {
         } catch (Throwable x) {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "init", x);
+            System.err.println("The " + method.getName() + " method of the " +
+                               method.getDeclaringClass().getName() +
+                               " repository interface encountered an error" +
+                               " and might not be a valid repository method." +
+                               " Refer to the cause exception: "); // TODO NLS
+            x.printStackTrace(); // TODO Tr.error instead
             throw x;
         }
 
@@ -2273,23 +2303,25 @@ public class QueryInfo {
                                                             " clause and instead use the " + "OrderBy" +
                                                             " annotation to specify static sort criteria."); // TODO NLS
 
-                if (where0 + whereLen != length)
-                    throw new UnsupportedOperationException("The " + ql + " query that is supplied to the " + method.getName() +
-                                                            " method of the " + method.getDeclaringClass().getName() +
-                                                            " repository must end in a WHERE clause because" +
-                                                            " the method returns a " + "CursoredPage" + ". There WHERE clause" +
-                                                            " ends at position " + (where0 + whereLen) + " but the length of the" +
-                                                            " query is " + length + "."); // TODO NLS
+                if (whereLen > 0) {
+                    if (where0 + whereLen != length)
+                        throw new UnsupportedOperationException("The " + ql + " query that is supplied to the " + method.getName() +
+                                                                " method of the " + method.getDeclaringClass().getName() +
+                                                                " repository must end in a WHERE clause because" +
+                                                                " the method returns a " + "CursoredPage" + ". There WHERE clause" +
+                                                                " ends at position " + (where0 + whereLen) + " but the length of the" +
+                                                                " query is " + length + "."); // TODO NLS
 
-                // Enclose the WHERE clause in parenthesis so that conditions can be appended.
-                boolean addSpace = ql.charAt(where0) != ' ';
-                ql = new StringBuilder(ql.length() + 2) //
-                                .append(ql.substring(0, where0)) //
-                                .append(" (") //
-                                .append(ql.substring(where0 + (addSpace ? 0 : 1), where0 + whereLen)) //
-                                .append(")") //
-                                .toString();
-                whereLen += 2 + (addSpace ? 1 : 0);
+                    // Enclose the WHERE clause in parenthesis so that conditions can be appended.
+                    boolean addSpace = ql.charAt(where0) != ' ';
+                    ql = new StringBuilder(ql.length() + 2) //
+                                    .append(ql.substring(0, where0)) //
+                                    .append(" (") //
+                                    .append(ql.substring(where0 + (addSpace ? 0 : 1), where0 + whereLen)) //
+                                    .append(")") //
+                                    .toString();
+                    whereLen += 2 + (addSpace ? 1 : 0);
+                }
             }
 
             StringBuilder q;
@@ -2331,6 +2363,8 @@ public class QueryInfo {
             }
 
             if (whereLen > 0)
+                // TODO once fixed, test #28931 by adding: && !"this.".equalsIgnoreCase(entityVar_)
+                // and running DataJPATestServlet.testCountQueryWithFromAndWhereClausesOnly
                 if (insertEntityVar) {
                     q.append("WHERE");
                     appendWithIdentifierName(ql, where0, where0 + whereLen, entityVar_, q);
@@ -2523,8 +2557,8 @@ public class QueryInfo {
             if (method.getParameterCount() > 0)
                 generateQueryByParameters(q, methodTypeAnno, countPages);
         } else {
-            // TODO should be unreachable
-            throw new UnsupportedOperationException("Unexpected annotation " + methodTypeAnno + " for parameter-based query.");
+            // unreachable
+            throw new IllegalArgumentException(methodTypeAnno.toString());
         }
 
         if (trace && tc.isEntryEnabled())
@@ -2564,10 +2598,17 @@ public class QueryInfo {
                 && !type.equals(entityInfo.recordClass)
                 && !type.equals(Object.class)
                 && !wrapperClassIfPrimitive(singleType).equals(wrapperClassIfPrimitive(entityInfo.idType)))
-                throw new MappingException("Results for find-and-delete repository queries must be the entity class (" +
+                throw new MappingException("The " + method.getGenericReturnType().getTypeName() +
+                                           " type cannot be used as a return type for the " +
+                                           method.getName() + " method of the " +
+                                           method.getDeclaringClass().getName() +
+                                           " repository inteface. The return type can be" +
+                                           " void to return no value, long or int for a deletion count," +
+                                           " boolean to indicate whether any entities were deleted," +
+                                           " or an array, Collection, or Optional of either the " +
                                            (entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName() +
-                                           ") or the id class (" + entityInfo.idType +
-                                           "), not the " + method.getGenericReturnType() + " class."); // TODO NLS
+                                           " entity class or the " + entityInfo.idType.getName() +
+                                           " Id class to return the deleted entities or entity Ids."); // TODO NLS
         }
 
         return isFindAndDelete;
@@ -2974,8 +3015,10 @@ public class QueryInfo {
     @Override
     @Trivial
     public String toString() {
-        StringBuilder b = new StringBuilder("QueryInfo@").append(Integer.toHexString(hashCode())) //
-                        .append(' ').append(method.getReturnType().getSimpleName()).append(' ').append(method.getName());
+        StringBuilder b = new StringBuilder("QueryInfo@") //
+                        .append(Integer.toHexString(hashCode())).append(' ') //
+                        .append(method.getGenericReturnType().getTypeName()).append(' ') //
+                        .append(method.getName());
         boolean first = true;
         for (Class<?> p : method.getParameterTypes()) {
             b.append(first ? "(" : ", ").append(p.getSimpleName());
@@ -3091,7 +3134,7 @@ public class QueryInfo {
         q.jpqlAfterCursor = jpqlAfterCursor;
         q.jpqlBeforeCursor = jpqlBeforeCursor;
         q.jpqlCount = jpqlCount;
-        q.jpqlDelete = jpqlDelete; // TODO jpqlCount and jpqlDelete could potentially be combined because you will never need both at once
+        q.jpqlDelete = jpqlDelete;
         q.maxResults = maxResults;
         q.paramCount = paramCount;
         q.paramAddedCount = paramAddedCount;

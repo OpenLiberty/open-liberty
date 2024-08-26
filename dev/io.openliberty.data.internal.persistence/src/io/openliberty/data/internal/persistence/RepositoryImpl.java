@@ -622,7 +622,17 @@ public class RepositoryImpl<R> implements InvocationHandler {
         } else {
             Class<?> multiType = queryInfo.multiType;
             if (multiType == null)
-                returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results? Detect earlier?
+                if (results.size() == 1)
+                    returnValue = results.get(0);
+                else if (results.isEmpty())
+                    returnValue = null;
+                else
+                    throw new NonUniqueResultException("The " + queryInfo.method.getName() +
+                                                       " method of the " + queryInfo.method.getDeclaringClass().getName() +
+                                                       " repository interface has the " +
+                                                       queryInfo.method.getGenericReturnType().getTypeName() +
+                                                       " return type, which is not capable of returning " +
+                                                       results.size() + " results."); // TODO NLS
             else if (multiType.isInstance(results))
                 returnValue = results;
             else if (Stream.class.equals(multiType))
@@ -632,7 +642,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
             else if (Iterator.class.equals(multiType))
                 returnValue = results.iterator();
             else
-                throw new MappingException("The " + returnType.getName() + " return type of the " +
+                throw new MappingException("The " + queryInfo.method.getGenericReturnType().getTypeName() +
+                                           " return type of the " +
                                            queryInfo.method.getName() + " method of the " +
                                            queryInfo.method.getDeclaringClass().getName() +
                                            " class is not a valid return type for a repository " +
@@ -645,7 +656,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
         } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
             returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
         } else if (returnValue != null && !returnType.isInstance(returnValue)) {
-            throw new MappingException("The " + returnType.getName() + " return type of the " +
+            throw new MappingException("The " + queryInfo.method.getGenericReturnType().getTypeName() +
+                                       " return type of the " +
                                        queryInfo.method.getName() + " method of the " +
                                        queryInfo.method.getDeclaringClass().getName() +
                                        " class is not a valid return type for a repository " +
@@ -688,7 +700,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (TraceComponent.isAnyTracingEnabled() && jpql != queryInfo.jpql)
             Tr.debug(this, tc, "JPQL adjusted for NULL id or version", jpql);
 
-        TypedQuery<?> query = em.createQuery(jpql, queryInfo.singleType); // TODO for records, use the entity class, not the record class
+        Class<?> entityClass = queryInfo.singleType.equals(entityInfo.recordClass) //
+                        ? entityInfo.entityClass //
+                        : queryInfo.singleType;
+
+        TypedQuery<?> query = em.createQuery(jpql, entityClass);
         query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
 
         // id parameter(s)
@@ -883,7 +899,17 @@ public class RepositoryImpl<R> implements InvocationHandler {
             } else {
                 Class<?> multiType = queryInfo.multiType;
                 if (multiType == null)
-                    returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results? Detect earlier?
+                    if (results.size() == 1)
+                        returnValue = results.get(0);
+                    else if (results.isEmpty())
+                        returnValue = null;
+                    else
+                        throw new NonUniqueResultException("The " + queryInfo.method.getName() +
+                                                           " method of the " + queryInfo.method.getDeclaringClass().getName() +
+                                                           " repository interface has the " +
+                                                           queryInfo.method.getGenericReturnType().getTypeName() +
+                                                           " return type, which is not capable of returning " +
+                                                           results.size() + " results."); // TODO NLS
                 else if (multiType.isInstance(results))
                     returnValue = results;
                 else if (Stream.class.equals(multiType))
@@ -893,7 +919,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 else if (Iterator.class.equals(multiType))
                     returnValue = results.iterator();
                 else
-                    throw new MappingException("The " + returnType.getName() + " return type of the " +
+                    throw new MappingException("The " + queryInfo.method.getGenericReturnType().getTypeName() +
+                                               " return type of the " +
                                                queryInfo.method.getName() + " method of the " +
                                                queryInfo.method.getDeclaringClass().getName() +
                                                " class is not a valid return type for a repository " +
@@ -905,7 +932,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
             returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
-            throw new MappingException("The " + returnType.getName() + " return type of the " +
+            throw new MappingException("The " + queryInfo.method.getGenericReturnType().getTypeName() +
+                                       " return type of the " +
                                        queryInfo.method.getName() + " method of the " +
                                        queryInfo.method.getDeclaringClass().getName() +
                                        " class is not a valid return type for a repository " +
@@ -1116,7 +1144,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             throw new IllegalArgumentException("A PageRequest that specifies the " + pagination.mode() +
                                                                " mode must not be supplied to the " + method.getName() +
                                                                " method of the " + method.getDeclaringClass().getName() +
-                                                               " repository because the method returns " + returnType.getName() +
+                                                               " repository because the method returns " +
+                                                               queryInfo.method.getGenericReturnType().getTypeName() +
                                                                " rather than " + CursoredPage.class.getName() + "."); // TODO NLS
                         } else {
                             em = entityInfo.builder.createEntityManager();
@@ -1295,7 +1324,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                                    " type of the observed query results."); // TODO NLS
                                     }
                                 } else if (results.isEmpty()) {
-                                    throw new EmptyResultException("Query with return type of " + returnType.getName() +
+                                    throw new EmptyResultException("Query with return type of " +
+                                                                   queryInfo.method.getGenericReturnType().getTypeName() +
                                                                    " returned no results. If this is expected, specify a return type of array, List, Optional, Page, CursoredPage, or Stream for the repository method.");
                                 } else { // single result of other type
                                     returnValue = oneResult(results);
@@ -1841,7 +1871,17 @@ public class RepositoryImpl<R> implements InvocationHandler {
             } else {
                 Class<?> multiType = queryInfo.multiType;
                 if (multiType == null)
-                    returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results? Detect earlier?
+                    if (results.size() == 1)
+                        returnValue = results.get(0);
+                    else if (results.isEmpty())
+                        returnValue = null;
+                    else
+                        throw new NonUniqueResultException("The " + queryInfo.method.getName() +
+                                                           " method of the " + queryInfo.method.getDeclaringClass().getName() +
+                                                           " repository interface has the " +
+                                                           queryInfo.method.getGenericReturnType().getTypeName() +
+                                                           " return type, which is not capable of returning " +
+                                                           results.size() + " results."); // TODO NLS
                 else if (multiType.isInstance(results))
                     returnValue = results;
                 else if (Stream.class.equals(multiType))
@@ -1851,7 +1891,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 else if (Iterator.class.equals(multiType))
                     returnValue = results.iterator();
                 else
-                    throw new MappingException("The " + returnType.getName() + " return type of the " +
+                    throw new MappingException("The " + queryInfo.method.getGenericReturnType().getTypeName() +
+                                               " return type of the " +
                                                queryInfo.method.getName() + " method of the " +
                                                queryInfo.method.getDeclaringClass().getName() +
                                                " class is not a valid return type for a repository " +
@@ -1863,7 +1904,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
             returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
-            throw new MappingException("The " + returnType.getName() + " return type of the " +
+            throw new MappingException("The " + queryInfo.method.getGenericReturnType().getTypeName() +
+                                       " return type of the " +
                                        queryInfo.method.getName() + " method of the " +
                                        queryInfo.method.getDeclaringClass().getName() +
                                        " class is not a valid return type for a repository " +

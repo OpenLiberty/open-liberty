@@ -684,6 +684,91 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that cursor-based pagination can be used with an empty string Query,
+     * which the spec allows as a valid query. It will need to generate a WHERE
+     * clause when appending conditions for the cursor.
+     */
+    @Test
+    public void testCursorPaginationForEmptyQuery() {
+
+        PageRequest page3request = PageRequest.ofPage(3)
+                        .size(5)
+                        .afterCursor(Cursor.forKey(12));
+        CursoredPage<Prime> page3 = primes.all(page3request,
+                                               Sort.asc("numberId"));
+
+        assertIterableEquals(List.of("thirteen",
+                                     "seventeen",
+                                     "nineteen",
+                                     "twenty-three",
+                                     "twenty-nine"),
+                             page3.stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        CursoredPage<Prime> page4 = primes.all(page3.nextPageRequest(),
+                                               Order.by(Sort.asc("numberId")));
+
+        assertIterableEquals(List.of("thirty-one",
+                                     "thirty-seven",
+                                     "forty-one",
+                                     "forty-three",
+                                     "forty-seven"),
+                             page4.stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Verify that cursor-based pagination can be used on a Find method without
+     * conditions that retrieves all entities. It will need to generate the WHERE
+     * clause when appending conditions for the cursor.
+     */
+    @Test
+    public void testCursorPaginationForFindAll() {
+
+        CursoredPage<Prime> page3 = primes.all(Order.by(Sort.asc("numberId")),
+                                               PageRequest.ofPage(3).size(3));
+
+        assertIterableEquals(List.of("seventeen", "nineteen", "twenty-three"),
+                             page3.stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        CursoredPage<Prime> page4 = primes.all(page3.nextPageRequest(),
+                                               Order.by(Sort.asc("numberId")));
+
+        assertIterableEquals(List.of("twenty-nine", "thirty-one", "thirty-seven"),
+                             page4.stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Verify that cursor-based pagination can append conditions for a WHERE clause
+     * when the base query only consists of a FROM clause.
+     */
+    @Test
+    public void testCursorPaginationWithFromClauseOnly() {
+
+        CursoredPage<Prime> page4 = primes.all(PageRequest.ofPage(4).size(3),
+                                               Order.by(Sort.asc("numberId")));
+
+        assertIterableEquals(List.of("twenty-nine", "thirty-one", "thirty-seven"),
+                             page4.stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        CursoredPage<Prime> page3 = primes.all(page4.previousPageRequest(),
+                                               Order.by(Sort.asc("numberId")));
+
+        assertIterableEquals(List.of("seventeen", "nineteen", "twenty-three"),
+                             page3.stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
      * Use a repository method that specifies query language consisting only of a WHERE clause
      * and requests cursor-based pagination.
      */

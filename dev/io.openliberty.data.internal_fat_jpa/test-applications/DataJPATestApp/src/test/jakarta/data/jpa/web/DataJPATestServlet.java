@@ -799,7 +799,7 @@ public class DataJPATestServlet extends FATServlet {
         }
 
         Order<City> orderByCityName = supportsOrderByForUpdate ? Order.by(Sort.asc("name")) : Order.by();
-        Iterator<CityId> ids = cities.delete3ByStateName("South Dakota", Limit.of(3), orderByCityName).iterator();
+        Iterator<CityId> ids = cities.deleteByStateName("South Dakota", Limit.of(3), orderByCityName).iterator();
         CityId id;
 
         assertEquals(true, ids.hasNext());
@@ -829,14 +829,14 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(false, ids.hasNext());
 
         Order<City> orderByPopulation = supportsOrderByForUpdate ? Order.by(Sort.asc("population")) : Order.by();
-        id = cities.delete1ByStateName("South Dakota", Limit.of(1), orderByPopulation).orElseThrow();
+        id = cities.deleteAtMost1ByStateName("South Dakota", Limit.of(1), orderByPopulation).orElseThrow();
         assertEquals("South Dakota", id.getStateName());
         if (supportsOrderByForUpdate)
             assertEquals("Spearfish", id.name);
         // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
-        id = cities.deleteByStateName("South Dakota", Limit.of(1));
+        id = cities.delete1ByStateName("South Dakota", Limit.of(1));
         assertEquals("South Dakota", id.getStateName());
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
