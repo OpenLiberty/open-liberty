@@ -495,8 +495,8 @@ schemagen.info.schema.file.created.explanation=The command completed successfull
 schemagen.info.schema.file.created.useraction=No action is required.
 
 warning.config.root.deleted=CWWKG0110W: A configuration update was detected, but the configuration root {0} does not exist. No configuration updates were made.
-warning.config.root.deleted.explanation=The server.xml was deleted. To cause no disruptions to running apps, no configuration changes will be made.
-warning.config.root.deleted.useraction=Add the server.xml back to the server.
+warning.config.root.deleted.explanation=The server.xml file was deleted. To cause no disruptions to running apps, no configuration changes are made.
+warning.config.root.deleted.useraction=Add the server.xml file back to the server.
 
 # Non-TR message
 error.invalidOCDRef=ERROR: Metatype PID [{0}] specifies non-existent object class definition ID [{1}]
