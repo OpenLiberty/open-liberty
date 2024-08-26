@@ -36,7 +36,7 @@ CWWKD1000.repo.general.err.useraction=Locate the repository interface and method
 
 CWWKD1001.no.primary.entity=CWWKD1001E: An entity class is needed by the {0} \
  repository method, but the {1} repository interface does not specify a primary \
- entity class. To correct this, have the {1} interface extend one of the \
+ entity class. To correct this, have the {1} repository interface extend one of the \
  built-in repository supertypes, such as {2}, supplying the entity class as \
  the first type parameter.
 CWWKD1001.no.primary.entity.explanation=Repository methods without an entity \
