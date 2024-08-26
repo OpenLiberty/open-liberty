@@ -33,6 +33,7 @@ import java.sql.SQLSyntaxErrorException;
 import java.sql.SQLTransientConnectionException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
@@ -476,6 +477,30 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
+     * Construct a RuntimeException or subclass and log the error.
+     *
+     * @param exceptionType RuntimeException or subclass, which must have a
+     *                          constructor that accepts the message as a single
+     *                          String argument.
+     * @param messageId     NLS message ID.
+     * @param args          message arguments.
+     * @return RuntimeException or subclass.
+     */
+    @Trivial
+    private final static <T extends RuntimeException> T exc(Class<T> exceptionType,
+                                                            String messageId,
+                                                            Object... args) {
+        Tr.error(tc, messageId, args);
+        String message = Tr.formatMessage(tc, messageId, args);
+        try {
+            return exceptionType.getConstructor(String.class).newInstance(message);
+        } catch (Exception x) {
+            // should never occur
+            throw new DataException(messageId + ' ' + Arrays.toString(args));
+        }
+    }
+
+    /**
      * Replaces an exception with a Jakarta Data specification-defined exception,
      * chaining the original exception as the cause.
      * This method replaces all exceptions that are not RuntimeExceptions.
@@ -642,13 +667,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
             else if (Iterator.class.equals(multiType))
                 returnValue = results.iterator();
             else
-                throw new MappingException("The " + queryInfo.method.getGenericReturnType().getTypeName() +
-                                           " return type of the " +
-                                           queryInfo.method.getName() + " method of the " +
-                                           queryInfo.method.getDeclaringClass().getName() +
-                                           " class is not a valid return type for a repository " +
-                                           "@Update" + " method. Valid return types include " +
-                                           getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
+                throw exc(MappingException.class,
+                          "CWWKD1003.lifecycle.rtrn.err",
+                          queryInfo.method.getGenericReturnType().getTypeName(),
+                          queryInfo.method.getName(),
+                          repositoryInterface.getName(),
+                          "Update",
+                          getValidReturnTypes(results.get(0).getClass().getSimpleName(),
+                                              hasSingularEntityParam,
+                                              false));
         }
 
         if (Optional.class.equals(returnType)) {
@@ -656,13 +683,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
         } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
             returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
         } else if (returnValue != null && !returnType.isInstance(returnValue)) {
-            throw new MappingException("The " + queryInfo.method.getGenericReturnType().getTypeName() +
-                                       " return type of the " +
-                                       queryInfo.method.getName() + " method of the " +
-                                       queryInfo.method.getDeclaringClass().getName() +
-                                       " class is not a valid return type for a repository " +
-                                       "@Update" + " method. Valid return types include " +
-                                       getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
+            throw exc(MappingException.class,
+                      "CWWKD1003.lifecycle.rtrn.err",
+                      queryInfo.method.getGenericReturnType().getTypeName(),
+                      queryInfo.method.getName(),
+                      repositoryInterface.getName(),
+                      "Update",
+                      getValidReturnTypes(results.get(0).getClass().getSimpleName(),
+                                          hasSingularEntityParam,
+                                          false));
         }
 
         return returnValue;
@@ -919,26 +948,30 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 else if (Iterator.class.equals(multiType))
                     returnValue = results.iterator();
                 else
-                    throw new MappingException("The " + queryInfo.method.getGenericReturnType().getTypeName() +
-                                               " return type of the " +
-                                               queryInfo.method.getName() + " method of the " +
-                                               queryInfo.method.getDeclaringClass().getName() +
-                                               " class is not a valid return type for a repository " +
-                                               "@Insert" + " method. Valid return types include " +
-                                               getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
+                    throw exc(MappingException.class,
+                              "CWWKD1003.lifecycle.rtrn.err",
+                              queryInfo.method.getGenericReturnType().getTypeName(),
+                              queryInfo.method.getName(),
+                              repositoryInterface.getName(),
+                              "Insert",
+                              getValidReturnTypes(results.get(0).getClass().getSimpleName(),
+                                                  hasSingularEntityParam,
+                                                  false));
             }
         }
 
         if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
             returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
-            throw new MappingException("The " + queryInfo.method.getGenericReturnType().getTypeName() +
-                                       " return type of the " +
-                                       queryInfo.method.getName() + " method of the " +
-                                       queryInfo.method.getDeclaringClass().getName() +
-                                       " class is not a valid return type for a repository " +
-                                       "@Insert" + " method. Valid return types include " +
-                                       getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
+            throw exc(MappingException.class,
+                      "CWWKD1003.lifecycle.rtrn.err",
+                      queryInfo.method.getGenericReturnType().getTypeName(),
+                      queryInfo.method.getName(),
+                      repositoryInterface.getName(),
+                      "Insert",
+                      getValidReturnTypes(results.get(0).getClass().getSimpleName(),
+                                          hasSingularEntityParam,
+                                          false));
         }
 
         return returnValue;
@@ -1891,26 +1924,30 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 else if (Iterator.class.equals(multiType))
                     returnValue = results.iterator();
                 else
-                    throw new MappingException("The " + queryInfo.method.getGenericReturnType().getTypeName() +
-                                               " return type of the " +
-                                               queryInfo.method.getName() + " method of the " +
-                                               queryInfo.method.getDeclaringClass().getName() +
-                                               " class is not a valid return type for a repository " +
-                                               "@Save" + " method. Valid return types include " +
-                                               getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
+                    throw exc(MappingException.class,
+                              "CWWKD1003.lifecycle.rtrn.err",
+                              queryInfo.method.getGenericReturnType().getTypeName(),
+                              queryInfo.method.getName(),
+                              repositoryInterface.getName(),
+                              "Save",
+                              getValidReturnTypes(results.get(0).getClass().getSimpleName(),
+                                                  hasSingularEntityParam,
+                                                  false));
             }
         }
 
         if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
             returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
-            throw new MappingException("The " + queryInfo.method.getGenericReturnType().getTypeName() +
-                                       " return type of the " +
-                                       queryInfo.method.getName() + " method of the " +
-                                       queryInfo.method.getDeclaringClass().getName() +
-                                       " class is not a valid return type for a repository " +
-                                       "@Save" + " method. Valid return types include " +
-                                       getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
+            throw exc(MappingException.class,
+                      "CWWKD1003.lifecycle.rtrn.err",
+                      queryInfo.method.getGenericReturnType().getTypeName(),
+                      queryInfo.method.getName(),
+                      repositoryInterface.getName(),
+                      "Save",
+                      getValidReturnTypes(results.get(0).getClass().getSimpleName(),
+                                          hasSingularEntityParam,
+                                          false));
         }
 
         return returnValue;
