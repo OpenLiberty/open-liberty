@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -73,7 +73,7 @@ public class CustomManifestTest {
 
     /**
      * Test CustomManifest constructor with the valid data.
-     * 
+     *
      * @throws IOException
      * @throws IllegalArgumentException
      */
@@ -97,7 +97,7 @@ public class CustomManifestTest {
 
     /**
      * Test CustomManifest constructor with the valid data.
-     * 
+     *
      * @throws IOException
      * @throws IllegalArgumentException
      */
@@ -115,7 +115,7 @@ public class CustomManifestTest {
 
     /**
      * Test CustomManifest constructor with the invalid data.
-     * 
+     *
      * @throws IOException
      */
     @Test
@@ -138,7 +138,7 @@ public class CustomManifestTest {
 
     /**
      * Test CustomManifest constructor with the invalid data.
-     * 
+     *
      * @throws IOException
      */
     @Test
@@ -160,7 +160,7 @@ public class CustomManifestTest {
 
     /**
      * Test findFeatureManifest method
-     * 
+     *
      * @throws IOException
      */
     @Test
@@ -172,15 +172,15 @@ public class CustomManifestTest {
 
     /**
      * Test containsToolsJar method
-     * 
+     *
      * @throws IOException
      */
     @Test
     public void testGetFileLocationsFromSubsystemContent() throws IOException {
         CustomManifest cm = new CustomManifest();
-        final String VALUE1 = "com.ibm.ws.crypto.util.custom; version=\"[1,1.0.100)\"; start-phase:=\"SERVICE_EARLY\", valid.jar; location:=\"bin/tools/extensions/ws-customPasswordEncryption/valid.jar\"; type=file";
+        final String VALUE1 = "com.ibm.ws.crypto.util.custom; version=\"[1,1.1)\"; start-phase:=\"SERVICE_EARLY\", valid.jar; location:=\"bin/tools/extensions/ws-customPasswordEncryption/valid.jar\"; type=file";
         final String VALUE1_LOCATION = "bin/tools/extensions/ws-customPasswordEncryption/valid.jar";
-        final String VALUE2 = "different.jar; type=file; location:=\"bin/tools/extensions/ws-customPasswordEncryption/different.jar\", com.ibm.ws.crypto.util.custom; version=\"[1,1.0.100)\"; start-phase:=\"SERVICE_EARLY\"";
+        final String VALUE2 = "different.jar; type=file; location:=\"bin/tools/extensions/ws-customPasswordEncryption/different.jar\", com.ibm.ws.crypto.util.custom; version=\"[1,1.1)\"; start-phase:=\"SERVICE_EARLY\"";
         final String VALUE2_LOCATION = "bin/tools/extensions/ws-customPasswordEncryption/different.jar";
         final String VALUE3 = "different.jar; type=jar location:=\"bin/tools/extensions/ws-customPasswordEncryption/different.jar\"";
         final String VALUE4 = VALUE1 + "," + VALUE2;
@@ -196,7 +196,7 @@ public class CustomManifestTest {
 
     /**
      * Test getAttributes method
-     * 
+     *
      * @throws IOException
      */
     @Test

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,8 +25,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
-import com.ibm.ws.kernel.provisioning.ContentBasedLocalBundleRepository;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry.BundleRepositoryHolder;
+import com.ibm.ws.kernel.provisioning.ContentBasedLocalBundleRepository;
 import com.ibm.ws.product.utility.extension.MD5Utils;
 
 /**
@@ -42,10 +42,10 @@ public class TestUtils {
     /**
      * This method generates the ifix xml files that contain the files that are in the ifix install. This method also
      * builds the Liberty Profile Metadata files for any jars supplied.
-     * 
-     * @param ifixFile - The Ifix File to write to.
-     * @param ifixName - The name of the ifix
-     * @param updates - A Set of string containing the update file names.
+     *
+     * @param ifixFile  - The Ifix File to write to.
+     * @param ifixName  - The name of the ifix
+     * @param updates   - A Set of string containing the update file names.
      * @param ifixApars - A set of String containing the apar numbers.
      */
     public static void createIfixXML(File ifixFile, String ifixName, Set<String> updates, Set<String> ifixApars) {
@@ -78,7 +78,7 @@ public class TestUtils {
         for (String update : updates) {
             ifixBuffer.append("    " + update + "\n");
 
-            // If the current update is a jar file, then work out the symbolicname and version and write the values out to the 
+            // If the current update is a jar file, then work out the symbolicname and version and write the values out to the
             // Liberty Profile Metadata file.
             if (update.contains(".jar\"")) {
                 Matcher symbolicNameMatcher = updateSymbolicNameVersionPattern.matcher(update);
@@ -109,9 +109,9 @@ public class TestUtils {
 
     /**
      * This writes a StringBuffer out to the required file. The file is always overwritten.
-     * 
+     *
      * @param fileToWrite - The file to write the buffer to.
-     * @param buffer - A String buffer containing the contents of the file
+     * @param buffer      - A String buffer containing the contents of the file
      */
     public static File createFile(File fileToWrite, StringBuffer buffer) {
         return createFile(fileToWrite, buffer, false);
@@ -119,10 +119,10 @@ public class TestUtils {
 
     /**
      * This writes a StringBuffer out to the required file.
-     * 
+     *
      * @param fileToWrite - The file to write the buffer to.
-     * @param buffer - A String buffer containing the contents of the file
-     * @param append - Whether we should be appending to the file or overwriting it.
+     * @param buffer      - A String buffer containing the contents of the file
+     * @param append      - Whether we should be appending to the file or overwriting it.
      */
     public static File createFile(File fileToWrite, StringBuffer buffer, boolean append) {
         FileOutputStream fos = null;
@@ -149,7 +149,7 @@ public class TestUtils {
     /**
      * This method deletes a file or directory. If a directory is passed it deletes the directory and
      * all subdirectories and their contents.
-     * 
+     *
      * @param file - The file/Directory to delete.
      */
     public static void delete(File file) {
@@ -170,7 +170,7 @@ public class TestUtils {
 
     /**
      * This method generates a hash for the requested file.
-     * 
+     *
      * @param file - The file to hash
      * @return - A String containing the hash of the file.
      */
@@ -187,12 +187,12 @@ public class TestUtils {
 
     /**
      * This method creates a jar which is symbolicName_version.jar which just contains a manifest. It adds ifix headers if required.
-     * 
-     * @param directory - The directory in which to put the jar file
+     *
+     * @param directory    - The directory in which to put the jar file
      * @param symbolicName - The symbolic Name of the jar file
-     * @param version - The String representation of the version
-     * @param ifixJar - A boolean to indicate whether this is an ifix jar
-     * @param testFix - A boolean to indicate whether this is a test ifix or not.
+     * @param version      - The String representation of the version
+     * @param ifixJar      - A boolean to indicate whether this is an ifix jar
+     * @param testFix      - A boolean to indicate whether this is a test ifix or not.
      * @return - The jar file.
      */
     public static File createJarFile(File directory, String symbolicName, String version, boolean ifixJar, boolean testFix) {
@@ -254,7 +254,7 @@ public class TestUtils {
 
     /**
      * This method generate a set with the vars args supplied.
-     * 
+     *
      * @param elements The elements to be put in the set.
      * @return The set containing the elements.
      */
@@ -269,11 +269,11 @@ public class TestUtils {
     /**
      * This method creates a relative pathname based on an actual file and a toplevel dir.
      * It also transforms "\"'s to "/"'s.
-     * 
+     *
      * So actual file c:\test\installroot\lib\file1.xml and topLevelDir of c:\test\installroot
      * would return a value of lib/file1.xml.
-     * 
-     * @param actualFile - The actual file we're creating a relative pathname for.
+     *
+     * @param actualFile  - The actual file we're creating a relative pathname for.
      * @param topLevelDir - The Top level Dir that we remove from the actual pathname.
      * @return - A relative pathname from the toplevel dir.
      */
@@ -287,9 +287,9 @@ public class TestUtils {
 
     /**
      * This method generates a test feature with the required subsystem content headers
-     * 
-     * @param featureFile - The actual Feature File.
-     * @param featureName - the name of the feature
+     *
+     * @param featureFile      - The actual Feature File.
+     * @param featureName      - the name of the feature
      * @param subsystemContent - A Map of subsystem content.The key is the location string, and the value is the file name.
      * @return - The file for the feature.
      */
@@ -319,7 +319,7 @@ public class TestUtils {
                 if (fileName.contains("static")) {
                     featureContents.append(" " + jarParts[0] + "; location:=\"" + location + "\"; type=\"jar\"");
                 } else {
-                    featureContents.append(" " + jarParts[0] + "; version=\"[1,1.0.100)\"");
+                    featureContents.append(" " + jarParts[0] + "; version=\"[1,1.1)\"");
                 }
             } else {
                 featureContents.append(" " + fileName + "; location:=\"" + location + "\"; type=\"file\"");
@@ -334,7 +334,7 @@ public class TestUtils {
      * This method refreshes the Bundle repository that is used to identify files that are within the liberty runtime.
      * We have to refresh this because if we add a file to the runtime, it won't get picked up unless the repo is cleaned and
      * it re-reads the dirs. This is effectively bouncing the liberty server.
-     * 
+     *
      * @return
      */
     public static ContentBasedLocalBundleRepository refreshBundleRepository() {
@@ -366,9 +366,9 @@ public class TestUtils {
 
     /**
      * This method copies the original file to the new destination.
-     * 
+     *
      * @param originalFile - The file to copy
-     * @param destFile - The location of the new file.
+     * @param destFile     - The location of the new file.
      */
     public static void copyFile(File originalFile, File destFile, boolean appendToDest) {
         FileInputStream fis = null;
