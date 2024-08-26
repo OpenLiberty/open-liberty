@@ -61,6 +61,7 @@ import io.openliberty.jpa.data.tests.models.Person;
 import io.openliberty.jpa.data.tests.models.Prime;
 import io.openliberty.jpa.data.tests.models.Product;
 import io.openliberty.jpa.data.tests.models.PurchaseOrder;
+import io.openliberty.jpa.data.tests.models.Rating;
 import io.openliberty.jpa.data.tests.models.Rebate;
 import io.openliberty.jpa.data.tests.models.Rebate.Status;
 import io.openliberty.jpa.data.tests.models.Reciept;
@@ -1305,6 +1306,58 @@ public class JakartaDataRecreateServlet extends FATServlet {
         }
     }
 
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29475")
+    public void testOLGH29475() throws Exception {
+        Rating.Reviewer jimmy = Rating.Reviewer.of("Jimothy", "Scramble", "J.Scramble@example.com");
+        Rating.Item blueBerry = Rating.Item.of("BlueBerry 10", 299.99f);
+        Rating rating = Rating.of(1001, blueBerry, 4, jimmy,
+                                  "The buttons are nice for quick typing",
+                                  "The power button could have been in a better place",
+                                  "Poor screen lighting");
+
+        Rating result;
+
+        tx.begin();
+        em.persist(rating);
+        tx.commit();
+
+        tx.begin();
+        List<String> comments = em.createQuery("SELECT o.comments FROM Rating o WHERE o.id = :id", String.class)
+                        .setParameter("id", 1001)
+                        .getResultList();
+        tx.commit();
+
+        assertEquals(3, comments.size());
+
+        tx.begin();
+        try {
+            result = em.createQuery("SELECT NEW io.openliberty.jpa.data.tests.models.Rating( "
+                                    + " o.id, o.item, o.numStars, o.reviewer, o.comments ) "
+                                    + "FROM Rating o WHERE o.id = :id", Rating.class)
+                            .setParameter("id", 1001)
+                            .getSingleResult();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+
+            /**
+             * Recreate
+             * Exception [EclipseLink-0] (Eclipse Persistence Services - 5.0.0.v202408071314-43356e84b79e71022b1656a5462b0a72d70787a4):
+             * org.eclipse.persistence.exceptions.JPQLException
+             * Exception Description: Problem compiling
+             * [SELECT NEW io.openliberty.jpa.data.tests.models.Rating( o.id, o.item, o.numStars, o.reviewer, o.comments ) FROM Rating o WHERE o.id = :id].
+             * [93, 103] The state field path 'o.comments' cannot be resolved to a collection type.
+             * (SELECT NEW io.openliberty.jpa.data.tests.models.Rating(o.id, o.item, o.numStars, o.reviewer, [ o.comments ] ...
+             */
+            throw e;
+        }
+
+        assertNotNull(result.comments);
+        assertEquals(3, result.comments.size());
+
+    }
+	
     /**
      * Utility method to drop all entities from table.
      *

@@ -18,7 +18,9 @@ import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static test.jakarta.data.jpa.web.Assertions.assertArrayEquals;
 import static test.jakarta.data.jpa.web.Assertions.assertIterableEquals;
@@ -90,6 +92,7 @@ import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import test.jakarta.data.jpa.web.CreditCard.CardId;
 import test.jakarta.data.jpa.web.CreditCard.Issuer;
+import test.jakarta.data.jpa.web.Mobile.OS;
 
 @DataSourceDefinition(name = "java:module/jdbc/RepositoryDataStore",
                       className = "${repository.datasource.class.name}",
@@ -135,6 +138,9 @@ public class DataJPATestServlet extends FATServlet {
 
     @Inject
     MixedRepository mixed;
+
+    @Inject
+    MobilePhones mobilePhones;
 
     @Inject
     Models models;
@@ -1684,6 +1690,34 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(1, results.size());
         assertEquals(4000921042220002L, results.get(0).number);
+    }
+
+    /**
+     * Verify that fetch type eager and lazy both work when using a detached entity returned by Jakarta Data
+     */
+    @Test
+    public void testFetchType() {
+        mobilePhones.removeAll();
+
+        List<String> apps = Arrays.asList("Settings", "Camera", "Phone", "Email", "Messages",
+                                          "UnoLingo", "BankApp", "SoloGame", "LocalNews");
+
+        List<String> emails = Arrays.asList("john.smith@example.com", "JohnDSmith@example.work.com");
+
+        // Populate database
+        UUID id = mobilePhones.insert(Mobile.of(OS.ANDROID, apps, emails)).deviceId;
+
+        // Outside of transaction, returned entity should be detached
+        Mobile johnsMobile = mobilePhones.findById(id).orElseThrow();
+
+        // Fetch type lazy should be populated when accessing apps field
+        assertFalse("Expected apps to be populated when using fetch type lazy", johnsMobile.apps.isEmpty());
+        assertEquals("Entity apps did not match expected apps", apps, johnsMobile.apps);
+
+        // Fetch type eager emails field should be pre-populated
+        assertFalse("Expected emails to be populated when using fetch type eager", johnsMobile.emails.isEmpty());
+        assertEquals("Entity emails did not match expected apps", emails, johnsMobile.emails);
+
     }
 
     /**

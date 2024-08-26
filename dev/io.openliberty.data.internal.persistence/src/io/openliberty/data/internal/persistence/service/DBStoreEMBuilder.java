@@ -842,7 +842,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
             String columnType;
             if (isPrimitive || attributeType.isInterface() || Serializable.class.isAssignableFrom(attributeType)) {
                 columnType = isId ? "id" : //
-                                isCollection ? "element-collection" : // TODO add fetch-type eager
+                                isCollection ? "element-collection" : //
                                                 attributeName.equals(versionAttributeName) ? "version" : //
                                                                 "basic";
             } else {
@@ -851,8 +851,12 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
             }
 
             xml.append("   <").append(columnType).append(" name=\"").append(attributeName).append('"');
+
+            // All other queries when using un-annotated entities or record entities are eager,
+            // element-collections should be as well.
             if (isCollection)
                 xml.append(" fetch=\"EAGER\"");
+
             xml.append('>').append(EOLN);
 
             if (isEmbeddable) {
