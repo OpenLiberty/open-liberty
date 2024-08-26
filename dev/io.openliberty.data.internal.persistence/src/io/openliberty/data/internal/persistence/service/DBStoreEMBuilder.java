@@ -576,14 +576,15 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 getterSig = "()" + fieldSig;
             }
 
+            // NOTE: Other than when generic types are used, there is no need to provide field, getter method, or setter method signatures
+
             // --------------------------------------------------------------------
             // public <FieldType> <FieldName>;
             // --------------------------------------------------------------------
             if (trace && tc.isEntryEnabled())
-                Tr.debug(tc, "     " + "adding field : " +
-                             componentName + " " +
-                             typeDesc,
-                         fieldSig);
+                Tr.debug(tc, "adding field : " +
+                             componentName + " " + typeDesc,
+                         "  with signature : " + (fieldSig == null ? "(implied) " + componentName + " " + typeDesc : fieldSig));
 
             fv = cw.visitField(ACC_PUBLIC, componentName,
                                typeDesc,
@@ -592,17 +593,15 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
 
             fv.visitEnd();
 
-            // TODO include signature for setter and getter
-
             // --------------------------------------------------------------------
             // public setter...
             // --------------------------------------------------------------------
+            String methodName = "set" + componentName.substring(0, 1).toUpperCase() + componentName.substring(1);
             if (trace && tc.isEntryEnabled())
-                Tr.debug(tc, "     " + "adding setter : " +
+                Tr.debug(tc, "adding setter : " +
                              component.getName() + " " +
                              component.getType().descriptorString(),
-                         setterSig);
-            String methodName = "set" + componentName.substring(0, 1).toUpperCase() + componentName.substring(1);
+                         "  with signature : " + (setterSig == null ? "(implied) " + methodName + "(" + typeDesc + ")V" : setterSig));
             MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, methodName, "(" + typeDesc + ")V", setterSig, null);
             mv.visitVarInsn(ALOAD, 0);
             mv.visitVarInsn(org.objectweb.asm.Type.getType(component.getType()).getOpcode(ILOAD), 1);
@@ -615,6 +614,11 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
             // public getter...
             // --------------------------------------------------------------------
             methodName = "get" + componentName.substring(0, 1).toUpperCase() + componentName.substring(1);
+            if (trace && tc.isEntryEnabled())
+                Tr.debug(tc, "adding getter : " +
+                             component.getName() + " " +
+                             component.getType().descriptorString(),
+                         "  with signature : " + (getterSig == null ? "(implied) " + methodName + "()" + typeDesc : getterSig));
             mv = cw.visitMethod(ACC_PUBLIC, methodName, "()" + typeDesc, getterSig, null);
             mv.visitVarInsn(ALOAD, 0);
             mv.visitFieldInsn(GETFIELD, internal_entityClassName, componentName, typeDesc);
