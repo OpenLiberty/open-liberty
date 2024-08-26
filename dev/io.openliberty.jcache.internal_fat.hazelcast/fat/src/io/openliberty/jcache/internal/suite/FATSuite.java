@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.jcache.internal.fat;
+package io.openliberty.jcache.internal.suite;
 
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -29,6 +29,22 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import io.openliberty.jcache.internal.fat.JCacheAuthCacheFailureTest;
+import io.openliberty.jcache.internal.fat.JCacheAuthenticationCacheServerRestartTest;
+import io.openliberty.jcache.internal.fat.JCacheAuthenticationCacheTest;
+import io.openliberty.jcache.internal.fat.JCacheCustomPrincipalCastingTest;
+import io.openliberty.jcache.internal.fat.JCacheDeleteAuthCacheTest;
+import io.openliberty.jcache.internal.fat.JCacheDynamicUpdateTest;
+import io.openliberty.jcache.internal.fat.JCacheJwtAuthenticationCacheTest;
+import io.openliberty.jcache.internal.fat.JCacheJwtLoggedOutCookieCacheTest;
+import io.openliberty.jcache.internal.fat.JCacheLtpaLoggedOutCookieCacheServerRestartTest;
+import io.openliberty.jcache.internal.fat.JCacheLtpaLoggedOutCookieCacheTest;
+import io.openliberty.jcache.internal.fat.JCacheOauth20AuthenticationCacheTest;
+import io.openliberty.jcache.internal.fat.JCacheOidcClientAuthenticationCacheTest;
+import io.openliberty.jcache.internal.fat.JCacheOidcLoginAuthenticationCacheTest;
+import io.openliberty.jcache.internal.fat.JCacheProviderInAppTest;
+import io.openliberty.jcache.internal.fat.JCacheSamlAuthenticationCacheTest;
+import io.openliberty.jcache.internal.fat.JCacheSpnegoAuthenticationCacheTest;
 import io.openliberty.jcache.internal.fat.plugins.HazelcastTestPlugin;
 import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 
