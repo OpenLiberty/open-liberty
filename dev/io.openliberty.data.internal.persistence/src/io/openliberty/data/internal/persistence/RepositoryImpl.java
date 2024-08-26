@@ -855,7 +855,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
             validReturnTypes.add(singularClassName);
         } else {
             validReturnTypes.add(singularClassName + "[]");
-            validReturnTypes.add("Iterable<" + singularClassName + ">");
             validReturnTypes.add("List<" + singularClassName + ">");
         }
 

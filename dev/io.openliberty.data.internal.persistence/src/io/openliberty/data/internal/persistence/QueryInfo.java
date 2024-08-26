@@ -1319,12 +1319,14 @@ public class QueryInfo {
                                 first = false;
                             }
                         else
+                            // TODO include/exclude Page/CursoredPage based on whether PageRequest is supplied?
                             throw exc(MappingException.class,
                                       "CWWKD1005.find.rtrn.err",
                                       method.getName(),
                                       method.getDeclaringClass().getName(),
                                       method.getGenericReturnType().getTypeName(),
-                                      entityInfo.entityClass.getName());
+                                      entityInfo.entityClass.getName(),
+                                      List.of("List", "Page", "CursoredPage", "Stream"));
                         q.append(')');
                     }
                 } else {
