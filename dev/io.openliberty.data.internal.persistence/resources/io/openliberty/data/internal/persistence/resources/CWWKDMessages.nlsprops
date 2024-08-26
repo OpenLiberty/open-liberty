@@ -88,5 +88,5 @@ CWWKD1010.unknown.entity.prop=CWWKD1010E: The {0} method of the {1} repository \
 CWWKD1010.unknown.entity.prop.explanation=The repository method is attempting \
  to use an entity property that does not exist.
 CWWKD1010.unknown.entity.prop.useraction=Update the repository method to match \
- the properties that are defined by the entity.
+ a valid property that is defined by the entity.
 
