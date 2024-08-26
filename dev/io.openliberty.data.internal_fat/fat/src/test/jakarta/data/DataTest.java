@@ -79,6 +79,10 @@ public class DataTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKD1000E.*delete3", // TODO more specific message ID once translated
+                          "CWWKD1000E.*delete4", // TODO more specific message ID once translated
+                          "CWWKD1000E.*delete5", // TODO more specific message ID once translated
+                          "CWWKD1000E.*findFirst2147483648" // TODO more specific message ID once translated
+        );
     }
 }
