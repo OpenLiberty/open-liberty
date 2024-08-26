@@ -494,7 +494,7 @@ schemagen.info.schema.file.created=CWWKG0109I: The schema was created in the [{0
 schemagen.info.schema.file.created.explanation=The command completed successfully.
 schemagen.info.schema.file.created.useraction=No action is required.
 
-warning.config.root.deleted=CWWKG0110W: A configuration update was detected but the configuration root, {0}, does not exist. No configuration updates were made.
+warning.config.root.deleted=CWWKG0110W: A configuration update was detected, but the configuration root {0} does not exist. No configuration updates were made.
 warning.config.root.deleted.explanation=The server.xml was deleted. To cause no disruptions to running apps, no configuration changes will be made.
 warning.config.root.deleted.useraction=Add the server.xml back to the server.
 
