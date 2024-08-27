@@ -48,17 +48,17 @@ CWWKD1001.no.primary.entity.useraction=Define a primary entity class for the \
 CWWKD1002.method.annos.err=CWWKD1002E: The {0} method of the {1} repository \
  interface is annotated with a combination of annotations, {2}, that is not \
  valid.
-CWWKD1002.method.annos.err.explanation=The combination of annotations is not \
+CWWKD1002.method.annos.err.explanation=This combination of annotations is not \
  valid on a single repository method.
 CWWKD1002.method.annos.err.useraction=Locate the repository interface and method \
- and determine the correct method annotations to use.
+ and determine the correct combination of method annotations.
 
 CWWKD1003.lifecycle.rtrn.err=CWWKD1003E: The {0} return type of the {1} method \
  of the {2} repository interface is not a valid return type for a repository \
  {3} method. Valid return types include: {4}.
 CWWKD1003.lifecycle.rtrn.err.explanation=The return type of the method is not \
  one of the supported return types for Insert, Update, and Save methods.
-CWWKD1003.lifecycle.rtrn.err.useraction=Refer to the Jakarta Data JavaDoc of the \
+CWWKD1003.lifecycle.rtrn.err.useraction=Refer to the Jakarta Data Javadoc information for the \
  Insert, Update, and Save methods for valid return types.
 
 CWWKD1004.general.rtrn.err=CWWKD1004E: The {0} return type of the {1} method \
@@ -66,7 +66,7 @@ CWWKD1004.general.rtrn.err=CWWKD1004E: The {0} return type of the {1} method \
  method.
 CWWKD1004.general.rtrn.err.explanation=The return type of the method is not \
  one of the supported return types for the type of repository method.
-CWWKD1004.general.rtrn.err.useraction=Refer to the Jakarta Data JavaDoc for a \
+CWWKD1004.general.rtrn.err.useraction=Refer to the Jakarta Data Javadoc information for a \
  list of valid return types for the type of repository method.
 
 CWWKD1005.find.rtrn.err=CWWKD1005E: The {0} method of the {1} repository \
@@ -79,7 +79,7 @@ CWWKD1005.find.rtrn.err=CWWKD1005E: The {0} method of the {1} repository \
  array of the result type, allowing multiple results to be returned.
 CWWKD1005.find.rtrn.err.explanation=The return type of the method is not \
  one of the supported return types for repository find methods.
-CWWKD1005.find.rtrn.err.useraction=Refer to the Jakarta Data JavaDoc for a \
+CWWKD1005.find.rtrn.err.useraction=Refer to the Jakarta Data Javadoc information for a \
  list of valid return types for repository find methods.
 
 
