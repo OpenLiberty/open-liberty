@@ -1,3 +1,21 @@
+/*
+ *   Copyright 2020, 2024 Red Hat, Inc, and individual contributors
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ */
+/*
+ * Liberty changes are enclosed by LIBERTY CHANGE START and LIBERTY CHANGE END
+ */
 package io.smallrye.metrics.legacyapi;
 
 import java.util.Collections;
@@ -5,12 +23,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
@@ -62,7 +80,12 @@ public class LegacyMetricRegistryAdapter implements MetricRegistry {
 
     protected final ConcurrentHashMap<String, io.micrometer.core.instrument.Tag> applicationMPConfigAppNameTagCache;
 
-    protected final ConcurrentHashMap<String, ConcurrentLinkedQueue<MetricID>> applicationMap;
+    // LIBERTY CHANGE START
+    /*
+     * Liberty change. Previously, the second param type of ConcurrentLinkedQueue lead to memory leak.
+     */
+    protected final ConcurrentHashMap<String, Set<MetricID>> applicationMap;
+    // LIBERTY CHANGE END
 
     protected final ApplicationNameResolver appNameResolver;
 
@@ -133,14 +156,21 @@ public class LegacyMetricRegistryAdapter implements MetricRegistry {
          */
         if (appName == null)
             return;
-        ConcurrentLinkedQueue<MetricID> list = applicationMap.get(appName);
-        if (list == null) {
-            ConcurrentLinkedQueue<MetricID> newList = new ConcurrentLinkedQueue<MetricID>();
-            list = applicationMap.putIfAbsent(appName, newList);
-            if (list == null)
-                list = newList;
+
+        // LIBERTY CHANGE START
+        /*
+         * Liberty change. Previously, the second param type of ConcurrentLinkedQueue lead to memory leak.
+         */
+
+        Set<MetricID> set = applicationMap.get(appName);
+        if (set == null) {
+            Set<MetricID> newSet = Collections.newSetFromMap(new ConcurrentHashMap<MetricID, Boolean>());
+            set = applicationMap.putIfAbsent(appName, newSet);
+            if (set == null)
+                set = newSet;
         }
-        list.add(metricID);
+        set.add(metricID);
+        // LIBERTY CHANGE END
         if (LOGGER.isLoggable(Level.FINER)) {
             LOGGER.logp(Level.FINER, CLASS_NAME, METHOD_NAME,
                         String.format("Mapped MetricID [id= %s] to application \"%s\"", metricID, appName));
@@ -161,11 +191,14 @@ public class LegacyMetricRegistryAdapter implements MetricRegistry {
         if (appName == null) {
             return;
         }
-
-        ConcurrentLinkedQueue<MetricID> list = applicationMap.remove(appName);
-
-        if (list != null) {
-            for (MetricID metricID : list) {
+        // LIBERTY CHANGE START
+        /*
+         * Liberty change. Previously, the second Parameter type of ConcurrentLinkedQueue lead to memory leak.
+         */
+        Set<MetricID> set = applicationMap.remove(appName);
+        // LIBERTY CHANGE END
+        if (set != null) {
+            for (MetricID metricID : set) {
                 remove(metricID);
             }
         }
@@ -175,7 +208,6 @@ public class LegacyMetricRegistryAdapter implements MetricRegistry {
     }
 
     public LegacyMetricRegistryAdapter(String scope, MeterRegistry registry, ApplicationNameResolver appNameResolver) {
-
         /*
          * Note: if ApplicationNameResolver is passed through as Java Reflection Proxy object,
          * can only be checked if its is "null".
@@ -194,7 +226,12 @@ public class LegacyMetricRegistryAdapter implements MetricRegistry {
 
         applicationMPConfigAppNameTagCache = new ConcurrentHashMap<String, io.micrometer.core.instrument.Tag>();
 
-        applicationMap = new ConcurrentHashMap<String, ConcurrentLinkedQueue<MetricID>>();
+        // LIBERTY CHANGE START
+        /*
+         * Liberty change. Previously, the second param type of ConcurrentLinkedQueue lead to memory leak.
+         */
+        applicationMap = new ConcurrentHashMap<String, Set<MetricID>>();
+        // LIBERTY CHANGE END
 
         defaultAppNameValue = resolveMPConfigDefaultAppNameTag();
 
