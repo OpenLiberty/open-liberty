@@ -1037,9 +1037,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                                 Tr.debug(tc, "The log is a Heartbeatlog");
                             heartbeatLog = (HeartbeatLog) partnerLog;
 
-                            // Configure the log's SQL Peer Locking parameters
-                            configureSQLPeerLockParameters(heartbeatLog, cp);
-
                             // Configure the log's SQL HADB Retry parameters
                             configureSQLHADBRetryParameters(heartbeatLog, cp);
                             configureSQLHADBLightweightRetryParameters(heartbeatLog, cp);
@@ -1070,25 +1067,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "isDBTXLogPeerLocking", enableLocking);
         return enableLocking;
-    }
-
-    /**
-     * Configure the SQL Peer Locking parameters
-     *
-     * @param recLog
-     * @param cp
-     */
-    private void configureSQLPeerLockParameters(HeartbeatLog heartbeatLog, ConfigurationProvider cp) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "configureSQLPeerLockParameters", new java.lang.Object[] { heartbeatLog, cp, this });
-
-        // The optional SQL Peer Lock parameters
-        int peerLockTimeBeforeStale = cp.getPeerTimeBeforeStale();
-        heartbeatLog.setTimeBeforeLogStale(peerLockTimeBeforeStale);
-        int timeBetweenHeartbeats = cp.getTimeBetweenHeartbeats();
-        heartbeatLog.setTimeBetweenHeartbeats(timeBetweenHeartbeats);
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "configureSQLPeerLockParameters");
     }
 
     /**

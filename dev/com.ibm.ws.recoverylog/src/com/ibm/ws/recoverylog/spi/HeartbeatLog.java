@@ -46,22 +46,6 @@ public interface HeartbeatLog {
     public boolean claimPeerRecoveryLogs() throws LogsUnderlyingTablesMissingException;
 
     /**
-     * Set time interval that specifies how long
-     * before a log goes stale under the HA DB Peer locking scheme.
-     *
-     * @param timeBeforeStale
-     */
-    public void setTimeBeforeLogStale(int timeBeforeStale);
-
-    /**
-     * Set the heartbeat time interval for the HA DB Peer locking
-     * scheme.
-     *
-     * @param timeBetweenHeartbeats
-     */
-    public void setTimeBetweenHeartbeats(int timeBetweenHeartbeats);
-
-    /**
      * Set the time interval for an HA DB retry where the operation has a standard retry scheme such
      * as opening or forcing recovery logs.
      *
