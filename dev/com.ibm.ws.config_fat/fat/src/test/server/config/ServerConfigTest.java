@@ -390,13 +390,13 @@ public class ServerConfigTest {
         try {
             assertNotNull("The server configuration was not updated when setting it to polled", server.waitForStringInLog("CWWKF0011I")); //server has started
             server.getServerConfigurationFile().delete();
-            assertNotNull("The server configuration was updated after server.xml was deleted", server.waitForStringInLog("CWWKG0110W"));
+            assertNotNull("The server configuration was updated after server.xml was deleted", server.waitForStringInLog("CWWKG0110E"));
 
             //server can't be stopped without a server.xml. Refresh the serverxml so the server can be stopped.
             server.refreshServerXMLFromPublish();
             assertNotNull("The server configuration was updated after server.xml was added back", server.waitForStringInLog("CWWKG0018I"));
         } finally {
-            server.stopServer("CWWKG0110W");
+            server.stopServer("CWWKG0110E");
         }
     }
 

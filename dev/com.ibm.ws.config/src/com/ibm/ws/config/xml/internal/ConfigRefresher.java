@@ -102,7 +102,7 @@ public class ConfigRefresher {
      */
     public void refreshConfigurationIfServerXMLExists(){
         if(!serverXMLConfig.configRootFile().exists()){
-            Tr.warning(tc, "warning.config.root.deleted", serverXMLConfig.configRootFile().getName());
+            Tr.error(tc, "error.config.root.deleted", serverXMLConfig.configRootFile().getName());
         }
         else{
             refreshConfiguration();
