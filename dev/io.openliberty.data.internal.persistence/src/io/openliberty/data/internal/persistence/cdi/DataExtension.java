@@ -483,7 +483,7 @@ public class DataExtension implements Extension {
                       "CWWKD1001.no.primary.entity",
                       method.getName(),
                       repositoryInterface.getName(),
-                      "DataRepository<EntityClass, KeyClass>");
+                      "DataRepository<EntityClass, EntityIdClass>");
         return primaryEntityClass;
     }
 
