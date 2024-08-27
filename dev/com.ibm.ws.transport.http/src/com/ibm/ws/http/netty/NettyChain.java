@@ -222,13 +222,27 @@ public synchronized void stop() {
                 tcpOptions.put(ConfigConstants.EXTERNAL_NAME, endpointName);
 
                 bootstrap = nettyFramework.createTCPBootstrap(tcpOptions);
-                HttpPipelineInitializer httpPipeline = new HttpPipelineInitializer.HttpPipelineBuilder(this)
-                                .with(ConfigElement.COMPRESSION, owner.getCompressionConfig())
-                                .with(ConfigElement.HTTP_OPTIONS,httpOptions)
-                                .with(ConfigElement.HEADERS,owner.getHeadersConfig())
-                                .with(ConfigElement.REMOTE_IP,owner.getRemoteIpConfig())
-                                .with(ConfigElement.SAMESITE,owner.getSamesiteConfig())
-                                .build();
+                HttpPipelineInitializer.HttpPipelineBuilder pipelineBuilder = new HttpPipelineInitializer.HttpPipelineBuilder(this)
+                    .with(ConfigElement.COMPRESSION, owner.getCompressionConfig())
+                    .with(ConfigElement.HTTP_OPTIONS, httpOptions)
+                    .with(ConfigElement.HEADERS, owner.getHeadersConfig())
+                    .with(ConfigElement.REMOTE_IP, owner.getRemoteIpConfig())
+                    .with(ConfigElement.SAMESITE, owner.getSamesiteConfig());
+
+                // Add SSL options only if the chain is SSL-enabled
+                if (this.isHttps()) {
+                    System.out.println("NETTY CHAIN -> SSL OPTIONS: " + owner.getSslOptions());
+                    Map<String, Object> sslOptions = new HashMap<>(this.getOwner().getSslOptions());
+                    // if (owner.getProtocolVersion() != null) {
+                    //         sslOptions.getSslOptions().put(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION, owner.getProtocolVersion());
+                    // }
+
+
+
+                    pipelineBuilder.with(ConfigElement.SSL_OPTIONS, sslOptions);
+                }
+
+                HttpPipelineInitializer httpPipeline = pipelineBuilder.build();
 
                 bootstrap.childOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
                 bootstrap.childHandler(httpPipeline);
