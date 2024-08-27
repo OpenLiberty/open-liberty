@@ -9,7 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.cookie;
 
-import io.openliberty.http.constants.HttpOption;
+
 
 /**
  * A cookie encoder that converts <HttpCookie> objects into "Set-Cookie" ready headers. 

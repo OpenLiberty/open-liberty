@@ -24,6 +24,8 @@ import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer.ConfigElement;
 
+import io.openliberty.http.options.SslOption;
+
 /**
  * Configuration class for Netty-based HTTP channels.
  */
@@ -31,6 +33,13 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
 
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(NettyHttpChannelConfig.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
+
+    
+    private boolean suppressHandshakeError;
+    private int suppressHandshakeErrorCount;
+
+
+    
 
     /**
      * Constructor for NettyHttpChannelConfig.
@@ -47,13 +56,12 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
 
         this.parseConfig(builder.options);
 
+        System.out.println("Attempting to parse SSL config (even if undefined)");
+        parseSslOptions(builder.options);
+
     }
 
     public void clear() {
-        //TODO implement
-        //clearHeader
-        //clearCompression
-        //clearHTTPOptions
 
         clearSameSiteOptions();
     }
@@ -88,50 +96,8 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
 
         parseHttpOptions(config);
 
-    }
+        
 
-    /**
-     * Updates the configuration based on the specified element and options.
-     *
-     * @param element The configuration element to update.
-     * @param config  The configuration options to apply.
-     */
-    public void updateConfig(ConfigElement element, Map<String, Object> config) {
-
-        switch (element) {
-
-            case COMPRESSION: {
-                this.useCompressionOptions = Boolean.TRUE;
-                this.parseCompressionOptions(config);
-                break;
-            }
-
-            case HEADERS: {
-                this.useHeadersOptions = Boolean.TRUE;
-                this.parseHeaderOptions(config);
-                break;
-            }
-
-            case HTTP_OPTIONS: {
-                this.parseHttpOptions(config);
-                break;
-            }
-
-            case REMOTE_IP: {
-                this.useRemoteIpOptions = Boolean.TRUE;
-                this.parseRemoteIpOptions(config);
-                break;
-            }
-
-            case SAMESITE: {
-                this.useSameSiteOptions = Boolean.TRUE;
-                this.parseSameSiteOptions(config);
-                break;
-            }
-
-            default:
-                break;
-        }
     }
 
     private void parseCompressionOptions(Map<String, Object> options) {
@@ -222,22 +188,25 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         parseWriteTimeout(options.get(HttpConfigConstants.PROPNAME_WRITE_TIMEOUT));
         parsev0CookieDateRFC1123compat(options.get(HttpConfigConstants.PROPNAME_V0_COOKIE_RFC1123_COMPAT));
 
-        //TODO -> Netty not needed
-        //parseBinaryTransport(options.get(HttpConfigConstants.PROPNAME_BINARY_TRANSPORT));
-        //parseByteCacheSize(options.get(HttpConfigConstants.PROPNAME_BYTE_CACHE_SIZE));
-        //parseDelayedExtract(options.get(HttpConfigConstants.PROPNAME_EXTRACT_VALUE));
-        //parseHeaderChangeLimit(options.get(HttpConfigConstants.PROPNAME_HEADER_CHANGE_LIMIT));
-        // parseHeaderValidation(options.get(HttpConfigConstants.PROPNAME_HEADER_VALIDATION));
-
-        //parsePreventResponseSplit(options.get(HttpConfigConstants.PROPNAME_PREVENT_RESPONSE_SPLIT))
-        //parseRemoveCLHeaderInTempStatusRespRFC7230compat(options.get(HttpConfigConstants.REMOVE_CLHEADER_IN_TEMP_STATUS_RFC7230_COMPAT));
-        //parseStrictURLFormat(options.get(HttpConfigConstants.PROPNAME_STRICT_URL_FORMAT));
-        //parseThrowIOEForInboundConnections(options.get(HttpConfigConstants.PROPNAME_THROW_IOE_FOR_INBOUND_CONNECTIONS));
-        //parseWaitForEndOfMessage(options.get(HttpConfigConstants.PROPNAME_WAIT_FOR_END_OF_MESSAGE));
-
         // HTTP/2 Options
         parseHttp2Options(options);
 
+    }
+
+
+    private void parseSslOptions(Map<String, Object> options) {
+        this.suppressHandshakeError =  SslOption.SUPPRESS_HANDSHAKE_ERRORS.parse(options);
+        this.suppressHandshakeErrorCount = SslOption.SUPPRESS_HANDSHAKE_ERRORS_COUNT.parse(options);
+        System.out.println("Netty channel picked up supressHandshakeError as: " + this.suppressHandshakeError);
+        System.out.println("Netty channel picked up supressHandshakeErrorCount as: " + this.suppressHandshakeErrorCount);
+    }
+
+    public boolean suppressHandshakeError() {
+        return suppressHandshakeError;
+    }
+
+    public int suppressHandshakeErrorCount(){
+        return suppressHandshakeErrorCount;
     }
 
     private void parseHttp2Options(Map<String, Object> options) {
@@ -320,6 +289,10 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         }
     }
 
+   
+
+    
+
     public void disableRemoteIp() {
         useRemoteIpOptions = Boolean.FALSE;
     }
@@ -340,6 +313,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         private Map<String, Object> httpOptions;
         private Map<String, Object> forwardingOptions;
         private Map<String, Object> sameSiteOptions;
+        private Map<String, Object> sslOptions;
 
         public NettyConfigBuilder() {
             options = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -354,6 +328,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
             httpOptions = Collections.emptyMap();
             forwardingOptions = Collections.emptyMap();
             sameSiteOptions = Collections.emptyMap();
+            sslOptions = Collections.emptyMap();
 
         }
 
@@ -365,6 +340,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
                 return this;
             }
 
+System.out.println("NETTY CONFIG BUILDER - with ["+ config+"] and options: " + options );
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Http Configuration - " + config);
             }
@@ -397,6 +373,13 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
                 case SAMESITE: {
                     useSameSite = Boolean.TRUE;
                     sameSiteOptions = options;
+                    break;
+                }
+
+                case SSL_OPTIONS: {
+                    System.out.println(" this.sslOptions populated with: " + options);
+                    this.sslOptions = options;
+                    break;
                 }
 
                 default:
@@ -413,6 +396,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
             httpOptions.forEach(options::putIfAbsent);
             forwardingOptions.forEach(options::putIfAbsent);
             sameSiteOptions.forEach(options::putIfAbsent);
+            sslOptions.forEach(options::putIfAbsent);
 
         }
 

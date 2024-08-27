@@ -9,11 +9,14 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline;
 
-import java.util.Collections;
+import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.Objects;
 
 import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLSessionContext;
 
 import com.ibm.websphere.channelfw.EndPointInfo;
 import com.ibm.websphere.ras.Tr;
@@ -25,12 +28,14 @@ import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig.NettyConfigBuilder;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.pipeline.LibertySslHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyNettyALPNHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyUpgradeCodec;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpObjectAggregator;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.TransportInboundHandler;
+import com.ibm.ws.http.netty.pipeline.TransportOutboundHandler;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -69,17 +74,9 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         ACCESS_LOG
     }
 
-    NettyChain chain;
-    Map<String, Object> tcpOptions;
-    Map<String, Object> sslOptions;
-    Map<String, Object> httpOptions;
-    Map<String, Object> remoteIp;
-    Map<String, Object> compression;
-    Map<String, Object> samesite;
-    Map<String, Object> headers;
-    Map<String, Object> endpointOptions;
-
-    NettyHttpChannelConfig httpConfig;
+    private final NettyChain chain;
+    private final NettyHttpChannelConfig httpConfig;
+    private final Map<ConfigElement, Map<String, Object>> configOptions;
 
     public static final String NO_UPGRADE_OCURRED_HANDLER_NAME = "UPGRADE_HANDLER_CHECK";
     public static final String NETTY_HTTP_SERVER_CODEC = "HTTP_SERVER_HANDLER";
@@ -93,67 +90,19 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
     public static final long maxContentLength = Long.MAX_VALUE;
 
-    private HttpPipelineInitializer(HttpPipelineBuilder builder) {
-        Objects.requireNonNull(builder);
-        this.chain = builder.chain;
-        this.httpConfig = builder.httpConfig;
-    }
-
-    public void updateConfig(ConfigElement config, Map<String, Object> options) {
-        Objects.requireNonNull(config);
-        Objects.requireNonNull(options);
-        Tr.entry(tc, "updateConfig");
-
-        switch (config) {
-            case COMPRESSION: {
-                if (!HttpConfigConstants.DEFAULT_COMPRESSION.equalsIgnoreCase(String.valueOf(options.get(HttpConfigConstants.ID)))) {
-                    this.httpConfig.updateConfig(config, options);
-
-                }
-                break;
-
-            }
-            case HEADERS: {
-                if (!HttpConfigConstants.DEFAULT_HEADERS.equalsIgnoreCase(String.valueOf(options.get(HttpConfigConstants.ID)))) {
-                    MSP.log("updating headers config...");
-                    this.httpConfig.updateConfig(config, options);
-
-                }
-                break;
-            }
-            case HTTP_OPTIONS: {
-                this.httpConfig.updateConfig(config, options);
-
-                break;
-            }
-            case REMOTE_IP: {
-                if (!HttpConfigConstants.DEFAULT_REMOTE_IP.equalsIgnoreCase(String.valueOf(options.get(HttpConfigConstants.ID)))) {
-
-                    this.httpConfig.updateConfig(config, options);
-                }
-                break;
-            }
-            case SAMESITE: {
-
-                if (!HttpConfigConstants.DEFAULT_SAMESITE.equalsIgnoreCase(String.valueOf(options.get(HttpConfigConstants.ID)))) {
-                    MSP.log("updating samesite config");
-                    this.httpConfig.updateConfig(config, options);
-                }
-                break;
-            }
-            default:
-                break;
-
-        }
-        Tr.exit(tc, "updateConfig");
+    private HttpPipelineInitializer(NettyChain chain, NettyHttpChannelConfig httpConfig, Map<ConfigElement, Map<String, Object>> configOptions) {
+        this.chain = chain;
+        this.httpConfig = httpConfig;
+        this.configOptions = configOptions;
     }
 
     @Override
     protected void initChannel(Channel channel) throws Exception {
         Tr.entry(tc, "initChannel");
+        System.setProperty("javax.net.debug", "ssl,handshake");
+    System.out.println("[DEBUG] Enabled Java SSL debug mode");
 
         ChannelPipeline pipeline = channel.pipeline();
-        boolean notDisabled = false;
 
         // Initialize with the parent bootstrap initializer
         this.chain.getBootstrap().getBaseInitializer().init(channel);
@@ -161,62 +110,52 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         channel.attr(NettyHttpConstants.IS_OUTBOUND_KEY).set(false);
         channel.attr(NettyHttpConstants.ENDPOINT_PID).set(chain.getEndpointPID());
 
-        //TODO:Uncomment for debug
-//        pipeline.addLast(new DebugHandler());
-
-        if (chain.isHttps()) {
-            if (chain.isHttp2Enabled()) { // h2 setup starts here
-                // Need to setup ALPN
-                setupH2Pipeline(pipeline);
-            } else { // https setup starts here
-                // No ALPN because only HTTP1.1, just need to add SSL handler here
-                setupHttpsPipeline(pipeline);
-            }
+        if(chain.isHttps()){
+            setupSecurePipeline(pipeline);
         } else {
-            if (chain.isHttp2Enabled()) { //h2c setup starts here
-                setupH2cPipeline(pipeline);
-            } else { // http 1.1 setup starts here
-                setupHttp11Pipeline(pipeline);
-
-            }
-
+            setupUnsecurePipeline(pipeline);
         }
-
         pipeline.remove(NettyConstants.INACTIVITY_TIMEOUT_HANDLER_NAME);
 
         Tr.exit(tc, "initChannel");
     }
 
-    /**
-     * Utility method for building an H2 pipeline
-     *
-     * @param pipeline ChannelPipeline to update as necessary
-     * @throws NettyException
-     */
+    private void setupSecurePipeline(ChannelPipeline pipeline) throws NettyException{
+        if(chain.isHttp2Enabled()){
+            setupH2Pipeline(pipeline);
+        } else {
+            setupHttpsPipeline(pipeline);
+        }
+    }
+
+    private void setupUnsecurePipeline(ChannelPipeline pipeline) {
+        if(chain.isHttp2Enabled()){
+            setupH2cPipeline(pipeline);
+        } else {
+            setupHttp11Pipeline(pipeline);
+        }
+    }
+
     private void setupH2Pipeline(ChannelPipeline pipeline) throws NettyException {
-        NettyTlsProvider tlsProvider = this.chain.getOwner().getNettyTlsProvider();
-        if (tlsProvider == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "Configuration requires SSL and TLS Provider is not yet loaded: " + this.chain);
-            }
-            return;
-        }
-        // Needs appropriate ciphers and ALPN negotiator
-        EndPointInfo ep = this.chain.getEndpointInfo();
-        String host = ep.getHost();
-        String port = Integer.toString(ep.getPort());
-        SslContext context = tlsProvider.getInboundALPNSSLContext(chain.getOwner().getSslOptions(), host, port);
-        if (context == null) {
-            throw new NettyException("Problems creating SSL context for endpoint: " + ep.getHost() + ":" + ep.getPort() + " - " + ep);
-        }
-        // TODO Add these and other SSL Options to the Netty TLS bundle
-//        context.sessionContext().setSessionCacheSize(100);
-//        context.sessionContext().setSessionTimeout(86400);
-//        engine = context.newEngine(ch.alloc());
-//        SslHandler handler = new SslHandler(engine, false);
-        SslHandler handler = context.newHandler(pipeline.channel().alloc());
-//        handler.setHandshakeTimeoutMillis(30000);
-        pipeline.addFirst(HTTP_SSL_HANDLER_NAME, handler);
+        //DEBUG ONLY REMOVE
+        System.setProperty("javax.net.debug", "ssl,handshake");
+        SslContext context = getSslContext();
+        SSLEngine engine = context.newEngine(pipeline.channel().alloc());
+
+         System.out.println("SSLEngine created: " + engine);
+        System.out.println("SSLEngine protocols: " + String.join(", ", engine.getEnabledProtocols()));
+        System.out.println("SSLEngine cipher suites: " + String.join(", ", engine.getEnabledCipherSuites()));
+        System.out.println("SSLEngine use client mode: " + engine.getUseClientMode());
+        System.out.println("SSLEngine need client auth: " + engine.getNeedClientAuth());
+        System.out.println("SSLEngine want client auth: " + engine.getWantClientAuth());
+
+        engine.setUseClientMode(false);
+        engine.setNeedClientAuth(false);
+        engine.setWantClientAuth(false);
+
+        System.out.println("[DEVELOPMENT DEBUG ONLY!!!] SSL peer authentication is disabled for HTTPS.");
+
+        pipeline.addFirst(HTTP_SSL_HANDLER_NAME, new LibertySslHandler(engine, httpConfig));
         addPreHttpCodecHandlers(pipeline);
         pipeline.addLast(HTTP_ALPN_HANDLER_NAME, new LibertyNettyALPNHandler(httpConfig));
         pipeline.addLast(HTTP_DISPATCHER_HANDLER_NAME, new HttpDispatcherHandler(httpConfig));
@@ -225,6 +164,66 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         // Turn off half closure with H2
         pipeline.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, false);
     }
+
+    private void setupHttpsPipeline(ChannelPipeline pipeline) throws NettyException {
+        //DEBUG ONLY REMOVE
+        System.setProperty("javax.net.debug", "ssl,handshake");
+        SslContext context = getSslContext();
+        SSLEngine engine = context.newEngine(pipeline.channel().alloc());
+
+         System.out.println("SSLEngine created: " + engine);
+        System.out.println("SSLEngine protocols: " + String.join(", ", engine.getEnabledProtocols()));
+        System.out.println("SSLEngine cipher suites: " + String.join(", ", engine.getEnabledCipherSuites()));
+        System.out.println("SSLEngine use client mode: " + engine.getUseClientMode());
+        System.out.println("SSLEngine need client auth: " + engine.getNeedClientAuth());
+        System.out.println("SSLEngine want client auth: " + engine.getWantClientAuth());
+
+        engine.setUseClientMode(false);
+        engine.setNeedClientAuth(false);
+        engine.setWantClientAuth(false);
+
+        System.out.println("[DEVELOPMENT DEBUG ONLY!!!] SSL peer authentication is disabled for HTTPS.");
+
+        pipeline.addFirst(HTTP_SSL_HANDLER_NAME, new LibertySslHandler(engine, httpConfig));
+        pipeline.channel().attr(NettyHttpConstants.IS_SECURE).set(Boolean.TRUE);
+        setupHttp11Pipeline(pipeline);
+    }
+
+    private SslContext getSslContext() throws NettyException {
+        NettyTlsProvider tlsProvider = chain.getOwner().getNettyTlsProvider();
+        if(tlsProvider == null){
+            throw new NettyException("TLS Provider is not loaded");
+        }
+        EndPointInfo ep = this.chain.getEndpointInfo();
+        String host = ep.getHost();
+        String port = Integer.toString(ep.getPort());
+
+        // Log SSL configuration details
+            System.out.println("SSL Configuration:");
+            System.out.println("Host: " + host);
+            System.out.println("Port: " + port);
+            System.out.println("Is HTTP/2 enabled: " + chain.isHttp2Enabled());
+
+        SslContext context = chain.isHttp2Enabled() ? 
+            tlsProvider.getInboundALPNSSLContext(configOptions.get(ConfigElement.SSL_OPTIONS), host, port)
+            : tlsProvider.getInboundSSLContext(configOptions.get(ConfigElement.SSL_OPTIONS), host, port);
+        if (context == null) {
+            throw new NettyException("Failed to create SSL context for endpoint: " + ep.getHost() + ":" + ep.getPort());
+        }
+
+        // Log SslContext details
+            System.out.println("SslContext created: " + context);
+            System.out.println("Cipher suites: " + String.join(", ", context.cipherSuites()));
+
+            //DEBUG session cache 0
+            context.getClientSessionContext().setSessionCacheSize(0);
+context.getServerSessionContext().setSessionCacheSize(0);
+
+
+        return context;
+    }
+
+   
 
     /**
      * Utility method for building and H2C pipeline
@@ -254,36 +253,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         pipeline.addLast(HTTP_DISPATCHER_HANDLER_NAME, new HttpDispatcherHandler(httpConfig));
         addPreHttpCodecHandlers(pipeline);
         addPreDispatcherHandlers(pipeline, false);
-    }
-
-    /**
-     * Utility method for building and HTTPS pipeline
-     *
-     * @param pipeline ChannelPipeline to update as necessary
-     */
-    private void setupHttpsPipeline(ChannelPipeline pipeline) {
-        NettyTlsProvider tlsProvider = this.chain.getOwner().getNettyTlsProvider();
-        if (tlsProvider == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "Configuration requires SSL and TLS Provider is not yet loaded: " + this.chain);
-            }
-            return;
-        }
-        EndPointInfo ep = this.chain.getEndpointInfo();
-        String host = ep.getHost();
-        String port = Integer.toString(ep.getPort());
-        SslContext context = tlsProvider.getInboundSSLContext(chain.getOwner().getSslOptions(), host, port);
-        Channel channel = pipeline.channel();
-        if (context == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                Tr.entry(this, tc, "setupHttpsPipeline", "Error adding TLS Support, found null context");
-            channel.close();
-            return;
-        }
-        SSLEngine engine = context.newEngine(channel.alloc());
-        pipeline.addFirst(HTTP_SSL_HANDLER_NAME, new SslHandler(engine, false));
-        channel.attr(NettyHttpConstants.IS_SECURE).set(Boolean.TRUE);
-        setupHttp11Pipeline(pipeline);
     }
 
     /**
@@ -349,10 +318,9 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
      */
     private void addPreHttpCodecHandlers(ChannelPipeline pipeline) {
         if (httpConfig.isAccessLoggingEnabled()) {
-            if (pipeline.names().contains(NETTY_HTTP_SERVER_CODEC))
-                pipeline.addBefore(NETTY_HTTP_SERVER_CODEC, null, new AccessLoggerHandler(httpConfig));
-            else
+            if (pipeline.names().contains(NETTY_HTTP_SERVER_CODEC)){        
                 pipeline.addLast(new AccessLoggerHandler(httpConfig));
+            }
         }
     }
 
@@ -384,119 +352,68 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     public static class HttpPipelineBuilder {
 
         private final NettyChain chain;
+        private final EnumMap<ConfigElement, Map<String, Object>> configOptions = new EnumMap<>(ConfigElement.class);
+        private final Set<ConfigElement> activeConfigs = EnumSet.noneOf(ConfigElement.class);
 
-        private Map<String, Object> compression;
-        private Map<String, Object> headers;
-        private Map<String, Object> httpOptions;
-        private Map<String, Object> remoteIp;
-        private Map<String, Object> samesite;
-
-        NettyHttpChannelConfig httpConfig;
-
-        private boolean useCompression;
-        private boolean useHeaders;
-        private boolean useRemoteIp;
-        private boolean useSameSite;
 
         public HttpPipelineBuilder(NettyChain chain) {
-            this.chain = chain;
-
-            if (httpConfig != null) {
-                httpConfig = null;
-            }
-            httpOptions = Collections.emptyMap();
-            remoteIp = Collections.emptyMap();
-            compression = Collections.emptyMap();
-            samesite = Collections.emptyMap();
-            headers = Collections.emptyMap();
-
+            this.chain = Objects.requireNonNull(chain, "Netty chain cannot be null");
         }
 
         public HttpPipelineBuilder with(ConfigElement config, Map<String, Object> options) {
-            Tr.entry(tc, "with");
-            if (Objects.isNull(config) || Objects.isNull(options)) {
-                Tr.debug(tc, "with", "A bad configuration was attempted. Config: " + config + " options: " + options);
-                return this;
+            Objects.requireNonNull(config, "ConfigElement cannot be null");
+            Objects.requireNonNull(options, "Options cannot be null");
+
+            String id = String.valueOf(options.get(HttpConfigConstants.ID));
+
+            if (config == ConfigElement.SSL_OPTIONS){
+                configOptions.put(config, options);
+                activeConfigs.add(config);
+            } else if (!isDefaultConfig(config, id)){
+                configOptions.put(config, options);
+                activeConfigs.add(config);
             }
 
-            switch (config) {
-
-                case COMPRESSION: {
-                    useCompression = HttpConfigConstants.DEFAULT_COMPRESSION.equalsIgnoreCase(String.valueOf(options.get(HttpConfigConstants.ID))) ? Boolean.FALSE : Boolean.TRUE;
-                    this.compression = options;
-                    break;
-                }
-
-                case HEADERS: {
-                    useHeaders = HttpConfigConstants.DEFAULT_HEADERS.equalsIgnoreCase(String.valueOf(options.get(HttpConfigConstants.ID))) ? Boolean.FALSE : Boolean.TRUE;
-                    this.headers = options;
-                    break;
-                }
-
-                case HTTP_OPTIONS: {
-                    this.httpOptions = options;
-                    break;
-                }
-                case REMOTE_IP: {
-
-                    useRemoteIp = HttpConfigConstants.DEFAULT_REMOTE_IP.equalsIgnoreCase(String.valueOf(options.get(HttpConfigConstants.ID))) ? Boolean.FALSE : Boolean.TRUE;
-                    this.remoteIp = options;
-
-                    break;
-                }
-                case SAMESITE: {
-
-                    useSameSite = HttpConfigConstants.DEFAULT_SAMESITE.equalsIgnoreCase(String.valueOf(options.get(HttpConfigConstants.ID))) ? Boolean.FALSE : Boolean.TRUE;
-
-                    MSP.log("Pipeline Samesite enabled: " + useSameSite);
-                    this.samesite = options;
-                    break;
-                }
-
-                default:
-                    break;
-            }
-            Tr.exit(tc, "with");
             return this;
         }
 
-        private NettyHttpChannelConfig generateHttpOptions() {
-            Tr.entry(tc, "generateHttpOptions");
-
-            NettyConfigBuilder builder = new NettyHttpChannelConfig.NettyConfigBuilder();
-
-            if (Objects.nonNull(httpOptions)) {
-
-                builder.with(ConfigElement.HTTP_OPTIONS, this.httpOptions);
-
+        private boolean isDefaultConfig(ConfigElement config, String id){
+            switch (config) {
+                case HTTP_OPTIONS:
+                    return "defaultHttpOptions".equalsIgnoreCase(id);
+                case REMOTE_IP:
+                    return "defaultRemoteIp".equalsIgnoreCase(id);
+                case COMPRESSION:
+                    return "defaultCompression".equalsIgnoreCase(id);
+                case SAMESITE:
+                    return "defaultSameSite".equalsIgnoreCase(id);
+                case HEADERS:
+                    return "defaultHeaders".equalsIgnoreCase(id);
+                case SSL_OPTIONS:
+                    System.out.println("checking default ssl, id is: " + id);
+                    return "defaultSSLOptions".equalsIgnoreCase(id);
+                default:
+                    return false;
             }
-
-            if (useCompression) {
-                builder.with(ConfigElement.COMPRESSION, compression);
-            }
-
-            if (useHeaders) {
-                builder.with(ConfigElement.HEADERS, headers);
-            }
-
-            if (useRemoteIp) {
-                builder.with(ConfigElement.REMOTE_IP, remoteIp);
-            }
-
-            if (useSameSite) {
-                builder.with(ConfigElement.SAMESITE, samesite);
-                MSP.log("Building config with samesite");
-            }
-            Tr.exit(tc, "generateHttpOptions");
-
-            return builder.build();
         }
 
         public HttpPipelineInitializer build() {
 
-            this.httpConfig = generateHttpOptions();
+            NettyHttpChannelConfig.NettyConfigBuilder configBuilder = new NettyHttpChannelConfig.NettyConfigBuilder();
 
-            return new HttpPipelineInitializer(this);
+            System.out.println("Building the netty configuration...");
+            for (ConfigElement element : ConfigElement.values()) {
+                System.out.println("Building the element: " + element);
+
+                if (activeConfigs.contains(element)) {
+                    configBuilder.with(element, configOptions.get(element));
+                }
+            }
+
+            NettyHttpChannelConfig httpConfig = configBuilder.build();
+
+
+            return new HttpPipelineInitializer(chain, httpConfig, configOptions);
         }
     }
 
