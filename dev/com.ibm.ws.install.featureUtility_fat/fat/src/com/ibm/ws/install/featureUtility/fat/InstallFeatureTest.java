@@ -173,6 +173,27 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
 	    Log.exiting(c, METHOD_NAME);
 	}
+	
+	/**
+	 * Test installation of feature usertest.with.api.esa from local. 
+	 * 
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testInstallUsrFeatureESA() throws Exception {
+	    final String METHOD_NAME = "testInstallUsrFeatureESA";
+	    Log.entering(c, METHOD_NAME);
+	    copyFileToMinifiedRoot("tmp", "publish/features/usertest.with.api-1.0.esa");
+	    // Begin Test
+	    String[] param1s = { "installFeature", minifiedRoot + "/tmp/usertest.with.api-1.0.esa", "--verbose" };
+	    String[] filesList = { "usr/extension/lib/features/usertest.with.api.mf" };
+	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+
+	    checkCommandOutput(po, 0, null, filesList);
+
+	    Log.exiting(c, METHOD_NAME);
+	}
 
 	/**
 	 * Test the installation of features eventLogging-1.0 and osgiConsole-1.0, which
@@ -1177,6 +1198,5 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    Log.exiting(c, METHOD_NAME);
 
 	}
-
 
 }
