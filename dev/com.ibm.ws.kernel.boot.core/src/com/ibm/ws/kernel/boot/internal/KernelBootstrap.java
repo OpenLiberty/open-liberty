@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -442,7 +442,7 @@ public class KernelBootstrap {
 
             NameBasedLocalBundleRepository repo = new NameBasedLocalBundleRepository(bootProps.getInstallRoot());
             File bestMatchFile = repo.selectBundle("com.ibm.ws.org.eclipse.equinox.region",
-                                                   VersionUtility.stringToVersionRange("[1.0,1.0.100)"));
+                                                   VersionUtility.stringToVersionRange("[1.0,1.1)"));
             if (bestMatchFile == null) {
                 throw new LaunchException("Could not find bundle for " + "com.ibm.ws.org.eclipse.equinox.region"
                                           + ".", BootstrapConstants.messages.getString("error.missingBundleException"));
