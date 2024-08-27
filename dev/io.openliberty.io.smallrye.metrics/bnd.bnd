@@ -33,6 +33,9 @@ WS-TraceGroup: METRICS
 publish.wlp.jar.suffix: lib
 
 -buildpath: \
-    io.smallrye:smallrye-metrics;version=5.1.0
+    io.smallrye:smallrye-metrics;version=5.1.0,\
+    io.openliberty.org.eclipse.microprofile.metrics.5.0;version=latest,\
+    io.openliberty.io.micrometer;version=latest,\
+    io.openliberty.org.eclipse.microprofile.config.3.0;version=latest
 	
 instrument.disabled: true
