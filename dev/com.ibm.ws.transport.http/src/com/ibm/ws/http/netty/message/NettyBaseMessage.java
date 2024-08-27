@@ -36,6 +36,7 @@ import com.ibm.ws.http.channel.internal.HttpTrailersImpl;
 import com.ibm.ws.http.channel.internal.cookies.CookieCacheData;
 import com.ibm.ws.http.channel.internal.cookies.CookieHeaderByteParser;
 import com.ibm.ws.http.channel.internal.cookies.CookieUtils;
+import com.ibm.ws.http.channel.internal.cookies.SameSiteCookieUtils;
 import com.ibm.ws.http.netty.MSP;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
@@ -1086,7 +1087,7 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
             Tr.entry(tc, "marshallCookies");
         }
 
-        HashMap<String, String> setCookieNames = null; //PI31734
+        HashMap<String, String> setCookieNames = new HashMap<String,String>();
 
         MSP.log("marshalling cookie list: " + list);
 
@@ -1178,6 +1179,19 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
                 }
                 if(sameSiteIsNotNone){
                     cookie.setAttribute("partitioned", "false");
+                }
+            }
+
+            if(cookie.getAttribute("samesite") != null && cookie.getAttribute("samesite").equals(HttpConfigConstants.SameSite.NONE.getName())){
+                String userAgent = getServiceContext().getRequest().getHeader(HttpHeaderKeys.HDR_USER_AGENT).asString();
+                if(userAgent != null && SameSiteCookieUtils.isSameSiteNoneIncompatible(userAgent)){
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && setCookieNames.containsKey(cookie.getName())) {
+                        Tr.debug(tc, "Incompatible client for SameSite=None found with the following User-Agent: " + userAgent);
+                    }
+                    cookie.setAttribute("samesite", null);
+                    if(partitionedValue != null){
+                        cookie.setAttribute("partitioned", null);
+                    }
                 }
             }
 
