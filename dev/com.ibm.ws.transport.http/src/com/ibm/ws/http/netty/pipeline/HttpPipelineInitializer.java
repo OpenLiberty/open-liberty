@@ -215,9 +215,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             System.out.println("SslContext created: " + context);
             System.out.println("Cipher suites: " + String.join(", ", context.cipherSuites()));
 
-            //DEBUG session cache 0
-            context.getClientSessionContext().setSessionCacheSize(0);
-context.getServerSessionContext().setSessionCacheSize(0);
+   
 
 
         return context;
