@@ -19,9 +19,9 @@
 
         <wlp>${wlp}</wlp>
         <targetDirectory>${project.basedir}/target</targetDirectory>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <maven.compiler.release>11</maven.compiler.release>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.release>17</maven.compiler.release>
 
         <!-- The default value is changed to `false` since maven-war-plugin 3.0.0 -->
         <failOnMissingWebXml>false</failOnMissingWebXml>
@@ -29,10 +29,10 @@
         <!-- Official Maven Plugins -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-war-plugin.version>3.3.1</maven-war-plugin.version>
-        <maven-dependency-plugin.version>3.2.0</maven-dependency-plugin.version>
-        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>3.0.0-M5</maven-failsafe-plugin.version>
-        <maven-surefire-report-plugin.version>3.0.0-M5</maven-surefire-report-plugin.version>
+        <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
+        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
+        <maven-surefire-report-plugin.version>3.2.5</maven-surefire-report-plugin.version>
 
         <!-- Jakarta EE API -->
         <jakarta.ws.rs-api.version>4.0.0</jakarta.ws.rs-api.version>
@@ -50,9 +50,9 @@
         <jsonassert.version>1.5.0</jsonassert.version>
         <assertj.version>3.20.1</assertj.version>
         <!-- TODO: OpenLiberty server -->
-        <liberty.runtime.version>21.0.0.12-beta</liberty.runtime.version>
-        <liberty-maven-plugin.version>3.3.4</liberty-maven-plugin.version>
-        <arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
+        <liberty.runtime.version>24.0.0.8</liberty.runtime.version>
+        <liberty-maven-plugin.version>3.10.3</liberty-maven-plugin.version>
+        <arquillian.liberty.managed.jakarta.version>2.1.3</arquillian.liberty.managed.jakarta.version>
 
         <!-- By default, skip tests -->
         <skip.unit.tests>true</skip.unit.tests>
@@ -208,17 +208,17 @@
         </dependency>
         <dependency>
             <groupId>io.openliberty</groupId>
-            <artifactId>io.openliberty.org.jboss.resteasy.common.ee10</artifactId>
+            <artifactId>io.openliberty.org.jboss.resteasy.common.ee11</artifactId>
             <version>1</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.org.jboss.resteasy.common.ee10_}</systemPath>
+            <systemPath>${io.openliberty.org.jboss.resteasy.common.ee11_}</systemPath>
         </dependency>
         <dependency>
             <groupId>io.openliberty</groupId>
-            <artifactId>io.openliberty.org.jboss.resteasy.jaxb.provider.ee10</artifactId>
+            <artifactId>io.openliberty.org.jboss.resteasy.jaxb.provider.ee11</artifactId>
             <version>1</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.org.jboss.resteasy.jaxb.provider.ee10_}</systemPath>
+            <systemPath>${io.openliberty.org.jboss.resteasy.jaxb.provider.ee11_}</systemPath>
         </dependency>        
         <dependency>
             <groupId>io.openliberty</groupId>
@@ -420,14 +420,16 @@
                     </systemPropertyVariables>
                     <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
                     <dependenciesToScan>
-                         <dependency>io.openliberty.jakarta.ws.rs:jakarta-restful-ws-tck</dependency>   
+						<dependency>jakarta.ws.rs:jakarta-restful-ws-tck</dependency>
+ <!--                         <dependency>io.openliberty.jakarta.ws.rs:jakarta-restful-ws-tck</dependency>   -->
                      </dependenciesToScan>
                     <includes>
-                        <!--  Example to run just one test. 
-                        <include>ee.jakarta.tck.ws.rs.signaturetest.jaxrs.JAXRSSigTestIT</include> -->                          
+                        <!--  Example to run just one test. -->
+                        <!-- <include>ee.jakarta.tck.ws.rs.ee.rs.container.requestcontext.JAXRSSigTestIT</include> -->                        
                     
-                         <include>**/tck/**/*Test</include>
-                        <include>**/tck/**/*IT</include>  
+                        <!--  Run all tests. -->
+                        <include>**/tck/**/*Test</include>
+                        <include>**/tck/**/*IT</include>
                      </includes>
                      <excludes>
                         <exclude>**/tck/**/JAXRSSigTestIT</exclude>
