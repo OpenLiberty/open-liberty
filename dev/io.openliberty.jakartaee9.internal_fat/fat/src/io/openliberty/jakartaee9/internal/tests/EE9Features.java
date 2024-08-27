@@ -294,7 +294,6 @@ public class EE9Features {
             features.remove("mpReactiveStreams-3.0");
             features.remove("mpReactiveMessaging-3.0");
             features.remove("mpTelemetry-1.1");
-            features.remove("mpTelemetry-2.0");
         }
 
         if (JavaInfo.JAVA_VERSION < 17) {
