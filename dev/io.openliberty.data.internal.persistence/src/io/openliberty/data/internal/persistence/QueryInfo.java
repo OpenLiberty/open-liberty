@@ -1326,7 +1326,9 @@ public class QueryInfo {
                                       method.getDeclaringClass().getName(),
                                       method.getGenericReturnType().getTypeName(),
                                       entityInfo.entityClass.getName(),
-                                      List.of("List", "Page", "CursoredPage", "Stream"));
+                                      List.of("List", "Optional",
+                                              "Page", "CursoredPage",
+                                              "Stream"));
                         q.append(')');
                     }
                 } else {

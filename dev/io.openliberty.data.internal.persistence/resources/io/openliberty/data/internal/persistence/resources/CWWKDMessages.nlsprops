@@ -67,16 +67,15 @@ CWWKD1004.general.rtrn.err.explanation=The return type of the method is not \
 CWWKD1004.general.rtrn.err.useraction=Refer to the Jakarta Data Javadoc \
  information for a list of valid return types for the type of repository method.
 
-
 CWWKD1005.find.rtrn.err=CWWKD1005E: The {0} method of the {1} repository \
  interface is not valid. The method specifies a {2} return type that is \
  not convertible from the {3} entity type. The result type of a \
  find operation must be the entity type, a type of an entity property, \
  a Java record composed of entity properties, or a type constructed \
  by the JPQL or JDQL that is supplied to the \
- Query annotation. The return type of the repository find method can be an \
- Optional or single value of the result type or it can be one of {4} or an \
- array of the result type.
+ Query annotation. The return type of the repository find method can be \
+ the result type, an array of the result type, or any of the following types \
+ parameterized with the result type: {4}.
 CWWKD1005.find.rtrn.err.explanation=The return type of the method is not \
  one of the supported return types for repository find methods.
 CWWKD1005.find.rtrn.err.useraction=Refer to the Jakarta Data Javadoc \
@@ -90,4 +89,3 @@ CWWKD1010.unknown.entity.prop.explanation=The repository method is attempting \
  to use an entity property that does not exist.
 CWWKD1010.unknown.entity.prop.useraction=Update the repository method to match \
  a valid property that is defined by the entity.
-
