@@ -9,6 +9,8 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal.container.fat;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,12 +19,14 @@ import java.net.URL;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.time.Duration;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.ImageNameSubstitutor;
 
@@ -102,5 +106,30 @@ public class TestUtils {
         } catch (Exception e) {
             Log.error(TestUtils.class, "trustAll", e);
         }
+    }
+
+    /*
+     * Ensure that the container was successfully started.
+     */
+    public static void isContainerStarted(String subString, GenericContainer<?> container) {
+        long endTime = System.currentTimeMillis() + Duration.ofSeconds(60).toMillis();
+        boolean messageFound = false;
+
+        while (System.currentTimeMillis() < endTime) {
+            String logs = container.getLogs();
+
+            if (logs.contains(subString)) {
+                messageFound = true;
+                break;
+            } else {
+                try {
+                    Thread.sleep(5000);
+                } catch (Exception e) {
+                    Thread.currentThread().interrupt();
+                    Log.info(c, "isContainerStarted", e.getMessage());
+                }
+            }
+        }
+        assertTrue("Container failed to startup successfully.", messageFound);
     }
 }

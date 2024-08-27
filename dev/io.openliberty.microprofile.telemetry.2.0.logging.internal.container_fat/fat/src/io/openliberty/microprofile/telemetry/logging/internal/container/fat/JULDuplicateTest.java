@@ -69,6 +69,7 @@ public class JULDuplicateTest {
         ShrinkHelper.exportDropinAppToServer(server, telemetryLogApp,
                                              DeployOptions.SERVER_ONLY);
 
+        server.addEnvVar("OTEL_EXPORTER_OTLP_PROTOCOL", "http/protobuf");
         server.addEnvVar("OTEL_EXPORTER_OTLP_ENDPOINT", "http://" + container.getHost() + ":" + container.getMappedPort(4318));
 
         server.copyFileToLibertyServerRoot("agent-260/opentelemetry-javaagent.jar");
@@ -89,6 +90,8 @@ public class JULDuplicateTest {
 
         // Wait for the second message (SESN0176I) to arrive, to ensure all the occurrences of the first message (SRVE0250I) has arrived.
         server.waitForStringInLog("SESN0176I");
+
+        TestUtils.isContainerStarted("LogsExporter", container);
 
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_ALL_SOURCES, messageLogFile, server);
