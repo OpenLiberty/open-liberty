@@ -10,3 +10,4 @@ IBM-App-ForceRestart: install,uninstall
 Subsystem-Content: io.openliberty.appAuthorization-3.0; type="osgi.subsystem.feature",
  io.openliberty.security.authorization.jacc.testprovider; version="[1,1.1)"
 WLP-InstantOn-Enabled: true
+
