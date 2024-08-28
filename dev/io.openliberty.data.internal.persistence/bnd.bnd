@@ -83,3 +83,10 @@ instrument.classesExcludes: io/openliberty/data/internal/persistence/resources/*
   io.openliberty.jakarta.persistence.3.1,\
   io.openliberty.jakarta.transaction.2.0,\
   io.openliberty.jakarta.validation.3.0
+  
+  -testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
+	com.ibm.ws.logging;version=latest, \
+	com.ibm.ws.kernel.boot.logging;version=latest, \
+	com.ibm.ws.kernel.security.thread;version=latest

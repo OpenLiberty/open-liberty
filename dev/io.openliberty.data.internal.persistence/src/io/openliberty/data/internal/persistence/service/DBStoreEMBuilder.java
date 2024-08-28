@@ -12,16 +12,6 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence.service;
 
-import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
-import static org.objectweb.asm.Opcodes.ACC_SUPER;
-import static org.objectweb.asm.Opcodes.ALOAD;
-import static org.objectweb.asm.Opcodes.GETFIELD;
-import static org.objectweb.asm.Opcodes.ILOAD;
-import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
-import static org.objectweb.asm.Opcodes.PUTFIELD;
-import static org.objectweb.asm.Opcodes.RETURN;
-import static org.objectweb.asm.Opcodes.V17;
-
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -31,7 +21,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.RecordComponent;
-import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,13 +43,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.sql.DataSource;
 
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.FieldVisitor;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.commons.GeneratorAdapter;
-import org.objectweb.asm.signature.SignatureVisitor;
-import org.objectweb.asm.signature.SignatureWriter;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -356,7 +338,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 } else {
                     if (c.isRecord()) {
                         String entityClassName = c.getName() + EntityInfo.RECORD_ENTITY_SUFFIX; // an entity class is generated for the record
-                        byte[] generatedEntityBytes = generateEntityClassBytes(c, entityClassName);
+                        byte[] generatedEntityBytes = RecordTransformer.generateEntityClassBytes(c, entityClassName);
                         generatedEntities.add(new InMemoryMappingFile(generatedEntityBytes, entityClassName.replace('.', '/') + ".class"));
                         Class<?> generatedEntity = classDefiner.findLoadedOrDefineClass(getRepositoryClassLoader(), entityClassName, generatedEntityBytes);
                         generatedToRecordClass.put(generatedEntity, c);
@@ -450,207 +432,9 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
         }
     }
 
-    /**
-     * Initially copied from @nmittles pull #25248
-     *
-     * Adds the default (no arg) constructor. <p>
-     *
-     * @param cw     ASM ClassWriter to add the constructor to.
-     * @param parent fully qualified name of the parent class
-     *                   with '/' as the separator character
-     *                   (i.e. internal name).
-     */
-    private static void addDefaultCtor(ClassWriter cw, String parent) {
-        MethodVisitor mv;
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "    " + "adding method : <init> ()V");
-
-        // -----------------------------------------------------------------------
-        // public <Class Name>()
-        // {
-        // -----------------------------------------------------------------------
-        mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
-        mv.visitCode();
-
-        // -----------------------------------------------------------------------
-        //    super();
-        // -----------------------------------------------------------------------
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V");
-
-        // -----------------------------------------------------------------------
-        // }
-        // -----------------------------------------------------------------------
-        mv.visitInsn(RETURN);
-        mv.visitMaxs(1, 1);
-        mv.visitEnd();
-    }
-
-    /**
-     * Initially copied from @nmittles pull #25248
-     *
-     * @param recordClass
-     * @param internalEntityClassName
-     * @param cw
-     * @param parent
-     */
-    private static void addRecordCtor(Class<?> recordClass, String internalEntityClassName, ClassWriter cw, String parent) {
-        org.objectweb.asm.commons.Method constructor = org.objectweb.asm.commons.Method.getMethod("void <init> (" + recordClass.getTypeName() + ")");
-        GeneratorAdapter mg = new GeneratorAdapter(ACC_PUBLIC, constructor, null, null, cw);
-        mg.loadThis();
-        mg.invokeConstructor(org.objectweb.asm.Type.getType(Object.class), org.objectweb.asm.commons.Method.getMethod("void <init> ()"));
-
-        for (RecordComponent component : recordClass.getRecordComponents()) {
-            String componentName = component.getName();
-            String typeDesc = component.getType().getTypeName();
-            String methodName = "set" + componentName.substring(0, 1).toUpperCase() + componentName.substring(1);
-            int componentValue = mg.newLocal(org.objectweb.asm.Type.getType(component.getType()));
-
-            mg.loadArg(0);
-            mg.invokeVirtual(org.objectweb.asm.Type.getType(recordClass),
-                             org.objectweb.asm.commons.Method.getMethod(typeDesc + " " + componentName + " ()"));
-
-            mg.storeLocal(componentValue);
-
-            mg.loadThis();
-            mg.loadLocal(componentValue);
-            mg.invokeVirtual(org.objectweb.asm.Type.getObjectType(internalEntityClassName),
-                             org.objectweb.asm.commons.Method.getMethod("void " + methodName + " (" + typeDesc + ")"));
-        }
-        mg.returnValue();
-        mg.endMethod();
-    }
-
     @Override
     public EntityManager createEntityManager() {
         return persistenceServiceUnit.createEntityManager();
-    }
-
-    /**
-     * Initially copied from @nmittles pull #25248
-     *
-     * @param recordClass
-     * @param entityClassName
-     * @return
-     */
-    private byte[] generateEntityClassBytes(Class<?> recordClass, String entityClassName) {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        String internal_entityClassName = entityClassName.replace('.', '/');
-
-        // Define the Entity Class object
-        cw.visit(V17, ACC_PUBLIC + ACC_SUPER,
-                 internal_entityClassName,
-                 null,
-                 "java/lang/Object",
-                 null);
-
-        // Define the source code file and debug settings
-        String sourceFileName = entityClassName.substring(entityClassName.lastIndexOf(".") + 1) + ".java";
-        cw.visitSource(sourceFileName, null);
-
-        // Add default constructor
-        addDefaultCtor(cw, null);
-
-        FieldVisitor fv;
-        for (RecordComponent component : recordClass.getRecordComponents()) {
-            String componentName = component.getName();
-            Class<?> componentClass = component.getType();
-            Type componentType = component.getGenericType();
-            String typeDesc = org.objectweb.asm.Type.getDescriptor(componentClass);
-            String fieldSig = null, setterSig = null, getterSig = null;
-            if (componentType instanceof ParameterizedType) {
-                SignatureWriter sigwriter = new SignatureWriter();
-                SignatureVisitor componentClassVisitor = sigwriter.visitParameterType();
-                componentClassVisitor.visitClassType(componentClass.getName());
-                for (Type typeVarType : ((ParameterizedType) componentType).getActualTypeArguments()) {
-                    SignatureVisitor typeVarVisitor = componentClassVisitor.visitTypeArgument('=');
-                    typeVarVisitor.visitClassType(typeVarType.getTypeName());
-                    typeVarVisitor.visitEnd();
-                }
-                sigwriter.visitEnd();
-                sigwriter.visitReturnType().visitBaseType('V');
-                setterSig = sigwriter.toString().replace('.', '/');
-                fieldSig = setterSig.substring(1, setterSig.length() - 2); // omit beginning ( and ending )V
-                getterSig = "()" + fieldSig;
-            }
-
-            // NOTE: Other than when generic types are used, there is no need to provide field, getter method, or setter method signatures
-
-            // --------------------------------------------------------------------
-            // public <FieldType> <FieldName>;
-            // --------------------------------------------------------------------
-            if (trace && tc.isEntryEnabled())
-                Tr.debug(tc, "adding field : " +
-                             componentName + " " + typeDesc,
-                         "  with signature : " + (fieldSig == null ? "(implied) " + componentName + " " + typeDesc : fieldSig));
-
-            fv = cw.visitField(ACC_PUBLIC, componentName,
-                               typeDesc,
-                               fieldSig,
-                               null);
-
-            fv.visitEnd();
-
-            // --------------------------------------------------------------------
-            // public setter...
-            // --------------------------------------------------------------------
-            String methodName = "set" + componentName.substring(0, 1).toUpperCase() + componentName.substring(1);
-            if (trace && tc.isEntryEnabled())
-                Tr.debug(tc, "adding setter : " +
-                             component.getName() + " " +
-                             component.getType().descriptorString(),
-                         "  with signature : " + (setterSig == null ? "(implied) " + methodName + "(" + typeDesc + ")V" : setterSig));
-            MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, methodName, "(" + typeDesc + ")V", setterSig, null);
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitVarInsn(org.objectweb.asm.Type.getType(component.getType()).getOpcode(ILOAD), 1);
-            mv.visitFieldInsn(PUTFIELD, internal_entityClassName, componentName, typeDesc);
-            mv.visitInsn(RETURN);
-            mv.visitMaxs(1, 1);
-            mv.visitEnd();
-
-            // --------------------------------------------------------------------
-            // public getter...
-            // --------------------------------------------------------------------
-            methodName = "get" + componentName.substring(0, 1).toUpperCase() + componentName.substring(1);
-            if (trace && tc.isEntryEnabled())
-                Tr.debug(tc, "adding getter : " +
-                             component.getName() + " " +
-                             component.getType().descriptorString(),
-                         "  with signature : " + (getterSig == null ? "(implied) " + methodName + "()" + typeDesc : getterSig));
-            mv = cw.visitMethod(ACC_PUBLIC, methodName, "()" + typeDesc, getterSig, null);
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitFieldInsn(GETFIELD, internal_entityClassName, componentName, typeDesc);
-            mv.visitInsn(org.objectweb.asm.Type.getType(component.getType()).getOpcode(Opcodes.IRETURN));
-            mv.visitMaxs(1, 1);
-            mv.visitEnd();
-        }
-
-        // Add constructor that will invoke all setters with data from a Record
-        addRecordCtor(recordClass, internal_entityClassName, cw, null);
-
-        // Mark the end of the generated wrapper class
-        cw.visitEnd();
-
-        // Dump the class bytes out to a byte array.
-        byte[] classBytes = cw.toByteArray();
-
-        if (trace && tc.isEntryEnabled()) {
-
-            // Get class bytes as a string for debugging
-            String classByteString = "";
-            for (int i = 0; i < classBytes.length; i++) {
-                classByteString += i % 8 == 0 ? "\t" : ""; // Separate 8 bytes by tab
-                classByteString += i % 32 == 0 ? System.lineSeparator() : ""; // Separate 16 bytes by line
-                classByteString += String.format("%02X", classBytes[i]) + " "; // Separate each byte by space
-            }
-
-            Tr.exit(tc, "generateClassBytes: " + classBytes.length + " bytes" +
-                        classByteString);
-        }
-
-        return classBytes;
     }
 
     /**
