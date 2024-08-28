@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -67,7 +67,7 @@ public class FeatureTool extends Bookmark {
     /**
      * Constructs the FeatureTool's id.
      *
-     * @param featureName See {@link #featureName}.
+     * @param featureName    See {@link #featureName}.
      * @param featureVersion See {@link #featureVersion}.
      * @return The FeatureTool's id.
      */
@@ -85,12 +85,12 @@ public class FeatureTool extends Bookmark {
     /**
      * Construct a tool representation.
      *
-     * @param featureName See {@link #featureName}.
+     * @param featureName    See {@link #featureName}.
      * @param featureVersion See {@link #featureVersion}.
-     * @param name See {@link #name}.
-     * @param url See {@link #url}.
-     * @param icon See {@link #icon}.
-     * @param description See {@link #description}.
+     * @param name           See {@link #name}.
+     * @param url            See {@link #url}.
+     * @param icon           See {@link #icon}.
+     * @param description    See {@link #description}.
      */
     public FeatureTool(final String featureName, final String featureVersion, final String featureShortName,
                        final String name, final String url, final String icon, final String description) {
@@ -100,14 +100,14 @@ public class FeatureTool extends Bookmark {
     /**
      * Construct a FeatureTool representation.
      *
-     * @param id the Tool's ID
-     * @param type Set the Tool's type.
-     * @param featureName See {@link #featureName}.
+     * @param id             the Tool's ID
+     * @param type           Set the Tool's type.
+     * @param featureName    See {@link #featureName}.
      * @param featureVersion See {@link #featureVersion}.
-     * @param name See {@link #name}.
-     * @param url See {@link #url}.
-     * @param icon See {@link #icon}.
-     * @param description See {@link #description}.
+     * @param name           See {@link #name}.
+     * @param url            See {@link #url}.
+     * @param icon           See {@link #icon}.
+     * @param description    See {@link #description}.
      */
     public FeatureTool(final String id, final String type, final String featureName, final String featureVersion,
                        final String featureShortName, final String name, final String url, final String icon, final String description) {

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -37,7 +37,7 @@ import com.ibm.wsspi.rest.handler.RESTResponse;
 
 /**
  * <p>Base RESTHandler class for handling JSON responses.</p>
- * 
+ *
  * <p>Supported HTTP methods:
  * <ul>
  * <li>GET - Read or retrieve the resource or collection</li>
@@ -55,18 +55,18 @@ public abstract class CommonJSONRESTHandler extends CommonRESTHandler {
 
     /**
      * Constructor which should be called by all extenders.
-     * 
-     * @param handlerURL The URL for which this handler is registered.
-     *            Should not end with a trailing slash. Must not be {@code null}.
-     * @param handlesChildResource Indicate whether or not child resources are
-     *            expected to be handled by this handler. Note only immediate
-     *            children are handled when this is set to true. Deeply nested
-     *            children are not considered to match.
+     *
+     * @param handlerURL                The URL for which this handler is registered.
+     *                                      Should not end with a trailing slash. Must not be {@code null}.
+     * @param handlesChildResource      Indicate whether or not child resources are
+     *                                      expected to be handled by this handler. Note only immediate
+     *                                      children are handled when this is set to true. Deeply nested
+     *                                      children are not considered to match.
      * @param handlesGrandchildResource Indicate whether or not grandchild
-     *            resources are expected to be handled by this handler. Note
-     *            only immediate grandchildren are handled when this is set
-     *            to true. Deeply nested grandchildren are not considered to
-     *            match.
+     *                                      resources are expected to be handled by this handler. Note
+     *                                      only immediate grandchildren are handled when this is set
+     *                                      to true. Deeply nested grandchildren are not considered to
+     *                                      match.
      */
     protected CommonJSONRESTHandler(final String handlerURL, final boolean handlesChildResource, final boolean handlesGrandchildResource) {
         super(handlerURL, handlesChildResource, handlesGrandchildResource, new Filter(), null);
@@ -74,20 +74,20 @@ public abstract class CommonJSONRESTHandler extends CommonRESTHandler {
 
     /**
      * Unit test constructor.
-     * 
-     * @param handlerURL The URL for which this handler is registered.
-     *            Should not end with a trailing slash. Must not be {@code null}.
-     * @param handlesChildResource Indicate whether or not child resources are
-     *            expected to be handled by this handler. Note only immediate
-     *            children are handled when this is set to true. Deeply nested
-     *            children are not considered to match.
+     *
+     * @param handlerURL                The URL for which this handler is registered.
+     *                                      Should not end with a trailing slash. Must not be {@code null}.
+     * @param handlesChildResource      Indicate whether or not child resources are
+     *                                      expected to be handled by this handler. Note only immediate
+     *                                      children are handled when this is set to true. Deeply nested
+     *                                      children are not considered to match.
      * @param handlesGrandchildResource Indicate whether or not grandchild
-     *            resources are expected to be handled by this handler. Note
-     *            only immediate grandchildren are handled when this is set
-     *            to true. Deeply nested grandchildren are not considered to
-     *            match.
-     * @param filter Injection point for the Filter
-     * @param mapper Injection point for the ObjectMapper
+     *                                      resources are expected to be handled by this handler. Note
+     *                                      only immediate grandchildren are handled when this is set
+     *                                      to true. Deeply nested grandchildren are not considered to
+     *                                      match.
+     * @param filter                    Injection point for the Filter
+     * @param mapper                    Injection point for the ObjectMapper
      */
     protected CommonJSONRESTHandler(final String handlerURL, final boolean handlesChildResource, final boolean handlesGrandchildResource, final Filter filter, final JSON json) {
         super(handlerURL, handlesChildResource, handlesGrandchildResource, filter, json);
@@ -95,15 +95,14 @@ public abstract class CommonJSONRESTHandler extends CommonRESTHandler {
 
     /**
      * Validates the POST / PUT media type is JSON.
-     * 
+     *
      * @param request The RESTRequest from handleRequest
      * @throws MediaTypeNotSupportedException if the Content-Type is not application/json
      */
     private void checkMediaTypeIsJson(final RESTRequest request) throws MediaTypeNotSupportedException {
         // Problem: Submitting {"name":"myTool","version":"1.0","url":"http://ibm.com","description":"IBM","icon":"default.png"} fails
         String requestContentType = request.getHeader(HTTP_HEADER_CONTENT_TYPE);
-        if (requestContentType == null || requestContentType.indexOf(MEDIA_TYPE_APPLICATION_JSON_NO_CHARSET) < 0)
-        {
+        if (requestContentType == null || requestContentType.indexOf(MEDIA_TYPE_APPLICATION_JSON_NO_CHARSET) < 0) {
             if (tc.isEventEnabled()) {
                 Tr.event(tc, "Inbound Content-Type is not the required " +
                              MEDIA_TYPE_APPLICATION_JSON_NO_CHARSET + " rather it is " + requestContentType);
@@ -115,8 +114,8 @@ public abstract class CommonJSONRESTHandler extends CommonRESTHandler {
     /**
      * Delegates to the appropriate HTTP method handler, or sets the RESTResponse
      * to 405 if the method is not supported.
-     * 
-     * @param request The RESTRequest from handleRequest
+     *
+     * @param request  The RESTRequest from handleRequest
      * @param response The RESTResponse from handleRequest
      * @throws RESTException Re-throws any exceptions thrown by the delegates
      */
@@ -147,9 +146,9 @@ public abstract class CommonJSONRESTHandler extends CommonRESTHandler {
      * do not want to expose additional information to the client, but an FFDC
      * will be created for debugging. Note that we should not expect errors in
      * this path.
-     * 
+     *
      * @param request The RESTRequest from handleRequest
-     * @param obj The Object to filter
+     * @param obj     The Object to filter
      * @return The filtered Object
      */
 
@@ -167,12 +166,12 @@ public abstract class CommonJSONRESTHandler extends CommonRESTHandler {
     /**
      * Reads the JSON payload from the RESTRequest. If the JSON payload can not
      * be deserialized, then a BadRequestException is thrown.
-     * 
-     * @param request The RESTRequest from handleRequest
+     *
+     * @param request      The RESTRequest from handleRequest
      * @param expectedType The Class to load from the JSON
      * @return The deserialized JSON object
      * @throws BadRequestException if the JSON payload was not in proper JSON
-     *             syntax or if it did not match the expected JSON object
+     *                                 syntax or if it did not match the expected JSON object
      */
 
     protected final <T> T readJSONPayload(RESTRequest request, Class<T> expectedType) throws RESTException {
@@ -183,7 +182,7 @@ public abstract class CommonJSONRESTHandler extends CommonRESTHandler {
 
     /**
      * Returns a comma delimited list of the Class names.
-     * 
+     *
      * @param types List of Classes
      * @return The comma delimited list of class names.
      */
@@ -202,13 +201,13 @@ public abstract class CommonJSONRESTHandler extends CommonRESTHandler {
     /**
      * Reads the JSON payload from the RESTRequest. If the JSON payload can not
      * be deserialized, then a BadRequestException is thrown.
-     * 
-     * @param request The RESTRequest from handleRequest
-     * @param superClass The parent Class of the types to load from the JSON. May be an interface.
+     *
+     * @param request       The RESTRequest from handleRequest
+     * @param superClass    The parent Class of the types to load from the JSON. May be an interface.
      * @param concreteTypes The List of concrete types to load from the JSON. Must be concrete classes. Try order is based on the order in the list.
      * @return The deserialized JSON object
      * @throws BadRequestException if the JSON payload was not in proper JSON
-     *             syntax or if it did not match the expected JSON object
+     *                                 syntax or if it did not match the expected JSON object
      */
     @FFDCIgnore({ EOFException.class, JSONMarshallException.class })
     protected final <T> T readJSONPayload(RESTRequest request, Class<T> superClass, List<Class<? extends T>> concreteTypes) throws RESTException {
@@ -263,9 +262,9 @@ public abstract class CommonJSONRESTHandler extends CommonRESTHandler {
 
     /**
      * Processes the RESTException thrown by delegateMethod().
-     * 
+     *
      * @param response The RESTResponse from handleRequest
-     * @param e The RESTException thrown by the delegate doX method
+     * @param e        The RESTException thrown by the delegate doX method
      * @throws IOException
      */
     @Override
@@ -291,11 +290,9 @@ public abstract class CommonJSONRESTHandler extends CommonRESTHandler {
     @Trivial
     @Override
     protected final String getReaderContents(InputStream input, int maxSize) throws IOException, BadRequestException {
-        try
-        {
+        try {
             return super.getReaderContents(input, maxSize);
-        } catch (BadRequestException e)
-        {
+        } catch (BadRequestException e) {
             throw new BadRequestException(MEDIA_TYPE_APPLICATION_JSON, e.getPayload());
         }
     }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-    <name>com.ibm.ws.springboot.fat20.war.app</name>
+	<name>com.ibm.ws.springboot.fat20.war.app</name>
+	<comment></comment>
 	<projects>
 	</projects>
 	<buildSpec>
@@ -11,6 +12,11 @@
 		</buildCommand>
 		<buildCommand>
 			<name>bndtools.core.bndbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.springframework.ide.eclipse.boot.validation.springbootbuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
