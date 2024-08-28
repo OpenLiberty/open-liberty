@@ -48,21 +48,21 @@ public class UpgradeOutputByteBufferUtil {
     public UpgradedWebConnectionImpl _upConn = null;
     private TCPConnectionContext _tcpContext = null;
     /** Array of buffers used for the content buffering */
-    protected WsByteBuffer[] _output = null;
+    private WsByteBuffer[] _output = null;
     /** Index into the output array for the current writes */
-    protected int outputIndex = 0;
+    private int outputIndex = 0;
     /** Total amount to buffer internally before triggering an auto-flush */
     private int amountToBuffer = 0;
     /** Size of the ByteBuffers to allocate */
     private int bbSize;
     /** Current amount buffered internally */
-    protected int bufferedCount = 0;
+    private int bufferedCount = 0;
     private long bytesRemaining = -1;
 
     /** Bytes written through this stream */
-    protected long bytesWritten = 0L;
+    private long bytesWritten = 0L;
     /** Possible error that may have been seen during IO requests */
-    protected IOException error = null;
+    private IOException error = null;
 
     // added following for Async Write
     /** Reference to the connection object */
@@ -94,16 +94,7 @@ public class UpgradeOutputByteBufferUtil {
      */
     public UpgradeOutputByteBufferUtil(UpgradedWebConnectionImpl up) {        
         _upConn = up;
-        _vc = _upConn.getVirtualConnection();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-        {  
-            Tr.debug(tc, "constructor");         
-        }       
-    }
-
-    public UpgradeOutputByteBufferUtil(UpgradedWebConnectionImpl up, TCPConnectionContext tcpContext) {        
-        _upConn = up;
-        _tcpContext = tcpContext;
+        _tcpContext = _upConn.getTCPConnectionContext();
         _vc = _upConn.getVirtualConnection();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
         {  
@@ -435,7 +426,7 @@ public class UpgradeOutputByteBufferUtil {
      * @throws IOException
      */
     @FFDCIgnore({ IOException.class })
-    protected void flushUpgradedOutputBuffers() throws IOException {
+    private void flushUpgradedOutputBuffers() throws IOException {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "flushUpgraded: Flushing buffers for Upgraded output: " + this);
@@ -501,7 +492,7 @@ public class UpgradeOutputByteBufferUtil {
      * 
      * @throws IOException
      */
-    protected void flushAsyncUpgradedOutputBuffers() throws IOException {
+    private void flushAsyncUpgradedOutputBuffers() throws IOException {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "flushAsyncUpgraded: Flushing async buffers  for Upgraded output: " + this);
@@ -555,7 +546,7 @@ public class UpgradeOutputByteBufferUtil {
      * 
      * @return boolean
      */
-    protected boolean hasBufferedContent() {
+    private boolean hasBufferedContent() {
         return (0 < this.bufferedCount);
     }
 
@@ -631,7 +622,7 @@ public class UpgradeOutputByteBufferUtil {
     /**
      * 
      */
-    protected void clearBuffersAfterWrite() {
+    private void clearBuffersAfterWrite() {
         if (null != this._output) {
             if (null != this._output[0]) {
                 this._output[0].clear();
