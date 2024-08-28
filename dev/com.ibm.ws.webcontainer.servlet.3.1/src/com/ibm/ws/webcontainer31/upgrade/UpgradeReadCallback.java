@@ -39,9 +39,9 @@ public class UpgradeReadCallback implements TCPReadCompletedCallback {
     //The users ReadListener so we can callback to them
     ReadListener _rl;
     UpgradeInputByteBufferUtil _upgradeStream;
-    protected SRTUpgradeInputStream31 _srtUpgradeStream;
+    private SRTUpgradeInputStream31 _srtUpgradeStream;
     //ThreadContextManager to push and pop the thread's context data
-    protected ThreadContextManager _contextManager;
+    private ThreadContextManager _contextManager;
 
     public UpgradeReadCallback(ReadListener rl, UpgradeInputByteBufferUtil uIBBU, ThreadContextManager tcm, SRTUpgradeInputStream31 srtUpgradeStream){
         _rl = rl;
