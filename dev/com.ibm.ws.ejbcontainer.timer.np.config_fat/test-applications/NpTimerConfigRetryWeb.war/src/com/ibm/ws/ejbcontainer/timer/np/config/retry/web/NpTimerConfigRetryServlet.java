@@ -617,7 +617,8 @@ public class NpTimerConfigRetryServlet extends FATServlet {
 
         svLogger.info("Calling BeanD to create situation where retries and regularly scheduled timeouts overlap...");
         driverBean.forceRetrysAndRegularSchedulesToOverlap("testOverlappingRetriesAndRegularlyScheduled", 7);
-        long startTime = System.nanoTime();
+        long startTimeNano = System.nanoTime();
+        long startTimeMillis = System.currentTimeMillis();
 
         svLogger.info("Waiting for timer to fail and expected retries to occur...");
         driverBean.waitForTimersAndCancel(NO_CANCEL_DELAY);
@@ -632,8 +633,12 @@ public class NpTimerConfigRetryServlet extends FATServlet {
         ArrayList<Long> nextTimes = (ArrayList<Long>) props.get(TimerRetryDriverBean.NEXTTIMEOUT_KEY);
 
         // Tolerate a slow system; allow multiple "catch-up" attempts based on actual time
-        long actualDuration = TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
-        svLogger.info("Actual duration = " + actualDuration);
+        // - nanoTime() and currentTimeMillis() varies per OS, so use the max of the two
+        long actualDurationNano = TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTimeNano, TimeUnit.NANOSECONDS);
+        long actualDurationMillis = System.currentTimeMillis() - startTimeMillis;
+        long actualDuration = Math.max(actualDurationNano, actualDurationMillis);
+        svLogger.info("Actual duration = max(" + actualDurationNano + ", " + actualDurationMillis + ")");
+
         long expectedCount = Math.max(7, 3 + actualDuration / TIMER_INTERVAL);
         if (expectedCount == 7) {
             assertEquals("Attempt count **" + count + "** was not the expected value of 7.", expectedCount, count);
