@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -32,14 +32,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.security.authorization.jacc.ejb.EJBSecurityPropagator;
 import com.ibm.ws.security.authorization.jacc.internal.DummyPolicy;
 import com.ibm.ws.security.authorization.jacc.internal.DummyPolicyConfigurationFactory;
+
+import io.openliberty.security.authorization.jacc.internal.proxy.ProxyTestUtil;
+import test.common.SharedOutputManager;
 
 public class PolicyConfigurationManagerTest {
     static final SharedOutputManager outputMgr = SharedOutputManager.getInstance();
@@ -66,7 +67,7 @@ public class PolicyConfigurationManagerTest {
         pcf = new DummyPolicyConfigurationFactory(pc1);
         policy = new DummyPolicy();
         pcm = new PolicyConfigurationManager();
-        PolicyConfigurationManager.initialize(policy, pcf);
+        PolicyConfigurationManager.initialize(ProxyTestUtil.createPolicyProxy(policy), pcf);
     }
 
     @After
