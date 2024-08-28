@@ -551,6 +551,27 @@ public class QueryInfo {
     }
 
     /**
+     * Constructs the UnsupportedOperationException for the general error where
+     * a repository method is unrecognized and log the error.
+     *
+     * @return UnsupportedOperationException.
+     */
+    @Trivial
+    private UnsupportedOperationException excUnsupportedMethod() {
+        // TODO should repository.repositoryInterface be used everywhere
+        // instead of method.getDeclaringClass()? It is more accurate.
+        return exc(UnsupportedOperationException.class,
+                   "CWWKD1011.unknown.method.pattern",
+                   method.getName(),
+                   method.getDeclaringClass().getName(),
+                   List.of("Delete", "Find", "Insert",
+                           "Query", "Save", "Update"),
+                   List.of("Connection", "DataSource", "EntityManager"),
+                   List.of("count", "delete", "exists", "find"),
+                   entityInfo.getExampleMethodNames());
+    }
+
+    /**
      * Generates JPQL for a *By condition such as MyColumn[IgnoreCase][Not]Like
      */
     private void generateCondition(String methodName, int start, int endBefore, StringBuilder q) {
@@ -1175,11 +1196,35 @@ public class QueryInfo {
                     if (Boolean.TRUE.equals(isNamePresent))
                         attribute = params[p].getName();
                     else
-                        throw new MappingException("You must specify an entity attribute name as the value of the " +
-                                                   By.class.getName() + " annotation on parameter " + (p + 1) +
-                                                   " of the " + method.getName() + " method of the " +
-                                                   method.getDeclaringClass().getName() + " repository or compile the application" +
-                                                   " with the -parameters compiler option that preserves the parameter names."); // TODO NLS
+                        switch (type) {
+                            case FIND:
+                            case FIND_AND_DELETE:
+                                throw exc(UnsupportedOperationException.class,
+                                          "CWWKD1012.fd.missing.param.anno",
+                                          p + 1,
+                                          method.getName(),
+                                          method.getDeclaringClass().getName(),
+                                          type == Type.FIND //
+                                                          ? List.of("Limit", "PageRequest", "Order", "Sort", "Sort[]") //
+                                                          : List.of("Limit", "Order", "Sort", "Sort[]"));
+                            case DELETE:
+                            case COUNT:
+                            case EXISTS:
+                                throw exc(UnsupportedOperationException.class,
+                                          "CWWKD1013.cde.missing.param.anno",
+                                          p + 1,
+                                          method.getName(),
+                                          method.getDeclaringClass().getName());
+                            case UPDATE:
+                                throw exc(UnsupportedOperationException.class,
+                                          "CWWKD1014.upd.missing.param.anno",
+                                          p + 1,
+                                          method.getName(),
+                                          method.getDeclaringClass().getName(),
+                                          List.of("By", "Assign"));
+                            default: // should be unreachable
+                                throw new IllegalStateException(type.name());
+                        }
                 }
 
                 if (isIdClass) {
@@ -1248,17 +1293,16 @@ public class QueryInfo {
         if (type == Type.FIND_AND_DELETE && !(singleType.isAssignableFrom(wrapperClassIfPrimitive(entityInfo.idType)) ||
                                               singleType.isAssignableFrom(entityInfo.entityClass) ||
                                               (entityInfo.recordClass != null && singleType.isAssignableFrom(entityInfo.recordClass)))) {
-            throw new MappingException("The " + method.getGenericReturnType().getTypeName() +
-                                       " type cannot be used as a return type for the " +
-                                       method.getName() + " method of the " +
-                                       method.getDeclaringClass().getName() +
-                                       " repository inteface. The return type can be" +
-                                       " void to return no value, long or int for a deletion count," +
-                                       " boolean to indicate whether any entities were deleted," +
-                                       " or an array, Collection, or Optional of either the " +
-                                       (entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName() +
-                                       " entity class or the " + entityInfo.idType.getName() +
-                                       " Id class to return the deleted entities or entity Ids."); // TODO NLS
+            Class<?> entityClass = entityInfo.recordClass == null //
+                            ? entityInfo.entityClass //
+                            : entityInfo.recordClass;
+            throw exc(MappingException.class,
+                      "CWWKD1006.delete.rtrn.err",
+                      method.getGenericReturnType().getTypeName(),
+                      method.getName(),
+                      method.getDeclaringClass().getName(),
+                      entityClass.getName(),
+                      entityInfo.idType.getName());
         }
 
         if (cols == null || cols.length == 0) {
@@ -1281,15 +1325,12 @@ public class QueryInfo {
                         if (singleAttributeName == null)
                             singleAttributeName = entry.getKey();
                         else
-                            throw new MappingException("The " + method.getName() + " method of the " +
-                                                       method.getDeclaringClass().getName() +
-                                                       " repository specifies the " + singleType.getName() +
-                                                       " result type, which corresponds to multiple entity attributes: " +
-                                                       singleAttributeName + ", " + entry.getKey() +
-                                                       ". To use this result type, update the repository method to " +
-                                                       "instead use the Query annotation with a SELECT clause to " +
-                                                       "disambiguate which entity attribute to use as the result " +
-                                                       "of the query."); // TODO NLS
+                            throw exc(MappingException.class,
+                                      "CWWKD1008.ambig.rtrn.err",
+                                      method.getGenericReturnType().getTypeName(),
+                                      method.getName(),
+                                      method.getDeclaringClass().getName(),
+                                      List.of(singleAttributeName, entry.getKey()));
                 }
 
                 if (singleAttributeName == null) {
@@ -1952,21 +1993,7 @@ public class QueryInfo {
             jpql = q == null ? jpql : q.toString();
 
             if (type == null)
-                throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
-                                                        repository.repositoryInterface.getName() +
-                                                        " repository does not match any of the patterns defined by Jakarta Data. " +
-                                                        "A repository method must either use annotations such as " +
-                                                        "(Delete, Find, Insert, Query, Save, Update)" +
-                                                        " to define operations, be a resource accessor method without parameters and " +
-                                                        "returning one of " + "(Connection, DataSource, EntityManager)" +
-                                                        ", or it must be named according to the requirements of the " +
-                                                        "Query by Method Name pattern. Method names for Query by Method Name must " +
-                                                        "begin with one of the " + "(count, delete, exists, find)" +
-                                                        " keywords, followed by 0 or more additional characters, " +
-                                                        "optionally followed by the 'By' keyword and one or more conditions " +
-                                                        "delimited by the 'And' or 'Or' keyword. " +
-                                                        "Some examples of valid method names are: " +
-                                                        entityInfo.getExampleMethodNames() + "."); // TODO NLS
+                throw excUnsupportedMethod();
 
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "init", new Object[] { this, entityInfo });
@@ -2494,15 +2521,11 @@ public class QueryInfo {
                 } else if (by > 0) {
                     orderBy = methodName.indexOf("OrderBy", by + 2);
                 }
-                if (type != null)
-                    throw new UnsupportedOperationException("The " + method.getGenericReturnType() +
-                                                            " return type is not supported for the " + methodName +
-                                                            " repository method."); // TODO NLS
                 type = Type.FIND_AND_DELETE;
                 q = generateSelectClause().append(" FROM ").append(entityInfo.name).append(' ').append(o);
                 jpqlDelete = generateDeleteById();
             } else { // DELETE
-                type = type == null ? Type.DELETE : type;
+                type = Type.DELETE;
                 q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
             }
 
@@ -2530,20 +2553,7 @@ public class QueryInfo {
                 generateWhereClause(methodName, by + 2, methodName.length(), q);
             type = Type.EXISTS;
         } else {
-            throw new UnsupportedOperationException("The " + methodName + " method of the " + method.getDeclaringClass().getName() +
-                                                    " repository does not match any of the patterns defined by Jakarta Data. " +
-                                                    "A repository method must either use annotations such as " +
-                                                    "(Delete, Find, Insert, Query, Save, Update)" +
-                                                    " to define operations, be a resource accessor method without parameters and " +
-                                                    "returning one of " + "(Connection, DataSource, EntityManager)" +
-                                                    ", or it must be named according to the requirements of the " +
-                                                    "Query by Method Name pattern. Method names for Query by Method Name must " +
-                                                    "begin with one of the " + "(count, delete, exists, find)" +
-                                                    " keywords, followed by 0 or more additional characters, " +
-                                                    "optionally followed by the 'By' keyword and one or more conditions " +
-                                                    "delimited by the 'And' or 'Or' keyword. " +
-                                                    "Some examples of valid method names are: " +
-                                                    entityInfo.getExampleMethodNames() + "."); // TODO NLS
+            throw excUnsupportedMethod();
         }
 
         if (trace && tc.isDebugEnabled())
@@ -2634,24 +2644,24 @@ public class QueryInfo {
                                "; multiType: " + (multiType == null ? null : multiType.getSimpleName()) +
                                "; singleType: " + (singleType == null ? null : singleType.getSimpleName()));
 
-        if (isFindAndDelete) {
+        if (isFindAndDelete)
             if (type != null
                 && !type.equals(entityInfo.entityClass)
                 && !type.equals(entityInfo.recordClass)
                 && !type.equals(Object.class)
-                && !wrapperClassIfPrimitive(singleType).equals(wrapperClassIfPrimitive(entityInfo.idType)))
-                throw new MappingException("The " + method.getGenericReturnType().getTypeName() +
-                                           " type cannot be used as a return type for the " +
-                                           method.getName() + " method of the " +
-                                           method.getDeclaringClass().getName() +
-                                           " repository inteface. The return type can be" +
-                                           " void to return no value, long or int for a deletion count," +
-                                           " boolean to indicate whether any entities were deleted," +
-                                           " or an array, Collection, or Optional of either the " +
-                                           (entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName() +
-                                           " entity class or the " + entityInfo.idType.getName() +
-                                           " Id class to return the deleted entities or entity Ids."); // TODO NLS
-        }
+                && !wrapperClassIfPrimitive(singleType) //
+                                .equals(wrapperClassIfPrimitive(entityInfo.idType))) {
+                Class<?> entityClass = entityInfo.recordClass == null //
+                                ? entityInfo.entityClass //
+                                : entityInfo.recordClass;
+                throw exc(MappingException.class,
+                          "CWWKD1006.delete.rtrn.err",
+                          method.getGenericReturnType().getTypeName(),
+                          method.getName(),
+                          method.getDeclaringClass().getName(),
+                          entityClass.getName(),
+                          entityInfo.idType.getName());
+            }
 
         return isFindAndDelete;
     }
@@ -2772,10 +2782,11 @@ public class QueryInfo {
         }
 
         if (primaryEntityInfoFuture == null)
-            throw new MappingException("The " + method.getName() + " method of the " + method.getDeclaringClass().getName() +
-                                       " repository does not specify an entity class. To correct this, have the repository interface" +
-                                       " extend DataRepository or another built-in repository interface and supply the entity class" +
-                                       " as the first type variable."); // TODO NLS
+            throw exc(MappingException.class,
+                      "CWWKD1001.no.primary.entity",
+                      method.getName(),
+                      method.getDeclaringClass().getName(),
+                      "DataRepository<EntityClass, EntityIdClass>");
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && !primaryEntityInfoFuture.isDone())
             Tr.debug(this, tc, "await completion of primary entity info", primaryEntityInfoFuture);
@@ -2992,10 +3003,12 @@ public class QueryInfo {
     private void setType(Class<? extends Annotation> annoClass, Type operationType) {
         type = operationType;
         if (entityParamType == null)
-            throw new UnsupportedOperationException("Repository " + '@' + annoClass.getSimpleName() +
-                                                    " operations must have exactly 1 parameter, which can be the entity" +
-                                                    " or a collection or array of entities. The " + method.getDeclaringClass().getName() +
-                                                    '.' + method.getName() + " method has " + method.getParameterCount() + " parameters."); // TODO NLS
+            throw exc(UnsupportedOperationException.class,
+                      "CWWKD1009.lifecycle.param.err",
+                      method.getName(),
+                      method.getDeclaringClass().getName(),
+                      method.getParameterCount(),
+                      annoClass.getSimpleName());
     }
 
     /**
