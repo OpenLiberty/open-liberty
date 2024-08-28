@@ -4011,6 +4011,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use repository methods that have various return types for a record entity.
      */
+    @Test
     public void testRecordReturnTypes() throws Exception {
         receipts.removeIfTotalUnder(1000000.0f);
 
@@ -4033,9 +4034,13 @@ public class DataTestServlet extends FATServlet {
 
         // various forms of completion stage results
         CompletableFuture<Receipt> futureResult = receipts.findByPurchaseId(3013L);
-        CompletionStage<Optional<Receipt>> futureOptionalPresent = receipts.findByPurchaseIdIfPresent(3014L);
-        CompletionStage<Optional<Receipt>> futureOptionalMissing = receipts.findByPurchaseIdIfPresent(3116L);
-        CompletableFuture<List<Receipt>> futureList = receipts.forCustomer("RRT20618", Order.by(Sort.desc("total")));
+        CompletionStage<Optional<Receipt>> futureOptionalPresent = //
+                        receipts.findIfPresentByPurchaseId(3014L);
+        CompletionStage<Optional<Receipt>> futureOptionalMissing = //
+                        receipts.findIfPresentByPurchaseId(3116L);
+        CompletableFuture<List<Receipt>> futureList = //
+                        receipts.forCustomer("RRT20618",
+                                             Order.by(Sort.desc("total")));
 
         // single record
         Receipt receipt = receipts.withPurchaseNum(3015L);
@@ -4093,7 +4098,7 @@ public class DataTestServlet extends FATServlet {
                                      .toList());
 
         CursoredPage<Receipt> pageBelow3003 = receipts.forCustomer("RRT10155", pageBelow3007.previousPageRequest(), Sort.asc("purchaseId"));
-        assertEquals(List.of(3000L, 3001),
+        assertEquals(List.of(3000L, 3001L),
                      pageBelow3003.stream()
                                      .map(Receipt::purchaseId)
                                      .toList());
@@ -4118,7 +4123,8 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(1L, receipts.removeByPurchaseId(3000L));
 
-        assertEquals(List.of(3002L, 3010L, 3012L), receipts.removeByTotalBetween(10.00f, 20.00f));
+        assertEquals(Set.of(3002L, 3010L, 3012L),
+                     receipts.removeByTotalBetween(10.00f, 20.00f));
 
         // remove data to avoid interference with other tests
         assertEquals(12, receipts.removeIfTotalUnder(1000000.0f));

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,5 +24,68 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWKD1100 to CWWKD1499
+# All messages must use the range CWWKD1000 to CWWKD1399
 
+CWWKD1000.repo.general.err=CWWKD1000E: The {0} method of the {1} repository \
+ interface encountered an error. The error might indicate that the repository \
+ method is not valid. The error is: {2}.
+CWWKD1000.repo.general.err.explanation=An error was found with the specified \
+ repository method.
+CWWKD1000.repo.general.err.useraction=Locate the repository interface and method \
+ and determine whether corrections are needed.
+
+CWWKD1001.no.primary.entity=CWWKD1001E: The {0} repository method requires \
+ an entity class but the {1} repository interface does not specify a primary \
+ entity class. To correct this error, the {1} repository interface must extend \
+ one of the built-in repository supertypes, such as {2}, and supply the entity \
+ class as the first type parameter.
+CWWKD1001.no.primary.entity.explanation=Repository methods without an entity \
+ class of their own require the repository to define a primary entity class.
+CWWKD1001.no.primary.entity.useraction=Define a primary entity class for the \
+ repository.
+
+CWWKD1002.method.annos.err=CWWKD1002E: The {0} method of the {1} repository \
+ interface is annotated with a combination of annotations that is not valid: {2}.
+CWWKD1002.method.annos.err.explanation=This combination of annotations is not \
+ valid on a single repository method.
+CWWKD1002.method.annos.err.useraction=Locate the repository interface and method \
+ and determine the correct combination of method annotations.
+
+CWWKD1003.lifecycle.rtrn.err=CWWKD1003E: The {0} return type of the {1} method \
+ of the {2} repository interface is not a valid return type for a repository \
+ {3} method. Valid return types include: {4}.
+CWWKD1003.lifecycle.rtrn.err.explanation=The return type of the method is not \
+ one of the supported return types for Insert, Update, and Save methods.
+CWWKD1003.lifecycle.rtrn.err.useraction=Refer to the Jakarta Data Javadoc \
+ information for the Insert, Update, and Save methods for valid return types.
+
+CWWKD1004.general.rtrn.err=CWWKD1004E: The {0} return type of the {1} method \
+ of the {2} repository interface is not a valid return type for a repository \
+ method.
+CWWKD1004.general.rtrn.err.explanation=The return type of the method is not \
+ one of the supported return types for the type of repository method.
+CWWKD1004.general.rtrn.err.useraction=Refer to the Jakarta Data Javadoc \
+ information for a list of valid return types for the type of repository method.
+
+CWWKD1005.find.rtrn.err=CWWKD1005E: The {0} method of the {1} repository \
+ interface is not valid. The method specifies a {2} return type that is \
+ not convertible from the {3} entity type. The result type of a \
+ find operation must be the entity type, a type of an entity property, \
+ a Java record composed of entity properties, or a type constructed \
+ by the JPQL or JDQL that is supplied to the \
+ Query annotation. The return type of the repository find method can be \
+ the result type, an array of the result type, or any of the following types \
+ parameterized with the result type: {4}.
+CWWKD1005.find.rtrn.err.explanation=The return type of the method is not \
+ one of the supported return types for repository find methods.
+CWWKD1005.find.rtrn.err.useraction=Refer to the Jakarta Data Javadoc \
+ information for a list of valid return types for repository find methods.
+
+
+CWWKD1010.unknown.entity.prop=CWWKD1010E: The {0} method of the {1} repository \
+ interface expects an entity property named {2} that is not found on the \
+ {3} entity class. Valid property names for the entity are: {4}.
+CWWKD1010.unknown.entity.prop.explanation=The repository method is attempting \
+ to use an entity property that does not exist.
+CWWKD1010.unknown.entity.prop.useraction=Update the repository method to match \
+ a valid property that is defined by the entity.

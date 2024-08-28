@@ -63,7 +63,7 @@ public interface CreditCards extends DataRepository<CreditCard, CardId> {
     Stream<CreditCard> findByIssuedOnWithDayBetween(int minDayOfMonth, int maxDayOfMonth);
 
     @OrderBy("debtor_email")
-    Stream<Customer> findByIssuer(Issuer cardIssuer);
+    Stream<CreditCard> findByIssuer(Issuer cardIssuer);
 
     @OrderBy(ID)
     Stream<CardId> findBySecurityCode(int code);

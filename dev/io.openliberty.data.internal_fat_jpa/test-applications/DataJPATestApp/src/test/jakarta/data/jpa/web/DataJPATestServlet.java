@@ -2473,35 +2473,41 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Query that matches multiple entities and returns a combined collection of results across matches for the ManyToMany association.
+     * Query that matches multiple entities and returns a stream of results
+     * where each result has a ManyToMany association.
      */
-    //@Test
-    // This test is currently incorrect because Phone is an attribute of Customer (primary entity type), not DeliveryLocation (result type).
-    // This would require a way to indicate that a projection is desired, meaning the return type indicates
-    // an attribute of the entity rather than the entity class itself.
-    // TODO Could this be achieved with @Select?
+    @Test
     public void testManyToManyReturnsCombinedCollectionFromMany() {
 
-        List<String> addresses = customers.findLocationsByPhoneIn(List.of(5075552444L, 5075550101L))
-                        .map(loc -> loc.houseNum + " " + loc.street.toString())
+        List<String> addresses = customers.findByPhoneIn(List.of(5075552444L,
+                                                                 5075550101L))
+                        .map(cust -> cust.deliveryLocations)
+                        .map(locs -> locs
+                                        .stream()
+                                        .map(loc -> loc.houseNum + " " +
+                                                    loc.street.toString())
+                                        .sorted()
+                                        .collect(Collectors.toList())
+                                        .toString())
                         .collect(Collectors.toList());
 
-        // Customer 1's delivery addresses must come before Customer 4's card numbers due to the ordering on Customer.email.
-        assertEquals(addresses.toString(),
-                     true, List.of("1001 1st Ave SW", "2800 37th St NW", "4004 4th Ave SE").equals(addresses) ||
-                           List.of("1001 1st Ave SW", "4004 4th Ave SE", "2800 37th St NW").equals(addresses));
+        // Customer 1's delivery address must come before
+        // Customer 4's delivery addresses due to ordering
+        // on Customer.email
+        assertEquals(List.of("[1001 1st Ave SW]",
+                             "[2800 37th St NW, 4004 4th Ave SE]"),
+                     addresses);
     }
 
     /**
-     * Query that matches a single entity and returns the corresponding collection from its ManyToMany association.
+     * Query that matches a single entity, from which the corresponding collection
+     * from its ManyToMany association can be accessed.
      */
-    //@Test
-    // This test is currently incorrect because Email is an attribute of Customer (primary entity type), not DeliveryLocation (result type)
-    // This would require a way to indicate that a projection is desired, meaning the return type indicates
-    // an attribute of the entity rather than the entity class itself.
-    // TODO Could this be achieved with @Select?
-    public void testManyToManyReturnsOneSetOfMany() {
-        Set<DeliveryLocation> locations = customers.findLocationsByEmail("Maximilian@tests.openliberty.io");
+    @Test
+    public void testManyToManyReturnsOneWithSetOfMany() {
+        Set<DeliveryLocation> locations = customers //
+                        .findByEmail("Maximilian@tests.openliberty.io")
+                        .orElseThrow().deliveryLocations;
 
         assertEquals(locations.toString(), 2, locations.size());
 
@@ -2563,21 +2569,19 @@ public class DataJPATestServlet extends FATServlet {
 
     /**
      * Many-to-one entity mapping, where a repository query from the many side
-     * filters on an attribute from the many side,
-     * orders by an attribute on the one side,
-     * returning results from the one side.
+     * filters on an attribute from the many side (CreditCard),
+     * orders by an attribute on the one side (Customer email),
+     * returning results (CreditCard) from which the one (Customer)
+     * can be obtained.
      */
-    //@Test
-    // This test is currently incorrect because Issuer is an attribute of CreditCard (primary entity type), not Customer (result type).
-    // This would require a way to indicate that a projection is desired, meaning the return type indicates
-    // an attribute of the entity rather than the entity class itself.
-    // TODO Could this be achieved with @Select?
+    @Test
     public void testManyToOneMM11() {
         assertIterableEquals(List.of("MICHELLE@TESTS.OPENLIBERTY.IO",
                                      "Matthew@tests.openliberty.io",
                                      "Maximilian@tests.openliberty.io",
                                      "Megan@tests.openliberty.io"),
                              creditCards.findByIssuer(Issuer.MonsterCard)
+                                             .map(cc -> cc.debtor)
                                              .map(c -> c.email)
                                              .collect(Collectors.toList()));
 
@@ -2586,6 +2590,7 @@ public class DataJPATestServlet extends FATServlet {
                                      "Megan@tests.openliberty.io",
                                      "Monica@tests.openliberty.io"),
                              creditCards.findByIssuer(Issuer.Feesa)
+                                             .map(cc -> cc.debtor)
                                              .map(c -> c.email)
                                              .collect(Collectors.toList()));
     }
@@ -2822,14 +2827,9 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Query that matches a single entity and so returns one collection for a OneToMany association.
      */
-    //@Test
-    // Test is currently incorrect because the text expects to query on the Id of Customer (primary entity type),
-    // not the Id of CreditCard (result type).
-    // This would require a way to indicate that a projection is desired, meaning the return type indicates
-    // an attribute of the entity rather than the entity class itself.
-    // TODO Could this be achieved with @Select?
+    @Test
     public void testOneToManyReturnsOneSetOfMany() {
-        Set<CreditCard> cards = customers.findCardsById(9210005);
+        Set<CreditCard> cards = customers.findCardsByCustomerId(9210005);
 
         assertEquals(cards.toString(), 2, cards.size());
 

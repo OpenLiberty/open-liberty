@@ -47,6 +47,7 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.QueryInfo;
+import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.repository.By;
 import jakarta.data.repository.DataRepository;
@@ -406,6 +407,30 @@ public class DataExtension implements Extension {
     }
 
     /**
+     * Construct a RuntimeException or subclass and log the error.
+     *
+     * @param exceptionType RuntimeException or subclass, which must have a
+     *                          constructor that accepts the message as a single
+     *                          String argument.
+     * @param messageId     NLS message ID.
+     * @param args          message arguments.
+     * @return RuntimeException or subclass.
+     */
+    @Trivial
+    private final static <T extends RuntimeException> T exc(Class<T> exceptionType,
+                                                            String messageId,
+                                                            Object... args) {
+        Tr.error(tc, messageId, args);
+        String message = Tr.formatMessage(tc, messageId, args);
+        try {
+            return exceptionType.getConstructor(String.class).newInstance(message);
+        } catch (Exception x) {
+            // should never occur
+            throw new DataException(messageId + ' ' + Arrays.toString(args));
+        }
+    }
+
+    /**
      * Look for parameterized type variable of the repository interface.
      * For example,
      *
@@ -454,13 +479,11 @@ public class DataExtension implements Extension {
                                                  Class<?> repositoryInterface,
                                                  Method method) {
         if (primaryEntityClass == null)
-            throw new MappingException("An entity class is needed by the " + method.getName() +
-                                       " method, but the " + repositoryInterface.getName() +
-                                       " repository interface does not specify a primary entity class." +
-                                       " To correct this, have the " + repositoryInterface.getSimpleName() +
-                                       " interface extend one of the built-in repository supertypes," +
-                                       " such as DataRepository<EntityClass, KeyClass>, supplying the" +
-                                       " entity class as the first type parameter."); // TODO NLS
+            throw exc(MappingException.class,
+                      "CWWKD1001.no.primary.entity",
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      "DataRepository<EntityClass, EntityIdClass>");
         return primaryEntityClass;
     }
 

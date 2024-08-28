@@ -329,19 +329,23 @@ public class QueryInfo {
             if (++d < depth)
                 type = returnTypeAtDepth.get(d);
             else
-                throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
-                                                        method.getDeclaringClass().getName() +
-                                                        " repository specifies the " + method.getGenericReturnType() +
-                                                        " result type, which is not a supported result type for a repository method."); // TODO NLS and add helpful information about supported result types
+                // TODO add helpful information about supported result types
+                throw exc(UnsupportedOperationException.class,
+                          "CWWKD1004.general.rtrn.err",
+                          method.getGenericReturnType().getTypeName(),
+                          method.getName(),
+                          method.getDeclaringClass().getName());
         if (isOptional = Optional.class.equals(type)) {
             multiType = null;
             if (++d < depth)
                 type = returnTypeAtDepth.get(d);
             else
-                throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
-                                                        method.getDeclaringClass().getName() +
-                                                        " repository specifies the " + method.getGenericReturnType() +
-                                                        " result type, which is not a supported result type for a repository method."); // TODO NLS and add helpful information about supported result types
+                // TODO add helpful information about supported result types
+                throw exc(UnsupportedOperationException.class,
+                          "CWWKD1004.general.rtrn.err",
+                          method.getGenericReturnType().getTypeName(),
+                          method.getName(),
+                          method.getDeclaringClass().getName());
         } else {
             if (returnArrayType != null
                 || Iterator.class.equals(type)
@@ -351,10 +355,12 @@ public class QueryInfo {
                 if (++d < depth)
                     type = returnTypeAtDepth.get(d);
                 else
-                    throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
-                                                            method.getDeclaringClass().getName() +
-                                                            " repository specifies the " + method.getGenericReturnType() +
-                                                            " result type, which is not a supported result type for a repository method."); // TODO NLS and add helpful information about supported result types
+                    // TODO add helpful information about supported result types
+                    throw exc(UnsupportedOperationException.class,
+                              "CWWKD1004.general.rtrn.err",
+                              method.getGenericReturnType().getTypeName(),
+                              method.getName(),
+                              method.getDeclaringClass().getName());
             } else {
                 multiType = null;
             }
@@ -518,6 +524,30 @@ public class QueryInfo {
     private static boolean endsWith(String searchFor, String text, int minStart, int endBefore) {
         int searchLen = searchFor.length();
         return endBefore - minStart >= searchLen && text.regionMatches(endBefore - searchLen, searchFor, 0, searchLen);
+    }
+
+    /**
+     * Construct a RuntimeException or subclass and log the error.
+     *
+     * @param exceptionType RuntimeException or subclass, which must have a
+     *                          constructor that accepts the message as a single
+     *                          String argument.
+     * @param messageId     NLS message ID.
+     * @param args          message arguments.
+     * @return RuntimeException or subclass.
+     */
+    @Trivial
+    private final static <T extends RuntimeException> T exc(Class<T> exceptionType,
+                                                            String messageId,
+                                                            Object... args) {
+        Tr.error(tc, messageId, args);
+        String message = Tr.formatMessage(tc, messageId, args);
+        try {
+            return exceptionType.getConstructor(String.class).newInstance(message);
+        } catch (Exception x) {
+            // should never occur
+            throw new DataException(messageId + ' ' + Arrays.toString(args));
+        }
     }
 
     /**
@@ -1289,13 +1319,16 @@ public class QueryInfo {
                                 first = false;
                             }
                         else
-                            throw new MappingException("The " + method.getName() + " method of the " +
-                                                       method.getDeclaringClass().getName() + " repository specifies the " +
-                                                       singleType.getName() + " result type, which is not convertible from the " +
-                                                       entityInfo.entityClass.getName() + " entity type. A repository method " +
-                                                       "result type must be the entity type, an entity attribute type, or a " +
-                                                       "Java record with attribute names that are a subset of the entity attribute names, " +
-                                                       "or the Query annotation must be used to construct the result type with JPQL."); // TODO NLS
+                            // TODO include/exclude Page/CursoredPage based on whether PageRequest is supplied?
+                            throw exc(MappingException.class,
+                                      "CWWKD1005.find.rtrn.err",
+                                      method.getName(),
+                                      method.getDeclaringClass().getName(),
+                                      method.getGenericReturnType().getTypeName(),
+                                      entityInfo.entityClass.getName(),
+                                      List.of("List", "Optional",
+                                              "Page", "CursoredPage",
+                                              "Stream"));
                         q.append(')');
                     }
                 } else {
@@ -1592,10 +1625,13 @@ public class QueryInfo {
                                     .append(')') //
                                     .toString();
             else
-                throw new MappingException("Entity class " + entityInfo.getType().getName() +
-                                           " does not have a property named " + name +
-                                           ". The following are valid property names for the entity: " +
-                                           entityInfo.attributeTypes.keySet()); // TODO NLS
+                throw exc(MappingException.class,
+                          "CWWKD1010.unknown.entity.prop",
+                          method.getName(),
+                          method.getDeclaringClass().getName(),
+                          name,
+                          entityInfo.getType().getName(),
+                          entityInfo.attributeTypes.keySet());
         } else {
             String lowerName = name.toLowerCase();
             attributeName = entityInfo.attributeNames.get(lowerName);
@@ -1610,12 +1646,17 @@ public class QueryInfo {
                         // tolerate possible mixture of . and _ separators with lack of separators:
                         lowerName = lowerName.replace("_", "");
                         attributeName = entityInfo.attributeNames.get(lowerName);
-                        if (attributeName == null && failIfNotFound)
+                        if (attributeName == null && failIfNotFound) {
                             // TODO If attempting to parse Query by Method Name without a By keyword, then the message
                             // should also include the possibility that repository method is missing an annotation.
-                            throw new MappingException("Entity class " + entityInfo.getType().getName() + " does not have a property named " + name +
-                                                       ". The following are valid property names for the entity: " +
-                                                       entityInfo.attributeTypes.keySet()); // TODO NLS
+                            throw exc(MappingException.class,
+                                      "CWWKD1010.unknown.entity.prop",
+                                      method.getName(),
+                                      method.getDeclaringClass().getName(),
+                                      name,
+                                      entityInfo.getType().getName(),
+                                      entityInfo.attributeTypes.keySet());
+                        }
                     }
                 }
         }
@@ -1931,14 +1972,15 @@ public class QueryInfo {
                 Tr.exit(this, tc, "init", new Object[] { this, entityInfo });
             return this;
         } catch (Throwable x) {
+            String message = x.getMessage();
+            if (message == null || !message.startsWith("CWWKD1"))
+                Tr.error(tc, "CWWKD1000.repo.general.err",
+                         method.getName(),
+                         method.getDeclaringClass().getName(),
+                         x);
+            // else the error was already logged
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "init", x);
-            System.err.println("The " + method.getName() + " method of the " +
-                               method.getDeclaringClass().getName() +
-                               " repository interface encountered an error" +
-                               " and might not be a valid repository method." +
-                               " Refer to the cause exception: "); // TODO NLS
-            x.printStackTrace(); // TODO Tr.error instead
             throw x;
         }
 
@@ -3086,9 +3128,11 @@ public class QueryInfo {
             if (orderBy.length > 0)
                 annoClassNames.add(OrderBy.class.getName());
 
-            throw new UnsupportedOperationException("The " + method.getDeclaringClass().getName() + '.' + method.getName() +
-                                                    " repository method cannot be annotated with the following combination of annotations: " +
-                                                    annoClassNames); // TODO NLS
+            throw exc(UnsupportedOperationException.class,
+                      "CWWKD1002.method.annos.err",
+                      method.getName(),
+                      method.getDeclaringClass().getName(),
+                      annoClassNames);
         }
 
         return ius == 1 //
