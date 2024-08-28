@@ -2008,7 +2008,7 @@ public class H2FATDriverServlet extends FATServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         byte[] chfwDebugData = "DATA Frame Received in the wrong state of: IDLE".getBytes();
-        byte[] nettyDebugData = "Stream 3 does not exist".getBytes();
+        byte[] nettyDebugData = "Stream 3 does not exist for inbound frame DATA, endOfStream = true".getBytes();
         FrameGoAway errorFrame;
         if (USING_NETTY)
             errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
@@ -2037,7 +2037,7 @@ public class H2FATDriverServlet extends FATServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         byte[] chfwDebugData = "RST_STREAM Frame Received in the wrong state of: IDLE".getBytes();
-        byte[] nettyDebugData = "Stream 3 does not exist".getBytes();
+        byte[] nettyDebugData = "Stream 3 does not exist for inbound frame RST_STREAM, endOfStream = false".getBytes();
         FrameGoAway errorFrame;
         if (USING_NETTY)
             errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
@@ -2066,7 +2066,7 @@ public class H2FATDriverServlet extends FATServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         byte[] chfwDebugData = "WINDOW_UPDATE Frame Received in the wrong state of: IDLE".getBytes();
-        byte[] nettyDebugData = "Stream 3 does not exist".getBytes();
+        byte[] nettyDebugData = "Stream 3 does not exist for inbound frame WINDOW_UPDATE, endOfStream = false".getBytes();
         FrameGoAway errorFrame;
         if (USING_NETTY)
             errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);

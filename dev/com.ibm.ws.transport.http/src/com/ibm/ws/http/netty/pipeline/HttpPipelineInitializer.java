@@ -29,10 +29,12 @@ import com.ibm.ws.http.netty.pipeline.http2.LibertyNettyALPNHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyUpgradeCodec;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpObjectAggregator;
+import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.TransportInboundHandler;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpMessage;
@@ -85,6 +87,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     public static final String HTTP_SSL_HANDLER_NAME = "SSL_HANDLER";
     public static final String HTTP_ALPN_HANDLER_NAME = "ALPN_HANDLER";
     public static final String HTTP_KEEP_ALIVE_HANDLER_NAME = "httpKeepAlive";
+    public static final String HTTP_AGGREGATOR_HANDLER_NAME = "LIBERTY_OBJECT_AGGREGATOR";
+    public static final String HTTP_REQUEST_HANDLER_NAME = "LIBERTY_REQUEST_HANDLER";
     public static final String HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME = "H2C_UPGRADE_HANDLER";
 
     public static final long maxContentLength = Long.MAX_VALUE;
@@ -218,6 +222,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         pipeline.addLast(HTTP_DISPATCHER_HANDLER_NAME, new HttpDispatcherHandler(httpConfig));
         addPreDispatcherHandlers(pipeline, true);
         pipeline.channel().attr(NettyHttpConstants.IS_SECURE).set(Boolean.TRUE);
+        // Turn off half closure with H2
+        pipeline.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, false);
     }
 
     /**
@@ -231,7 +237,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         addPreHttpCodecHandlers(pipeline);
         addH2CCodecHandlers(pipeline);
         addPreDispatcherHandlers(pipeline, true);
-
+        // Turn off half closure with H2
+        pipeline.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, false);
     }
 
     /**
@@ -298,12 +305,16 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                     ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
                     return;
                 }
+                // Turn on half closure for H1
+                ctx.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
+
                 MSP.log("NO UPGRADE DETECTED - ADD HTTP ");
 
                 pipeline.addBefore("chunkWriteHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
                 //TODO: this is a very large number, check best practice
-                pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, null,
+                pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, HTTP_AGGREGATOR_HANDLER_NAME,
                                   new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
+                pipeline.addAfter(HTTP_AGGREGATOR_HANDLER_NAME, HTTP_REQUEST_HANDLER_NAME, new LibertyHttpRequestHandler());
 
 //                ctx.pipeline().addBefore("chunkWriteHandler", "objectAggregator", new LibertyHttpObjectAggregator(maxContentLength));
 //                ctx.pipeline().addBefore("objectAggregator", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
@@ -355,8 +366,9 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         if (!isHttp2) {
             pipeline.addAfter(NETTY_HTTP_SERVER_CODEC, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
             //TODO: this is a very large number, check best practice
-            pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, null,
+            pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, HTTP_AGGREGATOR_HANDLER_NAME,
                               new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
+            pipeline.addAfter(HTTP_AGGREGATOR_HANDLER_NAME, HTTP_REQUEST_HANDLER_NAME, new LibertyHttpRequestHandler());
         }
 
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, "chunkLoggingHandler", new ChunkSizeLoggingHandler());
