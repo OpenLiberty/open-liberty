@@ -1366,6 +1366,7 @@ public class DataJPATestServlet extends FATServlet {
 
     /**
      * Tests CrudRepository methods that supply entities as parameters.
+     * Also tests compatibility with Converters using OffsetDateTimeToStringConverter
      */
     @SkipIfSysProp({
                      DB_Postgres, //TODO Failing on Postgres due to eclipselink issue.  OL Issue #28368
