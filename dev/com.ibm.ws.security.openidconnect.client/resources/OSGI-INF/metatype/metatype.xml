@@ -89,8 +89,8 @@
          <AD id="uniqueUserIdentifier" name="%userUniqueIdentifier" description="%userUniqueIdentifier.desc" required="false" type="String" default="uniqueSecurityName" />
          <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false"
              type="String" default="post" >
-                <Option label="basic" value="basic" />
-                <Option label="post"  value="post" />
+                <Option label="%tokenEndpointAuthMethod.basic" value="basic" />
+                <Option label="%tokenEndpointAuthMethod.post"  value="post" />
                 <Option label="%tokenEndpointAuthMethod.privateKeyJwt" value="private_key_jwt" />
          </AD>
          <AD id="tokenEndpointAuthSigningAlgorithm" name="%tokenEndpointAuthSigningAlgorithm" description="%tokenEndpointAuthSigningAlgorithm.desc" required="false"
