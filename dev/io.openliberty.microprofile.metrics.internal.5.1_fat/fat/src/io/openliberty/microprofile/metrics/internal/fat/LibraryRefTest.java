@@ -146,7 +146,7 @@ public class LibraryRefTest {
 	public void noMicrometerCore() throws Exception {
 		server = serverNoMicrometerCore;
 		server.startServer();
-
+		server.waitForSSLStart();
 		// CWMMC0014I emits that metrics is using libraryRef
 		Assert.assertNotNull("CWMMC0014I Not found",
 				server.waitForStringInLogUsingMark("CWMMC0014I"));
