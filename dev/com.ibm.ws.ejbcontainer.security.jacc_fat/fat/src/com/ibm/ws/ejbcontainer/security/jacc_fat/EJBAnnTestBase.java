@@ -82,6 +82,11 @@ public class EJBAnnTestBase {
             properties.put("websphere.java.security.exempt", "true");
             properties.put("io.openliberty.checkpoint.allowed.features", "jacc-1.5,appAuthorization-2.0,appAuthorization-2.1,appAuthorization-3.0");
             configureBootStrapProperties(server, properties);
+
+            Map<String, String> options = server.getJvmOptionsAsMap();
+            options.put("-Dcom.ibm.ws.beta.edition", "true");
+            server.setJvmOptions(options);
+
             LibertyServer.setValidateApps(false);
             testHelper = new EJBAnnTestBaseHelper(server, client, true);
         } else {
