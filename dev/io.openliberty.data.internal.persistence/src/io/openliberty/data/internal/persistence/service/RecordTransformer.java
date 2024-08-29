@@ -134,9 +134,9 @@ public class RecordTransformer {
         final String _sourceFileName = entityClassName.substring(entityClassName.lastIndexOf(".") + 1) + ".java";
 
         if (recordClass.getTypeParameters().length != 0) {
-            throw new IllegalStateException("The " + recordClass.getName() + " record has one or more generic types " +
+            throw new DataException("The " + recordClass.getName() + " record has one or more generic types " +
                                             Arrays.asList(recordClass.getTypeParameters()) + ". This record class cannot be transformed into "
-                                            + " and entity class since entity classes cannot be generic."); //TODO NLS
+                                            + " an entity class since entity classes cannot be generic."); //TODO NLS
         }
 
         // Collect record component information, must preserve order
