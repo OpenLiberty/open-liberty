@@ -320,14 +320,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     //
                     transactionLog = rlm.getRecoveryLog(fs, transactionLogProps);
 
-                    // Configure the SQL HADB Retry parameters
-                    if (transactionLog != null && transactionLog instanceof HeartbeatLog) {
-                        HeartbeatLog heartbeatLog = (HeartbeatLog) transactionLog;
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "The transaction log is a Heartbeatlog, configure SQL HADB retry parameters");
-                        configureSQLHADBRetryParameters(heartbeatLog, cp);
-                    }
-
                     //
                     // Create the Partner (XAResources) log
                     //
@@ -336,20 +328,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Set the home partnerLog to " + partnerLog);
                         _homePartnerLog = partnerLog;
-                    }
-
-                    // Configure the SQL HADB Retry parameters
-                    if (partnerLog != null && partnerLog instanceof HeartbeatLog) {
-                        HeartbeatLog heartbeatLog = (HeartbeatLog) partnerLog;
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "The partner log is a Heartbeatlog, configure SQL HADB retry parameters");
-                        cp = ConfigurationProviderManager.getConfigurationProvider();
-                        if (cp == null) {
-                            if (tc.isEntryEnabled())
-                                Tr.exit(tc, "initiateRecovery", "ConfigurationProvider is null");
-                            throw new RecoveryFailedException("ConfigurationProvider is null");
-                        }
-                        configureSQLHADBRetryParameters(heartbeatLog, cp);
                     }
 
                     // In the special case where we support tx peer recovery (eg for operating in the cloud), we'll also work with a "lease" log
@@ -1032,14 +1010,10 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Custom PartnerLog is set - {0}", partnerLog);
 
-                        if (partnerLog != null && partnerLog instanceof HeartbeatLog) {
+                        if (partnerLog instanceof HeartbeatLog) {
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "The log is a Heartbeatlog");
                             heartbeatLog = (HeartbeatLog) partnerLog;
-
-                            // Configure the log's SQL HADB Retry parameters
-                            configureSQLHADBRetryParameters(heartbeatLog, cp);
-                            configureSQLHADBLightweightRetryParameters(heartbeatLog, cp);
                         }
                     }
                 }
@@ -1067,44 +1041,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "isDBTXLogPeerLocking", enableLocking);
         return enableLocking;
-    }
-
-    /**
-     * Configure the SQL HADB Retry parameters
-     *
-     * @param recLog
-     * @param cp
-     */
-    private void configureSQLHADBRetryParameters(HeartbeatLog heartbeatLog, ConfigurationProvider cp) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "configureSQLHADBRetryParameters", new java.lang.Object[] { heartbeatLog, cp, this });
-
-        // The optional SQL HADB Retry parameters
-        int logRetryInterval = cp.getLogRetryInterval();
-        heartbeatLog.setLogRetryInterval(logRetryInterval);
-        int logRetryLimit = cp.getLogRetryLimit();
-        heartbeatLog.setLogRetryLimit(logRetryLimit);
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "configureSQLHADBRetryParameters");
-    }
-
-    /**
-     * Configure the Lightweight SQL HADB Retry parameters
-     *
-     * @param recLog
-     * @param cp
-     */
-    private void configureSQLHADBLightweightRetryParameters(HeartbeatLog heartbeatLog, ConfigurationProvider cp) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "configureSQLHADBLightweightRetryParameters", new java.lang.Object[] { heartbeatLog, cp, this });
-
-        // The optional SQL HADB Retry parameters
-        int lightweightLogRetryInterval = cp.getLightweightLogRetryInterval();
-        heartbeatLog.setLightweightLogRetryInterval(lightweightLogRetryInterval);
-        int lightweightLogRetryLimit = cp.getLightweightLogRetryLimit();
-        heartbeatLog.setLightweightLogRetryLimit(lightweightLogRetryLimit);
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "configureSQLHADBLightweightRetryParameters");
     }
 
     /**
