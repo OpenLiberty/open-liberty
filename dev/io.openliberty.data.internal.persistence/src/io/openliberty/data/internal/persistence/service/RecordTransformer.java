@@ -42,6 +42,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import jakarta.data.exceptions.DataException;
+
 /**
  * Transforms records to entity classes
  */
@@ -135,8 +137,8 @@ public class RecordTransformer {
 
         if (recordClass.getTypeParameters().length != 0) {
             throw new DataException("The " + recordClass.getName() + " record has one or more generic types " +
-                                            Arrays.asList(recordClass.getTypeParameters()) + ". This record class cannot be transformed into "
-                                            + " an entity class since entity classes cannot be generic."); //TODO NLS
+                                    Arrays.asList(recordClass.getTypeParameters()) + ". This record class cannot be transformed into "
+                                    + " an entity class since entity classes cannot be generic."); //TODO NLS
         }
 
         // Collect record component information, must preserve order
@@ -147,8 +149,8 @@ public class RecordTransformer {
 
             if (previous != null) {
                 throw new DataException("The " + recordClass.getName() + " record has two components [" +
-                                                info.name + ", " + previous.name + "] that cannot be tranformed into an entity class "
-                                                + "because the entity class getter and setter methods would be ambiguous."); //TODO NLS
+                                        info.name + ", " + previous.name + "] that cannot be tranformed into an entity class "
+                                        + "because the entity class getter and setter methods would be ambiguous."); //TODO NLS
             }
 
             if (trace && tc.isDebugEnabled())

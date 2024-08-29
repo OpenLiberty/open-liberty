@@ -31,6 +31,7 @@ import io.openliberty.data.internal.persistence.models.GenericInfer;
 import io.openliberty.data.internal.persistence.models.Naming;
 import io.openliberty.data.internal.persistence.models.Primitive;
 import io.openliberty.data.internal.persistence.models.Special;
+import jakarta.data.exceptions.DataException;
 
 /**
  * Unit tests for Record Transformer
