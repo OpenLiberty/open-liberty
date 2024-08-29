@@ -38,7 +38,7 @@ Subsystem-Name: Jakarta Server Pages 4.0
   io.openliberty.jakarta.pages-4.0, \
   io.openliberty.expressionLanguage-6.0
 -bundles=io.openliberty.org.eclipse.jdt.core.java17; require-java:=17, \
- io.openliberty.jakarta.tags.3.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0", \
+ io.openliberty.jakarta.tags.3.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.2", \
  io.openliberty.pages.4.0.internal.factories, \
  com.ibm.ws.jsp.jakarta, \
  io.openliberty.tags.3.0.facade; start-phase:=CONTAINER_EARLY, \
