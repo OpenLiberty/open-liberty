@@ -9,10 +9,19 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.internal.utils;
 
+import java.io.IOException;
+
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.eclipse.microprofile.openapi.models.info.Info;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIModelOperations;
+import io.smallrye.openapi.runtime.OpenApiRuntimeException;
+import io.smallrye.openapi.runtime.io.info.InfoReader;
 
 public class OpenAPIModelOperationsImpl implements OpenAPIModelOperations {
 
@@ -32,5 +41,17 @@ public class OpenAPIModelOperationsImpl implements OpenAPIModelOperations {
         result.setTags(model.getTags());
 
         return result;
+    }
+
+    @Override
+    @FFDCIgnore(IOException.class)
+    public Info parseInfo(String infoJson) throws OpenApiRuntimeException {
+        try {
+            JsonNode infoNode = new ObjectMapper().readTree(infoJson);
+            Info info = InfoReader.readInfo(infoNode);
+            return info;
+        } catch (IOException e) {
+            throw new OpenApiRuntimeException(e);
+        }
     }
 }

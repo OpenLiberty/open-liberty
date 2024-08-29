@@ -10,6 +10,9 @@
 package io.openliberty.microprofile.openapi20.internal.services;
 
 import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.eclipse.microprofile.openapi.models.info.Info;
+
+import io.smallrye.openapi.runtime.OpenApiRuntimeException;
 
 /**
  * Model operations which require a different implementation on different versions of the OpenAPI model.
@@ -26,4 +29,12 @@ public interface OpenAPIModelOperations {
      */
     public OpenAPI shallowCopy(OpenAPI model);
 
+    /**
+     * Parse JSON into an Info object
+     *
+     * @param infoJson a JSON serialized OpenAPI info section
+     * @return an Info model object
+     * @throws OpenApiRuntimeException if there's an error reading the JSON
+     */
+    public Info parseInfo(String infoJson) throws OpenApiRuntimeException;
 }

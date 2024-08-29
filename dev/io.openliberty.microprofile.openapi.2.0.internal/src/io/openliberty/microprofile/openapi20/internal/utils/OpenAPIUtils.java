@@ -26,9 +26,6 @@ import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.eclipse.microprofile.openapi.models.info.Info;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -38,18 +35,20 @@ import com.ibm.ws.kernel.service.util.ServiceCaller;
 import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult;
 import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult.ValidationEvent.Severity;
 import io.openliberty.microprofile.openapi20.internal.services.OASValidator;
+import io.openliberty.microprofile.openapi20.internal.services.OpenAPIModelOperations;
 import io.openliberty.microprofile.openapi20.internal.validation.ValidatorUtils;
 import io.smallrye.openapi.api.constants.OpenApiConstants;
 import io.smallrye.openapi.api.models.OpenAPIImpl;
 import io.smallrye.openapi.api.models.PathsImpl;
 import io.smallrye.openapi.api.models.info.InfoImpl;
+import io.smallrye.openapi.runtime.OpenApiRuntimeException;
 import io.smallrye.openapi.runtime.io.Format;
 import io.smallrye.openapi.runtime.io.OpenApiSerializer;
-import io.smallrye.openapi.runtime.io.info.InfoReader;
 
 public class OpenAPIUtils {
     private static final TraceComponent tc = Tr.register(OpenAPIUtils.class);
     private static final ServiceCaller<OASValidator> validatorService = new ServiceCaller<>(OpenAPIUtils.class, OASValidator.class);
+    private static final ServiceCaller<OpenAPIModelOperations> modelOpsService = new ServiceCaller<>(OpenAPIUtils.class, OpenAPIModelOperations.class);
 
     /**
      * The createBaseOpenAPIDocument method creates a default OpenAPI model object.
@@ -267,26 +266,27 @@ public class OpenAPIUtils {
         // This class is not meant to be instantiated.
     }
 
-    @FFDCIgnore(JsonProcessingException.class)
     public static Info getConfiguredInfo(Config config) {
         Optional<String> infoJson = config.getOptionalValue(Constants.MERGE_INFO_CONFIG, String.class);
         if (!infoJson.isPresent()) {
             return null;
         }
 
-        try {
-            JsonNode infoNode = new ObjectMapper().readTree(infoJson.get());
-            Info info = InfoReader.readInfo(infoNode);
-            if (info.getTitle() != null && info.getVersion() != null) {
-                return info;
-            } else {
-                Tr.warning(tc, MessageConstants.OPENAPI_MERGE_INFO_INVALID_CWWKO1664W, Constants.MERGE_INFO_CONFIG, infoJson.get());
+        return modelOpsService.run(modelOps -> {
+            try {
+                Info info = modelOps.parseInfo(infoJson.get());
+                if (info.getTitle() != null && info.getVersion() != null) {
+                    return info;
+                } else {
+                    Tr.warning(tc, MessageConstants.OPENAPI_MERGE_INFO_INVALID_CWWKO1664W, Constants.MERGE_INFO_CONFIG, infoJson.get());
+                    return null;
+                }
+            } catch (OpenApiRuntimeException ex) {
+                // Note: No auto-FFDC generated here because we're in a lambda
+                Tr.warning(tc, MessageConstants.OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W, Constants.MERGE_INFO_CONFIG, infoJson.get(), ex.toString());
                 return null;
             }
-        } catch (JsonProcessingException ex) {
-            Tr.warning(tc, MessageConstants.OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W, Constants.MERGE_INFO_CONFIG, infoJson.get(), ex.toString());
-            return null;
-        }
+        }).orElse(null);
     }
 
     /**
