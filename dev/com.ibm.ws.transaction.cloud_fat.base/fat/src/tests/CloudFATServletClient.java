@@ -155,10 +155,10 @@ public abstract class CloudFATServletClient extends CloudTestBase {
 
             try {
                 // We expect this to fail since it is gonna crash the server
-                sb = runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "setupRecForAggressiveTakeover1");
+                runTest(longLeaseCompeteServer1, SERVLET_NAME, "setupRecForAggressiveTakeover1");
+                fail();
             } catch (IOException e) {
             }
-            Log.info(this.getClass(), method, "back from runTestWithResponse, sb is " + sb);
 
             // wait for 1st server to have gone away
             assertNotNull(longLeaseCompeteServer1.getServerName() + " did not crash", longLeaseCompeteServer1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
@@ -170,6 +170,9 @@ public abstract class CloudFATServletClient extends CloudTestBase {
             // Now start server2
             server2fastcheck.setHttpDefaultPort(Integer.getInteger("HTTP_secondary"));
             FATUtils.startServers(_runner, server2fastcheck);
+
+            // Wait for 10 seconds for server1's logs to go stale
+            Thread.sleep(10000);
 
             // Now start server1
             FATUtils.startServers(_runner, longLeaseCompeteServer1);

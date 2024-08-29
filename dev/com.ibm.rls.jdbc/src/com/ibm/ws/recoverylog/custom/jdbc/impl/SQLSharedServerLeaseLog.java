@@ -321,7 +321,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                     queryString = "SELECT SERVER_IDENTITY, LEASE_TIME" +
                                   " FROM " + _leaseTableName +
                                   (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
-                                  " WHERE RECOVERY_GROUP = '" + recoveryGroup + "'" +
+                                  " WHERE RECOVERY_GROUP = '" + recoveryGroup + "' AND SERVER_IDENTITY != '" + _localRecoveryIdentity + "'" +
                                   ((_isSQLServer) ? "" : " FOR UPDATE") +
                                   ((_isPostgreSQL || _isSQLServer) ? "" : " OF LEASE_TIME");
                     if (tc.isDebugEnabled())
@@ -329,7 +329,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 } else {
                     queryString = "SELECT SERVER_IDENTITY, LEASE_TIME" +
                                   " FROM " + _leaseTableName +
-                                  " WHERE RECOVERY_GROUP = '" + recoveryGroup + "'";
+                                  " WHERE RECOVERY_GROUP = '" + recoveryGroup + "' AND SERVER_IDENTITY != '" + _localRecoveryIdentity + "'";
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Attempt to select from the lease table - " + queryString);
                 }

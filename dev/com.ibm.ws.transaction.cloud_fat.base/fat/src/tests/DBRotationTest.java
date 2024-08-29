@@ -453,7 +453,6 @@ public class DBRotationTest extends CloudFATServletClient {
         // Check for key strings to see whether the lease has been updated and read
         shortLeaseServer1.setTraceMarkToEndOfDefaultTrace();
         assertNotNull("Lease Renewer has not fired", shortLeaseServer1.waitForStringInTrace("Have updated Server row", FATUtils.LOG_SEARCH_TIMEOUT));
-        assertNotNull("Lease checker has not fired", shortLeaseServer1.waitForStringInTrace("Lease Table: read recoveryId", FATUtils.LOG_SEARCH_TIMEOUT));
     }
 
     @Test
