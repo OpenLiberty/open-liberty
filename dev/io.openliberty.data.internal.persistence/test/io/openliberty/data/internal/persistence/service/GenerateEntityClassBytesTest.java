@@ -84,7 +84,7 @@ public class GenerateEntityClassBytesTest {
         try {
             RecordTransformer.generateEntityClassBytes(GenericInfer.class, GenericInfer.class.getName() + "Entity");
             fail("Should not have created a entity class for: " + GenericInfer.class.getName());
-        } catch (IllegalStateException e) {
+        } catch (DataException e) {
             //expected
         }
     }
@@ -94,7 +94,7 @@ public class GenerateEntityClassBytesTest {
         try {
             RecordTransformer.generateEntityClassBytes(Ambiguous.class, Ambiguous.class.getName() + "Entity");
             fail("Should not have been able to create a well-formed entity class for: " + Ambiguous.class.getCanonicalName());
-        } catch (IllegalStateException e) {
+        } catch (DataException e) {
             //expected
         }
     }
