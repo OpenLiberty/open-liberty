@@ -87,7 +87,7 @@ CWWKD1006.delete.rtrn.err=CWWKD1006E: The {0} return type of the {1} method \
  type of long or int for a deletion count. Use a return type of boolean for \
  an indicator of whether any entities were deleted. Use a return type of array, \
  List, or Optional, parameterized with either the {3} entity class or the \
- {4} Id class, to return the deleted entities or entity Ids.
+ {4} unique identifier class, to return the deleted entities or entity Ids.
 CWWKD1006.delete.rtrn.err.explanation=The return type of the method is not \
  one of the supported return types for a delete operation.
 CWWKD1006.delete.rtrn.err.useraction=Update the repository method to use one \
@@ -107,7 +107,8 @@ CWWKD1008.ambig.rtrn.err=CWWKD1008E: The {0} return type of the {1} method \
  of the {2} repository interface is ambiguous as a return type because it \
  corresponds to multiple entity properties: {3}. To use this result type, \
  the repository method must switch to the Query annotation and use a JDQL \
- query with a SELECT clause that specifies which entity property to return.
+ or JPQL query with a SELECT clause that specifies which entity property to \
+ return.
 CWWKD1008.ambig.rtrn.err.explanation=The return type of the method is not \
  one of the supported return types for a delete method.
 CWWKD1008.ambig.rtrn.err.useraction=Update the repository method to use the \
