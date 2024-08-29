@@ -32,7 +32,6 @@ import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.feature.LibertyFeature;
 
-import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryInfoFactory;
@@ -44,11 +43,12 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
 
     private final MetaDataSlot slotForOpenTelemetryInfoHolder;
     private final OpenTelemetryInfoFactory openTelemetryInfoFactory;
+    boolean telemetry2OrLater;
 
     //These three are set during activation, and refreshed on checkpoint restore. (runtimeInstance is only set if we need one)
-    private boolean waitingForCheckpointRestore;
-    private boolean isRuntimeEnabled;
-    private LazyInitializer<OpenTelemetryInfo> runtimeInstance = null;
+    private volatile boolean waitingForCheckpointRestore = true;
+    private volatile boolean isRuntimeEnabled = false; //Always false before a checkpoint restore, so we allways prepare what we need if post-checkpoint we're now in app mode.
+    private volatile LazyInitializer<OpenTelemetryInfo> runtimeInstance = null;
 
     @Activate
     public OpenTelemtryLifecycleManagerImpl(@Reference MetaDataSlotService slotService, @Reference OpenTelemetryInfoFactory openTelemetryInfoFactory,
@@ -59,39 +59,30 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
 
         String shortName = (String) featureRef.getProperty("ibm.featureName");
         //the runtimeMode was added in 2.0
-        final boolean telemetry2OrLater = shortName.startsWith("mpTelemetry-1") ? false : true;
+        telemetry2OrLater = shortName.startsWith("mpTelemetry-1") ? false : true;
 
-        CheckpointHook checkpointHook = new CheckpointHook() {
-
-            @Override
-            public void restore() {
-                waitingForCheckpointRestore = false;
-                checkThenSetRuntimeFields(telemetry2OrLater);
-            }
-        };
-
-        // If checkpoint is enabled this statement will register the hook we created above. Then checkpoint returns true so the if statement is false.
-        // If checkpoint is disabled it does nothing and returns false, so the if statement will be true.
-        if (!CheckpointPhase.getPhase().addMultiThreadedHook(checkpointHook)) {
-            //Checkpoint disabled
-            waitingForCheckpointRestore = false;
-            checkThenSetRuntimeFields(telemetry2OrLater);
-        } else {
-            //Checkpoint enabled, before restore.
-            waitingForCheckpointRestore = true;
-        }
+        checkThenSetRuntimeFields();
     }
 
-    private void checkThenSetRuntimeFields(boolean telemetry2OrLater) {
-        HashMap<String, String> propreties = OpenTelemetryPropertiesReader.getRuntimeInstanceTelemetryProperties();
-        isRuntimeEnabled = telemetry2OrLater && !!!OpenTelemetryPropertiesReader.checkDisabled(propreties);
+    private void checkThenSetRuntimeFields() {
+        if (waitingForCheckpointRestore) {
+            synchronized (this) {
+                //restored() true if checkpoint has been restored or was never active
+                if (waitingForCheckpointRestore && CheckpointPhase.getPhase().restored()) {
+                    HashMap<String, String> propreties = OpenTelemetryPropertiesReader.getRuntimeInstanceTelemetryProperties();
+                    isRuntimeEnabled = telemetry2OrLater && OpenTelemetryPropertiesReader.isEnabled(propreties);
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "Configured runtime mode as ", isRuntimeEnabled);
-        }
+                    if (isRuntimeEnabled) {
+                        runtimeInstance = LazyInitializer.<OpenTelemetryInfo> builder().setInitializer(curryInfoFactory(isRuntimeEnabled)).get();
+                    }
 
-        if (isRuntimeEnabled) {
-            runtimeInstance = LazyInitializer.<OpenTelemetryInfo> builder().setInitializer(curryInfoFactory(isRuntimeEnabled)).get();
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Configured runtime mode as ", isRuntimeEnabled);
+                    }
+
+                    waitingForCheckpointRestore = false;
+                }
+            }
         }
     }
 
@@ -104,6 +95,8 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
     /** {@inheritDoc} */
     @Override
     public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
+        checkThenSetRuntimeFields();
+
         //We do not actually initialize on application starting, we do that lazily if this is needed.
 
         //We don't use app scoped OpenTelemetry objects if the server scoped object exists
@@ -148,6 +141,8 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
 
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
+        checkThenSetRuntimeFields();
+
         //We don't use app scoped OpenTelemetry objects if the server scoped object exists
         if (isRuntimeEnabled) {
             return;
@@ -202,6 +197,7 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
     /** {@inheritDoc} */
     @Override
     public OpenTelemetryInfo getOpenTelemetryInfo(ApplicationMetaData metaData) {
+        checkThenSetRuntimeFields();
 
         if (waitingForCheckpointRestore) {
             //We always return a no-op when waiting for checkpoint
@@ -257,6 +253,8 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
 
     @Override
     public boolean isRuntimeEnabled() {
+        checkThenSetRuntimeFields();
+
         return isRuntimeEnabled;
     }
 }

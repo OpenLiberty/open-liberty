@@ -55,19 +55,10 @@ public abstract class AbstractOpenTelemetryInfoFactory implements OpenTelemetryI
             }
 
             final Map<String, String> telemetryProperties;
-            final ClassLoader classLoader;
+
             if (runtimeEnabled) {
-                classLoader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
-                    return OpenTelemetry.noop().getClass().getClassLoader();
-                });
-
                 telemetryProperties = OpenTelemetryPropertiesReader.getRuntimeInstanceTelemetryProperties();
-
             } else {
-                classLoader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
-                    return Thread.currentThread().getContextClassLoader();
-                });
-
                 telemetryProperties = OpenTelemetryPropertiesReader.getTelemetryProperties();
 
                 //Checks if app mode thinks we're enabled and runtime thinks we're not
@@ -76,9 +67,8 @@ public abstract class AbstractOpenTelemetryInfoFactory implements OpenTelemetryI
                 warnIfAppEnabledAndRuntimeExplicitlyDisabled(telemetryProperties, instanceName);
             }
 
-            //TODO check if "tracer provider" is accurate?
             //Builds tracer provider if user has enabled tracing aspects with config properties
-            if (!OpenTelemetryPropertiesReader.checkDisabled(telemetryProperties)) {
+            if (OpenTelemetryPropertiesReader.isEnabled(telemetryProperties)) {
 
                 addDefaultVersionedProperties(telemetryProperties);
 
@@ -87,6 +77,8 @@ public abstract class AbstractOpenTelemetryInfoFactory implements OpenTelemetryI
                 }
 
                 OpenTelemetry openTelemetry = AccessController.doPrivileged((PrivilegedAction<OpenTelemetry>) () -> {
+                    ClassLoader classLoader = runtimeEnabled ? OpenTelemetry.noop().getClass().getClassLoader() : Thread.currentThread().getContextClassLoader();
+
                     return buildOpenTelemetry(telemetryProperties, getResourceCustomizer(runtimeEnabled), classLoader);
                 });
 
@@ -115,7 +107,7 @@ public abstract class AbstractOpenTelemetryInfoFactory implements OpenTelemetryI
 
         HashMap<String, String> runtimePropreties = OpenTelemetryPropertiesReader.getRuntimeInstanceTelemetryProperties();
 
-        if (!!!OpenTelemetryPropertiesReader.checkDisabled(telemetryAppProperties) && OpenTelemetryPropertiesReader.checkExplicitlyDisabled(runtimePropreties)) {
+        if (OpenTelemetryPropertiesReader.isEnabled(telemetryAppProperties) && OpenTelemetryPropertiesReader.checkExplicitlyDisabled(runtimePropreties)) {
             Tr.warning(tc, "CWMOT5007.tel.enabled.conflict", appName);
         }
 

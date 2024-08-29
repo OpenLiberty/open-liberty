@@ -93,6 +93,11 @@ public class OpenTelemetryAccessor {
         return bindings.orElseThrow(() -> new IllegalStateException("Unable to get CDIService"));
     }
 
+    /**
+     * Returns true if OpenTelemetry is in runtime mode otherwise false.
+     *
+     * Note that in a checkpoint environment this will always return false before a checkpoint restore.
+     */
     public static boolean isRuntimeEnabled() {
         Optional<Object> isRuntimeEnabled = openTelemetryLifecycleManagerService.call((lifecycle) -> {
             return lifecycle.isRuntimeEnabled();
