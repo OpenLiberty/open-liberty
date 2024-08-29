@@ -378,7 +378,7 @@ public class HttpConfigConstants {
     /** The channel will never be enabled for HTTP/2.0. */
     public static final String NEVER_20 = "2.0_Never";
 
-    /** HTTP/1.1 Version _V */
+    /** HTTP/1.1 Version protocol */
     public static final String PROTOCOL_VERSION_11 = "http/1.1";
     /** HTTP/2 Version protocol */
     public static final String PROTOCOL_VERSION_2 = "http/2";
