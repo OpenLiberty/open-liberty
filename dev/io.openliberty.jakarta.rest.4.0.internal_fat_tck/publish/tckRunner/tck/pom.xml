@@ -435,6 +435,8 @@
                         <exclude>**/tck/**/JAXRSSigTestIT</exclude>
                         <!--  Exclude testcase to avoid failures do to test infrastructure issues. --> 
                         <exclude>ee.jakarta.tck.ws.rs.jaxrs21.ee.sse.ssebroadcaster.JAXRSClientIT</exclude>
+                        <!--  Exclude testcase pending challenge documented in https://github.com/jakartaee/rest/issues/1278. --> 
+                        <exclude>ee.jakarta.tck.ws.rs.ee.rs.container.requestcontext.JAXRSClientIT</exclude>
                      </excludes>
                 </configuration>
             </plugin>
