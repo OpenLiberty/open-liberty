@@ -109,7 +109,8 @@ public class TestUtils {
     }
 
     /*
-     * Ensure that the container was successfully started.
+     * Ensure that the container was successfully started. This is done by checking the container logs for the message provided,
+     * and will check check the logs every 5 seconds for a total of 60s.
      */
     public static void isContainerStarted(String subString, GenericContainer<?> container) {
         long endTime = System.currentTimeMillis() + Duration.ofSeconds(60).toMillis();
