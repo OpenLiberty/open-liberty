@@ -34,6 +34,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @RunWith(FATRunner.class)
 public class TelemetrySourcesTest extends FATServletClient {
@@ -47,7 +48,7 @@ public class TelemetrySourcesTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests rt = FATSuite.testRepeatMPTel20();
+    public static RepeatTests rt = TelemetryActions.telemetry20Repeats();
 
     public static final String SERVER_XML_ALL_SOURCES = "allSources.xml";
     public static final String SERVER_XML_EMPTY_SOURCE = "emptySource.xml";

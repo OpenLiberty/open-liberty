@@ -40,10 +40,10 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.microprofile.telemetry.internal.apps.metricTest.TestResource;
-import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.otelCollector.OtelCollectorContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.otelCollector.OtelCollectorQueryClient;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 /**
  * Test exporting metrics to a OpenTelemetry Collector
@@ -61,7 +61,7 @@ public class MetricsApiOtelCollectorTest {
                                                                                                                                                                           .withNetworkAliases("otel-collector-metrics")
                                                                                                                                                                           .withLogConsumer(new SimpleLogConsumer(MetricsApiOtelCollectorTest.class,
                                                                                                                                                                                                                  "otelCol"));
-    public static RepeatTests repeat = FATSuite.telemetry20Repeats(SERVER_NAME);
+    public static RepeatTests repeat = TelemetryActions.telemetry20Repeats(SERVER_NAME);
 
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(network)
