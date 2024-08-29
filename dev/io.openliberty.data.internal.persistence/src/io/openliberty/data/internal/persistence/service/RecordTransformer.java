@@ -146,9 +146,9 @@ public class RecordTransformer {
             RecordComponentInfo previous = recordComponents.put(info.getMethodName(""), info);
 
             if (previous != null) {
-                throw new IllegalStateException("The " + recordClass.getName() + " record has two components [" +
+                throw new DataException("The " + recordClass.getName() + " record has two components [" +
                                                 info.name + ", " + previous.name + "] that cannot be tranformed into an entity class "
-                                                + "because the entity class getter and setter methods would be ambiguious."); //TODO NLS
+                                                + "because the entity class getter and setter methods would be ambiguous."); //TODO NLS
             }
 
             if (trace && tc.isDebugEnabled())
