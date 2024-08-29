@@ -231,7 +231,6 @@ public synchronized void stop() {
 
                 // Add SSL options only if the chain is SSL-enabled
                 if (this.isHttps()) {
-                    System.out.println("NETTY CHAIN -> SSL OPTIONS: " + owner.getSslOptions());
                     Map<String, Object> sslOptions = new HashMap<>(this.getOwner().getSslOptions());
                     // if (owner.getProtocolVersion() != null) {
                     //         sslOptions.getSslOptions().put(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION, owner.getProtocolVersion());
