@@ -776,13 +776,6 @@ public class DeliveryDelayServlet extends HttpServlet {
                 throw new TestException("Message received to soon, afterReceive:" + afterReceive + " beforeSend:" + beforeSend + " deliveryDelay:" + deliveryDelay
                         + "\nreceivedMessage:" + receivedMessage);
             
-            // The JMS Specification does not put an upper limit on how long it can take to deliver a message. Sib takes advantage of this 
-            // by not starting the delay timer for a PubSub message until it is committed.
-            // Allow 500 extra milliseconds for commit and receive latency. If the Test systems run too slowly we may get a false failure here. 
-            if (afterReceive - afterSend > deliveryDelay + commitDelay + 500)
-                throw new TestException("Message received to late, afterSend:" + afterSend + " afterReceive" + afterReceive 
-                        + " deliveryDelay:" + deliveryDelay +" commitDelay:" + commitDelay
-                        + "\nreceivedMessage:" + receivedMessage);
         }
     }
 
@@ -3474,12 +3467,6 @@ public class DeliveryDelayServlet extends HttpServlet {
                 throw new TestException("Message received to soon, afterReceive:" + afterReceive + " beforeSend:" + beforeSend + " deliveryDelay:" + deliveryDelay
                         + "\nreceivedMessage:" + receivedMessage);
             
-            // Allow 500 extra milliseconds for commit and receive latency. If the Test systems run too slowly we may get a false failure here. 
-            if (afterReceive - afterSend > deliveryDelay + commitDelay + 500)
-                throw new TestException("Message received to late, afterSend:" + afterSend + " afterReceive" + afterReceive 
-                        + " deliveryDelay:" + deliveryDelay +" commitDelay:" + commitDelay
-                        + "\nreceivedMessage:" + receivedMessage);
- 
         }
     }
 
@@ -3540,14 +3527,6 @@ public class DeliveryDelayServlet extends HttpServlet {
                 throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessage);
             if (afterReceive - beforePublish < deliveryDelay)
                 throw new TestException("Message received to soon, afterReceive:" + afterReceive + " beforePublish:" + beforePublish + " deliveryDelay:" + deliveryDelay
-                        + "\nreceivedMessage:" + receivedMessage);
-            
-            // The JMS Specification does not put an upper limit on how long it can take to deliver a message. Sib takes advantage of this 
-            // by not starting the delay timer for a PubSub message until it is committed.
-            // Allow 500 extra milliseconds for commit and receive latency. If the Test systems run too slowly we may get a false failure here. 
-            if (afterReceive - afterPublish > deliveryDelay + commitDelay + 500)
-                throw new TestException("Message received to late, afterPublish:" + afterPublish + " afterReceive" + afterReceive 
-                        + " deliveryDelay:" + deliveryDelay +" commitDelay:" + commitDelay
                         + "\nreceivedMessage:" + receivedMessage);
         }
     }
