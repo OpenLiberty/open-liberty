@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,19 +9,9 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.common.info;
 
-import io.opentelemetry.api.OpenTelemetry;
-import io.opentelemetry.api.trace.Tracer;
+import io.openliberty.microprofile.telemetry.spi.OpenTelemetryInfo;
 
-public interface OpenTelemetryInfo {
-    /**
-     * @return true if enabled
-     */
-    public boolean getEnabled();
-
-    /**
-     * @return the openTelemetry
-     */
-    public OpenTelemetry getOpenTelemetry();
+public interface OpenTelemetryInfoInternal extends OpenTelemetryInfo {
 
     /**
      * Disposes of the OpenTelemetry object within

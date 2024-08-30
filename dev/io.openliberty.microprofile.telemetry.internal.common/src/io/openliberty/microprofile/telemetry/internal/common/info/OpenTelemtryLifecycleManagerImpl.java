@@ -48,7 +48,7 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
     //These three are set during activation, and refreshed on checkpoint restore. (runtimeInstance is only set if we need one)
     private volatile boolean waitingForCheckpointRestore = true;
     private volatile boolean isRuntimeEnabled = false; //Always false before a checkpoint restore, so we allways prepare what we need if post-checkpoint we're now in app mode.
-    private volatile LazyInitializer<OpenTelemetryInfo> runtimeInstance = null;
+    private volatile LazyInitializer<OpenTelemetryInfoInternal> runtimeInstance = null;
 
     @Activate
     public OpenTelemtryLifecycleManagerImpl(@Reference MetaDataSlotService slotService, @Reference OpenTelemetryInfoFactory openTelemetryInfoFactory,
@@ -73,7 +73,7 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
                     isRuntimeEnabled = telemetry2OrLater && OpenTelemetryPropertiesReader.isEnabled(propreties);
 
                     if (isRuntimeEnabled) {
-                        runtimeInstance = LazyInitializer.<OpenTelemetryInfo> builder().setInitializer(curryInfoFactory(isRuntimeEnabled)).get();
+                        runtimeInstance = LazyInitializer.<OpenTelemetryInfoInternal> builder().setInitializer(curryInfoFactory(isRuntimeEnabled)).get();
                     }
 
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -86,7 +86,7 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
         }
     }
 
-    private FailableSupplier<OpenTelemetryInfo, ? extends Exception> curryInfoFactory(final boolean runtimeEnabled) {
+    private FailableSupplier<OpenTelemetryInfoInternal, ? extends Exception> curryInfoFactory(final boolean runtimeEnabled) {
         return () -> {
             return openTelemetryInfoFactory.createOpenTelemetryInfo(runtimeEnabled);
         };
@@ -122,7 +122,7 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
         ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
         OpenTelemetryInfoReference oTelRef = (OpenTelemetryInfoReference) extAppInfo.getMetaData().getMetaData(slotForOpenTelemetryInfoHolder);
 
-        LazyInitializer<OpenTelemetryInfo> newSupplier = LazyInitializer.<OpenTelemetryInfo> builder().setInitializer(curryInfoFactory(isRuntimeEnabled))
+        LazyInitializer<OpenTelemetryInfoInternal> newSupplier = LazyInitializer.<OpenTelemetryInfoInternal> builder().setInitializer(curryInfoFactory(isRuntimeEnabled))
                                                                         .setCloser(info -> info.dispose()).get();
 
         if (oTelRef == null) {
@@ -151,10 +151,10 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
         ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
         OpenTelemetryInfoReference oTelRef = (OpenTelemetryInfoReference) extAppInfo.getMetaData().getMetaData(slotForOpenTelemetryInfoHolder);
 
-        LazyInitializer<OpenTelemetryInfo> newSupplier = LazyInitializer.<OpenTelemetryInfo> builder().setInitializer(openTelemetryInfoFactory::createDisposedOpenTelemetryInfo)
+        LazyInitializer<OpenTelemetryInfoInternal> newSupplier = LazyInitializer.<OpenTelemetryInfoInternal> builder().setInitializer(openTelemetryInfoFactory::createDisposedOpenTelemetryInfo)
                                                                         .setCloser(info -> info.dispose()).get();
 
-        LazyInitializer<OpenTelemetryInfo> oldSupplier = oTelRef.getAndSet(newSupplier);
+        LazyInitializer<OpenTelemetryInfoInternal> oldSupplier = oTelRef.getAndSet(newSupplier);
 
         try {
             oldSupplier.close();
@@ -173,14 +173,14 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
      * Within the context of an application's lifecycle we need to ensure OpenTelemetryInfo
      * is only created once. LazySupplier handles this.
      */
-    private class OpenTelemetryInfoReference extends AtomicReference<LazyInitializer<OpenTelemetryInfo>> {
+    private class OpenTelemetryInfoReference extends AtomicReference<LazyInitializer<OpenTelemetryInfoInternal>> {
 
         private static final long serialVersionUID = -4884222080590544495L;
     }
 
     /** {@inheritDoc} */
     @Override
-    public OpenTelemetryInfo getOpenTelemetryInfo() {
+    public OpenTelemetryInfoInternal getOpenTelemetryInfo() {
         try {
             ApplicationMetaData metaData = null;
             ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
@@ -196,7 +196,7 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
 
     /** {@inheritDoc} */
     @Override
-    public OpenTelemetryInfo getOpenTelemetryInfo(ApplicationMetaData metaData) {
+    public OpenTelemetryInfoInternal getOpenTelemetryInfo(ApplicationMetaData metaData) {
         checkThenSetRuntimeFields();
 
         if (waitingForCheckpointRestore) {
@@ -243,7 +243,7 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
                 //If it isn't throw something nicer than an NPE.
                 throw new IllegalStateException("Attempted to create openTelemetaryInfo for application " + j2EEName + " which has not gone through ApplicationStarting");
             }
-            LazyInitializer<OpenTelemetryInfo> supplier = atomicRef.get();
+            LazyInitializer<OpenTelemetryInfoInternal> supplier = atomicRef.get();
             return supplier.get();
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));

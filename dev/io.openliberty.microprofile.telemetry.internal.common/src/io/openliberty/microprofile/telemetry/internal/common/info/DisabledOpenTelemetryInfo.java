@@ -15,11 +15,11 @@ import io.opentelemetry.api.trace.Tracer;
 /**
  * An impl of OpenTelemetryInfo that occurs if OpenTelemetry is Disabled
  */
-public class DisabledOpenTelemetryInfo implements OpenTelemetryInfo {
+public class DisabledOpenTelemetryInfo implements OpenTelemetryInfoInternal {
 
     /** {@inheritDoc} */
     @Override
-    public boolean getEnabled() {
+    public boolean isEnabled() {
         return false;
     }
 

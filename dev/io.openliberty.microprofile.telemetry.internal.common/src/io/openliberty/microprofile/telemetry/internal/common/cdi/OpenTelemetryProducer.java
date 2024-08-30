@@ -25,7 +25,7 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
 import io.openliberty.microprofile.telemetry.internal.common.info.ErrorOpenTelemetryInfo;
-import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
+import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfoInternal;
 import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryLifecycleManager;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.baggage.Baggage;
@@ -51,8 +51,8 @@ public class OpenTelemetryProducer {
      * @return An instance of OpenTelemetryInfo containing the instance of OpenTelemetry associated with this application. This instance will be a no-op OpenTelemetry if telemetry
      *         is disabled or the application has shut down.
      */
-    private OpenTelemetryInfo getOpenTelemetryInfo() {
-        Optional<OpenTelemetryInfo> openTelemetryInfo = openTelemetryInfoFactoryService.call((lifecycleManager) -> {
+    private OpenTelemetryInfoInternal getOpenTelemetryInfo() {
+        Optional<OpenTelemetryInfoInternal> openTelemetryInfo = openTelemetryInfoFactoryService.call((lifecycleManager) -> {
             return lifecycleManager.getOpenTelemetryInfo(metaData);
         });
         return openTelemetryInfo.orElseGet(ErrorOpenTelemetryInfo::new);
