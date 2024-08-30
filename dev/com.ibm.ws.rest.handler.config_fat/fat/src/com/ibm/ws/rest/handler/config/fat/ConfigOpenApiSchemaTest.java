@@ -48,6 +48,8 @@ public class ConfigOpenApiSchemaTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+                                                             MicroProfileActions.MP70_EE11,
+                                                             MicroProfileActions.MP70_EE10,
                                                              MicroProfileActions.MP61, // EE10
                                                              MicroProfileActions.MP50, // EE9
                                                              MicroProfileActions.MP40); // EE8
