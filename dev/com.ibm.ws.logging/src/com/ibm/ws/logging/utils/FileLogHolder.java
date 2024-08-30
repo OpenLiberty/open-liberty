@@ -308,7 +308,7 @@ public class FileLogHolder implements TraceWriter {
          * System err (Thread 2 holds lock)
          * Thread 2 > System Err ( locks System Err stream) > ... > Write to file (Thread 1 holds FileLogHolder locks)
          *
-         * This message may be ba bit delayed, but this will avoid deadlocks
+         * This message maybe a bit delayed, but this will avoid deadlocks
          *
          */
         // to avoid junit test to print an error message
