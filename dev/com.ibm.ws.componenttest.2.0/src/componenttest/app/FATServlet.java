@@ -48,6 +48,11 @@ import jakarta.servlet.http.HttpServletResponse;
 public abstract class FATServlet extends HttpServlet {
     public static final String SUCCESS = "SUCCESS";
     public static final String TEST_METHOD = "testMethod";
+    private final ThreadLocal<String> testMethod = new ThreadLocal<>();
+
+    protected String getTestMethod() {
+        return testMethod.get();
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -57,6 +62,7 @@ public abstract class FATServlet extends HttpServlet {
         System.out.println("Request URL: " + request.getRequestURL() + '?' + request.getQueryString());
         PrintWriter writer = response.getWriter();
         if (method != null && method.length() > 0) {
+            testMethod.set(method);
             try {
                 before();
                 before(request, response);
@@ -100,6 +106,8 @@ public abstract class FATServlet extends HttpServlet {
                     writer.println("ERROR: Caught exception attempting to call test method " + method + " on servlet " + getClass().getName());
                     t.printStackTrace(writer);
                 }
+            } finally {
+                testMethod.set(null);
             }
         } else {
             System.out.println("ERROR: expected testMethod parameter");
