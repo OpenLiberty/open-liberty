@@ -15,12 +15,13 @@ import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.OASFilter;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.jboss.jandex.Index;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.wsspi.adaptable.module.Container;
 
 import io.openliberty.microprofile.openapi20.internal.services.ModelGenerator;
+import io.openliberty.microprofile.openapi20.internal.services.OpenAPIModelOperations;
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
-import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIUtils;
 import io.smallrye.openapi.api.OpenApiConfig;
 import io.smallrye.openapi.api.constants.OpenApiConstants;
 import io.smallrye.openapi.api.util.ConfigUtil;
@@ -33,6 +34,9 @@ import io.smallrye.openapi.runtime.scanner.SchemaRegistry;
 import io.smallrye.openapi.runtime.scanner.processor.JavaSecurityProcessor;
 
 public class ModelGeneratorImpl implements ModelGenerator {
+
+    @Reference
+    protected OpenAPIModelOperations modelOps;
 
     @Override
     public OpenAPI generateModel(OpenApiConfig config, Container appContainer, ClassLoader appClassloader, ClassLoader tccl, Index index) {
@@ -86,7 +90,7 @@ public class ModelGeneratorImpl implements ModelGenerator {
 
                 ConfigUtil.applyConfig(config, openAPIModel);
 
-                if (OpenAPIUtils.isDefaultOpenApiModel(openAPIModel)) {
+                if (modelOps.isDefaultOpenApiModel(openAPIModel)) {
                     openAPIModel = null;
                 }
             }

@@ -37,4 +37,12 @@ public interface OpenAPIModelOperations {
      * @throws OpenApiRuntimeException if there's an error reading the JSON
      */
     public Info parseInfo(String infoJson) throws OpenApiRuntimeException;
+
+    /**
+     * Checks whether an OpenAPI model is the default model generated when an app has no content.
+     *
+     * @param model the OpenAPI model to check
+     * @return {@code true} if it's the default model, otherwise {@code false}
+     */
+    public boolean isDefaultOpenApiModel(OpenAPI model);
 }
