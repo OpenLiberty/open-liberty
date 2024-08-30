@@ -471,6 +471,10 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     @Override
     public boolean isEnabled() {
+        return checkEnabled();
+    }
+
+    public boolean checkEnabled() {
         if (JavaInfo.forCurrentVM().majorVersion() < minJavaLevel.majorVersion()) {
             Log.info(c, "isEnabled", "Skipping action '" + toString() + "' because the java level is too low.");
             return false;
@@ -942,5 +946,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
         } else {
             return getClass().getSimpleName() + "  REMOVE " + removeFeatures + "  ADD " + addFeatures;
         }
+    }
+
+    public static boolean isCheckpointRepeatActionActive() {
+        return CheckpointEE8Action.isActive() || CheckpointEE9Action.isActive() || CheckpointEE10Action.isActive() || CheckpointEE11Action.isActive();
     }
 }
