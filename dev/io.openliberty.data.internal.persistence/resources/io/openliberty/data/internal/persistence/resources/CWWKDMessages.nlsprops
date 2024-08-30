@@ -82,12 +82,12 @@ CWWKD1005.find.rtrn.err.useraction=Refer to the Jakarta Data Javadoc \
  information for a list of valid return types for repository find methods.
 
 CWWKD1006.delete.rtrn.err=CWWKD1006E: The {0} return type of the {1} method \
- of the {2} repository interface is not a valid return type for a repository \
- Delete operation. Use a return type of void to return no value. Use a return \
+ of the {2} repository interface is not a valid return type for a delete \
+ operation. Use a return type of void to return no value. Use a return \
  type of long or int for a deletion count. Use a return type of boolean for \
  an indicator of whether any entities were deleted. Use a return type of array, \
- List, or Optional, parameterized with either the {3} entity class or the \
- {4} unique identifier class, to return the deleted entities or entity Ids.
+ List, or Optional, that is parameterized with either the {3} entity class or \
+ the {4} unique identifier class to return the deleted entities or entity IDs.
 CWWKD1006.delete.rtrn.err.explanation=The return type of the method is not \
  one of the supported return types for a delete operation.
 CWWKD1006.delete.rtrn.err.useraction=Update the repository method to use one \
@@ -116,13 +116,13 @@ CWWKD1008.ambig.rtrn.err.useraction=Update the repository method to use the \
 
 CWWKD1009.lifecycle.param.err=CWWKD1009E: The {0} method of the {1} repository \
  interface cannot have {2} parameters because the method is annotated with the \
- {3} life cycle annotation. Repository methods that are annotated with a life \
- cycle annotation must have exactly 1 parameter, which must be the entity or an \
+ {3} lifecycle annotation. Repository methods that are annotated with a lifecycle \
+ annotation must have exactly 1 parameter, which must be the entity or an \
  array or List of the entity.
-CWWKD1009.lifecycle.param.err.explanation=Life cycle methods must have a single \
+CWWKD1009.lifecycle.param.err.explanation=Lifecycle methods must have a single \
  entity parameter.
 CWWKD1009.lifecycle.param.err.useraction=Update the repository method to have a \
- single parameter that is entity or an array of List of the entity.
+ single parameter that is the entity or an array or List of the entity.
 
 CWWKD1010.unknown.entity.prop=CWWKD1010E: The {0} method of the {1} repository \
  interface expects an entity property named {2} that is not found on the \
@@ -149,21 +149,21 @@ CWWKD1011.unknown.method.pattern.useraction=Update the repository method to \
 CWWKD1012.fd.missing.param.anno=CWWKD1012E: Parameter {0} of the {1} method of \
  the {2} repository interface does not match an entity property. Parameters that \
  do not match an entity property must be annotated with the By annotation or have \
- one of the special parameter types: {3}. If the parameter is intended to define \
- a condition for the restriction of query results, annotate the parameter with \
+ one of the special parameter types: {3}. To define a condition for the \
+ restriction of query results, annotate the parameter with \
  the By annotation and assign the value of the By annotation to be the entity \
  property name. Alternatively, enable the -parameters compile option and give \
  the parameter the same name as the entity property.
 CWWKD1012.fd.missing.param.anno.explanation=Parameters of repository find and \
- delete methods must correspond to entity properties or be special parameter \
- types that are defined by Jakarta Data.
+ delete methods must correspond to entity properties or be special Jakarta Data \
+ defined parameter types.
 CWWKD1012.fd.missing.param.anno.useraction=Update the repository method such \
  that all parameters correspond to entity properties or have one of the Jakarta \
  Data special parameter types.
 
 CWWKD1013.cde.missing.param.anno=CWWKD1013E: Parameter {0} of the {1} method of \
- the {2} repository interface does not match an entity property. Parameters that \
- do not match an entity property must be annotated with the By annotation and \
+ the {2} repository interface does not match an entity property. Annotate \
+ parameters that do not match an entity property with the By annotation and \
  assign the value of the By annotation to be the entity property name. \
  Alternatively, enable the -parameters compile option and give the parameter \
  the same name as the entity property.
@@ -175,7 +175,7 @@ CWWKD1013.cde.missing.param.anno.useraction=Update the repository method such \
 CWWKD1014.upd.missing.param.anno=CWWKD1014E: Parameter {0} of the {1} method of \
  the {2} repository interface does not match an entity property. Parameters that \
  do not match an entity property must have one of the parameter annotations: {3}. \
- If the parameter is intended to define a condition for the restriction of query \
+ To define a condition for the restriction of query \
  results, annotate the parameter with the By annotation and assign the value of \
  the By annotation to be the entity property name. Alternatively, enable the \
  -parameters compile option and give the parameter the same name as the entity \
