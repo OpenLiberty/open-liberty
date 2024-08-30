@@ -67,6 +67,7 @@ public class JULLogServletTest {
         ShrinkHelper.exportDropinAppToServer(server, telemetryLogApp,
                                              DeployOptions.SERVER_ONLY);
 
+        server.addEnvVar("OTEL_EXPORTER_OTLP_PROTOCOL", "http/protobuf");
         server.addEnvVar("OTEL_EXPORTER_OTLP_ENDPOINT", "http://" + container.getHost() + ":" + container.getMappedPort(4318));
 
         server.copyFileToLibertyServerRoot("agent-260/opentelemetry-javaagent.jar");
@@ -83,6 +84,8 @@ public class JULLogServletTest {
     @Test
     public void testMatchingJULMessageLogsWithContainerViaOpenTelemetryAgent() throws Exception {
         assertTrue("The server was not started successfully.", server.isStarted());
+
+        TestUtils.isContainerStarted("LogsExporter", container);
 
         TimeUnit.SECONDS.sleep(5);
 

@@ -57,7 +57,7 @@ public class LoggingServletTest {
                                     .copy("/etc/otelcol-contrib/config.yaml", "/etc/otelcol-contrib/config.yaml"))
                     .withFileFromFile("/etc/otelcol-contrib/config.yaml", new File(TestUtils.PATH_TO_AUTOFVT_TESTFILES + "config.yaml"), 0644))
                     .withLogConsumer(new SimpleLogConsumer(LoggingServletTest.class, "opentelemetry-collector-contrib"))
-                    .withExposedPorts(4317);
+                    .withExposedPorts(4317, 4318);
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -72,7 +72,8 @@ public class LoggingServletTest {
         ShrinkHelper.exportDropinAppToServer(server, telemetryLogApp,
                                              DeployOptions.SERVER_ONLY);
 
-        server.addEnvVar("OTEL_EXPORTER_OTLP_ENDPOINT", "http://" + container.getHost() + ":" + container.getMappedPort(4317));
+        server.addEnvVar("OTEL_EXPORTER_OTLP_PROTOCOL", "http/protobuf");
+        server.addEnvVar("OTEL_EXPORTER_OTLP_ENDPOINT", "http://" + container.getHost() + ":" + container.getMappedPort(4318));
 
         server.startServer();
 
@@ -87,6 +88,8 @@ public class LoggingServletTest {
     @Test
     public void testMessageLogs() throws Exception {
         assertTrue("The server was not started successfully.", server.isStarted());
+
+        TestUtils.isContainerStarted("LogsExporter", container);
 
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_ALL_SOURCES, messageLogFile, server);
@@ -119,6 +122,8 @@ public class LoggingServletTest {
 
         assertTrue("The server was not started successfully.", server.isStarted());
 
+        TestUtils.isContainerStarted("LogsExporter", container);
+
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_TRACE_SOURCE, messageLogFile, server);
 
@@ -150,6 +155,8 @@ public class LoggingServletTest {
     public void testFFDCLogs() throws Exception {
 
         assertTrue("The server was not started successfully.", server.isStarted());
+
+        TestUtils.isContainerStarted("LogsExporter", container);
 
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_FFDC_SOURCE, messageLogFile, server);

@@ -51,7 +51,7 @@ public class LoggingBridgeServletTest {
                                     .copy("/etc/otelcol-contrib/config.yaml", "/etc/otelcol-contrib/config.yaml"))
                     .withFileFromFile("/etc/otelcol-contrib/config.yaml", new File(TestUtils.PATH_TO_AUTOFVT_TESTFILES + "config.yaml"), 0644))
                     .withLogConsumer(new SimpleLogConsumer(LoggingBridgeServletTest.class, "opentelemetry-collector-contrib"))
-                    .withExposedPorts(4317);
+                    .withExposedPorts(4317, 4318);
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -66,7 +66,8 @@ public class LoggingBridgeServletTest {
         ShrinkHelper.exportDropinAppToServer(server, telemetryLogApp,
                                              DeployOptions.SERVER_ONLY);
 
-        server.addEnvVar("OTEL_EXPORTER_OTLP_ENDPOINT", "http://" + container.getHost() + ":" + container.getMappedPort(4317));
+        server.addEnvVar("OTEL_EXPORTER_OTLP_PROTOCOL", "http/protobuf");
+        server.addEnvVar("OTEL_EXPORTER_OTLP_ENDPOINT", "http://" + container.getHost() + ":" + container.getMappedPort(4318));
 
         server.startServer();
 
@@ -81,6 +82,9 @@ public class LoggingBridgeServletTest {
     @Test
     public void testBridgedLogs() throws Exception {
         assertTrue("The server was not started successfully.", server.isStarted());
+
+        TestUtils.isContainerStarted("LogsExporter", container);
+
         TestUtils.runApp(server, "logs");
 
         //Allow time for the collector to receive and bridge logs.
