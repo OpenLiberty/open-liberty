@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
+import java.util.logging.Level;
 
 import org.apache.cxf.common.i18n.BundleUtils;
 import org.apache.cxf.common.logging.LogUtils;
@@ -60,6 +61,12 @@ public class GZIPInInterceptor extends AbstractPhaseInterceptor<Message> {
     }
 
     public void handleMessage(Message message) {
+        // Liberty Change begin
+        boolean isLoggableFine = LOG.isLoggable(Level.FINE);
+        if (isLoggableFine) {
+           LOG.fine("Inside handleMessage of GZIPInInterceptor");
+        }
+        // Liberty Change end
         if (isGET(message)) {
             return;
         }
@@ -76,9 +83,18 @@ public class GZIPInInterceptor extends AbstractPhaseInterceptor<Message> {
             if (contentEncoding != null
                 && (contentEncoding.contains("gzip") || contentEncoding.contains("x-gzip"))) {
                 try {
-                    LOG.fine("Uncompressing response");
+                    // Liberty Change begin
+                    if (isLoggableFine) {
+                       LOG.fine("Uncompressing response");
+                    }
+                    // Liberty Change end
                     InputStream is = message.getContent(InputStream.class);
                     if (is == null) {
+                        // Liberty Change begin
+                        if (isLoggableFine) {
+                           LOG.fine("GZIPInInterceptor: InputStream is null, returning");
+                        }
+                        // Liberty Change end
                         return;
                     }
 
@@ -99,6 +115,11 @@ public class GZIPInInterceptor extends AbstractPhaseInterceptor<Message> {
                         //automatically be FI enabled
                         Endpoint ep = message.getExchange().getEndpoint();
                         ep.put(GZIPOutInterceptor.USE_GZIP_KEY, GZIPOutInterceptor.UseGzip.YES);
+                        // Liberty Change begin
+                        if (isLoggableFine) {
+                           LOG.fine("Setting GZIPOutInterceptor.UseGzip for Endpoint: " + (ep.getService() != null ? ep.getService().getName() : "null"));
+                        }
+                        // Liberty Change end
                     }
                 } catch (IOException ex) {
                     throw new Fault(new org.apache.cxf.common.i18n.Message("COULD_NOT_UNZIP", BUNDLE), ex);

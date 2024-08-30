@@ -134,12 +134,26 @@ public class GZIPOutInterceptor extends AbstractPhaseInterceptor<Message> {
     }
 
     public void handleMessage(Message message) {
+        // Liberty Change begin
+        boolean isLoggableFine = LOG.isLoggable(Level.FINE);
+        if (isLoggableFine) {
+           LOG.fine("Inside handleMessage of GZIPOutInterceptor");
+        }
         UseGzip use = gzipPermitted(message);
+        if (isLoggableFine) {
+           LOG.fine("Is gzipPermitted?: " + use);
+        }
+        // Liberty Change end
         if (use != UseGzip.NO) {
             // remember the original output stream, we will write compressed
             // data to this later
             OutputStream os = message.getContent(OutputStream.class);
             if (os == null) {
+                // Liberty Change begin
+                if (isLoggableFine) {
+                    LOG.fine("GZIPOutInterceptor: OutputStream is null, returning");
+                }
+                // Liberty Change end
                 return;
             }
             message.put(ORIGINAL_OUTPUT_STREAM_KEY, os);
@@ -170,13 +184,18 @@ public class GZIPOutInterceptor extends AbstractPhaseInterceptor<Message> {
      *                 that we can support (identity, gzip or x-gzip).
      */
     public UseGzip gzipPermitted(Message message) {
+        boolean isLoggableFine = LOG.isLoggable(Level.FINE);  // Liberty Change
         UseGzip permitted = UseGzip.NO;
         if (supportedPayloadContentTypes != null && message.containsKey(Message.CONTENT_TYPE)
             && !supportedPayloadContentTypes.contains(message.get(Message.CONTENT_TYPE))) {
             return permitted;
         }
         if (MessageUtils.isRequestor(message)) {
-            LOG.fine("Requestor role, so gzip enabled");
+            // Liberty Change begin
+            if (isLoggableFine) {
+               LOG.fine("Requestor role, so gzip enabled");
+            }
+            // Liberty Change end
             Object o = message.getContextualProperty(USE_GZIP_KEY);
             if (o instanceof UseGzip) {
                 permitted = (UseGzip)o;
@@ -188,7 +207,11 @@ public class GZIPOutInterceptor extends AbstractPhaseInterceptor<Message> {
             message.put(GZIP_ENCODING_KEY, "gzip");
             addHeader(message, "Accept-Encoding", "gzip;q=1.0, identity; q=0.5, *;q=0");
         } else {
-            LOG.fine("Response role, checking accept-encoding");
+            // Liberty Change begin
+            if (isLoggableFine) {
+               LOG.fine("Response role, checking accept-encoding");
+            }
+            // Liberty Change end
             Exchange exchange = message.getExchange();
             Message request = exchange.getInMessage();
             Map<String, List<String>> requestHeaders = CastUtils.cast((Map<?, ?>)request
@@ -202,9 +225,11 @@ public class GZIPOutInterceptor extends AbstractPhaseInterceptor<Message> {
                     message.put(GZIP_ENCODING_KEY, "gzip");
                 }
                 if (acceptEncodingHeader != null) {
-                    if (LOG.isLoggable(Level.FINE)) {
+                    // Liberty Change begin
+                    if (isLoggableFine) {
                         LOG.fine("Accept-Encoding header: " + acceptEncodingHeader);
                     }
+                    // Liberty Change end
                     // Accept-Encoding is a comma separated list of entries, so
                     // we split it into its component parts and build two
                     // lists, one with all the "q=0" encodings and the other
@@ -241,6 +266,13 @@ public class GZIPOutInterceptor extends AbstractPhaseInterceptor<Message> {
                                           || (nonZeros.contains("*") && !zeros.contains("gzip"));
                     boolean xGzipEnabled = nonZeros.contains("x-gzip")
                                            || (nonZeros.contains("*") && !zeros.contains("x-gzip"));
+                    // Liberty Change begin
+                    if (isLoggableFine) {
+                       LOG.fine("identityEnabled: " + identityEnabled);
+                       LOG.fine("gzipEnabled: " + gzipEnabled);
+                       LOG.fine("xGzipEnabled: " + xGzipEnabled);
+                    }
+                    // Liberty Change end
 
                     if (identityEnabled && !gzipEnabled && !xGzipEnabled) {
                         permitted = UseGzip.NO;
@@ -261,13 +293,21 @@ public class GZIPOutInterceptor extends AbstractPhaseInterceptor<Message> {
                                                                                BUNDLE));
                     }
                 } else {
-                    LOG.fine("No accept-encoding header");
+                    // Liberty Change begin
+                    if (isLoggableFine) {
+                       LOG.fine("No accept-encoding header");
+                    }
+                    // Liberty Change end
                 }
             }
         }
 
         if (LOG.isLoggable(Level.FINE)) {
-            LOG.fine("gzip permitted: " + permitted);
+            // Liberty Change begin
+            if (isLoggableFine) {
+               LOG.fine("gzip permitted: " + permitted);
+            }
+            // Liberty Change end
         }
         return permitted;
     }
