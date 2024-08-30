@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,7 @@ dependencies {
   
   yasson2 'org.eclipse:yasson:2.0.4'
 
-  yasson3 'org.eclipse:yasson:3.0.3'
+  yasson3 'org.eclipse:yasson:3.0.4'
 }
 
 task addJohnzon(type: Copy) {
@@ -81,7 +81,7 @@ task addYasson2(type: Copy) {
 
 task addYasson3(type: Copy) {
   from configurations.yasson3
-  into "${buildDir}/autoFVT/publish/shared/resources/yasson/3.0.3/"
+  into "${buildDir}/autoFVT/publish/shared/resources/yasson/3.0.4/"
   rename "yasson-.*.jar", "yasson.jar"
 }
 
