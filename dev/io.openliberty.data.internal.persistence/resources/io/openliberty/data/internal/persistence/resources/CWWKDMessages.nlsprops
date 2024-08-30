@@ -83,11 +83,12 @@ CWWKD1005.find.rtrn.err.useraction=Refer to the Jakarta Data Javadoc \
 
 CWWKD1006.delete.rtrn.err=CWWKD1006E: The {0} return type of the {1} method \
  of the {2} repository interface is not a valid return type for a delete \
- operation. Use a return type of void to return no value. Use a return \
- type of long or int for a deletion count. Use a return type of boolean for \
- an indicator of whether any entities were deleted. Use a return type of array, \
- List, or Optional, that is parameterized with either the {3} entity class or \
- the {4} unique identifier class to return the deleted entities or entity IDs.
+ operation. The return type must be either void, long, int, boolean, array, \
+ List, or Optional. A return type of void returns no value. A return type of \
+ long or int returns a deletion count. A return type of boolean returns \
+ an indicator of whether any entities were deleted. A return type of array, \
+ List, or Optional, that is parameterized with either a {3} entity class or \
+ a {4} unique identifier class returns the deleted entities or entity IDs.
 CWWKD1006.delete.rtrn.err.explanation=The return type of the method is not \
  one of the supported return types for a delete operation.
 CWWKD1006.delete.rtrn.err.useraction=Update the repository method to use one \
@@ -95,9 +96,10 @@ CWWKD1006.delete.rtrn.err.useraction=Update the repository method to use one \
 
 CWWKD1007.updel.rtrn.err=CWWKD1007E: The {0} return type of the {1} method \
  of the {2} repository interface is not a valid return type for a repository \
- {3} operation. Use a return type of void to return no value. Use a return \
- type of long or int for a count of matching entities. Use a return type of \
- boolean for an indicator of whether any entities match.
+ {3} operation. The return type must be either void, long, int, or boolean. \
+ A return type of void returns no value. A return type of long or int returns \
+ a count of matching entities. A return type of boolean returns an indicator \
+ of whether any entities match.
 CWWKD1007.updel.rtrn.err.explanation=The return type of the method is not \
  one of the supported return types for an update or delete operation.
 CWWKD1007.updel.rtrn.err.useraction=Update the repository method to use one \
@@ -105,10 +107,9 @@ CWWKD1007.updel.rtrn.err.useraction=Update the repository method to use one \
 
 CWWKD1008.ambig.rtrn.err=CWWKD1008E: The {0} return type of the {1} method \
  of the {2} repository interface is ambiguous as a return type because it \
- corresponds to multiple entity properties: {3}. To use this result type, \
- the repository method must switch to the Query annotation and use a JDQL \
- or JPQL query with a SELECT clause that specifies which entity property to \
- return.
+ corresponds to multiple entity properties: {3}. The repository method \
+ must switch to the Query annotation and use a JDQL or JPQL query with a \
+ SELECT clause that specifies which entity property to return.
 CWWKD1008.ambig.rtrn.err.explanation=The return type of the method is not \
  one of the supported return types for a delete method.
 CWWKD1008.ambig.rtrn.err.useraction=Update the repository method to use the \
@@ -122,7 +123,7 @@ CWWKD1009.lifecycle.param.err=CWWKD1009E: The {0} method of the {1} repository \
 CWWKD1009.lifecycle.param.err.explanation=Lifecycle methods must have a single \
  entity parameter.
 CWWKD1009.lifecycle.param.err.useraction=Update the repository method to have a \
- single parameter that is the entity or an array or List of the entity.
+ single parameter that is an entity or an array of List of the entity.
 
 CWWKD1010.unknown.entity.prop=CWWKD1010E: The {0} method of the {1} repository \
  interface expects an entity property named {2} that is not found on the \
@@ -133,16 +134,16 @@ CWWKD1010.unknown.entity.prop.useraction=Update the repository method to match \
  a valid property that is defined by the entity.
 
 CWWKD1011.unknown.method.pattern=CWWKD1011E: The {0} method of the {1} repository \
- interface does not match any of the patterns defined by Jakarta Data. \
- A repository method must either use annotations such as {2} to define operations, \
- be a resource accessor method with no parameters and returning one of {3}, \
- or the method must be named according to the Query by Method Name pattern. \
- Method names for Query by Method Name must begin with one of the {4} keywords, \
- followed by 0 or more additional characters, optionally followed by the \
- 'By' keyword and one or more conditions delimited by 'And' or 'Or' keywords. \
- Some examples of valid repository method names are: {5}.
+ interface does not match any of the Jakarta Data defined patterns. \
+ A repository method must either use annotations, be a resource accessor method, \
+ or be named according to the Query by Method Name pattern. Annotations such as \
+ {2} are used to define operations. A resource accessor method must contain \
+ no parameters and any of the {3} return types. The Query by Method Name pattern \
+ must begin with one of the {4} keywords, followed by 0 or more characters. \
+ Method names can also include the By keyword and one or more delimited \
+ conditions. Examples of valid repository method names are: {5}.
 CWWKD1011.unknown.method.pattern.explanation=Repository methods must follow the \
- patterns that are defined by Jakarta Data.
+ Jakarta Data defined patterns.
 CWWKD1011.unknown.method.pattern.useraction=Update the repository method to \
  adhere to one of the patterns from Jakarta Data.
 
@@ -150,8 +151,8 @@ CWWKD1012.fd.missing.param.anno=CWWKD1012E: Parameter {0} of the {1} method of \
  the {2} repository interface does not match an entity property. Parameters that \
  do not match an entity property must be annotated with the By annotation or have \
  one of the special parameter types: {3}. To define a condition for the \
- restriction of query results, annotate the parameter with \
- the By annotation and assign the value of the By annotation to be the entity \
+ restriction of query results, the parameter must be annotated with the By \
+ annotation and the value of the By annotation must be assigned to be the entity \
  property name. Alternatively, enable the -parameters compile option and give \
  the parameter the same name as the entity property.
 CWWKD1012.fd.missing.param.anno.explanation=Parameters of repository find and \
@@ -162,9 +163,9 @@ CWWKD1012.fd.missing.param.anno.useraction=Update the repository method such \
  Data special parameter types.
 
 CWWKD1013.cde.missing.param.anno=CWWKD1013E: Parameter {0} of the {1} method of \
- the {2} repository interface does not match an entity property. Annotate \
- parameters that do not match an entity property with the By annotation and \
- assign the value of the By annotation to be the entity property name. \
+ the {2} repository interface does not match an entity property. Parameters \
+ that do not match an entity property must be annotated with the By annotation and \
+ the By annotation value must be assigned to be the entity property name. \
  Alternatively, enable the -parameters compile option and give the parameter \
  the same name as the entity property.
 CWWKD1013.cde.missing.param.anno.explanation=Parameters of repository count, \
@@ -175,9 +176,9 @@ CWWKD1013.cde.missing.param.anno.useraction=Update the repository method such \
 CWWKD1014.upd.missing.param.anno=CWWKD1014E: Parameter {0} of the {1} method of \
  the {2} repository interface does not match an entity property. Parameters that \
  do not match an entity property must have one of the parameter annotations: {3}. \
- To define a condition for the restriction of query \
- results, annotate the parameter with the By annotation and assign the value of \
- the By annotation to be the entity property name. Alternatively, enable the \
+ To define a condition for the restriction of query results, the parameter must \
+ be annotated with the By annotation and the By annotation value must be \
+ assigned to be the entity property name. Alternatively, enable the \
  -parameters compile option and give the parameter the same name as the entity \
  property.
 CWWKD1014.upd.missing.param.anno.explanation=Parameters of repository update \
