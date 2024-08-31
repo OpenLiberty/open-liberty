@@ -143,11 +143,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         if (entitylessQueryInfos != null) {
             if (entityInfoFutures.isEmpty()) {
-                MappingException x = new MappingException("The " + repositoryInterface.getName() + " repository does not specify an entity class." + // TODO NLS
-                                                          " To correct this, have the repository interface extend DataRepository" +
-                                                          " or another built-in repository interface and supply the entity class as the first parameter.");
-                for (QueryInfo queryInfo : entitylessQueryInfos)
+                for (QueryInfo queryInfo : entitylessQueryInfos) {
+                    MappingException x = exc(MappingException.class,
+                                             "CWWKD1001.no.primary.entity",
+                                             queryInfo.method,
+                                             repositoryInterface.getName(),
+                                             "DataRepository<EntityClass, EntityIdClass>");
                     queries.put(queryInfo.method, CompletableFuture.failedFuture(x));
+                }
             }
 
             CompletableFuture<?>[] futures = entityInfoFutures.toArray(new CompletableFuture<?>[entityInfoFutures.size()]);
@@ -1269,7 +1272,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                     throw new MappingException("Results for find-and-delete repository queries must be the entity class (" +
                                                                                (entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName() +
                                                                                ") or the id class (" + entityInfo.idType +
-                                                                               "), not the " + result.getClass().getName() + " class."); // TODO NLS
+                                                                               "), not the " + result.getClass().getName() + " class."); // TODO NLS reuse CWWKD1006.delete.rtrn.err?
                                             }
 
                                             jakarta.persistence.Query delete = em.createQuery(queryInfo.jpqlDelete);
@@ -1819,10 +1822,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
      *
      * @param i          update count value.
      * @param returnType requested return type.
-     * @param queryInfo  query information.
+     * @param queryInfo  query information, which must have type DELETE or UPDATE.
      * @return converted value.
      */
-    private static final Object toReturnValue(int i, Class<?> returnType, QueryInfo queryInfo) {
+    private final Object toReturnValue(int i, Class<?> returnType, QueryInfo queryInfo) {
         Object result;
         if (int.class.equals(returnType) || Integer.class.equals(returnType) || Number.class.equals(returnType))
             result = i;
@@ -1834,15 +1837,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
             result = null;
         else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType))
             result = CompletableFuture.completedFuture(toReturnValue(i, queryInfo.singleType, null));
-        else // TODO queryInfo in message
-            throw new UnsupportedOperationException("The " + queryInfo.method.getName() + " method of the " +
-                                                    queryInfo.method.getDeclaringClass().getName() + " repository has a return type, " +
-                                                    returnType + ", that is not supported for repository Update and Delete operations. " +
-                                                    "Supported return types include void (for no result), boolean (to indicate whether " +
-                                                    "or not a matching entity was found), or one of the following types to indicate " +
-                                                    "how many matching entities were found: " +
-                                                    "long, Long, int, Integer, Number" + "."); // TODO NLS
-
+        else
+            throw exc(UnsupportedOperationException.class,
+                      "CWWKD1007.updel.rtrn.err",
+                      queryInfo.method.getGenericReturnType().getTypeName(),
+                      queryInfo.method.getName(),
+                      repositoryInterface.getName(),
+                      queryInfo.type == Type.DELETE ? "Delete" : "Update");
         return result;
     }
 
