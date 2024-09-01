@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.simplicity.AsyncProgramOutput;
 import com.ibm.websphere.simplicity.Machine;
@@ -130,26 +131,29 @@ public class LocalProvider {
         return file.delete();
     }
 
-    //
-
     public static ProgramOutput executeCommand(Machine machine, String cmd,
                                                String[] parameters, String workDir, Properties envVars) throws Exception {
+        return executeCommand(machine, cmd, parameters, workDir, envVars, 0);
+    }
+
+    public static ProgramOutput executeCommand(Machine machine, String cmd,
+                                               String[] parameters, String workDir, Properties envVars, int timeout) throws Exception {
         ByteArrayOutputStream bufferOut = new ByteArrayOutputStream();
         ByteArrayOutputStream bufferErr = new ByteArrayOutputStream();
         int rc = execute(machine, cmd, parameters, envVars, workDir, bufferOut,
-                         bufferErr, false);
+                         bufferErr, false, timeout);
         ProgramOutput ret = new ProgramOutput(cmd, rc, bufferOut.toString(), bufferErr.toString());
         return ret;
     }
 
     public static void executeCommandAsync(Machine machine, String cmd, String[] parameters, String workDir, Properties envVars, OutputStream redirect) throws Exception {
-        execute(machine, cmd, parameters, envVars, workDir, redirect, null, true);
+        execute(machine, cmd, parameters, envVars, workDir, redirect, null, true, 0);
     }
 
     private static final int execute(Machine machine, final String command,
                                      final String[] parameterArray, Properties envp,
                                      final String workDir, final OutputStream stdOutStream,
-                                     final OutputStream stdErrStream, boolean async) throws Exception {
+                                     final OutputStream stdErrStream, boolean async, int timeout) throws Exception {
         final String method = "execute";
         Log.entering(CLASS, method, "async is " + async);
 
@@ -263,11 +267,28 @@ public class LocalProvider {
         }
 
         // wait till completion
-        proc.waitFor();
+        int exitValue;
+        if (timeout <= 0) {
+            exitValue = proc.waitFor();
+        } else {
+            if (!proc.waitFor(timeout, TimeUnit.SECONDS)) {
+                Log.error(CLASS, method, null, "Process didn't complete within " + timeout + " seconds");
+                proc.destroyForcibly();
+
+                int count = 0;
+                while (proc.isAlive()) {
+                    if (count++ >= 5) {
+                        break;
+                    }
+                    Thread.sleep(1000);
+                }
+            }
+            exitValue = proc.exitValue();
+        }
         // let the streams catch up (critical step)
         outputGobbler.doJoin();
         Log.exiting(CLASS, method);
-        return proc.exitValue();
+        return exitValue;
     }
 
     /**

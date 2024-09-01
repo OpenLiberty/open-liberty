@@ -764,7 +764,7 @@ public class LibertyClient {
             Log.info(c, method, "Started client process in debug mode");
             output = null;
         } else {
-            output = machine.execute(cmd, parameters, envVars);
+            output = machine.execute(cmd, parameters, machine.getWorkDir(), envVars, 300);
 
             int rc = output.getReturnCode();
             Log.info(c, method, "Response from script is: " + output.getStdout());
