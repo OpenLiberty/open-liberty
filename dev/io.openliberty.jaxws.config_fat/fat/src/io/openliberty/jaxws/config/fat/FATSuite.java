@@ -23,7 +23,8 @@ import componenttest.rules.repeater.RepeatTests;
 	EnableSchemaValidationTest.class,
         EnableSchemaValidationWebServiceTest.class,
 	IgnoreUnexpectedElementConfigTest.class,
-	WebServiceBndServiceRefPropertiesConfigTest.class
+	WebServiceBndServiceRefPropertiesConfigTest.class,
+        GzipInterceptorsTest.class
 })
 public class FATSuite {
     @ClassRule
