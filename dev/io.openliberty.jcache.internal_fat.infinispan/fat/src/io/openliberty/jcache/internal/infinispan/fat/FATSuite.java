@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.jcache.internal.fat;
+package io.openliberty.jcache.internal.infinispan.fat;
 
 import java.util.Random;
 
@@ -34,9 +34,25 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
-import io.openliberty.jcache.internal.fat.docker.InfinispanContainer;
-import io.openliberty.jcache.internal.fat.plugins.InfinispanTestPlugin;
+import io.openliberty.jcache.internal.fat.JCacheAuthCacheFailureTest;
+import io.openliberty.jcache.internal.fat.JCacheAuthenticationCacheServerRestartTest;
+import io.openliberty.jcache.internal.fat.JCacheAuthenticationCacheTest;
+import io.openliberty.jcache.internal.fat.JCacheCustomPrincipalCastingTest;
+import io.openliberty.jcache.internal.fat.JCacheDeleteAuthCacheTest;
+import io.openliberty.jcache.internal.fat.JCacheDynamicUpdateTest;
+import io.openliberty.jcache.internal.fat.JCacheJwtAuthenticationCacheTest;
+import io.openliberty.jcache.internal.fat.JCacheJwtLoggedOutCookieCacheTest;
+import io.openliberty.jcache.internal.fat.JCacheLtpaLoggedOutCookieCacheServerRestartTest;
+import io.openliberty.jcache.internal.fat.JCacheLtpaLoggedOutCookieCacheTest;
+import io.openliberty.jcache.internal.fat.JCacheOauth20AuthenticationCacheTest;
+import io.openliberty.jcache.internal.fat.JCacheOidcClientAuthenticationCacheTest;
+import io.openliberty.jcache.internal.fat.JCacheOidcLoginAuthenticationCacheTest;
+import io.openliberty.jcache.internal.fat.JCacheProviderInAppTest;
+import io.openliberty.jcache.internal.fat.JCacheSamlAuthenticationCacheTest;
+import io.openliberty.jcache.internal.fat.JCacheSpnegoAuthenticationCacheTest;
 import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
+import io.openliberty.jcache.internal.infinispan.fat.docker.InfinispanContainer;
+import io.openliberty.jcache.internal.infinispan.fat.plugins.InfinispanTestPlugin;
 
 @SuppressWarnings("restriction")
 @RunWith(Suite.class)
