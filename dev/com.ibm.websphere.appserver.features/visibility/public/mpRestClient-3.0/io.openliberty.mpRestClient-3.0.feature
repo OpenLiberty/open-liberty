@@ -17,8 +17,8 @@ IBM-API-Package: \
 IBM-ShortName: mpRestClient-3.0
 Subsystem-Name: MicroProfile Rest Client 3.0
 
-# io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0,6.1" comes from io.openliberty.mpConfig features
 -features=\
+  io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0,6.1", \
   io.openliberty.jsonp-2.0; ibm.tolerates:="2.1", \
   io.openliberty.restfulWSClient-3.0; ibm.tolerates:="3.1", \
   io.openliberty.mpConfig-3.0; ibm.tolerates:="3.1", \
