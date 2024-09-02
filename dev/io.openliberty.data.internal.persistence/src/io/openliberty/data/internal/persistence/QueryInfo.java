@@ -1071,19 +1071,24 @@ public class QueryInfo {
         String o_ = entityVar_;
         DataVersionCompatibility compat = entityInfo.builder.provider.compat;
 
+        boolean isFindOrDelete = methodAnno instanceof Find ||
+                                 methodAnno instanceof Delete;
         Boolean isNamePresent = null; // unknown
         Parameter[] params = null;
 
         Class<?>[] paramTypes = method.getParameterTypes();
         int numAttributeParams = paramTypes.length;
-        while (numAttributeParams > 0 && SPECIAL_PARAM_TYPES.contains(paramTypes[numAttributeParams - 1]))
+        while (numAttributeParams > 0 &&
+               SPECIAL_PARAM_TYPES.contains(paramTypes[numAttributeParams - 1])) {
             numAttributeParams--;
-
-        if (numAttributeParams < paramTypes.length && !(methodAnno instanceof Find) && !(methodAnno instanceof Delete))
-            throw new MappingException("The special parameter types " + SPECIAL_PARAM_TYPES +
-                                       " must not be used on the " + method.getName() + " method of the " +
-                                       method.getDeclaringClass().getName() + " repository because the repository method is a " +
-                                       methodAnno.annotationType().getSimpleName() + " operation."); // TODO NLS
+            if (!isFindOrDelete) // special parameter is not allowed
+                throw exc(UnsupportedOperationException.class,
+                          "CWWKD1020.invalid.param.type",
+                          method.getName(),
+                          method.getDeclaringClass().getName(),
+                          paramTypes[numAttributeParams - 1].getSimpleName(),
+                          methodAnno.annotationType().getSimpleName());
+        }
 
         Annotation[][] annosForAllParams = method.getParameterAnnotations();
         boolean[] isUpdateOp = new boolean[annosForAllParams.length];
@@ -1953,14 +1958,18 @@ public class QueryInfo {
                     paramCount++;
 
                     if (initialParamCount != 0)
-                        throw new UnsupportedOperationException("Cannot mix positional and named parameters on repository method " +
-                                                                method.getDeclaringClass().getName() + '.' + method.getName()); // TODO NLS
+                        throw exc(UnsupportedOperationException.class,
+                                  "CWWKD1019.mixed.positional.named",
+                                  method.getName(),
+                                  method.getDeclaringClass().getName());
 
                     int numParamNames = paramNames == null ? 0 : paramNames.size();
                     if (numParamNames > 0 && numParamNames != paramCount)
                         if (hasParamAnnotation) {
-                            throw new UnsupportedOperationException("Cannot mix positional and named parameters on repository method " +
-                                                                    method.getDeclaringClass().getName() + '.' + method.getName()); // TODO NLS
+                            throw exc(UnsupportedOperationException.class,
+                                      "CWWKD1019.mixed.positional.named",
+                                      method.getName(),
+                                      method.getDeclaringClass().getName());
                         } else { // we might have mistaken a literal value for a named parameter
                             paramNames = null;
                             paramCount -= paramAddedCount;
@@ -2878,9 +2887,13 @@ public class QueryInfo {
 
         int methodParamForQueryCount = paramCount - paramAddedCount;
         if (args != null && args.length < methodParamForQueryCount)
-            throw new MappingException("The " + method.getName() + " repository method has " + args.length +
-                                       " parameters, but requires " + methodParamForQueryCount +
-                                       " method parameters. The generated JPQL query is: " + jpql + "."); // TODO NLS
+            throw exc(DataException.class,
+                      "CWWKD1021.insufficient.params",
+                      method.getName(),
+                      method.getDeclaringClass().getName(),
+                      args.length,
+                      methodParamForQueryCount,
+                      jpql);
 
         int namedParamCount = paramNames == null ? 0 : paramNames.size();
         for (int i = 0, p = 0; i < methodParamForQueryCount; i++) {
@@ -2910,6 +2923,18 @@ public class QueryInfo {
                     }
                 }
             }
+        }
+        if (args != null &&
+            methodParamForQueryCount < args.length &&
+            type != Type.FIND &&
+            type != Type.FIND_AND_DELETE) {
+            throw exc(DataException.class,
+                      "CWWKD1022.too.many.params",
+                      method.getName(),
+                      method.getDeclaringClass().getName(),
+                      methodParamForQueryCount,
+                      args.length,
+                      jpql);
         }
     }
 
