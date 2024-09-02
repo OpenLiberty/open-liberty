@@ -197,7 +197,7 @@ public class CompletionStageRxInvokerImpl implements CompletionStageRxInvoker {
         }
 
         if (ex == null) {
-            return completionStageFactory.supplyAsync(supplier);
+            return completionStageFactory.supplyAsync(supplier,JAXRSClientCompletionStageFactoryConfig.getExecutorService()); //Liberty change
         }
 
         return completionStageFactory.supplyAsync(supplier, ex); 
