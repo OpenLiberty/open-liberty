@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,8 +46,7 @@ public class SSLClientInterceptor extends AbstractPhaseInterceptor<Message> {
     }
 
     public WSATConfigService getConfigService() {
-        BundleContext context = FrameworkUtil.getBundle(WSATConfigService.class)
-                        .getBundleContext();
+        BundleContext context = FrameworkUtil.getBundle(WSATConfigService.class).getBundleContext();
         ServiceReference<WSATConfigService> serviceRef = context.getServiceReference(WSATConfigService.class);
         if (serviceRef == null)
             return null;
@@ -63,8 +62,7 @@ public class SSLClientInterceptor extends AbstractPhaseInterceptor<Message> {
     }
 
     public JaxWsSecurityConfigurationService getJaxWsSecurityService() {
-        BundleContext context = FrameworkUtil.getBundle(JaxWsSecurityConfigurationService.class)
-                        .getBundleContext();
+        BundleContext context = FrameworkUtil.getBundle(JaxWsSecurityConfigurationService.class).getBundleContext();
         ServiceReference<JaxWsSecurityConfigurationService> serviceRef = context.getServiceReference(JaxWsSecurityConfigurationService.class);
         if (serviceRef == null) {
             throw new RuntimeException("JaxWsSecurity Service is not available, please make sure you have enabled appSecurity-2.0 feature and configured correct SSL setting");
@@ -74,7 +72,7 @@ public class SSLClientInterceptor extends AbstractPhaseInterceptor<Message> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.cxf.interceptor.Interceptor#handleMessage(org.apache.cxf.message.Message)
      */
     @Override
@@ -96,7 +94,7 @@ public class SSLClientInterceptor extends AbstractPhaseInterceptor<Message> {
                     if (service == null) {
                         throw new Fault("JaxWsSecurity Service is not available, please make sure you have enabled appSecurity-2.0 feature and configured correct SSL setting", tc.getLogger());
                     }
-                    service.configClientSSL(httpConduit, sslId, null);
+                    service.configClientSSL(httpConduit, (String) message.get(Message.ENDPOINT_ADDRESS), sslId, null);
                 } catch (Exception e) {
                     throw new Fault(e);
                 }
