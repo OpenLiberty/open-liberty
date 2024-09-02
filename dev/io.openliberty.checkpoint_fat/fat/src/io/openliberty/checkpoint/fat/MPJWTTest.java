@@ -132,7 +132,7 @@ public class MPJWTTest extends FATServletClient {
 
             response.close();
         } finally {
-            server.stopServer(false, "");
+            server.stopServer(true, "");
         }
     }
 
@@ -168,7 +168,7 @@ public class MPJWTTest extends FATServletClient {
             //[ERROR   ] CWWKS5523E: The MicroProfile JWT feature cannot authenticate the request because the token that is included in the request cannot be validated.
             // CWWKS5524E: The MicroProfile JWT feature encountered an error while creating a JWT by using the [myMpJwt] configuration and the token included in the request.
             // CWWKS6031E: The JSON Web Token (JWT) consumer [myMpJwt] cannot process the token string. JWT_TOKEN_AGE_AFTER_CURRENT_TIME
-            server.stopServer(false, "CWWKS5523E", "CWWKS5524E", "CWWKS6031E");
+            server.stopServer(true, "CWWKS5523E", "CWWKS5524E", "CWWKS6031E");
         }
 
     }
@@ -197,7 +197,7 @@ public class MPJWTTest extends FATServletClient {
             //[ERROR   ] CWWKS5524E: The MicroProfile JWT feature encountered an error while creating a JWT by using the [myMpJwt] configuration and the token included in the request.
             // CWWKS6031E: The JSON Web Token (JWT) consumer [myMpJwt] cannot process the token string.
             // CWWKS6023E: The audience [[audience1]] of the provided JSON web token (JWT) is not listed as a trusted audience in the [myMpJwt] JWT configuration. The trusted audiences are [[audience2]].
-            server.stopServer(false, "CWWKS5523E", "CWWKS5524E", "CWWKS6031E");
+            server.stopServer(true, "CWWKS5523E", "CWWKS5524E", "CWWKS6031E");
         }
 
     }
@@ -267,7 +267,6 @@ public class MPJWTTest extends FATServletClient {
 
     @After
     public void tearDown() throws Exception {
-        server.postStopServerArchive();
         server.restoreServerConfiguration();
     }
 }
