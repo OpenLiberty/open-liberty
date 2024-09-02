@@ -52,9 +52,12 @@ import java.util.concurrent.TimeoutException;
 import javax.annotation.Resource;
 import javax.annotation.sql.DataSourceDefinition;
 import javax.annotation.sql.DataSourceDefinitions;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
 import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
+import javax.management.ReflectionException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletConfig;
@@ -2251,6 +2254,177 @@ public class DataSourceTestServlet extends FATServlet {
     }
 
     /**
+     * Use two data sources with onError=WARN to make sure they are working as expected.
+     *
+     * This is an order dependent test based on which data source is used first. This test
+     * is expecting to use connection pool jdbc/dsfat11amixedpoolderby for both data sources.
+     *
+     * Note, onError=IGNORE will have the same data source behavior as WARN,
+     * but will not log an error.
+     */
+    public void testOnErrorWorkingTwoDSorderA() throws Exception {
+
+        DataSource dsfat11bmixedpoolderby = null;
+        DataSource dsfat11amixedpoolderby = null;
+
+        String firstLookupJNDIName = "jdbc/dsfat11amixedpoolderby";
+        String secondLookupJNDIName = "jdbc/dsfat11bmixedpoolderby";
+
+        String firstLookupCon = null;
+        String secondLookupCon = null;
+
+        for (int i = 0; i < 2; i++) {
+            tran.setTransactionTimeout(60);
+            try {
+                tran.begin();
+                try {
+                    dsfat11bmixedpoolderby = (DataSource) new InitialContext().lookup(firstLookupJNDIName);
+                    Connection con = dsfat11bmixedpoolderby.getConnection();
+                    String pool = showPoolContents(firstLookupJNDIName);
+                    assertFalse("Connection pool should exist for jndi name " + firstLookupJNDIName, pool.equals("Not found"));
+
+                    if (firstLookupCon == null) {
+                        String indexString = "WSRdbManagedConnectionImpl@";
+                        int index = pool.indexOf(indexString);
+                        int endindex = index + indexString.length() + 10;
+                        firstLookupCon = pool.substring(index, endindex);
+                    } else {
+                        assertTrue("Did not find expected connection " + firstLookupCon + " in pool " + pool, pool.contains(firstLookupCon));
+                    }
+
+                    // extra check for data source being used, should be 14
+                    Statement stmt = con.createStatement();
+                    int timeout = stmt.getQueryTimeout();
+                    assertTrue("Incorrect query timeout, expecting 14 but found " + timeout, timeout == 14);
+                    con.close();
+                } finally {
+                    tran.commit();
+                }
+            } finally {
+                tran.setTransactionTimeout(0); // restore default
+            }
+
+            tran.setTransactionTimeout(60);
+            try {
+                tran.begin();
+                try {
+                    dsfat11amixedpoolderby = (DataSource) new InitialContext().lookup(secondLookupJNDIName);
+                    Connection con = dsfat11amixedpoolderby.getConnection();
+                    String pool = showPoolContents(firstLookupJNDIName);
+                    assertFalse("Connection pool should exist for jndi name " + firstLookupJNDIName, pool.equals("Not found"));
+
+                    if (secondLookupCon == null) {
+                        String indexString = "WSRdbManagedConnectionImpl@";
+                        int index = pool.indexOf(indexString);
+                        int endindex = index + indexString.length() + 10;
+                        secondLookupCon = pool.substring(index, endindex);
+                        assertTrue("Connection pool should not exist for jndi name " + secondLookupJNDIName, showPoolContents(secondLookupJNDIName).equals("Not found"));
+                    } else {
+                        assertTrue("Did not find expected connection " + secondLookupCon + " in pool " + pool, pool.contains(secondLookupCon));
+                    }
+
+                    // extra check for data source being used, should be 15
+                    Statement stmt = con.createStatement();
+                    int timeout = stmt.getQueryTimeout();
+                    assertTrue("Incorrect query timeout, expecting 15 but found " + timeout, timeout == 15);
+                    con.close();
+
+                } finally {
+                    tran.commit();
+                }
+            } finally {
+                tran.setTransactionTimeout(0); // restore default
+            }
+        }
+    }
+
+    /**
+     * Use two data sources with onError=WARN to make sure they are working as expected.
+     *
+     * This is an order dependent test based on which data source is used first. This test
+     * is expecting to use connection pool jdbc/dsfat11bmixedpoolderby for both data sources.
+     *
+     * Note, onError=IGNORE will have the same data source behavior as WARN,
+     * but will not log an error.
+     */
+    public void testOnErrorWorkingTwoDSorderB() throws Exception {
+
+        DataSource dsfat11bmixedpoolderby = null;
+        DataSource dsfat11amixedpoolderby = null;
+
+        String firstLookupJNDIName = "jdbc/dsfat11bmixedpoolderby";
+        String secondLookupJNDIName = "jdbc/dsfat11amixedpoolderby";
+
+        String firstLookupCon = null;
+        String secondLookupCon = null;
+
+        for (int i = 0; i < 2; i++) {
+            tran.setTransactionTimeout(60);
+            try {
+                tran.begin();
+                try {
+                    dsfat11bmixedpoolderby = (DataSource) new InitialContext().lookup(firstLookupJNDIName);
+                    Connection con = dsfat11bmixedpoolderby.getConnection();
+                    String pool = showPoolContents(firstLookupJNDIName);
+                    assertFalse("Connection pool should exist for jndi name " + firstLookupJNDIName, pool.equals("Not found"));
+
+                    String indexString = "WSRdbManagedConnectionImpl@";
+                    int index = pool.indexOf(indexString);
+                    int endindex = index + indexString.length() + 10;
+                    if (firstLookupCon == null) {
+                        firstLookupCon = pool.substring(index, endindex);
+                    } else {
+                        assertTrue("Did not find expected connection " + firstLookupCon + " in pool " + pool, pool.contains(firstLookupCon));
+                    }
+
+                    // extra check for data source being used, should be 15
+                    Statement stmt = con.createStatement();
+                    int timeout = stmt.getQueryTimeout();
+                    assertTrue("Incorrect query timeout, expecting 15 but found " + timeout, timeout == 15);
+                    con.close();
+                } finally {
+                    tran.commit();
+                }
+            } finally {
+                tran.setTransactionTimeout(0); // restore default
+            }
+
+            tran.setTransactionTimeout(60);
+            try {
+                tran.begin();
+                try {
+                    dsfat11amixedpoolderby = (DataSource) new InitialContext().lookup(secondLookupJNDIName);
+                    Connection con = dsfat11amixedpoolderby.getConnection();
+                    String pool = showPoolContents(firstLookupJNDIName);
+                    assertFalse("Connection pool should exist for jndi name " + firstLookupJNDIName, pool.equals("Not found"));
+
+                    String indexString = "WSRdbManagedConnectionImpl@";
+                    int index = pool.indexOf(indexString);
+                    int endindex = index + indexString.length() + 10;
+                    if (secondLookupCon == null) {
+                        assertTrue("Connection pool should not exist for jndi name " + secondLookupJNDIName, showPoolContents(secondLookupJNDIName).equals("Not found"));
+                        secondLookupCon = pool.substring(index, endindex);
+                    } else {
+                        assertTrue("Did not find expected connection " + secondLookupCon + " in pool " + pool, pool.contains(secondLookupCon));
+                    }
+
+                    // extra check for data source being used, should be 14
+                    Statement stmt = con.createStatement();
+                    int timeout = stmt.getQueryTimeout();
+                    assertTrue("Incorrect query timeout, expecting 14 but found " + timeout, timeout == 14);
+                    con.close();
+
+                } finally {
+                    tran.commit();
+                }
+            } finally {
+                tran.setTransactionTimeout(0); // restore default
+            }
+        }
+
+    }
+
+    /**
      * Use the queryTimeout and syncQueryTimeoutWithTransactionTimeout properties.
      */
     public void testQueryTimeout() throws Throwable {
@@ -3636,5 +3810,28 @@ public class DataSourceTestServlet extends FATServlet {
         System.out.println("   " + contents.replace("\n", "\n   "));
 
         return Integer.parseInt((String) mbs.getAttribute(bean.getObjectName(), "size"));
+    }
+
+    private String showPoolContents(String jndiName) {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        ObjectInstance bean;
+        String contents = "Not found";
+        try {
+            bean = getMBeanObjectInstance(jndiName);
+        } catch (Exception e) {
+            return contents;
+        }
+        System.out.println("Found " + bean.getObjectName().toString());
+
+        try {
+            contents = (String) mbs.invoke(bean.getObjectName(), "showPoolContents", null, null);
+        } catch (InstanceNotFoundException e) {
+            e.printStackTrace();
+        } catch (ReflectionException e) {
+            e.printStackTrace();
+        } catch (MBeanException e) {
+            e.printStackTrace();
+        }
+        return contents;
     }
 }

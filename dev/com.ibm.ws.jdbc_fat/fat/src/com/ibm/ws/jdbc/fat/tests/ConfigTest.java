@@ -1315,6 +1315,159 @@ public class ConfigTest extends FATServletClient {
     }
 
     /**
+     * Use two data sources using same connection manager with onError warn.
+     *
+     * This test is depended on which data source is used first.
+     *
+     * Checks to see if the right connections are being matched.
+     *
+     * testOnErrorWorkingTwoDSorderA uses order
+     * 1. lookup jdbc/dsfat11amixedpoolderby
+     * 2. lookup jdbc/dsfat11bmixedpoolderby
+     *
+     * related test
+     *
+     * testOnErrorWorkingTwoDSorderB uses the reverse order
+     * 1. lookup jdbc/dsfat11bmixedpoolderby
+     * 2. lookup jdbc/dsfat11amixedpoolderby
+     *
+     * @throws Throwable if it fails.
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testOnErrorWorkingTwoDSorderA() throws Throwable {
+        String method = "testOnErrorWorkingTwoDSorderA";
+        Log.info(c, method, "Executing " + method);
+
+        restartServer(); // order depended test, need to restart server.
+        String onErrorString = "WARN";
+        String originalonErrorValue = setonErrorValue(method, onErrorString); // ensure WARN is used
+        Log.info(c, method, "originalonErrorValue=" + originalonErrorValue);
+
+        try {
+            runTest(basicfat, "testOnErrorWorkingTwoDSorderA");
+        } catch (Throwable x) {
+            System.out.println("Failure during " + method + " with the following config:");
+            ServerConfiguration config = server.getServerConfiguration();
+            System.out.println(config);
+            throw x;
+        }
+
+        List<String> messages = server.findStringsInLogs("J2CA8040E");
+        if (messages.isEmpty())
+            throw new Exception("Did not find J2CA8040E for multiple dataSources (dsfat11amixedpoolderby and dsfat11bmixedpoolderby) using same connectionManager.");
+        else
+            Log.info(c, method, "Found expected: " + messages);
+    }
+
+    /**
+     * Use two data sources using same connection manager with onError warn.
+     *
+     * This test is depended on which data source is used first.
+     *
+     * Checks to see if the right connections are being matched.
+     *
+     * testOnErrorWorkingTwoDSorderB uses the order
+     * 1. lookup jdbc/dsfat11bmixedpoolderby
+     * 2. lookup jdbc/dsfat11amixedpoolderby
+     *
+     * related test
+     *
+     * testOnErrorWorkingTwoDSorderA uses the reverse order
+     * 1. lookup jdbc/dsfat11amixedpoolderby
+     * 2. lookup jdbc/dsfat11bmixedpoolderby
+     *
+     * @throws Throwable if it fails.
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testOnErrorWorkingTwoDSorderB() throws Throwable {
+        String method = "testOnErrorWorkingTwoDSorderB";
+        Log.info(c, method, "Executing " + method);
+
+        restartServer(); // order depended test, need to restart server.
+        String onErrorString = "WARN";
+        String originalonErrorValue = setonErrorValue(method, onErrorString); // ensure WARN is used
+        Log.info(c, method, "originalonErrorValue=" + originalonErrorValue);
+
+        try {
+            runTest(basicfat, "testOnErrorWorkingTwoDSorderB");
+        } catch (Throwable x) {
+            System.out.println("Failure during " + method + " with the following config:");
+            ServerConfiguration config = server.getServerConfiguration();
+            System.out.println(config);
+            throw x;
+        }
+
+        List<String> messages = server.findStringsInLogs("J2CA8040E");
+        if (messages.isEmpty())
+            throw new Exception("Did not find J2CA8040E for multiple dataSources (dsfat11amixedpoolderby and dsfat11bmixedpoolderby) using same connectionManager.");
+        else
+            Log.info(c, method, "Found expected: " + messages);
+    }
+
+    /**
+     * Restart the server with the required database configuration.
+     *
+     * @throws Exception
+     */
+    private void restartServer() throws Exception {
+        try {
+            server.stopServer(ALLOWED_MESSAGES);
+            //Get driver type
+            server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+            server.addEnvVar("ANON_DRIVER", "driver" + DatabaseContainerType.valueOf(testContainer).ordinal() + ".jar");
+            server.addEnvVar("DB_USER", testContainer.getUsername());
+            server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
+
+        } finally {
+            server.startServer();
+        }
+    }
+
+    /**
+     * The variable onError used in server.xml can have some interesting behaviors.
+     *
+     * The default when its not set in server.xml is WARN.
+     *
+     * This method can help to set onError to FAIL, WARN, or IGNORE only if the value is
+     * exists in the server.xml.
+     *
+     * The return value can be null if its not set in server.xml, otherwise, if required, it will return
+     * the original value to be able to reset onError back to its original state at the end
+     * of the test. An alternative to resetting the value is restarting the server
+     *
+     * @param method
+     * @param onErrorString
+     * @throws Exception
+     * @throws Throwable
+     */
+
+    private String setonErrorValue(String method, String onErrorString) throws Exception, Throwable {
+        ServerConfiguration config = server.getServerConfiguration();
+        String originalValue = null;
+        Variable onError = null;
+        for (Variable variable : config.getVariables())
+            if (variable.getName().equals("onError"))
+                onError = variable;
+        if (onError != null) {
+            originalValue = onError.getValue();
+            onError.setValue(onErrorString);
+
+            try {
+                updateServerConfig(config, EMPTY_EXPR_LIST);
+            } catch (Throwable x) {
+                Log.info(c, method, "Failure during " + method + " with the following config:");
+                Log.info(c, method, config.toString());
+                throw x;
+            }
+        } else {
+            Log.info(c, method, "Variable onError not set in server.xml, onError defaults to WARN");
+        }
+        return originalValue;
+    }
+
+    /**
      * Update the data source configuration while the server is running.
      * Uses <file> element
      *
