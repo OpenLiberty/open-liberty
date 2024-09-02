@@ -216,6 +216,9 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
     
     protected static final boolean SERVLET_PATH_FOR_DEFAULT_MAPPING = Boolean.valueOf(WCCustomProperties.SERVLET_PATH_FOR_DEFAULT_MAPPING).booleanValue();
 
+    private HttpSession ourHTTPSession = null;
+    private boolean triedToGetHTTPSession = false;
+
     public SRTServletRequest(SRTConnectionContext context)
     {
         this._connContext = context;
@@ -327,6 +330,9 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             checkRequestObjectInUse();
         }
 
+        ourHTTPSession = null;
+        triedToGetHTTPSession = false;
+        
         try {
 
             if (req == null) {
@@ -2307,8 +2313,13 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE){
             checkRequestObjectInUse();
         }
-        // return _connContext.getSessionAPISupport().getSession(create);
-        return _requestContext.getSession(create, ((WebAppDispatcherContext) this.getDispatchContext()).getWebApp());
+
+        if(create || ((ourHTTPSession == null) && (triedToGetHTTPSession == false))) {
+            // return _connContext.getSessionAPISupport().getSession(create);
+            ourHTTPSession = _requestContext.getSession(create, ((WebAppDispatcherContext) this.getDispatchContext()).getWebApp());
+            triedToGetHTTPSession = true;
+        }
+        return ourHTTPSession;
     }
 
     public boolean isRequestedSessionIdFromCookie()
