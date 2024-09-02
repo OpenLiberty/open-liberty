@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,8 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import mpGraphQL10.voidQuery.VoidQueryTestServlet;
 
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+
 @RunWith(FATRunner.class)
 public class VoidQueryTest {
 
@@ -45,7 +47,7 @@ public class VoidQueryTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, APP_NAME, "mpGraphQL10.voidQuery");
+        ShrinkHelper.defaultDropinApp(server, APP_NAME, new DeployOptions[] { DeployOptions.SERVER_ONLY }, "mpGraphQL10.voidQuery");
         server.startServer();
     }
 

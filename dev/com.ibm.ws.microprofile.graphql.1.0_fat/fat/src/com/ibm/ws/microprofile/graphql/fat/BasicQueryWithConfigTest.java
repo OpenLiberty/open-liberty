@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -23,9 +24,13 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import mpGraphQL10.basicQuery.BasicQueryTestServlet;
+import io.openliberty.microprofile.graphql.fat.repeat.GraphQlRepeatActions;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+
 
 @RunWith(FATRunner.class)
 public class BasicQueryWithConfigTest extends FATServletClient {
@@ -37,13 +42,16 @@ public class BasicQueryWithConfigTest extends FATServletClient {
     @TestServlet(servlet = BasicQueryTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests r = GraphQlRepeatActions.repeatDefault(SERVER);
+
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive war = ShrinkHelper.buildDefaultApp(APP_NAME, "mpGraphQL10.basicQuery")
                                      .addAsManifestResource(new StringAsset(
                                              "mp.graphql.contextpath=hello"),
                                          "microprofile-config.properties");
-        ShrinkHelper.exportDropinAppToServer(server, war);
+        ShrinkHelper.exportDropinAppToServer(server, war, new DeployOptions[] { DeployOptions.SERVER_ONLY });
         server.startServer();
     }
 
