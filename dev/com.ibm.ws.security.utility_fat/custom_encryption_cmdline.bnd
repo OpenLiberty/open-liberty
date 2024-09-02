@@ -1,0 +1,7 @@
+Require-Bundle: com.ibm.websphere.crypto.sample.customencryption; \
+ version="[1,1.0.100)"; location=usr/extension/lib
+IBM-ImplementationClass: \
+ com.ibm.websphere.crypto.sample.customencryption.CustomEncryptionImpl
+IBM-CustomPasswordEncryptionName-NotUedNow: customSample
+
+Private-Package: !com.ibm.ws.security.utility.test.*
