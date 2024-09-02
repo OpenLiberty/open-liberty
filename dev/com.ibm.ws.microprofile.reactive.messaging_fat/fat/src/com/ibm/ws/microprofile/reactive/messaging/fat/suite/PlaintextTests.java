@@ -24,6 +24,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.ack.auto.KafkaAutoAckTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.consumer.KafkaConsumerPartitionStrategyTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.ExtendedKafkaContainer;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.context.KafkaDefaultContextTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.context.custom.KafkaCustomContextTest;
@@ -64,7 +65,8 @@ import componenttest.containers.TestContainerSuite;
                 MissingGroupIDTest.class,
                 ReactiveStreamsTckTest.class,
                 UseConfiguredTopicTest.class,
-                UseProducerRecordTopicTest.class
+                UseProducerRecordTopicTest.class,
+                KafkaConsumerPartitionStrategyTest.class
 })
 public class PlaintextTests extends TestContainerSuite {
 
