@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011,2021 IBM Corporation and others.
+ * Copyright (c) 2011,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -66,15 +66,15 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
  * 3. ignoreCase does not need to be specified, a default value of false will
  * be used.
  */
-@ObjectClassDefinition(factoryPid = "com.ibm.ws.security.registry.basic.config",
+@ObjectClassDefinition(factoryPid = BasicRegistryConfig.FACTORY_PID,
                        name = "%basic.config", description = "%basic.config.desc", localization = Ext.LOCALIZATION)
 @Ext.Alias("basicRegistry")
 @Ext.ObjectClassClass(UserRegistry.class)
 interface BasicRegistryConfig {
-
-    public static final String MAP_MODE_PRINCIPAL_CN = "PRINCIPAL_CN";
-    public static final String MAP_MODE_CUSTOM = "CUSTOM";
-    public static final String MAP_MODE_NOT_SUPPORTED = "NOT_SUPPORTED";
+    String FACTORY_PID = "com.ibm.ws.security.registry.basic.config";
+    String MAP_MODE_PRINCIPAL_CN = "PRINCIPAL_CN";
+    String MAP_MODE_CUSTOM = "CUSTOM";
+    String MAP_MODE_NOT_SUPPORTED = "NOT_SUPPORTED";
 
     @AttributeDefinition(name = "%realm", description = "%realm.desc", defaultValue = BasicRegistry.DEFAULT_REALM_NAME)
     String realm();
@@ -83,11 +83,11 @@ interface BasicRegistryConfig {
     boolean ignoreCaseForAuthentication();
 
     @AttributeDefinition(name = "%basic.user", description = "%basic.user.desc", required = false)
-    @Ext.FlatReferencePid("com.ibm.ws.security.registry.basic.config.user")
+    @Ext.FlatReferencePid(User.FACTORY_PID)
     User[] user();
 
     @AttributeDefinition(name = "%basic.group", description = "%basic.group.desc", required = false)
-    @Ext.FlatReferencePid("com.ibm.ws.security.registry.basic.config.group")
+    @Ext.FlatReferencePid(Group.FACTORY_PID)
     Group[] group();
 
     @AttributeDefinition(name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, required = false)
@@ -107,9 +107,10 @@ interface BasicRegistryConfig {
     String CertificateMapper_target();
 }
 
-@ObjectClassDefinition(factoryPid = "com.ibm.ws.security.registry.basic.config.user", name = "%basic.user", description = "%basic.user.desc",
+@ObjectClassDefinition(factoryPid = User.FACTORY_PID, name = "%basic.user", description = "%basic.user.desc",
                        localization = Ext.LOCALIZATION)
 interface User {
+    String FACTORY_PID = "com.ibm.ws.security.registry.basic.config.user";
 
     @AttributeDefinition(name = "%user.name", description = "%user.name.desc")
     String name();
@@ -119,27 +120,29 @@ interface User {
     SerializableProtectedString password();
 }
 
-@ObjectClassDefinition(factoryPid = "com.ibm.ws.security.registry.basic.config.group", name = "%basic.group", description = "%basic.group.desc",
+@ObjectClassDefinition(factoryPid = Group.FACTORY_PID, name = "%basic.group", description = "%basic.group.desc",
                        localization = Ext.LOCALIZATION)
 interface Group {
+    String FACTORY_PID = "com.ibm.ws.security.registry.basic.config.group";
 
     @AttributeDefinition(name = "%group.name", description = "%group.name.desc")
     String name();
 
     @AttributeDefinition(name = "%basic.group.member", description = "%basic.group.member.desc", required = false)
-    @Ext.FlatReferencePid("com.ibm.ws.security.registry.basic.config.group.member")
+    @Ext.FlatReferencePid(Member.FACTORY_PID)
     Member[] member();
 }
 
-@ObjectClassDefinition(factoryPid = "com.ibm.ws.security.registry.basic.config.group.member", name = "%basic.group.member", description = "%basic.group.member.desc",
+@ObjectClassDefinition(factoryPid = Member.FACTORY_PID, name = "%basic.group.member", description = "%basic.group.member.desc",
                        localization = Ext.LOCALIZATION)
 interface Member {
+    String FACTORY_PID = "com.ibm.ws.security.registry.basic.config.group.member";
 
     @AttributeDefinition(name = "%member.name", description = "%member.name.desc")
     String name();
 }
 
-@Component(configurationPid = "com.ibm.ws.security.registry.basic.config",
+@Component(configurationPid = BasicRegistryConfig.FACTORY_PID,
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            immediate = true,
            property = { "service.vendor=IBM", "com.ibm.ws.security.registry.type=Basic" })
@@ -288,13 +291,11 @@ public class BasicRegistry implements UserRegistry {
         state = null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getRealm() {
         return state.realm;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String checkPassword(String userSecurityName, @Sensitive String password) throws RegistryException {
         if (userSecurityName == null) {
@@ -355,7 +356,6 @@ public class BasicRegistry implements UserRegistry {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     @FFDCIgnore({ com.ibm.websphere.security.CertificateMapNotSupportedException.class, com.ibm.websphere.security.CertificateMapFailedException.class })
     public String mapCertificate(X509Certificate[] chain) throws CertificateMapNotSupportedException, CertificateMapFailedException, RegistryException {
@@ -426,7 +426,6 @@ public class BasicRegistry implements UserRegistry {
 
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isValidUser(String userSecurityName) throws RegistryException {
         if (userSecurityName == null) {
@@ -448,7 +447,6 @@ public class BasicRegistry implements UserRegistry {
         return state.users.containsKey(userName);
     }
 
-    /** {@inheritDoc} */
     @Override
     public SearchResult getUsers(String pattern, int limit) throws RegistryException {
         // support ignoreCaseForAuthentication for user lookup
@@ -561,7 +559,6 @@ public class BasicRegistry implements UserRegistry {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getUserDisplayName(String userSecurityName) throws EntryNotFoundException, RegistryException {
         if (userSecurityName == null) {
@@ -577,7 +574,6 @@ public class BasicRegistry implements UserRegistry {
         return userSecurityName;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getUniqueUserId(String userSecurityName) throws EntryNotFoundException, RegistryException {
         if (userSecurityName == null) {
@@ -593,7 +589,6 @@ public class BasicRegistry implements UserRegistry {
         return userSecurityName;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getUserSecurityName(String uniqueUserId) throws EntryNotFoundException, RegistryException {
         if (uniqueUserId == null) {
@@ -609,7 +604,6 @@ public class BasicRegistry implements UserRegistry {
         return uniqueUserId;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isValidGroup(String groupSecurityName) throws RegistryException {
         if (groupSecurityName == null) {
@@ -622,13 +616,11 @@ public class BasicRegistry implements UserRegistry {
         return state.groups.containsKey(groupSecurityName);
     }
 
-    /** {@inheritDoc} */
     @Override
     public SearchResult getGroups(String pattern, int limit) throws RegistryException {
         return searchMap(state.groups, pattern, limit);
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getGroupDisplayName(String groupSecurityName) throws EntryNotFoundException, RegistryException {
         if (groupSecurityName == null) {
@@ -644,7 +636,6 @@ public class BasicRegistry implements UserRegistry {
         return groupSecurityName;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getUniqueGroupId(String groupSecurityName) throws EntryNotFoundException, RegistryException {
         if (groupSecurityName == null) {
@@ -660,7 +651,6 @@ public class BasicRegistry implements UserRegistry {
         return groupSecurityName;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getGroupSecurityName(String uniqueGroupId) throws EntryNotFoundException, RegistryException {
         if (uniqueGroupId == null) {
@@ -676,13 +666,11 @@ public class BasicRegistry implements UserRegistry {
         return uniqueGroupId;
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<String> getUniqueGroupIdsForUser(String uniqueUserId) throws EntryNotFoundException, RegistryException {
         return getGroupsForUser(uniqueUserId);
     }
 
-    /** {@inheritDoc} */
     //TODO this doesn't work for case insensitive
     @Override
     public List<String> getGroupsForUser(String userSecurityName) throws EntryNotFoundException, RegistryException {
@@ -709,12 +697,6 @@ public class BasicRegistry implements UserRegistry {
 
         return matched;
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.security.registry.UserRegistry#getUsersForGroup(java.lang.String, int)
-     */
 
     @Override
     public SearchResult getUsersForGroup(String groupSecurityName,
