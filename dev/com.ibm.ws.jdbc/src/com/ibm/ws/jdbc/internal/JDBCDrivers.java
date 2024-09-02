@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -86,7 +87,7 @@ public class JDBCDrivers {
         };
         classNamesByPID.put("com.ibm.ws.jdbc.dataSource.properties.db2.jcc", classes);
         classNamesByPID.put("com.ibm.ws.jdbc.dataSource.properties.informix.jcc", classes);
-        classNamesByKey.put("DB2JCC", classes);
+        classNamesByKey.put("JCC", classes); //drivers from IBM/Rocket are db2jcc.jar/db2jcc4.jar, but on maven central they are jcc-X.X.X.X.jar
 
         // Oracle Universal Connection Pooling
         classes = new String[] {
@@ -373,16 +374,29 @@ public class JDBCDrivers {
 
         String[] found = new String[NUM_DATA_SOURCE_INTERFACES];
         int preferredType = types[0];
+        
+        ServiceConfigurationError error = null;
 
         // Load JDBC driver class from service registry and use the package to infer the data source class
-        ServiceLoader<Driver> serviceLoader = ServiceLoader.load(Driver.class, loader);
+
+            ServiceLoader<Driver> serviceLoader = ServiceLoader.load(Driver.class, loader);
+
+        
         if (serviceLoader != null) {
             // In order to give preference to JDBC drivers supplied by the user, omit JDBC drivers that are packaged with Java
             List<Driver> drivers = new ArrayList<Driver>();
             for (Iterator<Driver> it = serviceLoader.iterator(); it.hasNext(); ) {
-                Driver driver = it.next();
-                if (!driver.getClass().getName().startsWith("sun."))
-                    drivers.add(driver);
+                try {
+                    Driver driver = it.next();
+                    if (!driver.getClass().getName().startsWith("sun."))
+                        drivers.add(driver);
+                } catch (ServiceConfigurationError sce) {
+                    if (System.getProperty("os.name").equals("OS/400")) {
+                        error = sce;
+                    } else {
+                        throw sce;
+                    }
+                }
             }
 
             for (Iterator<Driver> it = drivers.iterator(); found[preferredType] == null && it.hasNext(); ) {
@@ -491,6 +505,10 @@ public class JDBCDrivers {
             if (found[type] != null)
                 return new SimpleEntry<Integer, String>(type, found[type]);
 
+        if (error != null) {
+            throw error;
+        }
+        
         return null;
     }
 
