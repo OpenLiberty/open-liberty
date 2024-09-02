@@ -115,7 +115,18 @@ define([
         console.log("going to prefs from container:" + this.containerId);
         registry.byId("prefsContentContainer").setTransitionBackTo(this.containerId);
         registry.byId(this.containerId).performTransition("prefsContainer", 1, "slide");
-      })})); 
+      })}));
+      if (window.globalIsAdmin) {
+        userMenu.addChild(new MenuItem({
+          label: i18n.LIBERTY_HEADER_IDENTITY,
+          onClick: lang.hitch(this, function() {
+            // Transition to the 'Identity' container
+            console.log("Identity menu item clicked, going to identity from container:" + this.containerId);
+            registry.byId("identityContentContainer").setTransitionBackTo(this.containerId);
+            registry.byId(this.containerId).performTransition("identityContainer", 1, "slide");
+          })
+        }));
+      }
       userMenu.addChild(new MenuItem({label:i18n.LIBERTY_HEADER_LOGOUT, onClick: logout}));
       userMenu.addChild(new MenuItem({label:this.userName, iconClass:"headerIcon profileIcon"}), 0); 
       var user = {
@@ -1054,6 +1065,22 @@ define([
           registry.byId(this.containerId).performTransition("prefsContainer", 1, "slide");
         })
       }));
+
+      // only add AC Identidy for admin user
+      console.log("isAdminUser= " + window.globalIsAdmin);
+      if (window.globalIsAdmin) {
+        profileMenu.addChild(new MenuSeparator());
+        profileMenu.addChild(new MenuItem({
+          label: i18n.LIBERTY_HEADER_IDENTITY,
+          id: "identityMenuItem",
+          onClick: lang.hitch(this, function() {
+            // Transition to the 'Identity' container
+            console.log("Identity menu item clicked, going to identity from container:" + this.containerId);
+            registry.byId("identityContentContainer").setTransitionBackTo(this.containerId);
+            registry.byId(this.containerId).performTransition("identityContainer", 1, "slide");
+          })
+        }));
+      }
 
       profileMenu.addChild(new MenuSeparator());
       profileMenu.addChild(this.__createHelpMenuItem(window));
