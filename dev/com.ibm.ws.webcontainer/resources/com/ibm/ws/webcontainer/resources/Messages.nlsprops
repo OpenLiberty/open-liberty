@@ -1308,8 +1308,8 @@ setting.maxIdleTime.to.default.value.of.60000=SRVE8054E: A NumberFormatException
 setting.maxIdleTime.to.default.value.of.60000.explanation=A NumberFormatException occurred when trying to set the single thread model servlet maximum idle time.
 setting.maxIdleTime.to.default.value.of.60000.useraction=Verify the value for the single thread model servlet maximum idle time is a valid integer.
 
-Error.while.flushing.last.response=SRVE8055E: An unexpected exception occurred flushng out the rest of the response data.
-Error.while.flushing.last.response.explanation=An unexpected exception occurred flushng out the rest of the response data.
+Error.while.flushing.last.response=SRVE8055E: An unexpected exception occurred when the server flushed out the rest of the response data.
+Error.while.flushing.last.response.explanation=An unexpected exception occurred when the server flushed out the rest of the response data.
 Error.while.flushing.last.response.useraction=Gather server logs and contact IBM service.
 
 Error.while.closing.response.output=SRVE8056E: An unexpected exception occurred closing the output stream.
