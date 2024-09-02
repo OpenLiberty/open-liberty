@@ -109,7 +109,6 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
      */
     
     @Mode(TestMode.FULL)
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
     @Test
     public void testSAMLCxfSvcClient_TransportEnabled_httpFromClient() throws Exception {
     	

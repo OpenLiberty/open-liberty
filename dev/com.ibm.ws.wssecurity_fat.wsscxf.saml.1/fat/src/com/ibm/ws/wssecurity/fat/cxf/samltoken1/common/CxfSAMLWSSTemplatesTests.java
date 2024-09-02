@@ -37,7 +37,6 @@ import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
  * WSS Template tests
  */
 
-@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)

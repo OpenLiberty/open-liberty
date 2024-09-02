@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,10 +22,8 @@ import com.ibm.ws.security.fat.common.utils.ldaputils.CommonLocalLDAPServerSuite
 import com.ibm.ws.wssecurity.fat.cxf.samltoken6.OneServerTests.CxfSAMLBasic1ServerTests;
 import com.ibm.ws.wssecurity.fat.cxf.samltoken6.TwoServerTests.CxfSAMLBasic2ServerTests;
 import com.ibm.ws.wssecurity.fat.cxf.samltoken6.TwoServerTests.CxfSAMLWSSTemplatesWithExternalPolicy2ServerTests;
-import com.ibm.ws.wssecurity.fat.utils.common.RepeatWithEE7cbh20;
+import com.ibm.ws.wssecurity.fat.utils.common.WSSecuritySamlRepeatActions;
 
-import componenttest.rules.repeater.EmptyAction;
-import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -49,7 +47,15 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite extends CommonLocalLDAPServerSuite {
 
     @ClassRule
-    //issue 23060
-    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new RepeatWithEE7cbh20().fullFATOnly()).andWith(FeatureReplacementAction.EE9_FEATURES()).andWith(FeatureReplacementAction.EE10_FEATURES());
+    /*
+     * On Windows, always run the default/empty/EE7/EE8 tests.
+     * On other Platforms:
+     * - if Java 8, run default/empty/EE7/EE8 tests.
+     * - All other Java versions
+     * -- If LITE mode, run EE9
+     * -- If FULL mode, run EE10
+     *
+     */
+    public static RepeatTests r = WSSecuritySamlRepeatActions.createEE9OrEE10WSSecSamlRepeats("cbh20");
 
 }
