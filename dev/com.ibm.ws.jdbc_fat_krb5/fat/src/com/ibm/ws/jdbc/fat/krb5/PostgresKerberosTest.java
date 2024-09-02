@@ -30,8 +30,7 @@ import com.ibm.ws.jdbc.fat.krb5.containers.PostgresKerberosContainer;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -52,10 +51,13 @@ public class PostgresKerberosTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests repeat = RepeatTests.withoutModification()
-                    .andWith(new JakartaEE9Action()
+                    .andWith(FeatureReplacementAction.EE9_FEATURES()
                                     .forServers("com.ibm.ws.jdbc.fat.krb5.postgresql")
                                     .fullFATOnly())
-                    .andWith(new JakartaEE10Action()
+                    .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                    .forServers("com.ibm.ws.jdbc.fat.krb5.postgresql")
+                                    .fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE11_FEATURES()
                                     .forServers("com.ibm.ws.jdbc.fat.krb5.postgresql")
                                     .fullFATOnly());
 
