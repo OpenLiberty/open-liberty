@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -62,19 +62,9 @@ import org.eclipse.microprofile.openapi.models.tags.Tag;
  */
 public final class OpenAPIModelWalker {
 
-    private final OpenAPI openAPI;
-
-    public OpenAPIModelWalker(OpenAPI openAPI) {
-        this.openAPI = openAPI;
-    }
-
-    public void accept(OpenAPIModelVisitor visitor) {
-        accept(visitor, true);
-    }
-
-    public void accept(OpenAPIModelVisitor visitor, boolean previsit) {
+    public void walk(OpenAPI openAPI, OpenAPIModelVisitor visitor) {
         if (visitor != null && openAPI != null) {
-            new Walker(openAPI, visitor, previsit).traverseOpenAPI();
+            new Walker(openAPI, visitor, true).traverseOpenAPI();
         }
     }
 
@@ -121,22 +111,22 @@ public final class OpenAPIModelWalker {
      * "(k, v) ->", where k is the key and v is the value of an entry in the map. The convention for lists is "(v) ->",
      * where v is the value of an entry in the list.
      */
-    static final class Walker implements Context {
+    protected static class Walker implements Context {
 
         // The OpenAPI model being walked.
-        private final OpenAPI openAPI;
+        protected final OpenAPI openAPI;
 
         // The filter or visitor provided by the user of OpenAPIModelWalker.
-        private final OpenAPIModelVisitor visitor;
+        protected final OpenAPIModelVisitor visitor;
 
         // Flag indicating whether objects are visited before or after their children.
-        private final boolean previsit;
+        protected final boolean previsit;
 
         // A stack containing the ancestor objects of the object currently being traversed.
-        private final Deque<Object> ancestors = new LinkedList<>();
+        protected final Deque<Object> ancestors = new LinkedList<>();
 
         // A stack containing path segments for the object currently being traversed.
-        private final Deque<String> pathSegments = new LinkedList<>();
+        protected final Deque<String> pathSegments = new LinkedList<>();
 
         // A map containing all objects that have already been traversed.
         private final IdentityHashMap<Object, Object> traversedObjects = new IdentityHashMap<>();
@@ -234,11 +224,30 @@ public final class OpenAPIModelWalker {
 
         public void traverseOpenAPI() {
             pathSegments.push("#");
+            traverseOpenAPI(openAPI);
+            pathSegments.pop();
+
+            // Clean up
+            ancestors.clear();
+            pathSegments.clear();
+            traversedObjects.clear();
+        }
+
+        public void traverseOpenAPI(OpenAPI openAPI) {
             if (previsit) {
                 visitor.visitOpenAPI(this);
             }
-            ancestors.push(openAPI);
 
+            ancestors.push(openAPI);
+            traverseOpenAPIChildren();
+            ancestors.pop();
+
+            if (!previsit) {
+                visitor.visitOpenAPI(this);
+            }
+        }
+
+        protected void traverseOpenAPIChildren() {
             final Components components = openAPI.getComponents();
             if (components != null) {
                 pathSegments.push("components");
@@ -298,17 +307,6 @@ public final class OpenAPIModelWalker {
             if (tags != null) {
                 processTags(tags);
             }
-
-            ancestors.pop();
-            if (!previsit) {
-                visitor.visitOpenAPI(this);
-            }
-            pathSegments.pop();
-
-            // Clean up
-            ancestors.clear();
-            pathSegments.clear();
-            traversedObjects.clear();
         }
 
         public Components traverseComponents(Components components) {
@@ -323,6 +321,16 @@ public final class OpenAPIModelWalker {
             }
             ancestors.push(components);
 
+            processComponentChildren(components);
+
+            ancestors.pop();
+            if (!previsit) {
+                components = visitor.visitComponents(this, components);
+            }
+            return components;
+        }
+
+        protected void processComponentChildren(Components components) {
             final Map<String, Callback> callbacks = components.getCallbacks();
             if (callbacks != null) {
                 processCallbacks(callbacks);
@@ -372,12 +380,6 @@ public final class OpenAPIModelWalker {
             if (schemes != null) {
                 processSecuritySchemes(schemes);
             }
-
-            ancestors.pop();
-            if (!previsit) {
-                components = visitor.visitComponents(this, components);
-            }
-            return components;
         }
 
         public Callback traverseCallback(String key, Callback callback) {
@@ -961,7 +963,19 @@ public final class OpenAPIModelWalker {
                 }
             }
             ancestors.push(schema);
+            processSchemaChildren(schema);
+            ancestors.pop();
+            if (!previsit) {
+                if (key != null) {
+                    schema = visitor.visitSchema(this, key, schema);
+                } else {
+                    schema = visitor.visitSchema(this, schema);
+                }
+            }
+            return schema;
+        }
 
+        protected void processSchemaChildren(Schema schema) {
             final Schema addProps = schema.getAdditionalPropertiesSchema();
             if (addProps != null) {
                 pathSegments.push("additionalProperties");
@@ -1101,16 +1115,6 @@ public final class OpenAPIModelWalker {
                     pathSegments.pop();
                 });
             }
-
-            ancestors.pop();
-            if (!previsit) {
-                if (key != null) {
-                    schema = visitor.visitSchema(this, key, schema);
-                } else {
-                    schema = visitor.visitSchema(this, schema);
-                }
-            }
-            return schema;
         }
 
         public Discriminator traverseDiscriminator(Discriminator d) {
@@ -1543,6 +1547,29 @@ public final class OpenAPIModelWalker {
             return tag;
         }
 
+        public void traverseContent(final Content content) {
+            Map<String, MediaType> mediaTypes = content.getMediaTypes();
+            if (mediaTypes != null) {
+                final Map<String, MediaType> updates = map();
+                mediaTypes.forEach((k, v) -> {
+                    pathSegments.push(k);
+                    final MediaType m = traverseMediaType(k, v);
+                    if (m != v) {
+                        updates.put(k, m);
+                    }
+                    pathSegments.pop();
+                });
+
+                for (Entry<String, MediaType> entry : updates.entrySet()) {
+                    if (entry.getValue() != null) {
+                        content.addMediaType(entry.getKey(), entry.getValue());
+                    } else {
+                        content.removeMediaType(entry.getKey());
+                    }
+                } // FOR
+            }
+        }
+
         private void processParameters(final List<Parameter> parameters) {
             pathSegments.push("parameters");
             for (int i = 0; i < parameters.size(); ++i) {
@@ -1610,26 +1637,7 @@ public final class OpenAPIModelWalker {
 
         private void processContent(final Content content) {
             pathSegments.push("content");
-            Map<String, MediaType> mediaTypes = content.getMediaTypes();
-            if (mediaTypes != null) {
-                final Map<String, MediaType> updates = map();
-                mediaTypes.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    final MediaType m = traverseMediaType(k, v);
-                    if (m != v) {
-                        updates.put(k, m);
-                    }
-                    pathSegments.pop();
-                });
-
-                for (Entry<String, MediaType> entry : updates.entrySet()) {
-                    if (entry.getValue() != null) {
-                        content.addMediaType(entry.getKey(), entry.getValue());
-                    } else {
-                        content.removeMediaType(entry.getKey());
-                    }
-                } // FOR
-            }
+            traverseContent(content);
             pathSegments.pop();
         }
 
@@ -1815,11 +1823,11 @@ public final class OpenAPIModelWalker {
             }
         }
 
-        private <K, V> Map<K, V> map() {
+        protected <K, V> Map<K, V> map() {
             return new HashMap<>();
         }
 
-        private <K, V> void updateMap(Map<K, V> map, Map<K, V> updates) {
+        protected <K, V> void updateMap(Map<K, V> map, Map<K, V> updates) {
             updates.forEach((k, v) -> {
                 if (v != null) {
                     map.put(k, v);
