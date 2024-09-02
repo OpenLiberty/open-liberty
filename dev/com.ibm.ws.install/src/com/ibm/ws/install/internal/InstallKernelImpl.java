@@ -36,7 +36,6 @@ import com.ibm.ws.install.InstallProgressEvent;
 import com.ibm.ws.install.InstalledFeature;
 import com.ibm.ws.install.InstalledFeatureCollection;
 import com.ibm.ws.install.ReapplyFixException;
-import com.ibm.ws.install.RepositoryConfigUtils;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.install.internal.InstallUtils.FeaturesPlatforms;
 import com.ibm.ws.install.internal.asset.ServerAsset;
@@ -544,7 +543,6 @@ public class InstallKernelImpl implements InstallKernel, InstallKernelInteractiv
         Map<String, Collection<String>> installed;
         try {
             this.director.refresh();
-            RepositoryConfigUtils.setProxyAuthenticator(proxyHost, proxyPort, proxyUser, proxyPwd);
             try {
                 this.director.installAssets(assetIds, loginInfo);
             } catch (InstallException e) {

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,6 +46,7 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonString;
 
+import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.ws.repository.common.enums.AttachmentLinkType;
 import com.ibm.ws.repository.common.enums.AttachmentType;
 import com.ibm.ws.repository.common.enums.FilterableAttribute;
@@ -82,9 +83,9 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
      * password
      *
      * @param userId
-     *            The user id to use in Massive
+     *                     The user id to use in Massive
      * @param password
-     *            The password to use in Massive
+     *                     The password to use in Massive
      */
     public RestClient(ClientLoginInfo loginInfo) {
         super();
@@ -112,8 +113,8 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
      * @return This will return void if all is ok but will throw an exception if
      *         there are any problems
      * @throws RequestFailureException If the response code is not OK or the headers returned are missing
-     *             the count field (which can happen if we hit a URL that returns 200 but is not a valid repository).
-     * @throws IOException If there is a problem with the URL
+     *                                     the count field (which can happen if we hit a URL that returns 200 but is not a valid repository).
+     * @throws IOException             If there is a problem with the URL
      */
     @Override
     public void checkRepositoryStatus() throws IOException, RequestFailureException {
@@ -161,7 +162,7 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
      * this method.
      *
      * @param asset
-     *            The asset to add, it will not be modified by this method
+     *                  The asset to add, it will not be modified by this method
      * @return The asset with information added by Massive
      * @throws IOException
      */
@@ -186,7 +187,7 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
      * after calling this method.
      *
      * @param asset
-     *            The asset to add, it will not be modified by this method
+     *                  The asset to add, it will not be modified by this method
      * @return The asset with information added by Massive
      * @throws IOException
      * @throws RequestFailureException
@@ -219,7 +220,7 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
      *
      * @see #deleteAssetAndAttachments(String)
      * @param id
-     *            The ID to delete
+     *               The ID to delete
      * @return <code>true</code> if the delete is successful
      * @throws IOException
      * @throws RequestFailureException
@@ -239,7 +240,7 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
      * incorrectly).
      *
      * @param searchString The string to search for
-     * @param types The types to filter the results for
+     * @param types        The types to filter the results for
      * @return The assets that match the search string and type
      * @throws IOException
      * @throws RequestFailureException
@@ -459,9 +460,9 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
      * Returns the contents of an attachment
      *
      * @param assetId
-     *            The ID of the asset owning the attachment
+     *                         The ID of the asset owning the attachment
      * @param attachmentId
-     *            The ID of the attachment
+     *                         The ID of the attachment
      * @return The input stream for the attachment
      * @throws IOException
      * @throws RequestFailureException
@@ -496,9 +497,9 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
      * Returns the meta data about an attachment
      *
      * @param assetId
-     *            The ID of the asset owning the attachment
+     *                         The ID of the asset owning the attachment
      * @param attachmentId
-     *            The ID of the attachment
+     *                         The ID of the attachment
      * @return The attachment meta data
      * @throws IOException
      * @throws RequestFailureException
@@ -521,9 +522,9 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
      * Delete an attachment from an asset
      *
      * @param assetId
-     *            The ID of the asset containing the attachment
+     *                         The ID of the asset containing the attachment
      * @param attachmentId
-     *            The ID of the attachment to delete
+     *                         The ID of the attachment to delete
      * @return <code>true</code> if the delete was successful
      * @throws IOException
      * @throws RequestFailureException
@@ -540,7 +541,7 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
      * This will delete an asset and all its attachments
      *
      * @param assetId
-     *            The id of the asset
+     *                    The id of the asset
      * @return <code>true</code> if the asset and all its attachments are
      *         deleted. Note this is not atomic so some attachments may be
      *         deleted and <code>false</code> returned.
@@ -564,7 +565,7 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
      * Gets a single asset
      *
      * @param assetId
-     *            The ID of the asset to obtain
+     *                    The ID of the asset to obtain
      * @return The Asset
      * @throws IOException
      * @throws RequestFailureException
@@ -601,9 +602,9 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
      * action.
      *
      * @param assetId
-     *            The ID of the asset to update
+     *                    The ID of the asset to update
      * @param action
-     *            The action to take to modify the state
+     *                    The action to take to modify the state
      * @return <code>true</code> if the update was successful (currently always
      *         returns <code>true</code> from Massive)
      * @throws IOException
@@ -628,8 +629,8 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
      * information to connect to massive using the versioned URL as the base URL
      *
      * @param path
-     *            The path within massive to connect to (note this does not need
-     *            the API key or base path of "/ma/v1")
+     *                 The path within massive to connect to (note this does not need
+     *                 the API key or base path of "/ma/v1")
      * @return The {@link HttpURLConnection}
      * @throws IOException
      */
@@ -644,7 +645,7 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
      * </p>
      *
      * @param url
-     *            The complete URL to use (does not include the apiKey)
+     *                The complete URL to use (does not include the apiKey)
      * @return the {@link HttpURLConnection} with the api key and security
      *         information added
      * @throws IOException
@@ -687,7 +688,6 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
      * @throws IOException
      */
     private HttpURLConnection createRealHttpURLConnection(final String urlString) throws IOException {
-
         URL url = createURL(urlString);
 
         // If an HTTP proxy is defined, open the connection with a java.net.Proxy.  Authentication,
@@ -703,6 +703,11 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
                 LoginInfoClientProxy loginProxy = loginInfo.getProxy();
                 Proxy javaNetProxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(loginProxy.getProxyURL().getHost(), loginProxy.getProxyURL().getPort()));
                 connection = (HttpURLConnection) url.openConnection(javaNetProxy);
+
+                if (loginProxy.getProxyUser() != null && !loginProxy.getProxyUser().isEmpty() && loginProxy.getProxyPassword() != null
+                    && !loginProxy.getProxyPassword().isEmpty()) {
+                    addProxyAuthToConnection(connection, loginProxy.getProxyUser(), loginProxy.getProxyPassword());
+                }
 
             } else {
                 // The proxy is not an HTTP or HTTPS proxy we do not support this
@@ -757,19 +762,25 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
         }
     }
 
+    private void addProxyAuthToConnection(HttpURLConnection connection, String proxyUser, String proxyPassword) {
+        String basicAuthUserPass = proxyUser + ":" + PasswordUtil.passwordDecode(proxyPassword);
+        String basicAuth = "Basic " + encode(basicAuthUserPass.getBytes(Charset.forName("UTF-8")));
+        connection.setRequestProperty("Proxy-Authorization", basicAuth);
+    }
+
     /**
      * This method will update an existing attachment on an asset. Note that
      * Massive currently doesn't support update attachment so this will do a
      * delete and an add.
      *
      * @param assetId
-     *            The ID of the asset that the attachment is attached to
+     *                    The ID of the asset that the attachment is attached to
      * @param name
-     *            The name of the attachment to update
+     *                    The name of the attachment to update
      * @param file
-     *            The file to attach
+     *                    The file to attach
      * @param attach
-     *            Attachment metadata
+     *                    Attachment metadata
      * @return
      * @throws IOException
      * @throws RequestFailureException
@@ -838,7 +849,7 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
      * Creates a URL filter for the <code>attribute</code> where the <code>values</code> are the valid values.
      *
      * @param attributeName The attributes to use in the filter
-     * @param values The valid values. Must not be <code>null</code> or empty
+     * @param values        The valid values. Must not be <code>null</code> or empty
      * @return The filter strings
      */
     private String createListFilter(FilterableAttribute attribute, Collection<String> values) {
