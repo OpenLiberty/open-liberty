@@ -46,7 +46,7 @@
         <defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
         <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
         <targetDirectory>${project.basedir}/target</targetDirectory>
-        <jetty.version>9.4.18.v20190429</jetty.version>
+        <jetty.version>9.4.51.v20230217</jetty.version>
     </properties>
 
     <dependencyManagement>
