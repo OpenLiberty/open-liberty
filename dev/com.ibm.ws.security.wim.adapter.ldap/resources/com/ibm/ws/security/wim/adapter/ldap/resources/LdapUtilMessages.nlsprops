@@ -285,3 +285,7 @@ PREF_POOL_SIZE_TOO_BIG.useraction=Ensure that the preferred context pool size is
 LDAP_WIM_CONFIG_UPDATED_FAILED=CWIML4534E: LDAP repository {0} failed to process the configuration updates from federated repositories. Root cause: {1}
 LDAP_WIM_CONFIG_UPDATED_FAILED.explanation=Configuration changes to federated repositories triggered an update to the LDAP repository, but there was an error while processing those changes. 
 LDAP_WIM_CONFIG_UPDATED_FAILED.useraction=Review the logs for the cause of this error and take appropriate corrective actions.
+
+RANGE_ATTRIBUTE_PARSING=CWIML4535E: The Distinguished Name {0} failed to have its range attributes parsed with attribute range step of {1}.
+RANGE_ATTRIBUTE_PARSING.explanation=There was an unexpected error parsing range attributes. This could be due to a NumberFormatException or an unexpected range step.
+RANGE_ATTRIBUTE_PARSING.useraction=Verify the Distinguished Name has valid attributes.
