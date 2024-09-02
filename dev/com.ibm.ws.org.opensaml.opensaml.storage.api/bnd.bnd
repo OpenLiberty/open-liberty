@@ -10,20 +10,12 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/rejar.props
-bVersion=1.0
+-include= jar:${fileuri;${repo;org.opensaml:opensaml-storage-api;3.4.5}}!/META-INF/MANIFEST.MF,bnd.overrides
 
+-sub: *.bnd
+opensamlVersion=3.4.5
 
-WS-TraceGroup: SAML20
-
-Export-Package: \
-  org.opensaml.storage;version="3.4.5", \
-  org.opensaml.storage.*;version="3.4.5"
-  
-Import-Package: \
- com.google.common.base; version="[27.0.0,33.0.0)", \
- *
- 
-Include-Resource: \
- @${repo;org.opensaml:opensaml-storage-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*
-
+-buildpath: \
+    org.opensaml:opensaml-storage-api;version=${opensamlVersion},\
+    com.ibm.ws.com.google.guava;version=latest,\
+    joda-time:joda-time;version=2.9.9
