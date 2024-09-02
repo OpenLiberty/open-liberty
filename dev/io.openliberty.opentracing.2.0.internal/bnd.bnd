@@ -82,5 +82,7 @@ Service-Component: \
     com.ibm.ws.microprofile.opentracing.jaeger;version=latest, \
     com.ibm.ws.classloading;version=latest, \
     com.ibm.websphere.appserver.spi.kernel.service;version=latest, \
-    io.openliberty.microprofile.opentracing.common
+    io.openliberty.microprofile.opentracing.common, \
+    com.ibm.ws.kernel.boot.core;version=latest
+    
 
