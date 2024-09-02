@@ -4629,7 +4629,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <version>3.0.7.RELEASE</version>
+      <version>5.3.21</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -5384,12 +5384,12 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <version>4.3.13.RELEASE</version>
+      <version>5.3.21</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <version>5.0.4.RELEASE</version>
+      <version>5.3.21</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
