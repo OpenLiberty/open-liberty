@@ -1,0 +1,64 @@
+<server description="RemoteEJBClient">
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>ejbRemote-3.2</feature>
+        <feature>jdbc-4.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>transportSecurity-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestCommon.xml" />
+
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}">
+      <tcpOptions portOpenRetries="100000"/>
+    </httpEndpoint>
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}">
+        <iiopsOptions  iiopsPort="${bvt.prop.IIOP.secure}" sslRef="defaultSSLConfig"/>
+    </iiopEndpoint>
+
+    <transaction
+      dataSourceRef="tranlogDataSource"
+      recoverOnStartup="true"
+      waitForRecovery="false"
+      heuristicRetryInterval="10"
+    />
+	
+    <logging
+      traceSpecification="Transaction=all"
+      traceFileName="trace.log"
+      maxFileSize="2000"
+      maxFiles="20"
+      traceFormat="BASIC"
+    />
+
+    <javaPermission name="*" actions="*" className="java.security.AllPermission"/>
+
+    <library id="PostgresLib">
+        <file name="${shared.resource.dir}/postgres/postgresql.jar"/>
+    </library>
+
+    <dataSource id="tranlogDataSource" jndiName="jdbc/tranlogDataSource" transactional="false">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties.postgresql serverName="${POSTGRES_HOST}" portNumber="${POSTGRES_PORT}" databaseName="${POSTGRES_DB}" user="${POSTGRES_USER}" password="${POSTGRES_PASS}"
+                             ssl="true" sslfactory="org.postgresql.ssl.DefaultJavaSSLFactory" sslMode="verify-ca"/>
+    </dataSource>
+
+    <!-- Default SSL configuration enables trust for default certificates from the Java runtime --> 
+    <ssl id="defaultSSLConfig" trustDefaultCerts="true"/>
+
+    <sslDefault outboundSSLRef="outboundConfig"/>
+    <ssl id="outboundConfig" keyStoreRef="outboundKeyStore"/>
+    <keyStore id="outboundKeyStore" location="resources/security/outboundKeys.p12" password="liberty"/>
+<!--
+	<application location="TestBeanClient.war">
+        <classloader commonLibraryRef="PostgresLib"/>
+    </application>
+-->
+</server>
