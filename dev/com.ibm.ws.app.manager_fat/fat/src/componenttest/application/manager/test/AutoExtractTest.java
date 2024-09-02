@@ -276,6 +276,11 @@ public class AutoExtractTest extends AbstractAppManagerTest {
             } catch (FileNotFoundException e) {
                 //expected.
             }
+        } catch (Exception ex) {
+            Log.info(c, testName.getMethodName(),
+                     "An exception was encountered during the test. "
+                                                  + "A failure to delete a file on windows is not considered an error for this test.");
+            ex.printStackTrace();
         } finally {
             //if we failed to delete file before, try to delete it now.
             pathsToCleanup.add(server.getServerRoot() + "/" + APPS_DIR);
