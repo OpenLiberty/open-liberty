@@ -12,21 +12,12 @@
  *******************************************************************************/
 package com.ibm.ws.sip.container.asynch;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.NoSuchElementException;
 
-import javax.servlet.sip.ServletParseException;
-import javax.servlet.sip.SipApplicationSession;
-import javax.servlet.sip.SipURI;
-import javax.servlet.sip.URI;
+import javax.servlet.sip.*;
 
-import com.ibm.sip.util.log.Log;
-import com.ibm.sip.util.log.LogMgr;
-import com.ibm.sip.util.log.Situation;
+import com.ibm.sip.util.log.*;
 import com.ibm.websphere.sip.AsynchronousWork;
 import com.ibm.websphere.sip.AsynchronousWorkListener;
 import com.ibm.ws.jain.protocol.ip.sip.message.SipResponseCodes;
@@ -38,9 +29,7 @@ import com.ibm.ws.sip.container.failover.repository.SessionRepository;
 import com.ibm.ws.sip.container.osgi.AsynchronousWorkDispatcher;
 import com.ibm.ws.sip.container.parser.SipAppDesc;
 import com.ibm.ws.sip.container.router.tasks.RoutedTask;
-import com.ibm.ws.sip.container.servlets.SipApplicationSessionImpl;
-import com.ibm.ws.sip.container.servlets.SipServletRequestImpl;
-import com.ibm.ws.sip.container.servlets.SipServletsFactoryImpl;
+import com.ibm.ws.sip.container.servlets.*;
 import com.ibm.ws.sip.container.was.ThreadLocalStorage;
 //TODO Liberty the following imports don't longer exist as we don't support HA in Liberty
 //import com.ibm.ws.sip.container.failover.FailoverMgr;
@@ -139,7 +128,7 @@ public class AsynchronousWorkTask extends RoutedTask implements AsynchronousWork
     /**
 	 * @see com.ibm.ws.sip.container.util.Queueable#getQueueIndex()
 	 */
-	public int getQueueIndex() {
+	public long getQueueIndex() {
 		if (_index < 0){
 			throw new RuntimeException("Dispatching error, transaction-user not found!");
 		}		
@@ -239,7 +228,7 @@ public class AsynchronousWorkTask extends RoutedTask implements AsynchronousWork
 		_appAsynchWorkListener = listener;
 
 		//get the current queue id of the running thread,
-		Integer currentQueueId = ThreadLocalStorage.getQueueId();
+		Long currentQueueId = ThreadLocalStorage.getQueueId();
 		
 		SipApplicationSession sipAppSession = SipApplicationSessionImpl.getAppSession(_appSessionID);
 		
@@ -281,9 +270,9 @@ public class AsynchronousWorkTask extends RoutedTask implements AsynchronousWork
 				}
 				
 				//calculate the queue id of the async work
-				int asyncQueueId = this.getQueueIndex() % NativeMessageDispatchingHandler.s_dispatchers;
+				Long asyncQueueId = this.getQueueIndex() % NativeMessageDispatchingHandler.s_dispatchers;
 				
-				if (asyncQueueId == currentQueueId.intValue()){
+				if (asyncQueueId == currentQueueId.longValue()){
 					//the async work should run on the same queue as the current thread, run it now
 					setForDispatching(false);
 					

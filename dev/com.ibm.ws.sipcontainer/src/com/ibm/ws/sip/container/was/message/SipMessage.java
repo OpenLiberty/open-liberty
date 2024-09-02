@@ -1485,7 +1485,7 @@ public class SipMessage implements IRequestExtended, IResponse, Queueable
 	/**
 	 *  @see com.ibm.ws.sip.container.util.Queueable#getQueueIndex()
 	 */
-    public int getQueueIndex() {
+    public long getQueueIndex() {
 		TransactionUserWrapper tu = null;
     	if(_request != null){
 			tu = ((SipServletMessageImpl)_request).getTransactionUser();
@@ -1660,6 +1660,18 @@ public class SipMessage implements IRequestExtended, IResponse, Queueable
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public long getContentLengthLong() {
+		if (c_logger.isTraceDebugEnabled())
+        {
+            c_logger.traceDebug(this, "getContentLength", "");
+        }
+        return 0;
+    }
+	
+	public void setContentLengthLong(long length){
+
+    }
 
 	@Override
 	public void resetBuffer() {

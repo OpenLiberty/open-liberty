@@ -28,7 +28,7 @@ import com.ibm.ws.sip.container.util.Queueable;
  */
 public abstract class RoutedTask implements Queueable {
 
-	protected int _index = -1;
+	protected long _index = -1;
 	protected TransactionUserWrapper _transactionUser;
 	private boolean _forDispatching = true;
 	
@@ -78,7 +78,7 @@ public abstract class RoutedTask implements Queueable {
 	/**
 	 * @see com.ibm.ws.sip.container.util.Queueable#getQueueIndex()
 	 */
-	public int getQueueIndex() {
+	public long getQueueIndex() {
 		return _index;
 	}
 
