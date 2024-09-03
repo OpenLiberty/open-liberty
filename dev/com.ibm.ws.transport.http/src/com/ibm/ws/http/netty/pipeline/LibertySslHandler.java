@@ -52,7 +52,6 @@ public class LibertySslHandler extends SslHandler {
 
         this.suppressLogError = config.suppressHandshakeError();
         this.maxLogEntries = config.suppressHandshakeErrorCount();
-        System.out.println("Configured suppressLogError is: "+ this.suppressLogError);
     }
 
     /**
