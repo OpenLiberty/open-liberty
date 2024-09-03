@@ -94,6 +94,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         this.chain = chain;
         this.httpConfig = httpConfig;
         this.configOptions = configOptions;
+
+        httpConfig.registerAccessLog(chain.getOwner().getName());
     }
 
     @Override
@@ -308,6 +310,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
      * @param pipeline ChannelPipeline to update as necessary
      */
     private void addPreHttpCodecHandlers(ChannelPipeline pipeline) {
+        System.out.println("Is access log enabled: " + httpConfig.isAccessLoggingEnabled());
         if (httpConfig.isAccessLoggingEnabled()) {
             if (pipeline.names().contains(NETTY_HTTP_SERVER_CODEC)){        
                 pipeline.addLast(new AccessLoggerHandler(httpConfig));
