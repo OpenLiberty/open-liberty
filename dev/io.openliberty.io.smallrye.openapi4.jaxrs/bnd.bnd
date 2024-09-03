@@ -40,7 +40,7 @@ Export-Package: \
     io.smallrye.openapi.jaxrs;version=4.0;thread-context=true
 
 -buildpath: \
-    io.smallrye:smallrye-open-api-jaxrs;version=4.0.0.alpha1,\
+    io.smallrye:smallrye-open-api-jaxrs;version=4.0.0.alpha5,\
     io.openliberty.io.smallrye.openapi4.core;version=latest,\
     io.openliberty.jakarta.validation.3.0;version=latest,\
     io.openliberty.org.eclipse.microprofile.openapi.4.0;version=latest,\
