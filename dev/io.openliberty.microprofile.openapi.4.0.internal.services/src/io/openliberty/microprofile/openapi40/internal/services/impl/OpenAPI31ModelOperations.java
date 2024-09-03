@@ -14,16 +14,26 @@ import org.eclipse.microprofile.openapi.models.info.Info;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIModelOperations;
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
+import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelOperationsImpl;
 import io.smallrye.openapi.api.SmallRyeOASConfig;
+import io.smallrye.openapi.api.models.OpenAPIImpl;
+import io.smallrye.openapi.api.models.PathsImpl;
+import io.smallrye.openapi.api.models.info.InfoImpl;
 import io.smallrye.openapi.runtime.io.Format;
 import io.smallrye.openapi.runtime.io.IOContext;
 import io.smallrye.openapi.runtime.io.JsonIO;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = OpenAPIModelOperations.class)
 public class OpenAPI31ModelOperations extends OpenAPIModelOperationsImpl {
+
+    private static final TraceComponent tc = Tr.register(OpenAPI31ModelOperations.class);
 
     @Override
     public OpenAPI shallowCopy(OpenAPI model) {
@@ -67,6 +77,19 @@ public class OpenAPI31ModelOperations extends OpenAPIModelOperationsImpl {
         }
 
         return isDefault;
+    }
+
+    @Override
+    @Trivial
+    public OpenAPI createDefaultOpenApiModel() {
+        OpenAPI openAPI = new OpenAPIImpl();
+        openAPI.setOpenapi(SmallRyeOASConfig.Defaults.VERSION);
+        openAPI.paths(new PathsImpl());
+        openAPI.info(new InfoImpl().title(Constants.DEFAULT_OPENAPI_DOC_TITLE).version(Constants.DEFAULT_OPENAPI_DOC_VERSION));
+        if (LoggingUtils.isEventEnabled(tc)) {
+            Tr.event(this, tc, "Created base OpenAPI document");
+        }
+        return openAPI;
     }
 
 }

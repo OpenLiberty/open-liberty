@@ -45,4 +45,12 @@ public interface OpenAPIModelOperations {
      * @return {@code true} if it's the default model, otherwise {@code false}
      */
     public boolean isDefaultOpenApiModel(OpenAPI model);
+
+    /**
+     * Creates a default OpenAPI model object
+     *
+     * @return the default OpenAPI model
+     */
+    public OpenAPI createDefaultOpenApiModel();
+
 }
