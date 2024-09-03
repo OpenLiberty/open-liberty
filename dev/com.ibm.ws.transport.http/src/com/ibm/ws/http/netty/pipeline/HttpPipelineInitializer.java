@@ -23,7 +23,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
-import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig.NettyConfigBuilder;
@@ -101,8 +100,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     @Override
     protected void initChannel(Channel channel) throws Exception {
         Tr.entry(tc, "initChannel");
-        System.setProperty("javax.net.debug", "ssl,handshake");
-    System.out.println("[DEBUG] Enabled Java SSL debug mode");
+        
 
         ChannelPipeline pipeline = channel.pipeline();
 
@@ -270,25 +268,14 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 // Turn on half closure for H1
                 ctx.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
 
-                MSP.log("NO UPGRADE DETECTED - ADD HTTP ");
+
 
                 pipeline.addBefore("chunkWriteHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
                 //TODO: this is a very large number, check best practice
                 pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, HTTP_AGGREGATOR_HANDLER_NAME,
                                   new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
                 pipeline.addAfter(HTTP_AGGREGATOR_HANDLER_NAME, HTTP_REQUEST_HANDLER_NAME, new LibertyHttpRequestHandler());
-
-//                ctx.pipeline().addBefore("chunkWriteHandler", "objectAggregator", new LibertyHttpObjectAggregator(maxContentLength));
-//                ctx.pipeline().addBefore("objectAggregator", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
-                MSP.log("Have added the http handler, not the dispatcher");
-                MSP.log("Names: " + ctx.pipeline().names().toString());
-
-                //Removing upgrade handler, let the container handle it
-                // Remove unused handlers
-                //ctx.pipeline().remove(HttpServerUpgradeHandler.class);
                 ctx.pipeline().remove(this);
-                //TODO: this needs to be improved, what happens if first request is not H2 but second is.
-                MSP.log("Names after remove: " + ctx.pipeline().names().toString());
 
                 ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
 
@@ -310,7 +297,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
      * @param pipeline ChannelPipeline to update as necessary
      */
     private void addPreHttpCodecHandlers(ChannelPipeline pipeline) {
-        System.out.println("Is access log enabled: " + httpConfig.isAccessLoggingEnabled());
         if (httpConfig.isAccessLoggingEnabled()) {
             if (pipeline.names().contains(NETTY_HTTP_SERVER_CODEC)){        
                 pipeline.addLast(new AccessLoggerHandler(httpConfig));
@@ -384,7 +370,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 case HEADERS:
                     return "defaultHeaders".equalsIgnoreCase(id);
                 case SSL_OPTIONS:
-                    System.out.println("checking default ssl, id is: " + id);
                     return "defaultSSLOptions".equalsIgnoreCase(id);
                 default:
                     return false;
@@ -394,10 +379,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         public HttpPipelineInitializer build() {
 
             NettyHttpChannelConfig.NettyConfigBuilder configBuilder = new NettyHttpChannelConfig.NettyConfigBuilder();
-
-            System.out.println("Building the netty configuration...");
             for (ConfigElement element : ConfigElement.values()) {
-                System.out.println("Building the element: " + element);
 
                 if (activeConfigs.contains(element)) {
                     configBuilder.with(element, configOptions.get(element));
