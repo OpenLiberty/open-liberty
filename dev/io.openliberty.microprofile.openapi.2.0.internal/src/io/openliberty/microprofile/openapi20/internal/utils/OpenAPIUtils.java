@@ -112,7 +112,7 @@ public class OpenAPIUtils {
      */
     @Trivial
     public static void validateDocument(OpenAPI document) {
-        OASValidationResult result = validatorService.call(v -> {
+        OASValidationResult result = validatorService.run(v -> {
             return v.validate(document);
         }).orElseThrow(() -> new NoSuchElementException("validatorService"));
         final StringBuilder sbError = new StringBuilder();

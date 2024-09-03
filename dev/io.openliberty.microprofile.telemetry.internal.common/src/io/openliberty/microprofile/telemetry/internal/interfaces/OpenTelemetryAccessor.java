@@ -43,7 +43,7 @@ public class OpenTelemetryAccessor {
      */
     public static OpenTelemetryInfoInternal getOpenTelemetryInfo() {
         //TOOD when the SPI is out of beta, make this a redirect to the SPI accessor to avoid code duplication
-        Optional<OpenTelemetryInfoInternal> openTelemetryInfo = openTelemetryLifecycleManagerService.call((lifecycle) -> {
+        Optional<OpenTelemetryInfoInternal> openTelemetryInfo = openTelemetryLifecycleManagerService.run((lifecycle) -> {
             return lifecycle.getOpenTelemetryInfo();
         });
         return openTelemetryInfo.orElseGet(ErrorOpenTelemetryInfo::new);
@@ -85,7 +85,7 @@ public class OpenTelemetryAccessor {
      * @throws IllegalArgumentException if InvocationContext is not an instance of org.jboss.weld.interceptor.proxy.AbstractInvocationContext;
      */
     public static Set<Annotation> getInterceptorBindingsFromInvocationContext(final InvocationContext context) {
-        Optional<Set<Annotation>> bindings = cdiService.call((service) -> {
+        Optional<Set<Annotation>> bindings = cdiService.run((service) -> {
             return service.getInterceptorBindingsFromInvocationContext(context);
         });
         return bindings.orElseThrow(() -> new IllegalStateException("Unable to get CDIService"));
@@ -97,7 +97,7 @@ public class OpenTelemetryAccessor {
      * Note that in a checkpoint environment this will always return false before a checkpoint restore.
      */
     public static boolean isRuntimeEnabled() {
-        Optional<Object> isRuntimeEnabled = openTelemetryLifecycleManagerService.call((lifecycle) -> {
+        Optional<Object> isRuntimeEnabled = openTelemetryLifecycleManagerService.run((lifecycle) -> {
             return lifecycle.isRuntimeEnabled();
         });
         return (boolean) isRuntimeEnabled.orElse(false);

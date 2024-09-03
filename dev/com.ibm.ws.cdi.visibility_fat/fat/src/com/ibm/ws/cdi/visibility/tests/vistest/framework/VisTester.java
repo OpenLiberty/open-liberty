@@ -190,7 +190,7 @@ public class VisTester {
     }
 
     public static Optional<String> getModuleForClass(Class<?> clazz) {
-        Optional<Optional<J2EEName>> result = cdiServiceCaller.call(cdiService -> {
+        Optional<Optional<J2EEName>> result = cdiServiceCaller.run(cdiService -> {
             return cdiService.getModuleNameForClass(clazz);
         });
         return result.orElseThrow(() -> new RuntimeException("Failed to get CDI Service"))

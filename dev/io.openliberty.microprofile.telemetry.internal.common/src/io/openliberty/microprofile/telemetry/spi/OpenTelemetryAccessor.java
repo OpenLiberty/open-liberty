@@ -39,7 +39,7 @@ public class OpenTelemetryAccessor {
     public static OpenTelemetryInfo getOpenTelemetryInfo() {
 
         if (ProductInfo.getBetaEdition()) {
-            Optional<OpenTelemetryInfo> openTelemetryInfo = openTelemetryLifecycleManagerService.call((factory) -> {
+            Optional<OpenTelemetryInfo> openTelemetryInfo = openTelemetryLifecycleManagerService.run((factory) -> {
                 return factory.getOpenTelemetryInfo();
             });
 
