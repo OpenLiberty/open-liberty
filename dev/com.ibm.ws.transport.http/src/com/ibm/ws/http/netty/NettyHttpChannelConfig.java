@@ -66,6 +66,10 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         clearSameSiteOptions();
     }
 
+    public void registerAccessLog(String endpointName){
+        parseAccessLog(endpointName);
+    }
+
     /**
      * Parses the provided configuration options.
      *
@@ -79,6 +83,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
             }
             return;
         }
+        
 
         if (useCompressionOptions) {
             parseCompressionOptions(config);
@@ -157,7 +162,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
 
         //TODO -> Netty Needed
 
-        parseAccessLog(options.get(HttpConfigConstants.PROPNAME_ACCESSLOG_ID));
+        //parseAccessLog(options.get(HttpConfigConstants.PROPNAME_ACCESSLOG_ID));
         parseAllowRetries(options.get(HttpConfigConstants.PROPNAME_ALLOW_RETRIES));
         parseAttemptPurgeData(options.get(HttpConfigConstants.PROPNAME_PURGE_DATA_DURING_CLOSE));
         parseAutoDecompression(options.get(HttpConfigConstants.PROPNAME_AUTODECOMPRESSION));
