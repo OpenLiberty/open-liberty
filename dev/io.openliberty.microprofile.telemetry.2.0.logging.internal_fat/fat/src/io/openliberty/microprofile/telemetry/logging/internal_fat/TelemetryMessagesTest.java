@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import org.junit.After;
@@ -85,6 +86,10 @@ public class TelemetryMessagesTest extends FATServletClient {
 
     static void testTelemetryMessages(LibertyServer s, Consumer<List<String>> consoleConsumer) throws Exception {
         String line = s.waitForStringInLog("CWWKF0011I", s.getConsoleLogFile());
+
+        //Sleep for 5s to ensure messages/console log files are in sync
+        TimeUnit.SECONDS.sleep(5);
+
         List<String> linesMessagesLog = s.findStringsInLogs("^(?!.*scopeInfo).*\\[.*$", s.getDefaultLogFile());
         List<String> linesConsoleLog = s.findStringsInLogs(".*scopeInfo.*", s.getConsoleLogFile());
 
