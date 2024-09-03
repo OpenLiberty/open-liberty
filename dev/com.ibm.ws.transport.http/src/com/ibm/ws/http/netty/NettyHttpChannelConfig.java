@@ -56,7 +56,6 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
 
         this.parseConfig(builder.options);
 
-        System.out.println("Attempting to parse SSL config (even if undefined)");
         parseSslOptions(builder.options);
 
     }
@@ -202,8 +201,6 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
     private void parseSslOptions(Map<String, Object> options) {
         this.suppressHandshakeError =  SslOption.SUPPRESS_HANDSHAKE_ERRORS.parse(options);
         this.suppressHandshakeErrorCount = SslOption.SUPPRESS_HANDSHAKE_ERRORS_COUNT.parse(options);
-        System.out.println("Netty channel picked up supressHandshakeError as: " + this.suppressHandshakeError);
-        System.out.println("Netty channel picked up supressHandshakeErrorCount as: " + this.suppressHandshakeErrorCount);
     }
 
     public boolean suppressHandshakeError() {
@@ -269,8 +266,6 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         this.sameSitePatterns = null;
         this.onlySameSiteStar = false;
         this.isPartitioned = false;
-
-        MSP.log("Setting samesite partition? -> " + options.containsKey("partitioned"));
 
         if (this.useSameSiteOptions && (options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_LAX) ||
                                         options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_NONE) ||
@@ -345,7 +340,6 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
                 return this;
             }
 
-System.out.println("NETTY CONFIG BUILDER - with ["+ config+"] and options: " + options );
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Http Configuration - " + config);
             }
@@ -382,7 +376,6 @@ System.out.println("NETTY CONFIG BUILDER - with ["+ config+"] and options: " + o
                 }
 
                 case SSL_OPTIONS: {
-                    System.out.println(" this.sslOptions populated with: " + options);
                     this.sslOptions = options;
                     break;
                 }

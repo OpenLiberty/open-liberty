@@ -51,7 +51,6 @@ import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.internal.HttpChain.ChainState;
 import com.ibm.ws.http.logging.internal.AccessLogger;
 import com.ibm.ws.http.logging.internal.DisabledLogger;
-import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.kernel.launch.service.PauseableComponent;
 import com.ibm.ws.kernel.launch.service.PauseableComponentException;
@@ -304,12 +303,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
         useNetty = ProductInfo.getBetaEdition() &&
                    MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), true);
-        
-        MSP.log("USE NETTY -> " + useNetty);
-        MSP.log("ProductInfo -> " + ProductInfo.getBetaEdition());
-        MSP.log("Got config netty:  " +  MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), true));
-
-        //useNetty = MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), false);
+    
 
 
         initializeChains();
@@ -890,7 +884,6 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "set remote ip " + config.getProperty("id"), this);
         }
-        MSP.log("Remote IP config set called");
         this.remoteIpConfig = config;
         if (remoteIpConfig != null) {
             performAction(updateAction);

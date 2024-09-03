@@ -209,7 +209,6 @@ public synchronized void stop() {
             try {
                 Map<String, Object> httpOptions = new HashMap<>(owner.getHttpOptions());
                 httpOptions.put(HttpConfigConstants.PROPNAME_ACCESSLOG_ID, owner.getName());
-                httpOptions.keySet().forEach(MSP::log);
                 // Put the protocol version, which allows the http channel to dynamically
                 // know what http version it will use.
                 if (owner.getProtocolVersion() != null) {
