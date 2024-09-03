@@ -267,6 +267,7 @@ public class LocalProvider {
         }
 
         // wait till completion
+        // A timeout value of zero or less means to wait indefinitely for the process to complete
         int exitValue;
         if (timeout <= 0) {
             exitValue = proc.waitFor();
