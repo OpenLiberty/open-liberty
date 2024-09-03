@@ -696,7 +696,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                 if (currentSqlEx != null) {
                                     // Set the exception that will be reported
                                     nonTransientException = currentSqlEx;
-                                    OpenLogRetry openLogRetry = new OpenLogRetry();
+
+                                    final OpenLogRetry openLogRetry = new OpenLogRetry();
                                     openLogRetry.setNonTransientException(currentSqlEx);
                                     // The following method will reset "nonTransientException" if it cannot recover
                                     if (_sqlTransientErrorHandlingEnabled) {
@@ -2220,7 +2221,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                             if (currentSqlEx != null) {
                                 // Set the exception that will be reported
                                 nonTransientException = currentSqlEx;
-                                ForceSectionsRetry forceSectionsRetry = new ForceSectionsRetry();
+
+                                final ForceSectionsRetry forceSectionsRetry = new ForceSectionsRetry();
                                 forceSectionsRetry.setNonTransientException(currentSqlEx);
                                 // The following method will reset "nonTransientException" if it cannot recover
                                 if (_sqlTransientErrorHandlingEnabled) {
@@ -4220,9 +4222,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                 throw new LogClosedException();
                             }
 
-                            HeartbeatRetry heartbeatRetry = new HeartbeatRetry();
-                            sqlSuccess = heartbeatRetry.retryAndReport(this, _serverName, currentSqlEx, SQLRetry.getLightweightRetryAttempts(),
-                                                                       SQLRetry.getLightweightRetrySleepTime());
+                            final HeartbeatRetry heartbeatRetry = new HeartbeatRetry();
+                            sqlSuccess = heartbeatRetry.retryAndReport(this, _serverName, currentSqlEx);
                             if (!sqlSuccess)
                                 nonTransientException = heartbeatRetry.getNonTransientException();
                         } else {
@@ -4431,7 +4432,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                             Tr.exit(tc, "claimLocalRecoveryLogs", "server stopping");
                         return false;
                     }
-                    ClaimLocalRetry claimLocalRetry = new ClaimLocalRetry();
+
+                    final ClaimLocalRetry claimLocalRetry = new ClaimLocalRetry();
                     sqlSuccess = claimLocalRetry.retryAndReport(this, _serverName, currentSqlEx);
                     // If the retry operation succeeded, retrieve the result of the underlying operation
                     if (sqlSuccess)
@@ -4806,9 +4808,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         return false;
                     }
 
-                    ClaimPeerRetry claimPeerRetry = new ClaimPeerRetry();
-                    sqlSuccess = claimPeerRetry.retryAndReport(this, _serverName, currentSqlEx, SQLRetry.getLightweightRetryAttempts(),
-                                                               SQLRetry.getLightweightRetrySleepTime());
+                    final ClaimPeerRetry claimPeerRetry = new ClaimPeerRetry();
+                    sqlSuccess = claimPeerRetry.retryAndReport(this, _serverName, currentSqlEx);
                     // If the retry operation succeeded, retrieve the result of the underlying operation
                     if (sqlSuccess)
                         isClaimed = claimPeerRetry.isClaimed();
@@ -4830,54 +4831,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             Tr.exit(tc, "claimPeerRecoveryLogs", isClaimed);
 
         return isClaimed;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLogRetryInterval(int)
-     */
-    @Override
-    public void setLogRetryInterval(int logRetryInterval) {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "setLogRetryInterval", logRetryInterval);
-        SQLRetry.setTransientRetrySleepTime(logRetryInterval * 1000);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLogRetryLimit(int)
-     */
-    @Override
-    public void setLogRetryLimit(int logRetryLimit) {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "setLogRetryLimit", logRetryLimit);
-        SQLRetry.setTransientRetryAttempts(logRetryLimit);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLightweightLogRetryInterval(int)
-     */
-    @Override
-    public void setLightweightLogRetryInterval(int lightweightLogRetryInterval) {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "setLightweightLogRetryInterval", lightweightLogRetryInterval);
-        SQLRetry.setLightweightRetrySleepTime(lightweightLogRetryInterval * 1000);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLightweightLogRetryLimit(int)
-     */
-    @Override
-    public void setLightweightLogRetryLimit(int lightweightLogRetryLimit) {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "setLightweightLogRetryLimit", lightweightLogRetryLimit);
-        SQLRetry.setLightweightRetryAttempts(lightweightLogRetryLimit);
     }
 
     /*
@@ -4921,7 +4874,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * This concrete class extends SQLRetry providing the local recovery log claim code to be retried in an HA RDBMS environment.
      *
      */
-    class ClaimLocalRetry extends SQLRetry {
+    private class ClaimLocalRetry extends LogRetry {
 
         boolean _isClaimed = false;
 
@@ -4959,7 +4912,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * This concrete class extends SQLRetry providing the peer recovery log claim code to be retried in an HA RDBMS environment.
      *
      */
-    class ClaimPeerRetry extends SQLRetry {
+    private class ClaimPeerRetry extends LightweightLogRetry {
 
         boolean _isClaimed = false;
 
@@ -4993,7 +4946,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * This concrete class extends SQLRetry providing the heartbeat code to be retried in an HA RDBMS environment.
      *
      */
-    class HeartbeatRetry extends SQLRetry {
+    private class HeartbeatRetry extends LightweightLogRetry {
 
         @Override
         public void retryCode(Connection conn) throws SQLException, Exception {
@@ -5024,7 +4977,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * This concrete class extends SQLRetry providing the force sections code to be retried in an HA RDBMS environment.
      *
      */
-    class ForceSectionsRetry extends SQLRetry {
+    private class ForceSectionsRetry extends LogRetry {
 
         @Override
         public void retryCode(Connection conn) throws SQLException, Exception {
@@ -5062,7 +5015,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * This concrete class extends SQLRetry providing the openLog code to be retried in an HA RDBMS environment.
      *
      */
-    class OpenLogRetry extends SQLRetry {
+    private class OpenLogRetry extends LogRetry {
 
         @Override
         public void retryCode(Connection conn) throws SQLException, Exception {
