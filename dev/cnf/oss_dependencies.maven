@@ -640,7 +640,7 @@ org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.4.0
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:2.0
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:3.0.1
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:4.0-RC2
-org.eclipse.parsson:parsson:1.1.4
+org.eclipse.parsson:parsson:1.1.7
 org.eclipse.persistence:org.eclipse.persistence.antlr:2.7.15
 org.eclipse.persistence:org.eclipse.persistence.asm:9.7.0
 org.eclipse.persistence:org.eclipse.persistence.core:2.7.15
@@ -663,7 +663,7 @@ org.eclipse.transformer:org.eclipse.transformer.jakarta:0.5.0
 org.eclipse.transformer:org.eclipse.transformer:0.5.0
 org.eclipse:yasson:1.0.11
 org.eclipse:yasson:2.0.4
-org.eclipse:yasson:3.0.3
+org.eclipse:yasson:3.0.4
 org.ehcache:ehcache:3.9.3
 org.ektorp:org.ektorp:1.5.0
 org.fusesource.jansi:jansi:1.18
