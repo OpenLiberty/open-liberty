@@ -20,6 +20,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.OperatingSystem;
+
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
@@ -27,6 +29,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKRunner;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+
 
 /**
  * This is a test class that runs the entire Jakarta Validation TCK against Full
@@ -57,6 +60,9 @@ public class ValidationTckLauncher {
          */
         Map<String, String> opts = server.getJvmOptionsAsMap();
         opts.put("-Dvalidation.provider", validationProvider);
+        if (server.getMachine().getOperatingSystem() == OperatingSystem.LINUX){
+            opts.put("-Djavafx.platform", "linux");
+        }
 
         /*
          * Client config:
