@@ -690,7 +690,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                                           Container moduleContainer,
                                           Entry altDDEntry,
                                           String moduleURI,
-                                          ModuleClassesInfoProvider moduleClassesInfo,
+                                          ManifestClassPathProvider moduleClassesInfo,
                                           String contextRoot, String mainClass,
                                           boolean checkForDDOrAnnotations) throws UnableToAdaptException {
 

@@ -65,8 +65,7 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
 public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
 
-    // TODO rename this to ManifestClassPathProvider
-    protected static final class ModuleClassesInfoProvider {
+    protected static final class ManifestClassPathProvider {
         private final Map<String, List<ContainerInfo>> entryContainerInfosMap = new HashMap<String, List<ContainerInfo>>();
 
         public List<ContainerInfo> getClassesContainers(Container moduleContainer) throws UnableToAdaptException {
@@ -173,7 +172,7 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
                                        Container moduleContainer, Entry altDDEntry, String moduleURI,
                                        ContainerInfo.Type moduleContainerType,
                                        ModuleClassLoaderFactory moduleClassLoaderFactory,
-                                       ModuleClassesInfoProvider manifestClassPathProvider,
+                                       ManifestClassPathProvider manifestClassPathProvider,
                                        Class<? extends ModuleDeploymentDescriptor> moduleDDClass,
                                        ManifestClassPathConsumer manifestClassPathConsumer) throws UnableToAdaptException {
             super(moduleContainerType, moduleURI, moduleContainer, moduleClassLoaderFactory, altDDEntry);
@@ -195,7 +194,7 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
                                        Container moduleContainer, Entry altDDEntry, String moduleURI,
                                        ContainerInfo.Type moduleContainerType,
                                        ModuleClassLoaderFactory moduleClassLoaderFactory,
-                                       ModuleClassesInfoProvider manifestClassPathProvider,
+                                       ManifestClassPathProvider manifestClassPathProvider,
                                        Class<? extends ModuleDeploymentDescriptor> moduleDDClass) throws UnableToAdaptException {
             this(moduleHandler, //
                  moduleMetaDataExtenders, //
@@ -265,7 +264,7 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
                                             Container moduleContainer, Entry altDDEntry,
                                             String moduleURI,
                                             ModuleClassLoaderFactory moduleClassLoaderFactory,
-                                            ModuleClassesInfoProvider manifestClassPathProvider,
+                                            ManifestClassPathProvider manifestClassPathProvider,
                                             ManifestClassPathConsumer manifestClassPathConsumer) throws UnableToAdaptException {
             super(moduleHandler, moduleMetaDataExtenders, nestedModuleMetaDataFactories, moduleContainer, altDDEntry, moduleURI, ContainerInfo.Type.RAR_MODULE, moduleClassLoaderFactory, manifestClassPathProvider, com.ibm.ws.javaee.dd.connector.Connector.class, manifestClassPathConsumer);
             getConnectorModuleClassesInfo(moduleContainer, manifestClassPathConsumer);
@@ -276,7 +275,7 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
                                             Container moduleContainer, Entry altDDEntry,
                                             String moduleURI,
                                             ModuleClassLoaderFactory moduleClassLoaderFactory,
-                                            ModuleClassesInfoProvider manifestClassPathProvider) throws UnableToAdaptException {
+                                            ManifestClassPathProvider manifestClassPathProvider) throws UnableToAdaptException {
             this(moduleHandler, moduleMetaDataExtenders, nestedModuleMetaDataFactories, moduleContainer, altDDEntry, moduleURI, moduleClassLoaderFactory, manifestClassPathProvider, DEFAULT_MANIFEST_CLASS_PATH_CONSUMER);
         }
 
@@ -336,7 +335,7 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
                                       List<NestedModuleMetaDataFactory> nestedModuleMetaDataFactories,
                                       Container moduleContainer, Entry altDDEntry, String moduleURI,
                                       ModuleClassLoaderFactory moduleClassLoaderFactory,
-                                      ModuleClassesInfoProvider manifestClassPathProvider,
+                                      ManifestClassPathProvider manifestClassPathProvider,
                                       ManifestClassPathConsumer manifestClassPathConsumer) throws UnableToAdaptException {
             super(moduleHandler, moduleMetaDataExtenders, nestedModuleMetaDataFactories, moduleContainer, altDDEntry, moduleURI, ContainerInfo.Type.EJB_MODULE, moduleClassLoaderFactory, manifestClassPathProvider, EJBJar.class, manifestClassPathConsumer);
         }
@@ -345,7 +344,7 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
                                       List<NestedModuleMetaDataFactory> nestedModuleMetaDataFactories,
                                       Container moduleContainer, Entry altDDEntry, String moduleURI,
                                       ModuleClassLoaderFactory moduleClassLoaderFactory,
-                                      ModuleClassesInfoProvider manifestClassPathProvider) throws UnableToAdaptException {
+                                      ManifestClassPathProvider manifestClassPathProvider) throws UnableToAdaptException {
             this(moduleHandler, moduleMetaDataExtenders, nestedModuleMetaDataFactories, moduleContainer, altDDEntry, moduleURI, moduleClassLoaderFactory, manifestClassPathProvider, DEFAULT_MANIFEST_CLASS_PATH_CONSUMER);
         }
 
@@ -367,7 +366,7 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
                                          List<NestedModuleMetaDataFactory> nestedModuleMetaDataFactories,
                                          Container moduleContainer, Entry altDDEntry, String moduleURI,
                                          ModuleClassLoaderFactory moduleClassLoaderFactory,
-                                         ModuleClassesInfoProvider manifestClassPathProvider,
+                                         ManifestClassPathProvider manifestClassPathProvider,
                                          String mainClass,
                                          ManifestClassPathConsumer manifestClassPathConsumer) throws UnableToAdaptException {
             super(moduleHandler, moduleMetaDataExtenders, nestedModuleMetaDataFactories, moduleContainer, altDDEntry, moduleURI, ContainerInfo.Type.CLIENT_MODULE, moduleClassLoaderFactory, manifestClassPathProvider, ApplicationClient.class, manifestClassPathConsumer);
@@ -378,7 +377,7 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
                                          List<NestedModuleMetaDataFactory> nestedModuleMetaDataFactories,
                                          Container moduleContainer, Entry altDDEntry, String moduleURI,
                                          ModuleClassLoaderFactory moduleClassLoaderFactory,
-                                         ModuleClassesInfoProvider manifestClassPathProvider,
+                                         ManifestClassPathProvider manifestClassPathProvider,
                                          String mainClass) throws UnableToAdaptException {
             this(moduleHandler, moduleMetaDataExtenders, nestedModuleMetaDataFactories, moduleContainer, altDDEntry, moduleURI, moduleClassLoaderFactory, manifestClassPathProvider, mainClass, DEFAULT_MANIFEST_CLASS_PATH_CONSUMER);
         }
@@ -405,7 +404,7 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
         public WebModuleContainerInfo(ModuleHandler moduleHandler, List<ModuleMetaDataExtender> moduleMetaDataExtenders,
                                       List<NestedModuleMetaDataFactory> nestedModuleMetaDataFactories,
                                       Container moduleContainer, Entry altDDEntry, String moduleURI,
-                                      ModuleClassesInfoProvider moduleClassesInfo,
+                                      ManifestClassPathProvider moduleClassesInfo,
                                       String contextRoot) throws UnableToAdaptException {
             this(moduleHandler, moduleMetaDataExtenders, nestedModuleMetaDataFactories, moduleContainer, altDDEntry, moduleURI, null, moduleClassesInfo, contextRoot);
         }
@@ -414,7 +413,7 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
                                       List<NestedModuleMetaDataFactory> nestedModuleMetaDataFactories,
                                       Container moduleContainer, Entry altDDEntry, String moduleURI,
                                       ModuleClassLoaderFactory moduleClassLoaderFactory,
-                                      ModuleClassesInfoProvider moduleClassesInfo,
+                                      ManifestClassPathProvider moduleClassesInfo,
                                       String contextRoot) throws UnableToAdaptException {
             this(moduleHandler, moduleMetaDataExtenders, nestedModuleMetaDataFactories, moduleContainer, altDDEntry, moduleURI, moduleClassLoaderFactory, moduleClassesInfo, contextRoot, DEFAULT_MANIFEST_CLASS_PATH_CONSUMER);
         }
@@ -423,7 +422,7 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
                                       List<NestedModuleMetaDataFactory> nestedModuleMetaDataFactories,
                                       Container moduleContainer, Entry altDDEntry, String moduleURI,
                                       ModuleClassLoaderFactory moduleClassLoaderFactory,
-                                      ModuleClassesInfoProvider manifestClassPathProvider,
+                                      ManifestClassPathProvider manifestClassPathProvider,
                                       String contextRoot,
                                       ManifestClassPathConsumer manifestClassPathConsumer) throws UnableToAdaptException {
             super(moduleHandler, moduleMetaDataExtenders, nestedModuleMetaDataFactories, moduleContainer, altDDEntry, moduleURI, ContainerInfo.Type.WEB_MODULE, moduleClassLoaderFactory, manifestClassPathProvider, WebApp.class, manifestClassPathConsumer);
@@ -526,7 +525,7 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
     protected final ApplicationInfoFactory appInfoFactory;
     protected final MetaDataService metaDataService;
     protected final StateChangeService stateChangeService;
-    protected final ModuleClassesInfoProvider moduleClassesInfo;
+    protected final ManifestClassPathProvider moduleClassesInfo;
 
     protected final List<ModuleContainerInfoBase> moduleContainerInfos = new ArrayList<ModuleContainerInfoBase>();
     protected final Map<ExtendedModuleInfo, ModuleHandler> activeModuleHandlers = new IdentityHashMap<ExtendedModuleInfo, ModuleHandler>(4);
@@ -539,7 +538,7 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
         this.appInfoFactory = deployedAppServices.getApplicationInfoFactory();
         this.metaDataService = deployedAppServices.getMetaDataService();
         this.stateChangeService = deployedAppServices.getStateChangeService();
-        this.moduleClassesInfo = new ModuleClassesInfoProvider();
+        this.moduleClassesInfo = new ManifestClassPathProvider();
     }
 
     public void addDeployedModule(DeployedModuleInfoImpl deployedMod, List<ExtendedModuleInfo> nestedModules) {
