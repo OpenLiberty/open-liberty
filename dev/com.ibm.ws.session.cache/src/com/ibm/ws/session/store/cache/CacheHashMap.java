@@ -306,7 +306,14 @@ public class CacheHashMap extends BackedHashMap {
                     // ignore - some JCache providers might raise this instead of returning null when modified during iterator
                     entry = null;
                 }
-                String id = entry == null ? null : entry.getKey();
+                String id;
+                try {
+                    id = entry == null ? null : entry.getKey();
+                } catch (ClassCastException e) {
+                    id = null;
+                    if (trace && tc.isDebugEnabled())
+                        tcInvoke(tcSessionMetaCache, "Ignore unexpected entry key = ", entry.getKey());
+                }
                 ArrayList<?> value = id == null ? null : entry.getValue();
 
                 if (trace && tc.isDebugEnabled())
@@ -1183,7 +1190,14 @@ public class CacheHashMap extends BackedHashMap {
                 // ignore - some JCache providers might raise this instead of returning null when modified during iterator
                 entry = null;
             }
-            String id = entry == null ? null : entry.getKey();
+            String id;
+            try {
+                id = entry == null ? null : entry.getKey();
+            } catch (ClassCastException e) {
+                id = null;
+                if (trace && tc.isDebugEnabled())
+                    tcInvoke(tcSessionMetaCache, "Ignore unexpected entry key = ", entry.getKey());
+            }
             ArrayList<?> value = id == null ? null : entry.getValue();
 
             if (trace && tc.isDebugEnabled())
