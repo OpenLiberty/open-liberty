@@ -37,7 +37,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
+import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

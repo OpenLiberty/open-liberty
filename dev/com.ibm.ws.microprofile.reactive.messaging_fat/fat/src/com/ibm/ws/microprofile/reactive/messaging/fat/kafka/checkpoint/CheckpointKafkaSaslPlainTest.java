@@ -45,7 +45,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.sasl_plain.KafkaSaslTestServlet;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
+import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.SaslPlainTests;
 
 import componenttest.annotation.CheckpointTest;
@@ -70,9 +70,7 @@ public class CheckpointKafkaSaslPlainTest {
     private static final String SERVER_NAME = "CheckpointSimpleRxMessagingServer";
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME,
-                                                                  MicroProfileActions.MP70_EE11,
-                                                                  MicroProfileActions.MP61);
+    public static RepeatTests r = ReactiveMessagingActions.repeatAboveMP61(SERVER_NAME);
 
     public static final Map<String, String> ENV_AFTER_CHECKPOINT = new HashMap<String, String>();
 

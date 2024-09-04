@@ -30,6 +30,8 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
+
 @RunWith(FATRunner.class)
 public class BasicReactiveMessagingTest extends FATServletClient {
 

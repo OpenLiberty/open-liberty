@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
+import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

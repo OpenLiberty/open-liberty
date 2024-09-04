@@ -37,6 +37,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.liberty_login.none.L
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.liberty_login.special_chars.LibertyLoginModuleSpecialCharsTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.liberty_login.xor.LibertyLoginModuleXorTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.sasl_plain.KafkaSaslPlainTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
 
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.containers.TestContainerSuite;
