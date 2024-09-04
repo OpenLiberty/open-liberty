@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,10 +9,8 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.test.merge.parts;
 
-import static org.hamcrest.Matchers.empty;
-import static org.junit.Assert.assertThat;
-
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import org.eclipse.microprofile.openapi.models.OpenAPI;
@@ -21,7 +19,7 @@ import io.openliberty.microprofile.openapi20.internal.merge.MergeProcessorImpl;
 import io.openliberty.microprofile.openapi20.internal.services.MergeProcessor;
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
 
-public class TestUtil {
+public interface TestUtil {
 
     /**
      * Create an OpenAPIProvdier for the given model with an application path of {@code /}
@@ -29,9 +27,7 @@ public class TestUtil {
      * @param openapi the openapi model
      * @return the provider
      */
-    public static OpenAPIProvider createProvider(OpenAPI openapi) {
-        return createProvider(openapi, "/");
-    }
+    OpenAPIProvider createProvider(OpenAPI openapi);
 
     /**
      * Create an OpenAPIProvider for the given model
@@ -40,9 +36,7 @@ public class TestUtil {
      * @param applicationPath the application path for the returned provider
      * @return the provider
      */
-    public static OpenAPIProvider createProvider(OpenAPI openapi, String applicationPath) {
-        return new OpenAPIProviderCustom(openapi, applicationPath);
-    }
+    OpenAPIProvider createProvider(OpenAPI openapi, String applicationPath);
 
     /**
      * Merge several OpenAPI models using {@link MergeProcessorImpl}
@@ -50,13 +44,7 @@ public class TestUtil {
      * @param docs the openapi models
      * @return the merged model
      */
-    public static OpenAPI merge(OpenAPI... docs) {
-        List<OpenAPIProvider> providers = new ArrayList<>();
-        for (OpenAPI doc : docs) {
-            providers.add(createProvider(doc));
-        }
-        return merge(providers);
-    }
+    OpenAPI merge(OpenAPI... docs);
 
     /**
      * Merge several OpenAPI providers using {@link MergeProcessorImpl}
@@ -64,20 +52,37 @@ public class TestUtil {
      * @param providers the providers
      * @return the merged model
      */
-    public static OpenAPI merge(List<OpenAPIProvider> providers) {
-        OpenAPIProvider merged = getMergeProcessor().mergeDocuments(providers);
-        assertThat("Merge problems", merged.getMergeProblems(), empty());
-        return merged.getModel();
-    }
+    OpenAPI merge(List<OpenAPIProvider> providers);
 
     /**
      * Create a {@link MergeProcessorImpl} and initialize references
      *
      * @return the MergeProcessor under test
      */
-    public static MergeProcessor getMergeProcessor() {
-        MergeProcessorImpl mergeProcessor = new MergeProcessorImpl();
-        return mergeProcessor;
+    MergeProcessor getMergeProcessor();
+
+    /**
+     * Serialize a model as a string
+     *
+     * @param model the model
+     * @param format the format (json/yaml)
+     * @return the serialized model
+     * @throws IOException
+     */
+    String serialize(OpenAPI model, Format format) throws IOException;
+
+    /**
+     * Parse a model from a stream
+     *
+     * @param is the input stream
+     * @param format the format (json/yaml)
+     * @return the parsed model
+     * @throws IOException
+     */
+    OpenAPI parse(InputStream is, Format format) throws IOException;
+
+    public enum Format {
+        JSON, YAML
     }
 
 }

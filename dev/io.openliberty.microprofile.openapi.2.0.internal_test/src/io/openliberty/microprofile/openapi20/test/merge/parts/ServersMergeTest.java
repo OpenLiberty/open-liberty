@@ -45,7 +45,7 @@ public class ServersMergeTest {
         docPaths.addPathItem("/status", OASFactory.createPathItem());
         doc1.setPaths(docPaths);
 
-        OpenAPIProvider provider1 = TestUtil.createProvider(doc1);
+        OpenAPIProvider provider1 = TestUtils.current().createProvider(doc1);
 
         OpenAPI doc2 = OASFactory.createOpenAPI();
         doc2.addServer(OASFactory.createServer().url("http://common"));
@@ -58,7 +58,7 @@ public class ServersMergeTest {
         docPaths.addPathItem("/store", OASFactory.createPathItem().addServer(OASFactory.createServer().url("http://custom")));
         doc2.setPaths(docPaths);
 
-        OpenAPIProvider provider2 = TestUtil.createProvider(doc2);
+        OpenAPIProvider provider2 = TestUtils.current().createProvider(doc2);
 
         OpenAPI doc3 = OASFactory.createOpenAPI();
         doc3.addServer(OASFactory.createServer().url("/basepath"));
@@ -69,19 +69,19 @@ public class ServersMergeTest {
         docPaths.addPathItem("/news", OASFactory.createPathItem().addServer(OASFactory.createServer().url("http://custom/basepath")));
         doc3.setPaths(docPaths);
 
-        OpenAPIProvider provider3 = TestUtil.createProvider(doc3, "/basepath");
+        OpenAPIProvider provider3 = TestUtils.current().createProvider(doc3, "/basepath");
 
         List<Server> doc1Servers = doc1.getServers();
         List<Server> doc2Servers = doc2.getServers();
 
-        primaryOpenAPI = TestUtil.merge(Arrays.asList(provider1));
+        primaryOpenAPI = TestUtils.current().merge(Arrays.asList(provider1));
         Paths paths = primaryOpenAPI.getPaths();
 
         validatePathServers(paths.getPathItem("/users"), Arrays.asList(OASFactory.createServer().url("http://custom")));
         validatePathServers(paths.getPathItem("/events"), null);
         validatePathServers(paths.getPathItem("/status"), null);
 
-        primaryOpenAPI = TestUtil.merge(Arrays.asList(provider1, provider2));
+        primaryOpenAPI = TestUtils.current().merge(Arrays.asList(provider1, provider2));
         paths = primaryOpenAPI.getPaths();
 
         validatePathServers(paths.getPathItem("/users"), Arrays.asList(OASFactory.createServer().url("http://custom")));
@@ -93,7 +93,7 @@ public class ServersMergeTest {
 
         Assert.assertNull("Servers should be null", primaryOpenAPI.getServers());
 
-        primaryOpenAPI = TestUtil.merge(Arrays.asList(provider1, provider2, provider3));
+        primaryOpenAPI = TestUtils.current().merge(Arrays.asList(provider1, provider2, provider3));
         paths = primaryOpenAPI.getPaths();
 
         validatePathServersEmpty(paths.getPathItem("/basepath/feed"));

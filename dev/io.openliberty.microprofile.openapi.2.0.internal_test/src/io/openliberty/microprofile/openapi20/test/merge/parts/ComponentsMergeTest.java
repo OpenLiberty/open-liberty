@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -58,7 +58,7 @@ public class ComponentsMergeTest {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> void testComponentsItem(Class<T> clazz) throws Exception {
+    public static <T> void testComponentsItem(Class<T> clazz) throws Exception {
         OpenAPI primaryOpenAPI;
         Components components = OASFactory.createComponents();
 
@@ -91,7 +91,7 @@ public class ComponentsMergeTest {
         Map<String, T> doc2Map = (Map<String, T>) getter.invoke(doc2.getComponents());
         Map<String, T> doc3Map = (Map<String, T>) getter.invoke(doc3.getComponents());
 
-        primaryOpenAPI = TestUtil.merge(doc1);
+        primaryOpenAPI = TestUtils.current().merge(doc1);
 
         Assert.assertNotNull(primaryOpenAPI.getComponents());
         Map<String, T> primaryOpenAPIMap = (Map<String, T>) getter.invoke(primaryOpenAPI.getComponents());
@@ -101,42 +101,42 @@ public class ComponentsMergeTest {
 
         validateMap(primaryOpenAPIMap, doc1Map);
 
-        primaryOpenAPI = TestUtil.merge(doc1, doc2);
+        primaryOpenAPI = TestUtils.current().merge(doc1, doc2);
         primaryOpenAPIMap = (Map<String, T>) getter.invoke(primaryOpenAPI.getComponents());
 
         Assert.assertNotNull(primaryOpenAPIMap);
         Assert.assertEquals(5, primaryOpenAPIMap.size());
         validateMap(primaryOpenAPIMap, doc1Map, doc2Map);
 
-        primaryOpenAPI = TestUtil.merge(doc1, doc2, doc3);
+        primaryOpenAPI = TestUtils.current().merge(doc1, doc2, doc3);
         primaryOpenAPIMap = (Map<String, T>) getter.invoke(primaryOpenAPI.getComponents());
 
         Assert.assertNotNull(primaryOpenAPIMap);
         Assert.assertEquals(7, primaryOpenAPIMap.size());
         validateMap(primaryOpenAPIMap, doc1Map, doc2Map, doc3Map);
 
-        primaryOpenAPI = TestUtil.merge(doc1, doc3);
+        primaryOpenAPI = TestUtils.current().merge(doc1, doc3);
         primaryOpenAPIMap = (Map<String, T>) getter.invoke(primaryOpenAPI.getComponents());
 
         Assert.assertNotNull(primaryOpenAPIMap);
         Assert.assertEquals(5, primaryOpenAPIMap.size());
         validateMap(primaryOpenAPIMap, doc1Map, doc3Map);
 
-        primaryOpenAPI = TestUtil.merge(doc3);
+        primaryOpenAPI = TestUtils.current().merge(doc3);
         primaryOpenAPIMap = (Map<String, T>) getter.invoke(primaryOpenAPI.getComponents());
 
         Assert.assertNotNull(primaryOpenAPIMap);
         Assert.assertEquals(3, primaryOpenAPIMap.size());
         validateMap(primaryOpenAPIMap, doc3Map);
 
-        primaryOpenAPI = TestUtil.merge();
+        primaryOpenAPI = TestUtils.current().merge();
 
         //no data in components anymore should have been set to null
         Assert.assertNull(primaryOpenAPI.getComponents());
 
     }
 
-    private void validateMap(Map<String, ?> map, Map<?, ?>... maps) {
+    private static void validateMap(Map<String, ?> map, Map<?, ?>... maps) {
         Map<Object, Object> expectedMap = new HashMap<>();
         for (Map<?, ?> m : maps) {
             expectedMap.putAll(m);
@@ -145,7 +145,7 @@ public class ComponentsMergeTest {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> Map<String, T> getTestMap(Class<T> clazz, String... keys) {
+    private static <T> Map<String, T> getTestMap(Class<T> clazz, String... keys) {
         Map<String, T> map = new HashMap<>();
         try {
             for (String key : keys) {
@@ -162,14 +162,14 @@ public class ComponentsMergeTest {
         return map;
     }
 
-    private Method findSetter(Class<?> clazz) {
+    private static Method findSetter(Class<?> clazz) {
         Method setter = Arrays.asList(Components.class.getMethods()).stream().filter(method -> method.getName().startsWith("set") &&
                                                                                                method.getGenericParameterTypes()[0].toString().contains(clazz.getName()))
                               .findFirst().get();
         return setter;
     }
 
-    private Method findGetter(Class<?> clazz) {
+    private static Method findGetter(Class<?> clazz) {
         Method setter = Arrays.asList(Components.class.getMethods()).stream().filter(method -> method.getName().startsWith("get") &&
                                                                                                method.getGenericReturnType().toString().contains(clazz.getName()))
                               .findFirst().get();

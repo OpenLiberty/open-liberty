@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,9 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -49,8 +47,10 @@ import io.openliberty.microprofile.openapi20.fat.FATSuite;
 import io.openliberty.microprofile.openapi20.fat.deployments.test1.DeploymentTestApp;
 import io.openliberty.microprofile.openapi20.fat.deployments.test1.DeploymentTestResource;
 import io.openliberty.microprofile.openapi20.fat.deployments.test2.DeploymentTestResource2;
+import io.openliberty.microprofile.openapi20.fat.utils.ApplicationXmlAsset;
 import io.openliberty.microprofile.openapi20.fat.utils.OpenAPIConnection;
 import io.openliberty.microprofile.openapi20.fat.utils.OpenAPITestUtil;
+import io.openliberty.microprofile.openapi20.fat.utils.WebXmlAsset;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -64,14 +64,15 @@ public class MergeConfigTest {
     @ClassRule
     public static RepeatTests r = FATSuite.repeatDefault(SERVER_NAME);
 
-    private final Set<String> deployedApps = new HashSet<>();
-
     @After
     public void cleanup() throws Exception {
-        server.stopServer();
-        server.deleteAllDropinApplications();
-        server.clearAdditionalSystemProperties();
-        deployedApps.clear();
+        try {
+            server.stopServer();
+        } finally {
+            server.deleteAllDropinApplications();
+            server.removeAllInstalledAppsForValidation();
+            server.clearAdditionalSystemProperties();
+        }
     }
 
     @Mode(TestMode.LITE)
@@ -212,7 +213,8 @@ public class MergeConfigTest {
                                     .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
 
         WebArchive war3 = ShrinkWrap.create(WebArchive.class, "test3.war")
-                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
+                                    .setWebXML(new WebXmlAsset("test3-named"));
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "testEar.ear")
                                           .addAsModules(war1, war2, war3);
@@ -230,7 +232,7 @@ public class MergeConfigTest {
 
     @Test
     public void testModuleExclusion() throws Exception {
-        setMergeConfig("all", "testEar/test3, testEar/test1", null);
+        setMergeConfig("all", "testEar-named/test3-named, testEar-named/test1", null);
         server.startServer();
 
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
@@ -240,11 +242,18 @@ public class MergeConfigTest {
                                     .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
 
         WebArchive war3 = ShrinkWrap.create(WebArchive.class, "test3.war")
-                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
+                                    .setWebXML(new WebXmlAsset("test3-named"));
+
+        ApplicationXmlAsset appXml = new ApplicationXmlAsset("testEar-named").withWebModule(war1, "test1-custom")
+                                                                             .withWebModule(war2, "test2-custom")
+                                                                             .withWebModule(war3, "test3-custom");
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "testEar.ear")
-                                          .addAsModules(war1, war2, war3);
-        deployApp(ear);
+                                          .addAsModules(war1, war2, war3)
+                                          .setApplicationXML(appXml);
+
+        deployApp(ear); // Note: name from application.xml is not used in server.log
 
         // check that documentation includes module 2, excluding 1 & 3
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
@@ -363,11 +372,11 @@ public class MergeConfigTest {
 
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
                                     .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
-        ShrinkHelper.exportDropinAppToServer(server, war1, SERVER_ONLY);
+        deployApp(war1);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
                                     .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
-        ShrinkHelper.exportDropinAppToServer(server, war2, SERVER_ONLY);
+        deployApp(war2);
 
         server.startServer();
 
@@ -382,11 +391,11 @@ public class MergeConfigTest {
 
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
                                     .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
-        ShrinkHelper.exportDropinAppToServer(server, war1, SERVER_ONLY);
+        deployApp(war1);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
                                     .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
-        ShrinkHelper.exportDropinAppToServer(server, war2, SERVER_ONLY);
+        deployApp(war2);
 
         server.startServer();
 
@@ -415,22 +424,23 @@ public class MergeConfigTest {
     }
 
     private void deployApp(Archive<?> app) throws Exception {
-        server.setMarkToEndOfLog();
-        ShrinkHelper.exportDropinAppToServer(server, app, SERVER_ONLY, DISABLE_VALIDATION); // Do our own validation
-                                                                                           // because this is broken
-        assertNotNull(server.waitForStringInLog("CWWKZ0001I:.*" + getInstalledName(app.getName())));
-        deployedApps.add(app.getName());
+        deployApp(app, getInstalledName(app.getName()));
+    }
+
+    private void deployApp(Archive<?> archive, String installedName) throws Exception {
+        // Manually add for validation with the correct installed name
+        ShrinkHelper.exportDropinAppToServer(server, archive, SERVER_ONLY, DISABLE_VALIDATION);
+        server.addInstalledAppForValidation(installedName);
     }
 
     private void removeApp(Archive<?> app) throws Exception {
-        removeApp(app.getName());
+        removeApp(app, getInstalledName(app.getName()));
     }
 
-    private void removeApp(String archiveName) throws Exception {
+    private void removeApp(Archive<?> app, String installedName) throws Exception {
         server.setMarkToEndOfLog();
-        server.deleteFileFromLibertyServerRoot("dropins/" + archiveName);
-        assertNotNull(server.waitForStringInLog("CWWKZ0009I:.*" + getInstalledName(archiveName)));
-        deployedApps.remove(archiveName);
+        server.deleteFileFromLibertyServerRoot("dropins/" + app.getName());
+        server.removeInstalledAppForValidation(installedName);
     }
 
     private String getInstalledName(String archiveName) {

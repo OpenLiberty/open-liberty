@@ -37,6 +37,7 @@ import org.eclipse.microprofile.openapi.models.info.Info;
 import org.eclipse.microprofile.openapi.models.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.eclipse.microprofile.openapi.models.tags.Tag;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -78,6 +79,9 @@ public class MergeProcessorImpl implements MergeProcessor {
         MERGED_INFO.setVersion(Constants.DEFAULT_OPENAPI_DOC_VERSION);
     }
 
+    @Reference
+    protected OpenAPIModelWalker modelWalker;
+
     /**
      * Create a merged OpenAPI model from a list of OpenAPIProviders.
      * <p>
@@ -89,7 +93,7 @@ public class MergeProcessorImpl implements MergeProcessor {
     @Override
     public OpenAPIProvider mergeDocuments(List<OpenAPIProvider> documents) {
 
-        MergeProcessorInstance mergeProcessor = new MergeProcessorInstance(documents);
+        MergeProcessorInstance mergeProcessor = createMergeProcessorInstance(documents);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(mergeProcessor, tc, "Beginning merge of OpenAPI documents for " + documents);
@@ -109,9 +113,17 @@ public class MergeProcessorImpl implements MergeProcessor {
         return mergedDoc;
     }
 
-    private static class MergeProcessorInstance {
+    /**
+     * Create a new MergeProcessorInstance to handle a single merge operation
+     *
+     * @param documents the documents to be merged
+     * @return the new instance
+     */
+    protected MergeProcessorInstance createMergeProcessorInstance(List<OpenAPIProvider> documents) {
+        return new MergeProcessorInstance(documents);
+    }
 
-        private static final TraceComponent tc = Tr.register(MergeProcessorInstance.class);
+    protected class MergeProcessorInstance {
 
         /**
          * The providers to merge
@@ -147,11 +159,11 @@ public class MergeProcessorImpl implements MergeProcessor {
          *
          * @param providers the providers to merge
          */
-        private MergeProcessorInstance(List<OpenAPIProvider> providers) {
+        public MergeProcessorInstance(List<OpenAPIProvider> providers) {
             this.providers = Collections.unmodifiableList(providers);
         }
 
-        private void process() {
+        public void process() {
 
             List<InProgressModel> inProgressModels = new ArrayList<>();
 
@@ -207,6 +219,7 @@ public class MergeProcessorImpl implements MergeProcessor {
                 renameClashingTags(inProgress.model, inProgress.documentNameProcessor);
                 renameClashingComponents(inProgress.model, inProgress.documentNameProcessor);
                 renameClashingOperationIds(inProgress.model, inProgress.documentNameProcessor);
+                renameClashingWebhooks(inProgress.model, inProgress.documentNameProcessor);
 
                 // Move security requirements
                 if (!securityIdentical) {
@@ -232,8 +245,7 @@ public class MergeProcessorImpl implements MergeProcessor {
 
                     // Update references
                     OpenAPIModelVisitor visitor = new RenameReferenceVisitor(inProgress.documentNameProcessor);
-                    OpenAPIModelWalker walker = new OpenAPIModelWalker(inProgress.model);
-                    walker.accept(visitor);
+                    modelWalker.walk(inProgress.model, visitor);
                 }
 
                 processedModels.add(inProgress.model);
@@ -241,7 +253,7 @@ public class MergeProcessorImpl implements MergeProcessor {
             }
         }
 
-        private OpenAPIProvider getMergedDocument() {
+        public OpenAPIProvider getMergedDocument() {
             // If we've ended up with only one model included, throw away any processing we've done and return the original model
             if (includedProviders.size() == 1) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -351,7 +363,7 @@ public class MergeProcessorImpl implements MergeProcessor {
             }
         }
 
-        private void renameClashingComponents(OpenAPI document, DocumentNameProcessor documentNameProcessor) {
+        protected void renameClashingComponents(OpenAPI document, DocumentNameProcessor documentNameProcessor) {
             Components components = document.getComponents();
 
             if (components == null) {
@@ -369,7 +381,7 @@ public class MergeProcessorImpl implements MergeProcessor {
             components.setSecuritySchemes(renameComponents(NameType.SECURITY_SCHEMES, components.getSecuritySchemes(), documentNameProcessor));
         }
 
-        private <T> Map<String, T> renameComponents(NameType nameType, Map<String, T> componentMap, DocumentNameProcessor documentNameProcessor) {
+        protected <T> Map<String, T> renameComponents(NameType nameType, Map<String, T> componentMap, DocumentNameProcessor documentNameProcessor) {
             if (componentMap == null) {
                 return null;
             }
@@ -393,6 +405,10 @@ public class MergeProcessorImpl implements MergeProcessor {
                     op.setOperationId(documentNameProcessor.createUniqueName(NameType.OPERATION_ID, op.getOperationId(), null));
                 }
             }
+        }
+
+        protected void renameClashingWebhooks(OpenAPI document, DocumentNameProcessor documentNameProcessor) {
+            // No-op for OpenAPI 3.0
         }
 
         private void moveSecurityRequirements(OpenAPI document) {
@@ -420,237 +436,236 @@ public class MergeProcessorImpl implements MergeProcessor {
 
             document.setSecurity(null);
         }
+    }
 
-        /**
-         * Attempts to remove the context root from any servers and add it to the model paths
-         *
-         * @param model the OpenAPI model
-         */
-        private static void prependPaths(OpenAPI model, String contextRoot, DocumentNameProcessor documentNameProcessor) {
-            if (contextRoot == null) {
-                return;
+    /**
+     * Attempts to remove the context root from any servers and add it to the model paths
+     *
+     * @param model the OpenAPI model
+     */
+    private static void prependPaths(OpenAPI model, String contextRoot, DocumentNameProcessor documentNameProcessor) {
+        if (contextRoot == null) {
+            return;
+        }
+
+        if (contextRoot.endsWith("/")) {
+            contextRoot = contextRoot.substring(0, contextRoot.length() - 1);
+        }
+
+        if (contextRoot.isEmpty()) {
+            return;
+        }
+
+        Paths paths = model.getPaths();
+        if (paths == null) {
+            return;
+        }
+
+        List<Server> servers = model.getServers();
+
+        boolean allServersEndWithContextRoot = true;
+        // Check whether we can remove the context root from top level servers
+        for (Server server : notNull(servers)) {
+            if (!serverEndsWithContextRoot(server, contextRoot)) {
+                allServersEndWithContextRoot = false;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Server " + server.getUrl() + " does not end with the context root " + contextRoot + ". Context root cannot be prepended to paths.");
+                }
+
+                break;
             }
+        }
 
-            if (contextRoot.endsWith("/")) {
-                contextRoot = contextRoot.substring(0, contextRoot.length() - 1);
-            }
+        Map<String, PathItem> pathItems = paths.getPathItems();
 
-            if (contextRoot.isEmpty()) {
-                return;
-            }
-
-            Paths paths = model.getPaths();
-            if (paths == null) {
-                return;
-            }
-
-            List<Server> servers = model.getServers();
-
-            boolean allServersEndWithContextRoot = true;
-            // Check whether we can remove the context root from top level servers
-            for (Server server : notNull(servers)) {
-                if (!serverEndsWithContextRoot(server, contextRoot)) {
+        if (allServersEndWithContextRoot) {
+            for (Entry<String, PathItem> entry : pathItems.entrySet()) {
+                if (!pathServersEndWithContextRoot(entry.getValue(), contextRoot)) {
                     allServersEndWithContextRoot = false;
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                        Tr.event(tc, "Server " + server.getUrl() + " does not end with the context root " + contextRoot + ". Context root cannot be prepended to paths.");
+                        Tr.event(tc, "Server under path " + entry.getKey() + " did not end with context root " + contextRoot + ". Context root cannot be prepended to paths.");
                     }
 
-                    break;
                 }
             }
+        }
 
-            Map<String, PathItem> pathItems = paths.getPathItems();
-
-            if (allServersEndWithContextRoot) {
-                for (Entry<String, PathItem> entry : pathItems.entrySet()) {
-                    if (!pathServersEndWithContextRoot(entry.getValue(), contextRoot)) {
-                        allServersEndWithContextRoot = false;
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                            Tr.event(tc, "Server under path " + entry.getKey() + " did not end with context root " + contextRoot + ". Context root cannot be prepended to paths.");
-                        }
-
-                    }
-                }
+        if (allServersEndWithContextRoot) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Removing context root " + contextRoot + " from servers and adding it to paths");
             }
 
-            if (allServersEndWithContextRoot) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Removing context root " + contextRoot + " from servers and adding it to paths");
-                }
+            for (Server server : notNull(servers)) {
+                removeContextRoot(server, contextRoot);
+            }
 
-                for (Server server : notNull(servers)) {
+            Map<String, PathItem> newPathItems = new HashMap<>();
+            for (Entry<String, PathItem> entry : pathItems.entrySet()) {
+                PathItem pathItem = entry.getValue();
+
+                // Remove context root from servers under path
+                for (Server server : notNull(pathItem.getServers())) {
                     removeContextRoot(server, contextRoot);
                 }
 
-                Map<String, PathItem> newPathItems = new HashMap<>();
-                for (Entry<String, PathItem> entry : pathItems.entrySet()) {
-                    PathItem pathItem = entry.getValue();
-
-                    // Remove context root from servers under path
-                    for (Server server : notNull(pathItem.getServers())) {
-                        removeContextRoot(server, contextRoot);
-                    }
-
-                    // and under the operations under path
-                    for (Operation op : notNull(pathItem.getOperations()).values()) {
-                        for (Server server : notNull(op.getServers())) {
-                            removeContextRoot(server, contextRoot);
-                        }
-                    }
-
-                    // Then add the context root to the path
-                    String newPath = addContextRoot(entry.getKey(), contextRoot);
-                    documentNameProcessor.registerRename(NameType.PATHS, entry.getKey(), newPath);
-                    newPathItems.put(newPath, pathItem);
-                }
-                paths.setPathItems(newPathItems);
-
-                // In some cases, removing the context root can leave all servers with no information at all.
-                // In these cases they can be removed.
-                boolean allServersEmpty = notNull(servers).stream()
-                                                          .allMatch(MergeProcessorInstance::isServerEmpty);
-
-                if (allServersEmpty) {
-                    model.setServers(null);
-                }
-            }
-        }
-
-        /**
-         * Check whether a server element contains no useful data
-         *
-         * @param server the server element to check
-         * @return true if the server element has no extensions, no description, no variables and a URL which is empty or {@code "/"}
-         */
-        private static boolean isServerEmpty(Server server) {
-            Map<String, Object> extensions = server.getExtensions();
-            if (extensions != null && !extensions.isEmpty()) {
-                return false;
-            }
-
-            String description = server.getDescription();
-            if (description != null && !description.isEmpty()) {
-                return false;
-            }
-
-            Map<String, ?> variables = server.getVariables();
-            if (variables != null && !variables.isEmpty()) {
-                return false;
-            }
-
-            String url = server.getUrl();
-            if (url != null && !url.isEmpty() && !url.equals("/")) {
-                return false;
-            }
-
-            return true;
-        }
-
-        /**
-         * Returns whether all of the servers related to {@code pathItem} end with the context root
-         * <p>
-         * This check will consider all servers listed under the path or any of its operations.
-         *
-         * @param pathItem the path item to check
-         * @param contextRoot the context root to check for
-         * @return {@code true} if all servers under {@code pathItem} or any of its operations end with {@code contextRoot}, otherwise {@code false}
-         */
-        private static boolean pathServersEndWithContextRoot(PathItem pathItem, String contextRoot) {
-            boolean allServersEndWithContextRoot = true;
-
-            // Check whether all path servers end with the context root
-            for (Server server : notNull(pathItem.getServers())) {
-                if (!serverEndsWithContextRoot(server, contextRoot)) {
-                    allServersEndWithContextRoot = false;
-                    break;
-                }
-            }
-
-            if (allServersEndWithContextRoot) {
-                // Check whether all operation servers end with the context root
+                // and under the operations under path
                 for (Operation op : notNull(pathItem.getOperations()).values()) {
                     for (Server server : notNull(op.getServers())) {
-                        if (!serverEndsWithContextRoot(server, contextRoot)) {
-                            allServersEndWithContextRoot = false;
-                            break;
-                        }
+                        removeContextRoot(server, contextRoot);
+                    }
+                }
+
+                // Then add the context root to the path
+                String newPath = addContextRoot(entry.getKey(), contextRoot);
+                documentNameProcessor.registerRename(NameType.PATHS, entry.getKey(), newPath);
+                newPathItems.put(newPath, pathItem);
+            }
+            paths.setPathItems(newPathItems);
+
+            // In some cases, removing the context root can leave all servers with no information at all.
+            // In these cases they can be removed.
+            boolean allServersEmpty = notNull(servers).stream()
+                                                      .allMatch(MergeProcessorImpl::isServerEmpty);
+
+            if (allServersEmpty) {
+                model.setServers(null);
+            }
+        }
+    }
+
+    /**
+     * Check whether a server element contains no useful data
+     *
+     * @param server the server element to check
+     * @return true if the server element has no extensions, no description, no variables and a URL which is empty or {@code "/"}
+     */
+    private static boolean isServerEmpty(Server server) {
+        Map<String, Object> extensions = server.getExtensions();
+        if (extensions != null && !extensions.isEmpty()) {
+            return false;
+        }
+
+        String description = server.getDescription();
+        if (description != null && !description.isEmpty()) {
+            return false;
+        }
+
+        Map<String, ?> variables = server.getVariables();
+        if (variables != null && !variables.isEmpty()) {
+            return false;
+        }
+
+        String url = server.getUrl();
+        if (url != null && !url.isEmpty() && !url.equals("/")) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns whether all of the servers related to {@code pathItem} end with the context root
+     * <p>
+     * This check will consider all servers listed under the path or any of its operations.
+     *
+     * @param pathItem the path item to check
+     * @param contextRoot the context root to check for
+     * @return {@code true} if all servers under {@code pathItem} or any of its operations end with {@code contextRoot}, otherwise {@code false}
+     */
+    private static boolean pathServersEndWithContextRoot(PathItem pathItem, String contextRoot) {
+        boolean allServersEndWithContextRoot = true;
+
+        // Check whether all path servers end with the context root
+        for (Server server : notNull(pathItem.getServers())) {
+            if (!serverEndsWithContextRoot(server, contextRoot)) {
+                allServersEndWithContextRoot = false;
+                break;
+            }
+        }
+
+        if (allServersEndWithContextRoot) {
+            // Check whether all operation servers end with the context root
+            for (Operation op : notNull(pathItem.getOperations()).values()) {
+                for (Server server : notNull(op.getServers())) {
+                    if (!serverEndsWithContextRoot(server, contextRoot)) {
+                        allServersEndWithContextRoot = false;
+                        break;
                     }
                 }
             }
-
-            return allServersEndWithContextRoot;
         }
 
-        private static String addContextRoot(String key, String contextRoot) {
-            return contextRoot + key;
+        return allServersEndWithContextRoot;
+    }
+
+    private static String addContextRoot(String key, String contextRoot) {
+        return contextRoot + key;
+    }
+
+    private static void removeContextRoot(Server server, String contextRoot) {
+        String url = server.getUrl();
+        String newUrl;
+        if (url.endsWith("/")) {
+            newUrl = url.substring(0, url.length() - contextRoot.length() - 1);
+        } else {
+            newUrl = url.substring(0, url.length() - contextRoot.length());
+        }
+        server.setUrl(newUrl);
+    }
+
+    private static boolean serverEndsWithContextRoot(Server server, String contextRoot) {
+        return server.getUrl().endsWith(contextRoot) || server.getUrl().endsWith(contextRoot + "/");
+    }
+
+    private static boolean isSecurityIdentical(List<InProgressModel> models) {
+        List<List<SecurityRequirement>> reqs = models.stream().map(d -> d.model.getSecurity()).collect(toList());
+        return allEqual(reqs, ModelEquality::equals);
+    }
+
+    private static boolean isServersIdentical(List<InProgressModel> processedModels) {
+        List<List<Server>> servers = processedModels.stream().map(m -> m.model).map(OpenAPI::getServers).collect(toList());
+        return allEqual(servers, ModelEquality::equals);
+    }
+
+    private static boolean isInfoIdentical(List<InProgressModel> models) {
+        List<Info> infos = models.stream().map(m -> m.model).map(OpenAPI::getInfo).collect(toList());
+        return allEqual(infos, ModelEquality::equals);
+    }
+
+    private static boolean isExternalDocsIdentical(List<InProgressModel> models) {
+        List<ExternalDocumentation> docs = models.stream().map(m -> m.model).map(OpenAPI::getExternalDocs).collect(toList());
+        return allEqual(docs, ModelEquality::equals);
+    }
+
+    private static void moveServersUnderPaths(OpenAPI model) {
+        List<Server> servers = model.getServers();
+        if (servers == null) {
+            return;
         }
 
-        private static void removeContextRoot(Server server, String contextRoot) {
-            String url = server.getUrl();
-            String newUrl;
-            if (url.endsWith("/")) {
-                newUrl = url.substring(0, url.length() - contextRoot.length() - 1);
-            } else {
-                newUrl = url.substring(0, url.length() - contextRoot.length());
-            }
-            server.setUrl(newUrl);
-        }
+        Paths paths = model.getPaths();
 
-        private static boolean serverEndsWithContextRoot(Server server, String contextRoot) {
-            return server.getUrl().endsWith(contextRoot) || server.getUrl().endsWith(contextRoot + "/");
-        }
-
-        private static boolean isSecurityIdentical(List<InProgressModel> models) {
-            List<List<SecurityRequirement>> reqs = models.stream().map(d -> d.model.getSecurity()).collect(toList());
-            return allEqual(reqs, ModelEquality::equals);
-        }
-
-        private static boolean isServersIdentical(List<InProgressModel> processedModels) {
-            List<List<Server>> servers = processedModels.stream().map(m -> m.model).map(OpenAPI::getServers).collect(toList());
-            return allEqual(servers, ModelEquality::equals);
-        }
-
-        private static boolean isInfoIdentical(List<InProgressModel> models) {
-            List<Info> infos = models.stream().map(m -> m.model).map(OpenAPI::getInfo).collect(toList());
-            return allEqual(infos, ModelEquality::equals);
-        }
-
-        private static boolean isExternalDocsIdentical(List<InProgressModel> models) {
-            List<ExternalDocumentation> docs = models.stream().map(m -> m.model).map(OpenAPI::getExternalDocs).collect(toList());
-            return allEqual(docs, ModelEquality::equals);
-        }
-
-        private static void moveServersUnderPaths(OpenAPI model) {
-            List<Server> servers = model.getServers();
-            if (servers == null) {
-                return;
-            }
-
-            Paths paths = model.getPaths();
-
-            if (paths != null) {
-                for (PathItem item : notNull(paths.getPathItems()).values()) {
-                    if (item.getServers() == null) {
-                        item.setServers(servers);
-                    }
+        if (paths != null) {
+            for (PathItem item : notNull(paths.getPathItems()).values()) {
+                if (item.getServers() == null) {
+                    item.setServers(servers);
                 }
             }
-
-            model.setServers(null);
         }
 
-        private static class InProgressModel {
-            private InProgressModel(OpenAPIProvider provider, OpenAPI model, DocumentNameProcessor documentNameProcessor) {
-                this.provider = provider;
-                this.model = model;
-                this.documentNameProcessor = documentNameProcessor;
-            }
+        model.setServers(null);
+    }
 
-            private final OpenAPIProvider provider;
-            private final OpenAPI model;
-            private final DocumentNameProcessor documentNameProcessor;
+    private static class InProgressModel {
+        private InProgressModel(OpenAPIProvider provider, OpenAPI model, DocumentNameProcessor documentNameProcessor) {
+            this.provider = provider;
+            this.model = model;
+            this.documentNameProcessor = documentNameProcessor;
         }
 
+        private final OpenAPIProvider provider;
+        private final OpenAPI model;
+        private final DocumentNameProcessor documentNameProcessor;
     }
 
 }

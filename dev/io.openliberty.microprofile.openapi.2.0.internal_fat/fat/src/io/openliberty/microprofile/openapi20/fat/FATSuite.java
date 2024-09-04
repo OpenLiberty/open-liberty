@@ -38,7 +38,9 @@ import io.openliberty.microprofile.openapi20.fat.shutdown.ShutdownTest;
 public class FATSuite {
     public static RepeatTests repeatDefault(String serverName) {
         return MicroProfileActions.repeat(serverName,
-                                          MicroProfileActions.MP61, // mpOpenAPI-3.1, LITE
+                                          MicroProfileActions.MP70_EE10, // mpOpenAPI-4.0, LITE
+                                          MicroProfileActions.MP70_EE11, // mpOpenAPI-4.0, FULL
+                                          MicroProfileActions.MP61, // mpOpenAPI-3.1, FULL
                                           MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
                                           MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
     }

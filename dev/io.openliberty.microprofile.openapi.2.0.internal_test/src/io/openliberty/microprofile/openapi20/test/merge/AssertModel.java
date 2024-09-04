@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -59,6 +59,10 @@ public class AssertModel {
         if (expected == null) {
             // When smallrye merges model parts, if a map is null it sometimes gets initialized to an empty map
             // so treat an empty map as being equal to null
+            assertNullOrEmptyMap(context, actual);
+            return;
+        } else if (Objects.equals(context.peek(), "getExtensions") && isEmptyMap(expected)) {
+            // Some versions of smallrye set an empty map when reading an object with no extensions
             assertNullOrEmptyMap(context, actual);
             return;
         } else {
@@ -129,15 +133,18 @@ public class AssertModel {
     private static void assertNullOrEmptyMap(Deque<String> context, Object actual) {
         if (actual != null) {
             // When smallrye merges models, if a map is null, it sometimes gets initialized to an empty map
-            Optional<ModelType> mt = ModelType.getModelObject(actual.getClass());
-            if (!mt.isPresent() && actual instanceof Map) {
-                if (!((Map<?, ?>) actual).isEmpty()) {
-                    throw new AssertionError("Value is neither null nor empty map at " + contextString(context) + ". Was: " + actual);
-                }
-            } else {
-                throw new AssertionError("Value not null at " + contextString(context) + ". Was: " + actual);
+            if (!isEmptyMap(actual)) {
+                throw new AssertionError("Value is neither null nor empty map at " + contextString(context) + ". Was: " + actual);
             }
         }
+    }
+
+    private static boolean isEmptyMap(Object object) {
+        Optional<ModelType> mt = ModelType.getModelObject(object.getClass());
+        if (!mt.isPresent() && object instanceof Map) {
+            return ((Map<?, ?>) object).isEmpty();
+        }
+        return false;
     }
 
     private static void assertNotNull(Deque<String> context, Object actual) {

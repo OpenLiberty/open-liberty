@@ -56,13 +56,13 @@ public class SecurityMergeTest {
         List<SecurityRequirement> doc1Security = doc1.getSecurity();
         List<SecurityRequirement> doc2Security = doc2.getSecurity();
 
-        primaryOpenAPI = TestUtil.merge(doc1);
+        primaryOpenAPI = TestUtils.current().merge(doc1);
         Paths paths = primaryOpenAPI.getPaths();
 
         validatePathServers(paths.getPathItem("/users"), null);
         validatePathServers(paths.getPathItem("/status"), null);
 
-        primaryOpenAPI = TestUtil.merge(doc1, doc2);
+        primaryOpenAPI = TestUtils.current().merge(doc1, doc2);
         paths = primaryOpenAPI.getPaths();
 
         validatePathServers(paths.getPathItem("/users"), doc1Security);

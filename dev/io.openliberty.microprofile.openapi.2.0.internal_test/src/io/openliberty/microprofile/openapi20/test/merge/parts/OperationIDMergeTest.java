@@ -59,7 +59,7 @@ public class OperationIDMergeTest {
         paths.addPathItem("/products", pathItem);
         doc2.paths(paths);
 
-        primaryOpenAPI = TestUtil.merge(doc1, doc2);
+        primaryOpenAPI = TestUtils.current().merge(doc1, doc2);
 
         String opId = primaryOpenAPI.getPaths().getPathItem("/users").getGET().getOperationId();
         assertEquals("operationGet", opId);

@@ -34,7 +34,7 @@ public class OpenAPIValidationTestThree {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
+    public static RepeatTests r = FATSuite.repeatPre40(SERVER_NAME);
 
     private static final String OPENAPI_VALIDATION_YAML = "Validation";
 
@@ -73,7 +73,6 @@ public class OpenAPIValidationTestThree {
         MicroProfileActions.MP50_ID,
         MicroProfileActions.MP60_ID,
         MicroProfileActions.MP61_ID
-
     })
     public void testBlankInfo() throws Exception {
         OpenAPITestUtil.waitForApplicationProcessorProcessedEvent(server, OPENAPI_VALIDATION_YAML);
