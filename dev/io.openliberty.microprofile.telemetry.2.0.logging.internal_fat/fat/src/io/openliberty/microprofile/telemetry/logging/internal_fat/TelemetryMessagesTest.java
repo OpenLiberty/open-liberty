@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal_fat;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -30,6 +29,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -40,6 +40,8 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 
 @RunWith(FATRunner.class)
 public class TelemetryMessagesTest extends FATServletClient {
+
+    private static Class<?> c = TelemetryMessagesTest.class;
 
     public static final String APP_NAME = "MpTelemetryLogApp";
     public static final String SERVER_NAME = "TelemetryMessage";
@@ -90,14 +92,34 @@ public class TelemetryMessagesTest extends FATServletClient {
         //Sleep for 5s to ensure messages/console log files are in sync
         TimeUnit.SECONDS.sleep(5);
 
-        List<String> linesMessagesLog = s.findStringsInLogs("^(?!.*scopeInfo).*\\[.*$", s.getDefaultLogFile());
-        List<String> linesConsoleLog = s.findStringsInLogs(".*scopeInfo.*", s.getConsoleLogFile());
+        RemoteFile consoleLog = s.getConsoleLogFile();
+        s.setMarkToEndOfLog(consoleLog);
+        RemoteFile messageLog = s.getDefaultLogFile();
+        s.setMarkToEndOfLog(messageLog);
+
+        List<String> linesMessagesLog = s.findStringsInLogsUsingMark("^(?!.*scopeInfo).*\\[.*$", messageLog);
+        List<String> linesConsoleLog = s.findStringsInLogsUsingMark(".*scopeInfo.*", consoleLog);
 
         if (consoleConsumer != null) {
             consoleConsumer.accept(linesConsoleLog);
         }
 
-        assertEquals("Messages.log and Telemetry console logs don't match.", linesMessagesLog.size(), linesConsoleLog.size());
+        //Check if number of lines found in messages.log and console.log match.
+        boolean logSizeMatches = (linesMessagesLog.size() == linesConsoleLog.size());
+
+        if (!logSizeMatches) {
+            if (!linesMessagesLog.isEmpty()) {
+                Log.info(c, "testTelemetryMessages", "First messages.log line: " + linesMessagesLog.get(0));
+                Log.info(c, "testTelemetryMessages", "Last messages.log line: " + linesMessagesLog.get(linesMessagesLog.size() - 1));
+            }
+
+            if (!linesConsoleLog.isEmpty()) {
+                Log.info(c, "testTelemetryMessages", "First console.log line: " + linesConsoleLog.get(0));
+                Log.info(c, "testTelemetryMessages", "Last console.log line: " + linesConsoleLog.get(linesConsoleLog.size() - 1));
+            }
+        }
+
+        assertTrue("Messages.log and Telemetry console logs don't match. messageLogSize=" + linesMessagesLog.size() + ", consoleLogSize=" + linesConsoleLog.size(), logSizeMatches);
 
         Map<String, String> myMap = new HashMap<String, String>() {
             {
