@@ -60,9 +60,6 @@ public class ValidationTckLauncher {
          */
         Map<String, String> opts = server.getJvmOptionsAsMap();
         opts.put("-Dvalidation.provider", validationProvider);
-        if (server.getMachine().getOperatingSystem() == OperatingSystem.LINUX){
-            opts.put("-Djavafx.platform", "linux");
-        }
 
         /*
          * Client config:
@@ -70,6 +67,9 @@ public class ValidationTckLauncher {
          * - exclude.tests used for skipping tests if we find a TCK bug that needs a service release
          */
         additionalProps.put("validation.provider", validationProvider);
+        if (server.getMachine().getOperatingSystem() == OperatingSystem.LINUX){
+            additionalProps.put("javafx.platform", "linux");
+        }
         additionalProps.put("exclude.tests", "");
 
         //Configure server and install user feature
