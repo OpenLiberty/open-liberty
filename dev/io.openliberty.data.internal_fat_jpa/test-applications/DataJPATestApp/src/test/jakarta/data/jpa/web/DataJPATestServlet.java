@@ -20,7 +20,6 @@ import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static test.jakarta.data.jpa.web.Assertions.assertArrayEquals;
 import static test.jakarta.data.jpa.web.Assertions.assertIterableEquals;
