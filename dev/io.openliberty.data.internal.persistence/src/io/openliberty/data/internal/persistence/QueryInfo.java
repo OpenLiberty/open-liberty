@@ -2064,15 +2064,15 @@ public class QueryInfo {
                     for (char ch; startAt < length && Character.isJavaIdentifierPart(ch = ql.charAt(startAt)); startAt++)
                         entityName.append(ch);
                     if (entityName.length() > 0)
-                        setEntityInfo(entityName.toString(), entityInfos);
+                        setEntityInfo(entityName.toString(), entityInfos, ql);
                     else
-                        throw new UnsupportedOperationException("The entity name is missing from the " + "DELETE" +
-                                                                " query that is specified for the " + method.getName() +
-                                                                " method of the " + method.getDeclaringClass().getName() +
-                                                                " repository. In Jakarta Data Query Language, " +
-                                                                "DELETE" + " queries should be formed like: " +
-                                                                "DELETE FROM [entity_name] WHERE [conditional_expression]" +
-                                                                '.'); // TODO NLS
+                        throw exc(UnsupportedOperationException.class,
+                                  "CWWKD1030.ql.lacks.entity",
+                                  ql,
+                                  method.getName(),
+                                  method.getDeclaringClass().getName(),
+                                  "DELETE",
+                                  "DELETE FROM [entity_name] WHERE [conditional_expression]");
 
                     // skip whitespace
                     for (; startAt < length && Character.isWhitespace(ql.charAt(startAt)); startAt++);
@@ -2127,15 +2127,15 @@ public class QueryInfo {
                 for (char ch; startAt < length && Character.isJavaIdentifierPart(ch = ql.charAt(startAt)); startAt++)
                     entityName.append(ch);
                 if (entityName.length() > 0)
-                    setEntityInfo(entityName.toString(), entityInfos);
+                    setEntityInfo(entityName.toString(), entityInfos, ql);
                 else
-                    throw new UnsupportedOperationException("The entity name is missing from the " + "UPDATE" +
-                                                            " query that is specified for the " + method.getName() +
-                                                            " method of the " + method.getDeclaringClass().getName() +
-                                                            " repository. In Jakarta Data Query Language, " +
-                                                            "UPDATE" + " queries should be formed like: " +
-                                                            "UPDATE [entity_name] SET [update_items] WHERE [conditional_expression]" +
-                                                            '.'); // TODO NLS
+                    throw exc(UnsupportedOperationException.class,
+                              "CWWKD1030.ql.lacks.entity",
+                              ql,
+                              method.getName(),
+                              method.getDeclaringClass().getName(),
+                              "UPDATE",
+                              "UPDATE [entity_name] SET [update_items] WHERE [conditional_expression]");
                 if (startAt + 1 < length && entityInfo.name.length() > 0 && Character.isWhitespace(ql.charAt(startAt))) {
                     for (startAt++; startAt < length && Character.isWhitespace(ql.charAt(startAt)); startAt++);
                     if (startAt + 4 < length
@@ -2284,7 +2284,7 @@ public class QueryInfo {
                 for (; startAt < from0 + fromLen && Character.isJavaIdentifierPart(ql.charAt(startAt)); startAt++);
                 if ((entityNameLen = startAt - entityName0) > 0) {
                     String entityName = ql.substring(entityName0, entityName0 + entityNameLen);
-                    setEntityInfo(entityName, entityInfos);
+                    setEntityInfo(entityName, entityInfos, ql);
 
                     for (; startAt < from0 + fromLen && Character.isWhitespace(ql.charAt(startAt)); startAt++);
                     if (startAt < from0 + fromLen) {
@@ -2309,12 +2309,13 @@ public class QueryInfo {
                     String queryType = selectLen > 0 ? "SELECT" : "FROM";
                     String example = (selectLen > 0 ? "SELECT [select_list] " : "") +
                                      "FROM [entity_name] WHERE [conditional_expression]";
-                    throw new UnsupportedOperationException("The entity name is missing from the " + queryType +
-                                                            " query that is specified for the " + method.getName() +
-                                                            " method of the " + method.getDeclaringClass().getName() +
-                                                            " repository. In Jakarta Data Query Language, " +
-                                                            queryType + " queries should be formed like: " +
-                                                            example + '.'); // TODO NLS
+                    throw exc(UnsupportedOperationException.class,
+                              "CWWKD1030.ql.lacks.entity",
+                              ql,
+                              method.getName(),
+                              method.getDeclaringClass().getName(),
+                              queryType,
+                              example);
                 }
             }
 
@@ -2380,21 +2381,24 @@ public class QueryInfo {
 
             if (isCursoredPage) {
                 if (order0 >= 0)
-                    throw new UnsupportedOperationException("The " + ql + " query that is supplied to the " + method.getName() +
-                                                            " method of the " + method.getDeclaringClass().getName() +
-                                                            " repository cannot include an ORDER BY clause because" +
-                                                            " the method returns a " + "CursoredPage" + ". Remove the ORDER BY" +
-                                                            " clause and instead use the " + "OrderBy" +
-                                                            " annotation to specify static sort criteria."); // TODO NLS
+                    throw exc(UnsupportedOperationException.class,
+                              "CWWKD1033.ql.orderby.disallowed",
+                              method.getName(),
+                              method.getDeclaringClass().getName(),
+                              CursoredPage.class.getSimpleName(),
+                              OrderBy.class.getSimpleName(),
+                              ql);
 
                 if (whereLen > 0) {
                     if (where0 + whereLen != length)
-                        throw new UnsupportedOperationException("The " + ql + " query that is supplied to the " + method.getName() +
-                                                                " method of the " + method.getDeclaringClass().getName() +
-                                                                " repository must end in a WHERE clause because" +
-                                                                " the method returns a " + "CursoredPage" + ". There WHERE clause" +
-                                                                " ends at position " + (where0 + whereLen) + " but the length of the" +
-                                                                " query is " + length + "."); // TODO NLS
+                        throw exc(UnsupportedOperationException.class,
+                                  "CWWKD1034.ql.where.required",
+                                  method.getName(),
+                                  method.getDeclaringClass().getName(),
+                                  CursoredPage.class.getSimpleName(),
+                                  where0 + whereLen,
+                                  length,
+                                  ql);
 
                     // Enclose the WHERE clause in parenthesis so that conditions can be appended.
                     boolean addSpace = ql.charAt(where0) != ' ';
@@ -2823,10 +2827,13 @@ public class QueryInfo {
      *
      * @param entityName  case sensitive entity name obtained from JDQL or JPQL.
      * @param entityInfos map of entity name to already-completed future for the entity information.
+     * @param ql          query language.
      * @throws MappingException if the entity information is not found.
      */
     @Trivial
-    private void setEntityInfo(String entityName, Map<String, CompletableFuture<EntityInfo>> entityInfos) {
+    private void setEntityInfo(String entityName,
+                               Map<String, CompletableFuture<EntityInfo>> entityInfos,
+                               String ql) {
         CompletableFuture<EntityInfo> future = entityInfos.get(entityName);
         if (future == null) {
             // When a Java record is used as an entity, the name is [RecordName]Entity
@@ -2846,22 +2853,24 @@ public class QueryInfo {
                     if (recordEntityName.equalsIgnoreCase(name) && entityInfos.get(name).join().recordClass != null)
                         name = name.substring(0, name.length() - EntityInfo.RECORD_ENTITY_SUFFIX.length());
                     if (entityName.equalsIgnoreCase(name))
-                        throw new MappingException("The " + method.getName() + " method of the " + method.getDeclaringClass().getName() +
-                                                   " repository specifies query language that requires a " + entityName +
-                                                   " entity that is not found but is a close match for the " + name +
-                                                   " entity. Review the query language to ensure the correct entity name is used."); // TODO NLS
+                        throw exc(MappingException.class,
+                                  "CWWKD1031.ql.similar.entity",
+                                  method.getName(),
+                                  method.getDeclaringClass().getName(),
+                                  entityName,
+                                  name,
+                                  ql);
                 }
 
                 future = entityInfos.get(EntityInfo.FAILED);
                 if (future == null)
-                    throw new MappingException("The " + method.getName() + " method of the " + method.getDeclaringClass().getName() +
-                                               " repository specifies query language that requires a " + entityName +
-                                               " entity that is not found. Check if " + entityName + " is the name of a valid entity." +
-                                               " To enable the entity to be found, give the repository a life cycle method that is" +
-                                               " annotated with one of " + "(Insert, Save, Update, Delete)" +
-                                               " and supply the entity as its parameter or have the repository extend" +
-                                               " DataRepository or another built-in repository interface with the entity class as the" +
-                                               " first type variable."); // TODO NLS
+                    throw exc(MappingException.class,
+                              "CWWKD1032.ql.unknown.entity",
+                              method.getName(),
+                              method.getDeclaringClass().getName(),
+                              entityName,
+                              List.of("Insert", "Save", "Update", "Delete"),
+                              ql);
             }
         } else {
             entityInfo = future.join();

@@ -313,3 +313,50 @@ CWWKD1029.first.neg.or.zero.explanation=The maximum number of query results \
  must be a positive number.
 CWWKD1029.first.neg.or.zero.useraction=Update the repository method to specify \
  a positive maximum number of results.
+
+CWWKD1030.ql.lacks.entity=CWWKD1030E: The entity name is missing from the {0} \
+ query that is specified for the {1} method of the {2} repository. In Jakarta \
+ Data Query Language, {3} queries should be formed like: {4}.
+CWWKD1030.ql.lacks.entity.explanation=The query contains a clause that requires \
+ the entity name.
+CWWKD1030.ql.lacks.entity.useraction=Update the query for repository method to \
+ include the entity name.
+
+CWWKD1031.ql.similar.entity=CWWKD1031E: The {0} method of the {1} repository \
+ interface specifies a query that requires a {2} entity name that is not found \
+ but is a close match for the {3} entity name. The query is: {4}.
+CWWKD1031.ql.similar.entity.explanation=The query might have a typo in its \
+ reference to the entity name.
+CWWKD1031.ql.similar.entity.useraction=Review the query to ensure the correct \
+ entity name is used.
+
+CWWKD1032.ql.unknown.entity=CWWKD1032E: The {0} method of the {1} repository \
+ interface specifies a query that requires a {2} entity name that is not found. \
+ Check if {2} is the name of a valid entity. To enable the entity to be found, \
+ give the repository a lifecycle method that is annotated with one of the {3} \
+ annotations and supply the entity as its parameter. Alternatively, have the \
+ repository extend DataRepository or another built-in repository interface, \
+ with the entity class as the first type variable. The query is: {4}.
+CWWKD1032.ql.unknown.entity.explanation=The query might have a typo in its \
+ reference to the entity name, or the repository does not specify its primary \
+ entity class.
+CWWKD1032.ql.unknown.entity.useraction=Review the query to ensure the correct \
+ entity name is used. Review the repository definition to ensure the correct \
+ primary entity class is specified.
+
+CWWKD1033.ql.orderby.disallowed=CWWKD1033E: The {0} method of the {1} repository \
+ interface cannot specify a query that includes an ORDER BY clause because \
+ the method returns {2}. Remove the ORDER BY clause and instead use the {3} \
+ annotation to specify static sort criteria. The query is: {4}.
+CWWKD1033.ql.orderby.disallowed.explanation=The ORDER BY clause is incompatible \
+ with cursor-based pagination.
+CWWKD1033.ql.orderby.disallowed.useraction=Replace the ORDER BY clause with \
+ annotations that specify the sort criteria.
+
+CWWKD1034.ql.where.required=CWWKD1034E: The query that is specified by the \
+ {0} method of the {1} repository interface must end in a WHERE clause because \
+ the method returns {2}. There WHERE clause ends at position {3}, but the \
+ length of the query is {4}. The query is: {5}.
+CWWKD1034.ql.where.required.explanation=A WHERE clause is required when \
+ using cursor-based pagination.
+CWWKD1034.ql.where.required.useraction=Add a WHERE clause to the query.
