@@ -21,6 +21,8 @@ configurations.smallryeGraphQLClient {
 }
 
 dependencies {
+
+  requiredLibs project(':io.openliberty.microprofile.graphql.internal_repeat_tests')
   smallryeGraphQLClient 'io.smallrye:smallrye-graphql-client:1.0.5',
     'io.smallrye:smallrye-graphql-client-api:1.0.5',
     project(':com.ibm.ws.org.slf4j.api'),
