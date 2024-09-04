@@ -42,6 +42,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
                 TelemetryAPITest.class,
                 MultiThreadedContextTest.class,
                 TelemetryMisconfigTest.class,
+                TelemetryMultipleMetricsTest.class,
                 TelemetryLongRunningTest.class,
                 TelemetryGlobalOpenTelemetryTest.class,
                 TelemetryDisabledTest.class,
