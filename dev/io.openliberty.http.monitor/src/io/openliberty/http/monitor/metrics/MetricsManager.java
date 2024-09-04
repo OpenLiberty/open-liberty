@@ -26,7 +26,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.http.monitor.HttpStatAttributes;
-import io.openliberty.http.monitor.HttpServerStatsMonitor;
 
 @Component(configurationPolicy = IGNORE, immediate = true)
 public class MetricsManager {
@@ -68,9 +67,8 @@ public class MetricsManager {
      * @param duration
      */
 	public void updateHttpMetrics(HttpStatAttributes httpStatAttributes, Duration duration) {
-		httpMetricRuntimes.stream().forEach(adapters -> adapters.updateHttpMetrics(httpStatAttributes,duration));	
+        for (HTTPMetricAdapter adapter : httpMetricRuntimes) {
+            adapter.updateHttpMetrics(httpStatAttributes, duration);
+        }
 	}
-	
-
-	
 }
