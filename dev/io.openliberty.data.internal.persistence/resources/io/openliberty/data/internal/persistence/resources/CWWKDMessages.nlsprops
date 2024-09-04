@@ -185,3 +185,76 @@ CWWKD1014.upd.missing.param.anno.explanation=Parameters of repository update \
  methods must correspond to entity properties.
 CWWKD1014.upd.missing.param.anno.useraction=Update the repository method such that \
  all parameters correspond to entity properties.
+
+CWWKD1015.null.entity.param=CWWKD1015E: The {0} method of the {1} repository \
+ interface cannot accept a null entity.
+CWWKD1015.null.entity.param.explanation=Lifecycle methods require a non-null \
+ entity instance.
+CWWKD1015.null.entity.param.useraction=Update application code to avoid supplying \
+ a null entity value to the repository method.
+
+CWWKD1016.incompat.entity.param=CWWKD1016E: The {0} method of the {1} repository \
+ interface requires a {0} entity, but a {1} value was supplied.
+CWWKD1016.incompat.entity.param.explanation=The lifecycle method accepts only \
+ entity values of the declared type.
+CWWKD1016.incompat.entity.param.useraction=Update application code to supply an \
+ entity value of the same entity type that the repository method declares.
+
+CWWKD1017.dup.special.param=CWWKD1017E: The {0} method of the {1} repository \
+ cannot have multiple {2} parameters.
+CWWKD1017.dup.special.param.explanation=Some of the Jakarta Data special \
+ parameters, including Limit and PageRequest, cannot appear multiple times within \
+ a repository method signature.
+CWWKD1017.dup.special.param.useraction=Update the repository method signature \
+ to have at most one occurrence of the Jakarta Data special parameter type.
+
+CWWKD1018.confl.special.param=CWWKD1018E: The {0} method of the {1} repository \
+ cannot have a {2} parameter and a {3} parameter.
+CWWKD1018.confl.special.param.explanation=Some of the Jakarta Data special \
+ parameters, such as Limit and PageRequest, cannot be combined on a single \
+ repository method signature.
+CWWKD1018.confl.special.param.useraction=Update the repository to not use \
+ both of the Jakarta Data special parameter types in the same method signature.
+
+CWWKD1019.mixed.positional.named=CWWKD1019E: The {0} method of the {1} repository \
+ interface cannot have a query with a mixture of positional parameters and named \
+ parameters.
+CWWKD1019.mixed.positional.named.explanation=Queries with parameters must use all \
+ named parameters or all positional parameters, not a combination.
+CWWKD1019.mixed.positional.named.useraction=Update the repository method to use \
+ only named parameters or only positional parameters.
+
+CWWKD1020.invalid.param.type=CWWKD1020E: Parameters of the {0} method of the \
+ {1} repository interface must not be of the {2} type because the repository \
+ method is a {3} operation.
+CWWKD1020.invalid.param.type.explanation=The parameter type is not permitted \
+ on this type of method.
+CWWKD1020.invalid.param.type.useraction=Update the repository method to define \
+ a method parameter for each value that is required by a comparison.
+
+CWWKD1021.insufficient.params=CWWKD1021E: The {0} method of the {1} repository \
+ interface has {2} parameters, but the query conditions that are defined by the \
+ method require {3} parameters. The JPQL query for the method is: {4}.
+CWWKD1021.insufficient.params.explanation=Query conditions that define \
+ comparisons of values require a corresponding number of repository method \
+ parameters to supply the values.
+CWWKD1021.insufficient.params.useraction=Update the repository method to define \
+ a method parameter for each value that is required by a comparison.
+
+CWWKD1022.too.many.params=CWWKD1022E: The query conditions of the {0} method \
+ of the {1} repository interface require {2} parameters, but the repository \
+ method signature has {3} parameters. The JPQL query for the method is: {4}.
+CWWKD1022.too.many.params.explanation=Query conditions that define \
+ comparisons of values require a corresponding number of repository method \
+ parameters to supply the values. Extra parameters are not permitted.
+CWWKD1022.too.many.params.useraction=Update the repository method signature \
+ to remove extra parameters that do not correspond to declared conditions.
+
+CWWKD1023.extra.param=CWWKD1023E: The query conditions of the {0} method \
+ of the {1} repository interface require {2} parameters, but the repository \
+ method has an additional {3} parameter. The JPQL query for the method is: {4}.
+CWWKD1023.extra.param.explanation=Query conditions that define \
+ comparisons of values require a corresponding number of repository method \
+ parameters to supply the values. Extra parameters are not permitted.
+CWWKD1023.extra.param.useraction=Update the repository method signature \
+ to remove extra parameters that do not correspond to declared conditions.

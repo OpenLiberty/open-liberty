@@ -1099,7 +1099,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 if (limit == null)
                                     limit = (Limit) param;
                                 else
-                                    throw new UnsupportedOperationException("Repository method " + method + " cannot have multiple Limit parameters."); // TODO NLS
+                                    throw exc(UnsupportedOperationException.class,
+                                              "CWWKD1017.dup.special.param",
+                                              method.getName(),
+                                              method.getDeclaringClass().getName(),
+                                              "Limit");
                             } else if (param instanceof Order) {
                                 @SuppressWarnings("unchecked")
                                 Iterable<Sort<Object>> order = (Iterable<Sort<Object>>) param;
@@ -1108,9 +1112,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 if (pagination == null)
                                     pagination = (PageRequest) param;
                                 else
-                                    throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
-                                                                            method.getDeclaringClass().getName() +
-                                                                            " repository cannot have multiple PageRequest parameters."); // TODO NLS
+                                    throw exc(UnsupportedOperationException.class,
+                                              "CWWKD1017.dup.special.param",
+                                              method.getName(),
+                                              method.getDeclaringClass().getName(),
+                                              "PageRequest");
                             } else if (param instanceof Sort) {
                                 @SuppressWarnings("unchecked")
                                 List<Sort<Object>> newList = queryInfo.supplySorts(sortList, (Sort<Object>) param);
@@ -1119,13 +1125,26 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 @SuppressWarnings("unchecked")
                                 List<Sort<Object>> newList = queryInfo.supplySorts(sortList, (Sort<Object>[]) param);
                                 sortList = newList;
+                            } else if (param == null) {
+                                // ignore null for empty Sort...
+                            } else {
+                                throw exc(DataException.class,
+                                          "CWWKD1023.extra.param",
+                                          method.getName(),
+                                          method.getDeclaringClass().getName(),
+                                          queryInfo.paramCount,
+                                          method.getParameterTypes()[i].getName(),
+                                          queryInfo.jpql);
                             }
                         }
 
                         if (pagination != null && limit != null)
-                            throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
-                                                                    method.getDeclaringClass().getName() +
-                                                                    " repository cannot have both Limit and PageRequest as parameters."); // TODO NLS
+                            throw exc(UnsupportedOperationException.class,
+                                      "CWWKD1018.confl.special.param",
+                                      method.getName(),
+                                      method.getDeclaringClass().getName(),
+                                      "Limit",
+                                      "PageRequest");
 
                         if (sortList == null && queryInfo.hasDynamicSortCriteria())
                             sortList = queryInfo.sorts;
@@ -1592,12 +1611,18 @@ public class RepositoryImpl<R> implements InvocationHandler {
         Class<?> entityClass = queryInfo.entityInfo.recordClass == null ? queryInfo.entityInfo.entityClass : queryInfo.entityInfo.recordClass;
 
         if (e == null)
-            throw new NullPointerException("The entity parameter cannot have a null value."); // TODO NLS // required by spec
+            throw exc(NullPointerException.class,
+                      "CWWKD1015.null.entity.param",
+                      queryInfo.method,
+                      queryInfo.method.getDeclaringClass());
 
         if (!entityClass.isInstance(e))
-            throw new IllegalArgumentException("The " + (e == null ? null : e.getClass().getName()) +
-                                               " parameter does not match the " + entityClass.getName() +
-                                               " entity type that is expected for this repository."); // TODO NLS
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1016.incompat.entity.param",
+                      queryInfo.method,
+                      queryInfo.method.getDeclaringClass(),
+                      entityClass.getName(),
+                      e.getClass().getName());
 
         EntityInfo entityInfo = queryInfo.entityInfo;
         String jpql = queryInfo.jpql;
@@ -1966,12 +1991,18 @@ public class RepositoryImpl<R> implements InvocationHandler {
         Class<?> entityClass = queryInfo.entityInfo.recordClass == null ? queryInfo.entityInfo.entityClass : queryInfo.entityInfo.recordClass;
 
         if (e == null)
-            throw new NullPointerException("The entity parameter cannot have a null value."); // TODO NLS // required by spec
+            throw exc(NullPointerException.class,
+                      "CWWKD1015.null.entity.param",
+                      queryInfo.method,
+                      queryInfo.method.getDeclaringClass());
 
         if (!entityClass.isInstance(e))
-            throw new IllegalArgumentException("The " + (e == null ? null : e.getClass().getName()) +
-                                               " parameter does not match the " + entityClass.getName() +
-                                               " entity type that is expected for this repository."); // TODO NLS
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1016.incompat.entity.param",
+                      queryInfo.method,
+                      queryInfo.method.getDeclaringClass(),
+                      entityClass.getName(),
+                      e.getClass().getName());
 
         String jpql = queryInfo.jpql;
         EntityInfo entityInfo = queryInfo.entityInfo;
