@@ -1673,12 +1673,14 @@ public class H2FATDriverServlet extends FATServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         // Netty expecting a reset stream because the headers sent back exceed the 128 the number specified by the settings
-        // Legacy HTTP2 apparently does not do this check
-        if (USING_NETTY) {
-            FrameRstStream rstFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
-            h2Client.addExpectedFrame(rstFrame);
-        } else
-            addSecondExpectedHeaders(h2Client);
+        // Legacy HTTP2 apparently does not do this check 
+        // See https://github.com/OpenLiberty/open-liberty/issues/29561
+        // if (USING_NETTY) {
+        //     FrameRstStream rstFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
+        //     h2Client.addExpectedFrame(rstFrame);
+        // } else
+        //     addSecondExpectedHeaders(h2Client);
+        addSecondExpectedHeaders(h2Client);
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
 
         FrameSettings settingsFrameWithMaxHeaderListSize = new FrameSettings(0, -1, -1, -1, -1, -1, 128, false);

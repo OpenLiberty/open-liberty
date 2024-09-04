@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -95,7 +96,8 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
 
     private ChannelPromise responsePromise;
     
-    private ChannelPromise activePromise;
+//    private ChannelPromise activePromise;
+    private CountDownLatch activeChannelLatch;
 
     private FullHttpResponse resp;
 
@@ -128,12 +130,19 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
         String host = remoteAddress.getHostString();
         int port = remoteAddress.getPort();
         factory.handler(new WsocClientInitializer(factory.getBaseInitializer(), this));
-        connection = WsocOutboundChain.getNettyFramework().startOutbound(factory, host, port, null);
-        activePromise = connection.newPromise();
+        activeChannelLatch = new CountDownLatch(1);
+        connection = WsocOutboundChain.getNettyFramework().startOutbound(factory, host, port, future -> {
+            if (!future.isSuccess()) {
+                System.out.println("Error occurred connecting to outbound! Need to check what will be the correct approach here");
+            }
+            activeChannelLatch.countDown();
+        });
+//        activePromise = connection.newPromise();
         responsePromise = connection.newPromise();
         // TODO Configure this with legacy timeouts
         System.out.println("Waiting up to 60s for connection to be established");
-        activePromise.get(60000, TimeUnit.MILLISECONDS);
+        activeChannelLatch.await(60000, TimeUnit.MILLISECONDS);
+//        activePromise.get(60000, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -489,7 +498,7 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
                 
                 public void channelActive(ChannelHandlerContext ctx) throws Exception {
                     System.out.println("Setting active!!! "+ctx.channel());
-                    requestor.activePromise.setSuccess();
+//                    requestor.activePromise.setSuccess();
                     ctx.fireChannelActive();
                 }
                 
