@@ -241,9 +241,9 @@ io.smallrye:smallrye-graphql-servlet:1.0.26
 io.smallrye:smallrye-graphql:1.0.26
 io.smallrye:smallrye-metrics:5.1.0
 io.smallrye:smallrye-open-api-core:3.1.1
-io.smallrye:smallrye-open-api-core:4.0.0-alpha1
+io.smallrye:smallrye-open-api-core:4.0.0-alpha5
 io.smallrye:smallrye-open-api-jaxrs:3.1.1
-io.smallrye:smallrye-open-api-jaxrs:4.0.0-alpha1
+io.smallrye:smallrye-open-api-jaxrs:4.0.0-alpha5
 io.zipkin.reporter2:zipkin-reporter:2.16.4
 io.zipkin.reporter2:zipkin-reporter:3.3.0
 io.zipkin.reporter2:zipkin-sender-okhttp3:2.16.4
