@@ -150,11 +150,11 @@ public class TestUtils {
      * Checks to if the two given log sizes are equal to each other. If not, the container log file will be printed. This was done to reduce the output.txt size.
      */
     static boolean compareLogSizes(String methodName, String logs, long expected, long actual) {
-        boolean messageExists = expected == actual;
+        boolean logSizesMatch = (expected == actual);
 
-        if (!messageExists)
+        if (!logSizesMatch)
             Log.info(c, methodName, logs);
 
-        return messageExists;
+        return logSizesMatch;
     }
 }

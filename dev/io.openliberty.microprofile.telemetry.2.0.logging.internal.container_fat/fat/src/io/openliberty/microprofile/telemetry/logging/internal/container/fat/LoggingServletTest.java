@@ -108,7 +108,7 @@ public class LoggingServletTest {
         assertTrue("SeverityText message could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "SeverityText: I"));
         assertTrue("SeverityNumber message could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "SeverityNumber: Info"));
         assertTrue("Squence message could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "io.openliberty.sequence: Str"));
-        assertTrue("Log type messagecould not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "io.openliberty.type: Str(liberty_message)"));
+        assertTrue("Log type message could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "io.openliberty.type: Str(liberty_message)"));
         assertTrue("Thread ID message could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "thread.id: Int"));
     }
 
