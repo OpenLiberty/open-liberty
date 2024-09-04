@@ -750,7 +750,11 @@ public class VersionlessCachingTest {
 
     private static void stopServer(String[] messagesAllowed) throws Exception {
         displayHeading('*', "Stopping server " + ++STOPS);
-        server.stopServer(messagesAllowed);
+        // On the OS's where we drop out of a test that is non linux/mac os, we never create the server,
+        // thus when the @after clean up is called, the serverStop executes on a null server.
+        if (server != null) {
+            server.stopServer(messagesAllowed);
+        }
     }
 
     private static String waitForStringInLog(String s) throws Exception {
