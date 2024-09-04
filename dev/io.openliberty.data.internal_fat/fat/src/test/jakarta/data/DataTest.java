@@ -49,10 +49,10 @@ public class DataTest extends FATServletClient {
      */
     static final String[] EXPECTED_ERROR_MESSAGES = //
                     new String[] {
-                                   "CWWKD1006E.*delete3", // TODO more specific message ID once translated
-                                   "CWWKD1006E.*delete4", // TODO more specific message ID once translated
-                                   "CWWKD1008E.*delete5", // TODO more specific message ID once translated
-                                   "CWWKD1000E.*findFirst2147483648" // TODO more specific message ID once translated
+                                   "CWWKD1006E.*delete3",
+                                   "CWWKD1006E.*delete4",
+                                   "CWWKD1008E.*delete5",
+                                   "CWWKD1028E.*findFirst2147483648"
                     };
 
     @ClassRule

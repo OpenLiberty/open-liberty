@@ -1282,7 +1282,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                 entityInfo.recordClass != null && entityInfo.recordClass.isInstance(result)) {
                                                 List<Member> accessors = entityInfo.attributeAccessors.get(entityInfo.attributeNames.get(ID));
                                                 if (accessors == null || accessors.isEmpty())
-                                                    throw new MappingException("Unable to find the id attribute on the " + entityInfo.name + " entity."); // TODO NLS
+                                                    throw exc(MappingException.class,
+                                                              "CWWKD1025.missing.id.prop",
+                                                              entityInfo.getType().getName(),
+                                                              method.getName(),
+                                                              repositoryInterface);
                                                 for (Member accessor : accessors)
                                                     value = accessor instanceof Method ? ((Method) accessor).invoke(value) : ((Field) accessor).get(value);
                                             } else if (!entityInfo.idType.isInstance(value)) {

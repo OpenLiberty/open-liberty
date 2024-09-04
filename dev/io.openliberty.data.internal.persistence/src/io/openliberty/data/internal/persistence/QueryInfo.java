@@ -1133,11 +1133,12 @@ public class QueryInfo {
                                 if (Boolean.TRUE.equals(isNamePresent))
                                     attribute = params[p].getName();
                                 else
-                                    throw new MappingException("You must specify an entity attribute name as the value of the" +
-                                                               " annotation on parameter " + (p + 1) +
-                                                               " of the " + method.getName() + " method of the " +
-                                                               method.getDeclaringClass().getName() + " repository or compile the application" +
-                                                               " with the -parameters compiler option that preserves the parameter names."); // TODO NLS
+                                    throw exc(MappingException.class,
+                                              "CWWKD1027.anno.missing.prop.name",
+                                              p + 1,
+                                              method.getName(),
+                                              method.getDeclaringClass().getName(),
+                                              "Assign");
                             }
 
                             String name = getAttributeName(attribute, true);
@@ -1682,9 +1683,14 @@ public class QueryInfo {
             String lowerName = name.toLowerCase();
             attributeName = entityInfo.attributeNames.get(lowerName);
             if (attributeName == null)
-                if (name.length() == 0)
-                    throw new MappingException("Error parsing method name or entity property name is missing."); // TODO NLS
-                else {
+                if (name.length() == 0) {
+                    throw exc(MappingException.class,
+                              "CWWKD1024.missing.entity.prop",
+                              method.getName(),
+                              method.getDeclaringClass().getName(),
+                              entityInfo.getType().getName(),
+                              entityInfo.attributeTypes.keySet());
+                } else {
                     // tolerate possible mixture of . and _ separators:
                     lowerName = lowerName.replace('.', '_');
                     attributeName = entityInfo.attributeNames.get(lowerName);
@@ -2715,7 +2721,12 @@ public class QueryInfo {
                     if (num <= (Integer.MAX_VALUE - (ch - '0')) / 10)
                         num = num * 10 + (ch - '0');
                     else
-                        throw new UnsupportedOperationException(methodName.substring(0, endBefore) + " exceeds Integer.MAX_VALUE (2147483647)."); // TODO
+                        throw exc(UnsupportedOperationException.class,
+                                  "CWWKD1028.first.exceeds.max",
+                                  methodName,
+                                  method.getDeclaringClass().getName(),
+                                  methodName.substring(0, endBefore),
+                                  "Integer.MAX_VALUE (" + Integer.MAX_VALUE + ")");
                     start++;
                 } else {
                     if (num == 0)
@@ -2724,7 +2735,11 @@ public class QueryInfo {
                 }
             }
         if (num == 0)
-            throw new UnsupportedOperationException("The number of results to retrieve must not be 0 on the " + methodName + " method."); // TODO NLS
+            throw exc(UnsupportedOperationException.class,
+                      "CWWKD1029.first.neg.or.zero",
+                      methodName,
+                      method.getDeclaringClass().getName(),
+                      0);
         else
             maxResults = num;
 
@@ -3197,9 +3212,14 @@ public class QueryInfo {
                 && !CharSequence.class.isAssignableFrom(propertyClass)
                 && !char.class.equals(propertyClass)
                 && !Character.class.equals(propertyClass))
-                throw new UnsupportedOperationException("The ignoreCase parameter in a Sort can only be true if the Entity" +
-                                                        " property being sorted is a character sequence. The property [" + propName +
-                                                        "] is of type [" + propertyClass.getName() + "]"); //TODO NLS
+                throw exc(UnsupportedOperationException.class,
+                          "CWWKD1026.ignore.case.not.text",
+                          propName,
+                          entityInfo.getType().getName(),
+                          sort,
+                          propertyClass.getName(),
+                          method.getName(),
+                          method.getDeclaringClass().getName());
         }
     }
 
