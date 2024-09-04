@@ -470,6 +470,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
     @Test
     @Ignore("Reference : https://github.com/OpenLiberty/open-liberty/issues/29319")
+    // This test fails with createNamedQuery. For recreating you can uncomment the
+    // @NamedQuery annotation in Annuity.java
     public void testOLGH29319() throws Exception {
 
         Annuity annuity = Annuity.of("holder123", 2500.00);
@@ -479,6 +481,27 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             em.createNamedQuery("TEST_OLGH_29319", Annuity.class)
+                    .setParameter("holderId", "holder123")
+                    .getSingleResult();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+    }
+
+    @Test
+    // Reference : https://github.com/OpenLiberty/open-liberty/issues/29319
+    // This test will be passing with createQueryMethod.
+    public void testOLGH29319_2() throws Exception {
+
+        Annuity annuity = Annuity.of("holder123", 2500.00);
+        tx.begin();
+        em.persist(annuity);
+        tx.commit();
+        tx.begin();
+        try {
+            em.createQuery("FROM Annuity WHERE annuityHolderId = :holderId", Annuity.class)
                     .setParameter("holderId", "holder123")
                     .getSingleResult();
             tx.commit();
