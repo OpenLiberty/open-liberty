@@ -3258,6 +3258,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 DefaultFullHttpResponse resp = new DefaultFullHttpResponse(nettyResponse.protocolVersion(), nettyResponse.status());
                 resp.headers().add(nettyResponse.headers());
                 nettyResponse = resp;
+                ((NettyResponseMessage)msg).update(nettyResponse);
             }
             sendHeaders(nettyResponse);
             if (nettyResponse.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
