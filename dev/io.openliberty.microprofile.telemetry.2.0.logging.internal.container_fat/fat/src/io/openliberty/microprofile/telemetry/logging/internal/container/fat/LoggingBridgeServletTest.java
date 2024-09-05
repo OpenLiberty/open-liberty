@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal.container.fat;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -28,7 +27,6 @@ import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
@@ -94,11 +92,9 @@ public class LoggingBridgeServletTest {
 
         final String logs = container.getLogs();
 
-        Log.info(c, "testBridgedLogs", logs);
-
         int bridgedLogsCount = logs.split("LogRecord #").length - 1;
 
-        assertEquals("Messages.log and Telemetry console logs don't match.", linesMessagesLog.size(), bridgedLogsCount);
+        assertTrue("Messages.log and Telemetry console logs don't match.", TestUtils.compareLogSizes("testBridgedLogs", logs, linesMessagesLog.size(), bridgedLogsCount));
     }
 
     @AfterClass

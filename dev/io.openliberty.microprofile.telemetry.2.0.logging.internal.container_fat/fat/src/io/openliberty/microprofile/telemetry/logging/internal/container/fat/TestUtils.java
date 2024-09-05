@@ -133,4 +133,28 @@ public class TestUtils {
         }
         assertTrue("Container failed to startup successfully.", messageFound);
     }
+
+    /*
+     * Checks to see if a log string contains a given message. If not, the container log file will be printed. This was done to reduce the output.txt size.
+     */
+    static boolean assertLogContains(String methodName, String logs, String message) {
+        boolean messageExists = logs.contains(message);
+
+        if (!messageExists)
+            Log.info(c, methodName, logs);
+
+        return messageExists;
+    }
+
+    /*
+     * Checks to if the two given log sizes are equal to each other. If not, the container log file will be printed. This was done to reduce the output.txt size.
+     */
+    static boolean compareLogSizes(String methodName, String logs, long expected, long actual) {
+        boolean logSizesMatch = (expected == actual);
+
+        if (!logSizesMatch)
+            Log.info(c, methodName, logs);
+
+        return logSizesMatch;
+    }
 }

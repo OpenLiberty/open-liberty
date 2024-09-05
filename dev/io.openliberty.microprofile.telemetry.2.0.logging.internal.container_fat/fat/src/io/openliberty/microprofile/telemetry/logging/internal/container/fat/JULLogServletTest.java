@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal.container.fat;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -94,7 +93,8 @@ public class JULLogServletTest {
         List<String> linesMessagesLog = server.findStringsInLogs("^(?!.*scopeInfo).*\\[.*$", server.getDefaultLogFile());
         int bridgedLogsCount = logs.split("LogRecord #").length - 1;
 
-        assertEquals("Messages.log and Telemetry console logs don't match.", linesMessagesLog.size(), bridgedLogsCount);
+        assertTrue("Messages.log and Telemetry console logs don't match.",
+                   TestUtils.compareLogSizes("testMatchingJULMessageLogsWithContainerViaOpenTelemetryAgent", logs, linesMessagesLog.size(), bridgedLogsCount));
     }
 
     @AfterClass
