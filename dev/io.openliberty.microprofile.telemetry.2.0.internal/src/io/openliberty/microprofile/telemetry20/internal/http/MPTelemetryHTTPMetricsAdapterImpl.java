@@ -21,6 +21,7 @@ import static io.opentelemetry.semconv.UrlAttributes.URL_SCHEME;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.WeakHashMap;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -52,7 +53,7 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
     private static final Double[] BUCKET_BOUNDARIES = { 0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0, 2.5, 5.0, 7.5, 10.0 };
     private static final List<Double> BUCKET_BOUNDARIES_LIST = Arrays.asList(BUCKET_BOUNDARIES);
 
-    private DoubleHistogram httpHistogram = null;
+    private final WeakHashMap<OpenTelemetry, DoubleHistogram> httpHistogramMap = new WeakHashMap<OpenTelemetry, DoubleHistogram>();
 
     @Override
     public void updateHttpMetrics(HttpStatAttributes httpStatAttributes, Duration duration) {
@@ -82,19 +83,23 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
          * The Meter is built using the same static values each time.
          * The instrument that is recorded/updated is distinct for each
          * http-route/response/method combination (corresponds with resolved attributes).
-         * 
+         *
+         * However we cannot share it across multiple instances of OpenTelemetry
          */
-        if (httpHistogram == null) {
-            httpHistogram = otelInstance.getMeterProvider().get(INSTR_SCOPE).histogramBuilder(OpenTelemetryConstants.HTTP_SERVER_REQUEST_DURATION_NAME)
-                            .setUnit(OpenTelemetryConstants.OTEL_SECONDS_UNIT)
-                            .setDescription(OpenTelemetryConstants.HTTP_SERVER_REQUEST_DURATION_DESC)
-                            .setExplicitBucketBoundariesAdvice(BUCKET_BOUNDARIES_LIST).build();
-        }
+        final OpenTelemetry finalOtelInstnace = otelInstance;
+        DoubleHistogram httpHistogram = httpHistogramMap.computeIfAbsent(otelInstance,
+                                                                         (OpenTelemetry ignored) -> finalOtelInstnace.getMeterProvider().get(INSTR_SCOPE)
+                                                                                         .histogramBuilder(OpenTelemetryConstants.HTTP_SERVER_REQUEST_DURATION_NAME)
+                                                                                         .setUnit(OpenTelemetryConstants.OTEL_SECONDS_UNIT)
+                                                                                         .setDescription(OpenTelemetryConstants.HTTP_SERVER_REQUEST_DURATION_DESC)
+                                                                                         .setExplicitBucketBoundariesAdvice(BUCKET_BOUNDARIES_LIST).build());
 
         Context ctx = Context.current();
 
         double seconds = duration.toNanos() * NANO_CONVERSION;
-        httpHistogram.record(seconds, retrieveAttributes(httpStatAttributes), ctx);
+        httpHistogram.record(seconds,
+
+                             retrieveAttributes(httpStatAttributes), ctx);
 
     }
 
