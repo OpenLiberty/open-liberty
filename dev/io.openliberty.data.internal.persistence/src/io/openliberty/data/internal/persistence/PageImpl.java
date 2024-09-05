@@ -156,7 +156,7 @@ public class PageImpl<T> implements Page<T> {
             throw new NullPointerException("PageRequest: null");
         else
             throw new UnsupportedOperationException("The " + queryInfo.method.getName() + " method of the " +
-                                                    queryInfo.method.getDeclaringClass().getName() +
+                                                    queryInfo.repositoryInterface.getName() +
                                                     " repository has a " + queryInfo.method.getReturnType().getName() +
                                                     " return type but does not have a " + PageRequest.class.getName() +
                                                     " parameter."); // TODO NLS
