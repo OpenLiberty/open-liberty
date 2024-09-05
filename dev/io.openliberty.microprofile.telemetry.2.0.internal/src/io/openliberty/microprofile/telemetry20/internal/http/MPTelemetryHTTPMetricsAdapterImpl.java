@@ -86,9 +86,8 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
          *
          * However we cannot share it across multiple instances of OpenTelemetry
          */
-        final OpenTelemetry finalOtelInstnace = otelInstance;
         DoubleHistogram httpHistogram = httpHistogramMap.computeIfAbsent(otelInstance,
-                                                                         (OpenTelemetry ignored) -> finalOtelInstnace.getMeterProvider().get(INSTR_SCOPE)
+                                                                         (OpenTelemetry openTelemetry) -> openTelemetry.getMeterProvider().get(INSTR_SCOPE)
                                                                                          .histogramBuilder(OpenTelemetryConstants.HTTP_SERVER_REQUEST_DURATION_NAME)
                                                                                          .setUnit(OpenTelemetryConstants.OTEL_SECONDS_UNIT)
                                                                                          .setDescription(OpenTelemetryConstants.HTTP_SERVER_REQUEST_DURATION_DESC)
@@ -98,7 +97,6 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
 
         double seconds = duration.toNanos() * NANO_CONVERSION;
         httpHistogram.record(seconds,
-
                              retrieveAttributes(httpStatAttributes), ctx);
 
     }
