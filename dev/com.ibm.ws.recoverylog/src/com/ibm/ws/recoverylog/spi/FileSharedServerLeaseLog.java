@@ -32,6 +32,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
 import java.time.Instant;
+import java.util.stream.Stream;
 
 import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.ConfigurationProviderManager;
@@ -310,8 +311,8 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Exception locking lease control file: ", e);
         } finally {
-            try {
-                final long fileCount = Files.list(_serverInstallLeaseLogDir).peek(p -> {
+            try (Stream<Path> files = Files.list(_serverInstallLeaseLogDir)) {
+                final long fileCount = files.peek(p -> {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Lease directory contents: ", p);
                 }).count();
@@ -474,8 +475,8 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
             public Void run() {
                 // We'll start by trying to lock the control file, if we can't do it this time around, then so be it, we
                 // assume that someone else is either getting peer leases or deleting peer leases.
-                try (FileChannel theChannel = new RandomAccessFile(_controlFile.toFile(), "rw").getChannel(); FileLock lock = theChannel.tryLock();) {
-                    Files.list(_leaseLogDirectory).filter(path -> !Files.isDirectory(path)).filter(path -> 0 != path.compareTo(_controlFile)).filter(path -> !path.getFileName().toString().equals(_localRecoveryIdentity)).forEach(peer -> {
+                try (FileChannel theChannel = new RandomAccessFile(_controlFile.toFile(), "rw").getChannel(); FileLock lock = theChannel.tryLock(); Stream<Path> files = Files.list(_leaseLogDirectory);) {
+                    files.filter(path -> !Files.isDirectory(path)).filter(path -> 0 != path.compareTo(_controlFile)).filter(path -> !path.getFileName().toString().equals(_localRecoveryIdentity)).forEach(peer -> {
                         try {
                             peerLeaseTable.addPeerEntry(new PeerLeaseData(peer.getFileName().toString(), Files.getLastModifiedTime(peer), _leaseTimeout));
                         } catch (IOException e) {
