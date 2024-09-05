@@ -22,6 +22,8 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.WeakHashMap;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -53,7 +55,9 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
     private static final Double[] BUCKET_BOUNDARIES = { 0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0, 2.5, 5.0, 7.5, 10.0 };
     private static final List<Double> BUCKET_BOUNDARIES_LIST = Arrays.asList(BUCKET_BOUNDARIES);
 
-    private final WeakHashMap<OpenTelemetry, DoubleHistogram> httpHistogramMap = new WeakHashMap<OpenTelemetry, DoubleHistogram>();
+    //All access to threadUnsafeHTTPHistogramMap must be syncrhonized using httpHistogramMapLock
+    private final WeakHashMap<OpenTelemetry, DoubleHistogram> threadUnsafeHTTPHistogramMap = new WeakHashMap<OpenTelemetry, DoubleHistogram>();
+    private final ReadWriteLock httpHistogramMapLock = new ReentrantReadWriteLock();
 
     @Override
     public void updateHttpMetrics(HttpStatAttributes httpStatAttributes, Duration duration) {
@@ -78,20 +82,7 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
             }
         }
 
-        /*
-         * We can re-use the (histogram) Meter created here.
-         * The Meter is built using the same static values each time.
-         * The instrument that is recorded/updated is distinct for each
-         * http-route/response/method combination (corresponds with resolved attributes).
-         *
-         * However we cannot share it across multiple instances of OpenTelemetry
-         */
-        DoubleHistogram httpHistogram = httpHistogramMap.computeIfAbsent(otelInstance,
-                                                                         (OpenTelemetry openTelemetry) -> openTelemetry.getMeterProvider().get(INSTR_SCOPE)
-                                                                                         .histogramBuilder(OpenTelemetryConstants.HTTP_SERVER_REQUEST_DURATION_NAME)
-                                                                                         .setUnit(OpenTelemetryConstants.OTEL_SECONDS_UNIT)
-                                                                                         .setDescription(OpenTelemetryConstants.HTTP_SERVER_REQUEST_DURATION_DESC)
-                                                                                         .setExplicitBucketBoundariesAdvice(BUCKET_BOUNDARIES_LIST).build());
+        DoubleHistogram httpHistogram = getHTTPHistogram(otelInstance);
 
         Context ctx = Context.current();
 
@@ -121,4 +112,35 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
         return attributesBuilder.build();
     }
 
+    /*
+     * We can re-use the (histogram) Meter created here.
+     * The Meter is built using the same static values each time.
+     * The instrument that is recorded/updated is distinct for each
+     * http-route/response/method combination (corresponds with resolved attributes).
+     *
+     * However we cannot share it across multiple instances of OpenTelemetry
+     */
+    private DoubleHistogram getHTTPHistogram(OpenTelemetry otelInstance) {
+
+        try {
+            httpHistogramMapLock.readLock().lock();
+            if (threadUnsafeHTTPHistogramMap.containsKey(otelInstance)) {
+                return threadUnsafeHTTPHistogramMap.get(otelInstance);
+            }
+        } finally {
+            httpHistogramMapLock.readLock().unlock();
+        }
+
+        try {
+            httpHistogramMapLock.writeLock().lock();
+            return threadUnsafeHTTPHistogramMap.computeIfAbsent(otelInstance,
+                                                                (OpenTelemetry openTelemetry) -> openTelemetry.getMeterProvider().get(INSTR_SCOPE)
+                                                                                .histogramBuilder(OpenTelemetryConstants.HTTP_SERVER_REQUEST_DURATION_NAME)
+                                                                                .setUnit(OpenTelemetryConstants.OTEL_SECONDS_UNIT)
+                                                                                .setDescription(OpenTelemetryConstants.HTTP_SERVER_REQUEST_DURATION_DESC)
+                                                                                .setExplicitBucketBoundariesAdvice(BUCKET_BOUNDARIES_LIST).build());
+        } finally {
+            httpHistogramMapLock.writeLock().unlock();
+        }
+    }
 }
