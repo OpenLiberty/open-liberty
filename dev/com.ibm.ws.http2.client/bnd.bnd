@@ -52,7 +52,9 @@ Export-Package: \
   com.ibm.ws.http.netty.pipeline.inbound, \
   com.ibm.ws.http.netty.pipeline.outbound, \
   com.ibm.ws.http.netty.pipeline.http2, \
-  com.ibm.ws.http.logging.internal
+  com.ibm.ws.http.logging.internal, \
+  io.openliberty.http.options, \
+  io.openliberty.http.utils
   
 Import-Package: \
   !com.ibm.ws.http.channel.h2internal, \
