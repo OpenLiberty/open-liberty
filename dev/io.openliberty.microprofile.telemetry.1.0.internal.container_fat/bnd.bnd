@@ -28,6 +28,9 @@ tested.features:\
   cdi-2.0,\
   cdi-1.2,\
   cdi-4.1,\
+  concurrent-1.0,\
+  concurrent-3.1,\
+  concurrent-3.0,\
   mpTelemetry-1.1,\
   mpTelemetry-1.0,\
   mpTelemetry-2.0,\
@@ -45,6 +48,7 @@ tested.features:\
   restfulWS-3.1,\
   restfulWS-4.0,\
   restfulwsclient-4.0,\
+  servlet-3.1,\
   servlet-6.0,\
   servlet-6.1,\
   servlet-4.0
