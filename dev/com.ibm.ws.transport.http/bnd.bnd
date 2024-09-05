@@ -56,7 +56,9 @@ Import-Package: \
 
 Private-Package: \
 	com.ibm.ws.http.*, \
-	com.ibm.ws.genericbnf.internal
+	com.ibm.ws.genericbnf.internal, \
+	io.openliberty.http.options, \
+	io.openliberty.http.utils
 
 -dsannotations: com.ibm.ws.http.channel.internal.inbound.HttpPipelineEventHandler,\
   com.ibm.ws.http.dispatcher.internal.HttpDispatcher,\
