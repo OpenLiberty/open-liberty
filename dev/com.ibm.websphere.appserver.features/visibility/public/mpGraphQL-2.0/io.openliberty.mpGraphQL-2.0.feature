@@ -27,3 +27,4 @@ Subsystem-Name: MicroProfile GraphQL 2.0
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-Platform: microProfile-5.0,microProfile-6.0,microProfile-6.1,microProfile-7.0

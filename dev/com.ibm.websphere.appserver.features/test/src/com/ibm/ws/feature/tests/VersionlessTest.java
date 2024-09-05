@@ -376,23 +376,52 @@ public class VersionlessTest {
         platformFeatureBaseNames.add("io.openliberty.internal.mpVersion");
         platformFeatureBaseNames.add("com.ibm.websphere.appserver.eeCompatible");
 
+        // MicroProfile standalone features that we want to be versionless as well
+        platformFeatureBaseNames.add("com.ibm.websphere.appserver.mpContextPropagation");
+        platformFeatureBaseNames.add("com.ibm.websphere.appserver.mpGraphQL");
+        platformFeatureBaseNames.add("com.ibm.websphere.appserver.mpReactiveMessaging");
+        platformFeatureBaseNames.add("com.ibm.websphere.appserver.mpReactiveStreams");
+        platformFeatureBaseNames.add("io.openliberty.mpContextPropagation");
+        platformFeatureBaseNames.add("io.openliberty.mpGraphQL");
+        platformFeatureBaseNames.add("io.openliberty.mpReactiveMessaging");
+        platformFeatureBaseNames.add("io.openliberty.mpReactiveStreams");
+
         // Special versions of features that are not part of a convenience feature even though
         // they share the base feature name as feature we expect to have platforms listed
         Set<String> exceptionCases = new HashSet<>();
         exceptionCases.add("com.ibm.websphere.appserver.appSecurity-1.0"); // We use appSecurity-2.0 for EE 6 and EE 7
         exceptionCases.add("com.ibm.websphere.appserver.websocket-1.0"); // We use websocket-1.1 for EE 7 instead of 1.0
-        exceptionCases.add("com.ibm.websphere.appserver.eeCompatible-0.0"); // Special 0.0 version that purposely doesn't have platforms listed
         exceptionCases.add("com.ibm.websphere.appserver.servlet-servletSpi1.0"); // Private feature that has a public feature base name
 
+        Map<String, Set<String>> featurePlatforms = new HashMap<>();
         for (FeatureInfo featureInfo : featureRepo.values()) {
             String featureName = featureInfo.getName();
             boolean expectsPlatforms = platformFeatureBaseNames.contains(featureInfo.getBaseName());
 
             // If it is a feature that we expect to have platforms listed in it and we haven't already reported it and it isn't a special
             // feature that we don't expect a Platform to be associated with it.
-            if (!featureInfo.isAutoFeature() && expectsPlatforms && featureInfo.getPlatforms().isEmpty() && !featureToPlatformMapping.containsKey(featureName)
-                && !exceptionCases.contains(featureName)) {
-                errorMessage.append(featureName).append(" is a feature that expects Platforms to be listed\n");
+            if (!featureInfo.isAutoFeature() && expectsPlatforms && !exceptionCases.contains(featureName)) {
+                if (featureInfo.getPlatforms().isEmpty() && !featureToPlatformMapping.containsKey(featureName)) {
+                    errorMessage.append(featureName).append(" is a feature that expects Platforms to be listed\n");
+                }
+                String featureBaseNameToUse = featureInfo.getShortName();
+                if (featureBaseNameToUse != null) {
+                    featureBaseNameToUse = FeatureInfo.getBaseName(featureBaseNameToUse);
+                } else {
+                    featureBaseNameToUse = featureInfo.getBaseName();
+                }
+                Set<String> platforms = featurePlatforms.get(featureBaseNameToUse);
+                if (platforms == null) {
+                    platforms = new HashSet<>();
+                    featurePlatforms.put(featureBaseNameToUse, platforms);
+                }
+                Set<String> featureInfoPlatforms = featureInfo.getPlatforms();
+                for (String platform : featureInfoPlatforms) {
+                    if (!platforms.add(platform)) {
+                        errorMessage.append(featureName).append(" contains Platform ").append(platform)
+                                    .append(" that is also contained in another feature with the same base feature name ").append(featureBaseNameToUse).append("\n");
+                    }
+                }
             }
 
             if (!expectsPlatforms && !featureInfo.getPlatforms().isEmpty()) {
