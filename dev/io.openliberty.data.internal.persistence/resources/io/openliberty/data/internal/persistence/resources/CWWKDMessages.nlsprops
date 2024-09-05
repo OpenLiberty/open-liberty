@@ -270,16 +270,16 @@ CWWKD1024.missing.entity.prop.useraction=Inspect the declaration and usage of \
  each query condition and sort criterion.
 
 CWWKD1025.missing.id.prop=CWWKD1025E: The {0} entity class that is used by the \
- {1} method of the {2} repository interface does not have an Id property or \
+ {1} method of the {2} repository interface does not have an ID property or \
  accessor method.
 CWWKD1025.missing.id.prop.explanation=Repository methods that delete and return \
- an entity must have an Id property.
+ an entity must have an ID property.
 CWWKD1025.missing.id.prop.useraction=If the entity does not have a single \
- property that is the Id, define separate repository methods to query for the \
+ property for the ID, define separate repository methods that query for the \
  entity and delete the entity.
 
-CWWKD1026.ignore.case.not.text=CWWKD1026E: The {0} property of the {1} entity \
- is not a character or character sequence, so the {2} sort criteria must not \
+CWWKD1026.ignore.case.not.text=CWWKD1026E: The {0} property of the {1} entity is \
+ not a character or character sequence; therefore, the {2} sort criteria must not \
  specify to ignore case. The type of the property is {3}, and it was supplied to \
  the {4} method of the {5} repository interface.
 CWWKD1026.ignore.case.not.text.explanation=Sorting with case ignored is only \
@@ -291,7 +291,7 @@ CWWKD1026.ignore.case.not.text.useraction=Ensure the sort criteria is applied \
 CWWKD1027.anno.missing.prop.name=CWWKD1027E: Parameter {0} of the {1} method of \
  the {2} repository interface is annotated with an {3} annotation that does not \
  specify an entity property name as its value. The annotation must either specify \
- the entity property name as its value or the -parameters compile option must be \
+ the entity property name as its value, or the -parameters compile option must be \
  enabled and the parameter must have the same name as the entity property.
 CWWKD1027.anno.missing.prop.name.explanation=Parameters of repository update \
  methods must correspond to entity properties.
@@ -308,7 +308,7 @@ CWWKD1028.first.exceeds.max.useraction=Reduce the requested maximum number of \
 
 CWWKD1029.first.neg.or.zero=CWWKD1029E: The {0} method of the {1} repository \
  interface requests the first {2} results. The requested maximum number of \
- results to return must be positive.
+ results to return must be a positive number.
 CWWKD1029.first.neg.or.zero.explanation=The maximum number of query results \
  must be a positive number.
 CWWKD1029.first.neg.or.zero.useraction=Update the repository method to specify \
@@ -325,21 +325,21 @@ CWWKD1030.ql.lacks.entity.useraction=Update the query for repository method to \
 CWWKD1031.ql.similar.entity=CWWKD1031E: The {0} method of the {1} repository \
  interface specifies a query that requires a {2} entity name that is not found \
  but is a close match for the {3} entity name. The query is: {4}.
-CWWKD1031.ql.similar.entity.explanation=The query might have a typo in its \
- reference to the entity name.
+CWWKD1031.ql.similar.entity.explanation=The query might have a typographical \
+ error in its reference to the entity name.
 CWWKD1031.ql.similar.entity.useraction=Review the query to ensure the correct \
  entity name is used.
 
 CWWKD1032.ql.unknown.entity=CWWKD1032E: The {0} method of the {1} repository \
  interface specifies a query that requires a {2} entity name that is not found. \
- Check if {2} is the name of a valid entity. To enable the entity to be found, \
+ Ensure that {2} is the name of a valid entity. To enable the entity to be found, \
  give the repository a lifecycle method that is annotated with one of the {3} \
  annotations and supply the entity as its parameter. Alternatively, have the \
- repository extend DataRepository or another built-in repository interface, \
- with the entity class as the first type variable. The query is: {4}.
-CWWKD1032.ql.unknown.entity.explanation=The query might have a typo in its \
- reference to the entity name, or the repository does not specify its primary \
- entity class.
+ repository extend the DataRepository interface or another built-in repository \
+ interface, with the entity class as the first type variable. The query is: {4}.
+CWWKD1032.ql.unknown.entity.explanation=The query might have a typographical error \
+ in its reference to the entity name, or the repository does not specify its \
+ primary entity class.
 CWWKD1032.ql.unknown.entity.useraction=Review the query to ensure the correct \
  entity name is used. Review the repository definition to ensure the correct \
  primary entity class is specified.
