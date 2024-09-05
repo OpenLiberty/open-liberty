@@ -24,6 +24,7 @@ import com.ibm.ws.jaxrs20.client.fat.test.ClientContextInjectionTest;
 import com.ibm.ws.jaxrs20.client.fat.test.ComplexClientTest;
 import com.ibm.ws.jaxrs20.client.fat.test.DynamicOutboundSSLTest;
 import com.ibm.ws.jaxrs20.client.fat.test.HandleResponsesTest;
+import com.ibm.ws.jaxrs20.client.fat.test.HostnameVerificationTest;
 import com.ibm.ws.jaxrs20.client.fat.test.IBMJson4JProvidersTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRS20ClientAsyncInvokerTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRS20ClientAsyncInvokerTestWithConcurrency;
@@ -68,6 +69,7 @@ import componenttest.rules.repeater.RepeatTests;
                 ComplexClientTest.class,
                 DynamicOutboundSSLTest.class,
                 HandleResponsesTest.class,
+                HostnameVerificationTest.class,
                 IBMJson4JProvidersTest.class,
                 JacksonProvidersTest.class,
                 JAXRS20ClientAsyncInvokerTest.class,
