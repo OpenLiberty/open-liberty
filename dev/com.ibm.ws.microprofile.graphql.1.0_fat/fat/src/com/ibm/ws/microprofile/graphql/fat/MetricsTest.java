@@ -14,7 +14,6 @@ package com.ibm.ws.microprofile.graphql.fat;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -23,7 +22,6 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import mpGraphQL10.metrics.MetricsTestServlet;

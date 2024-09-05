@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,7 +14,6 @@ package com.ibm.ws.microprofile.graphql.fat;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -22,11 +21,9 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import mpGraphQL10.basicMutation.BasicMutationTestServlet;
-import io.openliberty.microprofile.graphql.fat.repeat.GraphQlRepeatActions;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 @RunWith(FATRunner.class)
@@ -38,9 +35,6 @@ public class BasicMutationTest extends FATServletClient {
     @Server(SERVER)
     @TestServlet(servlet = BasicMutationTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
-
-    @ClassRule
-    public static RepeatTests r = GraphQlRepeatActions.repeatDefault(SERVER);
 
     @BeforeClass
     public static void setUp() throws Exception {
