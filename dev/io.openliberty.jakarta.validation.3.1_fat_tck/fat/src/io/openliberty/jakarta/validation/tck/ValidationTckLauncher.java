@@ -20,6 +20,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.OperatingSystem;
+
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
@@ -27,6 +29,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKRunner;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+
 
 /**
  * This is a test class that runs the entire Jakarta Validation TCK against Full
@@ -64,6 +67,9 @@ public class ValidationTckLauncher {
          * - exclude.tests used for skipping tests if we find a TCK bug that needs a service release
          */
         additionalProps.put("validation.provider", validationProvider);
+        if (server.getMachine().getOperatingSystem() == OperatingSystem.LINUX){
+            additionalProps.put("javafx.platform", "linux");
+        }
         additionalProps.put("exclude.tests", "");
 
         //Configure server and install user feature
