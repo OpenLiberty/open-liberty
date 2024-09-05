@@ -16,8 +16,8 @@ configurations {
 }
 
 dependencies {
-  cloudant 'com.cloudant:cloudant-client:2.16.0',
-           'com.cloudant:cloudant-http:2.16.0',
+  cloudant 'com.cloudant:cloudant-client:2.20.1',
+           'com.cloudant:cloudant-http:2.20.1',
            project(':io.openliberty.org.apache.commons.codec'),
            project(':com.ibm.ws.org.apache.commons.io'),
            project(':io.openliberty.com.google.gson')
@@ -26,7 +26,7 @@ dependencies {
 task copyCloudant(type: Copy) {
   shouldRunAfter jar
   from configurations.cloudant
-  into new File(autoFvtDir, 'publish/shared/resources/cloudant-2.16')
+  into new File(autoFvtDir, 'publish/shared/resources/cloudant')
 }
 
 addRequiredLibraries.dependsOn copyCloudant

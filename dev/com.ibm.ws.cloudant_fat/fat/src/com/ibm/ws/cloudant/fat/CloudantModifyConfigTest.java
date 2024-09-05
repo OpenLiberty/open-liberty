@@ -370,7 +370,7 @@ public class CloudantModifyConfigTest extends FATServletClient {
                 "species=tarandus");
 
         // Copy 3 of the cloudant jars to a new location and point a new library at that location
-        RemoteFile sourceFolder = server.getFileFromLibertySharedDir("resources/cloudant-2.16");
+        RemoteFile sourceFolder = server.getFileFromLibertySharedDir("resources/cloudant");
         RemoteFile[] sourceFiles = sourceFolder.list(false);
         RemoteFile gsonSource = null;
         RemoteFile gsonDestination = null;
