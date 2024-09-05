@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2024 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,11 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
-import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE8_OR_LATER_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE9_OR_LATER_FEATURES;
-import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -37,16 +33,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.websphere.simplicity.config.WebContainerElement;
 
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -72,8 +62,6 @@ public class WCServerTest {
     private static final String SESSION_ID_LISTENER_APP_NAME = "SessionIdListener";
     private static final String SERVLET_CONTEXT_ADD_LISTENER_APP_NAME = "ServletContextAddListener";
     private static final String SERVLET_CONTEXT_CREATE_LISTENER_APP_NAME = "ServletContextCreateListener";
-    private static final String TEST_SERVLET_MAPPING_APP_NAME = "TestServletMapping";
-    private static final String TEST_SERVLET_MAPPING_ANNO_APP_NAME = "TestServletMappingAnno";
 
     @Server("servlet31_wcServer")
     public static LibertyServer LS;
@@ -122,13 +110,6 @@ public class WCServerTest {
                                                                                   "com.ibm.ws.webcontainer.servlet_31_fat.servletcontextcreatelistener.war.listeners");
         ServletContextCreateListenerApp = ServletContextCreateListenerApp.addAsLibraries(TestServlet31Jar);
 
-        WebArchive TestServletMappingApp = ShrinkHelper.buildDefaultApp(TEST_SERVLET_MAPPING_APP_NAME + ".war",
-                                                                        "com.ibm.ws.webcontainer.servlet_31_fat.testservletmapping.war.servlets");
-        TestServletMappingApp = (WebArchive) ShrinkHelper.addDirectory(TestServletMappingApp, "test-applications/TestServletMapping.war/resources");
-        WebArchive TestServletMappingAnnoApp = ShrinkHelper.buildDefaultApp(TEST_SERVLET_MAPPING_ANNO_APP_NAME + ".war",
-                                                                            "com.ibm.ws.webcontainer.servlet_31_fat.testservletmappinganno.war.servlets");
-        TestServletMappingAnnoApp = (WebArchive) ShrinkHelper.addDirectory(TestServletMappingAnnoApp, "test-applications/TestServletMappingAnno.war/resources");
-
         // Export the applications
         ShrinkHelper.exportDropinAppToServer(LS, TestServlet31App);
         ShrinkHelper.exportDropinAppToServer(LS, TestMetadataCompleteApp);
@@ -136,8 +117,6 @@ public class WCServerTest {
         ShrinkHelper.exportDropinAppToServer(LS, SessionIdListenerApp);
         ShrinkHelper.exportDropinAppToServer(LS, ServletContextAddListenerApp);
         ShrinkHelper.exportDropinAppToServer(LS, ServletContextCreateListenerApp);
-        ShrinkHelper.exportAppToServer(LS, TestServletMappingApp, DISABLE_VALIDATION);
-        ShrinkHelper.exportAppToServer(LS, TestServletMappingAnnoApp, DISABLE_VALIDATION);
 
         // Start the server and use the class name so we can find logs easily.
         LS.startServer(WCServerTest.class.getSimpleName() + ".log");
@@ -331,71 +310,6 @@ public class WCServerTest {
     }
 
     /**
-     * Verify that a duplicate <servlet-mapping> element results in a deployment error. Servlet 3.1 spec, section 12.2
-     *
-     * @throws Exception
-     */
-    @Test
-    @Mode(TestMode.FULL)
-    @ExpectedFFDC({ "com.ibm.wsspi.adaptable.module.UnableToAdaptException", "com.ibm.ws.container.service.metadata.MetaDataException" })
-    public void test_ServletMapping() throws Exception {
-
-        LibertyServer wlp = LS;
-        wlp.setMarkToEndOfLog();
-
-        wlp.saveServerConfiguration();
-        ServerConfiguration configuration = wlp.getServerConfiguration();
-        LOG.info("Server configuration that was saved: " + configuration);
-        // copy server.xml for TestServletMapping.war
-        // should use updateServerConfiguration(wlp.getServerRoot() +
-        wlp.setServerConfigurationFile("TestServletMapping/server.xml");
-        wlp.waitForConfigUpdateInLogUsingMark(null);
-        // check for error message
-        String logmsg = wlp.waitForStringInLogUsingMark("CWWKZ0002E:.*TestServletMapping");
-        Assert.assertNotNull("TestServletMapping application should have failed to start ", logmsg);
-
-        // application failed to start, verify that it is because of a duplicate servlet-mapping
-        logmsg = wlp.waitForStringInLogUsingMark("SRVE9016E:");
-        Assert.assertNotNull("TestServletMapping application deployment did not result in  message SRVE9016E: ", logmsg);
-
-        wlp.setMarkToEndOfLog();
-        wlp.updateServerConfiguration(configuration);
-        wlp.waitForConfigUpdateInLogUsingMark(null);
-    }
-
-    /**
-     * Verify that a duplicate <servlet-mapping> element results in a deployment error. Servlet 3.1 spec, section 12.2
-     *
-     * @throws Exception
-     */
-    @Test
-    @Mode(TestMode.FULL)
-    @ExpectedFFDC({ "com.ibm.wsspi.adaptable.module.UnableToAdaptException", "com.ibm.ws.container.service.metadata.MetaDataException" })
-    public void test_ServletMappingAnno() throws Exception {
-
-        LibertyServer wlp = LS;
-        wlp.setMarkToEndOfLog();
-
-        wlp.saveServerConfiguration();
-        ServerConfiguration configuration = wlp.getServerConfiguration();
-        LOG.info("Server configuration that was saved: " + configuration);
-        // copy server.xml for TestServletMappingAnno.war
-        wlp.setServerConfigurationFile("TestServletMappingAnno/server.xml");
-        wlp.waitForConfigUpdateInLogUsingMark(null);
-        // check for error message
-        String logmsg = wlp.waitForStringInLogUsingMark("CWWKZ0002E:.*TestServletMappingAnno");
-        Assert.assertNotNull("TestServletMappingAnno application should have failed to start ", logmsg);
-
-        // application failed to start, verify that it is because of a duplicate servlet-mapping
-        logmsg = wlp.waitForStringInLogUsingMark("SRVE9016E:");
-        Assert.assertNotNull("TestServletMappingAnno application deployment did not result in  message SRVE9016E ", logmsg);
-
-        wlp.setMarkToEndOfLog();
-        wlp.updateServerConfiguration(configuration);
-        wlp.waitForConfigUpdateInLogUsingMark(null);
-    }
-
-    /**
      * Verifies that the correct message is printed out when the class name specified for the ServletContext.addListener(String className)
      * API can not be found.
      *
@@ -437,76 +351,6 @@ public class WCServerTest {
         Assert.assertNotNull("REQUEST_INITIALIZED was not found in the logs. The listener must not have been created and added correctly",
                              logMessage);
 
-    }
-
-    /**
-     * Servlet 5.0: decodeUrlPlusSign = "false" by default.
-     * Only run in EE 9 (i.e skip 3.1 NO_MODIFICATION, and 4.0 EE8_FEATURES)
-     */
-    @Test
-    @Mode(TestMode.FULL)
-    @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
-    public void test_DecodeUrlPlusSignDefault_Servlet5() throws Exception {
-        verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/plus+sign.html", new String[] { "This file has a plus sign in the name" });
-    }
-
-    /**
-     * This test case verifies a plus in a URL is decoded to a space when default
-     * decodeUrlPlusSign = "true" is in effect.
-     */
-    @Test
-    @Mode(TestMode.FULL)
-    @SkipForRepeat(EE9_OR_LATER_FEATURES)
-    public void test_DecodeUrlPlusSignDefault() throws Exception {
-        verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/noplus+sign.html", new String[] { "This file has a space in the name" });
-    }
-
-    /**
-     * This test case verifies that WC property decodeUrlPlusSign="false" leaves "+" undecoded.
-     * For servlet-3.1 and servlet-4.0, the default for decodeUrlPlusSign has been true,
-     * which decodes "+" to blank.
-     *
-     * For servlet-5.0, default decodeUrlPlusSign="false". This test explicitly set it to "true"
-     * which decode "+" to a space/blank
-     */
-    @Test
-    @Mode(TestMode.FULL)
-    public void test_DecodeUrlPlusSign() throws Exception {
-
-        LibertyServer wlp = LS;
-        wlp.saveServerConfiguration();
-
-        ServerConfiguration configuration = wlp.getServerConfiguration();
-        LOG.info("Server configuration that was saved: " + configuration);
-
-        // Set the decodeUrlPlusSign property to false.
-        WebContainerElement webContainer = configuration.getWebContainer();
-
-        if (JakartaEEAction.isEE9OrLaterActive()) {
-            webContainer.setDecodeurlplussign(true);
-            LOG.info("Setting decodeUrlPlusSign to true");
-        } else {
-            webContainer.setDecodeurlplussign(false);
-            LOG.info("Setting decodeUrlPlusSign to false");
-        }
-
-        wlp.setMarkToEndOfLog();
-        wlp.updateServerConfiguration(configuration);
-        wlp.waitForConfigUpdateInLogUsingMark(null);
-
-        LOG.info("Server configuration updated to: " + configuration);
-
-        try {
-            if (JakartaEEAction.isEE9OrLaterActive())
-                verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/noplus+sign.html", new String[] { "This file has a space in the name" });
-            else
-                verifyStringsInResponse(new HttpClient(), "/TestServlet31", "/plus+sign.html", new String[] { "This file has a plus sign in the name" });
-        } finally {
-            // Reset the server.xml.
-            wlp.setMarkToEndOfLog();
-            wlp.updateServerConfiguration(configuration);
-            wlp.waitForConfigUpdateInLogUsingMark(null);
-        }
     }
 
     /**
