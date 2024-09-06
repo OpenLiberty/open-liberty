@@ -1097,15 +1097,14 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         if (classpathContainerInfos == null) {
             List<ContainerInfo> containerInfos = new ArrayList<ContainerInfo>();
 
-            boolean excludeManifestClassPath = classPathLoader == ClassPathLoader.EARLOADER;
-            addEJBJarContainerInfos(containerInfos, excludeManifestClassPath);
+            addEJBJarContainerInfos(containerInfos);
             if (classPathLoader == ClassPathLoader.EARLOADER) {
                 // RARs come first when using the EAR loader for Class-Path
-                addConnectorContainerInfos(containerInfos, excludeManifestClassPath);
+                addConnectorContainerInfos(containerInfos);
                 addEARLibContainerInfos(containerInfos);
             } else {
                 addEARLibContainerInfos(containerInfos);
-                addConnectorContainerInfos(containerInfos, excludeManifestClassPath);
+                addConnectorContainerInfos(containerInfos);
             }
             checkClientJarContainerInfos(containerInfos);
             manifestClassPathInfos.addTo(containerInfos);
@@ -1115,8 +1114,8 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         return classpathContainerInfos;
     }
 
-    private void addEJBJarContainerInfos(List<ContainerInfo> classpathContainerInfos, boolean excludeManifestClassPath) {
-        addModuleContainerInfos(classpathContainerInfos, EJBModuleContainerInfo.class, excludeManifestClassPath);
+    private void addEJBJarContainerInfos(List<ContainerInfo> classpathContainerInfos) {
+        addModuleContainerInfos(classpathContainerInfos, EJBModuleContainerInfo.class);
     }
 
     private void addEARLibContainerInfos(List<ContainerInfo> classpathContainerInfos) {
@@ -1151,21 +1150,18 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         }
     }
 
-    private void addConnectorContainerInfos(List<ContainerInfo> classpathContainerInfos, boolean excludeManifestClassPath) {
-        addModuleContainerInfos(classpathContainerInfos, ConnectorModuleContainerInfo.class, excludeManifestClassPath);
+    private void addConnectorContainerInfos(List<ContainerInfo> classpathContainerInfos) {
+        addModuleContainerInfos(classpathContainerInfos, ConnectorModuleContainerInfo.class);
     }
 
-    private void addModuleContainerInfos(final List<ContainerInfo> classpathContainerInfos, Class<?> type, boolean excludeManifestClassPath) {
+    private void addModuleContainerInfos(final List<ContainerInfo> classpathContainerInfos, Class<?> type) {
         try {
             for (ModuleContainerInfoBase modInfo : moduleContainerInfos) {
                 if (type.isInstance(modInfo)) {
-                    if (excludeManifestClassPath) {
-                        modInfo.getClassesContainerInfo().stream(). //
-                                        filter((c) -> !(c.getType() == Type.MANIFEST_CLASSPATH)). //
-                                        forEach(classpathContainerInfos::add);
-                    } else {
-                        classpathContainerInfos.addAll(modInfo.getClassesContainerInfo());
-                    }
+                    modInfo.getClassesContainerInfo().stream(). //
+                    // filter if already on the ear loader from manifestClassPathInfos
+                                    filter((c) -> !manifestClassPathInfos.contains(c)). //
+                                    forEach(classpathContainerInfos::add);
                 }
             }
         } catch (Throwable th) {
