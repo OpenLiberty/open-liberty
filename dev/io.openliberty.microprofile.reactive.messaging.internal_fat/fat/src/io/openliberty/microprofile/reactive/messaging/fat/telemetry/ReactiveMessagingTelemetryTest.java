@@ -36,7 +36,6 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.reactive.messaging.fat.apps.telemetry.ReactiveMessagingTelemetryTestServlet;

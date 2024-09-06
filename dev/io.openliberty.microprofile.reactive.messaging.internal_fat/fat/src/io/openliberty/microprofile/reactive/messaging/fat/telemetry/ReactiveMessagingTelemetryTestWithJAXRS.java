@@ -43,7 +43,6 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestC
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
