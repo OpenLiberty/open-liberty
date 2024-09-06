@@ -30,6 +30,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.data.internal.persistence.cdi.DataExtension;
 import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.page.CursoredPage;
@@ -56,7 +57,7 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
     CursoredPageImpl(QueryInfo queryInfo, PageRequest pageRequest, Object[] args) {
 
         if (pageRequest == null)
-            PageImpl.missingPageRequest(queryInfo);
+            queryInfo.missingPageRequest();
 
         this.args = args;
         this.queryInfo = queryInfo;
@@ -67,7 +68,7 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
 
         int maxPageSize = this.pageRequest.size();
         int firstResult = this.pageRequest.mode() == PageRequest.Mode.OFFSET //
-                        ? RepositoryImpl.computeOffset(this.pageRequest) //
+                        ? queryInfo.computeOffset(this.pageRequest) //
                         : 0;
 
         EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
@@ -111,10 +112,11 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
     @FFDCIgnore(Exception.class)
     private long countTotalElements() {
         if (!pageRequest.requestTotal())
-            throw new IllegalStateException("A total count of elements and pages is not retreived from the database because the " +
-                                            pageRequest + " page request specifies a value of 'false' for 'requestTotal'. " +
-                                            "To request a page with the total count included, use the " +
-                                            "PageRequest.withTotal method instead of the PageRequest.withoutTotal method."); // TODO NLS
+            throw exc(IllegalStateException.class,
+                      "CWWKD1042.no.totals",
+                      queryInfo.method.getName(),
+                      queryInfo.repositoryInterface.getName(),
+                      pageRequest);
 
         EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
         try {
@@ -162,6 +164,25 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
             }
 
         return Cursor.forKey(keyValues);
+    }
+
+    /**
+     * Construct a RuntimeException or subclass and log the error unless the
+     * error is known to be an error on the part of the application using a
+     * repository method, such as supplying a null PageRequest.
+     *
+     * @param exceptionType RuntimeException or subclass, which must have a
+     *                          constructor that accepts the message as a single
+     *                          String argument.
+     * @param messageId     NLS message ID.
+     * @param args          message arguments.
+     * @return RuntimeException or subclass.
+     */
+    @Trivial
+    private final static <T extends RuntimeException> T exc(Class<T> exceptionType,
+                                                            String messageId,
+                                                            Object... args) {
+        return DataExtension.exc(exceptionType, messageId, args);
     }
 
     @Override
@@ -265,8 +286,11 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
     @Override
     public PageRequest nextPageRequest() {
         if (!hasNext())
-            throw new NoSuchElementException("Cannot request a next page. To avoid this error, check for a " +
-                                             "true result of CursoredPage.hasNext before attempting this method."); // TODO NLS
+            throw exc(NoSuchElementException.class,
+                      "CWWKD1040.no.next.page",
+                      queryInfo.method.getName(),
+                      queryInfo.repositoryInterface.getName(),
+                      "CursoredPage.hasNext");
 
         int maxPageSize = pageRequest.size();
         int endingResultIndex = Math.min(maxPageSize, results.size()) - 1; // CURSOR_PREVIOUS that reads a partial page can have a next page
@@ -280,8 +304,10 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
     @Override
     public PageRequest previousPageRequest() {
         if (!hasPrevious())
-            throw new NoSuchElementException("Cannot request a previous page. To avoid this error, check for a " +
-                                             "true result of CursoredPage.hasPrevious before attempting this method."); // TODO NLS
+            throw exc(NoSuchElementException.class,
+                      "CWWKD1039.no.prev.cursor.page",
+                      queryInfo.method.getName(),
+                      queryInfo.repositoryInterface.getName());
 
         // Decrement page number by 1 unless it would go below 1.
         return PageRequest.beforeCursor(Cursor.forKey(queryInfo.getCursorValues(results.get(0))),

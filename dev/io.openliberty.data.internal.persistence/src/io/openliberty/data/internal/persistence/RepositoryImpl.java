@@ -33,7 +33,6 @@ import java.sql.SQLSyntaxErrorException;
 import java.sql.SQLTransientConnectionException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
@@ -213,29 +212,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
             return (int) startIndex;
         else
             throw new IllegalArgumentException("The starting point for " + range + " is not within 1 to Integer.MAX_VALUE (2147483647)."); // TODO
-    }
-
-    /**
-     * Compute the zero-based offset for the start of a page.
-     *
-     * @param pagination requested pagination.
-     * @return offset for the specified page.
-     * @throws IllegalArgumentException if the offset exceeds Integer.MAX_VALUE
-     *                                      or the PageRequest requests cursor-based pagination.
-     */
-    static int computeOffset(PageRequest pagination) {
-        if (pagination.mode() != PageRequest.Mode.OFFSET)
-            throw new IllegalArgumentException("Cursor-based pagination mode " + pagination.mode() +
-                                               " can only be used with repository methods with the following return types: " +
-                                               CursoredPage.class.getName() +
-                                               ". For offset pagination, use a PageRequest without a cursor."); // TODO NLS
-        int maxPageSize = pagination.size();
-        long pageIndex = pagination.page() - 1; // zero-based
-        if (Integer.MAX_VALUE / maxPageSize >= pageIndex)
-            return (int) (pageIndex * maxPageSize);
-        else
-            throw new IllegalArgumentException("The offset for " + pagination.page() + " pages of size " + maxPageSize +
-                                               " exceeds Integer.MAX_VALUE (2147483647)."); // TODO
     }
 
     /**
@@ -480,7 +456,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
-     * Construct a RuntimeException or subclass and log the error.
+     * Construct a RuntimeException or subclass and log the error unless the
+     * error is known to be an error on the part of the application using a
+     * repository method, such as supplying a null PageRequest.
      *
      * @param exceptionType RuntimeException or subclass, which must have a
      *                          constructor that accepts the message as a single
@@ -493,14 +471,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private final static <T extends RuntimeException> T exc(Class<T> exceptionType,
                                                             String messageId,
                                                             Object... args) {
-        Tr.error(tc, messageId, args);
-        String message = Tr.formatMessage(tc, messageId, args);
-        try {
-            return exceptionType.getConstructor(String.class).newInstance(message);
-        } catch (Exception x) {
-            // should never occur
-            throw new DataException(messageId + ' ' + Arrays.toString(args));
-        }
+        return DataExtension.exc(exceptionType, messageId, args);
     }
 
     /**
@@ -787,13 +758,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
     /**
      * Request an instance of a resource of the specified type.
      *
-     * @param type resource type.
+     * @param method the repository method.
      * @return instance of the resource. Never null.
      * @throws UnsupportedOperationException if the type of resource is not available.
      */
-    private <T> T getResource(Class<T> type) {
+    private <T> T getResource(Method method) {
         Deque<AutoCloseable> resources = defaultMethodResources.get();
         Object resource = null;
+        Class<?> type = method.getReturnType();
         if (EntityManager.class.equals(type))
             resource = primaryEntityInfoFuture.join().builder.createEntityManager();
         else if (DataSource.class.equals(type))
@@ -806,7 +778,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
             }
 
         if (resource == null)
-            throw new UnsupportedOperationException("The " + type.getName() + " type of resource is not available from the Jakarta Data provider."); // TODO NLS
+            throw exc(UnsupportedOperationException.class,
+                      "CWWKD1044.invalid.resource.type",
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      type.getName(),
+                      List.of(Connection.class.getName(),
+                              DataSource.class.getName(),
+                              EntityManager.class.getName()));
 
         if (resource instanceof AutoCloseable) {
             if (resources == null) {
@@ -1195,12 +1174,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         } else if (Page.class.equals(multiType)) {
                             returnValue = new PageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
                         } else if (pagination != null && !PageRequest.Mode.OFFSET.equals(pagination.mode())) {
-                            throw new IllegalArgumentException("A PageRequest that specifies the " + pagination.mode() +
-                                                               " mode must not be supplied to the " + method.getName() +
-                                                               " method of the " + repositoryInterface.getName() +
-                                                               " repository because the method returns " +
-                                                               queryInfo.method.getGenericReturnType().getTypeName() +
-                                                               " rather than " + CursoredPage.class.getName() + "."); // TODO NLS
+                            throw exc(IllegalArgumentException.class,
+                                      "CWWKD1035.incompat.page.mode",
+                                      pagination.mode(),
+                                      method.getName(),
+                                      repositoryInterface.getName(),
+                                      method.getGenericReturnType().getTypeName(),
+                                      CursoredPage.class.getSimpleName());
                         } else {
                             em = entityInfo.builder.createEntityManager();
 
@@ -1218,7 +1198,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                             : queryInfo.maxResults;
 
                             int startAt = limit != null ? computeOffset(limit) //
-                                            : pagination != null ? computeOffset(pagination) //
+                                            : pagination != null ? queryInfo.computeOffset(pagination) //
                                                             : 0;
 
                             if (maxResults > 0) {
@@ -1517,7 +1497,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         break;
                     }
                     case RESOURCE_ACCESS: {
-                        returnValue = getResource(returnType);
+                        returnValue = getResource(method);
                         break;
                     }
                     default:

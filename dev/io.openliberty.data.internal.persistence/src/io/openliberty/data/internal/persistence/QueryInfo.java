@@ -21,6 +21,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.RecordComponent;
+import java.math.BigInteger;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.data.internal.persistence.cdi.DataExtension;
 import io.openliberty.data.internal.version.DataVersionCompatibility;
 import jakarta.data.Limit;
 import jakarta.data.Order;
@@ -508,6 +510,41 @@ public class QueryInfo {
     }
 
     /**
+     * Compute the zero-based offset for the start of a page.
+     *
+     * @param pagination requested pagination.
+     * @return offset for the specified page.
+     * @throws IllegalArgumentException if the offset exceeds Integer.MAX_VALUE or
+     *                                      the PageRequest requests cursor-based
+     *                                      pagination.
+     */
+    int computeOffset(PageRequest pagination) {
+        if (pagination.mode() != PageRequest.Mode.OFFSET)
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1035.incompat.page.mode",
+                      pagination.mode(),
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      method.getGenericReturnType().getTypeName(),
+                      CursoredPage.class.getSimpleName());
+
+        int maxPageSize = pagination.size();
+        long pageIndex = pagination.page() - 1; // zero-based
+        if (Integer.MAX_VALUE / maxPageSize >= pageIndex)
+            return (int) (pageIndex * maxPageSize);
+        else
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1043.offset.exceeds.max",
+                      BigInteger.valueOf(pageIndex) //
+                                      .multiply(BigInteger.valueOf(maxPageSize)) //
+                                      .toString(),
+                      pagination,
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      "Integer.MAX_VALUE (" + Integer.MAX_VALUE + ")");
+    }
+
+    /**
      * Raises an error because the number of cursor elements does not match the
      * number of sort parameters.
      *
@@ -519,10 +556,14 @@ public class QueryInfo {
         for (int i = 0; i < cursor.size(); i++)
             keyTypes.add(cursor.get(i) == null ? null : cursor.get(i).getClass().getName());
 
-        throw new MappingException("The cursor with element types " + keyTypes +
-                                   " cannot be used with sort criteria of " + sorts +
-                                   " because they have different numbers of elements. The cursor size is " + cursor.size() +
-                                   " and the sort criteria size is " + sorts.size() + "."); // TODO NLS
+        throw exc(IllegalArgumentException.class,
+                  "CWWKD1036.cursor.size.mismatch",
+                  cursor.size(),
+                  method.getName(),
+                  repositoryInterface.getName(),
+                  sorts.size(),
+                  loggable(cursor.elements()),
+                  sorts);
     }
 
     /**
@@ -545,7 +586,9 @@ public class QueryInfo {
     }
 
     /**
-     * Construct a RuntimeException or subclass and log the error.
+     * Construct a RuntimeException or subclass and log the error unless the
+     * error is known to be an error on the part of the application using a
+     * repository method, such as supplying a null PageRequest.
      *
      * @param exceptionType RuntimeException or subclass, which must have a
      *                          constructor that accepts the message as a single
@@ -558,14 +601,7 @@ public class QueryInfo {
     private final static <T extends RuntimeException> T exc(Class<T> exceptionType,
                                                             String messageId,
                                                             Object... args) {
-        Tr.error(tc, messageId, args);
-        String message = Tr.formatMessage(tc, messageId, args);
-        try {
-            return exceptionType.getConstructor(String.class).newInstance(message);
-        } catch (Exception x) {
-            // should never occur
-            throw new DataException(messageId + ' ' + Arrays.toString(args));
-        }
+        return DataExtension.exc(exceptionType, messageId, args);
     }
 
     /**
@@ -1742,12 +1778,14 @@ public class QueryInfo {
     @Trivial
     Object[] getCursorValues(Object entity) {
         if (!entityInfo.getType().isInstance(entity))
-            throw new MappingException("Unable to obtain a cursor from the " +
-                                       (entity == null ? null : entity.getClass().getName()) +
-                                       " result that is returned by the " + method.getName() +
-                                       " method of the " + repositoryInterface.getName() +
-                                       " repository. Queries that use cursor-based pagination must return results of the same type as the entity type, which is " +
-                                       entityInfo.getType().getName() + "."); // TODO NLS
+            throw exc(MappingException.class,
+                      "CWWKD1037.cursor.rtrn.mismatch",
+                      loggable(entity),
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      entityInfo.getType().getName(),
+                      method.getGenericReturnType().getTypeName());
+
         ArrayList<Object> cursorValues = new ArrayList<>();
         for (Sort<?> sort : sorts)
             try {
@@ -2715,6 +2753,35 @@ public class QueryInfo {
         return entityInfo.builder.provider.loggable(repositoryInterface,
                                                     method,
                                                     value);
+    }
+
+    /**
+     * Raise an error because the PageRequest is missing.
+     *
+     * @throws IllegalArgumentException      if the user supplied a null PageRequest
+     * @throws UnsupportedOperationException if the repository method signature
+     *                                           lacks a parameter for supplying a
+     *                                           PageRequest
+     */
+    void missingPageRequest() {
+        Class<?>[] paramTypes = method.getParameterTypes();
+
+        // Check parameter positions after those used for query parameters
+        boolean signatureHasPageReq = false;
+        for (int i = paramCount - paramAddedCount; //
+                        i < paramTypes.length; //
+                        i++)
+            signatureHasPageReq |= PageRequest.class.equals(paramTypes[i]);
+
+        if (signatureHasPageReq)
+            // NullPointerException is required by BasicRepository.findAll
+            throw new NullPointerException("PageRequest: null");
+        else
+            throw exc(UnsupportedOperationException.class,
+                      "CWWKD1041.rtrn.mismatch.pagereq",
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      method.getGenericReturnType().getTypeName());
     }
 
     /**
