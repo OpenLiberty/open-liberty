@@ -19,7 +19,8 @@ Import-Package: \
     *
 
 Export-Package: \
-    io.openliberty.microprofile.openapi20.test.merge.*
+    io.openliberty.microprofile.openapi20.test.*,\
+    io.openliberty.microprofile.openapi20.validation.test.*
 
 test.project:true
 
@@ -45,5 +46,6 @@ test.project:true
     com.ibm.ws.org.slf4j.jdk14;version=latest, \
     org.jboss.logging:jboss-logging,\
     com.ibm.ws.kernel.service;version=latest,\
-    io.openliberty.microprofile.openapi.internal.common;version=latest
-    
+    io.openliberty.microprofile.openapi.internal.common;version=latest,\
+    com.ibm.ws.org.apache.commons.lang3;version=latest,\
+    com.ibm.websphere.javaee.jaxrs.2.1;version=latest

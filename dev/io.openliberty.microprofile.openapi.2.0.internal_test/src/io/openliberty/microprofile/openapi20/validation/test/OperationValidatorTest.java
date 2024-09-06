@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,11 +12,13 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.validation.test;
 
+import org.eclipse.microprofile.openapi.models.Operation;
 import org.junit.Assert;
 import org.junit.Test;
 
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
 import io.openliberty.microprofile.openapi20.internal.validation.OperationValidator;
+import io.openliberty.microprofile.openapi20.internal.validation.TypeValidator;
 import io.openliberty.microprofile.openapi20.test.utils.TestValidationContextHelper;
 import io.openliberty.microprofile.openapi20.test.utils.TestValidationHelper;
 import io.smallrye.openapi.api.models.OpenAPIImpl;
@@ -33,9 +35,13 @@ public class OperationValidatorTest {
 
     String key = null;
 
+    protected TypeValidator<Operation> getValidator() {
+        return OperationValidator.getInstance();
+    }
+
     @Test
     public void testCorrectOperation() {
-        OperationValidator validator = OperationValidator.getInstance();
+        TypeValidator<Operation> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         String pathNameOne = "/my-test-path-one/";
@@ -63,7 +69,7 @@ public class OperationValidatorTest {
 
     @Test
     public void testNullOperation() {
-        OperationValidator validator = OperationValidator.getInstance();
+        TypeValidator<Operation> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         OpenAPIImpl model = new OpenAPIImpl();
@@ -77,7 +83,7 @@ public class OperationValidatorTest {
 
     @Test
     public void testOperationWithNoResponses() {
-        OperationValidator validator = OperationValidator.getInstance();
+        TypeValidator<Operation> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         String pathNameOne = "/my-test-path-one/";
@@ -101,7 +107,7 @@ public class OperationValidatorTest {
 
     @Test
     public void testOperationWithNonUniqueIds() {
-        OperationValidator validator = OperationValidator.getInstance();
+        TypeValidator<Operation> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         String pathNameOne = "/my-test-path-one/";

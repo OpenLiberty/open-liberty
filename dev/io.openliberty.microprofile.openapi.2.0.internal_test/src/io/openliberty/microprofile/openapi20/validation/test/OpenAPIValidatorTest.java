@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,15 +12,21 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.validation.test;
 
+import static io.openliberty.microprofile.openapi20.test.utils.ValidationResultMatcher.hasError;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.eclipse.microprofile.openapi.models.tags.Tag;
 import org.junit.Assert;
 import org.junit.Test;
 
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
 import io.openliberty.microprofile.openapi20.internal.validation.OpenAPIValidator;
+import io.openliberty.microprofile.openapi20.internal.validation.TypeValidator;
 import io.openliberty.microprofile.openapi20.test.utils.TestValidationContextHelper;
 import io.openliberty.microprofile.openapi20.test.utils.TestValidationHelper;
 import io.smallrye.openapi.api.models.OpenAPIImpl;
@@ -32,12 +38,16 @@ import io.smallrye.openapi.api.models.tags.TagImpl;
 public class OpenAPIValidatorTest {
 
     OpenAPIImpl model = new OpenAPIImpl();
-    Context context = new TestValidationContextHelper(model);
+    protected Context context = new TestValidationContextHelper(model);
+
+    protected TypeValidator<OpenAPI> getValidator() {
+        return OpenAPIValidator.getInstance();
+    }
 
     @Test
     public void testCorrectOpenAPI() {
 
-        OpenAPIValidator validator = OpenAPIValidator.getInstance();
+        TypeValidator<OpenAPI> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         OpenAPIImpl openapi = new OpenAPIImpl();
@@ -70,7 +80,7 @@ public class OpenAPIValidatorTest {
 
     @Test
     public void testNullOpenAPI() {
-        OpenAPIValidator validator = OpenAPIValidator.getInstance();
+        TypeValidator<OpenAPI> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         OpenAPIImpl openapi = null;
@@ -80,7 +90,7 @@ public class OpenAPIValidatorTest {
 
     @Test
     public void testNoOpenAPI() {
-        OpenAPIValidator validator = OpenAPIValidator.getInstance();
+        TypeValidator<OpenAPI> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         OpenAPIImpl openapi = new OpenAPIImpl();
@@ -108,13 +118,12 @@ public class OpenAPIValidatorTest {
         openapi.setTags(tags);
 
         validator.validate(vh, context, openapi);
-        Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"openapi\" field is missing or is set to an invalid value"));
+        assertThat(vh.getResult(), hasError(containsString("Required \"openapi\" field is missing or is set to an invalid value")));
     }
 
     @Test
     public void testNoInfoOpenAPI() {
-        OpenAPIValidator validator = OpenAPIValidator.getInstance();
+        TypeValidator<OpenAPI> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         OpenAPIImpl openapi = new OpenAPIImpl();
@@ -146,7 +155,7 @@ public class OpenAPIValidatorTest {
 
     @Test
     public void testNoPathsOpenAPI() {
-        OpenAPIValidator validator = OpenAPIValidator.getInstance();
+        TypeValidator<OpenAPI> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         OpenAPIImpl openapi = new OpenAPIImpl();
@@ -172,13 +181,12 @@ public class OpenAPIValidatorTest {
         openapi.setTags(tags);
 
         validator.validate(vh, context, openapi);
-        Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"paths\" field is missing or is set to an invalid value"));
+        assertThat(vh.getResult(), hasError("Required \"paths\" field is missing or is set to an invalid value"));
     }
 
     @Test
     public void testOpenAPIWithInvalidVersion() {
-        OpenAPIValidator validator = OpenAPIValidator.getInstance();
+        TypeValidator<OpenAPI> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         OpenAPIImpl openapi = new OpenAPIImpl();
@@ -206,13 +214,12 @@ public class OpenAPIValidatorTest {
         openapi.setTags(tags);
 
         validator.validate(vh, context, openapi);
-        Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The OpenAPI Object must contain a valid OpenAPI specification version."));
+        assertThat(vh.getResult(), hasError(containsString("The OpenAPI Object must contain a valid OpenAPI specification version.")));
     }
 
     @Test
     public void testNullTagsOpenAPI() {
-        OpenAPIValidator validator = OpenAPIValidator.getInstance();
+        TypeValidator<OpenAPI> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         OpenAPIImpl openapi = new OpenAPIImpl();
@@ -235,7 +242,7 @@ public class OpenAPIValidatorTest {
 
     @Test
     public void testOpenAPITagsNotUnique() {
-        OpenAPIValidator validator = OpenAPIValidator.getInstance();
+        TypeValidator<OpenAPI> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         OpenAPIImpl openapi = new OpenAPIImpl();
