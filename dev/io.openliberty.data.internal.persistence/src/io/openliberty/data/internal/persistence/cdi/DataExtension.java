@@ -190,7 +190,10 @@ public class DataExtension implements Extension {
                 (EntityManager.class.equals(returnType)
                  || DataSource.class.equals(returnType)
                  || Connection.class.equals(returnType))) {
-                QueryInfo queryInfo = new QueryInfo(method, QueryInfo.Type.RESOURCE_ACCESS);
+                QueryInfo queryInfo = new QueryInfo( //
+                                repositoryInterface, //
+                                method, //
+                                QueryInfo.Type.RESOURCE_ACCESS);
 
                 List<QueryInfo> queries = queriesPerEntity.get(Void.class);
                 if (queries == null)
@@ -333,7 +336,12 @@ public class DataExtension implements Extension {
                 }
             }
 
-            queries.add(new QueryInfo(method, entityParamType, returnArrayComponentType, returnTypeAtDepth));
+            queries.add(new QueryInfo( //
+                            repositoryInterface, //
+                            method, //
+                            entityParamType, //
+                            returnArrayComponentType, //
+                            returnTypeAtDepth));
         }
 
         // Confirm which classes are actually entity classes and that all entity classes are supported

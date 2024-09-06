@@ -374,7 +374,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         }
 
         throw new MappingException("The " + queryInfo.method.getName() + " method of the " +
-                                   queryInfo.method.getDeclaringClass().getName() +
+                                   repositoryInterface.getName() +
                                    " repository is unable to convert a " +
                                    fromType.getName() + " value into a " + toType.getName() +
                                    " value that is required by the return type of the method.", // TODO NLS
@@ -394,7 +394,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private void convertFail(Method method, Class<?> fromType, long min, long max) {
         Class<?> toType = method.getReturnType();
         throw new MappingException("The " + method.getName() + " method of the " +
-                                   method.getDeclaringClass().getName() +
+                                   repositoryInterface.getName() +
                                    " repository is unable to convert a " +
                                    fromType.getName() + " value into a " + toType.getName() +
                                    " value because the value is not within the range of " +
@@ -656,7 +656,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     returnValue = null;
                 else
                     throw new NonUniqueResultException("The " + queryInfo.method.getName() +
-                                                       " method of the " + queryInfo.method.getDeclaringClass().getName() +
+                                                       " method of the " + repositoryInterface.getName() +
                                                        " repository interface has the " +
                                                        queryInfo.method.getGenericReturnType().getTypeName() +
                                                        " return type, which is not capable of returning " +
@@ -746,7 +746,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             throw new UnsupportedOperationException(); // TODO
         } else if (id != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "set ?" + (p + 1) + ' ' + id.getClass().getSimpleName());
+                Tr.debug(tc, "set ?" + (p + 1) + ' ' + queryInfo.loggable(id));
             query.setParameter(++p, id);
         }
 
@@ -754,7 +754,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         if (entityInfo.versionAttributeName != null && version != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "set ?" + (p + 1) + ' ' + version.getClass().getSimpleName());
+                Tr.debug(tc, "set ?" + (p + 1) + ' ' + queryInfo.loggable(version));
             query.setParameter(++p, version);
         }
 
@@ -936,7 +936,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         returnValue = null;
                     else
                         throw new NonUniqueResultException("The " + queryInfo.method.getName() +
-                                                           " method of the " + queryInfo.method.getDeclaringClass().getName() +
+                                                           " method of the " + repositoryInterface.getName() +
                                                            " repository interface has the " +
                                                            queryInfo.method.getGenericReturnType().getTypeName() +
                                                            " return type, which is not capable of returning " +
@@ -1102,7 +1102,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                     throw exc(UnsupportedOperationException.class,
                                               "CWWKD1017.dup.special.param",
                                               method.getName(),
-                                              method.getDeclaringClass().getName(),
+                                              repositoryInterface.getName(),
                                               "Limit");
                             } else if (param instanceof Order) {
                                 @SuppressWarnings("unchecked")
@@ -1115,7 +1115,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                     throw exc(UnsupportedOperationException.class,
                                               "CWWKD1017.dup.special.param",
                                               method.getName(),
-                                              method.getDeclaringClass().getName(),
+                                              repositoryInterface.getName(),
                                               "PageRequest");
                             } else if (param instanceof Sort) {
                                 @SuppressWarnings("unchecked")
@@ -1131,7 +1131,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 throw exc(DataException.class,
                                           "CWWKD1023.extra.param",
                                           method.getName(),
-                                          method.getDeclaringClass().getName(),
+                                          repositoryInterface.getName(),
                                           queryInfo.paramCount,
                                           method.getParameterTypes()[i].getName(),
                                           queryInfo.jpql);
@@ -1142,7 +1142,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             throw exc(UnsupportedOperationException.class,
                                       "CWWKD1018.confl.special.param",
                                       method.getName(),
-                                      method.getDeclaringClass().getName(),
+                                      repositoryInterface.getName(),
                                       "Limit",
                                       "PageRequest");
 
@@ -1158,7 +1158,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 // TODO raise a helpful error to prevent some cases of attempted unordered pagination?
                                 //else if (!queryInfo.hasOrderBy)
                                 //    throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
-                                //                                            queryInfo.method.getDeclaringClass().getName() +
+                                //                                            repositoryInterface.getName() +
                                 //                                            " repository has a PageRequest parameter without a way to " +
                                 //                                            " specify a deterministic ordering of results, which is required " +
                                 //                                            " when requesting pages. Use the OrderBy annotation or add a " +
@@ -1197,7 +1197,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         } else if (pagination != null && !PageRequest.Mode.OFFSET.equals(pagination.mode())) {
                             throw new IllegalArgumentException("A PageRequest that specifies the " + pagination.mode() +
                                                                " mode must not be supplied to the " + method.getName() +
-                                                               " method of the " + method.getDeclaringClass().getName() +
+                                                               " method of the " + repositoryInterface.getName() +
                                                                " repository because the method returns " +
                                                                queryInfo.method.getGenericReturnType().getTypeName() +
                                                                " rather than " + CursoredPage.class.getName() + "."); // TODO NLS
@@ -1272,7 +1272,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                 Object value = accessor instanceof Method ? ((Method) accessor).invoke(result) : ((Field) accessor).get(result);
                                                 if (trace && tc.isDebugEnabled())
                                                     Tr.debug(this, tc, queryInfo.jpqlDelete,
-                                                             "set ?" + (numParams + 1) + ' ' + (value == null ? null : value.getClass().getSimpleName()));
+                                                             "set ?" + (numParams + 1) + ' ' + queryInfo.loggable(value));
                                                 delete.setParameter(++numParams, value);
                                             }
                                             delete.executeUpdate();
@@ -1282,7 +1282,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                 entityInfo.recordClass != null && entityInfo.recordClass.isInstance(result)) {
                                                 List<Member> accessors = entityInfo.attributeAccessors.get(entityInfo.attributeNames.get(ID));
                                                 if (accessors == null || accessors.isEmpty())
-                                                    throw new MappingException("Unable to find the id attribute on the " + entityInfo.name + " entity."); // TODO NLS
+                                                    throw exc(MappingException.class,
+                                                              "CWWKD1025.missing.id.prop",
+                                                              entityInfo.getType().getName(),
+                                                              method.getName(),
+                                                              repositoryInterface);
                                                 for (Member accessor : accessors)
                                                     value = accessor instanceof Method ? ((Method) accessor).invoke(value) : ((Field) accessor).get(value);
                                             } else if (!entityInfo.idType.isInstance(value)) {
@@ -1297,7 +1301,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                             jakarta.persistence.Query delete = em.createQuery(queryInfo.jpqlDelete);
                                             if (trace && tc.isDebugEnabled())
                                                 Tr.debug(this, tc, queryInfo.jpqlDelete,
-                                                         "set ?1 " + (value == null ? null : value.getClass().getSimpleName()));
+                                                         "set ?1 " + queryInfo.loggable(value));
                                             delete.setParameter(1, value);
                                             delete.executeUpdate();
                                         }
@@ -1372,7 +1376,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                         throw new MappingException("The " + queryInfo.returnArrayType.getName() +
                                                                    " array type that is declared to be returned by the " +
                                                                    queryInfo.method.getName() + " method of the " +
-                                                                   queryInfo.method.getDeclaringClass().getName() +
+                                                                   repositoryInterface.getName() +
                                                                    " repository is incompatible with the " +
                                                                    firstNonNullResult.getClass().getName() +
                                                                    " type of the observed query results."); // TODO NLS
@@ -1613,14 +1617,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (e == null)
             throw exc(NullPointerException.class,
                       "CWWKD1015.null.entity.param",
-                      queryInfo.method,
-                      queryInfo.method.getDeclaringClass());
+                      queryInfo.method.getName(),
+                      repositoryInterface.getName());
 
         if (!entityClass.isInstance(e))
             throw exc(IllegalArgumentException.class,
                       "CWWKD1016.incompat.entity.param",
-                      queryInfo.method,
-                      queryInfo.method.getDeclaringClass(),
+                      queryInfo.method.getName(),
+                      repositoryInterface.getName(),
                       entityClass.getName(),
                       e.getClass().getName());
 
@@ -1654,12 +1658,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
             int p = 1;
             if (id != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "set ?" + p + ' ' + id.getClass().getSimpleName());
+                    Tr.debug(tc, "set ?" + p + ' ' + queryInfo.loggable(id));
                 delete.setParameter(p++, id);
             }
             if (version != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "set ?" + p + ' ' + version.getClass().getSimpleName());
+                    Tr.debug(tc, "set ?" + p + ' ' + queryInfo.loggable(version));
                 delete.setParameter(p, version);
             }
         } else {
@@ -1935,7 +1939,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         returnValue = null;
                     else
                         throw new NonUniqueResultException("The " + queryInfo.method.getName() +
-                                                           " method of the " + queryInfo.method.getDeclaringClass().getName() +
+                                                           " method of the " + repositoryInterface.getName() +
                                                            " repository interface has the " +
                                                            queryInfo.method.getGenericReturnType().getTypeName() +
                                                            " return type, which is not capable of returning " +
@@ -1993,14 +1997,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (e == null)
             throw exc(NullPointerException.class,
                       "CWWKD1015.null.entity.param",
-                      queryInfo.method,
-                      queryInfo.method.getDeclaringClass());
+                      queryInfo.method.getName(),
+                      repositoryInterface.getName());
 
         if (!entityClass.isInstance(e))
             throw exc(IllegalArgumentException.class,
                       "CWWKD1016.incompat.entity.param",
-                      queryInfo.method,
-                      queryInfo.method.getDeclaringClass(),
+                      queryInfo.method.getName(),
+                      repositoryInterface.getName(),
                       entityClass.getName(),
                       e.getClass().getName());
 
@@ -2032,8 +2036,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         int p = 0;
         for (String attrName : attrsToUpdate)
-            QueryInfo.setParameter(++p, update, e,
-                                   entityInfo.attributeAccessors.get(attrName));
+            queryInfo.setParameter(++p, update, e, attrName);
 
         // id parameter(s)
 
@@ -2041,7 +2044,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             throw new UnsupportedOperationException(); // TODO
         } else if (id != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "set ?" + (p + 1) + ' ' + id.getClass().getSimpleName());
+                Tr.debug(tc, "set ?" + (p + 1) + ' ' + queryInfo.loggable(id));
             update.setParameter(++p, id);
         }
 
@@ -2049,7 +2052,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         if (entityInfo.versionAttributeName != null && version != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "set ?" + (p + 1) + ' ' + version.getClass().getSimpleName());
+                Tr.debug(tc, "set ?" + (p + 1) + ' ' + queryInfo.loggable(version));
             update.setParameter(++p, version);
         }
 
