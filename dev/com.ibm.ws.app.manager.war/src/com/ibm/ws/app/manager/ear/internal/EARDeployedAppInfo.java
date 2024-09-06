@@ -57,7 +57,6 @@ import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.dd.app.Module;
 import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.ws.javaee.version.JavaEEVersion;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.DefaultNotification;
 import com.ibm.wsspi.adaptable.module.Entry;
@@ -87,24 +86,8 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         private static boolean issuedBetaMessage = false;
 
         public static ClassPathLoader convert(Object config) {
-            if (!(config instanceof String)) {
-                // handles null case; default to WARLOADER
-                return WARLOADER;
-            }
-            if (!ProductInfo.getBetaEdition()) {
-                throw new UnsupportedOperationException("BETA: The config attribute 'addWebModuleClassPathTo' is beta and is not available.");
-            } else {
-                if (!issuedBetaMessage) {
-                    Tr.info(_tc, "BETA: The beta config attribute 'addWebModuleClassPathTo' has been used.");
-                    issuedBetaMessage = true;
-                }
-            }
-            try {
-                return valueOf(((String) config).toUpperCase());
-            } catch (IllegalArgumentException e) {
-                // auto FFDC here
-                return WARLOADER;
-            }
+            // Just for testing!! force the earLoader to be used
+            return EARLOADER;
         }
     }
 
