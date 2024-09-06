@@ -9,6 +9,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
+# This change is only for demo purpose. 
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.7
