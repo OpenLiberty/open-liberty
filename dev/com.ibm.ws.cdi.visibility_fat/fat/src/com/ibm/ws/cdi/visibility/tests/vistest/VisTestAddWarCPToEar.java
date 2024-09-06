@@ -58,7 +58,6 @@ import java.util.logging.Logger;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -68,8 +67,6 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EERepeatActions;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyClientFactory;
 import componenttest.topology.impl.LibertyServer;
@@ -77,19 +74,19 @@ import componenttest.topology.utils.FATServletClient;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class VisTest extends FATServletClient {
+public class VisTestAddWarCPToEar extends FATServletClient {
 
-    public static final String SERVER_NAME = "visTestServer";
-    public static final String CLIENT_NAME = "visTestClient";
+    public static final String SERVER_NAME = "visTestServerAddWarCPToEar";
+    public static final String CLIENT_NAME = "visTestClientAddWarCPToEar";
 
-    @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE11, EERepeatActions.EE8, EERepeatActions.EE7);
+//    @ClassRule
+//    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE11, EERepeatActions.EE8, EERepeatActions.EE7);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
     public static LibertyClient client = LibertyClientFactory.getLibertyClient(CLIENT_NAME);
 
-    public static Logger LOG = Logger.getLogger(VisTest.class.getName());
+    public static Logger LOG = Logger.getLogger(VisTestAddWarCPToEar.class.getName());
 
     private static Map<Location, String> appClientResults = null;
 

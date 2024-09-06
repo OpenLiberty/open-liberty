@@ -1,0 +1,22 @@
+<client description="visibility test client">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>javaeeClient-7.0</feature>
+    </featureManager>
+    
+    <enterpriseApplication location="visTest.ear" defaultClientModule="visTestAppClient.jar" addWebModuleClassPathTo="earLoader" >
+        <classloader commonLibraryRef="visTestCommonLib" privateLibraryRef="visTestPrivateLib" />
+    </enterpriseApplication>
+    
+    <library id="visTestPrivateLib">
+       <fileset includes="visTestPrivateLib.jar"/>
+    </library>
+    
+    <library id="visTestCommonLib">
+       <fileset includes="visTestCommonLib.jar"/>
+    </library>
+    
+</client>
