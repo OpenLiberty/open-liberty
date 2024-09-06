@@ -1,10 +1,10 @@
 #*******************************************************************************
-# Copyright (c) 2019, 2023 IBM Corporation and others.
+# Copyright (c) 2019, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -35,11 +35,11 @@ fat.project: true
 
 
 tested.features: appsecurity-4.0, cdi-4.1, expressionlanguage-4.0, mpConfig-2.0, mpConfig-3.0, mpConfig-3.1, mpGraphQL-2.0, mpMetrics-2.0, mpMetrics-3.0, \
-  mpMetrics-4.0, mpMetrics-5.1, mpRestClient-2.0, mpRestClient-3.0, mpRestClient-4.0, appsecurity-5.0, mpmetrics-5.0, restfulwsclient-3.1, restfulwsclient-4.0, concurrent-3.0, concurrent-3.1, jsonb-3.0, servlet-6.1
+  mpMetrics-4.0, mpMetrics-5.1, mpRestClient-2.0, mpRestClient-3.0, mpRestClient-4.0, appsecurity-5.0, mpmetrics-5.0, restfulwsclient-3.1, restfulwsclient-4.0, \
+  concurrent-3.0, concurrent-3.1, jsonb-3.0, servlet-6.1, appSecurity-6.0
 
 -buildpath: \
   io.smallrye:smallrye-graphql-client-api;strategy=exact;version=1.0.26,\
-  io.openliberty.microprofile.graphql.internal_repeat_tests;version=latest,\
   com.ibm.websphere.javaee.annotation.1.2;version=latest,\
   com.ibm.websphere.javaee.cdi.2.0;version=latest,\
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
