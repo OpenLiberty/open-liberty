@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 
@@ -32,18 +31,13 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
 
-import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult;
-import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult.ValidationEvent.Severity;
-import io.openliberty.microprofile.openapi20.internal.services.OASValidator;
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIModelOperations;
-import io.openliberty.microprofile.openapi20.internal.validation.ValidatorUtils;
 import io.smallrye.openapi.runtime.OpenApiRuntimeException;
 import io.smallrye.openapi.runtime.io.Format;
 import io.smallrye.openapi.runtime.io.OpenApiSerializer;
 
 public class OpenAPIUtils {
     private static final TraceComponent tc = Tr.register(OpenAPIUtils.class);
-    private static final ServiceCaller<OASValidator> validatorService = new ServiceCaller<>(OpenAPIUtils.class, OASValidator.class);
     private static final ServiceCaller<OpenAPIModelOperations> modelOpsService = new ServiceCaller<>(OpenAPIUtils.class, OpenAPIModelOperations.class);
 
     /**
@@ -75,41 +69,6 @@ public class OpenAPIUtils {
         }
 
         return oasResult;
-    }
-
-    /**
-     * The validateDocument method validates the generated OpenAPI model and logs any warnings/errors.
-     *
-     * @param document
-     *     The OpenAPI document (model) to validate
-     */
-    @Trivial
-    public static void validateDocument(OpenAPI document) {
-        OASValidationResult result = validatorService.run(v -> {
-            return v.validate(document);
-        }).orElseThrow(() -> new NoSuchElementException("validatorService"));
-        final StringBuilder sbError = new StringBuilder();
-        final StringBuilder sbWarnings = new StringBuilder();
-        if (result.hasEvents()) {
-            result.getEvents().stream().forEach(v -> {
-                final String message = ValidatorUtils.formatMessage(ValidationMessageConstants.VALIDATION_MESSAGE, v.message, v.location);
-                if (v.severity == Severity.ERROR) {
-                    sbError.append("\n - " + message);
-                } else if (v.severity == Severity.WARNING) {
-                    sbWarnings.append("\n - " + message);
-                }
-            });
-
-            String errors = sbError.toString();
-            if (!errors.isEmpty()) {
-                Tr.error(tc, MessageConstants.OPENAPI_DOCUMENT_VALIDATION_ERROR, errors + "\n");
-            }
-
-            String warnings = sbWarnings.toString();
-            if (!warnings.isEmpty()) {
-                Tr.warning(tc, MessageConstants.OPENAPI_DOCUMENT_VALIDATION_WARNING, warnings + "\n");
-            }
-        }
     }
 
     /**

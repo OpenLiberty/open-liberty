@@ -9,8 +9,12 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.internal.services;
 
+import java.util.List;
+
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.eclipse.microprofile.openapi.models.info.Info;
+import org.eclipse.microprofile.openapi.models.media.Schema;
+import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
 
 import io.smallrye.openapi.runtime.OpenApiRuntimeException;
 
@@ -52,5 +56,17 @@ public interface OpenAPIModelOperations {
      * @return the default OpenAPI model
      */
     public OpenAPI createDefaultOpenApiModel();
+
+    /**
+     * Get the list of accepted types from a schema
+     * <p>
+     * Works around the change in type signature of the Schema.getType method in MP OpenAPI 4.0.
+     * <p>
+     * OpenAPI v3.0 only allows a single type here, whereas OpenAPI v3.1 allows multiple.
+     *
+     * @param schema the schema
+     * @return the list of schema types, or {@code null} if the {@code type} property is not set
+     */
+    public List<SchemaType> getTypes(Schema schema);
 
 }

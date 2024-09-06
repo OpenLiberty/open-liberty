@@ -42,6 +42,8 @@ import org.eclipse.microprofile.openapi.models.security.SecurityScheme;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariable;
 import org.eclipse.microprofile.openapi.models.tags.Tag;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
@@ -57,10 +59,11 @@ import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.C
 import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 
 /**
- * OpenAPI model validator. Checks structural constraints on the model and reports errors for violations.
+ * OpenAPI v3.0 model validator. Checks structural constraints on the model and reports errors for violations.
  */
-public class OASValidatorImpl implements OASValidator {
-    private static final TraceComponent tc = Tr.register(OASValidatorImpl.class);
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = "openapi.version=3.0")
+public class OASValidator30Impl implements OASValidator {
+    private static final TraceComponent tc = Tr.register(OASValidator30Impl.class);
 
     @Reference
     protected OpenAPIModelWalker modelWalker;
@@ -116,6 +119,23 @@ public class OASValidatorImpl implements OASValidator {
                 locations.add(location);
                 linkOperationIds.put(operationId, locations);
             }
+        }
+
+        @Override
+        public <T> T validateReference(Context context, String key, String ref, Class<T> clazz) {
+            Object component = validateReference(context, key, ref);
+            if (!clazz.isInstance(component)) {
+                final String message = Tr.formatMessage(tc, ValidationMessageConstants.REFERENCE_TO_OBJECT_INVALID, ref);
+                addValidationEvent(new ValidationEvent(Severity.ERROR, context.getLocation(), message));
+                return null;
+            } else {
+                return clazz.cast(component);
+            }
+        }
+
+        @Override
+        public Object validateReference(Context context, String key, String ref) {
+            return ReferenceValidator.getInstance().validate(this, context, key, ref);
         }
 
         public void validateLinkOperationIds() {

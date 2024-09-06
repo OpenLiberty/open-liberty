@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.validation.test;
+
+import static io.openliberty.microprofile.openapi20.test.utils.ValidationResultMatcher.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +43,8 @@ import io.smallrye.openapi.api.models.responses.APIResponsesImpl;
  */
 public class PathItemValidatorTest {
 
-    OpenAPIImpl model = new OpenAPIImpl();
-    Context context = new TestValidationContextHelper(model);
+    protected OpenAPIImpl model = new OpenAPIImpl();
+    protected Context context = new TestValidationContextHelper(model);
 
     @Test
     public void testCorrectPathItem() {
@@ -186,7 +189,7 @@ public class PathItemValidatorTest {
         pathItem.ref("http://test-this-ref.com");
 
         validator.validate(vh, context, key, pathItem);
-        Assert.assertEquals(0, vh.getEventsSize());
+        assertThat(vh.getResult(), successful());
     }
 
     @Test

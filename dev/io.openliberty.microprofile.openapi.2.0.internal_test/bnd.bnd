@@ -31,6 +31,7 @@ test.project:true
 	com.ibm.ws.org.jboss.jandex;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
@@ -45,7 +46,6 @@ test.project:true
     com.ibm.ws.org.slf4j.api;version=latest, \
     com.ibm.ws.org.slf4j.jdk14;version=latest, \
     org.jboss.logging:jboss-logging,\
-    com.ibm.ws.kernel.service;version=latest,\
     io.openliberty.microprofile.openapi.internal.common;version=latest,\
     com.ibm.ws.org.apache.commons.lang3;version=latest,\
     com.ibm.websphere.javaee.jaxrs.2.1;version=latest

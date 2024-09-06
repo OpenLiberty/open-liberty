@@ -1,17 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.validation.test;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,22 +20,31 @@ import java.util.Map;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import io.openliberty.microprofile.openapi20.internal.services.OpenAPIModelOperations;
+import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelOperationsImpl;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
 import io.openliberty.microprofile.openapi20.internal.validation.SchemaValidator;
+import io.openliberty.microprofile.openapi20.test.utils.TestServiceCaller;
 import io.openliberty.microprofile.openapi20.test.utils.TestValidationContextHelper;
 import io.openliberty.microprofile.openapi20.test.utils.TestValidationHelper;
 import io.smallrye.openapi.api.models.OpenAPIImpl;
 import io.smallrye.openapi.api.models.media.SchemaImpl;
 
-/**
- *
- */
 public class SchemaValidatorTest {
 
     OpenAPIImpl model = new OpenAPIImpl();
     Context context = new TestValidationContextHelper(model);
+
+    @BeforeClass
+    public static void setup() throws Exception {
+        // Manually provide required OSGi services
+        Field f = SchemaValidator.class.getDeclaredField("MODEL_OPS");
+        f.setAccessible(true);
+        f.set(null, new TestServiceCaller<>(OpenAPIModelOperations.class, new OpenAPIModelOperationsImpl()));
+    }
 
     @Test
     public void testSchemaCorrect() {
