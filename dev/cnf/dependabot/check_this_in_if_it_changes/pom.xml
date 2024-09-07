@@ -2974,7 +2974,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
       <artifactId>microprofile-fault-tolerance-api</artifactId>
-      <version>4.1-RC1</version>
+      <version>4.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.graphql</groupId>
@@ -3119,7 +3119,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.openapi</groupId>
       <artifactId>microprofile-openapi-api</artifactId>
-      <version>4.0-RC3</version>
+      <version>4.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.opentracing</groupId>
@@ -3219,7 +3219,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.rest.client</groupId>
       <artifactId>microprofile-rest-client-api</artifactId>
-      <version>4.0-RC2</version>
+      <version>4.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.parsson</groupId>
@@ -3939,7 +3939,7 @@
     <dependency>
       <groupId>org.jboss.weld.environment</groupId>
       <artifactId>weld-environment-common</artifactId>
-      <version>5.1.1.SP1</version>
+      <version>5.1.1.SP2</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.environment</groupId>
@@ -3959,7 +3959,7 @@
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
-      <version>5.1.1.SP1</version>
+      <version>5.1.1.SP2</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
@@ -3984,7 +3984,7 @@
     <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-osgi-bundle</artifactId>
-      <version>5.1.1.SP1</version>
+      <version>5.1.1.SP2</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld</groupId>

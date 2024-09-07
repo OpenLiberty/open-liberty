@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 ////// Update me when updating weld ////
-def weldVersion = "5.1.1.SP1"     ////
+def weldVersion = "5.1.1.SP2"     ////
 ////////////////////////////////////////
 
 def unzippDir = "${buildDir}/unzip"
