@@ -30,13 +30,13 @@
         <AD id="defaultClientModule" name="%earapp.defaultClientModule.name" description="%earapp.defaultClientModule.desc" type="String" required="false"/>
 <!--        <AD id="classloader" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.classloading.classloader" required="false" name="%classloader.name" description="%classloader.desc" />
         <AD id="application-bnd" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.javaee.dd.appbnd" required="false" name="%appBnd.name" description="%appBnd.desc" />-->
-        <AD name="internal" description="internal use only"
+        <AD name="%earapp.addWebModuleClassPathTo.name" description="%earapp.addWebModuleClassPathTo.desc"
             id="addWebModuleClassPathTo"
             required="false" 
             type="String" 
             ibm:beta="true" >
-            <Option label="%warLoader" value="warLoader"/>
-            <Option label="%earLoader" value="earLoader"/>
+            <Option label="%earapp.addWebModuleClassPathTo.warLoader" value="warLoader"/>
+            <Option label="%earapp.addWebModuleClassPathTo.earLoader" value="earLoader"/>
         </AD>
       </OCD>  
     <Designate factoryPid="com.ibm.ws.app.manager.earappcfg">
