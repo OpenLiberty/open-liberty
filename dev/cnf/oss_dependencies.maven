@@ -7,8 +7,10 @@ biz.aQute.bnd:biz.aQute.bnd:7.0.0
 cglib:cglib:3.3.0
 ch.qos.logback:logback-classic:1.2.3
 com.beust:jcommander:1.72
+com.cloudant:cloudant-client:2.20.1
 com.cloudant:cloudant-client:2.16.0
 com.cloudant:cloudant-client:2.8.0
+com.cloudant:cloudant-http:2.20.1
 com.cloudant:cloudant-http:2.16.0
 com.cloudant:cloudant-http:2.8.0
 com.fasterxml.jackson.core:jackson-annotations:2.15.2
