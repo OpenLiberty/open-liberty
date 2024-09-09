@@ -74,6 +74,7 @@ public class CloudTestBase extends FATServletClient {
 
     @Before
     public void setup() throws Exception {
+        TxTestContainerSuite.assertHealthy();
         serversToCleanup = null;
     }
 }
