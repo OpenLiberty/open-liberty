@@ -79,9 +79,6 @@ public class VisTestAddWarCPToEar extends FATServletClient {
     public static final String SERVER_NAME = "visTestServerAddWarCPToEar";
     public static final String CLIENT_NAME = "visTestClientAddWarCPToEar";
 
-//    @ClassRule
-//    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE11, EERepeatActions.EE8, EERepeatActions.EE7);
-
     @Server(SERVER_NAME)
     public static LibertyServer server;
     public static LibertyClient client = LibertyClientFactory.getLibertyClient(CLIENT_NAME);
