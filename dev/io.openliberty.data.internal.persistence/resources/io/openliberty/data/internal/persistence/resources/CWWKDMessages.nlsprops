@@ -361,7 +361,7 @@ CWWKD1034.ql.where.required.explanation=A WHERE clause is required when \
  using cursor-based pagination.
 CWWKD1034.ql.where.required.useraction=Add a WHERE clause to the query.
 
-CWWKD1035.incompat.page.mode=CWWKD1035E: A PageRequest with the {0} pagination \
+CWWKD1035.incompat.page.mode=CWWKD1035E: A page request with the {0} pagination \
  mode must not be supplied to the {1} method of the {2} repository interface \
  because the method returns {3} instead of {4}.
 CWWKD1035.incompat.page.mode.explanation=The requested pagination mode is \
@@ -370,17 +370,17 @@ CWWKD1035.incompat.page.mode.useraction=Use a return type of Page for the \
  OFFSET pagination mode and a return type of CursoredPage for the CURSOR_NEXT \
  and CURSOR_PREVIOUS pagination modes.
 
-CWWKD1036.cursor.size.mismatch=CWWKD1036E: A Cursor with {0} elements that is \
+CWWKD1036.cursor.size.mismatch=CWWKD1036E: A cursor with {0} elements that is \
  supplied to the {1} method of the {2} repository interface cannot be used with \
- sort criteria of size {3} because the number and order of the Cursor elements \
- must match the sort criteria. The Cursor consists of: {4}. The sort criteria is: \
+ sort criteria of size {3} because the number and order of the cursor elements \
+ must match the sort criteria. The cursor consists of: {4}. The sort criteria is: \
  {5}.
-CWWKD1036.cursor.size.mismatch.explanation=The number of Cursor elements must \
+CWWKD1036.cursor.size.mismatch.explanation=The number of cursor elements must \
  match the size of the combined sort criteria of the repository method.
-CWWKD1036.cursor.size.mismatch.useraction=Correct the Cursor elements or the \
+CWWKD1036.cursor.size.mismatch.useraction=Correct the cursor elements or the \
  sort criteria such that both have the same size.
 
-CWWKD1037.cursor.rtrn.mismatch=CWWKD1037E: Unable to obtain a Cursor from the \
+CWWKD1037.cursor.rtrn.mismatch=CWWKD1037E: Unable to obtain a cursor from the \
  {0} result of the {1} method of the {2} repository interface. Queries that \
  use cursor-based pagination must return results of the same type as the \
  entity type, which is {3}. The repository method return type is {4}.
@@ -390,8 +390,8 @@ CWWKD1037.cursor.rtrn.mismatch.useraction=Update the repository method to \
  return the entity type.
 
 CWWKD1038.no.prev.offset.page=CWWKD1038E: A page number prior to {0} cannot \
- be requested for the {1} method of the {2} repository interface because \
- Page.hasPrevious returns false, indicating there is no previous page.
+ be requested for the {1} method of the {2} repository interface because the \
+ Page.hasPrevious method returns false, indicating there is no previous page.
 CWWKD1038.no.prev.offset.page.explanation=Offset pagination does not allow \
  page numbers less than 1.
 CWWKD1038.no.prev.offset.page.useraction=Ensure that the requested page number \
@@ -399,10 +399,10 @@ CWWKD1038.no.prev.offset.page.useraction=Ensure that the requested page number \
  to request the previous page.
 
 CWWKD1039.no.prev.cursor.page=CWWKD1039E: A previous page cannot be requested \
- for the {0} method of the {1} repository interface because Page.hasPrevious \
- returns false, indicating there is no previous page.
+ for the {0} method of the {1} repository interface because the Page.hasPrevious \
+ method returns false, indicating there is no previous page.
 CWWKD1039.no.prev.cursor.page.explanation=Cursor-based pagination does not allow \
- requesting a previous page when the current page is known to contains the \
+ requesting a previous page when the current page is known to contain the \
  results at the beginning of the data set.
 CWWKD1039.no.prev.cursor.page.useraction=Use the Page.hasPrevious method to \
  ensure it is valid to request the previous page.
@@ -418,8 +418,8 @@ CWWKD1040.no.next.page.useraction=Use the hasNext method to ensure it is valid \
 CWWKD1041.rtrn.mismatch.pagereq=CWWKD1041E: The {0} method of the {1} repository \
  interface has a {2} return type but lacks a parameter of type PageRequest \
  following the parameters for the query conditions.
-CWWKD1041.rtrn.mismatch.pagereq.explanation=Repository methods that return Page \
- and CursoredPage must have a PageRequest parameter.
+CWWKD1041.rtrn.mismatch.pagereq.explanation=Repository methods with the Page \
+ and CursoredPage return types must have a PageRequest parameter.
 CWWKD1041.rtrn.mismatch.pagereq.useraction=Add a PageRequest parameter to the \
  repository method signature.
 
@@ -429,7 +429,7 @@ CWWKD1042.no.totals=CWWKD1042E: Pages that are retrieved by the {0} method of \
  To request a page with the total count included, use the PageRequest.withTotal \
  method instead of the PageRequest.withoutTotal method.
 CWWKD1042.no.totals.explanation=The PageRequest.withoutTotal method specifies that \
- requested pages will not include a total count of elements and pages.
+ requested pages do not include a total count of elements and pages.
 CWWKD1042.no.totals.useraction=Use the PageRequest.withTotal method to request a \
  total count of elements and pages.
 
