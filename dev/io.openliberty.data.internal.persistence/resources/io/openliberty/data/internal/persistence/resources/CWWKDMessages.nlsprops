@@ -459,3 +459,39 @@ CWWKD1045.unknown.entity.anno.explanation=The built-in Jakarta Data provider doe
 CWWKD1045.unknown.entity.anno.useraction=Remove the unrecognized entity annotation \
  or use the provider attribute of the Repository annotation to select a Jakarta \
  Data provider that recognizes the entity annotation.
+
+CWWKD1046.result.convert.err=CWWKD1046E: The {0} result of the {1} method of the \
+ {2} repository interface cannot be converted to the {3} type that is required by \
+ the {4} return type of the repository method.
+CWWKD1046.result.convert.err.explanation=The result value is not compatible with \
+ the repository method return type.
+CWWKD1046.result.convert.err.useraction=Ensure the return type of the repository \
+ method is consistent with the type of result that is returned by the query.
+
+CWWKD1047.result.out.of.range=CWWKD1047E: The {0} result of the {1} method of the \
+ {2} repository interface cannot be converted to the {3} type that is required by \
+ the {4} return type of the repository method because the result is not within the \
+ range of {5} to {6}.
+CWWKD1047.result.out.of.range.explanation=The result value is not compatible with \
+ the repository method return type because it is outside of the range of values \
+ that can be converted.
+CWWKD1047.result.out.of.range.useraction=Adjust the return type of the repository \
+ method to allow for the value to be returned.
+
+CWWKD1048.result.exceeds.max=CWWKD1048E: The {0} result of the {1} method of the \
+ {2} repository interface cannot be converted to the {3} type that is required by \
+ the {4} return type of the repository method because the result value exceeds the \
+ maximum value of {5}.
+CWWKD1048.result.exceeds.max.explanation=The result value is not compatible with \
+ the repository method return type because it exceeds the maximum value that can \
+ be converted to that type.
+CWWKD1048.result.exceeds.max.useraction=Adjust the return type of the repository \
+ method to allow for the value to be returned.
+
+CWWKD1049.count.convert.err=CWWKD1049E: The {0} count value from the {1} method of \
+ the {2} repository interface cannot be converted to the {3} type that is required \
+ by the {4} return type of the repository method.
+CWWKD1049.count.convert.err.explanation=The count value is not compatible with \
+ the repository method return type.
+CWWKD1049.count.convert.err.useraction=Adjust the return type of the repository \
+ method to allow for the value to be returned.

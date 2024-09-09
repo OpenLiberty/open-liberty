@@ -299,21 +299,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         if (v >= Integer.MIN_VALUE && v <= Integer.MAX_VALUE)
                             return n.intValue();
                         else
-                            convertFail(queryInfo.method, fromType,
+                            convertFail(queryInfo, n, toType,
                                         Integer.MIN_VALUE, Integer.MAX_VALUE);
                     } else if (short.class.equals(toType) ||
                                Short.class.equals(toType)) {
                         if (v >= Short.MIN_VALUE && v <= Short.MAX_VALUE)
                             return n.shortValue();
                         else
-                            convertFail(queryInfo.method, fromType,
+                            convertFail(queryInfo, n, toType,
                                         Short.MIN_VALUE, Short.MAX_VALUE);
                     } else if (byte.class.equals(toType) ||
                                Byte.class.equals(toType)) {
                         if (v >= Byte.MIN_VALUE && v <= Byte.MAX_VALUE)
                             return n.byteValue();
                         else
-                            convertFail(queryInfo.method, fromType,
+                            convertFail(queryInfo, n, toType,
                                         Byte.MIN_VALUE, Byte.MAX_VALUE);
                     } else if (BigInteger.class.equals(toType)) {
                         return BigInteger.valueOf(v);
@@ -349,33 +349,48 @@ public class RepositoryImpl<R> implements InvocationHandler {
             }
         }
 
-        throw new MappingException("The " + queryInfo.method.getName() + " method of the " +
-                                   repositoryInterface.getName() +
-                                   " repository is unable to convert a " +
-                                   fromType.getName() + " value into a " + toType.getName() +
-                                   " value that is required by the return type of the method.", // TODO NLS
-                        cause);
+        Object loggable = queryInfo.loggable(value);
+        if (loggable == value)
+            loggable = fromType.getName() + " (" + loggable + ')';
+        MappingException x;
+        x = exc(MappingException.class,
+                "CWWKD1046.result.convert.err",
+                loggable,
+                queryInfo.method.getName(),
+                repositoryInterface.getName(),
+                toType.getName(),
+                queryInfo.method.getGenericReturnType().getTypeName());
+        if (cause != null)
+            x = (MappingException) x.initCause(cause);
+        throw x;
     }
 
     /**
      * Raises an error for a type conversion failure due to a value being outside of
      * the specified range.
      *
-     * @param method   repository method.
-     * @param fromType type from which conversion has failed.
-     * @param min      minimum value for range.
-     * @param max      maximum value for range.
+     * @param queryInfo query information for the repository method.
+     * @param value     the value that fails to convert.
+     * @param toType    type to which conversion has failed.
+     * @param min       minimum value for range.
+     * @param max       maximum value for range.
      * @throws MappingException for the type conversion failure.
      */
-    private void convertFail(Method method, Class<?> fromType, long min, long max) {
-        Class<?> toType = method.getReturnType();
-        throw new MappingException("The " + method.getName() + " method of the " +
-                                   repositoryInterface.getName() +
-                                   " repository is unable to convert a " +
-                                   fromType.getName() + " value into a " + toType.getName() +
-                                   " value because the value is not within the range of " +
-                                   min + " to " + max + ". A " + toType.getName() +
-                                   " value is required by the return type of the method"); // TODO NLS
+    @Trivial
+    private void convertFail(QueryInfo queryInfo, Number value, Class<?> toType,
+                             long min, long max) {
+        Object loggable = queryInfo.loggable(value);
+        if (loggable != value)
+            loggable = value.getClass().getName() + " (" + loggable + ')';
+        throw exc(MappingException.class,
+                  "CWWKD1047.result.out.of.range",
+                  loggable,
+                  queryInfo.method.getName(),
+                  repositoryInterface.getName(),
+                  toType,
+                  queryInfo.method.getGenericReturnType().getTypeName(),
+                  min,
+                  max);
     }
 
     /**
@@ -415,20 +430,35 @@ public class RepositoryImpl<R> implements InvocationHandler {
         } else {
             if (int.class.equals(type) || Integer.class.equals(type))
                 if (count > Integer.MAX_VALUE)
-                    throw new MappingException("The " + count + " count value cannot be converted to " +
-                                               type.getName() + " because it exceeds " + Integer.MAX_VALUE + "."); // TODO NLS
+                    throw exc(MappingException.class,
+                              "CWWKD1048.result.exceeds.max",
+                              count,
+                              queryInfo.method.getName(),
+                              repositoryInterface.getName(),
+                              queryInfo.method.getGenericReturnType().getTypeName(),
+                              "Integer.MAX_VALUE (" + Integer.MAX_VALUE + ')');
                 else
                     returnValue = count.intValue();
             else if (short.class.equals(type) || Short.class.equals(type))
                 if (count > Short.MAX_VALUE)
-                    throw new MappingException("The " + count + " count value cannot be converted to " +
-                                               type.getName() + " because it exceeds " + Short.MAX_VALUE + "."); // TODO NLS
+                    throw exc(MappingException.class,
+                              "CWWKD1048.result.exceeds.max",
+                              count,
+                              queryInfo.method.getName(),
+                              repositoryInterface.getName(),
+                              queryInfo.method.getGenericReturnType().getTypeName(),
+                              "Short.MAX_VALUE (" + Short.MAX_VALUE + ')');
                 else
                     returnValue = count.shortValue();
             else if (byte.class.equals(type) || Byte.class.equals(type))
                 if (count > Byte.MAX_VALUE)
-                    throw new MappingException("The " + count + " count value cannot be converted to " +
-                                               type.getName() + " because it exceeds " + Byte.MAX_VALUE + "."); // TODO NLS
+                    throw exc(MappingException.class,
+                              "CWWKD1048.result.exceeds.max",
+                              count,
+                              queryInfo.method.getName(),
+                              repositoryInterface.getName(),
+                              queryInfo.method.getGenericReturnType().getTypeName(),
+                              "Byte.MAX_VALUE (" + Byte.MAX_VALUE + ')');
                 else
                     returnValue = count.byteValue();
             else if (BigInteger.class.equals(type))
@@ -436,8 +466,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
             else if (BigDecimal.class.equals(type))
                 returnValue = BigDecimal.valueOf(count);
             else
-                throw new MappingException("The resulting count value cannot be converted from Long type to " +
-                                           type.getName() + " type."); // TODO NLS
+                throw exc(MappingException.class,
+                          "CWWKD1049.count.convert.err",
+                          count,
+                          queryInfo.method.getName(),
+                          repositoryInterface.getName(),
+                          type,
+                          queryInfo.method.getGenericReturnType().getTypeName());
         }
 
         Class<?> returnType = queryInfo.method.getReturnType();
