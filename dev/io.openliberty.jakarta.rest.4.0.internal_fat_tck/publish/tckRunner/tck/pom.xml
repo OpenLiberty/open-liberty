@@ -180,10 +180,10 @@
         </dependency>
         <dependency>
             <groupId>io.openliberty</groupId>
-            <artifactId>io.openliberty.jakarta.annotation.2.1</artifactId>
+            <artifactId>io.openliberty.jakarta.annotation.3.0</artifactId>
             <version>1</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.jakarta.annotation.2.1_}</systemPath>
+            <systemPath>${io.openliberty.jakarta.annotation.3.0_}</systemPath>
         </dependency>
         <dependency>
             <groupId>io.openliberty</groupId>
@@ -283,8 +283,8 @@
             <version>3.1</version>
             <scope>test</scope>
         </dependency>
-        <!--  Note that the JAX-RS dependency must be ahead of the Jakarta platform dependency until we move from EE9 to EE10. -->
-        <!--  This is required so that the JAX-RS 3.1 APIs are loaded first in the test classpath - ahead of the JAX-RS 3.0 APIs that come with EE9 platform. -->
+        <!--  Note that the JAX-RS dependency must be ahead of the Jakarta platform dependency. -->
+        <!--  This is required so that the JAX-RS APIs are loaded first in the test classpath - ahead of the JAX-RS APIs that come with platform. -->
         <dependency>
             <groupId>jakarta.ws.rs</groupId>
             <artifactId>jakarta-restful-ws-tck</artifactId>
@@ -300,7 +300,7 @@
         <!-- and https://github.com/arquillian/arquillian-core/pull/246/files -->
         <dependency>
             <groupId>org.jboss.arquillian.protocol</groupId>
-            <artifactId>arquillian-protocol-servlet-jakarta</artifactId>
+            <artifactId>arquillian-protocol-rest-jakarta</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -361,7 +361,7 @@
                         <configuration>
                             
 			              <target>
-			                <copy file="${io.openliberty.jakarta.restfulWS.3.1}" tofile="${project.build.directory}/signaturedirectory/jakarta.ws.rs-api.jar"/>
+			                <copy file="${io.openliberty.jakarta.restfulWS.4.0}" tofile="${project.build.directory}/signaturedirectory/jakarta.ws.rs-api.jar"/>
 			                <copy file="${io.openliberty.jakarta.xmlBinding.4.0}" tofile="${project.build.directory}/signaturedirectory/jakarta.xml.bind-api.jar"/>
 			              </target>
                         </configuration>
@@ -374,7 +374,7 @@
 			            </goals>
 			            <configuration>
 			              <target>
-			                <copy file="${io.openliberty.jakarta.restfulws.3.1}" tofile="${project.build.directory}/signaturedirectory/jakarta.ws.rs-api.jar"/>
+			                <copy file="${io.openliberty.jakarta.restfulws.4.0}" tofile="${project.build.directory}/signaturedirectory/jakarta.ws.rs-api.jar"/>
 			              </target>
 			            </configuration>
 			        </execution>                     
@@ -433,7 +433,7 @@
                      </includes>
                      <excludes>
                         <exclude>**/tck/**/JAXRSSigTestIT</exclude>
-                        <!--  Exclude testcase to avoid failures do to test infrastructure issues. --> 
+                        <!--  Exclude testcase to avoid failures due to test infrastructure issues. --> 
                         <exclude>ee.jakarta.tck.ws.rs.jaxrs21.ee.sse.ssebroadcaster.JAXRSClientIT</exclude>
                         <!--  Exclude testcase pending challenge documented in https://github.com/jakartaee/rest/issues/1278. --> 
                         <exclude>ee.jakarta.tck.ws.rs.ee.rs.container.requestcontext.JAXRSClientIT</exclude>

@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -22,7 +19,7 @@ tested.features=webprofile-11.0, microprofile-7.0
 fat.project: true
 
 
-javac.source: 11
-javac.target: 11
-fat.minimum.java.level: 11
+javac.source: 17
+javac.target: 17
+fat.minimum.java.level: 17
 

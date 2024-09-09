@@ -21,7 +21,7 @@
     <name>Jakarta REST 4.0 TCK Runner</name>
 
     <properties>
-        <arquillian.version>1.7.0.Alpha13</arquillian.version>
+        <arquillian.version>1.7.0.Final</arquillian.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
