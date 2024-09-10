@@ -263,12 +263,14 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
                                 Tr.debug(this, tc, "HTTPS chain not enabled: SSL/TLS provider not available");
                             }
                             getCurrentHttpsChain().disable();
+                            getCurrentHttpsChain().stop();
                         }
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(this, tc, "HTTPS port not configured, disabling HTTPS chain");
                         }
                         getCurrentHttpsChain().disable();
+                        getCurrentHttpsChain().stop();
                     }
                 }
                     
