@@ -527,3 +527,21 @@ CWWKD1052.multi.opt.lock.exc.explanation=One or more of the entities were not \
 CWWKD1052.multi.opt.lock.exc.useraction=If it is expected that an entity might \
  not be found in the database, no action is needed. Otherwise, ensure that the \
  most recent version of each entity is used.
+
+CWWKD1053.empty.result=CWWKD1053E: The {0} return type of the {1} method of the \
+ {2} repository interface is not capable of returning an empty result. If an \
+ empty result is expected, the repository method must return an array or one of \
+ the following return types: {3}.
+CWWKD1053.empty.result.explanation=The return type of the repository method does \
+ not permit it to return an empty result.
+CWWKD1053.empty.result.useraction=Update the repository method to use one of the \
+ return types that can represent an empty result.
+
+CWWKD1054.non.unique.result=CWWKD1054E: The {0} method of the {1} repository \
+ interface has the {2} return type, which is not capable of returning {3} results. \
+ To limit to a single result, use one of the following Jakarta Data patterns: {4}.
+CWWKD1054.non.unique.result.explanation=The return type of the repository method \
+ does not permit returning multiple results.
+CWWKD1054.non.unique.result.useraction=Update the repository method to use a \
+ return type that supports multiple results, or update the repository method \
+ to return at most one result.

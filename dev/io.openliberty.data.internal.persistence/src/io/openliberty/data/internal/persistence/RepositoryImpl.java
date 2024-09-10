@@ -31,13 +31,11 @@ import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
 import java.sql.SQLSyntaxErrorException;
 import java.sql.SQLTransientConnectionException;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -223,181 +221,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
-     * Converts a value to the type that is required by the repository method
-     * return type.
-     *
-     * @param value     value to convert.
-     * @param queryInfo query information.
-     * @return converted value.
-     */
-    @FFDCIgnore(ArithmeticException.class) // reported to user as chained exception
-    @Trivial
-    private Object convert(Object value, QueryInfo queryInfo) {
-        Class<?> fromType = value.getClass();
-        Class<?> toType = queryInfo.singleType;
-        Exception cause = null;
-
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isDebugEnabled())
-            Tr.debug(this, tc, "convert " + fromType.getSimpleName() +
-                               " to " + toType.getSimpleName());
-
-        if (value instanceof Number &&
-            (QueryInfo.PRIMITIVE_NUMERIC_TYPES.contains(toType) ||
-             Number.class.isAssignableFrom(toType))) {
-            try {
-                if (BigDecimal.class.equals(fromType)) {
-                    BigDecimal v = (BigDecimal) value;
-                    if (long.class.equals(toType) ||
-                        Long.class.equals(toType)) {
-                        return v.longValueExact();
-                    } else if (int.class.equals(toType) ||
-                               Integer.class.equals(toType)) {
-                        return v.intValueExact();
-                    } else if (short.class.equals(toType) ||
-                               Short.class.equals(toType)) {
-                        return v.shortValueExact();
-                    } else if (byte.class.equals(toType) ||
-                               Byte.class.equals(toType)) {
-                        return v.byteValueExact();
-                    } else if (BigInteger.class.equals(toType)) {
-                        return v.toBigIntegerExact();
-                    }
-                } else if (BigInteger.class.equals(fromType)) {
-                    BigInteger v = (BigInteger) value;
-                    if (long.class.equals(toType) ||
-                        Long.class.equals(toType)) {
-                        return v.longValueExact();
-                    } else if (int.class.equals(toType) ||
-                               Integer.class.equals(toType)) {
-                        return v.intValueExact();
-                    } else if (short.class.equals(toType) ||
-                               Short.class.equals(toType)) {
-                        return v.shortValueExact();
-                    } else if (byte.class.equals(toType) ||
-                               Byte.class.equals(toType)) {
-                        return v.byteValueExact();
-                    } else if (BigDecimal.class.equals(toType)) {
-                        return new BigDecimal(v);
-                    }
-                } else if (double.class.equals(fromType) ||
-                           Double.class.equals(fromType)) {
-                    Double v = (Double) value;
-                    if (double.class.equals(toType))
-                        return v;
-                    else if (BigDecimal.class.equals(toType))
-                        return BigDecimal.valueOf(v);
-                } else if (float.class.equals(fromType) ||
-                           Float.class.equals(fromType)) {
-                    Float v = (Float) value;
-                    if (float.class.equals(toType))
-                        return v;
-                    else if (double.class.equals(toType))
-                        return v.doubleValue();
-                    else if (BigDecimal.class.equals(toType))
-                        return BigDecimal.valueOf(v);
-                } else {
-                    Number n = (Number) value;
-                    long v = n.longValue();
-                    if (long.class.equals(toType) ||
-                        Long.class.equals(toType)) {
-                        return v;
-                    } else if (int.class.equals(toType) ||
-                               Integer.class.equals(toType)) {
-                        if (v >= Integer.MIN_VALUE && v <= Integer.MAX_VALUE)
-                            return n.intValue();
-                        else
-                            convertFail(queryInfo, n,
-                                        Integer.MIN_VALUE, Integer.MAX_VALUE);
-                    } else if (short.class.equals(toType) ||
-                               Short.class.equals(toType)) {
-                        if (v >= Short.MIN_VALUE && v <= Short.MAX_VALUE)
-                            return n.shortValue();
-                        else
-                            convertFail(queryInfo, n,
-                                        Short.MIN_VALUE, Short.MAX_VALUE);
-                    } else if (byte.class.equals(toType) ||
-                               Byte.class.equals(toType)) {
-                        if (v >= Byte.MIN_VALUE && v <= Byte.MAX_VALUE)
-                            return n.byteValue();
-                        else
-                            convertFail(queryInfo, n,
-                                        Byte.MIN_VALUE, Byte.MAX_VALUE);
-                    } else if (BigInteger.class.equals(toType)) {
-                        return BigInteger.valueOf(v);
-                    } else if (BigDecimal.class.equals(toType)) {
-                        return BigDecimal.valueOf(v);
-                    } else if (double.class.equals(toType) ||
-                               Double.class.equals(toType)) {
-                        if (Integer.class.equals(fromType) ||
-                            Short.class.equals(fromType) ||
-                            Byte.class.equals(fromType) ||
-                            v >= Integer.MIN_VALUE && v <= Integer.MAX_VALUE)
-                            return n.doubleValue();
-                    } else if (float.class.equals(toType) ||
-                               Float.class.equals(toType)) {
-                        if (Short.class.equals(fromType) ||
-                            Byte.class.equals(fromType) ||
-                            v >= Short.MIN_VALUE && v <= Short.MAX_VALUE)
-                            return n.floatValue();
-                    }
-                }
-            } catch (ArithmeticException x) {
-                cause = x;
-            }
-        } else if (String.class.equals(toType) ||
-                   CharSequence.class.equals(toType)) {
-            return value.toString();
-        } else if (char.class.equals(toType) ||
-                   Character.class.equals(toType)) {
-            if (value instanceof CharSequence) {
-                CharSequence chars = (CharSequence) value;
-                if (chars.length() == 1)
-                    return chars.charAt(0);
-                else if (chars.isEmpty() && Character.class.equals(toType))
-                    return null;
-            }
-        }
-
-        MappingException x;
-        x = exc(MappingException.class,
-                "CWWKD1046.result.convert.err",
-                queryInfo.loggableAppend(fromType.getName(),
-                                         " (", value, ")"),
-                queryInfo.method.getName(),
-                repositoryInterface.getName(),
-                queryInfo.method.getGenericReturnType().getTypeName());
-        if (cause != null)
-            x = (MappingException) x.initCause(cause);
-        throw x;
-    }
-
-    /**
-     * Raises an error for a type conversion failure due to a value being outside of
-     * the specified range.
-     *
-     * @param queryInfo query information for the repository method.
-     * @param value     the value that fails to convert.
-     * @param min       minimum value for range.
-     * @param max       maximum value for range.
-     * @throws MappingException for the type conversion failure.
-     */
-    @Trivial
-    private void convertFail(QueryInfo queryInfo,
-                             Number value,
-                             long min, long max) {
-        throw exc(MappingException.class,
-                  "CWWKD1047.result.out.of.range",
-                  queryInfo.loggableAppend(value.getClass().getName(),
-                                           " (", value, ")"),
-                  queryInfo.method.getName(),
-                  repositoryInterface.getName(),
-                  queryInfo.method.getGenericReturnType().getTypeName(),
-                  min,
-                  max);
-    }
-
-    /**
      * Execute a repository count query.
      *
      * @param em        entity manager.
@@ -510,6 +333,45 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                             String messageId,
                                                             Object... args) {
         return DataExtension.exc(exceptionType, messageId, args);
+    }
+
+    /**
+     * Create a new EmptyResultException.
+     *
+     * @param method repository method that unexpectedly finds an empty result.
+     * @return the EmptyResultException.
+     */
+    @Trivial
+    private EmptyResultException excEmptyResult(Method method) {
+        return exc(EmptyResultException.class,
+                   "CWWKD1053.empty.result",
+                   method.getGenericReturnType().getTypeName(),
+                   method.getName(),
+                   repositoryInterface.getName(),
+                   List.of(List.class.getSimpleName(),
+                           Optional.class.getSimpleName(),
+                           Page.class.getSimpleName(),
+                           CursoredPage.class.getSimpleName(),
+                           Stream.class.getSimpleName()));
+    }
+
+    /**
+     * Create a new NonUniqueResultException.
+     *
+     * @param method repository method that unexpectedly finds multiple results.
+     * @return the NonUniqueResultException.
+     */
+    @Trivial
+    private NonUniqueResultException excNonUniqueResult(QueryInfo queryInfo,
+                                                        int numResults) {
+        throw exc(NonUniqueResultException.class,
+                  queryInfo.method.getName(),
+                  repositoryInterface.getName(),
+                  queryInfo.method.getGenericReturnType().getTypeName(),
+                  numResults,
+                  List.of(// In a future release: @Find @First findByX(...)
+                          "findFirstByX(...)",
+                          "findByX(..., Limit.of(1))"));
     }
 
     /**
@@ -650,18 +512,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 else if (results.isEmpty())
                     returnValue = null;
                 else
-                    throw new NonUniqueResultException("The " + queryInfo.method.getName() +
-                                                       " method of the " + repositoryInterface.getName() +
-                                                       " repository interface has the " +
-                                                       queryInfo.method.getGenericReturnType().getTypeName() +
-                                                       " return type, which is not capable of returning " +
-                                                       results.size() + " results."); // TODO NLS
+                    throw excNonUniqueResult(queryInfo, results.size());
             else if (multiType.isInstance(results))
                 returnValue = results;
             else if (Stream.class.equals(multiType))
                 returnValue = results.stream();
             else if (Iterable.class.isAssignableFrom(multiType))
-                returnValue = toIterable(multiType, null, results);
+                returnValue = queryInfo.convertToIterable(results, null, multiType);
             else if (Iterator.class.equals(multiType))
                 returnValue = results.iterator();
             else
@@ -956,18 +813,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     else if (results.isEmpty())
                         returnValue = null;
                     else
-                        throw new NonUniqueResultException("The " + queryInfo.method.getName() +
-                                                           " method of the " + repositoryInterface.getName() +
-                                                           " repository interface has the " +
-                                                           queryInfo.method.getGenericReturnType().getTypeName() +
-                                                           " return type, which is not capable of returning " +
-                                                           results.size() + " results."); // TODO NLS
+                        throw excNonUniqueResult(queryInfo, results.size());
                 else if (multiType.isInstance(results))
                     returnValue = results;
                 else if (Stream.class.equals(multiType))
                     returnValue = results.stream();
                 else if (Iterable.class.isAssignableFrom(multiType))
-                    returnValue = toIterable(multiType, null, results);
+                    returnValue = queryInfo.convertToIterable(results, null, multiType);
                 else if (Iterator.class.equals(multiType))
                     returnValue = results.iterator();
                 else
@@ -1312,7 +1164,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                 for (Member accessor : accessors)
                                                     value = accessor instanceof Method ? ((Method) accessor).invoke(value) : ((Field) accessor).get(value);
                                             } else if (!entityInfo.idType.isInstance(value)) {
-                                                value = to(entityInfo.idType, result, false);
+                                                value = queryInfo.convert(result,
+                                                                          entityInfo.idType,
+                                                                          false);
                                                 if (value == result) // unable to convert value - this should be unreachable since we validated the return type when we constructed the select query
                                                     throw new MappingException("Results for find-and-delete repository queries must be the entity class (" +
                                                                                (entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName() +
@@ -1331,11 +1185,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 if (results.isEmpty() && queryInfo.isOptional) {
                                     returnValue = null;
                                 } else if (multiType == null && entityInfo.entityClass.equals(singleType)) {
-                                    returnValue = oneResult(results);
+                                    returnValue = oneResult(queryInfo, results);
                                 } else if (multiType != null && multiType.isInstance(results) && (results.isEmpty() || !(results.get(0) instanceof Object[]))) {
                                     returnValue = results;
                                 } else if (multiType != null && Iterable.class.isAssignableFrom(multiType)) {
-                                    returnValue = toIterable(multiType, singleType, results);
+                                    returnValue = queryInfo.convertToIterable(results,
+                                                                              singleType,
+                                                                              multiType);
                                 } else if (Iterator.class.equals(multiType)) {
                                     returnValue = results.iterator();
                                 } else if (queryInfo.returnArrayType != null) {
@@ -1372,8 +1228,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                     Object subarray = Array.newInstance(subarrayType, len);
                                                     for (int j = 0; j < len; j++) {
                                                         Object element = Array.get(result, j);
-                                                        Array.set(subarray, j, subarrayType.isInstance(element) //
-                                                                        ? element : to(subarrayType, element, true));
+                                                        if (!subarrayType.isInstance(element))
+                                                            element = queryInfo.convert(element,
+                                                                                        subarrayType,
+                                                                                        true);
+                                                        Array.set(subarray, j, element);
                                                     }
                                                     Array.set(returnValue, i++, subarray);
                                                 }
@@ -1386,32 +1245,36 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                 returnValue = Array.newInstance(queryInfo.returnArrayType, len);
                                                 for (int i = 0; i < len; i++) {
                                                     Object element = Array.get(firstNonNullResult, i);
-                                                    Array.set(returnValue, i, queryInfo.returnArrayType.isInstance(element) //
-                                                                    ? element : to(queryInfo.returnArrayType, element, true));
+                                                    if (!queryInfo.returnArrayType.isInstance(element))
+                                                        element = queryInfo.convert(element,
+                                                                                    queryInfo.returnArrayType,
+                                                                                    true);
+                                                    Array.set(returnValue, i, element);
                                                 }
                                             }
                                         } else {
-                                            // List<Object[]> with multiple Object[] elements cannot convert to a one dimensional array
-                                            throw new NonUniqueResultException(""); // TODO NLS
+                                            // List<Object[]> with multiple Object[] elements
+                                            // cannot convert to a one dimensional array
+                                            throw excNonUniqueResult(queryInfo, size);
                                         }
                                     } else {
-                                        throw new MappingException("The " + queryInfo.returnArrayType.getName() +
-                                                                   " array type that is declared to be returned by the " +
-                                                                   queryInfo.method.getName() + " method of the " +
-                                                                   repositoryInterface.getName() +
-                                                                   " repository is incompatible with the " +
-                                                                   firstNonNullResult.getClass().getName() +
-                                                                   " type of the observed query results."); // TODO NLS
+                                        throw exc(MappingException.class,
+                                                  "CWWKD1055.incompat.result",
+                                                  queryInfo.loggableAppend(firstNonNullResult.getClass().getName(),
+                                                                           " (", firstNonNullResult, ")"),
+                                                  method.getGenericReturnType().getTypeName(),
+                                                  method.getName(),
+                                                  repositoryInterface.getName());
                                     }
                                 } else if (results.isEmpty()) {
-                                    throw new EmptyResultException("Query with return type of " +
-                                                                   queryInfo.method.getGenericReturnType().getTypeName() +
-                                                                   " returned no results. If this is expected, specify a return type of array, List, Optional, Page, CursoredPage, or Stream for the repository method.");
+                                    throw excEmptyResult(method);
                                 } else { // single result of other type
-                                    returnValue = oneResult(results);
+                                    returnValue = oneResult(queryInfo, results);
                                     if (returnValue != null &&
                                         !singleType.isAssignableFrom(returnValue.getClass()))
-                                        returnValue = convert(returnValue, queryInfo);
+                                        returnValue = queryInfo.convert(returnValue,
+                                                                        queryInfo.singleType,
+                                                                        true);
                                 }
                             }
                         }
@@ -1631,16 +1494,24 @@ public class RepositoryImpl<R> implements InvocationHandler {
                primitive == short.class && cl == Short.class;
     }
 
+    /**
+     * Requires a single result.
+     *
+     * @param queryInfo information about the query.
+     * @param results   list of results that is expected to have exactly 1 result.
+     * @return the single result.
+     * @throws EmptyResultException     if the list is empty.
+     * @throws NonUniqueResultException if the list has more than 1 result.
+     */
     @Trivial
-    private final Object oneResult(List<?> results) {
+    private final Object oneResult(QueryInfo queryInfo, List<?> results) {
         int size = results.size();
         if (size == 1)
             return results.get(0);
         else if (size == 0)
-            throw new EmptyResultException("Query returned no results. If this is expected, specify a return type of array, List, Optional, Page, CursoredPage, or Stream for the repository method.");
+            throw excEmptyResult(queryInfo.method);
         else
-            throw new NonUniqueResultException("Found " + results.size() +
-                                               " results. To limit to a single result, specify Limit.of(1) as a parameter or use the findFirstBy name pattern.");
+            throw excNonUniqueResult(queryInfo, results.size());
     }
 
     /**
@@ -1745,51 +1616,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
         return numDeleted;
     }
 
-    /**
-     * Converts to the specified type, raising an error if the conversion cannot be made.
-     *
-     * @param type               type to convert to.
-     * @param item               item to convert.
-     * @param failIfNotConverted whether or not to fail if unable to convert the value.
-     * @return new instance of the requested type.
-     */
-    @Trivial // avoid tracing value from customer data
-    private static final Object to(Class<?> type, Object item, boolean failIfNotConverted) {
-        Object result = item;
-        if (item == null) {
-            if (type.isPrimitive())
-                throw new MappingException("Query returned a null result which is not compatible with the type that is " +
-                                           "expected by the repository method signature: " + type.getName()); // TODO NLS
-        } else if (item instanceof Number && (type.isPrimitive() || Number.class.isAssignableFrom(type))) {
-            Number n = (Number) item;
-            if (long.class.equals(type) || Long.class.equals(type))
-                result = n.longValue();
-            else if (double.class.equals(type) || Double.class.equals(type))
-                result = n.doubleValue();
-            else if (float.class.equals(type) || Float.class.equals(type))
-                result = n.floatValue();
-            else if (int.class.equals(type) || Integer.class.equals(type))
-                result = n.intValue();
-            else if (short.class.equals(type) || Short.class.equals(type))
-                result = n.shortValue();
-            else if (byte.class.equals(type) || Byte.class.equals(type))
-                result = n.byteValue();
-            else if (boolean.class.equals(type) || Boolean.class.equals(type))
-                result = n.longValue() != 0L;
-            else if (failIfNotConverted)
-                throw new MappingException("Query returned a result of type " + item.getClass().getName() +
-                                           " which is not compatible with the type that is expected by the repository method signature: " +
-                                           type.getName()); // TODO
-        } else if (type.isAssignableFrom(String.class)) {
-            result = item.toString();
-        } else if (failIfNotConverted) {
-            throw new MappingException("Query returned a result of type " + item.getClass().getName() +
-                                       " which is not compatible with the type that is expected by the repository method signature: " +
-                                       type.getName()); // TODO
-        }
-        return result;
-    }
-
     @Trivial
     private static final double toDouble(Object o) {
         if (o instanceof Number)
@@ -1834,49 +1660,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
             return Integer.parseInt((String) o);
         else
             throw new MappingException("Not representable as an int value: " + o.getClass().getName());
-    }
-
-    /**
-     * Convert the results list into an Iterable of the specified type.
-     *
-     * @param iterableType the desired type of Iterable.
-     * @param elementType  the type of each element if a find operation. Can be NULL if a save operation.
-     * @param results      results of a find or save operation.
-     * @return results converted to an Iterable of the specified type.
-     */
-    @Trivial
-    private static final Iterable<?> toIterable(Class<?> iterableType, Class<?> elementType, List<?> results) {
-        Collection<Object> list;
-        if (iterableType.isInterface()) {
-            if (iterableType.isAssignableFrom(ArrayList.class)) // covers Iterable, Collection, List
-                list = new ArrayList<>(results.size());
-            else if (iterableType.isAssignableFrom(ArrayDeque.class)) // covers Queue, Deque
-                list = new ArrayDeque<>(results.size());
-            else if (iterableType.isAssignableFrom(LinkedHashSet.class)) // covers Set
-                list = new LinkedHashSet<>(results.size());
-            else
-                throw new UnsupportedOperationException(iterableType + " is an unsupported return type."); // TODO NLS
-        } else {
-            try {
-                @SuppressWarnings("unchecked")
-                Constructor<? extends Collection<Object>> c = (Constructor<? extends Collection<Object>>) iterableType.getConstructor();
-                list = c.newInstance();
-            } catch (NoSuchMethodException x) {
-                throw new MappingException("The " + iterableType.getName() + " result type lacks a public zero parameter constructor.", x); // TODO NLS
-            } catch (IllegalAccessException | InstantiationException x) {
-                throw new MappingException("Unable to access the zero parameter constructor of the " + iterableType.getName() + " result type.", x); // TODO NLS
-            } catch (InvocationTargetException x) {
-                throw new MappingException("The constructor for the " + iterableType.getName() + " result type raised an error: " + x.getCause().getMessage(), x.getCause()); // TODO NLS
-            }
-        }
-        if (results.size() == 1 && results.get(0) instanceof Object[]) {
-            Object[] a = (Object[]) results.get(0);
-            for (int i = 0; i < a.length; i++)
-                list.add(elementType.isInstance(a[i]) ? a[i] : to(elementType, a[i], true));
-        } else {
-            list.addAll(results);
-        }
-        return list;
     }
 
     @Trivial
@@ -1995,18 +1778,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     else if (results.isEmpty())
                         returnValue = null;
                     else
-                        throw new NonUniqueResultException("The " + queryInfo.method.getName() +
-                                                           " method of the " + repositoryInterface.getName() +
-                                                           " repository interface has the " +
-                                                           queryInfo.method.getGenericReturnType().getTypeName() +
-                                                           " return type, which is not capable of returning " +
-                                                           results.size() + " results."); // TODO NLS
+                        throw excNonUniqueResult(queryInfo, results.size());
                 else if (multiType.isInstance(results))
                     returnValue = results;
                 else if (Stream.class.equals(multiType))
                     returnValue = results.stream();
                 else if (Iterable.class.isAssignableFrom(multiType))
-                    returnValue = toIterable(multiType, null, results);
+                    returnValue = queryInfo.convertToIterable(results, null, multiType);
                 else if (Iterator.class.equals(multiType))
                     returnValue = results.iterator();
                 else

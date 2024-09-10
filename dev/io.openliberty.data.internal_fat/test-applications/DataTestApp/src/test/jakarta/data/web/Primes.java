@@ -279,22 +279,34 @@ public interface Primes {
            " ORDER BY name DESC")
     List<String> matchRightSideOfName(String searchFor);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
+    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), " +
+           "       COUNT(o.numberId), AVG(o.numberId) " +
+           "  FROM Prime o WHERE o.numberId < ?1")
     Deque<Double> minMaxSumCountAverageDeque(long numBelow);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
+    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId)," +
+           "       COUNT(o.numberId), CAST(AVG(o.numberId) AS FLOAT)" +
+           "  FROM Prime o WHERE o.numberId < ?1")
     float[] minMaxSumCountAverageFloat(long numBelow);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
+    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId)," +
+           "       COUNT(o.numberId), CAST(AVG(o.numberId) AS INTEGER)" +
+           "  FROM Prime o WHERE o.numberId < ?1")
     int[] minMaxSumCountAverageInt(long numBelow);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
+    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId)," +
+           "       COUNT(o.numberId), CAST(AVG(o.numberId) AS INTEGER)" +
+           "  FROM Prime o WHERE o.numberId < ?1")
     Iterable<Integer> minMaxSumCountAverageIterable(long numBelow);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
+    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId)," +
+           "       COUNT(o.numberId), CAST(AVG(o.numberId) AS INTEGER)" +
+           "  FROM Prime o WHERE o.numberId < ?1")
     List<Long> minMaxSumCountAverageList(long numBelow);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
+    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId)," +
+           "       COUNT(o.numberId), CAST(AVG(o.numberId) AS INTEGER)" +
+           "  FROM Prime o WHERE o.numberId < ?1")
     Long[] minMaxSumCountAverageLong(long numBelow);
 
     @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
