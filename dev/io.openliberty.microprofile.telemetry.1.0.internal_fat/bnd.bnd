@@ -19,7 +19,8 @@ fat.minimum.java.level: 1.8
 
 src: \
 	fat/src,\
-	test-bundles/telemetry.user.feature/src	
+	test-bundles/telemetry.user.feature/src,\
+	test-bundles/telemetry.user.wab/src	
 	
 fat.project: true
 
