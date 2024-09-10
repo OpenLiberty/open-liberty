@@ -14,15 +14,19 @@ addRequiredLibraries {
     configurations {
 	    	usrFeatures
 	    	usrEsa
+	    	usrEsa2
 	    	features1
 	    	features2
+	    	features3
     }
     
     dependencies {
       usrFeatures 'test.featureUtility_fat:userFeature:1.0@zip'
       usrEsa 'test.featureUtility_fat:usertest.with.api:1.0@esa'
+      usrEsa2 'test.featureUtility_fat:usertest:1.0@esa'
       features1 'test.featureUtility_fat:Archive:1.0@zip'
       features2 'test.featureUtility_fat:Archive:2.0@zip'
+      features3 'test.featureUtility_fat:com.ibm.websphere.appserver.classloading:1.0@esa'
       requiredLibs project(':com.ibm.ws.org.slf4j.api'),
       	project(':com.ibm.ws.org.slf4j.simple')
     }    
@@ -37,6 +41,11 @@ addRequiredLibraries {
         into "publish/features"
     }
     
+        copy {
+        from configurations.usrEsa2
+        into "publish/features"
+    }
+    
     copy {
         from configurations.features1
         into "publish/repo/archive1"
@@ -45,6 +54,11 @@ addRequiredLibraries {
     copy {
         from configurations.features2
         into "publish/repo/archive2"
+    }
+    
+    copy {
+        from configurations.features3
+        into "publish/repo/"
     }
 
     dependsOn copyTestContainers

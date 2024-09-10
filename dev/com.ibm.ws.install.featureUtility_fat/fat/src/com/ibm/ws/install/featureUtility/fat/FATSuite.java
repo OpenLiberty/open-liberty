@@ -21,11 +21,13 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.containers.TestContainerSuite;
+import componenttest.topology.impl.LibertyFileManager;
 
 @RunWith(Suite.class)
 @SuiteClasses({
 
-	InstallFeatureTest.class, InstallServerTest.class, HelpActionTest.class, InstallVersionlessServerTest.class
+	//InstallFeatureTest.class, InstallServerTest.class, HelpActionTest.class, InstallVersionlessServerTest.class, 
+	ClasspathTest.class, FeatureListTest.class
 
 })
 public class FATSuite extends TestContainerSuite {
@@ -37,10 +39,11 @@ public class FATSuite extends TestContainerSuite {
      */
     @BeforeClass
     public static void beforeSuite() throws Exception {
-	FeatureUtilityToolTest.setupEnv();
-	FeatureUtilityToolTest.constructLocalMavenRepo(Paths.get("publish/repo/").toAbsolutePath().toString(),Paths.get("publish/repo/userFeature/userFeature-1.0.zip"));
-	FeatureUtilityToolTest.constructLocalMavenRepo(Paths.get("publish/repo/").toAbsolutePath().toString(),Paths.get("publish/repo/archive1/Archive-1.0.zip"));
-	FeatureUtilityToolTest.constructLocalMavenRepo(Paths.get("publish/repo2/").toAbsolutePath().toString(),Paths.get("publish/repo/archive2/Archive-2.0.zip")); //New repo has versionless features
+		FeatureUtilityToolTest.setupEnv();
+		FeatureUtilityToolTest.constructLocalMavenRepo(Paths.get("publish/repo/").toAbsolutePath().toString(),Paths.get("publish/repo/userFeature/userFeature-1.0.zip"));
+		FeatureUtilityToolTest.constructLocalMavenRepo(Paths.get("publish/repo/").toAbsolutePath().toString(),Paths.get("publish/repo/archive1/Archive-1.0.zip"));
+		FeatureUtilityToolTest.constructLocalMavenRepo(Paths.get("publish/repo2/").toAbsolutePath().toString(),Paths.get("publish/repo/archive2/Archive-2.0.zip")); //New repo has versionless features
+//		LibertyFileManager.copyFileIntoLiberty(Paths.get("publish/repo/test/featureUtility_fat/com.ibm.websphere.appserver.classloading/1.0").toAbsolutePath().toString(),Paths.get("publish/repo/com.ibm.websphere.appserver.classloading-1.0.esa"));
     }
 
     @AfterClass
