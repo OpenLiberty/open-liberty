@@ -211,6 +211,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         super.init(nettyVc);
     }
 
+    // TODO Check if this is still being used
     public NettyServletUpgradeHandler prepareForUpgrade() {
         HttpServerKeepAliveHandler handler = nettyContext.channel().pipeline().get(HttpServerKeepAliveHandler.class);
         if (handler != null) {

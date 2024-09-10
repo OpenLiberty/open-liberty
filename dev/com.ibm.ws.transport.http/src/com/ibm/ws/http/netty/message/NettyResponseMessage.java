@@ -99,6 +99,7 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     public void update(HttpResponse response) {
         this.nettyResponse = response;
+        this.headers = response.headers();
     }
 
     @Override
