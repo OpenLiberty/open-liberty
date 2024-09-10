@@ -24,6 +24,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.data.internal.persistence.cdi.DataExtension;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.persistence.EntityManager;
@@ -43,7 +44,7 @@ public class PageImpl<T> implements Page<T> {
     @FFDCIgnore(Exception.class)
     PageImpl(QueryInfo queryInfo, PageRequest pageRequest, Object[] args) {
         if (pageRequest == null)
-            missingPageRequest(queryInfo);
+            queryInfo.missingPageRequest();
 
         this.queryInfo = queryInfo;
         this.pageRequest = pageRequest;
@@ -56,7 +57,7 @@ public class PageImpl<T> implements Page<T> {
             queryInfo.setParameters(query, args);
 
             int maxPageSize = pageRequest.size();
-            query.setFirstResult(RepositoryImpl.computeOffset(pageRequest));
+            query.setFirstResult(queryInfo.computeOffset(pageRequest));
             query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1));
 
             results = query.getResultList();
@@ -76,12 +77,14 @@ public class PageImpl<T> implements Page<T> {
     @FFDCIgnore(Exception.class)
     private long countTotalElements() {
         if (!pageRequest.requestTotal())
-            throw new IllegalStateException("A total count of elements and pages is not retreived from the database because the " +
-                                            pageRequest + " page request specifies a value of 'false' for 'requestTotal'. " +
-                                            "To request a page with the total count included, use the " +
-                                            "PageRequest.withTotal method instead of the PageRequest.withoutTotal method."); // TODO NLS
+            throw exc(IllegalStateException.class,
+                      "CWWKD1042.no.totals",
+                      queryInfo.method.getName(),
+                      queryInfo.repositoryInterface.getName(),
+                      pageRequest);
 
-        if (pageRequest.page() == 1L && results.size() <= pageRequest.size() && pageRequest.size() < Integer.MAX_VALUE)
+        if (pageRequest.page() == 1L && results.size() <= pageRequest.size() &&
+            pageRequest.size() < Integer.MAX_VALUE)
             return results.size();
 
         EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
@@ -104,6 +107,25 @@ public class PageImpl<T> implements Page<T> {
         int size = results.size();
         int max = pageRequest.size();
         return size > max ? new ResultList(max) : results;
+    }
+
+    /**
+     * Construct a RuntimeException or subclass and log the error unless the
+     * error is known to be an error on the part of the application using a
+     * repository method, such as supplying a null PageRequest.
+     *
+     * @param exceptionType RuntimeException or subclass, which must have a
+     *                          constructor that accepts the message as a single
+     *                          String argument.
+     * @param messageId     NLS message ID.
+     * @param args          message arguments.
+     * @return RuntimeException or subclass.
+     */
+    @Trivial
+    private final static <T extends RuntimeException> T exc(Class<T> exceptionType,
+                                                            String messageId,
+                                                            Object... args) {
+        return DataExtension.exc(exceptionType, messageId, args);
     }
 
     @Override
@@ -134,34 +156,6 @@ public class PageImpl<T> implements Page<T> {
         return size > max ? new ResultIterator(max) : results.iterator();
     }
 
-    /**
-     * Raise an error because the PageRequest is missing.
-     *
-     * @param queryInfo query information.
-     * @throws UnsupportedOperationException if the repository method signature
-     *                                           lacks a parameter for supplying a PageRequest
-     * @throws NullPointerException          if the user supplied a null PageRequest.
-     */
-    static void missingPageRequest(QueryInfo queryInfo) {
-        Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-
-        // Check parameter positions after those used for query parameters
-        boolean hasPageRequest = false;
-        for (int i = queryInfo.paramCount - queryInfo.paramAddedCount; //
-                        i < paramTypes.length; //
-                        i++)
-            hasPageRequest |= PageRequest.class.equals(paramTypes[i]);
-
-        if (hasPageRequest)
-            throw new NullPointerException("PageRequest: null");
-        else
-            throw new UnsupportedOperationException("The " + queryInfo.method.getName() + " method of the " +
-                                                    queryInfo.repositoryInterface.getName() +
-                                                    " repository has a " + queryInfo.method.getReturnType().getName() +
-                                                    " return type but does not have a " + PageRequest.class.getName() +
-                                                    " parameter."); // TODO NLS
-    }
-
     @Override
     public int numberOfElements() {
         int size = results.size();
@@ -179,8 +173,11 @@ public class PageImpl<T> implements Page<T> {
         if (hasNext())
             return PageRequest.ofPage(pageRequest.page() + 1, pageRequest.size(), pageRequest.requestTotal());
         else
-            throw new NoSuchElementException("Cannot request a next page. To avoid this error, check for a " +
-                                             "true result of Page.hasNext before attempting this method."); // TODO NLS
+            throw exc(NoSuchElementException.class,
+                      "CWWKD1040.no.next.page",
+                      queryInfo.method.getName(),
+                      queryInfo.repositoryInterface.getName(),
+                      "Page.hasNext");
     }
 
     @Override
@@ -188,9 +185,11 @@ public class PageImpl<T> implements Page<T> {
         if (pageRequest.page() > 1)
             return PageRequest.ofPage(pageRequest.page() - 2, pageRequest.size(), pageRequest.requestTotal());
         else
-            throw new NoSuchElementException("Cannot request a page number prior to " + pageRequest.page() +
-                                             ". To avoid this error, check for a true result of Page.hasPrevious " +
-                                             "before attempting this method."); // TODO NLS
+            throw exc(NoSuchElementException.class,
+                      "CWWKD1038.no.prev.offset.page",
+                      pageRequest.page(),
+                      queryInfo.method.getName(),
+                      queryInfo.repositoryInterface.getName());
     }
 
     @Override

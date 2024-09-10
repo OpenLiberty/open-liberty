@@ -360,3 +360,102 @@ CWWKD1034.ql.where.required=CWWKD1034E: The query that is specified by the \
 CWWKD1034.ql.where.required.explanation=A WHERE clause is required when \
  using cursor-based pagination.
 CWWKD1034.ql.where.required.useraction=Add a WHERE clause to the query.
+
+CWWKD1035.incompat.page.mode=CWWKD1035E: A page request with the {0} pagination \
+ mode must not be supplied to the {1} method of the {2} repository interface \
+ because the method returns {3} instead of {4}.
+CWWKD1035.incompat.page.mode.explanation=The requested pagination mode is \
+ not compatible with the return type of the repository method.
+CWWKD1035.incompat.page.mode.useraction=Use a return type of Page for the \
+ OFFSET pagination mode and a return type of CursoredPage for the CURSOR_NEXT \
+ and CURSOR_PREVIOUS pagination modes.
+
+CWWKD1036.cursor.size.mismatch=CWWKD1036E: A cursor with {0} elements that is \
+ supplied to the {1} method of the {2} repository interface cannot be used with \
+ sort criteria of size {3} because the number and order of the cursor elements \
+ must match the sort criteria. The cursor consists of: {4}. The sort criteria is: \
+ {5}.
+CWWKD1036.cursor.size.mismatch.explanation=The number of cursor elements must \
+ match the size of the combined sort criteria of the repository method.
+CWWKD1036.cursor.size.mismatch.useraction=Correct the cursor elements or the \
+ sort criteria such that both have the same size.
+
+CWWKD1037.cursor.rtrn.mismatch=CWWKD1037E: Unable to obtain a cursor from the \
+ {0} result of the {1} method of the {2} repository interface. Queries that \
+ use cursor-based pagination must return results of the same type as the \
+ entity type, which is {3}. The repository method return type is {4}.
+CWWKD1037.cursor.rtrn.mismatch.explanation=Cursor-based pagination is only \
+ possible when the repository method returns the entity type.
+CWWKD1037.cursor.rtrn.mismatch.useraction=Update the repository method to \
+ return the entity type.
+
+CWWKD1038.no.prev.offset.page=CWWKD1038E: A page number prior to {0} cannot \
+ be requested for the {1} method of the {2} repository interface because the \
+ Page.hasPrevious method returns false, indicating there is no previous page.
+CWWKD1038.no.prev.offset.page.explanation=Offset pagination does not allow \
+ page numbers less than 1.
+CWWKD1038.no.prev.offset.page.useraction=Ensure that the requested page number \
+ is a positive number and use the Page.hasPrevious method to ensure it is valid \
+ to request the previous page.
+
+CWWKD1039.no.prev.cursor.page=CWWKD1039E: A previous page cannot be requested \
+ for the {0} method of the {1} repository interface because the Page.hasPrevious \
+ method returns false, indicating there is no previous page.
+CWWKD1039.no.prev.cursor.page.explanation=Cursor-based pagination does not allow \
+ requesting a previous page when the current page is known to contain the \
+ results at the beginning of the data set.
+CWWKD1039.no.prev.cursor.page.useraction=Use the Page.hasPrevious method to \
+ ensure it is valid to request the previous page.
+
+CWWKD1040.no.next.page=CWWKD1040E: A next page cannot be requested for the \
+ {0} method of the {1} repository interface because {2} returns false, \
+ indicating there is no next page.
+CWWKD1040.no.next.page.explanation=A next page cannot be requested when the \
+ current page is known to contains the end of the data set.
+CWWKD1040.no.next.page.useraction=Use the hasNext method to ensure it is valid \
+ to request the next page.
+
+CWWKD1041.rtrn.mismatch.pagereq=CWWKD1041E: The {0} method of the {1} repository \
+ interface has a {2} return type but lacks a parameter of type PageRequest \
+ following the parameters for the query conditions.
+CWWKD1041.rtrn.mismatch.pagereq.explanation=Repository methods with the Page \
+ and CursoredPage return types must have a PageRequest parameter.
+CWWKD1041.rtrn.mismatch.pagereq.useraction=Add a PageRequest parameter to the \
+ repository method signature.
+
+CWWKD1042.no.totals=CWWKD1042E: Pages that are retrieved by the {0} method of \
+ the {1} repository interface do not include a total count of elements and pages \
+ because the {2} page request specifies a value of false for requestTotal. \
+ To request a page with the total count included, use the PageRequest.withTotal \
+ method instead of the PageRequest.withoutTotal method.
+CWWKD1042.no.totals.explanation=The PageRequest.withoutTotal method specifies that \
+ requested pages do not include a total count of elements and pages.
+CWWKD1042.no.totals.useraction=Use the PageRequest.withTotal method to request a \
+ total count of elements and pages.
+
+CWWKD1043.offset.exceeds.max=CWWKD1043E: The {0} offset that is needed for the \
+ {1} page request that is supplied to the {2} method of the {3} repository \
+ interface exceeds the maximum allowed value of {4}.
+CWWKD1043.offset.exceeds.max.explanation=The combination of page number and \
+ maximum page size is too large.
+CWWKD1043.offset.exceeds.max.useraction=Add restrictions to the query to reduce \
+ the number of matching results.
+
+CWWKD1044.invalid.resource.type=CWWKD1044E: The {0} resource accessor method \
+ of the {1} repository cannot return a {2} resource. The supported return types \
+ for resource accessor methods are: {3}.
+CWWKD1044.invalid.resource.type.explanation=The return type of the resource accessor \
+ method is not one of the supported types for Jakarta Data.
+CWWKD1044.invalid.resource.type.useraction=Remove the method or update it to return \
+ one of the supported types.
+
+CWWKD1045.unknown.entity.anno=CWWKD1045E: The built-in Jakarta Data provider \
+ cannot provide an implementation of the {0} repository interface because the \
+ {1} entity class that is used by the repository includes an unrecognized entity \
+ annotation. The following entity annotations are found on the entity class: {2}. \
+ Supported entity annotations are: {3}.
+CWWKD1045.unknown.entity.anno.explanation=The built-in Jakarta Data provider does \
+ not support one of the entity annotations.
+CWWKD1045.unknown.entity.anno.useraction=Remove the unrecognized entity annotation \
+ or use the provider attribute of the Repository annotation to select a Jakarta \
+ Data provider that recognizes the entity annotation.

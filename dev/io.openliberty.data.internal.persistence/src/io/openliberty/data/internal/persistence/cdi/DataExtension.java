@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.DoubleStream;
@@ -48,7 +49,10 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.QueryInfo;
 import jakarta.data.exceptions.DataException;
+import jakarta.data.exceptions.EmptyResultException;
+import jakarta.data.exceptions.EntityExistsException;
 import jakarta.data.exceptions.MappingException;
+import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.repository.By;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Delete;
@@ -415,7 +419,9 @@ public class DataExtension implements Extension {
     }
 
     /**
-     * Construct a RuntimeException or subclass and log the error.
+     * Construct a RuntimeException or subclass and log the error unless the
+     * error is known to be an error on the part of the application using a
+     * repository method, such as supplying a null PageRequest.
      *
      * @param exceptionType RuntimeException or subclass, which must have a
      *                          constructor that accepts the message as a single
@@ -425,10 +431,17 @@ public class DataExtension implements Extension {
      * @return RuntimeException or subclass.
      */
     @Trivial
-    private final static <T extends RuntimeException> T exc(Class<T> exceptionType,
-                                                            String messageId,
-                                                            Object... args) {
-        Tr.error(tc, messageId, args);
+    public final static <T extends RuntimeException> T exc(Class<T> exceptionType,
+                                                           String messageId,
+                                                           Object... args) {
+        if (!exceptionType.equals(EmptyResultException.class) &&
+            !exceptionType.equals(EntityExistsException.class) &&
+            !exceptionType.equals(IllegalArgumentException.class) &&
+            !exceptionType.equals(NoSuchElementException.class) &&
+            !exceptionType.equals(NullPointerException.class) &&
+            !exceptionType.equals(OptimisticLockingFailureException.class))
+            Tr.error(tc, messageId, args);
+
         String message = Tr.formatMessage(tc, messageId, args);
         try {
             return exceptionType.getConstructor(String.class).newInstance(message);
@@ -520,11 +533,12 @@ public class DataExtension implements Extension {
         if (hasEntityAnnos) {
             Repository repository = repositoryType.getAnnotation(Repository.class);
             if (!Repository.ANY_PROVIDER.equals(repository.provider()))
-                throw new MappingException("Open Liberty's built-in Jakarta Data provider cannot provide the " +
-                                           repositoryType.getJavaClass().getName() + " repository because the repository's " +
-                                           entityClass.getName() + " entity class includes an unrecognized entity annotation. " +
-                                           " The following annotations are found on the entity class: " + Arrays.toString(entityClassAnnos) +
-                                           ". Supported entity annotations are: " + Entity.class.getName() + "."); // TODO NLS
+                throw exc(DataException.class,
+                          "CWWKD1045.unknown.entity.anno",
+                          repositoryType.getJavaClass().getName(),
+                          entityClass.getName(),
+                          Arrays.toString(entityClassAnnos),
+                          Entity.class.getName());
         }
 
         return isSupported;
