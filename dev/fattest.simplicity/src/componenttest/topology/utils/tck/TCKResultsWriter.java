@@ -86,6 +86,7 @@ public class TCKResultsWriter {
                             .replaceAll("\\]", "")
                             .replaceAll("ADD", "add")
                             .replaceAll("  ", " ")
+                            .replaceAll(",","-")
                             .replaceAll(" ", "_");
             filename = (openLibertyVersion + "-" + fullSpecName.replace(" ", "-") + "-Java" + javaMajorVersion + newRepeat + "-TCKResults.adoc").replace("_", "-");
         } else {
