@@ -241,16 +241,17 @@ public final class ClassUtils extends org.apache.myfaces.core.api.shared.lang.Cl
 
     /**
      * Same as {link {@link #simpleClassForName(String)}, but will only
-     * log the exception and rethrow a RunTimeException if logException is true.
+     * log the exception and rethrow a RunTimeException if logAndThrowException is true.
      *
      * @param type
-     * @param logException - true to log/throw FacesException, false to avoid logging/throwing FacesException
+     * @param logAndThrowException - true to log and throw FacesException, false to avoid logging and throwing 
+     *  the FacesException
      * @return the corresponding Class
-     * @throws FacesException if class not found and logException is true
+     * @throws FacesException if class not found and logAndThrowException is true
      */
     // @Override MYFACES-4449: Methods that call ClassUtils.class.getClassLoader() need to be here
     //           as well as in the API ClassUtils so that the correct ClassLoader is used.
-    public static Class simpleClassForName(String type, boolean logException)
+    public static Class simpleClassForName(String type, boolean logAndThrowException)
     {
         Class returnClass = null;
         try
@@ -259,9 +260,42 @@ public final class ClassUtils extends org.apache.myfaces.core.api.shared.lang.Cl
         }
         catch (ClassNotFoundException e)
         {
-            if (logException)
+            if (logAndThrowException)
             {
                 log.log(Level.SEVERE, "Class " + type + " not found", e);
+                throw new FacesException(e);
+            }
+        }
+        return returnClass;
+    }
+
+    /**
+     * Same as {link {@link #simpleClassForName(String)}, but accepts two booleans
+     * One to log an exception and another to rethrow a FacesExceptions
+     *
+     * @param type
+     * @param logException - true to log the ClassNotFoundException, false to avoid logging
+     * @param throwException - true to throw a FacesException, false to avoid throwing a FacesException
+     * @return the corresponding Class
+     * @throws FacesException if class not found and throwException is true
+     */
+    // @Override MYFACES-4449: Methods that call ClassUtils.class.getClassLoader() need to be here
+    //           as well as in the API ClassUtils so that the correct ClassLoader is used.
+    public static Class simpleClassForName(String type, boolean throwException, boolean logException)
+    {
+        Class returnClass = null;
+        try
+        {
+            returnClass = classForName(type);
+        }
+        catch (ClassNotFoundException e)
+        {
+            if(logException)
+            {
+                log.log(Level.SEVERE, "Class " + type + " not found", e);
+            }
+            if (throwException)
+            {
                 throw new FacesException(e);
             }
         }

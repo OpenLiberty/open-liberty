@@ -174,7 +174,7 @@ public class FacesServletMappingUtils
             return true;
         }
 
-        Class servletClass = ClassUtils.simpleClassForName(servletClassName, true);
+        Class servletClass = ClassUtils.simpleClassForName(servletClassName, false, true);
         if (servletClass != null)
         {
             return FacesServlet.class.isAssignableFrom(servletClass);
