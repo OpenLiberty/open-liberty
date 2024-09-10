@@ -37,7 +37,6 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
      * Default to HTTP 2.0 for now
      */
     public LibertyNettyALPNHandler(NettyHttpChannelConfig httpConfig) {
-//        super(ApplicationProtocolNames.HTTP_2);
         super(ApplicationProtocolNames.HTTP_1_1);
         this.httpConfig = httpConfig;
     }
@@ -74,6 +73,9 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
                 Tr.debug(this, tc, "Configured pipeline with " + ctx.pipeline().names());
             }
             return;
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Pipeline unconfigured for protocol " + protocol);
         }
         throw new IllegalStateException("unknown protocol: " + protocol);
     }
