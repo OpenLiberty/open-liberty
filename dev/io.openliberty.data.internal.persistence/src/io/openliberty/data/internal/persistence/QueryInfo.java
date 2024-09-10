@@ -2756,6 +2756,22 @@ public class QueryInfo {
     }
 
     /**
+     * Appends a suffix if the repository class/package/method is considered
+     * loggable. Otherwise returns only the prefix.
+     *
+     * @param prefix         first part of value to always include.
+     * @param possibleSuffix suffix to only include if logValues allows.
+     * @return loggable value.
+     */
+    @Trivial
+    final String loggableAppend(String prefix, Object... possibleSuffix) {
+        return entityInfo.builder.provider.loggableAppend(repositoryInterface,
+                                                          method,
+                                                          prefix,
+                                                          possibleSuffix);
+    }
+
+    /**
      * Raise an error because the PageRequest is missing.
      *
      * @throws IllegalArgumentException      if the user supplied a null PageRequest

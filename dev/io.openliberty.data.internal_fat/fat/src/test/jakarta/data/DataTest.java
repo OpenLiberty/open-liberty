@@ -53,7 +53,9 @@ public class DataTest extends FATServletClient {
                                    "CWWKD1006E.*delete4",
                                    "CWWKD1008E.*delete5",
                                    "CWWKD1028E.*findFirst2147483648",
-                                   "CWWKD1041E.*findByNumberIdBetween"
+                                   "CWWKD1041E.*findByNumberIdBetween",
+                                   "CWWKD1047E.*numberAsByte",
+                                   "CWWKD1049E.*countAsBooleanByNumberIdLessThan"
                     };
 
     @ClassRule

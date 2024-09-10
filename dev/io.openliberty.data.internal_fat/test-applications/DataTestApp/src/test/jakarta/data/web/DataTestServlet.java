@@ -542,23 +542,14 @@ public class DataTestServlet extends FATServlet {
             // expected - out of range
         }
 
-        try {
-            double result = primes.numberAsDouble(4003);
-            fail("Should not convert long value to double value " + result);
-        } catch (MappingException x) {
-            // expected - not convertible
-        }
+        assertEquals(4003.0, primes.numberAsDouble(4003), 0.01);
 
-        try {
-            Optional<Float> result = primes.numberAsFloatWrapper(4001)
-                            .get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
-            fail("Should not convert long value to float value " + result);
-        } catch (ExecutionException x) {
-            if (x.getCause() instanceof MappingException)
-                ; // expected - not convertible
-            else
-                throw x;
-        }
+        assertEquals(4001f,
+                     primes.numberAsFloatWrapper(4001)
+                                     .get(TIMEOUT_MINUTES, TimeUnit.MINUTES)
+                                     .orElseThrow()
+                                     .floatValue(),
+                     0.01f);
 
         assertEquals(31,
                      primes.numberAsInt(31));

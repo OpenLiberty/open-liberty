@@ -80,7 +80,10 @@ import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.Query;
+import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.LockModeType;
@@ -94,6 +97,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private static final TraceComponent tc = Tr.register(RepositoryImpl.class);
 
     private static final ThreadLocal<Deque<AutoCloseable>> defaultMethodResources = new ThreadLocal<>();
+
+    private static final List<String> LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES = //
+                    List.of(Insert.class.getSimpleName(),
+                            Save.class.getSimpleName(),
+                            Update.class.getSimpleName());
 
     private final AtomicBoolean isDisposed = new AtomicBoolean();
     final CompletableFuture<EntityInfo> primaryEntityInfoFuture;
@@ -299,21 +307,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         if (v >= Integer.MIN_VALUE && v <= Integer.MAX_VALUE)
                             return n.intValue();
                         else
-                            convertFail(queryInfo, n, toType,
+                            convertFail(queryInfo, n,
                                         Integer.MIN_VALUE, Integer.MAX_VALUE);
                     } else if (short.class.equals(toType) ||
                                Short.class.equals(toType)) {
                         if (v >= Short.MIN_VALUE && v <= Short.MAX_VALUE)
                             return n.shortValue();
                         else
-                            convertFail(queryInfo, n, toType,
+                            convertFail(queryInfo, n,
                                         Short.MIN_VALUE, Short.MAX_VALUE);
                     } else if (byte.class.equals(toType) ||
                                Byte.class.equals(toType)) {
                         if (v >= Byte.MIN_VALUE && v <= Byte.MAX_VALUE)
                             return n.byteValue();
                         else
-                            convertFail(queryInfo, n, toType,
+                            convertFail(queryInfo, n,
                                         Byte.MIN_VALUE, Byte.MAX_VALUE);
                     } else if (BigInteger.class.equals(toType)) {
                         return BigInteger.valueOf(v);
@@ -323,12 +331,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                Double.class.equals(toType)) {
                         if (Integer.class.equals(fromType) ||
                             Short.class.equals(fromType) ||
-                            Byte.class.equals(fromType))
+                            Byte.class.equals(fromType) ||
+                            v >= Integer.MIN_VALUE && v <= Integer.MAX_VALUE)
                             return n.doubleValue();
                     } else if (float.class.equals(toType) ||
                                Float.class.equals(toType)) {
                         if (Short.class.equals(fromType) ||
-                            Byte.class.equals(fromType))
+                            Byte.class.equals(fromType) ||
+                            v >= Short.MIN_VALUE && v <= Short.MAX_VALUE)
                             return n.floatValue();
                     }
                 }
@@ -349,16 +359,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
             }
         }
 
-        Object loggable = queryInfo.loggable(value);
-        if (loggable == value)
-            loggable = fromType.getName() + " (" + loggable + ')';
         MappingException x;
         x = exc(MappingException.class,
                 "CWWKD1046.result.convert.err",
-                loggable,
+                queryInfo.loggableAppend(fromType.getName(),
+                                         " (", value, ")"),
                 queryInfo.method.getName(),
                 repositoryInterface.getName(),
-                toType.getName(),
                 queryInfo.method.getGenericReturnType().getTypeName());
         if (cause != null)
             x = (MappingException) x.initCause(cause);
@@ -371,23 +378,20 @@ public class RepositoryImpl<R> implements InvocationHandler {
      *
      * @param queryInfo query information for the repository method.
      * @param value     the value that fails to convert.
-     * @param toType    type to which conversion has failed.
      * @param min       minimum value for range.
      * @param max       maximum value for range.
      * @throws MappingException for the type conversion failure.
      */
     @Trivial
-    private void convertFail(QueryInfo queryInfo, Number value, Class<?> toType,
+    private void convertFail(QueryInfo queryInfo,
+                             Number value,
                              long min, long max) {
-        Object loggable = queryInfo.loggable(value);
-        if (loggable != value)
-            loggable = value.getClass().getName() + " (" + loggable + ')';
         throw exc(MappingException.class,
                   "CWWKD1047.result.out.of.range",
-                  loggable,
+                  queryInfo.loggableAppend(value.getClass().getName(),
+                                           " (", value, ")"),
                   queryInfo.method.getName(),
                   repositoryInterface.getName(),
-                  toType,
                   queryInfo.method.getGenericReturnType().getTypeName(),
                   min,
                   max);
@@ -471,7 +475,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                           count,
                           queryInfo.method.getName(),
                           repositoryInterface.getName(),
-                          type,
                           queryInfo.method.getGenericReturnType().getTypeName());
         }
 
@@ -611,13 +614,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (queryInfo.entityParamType.isArray()) {
             int length = Array.getLength(arg);
             results = new ArrayList<>(length);
-            for (int i = 0; i < length; i++) {
-                Object entity = findAndUpdateOne(Array.get(arg, i), queryInfo, em);
-                if (entity == null)
-                    throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
-                else
-                    results.add(entity);
-            }
+            for (int i = 0; i < length; i++)
+                results.add(findAndUpdateOne(Array.get(arg, i), queryInfo, em));
         } else {
             arg = arg instanceof Stream //
                             ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
@@ -625,21 +623,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
             results = new ArrayList<>();
             if (arg instanceof Iterable) {
-                for (Object e : ((Iterable<?>) arg)) {
-                    Object entity = findAndUpdateOne(e, queryInfo, em);
-                    if (entity == null)
-                        throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
-                    else
-                        results.add(entity);
-                }
+                for (Object e : ((Iterable<?>) arg))
+                    results.add(findAndUpdateOne(e, queryInfo, em));
             } else {
                 hasSingularEntityParam = true;
                 results = new ArrayList<>(1);
-                Object entity = findAndUpdateOne(arg, queryInfo, em);
-                if (entity == null)
-                    throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
-                else
-                    results.add(entity);
+                results.add(findAndUpdateOne(arg, queryInfo, em));
             }
         }
         em.flush();
@@ -713,8 +702,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @param e         the entity or record.
      * @param queryInfo query information.
      * @param em        the entity manager.
-     * @return the entity that is written to the database. Null if not found.
-     * @throws Exception if an error occurs.
+     * @return the entity that is written to the database. Never null.
+     * @throws OptimisticLockingException if the entity is not found.
+     * @throws Exception                  if an error occurs.
      */
     private Object findAndUpdateOne(Object e, QueryInfo queryInfo, EntityManager em) throws Exception {
         String jpql = queryInfo.jpql;
@@ -728,7 +718,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
         }
 
-        Object id = entityInfo.getAttribute(e, queryInfo.getAttributeName(ID, true));
+        String idAttributeName = queryInfo.getAttributeName(ID, true);
+        Object id = entityInfo.getAttribute(e, idAttributeName);
         if (id == null) {
             jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
             if (version != null)
@@ -770,8 +761,24 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (results.isEmpty()) {
             entity = null;
         } else {
-            entity = results.get(0);
+            entity = results.get(0); // TODO unused. Is this a mistake?
             entity = em.merge(toEntity(e));
+        }
+        if (entity == null) {
+            List<String> entityProps = new ArrayList<>(2);
+            if (id != null)
+                entityProps.add(queryInfo.loggableAppend(idAttributeName,
+                                                         "=", id));
+            if (entityInfo.versionAttributeName != null && version != null)
+                entityProps.add(queryInfo.loggableAppend(entityInfo.versionAttributeName,
+                                                         "=", version));
+            throw exc(OptimisticLockingFailureException.class,
+                      "CWWKD1050.opt.lock.exc",
+                      queryInfo.method.getName(),
+                      repositoryInterface.getName(),
+                      e.getClass().getName(),
+                      entityProps,
+                      LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES);
         }
         return entity;
     }
@@ -1462,11 +1469,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                         if (updateCount < numExpected)
                             if (numExpected == 1)
-                                throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                                throw exc(OptimisticLockingFailureException.class,
+                                          "CWWKD1051.single.opt.lock.exc",
+                                          queryInfo.method.getName(),
+                                          repositoryInterface.getName(),
+                                          queryInfo.entityInfo.entityClass.getName(),
+                                          LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES);
                             else
-                                throw new OptimisticLockingFailureException("A matching entity was not found in the database for " +
-                                                                            (numExpected - updateCount) + " of the " +
-                                                                            numExpected + " entities."); // TODO NLS
+                                throw exc(OptimisticLockingFailureException.class,
+                                          "CWWKD1052.multi.opt.lock.exc",
+                                          queryInfo.method.getName(),
+                                          repositoryInterface.getName(),
+                                          numExpected - updateCount,
+                                          numExpected,
+                                          queryInfo.entityInfo.entityClass.getName(),
+                                          LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES);
 
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
                         break;
@@ -1496,11 +1513,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                         if (updateCount < numExpected)
                             if (numExpected == 1)
-                                throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                                throw exc(OptimisticLockingFailureException.class,
+                                          "CWWKD1051.single.opt.lock.exc",
+                                          queryInfo.method.getName(),
+                                          repositoryInterface.getName(),
+                                          queryInfo.entityInfo.entityClass.getName(),
+                                          LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES);
                             else
-                                throw new OptimisticLockingFailureException("A matching entity was not found in the database for " +
-                                                                            (numExpected - updateCount) + " of the " +
-                                                                            numExpected + " entities."); // TODO NLS
+                                throw exc(OptimisticLockingFailureException.class,
+                                          "CWWKD1052.multi.opt.lock.exc",
+                                          queryInfo.method.getName(),
+                                          repositoryInterface.getName(),
+                                          numExpected - updateCount,
+                                          numExpected,
+                                          queryInfo.entityInfo.entityClass.getName(),
+                                          LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES);
 
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
                         break;
@@ -1655,8 +1682,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
         }
 
         Object id = null;
+        String idAttributeName = null;
         if (entityInfo.idClassAttributeAccessors == null) {
-            id = entityInfo.getAttribute(e, queryInfo.getAttributeName(ID, true));
+            idAttributeName = queryInfo.getAttributeName(ID, true);
+            id = entityInfo.getAttribute(e, idAttributeName);
             if (id == null) {
                 jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
                 if (version != null)
@@ -1690,11 +1719,24 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (numDeleted == 0) {
             Class<?> returnType = queryInfo.method.getReturnType();
             if (void.class.equals(returnType) || Void.class.equals(returnType)) {
-                if (entityInfo.versionAttributeName == null)
-                    throw new OptimisticLockingFailureException("Entity was not found."); // TODO NLS
-                else
-                    //TODO if the version is 0, let the user know the object returned from the insert/save operation must be used, not the original object
-                    throw new OptimisticLockingFailureException("Version " + version + " of the entity was not found."); // TODO NLS
+                // TODO IdClass is not covered. Ideally, it will be handled the same
+                // as other ids via id(this) if EclipseLink will allow that.
+                // Otherwise, we should add the id attributes/values here
+                // and in other places where this message is used
+                List<String> entityProps = new ArrayList<>(2);
+                if (idAttributeName != null && id != null)
+                    entityProps.add(queryInfo.loggableAppend(idAttributeName,
+                                                             "=", id));
+                if (entityInfo.versionAttributeName != null && version != null)
+                    entityProps.add(queryInfo.loggableAppend(entityInfo.versionAttributeName,
+                                                             "=", version));
+                throw exc(OptimisticLockingFailureException.class,
+                          "CWWKD1050.opt.lock.exc",
+                          queryInfo.method.getName(),
+                          repositoryInterface.getName(),
+                          e.getClass().getName(),
+                          entityProps,
+                          LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES);
             }
         } else if (numDeleted > 1) {
             throw new DataException("Found " + numDeleted + " matching entities."); // ought to be unreachable

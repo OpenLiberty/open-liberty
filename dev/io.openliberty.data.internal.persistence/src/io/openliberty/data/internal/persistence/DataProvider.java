@@ -522,6 +522,35 @@ public class DataProvider implements //
     }
 
     /**
+     * Appends a suffix if the repository class/package/method is considered
+     * loggable. Otherwise returns only the prefix.
+     *
+     * @param repoClass      repository class.
+     * @param method         repository method.
+     * @param prefix         first part of value to always include.
+     * @param possibleSuffix suffix to only include if logValues allows.
+     * @return loggable value.
+     */
+    @Trivial
+    String loggableAppend(Class<?> repoClass,
+                          Method method,
+                          String prefix,
+                          Object... possibleSuffix) {
+        StringBuilder b = new StringBuilder(prefix);
+        String className;
+        if (possibleSuffix != null &&
+            !logValues.isEmpty() &&
+            (logValues.contains("*") ||
+             logValues.contains(repoClass.getPackageName()) ||
+             logValues.contains(className = repoClass.getName()) ||
+             logValues.contains(className + '.' + method.getName())))
+            for (Object s : possibleSuffix)
+                b.append(s);
+
+        return b.toString();
+    }
+
+    /**
      * Invoked when configuration is modified.
      *
      * @param props config properties.
