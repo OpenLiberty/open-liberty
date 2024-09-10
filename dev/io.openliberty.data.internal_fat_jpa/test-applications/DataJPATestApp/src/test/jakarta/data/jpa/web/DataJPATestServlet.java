@@ -468,6 +468,9 @@ public class DataJPATestServlet extends FATServlet {
      * Use repository methods that convert a BigInteger value to other
      * numeric types.
      */
+    @SkipIfSysProp({
+                     DB_DB2, //TODO Failing on DB2 due to eclipselink issue. https://github.com/OpenLiberty/open-liberty/issues/29443
+    })
     @Test
     public void testConvertBigDecimalValue() {
         ZoneId ET = ZoneId.of("America/New_York");
