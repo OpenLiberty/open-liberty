@@ -1695,6 +1695,7 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Verify that fetch type eager and lazy both work when using a detached entity returned by Jakarta Data
      */
+    @SkipIfSysProp(DB_Postgres) //TODO Failing due to Eclipselink Issue on PostgreSQL: https://github.com/OpenLiberty/open-liberty/issues/28368
     @Test
     public void testFetchType() {
         mobilePhones.removeAll();
