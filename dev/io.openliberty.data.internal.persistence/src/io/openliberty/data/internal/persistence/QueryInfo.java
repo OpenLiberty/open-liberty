@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 import static jakarta.data.repository.By.ID;
 
 import java.lang.annotation.Annotation;
@@ -46,7 +47,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import io.openliberty.data.internal.persistence.cdi.DataExtension;
 import io.openliberty.data.internal.version.DataVersionCompatibility;
 import jakarta.data.Limit;
 import jakarta.data.Order;
@@ -771,12 +771,26 @@ public class QueryInfo {
                                 (Constructor<? extends Collection<Object>>) //
                                 iterableType.getConstructor();
                 list = c.newInstance();
-            } catch (NoSuchMethodException x) {
-                throw new MappingException("The " + iterableType.getName() + " result type lacks a public zero parameter constructor.", x); // TODO NLS
-            } catch (IllegalAccessException | InstantiationException x) {
-                throw new MappingException("Unable to access the zero parameter constructor of the " + iterableType.getName() + " result type.", x); // TODO NLS
+            } catch (IllegalAccessException | InstantiationException | //
+                            NoSuchMethodException x) {
+                throw (UnsupportedOperationException) exc //
+                (UnsupportedOperationException.class,
+                 "CWWKD1057.no.args.constr.inacc",
+                 method.getGenericReturnType().getTypeName(),
+                 method.getName(),
+                 repositoryInterface.getName(),
+                 iterableType.getName()) //
+                                 .initCause(x);
             } catch (InvocationTargetException x) {
-                throw new MappingException("The constructor for the " + iterableType.getName() + " result type raised an error: " + x.getCause().getMessage(), x.getCause()); // TODO NLS
+                throw (DataException) exc //
+                (DataException.class,
+                 "CWWKD1058.no.args.constr.err",
+                 method.getGenericReturnType().getTypeName(),
+                 method.getName(),
+                 repositoryInterface.getName(),
+                 iterableType.getName(),
+                 x.getMessage()) //
+                                 .initCause(x);
             }
         }
         if (results.size() == 1 && results.get(0) instanceof Object[]) {
@@ -832,25 +846,6 @@ public class QueryInfo {
     private static boolean endsWith(String searchFor, String text, int minStart, int endBefore) {
         int searchLen = searchFor.length();
         return endBefore - minStart >= searchLen && text.regionMatches(endBefore - searchLen, searchFor, 0, searchLen);
-    }
-
-    /**
-     * Construct a RuntimeException or subclass and log the error unless the
-     * error is known to be an error on the part of the application using a
-     * repository method, such as supplying a null PageRequest.
-     *
-     * @param exceptionType RuntimeException or subclass, which must have a
-     *                          constructor that accepts the message as a single
-     *                          String argument.
-     * @param messageId     NLS message ID.
-     * @param args          message arguments.
-     * @return RuntimeException or subclass.
-     */
-    @Trivial
-    private final static <T extends RuntimeException> T exc(Class<T> exceptionType,
-                                                            String messageId,
-                                                            Object... args) {
-        return DataExtension.exc(exceptionType, messageId, args);
     }
 
     /**
@@ -1940,6 +1935,44 @@ public class QueryInfo {
         }
         if (hasWhere)
             q.append(')');
+    }
+
+    /**
+     * Obtains the value of an entity attribute.
+     *
+     * @param entity        the entity from which to obtain the value.
+     * @param attributeName name of the entity attribute.
+     * @return the value of the attribute.
+     */
+    Object getAttribute(Object entity, String attributeName) throws Exception {
+        List<Member> accessors = entityInfo.attributeAccessors.get(attributeName);
+        if (accessors == null)
+            throw new IllegalArgumentException(attributeName); // should never occur
+
+        Object value = entity;
+        for (Member accessor : accessors) {
+            Class<?> type = accessor.getDeclaringClass();
+            if (type.isInstance(value)) {
+                if (accessor instanceof Method)
+                    value = ((Method) accessor).invoke(value);
+                else // Field
+                    value = ((Field) accessor).get(value);
+            } else {
+                throw exc(MappingException.class,
+                          "CWWKD1059.prop.cast.err",
+                          method.getName(),
+                          repositoryInterface.getName(),
+                          attributeName,
+                          loggableAppend(entity.getClass().getName(),
+                                         " (" + entity + ")"),
+                          accessor.getName(),
+                          type.getName(),
+                          loggableAppend(value.getClass().getName(),
+                                         " (" + value + ")"));
+            }
+        }
+
+        return value;
     }
 
     @Trivial
@@ -3050,25 +3083,35 @@ public class QueryInfo {
     }
 
     /**
-     * Parses and handles the text between find___By or find___OrderBy or find___ of a repository method.
-     * Currently this is only "First" or "First#" and entity property names to select.
+     * Parses and handles the text after the find keyword of the find clause,
+     * such as find___By or find___OrderBy or find___.
+     * Currently the only keyword supported within this portion of the find clause
+     * is First, which can be optionally followed by a number.
      * "Distinct" is reserved for future use.
+     * Other characters in the clause are ignored.
      *
-     * @param by index of first occurrence of "By" or "OrderBy" in the method name. -1 if both are absent.
+     * @param by index of first occurrence of "By" or "OrderBy" in the method name.
+     *               -1 if both are absent.
      */
     private void parseFindClause(int by) {
         String methodName = method.getName();
         int start = 4;
         int endBefore = by == -1 ? methodName.length() : by;
 
-        for (boolean first = methodName.regionMatches(start, "First", 0, 5), distinct = !first && methodName.regionMatches(start, "Distinct", 0, 8); //
+        for (boolean first = methodName.regionMatches(start, "First", 0, 5),
+                        distinct = !first && methodName //
+                                        .regionMatches(start, "Distinct", 0, 8); //
                         first || distinct;)
             if (first) {
                 start = parseFirst(start += 5, endBefore);
                 first = false;
                 distinct = methodName.regionMatches(start, "Distinct", 0, 8);
             } else if (distinct) {
-                throw new UnsupportedOperationException("The keyword Distinct is not supported on the " + methodName + " method."); // TODO NLS
+                throw exc(UnsupportedOperationException.class,
+                          "CWWKD1056.unsupported.keyword",
+                          method.getName(),
+                          repositoryInterface.getName(),
+                          "Distinct");
             }
     }
 

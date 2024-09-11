@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 import static jakarta.data.repository.By.ID;
 
 import java.lang.reflect.Array;
@@ -317,25 +318,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
-     * Construct a RuntimeException or subclass and log the error unless the
-     * error is known to be an error on the part of the application using a
-     * repository method, such as supplying a null PageRequest.
-     *
-     * @param exceptionType RuntimeException or subclass, which must have a
-     *                          constructor that accepts the message as a single
-     *                          String argument.
-     * @param messageId     NLS message ID.
-     * @param args          message arguments.
-     * @return RuntimeException or subclass.
-     */
-    @Trivial
-    private final static <T extends RuntimeException> T exc(Class<T> exceptionType,
-                                                            String messageId,
-                                                            Object... args) {
-        return DataExtension.exc(exceptionType, messageId, args);
-    }
-
-    /**
      * Create a new EmptyResultException.
      *
      * @param method repository method that unexpectedly finds an empty result.
@@ -570,13 +552,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
         int versionParamIndex = 2;
         Object version = null;
         if (entityInfo.versionAttributeName != null) {
-            version = entityInfo.getAttribute(e, entityInfo.versionAttributeName);
+            version = queryInfo.getAttribute(e, entityInfo.versionAttributeName);
             if (version == null)
                 jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
         }
 
         String idAttributeName = queryInfo.getAttributeName(ID, true);
-        Object id = entityInfo.getAttribute(e, idAttributeName);
+        Object id = queryInfo.getAttribute(e, idAttributeName);
         if (id == null) {
             jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
             if (version != null)
@@ -1557,7 +1539,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         int versionParamIndex = (entityInfo.idClassAttributeAccessors == null ? 1 : entityInfo.idClassAttributeAccessors.size()) + 1;
         Object version = null;
         if (entityInfo.versionAttributeName != null) {
-            version = entityInfo.getAttribute(e, entityInfo.versionAttributeName);
+            version = queryInfo.getAttribute(e, entityInfo.versionAttributeName);
             if (version == null)
                 jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
         }
@@ -1566,7 +1548,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         String idAttributeName = null;
         if (entityInfo.idClassAttributeAccessors == null) {
             idAttributeName = queryInfo.getAttributeName(ID, true);
-            id = entityInfo.getAttribute(e, idAttributeName);
+            id = queryInfo.getAttribute(e, idAttributeName);
             if (id == null) {
                 jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
                 if (version != null)
@@ -1860,12 +1842,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
         int versionParamIndex = attrsToUpdate.size() + 2;
         Object version = null;
         if (entityInfo.versionAttributeName != null) {
-            version = entityInfo.getAttribute(e, entityInfo.versionAttributeName);
+            version = queryInfo.getAttribute(e, entityInfo.versionAttributeName);
             if (version == null)
                 jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
         }
 
-        Object id = entityInfo.getAttribute(e, queryInfo.getAttributeName(ID, true));
+        Object id = queryInfo.getAttribute(e, queryInfo.getAttributeName(ID, true));
         if (id == null) {
             jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
             if (version != null)

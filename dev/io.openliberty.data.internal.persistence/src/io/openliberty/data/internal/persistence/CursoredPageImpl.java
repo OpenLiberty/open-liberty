@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
@@ -30,7 +32,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import io.openliberty.data.internal.persistence.cdi.DataExtension;
 import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.page.CursoredPage;
@@ -164,25 +165,6 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
             }
 
         return Cursor.forKey(keyValues);
-    }
-
-    /**
-     * Construct a RuntimeException or subclass and log the error unless the
-     * error is known to be an error on the part of the application using a
-     * repository method, such as supplying a null PageRequest.
-     *
-     * @param exceptionType RuntimeException or subclass, which must have a
-     *                          constructor that accepts the message as a single
-     *                          String argument.
-     * @param messageId     NLS message ID.
-     * @param args          message arguments.
-     * @return RuntimeException or subclass.
-     */
-    @Trivial
-    private final static <T extends RuntimeException> T exc(Class<T> exceptionType,
-                                                            String messageId,
-                                                            Object... args) {
-        return DataExtension.exc(exceptionType, messageId, args);
     }
 
     @Override
