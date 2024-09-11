@@ -145,6 +145,11 @@ final class CompilationManager
 
         DoctypeUnit unit = new DoctypeUnit(this.alias, this.nextTagId(),
             name, publicId, systemId, faceletsProcessingInstructions.isHtml5Doctype());
+        if(faceletsProcessingInstructions.isHtml5Doctype())
+        {
+            publicId = null;
+            systemId = null;
+        } 
         this.doctype = new DoctypeImpl(name, publicId, systemId);
         this.startUnit(unit);
     }
