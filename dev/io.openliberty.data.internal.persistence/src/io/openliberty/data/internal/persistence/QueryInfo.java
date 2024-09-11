@@ -15,18 +15,23 @@ package io.openliberty.data.internal.persistence;
 import static jakarta.data.repository.By.ID;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.RecordComponent;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -542,6 +547,250 @@ public class QueryInfo {
                       method.getName(),
                       repositoryInterface.getName(),
                       "Integer.MAX_VALUE (" + Integer.MAX_VALUE + ")");
+    }
+
+    /**
+     * Converts a value to the type that is required by the repository method
+     * return type.
+     *
+     * @param value              value to convert.
+     * @param type               type to convert to.
+     * @param failIfNotConverted whether or not to fail if unable to convert.
+     * @return converted value.
+     */
+    @FFDCIgnore(ArithmeticException.class) // reported to user as chained exception
+    @Trivial
+    Object convert(Object value, Class<?> toType, boolean failIfNotConverted) {
+        if (value == null) {
+            if (toType.isPrimitive())
+                throw exc(MappingException.class,
+                          "CWWKD1046.result.convert.err",
+                          null,
+                          method.getName(),
+                          repositoryInterface.getName(),
+                          method.getGenericReturnType().getTypeName());
+            else
+                return null;
+        }
+
+        Class<?> fromType = value.getClass();
+        Exception cause = null;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "convert " + loggableAppend(fromType.getSimpleName(),
+                                                           " (", value, ")")
+                               + " to " + toType.getSimpleName());
+
+        if (value instanceof Number &&
+            (PRIMITIVE_NUMERIC_TYPES.contains(toType) ||
+             Number.class.isAssignableFrom(toType))) {
+            try {
+                if (BigDecimal.class.equals(fromType)) {
+                    BigDecimal v = (BigDecimal) value;
+                    if (long.class.equals(toType) ||
+                        Long.class.equals(toType)) {
+                        return v.longValueExact();
+                    } else if (int.class.equals(toType) ||
+                               Integer.class.equals(toType)) {
+                        return v.intValueExact();
+                    } else if (short.class.equals(toType) ||
+                               Short.class.equals(toType)) {
+                        return v.shortValueExact();
+                    } else if (byte.class.equals(toType) ||
+                               Byte.class.equals(toType)) {
+                        return v.byteValueExact();
+                    } else if (BigInteger.class.equals(toType)) {
+                        return v.toBigIntegerExact();
+                    }
+                } else if (BigInteger.class.equals(fromType)) {
+                    BigInteger v = (BigInteger) value;
+                    if (long.class.equals(toType) ||
+                        Long.class.equals(toType)) {
+                        return v.longValueExact();
+                    } else if (int.class.equals(toType) ||
+                               Integer.class.equals(toType)) {
+                        return v.intValueExact();
+                    } else if (short.class.equals(toType) ||
+                               Short.class.equals(toType)) {
+                        return v.shortValueExact();
+                    } else if (byte.class.equals(toType) ||
+                               Byte.class.equals(toType)) {
+                        return v.byteValueExact();
+                    } else if (BigDecimal.class.equals(toType)) {
+                        return new BigDecimal(v);
+                    }
+                } else if (double.class.equals(fromType) ||
+                           Double.class.equals(fromType)) {
+                    Double v = (Double) value;
+                    if (double.class.equals(toType))
+                        return v;
+                    else if (BigDecimal.class.equals(toType))
+                        return BigDecimal.valueOf(v);
+                } else if (float.class.equals(fromType) ||
+                           Float.class.equals(fromType)) {
+                    Float v = (Float) value;
+                    if (float.class.equals(toType))
+                        return v;
+                    else if (double.class.equals(toType))
+                        return v.doubleValue();
+                    else if (BigDecimal.class.equals(toType))
+                        return BigDecimal.valueOf(v);
+                } else {
+                    Number n = (Number) value;
+                    long v = n.longValue();
+                    if (long.class.equals(toType) ||
+                        Long.class.equals(toType)) {
+                        return v;
+                    } else if (int.class.equals(toType) ||
+                               Integer.class.equals(toType)) {
+                        if (v >= Integer.MIN_VALUE && v <= Integer.MAX_VALUE)
+                            return n.intValue();
+                        else
+                            convertFail(n, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                    } else if (short.class.equals(toType) ||
+                               Short.class.equals(toType)) {
+                        if (v >= Short.MIN_VALUE && v <= Short.MAX_VALUE)
+                            return n.shortValue();
+                        else
+                            convertFail(n, Short.MIN_VALUE, Short.MAX_VALUE);
+                    } else if (byte.class.equals(toType) ||
+                               Byte.class.equals(toType)) {
+                        if (v >= Byte.MIN_VALUE && v <= Byte.MAX_VALUE)
+                            return n.byteValue();
+                        else
+                            convertFail(n, Byte.MIN_VALUE, Byte.MAX_VALUE);
+                    } else if (BigInteger.class.equals(toType)) {
+                        return BigInteger.valueOf(v);
+                    } else if (BigDecimal.class.equals(toType)) {
+                        return BigDecimal.valueOf(v);
+                    } else if (double.class.equals(toType) ||
+                               Double.class.equals(toType)) {
+                        if (Integer.class.equals(fromType) ||
+                            Short.class.equals(fromType) ||
+                            Byte.class.equals(fromType) ||
+                            v >= Integer.MIN_VALUE && v <= Integer.MAX_VALUE)
+                            return n.doubleValue();
+                    } else if (float.class.equals(toType) ||
+                               Float.class.equals(toType)) {
+                        if (Short.class.equals(fromType) ||
+                            Byte.class.equals(fromType) ||
+                            v >= Short.MIN_VALUE && v <= Short.MAX_VALUE)
+                            return n.floatValue();
+                    }
+                }
+            } catch (ArithmeticException x) {
+                cause = x;
+            }
+        } else if (String.class.equals(toType) ||
+                   CharSequence.class.equals(toType)) {
+            return value.toString();
+        } else if (char.class.equals(toType) ||
+                   Character.class.equals(toType)) {
+            if (value instanceof CharSequence) {
+                CharSequence chars = (CharSequence) value;
+                if (chars.length() == 1)
+                    return chars.charAt(0);
+                else if (chars.isEmpty() && Character.class.equals(toType))
+                    return null;
+            }
+        }
+
+        if (failIfNotConverted) {
+            MappingException x;
+            x = exc(MappingException.class,
+                    "CWWKD1046.result.convert.err",
+                    loggableAppend(fromType.getName(), " (", value, ")"),
+                    method.getName(),
+                    repositoryInterface.getName(),
+                    method.getGenericReturnType().getTypeName());
+            if (cause != null)
+                x = (MappingException) x.initCause(cause);
+            throw x;
+        } else {
+            return value;
+        }
+    }
+
+    /**
+     * Raises an error for a type conversion failure due to a value being outside of
+     * the specified range.
+     *
+     * @param queryInfo query information for the repository method.
+     * @param value     the value that fails to convert.
+     * @param min       minimum value for range.
+     * @param max       maximum value for range.
+     * @throws MappingException for the type conversion failure.
+     */
+    @Trivial
+    private void convertFail(Number value, long min, long max) {
+        throw exc(MappingException.class,
+                  "CWWKD1047.result.out.of.range",
+                  loggableAppend(value.getClass().getName(), " (", value, ")"),
+                  method.getName(),
+                  repositoryInterface.getName(),
+                  method.getGenericReturnType().getTypeName(),
+                  min,
+                  max);
+    }
+
+    /**
+     * Convert the results list into an Iterable of the specified type.
+     *
+     * @param results      results of a find or save operation.
+     * @param elementType  the type of each element if a find operation.
+     *                         Can be NULL if a save operation.
+     * @param iterableType the desired type of Iterable.
+     * @return results converted to an Iterable of the specified type.
+     */
+    @Trivial
+    final Iterable<?> convertToIterable(List<?> results,
+                                        Class<?> elementType,
+                                        Class<?> iterableType) {
+        Collection<Object> list;
+        if (iterableType.isInterface()) {
+            if (iterableType.isAssignableFrom(ArrayList.class))
+                // covers Iterable, Collection, List
+                list = new ArrayList<>(results.size());
+            else if (iterableType.isAssignableFrom(ArrayDeque.class))
+                // covers Queue, Deque
+                list = new ArrayDeque<>(results.size());
+            else if (iterableType.isAssignableFrom(LinkedHashSet.class))
+                // covers Set
+                list = new LinkedHashSet<>(results.size());
+            else
+                throw exc(UnsupportedOperationException.class,
+                          "CWWKD1046.result.convert.err",
+                          List.class.getName(),
+                          method.getName(),
+                          repositoryInterface.getName(),
+                          method.getGenericReturnType().getTypeName());
+        } else {
+            try {
+                @SuppressWarnings("unchecked")
+                Constructor<? extends Collection<Object>> c = //
+                                (Constructor<? extends Collection<Object>>) //
+                                iterableType.getConstructor();
+                list = c.newInstance();
+            } catch (NoSuchMethodException x) {
+                throw new MappingException("The " + iterableType.getName() + " result type lacks a public zero parameter constructor.", x); // TODO NLS
+            } catch (IllegalAccessException | InstantiationException x) {
+                throw new MappingException("Unable to access the zero parameter constructor of the " + iterableType.getName() + " result type.", x); // TODO NLS
+            } catch (InvocationTargetException x) {
+                throw new MappingException("The constructor for the " + iterableType.getName() + " result type raised an error: " + x.getCause().getMessage(), x.getCause()); // TODO NLS
+            }
+        }
+        if (results.size() == 1 && results.get(0) instanceof Object[]) {
+            Object[] a = (Object[]) results.get(0);
+            for (int i = 0; i < a.length; i++) {
+                Object element = a[i];
+                if (!elementType.isInstance(element))
+                    element = convert(element, elementType, true);
+                list.add(element);
+            }
+        } else {
+            list.addAll(results);
+        }
+        return list;
     }
 
     /**
@@ -2753,6 +3002,22 @@ public class QueryInfo {
         return entityInfo.builder.provider.loggable(repositoryInterface,
                                                     method,
                                                     value);
+    }
+
+    /**
+     * Appends a suffix if the repository class/package/method is considered
+     * loggable. Otherwise returns only the prefix.
+     *
+     * @param prefix         first part of value to always include.
+     * @param possibleSuffix suffix to only include if logValues allows.
+     * @return loggable value.
+     */
+    @Trivial
+    final String loggableAppend(String prefix, Object... possibleSuffix) {
+        return entityInfo.builder.provider.loggableAppend(repositoryInterface,
+                                                          method,
+                                                          prefix,
+                                                          possibleSuffix);
     }
 
     /**

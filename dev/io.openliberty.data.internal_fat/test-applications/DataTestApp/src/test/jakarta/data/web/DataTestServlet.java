@@ -542,23 +542,14 @@ public class DataTestServlet extends FATServlet {
             // expected - out of range
         }
 
-        try {
-            double result = primes.numberAsDouble(4003);
-            fail("Should not convert long value to double value " + result);
-        } catch (MappingException x) {
-            // expected - not convertible
-        }
+        assertEquals(4003.0, primes.numberAsDouble(4003), 0.01);
 
-        try {
-            Optional<Float> result = primes.numberAsFloatWrapper(4001)
-                            .get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
-            fail("Should not convert long value to float value " + result);
-        } catch (ExecutionException x) {
-            if (x.getCause() instanceof MappingException)
-                ; // expected - not convertible
-            else
-                throw x;
-        }
+        assertEquals(4001f,
+                     primes.numberAsFloatWrapper(4001)
+                                     .get(TIMEOUT_MINUTES, TimeUnit.MINUTES)
+                                     .orElseThrow()
+                                     .floatValue(),
+                     0.01f);
 
         assertEquals(31,
                      primes.numberAsInt(31));
@@ -3378,12 +3369,17 @@ public class DataTestServlet extends FATServlet {
         assertEquals(12, ints[3]); // count
         assertEquals(16, ints[4]); // average
 
-        float[] floats = primes.minMaxSumCountAverageFloat(35);
-        assertEquals(2.0f, floats[0], 0.01f); // minimum
-        assertEquals(31.0f, floats[1], 0.01f); // maximum
-        assertEquals(160.0f, floats[2], 0.01f); // sum
-        assertEquals(11.0f, floats[3], 0.01f); // count
-        assertEquals(14.0f, Math.floor(floats[4]), 0.01f); // average
+        try {
+            float[] floats = primes.minMaxSumCountAverageFloat(35);
+            fail("Allowed unsafe conversion from double to float: " +
+                 Arrays.toString(floats));
+        } catch (MappingException x) {
+            if (x.getMessage().startsWith("CWWKD1046E") &&
+                x.getMessage().contains("float[]"))
+                ; // unsafe to convert double to float
+            else
+                throw x;
+        }
 
         List<Long> list = primes.minMaxSumCountAverageList(30);
         assertEquals(Long.valueOf(2L), list.get(0)); // minimum

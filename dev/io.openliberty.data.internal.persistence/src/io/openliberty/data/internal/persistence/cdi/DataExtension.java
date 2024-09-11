@@ -437,6 +437,7 @@ public class DataExtension implements Extension {
         if (!exceptionType.equals(EmptyResultException.class) &&
             !exceptionType.equals(EntityExistsException.class) &&
             !exceptionType.equals(IllegalArgumentException.class) &&
+            !exceptionType.equals(IllegalStateException.class) &&
             !exceptionType.equals(NoSuchElementException.class) &&
             !exceptionType.equals(NullPointerException.class) &&
             !exceptionType.equals(OptimisticLockingFailureException.class))
