@@ -33,6 +33,46 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 public class ManifestClassPathHelper {
     static final TraceComponent tc = Tr.register(ManifestClassPathHelper.class);
 
+    public static class ManifestClassPath implements ContainerInfo {
+        private final Container container;
+        private final String name;
+
+        ManifestClassPath(String name, Container container) {
+            this.name = name;
+            this.container = container;
+        }
+
+        @Override
+        public Type getType() {
+            return Type.MANIFEST_CLASSPATH;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public Container getContainer() {
+            return container;
+        }
+
+        @Override
+        public int hashCode() {
+            // just hashing on name
+            return name.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof ManifestClassPath)) {
+                return false;
+            }
+            ManifestClassPath other = (ManifestClassPath) o;
+            return name.equals(other.getName()) && container.equals(other.getContainer());
+        }
+    }
+
     public static void processMFClasspath(Entry jarEntry, Container jarContainer, List<ContainerInfo> containers, Collection<String> resolved,
                                           boolean addRoot) throws UnableToAdaptException {
         String mfClassPath = null;
@@ -66,23 +106,7 @@ public class ManifestClassPathHelper {
                 if (path.equals(".")) {
                     if (addRoot) {
                         //add the root of the container holding the ear, if there was one..
-                        final Container rootContainer = jarEntry.getRoot();
-                        containers.add(new ContainerInfo() {
-                            @Override
-                            public Type getType() {
-                                return Type.MANIFEST_CLASSPATH;
-                            }
-
-                            @Override
-                            public String getName() {
-                                return "/";
-                            }
-
-                            @Override
-                            public Container getContainer() {
-                                return rootContainer;
-                            }
-                        });
+                        containers.add(new ManifestClassPath("/", jarEntry.getRoot()));
                     }
                 } else {
                     URI pathUri;
@@ -109,23 +133,7 @@ public class ManifestClassPathHelper {
                         final String classPathName = ManifestClassPathUtils.createEntryIdentity(classPathEntry);
                         final Container classPathContainer = classPathEntry.adapt(Container.class);
                         if (classPathContainer != null) {
-
-                            containers.add(new ContainerInfo() {
-                                @Override
-                                public Type getType() {
-                                    return Type.MANIFEST_CLASSPATH;
-                                }
-
-                                @Override
-                                public String getName() {
-                                    return classPathName;
-                                }
-
-                                @Override
-                                public Container getContainer() {
-                                    return classPathContainer;
-                                }
-                            });
+                            containers.add(new ManifestClassPath(classPathName, classPathContainer));
                         }
 
                         //TODO: toLowerCase?
