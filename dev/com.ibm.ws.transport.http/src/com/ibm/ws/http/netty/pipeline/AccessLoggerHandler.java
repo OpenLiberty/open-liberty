@@ -13,7 +13,6 @@ import java.util.Objects;
 
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
-import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 
 import io.netty.channel.ChannelDuplexHandler;
@@ -30,7 +29,6 @@ public class AccessLoggerHandler extends ChannelDuplexHandler {
     public AccessLoggerHandler(HttpChannelConfig config) {
         Objects.requireNonNull(config);
         this.config = config;
-        MSP.log("Access logger config set, format : " + config.getAccessLog().getFormat());
     }
 
     @Override
@@ -49,7 +47,6 @@ public class AccessLoggerHandler extends ChannelDuplexHandler {
         if (!ctx.channel().hasAttr(NettyHttpConstants.REQUEST_START_TIME)) {
 
             long startTime = System.nanoTime();
-            MSP.log("Setting current time: " + startTime);
             ctx.channel().attr(NettyHttpConstants.REQUEST_START_TIME).set(startTime);
         }
         super.channelRead(ctx, msg);

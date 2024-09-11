@@ -243,7 +243,6 @@ public class NettyHttpRequestImpl extends HttpRequestImpl implements Http2Reques
      */
     @Override
     public String getURI() {
-        MSP.log("NettyRequest URI - " + nettyRequest.uri());
         return this.nettyDecoder.uri();
 //        return this.nettyRequest.uri();
     }
@@ -287,23 +286,9 @@ public class NettyHttpRequestImpl extends HttpRequestImpl implements Http2Reques
      */
     @Override
     public int getVirtualPort() {
-        MSP.log("Virtual port is being gathered ");
 
         String port = null;
         int portNum = context.getLocalPort();
-//        if (port == null) {
-//            port = this.nettyRequest.headers().get(HttpHeaderKeys.HDR_HOST.getName());
-//            if (port != null & port.contains(":")) {
-//                port = port.substring(port.indexOf(':'));
-//                try {
-//                    portNum = Integer.parseInt(port);
-//                } catch (NumberFormatException exception) {
-//                    portNum = -1;
-//                }
-//            }
-//        }
-
-        MSP.log("Virtual port is  set to " + portNum);
         return portNum;
 
     }

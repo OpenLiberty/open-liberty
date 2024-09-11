@@ -28,7 +28,6 @@ import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.HttpTrailersImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.cookie.CookieEncoder;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
@@ -85,7 +84,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
         if (request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
             String streamId = request.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
-            System.out.println("Got an HTTP2 request, setting stream ID of response to: " + streamId);
             nettyResponse.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), streamId);
 
         }
@@ -154,7 +152,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     public void setConnection(ConnectionValues value) {
         //TODO Netty already sets this, no op?
         // Wrong need to set this on occasions like 404s
-        MSP.log("Attempt to set connection to: " + value);
         if (value.getName().equalsIgnoreCase(HttpHeaderValues.CLOSE.toString()))
             nettyResponse.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
         else if (value.getName().equalsIgnoreCase(HttpHeaderValues.KEEP_ALIVE.toString()))
@@ -163,21 +160,16 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public void setConnection(ConnectionValues[] values) {
-        ///TODO Netty already sets this, no op?
-        MSP.log("Attempt to set connection to: " + values.toString());
         nettyResponse.headers().set(HttpHeaderNames.CONNECTION, values);
     }
 
     @Override
     public ConnectionValues[] getConnection() {
-        // TODO Auto-generated method stub
         List<String> test = nettyResponse.headers().getAll(HttpHeaderNames.CONNECTION);
-        System.out.println("Processing Connection values: " + test);
         List<ConnectionValues> values = new ArrayList<ConnectionValues>();
         for (String header : test) {
             values.add(ConnectionValues.match(header, 0, header.length()));
         }
-        System.out.println("Returning: " + values);
         return (ConnectionValues[]) values.toArray();
     }
 
@@ -229,7 +221,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public boolean isChunkedEncodingSet() {
-        // TODO Auto-generated method stub
         return HttpUtil.isTransferEncodingChunked(nettyResponse);
     }
 
@@ -247,19 +238,16 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public byte[] getExpect() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public boolean isExpect100Continue() {
-        // TODO Auto-generated method stub
         return HttpUtil.is100ContinueExpected(nettyResponse);
     }
 
     @Override
     public String getMIMEType() {
-        // TODO Auto-generated method stub
         return HttpUtil.getMimeType(nettyResponse).toString();
     }
 
@@ -271,21 +259,16 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public Charset getCharset() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setCharset(Charset set) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public HttpTrailers getTrailers() {
-        // TODO Auto-generated method stub)
-//        if (trailers.isEmpty())
-//            return null;
         return nettyTrailerWrapper;
     }
 
@@ -296,35 +279,26 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public void setVersion(VersionValues version) {
-        MSP.log("Illegal call from setVersion(VersionValues version)");
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void setVersion(String version) throws UnsupportedProtocolVersionException {
-        MSP.log("Illegal call from setVersion(String version)");
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void setVersion(byte[] version) throws UnsupportedProtocolVersionException {
-        MSP.log("Illegal call from setVersion(byte[] version)");
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public HttpTrailersImpl createTrailers() {
-        // TODO Auto-generated method stub
-        MSP.log("Illegal call from createTrailers()");
         return null;
     }
 
     @Override
     public void setDebugContext(Object o) {
-        // TODO Auto-generated method stub
 
     }
 
@@ -335,14 +309,12 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public HeaderField getHeader(byte[] name) {
-        // TODO Auto-generated method stub
         return getHeader(new String(name, StandardCharsets.UTF_8));
 
     }
 
     @Override
     public HeaderField getHeader(HeaderKeys name) {
-        // TODO Auto-generated method stub
         return new NettyHeader(name, headers);
     }
 
@@ -395,7 +367,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public void appendHeader(byte[] header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
 
     }
 
@@ -413,7 +384,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public void appendHeader(HeaderKeys header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
 
     }
 
@@ -431,7 +401,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public void appendHeader(String header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
 
     }
 
@@ -449,31 +418,26 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public boolean containsHeader(byte[] header) {
-        // TODO Auto-generated method stub
         return containsHeader(new String(header, StandardCharsets.UTF_8));
     }
 
     @Override
     public boolean containsHeader(HeaderKeys header) {
-        // TODO Auto-generated method stub
         return containsHeader(header.getName());
     }
 
     @Override
     public boolean containsHeader(String header) {
-        // TODO Auto-generated method stub
         return headers.contains(header);
     }
 
     @Override
     public int getNumberOfHeaderInstances(byte[] header) {
-        // TODO Auto-generated method stub
         return this.getNumberOfHeaderInstances(new String(header, StandardCharsets.UTF_8));
     }
 
     @Override
     public int getNumberOfHeaderInstances(HeaderKeys header) {
-        // TODO Auto-generated method stub
         return this.getNumberOfHeaderInstances(header.toString());
     }
 
@@ -497,7 +461,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public void removeHeader(HeaderKeys header, int instance) {
-        // TODO Auto-generated method stub
 
     }
 
@@ -521,31 +484,26 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public void setHeader(byte[] header, byte[] value) {
-        MSP.log("Usupported use of setHeader byte value");
 
     }
 
     @Override
     public void setHeader(byte[] header, byte[] value, int offset, int length) {
-        MSP.log("Usupported use of setHeader byte value");
 
     }
 
     @Override
     public void setHeader(byte[] header, String value) {
-        MSP.log("Usupported use of setHeader byte value");
 
     }
 
     @Override
     public void setHeader(HeaderKeys header, byte[] value) {
-        MSP.log("Usupported use of setHeader byte value");
 
     }
 
     @Override
     public void setHeader(HeaderKeys header, byte[] value, int offset, int length) {
-        MSP.log("Usupported use of setHeader byte value");
 
     }
 
@@ -570,14 +528,11 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public void setHeader(String header, byte[] value) {
-        MSP.log("Unsupported use of setHeader byte value");
 
     }
 
     @Override
     public void setHeader(String header, byte[] value, int offset, int length) {
-        //No-Op, throw up?
-        MSP.log("Usupported use of setHeader(byte/offset");
 
     }
 
@@ -589,40 +544,27 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public void setLimitOnNumberOfHeaders(int number) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public int getLimitOnNumberOfHeaders() {
-        // TODO Auto-generated method stub
 
         return 0;
     }
 
     @Override
     public void setLimitOfTokenSize(int size) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public int getLimitOfTokenSize() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
     public byte[] getCookieValue(String name) {
-//        if (null == name) {
-//            return null;
-//        }
-//        byte[] val = getCookieValue(name, HttpHeaderKeys.HDR_SET_COOKIE);
-//        if (null == val) {
-//            val = getCookieValue(name, HttpHeaderKeys.HDR_SET_COOKIE2);
-//        }
-//        return val;
-        //TODO:
         return null;
     }
 
@@ -738,21 +680,18 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public void setStatusCode(int code) {
-        MSP.log("Setting status: " + code);
         this.nettyResponse.setStatus(HttpResponseStatus.valueOf(code));
 
     }
 
     @Override
     public void setStatusCode(StatusCodes code) {
-        MSP.log("setting status: " + code);
         setStatusCode(code.getIntCode());
 
     }
 
     @Override
     public String getReasonPhrase() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -763,19 +702,16 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public void setReasonPhrase(String reason) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void setReasonPhrase(byte[] reason) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public HttpResponseMessage duplicate() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -855,15 +791,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
         super.writeExternal(output);
         output.writeShort(getStatusCodeAsInt());
         writeByteArray(output, this.getReasonPhraseBytes());
-    }
-
-    public void logHttpResponse() {
-        MSP.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        MSP.log("HTTP Response:");
-        MSP.log("Status: " + this.nettyResponse.status());
-        MSP.log("Headers: ");
-        nettyResponse.headers().forEach(header -> MSP.log(header.getKey() + ": " + header.getValue()));
-        MSP.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     }
 
     public HttpResponse getResponse() {

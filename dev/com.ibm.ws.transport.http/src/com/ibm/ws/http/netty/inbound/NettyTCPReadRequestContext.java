@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -100,7 +99,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
      */
     @Override
     public long read(long numBytes, int timeout) throws IOException {
-        System.out.println("NETTY TCP SYNC READ - numBytes: "+ numBytes + " timeout: " +timeout);
         
         if (!nettyChannel.isActive()) {
             throw new IOException("Netty channel is not active.");
@@ -108,7 +106,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
                 
         if (nettyChannel.pipeline().get(NettyServletUpgradeHandler.class) == null) {
-            MSP.log("upgradeHandler not present, adding now");
             NettyServletUpgradeHandler upgradeHandler = new NettyServletUpgradeHandler(nettyChannel);
 
             nettyChannel.pipeline().addLast("ServletUpgradeHandler", upgradeHandler);
@@ -133,15 +130,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
             }
 
             return upgradeHandler.setToBuffer();
-            
-            
-//            if(bytesRead == 0) {
-//                new IOException("MSP -> read failed, no bytes to read.");
-//            }
-            
-            
-            
-            //return (long) this.getBuffer().limit();
         });
 
         try {
@@ -170,14 +158,12 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
         if (!nettyChannel.isActive()) {
             // Channel is not active, do not proceed with the callback
-            MSP.log("Netty channel is not active. Skipping callback execution.");
             return vc; // Return
         }
 
         //Start a new thread that waits to be notified by the handler when enough data is accumulated. On completion, use the callback complete and return null
 
         if (nettyChannel.pipeline().get(NettyServletUpgradeHandler.class) == null) {
-            MSP.log("upgradeHandler not present, adding now");
             NettyServletUpgradeHandler upgradeHandler = new NettyServletUpgradeHandler(nettyChannel);
 
             nettyChannel.pipeline().addLast("ServletUpgradeHandler", upgradeHandler);
@@ -187,38 +173,12 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         NettyServletUpgradeHandler upgrade = this.nettyChannel.pipeline().get(NettyServletUpgradeHandler.class);
         
 
-        MSP.log("setting callback for read");
-
         if (Objects.nonNull(callback)) {
             upgrade.setReadListener(callback);
         }
         upgrade.setTCPReadContext(this);
         upgrade.setVC(vc);
         
-        
-        
-
-        
-
-        MSP.log("TCP READ REQUEST CONTEXT - Before read: had data? " + upgrade.containsQueuedData());
-        MSP.log("TCP READ REQUEST CONTEXT - Before read: data size: " + upgrade.queuedDataSize());
-        MSP.log("TCP READ REQUEST CONTEXT - numBytes requested: " + numBytes);
-        
-        
-//        if(upgrade.queuedDataSize()>=minBytes) {
-//            upgrade.awaitReadReady(minBytes, timeout, TimeUnit.MILLISECONDS);
-//            upgrade.setToBuffer();
-//            return vc;
-//            
-//        } else {
-        
-//        if (upgrade.containsQueuedData()) {
-//            upgrade.awaitReadReady(minBytes, timeout, TimeUnit.MILLISECONDS);
-//            upgrade.setToBuffer();
-//            return vc;
-//        }
-
-        //TODO Change to liberty's executor
         ExecutorService blockingTaskExecutor = HttpDispatcher.getExecutorService();
 
         blockingTaskExecutor.submit(() -> {
@@ -226,15 +186,12 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
             if (!nettyChannel.isActive()) {
                 // Channel became inactive while waiting for data, skip callback execution
-                MSP.log("Netty channel became inactive. Skipping callback execution.");
                 return; // Exit the task execution
             }
 
             if (dataAvailable) {
 
                 upgrade.setToBuffer();
-                //TODO: if -1 do infinite
-                MSP.log("TCP READ REQUEST - SHOULD HAVE STORED DATA: " + this.getBuffer().limit());
 
                 if (callback != null) {
 
@@ -256,11 +213,9 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                 } else {
 
                     //TODO: !isActive shoudl have its own clause/return
-                    MSP.log("CALLBACK IS NULL - NOT SUPPORTED");
                     //throw new IOException ("BETA - unexpected null callback provided");
                 }
             } else {
-                MSP.log("BETA TIMED OUT");
                 StringBuilder error = new StringBuilder();
                 error.append("Socket operation timed out before it could be completed local=");
                 error.append(connectionContext.getLocalAddress().getHostName()).append("/");

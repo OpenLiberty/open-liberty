@@ -31,7 +31,6 @@ import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
-import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http2.GrpcServletServices;
@@ -99,8 +98,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     }
 
     public void init(FullHttpRequest request, HttpInboundServiceContext isc, ChannelHandlerContext nettyContext) {
-        MSP.log("NettyRequestMessage request null:" + Objects.isNull(request));
-        MSP.log("NettyRequestMessage isc null: " + Objects.isNull(isc));
 
         Objects.requireNonNull(request);
         Objects.requireNonNull(isc);
@@ -120,19 +117,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
         super.init(request, isc, config);
         setAndGetIsGrpc();
-//        verifyRequest();
-        
-        MSP.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        MSP.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        MSP.log("HTTP Request:");
-        MSP.log("Method: " + request.method());
-        MSP.log("URI: " + request.uri());
-        MSP.log("Headers: ");
-        request.headers().forEach(header -> MSP.log(header.getKey() + ": " + header.getValue()));
-        MSP.log("Cookies: ");
-        this.getAllCookies().forEach(cookie -> MSP.log(cookie.toString()));
-        MSP.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        MSP.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         
     }
 
@@ -331,9 +315,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     @Override
     @FFDCIgnore({ URISyntaxException.class })
     public String getRequestURI() {
-        MSP.log("getRequestURI: query.path()" + query.path() + "query uri: " + query.uri());
         if (getMethod().equalsIgnoreCase(HttpMethod.CONNECT.toString())) {
-            System.out.println("Found connect method, returning slash");
             return GenericUtils.getEnglishString(SLASH);
         }
         try {
@@ -393,7 +375,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public String getParameter(String name) {
-        MSP.log("getParameter(name): " + name + " -> " + (parameters.containsKey(name) ? parameters.get(name)[0] : null));
 
         return parameters.containsKey(name) ? parameters.get(name)[0] : null;
 
@@ -411,26 +392,22 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public String[] getParameterValues(String name) {
-        MSP.log("getParamValues name:" + name);
         return parameters.containsKey(name) ? parameters.get(name) : null;
     }
 
     @Override
     public void setRequestURL(String url) {
-        //TODO
         setRequestURL(GenericUtils.getEnglishBytes(url));
     }
 
     @Override
     public void setRequestURL(byte[] url) {
-        // TODO Auto-generated method stub
-        System.out.println("setRequestURL Netty called but nothing was done");
+        setRequestURL(new String(url, StandardCharsets.UTF_8));
     }
 
     @Override
     @FFDCIgnore({ MalformedURLException.class, URISyntaxException.class })
     public void setRequestURI(String uri) {
-        // TODO Auto-generated method stub
         try {
             URI requestUri = new URL(request.uri()).toURI();
             // If it works it means we have an absolute URI and not a path
@@ -444,8 +421,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public void setRequestURI(byte[] uri) {
-        // TODO Auto-generated method stub
-        // Just check for validity of URI
         if (null == uri || 0 == uri.length) {
             throw new IllegalArgumentException("setRequestURI: null input");
         }
@@ -568,21 +543,16 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public boolean isPushSupported() {
-        this.nettyContext.channel().pipeline().names().forEach(handler -> System.out.println(handler));
         HttpToHttp2ConnectionHandler handler = this.nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class);
         if (Objects.isNull(handler)) {
-            System.out.println("Could NOT find handler for push!");
             return false;
         }
         boolean canPush = handler.connection().remote().allowPushTo();
-        System.out.println("Can I push remote? " + canPush);
         return canPush;
     }
 
     @Override
     public void pushNewRequest(Http2PushBuilder pushBuilder) {
-
-        System.out.println("Hit the pushNewRequest!!!");
         // path is equal to uri + queryString
         String pbPath = null;
         if (pushBuilder.getPathQueryString() != null) {
@@ -594,7 +564,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "HTTPRequestMessageImpl pbPath = " + pbPath);
         }
-        this.nettyContext.channel().pipeline().names().forEach(handler -> System.out.println(handler));
         HttpToHttp2ConnectionHandler handler = this.nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class);
         Http2Connection connection = handler.connection();
 
@@ -630,24 +599,20 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.debug(tc, "handleH2LinkPreload(): Method is GET, authority is " + auth + ", scheme is " + scheme);
         }
-
-        System.out.println("Sending push promise frame for currentStream " + currentStreamId + " on promisedStream " + nextPromisedStreamId + " with headers " + headers);
-
         ChannelFuture promise = handler.encoder().writePushPromise(nettyContext, currentStreamId, nextPromisedStreamId, headers, 0,
                                                                    new VoidChannelPromise(this.nettyContext.channel(), true));
 
         promise.addListener(future -> {
-            if (future.isSuccess())
-                System.out.println("Successful promise write!");
+            if (future.isSuccess()){
+
+            }
             else {
-                System.out.println("No promise write: " + future.cause());
                 future.cause().printStackTrace();
             }
         });
 
         try {
             DefaultFullHttpRequest newRequest = new DefaultFullHttpRequest(request.protocolVersion(), HttpMethod.GET, pbPath);
-            System.out.println("Sending new request to dispatcher " + newRequest);
             newRequest.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), nextPromisedStreamId);
             HttpUtil.setContentLength(newRequest, 0);
             this.nettyContext.executor().execute(new Runnable() {
@@ -655,14 +620,10 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
                 @Override
                 public void run() {
                     try {
-                        nettyContext.channel().pipeline().names().forEach(handler -> System.out.println(handler));
                         ((HttpDispatcherHandler) nettyContext.channel().pipeline().get(HttpPipelineInitializer.HTTP_DISPATCHER_HANDLER_NAME)).channelRead(nettyContext,
-                                                                                                                                                          newRequest);;
-//                        nettyContext.pipeline().get(HttpDispatcherHandler.class).channelRead(nettyContext, newRequest);
+                                                                                                                                                          newRequest);
                     } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                        System.out.println("Error fowarding push request");
+               
                         e.printStackTrace();
                     }
                 }
@@ -750,17 +711,13 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     private void processQuery() {
         if (Objects.isNull(query)) {
-            MSP.log("Processing query with URI: " + request.uri());
             query = new QueryStringDecoder(request.uri());
 
             for (Map.Entry<String, List<String>> entry : query.parameters().entrySet()) {
 
                 List<String> value = entry.getValue();
                 this.parameters.put(entry.getKey(), value.toArray(new String[value.size()]));
-                MSP.log("Processed parameter: " + entry.getKey() + " Value: " + value.toString());
             }
-
-            MSP.log("Total parameters: " + parameters.size());
 
         }
     }

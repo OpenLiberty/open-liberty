@@ -53,7 +53,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public HeaderField getHeader(String name) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(name))
             throw new IllegalArgumentException("Null input provided");
         if (this.trailers.contains(name)) {
@@ -64,7 +63,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public HeaderField getHeader(byte[] name) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(name))
             throw new IllegalArgumentException("Null input provided");
         String nameString = new String(name);
@@ -76,7 +74,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public HeaderField getHeader(HeaderKeys name) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(name))
             throw new IllegalArgumentException("Null input provided");
         if (this.trailers.contains(name.getName())) {
@@ -87,7 +84,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public List<HeaderField> getHeaders(String name) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(name))
             throw new IllegalArgumentException("Null input provided");
         List<String> values = this.trailers.getAll(name);
@@ -100,7 +96,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public List<HeaderField> getHeaders(byte[] name) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(name))
             throw new IllegalArgumentException("Null input provided");
         String nameString = new String(name);
@@ -114,7 +109,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public List<HeaderField> getHeaders(HeaderKeys name) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(name))
             throw new IllegalArgumentException("Null input provided");
         List<String> values = this.trailers.getAll(name.getName());
@@ -127,7 +121,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public List<HeaderField> getAllHeaders() {
-        // TODO Auto-generated method stub
         List<HeaderField> trailerList = new ArrayList<HeaderField>(this.trailers.size());
         for (Entry<String, String> header : this.trailers) {
             trailerList.add(new NettyHeader(header.getKey(), header.getValue()));
@@ -137,19 +130,16 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public List<String> getAllHeaderNames() {
-        // TODO Auto-generated method stub
         return new ArrayList<String>(this.trailers.names());
     }
 
     @Override
     public Set<String> getAllHeaderNamesSet() {
-        // TODO Auto-generated method stub
         return this.trailers.names();
     }
 
     @Override
     public void appendHeader(byte[] header, byte[] value) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header) || Objects.isNull(value))
             throw new IllegalArgumentException("Null input provided");
         this.trailers.add(new String(header), value);
@@ -157,16 +147,11 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public void appendHeader(byte[] header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("appendHeader with offset not supported yet!!");
-//        if (Objects.isNull(header) || Objects.isNull(value))
-//            throw new IllegalArgumentException("Null input provided");
-//        this.trailers.add(new String(header),value);
     }
 
     @Override
     public void appendHeader(byte[] header, String value) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header) || Objects.isNull(value))
             throw new IllegalArgumentException("Null input provided");
         this.trailers.add(new String(header), value);
@@ -174,7 +159,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public void appendHeader(HeaderKeys header, byte[] value) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header) || Objects.isNull(value))
             throw new IllegalArgumentException("Null input provided");
         this.trailers.add(header.getName(), value);
@@ -182,16 +166,11 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public void appendHeader(HeaderKeys header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("appendHeader with offset not supported yet!!");
-//        if (Objects.isNull(header) || Objects.isNull(value))
-//            throw new IllegalArgumentException("Null input provided");
-//        this.trailers.add(header.getName(),value);
     }
 
     @Override
     public void appendHeader(HeaderKeys header, String value) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header) || Objects.isNull(value))
             throw new IllegalArgumentException("Null input provided");
         this.trailers.add(header.getName(), value);
@@ -199,7 +178,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public void appendHeader(String header, byte[] value) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header) || Objects.isNull(value))
             throw new IllegalArgumentException("Null input provided");
         this.trailers.add(header, value);
@@ -208,15 +186,10 @@ public class NettyTrailers implements HttpTrailers {
     @Override
     public void appendHeader(String header, byte[] value, int offset, int length) {
         throw new UnsupportedOperationException("appendHeader with offset not supported yet!!");
-        // TODO Auto-generated method stub
-//        if (Objects.isNull(header) || Objects.isNull(value))
-//            throw new IllegalArgumentException("Null input provided");
-//        this.trailers.add(header,value);
     }
 
     @Override
     public void appendHeader(String header, String value) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header) || Objects.isNull(value))
             throw new IllegalArgumentException("Null input provided");
         this.trailers.add(header, value);
@@ -224,7 +197,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public int getNumberOfHeaderInstances(String header) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header))
             throw new IllegalArgumentException("Null input provided");
         return this.trailers.getAll(header).size();
@@ -232,7 +204,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public boolean containsHeader(byte[] header) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header))
             throw new IllegalArgumentException("Null input provided");
         return this.trailers.contains(new String(header));
@@ -240,7 +211,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public boolean containsHeader(HeaderKeys header) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header))
             throw new IllegalArgumentException("Null input provided");
         return this.trailers.contains(header.getName());
@@ -248,7 +218,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public boolean containsHeader(String header) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header))
             throw new IllegalArgumentException("Null input provided");
         return this.trailers.contains(header);
@@ -256,7 +225,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public int getNumberOfHeaderInstances(byte[] header) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header))
             throw new IllegalArgumentException("Null input provided");
         return this.trailers.getAll(new String(header)).size();
@@ -264,7 +232,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public int getNumberOfHeaderInstances(HeaderKeys header) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header))
             throw new IllegalArgumentException("Null input provided");
         return this.trailers.getAll(header.getName()).size();
@@ -272,7 +239,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public void removeHeader(byte[] header) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header))
             throw new IllegalArgumentException("Null input provided");
         this.trailers.remove(new String(header));
@@ -280,16 +246,11 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public void removeHeader(byte[] header, int instance) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("removeHeader with instance not supported yet!!");
-//        if(Objects.isNull(header))
-//            throw new IllegalArgumentException("Null input provided");
-//        this.trailers.remove(new String(header));
     }
 
     @Override
     public void removeHeader(HeaderKeys header) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header))
             throw new IllegalArgumentException("Null input provided");
         this.trailers.remove(header.getName());
@@ -297,16 +258,11 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public void removeHeader(HeaderKeys header, int instance) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("removeHeader with instance not supported yet!!");
-//        if(Objects.isNull(header))
-//            throw new IllegalArgumentException("Null input provided");
-//        this.trailers.remove(header.getName());
     }
 
     @Override
     public void removeHeader(String header) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header))
             throw new IllegalArgumentException("Null input provided");
         this.trailers.remove(header);
@@ -314,16 +270,11 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public void removeHeader(String header, int instance) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("removeHeader with instance not supported yet!!");
-//        if(Objects.isNull(header))
-//            throw new IllegalArgumentException("Null input provided");
-//        this.trailers.remove(header);
     }
 
     @Override
     public void removeAllHeaders() {
-        // TODO Auto-generated method stub
         this.trailers.clear();
     }
 
@@ -336,16 +287,11 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public void setHeader(byte[] header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("removeHeader with offset not supported yet!!");
-//        if(Objects.isNull(header) || Objects.isNull(value))
-//            throw new IllegalArgumentException("Null input provided");
-//        this.trailers.set(new String(header), value);
     }
 
     @Override
     public void setHeader(byte[] header, String value) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header) || Objects.isNull(value))
             throw new IllegalArgumentException("Null input provided");
         this.trailers.set(new String(header), value);
@@ -353,7 +299,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public void setHeader(HeaderKeys header, byte[] value) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header) || Objects.isNull(value))
             throw new IllegalArgumentException("Null input provided");
         this.trailers.set(header.getName(), value);
@@ -361,16 +306,11 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public void setHeader(HeaderKeys header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("removeHeader with offset not supported yet!!");
-//        if(Objects.isNull(header) || Objects.isNull(value))
-//            throw new IllegalArgumentException("Null input provided");
-//        this.trailers.set(header.getName(), value);
     }
 
     @Override
     public void setHeader(HeaderKeys header, String value) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header) || Objects.isNull(value))
             throw new IllegalArgumentException("Null input provided");
         this.trailers.set(header.getName(), value);
@@ -378,7 +318,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public HeaderField setHeaderIfAbsent(HeaderKeys header, String value) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header) || Objects.isNull(value))
             throw new IllegalArgumentException("Null input provided");
         if (!this.trailers.contains(header.getName()))
@@ -388,7 +327,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public void setHeader(String header, byte[] value) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header) || Objects.isNull(value))
             throw new IllegalArgumentException("Null input provided");
         this.trailers.set(header, value);
@@ -396,16 +334,11 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public void setHeader(String header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("removeHeader with offset not supported yet!!");
-//        if(Objects.isNull(header) || Objects.isNull(value))
-//            throw new IllegalArgumentException("Null input provided");
-//        this.trailers.set(header, value);
     }
 
     @Override
     public void setHeader(String header, String value) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(header) || Objects.isNull(value))
             throw new IllegalArgumentException("Null input provided");
         this.trailers.set(header, value);
@@ -413,31 +346,26 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public void setLimitOnNumberOfHeaders(int number) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("setLimitOnNumberOfHeaders not supported yet!!");
     }
 
     @Override
     public int getLimitOnNumberOfHeaders() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("getLimitOnNumberOfHeaders not supported yet!!");
     }
 
     @Override
     public void setLimitOfTokenSize(int size) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("setLimitOfTokenSize not supported yet!!");
     }
 
     @Override
     public int getLimitOfTokenSize() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("getLimitOfTokenSize not supported yet!!");
     }
 
     @Override
     public boolean containsDeferredTrailer(String target) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(target))
             throw new IllegalArgumentException("Null input provided");
         return this.knownTGs.containsKey(target);
@@ -445,7 +373,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public boolean containsDeferredTrailer(HeaderKeys target) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(target))
             throw new IllegalArgumentException("Null input provided");
         return this.knownTGs.containsKey(target.getName());
@@ -453,7 +380,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public void setDeferredTrailer(HeaderKeys hdr, HttpTrailerGenerator htg) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(hdr) || Objects.isNull(htg))
             throw new IllegalArgumentException("Null input provided");
         this.knownTGs.put(hdr.getName(), htg);
@@ -461,7 +387,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public void setDeferredTrailer(String hdr, HttpTrailerGenerator htg) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(hdr) || Objects.isNull(htg))
             throw new IllegalArgumentException("Null input provided");
         this.knownTGs.put(hdr, htg);
@@ -469,7 +394,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public void removeDeferredTrailer(String hdr) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(hdr))
             throw new IllegalArgumentException("Null input provided");
         this.knownTGs.remove(hdr);
@@ -477,7 +401,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public void removeDeferredTrailer(HeaderKeys hdr) {
-        // TODO Auto-generated method stub
         if (Objects.isNull(hdr))
             throw new IllegalArgumentException("Null input provided");
         this.knownTGs.remove(hdr.getName());
@@ -485,7 +408,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public void computeRemainingTrailers() {
-        // TODO Auto-generated method stub
         Iterator<String> knowns = this.knownTGs.keySet().iterator();
         while (knowns.hasNext()) {
             String key = knowns.next();
@@ -495,7 +417,6 @@ public class NettyTrailers implements HttpTrailers {
 
     @Override
     public void clear() {
-        // TODO Auto-generated method stub
         this.trailers.clear();
     }
 

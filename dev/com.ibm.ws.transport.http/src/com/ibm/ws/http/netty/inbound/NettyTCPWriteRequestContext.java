@@ -20,7 +20,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.pipeline.WsByteBufferChunkedInput;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
@@ -66,7 +65,6 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
     @Override
     public TCPConnectionContext getInterface() {
-        // TODO Auto-generated method stub
         return connectionContext;
     }
 
@@ -85,7 +83,6 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
     }
 
     public void setStreamId(String streamId) {
-        System.out.println("Setting h2 stream id to: " + streamId);
         this.streamID = streamId;
     }
 
@@ -101,8 +98,6 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
             clearBuffers();
             return;
         }
-
-        MSP.log("Setting buffers on, have X buffers: " + bufs.length);
         // Assign the new buffers
         this.buffers = bufs;
 
@@ -145,8 +140,6 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
             // If there are no buffers, set byteBufferArray to null
             this.byteBufferArray = null;
         }
-
-        MSP.log("How many buffers do we have: " + this.buffers.length);
 
     }
 
@@ -196,7 +189,6 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
     @Override
     public long write(long numBytes, int timeout) throws IOException {
-        MSP.log("Trying to write synchronously: numBytes->" + numBytes + " timeout->" + timeout);
         AtomicLong writtenBytes = new AtomicLong(0);
         // Check if "Content-Length" is set for this channel
         boolean hasContentLength = nettyChannel.hasAttr(NettyHttpConstants.CONTENT_LENGTH) && Objects.nonNull(nettyChannel.attr(NettyHttpConstants.CONTENT_LENGTH).get());
@@ -204,15 +196,10 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         //check if wsoc
         final String protocol = nettyChannel.attr(NettyHttpConstants.PROTOCOL).get();
 
-        System.out.println("MSP WRITE - protocol: " + protocol);
-
         final boolean isWsoc = "WebSocket".equals(protocol);
 
         final boolean isH2 = "HTTP2".equals(protocol);
-
-        System.out.println("Is WebSocket: " + isWsoc);
         if (!nettyChannel.isWritable()) {
-            MSP.log("not writable, wrote 0, not waiting");
             return writtenBytes.get();
         }
 
@@ -233,15 +220,12 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
                     else if (hasContentLength || isWsoc) {
                         ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
-                        MSP.log("WRITING -> " + nettyBuf.readableBytes() + " bytes.");
                         this.nettyChannel.write(nettyBuf); // Write data to the channel
                         writtenBytes.addAndGet(nettyBuf.readableBytes());
                     }
 
                     else {
-                        System.out.println("Sending chunked input");
                         ChunkedInput<ByteBuf> chunkedInput = new WsByteBufferChunkedInput(buffer);
-                        MSP.log("Should be writing a chunk of size: " + chunkedInput.length());
                         ChannelFuture chunkFuture = nettyChannel.writeAndFlush(chunkedInput);
                         chunkFuture.awaitUninterruptibly();
                         writtenBytes.addAndGet(chunkedInput.length());
@@ -294,13 +278,9 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         //check if wsoc
         final String protocol = nettyChannel.attr(NettyHttpConstants.PROTOCOL).get();
 
-        System.out.println("MSP WRITE - protocol: " + protocol);
-
         final boolean isWsoc = "WebSocket".equals(protocol);
 
         final boolean isH2 = "HTTP2".equals(protocol);
-
-        System.out.println("Is WebSocket: " + isWsoc);
 
         if (Objects.isNull(buffers)) {
             return null;
@@ -321,15 +301,12 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
                         else if (hasContentLength || isWsoc) {
                             ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
-                            MSP.log("WRITING -> " + nettyBuf.readableBytes() + " bytes.");
                             lastWriteFuture = this.nettyChannel.writeAndFlush(nettyBuf); // Write data to the channel
                             totalWrittenBytes += nettyBuf.readableBytes();
                         }
 
                         else {
-                            System.out.println("Sending chunked input");
                             ChunkedInput<ByteBuf> chunkedInput = new WsByteBufferChunkedInput(buffer);
-                            MSP.log("Should be writing a chunk of size: " + chunkedInput.length());
                             lastWriteFuture = nettyChannel.writeAndFlush(chunkedInput);
                             totalWrittenBytes += chunkedInput.length();
                         }
@@ -352,10 +329,8 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                 if (lastWriteFuture != null) {
                     lastWriteFuture.addListener((ChannelFutureListener) future -> {
                         if (future.isSuccess()) {
-                            System.out.println("*** EXIT 2 calling from within future, should be using callback");
                             callback.complete(vc, this);
                         } else {
-                            System.out.println("*** EXIT 3 Exception: " + future.cause().getMessage());
                             callback.error(vc, this, new IOException(future.cause()));
                         }
                     });
@@ -363,64 +338,8 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
             }
 
         } catch (Exception e) {
-            System.out.println("*** EXIT 4 Exception: " + e.getMessage());
             callback.error(vc, null, new IOException(e));
         }
         return null; // Return null as the write operation is queued or forced to queue
     }
-
-    //TODO: force queue / timeout
-
-//  try {
-//      for (int i = 0; i < buffers.length; i++) {
-//          WsByteBuffer buffer = buffers[i];
-//          if (buffer != null && buffer.hasRemaining()) {
-//              byte[] byteArray = WsByteBufferUtils.asByteArray(buffer);
-//
-//              if(byteArray != null) {
-//                  ByteBuf nettyBuf = Unpooled.wrappedBuffer(byteArray);
-//                  if (i < buffers.length - 1) {
-//                      // Use write for all but the last buffer
-//                      lastWriteFuture = nettyChannel.write(nettyBuf);
-//                  } else {
-//                      // Use writeAndFlush for the last buffer
-//                      lastWriteFuture = nettyChannel.writeAndFlush(nettyBuf);
-//                  }
-//                  totalWrittenBytes += nettyBuf.readableBytes();
-//              }
-//
-//          }
-//      }
-//
-//      if (lastWriteFuture != null) {
-//          if(wasWritable && nettyChannel.isWritable() && totalWrittenBytes >= numBytes) {
-//              lastWriteFuture.awaitUninterruptibly(); // Block until the writeAndFlush operation is complete
-//              if (lastWriteFuture.isSuccess() ) {
-//                  System.out.println("*** EXIT 0 calling from within future, should be using vc");
-//                  return vc; // Return VirtualConnection as write completed immediately
-//              } else {
-//                  System.out.println("*** EXIT 1 Exception: " + lastWriteFuture.cause());
-//                  callback.error(vc, this, new IOException(lastWriteFuture.cause()));
-//              }
-//          } else {
-//              // Handle write completion asynchronously
-//              lastWriteFuture.addListener((ChannelFutureListener) future -> {
-//                  if (future.isSuccess()) {
-//                      System.out.println("*** EXIT 2 calling from within future, should be using callback");
-//                      callback.complete(vc, this);
-//                  } else {
-//                      System.out.println("*** EXIT 3 Exception: " + future.cause().getMessage());
-//                      callback.error(vc, this, new IOException(future.cause()));
-//                  }
-//              });
-//          }
-//      }
-//
-//  } catch (Exception e) {
-//      System.out.println("*** EXIT 4 Exception: " + e.getMessage());
-//      callback.error(vc, null, new IOException(e));
-//  }
-//  return null;
-//}
-
 }

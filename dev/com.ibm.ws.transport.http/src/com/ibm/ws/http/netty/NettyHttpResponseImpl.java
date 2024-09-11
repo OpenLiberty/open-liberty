@@ -69,14 +69,12 @@ public class NettyHttpResponseImpl extends HttpResponseImpl implements HttpRespo
      */
     @Override
     public void init(HttpInboundServiceContext context) {
-        System.out.println("MSP: init  netty response");
         this.isc = context;
         this.body = null;
         this.nettyContext = ((HttpInboundServiceContextImpl) context).getNettyContext();
         this.nettyRequest = ((HttpInboundServiceContextImpl) context).getNettyRequest();
         this.nettyResponse = new DefaultHttpResponse(nettyRequest.protocolVersion(), HttpResponseStatus.OK);
         ((HttpInboundServiceContextImpl) isc).setNettyResponse(nettyResponse);
-        System.out.println("Init netty response complete");
     }
 
     /*

@@ -44,7 +44,6 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
 
     @Override
     protected void configurePipeline(ChannelHandlerContext ctx, String protocol) throws Exception {
-        System.out.println("Configuring pipeline!! " + protocol);
         if (ApplicationProtocolNames.HTTP_2.equals(protocol)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Configuring pipeline with HTTP 2 for incoming connection " + ctx.channel());
@@ -53,8 +52,6 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
             HttpToHttp2ConnectionHandler handler = codec.buildHttp2ConnectionHandler(httpConfig, ctx.channel());
             // HTTP2 to HTTP 1.1 and back pipeline
             ctx.pipeline().addAfter(HttpPipelineInitializer.HTTP_ALPN_HANDLER_NAME, null, handler);
-//            ctx.pipeline().replace(this, null, handler);
-            System.out.println("Configured H2 pipeline with " + ctx.pipeline().names());
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Configured pipeline with " + ctx.pipeline().names());
             }
@@ -73,13 +70,11 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
             ctx.pipeline().addAfter(HttpPipelineInitializer.HTTP_AGGREGATOR_HANDLER_NAME, HttpPipelineInitializer.HTTP_REQUEST_HANDLER_NAME, new LibertyHttpRequestHandler());
             // Turn on half closure for H1
             ctx.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
-            System.out.println("Configured Http1 pipeline with " + ctx.pipeline().names());
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Configured pipeline with " + ctx.pipeline().names());
             }
             return;
         }
-        System.out.println("Oh no pipeline unconfigured for protocol: " + protocol + "!");
         throw new IllegalStateException("unknown protocol: " + protocol);
     }
 

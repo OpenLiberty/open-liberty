@@ -26,7 +26,6 @@ public class ChunkSizeLoggingHandler extends ChannelOutboundHandlerAdapter {
         if (msg instanceof ByteBuf) {
             ByteBuf chunk = (ByteBuf) msg;
             int chunkSize = chunk.readableBytes();
-            MSP.log("Chunk size: " + chunkSize + " bytes");
         }
 
         super.write(context, msg, promise);

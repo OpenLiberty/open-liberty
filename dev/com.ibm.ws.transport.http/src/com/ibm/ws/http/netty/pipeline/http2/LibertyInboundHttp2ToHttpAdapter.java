@@ -43,13 +43,9 @@ public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter 
                                                                               io.netty.handler.codec.http2.Http2Headers headers, boolean endOfStream, boolean allowAppend,
                                                                               boolean appendToTrailer) throws io.netty.handler.codec.http2.Http2Exception {
         try {
-            System.out.println("Here go the headers begin!");
-            System.out.println(headers.method());
-            System.out.println(HttpMethod.CONNECT.asciiName());
             boolean containsPath = Objects.nonNull(headers.path()) && !headers.path().toString().isEmpty();
             boolean containsScheme = Objects.nonNull(headers.scheme()) && !headers.scheme().toString().isEmpty();
             if (headers.method().toString().equalsIgnoreCase(HttpMethod.CONNECT.asciiName().toString())) {
-                System.out.println("Found connect method!");
                 if (containsPath || containsScheme || Objects.isNull(headers.authority()))
                     throw new NullPointerException("Connect method request must omit path and scheme values!");
             } else {
@@ -60,10 +56,8 @@ public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter 
             }
             return super.processHeadersBegin(ctx, stream, headers, endOfStream, allowAppend, appendToTrailer);
         } catch (NullPointerException e) {
-            System.out.println("Got null processing headers! Sending streamError");
             throw Http2Exception.streamError(stream.id(), Http2Error.PROTOCOL_ERROR, e.getMessage());
         } catch (Exception e2) {
-            System.out.println("Uncatched Issue with processing headers");
             e2.printStackTrace();
             throw e2;
         }
@@ -71,15 +65,12 @@ public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter 
 
     @Override
     public void onGoAwayReceived(int lastStreamId, long errorCode, ByteBuf debugData) {
-        // TODO Auto-generated method stub
         super.onGoAwayReceived(lastStreamId, errorCode, debugData);
         channel.close();
     }
 
     @Override
     public void onRstStreamRead(ChannelHandlerContext ctx, int streamId, long errorCode) throws Http2Exception {
-        // TODO Auto-generated method stub
-//        super.onRstStreamRead(ctx, streamId, errorCode);
         Http2Stream stream = connection.stream(streamId);
         FullHttpMessage msg = getMessage(stream);
         if (msg != null) {
@@ -87,7 +78,6 @@ public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter 
         }
         Http2Error code = Http2Error.valueOf(errorCode);
         if (Objects.isNull(code)) {
-            System.out.println("Found NULL code, treating as internal error!");
             code = Http2Error.INTERNAL_ERROR;
         }
         ctx.fireExceptionCaught(Http2Exception.streamError(streamId, code,

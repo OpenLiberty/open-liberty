@@ -72,10 +72,7 @@ public class HttpConfigUtils {
 
         Object value = config.get(option.getKey());
 
-        System.out.println("Checking key: " + option.getKey() + ", Value found: " + (value != null));
-
         if (Objects.isNull(value)) {
-            System.out.println("Value for key: " + option.getKey() + " is null. Returning default value: " + option.getDefaultValue());
        
             return (T) option.getDefaultValue();
         }
@@ -88,11 +85,9 @@ public class HttpConfigUtils {
             } else if (option.getValueType().isInstance(value)) {
                 return (T) value;
             } else {
-                System.out.println("Type mismatch. Returning default value.");
                 return (T) option.getDefaultValue();
             }
         } catch (ClassCastException e) {
-            System.out.println("Config value for key " + option.getKey() + " is of wrong type. Returning default value.");
             return (T) option.getDefaultValue();
         }
     }

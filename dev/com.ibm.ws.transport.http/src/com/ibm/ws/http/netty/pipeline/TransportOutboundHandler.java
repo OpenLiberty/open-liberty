@@ -12,8 +12,6 @@ package com.ibm.ws.http.netty.pipeline;
 import java.util.Objects;
 
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
-import com.ibm.ws.http.netty.MSP;
-import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 
 import io.netty.channel.ChannelFuture;
@@ -43,14 +41,11 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
 
-        MSP.log("Writing outbound, msg is: " + msg);
-        //TODO: only if first time running through here (persist needs to clear)
 
         if (msg instanceof HttpResponse) {
 
             HttpResponse response = (HttpResponse) msg;
 
-            System.out.println("MSP PROTOCOL SET TO: " + ctx.channel().attr(NettyHttpConstants.PROTOCOL).get());
             final boolean isSwitching = response.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS);
 
             ChannelFuture future = ctx.writeAndFlush(msg);
@@ -78,12 +73,9 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
                     }
                 }
             });
-            MSP.log("After header compliance, msg is: " + msg);
         }
 
         else {
-
-            MSP.log("writeAndFlush for message: " + msg.toString());
             super.write(ctx, msg, promise);
         }
     }
