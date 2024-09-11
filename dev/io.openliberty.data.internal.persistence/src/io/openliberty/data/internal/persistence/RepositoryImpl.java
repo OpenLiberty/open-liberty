@@ -1117,7 +1117,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 else if (DoubleStream.class.equals(multiType))
                                     returnValue = stream.mapToDouble(RepositoryImpl::toDouble);
                                 else
-                                    throw new UnsupportedOperationException("Stream type " + multiType.getName()); // TODO NLS
+                                    throw exc(UnsupportedOperationException.class,
+                                              "CWWKD1046.result.convert.err",
+                                              List.class.getName(),
+                                              method.getName(),
+                                              repositoryInterface.getName(),
+                                              method.getGenericReturnType().getTypeName());
                             } else {
                                 Class<?> singleType = queryInfo.singleType;
 
@@ -1136,7 +1141,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE)
                                     for (Object result : results)
                                         if (result == null) {
-                                            throw new DataException("Unable to delete from the database when the query result includes a null value."); // TODO NLS
+                                            throw exc(DataException.class,
+                                                      "CWWKD1046.result.convert.err",
+                                                      null,
+                                                      method.getName(),
+                                                      repositoryInterface.getName(),
+                                                      method.getGenericReturnType().getTypeName());
                                         } else if (entityInfo.entityClass.isInstance(result)) {
                                             em.remove(result);
                                         } else if (entityInfo.idClassAttributeAccessors != null) {

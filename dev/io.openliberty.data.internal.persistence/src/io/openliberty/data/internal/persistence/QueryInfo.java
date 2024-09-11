@@ -758,7 +758,12 @@ public class QueryInfo {
                 // covers Set
                 list = new LinkedHashSet<>(results.size());
             else
-                throw new UnsupportedOperationException(iterableType + " is an unsupported return type."); // TODO NLS
+                throw exc(UnsupportedOperationException.class,
+                          "CWWKD1046.result.convert.err",
+                          List.class.getName(),
+                          method.getName(),
+                          repositoryInterface.getName(),
+                          method.getGenericReturnType().getTypeName());
         } else {
             try {
                 @SuppressWarnings("unchecked")

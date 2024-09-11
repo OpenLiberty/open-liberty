@@ -444,10 +444,10 @@ CWWKD1043.offset.exceeds.max.useraction=Add restrictions to the query to reduce 
 CWWKD1044.invalid.resource.type=CWWKD1044E: The {0} resource accessor method \
  of the {1} repository cannot return a {2} resource. The supported return types \
  for resource accessor methods are: {3}.
-CWWKD1044.invalid.resource.type.explanation=The return type of the resource accessor \
- method is not one of the supported types for Jakarta Data.
-CWWKD1044.invalid.resource.type.useraction=Remove the method or update it to return \
- one of the supported types.
+CWWKD1044.invalid.resource.type.explanation=The return type of the resource \
+ accessor method is not one of the supported types for Jakarta Data.
+CWWKD1044.invalid.resource.type.useraction=Remove the method or update it to \
+ return one of the supported types.
 
 CWWKD1045.unknown.entity.anno=CWWKD1045E: The built-in Jakarta Data provider \
  cannot provide an implementation of the {0} repository interface because the \
@@ -472,8 +472,8 @@ CWWKD1047.result.out.of.range=CWWKD1047E: The {0} result of the {1} method of th
  {2} repository interface cannot be converted to the {3} return type of the \
  repository method because the result is not within the range of {4} to {5}.
 CWWKD1047.result.out.of.range.explanation=The result value is not compatible with \
- the return type for the repository method because it is outside of the range of values \
- that can be converted.
+ the return type for the repository method because it is outside of the range of \
+ values that can be converted.
 CWWKD1047.result.out.of.range.useraction=Adjust the return type of the repository \
  method to allow for the value to be returned.
 
@@ -481,8 +481,8 @@ CWWKD1048.result.exceeds.max=CWWKD1048E: The {0} result of the {1} method of the
  {2} repository interface cannot be converted to the {3} return type of the \
  repository method because the result value exceeds the maximum value of {4}.
 CWWKD1048.result.exceeds.max.explanation=The result value is not compatible with \
- the return type for the repository method because it exceeds the maximum value that can \
- be converted to that type.
+ the return type for the repository method because it exceeds the maximum value \
+ that can be converted to that type.
 CWWKD1048.result.exceeds.max.useraction=Adjust the return type of the repository \
  method to allow for the value to be returned.
 
@@ -542,6 +542,6 @@ CWWKD1054.non.unique.result=CWWKD1054E: The {0} method of the {1} repository \
  To limit to a single result, use one of the following Jakarta Data patterns: {4}.
 CWWKD1054.non.unique.result.explanation=The return type of the repository method \
  does not allow returning multiple results.
-CWWKD1054.non.unique.result.useraction=Update the repository method to either use a \
- return type that supports multiple results or update the repository method \
+CWWKD1054.non.unique.result.useraction=Update the repository method to either use \
+ a return type that supports multiple results or update the repository method \
  to return no more than a single result.
