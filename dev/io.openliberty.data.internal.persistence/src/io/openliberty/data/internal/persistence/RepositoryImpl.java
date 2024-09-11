@@ -650,10 +650,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (EntityManager.class.equals(type))
             resource = primaryEntityInfoFuture.join().builder.createEntityManager();
         else if (DataSource.class.equals(type))
-            resource = primaryEntityInfoFuture.join().builder.getDataSource();
+            resource = primaryEntityInfoFuture.join().builder //
+                            .getDataSource(method, repositoryInterface);
         else if (Connection.class.equals(type))
             try {
-                resource = primaryEntityInfoFuture.join().builder.getDataSource().getConnection();
+                resource = primaryEntityInfoFuture.join().builder //
+                                .getDataSource(method, repositoryInterface) //
+                                .getConnection();
             } catch (SQLException x) {
                 throw new DataConnectionException(x);
             }

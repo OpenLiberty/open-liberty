@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence.service;
 
+import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
+
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -439,21 +441,30 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
 
     /**
      * Obtains the DataSource that is used by the EntityManager.
+     * This method is used by resource accessor methods of a repository.
      *
+     * @param repoMethod    repository resource accessor method.
+     * @param repoInterface repository interface.
      * @return the DataSource that is used by the EntityManager.
      */
     @Override
-    public DataSource getDataSource() {
+    public DataSource getDataSource(Method repoMethod, Class<?> repoInterface) {
         BundleContext bc = FrameworkUtil.getBundle(getClass()).getBundleContext();
         Collection<ServiceReference<ResourceFactory>> dsFactoryRefs;
         try {
-            dsFactoryRefs = bc.getServiceReferences(ResourceFactory.class, dataSourceFactoryFilter);
+            dsFactoryRefs = bc.getServiceReferences(ResourceFactory.class,
+                                                    dataSourceFactoryFilter);
         } catch (InvalidSyntaxException x) {
             throw new RuntimeException(x); // should never happen
         }
+
         if (dsFactoryRefs.isEmpty())
-            throw new IllegalStateException("The " + dataSourceFactoryFilter +
-                                            " DataSource that is used by the repository is not available."); // TODO NLS
+            throw exc(IllegalStateException.class,
+                      "CWWKD1062.resource.not.found",
+                      repoMethod.getName(),
+                      repoInterface.getName(),
+                      DataSource.class.getSimpleName(),
+                      dataSourceFactoryFilter);
 
         ResourceFactory dsFactory = bc.getService(dsFactoryRefs.iterator().next());
         try {
@@ -466,17 +477,30 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 resRef.setResAuthType(ResourceConfig.AUTH_CONTAINER);
 
                 String dbStoreFilter = FilterUtils.createPropertyFilter("id", databaseStoreId);
-                Collection<ServiceReference<DatabaseStore>> dbStoreRefs = bc.getServiceReferences(DatabaseStore.class, dbStoreFilter);
+                Collection<ServiceReference<DatabaseStore>> dbStoreRefs = //
+                                bc.getServiceReferences(DatabaseStore.class,
+                                                        dbStoreFilter);
                 if (dbStoreRefs.isEmpty())
-                    throw new IllegalStateException("The " + dbStoreFilter + " resource that is used by the repository is not available."); // TODO NLS
+                    throw exc(IllegalStateException.class,
+                              "CWWKD1062.resource.not.found",
+                              repoMethod.getName(),
+                              repoInterface.getName(),
+                              "databaseStore",
+                              dbStoreFilter);
 
                 ServiceReference<DatabaseStore> ref = dbStoreRefs.iterator().next();
                 if (ref.getProperty("authDataRef") != null) {
                     String authDataFilter = (String) ref.getProperty("AuthData.target");
-                    ServiceReference<?>[] authDataRefs = bc.getServiceReferences("com.ibm.websphere.security.auth.data.AuthData",
-                                                                                 authDataFilter);
+                    ServiceReference<?>[] authDataRefs = //
+                                    bc.getServiceReferences("com.ibm.websphere.security.auth.data.AuthData",
+                                                            authDataFilter);
                     if (authDataRefs == null)
-                        throw new IllegalStateException("The " + authDataFilter + " resource that is used by the repository is not available."); // TODO NLS
+                        throw exc(IllegalStateException.class,
+                                  "CWWKD1062.resource.not.found",
+                                  repoMethod.getName(),
+                                  repoInterface.getName(),
+                                  "authData",
+                                  authDataFilter);
 
                     // The following pattern is copied from DatabaseStoreImpl,
                     String authDataId = (String) authDataRefs[0].getProperty("id");

@@ -45,6 +45,15 @@ import test.jakarta.data.datastore.webapp.DataStoreWebAppServlet;
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
 public class DataStoreTest extends FATServletClient {
+    /**
+     * Error messages, typically for invalid repository methods, that are
+     * intentionally caused by tests to cover error paths.
+     * These are ignored when checking the messages.log file for errors.
+     */
+    private static final String[] EXPECTED_ERROR_MESSAGES = //
+                    new String[] {
+                                   "CWWKD1063E.*PersistenceUnitRepo"
+                    };
 
     @Server("io.openliberty.data.internal.fat.datastore")
     @TestServlets({
@@ -104,7 +113,7 @@ public class DataStoreTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer(EXPECTED_ERROR_MESSAGES);
     }
 
     @Test

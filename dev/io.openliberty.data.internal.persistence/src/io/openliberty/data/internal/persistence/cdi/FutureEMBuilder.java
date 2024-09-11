@@ -12,7 +12,10 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence.cdi;
 
+import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
+
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -118,12 +121,14 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
             } else { // java:module or java:comp
                 module = moduleName.getModule();
                 if (module == null)
-                    throw new IllegalArgumentException("The " + repositoryInterface.getName() +
-                                                       " repository that is defined in the " +
-                                                       moduleName.getApplication() +
-                                                       " application specifies " + "dataStore = " + dataStore +
-                                                       ", but " + namespace + " names are not accessible to" +
-                                                       " this location. Use a java:app name instead."); // TODO NLS
+                    throw exc(IllegalArgumentException.class,
+                              "CWWKD1060.name.out.of.scope",
+                              repositoryInterface.getName(),
+                              moduleName.getApplication(),
+                              dataStore,
+                              "dataStore",
+                              namespace,
+                              "java:app");
             }
         }
     }
@@ -166,15 +171,16 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
         boolean switchMetadata = repoMetadata != null &&
                                  (extMetadata == null || !extMetadata.getJ2EEName().equals(repoMetadata.getJ2EEName()));
 
-        if (metadataIdentifier.startsWith("EJB#") && namespace == Namespace.COMP)
-            throw new IllegalArgumentException("The " + repositoryInterface.getName() +
-                                               " repository that is defined in the " +
-                                               repoMetadata.getJ2EEName().getModule() +
-                                               " enterprise bean module of the " +
-                                               repoMetadata.getJ2EEName().getApplication() +
-                                               " application specifies " + "dataStore = " + resourceName +
-                                               ", but java:comp names are not accessible to the" +
-                                               " module. Use a java:app or java:module name instead."); // TODO NLS
+        if (namespace == Namespace.COMP && metadataIdentifier.startsWith("EJB#"))
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1061.comp.name.in.ejb",
+                      repositoryInterface.getName(),
+                      repoMetadata.getJ2EEName().getModule(),
+                      repoMetadata.getJ2EEName().getApplication(),
+                      resourceName,
+                      "dataStore",
+                      "java:comp",
+                      List.of("java:app", "java:module"));
 
         if (switchMetadata)
             accessor.beginContext(repoMetadata);
@@ -322,9 +328,10 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
     @Override
     @Trivial
     public String toString() {
-        StringBuilder b = new StringBuilder(27 + dataStore.length() +
-                                            (application == null ? 4 : application.length()) +
-                                            (module == null ? 4 : module.length())) //
+        int len = 27 + dataStore.length() +
+                  (application == null ? 4 : application.length()) +
+                  (module == null ? 4 : module.length());
+        StringBuilder b = new StringBuilder(len) //
                         .append("FutureEMBuilder@") //
                         .append(Integer.toHexString(hashCode())) //
                         .append(":").append(dataStore) //

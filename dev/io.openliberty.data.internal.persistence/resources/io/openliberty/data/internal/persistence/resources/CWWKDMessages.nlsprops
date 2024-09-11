@@ -588,3 +588,38 @@ CWWKD1059.prop.cast.err.explanation=An entity property or a property from its \
  hierarchy of relations is not compatible the expected type.
 CWWKD1059.prop.cast.err.useraction=Review the entity model and ensure that the \
  expected types are used for each property.
+
+CWWKD1060.name.out.of.scope=CWWKD1060E: The {0} repository interface from the \
+ {1} application configures a {2} value for the {3} attribute, but {3} names \
+ are not accessible to the artifact that provides the repository interface. \
+ Use a {4} name instead.
+CWWKD1060.name.out.of.scope.explanation=The specified namespace is not visible \
+ to the artifact in which the repository interface is defined.
+CWWKD1060.name.out.of.scope.useraction=Update the Repository annotation to \
+ specify a data store name that is visible to the module or library that \
+ provides the repository interface.
+
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: The {0} repository interface that is \
+ defined in the {1} enterprise bean module of the {2} application configures \
+ a {2} value for the {3} attribute, but {4} names are not accessible to \
+ enterprise bean modules. Switch to a name in one of the following \
+ namespaces: {5}.
+CWWKD1061.comp.name.in.ejb.explanation=The specified namespace is not visible \
+ to the enterprise bean module in which the repository interface is defined.
+CWWKD1061.comp.name.in.ejb.useraction=Update the Repository annotation to \
+ specify a data store name that is visible to the enterprise bean module that \
+ provides the repository interface.
+
+CWWKD1062.resource.not.found=CWWKD1062E: The {0} method of the {1} repository \
+ interface is unable to locate the {2} resource with the {3} filter.
+CWWKD1062.resource.not.found.explanation=The resource is not found.
+CWWKD1062.resource.not.found.useraction=Ensure that the resource and all other \
+ resources upon which it depends exist and are correctly configured.
+
+CWWKD1063.unsupported.resource=CWWKD1063E: The {0} method of the {1} repository \
+ interface cannot obtain a {2} resource because the Jakarta Persistence provider \
+ does not support unwrapping as a {3} class.
+CWWKD1063.unsupported.resource.explanation=The requested type of resource is not \
+ available from the Jakarta Persistence provider.
+CWWKD1063.unsupported.resource.useraction=Remove the unsupported resource accessor \
+ method from the repository interface.
