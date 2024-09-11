@@ -65,9 +65,9 @@ public class FeatureListTest extends FeatureUtilityToolTest {
 
 	private static final Class<?> c = FeatureListTest.class;
     // ETC product extension related variables.
-    public static final String PRODUCT_FEATURE_PATH = "wlp/producttest/lib/features/";
-    public static final String PRODUCT_BUNDLE_PATH = "wlp/producttest/lib/";
-    public static final String PRODUCT_EXTENSIONS_PATH = "etc/extensions/";
+    public static final String PRODUCT_FEATURE_PATH = "producttest/lib/features";
+    public static final String PRODUCT_BUNDLE_PATH = "producttest/lib";
+    public static final String PRODUCT_EXTENSIONS_PATH = "etc/extensions";
     public static final String PRODUCT_FEATURE_PROPERTIES_FILE = "publish/tmp/testproduct.properties";
     public static final String PRODUCT_FEATURE_EMPTY_PATH_PROPERTIES_FILE = "publish/tmp/testproductbadpath.properties";
     public static final String PRODUCT_FEATURE_BAD_WLP_PROPERTIES_FILE = "publish/tmp/testproductbadwlp.properties";
