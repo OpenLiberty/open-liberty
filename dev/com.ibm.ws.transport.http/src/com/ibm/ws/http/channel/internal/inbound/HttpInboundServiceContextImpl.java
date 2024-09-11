@@ -34,7 +34,6 @@ import com.ibm.ws.http.channel.internal.HttpResponseMessageImpl;
 import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
 import com.ibm.ws.http.channel.internal.values.ReturnCodes;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
 import com.ibm.ws.http.netty.inbound.NettyTCPConnectionContext;
@@ -178,14 +177,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         super.setNettyRequest(request);
 
         boolean isSecure = nettyContext.channel().hasAttr(NettyHttpConstants.IS_SECURE);
-        MSP.log("Setting scheme, secure: " + isSecure);
         if (isSecure) {
             getRequest().setScheme(SchemeValues.HTTPS);
         } else {
-            MSP.log("Scheme should be set to http");
             getRequest().setScheme(SchemeValues.HTTP);
         }
-        MSP.log("Scheme set, exit isc init");
 
     }
 
@@ -522,7 +518,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     public HttpRequestMessage getRequest() {
         if (Objects.nonNull(nettyContext)) {
             if (Objects.isNull(requestMessage)) {
-                MSP.log("getRequest -> creating new NettyRequestMessage");
                 this.requestMessage = new NettyRequestMessage(nettyRequest, this, nettyContext);
             }
             return this.requestMessage;
@@ -569,7 +564,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      */
     @Override
     public HttpResponseMessage getResponse() {
-//        MSP.log("ISC - getResponse() - response: " + Objects.isNull(response) + ", context: " + Objects.nonNull(nettyContext));
         if (Objects.isNull(this.response) && Objects.nonNull(this.nettyContext)) {
             this.response = new NettyResponseMessage(nettyResponse, this, nettyRequest);
 
@@ -815,8 +809,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             }
             setPartialBody(true);
         }
-
-        MSP.log("sendResponseBody buffer size: " + GenericUtils.sizeOf(body));
 
         if (getHttpConfig().useNetty()) {
             formatBody(body, null);
@@ -2214,8 +2206,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
         this.forwardedHeaderInitialized = Boolean.TRUE;
 
-        MSP.log("initForwardedValues, useNetty? " + Objects.nonNull(nettyRequest));
-
         if (Objects.nonNull(nettyRequest)) {
             nettyInitForwardedValues();
         } else {
@@ -2313,13 +2303,10 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         String attribute;
 
         matcher = pattern.matcher(remoteIp);
-
-        MSP.log("nettyInitForwardedValues 1");
         if (matcher.matches()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Connected endpoint matched, verifying forwarded FOR list addresses");
             }
-            MSP.log("nettyInitForwardedValues 2");
             String[] forwardedForList = this.nettyContext.channel().attr(NettyHttpConstants.FORWARDED_FOR_KEY).get();
             if (Objects.isNull(forwardedForList) || forwardedForList.length == 0) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -2328,9 +2315,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                 }
                 return;
             }
-            MSP.log("nettyInitForwardedValues 3 - Size of ForList: " + forwardedForList.length);
             for (int i = forwardedForList.length - 1; i > 0; i--) {
-                MSP.log("Matching For List Element -> " + forwardedForList[i]);
                 matcher = pattern.matcher(forwardedForList[i]);
                 if (!matcher.matches()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -2340,7 +2325,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                     return;
                 }
             }
-            MSP.log("nettyInitForwardedValues 4");
             //if we get to the end, set the forwarded fields with correct values
 
             //First check that the last node identifier is not an obfuscated address or
@@ -2352,7 +2336,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                 }
                 return;
             }
-            MSP.log("nettyInitForwardedValues 5");
 
             //Check if a port was included
             attribute = this.nettyContext.channel().attr(NettyHttpConstants.FORWARDED_PORT_KEY).get();
@@ -2370,9 +2353,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                     }
                     return;
                 }
-                MSP.log("nettyInitForwardedValues 6");
             }
-            MSP.log("nettyInitForwardedValues 7");
 
             this.forwardedRemoteAddress = forwardedForList[0];
             this.forwardedHost = this.nettyContext.channel().attr(NettyHttpConstants.FORWARDED_HOST_KEY).get();

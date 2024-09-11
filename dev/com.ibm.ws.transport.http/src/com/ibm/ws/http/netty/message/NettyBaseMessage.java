@@ -37,7 +37,6 @@ import com.ibm.ws.http.channel.internal.cookies.CookieCacheData;
 import com.ibm.ws.http.channel.internal.cookies.CookieHeaderByteParser;
 import com.ibm.ws.http.channel.internal.cookies.CookieUtils;
 import com.ibm.ws.http.channel.internal.cookies.SameSiteCookieUtils;
-import com.ibm.ws.http.netty.MSP;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedProtocolVersionException;
@@ -328,10 +327,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public int getNumberOfHeaderInstances(String header) {
-
-        for (String name : headers.names()) {
-            MSP.log("Request Header name: " + name);
-        }
 
         return headers.getAll(header).size();
     }
@@ -707,7 +702,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
             return this.cookie2Cache;
 
         } else if (header.equals(HttpHeaderKeys.HDR_SET_COOKIE)) {
-            MSP.log("Processing set cookie header");
             if (null == this.setCookieCache) {
                 this.setCookieCache = new CookieCacheData(header);
                 if (!isIncoming()) {
@@ -740,7 +734,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
             Tr.debug(tc, "Parsing all cookies for " + header.getName());
         }
 
-        MSP.log("parsingSetCookieHeaders! ");
         // Iterate through the unparsed cookie header instances
         // in storage and add them to the list to be returned
         List<HeaderField> vals = getHeaders(header);
@@ -776,8 +769,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public boolean isCommitted() {
-        MSP.log("is Committed called with value of [" + this.committed + "]");
-        //MSP.stack();
         return this.committed;
 
     }
@@ -785,12 +776,10 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
     @Override
     public void setCommitted() {
         this.committed = Boolean.TRUE;
-        //MSP.stack();
     }
 
     public void setCommitted(boolean committed) {
         this.committed = committed;
-        // MSP.stack();
     }
 
     @Override
@@ -1033,9 +1022,7 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     public void processCookies() {
 
-        System.out.println("process cookie cache");
         marshallCookieCache(this.cookieCache);
-        System.out.println("process cookie 2 cache");
         marshallCookieCache(this.cookie2Cache);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1060,17 +1047,12 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
             }
 
         }
-        //Do we have set cookies?
-        System.out.println("process set-cookie cache");
         marshallCookieCache(this.setCookieCache);
-        System.out.println("process set-cookie2 cache");
         marshallCookieCache(this.setCookie2Cache);
 
     }
 
     private void marshallCookieCache(CookieCacheData cache) {
-
-        System.out.println("Is cache dirty for");
 
         if (null != cache && cache.isDirty()) {
             HttpHeaderKeys type = cache.getHeaderType();
@@ -1088,8 +1070,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         }
 
         HashMap<String, String> setCookieNames = new HashMap<String,String>();
-
-        MSP.log("marshalling cookie list: " + list);
 
         // convert each individual cookie into it's own header for clarity
         // Note: Set-Cookie header has comma separated cookies instead of semi-
@@ -1145,7 +1125,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "[1] Setting the Partitioned attribute for SameSite=None");
                             }
-                            MSP.log("[1] Setting the Partitioned attribute for SameSite=None");
                             cookie.setAttribute("partitioned", "");
                         }
                     }
@@ -1165,7 +1144,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "[2] Setting the Partitioned attribute for SameSite=None");
                         }
-                        MSP.log("[2] Setting the Partitioned attribute for SameSite=None");
                         cookie.setAttribute("partitioned", "");
                     }
                 }

@@ -24,7 +24,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
-import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyHeaderUtils;
 import com.ibm.wsspi.http.channel.HttpConstants;
 import com.ibm.wsspi.http.channel.values.ContentEncodingValues;
@@ -108,16 +107,12 @@ public class ResponseCompressionHandler {
     private boolean isAutoCompression() {
 
         boolean doCompression = Boolean.FALSE;
-
-        MSP.debug("isAutoCompression");
         if (config.useAutoCompression()) {
             //set the Vary header
             NettyHeaderUtils.setVary(headers, HttpHeaderKeys.HDR_ACCEPT_ENCODING.getName());
-            MSP.debug("isAutoCompression");
             //check and set highest priority compression encoding if set
             //on the Accept-Encoding header
             parseAcceptEncodingHeader();
-            MSP.debug("isAutoCompression");
             if (headers.contains(HttpHeaderKeys.HDR_CONTENT_ENCODING.getName())
                 && !ContentEncodingValues.IDENTITY.getName().equalsIgnoreCase(headers.get(HttpHeaderKeys.HDR_CONTENT_ENCODING.toString()))) {
                 //Body has already been marked as compressed above the channel, do not attempt to compress
@@ -125,25 +120,14 @@ public class ResponseCompressionHandler {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Response already contains Content-Encoding: [" + headers.get(HttpHeaderKeys.HDR_CONTENT_ENCODING.toString()) + "]");
                 }
-                MSP.debug("isAutoCompressionA");
             }
 
             //Check if the message has the appropriate type and size before attempting compression
             else if (!isCompressionCompliant()) {
                 doCompression = Boolean.FALSE;
-                MSP.debug("isAutoCompressionB");
             }
 
-//            else if (doCompression) {
-//                preferredEncoding = outgoingMsgEncoding.getName();
-//                if (!this.isSupportedEncoding() || !isCompressionAllowed()) {
-//
-//                    doCompression = false;
-//                }
-//            }
-
             else {
-                MSP.debug("isAutoCompressionC");
                 // check private compression header
                 preferredEncoding = headers.get(HttpHeaderKeys.HDR_$WSZIP.getName());
                 if (Objects.nonNull(preferredEncoding)) {
@@ -165,7 +149,6 @@ public class ResponseCompressionHandler {
                 if (config.useAutoCompression() && !doCompression) {
 
                     String serverPreferredEncoding = config.getPreferredCompressionAlgorithm().toLowerCase(Locale.ENGLISH);
-                    MSP.log("Should be config value: " + serverPreferredEncoding);
                     //if the compression element has a configured preferred compression
                     //algorithm, check that the client accepts it and the server supports it.
                     //If so, set this to be the compression algorithm.
@@ -181,7 +164,6 @@ public class ResponseCompressionHandler {
                         }
 
                     }
-                    MSP.log("Should be going in here. do compression should be false: " + doCompression);
                     //At this point, find the compression algorithm by finding the first
                     //algorithm that is both supported by the client and server by iterating
                     //through the sorted list of compression algorithms specified by the
@@ -200,13 +182,10 @@ public class ResponseCompressionHandler {
                         }
 
                         for (String encoding : acceptableEncodings.keySet()) {
-
-                            MSP.log("looping, checking encoding: " + encoding);
                             //if gzip has the same qv and we have yet to evaluate gzip,
                             //prioritize gzip over any other encoding.
                             if (acceptableEncodings.get(encoding) == gZipQV && !checkedGZipCompliance) {
                                 preferredEncoding = ContentEncodingValues.GZIP.getName();
-                                MSP.log("Encoding should be set to gzip");
                                 checkedGZipCompliance = true;
                                 if (this.isEncodingSupported(preferredEncoding) && isCompressionAllowed()) {
                                     doCompression = Boolean.TRUE;
@@ -216,7 +195,6 @@ public class ResponseCompressionHandler {
 
                             preferredEncoding = encoding;
                             if (this.isEncodingSupported(preferredEncoding) && isCompressionAllowed()) {
-                                MSP.log("setting allowed encoding: " + preferredEncoding);
                                 doCompression = true;
                                 break;
                             }
@@ -226,7 +204,6 @@ public class ResponseCompressionHandler {
                         //to gzip encoding. If not allowed, try deflate. If neither are allowed,
                         //disable further attempts.
                         if (starEncodingParsed) {
-                            MSP.log("Star logic");
                             if (!this.unacceptableEncodings.contains(HttpConstants.GZIP)) {
                                 preferredEncoding = ContentEncodingValues.GZIP.getName();
                                 doCompression = Boolean.TRUE;
@@ -244,8 +221,6 @@ public class ResponseCompressionHandler {
 
             if (!doCompression) {
                 preferredEncoding = ContentEncodingValues.IDENTITY.getName();
-                MSP.log("set identity, compression not allowed");
-                // setOutgoingMsgEncoding(ContentEncodingValues.IDENTITY);
             }
         }
 
@@ -511,7 +486,6 @@ public class ResponseCompressionHandler {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, method, "Response content length is less than 2048 bytes, do not attempt to compress");
             }
-            MSP.log("Invalid content-length: " + HttpUtil.getContentLength(response, HttpConstants.INT_UNDEFINED));
             isCompliant = Boolean.FALSE;
         }
 

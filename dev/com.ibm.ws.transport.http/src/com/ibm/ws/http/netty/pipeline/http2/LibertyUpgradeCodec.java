@@ -101,39 +101,32 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
             return new Http2ServerUpgradeCodec(handler) {
                 @Override
                 public void upgradeTo(ChannelHandlerContext ctx, io.netty.handler.codec.http.FullHttpRequest request) {
-                    ctx.channel().pipeline().names().forEach(handler -> System.out.println(handler));
-                    // Remove http1 handler adder
-                    
                     ctx.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP2");
                     
                     
                     // Call upgrade
                     super.upgradeTo(ctx, request);
-                    System.out.println("After upgrade!");
-                    ctx.channel().pipeline().names().forEach(handler -> System.out.println(handler));
                     // Set as stream 1 as defined in RFC
                     request.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), 1);
                     if (Constants.SPEC_INITIAL_WINDOW_SIZE != httpConfig.getH2ConnectionWindowSize()) {
                         // window update sets the difference between what the client has (default) and the new value.
                         // TODO Should this actually be a difference from the settings value instead of the spec size itself since that's the part where the ohter endpoint has the established info
                         int updateSize = httpConfig.getH2ConnectionWindowSize() - Constants.SPEC_INITIAL_WINDOW_SIZE;
-                        System.out.println("Update size to work with: " + updateSize);
                         try {
-                            System.out.println("Original initial window size for connection: "
-                                               + ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).initialWindowSize(handler.decoder().connection().connectionStream()));
-                            System.out.println("Original window size for connection: "
-                                               + ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).windowSize(handler.decoder().connection().connectionStream()));
-                            ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).incrementWindowSize(handler.decoder().connection().connectionStream(),
+                            // System.out.println("Original initial window size for connection: "
+                            //                    + ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).initialWindowSize(handler.decoder().connection().connectionStream()));
+                            // System.out.println("Original window size for connection: "
+                            //                    + ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).windowSize(handler.decoder().connection().connectionStream()));
+                             ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).incrementWindowSize(handler.decoder().connection().connectionStream(),
                                                                                                                        updateSize);
-                            System.out.println("New window size for connection: "
-                                               + ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).windowSize(handler.decoder().connection().connectionStream()));
-                            System.out.println("New initial window size for connection: "
-                                               + ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).initialWindowSize(handler.decoder().connection().connectionStream()));
+                            // System.out.println("New window size for connection: "
+                            //                    + ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).windowSize(handler.decoder().connection().connectionStream()));
+                            // System.out.println("New initial window size for connection: "
+                            //                    + ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).initialWindowSize(handler.decoder().connection().connectionStream()));
                         } catch (Http2Exception e) {
                             ctx.fireExceptionCaught(e);
                         }
                     }
-                    System.out.println("Max header list size on UPGRADE: " + handler.encoder().configuration().headersConfiguration().maxHeaderListSize());
                     // Send settings frame in advance
                     ctx.flush();
                     // Forward request to dispatcher
@@ -146,7 +139,6 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
             return new UpgradeCodec() {
                 @Override
                 public void upgradeTo(ChannelHandlerContext ctx, io.netty.handler.codec.http.FullHttpRequest request) {
-                    System.out.println("This should be retaining the message and passing it on to the NO_UPDATE handler");
                     
                     
                     ctx.fireChannelRead(ReferenceCountUtil.retain(request));
@@ -186,27 +178,13 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
         if (httpConfig.getH2SettingsInitialWindowSize() != Constants.SPEC_INITIAL_WINDOW_SIZE)
             initialSettings.initialWindowSize(httpConfig.getH2SettingsInitialWindowSize());
         builder = new InboundHttp2ToHttpAdapterBuilder(connection).propagateSettings(false).maxContentLength(Integer.MAX_VALUE).validateHttpHeaders(false);
-//        return new HttpToHttp2ConnectionHandlerBuilder().frameListener(builder.build()).frameLogger(LOGGER).connection(connection).initialSettings(initialSettings).build();
         HttpToHttp2ConnectionHandler handler = new HttpToHttp2ConnectionHandlerBuilder().frameListener(new LibertyInboundHttp2ToHttpAdapter(connection, Integer.MAX_VALUE, false, false, channel)).frameLogger(LOGGER).connection(connection).initialSettings(initialSettings).build();
-// Test for figuring out how max header list size is set
-//        try {
-//            Configuration confg = handler.encoder().configuration().headersConfiguration();
-//            System.out.println("Max header list size before update: " + confg.maxHeaderListSize());
-//            confg.maxHeaderListSize(Http2CodecUtil.MAX_HEADER_LIST_SIZE);
-//            System.out.println("Max header list size before update: " + confg.maxHeaderListSize());
-//        } catch (Http2Exception e1) {
-//            // TODO Auto-generated catch block
-//            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-//            System.out.println("Got error trying to update Max Header List Size!");
-//            e1.printStackTrace();
-//        }
+
         if (!httpConfig.getH2LimitWindowUpdateFrames()) {
             ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).windowUpdateRatio(0.99999f);
             try {
                 ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).windowUpdateRatio(connection.connectionStream(), 0.9999f);
             } catch (Http2Exception e) {
-                // TODO Auto-generated catch block
-                System.out.println("Damn an exception happened");
                 e.printStackTrace();
             }
         }

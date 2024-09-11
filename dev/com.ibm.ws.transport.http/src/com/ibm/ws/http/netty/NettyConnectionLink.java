@@ -23,62 +23,51 @@ public class NettyConnectionLink implements ConnectionLink {
     Channel nettyChannel;
 
     public NettyConnectionLink(Channel nettyChannel) {
-        // TODO Auto-generated constructor stub
         this.nettyChannel = nettyChannel;
     }
 
     @Override
     public void ready(VirtualConnection vc) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void destroy(Exception e) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public Object getChannelAccessor() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public VirtualConnection getVirtualConnection() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setApplicationCallback(ConnectionReadyCallback next) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public ConnectionLink getDeviceLink() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public ConnectionReadyCallback getApplicationCallback() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void close(VirtualConnection vc, Exception e) {
-        // TODO Auto-generated method stub
-        System.out.println("Closing Netty connection context: " + nettyChannel);
         nettyChannel.close();
     }
 
     @Override
     public void setDeviceLink(ConnectionLink next) {
-        // TODO Auto-generated method stub
 
     }
 
