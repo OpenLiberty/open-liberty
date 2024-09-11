@@ -80,9 +80,7 @@ dependencies {
     requiredLibs 'xalan:xalan:2.7.2'
     requiredLibs 'xml-apis:xml-apis:1.4.01'
     requiredLibs project(':com.ibm.ws.org.apache.commons.io')
-    requiredLibs project(':com.ibm.ws.org.slf4j.api')
     requiredLibs project(':io.openliberty.org.apache.commons.codec')
-    requiredLibs project(':io.openliberty.org.apache.commons.logging')
     requiredLibs project(':io.openliberty.org.apache.xercesImpl')
 //  mojarra40 'org.glassfish:jakarta.faces:4.0.0'
 //  mojarra40 'org.glassfish:jakarta.faces:4.1.0-SNAPSHOT'

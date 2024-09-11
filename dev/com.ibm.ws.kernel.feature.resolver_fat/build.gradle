@@ -12,7 +12,9 @@
  *******************************************************************************/
 
 configurations {
-  kernel
+  kernel {
+    transitive = false
+  }
 }
 
 dependencies {

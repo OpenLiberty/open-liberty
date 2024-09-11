@@ -9,13 +9,10 @@
  *******************************************************************************/
 
 dependencies {
-    requiredLibs 'net.sf.jtidy:jtidy:9.3.8',
-    project(':com.ibm.ws.org.slf4j.api'),
-    'org.apache.httpcomponents.client5:httpclient5:5.0',
+    requiredLibs 'org.apache.httpcomponents.client5:httpclient5:5.0',
     'org.apache.httpcomponents.core5:httpcore5:5.0',
     project(':io.openliberty.org.apache.commons.codec'),
     project(':com.ibm.ws.org.apache.httpcomponents'),
-    project(':io.openliberty.org.apache.commons.logging'),
     'jakarta.websocket:jakarta.websocket-api:2.1.1',
     'jakarta.websocket:jakarta.websocket-client-api:2.1.1',
     'org.eclipse.jetty:jetty-io:11.0.9',

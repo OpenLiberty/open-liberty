@@ -23,8 +23,6 @@ addRequiredLibraries {
       usrEsa 'test.featureUtility_fat:usertest.with.api:1.0@esa'
       features1 'test.featureUtility_fat:Archive:1.0@zip'
       features2 'test.featureUtility_fat:Archive:2.0@zip'
-      requiredLibs project(':com.ibm.ws.org.slf4j.api'),
-      	project(':com.ibm.ws.org.slf4j.simple')
     }    
     
     copy {

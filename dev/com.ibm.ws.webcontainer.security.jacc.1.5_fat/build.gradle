@@ -11,11 +11,16 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+configurations {
+  requiredLibs {
+    transitive = false
+  }
+}
+
 dependencies {
   requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
                'org.apache.httpcomponents:httpcore:4.1.2',
                project(':io.openliberty.org.apache.commons.codec'),
-               project(':io.openliberty.org.apache.commons.logging'),
                project(':com.ibm.websphere.javaee.servlet.3.0'),
                project(':com.ibm.ws.security.audit_fat.common.tooling'),
                project(':com.ibm.ws.webcontainer.security_test.servlets'),
