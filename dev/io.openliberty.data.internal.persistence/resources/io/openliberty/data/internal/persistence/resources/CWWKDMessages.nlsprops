@@ -464,7 +464,7 @@ CWWKD1046.result.convert.err=CWWKD1046E: The {0} result of the {1} method of the
  {2} repository interface cannot be converted to the {3} return type of the \
  repository method.
 CWWKD1046.result.convert.err.explanation=The result value is not compatible with \
- the repository method return type.
+ the return type of the repository method.
 CWWKD1046.result.convert.err.useraction=Ensure the return type of the repository \
  method is consistent with the type of result that is returned by the query.
 
@@ -472,7 +472,7 @@ CWWKD1047.result.out.of.range=CWWKD1047E: The {0} result of the {1} method of th
  {2} repository interface cannot be converted to the {3} return type of the \
  repository method because the result is not within the range of {4} to {5}.
 CWWKD1047.result.out.of.range.explanation=The result value is not compatible with \
- the repository method return type because it is outside of the range of values \
+ the return type for the repository method because it is outside of the range of values \
  that can be converted.
 CWWKD1047.result.out.of.range.useraction=Adjust the return type of the repository \
  method to allow for the value to be returned.
@@ -481,7 +481,7 @@ CWWKD1048.result.exceeds.max=CWWKD1048E: The {0} result of the {1} method of the
  {2} repository interface cannot be converted to the {3} return type of the \
  repository method because the result value exceeds the maximum value of {4}.
 CWWKD1048.result.exceeds.max.explanation=The result value is not compatible with \
- the repository method return type because it exceeds the maximum value that can \
+ the return type for the repository method because it exceeds the maximum value that can \
  be converted to that type.
 CWWKD1048.result.exceeds.max.useraction=Adjust the return type of the repository \
  method to allow for the value to be returned.
@@ -490,13 +490,13 @@ CWWKD1049.count.convert.err=CWWKD1049E: The count value, {0}, from the {1} metho
  of the {2} repository interface cannot be converted to the {3} return type of \
  the repository method.
 CWWKD1049.count.convert.err.explanation=The count value is not compatible with \
- the repository method return type.
+ the return type of the repository method.
 CWWKD1049.count.convert.err.useraction=Adjust the return type of the repository \
  method to allow for the value to be returned.
 
 CWWKD1050.opt.lock.exc=CWWKD1050E: The {0} method of the {1} repository \
  interface did not find a {2} entity that matches the entity properties: {3}. \
- If this is unexpected, ensure that the entity instance that is supplied to the \
+ Verify that the entity instance that is supplied to the \
  {0} method is based on the most recent version of the entity. The most recent \
  version of the entity can be obtained from a find method or from the result \
  value of one of the following lifecycle methods: {4}.
@@ -507,7 +507,7 @@ CWWKD1050.opt.lock.exc.useraction=If it is expected that the entity might \
 
 CWWKD1051.single.opt.lock.exc=CWWKD1051E: The {0} method of the {1} repository \
  interface did not find a matching {2} entity in the database. \
- If this is unexpected, ensure that the entity instance that is supplied to the \
+ Verify that the entity instance that is supplied to the \
  {0} method is based on the most recent version of the entity. The most recent \
  version of the entity can be obtained from a find method or from the result \
  value of one of the following lifecycle methods: {3}.
@@ -518,7 +518,7 @@ CWWKD1051.single.opt.lock.exc.useraction=If it is expected that the entity might
 
 CWWKD1052.multi.opt.lock.exc=CWWKD1052E: The {0} method of the {1} repository \
  interface did not find {2} of the {3} {4} entities in the database. \
- If this is unexpected, ensure that the entity instances that are supplied to the \
+ Verify that the entity instances that are supplied to the \
  {0} method are based on the most recent version of each entity. The most recent \
  version of an entity can be obtained from a find method or from the result \
  value of one of the following lifecycle methods: {5}.
@@ -533,7 +533,7 @@ CWWKD1053.empty.result=CWWKD1053E: The {0} return type of the {1} method of the 
  empty result is expected, the repository method must return an array or one of \
  the following return types: {3}.
 CWWKD1053.empty.result.explanation=The return type of the repository method does \
- not permit it to return an empty result.
+ not allow it to return an empty result.
 CWWKD1053.empty.result.useraction=Update the repository method to use one of the \
  return types that can represent an empty result.
 
@@ -541,7 +541,7 @@ CWWKD1054.non.unique.result=CWWKD1054E: The {0} method of the {1} repository \
  interface has the {2} return type, which is not capable of returning {3} results. \
  To limit to a single result, use one of the following Jakarta Data patterns: {4}.
 CWWKD1054.non.unique.result.explanation=The return type of the repository method \
- does not permit returning multiple results.
-CWWKD1054.non.unique.result.useraction=Update the repository method to use a \
- return type that supports multiple results, or update the repository method \
- to return at most one result.
+ does not allow returning multiple results.
+CWWKD1054.non.unique.result.useraction=Update the repository method to either use a \
+ return type that supports multiple results or update the repository method \
+ to return no more than a single result.
