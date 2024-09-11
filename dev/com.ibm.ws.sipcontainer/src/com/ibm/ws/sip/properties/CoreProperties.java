@@ -29,7 +29,14 @@ public class CoreProperties
 	 */
 	private static final transient LogMgr c_logger = Log
 			.get(CoreProperties.class);
-	/**
+	
+	 /**
+	 * Check branch state before creating new branch
+	 */
+	public static final String CHECK_STATE_WHEN_CREATING_PROXY_BRANCH = "checkStateWhenCreatingProxyBranch";
+	public static final boolean CHECK_STATE_WHEN_CREATING_PROXY_BRANCH_DEFAULT = true;
+	
+	 /**
 	 * Maximum sipAppSessions allowed. 
 	 */
 	 public static final String MAX_APP_SESSIONS = "maxAppSessions";
