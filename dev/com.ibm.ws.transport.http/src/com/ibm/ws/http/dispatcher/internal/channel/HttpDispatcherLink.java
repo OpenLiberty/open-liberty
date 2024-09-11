@@ -45,7 +45,6 @@ import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.internal.VirtualHostImpl;
 import com.ibm.ws.http.internal.VirtualHostMap;
 import com.ibm.ws.http.internal.VirtualHostMap.RequestHelper;
-import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyConnectionLink;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
@@ -195,14 +194,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "New conn: netty context=" + context);
         }
-        String probe = "DispatcherLink.init";
-        MSP.debug(probe);
         NettyVirtualConnectionImpl nettyVc = NettyVirtualConnectionImpl.createVC();
         nettyContext = context;
         this.isc = new HttpInboundServiceContextImpl(context, nettyVc);
-        MSP.debug(probe);
         this.isc.setHttpConfig(config);
-        MSP.debug(probe);
 
         nettyRequest = request;
         this.isc.setNettyRequest(request);
@@ -212,26 +207,21 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         this.response = new HttpResponseImpl(this);
         isc.setNettyResponse(new DefaultHttpResponse(nettyRequest.protocolVersion(), HttpResponseStatus.OK));
-        MSP.log("Netty response completed");
         this.nettyConnectionLink = new NettyConnectionLink(context.channel());
         super.init(nettyVc);
     }
 
     public NettyServletUpgradeHandler prepareForUpgrade() {
-        System.out.println("Decoupling close from codec and adding servlet upgrade handler!");
         HttpServerKeepAliveHandler handler = nettyContext.channel().pipeline().get(HttpServerKeepAliveHandler.class);
         if (handler != null) {
             // Need to remove to keep connection open
-            System.out.println("Removing keepalive handler on servlet upgrade!");
             nettyContext.channel().pipeline().remove(handler);
         }
 
         //nettyContext.channel().pipeline().remove(InactivityTimeoutHandler.class);
 
         // Add Inbound handler to accumulate data which will not belong to HTTP but rather the upgrade protocol
-        System.out.println("Adding Upgrade Handler!");
         HttpToHttp2ConnectionHandler http2Handler = nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class);
-        System.out.println(nettyContext.channel().pipeline().names());
 
         if (this.nettyContext.pipeline().get(NettyServletUpgradeHandler.class) == null) {
 
@@ -239,14 +229,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
             upgradeHandler.setVC(vc);
             if (http2Handler == null) { // In HTTP 1.1
-                System.out.println("Found HTTP1!");
                 HttpServerCodec httpHandler = nettyContext.channel().pipeline().get(HttpServerCodec.class);
                 if (httpHandler == null) {
-                    System.out.println("Found null handler HTTP!");
                     // throw new UnsupportedOperationException("Can't deal with this");
                 }
-
-                System.out.println("Should remove remove the dispatch handler, only keep reading and writing upgrade handler");
 
                 // nettyContext.channel().pipeline().addBefore(nettyContext.channel().pipeline().context(httpHandler).name(), "ServletUpgradeHandler", upgradeHandler);
                 //nettyContext.channel().pipeline().addLast(new WebSocketServerProtocolHandler("/websocket")); // Handles the WebSocket upgrade and control frames
@@ -256,12 +242,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
                 // if(nettyContext.channel().pipeline().get(HttpDispatcherHandler.class)
                 // nettyContext.channel().pipeline().remove(HttpDispatcherHandler.class);
-                System.out.println(nettyContext.channel().pipeline().names());
             } else { // In HTTP2
-                System.out.println("Found HTTP2! Need to check this logic...");
                 nettyContext.channel().pipeline().addBefore(nettyContext.channel().pipeline().context(http2Handler).name(), "ServletUpgradeHandler", upgradeHandler);
             }
-            System.out.println(nettyContext.channel().pipeline().names());
             return upgradeHandler;
         }
 
@@ -279,10 +262,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Close called , vc ->" + this.vc + " hc: " + this.hashCode());
         }
-
-        for (String handler : nettyContext.pipeline().names()) {
-            MSP.log("Dispatcher close handler -> " + handler);
-        }
         if (this.nettyContext.pipeline().get(RemoteIpHandler.class) != null)
             this.nettyContext.pipeline().get(RemoteIpHandler.class).resetState();
 
@@ -294,7 +273,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         if (vc != null) {
-            System.out.println("VC not null on netty, checking if streams need to be closed!");
             String closeNonUpgraded = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
             if (closeNonUpgraded != null && closeNonUpgraded.equalsIgnoreCase("true")) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -314,7 +292,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         if (nettyContext.pipeline().get("httpKeepAlive") == null) {
-            MSP.log("DispatcherLink close because no keep alive handler");
             this.nettyContext.channel().close();
 
         } else {
@@ -323,7 +300,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         if (nettyContext.pipeline().get(NettyServletUpgradeHandler.class) != null) {
-            MSP.log("DispatcherLink close because we have an upgrade handler");
             this.nettyContext.channel().close();
         }
 
@@ -560,12 +536,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         // Make sure to initialize the response in case of an early-return-error message
         //((NettyHttpRequestImpl) this.request).init(this.nettyRequest, this.nettyContext.channel(), this.isc);
-        // MSP.log("Init Request");
         this.request.init(nettyRequest, isc);
-        MSP.log("Init Response");
         this.response.init(isc);
         linkIsReady = true;
-        MSP.log("Req/Response done");
         ExecutorService executorService = HttpDispatcher.getExecutorService();
         if (null == executorService) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -619,8 +592,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             return;
         }
 
-        MSP.log("ready - before try");
-
         Runnable handler = null;
         try {
             handler = vhost.discriminate(this);
@@ -641,7 +612,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 }
             } else {
                 wrapHandlerAndExecute(handler);
-                MSP.log("finished wrap");
             }
         } catch (Throwable t) {
             // no FFDC required
@@ -880,53 +850,41 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     @FFDCIgnore(Throwable.class)
     private void send404Message(String url) {
 
-        MSP.log("sending 404 message, url: " + url);
-
         String s = HttpDispatcher.getContextRootNotFoundMessage();
         boolean addAddress = false;
         if ((s == null) || (s.isEmpty())) {
 
-            MSP.log("send404 1");
-
             if (HttpDispatcher.isWelcomePageEnabled()) {
                 InputStream notFoundPage = getNotFoundStream();
                 try {
-                    MSP.log("send404 2");
                     displayPage(notFoundPage, StatusCodes.NOT_FOUND);
                 } catch (Throwable t) {
                     // no FFDC required
-                    MSP.log("send404 3");
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                         Tr.event(tc, "Exception displaying error page; " + t);
                     }
 
                     if (t instanceof Exception) {
-                        MSP.log("send404 4");
                         sendResponse(StatusCodes.INTERNAL_ERROR, (Exception) t, true);
                     } else {
-                        MSP.log("send404 5");
                         sendResponse(StatusCodes.INTERNAL_ERROR, new Exception("Error page", t), true);
                     }
                 }
                 return;
             } else {
-                MSP.log("send404 6");
                 String safeUrl = URLEscapingUtils.toSafeString(url);
                 s = Tr.formatMessage(tc, "Missing.App.Or.Context.Root.No.Error.Code", safeUrl);
             }
         } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            MSP.log("send404 1");
             Tr.debug(tc, "send error with following string: " + s);
         }
 
         if (s != null && HttpDispatcher.padContextRootNotFoundMessage()) {
-            MSP.log("send404 7");
             //There is a problem with some IE browsers that won't display a 404 error page if it is less than 512 bytes.
             //append some characters in a comment to make sure that this message is displayed.
             int difference = 513 - s.length();
             if (difference > 0) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    MSP.log("send404 1");
                     Tr.debug(tc, "404 message is not 512 so pad it. Length = " + s.length());
                 }
                 StringBuffer sb = new StringBuffer(s);
@@ -943,7 +901,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         // If we got here, we didn't write the page yet.. last parameter is false
-        MSP.log("send404 1");
         sendResponse(StatusCodes.NOT_FOUND, s, null, addAddress);
     }
 

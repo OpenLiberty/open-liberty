@@ -65,7 +65,6 @@ public class WsByteBufferChunkedInput implements ChunkedInput<ByteBuf> {
 
     @Override
     public ByteBuf readChunk(ByteBufAllocator arg0) throws Exception {
-        // TODO Auto-generated method stub
         return chunks.poll();
     }
 

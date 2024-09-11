@@ -20,7 +20,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.http.netty.MSP;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 import io.netty.handler.codec.http.HttpHeaders;
@@ -68,7 +67,6 @@ public class HeaderHandler {
         if (!HttpUtil.isContentLengthSet(response) && !headers.contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
             if (response.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)) {
 
-                MSP.log("100-continue do not chunk");
                 HttpUtil.setContentLength(response, 0);
                 HttpUtil.setTransferEncodingChunked(response, false);
 
@@ -99,7 +97,6 @@ public class HeaderHandler {
             //Add all headers configured through the ADD configuration option
             for (List<Map.Entry<String, String>> headersToAdd : config.getConfiguredHeadersToAdd().values()) {
                 for (Entry<String, String> header : headersToAdd) {
-                    MSP.log("Custom header to add: " + header.getKey() + ": " + header.getValue());
                     headers.add(header.getKey(), header.getValue());
                 }
             }
@@ -178,7 +175,6 @@ public class HeaderHandler {
                 }
 
                 if (updated) {
-                    MSP.log("Updating Cache-Control for Set-Cookie");
                     headers.set(HttpHeaderKeys.HDR_CACHE_CONTROL.getName(), builder.toString());
                 }
             }

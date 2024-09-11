@@ -10,7 +10,6 @@
 package com.ibm.ws.http.netty.pipeline.inbound;
 
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
-import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
@@ -35,9 +34,7 @@ public class TransportInboundHandler extends SimpleChannelInboundHandler<FullHtt
     @Override
     protected void channelRead0(ChannelHandlerContext context, FullHttpRequest request) throws Exception {
 
-        //TODO: cleanup into individual handlers
         if (request.headers().contains(HttpHeaderKeys.HDR_ACCEPT_ENCODING.getName())) {
-            MSP.log("Found Accept-Encoding: " + request.headers().get(HttpHeaderKeys.HDR_ACCEPT_ENCODING.getName()));
             context.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).set(request.headers().get(HttpHeaderKeys.HDR_ACCEPT_ENCODING.getName()));
         }
         context.fireChannelRead(request.retain());
@@ -46,7 +43,6 @@ public class TransportInboundHandler extends SimpleChannelInboundHandler<FullHtt
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        MSP.log("Channel became inactive. Channel: {}" + " " + ctx.channel());
         super.channelInactive(ctx);
     }
 
