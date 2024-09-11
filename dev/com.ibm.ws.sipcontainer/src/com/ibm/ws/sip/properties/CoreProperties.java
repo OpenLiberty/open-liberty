@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2021 IBM Corporation and others.
+ * Copyright (c) 2003, 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -801,6 +801,7 @@ public class CoreProperties
     	properties.setInt(MAX_APP_SESSIONS, MAX_APP_SESSIONS_DEFAULT,CustPropSource.DEFAULT);
 		properties.setInt(MAX_MESSAGE_RATE, MAX_MESSAGE_RATE_DEFAULT,CustPropSource.DEFAULT);
 		properties.setInt(MAX_RESPONSE_TIME, MAX_RESPONSE_TIME_DEFAULT,CustPropSource.DEFAULT);
+		properties.setBoolean(CHECK_STATE_WHEN_CREATING_PROXY_BRANCH, CHECK_STATE_WHEN_CREATING_PROXY_BRANCH_DEFAULT, CustPropSource.DEFAULT);
 		properties.setInt(STAT_UPDATE_RANGE, STAT_UPDATE_RANGE_DEFAULT,CustPropSource.DEFAULT);
 		properties.setInt(STAT_AVERAGE_PERIOD, STAT_AVERAGE_PERIOD_DEFAULT,CustPropSource.DEFAULT);
 		properties.setInt(LOAD_UPDATE_PERIOD, LOAD_UPDATE_PERIOD_DEFAULT,CustPropSource.DEFAULT);
