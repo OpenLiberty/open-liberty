@@ -27,6 +27,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -36,7 +38,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 import junit.framework.Assert;
 
 @RunWith(FATRunner.class)
-//@Mode(TestMode.FULL)
+@Mode(TestMode.FULL)
 public class TelemetryMultipleMetricsTest extends FATServletClient {
 
     public static final String SERVER_NAME = "Telemetry10Metrics";
