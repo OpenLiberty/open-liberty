@@ -282,9 +282,6 @@ public class LibertyWebServiceClientInInterceptorGlobalTest extends LibertyWebSe
         // invoke LibertyWebServiceClientInInterceptor.handleMessage(message)
         interceptor.handleMessage(message);
 
-        // Assert message has the set values
-        assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to false", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
-
         // Assert message has the set values.
         assertFalse("The LibertyWebServiceClientInInterceptor should have set to the " + JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER + " property to false", MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER));
         assertNull(message.get(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER)); 

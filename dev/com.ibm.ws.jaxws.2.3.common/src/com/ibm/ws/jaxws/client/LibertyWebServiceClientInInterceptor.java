@@ -115,7 +115,12 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
             return;
         }
         
-
+        if (debug) {
+            Tr.debug(tc, "enableSchemaValidation   value: " + enableSchemaValidation);
+            Tr.debug(tc, "ignoreUnexpectedElements value: " + ignoreUnexpectedElements);
+            Tr.debug(tc, "enableDefaultValidation  value: " + enableDefaultValidation);
+        }
+        
         // As long as property is non-null:
         // Enable enhanced schema validation if true, or disable it along with default validation if false 
         if ( enableSchemaValidation != null) {
@@ -152,31 +157,30 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
                 // Enable validation handling in CXF
                 message.put(JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, true);
 
-                // Set our custom validation event handler
-                IgnoreUnexpectedElementValidationEventHandler unexpectedElementValidationEventHandler = new IgnoreUnexpectedElementValidationEventHandler();
-                message.put(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER, unexpectedElementValidationEventHandler);
-                
-                if (enableDefaultValidation != null && (boolean)enableDefaultValidation == false) {
-                  // If ignoreUnexpectedElements is true, do not let  enableDefaultValidation false value 
-                  // to not set JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER to false
-                  return;   
-                } 
-            
+            // Set our custom validation event handler
+            IgnoreUnexpectedElementValidationEventHandler unexpectedElementValidationEventHandler = new IgnoreUnexpectedElementValidationEventHandler();
+            message.put(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER, unexpectedElementValidationEventHandler);
+
             if (debug) {
                 Tr.debug(tc, "Set JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER to  " + (boolean) ignoreUnexpectedElements + " for ignoreUnexpectedElements");
-                
+
             }
-            
+
+            if (enableDefaultValidation != null && (boolean) enableDefaultValidation == false) {
+                // If ignoreUnexpectedElements is true, do not let  enableDefaultValidation false value 
+                // to not set JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER to false
+                return;
+            }
+
         } else {
             if (debug) {
                 Tr.debug(tc, "ignoreUnexpectedElements was " + ignoreUnexpectedElements + " not configuring ignoreUnexpectedElements on the client");
                 
             }
         }
-
+        
         // As long as property is non-null:
-        // Enable default validation if true, or disable it along with default validation if false 
-        if (enableDefaultValidation != null) {// && (boolean)enableDefaultValidation == true
+        if (enableDefaultValidation != null) {
             // JAXB's DefaultValidationEventHandler 
             message.put(JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, enableDefaultValidation);
             

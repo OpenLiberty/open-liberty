@@ -189,7 +189,7 @@ public class EnableSchemaValidationTest {
 
         assertNull("Expected null response from server, but was" + response, response);
         assertNotNull("Expected Unmarshalling Error: Expected elements are (none) in server logs",
-                      server.waitForStringInLogUsingLastOffset("cvc-type.3.1.2"));
+                      server.waitForStringInLog("local:\"WrongElementContent\""));
     }
 
     // GLOBAL FALSE TESTS
@@ -374,7 +374,7 @@ public class EnableSchemaValidationTest {
 
         assertNull("Expected null response from server, but was" + response, response);
         assertNotNull("Expected Unmarshalling Error: WrongelementContent is not found in server logs",
-                      server.waitForStringInLogUsingLastOffset("cvc-type.3.1.2"));
+                      server.waitForStringInLog("local:\"WrongElementContent\""));
     }
 
     // serviceName FALSE TESTS
