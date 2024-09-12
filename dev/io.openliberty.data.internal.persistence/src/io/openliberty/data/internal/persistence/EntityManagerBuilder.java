@@ -43,6 +43,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.Attribute;
 import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
@@ -201,21 +202,41 @@ public abstract class EntityManagerBuilder {
                                 throw new RuntimeException(); // unreachable unless more types are added
                         }
 
-                        // Allow the simple attribute name if it doesn't overlap
-                        relationAttributeName = relationAttributeName.toLowerCase();
-                        attributeNames.putIfAbsent(relationAttributeName, fullAttributeName);
-
                         // Allow a qualified name such as @OrderBy("address.street.name")
-                        relationAttributeName = fullAttributeName.toLowerCase();
-                        attributeNames.put(relationAttributeName, fullAttributeName);
+                        // No chance of conflicts because attributes defined on the entity cannot have a period
+                        String fullAttributeNameLower = fullAttributeName.toLowerCase();
+                        attributeNames.put(fullAttributeNameLower, fullAttributeName);
 
                         // Allow a qualified name such as findByAddress_Street_Name if it doesn't overlap
-                        String relationAttributeName_ = relationAttributeName.replace('.', '_');
-                        attributeNames.putIfAbsent(relationAttributeName_, fullAttributeName);
+                        // Check for conflicts with attributes defined on the entity to avoid ambiguous queries and sorts
+                        String relationAttributeName_ = fullAttributeNameLower.replace('.', '_');
+                        String conflictingAttribute = attributeNames.putIfAbsent(relationAttributeName_, fullAttributeName);
+
+                        // TODO instead of failing here, we could fail during queryInfo.getAttributeName();
+                        if (conflictingAttribute != null)
+                            throw new MappingException("The entity " + entityType.getName() + " defines a basic attribute " + conflictingAttribute
+                                                       + " and a relational attribute " + prefix
+                                                       + " which results in an overloaded path expression " + relationAttributeName_
+                                                       + " necessary for queries and sorting."); //TODO NLS
 
                         // Allow a qualified name such as findByAddressStreetName if it doesn't overlap
-                        String relationAttributeNameUndelimited = relationAttributeName.replace(".", "");
-                        attributeNames.putIfAbsent(relationAttributeNameUndelimited, fullAttributeName);
+                        // Check for conflicts with attributes defined on the entity to avoid ambiguous queries and sorts
+                        String relationAttributeNameUndelimited = fullAttributeNameLower.replace(".", "");
+                        conflictingAttribute = attributeNames.putIfAbsent(relationAttributeNameUndelimited, fullAttributeName);
+
+                        // TODO instead of failing here, we could fail during queryInfo.getAttributeName();
+                        // but we then run the risk of eclipselink throwing an error instead when the attribute name happens to match column name of the table.
+                        // which could be more difficult for the user to debug.
+                        if (conflictingAttribute != null)
+                            throw new MappingException("The entity " + entityType.getName() + " defines a basic attribute " + conflictingAttribute
+                                                       + " and a relational attribute " + prefix
+                                                       + " which results in an overloaded path expression " + relationAttributeNameUndelimited
+                                                       + " necessary for queries and sorting."); //TODO NLS
+
+                        // Allow the simple attribute name if it doesn't overlap. For example: name, address.street.name
+                        // TODO document behavior not part of Jakarta Data Specification
+                        relationAttributeName = relationAttributeName.toLowerCase();
+                        attributeNames.putIfAbsent(relationAttributeName, fullAttributeName);
 
                         attributeAccessors.put(fullAttributeName, relAccessors);
 
