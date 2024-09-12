@@ -81,15 +81,15 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     private final ModuleHandler connectorModuleHandler;
 
     enum ClassPathLoader {
-        WARLOADER,
-        EARLOADER;
+        WAR,
+        EAR;
 
         private static boolean issuedBetaMessage = false;
 
         public static ClassPathLoader convert(Object config) {
             if (!(config instanceof String)) {
-                // handles null case; default to WARLOADER
-                return WARLOADER;
+                // handles null case; default to WAR
+                return WAR;
             }
             if (!ProductInfo.getBetaEdition()) {
                 throw new UnsupportedOperationException("BETA: The config attribute 'addWebModuleClassPathTo' is beta and is not available.");
@@ -103,12 +103,12 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                 return valueOf(((String) config).toUpperCase());
             } catch (IllegalArgumentException e) {
                 // auto FFDC here
-                return WARLOADER;
+                return WAR;
             }
         }
     }
 
-    private static final String WAR_CLASS_PATH_LOADER_CONFIG = "addWebModuleClassPathTo";
+    private static final String WAR_CLASS_PATH_LOADER_CONFIG = "webModuleClassPathLoader";
     private final ClassPathLoader classPathLoader;
 
     private final DeployedAppMBeanRuntime appMBeanRuntime;
@@ -146,7 +146,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
         @Override
         public void consume(List<ContainerInfo> manifestClassPaths, List<ContainerInfo> destination) {
-            if (classPathLoader == ClassPathLoader.EARLOADER) {
+            if (classPathLoader == ClassPathLoader.EAR) {
                 this.manifestClassPaths.addAll(manifestClassPaths);
             }
             // always do the default so the CP JARs are associated with the declaring module
