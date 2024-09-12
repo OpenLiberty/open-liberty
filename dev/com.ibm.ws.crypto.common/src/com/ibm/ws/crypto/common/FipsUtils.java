@@ -18,6 +18,9 @@ import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 public class FipsUtils {
 
+    public static boolean isFIPSEnabled = false;
+	public static boolean fipsChecked = false;
+
     private static final TraceComponent tc = Tr.register(FipsUtils.class);
 
     static String FIPSLevel = getFipsLevel();
@@ -29,7 +32,8 @@ public class FipsUtils {
         String fipsLevel = AccessController.doPrivileged(new PrivilegedAction<String>() {
             @Override
             public String run() {
-                return System.getProperty("com.ibm.fips.mode");
+                String propertyValue = System.getProperty("com.ibm.fips.mode");
+                return (propertyValue == null) ? "disabled" : propertyValue.trim().toLowerCase();
             }
         });
         return fipsLevel;
@@ -42,6 +46,25 @@ public class FipsUtils {
         } else {
             return isRunningBetaMode() && "140-3".equals(FIPSLevel);
         }
+    }
+
+    public static boolean isFips140_2Enabled() {
+        //TODO remove beta check
+        if (unitTest) {
+            return "140-2".equals(FIPSLevel);
+        } else {
+            return isRunningBetaMode() && "140-2".equals(FIPSLevel);
+        }
+    }
+
+    public static boolean isFIPSEnabled() {
+		if (fipsChecked) {
+			return isFIPSEnabled;
+		} else {
+			isFIPSEnabled = isFips140_2Enabled() || isFips140_3Enabled();
+            fipsChecked = true;
+            return isFIPSEnabled;
+		}
     }
 
     //TODO remove beta check

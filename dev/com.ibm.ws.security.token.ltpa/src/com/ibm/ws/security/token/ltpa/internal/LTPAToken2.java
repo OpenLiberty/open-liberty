@@ -28,6 +28,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.auth.InvalidTokenException;
 import com.ibm.websphere.security.auth.TokenExpiredException;
 import com.ibm.ws.common.encoder.Base64Coder;
+import com.ibm.ws.crypto.common.FipsUtils;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyUtil;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPrivateKey;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPublicKey;
@@ -41,9 +42,11 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
  */
 public class LTPAToken2 implements Token, Serializable {
 
+    private static final boolean isFIPSEnabled = FipsUtils.isFIPSEnabled();
+
     private static final TraceComponent tc = Tr.register(LTPAToken2.class);
 
-    private static final String AES_CBC_CIPHER = "AES/CBC/PKCS5Padding";
+    private static final String AES_GCM_CIPHER = "AES/GCM/NoPadding";
 
     private static final long serialVersionUID = 1L;
     private static final String DELIM = "%";
@@ -66,9 +69,15 @@ public class LTPAToken2 implements Token, Serializable {
     static {
         MessageDigest m1 = null, m2 = null;
         try {
-            if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
+            if (isFIPSEnabled && LTPAKeyUtil.isOpenJCEPlusFIPSAvailable()) {
+                m1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.OPENJCE_PLUS_FIPS_NAME);
+                m2 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.OPENJCE_PLUS_FIPS_NAME);
+            } else if (isFIPSEnabled && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
                 m1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.IBMJCE_PLUS_FIPS_NAME);
                 m2 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.IBMJCE_PLUS_FIPS_NAME);
+            } else if (LTPAKeyUtil.isOpenJCEPlusAvailable()) {
+                m1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.OPENJCE_PLUS_NAME);
+                m2 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.OPENJCE_PLUS_NAME);
             } else if (LTPAKeyUtil.isIBMJCEAvailable()) {
                 m1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.IBMJCE_NAME);
                 m2 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.IBMJCE_NAME);
@@ -103,7 +112,7 @@ public class LTPAToken2 implements Token, Serializable {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
         this.expirationInMilliseconds = 0;
-        this.cipher = AES_CBC_CIPHER;
+        this.cipher = AES_GCM_CIPHER;
         this.expirationDifferenceAllowed = expDiffAllowed;
         decrypt();
     }
@@ -126,7 +135,7 @@ public class LTPAToken2 implements Token, Serializable {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
         this.expirationInMilliseconds = 0;
-        this.cipher = AES_CBC_CIPHER;
+        this.cipher = AES_GCM_CIPHER;
         this.expirationDifferenceAllowed = expDiffAllowed;
         decrypt();
         isValid();
@@ -155,7 +164,7 @@ public class LTPAToken2 implements Token, Serializable {
         this.publicKey = publicKey;
         this.userData = new UserData(accessID);
         setExpiration(expirationInMinutes);
-        this.cipher = AES_CBC_CIPHER;
+        this.cipher = AES_GCM_CIPHER;
     }
 
     /**
@@ -175,7 +184,7 @@ public class LTPAToken2 implements Token, Serializable {
         this.publicKey = publicKey;
         this.userData = userdata;
         setExpiration(expirationInMinutes);
-        this.cipher = AES_CBC_CIPHER;
+        this.cipher = AES_GCM_CIPHER;
     }
 
     /**

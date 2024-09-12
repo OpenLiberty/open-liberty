@@ -14,11 +14,14 @@ package com.ibm.ws.crypto.ltpakeyutil;
 
 import java.security.PrivateKey;
 
+import com.ibm.ws.crypto.common.FipsUtils;
+
 /**
  * Represents an LTPA Private Key; Encoding is non-standard. Uses 128 byte RSA.
  */
 public final class LTPAPrivateKey implements PrivateKey {
 
+    private static final boolean isFIPSEnabled = FipsUtils.isFIPSEnabled();
     private static final long serialVersionUID = -2566137894245694562L;
     private static final int PRIVATE_EXPONENT = 1;
     private static final int PUBLIC_EXPONENT = 2;
@@ -26,8 +29,8 @@ public final class LTPAPrivateKey implements PrivateKey {
     private static final int PRIME_Q = 4;
     private static final int PRIVATE_EXPONENT_LENGTH_FIELD_LENGTH = 4;
     private static final int PUBLIC_EXPONENT_LENGTH = 3;
-    private static final int PRIME_P_LENGTH = 65;
-    private static final int PRIME_Q_LENGTH = 65;
+    private static final int PRIME_P_LENGTH = (isFIPSEnabled ? 129 : 65);
+    private static final int PRIME_Q_LENGTH = (isFIPSEnabled ? 129 : 65);
     private int privateExponentLength;
     private final byte[][] rawKey;
     private final byte[] encodedKey;
@@ -151,7 +154,11 @@ public final class LTPAPrivateKey implements PrivateKey {
      * @return The raw data of the key
      */
     protected final byte[][] getRawKey() {
-        return rawKey.clone();
+        if (rawKey == null) {
+            return null;
+        } else {
+            return rawKey.clone();
+        }
     }
 
 }
