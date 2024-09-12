@@ -551,8 +551,8 @@ CWWKD1055.unsupported.entity.prop=CWWKD1055E: The {0} property of the {1} entity
  the {3} temporal types, and the following basic types: {4}. The built-in \
  Jakarta Data provider also supports some Jakarta Persistence types, such as \
  embeddables.
-CWWKD1055.unsupported.entity.prop.explanation=Jakarta Data does not support the type \
- used by the entity property.
+CWWKD1055.unsupported.entity.prop.explanation=Jakarta Data does not support the \
+ type used by the entity property.
 CWWKD1055.unsupported.entity.prop.useraction=Update the entity property to use \
  one of the supported types.
 
@@ -564,28 +564,28 @@ CWWKD1056.unsupported.keyword.explanation=The method name includes a keyword tha
 CWWKD1056.unsupported.keyword.useraction=Rename the repository method to remove \
  the unsupported keyword.
 
-CWWKD1057.no.args.constr.inacc=CWWKD1057E: The {0} return type of the {2} method \
- of the {3} repository interface is not valid for a repository method because the \
- {4} class lacks a public constructor without parameters.
+CWWKD1057.no.args.constr.inacc=CWWKD1057E: The {0} return type of the {1} method \
+ of the {2} repository interface is not valid for a repository method because the \
+ {3} class lacks a public constructor without parameters.
 CWWKD1057.no.args.constr.inacc.explanation=A public constructor without parameters \
  is needed to convert the result to the specified class.
 CWWKD1057.no.args.constr.inacc.useraction=Update the repository method to have a \
  return type that Jakarta Data supports or to be a subclass of Iterable \
  with a public constructor that does not have parameters.
 
-CWWKD1058.no.args.constr.err=CWWKD1058E: The {0} return type of the {2} method \
- of the {3} repository interface is not valid for a repository method because the \
- constructor of the {4} class raised an error: {5}.
+CWWKD1058.no.args.constr.err=CWWKD1058E: The {0} return type of the {1} method \
+ of the {2} repository interface is not valid for a repository method because the \
+ constructor of the {3} class raised an error: {4}.
 CWWKD1058.no.args.constr.err.explanation=The public constructor without parameters \
  failed due to an error.
-CWWKD1058.no.args.constr.err.useraction=Fix the error in the constructor, or update \
- the repository method to use a different return type.
+CWWKD1058.no.args.constr.err.useraction=Fix the error in the constructor, or \
+ update the repository method to use a different return type.
 
 CWWKD1059.prop.cast.err=CWWKD1059E: The {0} method of the {1} repository \
  interface cannot access the {2} property of the {3} entity because the \
  {4} field or method of the {5} class is incompatible with a {6} value.
-CWWKD1059.prop.cast.err.explanation=An entity property or a related property from its \
- hierarchy is not compatible with the expected type.
+CWWKD1059.prop.cast.err.explanation=An entity property or a related property from \
+ its hierarchy is not compatible with the expected type.
 CWWKD1059.prop.cast.err.useraction=Review the entity model and verify that the \
  correct types are used for each property.
 
@@ -613,8 +613,8 @@ CWWKD1061.comp.name.in.ejb.useraction=Update the Repository annotation to \
 CWWKD1062.resource.not.found=CWWKD1062E: The {0} method of the {1} repository \
  interface is unable to locate the {2} resource with the {3} filter.
 CWWKD1062.resource.not.found.explanation=The resource is not found.
-CWWKD1062.resource.not.found.useraction=Ensure that the specified resource and all other \
- resources it depends on exist and are correctly configured.
+CWWKD1062.resource.not.found.useraction=Ensure that the specified resource and all \
+ other resources it depends on exist and are correctly configured.
 
 CWWKD1063.unsupported.resource=CWWKD1063E: The {0} method of the {1} repository \
  interface cannot obtain a {2} resource because the Jakarta Persistence provider \
