@@ -557,9 +557,10 @@ CWWKD1055.unsupported.entity.prop.useraction=Update the entity property to use \
  one of the supported types.
 
 CWWKD1056.unsupported.keyword=CWWKD1056E: The {0} method of the {1} repository \
- interface has a name that includes a keyword, {2}, that is not a supported \
+ interface has a name that includes a keyword {2}, which is not a supported \
  keyword of the Jakarta Data Query by Method Name pattern.
-CWWKD1056.unsupported.keyword.explanation=The method name includes a keyword that is not recognized as part of the \
+CWWKD1056.unsupported.keyword.explanation=The method name includes a keyword \
+ that is not recognized as part of the \
  supported Jakarta Data Query by Method Name pattern.
 CWWKD1056.unsupported.keyword.useraction=Rename the repository method to remove \
  the unsupported keyword.
@@ -618,8 +619,8 @@ CWWKD1062.resource.not.found.useraction=Ensure that the specified resource and a
 
 CWWKD1063.unsupported.resource=CWWKD1063E: The {0} method of the {1} repository \
  interface cannot obtain a {2} resource because the Jakarta Persistence provider \
- does not support unwrapping as a {3} class.
-CWWKD1063.unsupported.resource.explanation=The Jakarta Persistence provider does not \
- support unwrapping the requested resource type.
+ does not support the unwrap operation returning a {3} instance.
+CWWKD1063.unsupported.resource.explanation=The Jakarta Persistence provider does \
+ not support the unwrap operation returning the specified resource type.
 CWWKD1063.unsupported.resource.useraction=Remove the unsupported resource accessor \
  method from the repository interface.
