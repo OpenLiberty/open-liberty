@@ -55,6 +55,8 @@ public interface Houses {
 
     List<House> findByGarage_door_heightOrderByGarage_door_heightDesc(int garageDoorHeight);
 
+    List<House> findByArea(int area);
+
     @Find
     House findById(@By(ID) String parcel);
 
