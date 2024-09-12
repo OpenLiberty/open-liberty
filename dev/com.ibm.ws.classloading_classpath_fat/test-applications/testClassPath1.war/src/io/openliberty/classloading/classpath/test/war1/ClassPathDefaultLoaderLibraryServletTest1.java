@@ -47,6 +47,8 @@ import io.openliberty.classloading.classpath.util.TestUtils.TEST_LOAD_RESULT;
 
 @WebServlet("/PrivateLibraryServletTest1")
 public class ClassPathDefaultLoaderLibraryServletTest1 extends FATServlet{
+    private static final long serialVersionUID = 1L;
+
     @Test
     public void testGetResource() {
         assertCommonResourceFromArchive(getClass(), TEST_EJB1);

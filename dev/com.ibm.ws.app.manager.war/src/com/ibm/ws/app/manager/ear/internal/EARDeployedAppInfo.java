@@ -358,8 +358,10 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             // was successfully gathered.
             return null;
         }
-
-        return new AppLibsInfo(libDirContainer);
+        EarManifestClassPathConsumer manifestClassPathConsumer = new EarManifestClassPathConsumer(classPathLoader);
+        AppLibsInfo result = new AppLibsInfo(libDirContainer, manifestClassPathConsumer);
+        manifestClassPathInfos.addAll(manifestClassPathConsumer.getManifestClassPaths());
+        return result;
     }
 
     /**
@@ -416,7 +418,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
      * actual application libraries.
      */
     private static class AppLibsInfo {
-        public AppLibsInfo(Container libsContainer) {
+        public AppLibsInfo(Container libsContainer, ManifestClassPathConsumer manifestClassPathConsumer) {
             this.libsContainer = libsContainer;
 
             String libsPath = libsContainer.getPath(); // Usually "lib"
@@ -460,9 +462,11 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                 useLibsInfos.add(libInfo);
 
                 try {
+                    List<ContainerInfo> manifestClassPaths = new ArrayList<>();
                     // For EAR libraries that have Class-Path keep the containers associated with the AppLibsInfo
                     // This is necessary for getLibraryClassesContainerInfo to keep returning the Class-Path references
-                    ManifestClassPathHelper.addCompleteJarEntryUrls(useLibsInfos, libEntry, libContainer, resolvedManifestIdentities);
+                    ManifestClassPathHelper.addCompleteJarEntryUrls(manifestClassPaths, libEntry, libContainer, resolvedManifestIdentities);
+                    manifestClassPathConsumer.consume(manifestClassPaths, useLibsInfos);
                     // throws UnableToAdaptException
                 } catch (UnableToAdaptException e) {
                     // FFDC
@@ -1098,14 +1102,8 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             List<ContainerInfo> containerInfos = new ArrayList<ContainerInfo>();
 
             addEJBJarContainerInfos(containerInfos);
-            if (classPathLoader == ClassPathLoader.EARLOADER) {
-                // RARs come first when using the EAR loader for Class-Path
-                addConnectorContainerInfos(containerInfos);
-                addEARLibContainerInfos(containerInfos);
-            } else {
-                addEARLibContainerInfos(containerInfos);
-                addConnectorContainerInfos(containerInfos);
-            }
+            addEARLibContainerInfos(containerInfos);
+            addConnectorContainerInfos(containerInfos);
             checkClientJarContainerInfos(containerInfos);
             manifestClassPathInfos.addTo(containerInfos);
 
@@ -1120,7 +1118,10 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
     private void addEARLibContainerInfos(List<ContainerInfo> classpathContainerInfos) {
         if (this.appLibsInfo != null) {
-            classpathContainerInfos.addAll(this.appLibsInfo.getLibsInfos());
+            this.appLibsInfo.getLibsInfos().stream(). //
+            // filter if already on the ear loader from manifestClassPathInfos
+                            filter((c) -> !manifestClassPathInfos.contains(c)). //
+                            forEach(classpathContainerInfos::add);
         }
     }
 

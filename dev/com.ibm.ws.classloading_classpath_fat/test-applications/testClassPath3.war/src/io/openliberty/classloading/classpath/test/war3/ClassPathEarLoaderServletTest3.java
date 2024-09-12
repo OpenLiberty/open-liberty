@@ -46,6 +46,8 @@ import io.openliberty.classloading.classpath.util.TestUtils.TEST_LOAD_RESULT;
 
 @WebServlet("/ClassPathEarLoaderServletTest3")
 public class ClassPathEarLoaderServletTest3 extends FATServlet{
+    private static final long serialVersionUID = 1L;
+
     @Test
     public void testGetResource() {
         assertCommonResourceFromArchive(getClass(), TEST_EJB1);
@@ -55,10 +57,10 @@ public class ClassPathEarLoaderServletTest3 extends FATServlet{
     public void testGetResources() {
         List<String> expectedOrder = Arrays.asList(TEST_EJB1, //
                                                    TEST_EJB2, //
+                                                   TEST_LIB4, //
                                                    TEST_RAR1, //
                                                    TEST_RESOURCE_ADAPTOR, //
                                                    TEST_LIB17, //
-                                                   TEST_LIB4, //
                                                    TEST_LIB6, //
                                                    TEST_LIB1, //
                                                    TEST_LIB2, //

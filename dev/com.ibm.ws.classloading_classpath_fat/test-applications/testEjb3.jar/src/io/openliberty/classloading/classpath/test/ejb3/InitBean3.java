@@ -19,8 +19,6 @@ import javax.ejb.LocalBean;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
-import io.openliberty.classloading.classpath.test.ejb2.InitBean2;
-
 
 @Singleton
 @Startup
