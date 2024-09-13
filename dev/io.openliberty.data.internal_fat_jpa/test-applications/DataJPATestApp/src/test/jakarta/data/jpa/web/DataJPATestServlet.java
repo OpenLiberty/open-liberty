@@ -2932,6 +2932,11 @@ public class DataJPATestServlet extends FATServlet {
         drivers.deleteByFullNameEndsWith(" TestOneToOne");
     }
 
+    /**
+     * Tests entity attribute names from embeddables and MappedSuperclass that
+     * can have delimiters. Includes tests for name collisions with attributes from an
+     * embeddable or superinteface.
+     */
     @Test
     public void testPersistentFieldNamesAndDelimiters() {
         apartments.removeAll();
