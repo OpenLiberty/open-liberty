@@ -460,7 +460,7 @@ public class Machine {
         if (OperatingSystem.ISERIES.compareTo(getOperatingSystem()) == 0) {
             cmd = "qsh -c " + cmd;
         }
-        return LocalProvider.executeCommand(this, cmd, parameters, workDir, envVars, timeout);
+        return LocalProvider.executeCommand(this, cmd, parameters, workDir, envVars);
     }
 
     /**
