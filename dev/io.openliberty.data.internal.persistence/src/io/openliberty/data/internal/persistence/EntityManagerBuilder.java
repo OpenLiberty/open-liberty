@@ -18,6 +18,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -292,11 +293,16 @@ public abstract class EntityManagerBuilder {
 
     /**
      * Obtains the DataSource that is used by the EntityManager.
+     * This method is used by resource accessor methods of a repository.
      *
+     * @param repoMethod    repository resource accessor method.
+     * @param repoInterface repository interface.
      * @return the DataSource that is used by the EntityManager.
-     * @throws UnsupportedOperationException if the DataSource cannot be obtained from the EntityManager.
+     * @throws UnsupportedOperationException if the DataSource cannot be obtained
+     *                                           from the EntityManager.
      */
-    public abstract DataSource getDataSource();
+    public abstract DataSource getDataSource(Method repoMethod,
+                                             Class<?> repoInterface);
 
     @FFDCIgnore(NoSuchFieldException.class)
     private static final SortedMap<String, Member> getIdClassAccessors(Class<?> idType,

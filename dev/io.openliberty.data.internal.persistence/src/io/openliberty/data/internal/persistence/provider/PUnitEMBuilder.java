@@ -12,6 +12,9 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence.provider;
 
+import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
+
+import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.concurrent.CompletionException;
 
@@ -81,7 +84,7 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
 
     @FFDCIgnore(PersistenceException.class)
     @Override
-    public DataSource getDataSource() {
+    public DataSource getDataSource(Method repoMethod, Class<?> repoInterface) {
         try {
             return emf.unwrap(DataSource.class);
         } catch (PersistenceException x) {
@@ -89,9 +92,12 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
                 EntityManager em = emf.createEntityManager();
                 return em.unwrap(DataSource.class);
             } catch (PersistenceException xx) {
-                throw new UnsupportedOperationException("DataSource and Connection resources are not available" +
-                                                        " from the EntityManagerFactory or EntityManager of the" +
-                                                        " Jakarta Persistence provider.", x); // TODO NLS
+                throw exc(UnsupportedOperationException.class,
+                          "CWWKD1063.unsupported.resource",
+                          repoMethod.getName(),
+                          repoInterface.getName(),
+                          repoMethod.getReturnType().getName(),
+                          DataSource.class.getName());
             }
         }
     }

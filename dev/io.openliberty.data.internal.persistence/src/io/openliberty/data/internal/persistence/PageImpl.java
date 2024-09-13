@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
+
 import java.util.AbstractList;
 import java.util.Iterator;
 import java.util.List;
@@ -24,7 +26,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import io.openliberty.data.internal.persistence.cdi.DataExtension;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.persistence.EntityManager;
@@ -107,25 +108,6 @@ public class PageImpl<T> implements Page<T> {
         int size = results.size();
         int max = pageRequest.size();
         return size > max ? new ResultList(max) : results;
-    }
-
-    /**
-     * Construct a RuntimeException or subclass and log the error unless the
-     * error is known to be an error on the part of the application using a
-     * repository method, such as supplying a null PageRequest.
-     *
-     * @param exceptionType RuntimeException or subclass, which must have a
-     *                          constructor that accepts the message as a single
-     *                          String argument.
-     * @param messageId     NLS message ID.
-     * @param args          message arguments.
-     * @return RuntimeException or subclass.
-     */
-    @Trivial
-    private final static <T extends RuntimeException> T exc(Class<T> exceptionType,
-                                                            String messageId,
-                                                            Object... args) {
-        return DataExtension.exc(exceptionType, messageId, args);
     }
 
     @Override
