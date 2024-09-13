@@ -20,7 +20,7 @@ import io.opentelemetry.sdk.trace.ReadableSpan;
 import junit.framework.Assert;
 
 @SuppressWarnings("serial")
-@WebServlet("/testSpanCurrent")
+@WebServlet("/userfeature")
 public class UserFeatureServlet extends FATServlet {
 
     //Copied from UserFeatureServletFilter to avoid creating a compile dependency

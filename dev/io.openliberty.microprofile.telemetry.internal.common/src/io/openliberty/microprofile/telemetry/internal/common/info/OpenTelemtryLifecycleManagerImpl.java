@@ -123,7 +123,7 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
         OpenTelemetryInfoReference oTelRef = (OpenTelemetryInfoReference) extAppInfo.getMetaData().getMetaData(slotForOpenTelemetryInfoHolder);
 
         LazyInitializer<OpenTelemetryInfoInternal> newSupplier = LazyInitializer.<OpenTelemetryInfoInternal> builder().setInitializer(curryInfoFactory(isRuntimeEnabled))
-                                                                        .setCloser(info -> info.dispose()).get();
+                                                                                .setCloser(info -> info.dispose()).get();
 
         if (oTelRef == null) {
             oTelRef = new OpenTelemetryInfoReference();
@@ -151,8 +151,9 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
         ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
         OpenTelemetryInfoReference oTelRef = (OpenTelemetryInfoReference) extAppInfo.getMetaData().getMetaData(slotForOpenTelemetryInfoHolder);
 
-        LazyInitializer<OpenTelemetryInfoInternal> newSupplier = LazyInitializer.<OpenTelemetryInfoInternal> builder().setInitializer(openTelemetryInfoFactory::createDisposedOpenTelemetryInfo)
-                                                                        .setCloser(info -> info.dispose()).get();
+        LazyInitializer<OpenTelemetryInfoInternal> newSupplier = LazyInitializer.<OpenTelemetryInfoInternal> builder()
+                                                                                .setInitializer(openTelemetryInfoFactory::createDisposedOpenTelemetryInfo)
+                                                                                .setCloser(info -> info.dispose()).get();
 
         LazyInitializer<OpenTelemetryInfoInternal> oldSupplier = oTelRef.getAndSet(newSupplier);
 
@@ -233,15 +234,12 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
         try {
             OpenTelemetryInfoReference atomicRef = (OpenTelemetryInfoReference) metaData.getMetaData(slotForOpenTelemetryInfoHolder);
             if (atomicRef == null) {
-                //If this is triggered by internal code that isn't supposed to call ApplicationStateListener.applicationStarting() don't throw an error
+                //If this is triggered by a WAB or internal code that doesn't have an associated app, and we're in app mode, return a no-op
+                //(in runtime mode we do want to have OpenTelemetry enabled for internal code, e.g., for tracing)
                 String j2EEName = metaData.getJ2EEName().toString();
-                if (j2EEName.startsWith("io.openliberty") || j2EEName.startsWith("com.ibm.ws")
-                    || j2EEName.startsWith("arquillian-liberty-support")) {
-                    Tr.info(tc, "CWMOT5100.tracing.is.disabled", j2EEName);
-                    return new DisabledOpenTelemetryInfo();
-                }
-                //If it isn't throw something nicer than an NPE.
-                throw new IllegalStateException("Attempted to create openTelemetaryInfo for application " + j2EEName + " which has not gone through ApplicationStarting");
+                Tr.info(tc, "CWMOT5100.tracing.is.disabled", j2EEName);
+                return new DisabledOpenTelemetryInfo();
+
             }
             LazyInitializer<OpenTelemetryInfoInternal> supplier = atomicRef.get();
             return supplier.get();

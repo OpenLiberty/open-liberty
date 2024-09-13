@@ -19,6 +19,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.LocalFile;
@@ -34,8 +35,10 @@ import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import componenttest.topology.utils.HttpRequest;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.userfeature.UserFeatureServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
+import junit.framework.Assert;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -45,21 +48,27 @@ public class TelemetryUserFeatureAppScopedTest extends FATServletClient {
     public static final String SERVER_NAME = "Telemetry10UserFeature";
     public static final String FEATURE_NAME = "telemetry.user.feature-1.0";
     public static final String FEATURE_JAKARTA_NAME = "telemetry.user.feature-2.0";
+    public static final String WAB_FEATURE_NAME = "telemetry.user.wab-1.0";
+    public static final String WAB_FEATURE_JAKARTA_NAME = "telemetry.user.wab-2.0";
     public static final String BUNDLE_NAME = "telemetry.user.feature";
     public static final String BUNDLE_JAKARTA_NAME = "telemetry.user.feature-jakarta";
+    public static final String WAB_BUNDLE_NAME = "telemetry.user.wab";
+    public static final String WAB_BUNDLE_JAKARTA_NAME = "telemetry.user.wab-jakarta";
     public static final String BUNDLE_PATH = "publish/bundles/";
 
     private static final String SEVER_XML_SNIPPET = "serverxmlsnippet.xml";
     private static final String JAVAX_SNIPPET = "javax/" + SEVER_XML_SNIPPET;
-    private static final String JAKARTA_SNIPPET = "jakarta/" + SEVER_XML_SNIPPET;;
+    private static final String JAKARTA_SNIPPET = "jakarta/" + SEVER_XML_SNIPPET;
+
+    private static final String USER_WAB_CONTEXT_ROOT = "telemetryuserwab";
 
     @TestServlet(contextRoot = APP_NAME, servlet = UserFeatureServlet.class)
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    //App Scope only exists on MpTel20 and later
+    //Telemetry 20 because we're only testing runtime mode
     @ClassRule
-    public static RepeatTests r = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
+    public static RepeatTests r = TelemetryActions.telemetry20Repeats(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -67,40 +76,72 @@ public class TelemetryUserFeatureAppScopedTest extends FATServletClient {
         System.out.println("Install the user feature bundles...");
 
         if (JakartaEEAction.isEE9OrLaterActive()) {
-            String fullPath = BUNDLE_PATH + BUNDLE_JAKARTA_NAME;
-            LocalFile bundleFile = new LocalFile(fullPath);
-            if (bundleFile.exists()) {
-                bundleFile.delete();
-            }
-            JakartaEEAction.transformApp(Paths.get(BUNDLE_PATH + BUNDLE_NAME + ".jar"), Paths.get(fullPath + ".jar"));
-            server.installUserBundle(BUNDLE_JAKARTA_NAME);
+            installBundle(BUNDLE_JAKARTA_NAME, BUNDLE_NAME);
+            installBundle(WAB_BUNDLE_JAKARTA_NAME, WAB_BUNDLE_NAME);
+
             server.installUserFeature(FEATURE_JAKARTA_NAME);
+            server.installUserFeature(WAB_FEATURE_JAKARTA_NAME);
 
             //Rather than force all the other tests to be aware of our user feature so a feature replacement action
             //can modify it. We'll use an includes in the server.xml and slide in a snippet with the right version
             server.copyFileToLibertyServerRoot(JAKARTA_SNIPPET);
         } else {
-            String fullPath = BUNDLE_PATH + BUNDLE_NAME;
-            LocalFile bundleFile = new LocalFile(fullPath);
-            if (bundleFile.exists()) {
-                bundleFile.delete();
-            }
-            server.installUserBundle(BUNDLE_NAME);
+            installBundle(BUNDLE_NAME, BUNDLE_NAME);
+            installBundle(WAB_BUNDLE_NAME, WAB_BUNDLE_NAME);
+
             server.installUserFeature(FEATURE_NAME);
+            server.installUserFeature(WAB_FEATURE_NAME);
 
             server.copyFileToLibertyServerRoot(JAVAX_SNIPPET);
         }
 
+        // Enable otel sdk here. Use server.env so we test an app instance
         PropertiesAsset appConfig = new PropertiesAsset()
                         .addProperty("otel.sdk.disabled", "false");
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addClass(UserFeatureServlet.class)
+                        .addPackage(UserFeatureServlet.class.getPackage())
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
 
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
 
+        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
+
         server.startServer();
+    }
+
+    private static void installBundle(String bundleName, String bundleNameWithoutJakarta) throws Exception {
+        String fullPath = BUNDLE_PATH + bundleName;
+        LocalFile bundleFile = new LocalFile(fullPath);
+        if (bundleFile.exists()) {
+            bundleFile.delete();
+        }
+
+        if (JakartaEEAction.isEE9OrLaterActive()) {
+            JakartaEEAction.transformApp(Paths.get(BUNDLE_PATH + bundleNameWithoutJakarta + ".jar"), Paths.get(fullPath + ".jar"));
+        }
+
+        server.installUserBundle(bundleName);
+    }
+
+    @Test
+    public void testTelemetryEnabledInWAB() throws Exception {
+        String wabOutput = new HttpRequest(server, "/" + USER_WAB_CONTEXT_ROOT + "/servletInsideWab")
+                        .expectCode(200)
+                        .run(String.class);
+
+        //False on an app instance since there will be no OpenTelemetry for a Liberty feature
+        Assert.assertEquals("telemetry enabled: false", wabOutput.trim());
+    }
+
+    @Test
+    public void testTelemetryFilterInApp() throws Exception {
+        String appOutput = new HttpRequest(server, "/" + APP_NAME + "/servletInsideApp")
+                        .expectCode(200)
+                        .run(String.class);
+
+        //But true for the app's servlet as the code in the user feature will
+        //run in the context of the app
+        Assert.assertEquals("telemetry enabled: true", appOutput.trim());
     }
 
     @AfterClass
@@ -111,10 +152,15 @@ public class TelemetryUserFeatureAppScopedTest extends FATServletClient {
         if (JakartaEEAction.isEE9OrLaterActive()) {
             server.uninstallUserBundle(BUNDLE_JAKARTA_NAME);
             server.uninstallUserFeature(FEATURE_JAKARTA_NAME);
+            server.uninstallUserBundle(WAB_BUNDLE_JAKARTA_NAME);
+            server.uninstallUserFeature(WAB_FEATURE_JAKARTA_NAME);
         } else {
             server.uninstallUserBundle(BUNDLE_NAME);
             server.uninstallUserFeature(FEATURE_NAME);
+            server.uninstallUserBundle(WAB_BUNDLE_NAME);
+            server.uninstallUserFeature(WAB_FEATURE_NAME);
         }
         server.deleteFileFromLibertyServerRoot(SEVER_XML_SNIPPET);
     }
+
 }

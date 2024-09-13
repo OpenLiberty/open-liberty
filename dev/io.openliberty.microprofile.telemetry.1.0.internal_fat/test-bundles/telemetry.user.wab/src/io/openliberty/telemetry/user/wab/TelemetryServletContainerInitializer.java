@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.telemetry.user.feature;
+package io.openliberty.telemetry.user.wab;
 
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
@@ -30,9 +30,10 @@ public class TelemetryServletContainerInitializer implements ServletContainerIni
     @Override
     public void onStartup(Set<Class<?>> c, ServletContext sc) throws ServletException {
         System.out.println("UserFeatureTest: Enable UserFeatureServletFilter");
-        FilterRegistration.Dynamic filterRegistration = sc.addFilter("io.openliberty.telemetry.user.feature.UserFeatureServletFilter",
-                                                                     UserFeatureServletFilter.class);
-        filterRegistration.addMappingForUrlPatterns(null, true, "/userfeature");
+        FilterRegistration.Dynamic filterRegistration = sc.addFilter("io.openliberty.telemetry.user.wab.WabFeatureServletFilter",
+                                                                     WabFeatureServletFilter.class);
+        filterRegistration.addMappingForUrlPatterns(null, true, "/servletInsideWab");
+        filterRegistration.addMappingForUrlPatterns(null, true, "/servletInsideApp");
         filterRegistration.setAsyncSupported(true);
     }
 
