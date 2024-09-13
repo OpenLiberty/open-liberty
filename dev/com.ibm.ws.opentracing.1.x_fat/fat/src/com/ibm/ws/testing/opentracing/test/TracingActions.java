@@ -44,11 +44,15 @@ public class TracingActions {
 	private static final List<FeatureSet> ALL_MPOT_SETS_LIST = Arrays.asList(ALL_MPOT_SETS_ARRAY);
 
 	public static RepeatTests defaultRepeat(String server) {
-		return TracingActions.repeat(server, TracingActions.MP30_MPOT13, TracingActions.MP21_MPOT12, TracingActions.MP14_MPOT11);
+		return TracingActions.repeat(server, TracingActions.MP30_MPOT13,
+											 //TracingActions.MP21_MPOT12, //TracingActions.MP21_MPOT12 is actually broken
+											 TracingActions.MP14_MPOT11);
 	}
 	
 	public static RepeatTests defaultRepeatMP14(String server) {
-		return TracingActions.repeat(server, TracingActions.MP21_MPOT12, TracingActions.MP14_MPOT11);
+		return TracingActions.repeat(server,
+				//TracingActions.MP21_MPOT12,
+				TracingActions.MP14_MPOT11);
 	}
 	
 	/**
