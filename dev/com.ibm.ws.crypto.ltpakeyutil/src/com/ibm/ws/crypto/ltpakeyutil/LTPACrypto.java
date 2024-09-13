@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,7 @@ import com.ibm.ws.crypto.common.FipsUtils;
 
 final class LTPACrypto {
 
-	private static final boolean isFIPSEnabled = FipsUtils.isFIPSEnabled();
+	private static final boolean isFIPSEnabled = LTPAKeyUtil.isFIPSEnabled();
 
 	private static final TraceComponent tc = Tr.register(LTPACrypto.class);
 	private static final String IBMJCE_NAME = "IBMJCE";
@@ -1060,7 +1060,7 @@ final class LTPACrypto {
 	@Trivial
 	static final byte[] generate3DESKey() {
 		byte[] rndSeed = null;
-		int len = 24; // 3DES
+		int len = (isFIPSEnabled) ? 32 : 24;
 		rndSeed = new byte[len];
 		random(rndSeed, 0, len);
 		return rndSeed;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2011 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ import com.ibm.ws.crypto.common.FipsUtils;
 
 final class LTPADigSignature {
 
-	static boolean isFipsEnabled = FipsUtils.isFIPSEnabled();
+	static boolean isFipsEnabled = LTPAKeyUtil.isFIPSEnabled();
 	static int keySize = (isFipsEnabled ? 256 : 128);
 
 	static byte[][] testRawPubKey = null;

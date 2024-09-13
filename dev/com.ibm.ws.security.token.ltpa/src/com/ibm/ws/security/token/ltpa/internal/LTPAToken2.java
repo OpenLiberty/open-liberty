@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2023 IBM Corporation and others.
+ * Copyright (c) 2004, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -42,7 +42,7 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
  */
 public class LTPAToken2 implements Token, Serializable {
 
-    private static final boolean isFIPSEnabled = FipsUtils.isFIPSEnabled();
+    private static final boolean isFIPSEnabled = LTPAKeyUtil.isFIPSEnabled();
 
     private static final TraceComponent tc = Tr.register(LTPAToken2.class);
 

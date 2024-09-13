@@ -22,7 +22,7 @@ import com.ibm.ws.crypto.common.FipsUtils;
  */
 public class KeyEncryptor {
 
-    private static final boolean isFIPSEnabled = FipsUtils.isFIPSEnabled();
+    private static final boolean isFIPSEnabled = LTPAKeyUtil.isFIPSEnabled();
     private static final int size = (isFIPSEnabled ? 32 : 24);
     private static final String MESSAGE_DIGEST_ALGORITHM = (isFIPSEnabled ? "SHA-256" : "SHA");
     private static final String CIPHER = (isFIPSEnabled ? "AES/GCM/NoPadding" : "DESede/ECB/PKCS5Padding");

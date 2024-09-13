@@ -35,7 +35,10 @@ public final class LTPAKeyUtil {
     public static boolean openJCEPlusProviderChecked = false;
     public static boolean openJCEPlusFIPSProviderChecked = false;
 
-	public static boolean isFIPSEnabled = FipsUtils.isFIPSEnabled();
+	public static boolean unitTest = false;
+	public static boolean isFIPSEnabled = false;
+	public static boolean fipsChecked = false;
+	public static String FIPSLevel = getFipsLevel();
 
 	public static boolean javaVersionChecked = false;
 	public static boolean isJava11orHigher = false;
@@ -169,6 +172,45 @@ public final class LTPAKeyUtil {
 			return true;
 		}
 	}
+
+    static String getFipsLevel() {
+        String fipsLevel = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                String propertyValue = System.getProperty("com.ibm.fips.mode");
+                return (propertyValue == null) ? "disabled" : propertyValue.trim().toLowerCase();
+            }
+        });
+        return fipsLevel;
+    }
+
+    public static boolean isFips140_3Enabled() {
+        //TODO remove beta check
+        if (unitTest) {
+            return "140-3".equals(FIPSLevel);
+        } else {
+            return isRunningBetaMode() && "140-3".equals(FIPSLevel);
+        }
+    }
+
+    public static boolean isFips140_2Enabled() {
+        //TODO remove beta check
+        if (unitTest) {
+            return "140-2".equals(FIPSLevel);
+        } else {
+            return isRunningBetaMode() && "140-2".equals(FIPSLevel);
+        }
+    }
+
+    public static boolean isFIPSEnabled() {
+		if (fipsChecked) {
+			return isFIPSEnabled;
+		} else {
+			isFIPSEnabled = isFips140_2Enabled() || isFips140_3Enabled();
+            fipsChecked = true;
+            return isFIPSEnabled;
+		}
+    }
 
 	private static boolean isJava11orHigher() {
 		if (javaVersionChecked) {

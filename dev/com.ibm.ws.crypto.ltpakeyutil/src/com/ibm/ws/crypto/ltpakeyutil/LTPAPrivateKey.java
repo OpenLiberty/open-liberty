@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2011 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,7 @@ import com.ibm.ws.crypto.common.FipsUtils;
  */
 public final class LTPAPrivateKey implements PrivateKey {
 
-    private static final boolean isFIPSEnabled = FipsUtils.isFIPSEnabled();
+    private static final boolean isFIPSEnabled = LTPAKeyUtil.isFIPSEnabled();
     private static final long serialVersionUID = -2566137894245694562L;
     private static final int PRIVATE_EXPONENT = 1;
     private static final int PUBLIC_EXPONENT = 2;

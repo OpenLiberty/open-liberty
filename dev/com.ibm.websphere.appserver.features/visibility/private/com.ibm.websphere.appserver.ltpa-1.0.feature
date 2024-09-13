@@ -8,6 +8,7 @@ WLP-DisableAllFeatures-OnConflict: false
  com.ibm.ws.security.credentials.ssotoken, \
  com.ibm.ws.security.token.ltpa, \
  com.ibm.ws.crypto.ltpakeyutil, \
- com.ibm.ws.security.token.s4u2
+ com.ibm.ws.security.token.s4u2, \
+ com.ibm.ws.crypto.common
 kind=ga
 edition=core
