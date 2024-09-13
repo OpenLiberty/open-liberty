@@ -288,6 +288,10 @@ public abstract class EntityManagerBuilder {
                     if (trace & tc.isDebugEnabled())
                         Tr.debug(tc, "Unexpected exception caught while collecting entity information. The entity information will complete exceptionally", e);
                     collectionException = e;
+                    // TODO compute the userEntityClass earlier and completeExceptionally here.
+                    // Then move the EntityInfo creation and successful completion to before the catch.
+                    // That will also cover the possibility of EntityInfo constructor failing,
+                    // which can happen when it doesn't validate.
                 }
 
                 Class<?> jpaEntityClass = entityType.getJavaType();
