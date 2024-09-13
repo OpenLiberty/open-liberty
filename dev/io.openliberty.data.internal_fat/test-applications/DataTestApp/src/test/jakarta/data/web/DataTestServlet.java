@@ -3756,6 +3756,11 @@ public class DataTestServlet extends FATServlet {
         assertEquals(19L, nine.numberId);
     }
 
+    /**
+     * Tests entity attribute names from embeddables and MappedSuperclass that
+     * can have delimiters. Includes tests for name collisions with attributes from an
+     * embeddable or superinteface. This test uses unannotated entities.
+     */
     @Test
     public void testPersistentFieldNamesAndDelimiters() {
         apartments.removeAll();
