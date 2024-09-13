@@ -552,8 +552,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         try {
-            NettyRequestMessage.verifyRequest(isc.getRequest());
-
+            ((NettyRequestMessage)isc.getRequest()).verifyRequest();
         } catch (IllegalArgumentException iae) {
             //no FFDC required
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

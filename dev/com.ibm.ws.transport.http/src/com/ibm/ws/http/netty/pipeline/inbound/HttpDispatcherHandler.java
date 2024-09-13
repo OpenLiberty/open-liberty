@@ -9,18 +9,31 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline.inbound;
 
+import java.net.InetSocketAddress;
 import java.util.Objects;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
+import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
+import com.ibm.wsspi.http.channel.error.HttpError;
+import com.ibm.wsspi.http.channel.error.HttpErrorPageProvider;
+import com.ibm.wsspi.http.channel.error.HttpErrorPageService;
+import com.ibm.wsspi.http.channel.values.StatusCodes;
 
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http2.Http2Connection;
 import io.netty.handler.codec.http2.Http2Exception.StreamException;
 import io.netty.handler.codec.http2.HttpConversionUtil;
@@ -32,14 +45,18 @@ import io.netty.util.ReferenceCountUtil;
  */
 public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
+    private static final TraceComponent tc = Tr.register(HttpDispatcherHandler.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
+
     HttpChannelConfig config;
     private ChannelHandlerContext context;
+    private final DefaultFullHttpResponse errorResponse;
     // private HttpDispatcherLink link;
 
     public HttpDispatcherHandler(HttpChannelConfig config) {
         super(false);
         Objects.requireNonNull(config);
         this.config = config;
+        errorResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST);
     }
 
     @Override
@@ -60,6 +77,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
         if (request.decoderResult().isFinished() && request.decoderResult().isSuccess()) {
 
             FullHttpRequest msg = ReferenceCountUtil.retain(request, 1);
+//            FullHttpRequest msg = request;
             HttpDispatcher.getExecutorService().execute(new Runnable() {
                 @Override
                 public void run() {
@@ -72,7 +90,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
                             context.close();
                         }
                     } finally {
-                        ReferenceCountUtil.release(msg);
+                        System.out.println("Releasing request! " + request + " with value: " + ReferenceCountUtil.release(msg));
+//                        ReferenceCountUtil.release(msg);
                     }
                 }
             });
@@ -96,8 +115,73 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
             Http2Connection connection = handler.connection();
             connection.stream(c.streamId()).close();
             return;
+        } else if (cause instanceof IllegalArgumentException) {
+            FFDCFilter.processException(cause, HttpDispatcherHandler.class.getName() + ".exceptionCaught(ChannelHandlerContext, Throwable)", "1", context);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "exceptionCaught encountered an IllegalArgumentException : " + cause);
+            }
+            sendErrorMessage(cause);
+            return;
         }
         context.close();
+    }
+
+    private void sendErrorMessage(Throwable cause) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Sending a 400 for throwable [" + cause + "]");
+        }
+        System.out.println("Sending a 400 for throwable: " + cause);
+        cause.printStackTrace();
+        // TODO Need a way to check if headers were already sent or not before sending an entire response
+        loadErrorPage(StatusCodes.BAD_REQUEST.getHttpError());
+        this.context.writeAndFlush(errorResponse);
+    }
+
+    private void loadErrorPage(HttpError error) {
+        System.out.println("Loading error page for: " + error);
+        errorResponse.setStatus(HttpResponseStatus.valueOf(error.getErrorCode()));
+        WsByteBuffer[] body = error.getErrorBody();
+        if (null != body) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HttpError returned body of length=" + body.length);
+            }
+            System.out.println(": " + error);
+            errorResponse.replace(Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(body)));
+            return;
+        }
+        HttpErrorPageService eps = (HttpErrorPageService) HttpDispatcher.getFramework().lookupService(HttpErrorPageService.class);
+        if (null == eps) {
+            return;
+        }
+
+        InetSocketAddress local = (InetSocketAddress) context.channel().localAddress();
+        InetSocketAddress remote = (InetSocketAddress) context.channel().remoteAddress();
+        // found the error page service, load the pieces we need and then
+        // query for any configured body
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Querying service for port=" + local.getPort());
+        }
+        HttpErrorPageProvider provider = eps.access(local.getPort());
+        if (null != provider) {
+            String host = local.getAddress().getHostName();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Querying provider for host=" + host);
+            }
+            try {
+                body = provider.accessPage(host, local.getPort(), null, null);
+            } catch (Throwable t) {
+//                FFDCFilter.processException(t, getClass().getName() + ".loadErrorBody", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Exception while calling into provider, t=" + t);
+                }
+            }
+            if (null != body) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Received body of length=" + body.length);
+                }
+            }
+        }
+        return;
     }
 
     public void newRequest(ChannelHandlerContext context, FullHttpRequest request) {
@@ -113,12 +197,12 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
 
         }
 
-        context.channel().closeFuture().addListener(new ChannelFutureListener() {
-
-            @Override
-            public void operationComplete(ChannelFuture arg0) throws Exception {
-            }
-        });
+//        context.channel().closeFuture().addListener(new ChannelFutureListener() {
+//
+//            @Override
+//            public void operationComplete(ChannelFuture arg0) throws Exception {
+//            }
+//        });
         link.init(context, request, config);
         link.ready();
     }

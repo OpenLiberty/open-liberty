@@ -35,6 +35,7 @@ import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http2.GrpcServletServices;
+import com.ibm.wsspi.genericbnf.BNFHeaders;
 import com.ibm.wsspi.genericbnf.HeaderStorage;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedMethodException;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedSchemeException;
@@ -87,11 +88,29 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     private ChannelHandlerContext nettyContext;
 
+    /** Value used when a search target is not present */
+    private static final int NOT_PRESENT = -1;
+    /** Value used before a search target has been tested */
+    private static final int NOT_TESTED = -2;
+
+    /** Port value in the request URL (if present) */
+    private transient int iUrlPort = HeaderStorage.NOTSET;
+    /** Port value parsed from Host header */
+    private transient int iHdrPort = NOT_TESTED;
+
     /** Default URI is just a slash */
     private static final byte[] SLASH = { '/' };
+    /** Static representation of a left bracket */
+    private static final byte LEFT_BRACKET = '[';
+    /** Static representation of a right bracket */
+    private static final byte RIGHT_BRACKET = ']';
 
     /** Request-Resource as a byte[] */
     private final byte[] myURIBytes = SLASH;
+    /** Host string in the request URL (if present) */
+    private transient String sUrlHost = null;
+    /** Host string parsed from Host header */
+    private transient String sHdrHost = null;
 
     public NettyRequestMessage(FullHttpRequest request, HttpInboundServiceContext isc, ChannelHandlerContext nettyContext) {
         init(request, isc, nettyContext);
@@ -124,12 +143,56 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     /**
      *
      */
-    public static void verifyRequest(HttpRequestMessage message) {
+    public void verifyRequest() {
         // TODO Add check for verifying request integrity
         // Method check possibly handled by Netty. Need to verify
         // Path check need to add some for ourselves
-        if (!message.getMethod().equalsIgnoreCase(HttpMethod.CONNECT.toString()))
-            message.setRequestURI(message.getRequestURI());
+        if (!getMethod().equalsIgnoreCase(HttpMethod.CONNECT.toString())) {
+            setRequestURI(getRequestURI());
+            // Additional verification for url host
+            String host = request.uri();
+            int start = 0;
+            // We should be looking at alpha chars and the scheme
+            if (isAlpha(host.charAt(0))) {
+                int colonIndex = host.indexOf(BNFHeaders.COLON);
+                if (colonIndex == -1 || SchemeValues.match(host, 0, colonIndex) == null) {
+                    // Throw exception here
+                    throw new IllegalArgumentException("Invalid scheme in URL: " + host);
+                }
+                // scheme should be followed by "://"
+                if ((colonIndex + 2) >= host.length() || ('/' != host.charAt(colonIndex + 1) || '/' != host.charAt(colonIndex + 2))) {
+                    throw new IllegalArgumentException("Invalid net_path: " + host);
+                }
+                start = colonIndex + 3;
+            }
+            // starts with "//". Only parse the authority if we are in a
+            // strict compliance setting, otherwise assume anything with a
+            // leading slash is just the URI
+            else if ('/' == host.charAt(0) && '/' == host.charAt(1) && getServiceContext().getHttpConfig().isStrictURLFormat()) {
+                start = 2;
+            } else {
+                return;
+            }
+            // authority is [userinfo@] host [:port] "/URI"
+            if (start >= host.length()) {
+                // nothing after the "//" which is invalid
+                throw new IllegalArgumentException("Invalid authority: " + host);
+            }
+            int i = start;
+            int host_start = start;
+            int slash_start = host.length();
+            for (; i < host.length(); i++) {
+                // find either a "@" or "/"
+                if ('@' == host.charAt(i)) {
+                    // Note: we're just cutting off the userinfo section for now
+                    host_start = i + 1;
+                } else if ('/' == host.charAt(i)) {
+                    slash_start = i;
+                    break;
+                }
+            }
+            parseURLHost(host, start, slash_start);
+        }
         // Need to check if Scheme is also verified by Netty coded or add that ourselves
         // Probably need to add check of authority ourselves as well
     }
@@ -314,20 +377,26 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     }
 
     @Override
-    @FFDCIgnore({ URISyntaxException.class })
+    @FFDCIgnore({ URISyntaxException.class, IllegalArgumentException.class })
     public String getRequestURI() {
         if (getMethod().equalsIgnoreCase(HttpMethod.CONNECT.toString())) {
             return GenericUtils.getEnglishString(SLASH);
         }
         try {
-            //URI requestUri = new URL(request.uri()).toURI();
             URI requestUri = new URI(request.uri());
             // If it works it means we have an absolute URI and not a path
             return requestUri.getRawPath();
-            //   } catch (MalformedURLException e) {
-            //  return query.path();
         } catch (URISyntaxException e) {
-            return query.path();
+            try {
+                return query.path();
+            } catch (IllegalArgumentException e2) {
+                int queryIndex = request.uri().indexOf('?');
+                if (queryIndex == -1)
+                    return request.uri();
+                return request.uri().substring(0, queryIndex);
+            }
+        } catch (Exception e2) {
+            return request.uri();
         }
     }
 
@@ -447,6 +516,97 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         }
     }
 
+    /**
+     * Parse out the host and possible port from the input bytes. The bytes in
+     * the range specified by the input could look like this:
+     * > hostname
+     * > hostname:port
+     * > IPv4Address
+     * > IPv4Address:port
+     * > [IPv6Address]
+     * > [IPv6Address]:port
+     * <p>
+     * Anything else will cause an IllegalArgumentException to be thrown.
+     *
+     * @param url
+     * @param start
+     * @param end
+     * @throws IllegalArgumentException
+     */
+    private void parseURLHost(String url, int start, int end) {
+        // save the host:port now, could be hostname, hostname:port, IP,
+        // IP:port, or [IPv6]:port
+        int length = end - start;
+        if (0 >= length) {
+            throw new IllegalArgumentException("Missing host/port");
+        }
+        int name_start = start;
+        int name_end = end;
+        int port_start = -1;
+        int port_end = -1;
+        if (LEFT_BRACKET != url.charAt(name_start)) {
+            // hostname plus optional port if colon is found
+            int colon_index = url.indexOf(BNFHeaders.COLON, name_start);
+            if (-1 != colon_index && colon_index <= end) {
+                name_end = colon_index;
+                port_start = colon_index + 1;
+                port_end = end;
+            }
+        } else {
+            // IPV6 IP and port
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "IPV6 host in the URL");
+            }
+            // find the right bracket marking the end of the IPV6 IP
+            // name_start++; // skip past the bracket
+            int index = url.indexOf(RIGHT_BRACKET, name_start);
+            if (-1 != index && index <= end) {
+                // save the ip, then check for port
+                // Note: reverse these 2 lines if we want to strip []s off
+                index++;
+                name_end = index;
+                if (index < end && BNFHeaders.COLON == url.charAt(index)) {
+                    port_start = index + 1;
+                    port_end = end;
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "No end to the IPV6 IP");
+                }
+                throw new IllegalArgumentException("Invalid IPV6 IP");
+            }
+        }
+        // save the hostname information
+        length = name_end - name_start;
+        if (0 >= length) {
+            throw new IllegalArgumentException("Hostname not present");
+        }
+        this.sUrlHost = url.substring(name_start, name_end);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Found URL host: " + this.sUrlHost);
+        }
+        // save the port information
+        if (-1 != port_start && port_end > port_start) {
+            length = port_end - port_start;
+            this.iUrlPort = GenericUtils.asIntValue(url.getBytes(), port_start, length);
+        } else {
+            // PK06407
+            // if the port was not in the URL but the host was, then default the
+            // virtual host to match the scheme
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Defaulting URL port to match scheme: " + getScheme());
+            }
+            if (SchemeValues.HTTPS.equals(getSchemeValue())) {
+                this.iUrlPort = 443;
+            } else {
+                this.iUrlPort = 80;
+            }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Found URL port of " + this.iUrlPort);
+        }
+    }
+
     @Override
     public String getURLHost() {
         return context.getLocalAddr().getHostName();
@@ -459,20 +619,117 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public String getVirtualHost() {
-
+        if (Objects.nonNull(this.sUrlHost))
+            return this.sUrlHost;
         String host = headers.get(HttpHeaderKeys.HDR_HOST.getName());
-        if (Objects.nonNull(host) && host.contains(":")) {
-            host = host.substring(0, host.indexOf(":"));
-
+        if (Objects.isNull(host) || host.length() <= 0) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getVirtualHost: No host header: [" + host + "]");
+            }
+            return null;
+//            host = host.substring(0, host.indexOf(":"));
+        }
+        int index = -1;
+        if (LEFT_BRACKET == host.charAt(0)) {
+            // IPv6 IP
+            index = host.indexOf(RIGHT_BRACKET);
+            if (-1 == index) {
+                // invalid IP
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "getVirtualHost: Invalid IPv6 IP, missing right bracket");
+                }
+                return null;
+            }
+            index++; // keep the right bracket
+        } else {
+            index = host.indexOf(BNFHeaders.COLON);
+        }
+        if (-1 != index) {
+            host = host.substring(0, index);
+        }
+        // PK14634 - cache the parsed host
+        this.sHdrHost = host;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getVirtualHost: " + host);
         }
 
         return Objects.isNull(host) ? getURLHost() : host;
     }
 
+    /**
+     * Check whether the input byte is an alphabetic character.
+     *
+     * @param b
+     * @return boolean
+     */
+    private static boolean isAlpha(char b) {
+        if ('a' <= b && 'z' >= b) {
+            return true;
+        }
+        return ('A' <= b && 'Z' >= b);
+    }
+
     @Override
     public int getVirtualPort() {
-        // TODO Missing proper implementation
-        return context.getLocalPort();
+        if (HeaderStorage.NOTSET != this.iUrlPort) {
+            // use the port from the parsed URL
+            return this.iUrlPort;
+        }
+        if (NOT_PRESENT <= this.iHdrPort) {
+            // already searched the header value and either found it or not,
+            // either way, return what we saved
+            return this.iHdrPort;
+        }
+        String host = headers.get(HttpHeaderKeys.HDR_HOST.getName());
+        if (Objects.isNull(host) || host.length() == 0) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getVirtualPort: No/empty host header");
+            }
+            return -1;
+        }
+        // default to not_present now
+        this.iHdrPort = NOT_PRESENT;
+        int start = -1;
+        int end = host.length();
+        if (LEFT_BRACKET == host.charAt(0)) {
+            start = host.indexOf(RIGHT_BRACKET);
+            if (-1 == start) {
+                // invalid IP
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "getVirtualPort: Invalid IPV6 ip in host header");
+                }
+                return -1;
+            }
+            start++; // skip past the bracket
+        } else {
+            // everything but an IPV6 IP
+            start = host.indexOf(BNFHeaders.COLON);
+        }
+        if (-1 == start || host.length() <= start || BNFHeaders.COLON != host.charAt(start)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getVirtualPort: No port in host header");
+            }
+            return -1;
+        }
+        start++;
+        if (0 >= end - start) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getVirtualPort: No port after colon");
+            }
+            return -1;
+        }
+        try {
+            // PK14634 - cache the parsed port
+            this.iHdrPort = Integer.parseInt(host.substring(start, end));
+        } catch (NumberFormatException nfe) {
+            // no FFDC required
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getVirtualPort: Invalid port value: " + host);
+            }
+            return -1;
+        }
+
+        return this.iHdrPort;
     }
 
     @Override
