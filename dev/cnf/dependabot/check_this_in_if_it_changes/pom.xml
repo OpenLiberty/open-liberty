@@ -3253,6 +3253,11 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
+      <artifactId>org.eclipse.persistence.core</artifactId>
+      <version>5.0.0-B03</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
       <version>2.7.15</version>
     </dependency>
@@ -3265,6 +3270,11 @@
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
       <version>4.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
+      <version>5.0.0-B03</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3283,6 +3293,11 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
+      <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
+      <version>5.0.0-B03</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa</artifactId>
       <version>2.7.15</version>
     </dependency>
@@ -3295,11 +3310,21 @@
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa</artifactId>
       <version>4.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>org.eclipse.persistence.jpa</artifactId>
+      <version>5.0.0-B03</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.json</artifactId>
       <version>4.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>org.eclipse.persistence.json</artifactId>
+      <version>5.0.0-B03</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.platform</groupId>
