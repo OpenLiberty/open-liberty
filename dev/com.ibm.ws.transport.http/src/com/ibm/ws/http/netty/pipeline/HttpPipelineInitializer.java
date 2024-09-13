@@ -141,17 +141,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         SslContext context = getSslContext();
         SSLEngine engine = context.newEngine(pipeline.channel().alloc());
 
-        //  System.out.println("SSLEngine created: " + engine);
-        // System.out.println("SSLEngine protocols: " + String.join(", ", engine.getEnabledProtocols()));
-        // System.out.println("SSLEngine cipher suites: " + String.join(", ", engine.getEnabledCipherSuites()));
-        // System.out.println("SSLEngine use client mode: " + engine.getUseClientMode());
-        // System.out.println("SSLEngine need client auth: " + engine.getNeedClientAuth());
-        // System.out.println("SSLEngine want client auth: " + engine.getWantClientAuth());
-
-        // engine.setUseClientMode(false);
-        // engine.setNeedClientAuth(false);
-        // engine.setWantClientAuth(false);
-
         pipeline.addFirst(HTTP_SSL_HANDLER_NAME, new LibertySslHandler(engine, httpConfig));
         addPreHttpCodecHandlers(pipeline);
         pipeline.addLast(HTTP_ALPN_HANDLER_NAME, new LibertyNettyALPNHandler(httpConfig));
@@ -165,17 +154,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     private void setupHttpsPipeline(ChannelPipeline pipeline) throws NettyException {
         SslContext context = getSslContext();
         SSLEngine engine = context.newEngine(pipeline.channel().alloc());
-
-        //  System.out.println("SSLEngine created: " + engine);
-        // System.out.println("SSLEngine protocols: " + String.join(", ", engine.getEnabledProtocols()));
-        // System.out.println("SSLEngine cipher suites: " + String.join(", ", engine.getEnabledCipherSuites()));
-        // System.out.println("SSLEngine use client mode: " + engine.getUseClientMode());
-        // System.out.println("SSLEngine need client auth: " + engine.getNeedClientAuth());
-        // System.out.println("SSLEngine want client auth: " + engine.getWantClientAuth());
-
-        // engine.setUseClientMode(false);
-        // engine.setNeedClientAuth(false);
-        // engine.setWantClientAuth(false);
 
         pipeline.addFirst(HTTP_SSL_HANDLER_NAME, new LibertySslHandler(engine, httpConfig));
         pipeline.channel().attr(NettyHttpConstants.IS_SECURE).set(Boolean.TRUE);
@@ -191,25 +169,12 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         String host = ep.getHost();
         String port = Integer.toString(ep.getPort());
 
-        // Log SSL configuration details
-            // System.out.println("SSL Configuration:");
-            // System.out.println("Host: " + host);
-            // System.out.println("Port: " + port);
-            // System.out.println("Is HTTP/2 enabled: " + chain.isHttp2Enabled());
-
         SslContext context = chain.isHttp2Enabled() ? 
             tlsProvider.getInboundALPNSSLContext(configOptions.get(ConfigElement.SSL_OPTIONS), host, port)
             : tlsProvider.getInboundSSLContext(configOptions.get(ConfigElement.SSL_OPTIONS), host, port);
         if (context == null) {
             throw new NettyException("Failed to create SSL context for endpoint: " + ep.getHost() + ":" + ep.getPort());
         }
-
-        // Log SslContext details
-            // System.out.println("SslContext created: " + context);
-            // System.out.println("Cipher suites: " + String.join(", ", context.cipherSuites()));
-
-   
-
 
         return context;
     }

@@ -16,7 +16,6 @@ package com.ibm.ws.http.channel.internal.values;
 
 import java.util.Iterator;
 
-import com.ibm.ws.http.netty.MSP;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.HttpResponseMessage;
@@ -46,8 +45,6 @@ public class AccessLogRequestHeaderValue extends AccessLogData {
         if (headerName != null) {
             // Some headers are allowed to have multiples such as X-Forwarded-For, get them all
             int count = request.getNumberOfHeaderInstances(headerName);
-
-            MSP.log("%i header get header [" + headerName + "] count is: " + count);
 
             if (0 == count) {
                 accessLogEntry.append("-");

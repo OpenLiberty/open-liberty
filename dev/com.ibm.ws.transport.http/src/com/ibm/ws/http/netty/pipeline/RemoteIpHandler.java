@@ -18,7 +18,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
-import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyHeaderUtils;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
@@ -70,7 +69,6 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
         Objects.requireNonNull(httpConfig);
         proxies = httpConfig.getForwardedProxiesRegex();
         useInAccessLog = httpConfig.useForwardingHeadersInAccessLog();
-        MSP.log("Is accessLog started: " + httpConfig.isAccessLoggingEnabled());
         noErrors = Boolean.TRUE;
     }
 
@@ -105,8 +103,7 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
 
             Tr.debug(tc, "channelRead0", this);
 
-        } else
-            System.out.println("Errors were found with remote ip!");
+        } 
 
         context.fireChannelRead(request);
 
@@ -117,7 +114,6 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
      * will not be set when the error flag is set.
      */
     private void setErrorState() {
-        MSP.log("error state set");
         this.forwardedBy = null;
         this.forwardedFor = null;
         this.forwardedHost = null;
@@ -127,7 +123,6 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
     }
 
     public void resetState() {
-        MSP.log("reset state");
         this.forwardedBy = null;
         this.forwardedFor = null;
         this.forwardedHost = null;
@@ -155,10 +150,8 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
         String nodeName = null;
         String nodeExtract = null;
 
-        MSP.log("processForwardedHeader 1 with value:" + value);
 
         for (String param : parameters) {
-            MSP.log("param: " + param);
             //The "for" and "by" parameters could be comma delimitted
             //lists. As such, lets split this again to save the data in the same
             //format as X-Forwarding
@@ -174,7 +167,6 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
                     nodeExtract = node.substring(node.indexOf("=") + 1);
                 } catch (IndexOutOfBoundsException e) {
                     setErrorState();
-                    //TODO: debug error
                     return;
                 }
 
@@ -190,9 +182,7 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
                     case (PROTO): {
                         forwardedProto = this.isValidProto(nodeExtract) ? nodeExtract : null;
                         if (Objects.isNull(forwardedProto)) {
-                            MSP.log("Forwarded header proto value was malformed: " + nodeExtract);
                             this.setErrorState();
-                            //TODO exit log
                             return;
                         }
                         break;
@@ -200,15 +190,12 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
                     case (HOST): {
                         forwardedHost = this.isValidHost(nodeExtract) ? nodeExtract : null;
                         if (Objects.isNull(forwardedHost)) {
-                            MSP.log("Forwarded header host value was malformed: " + nodeExtract);
                             this.setErrorState();
-                            //TODO exit log
                             return;
                         }
                         break;
                     }
                     default: {
-                        MSP.log("Unrecognized parameter in Forwarded header: " + node);
                         setErrorState();
                     }
                 }
@@ -223,48 +210,35 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
     }
 
     private void processForwardedAddress(String address, ListType type) {
-        MSP.log("processForwardedAddress 1");
         List<String> list = null;
 
         if (type == ListType.BY) {
-            MSP.log("using forwarded by list");
             list = this.forwardedBy;
-            MSP.log("list is null or empty? " + Objects.isNull(this.forwardedBy));
         }
 
         if (type == ListType.FOR) {
-            MSP.log("using forwarded for list");
             list = this.forwardedFor;
-            MSP.log("list is null or empty? " + Objects.isNull(this.forwardedFor));
-            MSP.log("list is empty? " + (Objects.nonNull(this.forwardedFor) && this.forwardedFor.isEmpty()));
         }
-        MSP.log("processForwardedAddress 2");
         String extract = address.replaceAll("\"", "").trim();
         String nodeName = null;
 
         int openBracket = extract.indexOf("[");
         int closedBracket = extract.indexOf("]");
-        MSP.log("processForwardedAddress 2.5");
         if (openBracket > -1) {
             //This is an IPv6 address
             //The nodename is enclosed in "[ ]", get it now
 
             if (openBracket != 0 || !(closedBracket > -1)) {
                 setErrorState();
-                MSP.log("Forwarded header IPv6 was malformed");
                 return;
             }
 
-            MSP.log("Extract: " + extract);
             nodeName = extract.substring(openBracket + 1, closedBracket);
-            MSP.log("processForwardedAddress 3: " + nodeName);
             if ((type == ListType.FOR) && list.isEmpty() && extract.contains("]:")) {
                 try {
                     this.forwardedPort = extract.substring(closedBracket + 2);
                 } catch (IndexOutOfBoundsException e) {
-                    MSP.log("Out of bounds: " + nodeName);
                     setErrorState();
-                    //TODO log error
                     return;
                 }
             }
@@ -279,7 +253,6 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
                         this.forwardedPort = extract.substring(index + 1);
                     } catch (IndexOutOfBoundsException e) {
                         setErrorState();
-                        //TODO: log error
                         return;
                     }
                 }
@@ -302,7 +275,6 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
 
             value.forEach(this::processXForwardedFor);
         }
-        MSP.log("processForwarded c");
         value = headers.getAll(X_FORWARDED_BY);
         if (Objects.nonNull(value)) {
             value.forEach(this::processXForwardedBy);
@@ -331,8 +303,6 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
      * @param list
      */
     private void processXForwardedAddress(String header, ListType type) {
-
-        MSP.log("Processing X-Forwarded-" + type + ": " + header);
 
         String[] addresses = header.split(",");
         for (String address : addresses) {

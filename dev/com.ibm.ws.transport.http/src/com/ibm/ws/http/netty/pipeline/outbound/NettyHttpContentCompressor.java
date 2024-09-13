@@ -9,7 +9,6 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline.outbound;
 
-import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -34,15 +33,11 @@ public class NettyHttpContentCompressor extends HttpContentCompressor {
     @Override
     protected Result beginEncode(HttpResponse httpResponse, String acceptEncoding) throws Exception {
 
-        MSP.log("Netty compression encode begin");
-
         Result result = null;
 
         if (context.channel().hasAttr(NettyHttpConstants.COMPRESSION_ENCODING)) {
 
             String targetContentEncoding = context.channel().attr(NettyHttpConstants.COMPRESSION_ENCODING).get();
-
-            MSP.log("targetEncoding: " + targetContentEncoding);
 
             ZlibWrapper wrapper;
 
@@ -57,12 +52,8 @@ public class NettyHttpContentCompressor extends HttpContentCompressor {
                     throw new Error();
             }
 
-            result = new Result(targetContentEncoding, new EmbeddedChannel(context.channel().id(), context.channel().metadata().hasDisconnect(), context.channel().config(), ZlibCodecFactory.newZlibEncoder(
-                                                                                                                                                                                                             wrapper,
-                                                                                                                                                                                                             -1,
-                                                                                                                                                                                                             -1,
-                                                                                                                                                                                                             -1)));
-            MSP.log("Netty compression encode end");
+            result = new Result(targetContentEncoding, new EmbeddedChannel(context.channel().id(), context.channel().metadata().hasDisconnect(), 
+                    context.channel().config(), ZlibCodecFactory.newZlibEncoder(wrapper, -1, -1, -1)));
         }
         return result;
     }
