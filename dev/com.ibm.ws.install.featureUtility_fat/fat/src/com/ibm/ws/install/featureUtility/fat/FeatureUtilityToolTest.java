@@ -53,7 +53,7 @@ public abstract class FeatureUtilityToolTest {
     protected static String mavenLocalRepo1 = Paths.get("publish/repo/").toAbsolutePath().toString();
     protected static String mavenLocalRepo2 = Paths.get("publish/repo2/").toAbsolutePath().toString();
     public static LibertyServer server;
-    private static String installRoot;
+    protected static String installRoot;
     static String minifiedRoot;
     static String relativeMinifiedRoot;
 
@@ -183,7 +183,7 @@ public abstract class FeatureUtilityToolTest {
      * @throws Exception
      */
     public static void copyFileToMinifiedRoot(String extendedPath, String fileName) throws Exception {
-	LibertyFileManager.copyFileIntoLiberty(server.getMachine(), minifiedRoot + "/" + extendedPath, fileName);
+    		LibertyFileManager.copyFileIntoLiberty(server.getMachine(), minifiedRoot + "/" + extendedPath, fileName);
     }
     
 
@@ -368,18 +368,18 @@ public abstract class FeatureUtilityToolTest {
         replaceWlpProperties(originalWlpVersion);
     }
 
-    protected ProgramOutput runFeatureUtility(String testcase, String[] params) throws Exception {
+    protected static ProgramOutput runFeatureUtility(String testcase, String[] params) throws Exception {
         return runFeatureUtility(testcase, params, false);
     }
 
-    protected ProgramOutput runFeatureUtility(String testcase, String[] params, boolean debug) throws Exception {
+    protected static ProgramOutput runFeatureUtility(String testcase, String[] params, boolean debug) throws Exception {
         Properties envProps = new Properties();
 	      //add beta property here
 	      envProps.put("JVM_ARGS", "-Dcom.ibm.ws.beta.edition=true");
         return runFeatureUtility(testcase, params, envProps);
     }
 
-    protected ProgramOutput runFeatureUtility(String testcase, String[] params, Properties envProps) throws Exception {
+    protected static ProgramOutput runFeatureUtility(String testcase, String[] params, Properties envProps) throws Exception {
     		// add beta property here
 	     envProps.put("JVM_ARGS", "-DfeatureUtility.beta=true");    
    	   envProps.put("JVM_ARGS", "-Dcom.ibm.ws.beta.edition=true");
@@ -435,7 +435,20 @@ public abstract class FeatureUtilityToolTest {
         Log.info(c, methodName, "DELETED files/folders: /etc ? VALUE: " + etc);
 
         return etc;
+    }
+    
+    protected static boolean deleteFolder(String methodName, String folderName){
+        boolean etc = TestUtils.deleteFolder(new File(minifiedRoot + folderName));
+        Log.info(c, methodName, "DELETED files/folders: /etc ? VALUE: " + etc);
 
+        return etc;
+    }
+    
+    protected static boolean deleteTmpFolder(String methodName){
+        boolean etc = TestUtils.deleteFolder(new File(minifiedRoot + "/tmp"));
+        Log.info(c, methodName, "DELETED files/folders: /tmp ? VALUE: " + etc);
+
+        return etc;
     }
     
     protected static boolean deleteUsrExtFolder(String methodName){

@@ -164,3 +164,61 @@ viewSettings.option-desc.--viewValidationMessages=\
 \tvalidation of the configured featureUtility.properties file.         \n\
 \tEach message contains an error code, the line number where the error \n\
 \twas found, and the cause of the error.
+
+#--------- FEATURELIST ACTION ---------------------------------------------#
+featureList.desc=\
+\tGenerate an XML report on all features that are installed in the runtime.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+featureList.option-key.--verbose=\
+\ \ \ \ --verbose
+featureList.option-desc.--verbose=\
+\tDisplay additional debug information while the action runs.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+featureList.option-key.--encoding=\
+\ \ \ \ --encoding=charset
+featureList.option-desc.--encoding=\
+\tSpecify the character set to use when writing the feature list xml   \n\
+\tfile.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+featureList.option-key.--locale=\
+\ \ \ \ --locale=language
+featureList.option-desc.--locale=\
+\tSpecify the language to use when writing the feature list. This      \n\
+\tconsists of the ISO-639 two-letter lowercase language code,          \n\
+\toptionally followed by an underscore and the ISO-3166 uppercase      \n\
+\ttwo-letter country code.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+featureList.option-key.fileName=\
+\ \ \ \ fileName
+featureList.option-desc.fileName=\
+\tThe name of the file to write the feature list xml to.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+featureList.option-key.--productextension=\
+\ \ \ \ --productExtension=name
+featureList.option-desc.--productextension=\
+\tSpecify the product extension name whose features are to be listed.  \n\
+\tIf the product extension is installed in the default user location,  \n\
+\tuse the keyword: usr.                                                \n\
+\tIf this option is not specified, the action is taken on Liberty core.
+
+#--------- CLASSPATH ACTION ---------------------------------------------#
+classpath.desc=\
+\tGenerate a JAR that can be added to a compiler classpath in order to\n\
+\tuse APIs from a list of features.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+classpath.option-key.--verbose=\
+\ \ \ \ --verbose
+classpath.option-desc.--verbose=\
+\tDisplay additional debug information while the action runs.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+classpath.option-key.--features=\
+\ \ \ \ --features=value,value,...
+classpath.option-desc.--features=\
+\tThe list of features to obtain the list of API JARs from.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+classpath.option-key.fileName=\
+\ \ \ \ fileName
+classpath.option-desc.fileName=\
+\tThe name of the JAR file to write the classpaths to.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+

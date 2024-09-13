@@ -25,6 +25,8 @@ import com.ibm.ws.kernel.boot.cmdline.ActionHandler;
 import com.ibm.ws.kernel.boot.cmdline.Arguments;
 import com.ibm.ws.kernel.boot.cmdline.ExitCode;
 import com.ibm.ws.kernel.feature.internal.cmdline.ArgumentsImpl;
+import com.ibm.ws.kernel.feature.internal.cmdline.ClasspathAction;
+import com.ibm.ws.kernel.feature.internal.cmdline.FeatureListAction;
 import com.ibm.ws.kernel.feature.internal.cmdline.FeatureToolException;
 import com.ibm.ws.kernel.feature.internal.cmdline.NLS;
 import com.ibm.ws.kernel.feature.internal.cmdline.ReturnCode;
@@ -37,6 +39,8 @@ public enum FeatureAction implements ActionDefinition {
 	    "--featuresBom", "--verify", "name..."),
     viewSettings(new ViewSettingsAction(),"", 0, "--viewValidationMessages"),
     find(new FindAction(), "", -1, "[searchString]"),
+    featureList(new FeatureListAction(), "fl", 1, "--verbose", "--encoding", "--locale", "--productextension", "fileName"),
+    classpath(new ClasspathAction(),"cp", 1, "--verbose", "--features", "fileName"),
     help(new FeatureHelpAction(),"", 0);
 
     private List<String> commandOptions;
