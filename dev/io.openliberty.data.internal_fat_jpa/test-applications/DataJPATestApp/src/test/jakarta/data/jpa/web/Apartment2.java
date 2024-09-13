@@ -18,15 +18,15 @@ import jakarta.persistence.Id;
 
 /**
  * Entity with embeddable and mapped superclass
- * Entity has a field with a colliding non-delimited attribute name with embeddable
+ * Entity has a field with a colliding delimited attribute name with embeddable
  */
 @Entity
-public class Apartment extends Residence {
+public class Apartment2 extends Residence {
 
     @Id
     public long aptId;
 
-    public int quartersWidth;
+    public int quarters_width;
 
     @Embedded
     public Bedroom quarters;

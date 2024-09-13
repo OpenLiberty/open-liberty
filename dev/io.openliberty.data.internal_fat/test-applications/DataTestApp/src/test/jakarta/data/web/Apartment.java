@@ -13,7 +13,8 @@
 package test.jakarta.data.web;
 
 /**
- * Has both a mapped superclass and an embedded class
+ * Entity with embeddable and mapped superclass
+ * Entity has a field with a colliding non-delimited attribute name with embeddable
  *
  * TODO extends here could indicate either a mapped superclass or inheritance
  * Today we treat this as a mapped superclass, but we could support inheritance but would need a way to distinguish between the two.
@@ -21,6 +22,8 @@ package test.jakarta.data.web;
 public class Apartment extends Residence {
 
     public long aptId;
+
+    public int quartersWidth;
 
     public Bedroom quarters;
 
