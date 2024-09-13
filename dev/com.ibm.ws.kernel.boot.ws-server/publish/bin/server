@@ -927,7 +927,7 @@ javaCmd()
 
     # IgnoreUnrecognizedVMOptions is used so that other JVMs don't fail on these args
     # IgnoreUnrecognizedRestoreOptions to avoid failing to restore if unsupported options are specified to restore
-    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+IgnoreUnrecognizedVMOptions -XX:+IgnoreUnrecognizedRestoreOptions -XX:+EnableCRIUSupport -XX:+CRIURestoreNonPortableMode $X_WLP_IMMUTABLE_VARS"
+    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+IgnoreUnrecognizedVMOptions -XX:+IgnoreUnrecognizedRestoreOptions -XX:+EnableCRIUSupport -XX:+CRIURestoreNonPortableMode -XX:+DebugOnRestore $X_WLP_IMMUTABLE_VARS"
 
     checkCriuUnprivileged
     if [ $DO_CRIU_UNPRIVILEGED = true ]; then
