@@ -10,25 +10,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.jpa.web;
-
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+package test.jakarta.data.web;
 
 /**
  * Entity with embeddable and mapped superclass
- * Entity has a field with a colliding non-delimited attribute name with embeddable
+ * Entity has a field with a colliding delimited attribute name with mapped superclass.
  */
-@Entity
-public class Apartment extends Residence {
+public class Apartment3 extends Residence {
 
-    @Id
     public long aptId;
 
-    public int quartersWidth;
+    public boolean occupant_firstName;
 
-    @Embedded
     public Bedroom quarters;
 
 }

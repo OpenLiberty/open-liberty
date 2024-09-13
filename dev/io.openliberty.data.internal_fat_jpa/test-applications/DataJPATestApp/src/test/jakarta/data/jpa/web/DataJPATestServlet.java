@@ -2933,7 +2933,7 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     @Test
-    public void testPersistentFieldNamesWithDelimiters() {
+    public void testPersistentFieldNamesAndDelimiters() {
         apartments.removeAll();
 
         Apartment a101 = new Apartment();
@@ -2945,6 +2945,7 @@ public class DataJPATestServlet extends FATServlet {
         a101.quarters = new Bedroom();
         a101.quarters.length = 10;
         a101.quarters.width = 10;
+        a101.quartersWidth = 15;
 
         Apartment a102 = new Apartment();
         a102.occupant = new Occupant();
@@ -2955,6 +2956,7 @@ public class DataJPATestServlet extends FATServlet {
         a102.quarters = new Bedroom();
         a102.quarters.length = 11;
         a102.quarters.width = 11;
+        a102.quartersWidth = 15;
 
         Apartment a103 = new Apartment();
         a103.occupant = new Occupant();
@@ -2965,6 +2967,7 @@ public class DataJPATestServlet extends FATServlet {
         a103.quarters = new Bedroom();
         a103.quarters.length = 11;
         a103.quarters.width = 12;
+        a103.quartersWidth = 15;
 
         Apartment a104 = new Apartment();
         a104.occupant = new Occupant();
@@ -2975,6 +2978,7 @@ public class DataJPATestServlet extends FATServlet {
         a104.quarters = new Bedroom();
         a104.quarters.length = 12;
         a104.quarters.width = 11;
+        a104.quartersWidth = 15;
 
         apartments.saveAll(List.of(a101, a102, a103, a104));
 
@@ -3030,6 +3034,28 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals("Brian", results.get(1).occupant.firstName);
         assertEquals("Kyle", results.get(2).occupant.firstName);
         assertEquals("Scott", results.get(3).occupant.firstName);
+
+        // Colliding non-delimited attribute name quartersWidth, ensure we use entity attribute and not embedded attribute for query
+        results = apartments.findByQuartersWidth(15);
+        assertEquals(4, results.size());
+        assertEquals("Brent", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(1).occupant.firstName);
+        assertEquals("Kyle", results.get(2).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        try {
+            apartments.findAllCollidingEmbeddable();
+            fail("Should not have been able to execute query on an entity with colliding attibute name from embeddable");
+        } catch (MappingException e) {
+            //expected
+        }
+
+        try {
+            apartments.findAllCollidingSuperclass();
+            fail("Should not have been able to execute query on an entity with colliding attibute name from superclass");
+        } catch (MappingException e) {
+            // expected
+        }
     }
 
     /**
