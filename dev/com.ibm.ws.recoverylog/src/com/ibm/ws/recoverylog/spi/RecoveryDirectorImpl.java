@@ -185,6 +185,8 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      */
     protected HashMap<String, RecoveryLogFactory> _customLogFactories = new HashMap<String, RecoveryLogFactory>();
 
+    private boolean _isSQLRecoveryLog;
+
     //------------------------------------------------------------------------------
     // Method: RecoveryDirectorImpl.RecoveryDirectorImpl
     //------------------------------------------------------------------------------
@@ -574,62 +576,79 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                     // Notify the listeners we're about to make the call
                     _eventListeners.clientRecoveryInitiated(failureScope, recoveryAgent.clientIdentifier()); /* @MD19638A */
 
-                    // HADB Peer Locking function is provided in tWAS to handle the case where a network is partitioned
-                    // and transaction recovery logs are stored in an RDBMS.This function, while not strictly required in
+                    // DB Peer Locking function is provided in tWAS to handle the case where a network is partitioned
+                    // and transaction recovery logs are stored in an RDBMS. This function, while not strictly required in
                     // Liberty is included in Liberty in order to maintain compatibility and allow testing.
                     //
-                    // HADB Peer Locking is enabled through a server.xml enableHADBPeerLocking attribute in the transaction element.
-                    boolean shouldBeRecovered = true;
-                    boolean enableHADBPeerLocking = recoveryAgent.isDBTXLogPeerLocking();
-                    if (enableHADBPeerLocking) {
-                        // We need to acquire a Heartbeat Recovery Log reference whether we are recovering a local
-                        // or peer server. In each case we get a reference to the appropriate Recovery Log.
-                        HeartbeatLog heartbeatLog = recoveryAgent.getHeartbeatLog(failureScope);
+                    // Peer Locking is enabled by default for DB Logs but can be disabled through a server.xml enableDBLogPeerLocking
+                    // attribute in the transaction element.
+                    boolean proceedWithRecovery = true;
 
-                        if (heartbeatLog != null) {
-                            // Set the ThreadLocal to show that this is the thread that will replay the recovery logs
-                            recoveryAgent.setReplayThread();
-                            if (currentFailureScope.equals(failureScope)) {
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "LOCAL RECOVERY, claim local logs");
-                                shouldBeRecovered = heartbeatLog.claimLocalRecoveryLogs();
-                                if (!shouldBeRecovered) {
-                                    // Cannot recover the home server, throw exception
-                                    RecoveryFailedException rfex = new RecoveryFailedException("HADB Peer locking, local recovery failed");
+                    // Differentiate between the RDBMS and FileSystem implementations
+                    _isSQLRecoveryLog = recoveryAgent.isSQLRecoveryLog();
+                    if (_isSQLRecoveryLog) {
+                        if (recoveryAgent.isLogLockingEnabled()) {
+                            // We need to acquire a Heartbeat Recovery Log reference whether we are recovering a local
+                            // or peer server. In each case we get a reference to the appropriate Recovery Log.
+                            HeartbeatLog heartbeatLog = recoveryAgent.getHeartbeatLog(failureScope);
 
-                                    throw rfex;
-                                }
-
-                            } else {
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "PEER RECOVERY, take lock, ie check staleness");
-                                try {
-                                    shouldBeRecovered = heartbeatLog.claimPeerRecoveryLogs();
-                                } catch (LogsUnderlyingTablesMissingException lutme) {
-                                    Tr.audit(tc, "WTRN0107W: " +
-                                                 "Peer server " + failureScope.serverName() + " has missing recovery log SQL tables. Delete its lease");
-                                    recoveryAgent.deleteServerLease(failureScope.serverName(), true);
-                                    if (tc.isEntryEnabled())
-                                        Tr.exit(tc, "directInitialization", lutme);
-                                    throw lutme;
-                                }
-                                if (!shouldBeRecovered) {
-                                    // Cannot recover peer server, throw exception
+                            if (heartbeatLog != null) {
+                                // Set the ThreadLocal to show that this is the thread that will replay the recovery logs
+                                recoveryAgent.setReplayThread();
+                                if (currentFailureScope.equals(failureScope)) {
                                     if (tc.isDebugEnabled())
-                                        Tr.debug(tc, "Unable to claim logs, throw PeerLostLogOwnershipException");
-                                    PeerLostLogOwnershipException plex = new PeerLostLogOwnershipException();
-                                    if (tc.isEntryEnabled())
-                                        Tr.exit(tc, "directInitialization", plex);
-                                    throw plex;
+                                        Tr.debug(tc, "LOCAL RECOVERY, claim local logs");
+                                    proceedWithRecovery = heartbeatLog.claimLocalRecoveryLogs();
+                                    if (!proceedWithRecovery) {
+                                        // Cannot recover the home server, throw exception
+                                        RecoveryFailedException rfex = new RecoveryFailedException("HADB Peer locking, local recovery failed");
+
+                                        throw rfex;
+                                    }
+
+                                } else {
+                                    if (tc.isDebugEnabled())
+                                        Tr.debug(tc, "PEER RECOVERY, take lock, ie check staleness");
+                                    try {
+                                        proceedWithRecovery = heartbeatLog.claimPeerRecoveryLogs();
+                                    } catch (LogsUnderlyingTablesMissingException e) {
+                                        Tr.audit(tc, "WTRN0107W: " +
+                                                     "Peer server " + failureScope.serverName() + " has missing recovery log SQL tables. Delete its lease");
+                                        recoveryAgent.deleteServerLease(failureScope.serverName(), true);
+                                        if (tc.isEntryEnabled())
+                                            Tr.exit(tc, "directInitialization", e);
+                                        throw e;
+                                    }
+                                    if (!proceedWithRecovery) {
+                                        // Cannot recover peer server, throw exception
+                                        if (tc.isDebugEnabled())
+                                            Tr.debug(tc, "Unable to claim logs, throw PeerLostLogOwnershipException");
+                                        PeerLostLogOwnershipException plex = new PeerLostLogOwnershipException();
+                                        if (tc.isEntryEnabled())
+                                            Tr.exit(tc, "directInitialization", plex);
+                                        throw plex;
+                                    }
                                 }
                             }
+                        }
+                    } else {
+                        // FileSystem Case
+                        if (!currentFailureScope.equals(failureScope) && recoveryAgent != null) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "PEER RECOVERY, filesystem case");
+                        } else {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "LOCAL RECOVERY, filesystem case");
                         }
                     }
 
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "now initiateRecovery if shouldBeRecovered - " + shouldBeRecovered);
-                    if (shouldBeRecovered)
+                        Tr.debug(tc, "now initiateRecovery if shouldBeRecovered - " + proceedWithRecovery);
+                    if (proceedWithRecovery) {
                         recoveryAgent.initiateRecovery(failureScope);
+                    } else {
+                        throw new RecoveryFailedException("FileSystem Peer locking, peer recovery failed");
+                    }
                 } catch (RecoveryFailedException exc) {
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "directInitialization", exc);
@@ -1669,19 +1688,19 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
             Tr.entry(tc, "peerRecoverServers", new Object[] { recoveryAgent, myRecoveryIdentity, peersToRecover });
 
         for (String peerRecoveryIdentity : peersToRecover) {
-
+            boolean leaseClaimed = false;
             try {
-                //Read lease check if it is still expired. If so, then update lease and proceed to peer recover
+                // Read lease, check if it is still expired. If so, then update lease and proceed to peer recover
                 // if not still expired (someone else has grabbed it) then bypass peer recover.
                 LeaseInfo leaseInfo = new LeaseInfo();
-                if (recoveryAgent.claimPeerLeaseForRecovery(peerRecoveryIdentity, myRecoveryIdentity, leaseInfo)) {
-
+                leaseClaimed = recoveryAgent.claimPeerLeaseForRecovery(peerRecoveryIdentity, myRecoveryIdentity, leaseInfo);
+                if (leaseClaimed) {
                     FileFailureScope peerFFS = new FileFailureScope(peerRecoveryIdentity, leaseInfo);
 
                     directInitialization(peerFFS);
                 } else {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Failed to claim lease for peer", this);
+                    Tr.audit(tc, "WTRN0108I: " +
+                                 "Peer Recovery failed for server with recovery identity " + peerRecoveryIdentity);
                 }
             } catch (RecoveryFailedException rfexc) {
                 Tr.audit(tc, "WTRN0108I: " +
@@ -1702,8 +1721,19 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "peerRecoverServers", exc);
                 throw new RecoveryFailedException(exc);
+            } finally {
+                // Release the peer lease if it was claimed
+                if (leaseClaimed) {
+                    try {
+                        recoveryAgent.releasePeerLeaseForRecovery(peerRecoveryIdentity);
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Have released peer lease lock");
+                    } catch (Exception e) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Failed to release peer lease lock for server with recovery identity " + peerRecoveryIdentity + ", exc:  " + e, this);
+                    }
+                }
             }
-
         }
 
         if (tc.isEntryEnabled())

@@ -21,7 +21,7 @@
     
     <include location="../fatTestCommon.xml" />
 
-	<httpEndpoint id="defaultHttpEndpoint"
+    <httpEndpoint id="defaultHttpEndpoint"
                   host="*"
                   httpPort="${bvt.prop.HTTP_secondary}"
                   httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
@@ -35,4 +35,20 @@
       <!-- Properties modified by fat for database rotation -->
       <properties  createDatabase="create" databaseName="${shared.resource.dir}/data/tranlogdb" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
+    
+    <!-- JDBC driver -->
+    <javaPermission codebase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/ifx/ifxjdbc.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/ifx/anomyous.jar" className="java.security.AllPermission"/>
+  
+    <!-- Permission needed for SQLServer driver -->
+    <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+  
+    <!-- Permission needed for Oracle driver -->
+    <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers" />
+    
+    <javaPermission className="java.util.PropertyPermission" name="java.specification.version" actions="read"/>
+ 
+    <javaPermission className="java.lang.RuntimePermission" name="*" actions="*"/>
+    <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read,write,delete"/>
 </server>

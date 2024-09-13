@@ -829,10 +829,12 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * attributes from metadata.
      *
      * @return The Connection.
+     * @throws InternalLogException
+     * @throws SQLException
      *
      * @exception
      */
-    private Connection getFirstConnection() throws Exception {
+    private Connection getFirstConnection() throws InternalLogException, SQLException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getFirstConnection");
         Connection conn = null;
