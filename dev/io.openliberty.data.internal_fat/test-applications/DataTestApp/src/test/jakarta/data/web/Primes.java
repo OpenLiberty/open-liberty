@@ -28,6 +28,7 @@ import java.util.Stack;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import jakarta.data.Limit;
@@ -62,6 +63,10 @@ public interface Primes {
 
     @Query("SELECT (num.name) FROM Prime As num")
     Page<String> all(Sort<Prime> sort, PageRequest pagination);
+
+    @Query("SELECT binaryDigits WHERE numberId <= :max")
+    @OrderBy(ID)
+    LongStream binaryDigitsAsDecimal(long max);
 
     @Query("SELECT name WHERE numberId < 35 AND romanNumeral || name LIKE :pattern")
     List<String> concatAndMatch(String pattern, Sort<?> sort);
@@ -370,6 +375,9 @@ public interface Primes {
 
     @Query("SELECT DISTINCT LENGTH(p.romanNumeral) FROM Prime p WHERE p.numberId <= ?1 ORDER BY LENGTH(p.romanNumeral) DESC")
     Page<Integer> romanNumeralLengths(long maxNumber, PageRequest pagination);
+
+    @Query("SELECT hex WHERE numberId=:id")
+    Optional<Character> singleHexDigit(long id);
 
     @Query("SELECT hex WHERE numberId=?1")
     Optional<String> toHexadecimal(long num);
