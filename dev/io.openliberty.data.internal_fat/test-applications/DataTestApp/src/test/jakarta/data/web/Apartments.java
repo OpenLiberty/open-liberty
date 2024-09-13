@@ -26,7 +26,7 @@ import jakarta.data.repository.Save;
 @Repository
 public interface Apartments {
     @Delete
-    public void removeAll();
+    public List<Apartment> removeAll(); //Need to return List<Apartment> since this repository lacks a primary entity
 
     @Save
     public List<Apartment> saveAll(List<Apartment> entities);
