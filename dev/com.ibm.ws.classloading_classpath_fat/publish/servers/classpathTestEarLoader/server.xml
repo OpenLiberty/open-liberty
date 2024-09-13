@@ -6,7 +6,7 @@
         <feature>componenttest-1.0</feature>
     </featureManager>
 
-    <enterpriseApplication location="testClassPath.ear" addWebModuleClassPathTo="earLoader"/>
+    <enterpriseApplication location="testClassPath.ear" webModuleClassPathLoader="ear"/>
 
     <include location="../fatTestPorts.xml"/>
 </server>
