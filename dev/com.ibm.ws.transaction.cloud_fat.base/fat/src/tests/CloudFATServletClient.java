@@ -144,10 +144,8 @@ public abstract class CloudFATServletClient extends CloudTestBase {
      * @throws Exception
      */
     @Test
+    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException" })
     public void testAggressiveTakeover1() throws Exception {
-        final String method = "testAggressiveTakeover1";
-        StringBuilder sb = null;
-
         if (!isDerby()) { // Embedded Derby cannot support tests with concurrent server startup
             serversToCleanup = new LibertyServer[] { longLeaseCompeteServer1, server2fastcheck };
 
@@ -197,7 +195,6 @@ public abstract class CloudFATServletClient extends CloudTestBase {
     @Test
     @AllowedFFDC(value = { "com.ibm.tx.jta.XAResourceNotAvailableException", "java.lang.RuntimeException" }) // should be expected but..... Derby
     public void testAggressiveTakeover2() throws Exception {
-
         if (!isDerby()) { // Embedded Derby cannot support tests with concurrent server startup
             serversToCleanup = new LibertyServer[] { longLeaseCompeteServer1, server2fastcheck };
 
@@ -247,6 +244,7 @@ public abstract class CloudFATServletClient extends CloudTestBase {
      * Setup a lease for a non-existant server and check it gets deleted without creating bogus new recovery logs
      */
     @Test
+    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException" }) // doesn't happen for FS
     public void testOrphanLeaseDeletion() throws Exception {
 
         final String nonexistantServerName = UUID.randomUUID().toString().replaceAll("\\W", "");
@@ -265,7 +263,7 @@ public abstract class CloudFATServletClient extends CloudTestBase {
 
     @Test
     // Can get a benign InternalLogException if heartbeat happens at same time as lease claim
-    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.InternalLogException" })
+    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.InternalLogException", "com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException" }) // LUTME doesn't happen for FS
     public void testBatchLeaseDeletion() throws Exception {
         if (!TxTestContainerSuite.isDerby()) { // Exclude Derby
             serversToCleanup = new LibertyServer[] { server1, server2 };

@@ -342,12 +342,11 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#enableHADBPeerLocking()
+     * @see com.ibm.tx.config.ConfigurationProvider#enableLogLocking()
      */
     @Override
-    public boolean enableHADBPeerLocking() {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean enableLogLocking() {
+        return true;
     }
 
     /*
@@ -485,5 +484,35 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     @Override
     public String getUserDir() {
         return System.getenv("WLP_USER_DIR");
+    }
+
+    @Override
+    public boolean enableHomeLeaseLockRetries() {
+        return false;
+    }
+
+    @Override
+    public int getHomeLeaseLockRetryDelay() {
+        return 0;
+    }
+
+    @Override
+    public int getHomeNumberOfLeaseLockRetries() {
+        return 0;
+    }
+
+    @Override
+    public boolean enablePeerLeaseLockRetries() {
+        return false;
+    }
+
+    @Override
+    public int getPeerLeaseLockRetryDelay() {
+        return 0;
+    }
+
+    @Override
+    public int getPeerNumberOfLeaseLockRetries() {
+        return 0;
     }
 }

@@ -33,6 +33,7 @@ import com.ibm.ws.transaction.fat.util.SetupRunner;
 import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -416,7 +417,7 @@ public class DBRotationTest extends CloudFATServletClient {
     }
 
     @Test
-    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
+    @ExpectedFFDC(value = { "com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException" })
     public void testBackwardCompatibility() throws Exception {
 
         serversToCleanup = new LibertyServer[] { server1 };
@@ -429,8 +430,10 @@ public class DBRotationTest extends CloudFATServletClient {
         // we pickup the trace from the next home server lease update where the V1 data will be replaced by V2 and from the claim for
         // cloud0022's logs.
         server1.setTraceMarkToEndOfDefaultTrace();
-        assertNotNull("Lease Owner column not updated", server1.waitForStringInTrace("Lease_owner column contained cloud0011,http", FATUtils.LOG_SEARCH_TIMEOUT));
-        assertNotNull("Lease Owner column not inserted", server1.waitForStringInTrace("Insert combined string cloud0011,http", FATUtils.LOG_SEARCH_TIMEOUT));
+        assertNotNull("V1 lease Owner column not discovered", server1.waitForStringInTrace("Lease_owner column contained cloud0011$", FATUtils.LOG_SEARCH_TIMEOUT));
+        assertNotNull("V2 lease Owner column not inserted", server1.waitForStringInTrace("Insert combined string cloud0011,http", FATUtils.LOG_SEARCH_TIMEOUT));
+
+        assertNotNull("Peer recovery not atempted", server1.waitForStringInTrace("Peer Recovery failed for server with recovery identity cloud0033", FATUtils.LOG_SEARCH_TIMEOUT));
 
         // Now tidy up after test
         runTest(server1, SERVLET_NAME, "tidyupV1LeaseLog");
