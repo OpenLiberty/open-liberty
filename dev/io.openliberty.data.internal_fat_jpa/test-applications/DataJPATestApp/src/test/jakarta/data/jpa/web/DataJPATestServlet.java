@@ -1180,8 +1180,7 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Use an entity with embeddable attributes that are Java records.
      */
-    // TODO enable once #29459 is fixed
-    // @Test
+    @Test
     public void testEmbeddableRecord() {
         Segment s1 = new Segment();
         s1.pointA = new Point(0, 0);
@@ -1215,29 +1214,31 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(3, segments.countByPointAXLessThan(1));
 
-        assertEquals(List.of(s3.id, s4.id, s2.id, s1.id),
-                     segments.endingSouthOf(100)
-                                     .map(s -> s.id)
-                                     .collect(Collectors.toList()));
+        // TODO enable once #29460 is fixed
+        //assertEquals(List.of(s3.id, s4.id, s2.id, s1.id),
+        //             segments.endingSouthOf(100)
+        //                             .map(s -> s.id)
+        //                             .collect(Collectors.toList()));
 
-        assertEquals(List.of(-20, 0, 24),
-                     segments.longerThan(200, Sort.asc("pointA.x"))
-                                     .stream()
-                                     .map(s -> s.pointA.x())
-                                     .collect(Collectors.toList()));
+        //assertEquals(List.of(-20, 0, 24),
+        //             segments.longerThan(200, Sort.asc("pointA.x"))
+        //                             .stream()
+        //                             .map(s -> s.pointA.x())
+        //                             .collect(Collectors.toList()));
 
-        s3.pointB = new Point(s3.pointB.x() - s3.pointA.x(), s3.pointB.y() - s3.pointA.y());
-        s3.pointA = new Point(0, 0);
-        s3 = segments.addOrModify(s3);
+        //s3.pointB = new Point(s3.pointB.x() - s3.pointA.x(), s3.pointB.y() - s3.pointA.y());
+        //s3.pointA = new Point(0, 0);
+        //s3 = segments.addOrModify(s3);
 
         // removes s1 and s3
-        assertEquals(2L, segments.removeStartingAt(0, 0));
+        //assertEquals(2L, segments.removeStartingAt(0, 0));
 
-        Point s2pointB = segments.terminalPoint(s2.id).orElseThrow();
-        assertEquals(120, s2pointB.x());
-        assertEquals(171, s2pointB.y());
+        //Point s2pointB = segments.terminalPoint(s2.id).orElseThrow();
+        //assertEquals(120, s2pointB.x());
+        //assertEquals(171, s2pointB.y());
 
-        assertEquals(4L, segments.erase());
+        assertEquals(6L, // TODO change to 4L, once #29460 is fixed
+                     segments.erase());
     }
 
     /**
