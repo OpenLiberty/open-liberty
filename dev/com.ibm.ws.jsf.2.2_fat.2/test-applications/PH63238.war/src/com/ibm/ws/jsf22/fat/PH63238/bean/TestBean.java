@@ -11,11 +11,11 @@ package com.ibm.ws.jsf22.fat.PH63238.bean;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 
-@Named("testBean")
-@RequestScoped
+@ManagedBean
+@ViewScoped
 public class TestBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -25,12 +25,12 @@ public class TestBean implements Serializable {
     }
 
     public String confirm() {
-        System.out.println("confirm() invoked!");
+        System.out.println("confirm invoked!");
         return "result";
     }
 
     public void listener() {
-        System.out.println("listener() invoked!");
+        System.out.println("listener invoked!");
     }
 
 }

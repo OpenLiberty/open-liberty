@@ -192,9 +192,9 @@ public class JSF22APARSeleniumTests {
 
         page.waitReqJs();
 
-        assertTrue("Ajax Listener not invokved!", jsf22APARSeleniumServer.findStringsInLogs("listener() invoked!").size() == 1);
+        assertTrue("Ajax Listener not invokved!", jsf22APARSeleniumServer.findStringsInLogs("listener invoked!").size() == 1);
 
-        assertTrue("Action was wrongly invokved!", jsf22APARSeleniumServer.findStringsInLogs("confirm() invoked!").isEmpty());
+        assertTrue("Action was wrongly invokved!", jsf22APARSeleniumServer.findStringsInLogs("confirm invoked!").isEmpty());
 
     }
     
