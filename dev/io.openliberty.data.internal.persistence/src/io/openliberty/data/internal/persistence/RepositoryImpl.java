@@ -175,8 +175,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                         }
                                         if (conflict != null) {
                                             EntityInfo conflictInfo = conflict.join(); // already completed
-                                            List<String> classNames = List.of((entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName(),
-                                                                              (conflictInfo.recordClass == null ? conflictInfo.entityClass : conflictInfo.recordClass).getName());
+                                            List<String> classNames = List.of(entityInfo.getType().getName(),
+                                                                              conflictInfo.getType().getName());
                                             // TODO NLS, consider splitting message for records/normal entities
                                             MappingException conflictX = new MappingException("The " + classNames + " entities have conflicting names. " +
                                                                                               "When using records as entities, an entity name consisting of " +
@@ -1051,7 +1051,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         if (CursoredPage.class.equals(multiType)) {
                             returnValue = new CursoredPageImpl<>(queryInfo, pagination, args);
                         } else if (Page.class.equals(multiType)) {
-                            returnValue = new PageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
+                            PageRequest req = limit == null //
+                                            ? pagination //
+                                            : queryInfo.toPageRequest(limit);
+                            returnValue = new PageImpl<>(queryInfo, req, args);
                         } else if (pagination != null && !PageRequest.Mode.OFFSET.equals(pagination.mode())) {
                             throw exc(IllegalArgumentException.class,
                                       "CWWKD1035.incompat.page.mode",
@@ -1096,11 +1099,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 if (Stream.class.equals(multiType))
                                     returnValue = stream;
                                 else if (IntStream.class.equals(multiType))
-                                    returnValue = stream.mapToInt(RepositoryImpl::toInt);
+                                    returnValue = stream.mapToInt(queryInfo::toInt);
                                 else if (LongStream.class.equals(multiType))
-                                    returnValue = stream.mapToLong(RepositoryImpl::toLong);
+                                    returnValue = stream.mapToLong(queryInfo::toLong);
                                 else if (DoubleStream.class.equals(multiType))
-                                    returnValue = stream.mapToDouble(RepositoryImpl::toDouble);
+                                    returnValue = stream.mapToDouble(queryInfo::toDouble);
                                 else
                                     throw exc(UnsupportedOperationException.class,
                                               "CWWKD1046.result.convert.err",
@@ -1162,11 +1165,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                 value = queryInfo.convert(result,
                                                                           entityInfo.idType,
                                                                           false);
-                                                if (value == result) // unable to convert value - this should be unreachable since we validated the return type when we constructed the select query
-                                                    throw new MappingException("Results for find-and-delete repository queries must be the entity class (" +
-                                                                               (entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName() +
-                                                                               ") or the id class (" + entityInfo.idType +
-                                                                               "), not the " + result.getClass().getName() + " class."); // TODO NLS reuse CWWKD1006.delete.rtrn.err?
+                                                if (value == result)
+                                                    throw exc(MappingException.class,
+                                                              "CWWKD1006.delete.rtrn.err",
+                                                              method.getGenericReturnType().getTypeName(),
+                                                              method.getName(),
+                                                              repositoryInterface.getName(),
+                                                              entityInfo.getType().getName(),
+                                                              entityInfo.idType);
                                             }
 
                                             jakarta.persistence.Query delete = em.createQuery(queryInfo.jpqlDelete);
@@ -1520,7 +1526,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      *                       the entity (or correct version of the entity) was not found.
      */
     private int remove(Object e, QueryInfo queryInfo, EntityManager em) throws Exception {
-        Class<?> entityClass = queryInfo.entityInfo.recordClass == null ? queryInfo.entityInfo.entityClass : queryInfo.entityInfo.recordClass;
+        Class<?> entityClass = queryInfo.entityInfo.getType();
 
         if (e == null)
             throw exc(NullPointerException.class,
@@ -1611,16 +1617,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
         return numDeleted;
     }
 
-    @Trivial
-    private static final double toDouble(Object o) {
-        if (o instanceof Number)
-            return ((Number) o).doubleValue();
-        else if (o instanceof String)
-            return Double.parseDouble((String) o);
-        else
-            throw new MappingException("Not representable as a double value: " + o.getClass().getName());
-    }
-
     /**
      * Converts a record to its generated entity equivalent,
      * or does nothing if not a record.
@@ -1645,40 +1641,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (entity != o && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "toEntity " + oClass.getName() + " --> " + entity.getClass().getName());
         return entity;
-    }
-
-    @Trivial
-    private static final int toInt(Object o) {
-        if (o instanceof Number)
-            return ((Number) o).intValue();
-        else if (o instanceof String)
-            return Integer.parseInt((String) o);
-        else
-            throw new MappingException("Not representable as an int value: " + o.getClass().getName());
-    }
-
-    @Trivial
-    private static final long toLong(Object o) {
-        if (o instanceof Number)
-            return ((Number) o).longValue();
-        else if (o instanceof String)
-            return Long.parseLong((String) o);
-        else
-            throw new MappingException("Not representable as a long value: " + o.getClass().getName());
-    }
-
-    /**
-     * Converts a Limit to a PageRequest if possible.
-     *
-     * @param limit Limit.
-     * @return PageRequest.
-     * @throws IllegalArgumentException if the Limit is a range with a starting point above 1.
-     */
-    private static final PageRequest toPageRequest(Limit limit) {
-        if (limit.startAt() != 1L)
-            throw new IllegalArgumentException("Limit with starting point " + limit.startAt() +
-                                               ", which is greater than 1, cannot be used to request pages."); // TODO NLS
-        return PageRequest.ofSize(limit.maxResults());
     }
 
     /**
@@ -1822,7 +1784,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @throws Exception if an error occurs.
      */
     private int update(Object e, QueryInfo queryInfo, EntityManager em) throws Exception {
-        Class<?> entityClass = queryInfo.entityInfo.recordClass == null ? queryInfo.entityInfo.entityClass : queryInfo.entityInfo.recordClass;
+        Class<?> entityClass = queryInfo.entityInfo.getType();
 
         if (e == null)
             throw exc(NullPointerException.class,

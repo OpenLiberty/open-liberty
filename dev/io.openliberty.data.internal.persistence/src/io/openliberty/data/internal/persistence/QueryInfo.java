@@ -584,6 +584,7 @@ public class QueryInfo {
         if (value instanceof Number &&
             (PRIMITIVE_NUMERIC_TYPES.contains(toType) ||
              Number.class.isAssignableFrom(toType))) {
+            // Conversion from one numeric type to another
             try {
                 if (BigDecimal.class.equals(fromType)) {
                     BigDecimal v = (BigDecimal) value;
@@ -681,11 +682,33 @@ public class QueryInfo {
             } catch (ArithmeticException x) {
                 cause = x;
             }
+        } else if (value instanceof CharSequence &&
+                   (PRIMITIVE_NUMERIC_TYPES.contains(toType) ||
+                    Number.class.isAssignableFrom(toType))) {
+            // Conversion from text to numeric value
+            if (int.class.equals(toType) || Integer.class.equals(toType))
+                return Integer.parseInt(value.toString());
+            else if (long.class.equals(toType) || Long.class.equals(toType))
+                return Long.parseLong(value.toString());
+            else if (short.class.equals(toType) || Short.class.equals(toType))
+                return Short.parseShort(value.toString());
+            else if (byte.class.equals(toType) || Byte.class.equals(toType))
+                return Byte.parseByte(value.toString());
+            else if (double.class.equals(toType) || Double.class.equals(toType))
+                return Double.parseDouble(value.toString());
+            else if (float.class.equals(toType) || Float.class.equals(toType))
+                return Float.parseFloat(value.toString());
+            else if (BigDecimal.class.equals(toType))
+                return new BigDecimal(value.toString());
+            else if (BigInteger.class.equals(toType))
+                return new BigInteger(value.toString());
         } else if (String.class.equals(toType) ||
                    CharSequence.class.equals(toType)) {
+            // Conversion to text
             return value.toString();
         } else if (char.class.equals(toType) ||
                    Character.class.equals(toType)) {
+            // Conversion from length 1 or 0 text to single/optional character
             if (value instanceof CharSequence) {
                 CharSequence chars = (CharSequence) value;
                 if (chars.length() == 1)
@@ -1592,18 +1615,15 @@ public class QueryInfo {
         if (singleType.isPrimitive())
             singleType = wrapperClassIfPrimitive(singleType);
 
-        if (type == Type.FIND_AND_DELETE && !(singleType.isAssignableFrom(wrapperClassIfPrimitive(entityInfo.idType)) ||
-                                              singleType.isAssignableFrom(entityInfo.entityClass) ||
-                                              (entityInfo.recordClass != null && singleType.isAssignableFrom(entityInfo.recordClass)))) {
-            Class<?> entityClass = entityInfo.recordClass == null //
-                            ? entityInfo.entityClass //
-                            : entityInfo.recordClass;
+        if (type == Type.FIND_AND_DELETE &&
+            !(singleType.isAssignableFrom(wrapperClassIfPrimitive(entityInfo.idType)) ||
+              singleType.isAssignableFrom(entityInfo.getType()))) {
             throw exc(MappingException.class,
                       "CWWKD1006.delete.rtrn.err",
                       method.getGenericReturnType().getTypeName(),
                       method.getName(),
                       repositoryInterface.getName(),
-                      entityClass.getName(),
+                      entityInfo.getType().getName(),
                       entityInfo.idType.getName());
         }
 
@@ -3006,15 +3026,12 @@ public class QueryInfo {
                 && !type.equals(Object.class)
                 && !wrapperClassIfPrimitive(singleType) //
                                 .equals(wrapperClassIfPrimitive(entityInfo.idType))) {
-                Class<?> entityClass = entityInfo.recordClass == null //
-                                ? entityInfo.entityClass //
-                                : entityInfo.recordClass;
                 throw exc(MappingException.class,
                           "CWWKD1006.delete.rtrn.err",
                           method.getGenericReturnType().getTypeName(),
                           method.getName(),
                           repositoryInterface.getName(),
-                          entityClass.getName(),
+                          entityInfo.getType().getName(),
                           entityInfo.idType.getName());
             }
 
@@ -3524,6 +3541,61 @@ public class QueryInfo {
                 combined.add(getWithAttributeName(sort.property(), sort));
         }
         return combined;
+    }
+
+    /**
+     * Functional interface that can be supplied to stream.mapToDouble.
+     *
+     * @param o object to convert.
+     * @return double value.
+     */
+    @Trivial
+    final double toDouble(Object o) {
+        return (Double) convert(o, double.class, true);
+    }
+
+    /**
+     * Functional interface that can be supplied to stream.mapToInt.
+     *
+     * @param o object to convert.
+     * @return int value.
+     */
+    @Trivial
+    final int toInt(Object o) {
+        return (Integer) convert(o, int.class, true);
+    }
+
+    /**
+     * Functional interface that can be supplied to stream.mapToLong.
+     *
+     * @param o object to convert.
+     * @return long value.
+     */
+    @Trivial
+    final long toLong(Object o) {
+        return (Long) convert(o, long.class, true);
+    }
+
+    /**
+     * Converts a Limit to a PageRequest if possible.
+     * Some tests are relying on this. Consider if we should allow this
+     * pattern where a Limit can used in place of PageRequest if its
+     * starting result is 1.
+     *
+     * @param limit Limit.
+     * @return PageRequest.
+     * @throws IllegalArgumentException if the Limit is a range with a
+     *                                      starting point above 1.
+     */
+    final PageRequest toPageRequest(Limit limit) {
+        if (limit.startAt() != 1L)
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1041.rtrn.mismatch.pagereq",
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      method.getGenericReturnType().getTypeName());
+
+        return PageRequest.ofSize(limit.maxResults());
     }
 
     @Override

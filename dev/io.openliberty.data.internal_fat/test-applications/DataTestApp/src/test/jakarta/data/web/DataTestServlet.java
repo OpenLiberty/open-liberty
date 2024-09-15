@@ -575,6 +575,32 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Repository method that converts a length 1 String attribute to a
+     * single character.
+     */
+    @Test
+    public void testConvertToChar() {
+        assertEquals(Character.valueOf('D'),
+                     primes.singleHexDigit(13).orElseThrow());
+
+        assertEquals(false,
+                     primes.singleHexDigit(12).isPresent());
+
+        try {
+            Optional<Character> found = primes.singleHexDigit(29);
+            fail("Should not be able to return hex 1D as a single character: " +
+                 found);
+        } catch (MappingException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1046E") &&
+                x.getMessage().contains("singleHexDigit"))
+                ; // pass
+            else
+                throw x;
+        }
+    }
+
+    /**
      * Repository method that returns the count as a BigDecimal value.
      */
     @Test
@@ -3224,6 +3250,17 @@ public class DataTestServlet extends FATServlet {
     public void testLeftFunction() {
         assertEquals(List.of("seven", "seventeen"),
                      primes.matchLeftSideOfName("seven"));
+    }
+
+    /**
+     * Repository method with return type of LongStream, involving type conversion.
+     */
+    @Test
+    public void testLongStream() {
+        assertEquals(List.of(10L, 11L, 101L, 111L, 1011L, 1101L, 10001L, 10011L),
+                     primes.binaryDigitsAsDecimal(20)
+                                     .boxed()
+                                     .collect(Collectors.toList()));
     }
 
     /**
