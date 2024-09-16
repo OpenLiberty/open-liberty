@@ -18,6 +18,7 @@ import com.ibm.ws.crypto.common.FipsUtils;
 
 /**
  * Represents an LTPA Private Key; Encoding is non-standard. Uses 128 byte RSA.
+ * With FIPS enabled, it is based on RSA/SHA-256 (256 byte RSA key).
  */
 public final class LTPAPrivateKey implements PrivateKey {
 
@@ -129,7 +130,7 @@ public final class LTPAPrivateKey implements PrivateKey {
      */
     @Override
     public final String getAlgorithm() {
-        return "RSA/SHA-1";
+        return (isFIPSEnabled ? "RSA/SHA-256" : "RSA/SHA-1");
     }
 
     /** {@inheritDoc} */

@@ -76,8 +76,8 @@ public class LTPAToken2 implements Token, Serializable {
                 m1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.IBMJCE_PLUS_FIPS_NAME);
                 m2 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.IBMJCE_PLUS_FIPS_NAME);
             } else if (LTPAKeyUtil.isOpenJCEPlusAvailable()) {
-                m1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.OPENJCE_PLUS_NAME);
-                m2 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.OPENJCE_PLUS_NAME);
+                m1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.OPENJCE_PLUS_NAME);
+                m2 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.OPENJCE_PLUS_NAME);
             } else if (LTPAKeyUtil.isIBMJCEAvailable()) {
                 m1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.IBMJCE_NAME);
                 m2 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.IBMJCE_NAME);
