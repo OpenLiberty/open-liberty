@@ -101,8 +101,8 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
             // if messageSevice == null then try to get the global configuration values, if its not set keep values null
             enableSchemaValidation = (WebServicesClientConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesClientConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP) : null;
 
-            ignoreUnexpectedElements = (WebServicesClientConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesClientConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) : null;
-            
+            ignoreUnexpectedElements = (WebServicesClientConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesClientConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) : null;            
+
             enableDefaultValidation = (WebServicesClientConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesClientConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) : null;
 
         }
@@ -153,17 +153,15 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
 
         // Set ignoreUnexpectedElements if true
         if (ignoreUnexpectedElements != null && (boolean) ignoreUnexpectedElements == true) {
-            
-                // Enable validation handling in CXF
-                message.put(JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, true);
+            // Enable validation handling in CXF
+            message.put(JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, true);
 
             // Set our custom validation event handler
             IgnoreUnexpectedElementValidationEventHandler unexpectedElementValidationEventHandler = new IgnoreUnexpectedElementValidationEventHandler();
-            message.put(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER, unexpectedElementValidationEventHandler);
+            message.put(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER, unexpectedElementValidationEventHandler); 
 
             if (debug) {
                 Tr.debug(tc, "Set JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER to  " + (boolean) ignoreUnexpectedElements + " for ignoreUnexpectedElements");
-
             }
 
             if (enableDefaultValidation != null && (boolean) enableDefaultValidation == false) {
@@ -175,7 +173,7 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
         } else {
             if (debug) {
                 Tr.debug(tc, "ignoreUnexpectedElements was " + ignoreUnexpectedElements + " not configuring ignoreUnexpectedElements on the client");
-                
+
             }
         }
         
