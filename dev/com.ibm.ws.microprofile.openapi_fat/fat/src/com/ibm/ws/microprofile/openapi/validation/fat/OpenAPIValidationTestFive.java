@@ -1,6 +1,11 @@
 package com.ibm.ws.microprofile.openapi.validation.fat;
 
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -64,43 +69,48 @@ public class OpenAPIValidationTestFive {
 
     @Test
     public void testTags() throws Exception {
-        assertNotNull("The Tag Validator should have been triggered by the missing 'name' field",
-            server.waitForStringInLog(
+        assertNotEmpty("The Tag Validator should have been triggered by the missing 'name' field",
+            server.findStringsInLogs(
                 " - Message: Required \"name\" field is missing or is set to an invalid value, Location: #/tags"));
     }
 
     @Test
     public void testDiscriminator() throws Exception {
-        assertNotNull("The Discriminator validator should have been triggered by the missing 'propertyName' field",
-            server.waitForStringInLog(
+        assertNotEmpty("The Discriminator validator should have been triggered by the missing 'propertyName' field",
+            server.findStringsInLogs(
                 "- Message: Required \"propertyName\" field is missing or is set to an invalid value,*"));
     }
 
     @Test
     public void testSchema() throws Exception {
-        assertNotNull("The Schema validator should have been triggered by the missing 'items' field",
-            server.waitForStringInLog(
+        assertNotEmpty("The Schema validator should have been triggered by the missing 'items' field",
+            server.findStringsInLogs(
                 " - Message: The Schema Object of \"array\" type must have \"items\" property defined, Location: #/paths/~1availability/get/parameters/schema"));
-        assertNotNull("The Schema validator should have been triggered by the invalid 'multipleOf' field",
-            server.waitForStringInLog(
+        assertNotEmpty("The Schema validator should have been triggered by the invalid 'multipleOf' field",
+            server.findStringsInLogs(
                 " - Message: The Schema Object must have the \"multipleOf\" property set to a number strictly greater than zero, Location: #/paths/~1availability/get/parameters/schema"));
-        assertNotNull("The Schema validator should have been triggered by the invalid 'minItems' field",
-            server.waitForStringInLog(
+        assertNotEmpty("The Schema validator should have been triggered by the invalid 'minItems' field",
+            server.findStringsInLogs(
                 "- Message: The \"minItems\" property of the Schema Object must be greater than or equal to zero, Location: #/paths/~1availability/get/parameters/schema"));
-        assertNotNull("The Schema validator should have been triggered by the invalid 'maxItems' field",
-            server.waitForStringInLog(
+        assertNotEmpty("The Schema validator should have been triggered by the invalid 'maxItems' field",
+            server.findStringsInLogs(
                 " - Message: The \"maxItems\" property of the Schema Object must be greater than or equal to zero, Location: #/paths/~1availability/get/parameters/schema"));
-        assertNotNull("The Schema validator should have been triggered by the invalid 'minProperties' field",
-            server.waitForStringInLog(
+        assertNotEmpty("The Schema validator should have been triggered by the invalid 'minProperties' field",
+            server.findStringsInLogs(
                 " - Message: The \"minProperties\" property of the Schema Object must be greater than or equal to zero, Location: #/paths/~1availability/get/parameters/schema"));
-        assertNotNull("The Schema validator should have been triggered by the invalid 'maxProperties' field",
-            server.waitForStringInLog(
+        assertNotEmpty("The Schema validator should have been triggered by the invalid 'maxProperties' field",
+            server.findStringsInLogs(
                 " - Message: The \"maxProperties\" property of the Schema Object must be greater than or equal to zero, Location: #/paths/~1availability/get/parameters/schema"));
-        assertNotNull("The Schema validator should have been triggered by the invalid 'minItems' field",
-            server.waitForStringInLog(
+        assertNotEmpty("The Schema validator should have been triggered by the invalid 'minItems' field",
+            server.findStringsInLogs(
                 " - Message: The \"minItems\" property is not appropriate for the Schema Object of \"object\" type, Location: #/paths/~1availability/get/parameters/schema"));
-        assertNotNull("The Schema validator should have been triggered by the invalid 'maxItems' field",
-            server.waitForStringInLog(
+        assertNotEmpty("The Schema validator should have been triggered by the invalid 'maxItems' field",
+            server.findStringsInLogs(
                 " - Message: The \"maxItems\" property is not appropriate for the Schema Object of \"object\" type, Location: #/paths/~1availability/get/parameters/schema"));
+    }
+
+    private void assertNotEmpty(String message,
+                                List<String> stringsInLogs) {
+        assertThat(message, stringsInLogs, not(empty()));
     }
 }
