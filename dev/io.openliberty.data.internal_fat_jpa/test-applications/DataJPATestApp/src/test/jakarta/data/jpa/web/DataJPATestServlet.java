@@ -92,6 +92,7 @@ import componenttest.app.FATServlet;
 import test.jakarta.data.jpa.web.CreditCard.CardId;
 import test.jakarta.data.jpa.web.CreditCard.Issuer;
 import test.jakarta.data.jpa.web.Mobile.OS;
+import test.jakarta.data.jpa.web.Residence.Occupant;
 
 @DataSourceDefinition(name = "java:module/jdbc/RepositoryDataStore",
                       className = "${repository.datasource.class.name}",
@@ -107,6 +108,9 @@ public class DataJPATestServlet extends FATServlet {
 
     @Inject
     Accounts accounts;
+
+    @Inject
+    Apartments apartments;
 
     @Inject
     Businesses businesses;
@@ -2927,6 +2931,137 @@ public class DataJPATestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         drivers.deleteByFullNameEndsWith(" TestOneToOne");
+    }
+
+    /**
+     * Tests entity attribute names from embeddables and MappedSuperclass that
+     * can have delimiters. Includes tests for name collisions with attributes from an
+     * embeddable or superinteface.
+     */
+    @Test
+    public void testPersistentFieldNamesAndDelimiters() {
+        apartments.removeAll();
+
+        Apartment a101 = new Apartment();
+        a101.occupant = new Occupant();
+        a101.occupant.firstName = "Kyle";
+        a101.occupant.lastName = "Smith";
+        a101.isOccupied = true;
+        a101.aptId = 101L;
+        a101.quarters = new Bedroom();
+        a101.quarters.length = 10;
+        a101.quarters.width = 10;
+        a101.quartersWidth = 15;
+
+        Apartment a102 = new Apartment();
+        a102.occupant = new Occupant();
+        a102.occupant.firstName = "Brent";
+        a102.occupant.lastName = "Smith";
+        a102.isOccupied = false;
+        a102.aptId = 102L;
+        a102.quarters = new Bedroom();
+        a102.quarters.length = 11;
+        a102.quarters.width = 11;
+        a102.quartersWidth = 15;
+
+        Apartment a103 = new Apartment();
+        a103.occupant = new Occupant();
+        a103.occupant.firstName = "Brian";
+        a103.occupant.lastName = "Smith";
+        a103.isOccupied = false;
+        a103.aptId = 103L;
+        a103.quarters = new Bedroom();
+        a103.quarters.length = 11;
+        a103.quarters.width = 12;
+        a103.quartersWidth = 15;
+
+        Apartment a104 = new Apartment();
+        a104.occupant = new Occupant();
+        a104.occupant.firstName = "Scott";
+        a104.occupant.lastName = "Smith";
+        a104.isOccupied = false;
+        a104.aptId = 104L;
+        a104.quarters = new Bedroom();
+        a104.quarters.length = 12;
+        a104.quarters.width = 11;
+        a104.quartersWidth = 15;
+
+        apartments.saveAll(List.of(a101, a102, a103, a104));
+
+        List<Apartment> results;
+
+        results = apartments.findApartmentsByBedroomWidth(12);
+        assertEquals(1, results.size());
+        assertEquals("Brian", results.get(0).occupant.firstName);
+
+        results = apartments.findApartmentsByBedroom(11, 11);
+        assertEquals(1, results.size());
+        assertEquals("Brent", results.get(0).occupant.firstName);
+
+        results = apartments.findAllOrderByBedroomLength();
+        assertEquals(4, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        results = apartments.findAllOrderByBedroomWidth();
+        assertEquals(4, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(3).occupant.firstName);
+
+        results = apartments.findApartmentsByBedroomLength(10);
+        assertEquals(1, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+
+        results = apartments.findByQuarters_Width(12);
+        assertEquals(1, results.size());
+        assertEquals("Brian", results.get(0).occupant.firstName);
+
+        results = apartments.findByQuartersLength(12);
+        assertEquals(1, results.size());
+        assertEquals("Scott", results.get(0).occupant.firstName);
+
+        results = apartments.findAllSorted(Sort.asc("quarters.length"));
+        assertEquals(4, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        results = apartments.findAllSorted(Sort.asc("quarters_width"));
+        assertEquals(4, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(3).occupant.firstName);
+
+        results = apartments.findByOccupied(true);
+        assertEquals(1, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+
+        results = apartments.findByOccupantLastNameOrderByFirstName("Smith");
+        assertEquals(4, results.size());
+        assertEquals("Brent", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(1).occupant.firstName);
+        assertEquals("Kyle", results.get(2).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        // Colliding non-delimited attribute name quartersWidth, ensure we use entity attribute and not embedded attribute for query
+        results = apartments.findByQuartersWidth(15);
+        assertEquals(4, results.size());
+        assertEquals("Brent", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(1).occupant.firstName);
+        assertEquals("Kyle", results.get(2).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        try {
+            apartments.findAllCollidingEmbeddable();
+            fail("Should not have been able to execute query on an entity with colliding attibute name from embeddable");
+        } catch (MappingException e) {
+            //expected
+        }
+
+        try {
+            apartments.findAllCollidingSuperclass();
+            fail("Should not have been able to execute query on an entity with colliding attibute name from superclass");
+        } catch (MappingException e) {
+            // expected
+        }
     }
 
     /**
