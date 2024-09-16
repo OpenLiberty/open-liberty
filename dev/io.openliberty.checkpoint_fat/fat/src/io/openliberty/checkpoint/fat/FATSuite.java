@@ -203,8 +203,10 @@ public class FATSuite {
 
     public static RepeatTests defaultMPRepeat(String serverName) {
         return MicroProfileActions.repeat(serverName,
-                                          MicroProfileActions.MP61, // first test in LITE mode
-                                          MicroProfileActions.MP41, // rest are FULL mode
+                                          MicroProfileActions.MP70_EE10, // first test in LITE mode
+                                          MicroProfileActions.MP70_EE11, // rest are FULL mode
+                                          MicroProfileActions.MP61,
+                                          MicroProfileActions.MP41,
                                           MicroProfileActions.MP50);
     }
 }
