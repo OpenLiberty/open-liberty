@@ -42,7 +42,9 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.persistence.mbean.DDLGenerationMBean;
+import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TrConfigurator;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.location.WsResource;
@@ -56,6 +58,7 @@ import com.ibm.wsspi.persistence.DDLGenerationWriter;
 @Component(service = { DDLGenerationMBean.class, DynamicMBean.class }, immediate = true, property = { "service.vendor=IBM",
                                                                                                       "jmx.objectname=" + DDLGenerationMBean.OBJECT_NAME })
 public class DDLGenerationMBeanImpl extends StandardMBean implements DDLGenerationMBean {
+    private static final TraceComponent tc = Tr.register(DDLGenerationMBeanImpl.class);
     private static final String OUTPUT_DIR = WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR + "ddl" + File.separator;
 
     private static final String KEY_GENERATOR = "generator";
@@ -135,23 +138,43 @@ public class DDLGenerationMBeanImpl extends StandardMBean implements DDLGenerati
             // We'll request the DDL be written to a file whose name is chosen by the component providing the service.
             ServiceAndServiceReferencePair<DDLGenerationParticipant> generatorPair = i.next();
             DDLGenerationParticipant generator = generatorPair.getService();
-            String rawId = generator.getDDLFileName();
 
-            // Remove any restricted characters from the file name, and make sure
-            // that the resulting string is not empty.  If it's empty, supply a
-            // default name.
-            String id = (rawId != null) ? PathUtils.replaceRestrictedCharactersInFileName(rawId) : null;
-            if ((id == null) || (id.length() == 0)) {
-                throw new IllegalArgumentException("Service " + generator.toString() + " DDL file name: " + rawId);
-            }
+            try {
+                String rawId = generator.getDDLFileName();
 
-            // Support multiple participants choosing the same file name
-            List<DDLGenerationParticipant> participantList = participants.get(id);
-            if (participantList == null) {
-                participantList = new ArrayList<DDLGenerationParticipant>();
-                participants.put(id, participantList);
+                // A participant may elect to not provide DDL by returning null for the file name.
+                // Skip the participant by not adding to participant list and continue without error.
+                if (rawId == null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "Service " + generator.toString() + " DDL file name: " + rawId + " : skipping");
+                    continue;
+                }
+
+                // Remove any restricted characters from the file name, and make sure
+                // that the resulting string is not empty. If null or empty, log an
+                // exception to FFDC, mark the command in error, and do not call to
+                // generate DDL for a participant without a valid file name.
+                String id = PathUtils.replaceRestrictedCharactersInFileName(rawId);
+                if ((id == null) || (id.length() == 0)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "Service " + generator.toString() + " DDL file name null or empty : skipping with error");
+                    throw new IllegalArgumentException("Service " + generator.toString() + " DDL file name null or empty");
+                }
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "Service " + generator.toString() + " DDL file name: " + id);
+
+                // Support multiple participants choosing the same file name
+                List<DDLGenerationParticipant> participantList = participants.get(id);
+                if (participantList == null) {
+                    participantList = new ArrayList<DDLGenerationParticipant>();
+                    participants.put(id, participantList);
+                }
+                participantList.add(generator);
+            } catch (Throwable t) {
+                // We'll get an FFDC here... indicate that we had trouble; continue to next generator.
+                success = false;
             }
-            participantList.add(generator);
         }
 
         for (Map.Entry<String, List<DDLGenerationParticipant>> entry : participants.entrySet()) {
