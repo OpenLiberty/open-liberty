@@ -2502,13 +2502,6 @@ public class QueryInfo {
 
                         // TODO remove this workaround for #28931 once fixed
                         boolean insertEntityVar = !entityInfo.relationAttributeNames.isEmpty();
-                        if (!insertEntityVar)
-                            for (int i = startAt; !insertEntityVar && i < length; i++)
-                                switch (ql.charAt(i)) {
-                                    case '(': // TODO remove this workaround for #28908 once fixed
-                                        insertEntityVar = ql.regionMatches(true, i - 2, "ID", 0, 2);
-                                        break;
-                                }
                         if (insertEntityVar) {
                             entityVar = "o";
                             entityVar_ = "o.";
