@@ -29,7 +29,6 @@ import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
 import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -43,7 +42,7 @@ public class WebProfileJSPWithELTest {
     public static final String SERVER_NAME = "webProfileJSPWithEL";
 
     @ClassRule
-    public static RepeatTests r1 = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE11, EERepeatActions.EE10, EERepeatActions.EE9, EERepeatActions.EE8);
+    public static RepeatTests r1 = FATSuite.defaultEERepeat(SERVER_NAME);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

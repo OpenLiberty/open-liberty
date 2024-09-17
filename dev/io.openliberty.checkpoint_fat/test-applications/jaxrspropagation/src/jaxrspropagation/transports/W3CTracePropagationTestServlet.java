@@ -19,23 +19,24 @@ import static org.junit.Assert.assertThat;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-import jaxrspropagation.common.PropagationHeaderClient;
-import jaxrspropagation.common.PropagationHeaderEndpoint;
-import jaxrspropagation.spanexporter.TestSpans;
-import jaxrspropagation.spanexporter.InMemorySpanExporter;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.baggage.BaggageEntryMetadata;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.sdk.trace.data.SpanData;
-import jakarta.inject.Inject;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServletRequest;
+import jaxrspropagation.common.PropagationHeaderClient;
+import jaxrspropagation.common.PropagationHeaderEndpoint;
+import jaxrspropagation.spanexporter.InMemorySpanExporter;
+import jaxrspropagation.spanexporter.TestSpans;
 
 @SuppressWarnings("serial")
 @WebServlet("/testW3cTracePropagation")

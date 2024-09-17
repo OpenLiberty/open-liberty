@@ -22,23 +22,22 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.junit.rules.RuleChain;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
-import componenttest.rules.repeater.FeatureReplacementAction;
 
 @RunWith(FATRunner.class)
 @CheckpointTest
@@ -51,9 +50,7 @@ public class AuditTest extends FATServletClient {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly())
-                    .andWith(new JakartaEE10Action().forServers(SERVER_NAME).fullFATOnly());
+    public static RepeatTests r = FATSuite.defaultEERepeat(SERVER_NAME);
 
     /**
      * Need the first repeat to make sure that audit-2.0 from a previous repeat gets put back to audit-1.0
@@ -66,7 +63,7 @@ public class AuditTest extends FATServletClient {
 
     @BeforeClass
     public static void copyAppToDropins() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, APP_NAME);
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, APP_NAME);
         FATSuite.copyAppsAppToDropins(server, APP_NAME);
     }
 

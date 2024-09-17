@@ -50,6 +50,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.LocalFile;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.SSL;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -59,8 +60,6 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -84,13 +83,11 @@ public class SSLTest {
     public TestMethod testMethod;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification() //
-                    .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly()) //
-                    .andWith(new JakartaEE10Action().forServers(SERVER_NAME).fullFATOnly());
+    public static RepeatTests repeatTest = FATSuite.defaultEERepeat(SERVER_NAME);
 
     @Before
     public void beforeEach() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "app2");
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "app2");
         FATSuite.copyAppsAppToDropins(server, APP_NAME);
         testMethod = getTestMethod(TestMethod.class, testName);
         configureBeforeCheckpoint();

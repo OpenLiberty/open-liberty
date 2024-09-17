@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -52,6 +52,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.BasicRegistry;
 import com.ibm.websphere.simplicity.config.BasicRegistry.Group.Member;
 import com.ibm.websphere.simplicity.config.BasicRegistry.User;
@@ -60,11 +61,9 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import appsecurity.AppsecurityBean;
 import appsecurity.AppsecurityServlet;
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -86,9 +85,7 @@ public class AppsecurityTest extends FATServletClient {
     private TestMethod testMethod;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification() //
-                    .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly()) //
-                    .andWith(new JakartaEE10Action().forServers(SERVER_NAME).fullFATOnly());
+    public static RepeatTests repeatTest = FATSuite.defaultEERepeat(SERVER_NAME);
 
     @BeforeClass
     public static void createAppAndExportToServer() throws Exception {
@@ -102,7 +99,7 @@ public class AppsecurityTest extends FATServletClient {
                         .addAsWebResource(new File("test-applications/appsecurity/resources/error.html"))
                         .addAsWebResource(new File("test-applications/appsecurity/resources/error403.html"))
                         .addAsWebInfResource(new File("test-applications/appsecurity/resources/WEB-INF/web.xml"));
-        ShrinkHelper.exportAppToServer(server, appsecurityApp);
+        ShrinkHelper.exportAppToServer(server, appsecurityApp, DeployOptions.OVERWRITE);
     }
 
     @Before
