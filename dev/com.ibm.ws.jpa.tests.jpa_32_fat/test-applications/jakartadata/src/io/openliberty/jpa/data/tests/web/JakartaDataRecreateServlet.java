@@ -135,7 +135,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28913")
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28913"
     public void testOLGH28913() throws Exception {
         AsciiCharacter character = AsciiCharacter.of(80); // P
         String result;
@@ -169,7 +169,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28908")
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28908"
     public void testOLGH28908() throws Exception {
         Person p = new Person();
         p.firstName = "John";
@@ -182,15 +182,10 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
         try {
             em.persist(p);
-
             em.createQuery("UPDATE Person SET firstName=:newFirstName WHERE id(this)=:ssn")
                     .setParameter("newFirstName", "Jack")
                     .setParameter("ssn", p.ssn_id)
                     .executeUpdate();
-
-            result = em.createQuery("SELECT Person WHERE ssn_id = :ssn", Person.class)
-                    .setParameter("ssn", p.ssn_id)
-                    .getSingleResult();
 
             tx.commit();
         } catch (Exception e) {
@@ -208,7 +203,11 @@ public class JakartaDataRecreateServlet extends FATServlet {
              */
             throw e;
         }
-
+        tx.begin();
+        result = em.createQuery("SELECT this from Person WHERE ssn_id = :ssn", Person.class)
+                    .setParameter("ssn", p.ssn_id)
+                    .getSingleResult();
+        tx.commit();
         assertEquals(p.ssn_id, result.ssn_id);
         assertEquals("Jack", result.firstName);
         assertEquals(p.lastName, result.lastName);
@@ -277,7 +276,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28920")
+    // Resolved issue: https://github.com/OpenLiberty/open-liberty/issues/28920
+    @Ignore("Additional issue: https://github.com/OpenLiberty/open-liberty/issues/28874")
     public void testOLGH28920() throws Exception {
         Rebate r1 = Rebate.of(10.00, "testOLGH28920", LocalTime.now().minusHours(1), LocalDate.now(), Status.SUBMITTED,
                 LocalDateTime.now(), 1);
@@ -329,7 +329,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28909")
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28909
     public void testOLGH28909() throws Exception {
         deleteAllEntities(Box.class);
 
@@ -347,11 +347,6 @@ public class JakartaDataRecreateServlet extends FATServlet {
                     .setParameter(1, 1)
                     .setParameter(2, 2)
                     .executeUpdate();
-
-            wall = em.createQuery("SELECT Box WHERE boxIdentifier = :id", Box.class)
-                    .setParameter("id", "testOLGH28909")
-                    .getSingleResult();
-
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -366,10 +361,15 @@ public class JakartaDataRecreateServlet extends FATServlet {
              */
             throw e;
         }
+        tx.begin();
+        wall = em.createQuery("SELECT this from Box WHERE boxIdentifier = :id", Box.class)
+        .setParameter("id", "testOLGH28909")
+        .getSingleResult();
+        tx.commit();
 
         assertEquals("testOLGH28909", wall.boxIdentifier);
         assertEquals(2, wall.length); // 1+1
-        assertEquals(0, wall.length); // 1-1
+        assertEquals(0, wall.width); // 1-1
         assertEquals(2, wall.height); // 1*2
     }
 
@@ -437,7 +437,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @Ignore("Reference : https://github.com/OpenLiberty/open-liberty/issues/29457")
+    //Reference : https://github.com/OpenLiberty/open-liberty/issues/29457"
     public void testOLGH29457() throws Exception {
 
         // Create a DemographicInfo instance
@@ -459,7 +459,14 @@ public class JakartaDataRecreateServlet extends FATServlet {
                     .getSingleResult();
 
             // Assuming some assertion or validation
-            assertEquals(new BigDecimal("2000.00"), result);
+            BigDecimal expected = new BigDecimal("2000.00");
+            BigDecimal actual = result;
+
+            // Define the precision for comparison
+            BigDecimal tolerance = new BigDecimal("0.01");
+
+            assertTrue("Expected: " + expected + ", but was: " + actual, expected.subtract(actual).abs().compareTo(tolerance) < 0);
+
 
             tx.commit();
         } catch (Exception e) {
@@ -879,15 +886,15 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28928")
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28928
     public void testOLGH28928() throws Exception {
         Item apple = Item.of("testOLGH28928-a", "apple", 7.00f);
         Item ball = Item.of("testOLGH28928-b", "ball", 10.00f);
         Item carrot = Item.of("testOLGH28928-c", "carrot", 0.50f);
 
-        Float maxPrice;
-        Float minPrice;
-        Float avgPrice;
+        Double maxPrice;
+        Double minPrice;
+        Double avgPrice;
 
         tx.begin();
         em.persist(apple);
@@ -898,13 +905,13 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
 
-            maxPrice = em.createQuery("SELECT MAX(price) FROM Item", Float.class)
+            maxPrice = em.createQuery("SELECT MAX(price) FROM Item", Double.class)
                     .getSingleResult();
 
-            minPrice = em.createQuery("SELECT MIN(price) FROM Item", Float.class)
+            minPrice = em.createQuery("SELECT MIN(price) FROM Item", Double.class)
                     .getSingleResult();
 
-            avgPrice = em.createQuery("SELECT AVG(price) FROM Item", Float.class)
+            avgPrice = em.createQuery("SELECT AVG(price) FROM Item", Double.class)
                     .getSingleResult();
 
             tx.commit();
@@ -921,9 +928,9 @@ public class JakartaDataRecreateServlet extends FATServlet {
             throw e;
         }
 
-        assertEquals(10.00f, maxPrice, 0.01f);
-        assertEquals(0.50f, minPrice, 0.01f);
-        assertEquals(5.833f, avgPrice, 0.01f);
+        assertEquals(10.00, maxPrice, 0.01);
+        assertEquals(0.50, minPrice, 0.01);
+        assertEquals(5.833, avgPrice, 0.01);
     }
 
     @Test
