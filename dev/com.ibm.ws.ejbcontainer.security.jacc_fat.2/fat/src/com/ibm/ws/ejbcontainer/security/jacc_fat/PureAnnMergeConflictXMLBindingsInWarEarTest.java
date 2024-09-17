@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -27,6 +28,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 
 /**
  * Performs testing of EJB pure annotations with a Stateless bean and role definitions split across server.xml and ibm-application-bnd.xml
@@ -53,6 +55,9 @@ public class PureAnnMergeConflictXMLBindingsInWarEarTest extends EJBAnnTestBase 
 
     @Rule
     public TestName name = new TestName();
+
+    @ClassRule
+    public static RepeatTests r = FATSuite.defaultRepeat(Constants.SERVER_EJB_MERGE_BINDINGS);
 
     @BeforeClass
     public static void setUp() throws Exception {

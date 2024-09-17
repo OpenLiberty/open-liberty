@@ -20,7 +20,8 @@ fat.project: true
 
 tested.features: \
 	jacc-1.5, expressionLanguage-4.0, appsecurity-4.0, servlet-5.0, cdi-3.0, enterpriseBeansLite-4.0, appAuthorization-2.0, \
-	expressionLanguage-5.0, appsecurity-5.0, servlet-6.0, cdi-4.0, appAuthorization-2.1, jsonp-2.1, appAuthorization-3.0
+	expressionLanguage-5.0, appsecurity-5.0, servlet-6.0, cdi-4.0, appAuthorization-2.1, jsonp-2.1, appSecurity-3.0, cdi-2.0, el-3.0, \
+	expressionLanguage-6.0, appSecurity-6.0, noShip-1.0, appAuthorization-3.0, cdi-4.1, servlet-6.1, checkpoint
 
 -buildpath: \
     com.ibm.json4j;version=latest,\
