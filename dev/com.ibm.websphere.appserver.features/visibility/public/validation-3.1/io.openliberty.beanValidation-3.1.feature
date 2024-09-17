@@ -44,7 +44,7 @@ IBM-SPI-Package: \
   com.ibm.ws.beanvalidation.v20.jakarta, \
   com.ibm.ws.org.jboss.logging, \
   com.ibm.ws.com.fasterxml.classmate, \
-  io.openliberty.org.hibernate.validator.7.0
+  io.openliberty.org.hibernate.validator.9.0
 kind=beta
 edition=core
 WLP-Activation-Type: parallel

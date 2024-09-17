@@ -7,11 +7,11 @@ biz.aQute.bnd:biz.aQute.bnd:7.0.0
 cglib:cglib:3.3.0
 ch.qos.logback:logback-classic:1.2.3
 com.beust:jcommander:1.72
-com.cloudant:cloudant-client:2.20.1
 com.cloudant:cloudant-client:2.16.0
+com.cloudant:cloudant-client:2.20.1
 com.cloudant:cloudant-client:2.8.0
-com.cloudant:cloudant-http:2.20.1
 com.cloudant:cloudant-http:2.16.0
+com.cloudant:cloudant-http:2.20.1
 com.cloudant:cloudant-http:2.8.0
 com.fasterxml.jackson.core:jackson-annotations:2.15.2
 com.fasterxml.jackson.core:jackson-core:2.15.2
@@ -718,8 +718,10 @@ org.hibernate.common:hibernate-commons-annotations:5.1.0.Final
 org.hibernate.orm:hibernate-core:7.0.0.Alpha2
 org.hibernate.validator:hibernate-validator-cdi:6.2.5.Final
 org.hibernate.validator:hibernate-validator-cdi:7.0.4.Final
+org.hibernate.validator:hibernate-validator-cdi:9.0.0.Beta3
 org.hibernate.validator:hibernate-validator:6.2.5.Final
 org.hibernate.validator:hibernate-validator:7.0.4.Final
+org.hibernate.validator:hibernate-validator:9.0.0.Beta3
 org.hibernate:hibernate-core:5.2.17.Final
 org.hibernate:hibernate-search-engine:5.11.2.Final
 org.infinispan:infinispan-client-hotrod:13.0.10.Final
