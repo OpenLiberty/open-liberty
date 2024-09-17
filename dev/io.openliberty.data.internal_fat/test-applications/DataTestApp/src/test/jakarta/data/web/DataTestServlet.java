@@ -5340,24 +5340,21 @@ public class DataTestServlet extends FATServlet {
         PageRequest page1req = PageRequest.ofSize(3).withTotal();
 
         // query with no clauses
-        // TODO blocked by 28913
-        //page1 = receipts.all(page1req, Order.by(Sort.asc(ID)));
-        //assertEquals(5, page1.totalElements());
+        page1 = receipts.all(page1req, Order.by(Sort.asc(ID)));
+        assertEquals(5, page1.totalElements());
 
         receipts.insert(new Receipt(5006, "TCFQWSCO-5", 56.56f));
 
         // query with FROM clause only
-        // TODO blocked by 28913
-        //page1 = receipts.all(page1req, Sort.desc(ID));
-        //assertEquals(6, page1.totalElements());
+        page1 = receipts.all(page1req, Sort.desc(ID));
+        assertEquals(6, page1.totalElements());
 
         receipts.insert(new Receipt(5007, "TCFQWSCO-7", 57.17f));
 
         // query with FROM clause only
-        // TODO blocked by 28913
-        //page1 = receipts.sortedByTotalIncreasing(page1req);
-        //assertEquals(7, page1.totalElements());
-        //assertEquals(5003, page1.iterator().next().purchaseId());
+        page1 = receipts.sortedByTotalIncreasing(page1req);
+        assertEquals(7, page1.totalElements());
+        assertEquals(5003, page1.iterator().next().purchaseId());
 
         receipts.insert(new Receipt(5008, "TCFQWSCO-8", 58.88f));
 
