@@ -408,17 +408,6 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
 
             collectEntityInfo(entityTypes);
 
-            // Register as a DDL generator for use by the ddlGen command and add to list for cleanup on application stop
-            BundleContext thisbc = FrameworkUtil.getBundle(getClass()).getBundleContext();
-            ServiceRegistration<DDLGenerationParticipant> ddlgenreg = thisbc.registerService(DDLGenerationParticipant.class, this, null);
-            Queue<ServiceRegistration<DDLGenerationParticipant>> ddlgenRegistrations = provider.ddlgeneratorsAllApps.get(application);
-            if (ddlgenRegistrations == null) {
-                Queue<ServiceRegistration<DDLGenerationParticipant>> empty = new ConcurrentLinkedQueue<>();
-                if ((ddlgenRegistrations = provider.ddlgeneratorsAllApps.putIfAbsent(application, empty)) == null)
-                    ddlgenRegistrations = empty;
-            }
-            ddlgenRegistrations.add(ddlgenreg);
-
         } catch (RuntimeException x) {
             for (Class<?> entityClass : entityTypes)
                 entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
@@ -701,8 +690,10 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
      */
     @Override
     public void generate(Writer out) throws Exception {
+        // Note that exceptions thrown here or by the persistence service will be logged by the
+        // direct caller (FutureEMBuilder) or the DDL generation MBean.
         if (persistenceServiceUnit == null) {
-            throw new IllegalStateException("PersistenceUnit has not benn initialized.");
+            throw new IllegalStateException("EntityManagerFactory for Jakarta Data repository has not been initialized for the " + databaseStoreId + " DatabaseStore.");
         }
         persistenceServiceUnit.generateDDL(out);
     }
