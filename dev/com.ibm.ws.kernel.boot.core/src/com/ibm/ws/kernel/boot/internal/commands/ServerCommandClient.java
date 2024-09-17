@@ -431,4 +431,8 @@ public class ServerCommandClient extends ServerCommand {
             Utils.tryToClose(channel);
         }
     }
+
+    public char getDelim(){
+        return DELIM;
+    }
 }

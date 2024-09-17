@@ -701,7 +701,7 @@ public class ProcessControlHelper {
         return resumeRc;
     }
 
-        /**
+    /**
      * Resume inbound work to the server.
      *
      * @return
@@ -735,7 +735,16 @@ public class ProcessControlHelper {
                     }
 
                     output = scc.compStatus(targetParm);
-                    compStatusRc = ReturnCode.OK;
+                    if(output.indexOf("#") != -1){
+                        //set the return code and remove it from output string
+                        int returnCode = Integer.parseInt(output.substring(output.indexOf("#") + 1).trim());
+                        compStatusRc = ReturnCode.getEnum(returnCode);
+                        output = output.substring(0, output.indexOf("#"));
+                    }
+                    else{
+                        // Something went wrong when communicating with server...
+                        compStatusRc = ReturnCode.SERVER_UNKNOWN_STATUS;
+                    }
                 } else {
                     // We can't communicate to the server...
                     compStatusRc = ReturnCode.SERVER_UNKNOWN_STATUS;
@@ -749,17 +758,13 @@ public class ProcessControlHelper {
             compStatusRc = ReturnCode.SERVER_UNKNOWN_STATUS;
         }
 
-        if (compStatusRc == ReturnCode.OK) {
-            if (targetParm != null) {
-                System.out.println(output);
-            } else {
-                System.out.println(output);
-            }
-        } else if (compStatusRc == ReturnCode.SERVER_UNKNOWN_STATUS) {
+        System.out.println(output);
+        
+        if (compStatusRc == ReturnCode.SERVER_UNKNOWN_STATUS) {
             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverNotRunning"), serverName));
         } else if (compStatusRc == ReturnCode.SERVER_COMMAND_PORT_DISABLED_STATUS) {
             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.server.resume.command.port.disabled"), serverName));
-        } else {
+        } else if (compStatusRc != ReturnCode.OK){
             if (targetParm != null) {
                 System.out.println("Component status failed in " + serverName);
             } else {

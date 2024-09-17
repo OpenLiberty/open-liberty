@@ -479,13 +479,16 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
 
     @Override
     public String componentStatus(String targets){
+        StringBuilder output = new StringBuilder();
+
+        if (tracker.getTracked().isEmpty()) {
+            output.append(Tr.formatMessage(tc, "warning.server.resume.no.targets") + "\n");
+            return output.toString();
+        }
+
         Set<String> foundTargets = new HashSet<String>();
-
         Set<String> targetList = createTargetList(targets);
-
         boolean allTargets = targetList.isEmpty();
-
-        String output = "";
 
         //Add each pauseable component to this list. If the tracked values get modified
         //while we are iterating and we start over, skip anyone already in this list
@@ -502,7 +505,7 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
                             if (targetList.contains(pauseableComponent.getName()) || allTargets) {
                                 foundTargets.add(pauseableComponent.getName());
 
-                                output += "Target " + pauseableComponent.getName() + " paused: " + pauseableComponent.isPaused() + "\n";
+                                output.append("Target " + pauseableComponent.getName() + " paused: " + pauseableComponent.isPaused() + "\n");
                             }
                         }
                     }
@@ -513,7 +516,16 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
                 }
             }
         }
-        return output;
+
+        //Check which (if any) targets were not found
+        boolean targetsNotFound = false;
+        targetList.removeAll(foundTargets);
+        if (!targetList.isEmpty()) {
+            targetsNotFound = true;
+            output.append(Tr.formatMessage(tc, "warning.server.resume.missing.targets", Arrays.toString(targetList.toArray())) + "\n");
+        }
+
+        return output.toString();
     }
 
     /**
