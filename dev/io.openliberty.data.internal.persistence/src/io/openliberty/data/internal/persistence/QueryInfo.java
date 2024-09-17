@@ -2820,17 +2820,6 @@ public class QueryInfo {
             // TODO remove this workaround for #28925 once fixed
             else if (jpql.equals("SELECT ID(THIS) FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR ID(THIS)=:num)"))
                 jpql = "SELECT o.numberId FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR o.numberId=:num)";
-            // TODO remove this workaround for #28928 once fixed
-            else if (jpql.equals("SELECT MAX(price) FROM Item"))
-                jpql = "SELECT MAX(this.price) FROM Item";
-            else if (jpql.equals("SELECT MIN(price) FROM Item"))
-                jpql = "SELECT MIN(this.price) FROM Item";
-            else if (jpql.equals("SELECT AVG(price) FROM Item"))
-                jpql = "SELECT AVG(this.price) FROM Item";
-            else if (jpql.equals("SELECT SUM(DISTINCT price) FROM Item"))
-                jpql = "SELECT SUM(DISTINCT this.price) FROM Item";
-            else if (jpql.equals("SELECT NEW test.jakarta.data.experimental.web.ItemCount(COUNT(name), COUNT(description), COUNT(price)) FROM Item"))
-                jpql = "SELECT NEW test.jakarta.data.experimental.web.ItemCount(COUNT(this.name), COUNT(this.description), COUNT(this.price)) FROM Item";
         }
     }
 
