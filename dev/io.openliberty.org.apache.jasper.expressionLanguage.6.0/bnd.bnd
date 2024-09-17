@@ -28,8 +28,7 @@ Export-Package: org.apache.el;thread-context=true;version=${Implementation-Versi
 Import-Package: \
     jakarta.el; version=6.0.0, \
     *
-# Set this to 5.0.0 for now until other EE11 features such as Security, CDI and Faces update
-# to depend on Expression Language 6.0.
+
 Require-Capability: osgi.contract;
  filter:="(&(osgi.contract=JakartaExpressionLanguage)(version=6.0.0))"
 

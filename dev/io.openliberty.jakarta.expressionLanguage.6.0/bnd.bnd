@@ -21,9 +21,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 Export-Package: \
  jakarta.el;thread-context=true; version="6.0.0"
 
-# Set this to 5.0.0 for now until other EE11 features such as Security, CDI and Faces update
-# to depend on Expression Language 6.0.
- Provide-Capability: \
+Provide-Capability: \
    osgi.contract;\
        osgi.contract=JakartaExpressionLanguage;\
        version:Version=6.0.0;\
