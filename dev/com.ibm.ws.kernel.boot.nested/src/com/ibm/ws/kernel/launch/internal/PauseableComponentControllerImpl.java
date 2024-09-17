@@ -69,6 +69,8 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
 
         Tr.info(tc, "info.server.pause.all.request.received");
 
+        getPauseableComponents();
+
         Set<String> failed = new HashSet<String>();
 
         if (tracker.getTracked().isEmpty()) {
@@ -126,6 +128,8 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
     public void pause(String targets) throws PauseableComponentControllerRequestFailedException {
 
         Tr.info(tc, "info.server.pause.request.received", targets);
+
+        getPauseableComponents();
 
         Set<String> foundTargets = new HashSet<String>();
 
@@ -206,6 +210,8 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
 
         Tr.info(tc, "info.server.resume.all.request.received");
 
+        getPauseableComponents();
+
         Set<String> failed = new HashSet<String>();
 
         if (tracker.getTracked().isEmpty()) {
@@ -262,6 +268,8 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
     public void resume(String targets) throws PauseableComponentControllerRequestFailedException {
 
         Tr.info(tc, "info.server.resume.request.received", targets);
+
+        getPauseableComponents();
 
         Set<String> foundTargets = new HashSet<String>();
 
@@ -462,8 +470,62 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
     @Override
     public Collection<PauseableComponent> getPauseableComponents() {
 
+        for(PauseableComponent pc : tracker.getTracked().values()){
+            System.out.println(pc.getName());
+        }
         return tracker.getTracked().values();
 
+    }
+
+    @Override
+    public String componentStatus(String targets){
+        StringBuilder output = new StringBuilder();
+
+        if (tracker.getTracked().isEmpty()) {
+            output.append(Tr.formatMessage(tc, "warning.server.resume.no.targets") + "\n");
+            return output.toString();
+        }
+
+        Set<String> foundTargets = new HashSet<String>();
+        Set<String> targetList = createTargetList(targets);
+        boolean allTargets = targetList.isEmpty();
+
+        //Add each pauseable component to this list. If the tracked values get modified
+        //while we are iterating and we start over, skip anyone already in this list
+        Set<PauseableComponent> processedList = new HashSet<PauseableComponent>();
+
+        // Sync with other methods changing/querying states for PauseableComponents
+        synchronized (this) {
+            while (true) {
+                try {
+                    for (PauseableComponent pauseableComponent : tracker.getTracked().values()) {
+
+                        if (processedList.add(pauseableComponent)) {
+
+                            if (targetList.contains(pauseableComponent.getName()) || allTargets) {
+                                foundTargets.add(pauseableComponent.getName());
+
+                                output.append("Target " + pauseableComponent.getName() + " paused: " + pauseableComponent.isPaused() + "\n");
+                            }
+                        }
+                    }
+
+                    break;
+                } catch (Throwable t) {
+                    // Someone modified our list of services. Retry.
+                }
+            }
+        }
+
+        //Check which (if any) targets were not found
+        boolean targetsNotFound = false;
+        targetList.removeAll(foundTargets);
+        if (!targetList.isEmpty()) {
+            targetsNotFound = true;
+            output.append(Tr.formatMessage(tc, "warning.server.resume.missing.targets", Arrays.toString(targetList.toArray())) + "\n");
+        }
+
+        return output.toString();
     }
 
     /**

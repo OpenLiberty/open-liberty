@@ -700,4 +700,78 @@ public class ProcessControlHelper {
 
         return resumeRc;
     }
+
+    /**
+     * Resume inbound work to the server.
+     *
+     * @return
+     */
+    public ReturnCode compStatus() {
+        // Use initialized bootstrap configuration to find the server lock file.
+        ServerLock serverLock = ServerLock.createTestLock(bootProps);
+
+        // we can not pre-test the server: on some platforms, the server lock file
+        // can be deleted, which means waiting to see if it is there leads to
+        // an abandoned server.
+        ReturnCode compStatusRc = ReturnCode.COMP_STATUS_ACTION;
+        String output = "";
+
+        // The lock file may have been (erroneously) deleted: this can happen on linux
+        boolean lockExists = serverLock.lockFileExists();
+
+        String targetParm = launchArgs.getOption("target");
+        if (lockExists) {
+            // If the lock exists, check quickly to see if the process is holding it.
+            if (serverLock.testServerRunning()) {
+                // We need to tell the server to resume...
+                ServerCommandClient scc = new ServerCommandClient(bootProps);
+
+                if (scc.isValid()) {
+                    if (targetParm != null) {
+                        System.out.println("Checking status of components in " + serverName);
+                        targetParm = "target=" + targetParm;
+                    } else {
+                        System.out.println("Checking status of components in " + serverName);
+                    }
+
+                    output = scc.compStatus(targetParm);
+                    if(output.indexOf("#") != -1){
+                        //set the return code and remove it from output string
+                        int returnCode = Integer.parseInt(output.substring(output.indexOf("#") + 1).trim());
+                        compStatusRc = ReturnCode.getEnum(returnCode);
+                        output = output.substring(0, output.indexOf("#"));
+                    }
+                    else{
+                        // Something went wrong when communicating with server...
+                        compStatusRc = ReturnCode.SERVER_UNKNOWN_STATUS;
+                    }
+                } else {
+                    // We can't communicate to the server...
+                    compStatusRc = ReturnCode.SERVER_UNKNOWN_STATUS;
+                }
+            } else {
+                // nope: lock not held, server not up
+                compStatusRc = ReturnCode.SERVER_UNKNOWN_STATUS;
+            }
+        } else {
+            // no lock file: we assume the server is not running, we have nothing to do.
+            compStatusRc = ReturnCode.SERVER_UNKNOWN_STATUS;
+        }
+
+        System.out.println(output);
+        
+        if (compStatusRc == ReturnCode.SERVER_UNKNOWN_STATUS) {
+            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverNotRunning"), serverName));
+        } else if (compStatusRc == ReturnCode.SERVER_COMMAND_PORT_DISABLED_STATUS) {
+            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.server.resume.command.port.disabled"), serverName));
+        } else if (compStatusRc != ReturnCode.OK){
+            if (targetParm != null) {
+                System.out.println("Component status failed in " + serverName);
+            } else {
+                System.out.println("Component status failed in " + serverName);
+            }
+        }
+
+        return compStatusRc;
+    }
 }

@@ -68,4 +68,8 @@ public interface PauseableComponentController {
      */
     boolean isActive(String targets);
 
+    /**
+     * Status of components
+     */
+    String componentStatus(String targets);
 }

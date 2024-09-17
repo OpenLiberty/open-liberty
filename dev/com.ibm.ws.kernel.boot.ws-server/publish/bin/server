@@ -1981,6 +1981,19 @@ case "$ACTION" in
     fi    
   ;;
 
+  # get status of components of the server
+  compstatus)
+    serverEnv
+    # Check to see if the server exists
+    if checkServer true
+    then
+      javaCmd '' "${SERVER_NAME}" --compStatus "$@" 
+      exit $?
+    else
+      exit 2
+    fi    
+  ;;
+
   # resume the server
   resume)
     serverEnv

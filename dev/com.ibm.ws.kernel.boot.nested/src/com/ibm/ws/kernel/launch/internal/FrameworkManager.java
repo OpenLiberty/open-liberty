@@ -1490,4 +1490,39 @@ public class FrameworkManager {
 
         return ReturnCode.OK;
     }
+
+    public String compStatusListeners(String args) {
+        String response = "";
+
+        // A registered service for delivering pause/resume requests to interested Components.
+        PauseableComponentController pauseableComponentController;
+
+        ServiceReference<PauseableComponentController> reference = systemBundleCtx.getServiceReference(PauseableComponentController.class);
+        pauseableComponentController = reference == null ? null : systemBundleCtx.getService(reference);
+        if (pauseableComponentController == null) {
+            System.out.println("Error comp status request failed");
+            response = "#" + ReturnCode.ERROR_SERVER_COMP_STATUS.getValue();
+            return response;
+        }
+
+        if (args == null) {
+            response = pauseableComponentController.componentStatus("");
+
+        } else {
+            String targetList = args.substring(args.indexOf("=") + 1);
+            response = pauseableComponentController.componentStatus(targetList);
+        }
+
+        if(response.contains("CWWKE")){
+            response += "#" + ReturnCode.ERROR_SERVER_COMP_STATUS.getValue();
+        }
+        else{
+            response += "#" + ReturnCode.OK.getValue();
+        }
+
+        System.out.println(response);
+
+
+        return response;
+    }
 }
