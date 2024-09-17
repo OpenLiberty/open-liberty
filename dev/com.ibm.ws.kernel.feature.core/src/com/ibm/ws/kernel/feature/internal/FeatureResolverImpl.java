@@ -388,7 +388,8 @@ public class FeatureResolverImpl implements FeatureResolver {
                 if (map.containsKey(compatibilityFeature)) {
                     map.get(compatibilityFeature).retainAll(featuresPlatforms);
                 } else {
-                    map.put(compatibilityFeature, new HashSet<String>(featuresPlatforms));
+                    if (compatibilityFeature != null)
+                        map.put(compatibilityFeature, new HashSet<String>(featuresPlatforms));
                 }
             }
         }
