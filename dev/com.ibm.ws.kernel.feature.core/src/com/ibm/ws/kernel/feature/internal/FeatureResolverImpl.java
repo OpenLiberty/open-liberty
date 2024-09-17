@@ -379,7 +379,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 String[] nav = parseNameAndVersion(wlpPlatform.get(0));
                 String compatibilityFeature = selectionContext.getCompatibilityBaseName(nav[0]);
                 List<String> featuresPlatforms = new ArrayList<String>();
-                for(String platform : wlpPlatform){
+                for (String platform : wlpPlatform) {
                     ProvisioningFeatureDefinition featureDef = allCompatibilityFeatures.get(platform.toLowerCase());
                     if (featureDef != null) {
                         featuresPlatforms.add(featureDef.getSymbolicName());
@@ -571,14 +571,14 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
 
-        if(hasRootVersionlessFeatures(repository, rootFeatures)){
+        if (hasRootVersionlessFeatures(repository, rootFeatures)) {
             selectionContext.setHasVersionlessFeatures();
             processCompatibilityFeatures(repository.getFeatures());
 
             rootPlatforms = collectConfiguredPlatforms(repository, rootPlatforms, selectionContext);
             rootPlatforms.addAll(collectEnvironmentPlatforms(repository, rootPlatforms, selectionContext));
             rootPlatforms.addAll(collectFeaturePlatforms(repository, rootPlatforms, rootFeatures, selectionContext));
-            for(String platform : rootPlatforms){
+            for (String platform : rootPlatforms) {
                 selectionContext.getResult().addResolvedPlatform(repository.getFeature(platform).getPlatformName());
             }
         }
@@ -600,11 +600,11 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         //add versionless after normal resolution for packaging
         List<String> filteredVersionless = new ArrayList<>();
-        if(allowedMultipleVersions != null && selectionContext.getHasVersionlessFeatures()){
+        if (allowedMultipleVersions != null && selectionContext.getHasVersionlessFeatures()) {
             filteredVersionless = filterVersionless(rootFeaturesList, selectionContext);
         }
         //preresolve versionless features for regular resolution
-        else if(selectionContext.getHasVersionlessFeatures()){
+        else if (selectionContext.getHasVersionlessFeatures()) {
             preresolveVersionless(rootFeaturesList, selectionContext, rootPlatforms, filteredVersionless);
         }
 
@@ -635,10 +635,9 @@ public class FeatureResolverImpl implements FeatureResolver {
         } while (!!!(autoFeaturesToInstall = processAutoFeatures(kernelFeatures, resolved, seenAutoFeatures, selectionContext)).isEmpty());
 
         //if we filtered versionless features in the pre resolution step, add them back after resolution is over.
-        if(!filteredVersionless.isEmpty() && allowedMultipleVersions != null){
+        if (!filteredVersionless.isEmpty() && allowedMultipleVersions != null) {
             addBackVersionless(filteredVersionless, selectionContext);
-        }
-        else if(selectionContext.getHasVersionlessFeatures()){
+        } else if (selectionContext.getHasVersionlessFeatures()) {
             finalizeVersionlessResults(selectionContext, filteredVersionless);
         }
 
@@ -772,20 +771,20 @@ public class FeatureResolverImpl implements FeatureResolver {
                         continue;
                     }
                     compatibilityBase = selectionContext.getCompatibilityBaseName(parseName(versionedFeature.getPlatformName()));
-                    
-                    if(multiplePlatforms.contains(compatibilityBase)){
+
+                    if (multiplePlatforms.contains(compatibilityBase)) {
                         hasMultiplePlatforms = true;
                         break;
                     }
 
-                    for(String platform : versionedFeature.getPlatformNames()){
+                    for (String platform : versionedFeature.getPlatformNames()) {
                         ProvisioningFeatureDefinition featureDef = allCompatibilityFeatures.get(platform.toLowerCase());
                         if (featureDef != null && rootPlatforms.contains(featureDef.getSymbolicName())) {
                             //found a match to the platform, add the versioned feature and filter the versionless features
                             //to be added back later
                             addFeature = true;
                             filteredVersionless.add(linkingDef.getFeatureName());
-                            if(!rootFeatures.contains(versionedFeature.getSymbolicName())){
+                            if (!rootFeatures.contains(versionedFeature.getSymbolicName())) {
                                 addedRootFeatures.add(versionedFeature.getSymbolicName());
                             }
                             break;
@@ -794,24 +793,23 @@ public class FeatureResolverImpl implements FeatureResolver {
                 }
             }
             //if the feature was not added, filter it from the features list and set the result to null
-            if(!addFeature){
-                if(!usedPlatforms.contains(compatibilityBase)){
-                    if(noPlatformFeatures.containsKey(compatibilityBase)){
+            if (!addFeature) {
+                if (!usedPlatforms.contains(compatibilityBase)) {
+                    if (noPlatformFeatures.containsKey(compatibilityBase)) {
                         noPlatformFeatures.get(compatibilityBase).add(rootFeatureDef.getFeatureName());
-                    }
-                    else{
+                    } else {
                         Set<String> featureWithoutPlatform = new HashSet<>();
                         featureWithoutPlatform.add(rootFeatureDef.getFeatureName());
                         noPlatformFeatures.put(compatibilityBase, featureWithoutPlatform);
                     }
                 }
             }
-            if(!hasMultiplePlatforms){
+            if (!hasMultiplePlatforms) {
                 filteredVersionless.add(rootFeatureDef.getFeatureName());
                 removedVersionlessFeatures.add(rootFeatureDef.getSymbolicName());
             }
             //if theres multiple platforms, store the platform to be postponed
-            else{
+            else {
                 linkingFeatureBaseNameToCompatibility.put(linkingFeatureBase, compatibilityBase);
             }
         }
@@ -824,13 +822,13 @@ public class FeatureResolverImpl implements FeatureResolver {
         rootFeatures.removeAll(removedVersionlessFeatures);
     }
 
-    static Map<String, String> linkingFeatureBaseNameToCompatibility = new HashMap<String,String>();
+    static Map<String, String> linkingFeatureBaseNameToCompatibility = new HashMap<String, String>();
 
-    static private boolean isLinkingFeature(String basename){
+    static private boolean isLinkingFeature(String basename) {
         return linkingFeatureBaseNameToCompatibility.keySet().contains(basename);
     }
 
-    static private String getLinkingFeaturesCompatibility(String basename){
+    static private String getLinkingFeaturesCompatibility(String basename) {
         return linkingFeatureBaseNameToCompatibility.get(basename);
     }
 
@@ -907,14 +905,14 @@ public class FeatureResolverImpl implements FeatureResolver {
                         if (compatibleFeature != null) {
                             String[] nav = parseNameAndVersion(compatibleFeature.getSymbolicName());
                             String compatibleFeatureName = compatibleFeature.getSymbolicName();
-                            if(shouldAddCompatibleFeature(result, compatibleFeatureName, selectionContext)){
+                            if (shouldAddCompatibleFeature(result, compatibleFeatureName, selectionContext)) {
                                 addingFeatures.add(compatibleFeatureName);
                             }
 
                             if (compatibleFeature.getTolerates() != null) {
                                 for (String version : compatibleFeature.getTolerates()) {
                                     compatibleFeatureName = nav[0] + "-" + version;
-                                    if(shouldAddCompatibleFeature(result, compatibleFeatureName, selectionContext)){
+                                    if (shouldAddCompatibleFeature(result, compatibleFeatureName, selectionContext)) {
                                         addingFeatures.add(compatibleFeatureName);
                                     }
                                 }
@@ -931,16 +929,16 @@ public class FeatureResolverImpl implements FeatureResolver {
     }
 
     /**
-     * Check result for dependencies of the compatibility feature 
+     * Check result for dependencies of the compatibility feature
      * if the dependencies are included, return true
-     * 
+     *
      * @param result
      * @param featureName
      * @return
      */
-    private boolean shouldAddCompatibleFeature(FeatureResolverResultImpl result, String featureName, SelectionContext selectionContext){
+    private boolean shouldAddCompatibleFeature(FeatureResolverResultImpl result, String featureName, SelectionContext selectionContext) {
         ProvisioningFeatureDefinition feature = selectionContext.getRepository().getFeature(featureName);
-        if(feature == null){
+        if (feature == null) {
             return false;
         }
         Collection<FeatureResource> featureDeps = feature.getConstituents(SubsystemContentType.FEATURE_TYPE);
@@ -950,7 +948,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             if (versionedFeature == null) {
                 continue;
             }
-            if(result.getResolvedFeatures().contains(versionedFeature.getFeatureName())){
+            if (result.getResolvedFeatures().contains(versionedFeature.getFeatureName())) {
                 return true;
             }
         }
@@ -1355,7 +1353,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             return true;
         }
         // if it comes from a versionless feature
-        if(selectionContext.getRepository().getFeature(chain.peekFirst()).isVersionless()){
+        if (selectionContext.getRepository().getFeature(chain.peekFirst()).isVersionless()) {
             return true;
         }
         return false;
@@ -1477,11 +1475,11 @@ public class FeatureResolverImpl implements FeatureResolver {
         private boolean triedVersionless = false;
         private boolean hasVersionlessFeatures = false;
 
-        void setHasVersionlessFeatures(){
+        void setHasVersionlessFeatures() {
             hasVersionlessFeatures = true;
         }
 
-        boolean getHasVersionlessFeatures(){
+        boolean getHasVersionlessFeatures() {
             return hasVersionlessFeatures;
         }
 
@@ -1619,8 +1617,8 @@ public class FeatureResolverImpl implements FeatureResolver {
             // a specific compatibility feature.
 
             //if versionless, check if its corresponding compatibility feature has been resolved, otherwise postpone
-            if  (isLinkingFeature(baseSymbolicName) 
-                && getSelected(getLinkingFeaturesCompatibility(baseSymbolicName)) == null){
+            if (isLinkingFeature(baseSymbolicName)
+                && getSelected(getLinkingFeaturesCompatibility(baseSymbolicName)) == null) {
 
                 addPostponed(baseSymbolicName, new Chain(chain, candidateNames, preferredVersion, symbolicName));
                 return;
@@ -1767,7 +1765,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 while (postponedVersionlessIterator.hasNext()) {
                     firstPostponedVersionless = postponedVersionlessIterator.next();
 
-                    if(getSelected(getLinkingFeaturesCompatibility(firstPostponedVersionless.getKey())) != null){
+                    if (getSelected(getLinkingFeaturesCompatibility(firstPostponedVersionless.getKey())) != null) {
                         break;
                     }
                     firstPostponedVersionless = null;
@@ -1794,7 +1792,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
                 Chain selected = null;
                 String postponedBaseName = firstPostponed.getKey();
-                if(hasVersionlessFeatures && !_current._postponedFeaturesTried.contains(postponedBaseName)){
+                if (hasVersionlessFeatures && !_current._postponedFeaturesTried.contains(postponedBaseName)) {
                     _current._postponedFeaturesTried.add(postponedBaseName);
                     selected = firstPostponed.getValue().selectTryFirst(postponedBaseName, this);
                 } else {
@@ -1971,10 +1969,14 @@ public class FeatureResolverImpl implements FeatureResolver {
                     for (String plat : feature.getPlatformNames()) {
                         Chain c = selectionContext.getSelected(selectionContext.getCompatibilityBaseName(parseName(plat)));
                         if (c != null) {
-                            if (c.getCandidates().size() == 1 && c.getCandidates().get(0).equals(allCompatibilityFeatures.get(plat.toLowerCase()).getSymbolicName())) {
+                            ProvisioningFeatureDefinition fd = allCompatibilityFeatures.get(plat.toLowerCase());
+                            if (fd == null)
+                                continue;
+                            if (c.getCandidates().size() == 1 && c.getCandidates().get(0).equals(fd.getSymbolicName())) {
                                 Chain match = match(candidate, selectedChain, selectionContext);
                                 if (match != null) {
-                                    return new Chain(selectedChain.getChain(), Collections.singletonList(candidate), feature.getVersion().toString(), selectedChain.getFeatureRequirement());
+                                    return new Chain(selectedChain.getChain(), Collections.singletonList(candidate), feature.getVersion().toString(),
+                                                     selectedChain.getFeatureRequirement());
                                 }
                             }
                         }
