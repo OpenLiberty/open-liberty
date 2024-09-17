@@ -27,8 +27,8 @@ public interface Drivers extends BasicRepository<Driver, Integer> {
 
     int deleteByFullNameEndsWith(String ending);
 
-    @OrderBy("birthday")
-    Stream<DriversLicense> findByFullNameEndsWith(String ending);
+    @OrderBy("driver.birthday")
+    Stream<DriversLicense> findByDriver_fullNameEndsWith(String ending);
 
     Driver findByLicense(DriversLicense license);
 
@@ -39,7 +39,7 @@ public interface Drivers extends BasicRepository<Driver, Integer> {
     @OrderBy("licenseExpiresOn")
     Stream<Driver> findByLicenseNotNull();
 
-    Driver findByLicenseNum(String licenseNumber);
+    Driver findByLicense_licenseNum(String licenseNumber);
 
     Stream<Driver> findByLicenseStateNameOrderByLicenseExpiresOnDesc(String state);
 }
