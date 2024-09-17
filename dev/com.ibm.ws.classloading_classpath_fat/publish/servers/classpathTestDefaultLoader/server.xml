@@ -9,5 +9,7 @@
     <enterpriseApplication location="testClassPath.ear"/>
 
     <include location="../fatTestPorts.xml"/>
+    <javaPermission codeBase="${server.config.dir}/apps/testClassPath.ear" className="java.lang.RuntimePermission" name="getClassLoader"/>
+
 </server>
 
