@@ -48,7 +48,7 @@ public class OpenAPIValidationTestTwo {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = FATSuite.repeatPre40(SERVER_NAME);
+    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
 
     private static final String OPENAPI_VALIDATION_YAML = "openapi_validation";
 
@@ -139,7 +139,7 @@ public class OpenAPIValidationTestTwo {
     @Test
     public void testOAuthFlowValidation() throws Exception {
         assertThat("The OAuthFlow Validator should have been triggered by missing \"scopes\" field",
-            server.findStringsInLogs()
+            server.findStringsInLogs(
                 "Message: Required \"scopes\" field is missing or is set to an invalid value*"),
             hasSize(3));
         assertNotEmpty("The OAuthFlow Validator should have been triggered by invalid URL",

@@ -1,5 +1,7 @@
 package com.ibm.ws.microprofile.openapi.validation.fat;
 
+import static componenttest.rules.repeater.MicroProfileActions.MP70_EE10_ID;
+import static componenttest.rules.repeater.MicroProfileActions.MP70_EE11_ID;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
@@ -17,6 +19,7 @@ import org.junit.runner.RunWith;
 import com.ibm.ws.microprofile.openapi.fat.FATSuite;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -39,7 +42,7 @@ public class OpenAPIValidationTestFour {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = FATSuite.repeatPre40(SERVER_NAME);
+    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
 
     private static final String OPENAPI_VALIDATION_YAML = "Validation";
 
@@ -65,6 +68,10 @@ public class OpenAPIValidationTestFour {
         server.stopServer("CWWKO1650E", "CWWKO1651W");
     }
 
+    @SkipForRepeat({
+        MP70_EE10_ID, // Disable for mpOpenAPI-4.0 until we have a fix for
+        MP70_EE11_ID, // https://github.com/smallrye/smallrye-open-api/issues/1987
+    })
     @Test
     public void testRef() throws Exception {
         assertNotEmpty("The Reference validator should have been triggered by the invalid reference",

@@ -14,6 +14,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.microprofile.openapi.fat.FATSuite;
 
 import componenttest.annotation.Server;
@@ -22,6 +23,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpRequest;
 import componenttest.topology.utils.HttpUtils;
 
 /**
@@ -58,7 +60,7 @@ public class OpenAPIValidationTestOne {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = FATSuite.repeatPre40(SERVER_NAME);
+    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
 
     private static final String OPENAPI_VALIDATION_YAML = "openapi_validation";
 
@@ -77,6 +79,8 @@ public class OpenAPIValidationTestOne {
         assertNotNull("The application openapi_validation was processed and an OpenAPI document was produced.",
             server.waitForStringInLog("CWWKO1660I.*and an OpenAPI document was produced.")); // wait for application to
                                                                                              // be processed
+        String openApiDoc = new HttpRequest(server, "/openapi").run(String.class);
+        Log.info(OpenAPIValidationTestOne.class, "setUpTest", "OpenAPI doc:\n" + openApiDoc);
     }
 
     @AfterClass
@@ -91,7 +95,9 @@ public class OpenAPIValidationTestOne {
         MicroProfileActions.MP41_ID,
         MicroProfileActions.MP50_ID,
         MicroProfileActions.MP60_ID,
-        MicroProfileActions.MP61_ID
+        MicroProfileActions.MP61_ID,
+        MicroProfileActions.MP70_EE10_ID,
+        MicroProfileActions.MP70_EE11_ID
     })
     public void testInfoValidation() throws Exception {
 
