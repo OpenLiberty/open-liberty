@@ -31,6 +31,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
@@ -324,7 +325,8 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
              */
             Set<Class<?>> converterTypes = new HashSet<>();
 
-            Set<Class<?>> embeddableTypes = new HashSet<>();
+            Map<Class<?>, Map<String, Class<?>>> embeddableTypes = //
+                            new LinkedHashMap<>();
 
             for (Class<?> c : entityTypes) {
                 if (c.isAnnotationPresent(Entity.class)) {
@@ -355,7 +357,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
 
                     xml.append("  <table name=\"").append(tablePrefix).append(c.getSimpleName()).append("\"/>").append(EOLN);
 
-                    writeAttributes(xml, c, embeddableTypes);
+                    writeAttributes(xml, findAttributes(c), embeddableTypes);
 
                     xml.append(" </entity>").append(EOLN);
 
@@ -363,12 +365,15 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 }
             }
 
-            for (Class<?> type : embeddableTypes) {
+            for (Entry<Class<?>, Map<String, Class<?>>> e : embeddableTypes.entrySet()) {
+                Class<?> type = e.getKey();
+                Map<String, Class<?>> attrs = e.getValue();
+
                 StringBuilder xml = new StringBuilder(500) //
                                 .append(" <embeddable class=\"") //
                                 .append(type.getName()).append("\">") //
                                 .append(EOLN);
-                writeAttributes(xml, type, null);
+                writeAttributes(xml, attrs, null);
                 xml.append(" </embeddable>").append(EOLN);
                 entityClassInfo.add(xml.toString());
             }
@@ -475,12 +480,11 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
     /**
      * Find the Id and Version attributes (if any).
      *
-     * @param attributes all top level entity attributes.
+     * @param attributes top level entity or embeddable attributes.
      * @return the Id and Version attributes (if any).
      *         Null if there is no Id.
      */
-    private Entry<String, String> findIdAndVersion(SortedMap<String, //
-                    Class<?>> attributes) {
+    private Entry<String, String> findIdAndVersion(Map<String, Class<?>> attrs) {
         String idAttrName = null;
         String versionAttrName = null;
 
@@ -495,7 +499,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
         // (2) name is _version, ignoring case.
         int idPrecedence = 10;
         int vPrecedence = 10;
-        for (Map.Entry<String, Class<?>> attribute : attributes.entrySet()) {
+        for (Map.Entry<String, Class<?>> attribute : attrs.entrySet()) {
             String name = attribute.getKey();
             Class<?> type = attribute.getValue();
             int len = name.length();
@@ -661,16 +665,13 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
      * Write attributes for the specified entity or embeddable to XML.
      *
      * @param xml             XML for defining the entity attributes
-     * @param c               entity class (never a record), or
-     *                            embeddable class (can be a record)
+     * @param attributes      top level entity or embeddable attributes.
      * @param embeddableTypes embeddable types. When non-null, this method adds
      *                            embeddable types that are found.
      */
     private void writeAttributes(StringBuilder xml,
-                                 Class<?> c,
-                                 Set<Class<?>> embeddableTypes) {
-        // Identify attributes
-        SortedMap<String, Class<?>> attributes = findAttributes(c);
+                                 Map<String, Class<?>> attributes,
+                                 Map<Class<?>, Map<String, Class<?>>> embeddableTypes) {
 
         Entry<String, String> idAndVersion = embeddableTypes == null //
                         ? ID_AND_VERSION_NOT_SPECIFIED //
@@ -704,10 +705,6 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                     columnType = "embedded-id";
                 else
                     columnType = "embedded";
-
-                // TODO move this to after pop from stack, change embeddableTypes to map of class to info
-                if (embeddableTypes != null)
-                    embeddableTypes.add(attributeType);
             }
 
             xml.append("   <").append(columnType).append(" name=\"") //
@@ -722,18 +719,22 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
 
             if (embeddableTypes != null && // top level entity attribute
                 columnType.charAt(1) == 'm') { // embedded or embedded-id
-                LinkedList<Entry<String[], SortedMap<String, Class<?>>>> stack = //
+                LinkedList<Entry<String[], Map<String, Class<?>>>> stack = //
                                 new LinkedList<>();
+                Map<String, Class<?>> attrs = embeddableTypes.get(attributeType);
+                if (attrs == null)
+                    embeddableTypes.put(attributeType,
+                                        attrs = findAttributes(attributeType));
                 stack.add(new SimpleImmutableEntry<>( //
                                 new String[] { attributeName }, //
-                                findAttributes(attributeType)));
-                for (Entry<String[], SortedMap<String, Class<?>>> emb; //
+                                attrs));
+                for (Entry<String[], Map<String, Class<?>>> emb; //
                                 null != (emb = stack.pollLast());) {
                     String[] names = emb.getKey();
-                    SortedMap<String, Class<?>> embeddableAttrs = emb.getValue();
-                    for (Entry<String, Class<?>> a : embeddableAttrs.entrySet()) {
-                        String name = a.getKey();
-                        Class<?> type = a.getValue();
+                    Map<String, Class<?>> embeddableAttrs = emb.getValue();
+                    for (Entry<String, Class<?>> e : embeddableAttrs.entrySet()) {
+                        String name = e.getKey();
+                        Class<?> type = e.getValue();
                         // attribute-override is only written for leaf-level
                         if (type.isPrimitive() ||
                             type.isInterface() ||
@@ -751,13 +752,13 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                             // TODO reject column name collisions?
                             // collisions are currently only possible if an attribute name includes _
                         } else {
-                            embeddableTypes.add(type);
+                            Map<String, Class<?>> a = embeddableTypes.get(type);
+                            if (a == null)
+                                embeddableTypes.put(type, a = findAttributes(type));
                             String[] names2 = new String[names.length + 1];
                             System.arraycopy(names, 0, names2, 0, names.length);
                             names2[names.length] = name;
-                            stack.add(new SimpleImmutableEntry<>( //
-                                            names2, //
-                                            findAttributes(type)));
+                            stack.add(new SimpleImmutableEntry<>(names2, a));
                         }
                     }
                 }

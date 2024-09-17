@@ -16,7 +16,6 @@ import static jakarta.data.repository.By.ID;
 
 import java.util.stream.Stream;
 
-import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
@@ -29,15 +28,13 @@ import jakarta.data.repository.Save;
  * a Java record with multiple of the same type of embeddable.
  */
 @Repository
-public interface Cylinders
-                // TODO remove the superinterface. It should not be necessary due to @Save
-                extends DataRepository<Cylinder, String> {
+public interface Cylinders {
 
     @Find
     @OrderBy("side.b.y")
     @OrderBy("side_b_x")
     @OrderBy(ID)
-    Stream<?> centeredAt(int centerX, int center_y);
+    Stream<Cylinder> centeredAt(int centerX, int center_y);
 
     @Query("SELECT COUNT(THIS) " +
            " WHERE (side.a.y - side.b.y) * (side.a.y + side.b.y - 2 * center.y)" +
