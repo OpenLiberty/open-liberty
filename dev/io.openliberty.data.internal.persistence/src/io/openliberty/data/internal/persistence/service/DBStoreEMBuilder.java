@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.RecordComponent;
 import java.sql.Connection;
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
@@ -33,6 +34,7 @@ import java.util.Hashtable;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 import java.util.SortedMap;
@@ -83,6 +85,8 @@ import jakarta.persistence.Table;
 public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerationParticipant {
     static final String EOLN = String.format("%n");
     private static final long MAX_WAIT_FOR_SERVICE_NS = TimeUnit.SECONDS.toNanos(60);
+    private static final Entry<String, String> ID_AND_VERSION_NOT_SPECIFIED = //
+                    new SimpleImmutableEntry<>(null, null);
     private static final TraceComponent tc = Tr.register(DBStoreEMBuilder.class);
 
     private final ClassDefiner classDefiner = new ClassDefiner();
@@ -310,8 +314,6 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
             // XML to make all other classes into JPA entities:
             ArrayList<String> entityClassInfo = new ArrayList<>(entityTypes.size());
 
-            Queue<Class<?>> embeddableTypesQueue = new LinkedList<>();
-
             /*
              * Note: When creating a persistence unit, managed classes (such as entities) are declared in an
              * all or nothing fashion. Therefore, if we create a persistence unit with a list of entities
@@ -321,6 +323,8 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
              * such function so the converters need to be put into the generated orm.xml file.
              */
             Set<Class<?>> converterTypes = new HashSet<>();
+
+            Set<Class<?>> embeddableTypes = new HashSet<>();
 
             for (Class<?> c : entityTypes) {
                 if (c.isAnnotationPresent(Entity.class)) {
@@ -351,7 +355,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
 
                     xml.append("  <table name=\"").append(tablePrefix).append(c.getSimpleName()).append("\"/>").append(EOLN);
 
-                    writeAttributes(xml, c, false, embeddableTypesQueue);
+                    writeAttributes(xml, c, embeddableTypes);
 
                     xml.append(" </entity>").append(EOLN);
 
@@ -359,17 +363,21 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 }
             }
 
-            Set<Class<?>> embeddableTypes = new HashSet<>();
-            for (Class<?> type; (type = embeddableTypesQueue.poll()) != null;)
-                if (embeddableTypes.add(type)) { // only write each type once
-                    StringBuilder xml = new StringBuilder(500).append(" <embeddable class=\"").append(type.getName()).append("\">").append(EOLN);
-                    writeAttributes(xml, type, true, embeddableTypesQueue);
-                    xml.append(" </embeddable>").append(EOLN);
-                    entityClassInfo.add(xml.toString());
-                }
+            for (Class<?> type : embeddableTypes) {
+                StringBuilder xml = new StringBuilder(500) //
+                                .append(" <embeddable class=\"") //
+                                .append(type.getName()).append("\">") //
+                                .append(EOLN);
+                writeAttributes(xml, type, null);
+                xml.append(" </embeddable>").append(EOLN);
+                entityClassInfo.add(xml.toString());
+            }
 
             for (Class<?> type : converterTypes) {
-                StringBuilder xml = new StringBuilder(500).append(" <converter class=\"").append(type.getName()).append("\"></converter>").append(EOLN);
+                StringBuilder xml = new StringBuilder(500) //
+                                .append(" <converter class=\"") //
+                                .append(type.getName()).append("\"></converter>") //
+                                .append(EOLN);
                 entityClassInfo.add(xml.toString());
             }
 
@@ -426,6 +434,110 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
     @Override
     public EntityManager createEntityManager() {
         return persistenceServiceUnit.createEntityManager();
+    }
+
+    /**
+     * Find attributes of the specified class.
+     * If a record, use the record components.
+     * Otherwise, use fields and property descriptors.
+     *
+     * @param c entity class or embedded class.
+     * @return attributes, sorted alphabetically.
+     */
+    private SortedMap<String, Class<?>> findAttributes(Class<?> c) {
+        SortedMap<String, Class<?>> attributes = new TreeMap<>();
+
+        if (c.isRecord()) {
+            for (RecordComponent r : c.getRecordComponents())
+                attributes.put(r.getName(), r.getType());
+        } else {
+            for (Field f : c.getFields())
+                attributes.put(f.getName(), f.getType());
+
+            try {
+                PropertyDescriptor[] propertyDescriptors = Introspector //
+                                .getBeanInfo(c).getPropertyDescriptors();
+                if (propertyDescriptors != null)
+                    for (PropertyDescriptor p : propertyDescriptors) {
+                        Method setter = p.getWriteMethod();
+                        if (setter != null)
+                            attributes.putIfAbsent(p.getName(),
+                                                   p.getPropertyType());
+                    }
+            } catch (IntrospectionException x) {
+                throw new MappingException(x);
+            }
+        }
+
+        return attributes;
+    }
+
+    /**
+     * Find the Id and Version attributes (if any).
+     *
+     * @param attributes all top level entity attributes.
+     * @return the Id and Version attributes (if any).
+     *         Null if there is no Id.
+     */
+    private Entry<String, String> findIdAndVersion(SortedMap<String, //
+                    Class<?>> attributes) {
+        String idAttrName = null;
+        String versionAttrName = null;
+
+        // Determine which attribute is the id and version (optional).
+        // Id precedence:
+        // (1) name is id, ignoring case.
+        // (2) name ends with _id, ignoring case.
+        // (3) name ends with Id or ID.
+        // (4) type is UUID.
+        // Version precedence (if also a valid version type):
+        // (1) name is version, ignoring case.
+        // (2) name is _version, ignoring case.
+        int idPrecedence = 10;
+        int vPrecedence = 10;
+        for (Map.Entry<String, Class<?>> attribute : attributes.entrySet()) {
+            String name = attribute.getKey();
+            Class<?> type = attribute.getValue();
+            int len = name.length();
+
+            if (idPrecedence > 1 &&
+                len >= 2 &&
+                name.regionMatches(true, len - 2, "id", 0, 2)) {
+                if (name.length() == 2) {
+                    idAttrName = name;
+                    idPrecedence = 1;
+                } else if (idPrecedence > 2 &&
+                           name.charAt(len - 3) == '_') {
+                    idAttrName = name;
+                    idPrecedence = 2;
+                } else if (idPrecedence > 3 &&
+                           name.charAt(len - 2) == 'I') {
+                    idAttrName = name;
+                    idPrecedence = 3;
+                }
+            } else if (idPrecedence > 4 && UUID.class.equals(type)) {
+                idAttrName = name;
+                idPrecedence = 4;
+            }
+
+            if (vPrecedence > 1 &&
+                len == 7 &&
+                QueryInfo.VERSION_TYPES.contains(type) &&
+                "version".equalsIgnoreCase(name)) {
+                versionAttrName = name;
+                vPrecedence = 1;
+            } else if (vPrecedence > 2 &&
+                       len == 8 &&
+                       QueryInfo.VERSION_TYPES.contains(type) &&
+                       "_version".equalsIgnoreCase(name)) {
+                versionAttrName = name;
+                vPrecedence = 2;
+            }
+        }
+
+        return idAttrName == null //
+                        ? null //
+                        : new SimpleImmutableEntry<>(idAttrName, versionAttrName);
     }
 
     /**
@@ -548,94 +660,21 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
     /**
      * Write attributes for the specified entity or embeddable to XML.
      *
-     * @param xml                  XML for defining the entity attributes
-     * @param c                    entity class (never a record), or
-     *                                 embeddable class (can be a record)
-     * @param isEmbeddable         indicates if the class is an embeddable type rather than an entity.
-     * @param embeddableTypesQueue queue of embeddable types. This method adds to the queue when an embeddable type is found.
+     * @param xml             XML for defining the entity attributes
+     * @param c               entity class (never a record), or
+     *                            embeddable class (can be a record)
+     * @param embeddableTypes embeddable types. When non-null, this method adds
+     *                            embeddable types that are found.
      */
-    private void writeAttributes(StringBuilder xml, Class<?> c, boolean isEmbeddable, Queue<Class<?>> embeddableTypesQueue) {
-
+    private void writeAttributes(StringBuilder xml,
+                                 Class<?> c,
+                                 Set<Class<?>> embeddableTypes) {
         // Identify attributes
-        SortedMap<String, Class<?>> attributes = new TreeMap<>();
+        SortedMap<String, Class<?>> attributes = findAttributes(c);
 
-        if (isEmbeddable && c.isRecord()) {
-            for (RecordComponent r : c.getRecordComponents())
-                attributes.putIfAbsent(r.getName(), r.getType());
-        } else {
-            for (Field f : c.getFields())
-                attributes.putIfAbsent(f.getName(), f.getType());
-
-            try {
-                PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(c).getPropertyDescriptors();
-                if (propertyDescriptors != null)
-                    for (PropertyDescriptor p : propertyDescriptors) {
-                        Method setter = p.getWriteMethod();
-                        if (setter != null)
-                            attributes.putIfAbsent(p.getName(), p.getPropertyType());
-                    }
-            } catch (IntrospectionException x) {
-                throw new MappingException(x);
-            }
-        }
-
-        String keyAttributeName = null;
-        String versionAttributeName = null;
-        if (!isEmbeddable) {
-            // Determine which attribute is the id and version (optional).
-            // Id precedence:
-            // (1) name is id, ignoring case.
-            // (2) name ends with _id, ignoring case.
-            // (3) name ends with Id or ID.
-            // (4) type is UUID.
-            // Version precedence (if also a valid version type):
-            // (1) name is version, ignoring case.
-            // (2) name is _version, ignoring case.
-            int idPrecedence = 10;
-            int vPrecedence = 10;
-            for (Map.Entry<String, Class<?>> attribute : attributes.entrySet()) {
-                String name = attribute.getKey();
-                Class<?> type = attribute.getValue();
-                int len = name.length();
-
-                if (idPrecedence > 1 &&
-                    len >= 2 &&
-                    name.regionMatches(true, len - 2, "id", 0, 2)) {
-                    if (name.length() == 2) {
-                        keyAttributeName = name;
-                        idPrecedence = 1;
-                    } else if (idPrecedence > 2 &&
-                               name.charAt(len - 3) == '_') {
-                        keyAttributeName = name;
-                        idPrecedence = 2;
-                    } else if (idPrecedence > 3 &&
-                               name.charAt(len - 2) == 'I') {
-                        keyAttributeName = name;
-                        idPrecedence = 3;
-                    }
-                } else if (idPrecedence > 4 && UUID.class.equals(type)) {
-                    keyAttributeName = name;
-                    idPrecedence = 4;
-                }
-
-                if (vPrecedence > 1 &&
-                    len == 7 &&
-                    QueryInfo.VERSION_TYPES.contains(type) &&
-                    "version".equalsIgnoreCase(name)) {
-                    versionAttributeName = name;
-                    vPrecedence = 1;
-                } else if (vPrecedence > 2 &&
-                           len == 8 &&
-                           QueryInfo.VERSION_TYPES.contains(type) &&
-                           "_version".equalsIgnoreCase(name)) {
-                    versionAttributeName = name;
-                    vPrecedence = 2;
-                }
-            }
-
-            if (keyAttributeName == null)
-                throw new MappingException("Entity class " + c.getName() + " lacks a public field of the form *ID or public method of the form get*ID."); // TODO NLS
-        }
+        Entry<String, String> idAndVersion = embeddableTypes == null //
+                        ? ID_AND_VERSION_NOT_SPECIFIED //
+                        : findIdAndVersion(attributes);
 
         // Write the attributes to XML:
 
@@ -646,20 +685,33 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
             Class<?> attributeType = attributeInfo.getValue();
             boolean isCollection = Collection.class.isAssignableFrom(attributeType);
             boolean isPrimitive = attributeType.isPrimitive();
-            boolean isId = attributeName.equals(keyAttributeName);
+            boolean isId = attributeName.equals(idAndVersion.getKey());
 
             String columnType;
-            if (isPrimitive || attributeType.isInterface() || Serializable.class.isAssignableFrom(attributeType)) {
-                columnType = isId ? "id" : //
-                                isCollection ? "element-collection" : //
-                                                attributeName.equals(versionAttributeName) ? "version" : //
-                                                                "basic";
+            if (isPrimitive || //
+                attributeType.isInterface() || //
+                Serializable.class.isAssignableFrom(attributeType)) {
+                if (isId)
+                    columnType = "id";
+                else if (isCollection)
+                    columnType = "element-collection";
+                else if (attributeName.equals(idAndVersion.getValue()))
+                    columnType = "version";
+                else
+                    columnType = "basic";
             } else {
-                columnType = isId ? "embedded-id" : "embedded";
-                embeddableTypesQueue.add(attributeType);
+                if (isId)
+                    columnType = "embedded-id";
+                else
+                    columnType = "embedded";
+
+                // TODO move this to after pop from stack, change embeddableTypes to map of class to info
+                if (embeddableTypes != null)
+                    embeddableTypes.add(attributeType);
             }
 
-            xml.append("   <").append(columnType).append(" name=\"").append(attributeName).append('"');
+            xml.append("   <").append(columnType).append(" name=\"") //
+                            .append(attributeName).append('"');
 
             // All other queries when using un-annotated entities or record entities are eager,
             // element-collections should be as well.
@@ -668,13 +720,51 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
 
             xml.append('>').append(EOLN);
 
-            if (isEmbeddable) {
-                if (!"embedded".equals(columnType))
-                    xml.append("    <column name=\"").append(c.getSimpleName().toUpperCase()).append(attributeName.toUpperCase()).append("\"/>").append(EOLN);
-            } else {
-                if (isPrimitive)
-                    xml.append("    <column nullable=\"false\"/>").append(EOLN);
+            if (embeddableTypes != null && // top level entity attribute
+                columnType.charAt(1) == 'm') { // embedded or embedded-id
+                LinkedList<Entry<String[], SortedMap<String, Class<?>>>> stack = //
+                                new LinkedList<>();
+                stack.add(new SimpleImmutableEntry<>( //
+                                new String[] { attributeName }, //
+                                findAttributes(attributeType)));
+                for (Entry<String[], SortedMap<String, Class<?>>> emb; //
+                                null != (emb = stack.pollLast());) {
+                    String[] names = emb.getKey();
+                    SortedMap<String, Class<?>> embeddableAttrs = emb.getValue();
+                    for (Entry<String, Class<?>> a : embeddableAttrs.entrySet()) {
+                        String name = a.getKey();
+                        Class<?> type = a.getValue();
+                        // attribute-override is only written for leaf-level
+                        if (type.isPrimitive() ||
+                            type.isInterface() ||
+                            Serializable.class.isAssignableFrom(type)) {
+                            xml.append("    <attribute-override name=\"");
+                            for (int n = 1; n < names.length; n++)
+                                xml.append(names[n]).append('.');
+                            xml.append(name).append("\">").append(EOLN);
+                            xml.append("     <column name=\"");
+                            for (int n = 0; n < names.length; n++)
+                                xml.append(names[n].toUpperCase()).append('_');
+                            xml.append(name.toUpperCase()) //
+                                            .append("\"/>").append(EOLN);
+                            xml.append("    </attribute-override>").append(EOLN);
+                            // TODO reject column name collisions?
+                            // collisions are currently only possible if an attribute name includes _
+                        } else {
+                            embeddableTypes.add(type);
+                            String[] names2 = new String[names.length + 1];
+                            System.arraycopy(names, 0, names2, 0, names.length);
+                            names2[names.length] = name;
+                            stack.add(new SimpleImmutableEntry<>( //
+                                            names2, //
+                                            findAttributes(type)));
+                        }
+                    }
+                }
             }
+
+            if (isPrimitive)
+                xml.append("    <column nullable=\"false\"/>").append(EOLN);
 
             xml.append("   </" + columnType + ">").append(EOLN);
         }
