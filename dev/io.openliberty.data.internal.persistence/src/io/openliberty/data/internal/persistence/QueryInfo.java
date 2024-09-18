@@ -2502,13 +2502,6 @@ public class QueryInfo {
 
                         // TODO remove this workaround for #28931 once fixed
                         boolean insertEntityVar = !entityInfo.relationAttributeNames.isEmpty();
-                        if (!insertEntityVar)
-                            for (int i = startAt; !insertEntityVar && i < length; i++)
-                                switch (ql.charAt(i)) {
-                                    case '(': // TODO remove this workaround for #28908 once fixed
-                                        insertEntityVar = ql.regionMatches(true, i - 2, "ID", 0, 2);
-                                        break;
-                                }
                         if (insertEntityVar) {
                             entityVar = "o";
                             entityVar_ = "o.";
@@ -2772,12 +2765,6 @@ public class QueryInfo {
             if (selectLen > 0) {
                 q = new StringBuilder(ql.length() + (selectLen >= 0 ? 0 : 50) + (fromLen >= 0 ? 0 : 50) + 2);
                 String selection = ql.substring(select0, select0 + selectLen);
-                // TODO remove this workaround for #28913 once fixed
-                if (!insertEntityVar && entityVar_.length() == 0 && selection.indexOf('.') < 0
-                    && entityInfo.attributeNames.containsKey(selection.trim().toLowerCase())) {
-                    insertEntityVar = true;
-                    entityVar_ = entityVar + ".";
-                }
                 if (insertEntityVar) {
                     q.append("SELECT");
                     appendWithIdentifierName(ql, select0, select0 + selectLen, entityVar_, q);
@@ -2830,25 +2817,9 @@ public class QueryInfo {
             // TODO remove this workaround for #28874 once fixed
             else if (jpql.equals(" FROM NaturalNumber WHERE isOdd = false AND numType = ee.jakarta.tck.data.framework.read.only.NaturalNumber.NumberType.PRIME"))
                 jpql = "SELECT o FROM NaturalNumber o WHERE o.isOdd = false AND o.numType = ee.jakarta.tck.data.framework.read.only.NaturalNumber.NumberType.PRIME";
-            // TODO remove this workaround for #28913 once fixed
-            else if (jpql.equals("SELECT amount FROM RebateEntity WHERE customerId=?1")) // misses prior workaround because selection is implicit
-                jpql = "SELECT this.amount FROM RebateEntity WHERE this.customerId=?1";
-            else if (jpql.equals("SELECT DISTINCT name FROM Item WHERE name LIKE :namePattern")) // misses prior workaround due to DISTINCT
-                jpql = "SELECT DISTINCT this.name FROM Item WHERE this.name LIKE :namePattern";
             // TODO remove this workaround for #28925 once fixed
             else if (jpql.equals("SELECT ID(THIS) FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR ID(THIS)=:num)"))
                 jpql = "SELECT o.numberId FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR o.numberId=:num)";
-            // TODO remove this workaround for #28928 once fixed
-            else if (jpql.equals("SELECT MAX(price) FROM Item"))
-                jpql = "SELECT MAX(this.price) FROM Item";
-            else if (jpql.equals("SELECT MIN(price) FROM Item"))
-                jpql = "SELECT MIN(this.price) FROM Item";
-            else if (jpql.equals("SELECT AVG(price) FROM Item"))
-                jpql = "SELECT AVG(this.price) FROM Item";
-            else if (jpql.equals("SELECT SUM(DISTINCT price) FROM Item"))
-                jpql = "SELECT SUM(DISTINCT this.price) FROM Item";
-            else if (jpql.equals("SELECT NEW test.jakarta.data.experimental.web.ItemCount(COUNT(name), COUNT(description), COUNT(price)) FROM Item"))
-                jpql = "SELECT NEW test.jakarta.data.experimental.web.ItemCount(COUNT(this.name), COUNT(this.description), COUNT(this.price)) FROM Item";
         }
     }
 
