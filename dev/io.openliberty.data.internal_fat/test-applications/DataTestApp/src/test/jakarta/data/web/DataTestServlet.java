@@ -111,6 +111,9 @@ public class DataTestServlet extends FATServlet {
     Apartments apartments;
 
     @Inject
+    Cylinders cylinders;
+
+    @Inject
     EmptyRepository emptyRepo;
 
     @Inject
@@ -3481,6 +3484,40 @@ public class DataTestServlet extends FATServlet {
         assertEquals(58.0, deque.removeFirst(), 0.01); // sum
         assertEquals(7.0, deque.removeFirst(), 0.01); // count
         assertEquals(8.0, Math.floor(deque.removeFirst()), 0.01); // average
+    }
+
+    /**
+     * Use a repository that has multiple embeddable attributes of the same type.
+     */
+    @Test
+    public void testMultipleEmbeddableAttributesOfSameType() {
+        Cylinder cyl1, cyl2, cyl3, cyl4, cyl5;
+
+        //                                    Id     a.x, a.y, b.x, b.y, c.x, c.y
+        cylinders.upsert(cyl1 = new Cylinder("CYL1", 100, 287, 372, 833, 509, 424),
+                         cyl2 = new Cylinder("CYL2", 790, 857, 942, 143, 509, 424),
+                         cyl3 = new Cylinder("CYL3", 340, 101, 100, 919, 629, 630),
+                         cyl4 = new Cylinder("CYL4", 100, 684, 974, 516, 453, 163),
+                         cyl5 = new Cylinder("CYL5", 412, 983, 276, 413, 629, 630));
+
+        assertEquals(5, cylinders.countValid());
+
+        assertEquals(List.of(cyl5.toString(), cyl3.toString()),
+                     cylinders.centeredAt(629, 630)
+                                     .map(Object::toString)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of(cyl2.toString(), cyl1.toString()),
+                     cylinders.centeredAt(509, 424)
+                                     .map(Object::toString)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of(cyl3.toString(), cyl1.toString(), cyl4.toString()),
+                     cylinders.findBySideAXOrSideBXOrderBySideBYDesc(100, 100)
+                                     .map(Object::toString)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(Long.valueOf(5), cylinders.eraseAll());
     }
 
     /**
