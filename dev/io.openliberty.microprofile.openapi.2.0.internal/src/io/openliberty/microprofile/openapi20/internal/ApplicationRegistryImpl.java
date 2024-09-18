@@ -36,6 +36,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ServerStartedPhase2;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
+import io.openliberty.microprofile.openapi.internal.common.services.OpenAPIAppConfigProvider;
 import io.openliberty.microprofile.openapi20.internal.services.ApplicationRegistry;
 import io.openliberty.microprofile.openapi20.internal.services.MergeProcessor;
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
@@ -66,8 +67,22 @@ public class ApplicationRegistryImpl implements ApplicationRegistry {
     @Reference
     private MergeProcessor mergeProcessor;
 
+    private Runnable configUpdateListener;
+    private OpenAPIAppConfigProvider openAPIAppConfigProvider;
+
+//    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.DYNAMIC,
+//               policyOption = ReferencePolicyOption.GREEDY, unbind = "unbindAppConfigProvider")
+    @Reference
+    private void bindAppConfigProvider(OpenAPIAppConfigProvider openAPIAppConfigProvider) {
+        this.openAPIAppConfigProvider = openAPIAppConfigProvider;
+        this.configUpdateListener = () -> {
+            refreshAfterConfigUpdate();
+        };
+        openAPIAppConfigProvider.addListener(configUpdateListener);
+    }
+
     // Thread safety: access to these fields must be synchronized on this
-    private final Map<String, ApplicationRecord> applications = new LinkedHashMap<>(); // Linked map retains order in which applications were added
+    private Map<String, ApplicationRecord> applications = new LinkedHashMap<>(); // Linked map retains order in which applications were added
 
     private OpenAPIProvider cachedProvider = null;
 
@@ -262,7 +277,7 @@ public class ApplicationRegistryImpl implements ApplicationRegistry {
     private ModuleSelectionConfig getModuleSelectionConfig() {
         if (moduleSelectionConfig == null) {
             // Lazy initialization to avoid calling getConfig() before Config is ready
-            moduleSelectionConfig = ModuleSelectionConfig.fromConfig(ConfigProvider.getConfig(ApplicationRegistryImpl.class.getClassLoader()));
+            moduleSelectionConfig = ModuleSelectionConfig.fromConfig(ConfigProvider.getConfig(ApplicationRegistryImpl.class.getClassLoader()), openAPIAppConfigProvider);
         }
         return moduleSelectionConfig;
     }
@@ -280,6 +295,18 @@ public class ApplicationRegistryImpl implements ApplicationRegistry {
             }
         }
         return null;
+    }
+
+    private synchronized void refreshAfterConfigUpdate() {
+        Map<String, ApplicationRecord> oldApps = applications;
+        applications = new LinkedHashMap<>();
+        for (ApplicationRecord record : oldApps.values()) {
+            //Add application uses config to decide if it creates and registers any providers in ApplicationInfo
+            //Rather than map from the old state to the new state when the config changes, KISS and start again.
+            addApplication(record.info);
+        }
+        cachedProvider = null;
+        moduleSelectionConfig = null;
     }
 
     private static class ApplicationRecord {

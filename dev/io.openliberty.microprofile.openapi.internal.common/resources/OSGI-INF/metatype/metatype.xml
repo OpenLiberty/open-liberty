@@ -17,6 +17,8 @@
     <OCD id="io.openliberty.microprofile.openapi" name="%mpOpenAPI" description="%mpOpenAPI.desc" ibm:alias="mpOpenAPI">
         <AD id="docPath" name="%docPath" description="%docPath.desc" default="/openapi" required="false" type="String" />
         <AD id="uiPath" name="%uiPath" description="%uiPath.desc" required="false" type="String" />
+        <AD id="include" name="%include" description="%include.desc" required="false" type="String" ibm:beta="true"/>
+        <AD id="exclude" name="%exclude" description="%exclude.desc" required="false" type="String" ibm:beta="true"/>
     </OCD>
 
     <Designate pid="io.openliberty.microprofile.openapi">

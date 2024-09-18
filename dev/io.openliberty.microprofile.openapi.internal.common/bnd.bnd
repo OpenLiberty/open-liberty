@@ -24,7 +24,8 @@ Import-Package: \
 
 -dsannotations-inherit: true
 -dsannotations: \
-  io.openliberty.microprofile.openapi.internal.common.OpenAPIEndpointManager
+  io.openliberty.microprofile.openapi.internal.common.OpenAPIEndpointManager,\
+  io.openliberty.microprofile.openapi.internal.common.OpenAPIAppConfigProviderImpl  
 
 Export-Package: \
     io.openliberty.microprofile.openapi.internal.resources; version="1.0",\

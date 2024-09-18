@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,7 +27,9 @@ import org.eclipse.microprofile.config.Config;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
+import io.openliberty.microprofile.openapi.internal.common.services.OpenAPIAppConfigProvider;
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
 import io.openliberty.microprofile.openapi20.internal.utils.MessageConstants;
 
@@ -50,16 +52,23 @@ public class ModuleSelectionConfig {
      * <p>
      * If the config is invalid, this method will output warning messages but still return a usable result object.
      *
-     * @param config the config to read
      * @return the module selection config
      */
-    public static ModuleSelectionConfig fromConfig(Config config) {
+    public static ModuleSelectionConfig fromConfig(Config configFromMPConfig, OpenAPIAppConfigProvider configFromServerXML) {
         ModuleSelectionConfig result = new ModuleSelectionConfig();
 
-        String inclusion = config.getOptionalValue(Constants.MERGE_INCLUDE_CONFIG, String.class).orElse("first").trim();
+        String inclusion;
+        if (!ProductInfo.getBetaEdition()) {
+            inclusion = configFromMPConfig.getOptionalValue(Constants.MERGE_INCLUDE_CONFIG, String.class).orElse("first");
+
+        } else {
+            inclusion = configFromServerXML.getIncludedModules()
+                                           .orElse(configFromMPConfig.getOptionalValue(Constants.MERGE_INCLUDE_CONFIG, String.class).orElse("first"))
+                                           .trim();
+        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(null, tc, "Names in config: " + config.getPropertyNames());
+            Tr.debug(null, tc, "Names in config: " + configFromMPConfig.getPropertyNames());
             Tr.debug(null, tc, "Inclusion read from config: " + inclusion);
         }
 
@@ -73,7 +82,17 @@ public class ModuleSelectionConfig {
             result.included = parseModuleNames(inclusion, Constants.MERGE_INCLUDE_CONFIG);
         }
 
-        String exclusion = config.getOptionalValue(Constants.MERGE_EXCLUDE_CONFIG, String.class).orElse("none").trim();
+        String exclusion;
+
+        if (!ProductInfo.getBetaEdition()) {
+            exclusion = configFromMPConfig.getOptionalValue(Constants.MERGE_EXCLUDE_CONFIG, String.class).orElse("none")
+                                          .trim();
+        } else {
+            exclusion = configFromServerXML.getExcludedModules()
+                                           .orElse(configFromMPConfig.getOptionalValue(Constants.MERGE_EXCLUDE_CONFIG, String.class).orElse("none"))
+                                           .trim();
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(null, tc, "Exclusion read from config: " + exclusion);
         }
