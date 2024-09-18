@@ -13,49 +13,20 @@
 package com.ibm.ws.crypto.ltpakeyutil;
 
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 
-import com.ibm.ws.crypto.common.CryptoProvider;
 import com.ibm.ws.crypto.common.FipsUtils;
 import com.ibm.ws.crypto.common.MessageDigestUtils;
 
 final class LTPADigSignature {
 
-	static boolean fipsEnabled = FipsUtils.isFIPSEnabled();
-	static int keySize = (fipsEnabled ? 256 : 128);
+	static int keySize = (FipsUtils.isFIPSEnabled() ? 256 : 128);
 
 	static byte[][] testRawPubKey = null;
 	static byte[][] testRawPrivKey = null;
-	static MessageDigest md1 = null;
+	static MessageDigest md1 = MessageDigestUtils.getMessageDigestForLTPA();
 	static private Object lockObj1 = new Object();
 	static long created = 0;
 	static long cacheHits = 0;
-
-	static {
-		try {
-			if (fipsEnabled && CryptoProvider.isOpenJCEPlusFIPSAvailable()) {
-				md1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256,
-						CryptoProvider.OPENJCE_PLUS_FIPS_NAME);
-			} else if (fipsEnabled && CryptoProvider.isIBMJCEPlusFIPSAvailable()) {
-				md1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256,
-						CryptoProvider.IBMJCE_PLUS_FIPS_NAME);
-			} else if (CryptoProvider.isOpenJCEPlusAvailable()) {
-				md1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA,
-						CryptoProvider.OPENJCE_PLUS_NAME);
-			} else if (CryptoProvider.isIBMJCEAvailable()) {
-				md1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA,
-						CryptoProvider.IBMJCE_NAME);
-			} else {
-				md1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA);
-			}
-
-		} catch (NoSuchAlgorithmException e) {
-			// instrumented ffdc
-		} catch (NoSuchProviderException e) {
-			// instrumented ffdc;
-		}
-	}
 
 	public LTPADigSignature() {
 		super();

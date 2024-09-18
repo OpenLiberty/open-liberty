@@ -51,8 +51,6 @@ public class CryptoProvider {
     public static final String OPENJCE_PLUS_NAME = "OpenJCEPlus";
     public static final String OPENJCE_PLUS_FIPS_NAME = "OpenJCEPlusFIPS";
 
-    private static boolean issuedBetaMessage = false;
-
     public static boolean isIBMJCEAvailable() {
         if (ibmJCEProviderChecked) {
             return ibmJCEAvailable;

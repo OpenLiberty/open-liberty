@@ -11,6 +11,7 @@ package com.ibm.ws.crypto.common;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,6 +23,8 @@ public class MessageDigestUtils {
     public final static String MESSAGE_DIGEST_ALGORITHM_SHA512 = "SHA-512";
     public final static String MESSAGE_DIGEST_ALGORITHM_SHA = "SHA";
 
+    public static boolean fipsEnabled = FipsUtils.isFIPSEnabled();
+    public static final String MESSAGE_DIGEST_ALGORITHM = (fipsEnabled ? MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256 : MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA);
     /**
      * List of supported Message Digest Algorithms.
      */
@@ -42,5 +45,33 @@ public class MessageDigestUtils {
         if (!supportedMessageDigestAlgorithms.contains(algorithm))
             throw new NoSuchAlgorithmException(String.format("Algorithm %s is not supported", algorithm));
         return MessageDigest.getInstance(algorithm);
+    }
+
+    public static MessageDigest getMessageDigestForLTPA() {
+        MessageDigest md1 = null;
+        try {
+            if (fipsEnabled && CryptoProvider.isOpenJCEPlusFIPSAvailable()) {
+                md1 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM_SHA256,
+                                                CryptoProvider.OPENJCE_PLUS_FIPS_NAME);
+            } else if (fipsEnabled && CryptoProvider.isIBMJCEPlusFIPSAvailable()) {
+                md1 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM_SHA256,
+                                                CryptoProvider.IBMJCE_PLUS_FIPS_NAME);
+            } else if (CryptoProvider.isOpenJCEPlusAvailable()) {
+                md1 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM_SHA,
+                                                CryptoProvider.OPENJCE_PLUS_NAME);
+            } else if (CryptoProvider.isIBMJCEAvailable()) {
+                md1 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM_SHA,
+                                                CryptoProvider.IBMJCE_NAME);
+            } else {
+                md1 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM_SHA);
+            }
+
+        } catch (NoSuchAlgorithmException e) {
+            // instrumented ffdc
+        } catch (NoSuchProviderException e) {
+            // instrumented ffdc;
+        }
+
+        return md1;
     }
 }

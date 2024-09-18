@@ -16,13 +16,11 @@ public class CryptoUtils {
 
     public static final String SIGNATURE_ALGORITHM_SHA1WITHRSA = "SHA1withRSA";
     public static final String SIGNATURE_ALGORITHM_SHA256WITHRSA = "SHA256withRSA";
-//    private static final String signatureAlgorithm = getSignatureAlgorithm();
 
     public static final String CRYPTO_ALGORITHM_RSA = "RSA";
 
     public static final String ENCRYPT_ALGORITHM_DESEDE = "DESede";
     public static final String ENCRYPT_ALGORITHM_RSA = "RSA";
-//    private static final String encryptAlgorithm = getEncryptionAlgorithm();
 
     public static final String AES_GCM_CIPHER = "AES/GCM/NoPadding";
     public static final String DES_ECB_CIPHER = "DESede/ECB/PKCS5Padding";
@@ -71,6 +69,11 @@ public class CryptoUtils {
             return ENCRYPT_ALGORITHM_RSA;
         else
             return ENCRYPT_ALGORITHM_DESEDE;
+    }
+
+    public static String getCipher() {
+        String cipher = fipsEnabled ? AES_GCM_CIPHER : DES_ECB_CIPHER;
+        return cipher;
     }
 
 }
