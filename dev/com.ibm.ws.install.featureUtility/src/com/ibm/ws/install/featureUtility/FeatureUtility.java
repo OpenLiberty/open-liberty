@@ -320,7 +320,7 @@ public class FeatureUtility {
 		}
 
 		// override no_proxy settings
-		if (System.getProperty("featureUtility.beta") != null && System.getProperty("featureUtility.beta").equals("true") && FeatureUtilityProperties.getNoProxySetting() != null) {
+		if (FeatureUtilityProperties.getNoProxySetting() != null) {
 		    overrideMap.put("http.nonProxyHosts", FeatureUtilityProperties.getNoProxySetting());
 		}
 
