@@ -234,6 +234,10 @@ public class LibertyServer implements LogMonitorClient {
                     ? Boolean.parseBoolean(PrivHelper.getProperty("global.debug.java2.sec", "true")) //
                     : Boolean.parseBoolean(PrivHelper.getProperty("global.debug.java2.sec", "false"));
 
+    //should the check for repeated features throw an exception
+    protected static final String REPEAT_FEATURE_CHECK_ERROR_PROP = "fat.test.repeat.feature.check.error";
+    protected static final boolean REPEAT_FEATURE_CHECK_ERROR = Boolean.parseBoolean(PrivHelper.getProperty(REPEAT_FEATURE_CHECK_ERROR_PROP, "true"));
+
     //FIPS 140-3
     protected static final boolean GLOBAL_FIPS_140_3 = Boolean.parseBoolean(PrivHelper.getProperty("global.fips_140-3", "false"));
 
@@ -3486,66 +3490,157 @@ public class LibertyServer implements LogMonitorClient {
     //servers which are exempt from checking repeat features
     //this list should eventually be removed once the tests are fixed
     private static final String[] EXEMPT_SERVERS = {
-                                                     "com.ibm.ws.jpa.el.defaultds.fat.server", //io.openliberty.jpa.defaultdatasource.JPADefaultDataSourceTest
-                                                     "com.ibm.ws.jpa.el.defaultds.fat.server", //io.openliberty.jpa.dserror.JPADSErrorTest
-                                                     "com.ibm.ws.jpa.fat.dsoverride", //io.openliberty.jpa.dsoverride.DSOverrideTest
-                                                     "com.ibm.ws.jpa.fat.emlocking", //io.openliberty.jpa.emlocking.EMLockingTest
-                                                     "com.ibm.ws.jpa.el.defaultds.fat.server", //io.openliberty.jpa.defaultdatasource.JPADefaultDataSourceTest
-                                                     "com.ibm.ws.jpa.fat.dserror", //io.openliberty.jpa.dsoverride.DSOverrideTest
-                                                     "com.ibm.ws.jpa.fat.emlocking", //io.openliberty.jpa.emlocking.EMLockingTest
-                                                     "ConcurrentEnhancementVerification", //io.openliberty.jpa.concurrent_enhancement.TestConcurrentEnhancement
-                                                     "com.ibm.ws.jpa.fat.ejbpassivation", //io.openliberty.jpa.ejbpassivation.JPAPassivationTest
-                                                     "CDIFaultTolerance", //com.ibm.websphere.microprofile.faulttolerance_fat.tests.FaultToleranceMainTest
-                                                     "FaultToleranceMultiModule", //com.ibm.websphere.microprofile.faulttolerance_fat.tests.completionstage.CDICompletionStageTest
-                                                     "FaultToleranceMultiModule", //com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.TestMultiModuleClassLoading
-                                                     "AsyncFaultTolerance", //com.ibm.websphere.microprofile.faulttolerance_fat.tests.async.AsyncReturnNullTest
-                                                     "AsyncFaultTolerance", //com.ibm.websphere.microprofile.faulttolerance_fat.tests.async.AsyncRequestScopedContextTest
-                                                     "AsyncFaultTolerance", //com.ibm.websphere.microprofile.faulttolerance_fat.tests.interceptors.InterceptorTest
-                                                     "FaultToleranceEJB", //com.ibm.websphere.microprofile.faulttolerance_fat.tests.ejb.AsyncEJBTest
-                                                     "JaxRsFaultTolerance", //com.ibm.websphere.microprofile.faulttolerance_fat.tests.jaxrs.JaxRsTest
-                                                     "validationServerOne", //com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestOne
-                                                     "validationServerTwo", //com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestTwo
-                                                     "validationServerThree", //com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestThree
-                                                     "validationServerFour", //com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestFour
-                                                     "validationServerFive", //com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestFive
-                                                     "mpRestClient10.remoteServer", //com.ibm.ws.microprofile.rest.client.fat.CollectionsTest
-                                                     "mpRestClient10.remoteServer", //com.ibm.ws.microprofile.rest.client.fat.HandleResponsesTest
-                                                     "mpRestClient10.remoteServer", //com.ibm.ws.microprofile.rest.client.fat.JsonbContextTest
-                                                     "com.ibm.ws.rest.handler.config.fat", //com.ibm.ws.rest.handler.config.fat.ConfigRESTHandlerTest
-                                                     "com.ibm.ws.rest.handler.config.openapi.fat", //com.ibm.ws.rest.handler.config.fat.ConfigOpenApiSchemaTest
-                                                     "com.ibm.ws.rest.handler.config.audit.feature.fat", //com.ibm.ws.rest.handler.config.fat.audit.ConfigRestHandlerAuditFeatureTest
-                                                     "com.ibm.ws.rest.handler.validator.jdbc.fat", //com.ibm.ws.rest.handler.validator.fat.ValidateDataSourceTest
-                                                     "com.ibm.ws.rest.handler.validator.jca.fat", //com.ibm.ws.rest.handler.validator.fat.ValidateJMSTest
-                                                     "com.ibm.ws.rest.handler.validator.openapi.fat", //com.ibm.ws.rest.handler.validator.fat.ValidateOpenApiSchemaTest
-                                                     "com.ibm.ws.scaling.member.fat.member1", //com.ibm.ws.scaling.member.fat.DeploymentMetadataTests
-                                                     "com.ibm.ws.ui.fat", //com.ibm.ws.ui.fat.rest.v1.IconRestHandlerTest
-                                                     "com.ibm.ws.ui.fat", //com.ibm.ws.ui.fat.rest.v1.ToolboxPersistenceTest
-                                                     "com.ibm.ws.webcontainer.security.fat.basicauth.audit", //com.ibm.ws.webcontainer.security.jacc15.fat.audit.BasicAuthAuditAUTHZTest
-                                                     "opentracingFATServer1", //com.ibm.ws.testing.opentracing.test.FATOpentracing
-                                                     "opentracingFATServer3", //com.ibm.ws.testing.opentracing.test.FATMPOpenTracing
-                                                     "opentracingFATServer4", //com.ibm.ws.testing.opentracing.test.MicroProfile14NoTracer
-                                                     "crossFeatureOpenTracingServer", //io.openliberty.microprofile.telemetry.internal.tests.CrossFeatureJaegerTest
-                                                     "crossFeatureOpenTracingZipkinServer", //io.openliberty.microprofile.telemetry.internal.tests.CrossFeatureZipkinTest
-                                                     "crossFeatureTelemetryServer", //io.openliberty.microprofile.telemetry.internal.tests.CrossFeatureJaegerTest
-                                                     "crossFeatureTelemetryServer", //io.openliberty.microprofile.telemetry.internal.tests.CrossFeatureZipkinTest
-                                                     "spanTestServer", //io.openliberty.microprofile.telemetry.internal.tests.JaegerBaseTest
-                                                     "spanTestServer", //io.openliberty.microprofile.telemetry.internal.tests.JvmMetricsOtelCollectorTest
-                                                     "spanTestServer", //io.openliberty.microprofile.telemetry.internal.tests.MetricsApiOtelCollectorTest
-                                                     "spanTestServer", //io.openliberty.microprofile.telemetry.internal.tests.TracingNotEnabledTest
-                                                     "spanTestServer", //io.openliberty.microprofile.telemetry.internal.tests.ZipkinOtelCollectorTest
-                                                     "spanTestServer", //io.openliberty.microprofile.telemetry.internal.tests.ZipkinTest
-                                                     "Health40TCKServer", //io.openliberty.microprofile.health40.tck.Health40TCKLauncher
-                                                     "ConfigAdminDropinsCheck", //io.openliberty.microprofile.health31.fat.ConfigAdminHealthCheckTest
-                                                     "ConfigAdminWrongAppCheck", //io.openliberty.microprofile.health31.fat.ConfigAdminHealthCheckTest
-                                                     "ConfigAdminXmlCheck", //io.openliberty.microprofile.health31.fat.ConfigAdminHealthCheckTest
-                                                     "DefaultStartupOverallStatusHealthCheck", //io.openliberty.microprofile.health31.fat.DefaultOverallStartupStatusUpAppStartupTest
-                                                     "FailedConfigAdminApplicationStateHealthCheck", //io.openliberty.microprofile.health31.fat.ConfigAdminHealthCheckTest
-                                                     "InvalidDefaultStartupOverallStatusProperty", //io.openliberty.microprofile.health31.fat.DefaultOverallStartupStatusUpAppStartupTest
-                                                     "SlowAppStartupHealthCheck", //io.openliberty.microprofile.health31.fat.SlowAppStartupHealthCheckTest
-                                                     "FATServer", //org.eclipse.microprofile.graphql.tck.GraphQLTckPackageTest
-                                                     "com.ibm.ws.scaling.member.fat.controller1", //com.ibm.ws.scaling.member.fat.DeploymentMetadataTests
-                                                     "checkpointMPJWT", //io.openliberty.checkpoint.fat.MPJWTTest
-                                                     "com.ibm.ws.rest.handler.validator.jms.fat", //com.ibm.ws.rest.handler.validator.fat.ValidateJMSTest
+                                                     "cdi20EEServer", //com.ibm.ws.cdi.1.0_fat_EE
+
+                                                     "cdi12EJBServer", //com.ibm.ws.cdi.visibility_fat
+
+                                                     "com.ibm.ws.concurrent.mp.fat.1.3.ee10", //com.ibm.ws.concurrent.mp_fat_jakarta
+
+                                                     "com.ibm.ws.jaxrs.fat.exceptionMappingWithOT", //com.ibm.ws.jaxrs.2.0_fat
+
+                                                     "EclipseLinkServer", //com.ibm.ws.jpa.tests.eclipselink_jpa_2.1_fat
+
+                                                     "com.ibm.ws.jpa.el.defaultds.fat.server", //com.ibm.ws.jpa.tests.jpa_fat
+                                                     "com.ibm.ws.jpa.fat.dsoverride", //com.ibm.ws.jpa.tests.jpa_fat
+                                                     "com.ibm.ws.jpa.fat.emlocking", //com.ibm.ws.jpa.tests.jpa_fat
+                                                     "com.ibm.ws.jpa.el.defaultds.fat.server", //com.ibm.ws.jpa.tests.jpa_fat
+                                                     "com.ibm.ws.jpa.fat.dserror", //com.ibm.ws.jpa.tests.jpa_fat
+                                                     "com.ibm.ws.jpa.fat.emlocking", //com.ibm.ws.jpa.tests.jpa_fat
+                                                     "ConcurrentEnhancementVerification", //com.ibm.ws.jpa.tests.jpa_fat
+                                                     "com.ibm.ws.jpa.fat.ejbpassivation", //com.ibm.ws.jpa.tests.jpa_fat
+
+                                                     "Config13TCKServer", //com.ibm.ws.microprofile.config.1.3_fat_tck
+
+                                                     "CDIFaultTolerance", //com.ibm.ws.microprofile.faulttolerance.cdi_fat
+                                                     "FaultToleranceMultiModule", //com.ibm.ws.microprofile.faulttolerance.cdi_fat
+                                                     "AsyncFaultTolerance", //com.ibm.ws.microprofile.faulttolerance.cdi_fat
+                                                     "FaultToleranceEJB", //com.ibm.ws.microprofile.faulttolerance.cdi_fat
+                                                     "JaxRsFaultTolerance", //com.ibm.ws.microprofile.faulttolerance.cdi_fat
+
+                                                     "mpGraphQL10.basicQuery", //com.ibm.ws.microprofile.graphql.1.0_fat
+                                                     "mpGraphQL10.defaultvalue", //com.ibm.ws.microprofile.graphql.1.0_fat
+                                                     "mpGraphQL10.graphQLInterface", //com.ibm.ws.microprofile.graphql.1.0_fat
+                                                     "mpGraphQL10.iface", //com.ibm.ws.microprofile.graphql.1.0_fat
+                                                     "mpGraphQL10.ignore", //com.ibm.ws.microprofile.graphql.1.0_fat
+                                                     "mpGraphQL10.inputFields", //com.ibm.ws.microprofile.graphql.1.0_fat
+                                                     "mpGraphQL10.jarInWar", //com.ibm.ws.microprofile.graphql.1.0_fat
+                                                     "mpGraphQL10.outputFields", //com.ibm.ws.microprofile.graphql.1.0_fat
+                                                     "mpGraphQL10.rolesAuth", //com.ibm.ws.microprofile.graphql.1.0_fat
+                                                     "mpGraphQL10.types", //com.ibm.ws.microprofile.graphql.1.0_fat
+                                                     "mpGraphQL10.ui", //com.ibm.ws.microprofile.graphql.1.0_fat
+                                                     "mpGraphQL10.voidQuery", //com.ibm.ws.microprofile.graphql.1.0_fat
+
+                                                     "FATServer", //com.ibm.ws.microprofile.graphql_fat_tck
+
+                                                     "validationServerOne", //com.ibm.ws.microprofile.openapi_fat
+                                                     "validationServerTwo", //com.ibm.ws.microprofile.openapi_fat
+                                                     "validationServerThree", //com.ibm.ws.microprofile.openapi_fat
+                                                     "validationServerFour", //com.ibm.ws.microprofile.openapi_fat
+                                                     "validationServerFive", //com.ibm.ws.microprofile.openapi_fat
+                                                     "OpenAPIConfigServer", //com.ibm.ws.microprofile.openapi_fat
+                                                     "AnnotationProcessingServer", //com.ibm.ws.microprofile.openapi_fat
+                                                     "ApplicationProcessorServletServer", //com.ibm.ws.microprofile.openapi_fat
+                                                     "ApplicationProcessorServer", //com.ibm.ws.microprofile.openapi_fat
+                                                     "FilterServer", //com.ibm.ws.microprofile.openapi_fat
+                                                     "ProxySupportServer", //com.ibm.ws.microprofile.openapi_fat
+                                                     "EndpointAvailabilityServer", //com.ibm.ws.microprofile.openapi_fat
+                                                     "UICustomizationServer", //com.ibm.ws.microprofile.openapi_fat
+                                                     "CorsServer", //com.ibm.ws.microprofile.openapi_fat
+
+                                                     "ApplicationProcessorServer", //io.openliberty.microprofile.openapi.2.0.internal_fat
+                                                     "OpenAPITestServer", //io.openliberty.microprofile.openapi.2.0.internal_fat
+                                                     "OpenAPIMergeTestServer", //io.openliberty.microprofile.openapi.2.0.internal_fat
+                                                     "OpenAPIMergeWithServletTestServer", //io.openliberty.microprofile.openapi.2.0.internal_fat
+
+                                                     "SimpleRxMessagingServer", //com.ibm.ws.microprofile.reactive.messaging_fat
+                                                     "ContextRxMessagingServer", //com.ibm.ws.microprofile.reactive.messaging_fat
+                                                     "CustomContextRxMessagingServer", //com.ibm.ws.microprofile.reactive.messaging_fat
+                                                     "ConcurrentRxMessagingServer", //com.ibm.ws.microprofile.reactive.messaging_fat
+                                                     "SharedLibRxMessagingServer", //com.ibm.ws.microprofile.reactive.messaging_fat
+                                                     "CheckpointSimpleRxMessagingServer", //com.ibm.ws.microprofile.reactive.messaging_fat
+                                                     "JsonbRxMessagingServer", //com.ibm.ws.microprofile.reactive.messaging_fat
+
+                                                     "mpRestClient10.remoteServer", //com.ibm.ws.microprofile.rest.client_fat
+                                                     "mpRestClient11.async", //com.ibm.ws.microprofile.rest.client_fat
+                                                     "mpRestClient10.basic", //com.ibm.ws.microprofile.rest.client_fat
+                                                     "mpRestClient10.collections", //com.ibm.ws.microprofile.rest.client_fat
+                                                     "mpRestClient10.handleresponses", //com.ibm.ws.microprofile.rest.client_fat
+                                                     "mpRestClient10.headerPropagation", //com.ibm.ws.microprofile.rest.client_fat
+                                                     "mpRestClient13.ssl", //com.ibm.ws.microprofile.rest.client_fat
+                                                     "mpRestClient12.jsonbContext", //com.ibm.ws.microprofile.rest.client_fat
+                                                     "mpRestClient11.produceConsume", //com.ibm.ws.microprofile.rest.client_fat
+                                                     "mpRestClient10.props", //com.ibm.ws.microprofile.rest.client_fat
+                                                     "mpRestClient20.sse", //com.ibm.ws.microprofile.rest.client_fat
+
+                                                     "opentracingFATServer1", //com.ibm.ws.opentracing.1.x_fat
+                                                     "opentracingFATServer3", //com.ibm.ws.opentracing.1.x_fat
+                                                     "opentracingFATServer4", //com.ibm.ws.opentracing.1.x_fat
+
+                                                     "RequestTimingServer", //com.ibm.ws.request.timing_fat
+                                                     "HungRequestTimingServer", //com.ibm.ws.request.timing.hung_fat
+
+                                                     "com.ibm.ws.rest.handler.config.fat", //com.ibm.ws.rest.handler.config_fat
+                                                     "com.ibm.ws.rest.handler.config.openapi.fat", //com.ibm.ws.rest.handler.config_fat
+                                                     "com.ibm.ws.rest.handler.config.audit.feature.fat", //com.ibm.ws.rest.handler.config_fat
+                                                     "com.ibm.ws.rest.handler.config.appdef.fat", //com.ibm.ws.rest.handler.config_fat
+                                                     "com.ibm.ws.rest.handler.validator.jdbc.fat", //com.ibm.ws.rest.handler.validator_fat
+                                                     "com.ibm.ws.rest.handler.validator.jca.fat", //com.ibm.ws.rest.handler.validator_fat
+                                                     "com.ibm.ws.rest.handler.validator.jms.fat", //com.ibm.ws.rest.handler.validator_fat
+                                                     "com.ibm.ws.rest.handler.validator.openapi.fat", //com.ibm.ws.rest.handler.validator_fat
+
+                                                     "com.ibm.ws.scaling.member.fat.member1", //com.ibm.ws.scaling.member_fat
+                                                     "com.ibm.ws.scaling.member.fat.controller1", //com.ibm.ws.scaling.member_fat
+
+                                                     "com.ibm.ws.ui.fat", //com.ibm.ws.ui_rest_fat
+
+                                                     "com.ibm.ws.webcontainer.security.fat.basicauth.audit", //com.ibm.ws.webcontainer.security.jacc.1.5_fat
+
+                                                     "com.ibm.ws.jaxrs.fat.exceptionMappingWithOT", //com.ibm.ws.jaxrs.2.0_fat
+
+                                                     "RequestTimingServer", //com.ibm.ws.request.timing_fat
+
+                                                     "checkpointMPJWT", //io.openliberty.checkpoint_fat
+                                                     "checkpointMPHealth", //io.openliberty.checkpoint_fat
+                                                     "checkpointPasswordUtilities", //io.openliberty.checkpoint_fat
+                                                     "timeoutServer", //io.openliberty.checkpoint_fat
+                                                     "checkpointMPMetrics", //io.openliberty.checkpoint_fat
+                                                     "checkpointMPOpenAPIConfig", //io.openliberty.checkpoint_fat
+
+                                                     "io.openliberty.jcache.internal.fat.jwt.auth.cache.1", //io.openliberty.checkpoint_fat_jcache_hazelcast
+
+                                                     "ContainerJSPServer", //io.openliberty.http.monitor_fat
+
+                                                     "RSTestServer", //io.openliberty.jaxrs.global.handler.internal_fat
+
+                                                     "EnableSchemaValidationTestServer", //io.openliberty.jaxws.config_fat
+                                                     "EnableSchemaValidationWebServiceTestServer", //io.openliberty.jaxws.config_fat
+                                                     "IgnoreUnexpectedElementConfigTestServer", //io.openliberty.jaxws.config_fat
+                                                     "GzipInterceptorsTestServer", //io.openliberty.jaxws.config_fat
+
+                                                     "AddNumbersTestServer", //io.openliberty.jaxws.global.handler.internal_fat
+                                                     "EJBServiceRefBndTestServer", //io.openliberty.jaxws.global.handler.internal_fat
+                                                     "HandlerChainTestServerAlternate", //io.openliberty.jaxws.global.handler.internal_fat
+
+                                                     "simpleWar", //io.openliberty.jee.internal_fat
+                                                     "simpleEar", //io.openliberty.jee.internal_fat
+
+                                                     "Health40TCKServer", //io.openliberty.microprofile.health.4.0.internal_fat_tck
+                                                     "ConfigAdminDropinsCheck", //io.openliberty.microprofile.health.3.1.internal_fat
+                                                     "ConfigAdminWrongAppCheck", //io.openliberty.microprofile.health.3.1.internal_fat
+                                                     "ConfigAdminXmlCheck", //io.openliberty.microprofile.health.3.1.internal_fat
+                                                     "DefaultStartupOverallStatusHealthCheck", //io.openliberty.microprofile.health.3.1.internal_fat
+                                                     "FailedConfigAdminApplicationStateHealthCheck", //io.openliberty.microprofile.health.3.1.internal_fat
+                                                     "InvalidDefaultStartupOverallStatusProperty", //io.openliberty.microprofile.health.3.1.internal_fat
+                                                     "SlowAppStartupHealthCheck", //io.openliberty.microprofile.health.3.1.internal_fat
+
+                                                     "MPServer41", //io.openliberty.microprofile41.internal_fat
+                                                     "MPServer", //io.openliberty.microprofile.internal_fat
+
+                                                     "crossFeatureOpenTracingServer", //io.openliberty.microprofile.telemetry.1.0.internal.container_fat
+                                                     "crossFeatureOpenTracingZipkinServer", //io.openliberty.microprofile.telemetry.1.0.internal.container_fat
+                                                     "crossFeatureTelemetryServer", //io.openliberty.microprofile.telemetry.1.0.internal.container_fat
+                                                     "spanTestServer", //io.openliberty.microprofile.telemetry.1.0.internal.container_fat
+
     };
     private static final Set<String> EXEMPT_SERVERS_SET = new HashSet<String>(Arrays.asList(EXEMPT_SERVERS));
 
@@ -3602,12 +3697,20 @@ public class LibertyServer implements LogMonitorClient {
                     message = message
                               + "This is usually caused by a feature not being explicitly set in the FAT's server.xml such that FeatureReplacementAction does not replace it properly.";
 
+                    //if this is a local run then always throw an exception
+                    //if not local then check if the server is exempt
+                    //if not exempt then throw exception, otherwise just output a message
                     //check for exempt servers should eventually be removed
-                    //if exempt then output info message, otherwise throw exception
-                    if (EXEMPT_SERVERS_SET.contains(serverName)) {
-                        Log.info(c, method, message);
+                    if (REPEAT_FEATURE_CHECK_ERROR) {
+                        if (FAT_TEST_LOCALRUN) {
+                            throw new Exception(message);
+                        } else if (!EXEMPT_SERVERS_SET.contains(serverName)) {
+                            throw new Exception(message);
+                        } else {
+                            Log.info(c, method, message);
+                        }
                     } else {
-                        throw new Exception(message);
+                        Log.info(c, method, message);
                     }
                 }
             }
