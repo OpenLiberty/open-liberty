@@ -7,5 +7,6 @@
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
+    <javaPermission codeBase="${server.config.dir}/dropins/testClassPath.ear" className="java.lang.RuntimePermission" name="getClassLoader"/>
 </server>
 
