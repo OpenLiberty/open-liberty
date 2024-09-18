@@ -76,8 +76,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
         // TODO Need to see if we need to check decoder result from request to ensure data is properly parsed as expected
         if (request.decoderResult().isFinished() && request.decoderResult().isSuccess()) {
 
-            FullHttpRequest msg = ReferenceCountUtil.retain(request, 1);
-//            FullHttpRequest msg = request;
+//            FullHttpRequest msg = ReferenceCountUtil.retain(request, 1);
+            FullHttpRequest msg = request;
             HttpDispatcher.getExecutorService().execute(new Runnable() {
                 @Override
                 public void run() {
@@ -196,13 +196,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
             context.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(null);
 
         }
-
-//        context.channel().closeFuture().addListener(new ChannelFutureListener() {
-//
-//            @Override
-//            public void operationComplete(ChannelFuture arg0) throws Exception {
-//            }
-//        });
         link.init(context, request, config);
         link.ready();
     }
