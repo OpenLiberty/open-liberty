@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.crypto.common;
@@ -20,6 +20,7 @@ public class MessageDigestUtils {
     public final static String MESSAGE_DIGEST_ALGORITHM_SHA256 = "SHA-256";
     public final static String MESSAGE_DIGEST_ALGORITHM_SHA384 = "SHA-384";
     public final static String MESSAGE_DIGEST_ALGORITHM_SHA512 = "SHA-512";
+    public final static String MESSAGE_DIGEST_ALGORITHM_SHA = "SHA";
 
     /**
      * List of supported Message Digest Algorithms.

@@ -13,7 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CryptoUtils {
-    
+
+    public static final String AES_GCM_CIPHER = "AES/GCM/NoPadding";
+
     private static Map<String, String> secureAlternative = new HashMap<>();
     static {
         secureAlternative.put("SHA", "SHA256");
@@ -25,9 +27,9 @@ public class CryptoUtils {
 
     /**
      * Answers whether a crypto algorithm is considered insecure.
-     * 
-     * @param algorithm   The algorithm to check.
-     * @return            True if the algorithm is considered insecure, false otherwise.
+     *
+     * @param algorithm The algorithm to check.
+     * @return True if the algorithm is considered insecure, false otherwise.
      */
     public static boolean isAlgorithmInsecure(String algorithm) {
         return secureAlternative.containsKey(algorithm);
@@ -35,9 +37,9 @@ public class CryptoUtils {
 
     /**
      * Returns a secure crypto algorithm to use in place of the given one.
-     * 
-     * @param algorithm   The insecure algorithm to be replaced.
-     * @return            A secure replacement algorithm.  If there is none a null is returned.
+     *
+     * @param algorithm The insecure algorithm to be replaced.
+     * @return A secure replacement algorithm. If there is none a null is returned.
      */
     public static String getSecureAlternative(String algorithm) {
         return secureAlternative.get(algorithm);

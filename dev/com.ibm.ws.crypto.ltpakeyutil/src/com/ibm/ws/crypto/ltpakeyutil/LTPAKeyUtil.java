@@ -12,33 +12,26 @@
  *******************************************************************************/
 package com.ibm.ws.crypto.ltpakeyutil;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.interfaces.RSAPrivateCrtKey;
-import java.security.interfaces.RSAPublicKey;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.crypto.common.FipsUtils;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 
 public final class LTPAKeyUtil {
 	private static final TraceComponent tc = Tr.register(LTPAKeyUtil.class);
 
 	public static boolean ibmJCEAvailable = false;
-    public static boolean ibmJCEPlusFIPSAvailable = false;
-    public static boolean openJCEPlusAvailable = false;
-    public static boolean openJCEPlusFIPSAvailable = false;
-    public static boolean ibmJCEProviderChecked = false;
-    public static boolean ibmJCEPlusFIPSProviderChecked = false;
-    public static boolean openJCEPlusProviderChecked = false;
-    public static boolean openJCEPlusFIPSProviderChecked = false;
+	public static boolean ibmJCEPlusFIPSAvailable = false;
+	public static boolean openJCEPlusAvailable = false;
+	public static boolean openJCEPlusFIPSAvailable = false;
+	public static boolean ibmJCEProviderChecked = false;
+	public static boolean ibmJCEPlusFIPSProviderChecked = false;
+	public static boolean openJCEPlusProviderChecked = false;
+	public static boolean openJCEPlusFIPSProviderChecked = false;
 
 	public static boolean unitTest = false;
-	public static boolean isFIPSEnabled = false;
+	public static boolean fipsEnabled = FipsUtils.isFIPSEnabled();
 	public static boolean fipsChecked = false;
-	public static String FIPSLevel = getFipsLevel();
 
 	public static boolean javaVersionChecked = false;
 	public static boolean isJava11orHigher = false;
@@ -51,16 +44,13 @@ public final class LTPAKeyUtil {
 	public static boolean osVersionChecked = false;
 
 	public static String IBMJCE_PROVIDER = "com.ibm.crypto.provider.IBMJCE";
-    public static String IBMJCE_PLUS_FIPS_PROVIDER = "com.ibm.crypto.provider.IBMJCEPlusFIPS";
-    public static String OPENJCE_PLUS_PROVIDER = "com.ibm.crypto.plus.provider.OpenJCEPlus";
-    public static String OPENJCE_PLUS_FIPS_PROVIDER = "com.ibm.crypto.plus.provider.OpenJCEPlusFIPS";
-
-	public static final String MESSAGE_DIGEST_ALGORITHM_SHA = "SHA";
-	public static final String MESSAGE_DIGEST_ALGORITHM_SHA256 = "SHA-256";
+	public static String IBMJCE_PLUS_FIPS_PROVIDER = "com.ibm.crypto.provider.IBMJCEPlusFIPS";
+	public static String OPENJCE_PLUS_PROVIDER = "com.ibm.crypto.plus.provider.OpenJCEPlus";
+	public static String OPENJCE_PLUS_FIPS_PROVIDER = "com.ibm.crypto.plus.provider.OpenJCEPlusFIPS";
 
 	public static final String IBMJCE_NAME = "IBMJCE";
-    public static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
-    public static final String OPENJCE_PLUS_NAME = "OpenJCEPlus";
+	public static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
+	public static final String OPENJCE_PLUS_NAME = "OpenJCEPlus";
 	public static final String OPENJCE_PLUS_FIPS_NAME = "OpenJCEPlusFIPS";
 
 	private static boolean issuedBetaMessage = false;
@@ -112,24 +102,24 @@ public final class LTPAKeyUtil {
 		}
 	}
 
-    public static boolean isIBMJCEPlusFIPSAvailable() {
-        if (ibmJCEPlusFIPSProviderChecked) {
-            return ibmJCEPlusFIPSAvailable;
-        } else {
-            ibmJCEPlusFIPSAvailable = JavaInfo.isSystemClassAvailable(IBMJCE_PLUS_FIPS_PROVIDER);
-            ibmJCEPlusFIPSProviderChecked = true;
+	public static boolean isIBMJCEPlusFIPSAvailable() {
+		if (ibmJCEPlusFIPSProviderChecked) {
+			return ibmJCEPlusFIPSAvailable;
+		} else {
+			ibmJCEPlusFIPSAvailable = JavaInfo.isSystemClassAvailable(IBMJCE_PLUS_FIPS_PROVIDER);
+			ibmJCEPlusFIPSProviderChecked = true;
 
-            if (isRunningBetaMode() && ibmJCEPlusFIPSAvailable) {
-                ibmJCEPlusFIPSAvailable = true;
+			if (FipsUtils.isRunningBetaMode() && ibmJCEPlusFIPSAvailable) {
+				ibmJCEPlusFIPSAvailable = true;
 			} else {
-                if (isFIPSEnabled) {
-                    Tr.error(tc, "FIPS is enabled but the IBMJCEPlusFIPS provider is not available.");
-                }
-                ibmJCEPlusFIPSAvailable = false;
-            }
-            return ibmJCEPlusFIPSAvailable;
-        }
-    }
+				if (fipsEnabled) {
+					Tr.error(tc, "FIPS is enabled but the IBMJCEPlusFIPS provider is not available.");
+				}
+				ibmJCEPlusFIPSAvailable = false;
+			}
+			return ibmJCEPlusFIPSAvailable;
+		}
+	}
 
 	public static boolean isOpenJCEPlusAvailable() {
 		if (openJCEPlusProviderChecked) {
@@ -142,75 +132,23 @@ public final class LTPAKeyUtil {
 	}
 
 	public static boolean isOpenJCEPlusFIPSAvailable() {
-        if (openJCEPlusFIPSProviderChecked) {
-            return openJCEPlusFIPSAvailable;
-        } else {
-            openJCEPlusFIPSAvailable = JavaInfo.isSystemClassAvailable(OPENJCE_PLUS_FIPS_PROVIDER);
-            openJCEPlusFIPSProviderChecked = true;
-
-            if (isRunningBetaMode() && openJCEPlusFIPSAvailable) {
-                openJCEPlusFIPSAvailable = true;
-            } else {
-                if (isFIPSEnabled) {
-                    Tr.error(tc, "FIPS is enabled but the OpenJCEPlusFIPS provider is not available.");
-                }
-                openJCEPlusFIPSAvailable = false;
-            }
-            return openJCEPlusFIPSAvailable;
-        }
-    }
-
-	static boolean isRunningBetaMode() {
-		if (!ProductInfo.getBetaEdition()) {
-			return false;
+		if (openJCEPlusFIPSProviderChecked) {
+			return openJCEPlusFIPSAvailable;
 		} else {
-			// Running beta exception, issue message if we haven't already issued one for this class
-			if (!issuedBetaMessage) {
-				Tr.info(tc, "BETA: A beta method has been invoked for the class LTPAKeyUtil for the first time.");
-				issuedBetaMessage = !issuedBetaMessage;
+			openJCEPlusFIPSAvailable = JavaInfo.isSystemClassAvailable(OPENJCE_PLUS_FIPS_PROVIDER);
+			openJCEPlusFIPSProviderChecked = true;
+
+			if (FipsUtils.isRunningBetaMode() && openJCEPlusFIPSAvailable) {
+				openJCEPlusFIPSAvailable = true;
+			} else {
+				if (fipsEnabled) {
+					Tr.error(tc, "FIPS is enabled but the OpenJCEPlusFIPS provider is not available.");
+				}
+				openJCEPlusFIPSAvailable = false;
 			}
-			return true;
+			return openJCEPlusFIPSAvailable;
 		}
 	}
-
-    static String getFipsLevel() {
-        String fipsLevel = AccessController.doPrivileged(new PrivilegedAction<String>() {
-            @Override
-            public String run() {
-                String propertyValue = System.getProperty("com.ibm.fips.mode");
-                return (propertyValue == null) ? "disabled" : propertyValue.trim().toLowerCase();
-            }
-        });
-        return fipsLevel;
-    }
-
-    public static boolean isFips140_3Enabled() {
-        //TODO remove beta check
-        if (unitTest) {
-            return "140-3".equals(FIPSLevel);
-        } else {
-            return isRunningBetaMode() && "140-3".equals(FIPSLevel);
-        }
-    }
-
-    public static boolean isFips140_2Enabled() {
-        //TODO remove beta check
-        if (unitTest) {
-            return "140-2".equals(FIPSLevel);
-        } else {
-            return isRunningBetaMode() && "140-2".equals(FIPSLevel);
-        }
-    }
-
-    public static boolean isFIPSEnabled() {
-		if (fipsChecked) {
-			return isFIPSEnabled;
-		} else {
-			isFIPSEnabled = isFips140_2Enabled() || isFips140_3Enabled();
-            fipsChecked = true;
-            return isFIPSEnabled;
-		}
-    }
 
 	private static boolean isJava11orHigher() {
 		if (javaVersionChecked) {

@@ -18,15 +18,12 @@ import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 public class FipsUtils {
 
-    public static boolean isFIPSEnabled = false;
-	public static boolean fipsChecked = false;
+    public static boolean fipsEnabled = false;
+    public static boolean fipsChecked = false;
 
     private static final TraceComponent tc = Tr.register(FipsUtils.class);
 
     static String FIPSLevel = getFipsLevel();
-
-    //TODO remove with beta checks
-    static boolean unitTest = false;
 
     static String getFipsLevel() {
         String fipsLevel = AccessController.doPrivileged(new PrivilegedAction<String>() {
@@ -40,35 +37,24 @@ public class FipsUtils {
     }
 
     public static boolean isFips140_3Enabled() {
-        //TODO remove beta check
-        if (unitTest) {
-            return "140-3".equals(FIPSLevel);
-        } else {
-            return isRunningBetaMode() && "140-3".equals(FIPSLevel);
-        }
+        return isRunningBetaMode() && "140-3".equals(FIPSLevel);
     }
 
     public static boolean isFips140_2Enabled() {
-        //TODO remove beta check
-        if (unitTest) {
-            return "140-2".equals(FIPSLevel);
-        } else {
-            return isRunningBetaMode() && "140-2".equals(FIPSLevel);
-        }
+        return isRunningBetaMode() && "140-2".equals(FIPSLevel);
     }
 
     public static boolean isFIPSEnabled() {
-		if (fipsChecked) {
-			return isFIPSEnabled;
-		} else {
-			isFIPSEnabled = isFips140_2Enabled() || isFips140_3Enabled();
+        if (fipsChecked) {
+            return fipsEnabled;
+        } else {
+            fipsEnabled = isFips140_2Enabled() || isFips140_3Enabled();
             fipsChecked = true;
-            return isFIPSEnabled;
-		}
+            return fipsEnabled;
+        }
     }
 
-    //TODO remove beta check
-    static boolean isRunningBetaMode() {
+    public static boolean isRunningBetaMode() {
         return ProductInfo.getBetaEdition();
     }
 

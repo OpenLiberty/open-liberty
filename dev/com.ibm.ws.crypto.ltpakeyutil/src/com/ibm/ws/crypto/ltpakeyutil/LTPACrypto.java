@@ -49,7 +49,7 @@ import com.ibm.ws.crypto.common.FipsUtils;
 
 final class LTPACrypto {
 
-	private static final boolean isFIPSEnabled = LTPAKeyUtil.isFIPSEnabled();
+	private static final boolean fipsEnabled = FipsUtils.isFIPSEnabled();
 
 	private static final TraceComponent tc = Tr.register(LTPACrypto.class);
 	private static final String IBMJCE_NAME = "IBMJCE";
@@ -69,7 +69,7 @@ final class LTPACrypto {
 	private static final String encryptAlgorithm = getEncryptionAlgorithm();
 
 	public static RSAPublicKey rsaPubKey;
-    public static RSAPrivateCrtKey rsaPrivKey;
+	public static RSAPrivateCrtKey rsaPrivKey;
 
 	private static int MAX_CACHE = 500;
 	private static IvParameterSpec ivs8 = null;
@@ -645,26 +645,26 @@ final class LTPACrypto {
 		ci = (provider == null) ? Cipher.getInstance(cipher) : Cipher.getInstance(cipher, provider);
 
 		if (cipher.indexOf("ECB") == -1) {
-            if (cipher.indexOf("GCM") != -1) {
-                byte[] iv = new byte[12];
-                GCMParameterSpec params = new GCMParameterSpec(128, iv);
-                System.out.println("using GCM spec");
-                ci.init(cipherMode, sKey, params);
-            } else if (cipher.indexOf("AES") != -1) {
-                if (ivs16 == null) {
-                    setIVS16(key);
-                }
-                ci.init(cipherMode, sKey, ivs16);
-            } else {
-                if (ivs8 == null) {
-                    setIVS8(key);
-                }
-                ci.init(cipherMode, sKey, ivs8);
-            }
-        } else {
-            ci.init(cipherMode, sKey);
-        }
-        return ci;
+			if (cipher.indexOf("GCM") != -1) {
+				byte[] iv = new byte[12];
+				GCMParameterSpec params = new GCMParameterSpec(128, iv);
+				System.out.println("using GCM spec");
+				ci.init(cipherMode, sKey, params);
+			} else if (cipher.indexOf("AES") != -1) {
+				if (ivs16 == null) {
+					setIVS16(key);
+				}
+				ci.init(cipherMode, sKey, ivs16);
+			} else {
+				if (ivs8 == null) {
+					setIVS8(key);
+				}
+				ci.init(cipherMode, sKey, ivs8);
+			}
+		} else {
+			ci.init(cipherMode, sKey);
+		}
+		return ci;
 	}
 
 	/**
@@ -1060,7 +1060,7 @@ final class LTPACrypto {
 	@Trivial
 	static final byte[] generate3DESKey() {
 		byte[] rndSeed = null;
-		int len = (isFIPSEnabled) ? 32 : 24;
+		int len = (fipsEnabled) ? 32 : 24;
 		rndSeed = new byte[len];
 		random(rndSeed, 0, len);
 		return rndSeed;
@@ -1172,19 +1172,16 @@ final class LTPACrypto {
 	}
 
 	private static String getProvider() {
-        String provider = null;
-        if (isFIPSEnabled && LTPAKeyUtil.isOpenJCEPlusFIPSAvailable()) {
-            provider = OPENJCE_PLUS_FIPS_NAME;
-        }
-        else if (isFIPSEnabled && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
-            provider = IBMJCE_PLUS_FIPS_NAME;
-        } 
-        else if (LTPAKeyUtil.isZOSandRunningJava11orHigher() && LTPAKeyUtil.isOpenJCEPlusAvailable()) {
-            provider = OPENJCE_PLUS_NAME;
-        } 
-        else if (LTPAKeyUtil.isIBMJCEAvailable()) {
-            provider = IBMJCE_NAME;
-        } 
+		String provider = null;
+		if (fipsEnabled && LTPAKeyUtil.isOpenJCEPlusFIPSAvailable()) {
+			provider = OPENJCE_PLUS_FIPS_NAME;
+		} else if (fipsEnabled && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
+			provider = IBMJCE_PLUS_FIPS_NAME;
+		} else if (LTPAKeyUtil.isZOSandRunningJava11orHigher() && LTPAKeyUtil.isOpenJCEPlusAvailable()) {
+			provider = OPENJCE_PLUS_NAME;
+		} else if (LTPAKeyUtil.isIBMJCEAvailable()) {
+			provider = IBMJCE_NAME;
+		}
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			if (provider == null) {
 				Tr.debug(tc, "getProvider" + " Provider configured by JDK");
@@ -1196,14 +1193,14 @@ final class LTPACrypto {
 	}
 
 	private static String getSignatureAlgorithm() {
-		if (isFIPSEnabled && (LTPAKeyUtil.isOpenJCEPlusFIPSAvailable() || LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()))
+		if (fipsEnabled && (LTPAKeyUtil.isOpenJCEPlusFIPSAvailable() || LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()))
 			return SIGNATURE_ALGORITHM_SHA256WITHRSA;
 		else
 			return SIGNATURE_ALGORITHM_SHA1WITHRSA;
 	}
 
 	private static String getEncryptionAlgorithm() {
-		if (isFIPSEnabled && (LTPAKeyUtil.isOpenJCEPlusFIPSAvailable() || LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()))
+		if (fipsEnabled && (LTPAKeyUtil.isOpenJCEPlusFIPSAvailable() || LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()))
 			return ENCRYPT_ALGORITHM_RSA;
 		else
 			return ENCRYPT_ALGORITHM_DESEDE;

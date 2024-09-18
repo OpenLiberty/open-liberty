@@ -28,7 +28,9 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.auth.InvalidTokenException;
 import com.ibm.websphere.security.auth.TokenExpiredException;
 import com.ibm.ws.common.encoder.Base64Coder;
+import com.ibm.ws.crypto.common.CryptoUtils;
 import com.ibm.ws.crypto.common.FipsUtils;
+import com.ibm.ws.crypto.common.MessageDigestUtils;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyUtil;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPrivateKey;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPublicKey;
@@ -42,11 +44,9 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
  */
 public class LTPAToken2 implements Token, Serializable {
 
-    private static final boolean isFIPSEnabled = LTPAKeyUtil.isFIPSEnabled();
+    private static final boolean fipsEnabled = FipsUtils.isFIPSEnabled();
 
     private static final TraceComponent tc = Tr.register(LTPAToken2.class);
-
-    private static final String AES_GCM_CIPHER = "AES/GCM/NoPadding";
 
     private static final long serialVersionUID = 1L;
     private static final String DELIM = "%";
@@ -69,21 +69,21 @@ public class LTPAToken2 implements Token, Serializable {
     static {
         MessageDigest m1 = null, m2 = null;
         try {
-            if (isFIPSEnabled && LTPAKeyUtil.isOpenJCEPlusFIPSAvailable()) {
-                m1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.OPENJCE_PLUS_FIPS_NAME);
-                m2 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.OPENJCE_PLUS_FIPS_NAME);
-            } else if (isFIPSEnabled && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
-                m1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.IBMJCE_PLUS_FIPS_NAME);
-                m2 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.IBMJCE_PLUS_FIPS_NAME);
+            if (fipsEnabled && LTPAKeyUtil.isOpenJCEPlusFIPSAvailable()) {
+                m1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.OPENJCE_PLUS_FIPS_NAME);
+                m2 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.OPENJCE_PLUS_FIPS_NAME);
+            } else if (fipsEnabled && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
+                m1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.IBMJCE_PLUS_FIPS_NAME);
+                m2 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.IBMJCE_PLUS_FIPS_NAME);
             } else if (LTPAKeyUtil.isOpenJCEPlusAvailable()) {
-                m1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.OPENJCE_PLUS_NAME);
-                m2 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.OPENJCE_PLUS_NAME);
+                m1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.OPENJCE_PLUS_NAME);
+                m2 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.OPENJCE_PLUS_NAME);
             } else if (LTPAKeyUtil.isIBMJCEAvailable()) {
-                m1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.IBMJCE_NAME);
-                m2 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.IBMJCE_NAME);
+                m1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.IBMJCE_NAME);
+                m2 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.IBMJCE_NAME);
             } else {
-                m1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA);
-                m2 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA);
+                m1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA);
+                m2 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA);
             }
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -112,7 +112,7 @@ public class LTPAToken2 implements Token, Serializable {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
         this.expirationInMilliseconds = 0;
-        this.cipher = AES_GCM_CIPHER;
+        this.cipher = CryptoUtils.AES_GCM_CIPHER;
         this.expirationDifferenceAllowed = expDiffAllowed;
         decrypt();
     }
@@ -135,7 +135,7 @@ public class LTPAToken2 implements Token, Serializable {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
         this.expirationInMilliseconds = 0;
-        this.cipher = AES_GCM_CIPHER;
+        this.cipher = CryptoUtils.AES_GCM_CIPHER;
         this.expirationDifferenceAllowed = expDiffAllowed;
         decrypt();
         isValid();
@@ -164,7 +164,7 @@ public class LTPAToken2 implements Token, Serializable {
         this.publicKey = publicKey;
         this.userData = new UserData(accessID);
         setExpiration(expirationInMinutes);
-        this.cipher = AES_GCM_CIPHER;
+        this.cipher = CryptoUtils.AES_GCM_CIPHER;
     }
 
     /**
@@ -184,7 +184,7 @@ public class LTPAToken2 implements Token, Serializable {
         this.publicKey = publicKey;
         this.userData = userdata;
         setExpiration(expirationInMinutes);
-        this.cipher = AES_GCM_CIPHER;
+        this.cipher = CryptoUtils.AES_GCM_CIPHER;
     }
 
     /**
