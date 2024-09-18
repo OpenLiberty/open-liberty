@@ -119,7 +119,8 @@ public abstract class EntityManagerBuilder {
                 Class<?> idType = null;
                 String versionAttrName = null;
 
-                Exception collectionException = null;
+                Class<?> jpaEntityClass = entityType.getJavaType();
+                Class<?> userEntityClass = recordClass == null ? jpaEntityClass : recordClass;
 
                 try {
                     for (Attribute<?, ?> attr : entityType.getAttributes()) {
@@ -239,10 +240,6 @@ public abstract class EntityManagerBuilder {
                                              + " which results in an overloaded path expression " + relationAttributeNameUndelimited
                                              + " the relational attribute will be ignored."); //TODO NLS swap to warning
 
-                            // TODO - remove this experimental behavior - not part of Jakarta Data Specification
-                            relationAttributeName = relationAttributeName.toLowerCase();
-                            attributeNames.putIfAbsent(relationAttributeName, fullAttributeName);
-
                             attributeAccessors.put(fullAttributeName, relAccessors);
 
                             attributeTypes.put(fullAttributeName, relAttr.getJavaType());
@@ -282,40 +279,28 @@ public abstract class EntityManagerBuilder {
                             }
                         }
                     }
-                } catch (MappingException e) {
-                    collectionException = e;
-                } catch (Exception e) {
-                    if (trace & tc.isDebugEnabled())
-                        Tr.debug(tc, "Unexpected exception caught while collecting entity information. The entity information will complete exceptionally", e);
-                    collectionException = e;
-                    // TODO compute the userEntityClass earlier and completeExceptionally here.
-                    // Then move the EntityInfo creation and successful completion to before the catch.
-                    // That will also cover the possibility of EntityInfo constructor failing,
-                    // which can happen when it doesn't validate.
-                }
 
-                Class<?> jpaEntityClass = entityType.getJavaType();
-                Class<?> userEntityClass = recordClass == null ? jpaEntityClass : recordClass;
+                    EntityInfo entityInfo = new EntityInfo( //
+                                    entityType.getName(), //
+                                    jpaEntityClass, //
+                                    recordClass, //
+                                    attributeAccessors, //
+                                    attributeNames, //
+                                    attributeNamesForUpdate, //
+                                    attributeTypes, //
+                                    collectionElementTypes, //
+                                    relationAttributeNames, //
+                                    idType, //
+                                    idClassAttributeAccessors, //
+                                    versionAttrName, //
+                                    this);
 
-                EntityInfo entityInfo = new EntityInfo( //
-                                entityType.getName(), //
-                                jpaEntityClass, //
-                                recordClass, //
-                                attributeAccessors, //
-                                attributeNames, //
-                                attributeNamesForUpdate, //
-                                attributeTypes, //
-                                collectionElementTypes, //
-                                relationAttributeNames, //
-                                idType, //
-                                idClassAttributeAccessors, //
-                                versionAttrName, //
-                                this);
-
-                if (collectionException == null)
                     entityInfoMap.computeIfAbsent(userEntityClass, EntityInfo::newFuture).complete(entityInfo);
-                else
-                    entityInfoMap.computeIfAbsent(userEntityClass, EntityInfo::newFuture).completeExceptionally(collectionException);
+                } catch (MappingException e) { // Ignored FFDC
+                    entityInfoMap.computeIfAbsent(userEntityClass, EntityInfo::newFuture).completeExceptionally(e);
+                } catch (Exception e) { // Produce FFDC
+                    entityInfoMap.computeIfAbsent(userEntityClass, EntityInfo::newFuture).completeExceptionally(e);
+                }
             }
         } finally {
             if (em != null)

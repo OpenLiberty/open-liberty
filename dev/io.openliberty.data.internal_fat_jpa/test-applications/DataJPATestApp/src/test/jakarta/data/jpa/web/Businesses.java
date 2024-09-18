@@ -33,7 +33,7 @@ import jakarta.data.repository.Update;
 public interface Businesses extends BasicRepository<Business, Integer> {
 
     // embeddable 1 level deep
-    List<Business> findByLatitudeBetweenOrderByLongitudeDesc(float min, float max);
+    List<Business> findByLocationLatitudeBetweenOrderByLocationLongitudeDesc(float min, float max);
 
     // embeddable 3 levels deep where @Column resolves name conflict
     Business[] findByLocation_Address_Street_NameIgnoreCaseEndsWithOrderByLocation_Address_Street_DirectionIgnoreCaseAscNameAsc(String streetName);
@@ -41,21 +41,21 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     List<Business> findByLocationLongitudeAbsoluteValueBetween(float min, float max);
 
     // embeddable as result type
-    @OrderBy("street")
-    @OrderBy("houseNum")
-    Stream<Location> findByZip(int zipCode);
+    @OrderBy("location.address.street")
+    @OrderBy("location.address.houseNum")
+    Stream<Location> findByLocationAddressZip(int zipCode);
 
     // embeddable 2 levels deep
-    @OrderBy(value = "city", descending = true)
+    @OrderBy(value = "location.address.city", descending = true)
     @OrderBy("location.address.zip")
-    @OrderBy("houseNum")
+    @OrderBy("location.address.houseNum")
     @OrderBy("id")
-    CursoredPage<Business> findByZipIn(Iterable<Integer> zipCodes, PageRequest pagination);
+    CursoredPage<Business> findByLocationAddressZipIn(Iterable<Integer> zipCodes, PageRequest pagination);
 
     // embeddable 3 levels deep as result type
-    @OrderBy("street")
-    @OrderBy("houseNum")
-    Stream<Street> findByZipNotAndCity(int excludeZipCode, String city);
+    @OrderBy("location.address.street")
+    @OrderBy("location.address.houseNum")
+    Stream<Street> findByLocationAddressZipNotAndLocationAddressCity(int excludeZipCode, String city);
 
     @OrderBy("id")
     Business findFirstByName(String name);
