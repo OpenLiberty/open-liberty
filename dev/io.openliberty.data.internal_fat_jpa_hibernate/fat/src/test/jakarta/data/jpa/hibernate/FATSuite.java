@@ -26,7 +26,7 @@ import componenttest.topology.database.container.DatabaseContainerFactory;
 @SuiteClasses({
                 AlwaysPassesTest.class,
                 DataJPAHibernateTest.class,
-                DataJPAHibernateIntegrationTest.class
+                DataJPAHibernateIntegrationTest.class // Does not use database rotation
 })
 public class FATSuite extends TestContainerSuite {
 

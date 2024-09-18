@@ -34,7 +34,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.UserTransaction;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -110,13 +109,13 @@ public class DataJPAHibernateTestServlet extends FATServlet {
                         });
     }
 
-    //TODO deleteById always fails with jakarta.persistence.TransactionRequiredException: Executing an update/delete query
-    @Ignore("https://hibernate.atlassian.net/browse/HHH-18260")
     @Test
     public void testBasicRepositoryDeleteById() throws Exception {
         City GreenBay = new City("Green Bay", "Wisconsin", 107395, Set.of(920));
         cities.save(GreenBay);
 
+        //NOTE: tran.begin() / tran.commit() requires hibernate property hibernate.allow_update_outside_transaction=true
+        //see https://hibernate.atlassian.net/browse/HHH-18260
         tran.begin();
         cities.deleteById(GreenBay.id);
         tran.commit();
