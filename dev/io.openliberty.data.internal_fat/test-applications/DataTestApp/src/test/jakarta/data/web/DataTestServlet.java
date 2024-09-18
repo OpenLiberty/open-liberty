@@ -3403,6 +3403,9 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testMultipleAggregates() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        boolean databaseRounds = jdbcJarName.startsWith("ojdbc") || jdbcJarName.startsWith("postgre");
+
         Object[] objects = primes.minMaxSumCountAverageObject(50);
         assertEquals(Long.valueOf(2L), objects[0]); // minimum
         assertEquals(Long.valueOf(47L), objects[1]); // maximum
@@ -3449,7 +3452,10 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Long.valueOf(29L), list.get(1)); // maximum
         assertEquals(Long.valueOf(129L), list.get(2)); // sum
         assertEquals(Long.valueOf(10L), list.get(3)); // count
-        assertEquals(Long.valueOf(12L), list.get(4)); // average
+        if (databaseRounds)
+            assertEquals(Long.valueOf(13L), list.get(4)); // average - 12.9 -> 13
+        else
+            assertEquals(Long.valueOf(12L), list.get(4)); // average - 12.9 -> 12
 
         Stack<String> stack = primes.minMaxSumCountAverageStack(25);
         assertEquals("2", stack.get(0)); // minimum
@@ -3464,7 +3470,10 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Integer.valueOf(19), it.next()); // maximum
         assertEquals(Integer.valueOf(77), it.next()); // sum
         assertEquals(Integer.valueOf(8), it.next()); // count
-        assertEquals(Integer.valueOf(9), it.next()); // average
+        if (databaseRounds)
+            assertEquals(Integer.valueOf(10), it.next()); // average - 9.625 -> 10
+        else
+            assertEquals(Integer.valueOf(9), it.next()); // average - 9.625 -> 9
 
         Deque<Double> deque = primes.minMaxSumCountAverageDeque(18);
         assertEquals(2.0, deque.removeFirst(), 0.01); // minimum
