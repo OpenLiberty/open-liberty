@@ -79,6 +79,8 @@ public class OpenAPIValidationTestOne {
         assertNotNull("The application openapi_validation was processed and an OpenAPI document was produced.",
             server.waitForStringInLog("CWWKO1660I.*and an OpenAPI document was produced.")); // wait for application to
                                                                                              // be processed
+        assertThat("Validation errors were reported", server.findStringsInLogs("CWWKO1650E"), not(empty()));
+        assertThat("Validation warnings were reported", server.findStringsInLogs("CWWKO1651W"), not(empty()));
         String openApiDoc = new HttpRequest(server, "/openapi").run(String.class);
         Log.info(OpenAPIValidationTestOne.class, "setUpTest", "OpenAPI doc:\n" + openApiDoc);
     }
