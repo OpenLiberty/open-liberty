@@ -28,6 +28,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.auth.InvalidTokenException;
 import com.ibm.websphere.security.auth.TokenExpiredException;
 import com.ibm.ws.common.encoder.Base64Coder;
+import com.ibm.ws.crypto.common.CryptoProvider;
 import com.ibm.ws.crypto.common.CryptoUtils;
 import com.ibm.ws.crypto.common.FipsUtils;
 import com.ibm.ws.crypto.common.MessageDigestUtils;
@@ -69,18 +70,18 @@ public class LTPAToken2 implements Token, Serializable {
     static {
         MessageDigest m1 = null, m2 = null;
         try {
-            if (fipsEnabled && LTPAKeyUtil.isOpenJCEPlusFIPSAvailable()) {
-                m1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.OPENJCE_PLUS_FIPS_NAME);
-                m2 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.OPENJCE_PLUS_FIPS_NAME);
-            } else if (fipsEnabled && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
-                m1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.IBMJCE_PLUS_FIPS_NAME);
-                m2 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.IBMJCE_PLUS_FIPS_NAME);
-            } else if (LTPAKeyUtil.isOpenJCEPlusAvailable()) {
-                m1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.OPENJCE_PLUS_NAME);
-                m2 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.OPENJCE_PLUS_NAME);
-            } else if (LTPAKeyUtil.isIBMJCEAvailable()) {
-                m1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.IBMJCE_NAME);
-                m2 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.IBMJCE_NAME);
+            if (fipsEnabled && CryptoProvider.isOpenJCEPlusFIPSAvailable()) {
+                m1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, CryptoProvider.OPENJCE_PLUS_FIPS_NAME);
+                m2 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, CryptoProvider.OPENJCE_PLUS_FIPS_NAME);
+            } else if (fipsEnabled && CryptoProvider.isIBMJCEPlusFIPSAvailable()) {
+                m1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, CryptoProvider.IBMJCE_PLUS_FIPS_NAME);
+                m2 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, CryptoProvider.IBMJCE_PLUS_FIPS_NAME);
+            } else if (CryptoProvider.isOpenJCEPlusAvailable()) {
+                m1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA, CryptoProvider.OPENJCE_PLUS_NAME);
+                m2 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA, CryptoProvider.OPENJCE_PLUS_NAME);
+            } else if (CryptoProvider.isIBMJCEAvailable()) {
+                m1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA, CryptoProvider.IBMJCE_NAME);
+                m2 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA, CryptoProvider.IBMJCE_NAME);
             } else {
                 m1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA);
                 m2 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA);
@@ -112,7 +113,7 @@ public class LTPAToken2 implements Token, Serializable {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
         this.expirationInMilliseconds = 0;
-        this.cipher = CryptoUtils.AES_GCM_CIPHER;
+        this.cipher = fipsEnabled ? CryptoUtils.AES_GCM_CIPHER : CryptoUtils.AES_CBC_CIPHER;
         this.expirationDifferenceAllowed = expDiffAllowed;
         decrypt();
     }
@@ -135,7 +136,7 @@ public class LTPAToken2 implements Token, Serializable {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
         this.expirationInMilliseconds = 0;
-        this.cipher = CryptoUtils.AES_GCM_CIPHER;
+        this.cipher = fipsEnabled ? CryptoUtils.AES_GCM_CIPHER : CryptoUtils.AES_CBC_CIPHER;
         this.expirationDifferenceAllowed = expDiffAllowed;
         decrypt();
         isValid();
@@ -164,7 +165,7 @@ public class LTPAToken2 implements Token, Serializable {
         this.publicKey = publicKey;
         this.userData = new UserData(accessID);
         setExpiration(expirationInMinutes);
-        this.cipher = CryptoUtils.AES_GCM_CIPHER;
+        this.cipher = fipsEnabled ? CryptoUtils.AES_GCM_CIPHER : CryptoUtils.AES_CBC_CIPHER;
     }
 
     /**
@@ -184,7 +185,7 @@ public class LTPAToken2 implements Token, Serializable {
         this.publicKey = publicKey;
         this.userData = userdata;
         setExpiration(expirationInMinutes);
-        this.cipher = CryptoUtils.AES_GCM_CIPHER;
+        this.cipher = fipsEnabled ? CryptoUtils.AES_GCM_CIPHER : CryptoUtils.AES_CBC_CIPHER;
     }
 
     /**

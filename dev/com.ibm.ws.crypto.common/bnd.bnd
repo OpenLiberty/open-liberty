@@ -22,8 +22,10 @@ Export-Package: \
 
 -buildpath: \
   com.ibm.ws.logging;version=latest,\
+  com.ibm.ws.kernel.service;version=latest,\
   com.ibm.ws.kernel.boot;version=latest,\
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.kernel.boot.core;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\

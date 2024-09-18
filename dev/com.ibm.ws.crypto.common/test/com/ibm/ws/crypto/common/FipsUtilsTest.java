@@ -25,7 +25,7 @@ public class FipsUtilsTest {
     @Before
     public void beforeTest() {
         fipsModeOrig = System.getProperty(FIPS_MODE_PROPERTY);
-        FipsUtils.unitTest = true;
+        // FipsUtils.unitTest = true;
     }
 
     @After

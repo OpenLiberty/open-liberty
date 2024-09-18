@@ -16,6 +16,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
+import com.ibm.ws.crypto.common.CryptoProvider;
 import com.ibm.ws.crypto.common.FipsUtils;
 import com.ibm.ws.crypto.common.MessageDigestUtils;
 
@@ -33,18 +34,18 @@ final class LTPADigSignature {
 
 	static {
 		try {
-			if (fipsEnabled && LTPAKeyUtil.isOpenJCEPlusFIPSAvailable()) {
+			if (fipsEnabled && CryptoProvider.isOpenJCEPlusFIPSAvailable()) {
 				md1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256,
-						LTPAKeyUtil.OPENJCE_PLUS_FIPS_NAME);
-			} else if (fipsEnabled && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
+						CryptoProvider.OPENJCE_PLUS_FIPS_NAME);
+			} else if (fipsEnabled && CryptoProvider.isIBMJCEPlusFIPSAvailable()) {
 				md1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256,
-						LTPAKeyUtil.IBMJCE_PLUS_FIPS_NAME);
-			} else if (LTPAKeyUtil.isOpenJCEPlusAvailable()) {
+						CryptoProvider.IBMJCE_PLUS_FIPS_NAME);
+			} else if (CryptoProvider.isOpenJCEPlusAvailable()) {
 				md1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA,
-						LTPAKeyUtil.OPENJCE_PLUS_NAME);
-			} else if (LTPAKeyUtil.isIBMJCEAvailable()) {
+						CryptoProvider.OPENJCE_PLUS_NAME);
+			} else if (CryptoProvider.isIBMJCEAvailable()) {
 				md1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA,
-						LTPAKeyUtil.IBMJCE_NAME);
+						CryptoProvider.IBMJCE_NAME);
 			} else {
 				md1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA);
 			}

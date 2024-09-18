@@ -14,7 +14,21 @@ import java.util.Map;
 
 public class CryptoUtils {
 
+    public static final String SIGNATURE_ALGORITHM_SHA1WITHRSA = "SHA1withRSA";
+    public static final String SIGNATURE_ALGORITHM_SHA256WITHRSA = "SHA256withRSA";
+//    private static final String signatureAlgorithm = getSignatureAlgorithm();
+
+    public static final String CRYPTO_ALGORITHM_RSA = "RSA";
+
+    public static final String ENCRYPT_ALGORITHM_DESEDE = "DESede";
+    public static final String ENCRYPT_ALGORITHM_RSA = "RSA";
+//    private static final String encryptAlgorithm = getEncryptionAlgorithm();
+
     public static final String AES_GCM_CIPHER = "AES/GCM/NoPadding";
+    public static final String DES_ECB_CIPHER = "DESede/ECB/PKCS5Padding";
+    public static final String AES_CBC_CIPHER = "AES/CBC/PKCS5Padding";
+
+    private static final boolean fipsEnabled = FipsUtils.isFIPSEnabled();
 
     private static Map<String, String> secureAlternative = new HashMap<>();
     static {
@@ -44,4 +58,19 @@ public class CryptoUtils {
     public static String getSecureAlternative(String algorithm) {
         return secureAlternative.get(algorithm);
     }
+
+    public static String getSignatureAlgorithm() {
+        if (fipsEnabled && (CryptoProvider.isOpenJCEPlusFIPSAvailable() || CryptoProvider.isIBMJCEPlusFIPSAvailable()))
+            return SIGNATURE_ALGORITHM_SHA256WITHRSA;
+        else
+            return SIGNATURE_ALGORITHM_SHA1WITHRSA;
+    }
+
+    public static String getEncryptionAlgorithm() {
+        if (fipsEnabled && (CryptoProvider.isOpenJCEPlusFIPSAvailable() || CryptoProvider.isIBMJCEPlusFIPSAvailable()))
+            return ENCRYPT_ALGORITHM_RSA;
+        else
+            return ENCRYPT_ALGORITHM_DESEDE;
+    }
+
 }

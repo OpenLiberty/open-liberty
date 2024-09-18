@@ -14,7 +14,9 @@ package com.ibm.ws.crypto.ltpakeyutil;
 
 import java.security.MessageDigest;
 
+import com.ibm.ws.crypto.common.CryptoUtils;
 import com.ibm.ws.crypto.common.FipsUtils;
+import com.ibm.ws.crypto.common.MessageDigestUtils;
 
 /**
  * A package local class for performing encryption and decryption of keys based
@@ -24,8 +26,10 @@ public class KeyEncryptor {
 
 	private static final boolean fipsEnabled = FipsUtils.isFIPSEnabled();
 	private static final int size = (fipsEnabled ? 32 : 24);
-	private static final String MESSAGE_DIGEST_ALGORITHM = (fipsEnabled ? "SHA-256" : "SHA");
-	private static final String CIPHER = (fipsEnabled ? "AES/GCM/NoPadding" : "DESede/ECB/PKCS5Padding");
+	private static final String MESSAGE_DIGEST_ALGORITHM = (fipsEnabled
+			? MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256
+			: MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA);
+	private static final String CIPHER = (fipsEnabled ? CryptoUtils.AES_GCM_CIPHER : CryptoUtils.DES_ECB_CIPHER);
 	private final byte[] key;
 
 	/**

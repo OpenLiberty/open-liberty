@@ -20,6 +20,7 @@ public class FipsUtils {
 
     public static boolean fipsEnabled = false;
     public static boolean fipsChecked = false;
+    private static boolean issuedBetaMessage = false;
 
     private static final TraceComponent tc = Tr.register(FipsUtils.class);
 
@@ -55,7 +56,18 @@ public class FipsUtils {
     }
 
     public static boolean isRunningBetaMode() {
-        return ProductInfo.getBetaEdition();
+
+        if (!ProductInfo.getBetaEdition()) {
+            return false;
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for
+            // this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class FipsUtils for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+            return true;
+        }
     }
 
 }

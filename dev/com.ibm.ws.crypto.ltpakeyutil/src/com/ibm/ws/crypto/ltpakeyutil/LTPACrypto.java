@@ -42,31 +42,20 @@ import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.crypto.common.CryptoProvider;
+import com.ibm.ws.crypto.common.CryptoUtils;
 import com.ibm.ws.crypto.common.FipsUtils;
 
 final class LTPACrypto {
 
 	private static final boolean fipsEnabled = FipsUtils.isFIPSEnabled();
 
-	private static final TraceComponent tc = Tr.register(LTPACrypto.class);
-	private static final String IBMJCE_NAME = "IBMJCE";
-	private static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
-	private static final String OPENJCE_PLUS_NAME = "OpenJCEPlus";
-	private static final String OPENJCE_PLUS_FIPS_NAME = "OpenJCEPlusFIPS";
-	private static final String provider = getProvider();
+	private static final String provider = CryptoProvider.getProvider();
 
-	private static final String SIGNATURE_ALGORITHM_SHA1WITHRSA = "SHA1withRSA";
-	private static final String SIGNATURE_ALGORITHM_SHA256WITHRSA = "SHA256withRSA";
-	private static final String signatureAlgorithm = getSignatureAlgorithm();
+	private static final String signatureAlgorithm = CryptoUtils.getSignatureAlgorithm();
 
-	private static final String CRYPTO_ALGORITHM_RSA = "RSA";
-
-	private static final String ENCRYPT_ALGORITHM_DESEDE = "DESede";
-	private static final String ENCRYPT_ALGORITHM_RSA = "RSA";
-	private static final String encryptAlgorithm = getEncryptionAlgorithm();
+	private static final String encryptAlgorithm = CryptoUtils.getEncryptionAlgorithm();
 
 	public static RSAPublicKey rsaPubKey;
 	public static RSAPrivateCrtKey rsaPrivKey;
@@ -259,8 +248,8 @@ final class LTPACrypto {
 		BigInteger d = e.modInverse((p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE)));
 		KeyFactory kFact = null;
 
-		kFact = (provider == null) ? KeyFactory.getInstance(CRYPTO_ALGORITHM_RSA)
-				: KeyFactory.getInstance(CRYPTO_ALGORITHM_RSA, provider);
+		kFact = (provider == null) ? KeyFactory.getInstance(CryptoUtils.CRYPTO_ALGORITHM_RSA)
+				: KeyFactory.getInstance(CryptoUtils.CRYPTO_ALGORITHM_RSA, provider);
 
 		BigInteger pep = new BigInteger(key[5]);
 		BigInteger peq = new BigInteger(key[6]);
@@ -534,8 +523,8 @@ final class LTPACrypto {
 		KeyFactory kFact = null;
 		Signature rsaSig = null;
 
-		kFact = (provider == null) ? KeyFactory.getInstance(CRYPTO_ALGORITHM_RSA)
-				: KeyFactory.getInstance(CRYPTO_ALGORITHM_RSA, provider);
+		kFact = (provider == null) ? KeyFactory.getInstance(CryptoUtils.CRYPTO_ALGORITHM_RSA)
+				: KeyFactory.getInstance(CryptoUtils.CRYPTO_ALGORITHM_RSA, provider);
 
 		RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(n, e);
 		PublicKey pubKey = kFact.generatePublic(pubKeySpec);
@@ -1073,8 +1062,8 @@ final class LTPACrypto {
 		KeyPairGenerator keyGen = null;
 		try {
 
-			keyGen = (provider == null) ? KeyPairGenerator.getInstance(CRYPTO_ALGORITHM_RSA)
-					: KeyPairGenerator.getInstance(CRYPTO_ALGORITHM_RSA, provider);
+			keyGen = (provider == null) ? KeyPairGenerator.getInstance(CryptoUtils.CRYPTO_ALGORITHM_RSA)
+					: KeyPairGenerator.getInstance(CryptoUtils.CRYPTO_ALGORITHM_RSA, provider);
 
 			keyGen.initialize(len * 8, new SecureRandom());
 			pair = keyGen.generateKeyPair();
@@ -1170,40 +1159,4 @@ final class LTPACrypto {
 
 		return key;
 	}
-
-	private static String getProvider() {
-		String provider = null;
-		if (fipsEnabled && LTPAKeyUtil.isOpenJCEPlusFIPSAvailable()) {
-			provider = OPENJCE_PLUS_FIPS_NAME;
-		} else if (fipsEnabled && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
-			provider = IBMJCE_PLUS_FIPS_NAME;
-		} else if (LTPAKeyUtil.isZOSandRunningJava11orHigher() && LTPAKeyUtil.isOpenJCEPlusAvailable()) {
-			provider = OPENJCE_PLUS_NAME;
-		} else if (LTPAKeyUtil.isIBMJCEAvailable()) {
-			provider = IBMJCE_NAME;
-		}
-		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-			if (provider == null) {
-				Tr.debug(tc, "getProvider" + " Provider configured by JDK");
-			} else {
-				Tr.debug(tc, "getProvider" + " Provider configured is " + provider);
-			}
-		}
-		return provider;
-	}
-
-	private static String getSignatureAlgorithm() {
-		if (fipsEnabled && (LTPAKeyUtil.isOpenJCEPlusFIPSAvailable() || LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()))
-			return SIGNATURE_ALGORITHM_SHA256WITHRSA;
-		else
-			return SIGNATURE_ALGORITHM_SHA1WITHRSA;
-	}
-
-	private static String getEncryptionAlgorithm() {
-		if (fipsEnabled && (LTPAKeyUtil.isOpenJCEPlusFIPSAvailable() || LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()))
-			return ENCRYPT_ALGORITHM_RSA;
-		else
-			return ENCRYPT_ALGORITHM_DESEDE;
-	}
-
 }
