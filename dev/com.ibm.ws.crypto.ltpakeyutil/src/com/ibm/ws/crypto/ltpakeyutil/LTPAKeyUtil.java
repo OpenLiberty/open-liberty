@@ -47,8 +47,8 @@ public final class LTPAKeyUtil {
 		return LTPADigSignature.generateLTPAKeyPair();
 	}
 
-	public static byte[] generate3DESKey() {
-		return LTPACrypto.generate3DESKey();
+	public static byte[] generateSharedKey() {
+		return LTPACrypto.generateSharedKey();
 	}
 
 }
