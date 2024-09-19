@@ -70,6 +70,12 @@ public class DataStoreTestServlet extends FATServlet {
     EMAccessorMethodQualifiedRepo emAccessorQualifiedRepo;
 
     @Inject
+    MultiEntityRepo1 multiEntityRepo1;
+
+    @Inject
+    OrderingRepo orderingRepo;
+
+    @Inject
     PersistenceUnitRepo persistenceUnitRepo;
 
     @Inject
