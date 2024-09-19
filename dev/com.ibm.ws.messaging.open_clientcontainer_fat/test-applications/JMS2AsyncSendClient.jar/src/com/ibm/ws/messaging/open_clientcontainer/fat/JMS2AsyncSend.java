@@ -325,6 +325,7 @@ public class JMS2AsyncSend extends ClientMain {
     clearQueue(queueOne_);
     completionListener_.reset();
     int outOfOrderCount = 0;
+    int failedReceiveCount = 0;
 
     try (JMSContext context  = queueConnectionFactory_.createContext();
          JMSContext context1 = queueConnectionFactory_.createContext();
@@ -351,14 +352,16 @@ public class JMS2AsyncSend extends ClientMain {
         producer[i%3].send(queueOne_, message);
       }
 
-      boolean conditionMet = completionListener_.waitFor(11, 0);
+      // We've had an instance where the completionListener returned false after the default wait, but the later test showed that the messages were correctly delivered.
+      // Presumably there was a resource issue that meant the original sends took longer than expected so increase the wait time here slightly to make the test a bit more tolerant.
+      boolean conditionMet = completionListener_.waitFor(15000, 11, 0);
 
       for(int i=0;11>i;++i) {
         Message message = consumer.receive(WAIT_TIME);
         if (null==message) {
           Util.TRACE("Failed to receive message "+i);
-          ++outOfOrderCount;      // force failure
-          break;
+          ++failedReceiveCount;
+          continue; // Keep going to see whether the other messages were delivered and received correctly. 
         }
         int sessionNumber = message.getIntProperty("Session_Number");
         int messageOrder = message.getIntProperty("Message_Order");
@@ -367,14 +370,19 @@ public class JMS2AsyncSend extends ClientMain {
         order[sessionNumber] = messageOrder;
       }
 
+      // It's possible that the completionListener wasn't informed of the original message sends before we started receiving. Check again, if required, to see whether any callback has been invoked late.
+      // We're using hardcoded values here just to match those used before.
+      if (!conditionMet) conditionMet = (completionListener_.completionCount_ == 11 && completionListener_.exceptionCount_ == 0);
+      
       Util.TRACE("outOfOrderCount="+outOfOrderCount
-                +",completionCount="+completionListener_.completionCount_
-                +",exceptionCount="+completionListener_.exceptionCount_
+    		    + ", failedReceiveCount=" + failedReceiveCount
+                +", completionCount="+completionListener_.completionCount_
+                +", exceptionCount="+completionListener_.exceptionCount_
                 );
-      if (outOfOrderCount == 0 && conditionMet == true ) {
+      if (outOfOrderCount == 0 && failedReceiveCount == 0 && conditionMet == true ) {
         reportSuccess();
       } else {
-        reportFailure("Failed to receive messages in order.");
+        reportFailure("Failed to receive all messages in order. (outOfOrderCount=" + outOfOrderCount + ",failedReceiveCount=" + failedReceiveCount + ",conditionMet=" + conditionMet + ")");
       }
     }
     clearQueue(queueOne_);
