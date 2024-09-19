@@ -72,8 +72,8 @@ public class DataWebTckLauncher {
         additionalProps.put("excluded.tests", FATSuite.getExcludedTestByDatabase(DatabaseContainerType.valueOf(FATSuite.relationalDatabase)));
 
         //Comment out to use SNAPSHOT
-//        additionalProps.put("jakarta.data.groupid", "jakarta.data");
-//        additionalProps.put("jakarta.data.tck.version", "1.0.1");
+        additionalProps.put("jakarta.data.groupid", "jakarta.data");
+        additionalProps.put("jakarta.data.tck.version", "1.0.1");
 
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckWeb";

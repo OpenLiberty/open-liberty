@@ -27,7 +27,7 @@
 		<repository>
 			<id>sonatype-nexus-staging</id>
 			<name>Sonatype Nexus Staging</name>
-			<url>https://jakarta.oss.sonatype.org/content/repositories/staging/</url>
+			<url>https://jakarta.oss.sonatype.org/content/repositories/jakartadata-1027/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -35,7 +35,7 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-		<!-- For artifacts not yet in Stagging repo use DHE -->
+		<!-- For artifacts not yet in Staging repo use DHE -->
 		<repository>
 			<name>IBM DHE Maven repository</name>
 			<id>DHE</id>
