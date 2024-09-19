@@ -49,7 +49,7 @@ public class DDLGenTestServlet extends FATServlet {
     public void executeDDL() throws SQLException {
         // TODO read from ddlgen output file
         String[] ddl = new String[] {
-                                      "CREATE TABLE dbuser.TESTPartEntity (NAME VARCHAR(255), PRICE FLOAT NOT NULL, VERSION INTEGER NOT NULL, ID_VENDOR VARCHAR(255) NOT NULL, ID_PARTNUM VARCHAR(255) NOT NULL, PRIMARY KEY (ID_VENDOR, ID_PARTNUM))"
+                                      "CREATE TABLE dbuser.TESTPart (NAME VARCHAR(255), PRICE FLOAT NOT NULL, VERSION INTEGER NOT NULL, ID_VENDOR VARCHAR(255) NOT NULL, ID_PARTNUM VARCHAR(255) NOT NULL, PRIMARY KEY (ID_VENDOR, ID_PARTNUM))"
         };
         try (Connection con = adminDataSource.getConnection()) {
             Statement stmt = con.createStatement();

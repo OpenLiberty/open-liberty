@@ -344,6 +344,11 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                             converterTypes.add(convert.converter());
                     }
                 } else {
+                    // The table is named from the class name of the entity or
+                    // record that is specified by the user, not from the generated
+                    // entity class that is used internally in place of a record.
+                    String tableName = c.getSimpleName();
+
                     if (c.isRecord()) {
                         String entityClassName = c.getName() + EntityInfo.RECORD_ENTITY_SUFFIX; // an entity class is generated for the record
                         byte[] generatedEntityBytes = RecordTransformer.generateEntityClassBytes(c, entityClassName);
@@ -353,9 +358,14 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                         c = generatedEntity;
                     }
 
-                    StringBuilder xml = new StringBuilder(500).append(" <entity class=\"").append(c.getName()).append("\">").append(EOLN);
+                    StringBuilder xml = new StringBuilder(500);
 
-                    xml.append("  <table name=\"").append(tablePrefix).append(c.getSimpleName()).append("\"/>").append(EOLN);
+                    xml.append(" <entity class=\"").append(c.getName()) //
+                                    .append("\">").append(EOLN);
+
+                    xml.append("  <table name=\"") //
+                                    .append(tablePrefix).append(tableName) //
+                                    .append("\"/>").append(EOLN);
 
                     writeAttributes(xml, findAttributes(c), embeddableTypes);
 
@@ -666,14 +676,17 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
      *
      * @param xml             XML for defining the entity attributes
      * @param attributes      top level entity or embeddable attributes.
-     * @param embeddableTypes embeddable types. When non-null, this method adds
-     *                            embeddable types that are found.
+     * @param embeddableTypes embeddable types list to add to. Null if the specified
+     *                            attributes are already for an embeddable.
+     *                            When non-null, this method adds embeddable types
+     *                            that are found.
      */
     private void writeAttributes(StringBuilder xml,
                                  Map<String, Class<?>> attributes,
                                  Map<Class<?>, Map<String, Class<?>>> embeddableTypes) {
+        boolean isEmbeddable = embeddableTypes == null;
 
-        Entry<String, String> idAndVersion = embeddableTypes == null //
+        Entry<String, String> idAndVersion = isEmbeddable //
                         ? ID_AND_VERSION_NOT_SPECIFIED //
                         : findIdAndVersion(attributes);
 
@@ -717,7 +730,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
 
             xml.append('>').append(EOLN);
 
-            if (embeddableTypes != null && // top level entity attribute
+            if (!isEmbeddable && // top level entity attribute
                 columnType.charAt(1) == 'm') { // embedded or embedded-id
                 LinkedList<Entry<String[], Map<String, Class<?>>>> stack = //
                                 new LinkedList<>();
@@ -765,7 +778,12 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
             }
 
             if (isPrimitive)
-                xml.append("    <column nullable=\"false\"/>").append(EOLN);
+                if (isEmbeddable) {
+                    // Primitive attributes on an embeddable might need the null
+                    // value to indicate that the embeddable itself is null.
+                } else {
+                    xml.append("    <column nullable=\"false\"/>").append(EOLN);
+                }
 
             xml.append("   </" + columnType + ">").append(EOLN);
         }
