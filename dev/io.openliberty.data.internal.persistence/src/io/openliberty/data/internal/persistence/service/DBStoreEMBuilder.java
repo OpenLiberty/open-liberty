@@ -631,7 +631,17 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
 
             return (DataSource) dsFactory.createResource(resRef);
         } catch (Exception x) {
-            throw new DataException(x); // TODO NLS
+            if (x instanceof RuntimeException &&
+                x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD"))
+                throw (RuntimeException) x;
+
+            throw (DataException) exc(DataException.class,
+                                      "CWWKD1064.datastore.error",
+                                      repoMethod.getName(),
+                                      repoInterface.getName(),
+                                      databaseStoreId,
+                                      x.getMessage()).initCause(x);
         }
     }
 

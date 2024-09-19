@@ -624,3 +624,11 @@ CWWKD1063.unsupported.resource.explanation=The Jakarta Persistence provider does
  not support the unwrap operation returning the specified resource type.
 CWWKD1063.unsupported.resource.useraction=Remove the unsupported resource accessor \
  method from the repository interface.
+
+CWWKD1064.datastore.error=CWWKD1064E: The {0} method of the {1} repository \
+ interface is unable to obtain the {2} data store for the repository due to \
+ the following error: {3}.
+CWWKD1064.datastore.error.explanation=An error occurred when attempting to obtain \
+ the data store.
+CWWKD1064.datastore.error.useraction=Ensure that the specified data store and all \
+ other resources it depends on exist and are correctly configured.
