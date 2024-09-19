@@ -48,6 +48,9 @@ public class DataStoreSecondServlet extends FATServlet {
     DataSource serverDSResRef;
 
     @Inject
+    OrderingRepo orderingRepo;
+
+    @Inject
     WebModule2DSResRefRepo serverDSResRefRepo;
 
     @Inject

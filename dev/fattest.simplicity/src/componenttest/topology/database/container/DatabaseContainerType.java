@@ -14,6 +14,7 @@ package componenttest.topology.database.container;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.testcontainers.containers.Db2Container;
@@ -39,22 +40,26 @@ import com.ibm.websphere.simplicity.log.Log;
 public enum DatabaseContainerType {
     DB2("jcc.jar", Db2Container.class.getCanonicalName(), Properties_db2_jcc.class, //
         DockerImageName.parse("kyleaure/db2:1.0").asCompatibleSubstituteFor("ibmcom/db2")),
-    Derby("derby.jar", DerbyNoopContainer.class.getCanonicalName(), Properties_derby_embedded.class, DockerImageName.parse("")),
-    DerbyClient("derbyclient.jar", DerbyClientContainer.class.getCanonicalName(), Properties_derby_client.class, DockerImageName.parse("")),
+    Derby("derby.jar", DerbyNoopContainer.class.getCanonicalName(), Properties_derby_embedded.class, DockerImageName.parse(""), //
+          "DerbyEmbedded"),
+    DerbyClient("derbyclient.jar", DerbyClientContainer.class.getCanonicalName(), Properties_derby_client.class, //
+                DockerImageName.parse("")),
     Oracle("ojdbc8.jar", OracleContainer.class.getCanonicalName(), Properties_oracle.class, //
-           DockerImageName.parse("gvenzl/oracle-free:23.3-full-faststart")),
+           DockerImageName.parse("gvenzl/oracle-free:23.3-full-faststart"), "OracleDB"),
     Postgres("postgresql.jar", PostgreSQLContainer.class.getCanonicalName(), Properties_postgresql.class, //
-             DockerImageName.parse("postgres:14.1-alpine")),
+             DockerImageName.parse("postgres:14.1-alpine"), "Postgre", "PostgreSQL"),
     SQLServer("mssql-jdbc.jar", MSSQLServerContainer.class.getCanonicalName(), Properties_microsoft_sqlserver.class, //
-              DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04"));
+              DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04"), "MSSQLServer");
 
     private final String driverName;
     private final Class<DataSourceProperties> dsPropsClass;
     private final Class<? extends JdbcDatabaseContainer> containerClass;
     private final DockerImageName imageName;
+    private final List<String> aliases;
 
     @SuppressWarnings("unchecked")
-    DatabaseContainerType(final String driverName, final String containerClassName, final Class dsPropsClass, final DockerImageName imageName) {
+    DatabaseContainerType(final String driverName, final String containerClassName, final Class dsPropsClass,
+                          final DockerImageName imageName, final String... aliases) {
         this.driverName = driverName;
 
         //Use reflection to get classes at runtime.
@@ -68,6 +73,7 @@ public enum DatabaseContainerType {
         this.containerClass = containerClass;
         this.dsPropsClass = dsPropsClass;
         this.imageName = imageName;
+        this.aliases = Arrays.asList(aliases);
     }
 
     /**
@@ -124,10 +130,46 @@ public enum DatabaseContainerType {
     }
 
     /**
+     * Given a database name return the corresponding Database Container Type.
+     * This is more forgiving then the implicit valueOf method which is case-sensitive
+     * and does not allow for aliases
+     *
+     * @param  alias - the name of the database or an alias
+     * @return       - DatabaseContainerType
+     */
+    public static DatabaseContainerType valueOfAlias(String alias) {
+        IllegalArgumentException caught;
+
+        // Find direct match
+        try {
+            return valueOf(alias);
+        } catch (IllegalArgumentException e) {
+            caught = e; //rethrow if we never find a match
+        }
+
+        // Find case insensitive
+        for (DatabaseContainerType type : DatabaseContainerType.values()) {
+            if (type.name().equalsIgnoreCase(alias)) {
+                return type;
+            }
+
+            // Find case insensitive from list of aliases
+            for (String typeAlias : type.aliases) {
+                if (typeAlias.equalsIgnoreCase(alias)) {
+                    return type;
+                }
+            }
+        }
+
+        // Did not find, throw original exception
+        throw caught;
+    }
+
+    /**
      * Given a JDBC testcontainer return the corresponding Database Container Type.
      *
      * @param  cont - A database container.
-     * @return      DatabaseContainerType - type enum
+     * @return      - DatabaseContainerType
      */
     public static DatabaseContainerType valueOf(JdbcDatabaseContainer cont) {
         for (DatabaseContainerType elem : values())

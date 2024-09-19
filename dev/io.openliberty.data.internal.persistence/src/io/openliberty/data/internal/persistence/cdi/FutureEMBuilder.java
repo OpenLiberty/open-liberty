@@ -57,7 +57,7 @@ import jakarta.persistence.EntityManagerFactory;
  * A completable future for an EntityManagerBuilder that can be
  * completed by invoking the createEMBuilder method.
  */
-public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> implements DDLGenerationParticipant {
+public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> implements DDLGenerationParticipant, Comparable<FutureEMBuilder> {
     private static final TraceComponent tc = Tr.register(FutureEMBuilder.class);
     private static final long DDLGEN_WAIT_TIME = 15;
 
@@ -647,5 +647,12 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                         .append(' ').append(application) //
                         .append('#').append(module);
         return b.toString();
+    }
+
+    // Ensures order of DDL generation based on repository interface name
+    @Override
+	@Trivial
+    public int compareTo(FutureEMBuilder o) {
+        return this.repositoryInterface.getCanonicalName().compareTo(o.repositoryInterface.getCanonicalName());
     }
 }
