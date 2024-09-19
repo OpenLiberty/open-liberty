@@ -31,7 +31,7 @@ Private-Package: \
   com.ibm.ws.jmx.connector.server.internal.resources.*
 
 Import-Package: \
-  com.ibm.websphere.jsonsupport;version='[1.0,2.0)', \
+  com.ibm.websphere.jsonsupport;version='[2.0,3.0)', \
   *
 
 Export-Package: \

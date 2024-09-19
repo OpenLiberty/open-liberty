@@ -28,10 +28,10 @@ Private-Package: \
 
 # Need a special import to properly construct import for commons.io
 Import-Package: \
-  com.ibm.websphere.jsonsupport.*;version='[1.0,2.0)', \
-  com.ibm.ws.ui.servlet.filter, \
-  !*.internal.*, \
-  *
+	com.ibm.websphere.jsonsupport.*;version='[2.0,3.0)',\
+	com.ibm.ws.ui.servlet.filter,\
+	!*.internal.*,\
+	*
 
 DynamicImport-Package: \
  com.ibm.ws.security.openidconnect.server.plugins
