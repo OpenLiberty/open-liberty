@@ -656,3 +656,24 @@ CWWKD1067.ddlgen.emf.timeout.explanation=Acquisition of the resources needed \
  for DDL generation timed out and did not complete.
 CWWKD1067.ddlgen.emf.timeout.useraction=Reattempt DDL generation at a later time \
  when the system and database are not under load.
+
+CWWKD1068.entity.name.conflict=CWWKD1068E: The {0} repository interface has \
+ multiple entities named {1} which are provided by different classes: {2}. \
+ Use the following Jakarta Persistence entity annotations to assign a unique \
+ entity name and table name to each entity class: {3}.
+CWWKD1068.entity.name.conflict.explanation=Entity names and tables names are \
+ inferred from the unqualified class name or assigned by Jakarta Persistence \
+ annotations.
+CWWKD1068.entity.name.conflict.useraction=Rename the entities or add \
+ Jakarta Persistence annotations to explicitly resolve the name conflict.
+
+CWWKD1069.record.entity.name.conflict=CWWKD1069E: The {0} repository interface \
+ has multiple entities named {1} which are provided by different classes: {2}. \
+ When Java records are used as entities, it must also be possible to append \
+ a suffix of Entity to the entity name without resulting in a name conflict. \
+ For example: {2}.
+CWWKD1069.record.entity.name.conflict.explanation=Entity names and tables names \
+ are inferred from the unqualified class name or assigned by Jakarta Persistence \
+ annotations.
+CWWKD1069.record.entity.name.conflict.useraction=Rename the entities or switch \
+ to Jakarta Persistence entities to resolve the name conflict.

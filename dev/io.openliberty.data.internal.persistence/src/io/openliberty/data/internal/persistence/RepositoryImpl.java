@@ -83,12 +83,14 @@ import jakarta.data.repository.Insert;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceException;
+import jakarta.persistence.Table;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Status;
 
@@ -159,43 +161,84 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 }
             }
 
-            CompletableFuture<?>[] futures = entityInfoFutures.toArray(new CompletableFuture<?>[entityInfoFutures.size()]);
-            CompletableFuture<Map<String, CompletableFuture<EntityInfo>>> allEntityInfo = CompletableFuture.allOf(futures) //
-                            .handle((ignore, x) -> {
-                                Map<String, CompletableFuture<EntityInfo>> entityInfos = new HashMap<>();
-                                for (CompletableFuture<EntityInfo> future : entityInfoFutures) {
-                                    if (future.isCompletedExceptionally()) {
-                                        entityInfos.putIfAbsent(EntityInfo.FAILED, future);
-                                    } else if (future.isDone()) {
-                                        EntityInfo entityInfo = future.join();
-                                        CompletableFuture<EntityInfo> conflict = entityInfos.put(entityInfo.name, future);
-                                        if (entityInfo.recordClass != null && conflict == null) {
-                                            String recordName = entityInfo.name.substring(0, entityInfo.name.length() - EntityInfo.RECORD_ENTITY_SUFFIX.length());
-                                            conflict = entityInfos.put(recordName, future);
-                                        }
-                                        if (conflict != null) {
-                                            EntityInfo conflictInfo = conflict.join(); // already completed
-                                            List<String> classNames = List.of(entityInfo.getType().getName(),
-                                                                              conflictInfo.getType().getName());
-                                            // TODO NLS, consider splitting message for records/normal entities
-                                            MappingException conflictX = new MappingException("The " + classNames + " entities have conflicting names. " +
-                                                                                              "When using records as entities, an entity name consisting of " +
-                                                                                              "the record name suffixed with " + EntityInfo.RECORD_ENTITY_SUFFIX +
-                                                                                              " is generated.");
-                                            entityInfos.putIfAbsent(EntityInfo.FAILED, CompletableFuture.failedFuture(conflictX));
-                                        }
-                                    } else {
-                                        entityInfos.putIfAbsent(EntityInfo.FAILED, CompletableFuture.failedFuture(x));
-                                    }
-                                }
-                                return entityInfos;
-                            });
+            CompletableFuture<?>[] futures = entityInfoFutures //
+                            .toArray(new CompletableFuture<?>[entityInfoFutures.size()]);
+            CompletableFuture<Map<String, CompletableFuture<EntityInfo>>> allEntityInfo = //
+                            CompletableFuture.allOf(futures) //
+                                            .handle((VOID, x) -> x) //
+                                            .thenCombine(CompletableFuture.completedFuture(entityInfoFutures),
+                                                         this::allEntityInfoAsMap);
             for (QueryInfo queryInfo : entitylessQueryInfos) {
-                queries.put(queryInfo.method,
-                            allEntityInfo.thenCombine(CompletableFuture.completedFuture(this),
-                                                      queryInfo::init));
+                queries.put(queryInfo.method, allEntityInfo //
+                                .thenCombine(CompletableFuture.completedFuture(this),
+                                             queryInfo::init));
             }
         }
+    }
+
+    /**
+     * Constructs a map of entity name to completed EntityInfo future.
+     *
+     * @param entityInfoFutures completed futures for entity information.
+     * @param x                 failure if any.
+     * @return map of entity name to completed EntityInfo future.
+     */
+    private Map<String, CompletableFuture<EntityInfo>> //
+                    allEntityInfoAsMap(Throwable x,
+                                       List<CompletableFuture<EntityInfo>> futures) {
+        Map<String, CompletableFuture<EntityInfo>> entityInfos = new HashMap<>();
+        for (CompletableFuture<EntityInfo> future : futures) {
+            if (future.isCompletedExceptionally()) {
+                entityInfos.putIfAbsent(EntityInfo.FAILED, future);
+            } else if (future.isDone()) {
+                EntityInfo entityInfo = future.join();
+                CompletableFuture<EntityInfo> conflict = //
+                                entityInfos.put(entityInfo.name, future);
+                if (entityInfo.recordClass != null && conflict == null) {
+                    int end = entityInfo.name.length() -
+                              EntityInfo.RECORD_ENTITY_SUFFIX.length();
+                    String recordName = entityInfo.name.substring(0, end);
+                    conflict = entityInfos.put(recordName, future);
+                }
+                if (conflict != null) {
+                    MappingException conflictX;
+                    EntityInfo conflictInfo = conflict.join(); // already completed
+                    List<String> classNames = List //
+                                    .of(entityInfo.getType().getName(),
+                                        conflictInfo.getType().getName());
+                    if (entityInfo.recordClass == null &&
+                        conflictInfo.recordClass == null) {
+                        conflictX = exc(MappingException.class,
+                                        "CWWKD1068.entity.name.conflict",
+                                        repositoryInterface.getName(),
+                                        entityInfo.name,
+                                        classNames,
+                                        List.of(Entity.class.getName(),
+                                                Table.class.getName()));
+                    } else { // conflict involving one or more record entity
+                        String longerName = entityInfo.name;
+                        String shorterName = entityInfo.name;
+                        if (conflictInfo.name.length() > longerName.length())
+                            longerName = conflictInfo.name;
+                        else
+                            shorterName = conflictInfo.name;
+
+                        conflictX = exc(MappingException.class,
+                                        "CWWKD1069.record.entity.name.conflict",
+                                        repositoryInterface.getName(),
+                                        shorterName,
+                                        classNames,
+                                        longerName);
+                    }
+                    entityInfos.putIfAbsent(EntityInfo.FAILED,
+                                            CompletableFuture.failedFuture(conflictX));
+                }
+            } else {
+                entityInfos.putIfAbsent(EntityInfo.FAILED,
+                                        CompletableFuture.failedFuture(x));
+            }
+        }
+        return entityInfos;
     }
 
     /**
