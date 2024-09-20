@@ -151,6 +151,9 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             setRequestURI(getRequestURI());
             // Additional verification for url host
             String host = request.uri();
+            if (null == host || host.isEmpty()) {
+                throw new IllegalArgumentException("setRequestURL: null URL");
+            }
             int start = 0;
             // We should be looking at alpha chars and the scheme
             if (isAlpha(host.charAt(0))) {
@@ -168,7 +171,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             // starts with "//". Only parse the authority if we are in a
             // strict compliance setting, otherwise assume anything with a
             // leading slash is just the URI
-            else if ('/' == host.charAt(0) && '/' == host.charAt(1) && getServiceContext().getHttpConfig().isStrictURLFormat()) {
+            else if (host.length() > 1 && '/' == host.charAt(0) && '/' == host.charAt(1) && getServiceContext().getHttpConfig().isStrictURLFormat()) {
                 start = 2;
             } else {
                 return;

@@ -76,7 +76,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
         // TODO Need to see if we need to check decoder result from request to ensure data is properly parsed as expected
         if (request.decoderResult().isFinished() && request.decoderResult().isSuccess()) {
 
-//            FullHttpRequest msg = ReferenceCountUtil.retain(request, 1);
             FullHttpRequest msg = request;
             HttpDispatcher.getExecutorService().execute(new Runnable() {
                 @Override
@@ -90,8 +89,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
                             context.close();
                         }
                     } finally {
-                        System.out.println("Releasing request! " + request + " with value: " + ReferenceCountUtil.release(msg));
-//                        ReferenceCountUtil.release(msg);
+                        ReferenceCountUtil.release(msg);
                     }
                 }
             });
@@ -130,22 +128,18 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Sending a 400 for throwable [" + cause + "]");
         }
-        System.out.println("Sending a 400 for throwable: " + cause);
-        cause.printStackTrace();
         // TODO Need a way to check if headers were already sent or not before sending an entire response
         loadErrorPage(StatusCodes.BAD_REQUEST.getHttpError());
         this.context.writeAndFlush(errorResponse);
     }
 
     private void loadErrorPage(HttpError error) {
-        System.out.println("Loading error page for: " + error);
         errorResponse.setStatus(HttpResponseStatus.valueOf(error.getErrorCode()));
         WsByteBuffer[] body = error.getErrorBody();
         if (null != body) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "HttpError returned body of length=" + body.length);
             }
-            System.out.println(": " + error);
             errorResponse.replace(Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(body)));
             return;
         }
