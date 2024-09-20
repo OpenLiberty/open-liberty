@@ -36,9 +36,7 @@ public class MP7EE10CompatibleTest {
 
     @AfterClass
     public static void cleanUp() throws Exception {
-        //I think CWWWC0002W is a mpGraphQL-1.0 bug and should not appear
-        //See issue 15496
-        MPCompatibilityTestUtils.cleanUp(server, "CWWWC0002W");
+        MPCompatibilityTestUtils.cleanUp(server);
     }
 
     /**
