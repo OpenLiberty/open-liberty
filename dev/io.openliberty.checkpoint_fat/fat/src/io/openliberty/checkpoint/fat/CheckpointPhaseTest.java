@@ -49,7 +49,7 @@ public class CheckpointPhaseTest {
     public TestName testName = new TestName();
     public static final String APP_NAME = "app2";
 
-    @Server("checkpointFATServer")
+    @Server("checkpointPhaseServer")
     public static LibertyServer server;
 
     @BeforeClass
