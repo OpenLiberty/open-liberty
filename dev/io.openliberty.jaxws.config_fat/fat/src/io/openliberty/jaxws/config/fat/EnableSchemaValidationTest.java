@@ -51,7 +51,7 @@ import componenttest.topology.utils.HttpUtils;
  *
  *      Each test uses a specific server.xml configuration that's reconfigured at test start. It calls the @see IgnoreUnexpectedElementTestServiceServlet servlet
  *      along with a HTTP request parameter. That parameter is added to the SOAP Request, and when the mock JAX-WS endpoint receives the request, it checks for the string
- *      and correlates it to the "bad" response the endpoint then returns. After the client recieves the inbound response, the test checks the response from the
+ *      and correlates it to the "bad" response the endpoint then returns. After the client receives the inbound response, the test checks the response from the
  *      IgnoreUnexpectedElementTestServiceServlet servlet
  *      for the specified response or exception in the server logs.
  *
