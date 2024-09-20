@@ -16,10 +16,8 @@ import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 import static jakarta.data.repository.By.ID;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -639,14 +637,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         List<?> results = query.getResultList();
 
-        Object entity;
         if (results.isEmpty()) {
-            entity = null;
-        } else {
-            entity = results.get(0); // TODO unused. Is this a mistake?
-            entity = em.merge(toEntity(e));
-        }
-        if (entity == null) {
             List<String> entityProps = new ArrayList<>(2);
             if (id != null)
                 entityProps.add(queryInfo.loggableAppend(idAttributeName,
@@ -662,7 +653,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                       entityProps,
                       LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES);
         }
-        return entity;
+
+        return em.merge(queryInfo.toEntity(e));
     }
 
     /**
@@ -790,7 +782,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             int length = Array.getLength(arg);
             results = resultVoid ? null : new ArrayList<>(length);
             for (int i = 0; i < length; i++) {
-                Object entity = toEntity(Array.get(arg, i));
+                Object entity = queryInfo.toEntity(Array.get(arg, i));
                 em.persist(entity);
                 if (results != null)
                     results.add(entity);
@@ -804,7 +796,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (arg instanceof Iterable) {
                 results = resultVoid ? null : new ArrayList<>();
                 for (Object e : ((Iterable<?>) arg)) {
-                    Object entity = toEntity(e);
+                    Object entity = queryInfo.toEntity(e);
                     em.persist(entity);
                     if (results != null)
                         results.add(entity);
@@ -813,7 +805,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             } else {
                 hasSingularEntityParam = true;
                 results = resultVoid ? null : new ArrayList<>(1);
-                Object entity = toEntity(arg);
+                Object entity = queryInfo.toEntity(arg);
                 em.persist(entity);
                 em.flush();
                 if (results != null)
@@ -1661,32 +1653,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
-     * Converts a record to its generated entity equivalent,
-     * or does nothing if not a record.
-     *
-     * @param o entity or a record that needs conversion to an entity.
-     * @return entity.
-     */
-    @Trivial
-    private static final Object toEntity(Object o) {
-        Object entity = o;
-        Class<?> oClass = o == null ? null : o.getClass();
-        if (o != null && oClass.isRecord())
-            try {
-                Class<?> entityClass = oClass.getClassLoader().loadClass(oClass.getName() + "Entity");
-                Constructor<?> ctor = entityClass.getConstructor(oClass);
-                entity = ctor.newInstance(o);
-            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | //
-                            InvocationTargetException | NoSuchMethodException | SecurityException x) {
-                throw new MappingException("Unable to convert record " + oClass + " to generated entity class.", //
-                                x instanceof InvocationTargetException ? x.getCause() : x); // TODO NLS
-            }
-        if (entity != o && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "toEntity " + oClass.getName() + " --> " + entity.getClass().getName());
-        return entity;
-    }
-
-    /**
      * Converts an update count to the requested return type.
      *
      * @param i          update count value.
@@ -1736,7 +1702,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             results = new ArrayList<>();
             int length = Array.getLength(arg);
             for (int i = 0; i < length; i++)
-                results.add(em.merge(toEntity(Array.get(arg, i))));
+                results.add(em.merge(queryInfo.toEntity(Array.get(arg, i))));
             em.flush();
         } else {
             arg = arg instanceof Stream //
@@ -1746,12 +1712,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (Iterable.class.isAssignableFrom(queryInfo.entityParamType)) {
                 results = new ArrayList<>();
                 for (Object e : ((Iterable<?>) arg))
-                    results.add(em.merge(toEntity(e)));
+                    results.add(em.merge(queryInfo.toEntity(e)));
                 em.flush();
             } else {
                 hasSingularEntityParam = true;
                 results = resultVoid ? null : new ArrayList<>(1);
-                Object entity = em.merge(toEntity(arg));
+                Object entity = em.merge(queryInfo.toEntity(arg));
                 if (results != null)
                     results.add(entity);
                 em.flush();

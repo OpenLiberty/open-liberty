@@ -2946,6 +2946,7 @@ public class QueryInfo {
      * @throws MappingException if the repository method return type is incompatible with both
      *                              delete-only and find-and-delete.
      */
+    @SuppressWarnings("unlikely-arg-type")
     @Trivial
     private boolean isFindAndDelete() {
 
@@ -3492,6 +3493,47 @@ public class QueryInfo {
     @Trivial
     final double toDouble(Object o) {
         return (Double) convert(o, double.class, true);
+    }
+
+    /**
+     * Converts a record to its generated entity equivalent,
+     * or does nothing if not a record.
+     *
+     * @param o a record that needs conversion to an entity,
+     *              or an entity that is already an entity and does not
+     *              need conversion.
+     * @return entity.
+     */
+    @Trivial
+    final Object toEntity(Object o) {
+        Object entity = o;
+        Class<?> oClass = o == null ? null : o.getClass();
+        if (o != null && oClass.isRecord())
+            try {
+                Class<?> entityClass = oClass.getClassLoader() //
+                                .loadClass(oClass.getName() + "Entity");
+                Constructor<?> ctor = entityClass.getConstructor(oClass);
+                entity = ctor.newInstance(o);
+            } catch (ClassNotFoundException | IllegalAccessException | //
+                            InstantiationException | InvocationTargetException | //
+                            NoSuchMethodException | SecurityException x) {
+                Throwable targetx = x instanceof InvocationTargetException //
+                                ? x.getCause() //
+                                : x;
+                IllegalArgumentException iax = exc(IllegalArgumentException.class,
+                                                   "CWWKD1070.record.convert.err",
+                                                   loggableAppend(oClass.getName(),
+                                                                  " (" + o + ')'),
+                                                   method.getName(),
+                                                   repositoryInterface.getName(),
+                                                   targetx.getMessage());
+                throw (IllegalArgumentException) iax.initCause(x);
+            }
+        if (entity != o &&
+            TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "toEntity " + loggable(o),
+                     oClass.getName() + " --> " + entity.getClass().getName());
+        return entity;
     }
 
     /**

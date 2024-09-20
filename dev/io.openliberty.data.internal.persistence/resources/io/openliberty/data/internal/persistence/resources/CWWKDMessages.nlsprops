@@ -677,3 +677,26 @@ CWWKD1069.record.entity.name.conflict.explanation=Entity names and tables names 
  annotations.
 CWWKD1069.record.entity.name.conflict.useraction=Rename the entities or switch \
  to Jakarta Persistence entities to resolve the name conflict.
+
+CWWKD1070.record.convert.err=CWWKD1070E: The {0} record that is supplied to the \
+ {1} method of the {2} repository interface cannot be used as an entity due to \
+ the following error: {3}.
+CWWKD1070.record.convert.err.explanation=It is not possible to use the \
+ Java record as an entity.
+CWWKD1070.record.convert.err.useraction=Define the entity as a Jakarta Persistence \
+ entity instead of using a Java record entity.
+
+CWWKD1071.record.with.type.var=CWWKD1071E: The {0} record cannot be used as an \
+ entity because it has one or more type variables: {1}.
+CWWKD1071.record.with.type.var.explanation=Entity classes cannot have generic \
+ type variables.
+CWWKD1071.record.with.type.var.useraction=Remove the type variables from the \
+ record.
+
+CWWKD1072.record.comp.conflict=CWWKD1072E: The {0} record cannot be used as an \
+ entity because its {1} component and {2} component both resolve to the same \
+ entity property name.
+CWWKD1072.record.comp.conflict.explanation=Entity property names must be \
+ unique ignoring case.
+CWWKD1072.record.comp.conflict.useraction=Rename one of the record components \
+ to avoid the conflict.
