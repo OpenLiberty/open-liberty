@@ -102,7 +102,9 @@ public class JaegerQueryClient implements AutoCloseable {
         try {
             Log.info(c, "getSpansForTraceId", "Starting Jaeger query");
             GetTraceRequest req = GetTraceRequest.newBuilder().setTraceId(traceId).build();
+            Log.info(c, "GetTraceRequest.newBuilder().setTraceId(" + traceId + ").build()", req.toString());
             Iterator<SpansResponseChunk> result = getRawClient().getTrace(req);
+            Log.info(c, "getRawClient().getTrace(req)", result.toString());
             List<Span> spans = consumeChunkedResult(result, chunk -> chunk.getSpansList());
             Log.info(c, "getSpansForTraceId", "Returning spans");
             return spans;
