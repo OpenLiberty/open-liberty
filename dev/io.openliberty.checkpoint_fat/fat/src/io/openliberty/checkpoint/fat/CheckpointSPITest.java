@@ -81,6 +81,14 @@ public class CheckpointSPITest {
     public void testRunningConditionLaunch() throws Exception {
         server.startServer(getTestMethodNameOnly(testName) + ".log");
         findLogMessage("Activate should have non-null running condition", "TESTING - activate running condition: ", "io.openliberty.process.running null", 500);
+        findLogMessage("Activate should have null before checkpoint condition", "TESTING - activate before checkpoint condition: ", "null", 500);
+    }
+
+    @Test
+    public void testBeforeCheckpointAndRunningCondition() throws Exception {
+        // The before checkpoint condition is tested in the lambda setup in setCheckpoint
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
+        findLogMessage("Should bind running condition on restore", "TESTING - bind running condition:", " io.openliberty.process.running AFTER_APP_START", 500);
     }
 
     @Test
@@ -152,6 +160,8 @@ public class CheckpointSPITest {
             findLogMessage("No RESTORED false found in prepare", "TESTING - in prepare method RESTORED", " - false -- false", 500);
             findLogMessage("Activate should have null running condition", "TESTING - activate running condition: ", "null", 500);
             findLogMessage("Prepare should have null running condition", "TESTING - prepare running condition: ", "null", 500);
+            findLogMessage("Should activate the before checkpoint component", "TESTING - activate before checkpoint condition component", "", 500);
+            findLogMessage("Should deactivate the before checkpoint component", "TESTING - deactivate before checkpoint condition component", "", 500);
             runBeforeRestore(testMethod);
         }));
     }
@@ -193,6 +203,7 @@ public class CheckpointSPITest {
         testRunningConditionLaunch,
         testFailedCheckpoint,
         testFailedRestore,
+        testBeforeCheckpointAndRunningCondition,
         unknown
     }
 
