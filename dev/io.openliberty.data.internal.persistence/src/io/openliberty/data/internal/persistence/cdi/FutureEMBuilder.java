@@ -12,16 +12,29 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence.cdi;
 
+import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
+
+import java.io.Writer;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
@@ -32,19 +45,22 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.wsspi.persistence.DDLGenerationParticipant;
 
 import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.provider.PUnitEMBuilder;
 import io.openliberty.data.internal.persistence.service.DBStoreEMBuilder;
+import jakarta.data.exceptions.DataException;
 import jakarta.persistence.EntityManagerFactory;
 
 /**
  * A completable future for an EntityManagerBuilder that can be
  * completed by invoking the createEMBuilder method.
  */
-public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
+public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> implements DDLGenerationParticipant {
     private static final TraceComponent tc = Tr.register(FutureEMBuilder.class);
+    private static final long DDLGEN_WAIT_TIME = 15;
 
     /**
      * These are present only if needed to disambiguate a JNDI name
@@ -118,12 +134,14 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
             } else { // java:module or java:comp
                 module = moduleName.getModule();
                 if (module == null)
-                    throw new IllegalArgumentException("The " + repositoryInterface.getName() +
-                                                       " repository that is defined in the " +
-                                                       moduleName.getApplication() +
-                                                       " application specifies " + "dataStore = " + dataStore +
-                                                       ", but " + namespace + " names are not accessible to" +
-                                                       " this location. Use a java:app name instead."); // TODO NLS
+                    throw exc(IllegalArgumentException.class,
+                              "CWWKD1060.name.out.of.scope",
+                              repositoryInterface.getName(),
+                              moduleName.getApplication(),
+                              dataStore,
+                              "dataStore",
+                              namespace,
+                              "java:app");
             }
         }
     }
@@ -141,6 +159,91 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
             Tr.debug(this, tc, "add: " + entityClass.getName());
 
         entityTypes.add(entityClass);
+    }
+
+    /**
+     * Registers this future with the DDL generation MBean so that the ddlgen command
+     * will generate DDL for the EntityManagerBuilder produced by this future. <p>
+     *
+     * Not all EntityManagerBuilder instances will participate in DDL generation;
+     * only those that use the Persistence Service. This is not determined until the
+     * EntityManagerBuilder has been created. If not participating, a null DDL file
+     * name will be provided and the DDL generation command will skip generation.
+     *
+     * @param appName application name
+     */
+    public void registerDDLGenerationParticipant(String appName) {
+        // Register as a DDL generator for use by the ddlGen command and add to list for cleanup on application stop
+        BundleContext thisbc = FrameworkUtil.getBundle(getClass()).getBundleContext();
+        ServiceRegistration<DDLGenerationParticipant> ddlgenreg = thisbc.registerService(DDLGenerationParticipant.class, this, null);
+        Queue<ServiceRegistration<DDLGenerationParticipant>> ddlgenRegistrations = provider.ddlgeneratorsAllApps.get(appName);
+        if (ddlgenRegistrations == null) {
+            Queue<ServiceRegistration<DDLGenerationParticipant>> empty = new ConcurrentLinkedQueue<>();
+            if ((ddlgenRegistrations = provider.ddlgeneratorsAllApps.putIfAbsent(appName, empty)) == null)
+                ddlgenRegistrations = empty;
+        }
+        ddlgenRegistrations.add(ddlgenreg);
+    }
+
+    @Override
+    public String getDDLFileName() {
+        try {
+            EntityManagerBuilder builder = get(DDLGEN_WAIT_TIME, TimeUnit.SECONDS);
+            if (builder instanceof DDLGenerationParticipant) {
+                return ((DDLGenerationParticipant) builder).getDDLFileName();
+            }
+        } catch (TimeoutException e) {
+            // TODO : translate message for exception & error (or warning)
+            // DDL generation MBean does not log errors; participants must provide meaningful messages.
+            // Log a useful error informing user to try again later after builder creation completes.
+            Tr.error(tc, "CWWKD10xxE.ddlgen.timeout", dataStore, DDLGEN_WAIT_TIME);
+
+            // Throw exception with same message so DDL generation MBean reports that a failure occurred.
+            throw new DataException("DDL file not generated for Jakarta Data repositories associated with the " + dataStore
+                                    + " DatabaseStore. The EntityManagerFactory was not created in " + DDLGEN_WAIT_TIME + " seconds. Try DDL generation again at a later time.");
+        } catch (Throwable ex) {
+            // TODO : translate message for exception & error
+            // DDL generation MBean does not log errors; participants must provide meaningful messages.
+            // Log a useful error informing user to correct problems reported in the cause.
+            Throwable cause = (ex instanceof ExecutionException) ? ex.getCause() : ex;
+            Tr.error(tc, "CWWKD10xyE.ddlgen.failed.create", dataStore, cause);
+
+            // Throw exception with same message so DDL generation MBean reports that a failure occurred.
+            throw new DataException("DDL file not generated for Jakarta Data repositories associated with the " + dataStore
+                                    + " DatabaseStore. An error occurred creating the EntityManagerFactory.", cause);
+        }
+
+        // Not using persistence service; return null and DDL generation will skip this future
+        return null;
+    }
+
+    @Override
+    public void generate(Writer out) throws Exception {
+        try {
+            EntityManagerBuilder builder = get(DDLGEN_WAIT_TIME, TimeUnit.SECONDS);
+            if (builder instanceof DDLGenerationParticipant) {
+                ((DDLGenerationParticipant) builder).generate(out);
+            }
+        } catch (TimeoutException e) {
+            // TODO : translate message for exception & error (or warning)
+            // DDL generation MBean does not log errors; participants must provide meaningful messages.
+            // Log a useful error informing user to try again later after builder creation completes.
+            Tr.error(tc, "CWWKD10xxE.ddlgen.timeout", dataStore, DDLGEN_WAIT_TIME);
+
+            // Throw exception with same message so DDL generation MBean reports that a failure occurred.
+            throw new DataException("DDL file not generated for Jakarta Data repositories associated with the " + dataStore
+                                    + " DatabaseStore. The EntityManagerFactory was not created in " + DDLGEN_WAIT_TIME + " seconds. Try DDL generation again at a later time.");
+        } catch (Throwable ex) {
+            // TODO : translate message for exception & error (or warning)
+            // DDL generation MBean does not log errors; participants must provide meaningful messages.
+            // Log a useful error informing user to correct problems reported in the cause.
+            Throwable cause = (ex instanceof ExecutionException) ? ex.getCause() : ex;
+            Tr.error(tc, "CWWKD10xyE.ddlgen.failed.create", dataStore, cause);
+
+            // Throw exception with same message so DDL generation MBean reports that a failure occurred.
+            throw new DataException("DDL file not generated for Jakarta Data repositories associated with the " + dataStore
+                                    + " DatabaseStore. An error occurred creating the EntityManagerFactory.", cause);
+        }
     }
 
     /**
@@ -166,15 +269,16 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
         boolean switchMetadata = repoMetadata != null &&
                                  (extMetadata == null || !extMetadata.getJ2EEName().equals(repoMetadata.getJ2EEName()));
 
-        if (metadataIdentifier.startsWith("EJB#") && namespace == Namespace.COMP)
-            throw new IllegalArgumentException("The " + repositoryInterface.getName() +
-                                               " repository that is defined in the " +
-                                               repoMetadata.getJ2EEName().getModule() +
-                                               " enterprise bean module of the " +
-                                               repoMetadata.getJ2EEName().getApplication() +
-                                               " application specifies " + "dataStore = " + resourceName +
-                                               ", but java:comp names are not accessible to the" +
-                                               " module. Use a java:app or java:module name instead."); // TODO NLS
+        if (namespace == Namespace.COMP && metadataIdentifier.startsWith("EJB#"))
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1061.comp.name.in.ejb",
+                      repositoryInterface.getName(),
+                      repoMetadata.getJ2EEName().getModule(),
+                      repoMetadata.getJ2EEName().getApplication(),
+                      resourceName,
+                      "dataStore",
+                      "java:comp",
+                      List.of("java:app", "java:module"));
 
         if (switchMetadata)
             accessor.beginContext(repoMetadata);
@@ -322,9 +426,10 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
     @Override
     @Trivial
     public String toString() {
-        StringBuilder b = new StringBuilder(27 + dataStore.length() +
-                                            (application == null ? 4 : application.length()) +
-                                            (module == null ? 4 : module.length())) //
+        int len = 27 + dataStore.length() +
+                  (application == null ? 4 : application.length()) +
+                  (module == null ? 4 : module.length());
+        StringBuilder b = new StringBuilder(len) //
                         .append("FutureEMBuilder@") //
                         .append(Integer.toHexString(hashCode())) //
                         .append(":").append(dataStore) //

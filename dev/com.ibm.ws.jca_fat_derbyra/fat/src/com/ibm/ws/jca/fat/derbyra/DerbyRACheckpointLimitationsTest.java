@@ -178,6 +178,9 @@ public class DerbyRACheckpointLimitationsTest extends FATServletClient {
         assertNotNull("The test work scheduled during did not execute during servlet init()",
                       server.waitForStringInLogUsingMark("--- DerbyRA start createTimer: "));
 
+        // Verify application has started before running tests
+        server.addInstalledAppForValidation(APP);
+
         // Verify some connector function
         runTest(server, DerbyRAServlet, "initDatabaseTables");
         runTest(server, DerbyRAAnnoServlet, "testActivationSpec");
@@ -210,6 +213,9 @@ public class DerbyRACheckpointLimitationsTest extends FATServletClient {
 
         assertNotNull("The test work scheduled during did not execute during servlet init()",
                       server.waitForStringInLogUsingMark("--- DerbyRACheckpointServlet TestWork run"));
+
+        // Verify application has started before running tests
+        server.addInstalledAppForValidation(APP);
 
         runTest(server, DerbyRAServlet, "initDatabaseTables");
         runTest(server, DerbyRAAnnoServlet, "testActivationSpec");

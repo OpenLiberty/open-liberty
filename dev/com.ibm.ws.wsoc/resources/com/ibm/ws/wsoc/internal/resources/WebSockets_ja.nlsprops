@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2023 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -234,3 +234,7 @@ scheme.incorrect.error.useraction=\u30b9\u30ad\u30fc\u30e0\u30fb\u30bf\u30a4\u30
 upgradeHttpToWebSocket.failed=CWWKH0055E: {0}\u306e\u539f\u56e0\u3067\u3001jakarta.websocket.server.ServerContainer#upgradeHttpToWebSocket \u547c\u3073\u51fa\u3057\u304c\u5931\u6557\u3057\u307e\u3057\u305f\u3002 
 upgradeHttpToWebSocket.failed.explanation=\u30b5\u30fc\u30d0\u30fc\u306f HTTP \u307e\u305f\u306f HTTPS \u8981\u6c42\u3092 ws/wss \u30d7\u30ed\u30c8\u30b3\u30eb\u306b\u30a2\u30c3\u30d7\u30b0\u30ec\u30fc\u30c9\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002
 upgradeHttpToWebSocket.failed.useraction=\u30a8\u30e9\u30fc\u3092\u78ba\u8a8d\u3057\u3066\u3001\u8981\u6c42\u304c\u30a2\u30c3\u30d7\u30b0\u30ec\u30fc\u30c9\u306b\u5931\u6557\u3057\u305f\u7406\u7531\u3092\u7279\u5b9a\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+maxmessagesize.exceeded=CWWKH0056E: {0} \u30e1\u30bd\u30c3\u30c9\u306e maxMessageSize \u304c\u3001{1} \u30af\u30e9\u30b9\u306e Integer.MAX_VALUE \u3092\u8d85\u3048\u3066\u3044\u307e\u3059\u3002
+maxmessagesize.exceeded.explanation=maxMessageSize OnMessage \u30a2\u30ce\u30c6\u30fc\u30b7\u30e7\u30f3\u30fb\u30d1\u30e9\u30e1\u30fc\u30bf\u306f\u3001\u30e1\u30bd\u30c3\u30c9\u306e\u6700\u5927\u30e1\u30c3\u30bb\u30fc\u30b8\u30fb\u30b5\u30a4\u30ba\u3092\u30d0\u30a4\u30c8\u5358\u4f4d\u3067\u8a2d\u5b9a\u3057\u307e\u3059\u3002 maxMessageSize\u306f\u6700\u5927\u5024Integer.MAX_VALUE\u306b\u306e\u307f\u8a2d\u5b9a\u3067\u304d\u307e\u3059\u3002
+maxmessagesize.exceeded.useraction=maxMessageSize\u30d1\u30e9\u30e1\u30fc\u30bf\u306e\u5024\u3092Integer.MAX_VALUE\u4ee5\u4e0b\u306b\u3057\u307e\u3059\u3002

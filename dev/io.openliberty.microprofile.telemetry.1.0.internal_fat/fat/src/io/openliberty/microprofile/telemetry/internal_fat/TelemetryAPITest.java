@@ -33,6 +33,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.api.BaggageAPISer
 import io.openliberty.microprofile.telemetry.internal_fat.apps.api.CommonSDKServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.api.ContextAPIServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.api.TraceAPIServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 /**
  * Test use of the Open Telemetry APIs:
@@ -61,7 +62,7 @@ public class TelemetryAPITest extends FATServletClient {
     public static LibertyServer server;
     
     @ClassRule
-    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
+    public static RepeatTests r = TelemetryActions.allMPRepeats(SERVER_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {

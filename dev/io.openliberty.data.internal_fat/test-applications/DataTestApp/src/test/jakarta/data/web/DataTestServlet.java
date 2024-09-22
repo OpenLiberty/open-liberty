@@ -19,6 +19,7 @@ import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -88,11 +89,13 @@ import jakarta.transaction.TransactionRequiredException;
 import jakarta.transaction.TransactionalException;
 import jakarta.transaction.UserTransaction;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
+import test.jakarta.data.web.Residence.Occupant;
 
 @DataSourceDefinition(name = "java:app/jdbc/DerbyDataSource",
                       className = "org.apache.derby.jdbc.EmbeddedXADataSource",
@@ -103,6 +106,12 @@ import componenttest.app.FATServlet;
 @WebServlet("/*")
 public class DataTestServlet extends FATServlet {
     private final long TIMEOUT_MINUTES = 2;
+
+    @Inject
+    Apartments apartments;
+
+    @Inject
+    Cylinders cylinders;
 
     @Inject
     EmptyRepository emptyRepo;
@@ -540,23 +549,14 @@ public class DataTestServlet extends FATServlet {
             // expected - out of range
         }
 
-        try {
-            double result = primes.numberAsDouble(4003);
-            fail("Should not convert long value to double value " + result);
-        } catch (MappingException x) {
-            // expected - not convertible
-        }
+        assertEquals(4003.0, primes.numberAsDouble(4003), 0.01);
 
-        try {
-            Optional<Float> result = primes.numberAsFloatWrapper(4001)
-                            .get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
-            fail("Should not convert long value to float value " + result);
-        } catch (ExecutionException x) {
-            if (x.getCause() instanceof MappingException)
-                ; // expected - not convertible
-            else
-                throw x;
-        }
+        assertEquals(4001f,
+                     primes.numberAsFloatWrapper(4001)
+                                     .get(TIMEOUT_MINUTES, TimeUnit.MINUTES)
+                                     .orElseThrow()
+                                     .floatValue(),
+                     0.01f);
 
         assertEquals(31,
                      primes.numberAsInt(31));
@@ -579,6 +579,32 @@ public class DataTestServlet extends FATServlet {
         assertEquals(false,
                      primes.numberAsShortWrapper(27).isPresent());
 
+    }
+
+    /**
+     * Repository method that converts a length 1 String attribute to a
+     * single character.
+     */
+    @Test
+    public void testConvertToChar() {
+        assertEquals(Character.valueOf('D'),
+                     primes.singleHexDigit(13).orElseThrow());
+
+        assertEquals(false,
+                     primes.singleHexDigit(12).isPresent());
+
+        try {
+            Optional<Character> found = primes.singleHexDigit(29);
+            fail("Should not be able to return hex 1D as a single character: " +
+                 found);
+        } catch (MappingException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1046E") &&
+                x.getMessage().contains("singleHexDigit"))
+                ; // pass
+            else
+                throw x;
+        }
     }
 
     /**
@@ -681,6 +707,91 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testCountAsShortWrapper() {
         assertEquals(Short.valueOf((short) 5), primes.countAsShortWrapperByNumberIdLessThan(12));
+    }
+
+    /**
+     * Verify that cursor-based pagination can be used with an empty string Query,
+     * which the spec allows as a valid query. It will need to generate a WHERE
+     * clause when appending conditions for the cursor.
+     */
+    @Test
+    public void testCursorPaginationForEmptyQuery() {
+
+        PageRequest page3request = PageRequest.ofPage(3)
+                        .size(5)
+                        .afterCursor(Cursor.forKey(12));
+        CursoredPage<Prime> page3 = primes.all(page3request,
+                                               Sort.asc("numberId"));
+
+        assertIterableEquals(List.of("thirteen",
+                                     "seventeen",
+                                     "nineteen",
+                                     "twenty-three",
+                                     "twenty-nine"),
+                             page3.stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        CursoredPage<Prime> page4 = primes.all(page3.nextPageRequest(),
+                                               Order.by(Sort.asc("numberId")));
+
+        assertIterableEquals(List.of("thirty-one",
+                                     "thirty-seven",
+                                     "forty-one",
+                                     "forty-three",
+                                     "forty-seven"),
+                             page4.stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Verify that cursor-based pagination can be used on a Find method without
+     * conditions that retrieves all entities. It will need to generate the WHERE
+     * clause when appending conditions for the cursor.
+     */
+    @Test
+    public void testCursorPaginationForFindAll() {
+
+        CursoredPage<Prime> page3 = primes.all(Order.by(Sort.asc("numberId")),
+                                               PageRequest.ofPage(3).size(3));
+
+        assertIterableEquals(List.of("seventeen", "nineteen", "twenty-three"),
+                             page3.stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        CursoredPage<Prime> page4 = primes.all(page3.nextPageRequest(),
+                                               Order.by(Sort.asc("numberId")));
+
+        assertIterableEquals(List.of("twenty-nine", "thirty-one", "thirty-seven"),
+                             page4.stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Verify that cursor-based pagination can append conditions for a WHERE clause
+     * when the base query only consists of a FROM clause.
+     */
+    @Test
+    public void testCursorPaginationWithFromClauseOnly() {
+
+        CursoredPage<Prime> page4 = primes.all(PageRequest.ofPage(4).size(3),
+                                               Order.by(Sort.asc("numberId")));
+
+        assertIterableEquals(List.of("twenty-nine", "thirty-one", "thirty-seven"),
+                             page4.stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        CursoredPage<Prime> page3 = primes.all(page4.previousPageRequest(),
+                                               Order.by(Sort.asc("numberId")));
+
+        assertIterableEquals(List.of("seventeen", "nineteen", "twenty-three"),
+                             page3.stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
     }
 
     /**
@@ -1110,6 +1221,48 @@ public class DataTestServlet extends FATServlet {
         assertEquals(4, h.numBedrooms);
         assertEquals(188000f, h.purchasePrice, 0.001f);
         assertEquals(Year.of(2020), h.sold);
+
+        found = houses.findByGarage_door_heightOrderByGarage_door_heightDesc(9);
+        assertEquals(1, found.size());
+
+        h = found.get(0);
+        assertEquals("TestEmbeddable-404-4418-40", h.parcelId);
+        assertEquals(2400, h.area);
+        assertNotNull(h.garage);
+        assertEquals(220, h.garage.area);
+        assertEquals(Garage.Type.Detached, h.garage.type);
+        assertNotNull(h.garage.door);
+        assertEquals(9, h.garage.door.getHeight());
+        assertEquals(13, h.garage.door.getWidth());
+        assertNotNull(h.kitchen);
+        assertEquals(16, h.kitchen.length);
+        assertEquals(14, h.kitchen.width);
+        assertEquals(0.24f, h.lotSize, 0.001f);
+        assertEquals(5, h.numBedrooms);
+        assertEquals(204000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2022), h.sold);
+
+        // Query by attributes on base entity that could conflict with embedded attributes
+
+        List<House> hs = houses.findByArea(2400);
+        assertEquals(1, hs.size());
+
+        h = hs.get(0);
+        assertEquals("TestEmbeddable-404-4418-40", h.parcelId);
+        assertEquals(2400, h.area);
+        assertNotNull(h.garage);
+        assertEquals(220, h.garage.area);
+        assertEquals(Garage.Type.Detached, h.garage.type);
+        assertNotNull(h.garage.door);
+        assertEquals(9, h.garage.door.getHeight());
+        assertEquals(13, h.garage.door.getWidth());
+        assertNotNull(h.kitchen);
+        assertEquals(16, h.kitchen.length);
+        assertEquals(14, h.kitchen.width);
+        assertEquals(0.24f, h.lotSize, 0.001f);
+        assertEquals(5, h.numBedrooms);
+        assertEquals(204000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2022), h.sold);
 
         // Sorting with type-safe StaticMetamodel constant-like fields
 
@@ -3066,6 +3219,23 @@ public class DataTestServlet extends FATServlet {
         }
     }
 
+    @Test //TODO
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29475")
+    public void testFetchTypeDefault() {
+        ratings.clear();
+
+        Rating.Reviewer user1 = new Rating.Reviewer("Rex", "TestFetchTypeDefault", "rex@openliberty.io");
+        Rating.Item toaster = new Rating.Item("toaster", 28.98f);
+        Set<String> comments = Set.of("Burns everything.", "Often gets stuck.", "Bagels don't fit.");
+
+        ratings.add(new Rating(1000, toaster, 2, user1, comments));
+
+        Rating user1Rating = ratings.get(1000).orElseThrow();
+
+        assertFalse("Expected comments to be populated when using fetch type eager", user1Rating.comments().isEmpty());
+        assertEquals("Expected comments to be populated when using fetch type eager", comments, user1Rating.comments());
+    }
+
     /**
      * A repository might attempt to define a method that returns a CursoredPage
      * without specifying a PageRequest and attempt to use a Limit parameter
@@ -3109,6 +3279,17 @@ public class DataTestServlet extends FATServlet {
     public void testLeftFunction() {
         assertEquals(List.of("seven", "seventeen"),
                      primes.matchLeftSideOfName("seven"));
+    }
+
+    /**
+     * Repository method with return type of LongStream, involving type conversion.
+     */
+    @Test
+    public void testLongStream() {
+        assertEquals(List.of(10L, 11L, 101L, 111L, 1011L, 1101L, 10001L, 10011L),
+                     primes.binaryDigitsAsDecimal(20)
+                                     .boxed()
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -3225,6 +3406,9 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testMultipleAggregates() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        boolean databaseRounds = jdbcJarName.startsWith("ojdbc") || jdbcJarName.startsWith("postgre");
+
         Object[] objects = primes.minMaxSumCountAverageObject(50);
         assertEquals(Long.valueOf(2L), objects[0]); // minimum
         assertEquals(Long.valueOf(47L), objects[1]); // maximum
@@ -3254,19 +3438,27 @@ public class DataTestServlet extends FATServlet {
         assertEquals(12, ints[3]); // count
         assertEquals(16, ints[4]); // average
 
-        float[] floats = primes.minMaxSumCountAverageFloat(35);
-        assertEquals(2.0f, floats[0], 0.01f); // minimum
-        assertEquals(31.0f, floats[1], 0.01f); // maximum
-        assertEquals(160.0f, floats[2], 0.01f); // sum
-        assertEquals(11.0f, floats[3], 0.01f); // count
-        assertEquals(14.0f, Math.floor(floats[4]), 0.01f); // average
+        try {
+            float[] floats = primes.minMaxSumCountAverageFloat(35);
+            fail("Allowed unsafe conversion from double to float: " +
+                 Arrays.toString(floats));
+        } catch (MappingException x) {
+            if (x.getMessage().startsWith("CWWKD1046E") &&
+                x.getMessage().contains("float[]"))
+                ; // unsafe to convert double to float
+            else
+                throw x;
+        }
 
         List<Long> list = primes.minMaxSumCountAverageList(30);
         assertEquals(Long.valueOf(2L), list.get(0)); // minimum
         assertEquals(Long.valueOf(29L), list.get(1)); // maximum
         assertEquals(Long.valueOf(129L), list.get(2)); // sum
         assertEquals(Long.valueOf(10L), list.get(3)); // count
-        assertEquals(Long.valueOf(12L), list.get(4)); // average
+        if (databaseRounds)
+            assertEquals(Long.valueOf(13L), list.get(4)); // average - 12.9 -> 13
+        else
+            assertEquals(Long.valueOf(12L), list.get(4)); // average - 12.9 -> 12
 
         Stack<String> stack = primes.minMaxSumCountAverageStack(25);
         assertEquals("2", stack.get(0)); // minimum
@@ -3281,7 +3473,10 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Integer.valueOf(19), it.next()); // maximum
         assertEquals(Integer.valueOf(77), it.next()); // sum
         assertEquals(Integer.valueOf(8), it.next()); // count
-        assertEquals(Integer.valueOf(9), it.next()); // average
+        if (databaseRounds)
+            assertEquals(Integer.valueOf(10), it.next()); // average - 9.625 -> 10
+        else
+            assertEquals(Integer.valueOf(9), it.next()); // average - 9.625 -> 9
 
         Deque<Double> deque = primes.minMaxSumCountAverageDeque(18);
         assertEquals(2.0, deque.removeFirst(), 0.01); // minimum
@@ -3289,6 +3484,40 @@ public class DataTestServlet extends FATServlet {
         assertEquals(58.0, deque.removeFirst(), 0.01); // sum
         assertEquals(7.0, deque.removeFirst(), 0.01); // count
         assertEquals(8.0, Math.floor(deque.removeFirst()), 0.01); // average
+    }
+
+    /**
+     * Use a repository that has multiple embeddable attributes of the same type.
+     */
+    @Test
+    public void testMultipleEmbeddableAttributesOfSameType() {
+        Cylinder cyl1, cyl2, cyl3, cyl4, cyl5;
+
+        //                                    Id     a.x, a.y, b.x, b.y, c.x, c.y
+        cylinders.upsert(cyl1 = new Cylinder("CYL1", 100, 287, 372, 833, 509, 424),
+                         cyl2 = new Cylinder("CYL2", 790, 857, 942, 143, 509, 424),
+                         cyl3 = new Cylinder("CYL3", 340, 101, 100, 919, 629, 630),
+                         cyl4 = new Cylinder("CYL4", 100, 684, 974, 516, 453, 163),
+                         cyl5 = new Cylinder("CYL5", 412, 983, 276, 413, 629, 630));
+
+        assertEquals(5, cylinders.countValid());
+
+        assertEquals(List.of(cyl5.toString(), cyl3.toString()),
+                     cylinders.centeredAt(629, 630)
+                                     .map(Object::toString)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of(cyl2.toString(), cyl1.toString()),
+                     cylinders.centeredAt(509, 424)
+                                     .map(Object::toString)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of(cyl3.toString(), cyl1.toString(), cyl4.toString()),
+                     cylinders.findBySideAXOrSideBXOrderBySideBYDesc(100, 100)
+                                     .map(Object::toString)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(Long.valueOf(5), cylinders.eraseAll());
     }
 
     /**
@@ -3571,6 +3800,137 @@ public class DataTestServlet extends FATServlet {
     public void testParameterAnnotationTakesPrecedenceOverMethodPrefix() {
         Prime nine = primes.findByBinary("10011").orElseThrow();
         assertEquals(19L, nine.numberId);
+    }
+
+    /**
+     * Tests entity attribute names from embeddables and MappedSuperclass that
+     * can have delimiters. Includes tests for name collisions with attributes from an
+     * embeddable or superinteface. This test uses unannotated entities.
+     */
+    @Test
+    public void testPersistentFieldNamesAndDelimiters() {
+        apartments.removeAll();
+
+        Apartment a101 = new Apartment();
+        a101.occupant = new Occupant();
+        a101.occupant.firstName = "Kyle";
+        a101.occupant.lastName = "Smith";
+        a101.isOccupied = true;
+        a101.aptId = 101L;
+        a101.quarters = new Bedroom();
+        a101.quarters.length = 10;
+        a101.quarters.width = 10;
+        a101.quartersWidth = 15;
+
+        Apartment a102 = new Apartment();
+        a102.occupant = new Occupant();
+        a102.occupant.firstName = "Brent";
+        a102.occupant.lastName = "Smith";
+        a102.isOccupied = false;
+        a102.aptId = 102L;
+        a102.quarters = new Bedroom();
+        a102.quarters.length = 11;
+        a102.quarters.width = 11;
+        a102.quartersWidth = 15;
+
+        Apartment a103 = new Apartment();
+        a103.occupant = new Occupant();
+        a103.occupant.firstName = "Brian";
+        a103.occupant.lastName = "Smith";
+        a103.isOccupied = false;
+        a103.aptId = 103L;
+        a103.quarters = new Bedroom();
+        a103.quarters.length = 11;
+        a103.quarters.width = 12;
+        a103.quartersWidth = 15;
+
+        Apartment a104 = new Apartment();
+        a104.occupant = new Occupant();
+        a104.occupant.firstName = "Scott";
+        a104.occupant.lastName = "Smith";
+        a104.isOccupied = false;
+        a104.aptId = 104L;
+        a104.quarters = new Bedroom();
+        a104.quarters.length = 12;
+        a104.quarters.width = 11;
+        a104.quartersWidth = 15;
+
+        apartments.saveAll(List.of(a101, a102, a103, a104));
+
+        List<Apartment> results;
+
+        results = apartments.findApartmentsByBedroomWidth(12);
+        assertEquals(1, results.size());
+        assertEquals("Brian", results.get(0).occupant.firstName);
+
+        results = apartments.findApartmentsByBedroom(11, 11);
+        assertEquals(1, results.size());
+        assertEquals("Brent", results.get(0).occupant.firstName);
+
+        results = apartments.findAllOrderByBedroomLength();
+        assertEquals(4, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        results = apartments.findAllOrderByBedroomWidth();
+        assertEquals(4, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(3).occupant.firstName);
+
+        results = apartments.findApartmentsByBedroomLength(10);
+        assertEquals(1, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+
+        results = apartments.findByQuarters_Width(12);
+        assertEquals(1, results.size());
+        assertEquals("Brian", results.get(0).occupant.firstName);
+
+        results = apartments.findByQuartersLength(12);
+        assertEquals(1, results.size());
+        assertEquals("Scott", results.get(0).occupant.firstName);
+
+        results = apartments.findAllSorted(Sort.asc("quarters.length"));
+        assertEquals(4, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        results = apartments.findAllSorted(Sort.asc("quarters_width"));
+        assertEquals(4, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(3).occupant.firstName);
+
+        results = apartments.findByOccupied(true);
+        assertEquals(1, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+
+        results = apartments.findByOccupantLastNameOrderByFirstName("Smith");
+        assertEquals(4, results.size());
+        assertEquals("Brent", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(1).occupant.firstName);
+        assertEquals("Kyle", results.get(2).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        // Colliding non-delimited attribute name quartersWidth, ensure we use entity attribute and not embedded attribute for query
+        results = apartments.findByQuartersWidth(15);
+        assertEquals(4, results.size());
+        assertEquals("Brent", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(1).occupant.firstName);
+        assertEquals("Kyle", results.get(2).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        try {
+            apartments.findAllCollidingEmbeddable();
+            fail("Should not have been able to execute query on an entity with colliding attibute name from embeddable");
+        } catch (MappingException e) {
+            //expected
+        }
+
+        try {
+            apartments.findAllCollidingSuperclass();
+            fail("Should not have been able to execute query on an entity with colliding attibute name from superclass");
+        } catch (MappingException e) {
+            // expected
+        }
     }
 
     /**
@@ -3875,10 +4235,11 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals("Simon", participants.getFirstName(3).orElseThrow());
 
-        assertEquals(List.of("Samantha", "Sarah", "Simon", "Steve"),
-                     participants.withSurname("TestRecordAsEmbeddable")
-                                     .map(p -> p.name.first())
-                                     .collect(Collectors.toList()));
+        // TODO enable once #29460 is fixed
+        //assertEquals(List.of("Samantha", "Sarah", "Simon", "Steve"),
+        //             participants.withSurname("TestRecordAsEmbeddable")
+        //                             .map(p -> p.name.first())
+        //                             .collect(Collectors.toList()));
 
         assertEquals(4L, participants.remove("TestRecordAsEmbeddable"));
     }
@@ -3906,6 +4267,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use repository methods that have various return types for a record entity.
      */
+    @Test
     public void testRecordReturnTypes() throws Exception {
         receipts.removeIfTotalUnder(1000000.0f);
 
@@ -3928,9 +4290,13 @@ public class DataTestServlet extends FATServlet {
 
         // various forms of completion stage results
         CompletableFuture<Receipt> futureResult = receipts.findByPurchaseId(3013L);
-        CompletionStage<Optional<Receipt>> futureOptionalPresent = receipts.findByPurchaseIdIfPresent(3014L);
-        CompletionStage<Optional<Receipt>> futureOptionalMissing = receipts.findByPurchaseIdIfPresent(3116L);
-        CompletableFuture<List<Receipt>> futureList = receipts.forCustomer("RRT20618", Order.by(Sort.desc("total")));
+        CompletionStage<Optional<Receipt>> futureOptionalPresent = //
+                        receipts.findIfPresentByPurchaseId(3014L);
+        CompletionStage<Optional<Receipt>> futureOptionalMissing = //
+                        receipts.findIfPresentByPurchaseId(3116L);
+        CompletableFuture<List<Receipt>> futureList = //
+                        receipts.forCustomer("RRT20618",
+                                             Order.by(Sort.desc("total")));
 
         // single record
         Receipt receipt = receipts.withPurchaseNum(3015L);
@@ -3988,7 +4354,7 @@ public class DataTestServlet extends FATServlet {
                                      .toList());
 
         CursoredPage<Receipt> pageBelow3003 = receipts.forCustomer("RRT10155", pageBelow3007.previousPageRequest(), Sort.asc("purchaseId"));
-        assertEquals(List.of(3000L, 3001),
+        assertEquals(List.of(3000L, 3001L),
                      pageBelow3003.stream()
                                      .map(Receipt::purchaseId)
                                      .toList());
@@ -4013,7 +4379,8 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(1L, receipts.removeByPurchaseId(3000L));
 
-        assertEquals(List.of(3002L, 3010L, 3012L), receipts.removeByTotalBetween(10.00f, 20.00f));
+        assertEquals(Set.of(3002L, 3010L, 3012L),
+                     receipts.removeByTotalBetween(10.00f, 20.00f));
 
         // remove data to avoid interference with other tests
         assertEquals(12, receipts.removeIfTotalUnder(1000000.0f));
@@ -4457,7 +4824,38 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Repository method with a SELECT clause but no FROM clause.
+     * Repository method having only a SELECT clause.
+     */
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  https://github.com/OpenLiberty/open-liberty/issues/28368
+    @Test
+    public void testSelectClauseOnly() {
+        products.clear();
+
+        assertEquals(List.of(),
+                     List.of(products.names()));
+
+        Product prod1 = new Product();
+        prod1.pk = UUID.nameUUIDFromBytes("TestSelectClauseOnly-1".getBytes());
+        prod1.name = "TestSelectClauseOnly-1";
+        prod1.description = "TestSelectClauseOnly description 1";
+        prod1.price = 18.99f;
+
+        Product prod2 = new Product();
+        prod2.pk = UUID.nameUUIDFromBytes("TestSelectClauseOnly-2".getBytes());
+        prod2.name = "TestSelectClauseOnly-2";
+        prod2.description = "TestSelectClauseOnly description 2";
+        prod2.price = 27.99f;
+
+        products.saveMultiple(prod1, prod2);
+
+        assertEquals(Set.of("TestSelectClauseOnly-1", "TestSelectClauseOnly-2"),
+                     Set.of(products.names()));
+
+        products.clear();
+    }
+
+    /**
+     * Repository method with a SELECT clause and WHERE clause, but no FROM clause.
      */
     @Test
     public void testSelectClauseWithoutFromClause() {
@@ -4937,12 +5335,12 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Obtain total counts of number of elements and pages when JPQL is supplied via the Query annotation,
-     * with a count query automatically generated from the primary query of the Query annotation.
+     * Obtain total counts of number of elements and pages when JPQL with 4 clauses
+     * (SELECT, FROM, WHERE, ORDER BY) is supplied via the Query annotation, with a
+     * count query automatically generated from the primary query.
      */
-    // TODO re-enable once JPA 3.2 gives us COUNT(THIS) or if we improve the query parsing to better simulate it
-    // @Test
-    public void testTotalCountsForCountQuery() {
+    @Test
+    public void testTotalCountsForFullQuery() {
         Page<Map.Entry<Long, String>> page1 = primes.namesByNumber(47L, PageRequest.ofSize(5));
 
         assertEquals(15L, page1.totalElements());
@@ -4971,33 +5369,79 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Obtain total counts of number of elements and pages when JDQL is supplied via the Query annotation
-     * and the count query provided by the Query annotation only has a WHERE clause.
+     * Obtain total counts of elements when various JDQL queries are supplied
+     * that lack different optional clauses.
      */
     @Test
-    public void testTotalCountsForCountQueryWithWhereClauseOnly() {
+    public void testTotalCountsForQueriesWithSomeClausesOmitted() {
+        receipts.removeIfTotalUnder(Float.MAX_VALUE);
+
+        receipts.insertAll(List.of(new Receipt(5001, "TCFQWSCO-1", 51.01f),
+                                   new Receipt(5002, "TCFQWSCO-2", 52.42f),
+                                   new Receipt(5003, "TCFQWSCO-3", 50.33f),
+                                   new Receipt(5004, "TCFQWSCO-2", 52.24f),
+                                   new Receipt(5005, "TCFQWSCO-5", 56.95f)));
+
+        Page<Receipt> page1;
+        PageRequest page1req = PageRequest.ofSize(3).withTotal();
+
+        // query with no clauses
+        page1 = receipts.all(page1req, Order.by(Sort.asc(ID)));
+        assertEquals(5, page1.totalElements());
+
+        receipts.insert(new Receipt(5006, "TCFQWSCO-5", 56.56f));
+
+        // query with FROM clause only
+        page1 = receipts.all(page1req, Sort.desc(ID));
+        assertEquals(6, page1.totalElements());
+
+        receipts.insert(new Receipt(5007, "TCFQWSCO-7", 57.17f));
+
+        // query with FROM clause only
+        page1 = receipts.sortedByTotalIncreasing(page1req);
+        assertEquals(7, page1.totalElements());
+        assertEquals(5003, page1.iterator().next().purchaseId());
+
+        receipts.insert(new Receipt(5008, "TCFQWSCO-8", 58.88f));
+
+        // query with SELECT clause only
+        Page<Float> amountsPage1;
+        amountsPage1 = receipts.totals(page1req, Sort.asc(ID));
+        assertEquals(8, amountsPage1.totalElements());
+
+        receipts.insert(new Receipt(5009, "TCFQWSCO-9", 59.09f));
+
+        // query with SELECT and ORDER BY clauses only
+        amountsPage1 = receipts.totalsDecreasing(page1req);
+        assertEquals(9, amountsPage1.totalElements());
+
+        assertEquals(9, receipts.removeIfTotalUnder(Float.MAX_VALUE));
+    }
+
+    /**
+     * Obtain total counts of number of elements and pages when JDQL is supplied via
+     * the Query annotation and the provided query lacks a FROM clause.
+     */
+    @Test
+    public void testTotalCountsForQueryWithInferredFromClause() {
         // The prime numbers less than 50 where the roman numeral length is at least
         // twice the name length are:
         // 2, 3, 7, 13, 37
 
-        Page<Prime> page1 = primes.lengthBasedQuery(PageRequest.ofSize(3));
+        Page<String> page1 = primes.lengthBasedQuery(PageRequest.ofSize(3));
 
         assertEquals(List.of("two", "three", "thirty-seven"),
-                     page1.stream()
-                                     .map(p -> p.name)
-                                     .collect(Collectors.toList()));
+                     page1.content());
 
         assertEquals(3, page1.numberOfElements());
         assertEquals(5L, page1.totalElements());
         assertEquals(2L, page1.totalPages());
         assertEquals(true, page1.hasNext());
 
-        Page<Prime> page2 = primes.lengthBasedQuery(page1.nextPageRequest());
+        Page<String> page2 = primes.lengthBasedQuery(page1.nextPageRequest());
 
         assertEquals(List.of("thirteen", "seven"),
-                     page2.stream()
-                                     .map(p -> p.name)
-                                     .collect(Collectors.toList()));
+                     page2.content());
 
         assertEquals(false, page2.hasNext());
     }

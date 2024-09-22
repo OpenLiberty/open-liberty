@@ -71,12 +71,6 @@ public class MonitorMetrics {
 	}
 
 	public void createMetrics(String[][] data) {
-		/*
-		 * Just in case - If beta flag not enabled, do not do anything.
-		 */
-		if (!ProductInfo.getBetaEdition()) {
-			return;
-		}
 
 		/*
 		 * Upon initial bundle start up (Which will start with mpTelemetry=2.x and up),

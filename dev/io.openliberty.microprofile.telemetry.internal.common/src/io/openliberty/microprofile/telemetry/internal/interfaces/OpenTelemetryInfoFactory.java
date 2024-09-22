@@ -9,22 +9,22 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.interfaces;
 
-import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
+import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfoInternal;
 
 public interface OpenTelemetryInfoFactory {
 
     /**
      * @return
      */
-    OpenTelemetryInfo createOpenTelemetryInfo(boolean runtimeEnabled);
+    OpenTelemetryInfoInternal createOpenTelemetryInfo(boolean runtimeEnabled);
 
     /**
      * @return
      */
-    OpenTelemetryInfo createDisposedOpenTelemetryInfo();
+    OpenTelemetryInfoInternal createDisposedOpenTelemetryInfo();
 
     /**
      * @return
      */
-    OpenTelemetryInfo createDisabledOpenTelemetryInfo();
+    OpenTelemetryInfoInternal createDisabledOpenTelemetryInfo();
 }

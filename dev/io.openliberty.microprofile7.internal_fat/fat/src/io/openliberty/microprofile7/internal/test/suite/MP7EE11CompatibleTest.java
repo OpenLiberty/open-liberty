@@ -14,6 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -22,6 +23,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
+@MinimumJavaLevel(javaLevel = 17)
 public class MP7EE11CompatibleTest {
 
     private static final String SERVER_NAME = "MP70andEE11";
@@ -36,7 +38,9 @@ public class MP7EE11CompatibleTest {
 
     @AfterClass
     public static void cleanUp() throws Exception {
-        MPCompatibilityTestUtils.cleanUp(server);
+        //I think CWWWC0002W is a mpGraphQL-1.0 bug and should not appear
+        //See issue 15496
+        MPCompatibilityTestUtils.cleanUp(server, "CWWWC0002W");
     }
 
     /**

@@ -1,0 +1,6 @@
+<server description="Versioned telemetry user feature snippet">
+    <featureManager>
+      <feature>usr:telemetry.user.feature-2.0</feature>
+      <feature>usr:telemetry.user.wab-2.0</feature>
+    </featureManager>
+</server>

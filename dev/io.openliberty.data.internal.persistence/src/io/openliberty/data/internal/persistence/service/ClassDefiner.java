@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence.service;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -95,7 +96,11 @@ class ClassDefiner {
      * @throws LinkageError     if a class is defined twice within the given class loader
      * @throws ClassFormatError if the bytes passed in are invalid
      */
+    @Trivial
     Class<?> defineClass(ClassLoader classLoader, String className, byte[] classbytes) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "defineClass", classLoader, className, classbytes.length);
+
         Method defineClassMethod = svDefineClassMethod;
         if (defineClassMethod == null) {
             Permissions perms = new Permissions();
@@ -126,8 +131,10 @@ class ClassDefiner {
                                                              0,
                                                              classbytes.length,
                                                              svAllPermissionProtectionDomain);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(this, tc, "generated entity class: " + className, toString(c));
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.exit(tc, "defineClass", c);
+
             return c;
         } catch (IllegalAccessException ex) {
             throw new IllegalStateException(ex);
@@ -155,7 +162,11 @@ class ClassDefiner {
      * @throws LinkageError     if a class is defined twice within the given class loader
      * @throws ClassFormatError if the bytes passed in are invalid
      */
+    @Trivial
     Class<?> findLoadedOrDefineClass(ClassLoader classLoader, String className, byte[] classbytes) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "findLoadedOrDefineClass", classLoader, className, classbytes.length);
+
         Class<?> klass = findLoadedClass(classLoader, className);
         if (klass == null) {
             try {
@@ -167,6 +178,9 @@ class ClassDefiner {
                 }
             }
         }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "findLoadedOrDefineClass", klass);
 
         return klass;
     }
@@ -188,6 +202,15 @@ class ClassDefiner {
             fields.put(f.getName(), f);
         for (Field f : fields.values())
             s.append("  ").append(f.toGenericString()).append(';').append(DBStoreEMBuilder.EOLN);
+
+        s.append(DBStoreEMBuilder.EOLN);
+
+        // constructors
+        TreeMap<String, Constructor<?>> ctors = new TreeMap<>();
+        for (Constructor<?> ctor : c.getConstructors())
+            ctors.put(ctor.getName(), ctor);
+        for (Constructor<?> ctor : ctors.values())
+            s.append("  ").append(ctor.toGenericString()).append(DBStoreEMBuilder.EOLN);
 
         s.append(DBStoreEMBuilder.EOLN);
 

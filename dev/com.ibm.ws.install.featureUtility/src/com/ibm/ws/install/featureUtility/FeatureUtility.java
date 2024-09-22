@@ -672,7 +672,7 @@ public class FeatureUtility {
         	if (!isInstallServerFeature) {
         		String installingFeature = featuresToInstall.get(0);
         		for( String aFeature : resolvedFeatures) {
-        			String shortName = aFeature.split(":")[1];
+        			String shortName = aFeature.split(":").length > 1 ? aFeature.split(":")[1] : "" ;
         			if (installingFeature.equals(shortName) && isBaseVersionless(aFeature)) {
         				throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_VERSIONLESS_INSTALL"), InstallException.BAD_ARGUMENT);
         			}	

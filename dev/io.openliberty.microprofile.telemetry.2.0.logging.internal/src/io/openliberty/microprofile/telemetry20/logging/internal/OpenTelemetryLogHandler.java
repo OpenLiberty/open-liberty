@@ -37,11 +37,11 @@ import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.Handler;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
-import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
+import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
-import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
+import io.openliberty.microprofile.telemetry.spi.OpenTelemetryInfo;
 import io.opentelemetry.api.logs.LogRecordBuilder;
 
 @Component(name = OpenTelemetryLogHandler.COMPONENT_NAME, service = { Handler.class }, configurationPolicy = ConfigurationPolicy.OPTIONAL, property = { "service.vendor=IBM" })
@@ -170,7 +170,7 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
             otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo();
         }
 
-        if (otelInstance != null && otelInstance.getEnabled()) {
+        if (otelInstance != null && otelInstance.isEnabled()) {
             /*
              * Given an 'object' we must determine what type of log event it originates from.
              * Knowing that it is a *Data object, we can figure what type of source it is.
@@ -226,7 +226,9 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
         } else if (event instanceof FFDCData) {
             eventMsg = ((FFDCData) event).getMessage();
         }
-        isOTelMappedEvent = eventMsg.contains(MpTelemetryLogFieldConstants.OTEL_SCOPE_INFO);
+        if (eventMsg != null) {
+            isOTelMappedEvent = eventMsg.contains(MpTelemetryLogFieldConstants.OTEL_SCOPE_INFO);
+        }
         return isOTelMappedEvent;
     }
 

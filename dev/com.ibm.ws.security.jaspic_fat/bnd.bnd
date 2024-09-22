@@ -42,6 +42,7 @@ tested.features: audit-2.0, pages-3.0, appAuthentication-2.0, appAuthorization-2
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.security.audit_fat.common.tooling;version=latest,\
 	com.ibm.ws.security.authorization.jacc.testprovider;version=latest,\
+	io.openliberty.security.authorization.jacc.testprovider;version=latest,\
 	com.ibm.ws.security.jaspic.1.1;version=latest,\
 	com.ibm.ws.security.jaspic.test;version=latest,\
 	com.ibm.ws.security.token;version=latest,\

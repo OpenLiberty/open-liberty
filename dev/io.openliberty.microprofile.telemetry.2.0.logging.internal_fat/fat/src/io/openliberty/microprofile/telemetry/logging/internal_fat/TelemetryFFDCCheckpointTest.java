@@ -20,16 +20,21 @@ import java.util.Collections;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @RunWith(FATRunner.class)
 @CheckpointTest
@@ -38,15 +43,20 @@ public class TelemetryFFDCCheckpointTest extends FATServletClient {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests rt = TelemetryActions.telemetry20Repeats();
+
     @BeforeClass
     public static void initialSetup() throws Exception {
-        server = installUserFeatureAndApp(getLibertyServer(SERVER_NAME));
+        if (!RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID)) {
+            server = installUserFeatureAndApp(getLibertyServer(SERVER_NAME));
 
-        server.setCheckpoint(CheckpointPhase.AFTER_APP_START);
-        server.addCheckpointRegexIgnoreMessages("com.ibm.ws.logging.fat.ffdc.servlet", "RuntimeException", "SRVE0207E");
-        server.addBootstrapProperties(Collections.singletonMap("io.openliberty.microprofile.telemetry.ffdc.early", "true"));
+            server.setCheckpoint(CheckpointPhase.AFTER_APP_START);
+            server.addCheckpointRegexIgnoreMessages("com.ibm.ws.logging.fat.ffdc.servlet", "RuntimeException", "SRVE0207E");
+            server.addBootstrapProperties(Collections.singletonMap("io.openliberty.microprofile.telemetry.ffdc.early", "true"));
 
-        server.startServer();
+            server.startServer();
+        }
     }
 
     /**
@@ -54,6 +64,7 @@ public class TelemetryFFDCCheckpointTest extends FATServletClient {
      */
     @Test
     @ExpectedFFDC({ "java.lang.ArithmeticException" })
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID }) //Checkpoint only supports MP4.1 and higher.
     public void testTelemetryFFDCMessagesCheckpoint() throws Exception {
         testTelemetryFFDCMessages(server, (linesConsoleLog) -> {
             // For checkpoint we expect to NOT see the early ffdc message:
@@ -67,7 +78,9 @@ public class TelemetryFFDCCheckpointTest extends FATServletClient {
 
     @AfterClass
     public static void cleanUp() throws Exception {
-        removeUserFeaturesAndStopServer(server);
+        if (server != null && server.isStarted()) {
+            removeUserFeaturesAndStopServer(server);
+        }
     }
 
 }

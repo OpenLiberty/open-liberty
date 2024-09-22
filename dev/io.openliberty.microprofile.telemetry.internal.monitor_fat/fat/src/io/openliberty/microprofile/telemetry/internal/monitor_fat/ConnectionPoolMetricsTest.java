@@ -28,6 +28,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
@@ -39,11 +40,14 @@ public class ConnectionPoolMetricsTest extends BaseTestClass {
 
 	private static Class<?> c = ConnectionPoolMetricsTest.class;
 
-	@Server("ConnPoolMetricsServer")
+	private static final String SERVER_NAME = "ConnPoolMetricsServer";
+
+	
+	@Server(SERVER_NAME)
 	public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests rt = FATSuite.testRepeatMPTel20("ConnPoolMetricsServer");
+    public static RepeatTests rt = FATSuite.testRepeatMPTel20(SERVER_NAME);
 	
 	@ClassRule
 	public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()

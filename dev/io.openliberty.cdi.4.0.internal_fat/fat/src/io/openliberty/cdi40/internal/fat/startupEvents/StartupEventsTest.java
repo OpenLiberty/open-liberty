@@ -9,6 +9,8 @@
  *******************************************************************************/
 package io.openliberty.cdi40.internal.fat.startupEvents;
 
+import java.util.List;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -16,16 +18,16 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
+import com.ibm.ws.fat.util.jmx.mbeans.ApplicationMBean;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
-import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -37,6 +39,7 @@ import io.openliberty.cdi40.internal.fat.startupEvents.ear.ejb.StartupSingletonE
 import io.openliberty.cdi40.internal.fat.startupEvents.ear.lib.EarLibApplicationScopedBean;
 import io.openliberty.cdi40.internal.fat.startupEvents.ear.war.StartupEventsServlet;
 import io.openliberty.cdi40.internal.fat.startupEvents.sharedLib.AbstractObserver;
+import junit.framework.Assert;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -44,14 +47,12 @@ public class StartupEventsTest extends FATServletClient {
     public static final String SERVER_NAME = "StartupEventsServer";
 
     public static final String STARTUP_EVENTS_APP_NAME = "StartupEvents";
+    public static final String SERVLET_PATH = "events";
 
     @ClassRule
     public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, true, EERepeatActions.EE10, EERepeatActions.EE11);
 
     @Server(SERVER_NAME)
-    @TestServlets({
-                    @TestServlet(servlet = StartupEventsServlet.class, contextRoot = STARTUP_EVENTS_APP_NAME)
-    })
     public static LibertyServer server;
 
     @BeforeClass
@@ -82,6 +83,44 @@ public class StartupEventsTest extends FATServletClient {
         ShrinkHelper.exportAppToServer(server, startupEventsEar, DeployOptions.SERVER_ONLY);
 
         server.startServer();
+    }
+
+    @Test
+    public void runStartupAndShutdownEvents() throws Exception {
+
+        /*
+         * Unfortunately there's no better way to do this. We need these to run before app shutdown
+         * componentest 2.0 doesn't provide FixMethodOrder. And the test framework doesn't provide
+         * any guarantees of the relative ordering between tests here and tests on the servlet.
+         * So unfortunately we have to run this as one big test.
+         */
+        runTest(server, STARTUP_EVENTS_APP_NAME + "/" + SERVLET_PATH, "testWarStartupEvents");
+        runTest(server, STARTUP_EVENTS_APP_NAME + "/" + SERVLET_PATH, "testEarLibStartupEvents");
+        runTest(server, STARTUP_EVENTS_APP_NAME + "/" + SERVLET_PATH, "testSharedLibStartupEvents");
+        runTest(server, STARTUP_EVENTS_APP_NAME + "/" + SERVLET_PATH, "testStartupEJBStartupEvents");
+
+        server.setMarkToEndOfLog();
+        ApplicationMBean mbean = server.getApplicationMBean(STARTUP_EVENTS_APP_NAME);
+        mbean.stop();
+
+        List<String> failures = server.findStringsInLogs("===TEST FAIL");
+        List<String> exceptions = server.findStringsInLogs("===TEST EXCEPTION");
+
+        Assert.assertTrue("Tests did not pass: " + System.lineSeparator()
+                          + String.join(System.lineSeparator(), failures) + System.lineSeparator()
+                          + String.join(System.lineSeparator(), exceptions),
+                          failures.isEmpty() && exceptions.isEmpty());
+
+        List<String> expectedLogOutput = List.of("===TEST PASS io.openliberty.cdi40.internal.fat.startupEvents.ear.war.WarApplicationScopedBean.observeDestroy",
+                                                 "===TEST PASS io.openliberty.cdi40.internal.fat.startupEvents.sharedLib.SharedLibApplicationScopedBean.observeDestroy",
+                                                 "===TEST PASS io.openliberty.cdi40.internal.fat.startupEvents.ear.lib.EarLibApplicationScopedBean.observeDestroy",
+                                                 "===TEST PASS io.openliberty.cdi40.internal.fat.startupEvents.ear.ejb.EjbApplicationScopedBean.observeDestroy",
+                                                 "===TEST PASS io.openliberty.cdi40.internal.fat.startupEvents.ear.war.WarApplicationScopedBean.observeShutdown",
+                                                 "===TEST PASS io.openliberty.cdi40.internal.fat.startupEvents.sharedLib.SharedLibApplicationScopedBean.observeShutdown",
+                                                 "===TEST PASS io.openliberty.cdi40.internal.fat.startupEvents.ear.lib.EarLibApplicationScopedBean.observeShutdown",
+                                                 "===TEST PASS io.openliberty.cdi40.internal.fat.startupEvents.ear.ejb.EjbApplicationScopedBean.observeShutdown");
+
+        server.waitForStringsInLogUsingMark(expectedLogOutput);
     }
 
     @AfterClass

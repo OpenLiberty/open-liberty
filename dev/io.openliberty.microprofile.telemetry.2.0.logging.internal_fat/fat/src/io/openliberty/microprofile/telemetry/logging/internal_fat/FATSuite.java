@@ -36,10 +36,10 @@ import componenttest.topology.utils.HttpUtils;
                 TelemetrySourcesTest.class,
                 TelemetryApplicationConfigTest.class,
                 TelemetryDropinsTest.class
-                //TelemetryAgentJULMessagesTest.class, // To Do: Move this to the mpTelemetry logs container FAT
 })
 
 public class FATSuite {
+
     private static final int CONN_TIMEOUT = 10;
 
     static void hitWebPage(LibertyServer server, String contextRoot, String servletName, boolean failureAllowed,

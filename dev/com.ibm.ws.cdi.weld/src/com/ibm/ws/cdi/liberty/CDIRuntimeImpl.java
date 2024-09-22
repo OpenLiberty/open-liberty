@@ -22,6 +22,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import javax.enterprise.inject.spi.CDIProvider;
 
+import org.jboss.weld.bootstrap.WeldStartup;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.serialization.spi.ProxyServices;
@@ -86,8 +87,9 @@ import io.openliberty.cdi.spi.CDIExtensionMetadata;
  * This class is to get hold all necessary services.
  */
 @Component(name = "com.ibm.ws.cdi.liberty.CDIRuntimeImpl", service = { ApplicationStateListener.class, CDIService.class,
-                                                                       CDIProvider.class }, property = { "service.vendor=IBM", "service.ranking:Integer=100" }) //CDI must shut down before EJB as EJBs can have a cdi application scope and according to the CDI spec "jakarta.enterprise.event.Shutdown is not after @BeforeDestroyed(ApplicationScoped.class)"
-                                                                                                                                                                                                                                                                                         //CDI must also start up after injection engine, as CDI can trigger JNDI lookups in app code as part of starting up and that code can do JNDI lookups
+                                                                       CDIProvider.class },
+           property = { "service.vendor=IBM", "service.ranking:Integer=100" }) //CDI must shut down before EJB as EJBs can have a cdi application scope and according to the CDI spec "jakarta.enterprise.event.Shutdown is not after @BeforeDestroyed(ApplicationScoped.class)"
+                                                                                                                                                                                                                             //CDI must also start up after injection engine, as CDI can trigger JNDI lookups in app code as part of starting up and that code can do JNDI lookups
 public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationStateListener, CDIService, CDILibertyRuntime, CDIProvider {
     private static final TraceComponent tc = Tr.register(CDIRuntimeImpl.class);
 
@@ -145,6 +147,12 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     private ProxyServicesImpl proxyServices;
 
     public void activate(ComponentContext cc) {
+        //This emmits logging in a static block.
+        //OpenTelemetry can have a circular dependency if that loging goes into OTel
+        //And the application calls CDI.current() during its OTel configuration extensions.
+        //So force it early
+        WeldStartup ws = new WeldStartup();
+
         metaDataSlotServiceSR.activate(cc);
         ejbEndpointServiceSR.activate(cc);
         classLoadingSRRef.activate(cc);
@@ -210,7 +218,8 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         executorServiceRef.unsetReference(ref);
     }
 
-    @Reference(name = "managedExecutorService", service = ExecutorService.class, target = "(id=DefaultManagedExecutorService)", policyOption = ReferencePolicyOption.GREEDY, cardinality = ReferenceCardinality.OPTIONAL)
+    @Reference(name = "managedExecutorService", service = ExecutorService.class, target = "(id=DefaultManagedExecutorService)", policyOption = ReferencePolicyOption.GREEDY,
+               cardinality = ReferenceCardinality.OPTIONAL)
     protected void setManagedExecutorService(ServiceReference<ExecutorService> ref) {
         managedExecutorServiceRef.setReference(ref);
     }
@@ -467,8 +476,8 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
 
             ClassLoader appCL = getRealAppClassLoader(application);
             if (appCL != null) {
-                ClassLoader newCL = classLoadingSRRef.getServiceWithException().createThreadContextClassLoader(appCL);
-                application.setTCCL(newCL);
+                ClassLoader appTCCL = classLoadingSRRef.getServiceWithException().createThreadContextClassLoader(appCL);
+                application.setTCCL(appTCCL);
             }
 
             for (CDIArchive archive : application.getModuleArchives()) {
@@ -514,9 +523,9 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
             } finally {
                 // Clean up the application TCCL created for startup
                 // Must do this at shutdown since it's possible for the app to hold onto it and use it after startup
-                ClassLoader tccl = application.getTCCL();
-                if (tccl != null) {
-                    classLoadingSRRef.getServiceWithException().destroyThreadContextClassLoader(tccl);
+                ClassLoader appTCCL = application.getTCCL();
+                if (appTCCL != null) {
+                    classLoadingSRRef.getServiceWithException().destroyThreadContextClassLoader(appTCCL);
                 }
                 application.setTCCL(null);
             }

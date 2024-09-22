@@ -31,3 +31,7 @@ CRYPTO_INSECURE.useraction=Utilisez l\u2019algorithme s\u00e9curis\u00e9 sugg\u0
 CRYPTO_INSECURE_REPLACED=CWWKS5901W: Le {0} L''\u00e9l\u00e9ment de configuration sp\u00e9cifie le {1} algorithme cryptographique non s\u00e9curis\u00e9.  Le {2} un algorithme s\u00e9curis\u00e9 est utilis\u00e9 \u00e0 la place.
 CRYPTO_INSECURE_REPLACED.explanation=L'algorithme cryptographique non s\u00e9curis\u00e9 a \u00e9t\u00e9 remplac\u00e9 par l'algorithme s\u00e9curis\u00e9.
 CRYPTO_INSECURE_REPLACED.useraction=Aucune action n'est requise.
+
+CRYPTO_INSECURE_PROVIDER=CWWKS5902W: L''\u00e9l\u00e9ment de configuration {0} utilise l''algorithme cryptographique non s\u00e9curis\u00e9 {1}. Envisagez de remplacer la configuration par un autre fournisseur si la s\u00e9curit\u00e9 est une pr\u00e9occupation.
+CRYPTO_INSECURE_PROVIDER.explanation=L'algorithme n'est plus consid\u00e9r\u00e9 comme s\u00fbr sur le plan cryptographique.
+CRYPTO_INSECURE_PROVIDER.useraction=Envisagez de remplacer la configuration par un autre fournisseur si la s\u00e9curit\u00e9 est une pr\u00e9occupation.

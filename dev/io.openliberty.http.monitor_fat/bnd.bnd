@@ -16,12 +16,10 @@ src: \
 	test-applications/RestApp/src,\
 	test-applications/ServletApp/src,\
 	test-applications/WildCardServletApp/src,\
-	test-applications/jspApp/src,\
+	test-applications/JspApp/src,\
 	test-applications/MBeanGetter/src
 
 fat.project: true
-
-fat.minimum.java.level: 1.8
 
 tested.features:\
   restfulwsclient-3.0,\
@@ -53,9 +51,6 @@ tested.features:\
   jsp-2.3,\
   jsp-2.2,\
   el-3.0
-
-javac.source: 1.8
-javac.target: 1.8
 
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true

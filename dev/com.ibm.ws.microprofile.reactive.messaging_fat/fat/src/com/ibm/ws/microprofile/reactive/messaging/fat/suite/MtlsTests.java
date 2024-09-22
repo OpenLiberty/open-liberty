@@ -16,6 +16,8 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.mtls.single.KafkaMtl
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.mtls.single.KafkaMtlsChannelTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.mtls.single.KafkaMtlsConnectorTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.mtls.single.KafkaMtlsIncorrectKeyTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
+
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.containers.TestContainerSuite;
 import org.apache.kafka.clients.admin.AdminClient;

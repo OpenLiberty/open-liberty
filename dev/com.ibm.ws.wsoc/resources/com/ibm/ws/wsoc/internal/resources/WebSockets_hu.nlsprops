@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2023 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -234,3 +234,7 @@ scheme.incorrect.error.useraction=A s\u00e9ma t\u00edpusa csak http, https, ws v
 upgradeHttpToWebSocket.failed=CWWKH0055E: A jakarta.websocket.server.ServerContainer#upgradeHttpToWebSocket h\u00edv\u00e1sa {0} miatt meghi\u00fasult. 
 upgradeHttpToWebSocket.failed.explanation=A kiszolg\u00e1l\u00f3 nem tudta friss\u00edteni a HTTP vagy HTTPS k\u00e9r\u00e9st a ws/wss protokollra.
 upgradeHttpToWebSocket.failed.useraction=Tekintse \u00e1t a hib\u00e1t, hogy azonos\u00edthassa, mi\u00e9rt nem siker\u00fclt a k\u00e9r\u00e9s friss\u00edt\u00e9se.
+
+maxmessagesize.exceeded=CWWKH0056E: A {0} met\u00f3dus maxMessageSize meghaladja Integer.MAX_VALUE \u00e9rt\u00e9ket a(z) {1} oszt\u00e1lyban.
+maxmessagesize.exceeded.explanation=A maxMessageSize OnMessage annot\u00e1ci\u00f3s param\u00e9ter be\u00e1ll\u00edtja a met\u00f3dus maxim\u00e1lis \u00fczenetm\u00e9ret\u00e9t b\u00e1jtban. maxMessageSize csak Integer.MAX_VALUE maxim\u00e1lis \u00e9rt\u00e9kre \u00e1ll\u00edthat\u00f3 be.
+maxmessagesize.exceeded.useraction=Cs\u00f6kkentse a maxMessageSize param\u00e9ter \u00e9rt\u00e9k\u00e9t legfeljebb Integer.MAX_VALUE \u00e9rt\u00e9kre.

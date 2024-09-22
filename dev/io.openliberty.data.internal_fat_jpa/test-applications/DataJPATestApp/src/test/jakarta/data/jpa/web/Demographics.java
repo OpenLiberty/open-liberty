@@ -91,13 +91,13 @@ public interface Demographics {
 
     // End of type conversion methods
 
-    // TODO support for Instant requires JPA 3.2, after which the following can be tried out:
+    @Query("SELECT publicDebt / numFullTimeWorkers" +
+           "  FROM DemographicInfo" +
+           " WHERE EXTRACT (YEAR FROM collectedOn) = ?1")
+    Optional<BigDecimal> publicDebtPerFullTimeWorker(int year);
 
-    //@Query("SELECT publicDebt / numFullTimeWorkers FROM DemographicInfo WHERE EXTRACT (YEAR FROM collectedOn) = ?1")
-    //Optional<BigDecimal> publicDebtPerFullTimeWorker(int year);
-
-    //@Find
-    //Optional<DemographicInfo> read(Instant collectedOn);
+    @Find
+    Optional<DemographicInfo> read(Instant collectedOn);
 
     @OrderBy("numFullTimeWorkers")
     @Query("WHERE numFullTimeWorkers >= :min AND numFullTimeWorkers <= :max")

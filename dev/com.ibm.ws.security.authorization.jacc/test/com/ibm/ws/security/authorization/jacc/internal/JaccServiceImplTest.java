@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -50,6 +50,8 @@ import org.osgi.service.component.ComponentContext;
 
 import com.ibm.ws.security.authorization.jacc.MethodInfo;
 import com.ibm.ws.security.authorization.jacc.RoleInfo;
+import com.ibm.ws.security.authorization.jacc.common.PolicyProxy;
+import com.ibm.ws.security.authorization.jacc.common.ProviderServiceProxy;
 import com.ibm.ws.security.authorization.jacc.ejb.EJBSecurityPropagator;
 import com.ibm.ws.security.authorization.jacc.ejb.EJBSecurityValidator;
 import com.ibm.ws.security.authorization.jacc.ejb.EJBService;
@@ -64,6 +66,8 @@ import com.ibm.wsspi.security.authorization.jacc.ProviderService;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 
+import io.openliberty.security.authorization.jacc.internal.proxy.ProviderServiceProxyImpl;
+import io.openliberty.security.authorization.jacc.internal.proxy.ProxyTestUtil;
 import test.common.SharedOutputManager;
 
 public class JaccServiceImplTest {
@@ -78,6 +82,9 @@ public class JaccServiceImplTest {
 
     private final Mockery context = new JUnit4Mockery();
     private final ComponentContext cc = context.mock(ComponentContext.class);
+    @SuppressWarnings("unchecked")
+    private final ServiceReference<ProviderServiceProxy> jaccProviderServiceProxyRef = context.mock(ServiceReference.class, "providerServiceProxyRef");
+    private final ProviderServiceProxy jaccProviderServiceProxy = context.mock(ProviderServiceProxy.class);
     @SuppressWarnings("unchecked")
     private final ServiceReference<ProviderService> jaccProviderServiceRef = context.mock(ServiceReference.class, "providerServiceRef");
     private final ProviderService jaccProviderService = context.mock(ProviderService.class);
@@ -103,6 +110,7 @@ public class JaccServiceImplTest {
     private final List<String> roles = new ArrayList<String>();
 
     private final Policy policy = Policy.getPolicy();
+    private final PolicyProxy policyProxy = context.mock(PolicyProxy.class);
     private final PolicyConfigurationFactory pcf = new DummyPolicyConfigurationFactory(pc);
     private final JaccServiceImpl jaccService = new JaccServiceImpl();
     private final ClassLoader scl = ClassLoader.getSystemClassLoader();
@@ -174,20 +182,34 @@ public class JaccServiceImplTest {
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(null));
+                allowing(cc).locateService("jaccProviderServiceProxy", jaccProviderServiceProxyRef);
+                will(returnValue(jaccProviderServiceProxy));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
                 allowing(cc).locateService("locationAdmin", wsLocationAdminRef);
                 will(returnValue(wsLocationAdmin));
+                allowing(jaccProviderServiceProxy).getPolicyProxy();
+                will(returnValue(policyProxy));
+                allowing(jaccProviderServiceProxy).getPolicyConfigFactory();
+                will(returnValue(pcf));
                 allowing(jaccProviderService).getPolicy();
                 will(returnValue(policy));
+                allowing(policyProxy).setPolicy();
+                allowing(policyProxy).refresh();
                 allowing(jaccProviderService).getPolicyConfigFactory();
                 will(returnValue(pcf));
+                allowing(jaccProviderServiceProxy).getPolicyName();
+                will(returnValue(JACC_POLICY_PROVIDER_IMPL));
+                allowing(jaccProviderServiceProxy).getFactoryName();
+                will(returnValue(JACC_FACTORY_IMPL));
                 allowing(sl).getClassLoader();
                 will(returnValue(scl));
             }
         });
         JaccServiceImpl jaccService = new JaccServiceImpl();
-        jaccService.setJaccProviderService(jaccProviderServiceRef);
+        jaccService.setJaccProviderServiceProxy(jaccProviderServiceProxyRef);
+        ProviderServiceProxyImpl providerServiceProxy = new ProviderServiceProxyImpl();
+        ProxyTestUtil.setProviderService(providerServiceProxy, jaccProviderServiceRef);
         jaccService.setLocationAdmin(wsLocationAdminRef);
         jaccService.activate(cc);
         assertEquals(JACC_POLICY_PROVIDER_IMPL, System.getProperty(JACC_POLICY_PROVIDER));
@@ -195,7 +217,8 @@ public class JaccServiceImplTest {
         assertEquals(JACC_FACTORY_IMPL, System.getProperty(JACC_FACTORY));
         assertEquals(JACC_FACTORY_IMPL, System.getProperty(JACC_FACTORY_EE9));
         jaccService.deactivate(cc);
-        jaccService.unsetJaccProviderService(jaccProviderServiceRef);
+        ProxyTestUtil.unsetProviderService(providerServiceProxy, jaccProviderServiceRef);
+        jaccService.unsetJaccProviderServiceProxy(jaccProviderServiceProxyRef);
         jaccService.unsetLocationAdmin(wsLocationAdminRef);
     }
 
@@ -227,14 +250,26 @@ public class JaccServiceImplTest {
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(null));
+                allowing(cc).locateService("jaccProviderServiceProxy", jaccProviderServiceProxyRef);
+                will(returnValue(jaccProviderServiceProxy));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
                 allowing(cc).locateService("locationAdmin", wsLocationAdminRef);
                 will(returnValue(wsLocationAdmin));
+                allowing(jaccProviderServiceProxy).getPolicyProxy();
+                will(returnValue(policyProxy));
+                allowing(jaccProviderServiceProxy).getPolicyConfigFactory();
+                will(returnValue(pcf));
                 allowing(jaccProviderService).getPolicy();
                 will(returnValue(policy));
+                allowing(policyProxy).setPolicy();
+                allowing(policyProxy).refresh();
                 allowing(jaccProviderService).getPolicyConfigFactory();
                 will(returnValue(pcf));
+                allowing(jaccProviderServiceProxy).getPolicyName();
+                will(returnValue(JACC_POLICY_PROVIDER_IMPL));
+                allowing(jaccProviderServiceProxy).getFactoryName();
+                will(returnValue(JACC_FACTORY_IMPL));
                 allowing(sl).getClassLoader();
                 will(returnValue(scl));
             }
@@ -247,7 +282,9 @@ public class JaccServiceImplTest {
         System.setProperty(JACC_FACTORY_EE9, tmpFn);
 
         JaccServiceImpl jaccService = new JaccServiceImpl();
-        jaccService.setJaccProviderService(jaccProviderServiceRef);
+        jaccService.setJaccProviderServiceProxy(jaccProviderServiceProxyRef);
+        ProviderServiceProxyImpl providerServiceProxy = new ProviderServiceProxyImpl();
+        ProxyTestUtil.setProviderService(providerServiceProxy, jaccProviderServiceRef);
         jaccService.setLocationAdmin(wsLocationAdminRef);
         jaccService.activate(cc);
         assertEquals(JACC_POLICY_PROVIDER_IMPL, System.getProperty(JACC_POLICY_PROVIDER));
@@ -255,7 +292,8 @@ public class JaccServiceImplTest {
         assertEquals(JACC_FACTORY_IMPL, System.getProperty(JACC_FACTORY));
         assertEquals(JACC_FACTORY_IMPL, System.getProperty(JACC_FACTORY_EE9));
         jaccService.deactivate(cc);
-        jaccService.unsetJaccProviderService(jaccProviderServiceRef);
+        ProxyTestUtil.unsetProviderService(providerServiceProxy, jaccProviderServiceRef);
+        jaccService.unsetJaccProviderServiceProxy(jaccProviderServiceProxyRef);
         jaccService.unsetLocationAdmin(wsLocationAdminRef);
         assertEquals(tmpPp, System.getProperty(JACC_POLICY_PROVIDER));
         assertEquals(tmpPp, System.getProperty(JACC_POLICY_PROVIDER_EE9));
@@ -288,7 +326,7 @@ public class JaccServiceImplTest {
         System.setProperty(JACC_FACTORY_EE9, tmpFn);
 
         JaccServiceImpl jaccService = new JaccServiceImpl();
-        jaccService.setJaccProviderService(jaccProviderServiceRef);
+        jaccService.setJaccProviderServiceProxy(jaccProviderServiceProxyRef);
 
         assertEquals(tmpPp, System.getProperty(JACC_POLICY_PROVIDER));
         assertEquals(tmpPp, System.getProperty(JACC_POLICY_PROVIDER_EE9));
@@ -318,7 +356,7 @@ public class JaccServiceImplTest {
         System.clearProperty(JACC_FACTORY_EE9);
 
         JaccServiceImpl jaccService = new JaccServiceImpl();
-        jaccService.setJaccProviderService(jaccProviderServiceRef);
+        jaccService.setJaccProviderServiceProxy(jaccProviderServiceProxyRef);
 
         assertNull(System.getProperty(JACC_POLICY_PROVIDER));
         assertNull(System.getProperty(JACC_POLICY_PROVIDER_EE9));
@@ -355,20 +393,32 @@ public class JaccServiceImplTest {
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(null));
+                allowing(cc).locateService("jaccProviderServiceProxy", jaccProviderServiceProxyRef);
+                will(returnValue(jaccProviderServiceProxy));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
 //                allowing(cc).locateService("locationAdmin", wsLocationAdminRef);
 //                will(returnValue(wsLocationAdmin));
+                allowing(jaccProviderServiceProxy).getPolicyProxy();
+                will(returnValue(null));
+                allowing(jaccProviderServiceProxy).getPolicyConfigFactory();
+                will(returnValue(pcf));
                 allowing(jaccProviderService).getPolicy();
                 will(returnValue(null));
                 allowing(jaccProviderService).getPolicyConfigFactory();
                 will(returnValue(pcf));
+                allowing(jaccProviderServiceProxy).getPolicyName();
+                will(returnValue(null));
+                allowing(jaccProviderServiceProxy).getFactoryName();
+                will(returnValue(JACC_FACTORY_IMPL));
 //                allowing(sl).getClassLoader();
 //                will(returnValue(scl));
             }
         });
         JaccServiceImpl jaccService = new JaccServiceImpl();
-        jaccService.setJaccProviderService(jaccProviderServiceRef);
+        jaccService.setJaccProviderServiceProxy(jaccProviderServiceProxyRef);
+        ProviderServiceProxyImpl providerServiceProxy = new ProviderServiceProxyImpl();
+        ProxyTestUtil.setProviderService(providerServiceProxy, jaccProviderServiceRef);
         jaccService.setLocationAdmin(wsLocationAdminRef);
         jaccService.activate(cc);
 
@@ -403,20 +453,34 @@ public class JaccServiceImplTest {
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(null));
+                allowing(cc).locateService("jaccProviderServiceProxy", jaccProviderServiceProxyRef);
+                will(returnValue(jaccProviderServiceProxy));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
                 allowing(cc).locateService("locationAdmin", wsLocationAdminRef);
                 will(returnValue(wsLocationAdmin));
+                allowing(jaccProviderServiceProxy).getPolicyProxy();
+                will(returnValue(policyProxy));
+                allowing(jaccProviderServiceProxy).getPolicyConfigFactory();
+                will(returnValue(null));
                 allowing(jaccProviderService).getPolicy();
                 will(returnValue(policy));
+                allowing(policyProxy).setPolicy();
+                allowing(policyProxy).refresh();
                 allowing(jaccProviderService).getPolicyConfigFactory();
+                will(returnValue(null));
+                allowing(jaccProviderServiceProxy).getPolicyName();
+                will(returnValue(JACC_POLICY_PROVIDER_IMPL));
+                allowing(jaccProviderServiceProxy).getFactoryName();
                 will(returnValue(null));
                 allowing(sl).getClassLoader();
                 will(returnValue(scl));
             }
         });
         JaccServiceImpl jaccService = new JaccServiceImpl();
-        jaccService.setJaccProviderService(jaccProviderServiceRef);
+        jaccService.setJaccProviderServiceProxy(jaccProviderServiceProxyRef);
+        ProviderServiceProxyImpl providerServiceProxy = new ProviderServiceProxyImpl();
+        ProxyTestUtil.setProviderService(providerServiceProxy, jaccProviderServiceRef);
         jaccService.setLocationAdmin(wsLocationAdminRef);
         jaccService.activate(cc);
 
@@ -467,14 +531,26 @@ public class JaccServiceImplTest {
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
+                allowing(cc).locateService("jaccProviderServiceProxy", jaccProviderServiceProxyRef);
+                will(returnValue(jaccProviderServiceProxy));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
                 allowing(cc).locateService("locationAdmin", wsLocationAdminRef);
                 will(returnValue(wsLocationAdmin));
+                allowing(jaccProviderServiceProxy).getPolicyProxy();
+                will(returnValue(policyProxy));
+                allowing(jaccProviderServiceProxy).getPolicyConfigFactory();
+                will(returnValue(pcf));
                 allowing(jaccProviderService).getPolicy();
                 will(returnValue(policy));
+                allowing(policyProxy).setPolicy();
+                allowing(policyProxy).refresh();
                 allowing(jaccProviderService).getPolicyConfigFactory();
                 will(returnValue(pcf));
+                allowing(jaccProviderServiceProxy).getPolicyName();
+                will(returnValue(JACC_POLICY_PROVIDER_IMPL));
+                allowing(jaccProviderServiceProxy).getFactoryName();
+                will(returnValue(JACC_FACTORY_IMPL));
                 allowing(wsLocationAdmin).resolveString("${wlp.user.dir}");
                 will(returnValue(directory));
                 allowing(wsLocationAdmin).getServerName();
@@ -484,7 +560,9 @@ public class JaccServiceImplTest {
         });
         try {
             JaccServiceImpl jaccService = new JaccServiceImpl();
-            jaccService.setJaccProviderService(jaccProviderServiceRef);
+            jaccService.setJaccProviderServiceProxy(jaccProviderServiceProxyRef);
+            ProviderServiceProxyImpl providerServiceProxy = new ProviderServiceProxyImpl();
+            ProxyTestUtil.setProviderService(providerServiceProxy, jaccProviderServiceRef);
             jaccService.setLocationAdmin(wsLocationAdminRef);
             jaccService.activate(cc);
             jaccService.propagateWebConstraints(wsp, "application", "module", "abc");
@@ -553,26 +631,40 @@ public class JaccServiceImplTest {
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
+                allowing(cc).locateService("jaccProviderServiceProxy", jaccProviderServiceProxyRef);
+                will(returnValue(jaccProviderServiceProxy));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
                 allowing(cc).locateService("locationAdmin", wsLocationAdminRef);
                 will(returnValue(wsLocationAdmin));
+                allowing(jaccProviderServiceProxy).getPolicyProxy();
+                will(returnValue(policyProxy));
+                allowing(jaccProviderServiceProxy).getPolicyConfigFactory();
+                will(returnValue(pcf));
                 allowing(jaccProviderService).getPolicy();
                 will(returnValue(policy));
+                allowing(policyProxy).setPolicy();
+                allowing(policyProxy).refresh();
                 allowing(jaccProviderService).getPolicyConfigFactory();
                 will(returnValue(pcf));
+                allowing(jaccProviderServiceProxy).getPolicyName();
+                will(returnValue(JACC_POLICY_PROVIDER_IMPL));
+                allowing(jaccProviderServiceProxy).getFactoryName();
+                will(returnValue(JACC_FACTORY_IMPL));
                 allowing(wsLocationAdmin).resolveString("${wlp.user.dir}");
                 will(returnValue(directory));
                 allowing(wsLocationAdmin).getServerName();
                 will(returnValue(name));
-                allowing(wsv).checkDataConstraints(with(any(String.class)), with(any(Object.class)), with(any(WebUserDataPermission.class)));
+                allowing(wsv).checkDataConstraints(with(any(String.class)), with(any(Object.class)), with(any(WebUserDataPermission.class)), with(any(PolicyProxy.class)));
                 will(returnValue(false));
             }
         });
 
         try {
             JaccServiceImpl jaccService = new JaccServiceImpl();
-            jaccService.setJaccProviderService(jaccProviderServiceRef);
+            jaccService.setJaccProviderServiceProxy(jaccProviderServiceProxyRef);
+            ProviderServiceProxyImpl providerServiceProxy = new ProviderServiceProxyImpl();
+            ProxyTestUtil.setProviderService(providerServiceProxy, jaccProviderServiceRef);
             jaccService.setLocationAdmin(wsLocationAdminRef);
             jaccService.activate(cc);
             assertFalse(jaccService.checkDataConstraints(wsv, appName, moduleName, uriName, method, new Object(), null));
@@ -601,14 +693,26 @@ public class JaccServiceImplTest {
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
+                allowing(cc).locateService("jaccProviderServiceProxy", jaccProviderServiceProxyRef);
+                will(returnValue(jaccProviderServiceProxy));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
                 allowing(cc).locateService("locationAdmin", wsLocationAdminRef);
                 will(returnValue(wsLocationAdmin));
+                allowing(jaccProviderServiceProxy).getPolicyProxy();
+                will(returnValue(policyProxy));
+                allowing(jaccProviderServiceProxy).getPolicyConfigFactory();
+                will(returnValue(pcf));
                 allowing(jaccProviderService).getPolicy();
                 will(returnValue(policy));
+                allowing(policyProxy).setPolicy();
+                allowing(policyProxy).refresh();
                 allowing(jaccProviderService).getPolicyConfigFactory();
                 will(returnValue(pcf));
+                allowing(jaccProviderServiceProxy).getPolicyName();
+                will(returnValue(JACC_POLICY_PROVIDER_IMPL));
+                allowing(jaccProviderServiceProxy).getFactoryName();
+                will(returnValue(JACC_FACTORY_IMPL));
                 allowing(wsLocationAdmin).resolveString("${wlp.user.dir}");
                 will(returnValue(directory));
                 allowing(wsLocationAdmin).getServerName();
@@ -618,7 +722,9 @@ public class JaccServiceImplTest {
 
         try {
             JaccServiceImpl jaccService = new JaccServiceImpl();
-            jaccService.setJaccProviderService(jaccProviderServiceRef);
+            jaccService.setJaccProviderServiceProxy(jaccProviderServiceProxyRef);
+            ProviderServiceProxyImpl providerServiceProxy = new ProviderServiceProxyImpl();
+            ProxyTestUtil.setProviderService(providerServiceProxy, jaccProviderServiceRef);
             jaccService.setLocationAdmin(wsLocationAdminRef);
             jaccService.activate(cc);
             assertTrue(jaccService.isSSLRequired(appName, moduleName, uriName, method, req));
@@ -670,26 +776,41 @@ public class JaccServiceImplTest {
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
+                allowing(cc).locateService("jaccProviderServiceProxy", jaccProviderServiceProxyRef);
+                will(returnValue(jaccProviderServiceProxy));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
                 allowing(cc).locateService("locationAdmin", wsLocationAdminRef);
                 will(returnValue(wsLocationAdmin));
+                allowing(jaccProviderServiceProxy).getPolicyProxy();
+                will(returnValue(policyProxy));
+                allowing(jaccProviderServiceProxy).getPolicyConfigFactory();
+                will(returnValue(pcf));
                 allowing(jaccProviderService).getPolicy();
                 will(returnValue(policy));
+                allowing(policyProxy).setPolicy();
+                allowing(policyProxy).refresh();
                 allowing(jaccProviderService).getPolicyConfigFactory();
                 will(returnValue(pcf));
+                allowing(jaccProviderServiceProxy).getPolicyName();
+                will(returnValue(JACC_POLICY_PROVIDER_IMPL));
+                allowing(jaccProviderServiceProxy).getFactoryName();
+                will(returnValue(JACC_FACTORY_IMPL));
                 allowing(wsLocationAdmin).resolveString("${wlp.user.dir}");
                 will(returnValue(directory));
                 allowing(wsLocationAdmin).getServerName();
                 will(returnValue(name));
-                allowing(wsv).checkResourceConstraints(with(any(String.class)), with(any(Object.class)), with(any(WebResourcePermission.class)), with(any(Subject.class)));
+                allowing(wsv).checkResourceConstraints(with(any(String.class)), with(any(Object.class)), with(any(WebResourcePermission.class)), with(any(Subject.class)),
+                                                       with(any(PolicyProxy.class)));
                 will(returnValue(false));
             }
         });
 
         try {
             JaccServiceImpl jaccService = new JaccServiceImpl();
-            jaccService.setJaccProviderService(jaccProviderServiceRef);
+            jaccService.setJaccProviderServiceProxy(jaccProviderServiceProxyRef);
+            ProviderServiceProxyImpl providerServiceProxy = new ProviderServiceProxyImpl();
+            ProxyTestUtil.setProviderService(providerServiceProxy, jaccProviderServiceRef);
             jaccService.setLocationAdmin(wsLocationAdminRef);
             jaccService.activate(cc);
             assertFalse(jaccService.isAuthorized(wsv, appName, moduleName, uriName, method, req, subject));
@@ -738,26 +859,41 @@ public class JaccServiceImplTest {
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
+                allowing(cc).locateService("jaccProviderServiceProxy", jaccProviderServiceProxyRef);
+                will(returnValue(jaccProviderServiceProxy));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
                 allowing(cc).locateService("locationAdmin", wsLocationAdminRef);
                 will(returnValue(wsLocationAdmin));
+                allowing(jaccProviderServiceProxy).getPolicyProxy();
+                will(returnValue(policyProxy));
+                allowing(jaccProviderServiceProxy).getPolicyConfigFactory();
+                will(returnValue(pcf));
                 allowing(jaccProviderService).getPolicy();
                 will(returnValue(policy));
+                allowing(policyProxy).setPolicy();
+                allowing(policyProxy).refresh();
                 allowing(jaccProviderService).getPolicyConfigFactory();
                 will(returnValue(pcf));
+                allowing(jaccProviderServiceProxy).getPolicyName();
+                will(returnValue(JACC_POLICY_PROVIDER_IMPL));
+                allowing(jaccProviderServiceProxy).getFactoryName();
+                will(returnValue(JACC_FACTORY_IMPL));
                 allowing(wsLocationAdmin).resolveString("${wlp.user.dir}");
                 will(returnValue(directory));
                 allowing(wsLocationAdmin).getServerName();
                 will(returnValue(name));
-                allowing(wsv).checkResourceConstraints(with(any(String.class)), with(any(Object.class)), with(any(WebRoleRefPermission.class)), with(any(Subject.class)));
+                allowing(wsv).checkResourceConstraints(with(any(String.class)), with(any(Object.class)), with(any(WebRoleRefPermission.class)), with(any(Subject.class)),
+                                                       with(any(PolicyProxy.class)));
                 will(returnValue(true));
             }
         });
 
         try {
             JaccServiceImpl jaccService = new JaccServiceImpl();
-            jaccService.setJaccProviderService(jaccProviderServiceRef);
+            jaccService.setJaccProviderServiceProxy(jaccProviderServiceProxyRef);
+            ProviderServiceProxyImpl providerServiceProxy = new ProviderServiceProxyImpl();
+            ProxyTestUtil.setProviderService(providerServiceProxy, jaccProviderServiceRef);
             jaccService.setLocationAdmin(wsLocationAdminRef);
             jaccService.activate(cc);
             assertTrue(jaccService.isSubjectInRole(wsv, appName, moduleName, servletName, role, req, subject));
@@ -808,14 +944,26 @@ public class JaccServiceImplTest {
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
+                allowing(cc).locateService("jaccProviderServiceProxy", jaccProviderServiceProxyRef);
+                will(returnValue(jaccProviderServiceProxy));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
                 allowing(cc).locateService("locationAdmin", wsLocationAdminRef);
                 will(returnValue(wsLocationAdmin));
+                allowing(jaccProviderServiceProxy).getPolicyProxy();
+                will(returnValue(policyProxy));
+                allowing(jaccProviderServiceProxy).getPolicyConfigFactory();
+                will(returnValue(pcf));
                 allowing(jaccProviderService).getPolicy();
                 will(returnValue(policy));
+                allowing(policyProxy).setPolicy();
+                allowing(policyProxy).refresh();
                 allowing(jaccProviderService).getPolicyConfigFactory();
                 will(returnValue(pcf));
+                allowing(jaccProviderServiceProxy).getPolicyName();
+                will(returnValue(JACC_POLICY_PROVIDER_IMPL));
+                allowing(jaccProviderServiceProxy).getFactoryName();
+                will(returnValue(JACC_FACTORY_IMPL));
                 allowing(wsLocationAdmin).resolveString("${wlp.user.dir}");
                 will(returnValue(directory));
                 allowing(wsLocationAdmin).getServerName();
@@ -825,7 +973,9 @@ public class JaccServiceImplTest {
         });
         try {
             JaccServiceImpl jaccService = new JaccServiceImpl();
-            jaccService.setJaccProviderService(jaccProviderServiceRef);
+            jaccService.setJaccProviderServiceProxy(jaccProviderServiceProxyRef);
+            ProviderServiceProxyImpl providerServiceProxy = new ProviderServiceProxyImpl();
+            ProxyTestUtil.setProviderService(providerServiceProxy, jaccProviderServiceRef);
             jaccService.setLocationAdmin(wsLocationAdminRef);
             jaccService.activate(cc);
             jaccService.propagateEJBRoles(esp, appName, moduleName, beanName, rl, mm);
@@ -887,14 +1037,26 @@ public class JaccServiceImplTest {
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
+                allowing(cc).locateService("jaccProviderServiceProxy", jaccProviderServiceProxyRef);
+                will(returnValue(jaccProviderServiceProxy));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
                 allowing(cc).locateService("locationAdmin", wsLocationAdminRef);
                 will(returnValue(wsLocationAdmin));
+                allowing(jaccProviderServiceProxy).getPolicyProxy();
+                will(returnValue(policyProxy));
+                allowing(jaccProviderServiceProxy).getPolicyConfigFactory();
+                will(returnValue(pcf));
                 allowing(jaccProviderService).getPolicy();
                 will(returnValue(policy));
+                allowing(policyProxy).setPolicy();
+                allowing(policyProxy).refresh();
                 allowing(jaccProviderService).getPolicyConfigFactory();
                 will(returnValue(pcf));
+                allowing(jaccProviderServiceProxy).getPolicyName();
+                will(returnValue(JACC_POLICY_PROVIDER_IMPL));
+                allowing(jaccProviderServiceProxy).getFactoryName();
+                will(returnValue(JACC_FACTORY_IMPL));
                 allowing(wsLocationAdmin).resolveString("${wlp.user.dir}");
                 will(returnValue(directory));
                 allowing(wsLocationAdmin).getServerName();
@@ -902,14 +1064,16 @@ public class JaccServiceImplTest {
                 allowing(req).getMethod();
                 will(returnValue(method));
                 allowing(esv).checkResourceConstraints(with(any(String.class)), with(any(ArrayList.class)), with(any(EnterpriseBean.class)), with(any(EJBMethodPermission.class)),
-                                                       with(any(Subject.class)));
+                                                       with(any(Subject.class)), with(any(PolicyProxy.class)));
                 will(returnValue(true));
             }
         });
 
         try {
             JaccServiceImpl jaccService = new JaccServiceImpl();
-            jaccService.setJaccProviderService(jaccProviderServiceRef);
+            jaccService.setJaccProviderServiceProxy(jaccProviderServiceProxyRef);
+            ProviderServiceProxyImpl providerServiceProxy = new ProviderServiceProxyImpl();
+            ProxyTestUtil.setProviderService(providerServiceProxy, jaccProviderServiceRef);
             jaccService.setLocationAdmin(wsLocationAdminRef);
             jaccService.activate(cc);
             assertTrue(jaccService.isAuthorized(esv, appName, moduleName, beanName, methodName, methodInterface, ms2, mp, eBean, subject));
@@ -969,27 +1133,41 @@ public class JaccServiceImplTest {
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
+                allowing(cc).locateService("jaccProviderServiceProxy", jaccProviderServiceProxyRef);
+                will(returnValue(jaccProviderServiceProxy));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
                 allowing(cc).locateService("locationAdmin", wsLocationAdminRef);
                 will(returnValue(wsLocationAdmin));
+                allowing(jaccProviderServiceProxy).getPolicyProxy();
+                will(returnValue(policyProxy));
+                allowing(jaccProviderServiceProxy).getPolicyConfigFactory();
+                will(returnValue(pcf));
                 allowing(jaccProviderService).getPolicy();
                 will(returnValue(policy));
+                allowing(policyProxy).setPolicy();
+                allowing(policyProxy).refresh();
                 allowing(jaccProviderService).getPolicyConfigFactory();
                 will(returnValue(pcf));
+                allowing(jaccProviderServiceProxy).getPolicyName();
+                will(returnValue(JACC_POLICY_PROVIDER_IMPL));
+                allowing(jaccProviderServiceProxy).getFactoryName();
+                will(returnValue(JACC_FACTORY_IMPL));
                 allowing(wsLocationAdmin).resolveString("${wlp.user.dir}");
                 will(returnValue(directory));
                 allowing(wsLocationAdmin).getServerName();
                 will(returnValue(name));
                 allowing(esv).checkResourceConstraints(with(any(String.class)), with(any(ArrayList.class)), with(any(EnterpriseBean.class)), with(any(EJBRoleRefPermission.class)),
-                                                       with(any(Subject.class)));
+                                                       with(any(Subject.class)), with(any(PolicyProxy.class)));
                 will(returnValue(true));
             }
         });
 
         try {
             JaccServiceImpl jaccService = new JaccServiceImpl();
-            jaccService.setJaccProviderService(jaccProviderServiceRef);
+            jaccService.setJaccProviderServiceProxy(jaccProviderServiceProxyRef);
+            ProviderServiceProxyImpl providerServiceProxy = new ProviderServiceProxyImpl();
+            ProxyTestUtil.setProviderService(providerServiceProxy, jaccProviderServiceRef);
             jaccService.setLocationAdmin(wsLocationAdminRef);
             jaccService.activate(cc);
             assertTrue(jaccService.isSubjectInRole(esv, appName, moduleName, beanName, methodName, mp, role, eBean, subject));
@@ -1014,14 +1192,28 @@ public class JaccServiceImplTest {
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
+                allowing(cc).locateService("jaccProviderServiceProxy", jaccProviderServiceProxyRef);
+                will(returnValue(jaccProviderServiceProxy));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
                 allowing(cc).locateService("locationAdmin", wsLocationAdminRef);
                 will(returnValue(wsLocationAdmin));
+                allowing(jaccProviderServiceProxy).getPolicyProxy();
+                will(returnValue(policyProxy));
+                allowing(jaccProviderServiceProxy).getPolicyConfigFactory();
+                will(returnValue(pcf));
                 allowing(jaccProviderService).getPolicy();
                 will(returnValue(policy));
+                allowing(policyProxy).setPolicy();
+                allowing(policyProxy).refresh();
                 allowing(jaccProviderService).getPolicyConfigFactory();
                 will(returnValue(pcf));
+                allowing(jaccProviderServiceProxy).getPolicyName();
+                will(returnValue(JACC_POLICY_PROVIDER_IMPL));
+                allowing(jaccProviderServiceProxy).getFactoryName();
+                will(returnValue(JACC_FACTORY_IMPL));
+                allowing(jaccProviderServiceProxy).getProperty(JACC_EJB_METHOD_ARGUMENT);
+                will(returnValue(value));
                 allowing(jaccProviderServiceRef).getProperty(JACC_EJB_METHOD_ARGUMENT);
                 will(returnValue(value));
             }
@@ -1029,7 +1221,9 @@ public class JaccServiceImplTest {
 
         try {
             JaccServiceImpl jaccService = new JaccServiceImpl();
-            jaccService.setJaccProviderService(jaccProviderServiceRef);
+            jaccService.setJaccProviderServiceProxy(jaccProviderServiceProxyRef);
+            ProviderServiceProxyImpl providerServiceProxy = new ProviderServiceProxyImpl();
+            ProxyTestUtil.setProviderService(providerServiceProxy, jaccProviderServiceRef);
             jaccService.setLocationAdmin(wsLocationAdminRef);
             jaccService.activate(cc);
             assertTrue(jaccService.areRequestMethodArgumentsRequired());

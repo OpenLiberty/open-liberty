@@ -24,5 +24,8 @@
 
     <!--Java2 security-->
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+    
+    <!--  Addresses Session invalidation issue  -->
+    <httpSession useSeparateSessionInvalidatorThreadPool = "false" delayInvalidationAlarmDuringServerStartup = "60"/>
 
 </server>

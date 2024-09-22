@@ -18,13 +18,13 @@ public interface OpenTelemetryLifecycleManager {
     /**
      * @return
      */
-    OpenTelemetryInfo getOpenTelemetryInfo();
+    OpenTelemetryInfoInternal getOpenTelemetryInfo();
 
     /**
      * @param metaData
      * @return
      */
-    OpenTelemetryInfo getOpenTelemetryInfo(ApplicationMetaData metaData);
+    OpenTelemetryInfoInternal getOpenTelemetryInfo(ApplicationMetaData metaData);
 
     /**
      * @return

@@ -62,6 +62,7 @@ Service-Component: \
         |org.jboss.weld.annotated.slim.unbacked\
         |org.jboss.weld.bean\
         |org.jboss.weld.bean.builtin\
+        |org.jboss.weld.bean.builtin.ee\
         |org.jboss.weld.bean.proxy.util\
         |org.jboss.weld.context.beanstore\
         |org.jboss.weld.context.conversation\

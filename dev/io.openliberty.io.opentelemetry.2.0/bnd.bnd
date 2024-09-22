@@ -20,9 +20,6 @@ openTelemetryInstrumentationVersion=2.5.0
 alphaOpenTelemetryInstrumentationVersion=2.5.0.alpha
 alphaSemconvOpenTelemetryVersion=1.25.0.alpha
 
-javac.source: 1.8
-javac.target: 1.8
-
 src: src, resources
 
 Import-Package: \
@@ -87,8 +84,6 @@ Service-Component: \
         provide:=com.ibm.wsspi.classloading.ResourceProvider; \
         configuration-policy:=optional; \
         properties:="resources=${app-resources}"
-
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
 	io.openliberty.com.squareup.okhttp;version=latest,\

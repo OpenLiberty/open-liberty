@@ -250,6 +250,7 @@ assemble.dependsOn JASPIWrappingServlet_WAR
  ******************************************************************
  ******************************************************************/
 autoFVT.dependsOn ':com.ibm.ws.security.authorization.jacc.testprovider:assemble'
+autoFVT.dependsOn ':io.openliberty.security.authorization.jacc.testprovider:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.jaspic.test:assemble'
 autoFVT.doLast {
 
@@ -297,9 +298,15 @@ autoFVT.doLast {
      rename 'com.ibm.ws.security.authorization.jacc.testprovider.jakarta.jar', 'com.ibm.ws.security.authorization.jacc.testprovider_2.1.jar'
   }
   copy {
+     from new File(project(':io.openliberty.security.authorization.jacc.testprovider').projectDir, "/build/libs/io.openliberty.security.authorization.jacc.testprovider.jar") 
+     into new File(autoFvtDir, 'publish/bundles')
+     rename 'io.openliberty.security.authorization.jacc.testprovider.jar', 'io.openliberty.security.authorization.jacc.testprovider_3.0.jar'
+  }
+  copy {
      from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-1.0.mf")  
      from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-2.0.mf")  
      from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-2.1.mf")  
+     from new File(project(':io.openliberty.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-3.0.mf")  
      into new File(autoFvtDir, 'publish/features')
   }
   

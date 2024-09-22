@@ -10,6 +10,8 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -28,10 +30,18 @@ public class Segment {
 
     @Embedded
     @Column(nullable = false)
+    @AttributeOverrides( // TODO remove once #29459 is fixed (if it is valid)
+    { @AttributeOverride(name = "x", column = @Column(name = "POINTAX")),
+      @AttributeOverride(name = "y", column = @Column(name = "POINTAY"))
+    })
     public Point pointA;
 
     @Embedded
     @Column(nullable = false)
+    @AttributeOverrides( // TODO remove once #29459 is fixed (if it is valid)
+    { @AttributeOverride(name = "x", column = @Column(name = "POINTBX")),
+      @AttributeOverride(name = "y", column = @Column(name = "POINTBY"))
+    })
     public Point pointB;
 
     @Override

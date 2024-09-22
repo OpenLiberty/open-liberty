@@ -1,0 +1,102 @@
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
+
+File esaDir = new File('test-resources/esa/')
+File esaAssetDir = new File(esaDir, 'esaAssetOnly/')
+File esaMetadataDir = new File(esaDir, 'esaMetadataOnly/')
+
+configurations {
+    anno_esa
+    jsp_esa
+    anno_metadata
+    jsp_metadata
+ }
+ 
+ dependencies {
+    anno_esa      'com.ibm.ws.repository.parsers.test:anno-esa:1.0.0'
+    jsp_esa       'com.ibm.ws.repository.parsers.test:jsp-esa:2.3.0'
+    anno_metadata 'com.ibm.ws.repository.parsers.test:anno-metadata:1.0.0'
+    jsp_metadata  'com.ibm.ws.repository.parsers.test:jsp-metadata:2.3.0'
+    
+ }
+
+task copyFilesForUnittest() {
+  copy {
+    from configurations.anno_esa
+    into esaDir
+    rename 'anno-esa-*.*.*.*', 'com.ibm.websphere.appserver.anno-1.0.esa'
+  }
+
+  copy {
+    from configurations.anno_esa
+    into esaAssetDir
+    rename 'anno-esa-*.*.*.*', 'com.ibm.websphere.appserver.anno-1.0.esa'
+  }
+
+  copy {
+    from configurations.anno_metadata
+    into esaDir
+    rename 'anno-metadata-*.*.*.*', 'com.ibm.websphere.appserver.anno-1.0.esa.metadata.zip'
+  }
+
+  copy {
+    from configurations.anno_metadata
+    into esaMetadataDir
+    rename 'anno-metadata-*.*.*.*', 'com.ibm.websphere.appserver.anno-1.0.esa.metadata.zip'
+  }
+
+  copy {
+    from configurations.jsp_esa
+    into esaDir
+    rename 'jsp-esa-*.*.*.*', 'com.ibm.websphere.appserver.jsp-2.3.esa'
+  }
+
+  copy {
+    from configurations.jsp_esa
+    into esaAssetDir
+    rename 'jsp-esa-*.*.*.*', 'com.ibm.websphere.appserver.jsp-2.3.esa'
+  }
+
+  copy {
+    from configurations.jsp_metadata
+    into esaDir
+    rename 'jsp-metadata-*.*.*.*', 'com.ibm.websphere.appserver.jsp-2.3.esa.metadata.zip'
+  }
+
+  copy {
+    from configurations.jsp_metadata
+    into esaMetadataDir
+    rename 'jsp-metadata-*.*.*.*', 'com.ibm.websphere.appserver.jsp-2.3.esa.metadata.zip'
+  }
+}
+
+task deleteTestFiles {
+  doLast {
+    println "deleteTestFiles task, deleting files in " + esaDir
+    delete fileTree(esaDir).matching {
+      include "*.esa"
+      include "*.zip"
+    }
+ 
+    println "deleteTestFiles task, deleting directory " + esaAssetDir
+    file(esaAssetDir).deleteDir()
+
+    println "deleteTestFiles task, deleting directory " + esaMetadataDir
+    file(esaMetadataDir).deleteDir()
+  }
+}
+
+test {
+  dependsOn copyFilesForUnittest
+}
+
+clean {
+  dependsOn deleteTestFiles
+}

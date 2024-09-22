@@ -12,15 +12,7 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence.service;
 
-import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
-import static org.objectweb.asm.Opcodes.ACC_SUPER;
-import static org.objectweb.asm.Opcodes.ALOAD;
-import static org.objectweb.asm.Opcodes.GETFIELD;
-import static org.objectweb.asm.Opcodes.ILOAD;
-import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
-import static org.objectweb.asm.Opcodes.PUTFIELD;
-import static org.objectweb.asm.Opcodes.RETURN;
-import static org.objectweb.asm.Opcodes.V17;
+import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -31,17 +23,19 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.RecordComponent;
-import java.lang.reflect.Type;
 import java.sql.Connection;
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 import java.util.SortedMap;
@@ -54,13 +48,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.sql.DataSource;
 
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.FieldVisitor;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.commons.GeneratorAdapter;
-import org.objectweb.asm.signature.SignatureVisitor;
-import org.objectweb.asm.signature.SignatureWriter;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -99,6 +86,8 @@ import jakarta.persistence.Table;
 public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerationParticipant {
     static final String EOLN = String.format("%n");
     private static final long MAX_WAIT_FOR_SERVICE_NS = TimeUnit.SECONDS.toNanos(60);
+    private static final Entry<String, String> ID_AND_VERSION_NOT_SPECIFIED = //
+                    new SimpleImmutableEntry<>(null, null);
     private static final TraceComponent tc = Tr.register(DBStoreEMBuilder.class);
 
     private final ClassDefiner classDefiner = new ClassDefiner();
@@ -326,9 +315,18 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
             // XML to make all other classes into JPA entities:
             ArrayList<String> entityClassInfo = new ArrayList<>(entityTypes.size());
 
-            Queue<Class<?>> embeddableTypesQueue = new LinkedList<>();
+            /*
+             * Note: When creating a persistence unit, managed classes (such as entities) are declared in an
+             * all or nothing fashion. Therefore, if we create a persistence unit with a list of entities
+             * we are also required to provide a list of converters, otherwise the persistence provider
+             * will not use them. Ideally, our internal persistence service unit would have a method to
+             * include converter classes alongside entity classes, but the persistence provider API lacks
+             * such function so the converters need to be put into the generated orm.xml file.
+             */
+            Set<Class<?>> converterTypes = new HashSet<>();
 
-            Set<Class<?>> converterTypes = new HashSet<>(); // TODO why do we need to write converters to orm.xml at all?
+            Map<Class<?>, Map<String, Class<?>>> embeddableTypes = //
+                            new LinkedHashMap<>();
 
             for (Class<?> c : entityTypes) {
                 if (c.isAnnotationPresent(Entity.class)) {
@@ -346,20 +344,30 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                             converterTypes.add(convert.converter());
                     }
                 } else {
+                    // The table is named from the class name of the entity or
+                    // record that is specified by the user, not from the generated
+                    // entity class that is used internally in place of a record.
+                    String tableName = c.getSimpleName();
+
                     if (c.isRecord()) {
                         String entityClassName = c.getName() + EntityInfo.RECORD_ENTITY_SUFFIX; // an entity class is generated for the record
-                        byte[] generatedEntityBytes = generateEntityClassBytes(c, entityClassName);
+                        byte[] generatedEntityBytes = RecordTransformer.generateEntityClassBytes(c, entityClassName);
                         generatedEntities.add(new InMemoryMappingFile(generatedEntityBytes, entityClassName.replace('.', '/') + ".class"));
                         Class<?> generatedEntity = classDefiner.findLoadedOrDefineClass(getRepositoryClassLoader(), entityClassName, generatedEntityBytes);
                         generatedToRecordClass.put(generatedEntity, c);
                         c = generatedEntity;
                     }
 
-                    StringBuilder xml = new StringBuilder(500).append(" <entity class=\"").append(c.getName()).append("\">").append(EOLN);
+                    StringBuilder xml = new StringBuilder(500);
 
-                    xml.append("  <table name=\"").append(tablePrefix).append(c.getSimpleName()).append("\"/>").append(EOLN);
+                    xml.append(" <entity class=\"").append(c.getName()) //
+                                    .append("\">").append(EOLN);
 
-                    writeAttributes(xml, c, false, embeddableTypesQueue);
+                    xml.append("  <table name=\"") //
+                                    .append(tablePrefix).append(tableName) //
+                                    .append("\"/>").append(EOLN);
+
+                    writeAttributes(xml, findAttributes(c), embeddableTypes);
 
                     xml.append(" </entity>").append(EOLN);
 
@@ -367,17 +375,24 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 }
             }
 
-            Set<Class<?>> embeddableTypes = new HashSet<>();
-            for (Class<?> type; (type = embeddableTypesQueue.poll()) != null;)
-                if (embeddableTypes.add(type)) { // only write each type once
-                    StringBuilder xml = new StringBuilder(500).append(" <embeddable class=\"").append(type.getName()).append("\">").append(EOLN);
-                    writeAttributes(xml, type, true, embeddableTypesQueue);
-                    xml.append(" </embeddable>").append(EOLN);
-                    entityClassInfo.add(xml.toString());
-                }
+            for (Entry<Class<?>, Map<String, Class<?>>> e : embeddableTypes.entrySet()) {
+                Class<?> type = e.getKey();
+                Map<String, Class<?>> attrs = e.getValue();
+
+                StringBuilder xml = new StringBuilder(500) //
+                                .append(" <embeddable class=\"") //
+                                .append(type.getName()).append("\">") //
+                                .append(EOLN);
+                writeAttributes(xml, attrs, null);
+                xml.append(" </embeddable>").append(EOLN);
+                entityClassInfo.add(xml.toString());
+            }
 
             for (Class<?> type : converterTypes) {
-                StringBuilder xml = new StringBuilder(500).append(" <converter class=\"").append(type.getName()).append("\"></converter>").append(EOLN);
+                StringBuilder xml = new StringBuilder(500) //
+                                .append(" <converter class=\"") //
+                                .append(type.getName()).append("\"></converter>") //
+                                .append(EOLN);
                 entityClassInfo.add(xml.toString());
             }
 
@@ -416,17 +431,6 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
 
             collectEntityInfo(entityTypes);
 
-            // Register as a DDL generator for use by the ddlGen command and add to list for cleanup on application stop
-            BundleContext thisbc = FrameworkUtil.getBundle(getClass()).getBundleContext();
-            ServiceRegistration<DDLGenerationParticipant> ddlgenreg = thisbc.registerService(DDLGenerationParticipant.class, this, null);
-            Queue<ServiceRegistration<DDLGenerationParticipant>> ddlgenRegistrations = provider.ddlgeneratorsAllApps.get(application);
-            if (ddlgenRegistrations == null) {
-                Queue<ServiceRegistration<DDLGenerationParticipant>> empty = new ConcurrentLinkedQueue<>();
-                if ((ddlgenRegistrations = provider.ddlgeneratorsAllApps.putIfAbsent(application, empty)) == null)
-                    ddlgenRegistrations = empty;
-            }
-            ddlgenRegistrations.add(ddlgenreg);
-
         } catch (RuntimeException x) {
             for (Class<?> entityClass : entityTypes)
                 entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
@@ -442,222 +446,140 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
         }
     }
 
-    /**
-     * Initially copied from @nmittles pull #25248
-     *
-     * Adds the default (no arg) constructor. <p>
-     *
-     * @param cw     ASM ClassWriter to add the constructor to.
-     * @param parent fully qualified name of the parent class
-     *                   with '/' as the separator character
-     *                   (i.e. internal name).
-     */
-    private static void addDefaultCtor(ClassWriter cw, String parent) {
-        MethodVisitor mv;
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "    " + "adding method : <init> ()V");
-
-        // -----------------------------------------------------------------------
-        // public <Class Name>()
-        // {
-        // -----------------------------------------------------------------------
-        mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
-        mv.visitCode();
-
-        // -----------------------------------------------------------------------
-        //    super();
-        // -----------------------------------------------------------------------
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V");
-
-        // -----------------------------------------------------------------------
-        // }
-        // -----------------------------------------------------------------------
-        mv.visitInsn(RETURN);
-        mv.visitMaxs(1, 1);
-        mv.visitEnd();
-    }
-
-    /**
-     * Initially copied from @nmittles pull #25248
-     *
-     * @param recordClass
-     * @param internalEntityClassName
-     * @param cw
-     * @param parent
-     */
-    private static void addRecordCtor(Class<?> recordClass, String internalEntityClassName, ClassWriter cw, String parent) {
-        org.objectweb.asm.commons.Method constructor = org.objectweb.asm.commons.Method.getMethod("void <init> (" + recordClass.getTypeName() + ")");
-        GeneratorAdapter mg = new GeneratorAdapter(ACC_PUBLIC, constructor, null, null, cw);
-        mg.loadThis();
-        mg.invokeConstructor(org.objectweb.asm.Type.getType(Object.class), org.objectweb.asm.commons.Method.getMethod("void <init> ()"));
-
-        for (RecordComponent component : recordClass.getRecordComponents()) {
-            String componentName = component.getName();
-            String typeDesc = component.getType().getTypeName();
-            String methodName = "set" + componentName.substring(0, 1).toUpperCase() + componentName.substring(1);
-            int componentValue = mg.newLocal(org.objectweb.asm.Type.getType(component.getType()));
-
-            mg.loadArg(0);
-            mg.invokeVirtual(org.objectweb.asm.Type.getType(recordClass),
-                             org.objectweb.asm.commons.Method.getMethod(typeDesc + " " + componentName + " ()"));
-
-            mg.storeLocal(componentValue);
-
-            mg.loadThis();
-            mg.loadLocal(componentValue);
-            mg.invokeVirtual(org.objectweb.asm.Type.getObjectType(internalEntityClassName),
-                             org.objectweb.asm.commons.Method.getMethod("void " + methodName + " (" + typeDesc + ")"));
-        }
-        mg.returnValue();
-        mg.endMethod();
-    }
-
     @Override
     public EntityManager createEntityManager() {
         return persistenceServiceUnit.createEntityManager();
     }
 
     /**
-     * Initially copied from @nmittles pull #25248
+     * Find attributes of the specified class.
+     * If a record, use the record components.
+     * Otherwise, use fields and property descriptors.
      *
-     * @param recordClass
-     * @param entityClassName
-     * @return
+     * @param c entity class or embedded class.
+     * @return attributes, sorted alphabetically.
      */
-    private byte[] generateEntityClassBytes(Class<?> recordClass, String entityClassName) {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        String internal_entityClassName = entityClassName.replace('.', '/');
+    private SortedMap<String, Class<?>> findAttributes(Class<?> c) {
+        SortedMap<String, Class<?>> attributes = new TreeMap<>();
 
-        // Define the Entity Class object
-        cw.visit(V17, ACC_PUBLIC + ACC_SUPER,
-                 internal_entityClassName,
-                 null,
-                 "java/lang/Object",
-                 null);
+        if (c.isRecord()) {
+            for (RecordComponent r : c.getRecordComponents())
+                attributes.put(r.getName(), r.getType());
+        } else {
+            for (Field f : c.getFields())
+                attributes.put(f.getName(), f.getType());
 
-        // Define the source code file and debug settings
-        String sourceFileName = entityClassName.substring(entityClassName.lastIndexOf(".") + 1) + ".java";
-        cw.visitSource(sourceFileName, null);
+            try {
+                PropertyDescriptor[] propertyDescriptors = Introspector //
+                                .getBeanInfo(c).getPropertyDescriptors();
+                if (propertyDescriptors != null)
+                    for (PropertyDescriptor p : propertyDescriptors) {
+                        Method setter = p.getWriteMethod();
+                        if (setter != null)
+                            attributes.putIfAbsent(p.getName(),
+                                                   p.getPropertyType());
+                    }
+            } catch (IntrospectionException x) {
+                throw new MappingException(x);
+            }
+        }
 
-        // Add default constructor
-        addDefaultCtor(cw, null);
+        return attributes;
+    }
 
-        FieldVisitor fv;
-        for (RecordComponent component : recordClass.getRecordComponents()) {
-            String componentName = component.getName();
-            Class<?> componentClass = component.getType();
-            Type componentType = component.getGenericType();
-            String typeDesc = org.objectweb.asm.Type.getDescriptor(componentClass);
-            String fieldSig = null, setterSig = null, getterSig = null;
-            if (componentType instanceof ParameterizedType) {
-                SignatureWriter sigwriter = new SignatureWriter();
-                SignatureVisitor componentClassVisitor = sigwriter.visitParameterType();
-                componentClassVisitor.visitClassType(componentClass.getName());
-                for (Type typeVarType : ((ParameterizedType) componentType).getActualTypeArguments()) {
-                    SignatureVisitor typeVarVisitor = componentClassVisitor.visitTypeArgument('=');
-                    typeVarVisitor.visitClassType(typeVarType.getTypeName());
-                    typeVarVisitor.visitEnd();
+    /**
+     * Find the Id and Version attributes (if any).
+     *
+     * @param attributes top level entity or embeddable attributes.
+     * @return the Id and Version attributes (if any).
+     *         Null if there is no Id.
+     */
+    private Entry<String, String> findIdAndVersion(Map<String, Class<?>> attrs) {
+        String idAttrName = null;
+        String versionAttrName = null;
+
+        // Determine which attribute is the id and version (optional).
+        // Id precedence:
+        // (1) name is id, ignoring case.
+        // (2) name ends with _id, ignoring case.
+        // (3) name ends with Id or ID.
+        // (4) type is UUID.
+        // Version precedence (if also a valid version type):
+        // (1) name is version, ignoring case.
+        // (2) name is _version, ignoring case.
+        int idPrecedence = 10;
+        int vPrecedence = 10;
+        for (Map.Entry<String, Class<?>> attribute : attrs.entrySet()) {
+            String name = attribute.getKey();
+            Class<?> type = attribute.getValue();
+            int len = name.length();
+
+            if (idPrecedence > 1 &&
+                len >= 2 &&
+                name.regionMatches(true, len - 2, "id", 0, 2)) {
+                if (name.length() == 2) {
+                    idAttrName = name;
+                    idPrecedence = 1;
+                } else if (idPrecedence > 2 &&
+                           name.charAt(len - 3) == '_') {
+                    idAttrName = name;
+                    idPrecedence = 2;
+                } else if (idPrecedence > 3 &&
+                           name.charAt(len - 2) == 'I') {
+                    idAttrName = name;
+                    idPrecedence = 3;
                 }
-                sigwriter.visitEnd();
-                sigwriter.visitReturnType().visitBaseType('V');
-                setterSig = sigwriter.toString().replace('.', '/');
-                fieldSig = setterSig.substring(1, setterSig.length() - 2); // omit beginning ( and ending )V
-                getterSig = "()" + fieldSig;
+            } else if (idPrecedence > 4 && UUID.class.equals(type)) {
+                idAttrName = name;
+                idPrecedence = 4;
             }
 
-            // --------------------------------------------------------------------
-            // public <FieldType> <FieldName>;
-            // --------------------------------------------------------------------
-            if (trace && tc.isEntryEnabled())
-                Tr.debug(tc, "     " + "adding field : " +
-                             componentName + " " +
-                             typeDesc,
-                         fieldSig);
-
-            fv = cw.visitField(ACC_PUBLIC, componentName,
-                               typeDesc,
-                               fieldSig,
-                               null);
-
-            fv.visitEnd();
-
-            // TODO include signature for setter and getter
-
-            // --------------------------------------------------------------------
-            // public setter...
-            // --------------------------------------------------------------------
-            if (trace && tc.isEntryEnabled())
-                Tr.debug(tc, "     " + "adding setter : " +
-                             component.getName() + " " +
-                             component.getType().descriptorString(),
-                         setterSig);
-            String methodName = "set" + componentName.substring(0, 1).toUpperCase() + componentName.substring(1);
-            MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, methodName, "(" + typeDesc + ")V", setterSig, null);
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitVarInsn(org.objectweb.asm.Type.getType(component.getType()).getOpcode(ILOAD), 1);
-            mv.visitFieldInsn(PUTFIELD, internal_entityClassName, componentName, typeDesc);
-            mv.visitInsn(RETURN);
-            mv.visitMaxs(1, 1);
-            mv.visitEnd();
-
-            // --------------------------------------------------------------------
-            // public getter...
-            // --------------------------------------------------------------------
-            methodName = "get" + componentName.substring(0, 1).toUpperCase() + componentName.substring(1);
-            mv = cw.visitMethod(ACC_PUBLIC, methodName, "()" + typeDesc, getterSig, null);
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitFieldInsn(GETFIELD, internal_entityClassName, componentName, typeDesc);
-            mv.visitInsn(org.objectweb.asm.Type.getType(component.getType()).getOpcode(Opcodes.IRETURN));
-            mv.visitMaxs(1, 1);
-            mv.visitEnd();
-        }
-
-        // Add constructor that will invoke all setters with data from a Record
-        addRecordCtor(recordClass, internal_entityClassName, cw, null);
-
-        // Mark the end of the generated wrapper class
-        cw.visitEnd();
-
-        // Dump the class bytes out to a byte array.
-        byte[] classBytes = cw.toByteArray();
-
-        if (trace && tc.isEntryEnabled()) {
-
-            // Get class bytes as a string for debugging
-            String classByteString = "";
-            for (int i = 0; i < classBytes.length; i++) {
-                classByteString += i % 8 == 0 ? "\t" : ""; // Separate 8 bytes by tab
-                classByteString += i % 32 == 0 ? System.lineSeparator() : ""; // Separate 16 bytes by line
-                classByteString += String.format("%02X", classBytes[i]) + " "; // Separate each byte by space
+            if (vPrecedence > 1 &&
+                len == 7 &&
+                QueryInfo.VERSION_TYPES.contains(type) &&
+                "version".equalsIgnoreCase(name)) {
+                versionAttrName = name;
+                vPrecedence = 1;
+            } else if (vPrecedence > 2 &&
+                       len == 8 &&
+                       QueryInfo.VERSION_TYPES.contains(type) &&
+                       "_version".equalsIgnoreCase(name)) {
+                versionAttrName = name;
+                vPrecedence = 2;
             }
-
-            Tr.exit(tc, "generateClassBytes: " + classBytes.length + " bytes" +
-                        classByteString);
         }
 
-        return classBytes;
+        return idAttrName == null //
+                        ? null //
+                        : new SimpleImmutableEntry<>(idAttrName, versionAttrName);
     }
 
     /**
      * Obtains the DataSource that is used by the EntityManager.
+     * This method is used by resource accessor methods of a repository.
      *
+     * @param repoMethod    repository resource accessor method.
+     * @param repoInterface repository interface.
      * @return the DataSource that is used by the EntityManager.
      */
     @Override
-    public DataSource getDataSource() {
+    public DataSource getDataSource(Method repoMethod, Class<?> repoInterface) {
         BundleContext bc = FrameworkUtil.getBundle(getClass()).getBundleContext();
         Collection<ServiceReference<ResourceFactory>> dsFactoryRefs;
         try {
-            dsFactoryRefs = bc.getServiceReferences(ResourceFactory.class, dataSourceFactoryFilter);
+            dsFactoryRefs = bc.getServiceReferences(ResourceFactory.class,
+                                                    dataSourceFactoryFilter);
         } catch (InvalidSyntaxException x) {
             throw new RuntimeException(x); // should never happen
         }
+
         if (dsFactoryRefs.isEmpty())
-            throw new IllegalStateException("The " + dataSourceFactoryFilter +
-                                            " DataSource that is used by the repository is not available."); // TODO NLS
+            throw exc(IllegalStateException.class,
+                      "CWWKD1062.resource.not.found",
+                      repoMethod.getName(),
+                      repoInterface.getName(),
+                      DataSource.class.getSimpleName(),
+                      dataSourceFactoryFilter);
 
         ResourceFactory dsFactory = bc.getService(dsFactoryRefs.iterator().next());
         try {
@@ -670,17 +592,30 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 resRef.setResAuthType(ResourceConfig.AUTH_CONTAINER);
 
                 String dbStoreFilter = FilterUtils.createPropertyFilter("id", databaseStoreId);
-                Collection<ServiceReference<DatabaseStore>> dbStoreRefs = bc.getServiceReferences(DatabaseStore.class, dbStoreFilter);
+                Collection<ServiceReference<DatabaseStore>> dbStoreRefs = //
+                                bc.getServiceReferences(DatabaseStore.class,
+                                                        dbStoreFilter);
                 if (dbStoreRefs.isEmpty())
-                    throw new IllegalStateException("The " + dbStoreFilter + " resource that is used by the repository is not available."); // TODO NLS
+                    throw exc(IllegalStateException.class,
+                              "CWWKD1062.resource.not.found",
+                              repoMethod.getName(),
+                              repoInterface.getName(),
+                              "databaseStore",
+                              dbStoreFilter);
 
                 ServiceReference<DatabaseStore> ref = dbStoreRefs.iterator().next();
                 if (ref.getProperty("authDataRef") != null) {
                     String authDataFilter = (String) ref.getProperty("AuthData.target");
-                    ServiceReference<?>[] authDataRefs = bc.getServiceReferences("com.ibm.websphere.security.auth.data.AuthData",
-                                                                                 authDataFilter);
+                    ServiceReference<?>[] authDataRefs = //
+                                    bc.getServiceReferences("com.ibm.websphere.security.auth.data.AuthData",
+                                                            authDataFilter);
                     if (authDataRefs == null)
-                        throw new IllegalStateException("The " + authDataFilter + " resource that is used by the repository is not available."); // TODO NLS
+                        throw exc(IllegalStateException.class,
+                                  "CWWKD1062.resource.not.found",
+                                  repoMethod.getName(),
+                                  repoInterface.getName(),
+                                  "authData",
+                                  authDataFilter);
 
                     // The following pattern is copied from DatabaseStoreImpl,
                     String authDataId = (String) authDataRefs[0].getProperty("id");
@@ -739,94 +674,21 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
     /**
      * Write attributes for the specified entity or embeddable to XML.
      *
-     * @param xml                  XML for defining the entity attributes
-     * @param c                    entity class (never a record), or
-     *                                 embeddable class (can be a record)
-     * @param isEmbeddable         indicates if the class is an embeddable type rather than an entity.
-     * @param embeddableTypesQueue queue of embeddable types. This method adds to the queue when an embeddable type is found.
+     * @param xml             XML for defining the entity attributes
+     * @param attributes      top level entity or embeddable attributes.
+     * @param embeddableTypes embeddable types list to add to. Null if the specified
+     *                            attributes are already for an embeddable.
+     *                            When non-null, this method adds embeddable types
+     *                            that are found.
      */
-    private void writeAttributes(StringBuilder xml, Class<?> c, boolean isEmbeddable, Queue<Class<?>> embeddableTypesQueue) {
+    private void writeAttributes(StringBuilder xml,
+                                 Map<String, Class<?>> attributes,
+                                 Map<Class<?>, Map<String, Class<?>>> embeddableTypes) {
+        boolean isEmbeddable = embeddableTypes == null;
 
-        // Identify attributes
-        SortedMap<String, Class<?>> attributes = new TreeMap<>();
-
-        if (isEmbeddable && c.isRecord()) {
-            for (RecordComponent r : c.getRecordComponents())
-                attributes.putIfAbsent(r.getName(), r.getType());
-        } else {
-            for (Field f : c.getFields())
-                attributes.putIfAbsent(f.getName(), f.getType());
-
-            try {
-                PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(c).getPropertyDescriptors();
-                if (propertyDescriptors != null)
-                    for (PropertyDescriptor p : propertyDescriptors) {
-                        Method setter = p.getWriteMethod();
-                        if (setter != null)
-                            attributes.putIfAbsent(p.getName(), p.getPropertyType());
-                    }
-            } catch (IntrospectionException x) {
-                throw new MappingException(x);
-            }
-        }
-
-        String keyAttributeName = null;
-        String versionAttributeName = null;
-        if (!isEmbeddable) {
-            // Determine which attribute is the id and version (optional).
-            // Id precedence:
-            // (1) name is id, ignoring case.
-            // (2) name ends with _id, ignoring case.
-            // (3) name ends with Id or ID.
-            // (4) type is UUID.
-            // Version precedence (if also a valid version type):
-            // (1) name is version, ignoring case.
-            // (2) name is _version, ignoring case.
-            int idPrecedence = 10;
-            int vPrecedence = 10;
-            for (Map.Entry<String, Class<?>> attribute : attributes.entrySet()) {
-                String name = attribute.getKey();
-                Class<?> type = attribute.getValue();
-                int len = name.length();
-
-                if (idPrecedence > 1 &&
-                    len >= 2 &&
-                    name.regionMatches(true, len - 2, "id", 0, 2)) {
-                    if (name.length() == 2) {
-                        keyAttributeName = name;
-                        idPrecedence = 1;
-                    } else if (idPrecedence > 2 &&
-                               name.charAt(len - 3) == '_') {
-                        keyAttributeName = name;
-                        idPrecedence = 2;
-                    } else if (idPrecedence > 3 &&
-                               name.charAt(len - 2) == 'I') {
-                        keyAttributeName = name;
-                        idPrecedence = 3;
-                    }
-                } else if (idPrecedence > 4 && UUID.class.equals(type)) {
-                    keyAttributeName = name;
-                    idPrecedence = 4;
-                }
-
-                if (vPrecedence > 1 &&
-                    len == 7 &&
-                    QueryInfo.VERSION_TYPES.contains(type) &&
-                    "version".equalsIgnoreCase(name)) {
-                    versionAttributeName = name;
-                    vPrecedence = 1;
-                } else if (vPrecedence > 2 &&
-                           len == 8 &&
-                           QueryInfo.VERSION_TYPES.contains(type) &&
-                           "_version".equalsIgnoreCase(name)) {
-                    versionAttributeName = name;
-                    vPrecedence = 2;
-                }
-            }
-
-            if (keyAttributeName == null)
-                throw new MappingException("Entity class " + c.getName() + " lacks a public field of the form *ID or public method of the form get*ID."); // TODO NLS
-        }
+        Entry<String, String> idAndVersion = isEmbeddable //
+                        ? ID_AND_VERSION_NOT_SPECIFIED //
+                        : findIdAndVersion(attributes);
 
         // Write the attributes to XML:
 
@@ -837,31 +699,91 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
             Class<?> attributeType = attributeInfo.getValue();
             boolean isCollection = Collection.class.isAssignableFrom(attributeType);
             boolean isPrimitive = attributeType.isPrimitive();
-            boolean isId = attributeName.equals(keyAttributeName);
+            boolean isId = attributeName.equals(idAndVersion.getKey());
 
             String columnType;
-            if (isPrimitive || attributeType.isInterface() || Serializable.class.isAssignableFrom(attributeType)) {
-                columnType = isId ? "id" : //
-                                isCollection ? "element-collection" : // TODO add fetch-type eager
-                                                attributeName.equals(versionAttributeName) ? "version" : //
-                                                                "basic";
+            if (isPrimitive || //
+                attributeType.isInterface() || //
+                Serializable.class.isAssignableFrom(attributeType)) {
+                if (isId)
+                    columnType = "id";
+                else if (isCollection)
+                    columnType = "element-collection";
+                else if (attributeName.equals(idAndVersion.getValue()))
+                    columnType = "version";
+                else
+                    columnType = "basic";
             } else {
-                columnType = isId ? "embedded-id" : "embedded";
-                embeddableTypesQueue.add(attributeType);
+                if (isId)
+                    columnType = "embedded-id";
+                else
+                    columnType = "embedded";
             }
 
-            xml.append("   <").append(columnType).append(" name=\"").append(attributeName).append('"');
+            xml.append("   <").append(columnType).append(" name=\"") //
+                            .append(attributeName).append('"');
+
+            // All other queries when using un-annotated entities or record entities are eager,
+            // element-collections should be as well.
             if (isCollection)
                 xml.append(" fetch=\"EAGER\"");
+
             xml.append('>').append(EOLN);
 
-            if (isEmbeddable) {
-                if (!"embedded".equals(columnType))
-                    xml.append("    <column name=\"").append(c.getSimpleName().toUpperCase()).append(attributeName.toUpperCase()).append("\"/>").append(EOLN);
-            } else {
-                if (isPrimitive)
-                    xml.append("    <column nullable=\"false\"/>").append(EOLN);
+            if (!isEmbeddable && // top level entity attribute
+                columnType.charAt(1) == 'm') { // embedded or embedded-id
+                LinkedList<Entry<String[], Map<String, Class<?>>>> stack = //
+                                new LinkedList<>();
+                Map<String, Class<?>> attrs = embeddableTypes.get(attributeType);
+                if (attrs == null)
+                    embeddableTypes.put(attributeType,
+                                        attrs = findAttributes(attributeType));
+                stack.add(new SimpleImmutableEntry<>( //
+                                new String[] { attributeName }, //
+                                attrs));
+                for (Entry<String[], Map<String, Class<?>>> emb; //
+                                null != (emb = stack.pollLast());) {
+                    String[] names = emb.getKey();
+                    Map<String, Class<?>> embeddableAttrs = emb.getValue();
+                    for (Entry<String, Class<?>> e : embeddableAttrs.entrySet()) {
+                        String name = e.getKey();
+                        Class<?> type = e.getValue();
+                        // attribute-override is only written for leaf-level
+                        if (type.isPrimitive() ||
+                            type.isInterface() ||
+                            Serializable.class.isAssignableFrom(type)) {
+                            xml.append("    <attribute-override name=\"");
+                            for (int n = 1; n < names.length; n++)
+                                xml.append(names[n]).append('.');
+                            xml.append(name).append("\">").append(EOLN);
+                            xml.append("     <column name=\"");
+                            for (int n = 0; n < names.length; n++)
+                                xml.append(names[n].toUpperCase()).append('_');
+                            xml.append(name.toUpperCase()) //
+                                            .append("\"/>").append(EOLN);
+                            xml.append("    </attribute-override>").append(EOLN);
+                            // TODO reject column name collisions?
+                            // collisions are currently only possible if an attribute name includes _
+                        } else {
+                            Map<String, Class<?>> a = embeddableTypes.get(type);
+                            if (a == null)
+                                embeddableTypes.put(type, a = findAttributes(type));
+                            String[] names2 = new String[names.length + 1];
+                            System.arraycopy(names, 0, names2, 0, names.length);
+                            names2[names.length] = name;
+                            stack.add(new SimpleImmutableEntry<>(names2, a));
+                        }
+                    }
+                }
             }
+
+            if (isPrimitive)
+                if (isEmbeddable) {
+                    // Primitive attributes on an embeddable might need the null
+                    // value to indicate that the embeddable itself is null.
+                } else {
+                    xml.append("    <column nullable=\"false\"/>").append(EOLN);
+                }
 
             xml.append("   </" + columnType + ">").append(EOLN);
         }
@@ -877,8 +799,10 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
      */
     @Override
     public void generate(Writer out) throws Exception {
+        // Note that exceptions thrown here or by the persistence service will be logged by the
+        // direct caller (FutureEMBuilder) or the DDL generation MBean.
         if (persistenceServiceUnit == null) {
-            throw new IllegalStateException("PersistenceUnit has not benn initialized.");
+            throw new IllegalStateException("EntityManagerFactory for Jakarta Data repository has not been initialized for the " + databaseStoreId + " DatabaseStore.");
         }
         persistenceServiceUnit.generateDDL(out);
     }

@@ -22,7 +22,8 @@ Export-Package: \
 	io.openliberty.microprofile.telemetry.internal.common.cdi;version='1.0',\
 	io.openliberty.microprofile.telemetry.internal.common.info;version='1.0',\
 	io.openliberty.microprofile.telemetry.internal.common.resources;version='1.0',\
-	io.openliberty.microprofile.telemetry.internal.common.rest;version='1.0';thread-context=true
+	io.openliberty.microprofile.telemetry.internal.common.rest;version='1.0';thread-context=true,\
+	io.openliberty.microprofile.telemetry.spi;version='1.0'
 
 Private-Package: \
 	io.openliberty.microprofile.telemetry.internal.common.rest.jakarta

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package test.jakarta.data.jpa.web;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -31,15 +32,15 @@ import test.jakarta.data.jpa.web.CreditCard.Issuer;
 @Repository(dataStore = "java:module/jdbc/RepositoryDataStore")
 public interface Customers extends DataRepository<Customer, Integer> {
 
-    @OrderBy("phone")
-    Stream<CreditCard> findCardsByEmailEndsWith(String ending);
-
-    Set<CreditCard> findCardsById(int customerId);
-
-    Set<DeliveryLocation> findLocationsByEmail(String emailAddress);
+    Optional<Customer> findByEmail(String emailAddress);
 
     @OrderBy("email")
-    Stream<DeliveryLocation> findLocationsByPhoneIn(List<Long> phoneNumbers);
+    Stream<Customer> findByPhoneIn(List<Long> phoneNumbers);
+
+    @OrderBy("debtor.phone")
+    Stream<CreditCard> findCardsByDebtorEmailEndsWith(String ending);
+
+    Set<CreditCard> findCardsByDebtorCustomerId(int customerId);
 
     @OrderBy("email")
     @Query("SELECT c.email FROM Customer c JOIN c.cards cc WHERE (cc.issuer=?1)")

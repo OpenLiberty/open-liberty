@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -41,6 +41,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
+import io.openliberty.security.authorization.jacc.internal.proxy.JavaSePolicyProxyImpl;
 import test.common.SharedOutputManager;
 
 public class EJBSecurityValidatorImplTest {
@@ -79,7 +80,7 @@ public class EJBSecurityValidatorImplTest {
         final Subject subject = new Subject();
         final EJBRoleRefPermission ejbPerm = new EJBRoleRefPermission(beanName, role);
         EJBSecurityValidatorImpl esv = new EJBSecurityValidatorImpl();
-        assertFalse(esv.checkResourceConstraints(contextId, methodParameters, eBean, ejbPerm, subject));
+        assertFalse(esv.checkResourceConstraints(contextId, methodParameters, eBean, ejbPerm, subject, new JavaSePolicyProxyImpl()));
     }
 
     /**
@@ -95,8 +96,8 @@ public class EJBSecurityValidatorImplTest {
         final Subject subject = new Subject();
         final EJBRoleRefPermission ejbPerm = new EJBRoleRefPermission(beanName, role);
         EJBSecurityValidatorImpl esv = new EJBSecurityValidatorImpl();
-        assertFalse(esv.checkResourceConstraints(contextId, null, eBean, ejbPerm, subject));
-        assertFalse(esv.checkResourceConstraints(contextId, methodParameters, eBean, ejbPerm, subject));
+        assertFalse(esv.checkResourceConstraints(contextId, null, eBean, ejbPerm, subject, new JavaSePolicyProxyImpl()));
+        assertFalse(esv.checkResourceConstraints(contextId, methodParameters, eBean, ejbPerm, subject, new JavaSePolicyProxyImpl()));
     }
 
     /**
@@ -114,7 +115,7 @@ public class EJBSecurityValidatorImplTest {
         final Subject subject = new Subject();
         final EJBRoleRefPermission ejbPerm = new EJBRoleRefPermission(beanName, role);
         EJBSecurityValidatorImpl esv = new EJBSecurityValidatorImpl();
-        assertFalse(esv.checkResourceConstraints(contextId, methodParameters, null, ejbPerm, subject));
+        assertFalse(esv.checkResourceConstraints(contextId, methodParameters, null, ejbPerm, subject, new JavaSePolicyProxyImpl()));
     }
 
     /**
@@ -132,7 +133,7 @@ public class EJBSecurityValidatorImplTest {
         final Subject subject = new Subject();
         final EJBRoleRefPermission ejbPerm = new EJBRoleRefPermission(beanName, role);
         EJBSecurityValidatorImpl esv = new EJBSecurityValidatorImpl();
-        assertFalse(esv.checkResourceConstraints(contextId, methodParameters, new String("invalid"), ejbPerm, subject));
+        assertFalse(esv.checkResourceConstraints(contextId, methodParameters, new String("invalid"), ejbPerm, subject, new JavaSePolicyProxyImpl()));
     }
 
     /**
@@ -152,7 +153,7 @@ public class EJBSecurityValidatorImplTest {
         final Subject subject = new Subject(false, principals, credentials, credentials);
         final EJBRoleRefPermission ejbPerm = new EJBRoleRefPermission(beanName, role);
         EJBSecurityValidatorImpl esv = new EJBSecurityValidatorImpl();
-        assertFalse(esv.checkResourceConstraints(contextId, methodParameters, eBean, ejbPerm, subject));
+        assertFalse(esv.checkResourceConstraints(contextId, methodParameters, eBean, ejbPerm, subject, new JavaSePolicyProxyImpl()));
     }
 
     /**

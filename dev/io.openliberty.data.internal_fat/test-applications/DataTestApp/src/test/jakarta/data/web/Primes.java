@@ -28,6 +28,7 @@ import java.util.Stack;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import jakarta.data.Limit;
@@ -51,8 +52,21 @@ import jakarta.enterprise.concurrent.Asynchronous;
  */
 @Repository
 public interface Primes {
+    @Find
+    CursoredPage<Prime> all(Order<Prime> sorts, PageRequest req);
+
+    @Query("")
+    CursoredPage<Prime> all(PageRequest req, Order<Prime> sorts);
+
+    @Query("FROM Prime")
+    CursoredPage<Prime> all(PageRequest req, Sort<?>... sorts);
+
     @Query("SELECT (num.name) FROM Prime As num")
     Page<String> all(Sort<Prime> sort, PageRequest pagination);
+
+    @Query("SELECT binaryDigits WHERE numberId <= :max")
+    @OrderBy(ID)
+    LongStream binaryDigitsAsDecimal(long max);
 
     @Query("SELECT name WHERE numberId < 35 AND romanNumeral || name LIKE :pattern")
     List<String> concatAndMatch(String pattern, Sort<?> sort);
@@ -232,9 +246,12 @@ public interface Primes {
 
     Boolean existsByNumberIdBetween(Long first, Long last);
 
-    // TODO after JDQL SELECT is added: "Select name Where length(romanNumeral) * 2 >= length(name) Order By name Asc",
-    @Query(value = "Where numberId < 50 and romanNumeral is not null and length(romanNumeral) * 2 >= length(name) Order By name Desc")
-    Page<Prime> lengthBasedQuery(PageRequest pageRequest);
+    @Query(value = "Select name" +
+                   " Where numberId < 50 and" +
+                   "       romanNumeral is not null and" +
+                   "       length(romanNumeral) * 2 >= length(name)" +
+                   " Order By name Desc")
+    Page<String> lengthBasedQuery(PageRequest pageRequest);
 
     @OrderBy(ID)
     @Query("SELECT ID(THIS) FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR ID(THIS)=:num)")
@@ -267,22 +284,34 @@ public interface Primes {
            " ORDER BY name DESC")
     List<String> matchRightSideOfName(String searchFor);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
+    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), " +
+           "       COUNT(o.numberId), AVG(o.numberId) " +
+           "  FROM Prime o WHERE o.numberId < ?1")
     Deque<Double> minMaxSumCountAverageDeque(long numBelow);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
+    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId)," +
+           "       COUNT(o.numberId), CAST(AVG(o.numberId) AS FLOAT)" +
+           "  FROM Prime o WHERE o.numberId < ?1")
     float[] minMaxSumCountAverageFloat(long numBelow);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
+    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId)," +
+           "       COUNT(o.numberId), CAST(AVG(o.numberId) AS INTEGER)" +
+           "  FROM Prime o WHERE o.numberId < ?1")
     int[] minMaxSumCountAverageInt(long numBelow);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
+    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId)," +
+           "       COUNT(o.numberId), CAST(AVG(o.numberId) AS INTEGER)" +
+           "  FROM Prime o WHERE o.numberId < ?1")
     Iterable<Integer> minMaxSumCountAverageIterable(long numBelow);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
+    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId)," +
+           "       COUNT(o.numberId), CAST(AVG(o.numberId) AS INTEGER)" +
+           "  FROM Prime o WHERE o.numberId < ?1")
     List<Long> minMaxSumCountAverageList(long numBelow);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
+    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId)," +
+           "       COUNT(o.numberId), CAST(AVG(o.numberId) AS INTEGER)" +
+           "  FROM Prime o WHERE o.numberId < ?1")
     Long[] minMaxSumCountAverageLong(long numBelow);
 
     @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
@@ -346,6 +375,9 @@ public interface Primes {
 
     @Query("SELECT DISTINCT LENGTH(p.romanNumeral) FROM Prime p WHERE p.numberId <= ?1 ORDER BY LENGTH(p.romanNumeral) DESC")
     Page<Integer> romanNumeralLengths(long maxNumber, PageRequest pagination);
+
+    @Query("SELECT hex WHERE numberId=:id")
+    Optional<Character> singleHexDigit(long id);
 
     @Query("SELECT hex WHERE numberId=?1")
     Optional<String> toHexadecimal(long num);

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # -------------------------------------------------------------------------------------------------
 #*******************************************************************************
-# Copyright (c) 2023 IBM Corporation and others.
+# Copyright (c) 2023, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,4 +49,40 @@ CWMOT5003.factory.used.after.shutdown.useraction=Examina\u021bi aplica\u021bia p
 
 CWMOT5004.factory.used.without.metadata=CWMOT5004W: S-a f\u0103cut o cerere pentru un OpenTelemetry obiect, dar f\u0103r\u0103 metadate ale aplica\u021biei \u0219i f\u0103r\u0103 global OpenTelemetry obiectul era disponibil. 
 CWMOT5004.factory.used.without.metadata.explanation=CWMOT5004.factory.used.without.metadata.explanation=If nu exist\u0103 global OpenTelemetry obiect Liberty lui MicroProfile Codul de integrare a telemetriei va \u00eencerca s\u0103 g\u0103seasc\u0103 cel corect OpenTelemetry obiect pentru aplica\u021bia curent\u0103 utiliz\u00e2nd metadatele aplica\u021biei pe firul curent. Cu toate acestea, deoarece nu existau metadate pe fir, nu a putut face acest lucru. 
-CWMOT5004.factory.used.without.metadata.useraction=Examina\u021bi codul pentru a vedea de ce a \u00eencercat s\u0103 fie utilizat MicroProfile Telemetrie atunci c\u00e2nd nu existau metadate ale aplica\u021biei \u0219i domeniul de aplicare al serverului OpenTelemetry obiect. Cazul cel mai probabil este c\u0103 crea\u021bi fire noi f\u0103r\u0103 a utiliza Liberty lui ManagedExecutorService \u0219i \u00eencerc\u00e2nd s\u0103 dob\u00e2ndeasc\u0103 o OpenTelemetry obiect din interior. Dac\u0103 \u00eencerca\u021bi s\u0103 achizi\u021biona\u021bi un OpenTemetry obiect \u00een afara unei aplica\u021bii, asigura\u021bi OpenTelemetry este activat\u0103 printr-o variabil\u0103 de mediu sau o proprietate de sistem.   
+CWMOT5004.factory.used.without.metadata.useraction=Examina\u021bi-v\u0103 codul pentru a vedea de ce codul de integrare a \u00eencercat s\u0103 foloseasc\u0103 MicroProfile Telemetry f\u0103r\u0103 metadate \u0219i un obiect OpenTelemetry \u00een domeniul serverului. Codul de integrare \u00eencearc\u0103 cel mai probabil s\u0103 creeze fire noi f\u0103r\u0103 a utiliza interfa\u021ba ManagedExecutorService \u0219i s\u0103 achizi\u021bioneze un obiect OpenTelemetry din cadrul aplica\u021biei. Pentru a ob\u021bine un obiect OpenTemetry \u00een afara unei aplica\u021bii, activa\u021bi OpenTelemetry printr-o variabil\u0103 de mediu sau o proprietate de sistem.
+
+CWMOT5005.mptelemetry.unknown.log.source=CWMOT5005W: Caracteristica de \u00eenregistrare \u00een jurnal MicroProfile Telemetry nu recunoa\u0219te sursa de jurnal [ {0} ].
+CWMOT5005.mptelemetry.unknown.log.source.explanation=Mediul de rulare Liberty nu furnizeaz\u0103 sursa de jurnal specificat\u0103.
+CWMOT5005.mptelemetry.unknown.log.source.useraction=Verifica\u021bi informa\u021biile de configurare \u0219i specifica\u021bi una dintre sursele acceptate pentru MicroProfile Telemetry.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+
+threadpool.activeThreads.description=Num\u0103rul de fire care execut\u0103 activ sarcini.
+threadpool.size.description=Dimensiunea pool-ului de fire.
+
+session.activeSessions.description=Num\u0103rul de sesiuni active concurente. O sesiune este activ\u0103 atunci c\u00e2nd runtime proceseaz\u0103 o solicitare care utilizeaz\u0103 acea sesiune de utilizator.
+session.created.description=Num\u0103rul de sesiuni conectate de c\u00e2nd aceast\u0103 valoare a fost activat\u0103.
+session.invalidated.description=Num\u0103rul de sesiuni deconectate de la activarea acestei valori.
+session.invalidatedbyTimeout.description=Num\u0103rul de sesiuni deconectate din cauza unui timeout de la activarea acestei valori.
+session.live.description=Num\u0103rul de utilizatori care sunt loga\u0163i curent.
+
+connectionpool.handle.count.description=Num\u0103rul de conexiuni care sunt \u00een uz. Acest num\u0103r poate include mai multe conexiuni care sunt partajate de la o singur\u0103 conexiune gestionat\u0103.
+connectionpool.connection.created.description=Num\u0103rul total de conexiuni gestionate care au fost create de la crearea pool-ului.
+connectionpool.connection.destroyed.description=Num\u0103rul total de conexiuni gestionate care au fost distruse de la crearea pool-ului.
+connectionpool.connection.free.description=Num\u0103rul de conexiuni gestionate care sunt disponibile.
+connectionpool.connection.waitTime.description=Cantitatea total\u0103 de timp \u00een care solicit\u0103rile de conexiune au a\u0219teptat o conexiune.
+connectionpool.connection.useTime.description=Cantitatea total\u0103 de timp \u00een care au fost utilizate toate conexiunile la sursa de date.
+connectionpool.connection.count.description=Num\u0103rul actual de conexiuni gestionate din pool. Aceast\u0103 valoare include conexiunile gestionate care sunt disponibile \u0219i cele care sunt \u00een uz. O singur\u0103 conexiune gestionat\u0103 care este partajat\u0103 de mai multe conexiuni conteaz\u0103 o singur\u0103 dat\u0103.
+
+requestTiming.processed.description=Num\u0103rul cererilor de servlet de c\u00e2nd a pornit serverul.
+requestTiming.active.description=Num\u0103rul de solicit\u0103ri de servlet care ruleaz\u0103 \u00een prezent.
+requestTiming.slow.description=Num\u0103rul cererilor de servlet care ruleaz\u0103 curent, dar sunt lente.
+requestTiming.hung.description=Num\u0103rul de solicit\u0103ri de servlet care sunt suspendate \u00een prezent.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# HTTP Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+
+http.server.request.duration.description=Durata solicit\u0103rilor serverului HTTP.

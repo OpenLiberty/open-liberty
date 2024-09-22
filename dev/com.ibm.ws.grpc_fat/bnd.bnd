@@ -61,7 +61,8 @@ tested.features:\
     pages-4.0,\
     mprestclient-4.0,\
     mpopenapi-4.0,\
-    restfulws-4.0
+    restfulws-4.0,\
+    noship-1.0
 
 -buildpath: \
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\

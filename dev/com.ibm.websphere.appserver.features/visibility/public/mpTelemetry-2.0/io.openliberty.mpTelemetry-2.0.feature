@@ -37,6 +37,7 @@ IBM-API-Package: \
   io.opentelemetry.exporter.logging;type="third-party",\
   io.opentelemetry.exporter.otlp.logs;type="third-party",\
   io.opentelemetry.exporter.otlp;type="third-party"
+IBM-SPI-Package: io.openliberty.microprofile.telemetry.spi
 -features=\
   io.openliberty.mpTelemetry2.0.ee-10.0; ibm.tolerates:= "11.0, 9.0, 8.0, 7.0",\
   com.ibm.websphere.appserver.monitor-1.0
@@ -47,8 +48,12 @@ IBM-API-Package: \
   io.openliberty.org.jetbrains.annotation,\
   io.openliberty.io.zipkin.zipkin2.2.0,\
   io.openliberty.microprofile.telemetry.monitor.internal
--jars=io.openliberty.mpTelemetry.2.0.thirdparty; location:="dev/api/third-party/,lib/"
-kind=beta
+-jars=io.openliberty.mpTelemetry.2.0.thirdparty; location:="dev/api/third-party/,lib/",\
+  io.openliberty.microprofile.telemetry.spi; location:="lib/"
+# commented out until the SPI is moved to GA and the bundle is moved to the dev/spi/ibm direcotry
+# add dev/spi/ibm/, when the SPI is moved to GA
+#-files=dev/spi/ibm/javadoc/io.openliberty.microprofile.telemetry.spi_1.0-javadoc.zip
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

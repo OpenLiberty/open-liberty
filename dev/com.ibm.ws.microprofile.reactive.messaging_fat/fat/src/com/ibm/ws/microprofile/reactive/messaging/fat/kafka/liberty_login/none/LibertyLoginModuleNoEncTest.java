@@ -18,6 +18,7 @@ import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaU
 
 import java.util.Map;
 
+import componenttest.annotation.MaximumJavaLevel;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -32,7 +33,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProp
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
+import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.SaslPlainTests;
 
 import componenttest.annotation.Server;
@@ -44,6 +45,7 @@ import componenttest.topology.impl.LibertyServer;
 /**
  * Test the login module with an unencoded password - should still work
  */
+@MaximumJavaLevel(javaLevel = 22)
 @RunWith(FATRunner.class)
 public class LibertyLoginModuleNoEncTest {
 

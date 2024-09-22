@@ -15,6 +15,6 @@ singleton=true
   io.openliberty.microprofile.telemetry.2.0.logging.internal, \
   io.openliberty.io.opentelemetry.2.0, \
   io.openliberty.microprofile.telemetry.internal.common
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel 

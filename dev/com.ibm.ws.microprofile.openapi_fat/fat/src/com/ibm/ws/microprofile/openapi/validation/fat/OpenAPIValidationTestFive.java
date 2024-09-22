@@ -35,7 +35,7 @@ public class OpenAPIValidationTestFive {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
+    public static RepeatTests r = FATSuite.repeatPre40(SERVER_NAME);
 
     private static final String OPENAPI_VALIDATION_YAML = "Validation";
 

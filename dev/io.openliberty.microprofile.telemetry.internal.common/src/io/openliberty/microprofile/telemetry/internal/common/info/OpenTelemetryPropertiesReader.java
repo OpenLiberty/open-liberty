@@ -28,13 +28,25 @@ public class OpenTelemetryPropertiesReader {
 
     private static final TraceComponent tc = Tr.register(OpenTelemetryPropertiesReader.class);
 
-    //TODO document exactly how this is different from the other
+    /**
+     * Reads all MicroProfile Config sources and creates a map of Open Telemetry properties found within.
+     *
+     * MicroProfile Config sources include (in descending order of precedence)
+     * Properties set in server.xml, system properties, environment variables, and properties set in
+     * a microprofile-config.properties file inside an application.
+     *
+     * Note that properties set in bootstrap.properties are system properties.
+     *
+     * @return a Map of properties
+     */
     public static HashMap<String, String> getTelemetryProperties() {
         try {
             Config config = ConfigProvider.getConfig();
 
             HashMap<String, String> telemetryProperties = new HashMap<>();
 
+            //getConfigSources returns sources in descending order of priority.
+            //so via putIfAbsent we ensure the highest priority takes precedence.
             for (ConfigSource configSource : config.getConfigSources()) {
                 for (Entry<String, String> entry : configSource.getProperties().entrySet()) {
                     if (entry.getKey().startsWith("otel") || entry.getKey().startsWith("OTEL")) {
@@ -52,7 +64,13 @@ public class OpenTelemetryPropertiesReader {
         }
     }
 
-    //TODO document exactly how this is different from the other
+    /**
+     * Reads the system properties and environment properties for all telemetry properties.
+     * Note that properties set in bootstrap.properties are system properties.
+     * The order of precedence: System Properties > environment properties
+     *
+     * @return a Map of properties
+     */
     public static HashMap<String, String> getRuntimeInstanceTelemetryProperties() {
         try {
             final HashMap<String, String> telemetryProperties = new HashMap<>();
@@ -105,16 +123,16 @@ public class OpenTelemetryPropertiesReader {
      * Reads the oTelConfigs to see if open telemetry is disabled. Call this with the result of one of the two methods above
      *
      * @param oTelConfigs a map of open telemetry configuration properties acquired by {@link getTelemetryProperties} or {@link getRuntimeInstanceTelemetryProperties}
-     * @return true if Open Telemetry is disabled otherwise false
+     * @return true if Open Telemetry is enabled otherwise false
      */
-    public static boolean checkDisabled(Map<String, String> oTelConfigs) {
+    public static boolean isEnabled(Map<String, String> oTelConfigs) {
         //In order to enable any of the tracing aspects, the configuration otel.sdk.disabled=false must be specified in any of the configuration sources available via MicroProfile Config.
         if (oTelConfigs.get(OpenTelemetryConstants.ENV_DISABLE_PROPERTY) != null) {
-            return Boolean.valueOf(oTelConfigs.get(OpenTelemetryConstants.ENV_DISABLE_PROPERTY));
+            return !!!Boolean.valueOf(oTelConfigs.get(OpenTelemetryConstants.ENV_DISABLE_PROPERTY));
         } else if (oTelConfigs.get(OpenTelemetryConstants.CONFIG_DISABLE_PROPERTY) != null) {
-            return Boolean.valueOf(oTelConfigs.get(OpenTelemetryConstants.CONFIG_DISABLE_PROPERTY));
+            return !!!Boolean.valueOf(oTelConfigs.get(OpenTelemetryConstants.CONFIG_DISABLE_PROPERTY));
         }
-        return true;
+        return false;
     }
 
     /**

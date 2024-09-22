@@ -9,6 +9,8 @@
  *******************************************************************************/
 package io.openliberty.http.monitor;
 
+import javax.servlet.http.HttpServletMapping;
+
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.webcontainer40.osgi.webapp.WebAppDispatcherContext40;
 import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
@@ -24,7 +26,8 @@ public class Servlet4Helper {
 		if (isServlet4Up) {
 			if (webAppdispatcherContext instanceof WebAppDispatcherContext40) {
 				WebAppDispatcherContext40 webAppDispatcherContext40 = (WebAppDispatcherContext40) webAppdispatcherContext;
-				return webAppDispatcherContext40.getServletMapping().getPattern();
+				HttpServletMapping mapping = webAppDispatcherContext40.getServletMapping();
+				return mapping == null ? null : mapping.getPattern();
 			}
 			return null;
 		} else {
@@ -44,7 +47,8 @@ public class Servlet4Helper {
 		if (isServlet4Up) {
 			if (webAppdispatcherContext instanceof WebAppDispatcherContext40) {
 				WebAppDispatcherContext40 webAppDispatcherContext40 = (WebAppDispatcherContext40) webAppdispatcherContext;
-				return webAppDispatcherContext40.getServletMapping().getMatchValue();
+				HttpServletMapping mapping = webAppDispatcherContext40.getServletMapping();
+				return mapping == null ? null : mapping.getMatchValue();
 			}
 			return null;
 		} else {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.transaction.fat.util;
+
+import static org.junit.Assert.assertTrue;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -33,6 +35,10 @@ public class TxTestContainerSuite extends TestContainerSuite {
 
     private static DatabaseContainerType databaseContainerType;
     public static JdbcDatabaseContainer<?> testContainer;
+
+    public static void assertHealthy() {
+    	assertTrue(databaseContainerType + " is not healthy", isDerby() || testContainer == null || testContainer.isRunning());
+    }
 
     public static void beforeSuite(DatabaseContainerType type) {
         Log.info(TxTestContainerSuite.class, "beforeSuite", type.toString());
@@ -59,9 +65,10 @@ public class TxTestContainerSuite extends TestContainerSuite {
             DatabaseMetaData metaData = conn.getMetaData();
             String[] types = {"TABLE"};
             //Retrieving the columns in the database
-            ResultSet tables = metaData.getTables(null, null, "%", types);
-            while (tables.next()) {
-            	Log.info(TxTestContainerSuite.class, "showTables", tables.getString("TABLE_NAME"));
+            try (ResultSet tables = metaData.getTables(null, null, "%", types)) {
+            	while (tables.next()) {
+            		Log.info(TxTestContainerSuite.class, "showTables", tables.getString("TABLE_NAME"));
+            	}
             }
         } catch (SQLException e) {
         	Log.error(TxTestContainerSuite.class, "showTables", e);
@@ -80,9 +87,10 @@ public class TxTestContainerSuite extends TestContainerSuite {
         		DatabaseMetaData metaData = conn.getMetaData();
         		String[] types = {"TABLE"};
         		//Retrieving the columns in the database
-        		ResultSet existing = metaData.getTables(null, null, "%", types);
-        		while (existing.next()) {
-        			dropTable(stmt, existing.getString("TABLE_NAME"));
+        		try (ResultSet existing = metaData.getTables(null, null, "%", types)) {
+        			while (existing.next()) {
+        				dropTable(stmt, existing.getString("TABLE_NAME"));
+        			}
         		}
         	}
         } catch (SQLException e) {

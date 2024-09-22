@@ -45,21 +45,23 @@ public interface Cities {
     @Delete
     void delete(City city); // copied from BasicRepository
 
+    CityId delete1ByStateName(String state, Limit limitOf1);
+
     // "IN" (which is needed for this) is not supported for composite IDs, but EclipseLink generates SQL
     // that leads to an SQLSyntaxErrorException rather than rejecting it outright
     @Delete
     void deleteAll(Iterable<City> list); // copied from BasicRepository
+
+    Optional<CityId> deleteAtMost1ByStateName(String state,
+                                              Limit limitOf1,
+                                              Order<City> sorts);
 
     @Delete
     long deleteById(@By(ID) CityId id);
 
     LinkedList<CityId> deleteByStateName(String state);
 
-    CityId deleteByStateName(String state, Limit limitOf1);
-
-    Optional<CityId> delete1ByStateName(String state, Limit limit, Order<City> sorts);
-
-    Iterable<CityId> delete3ByStateName(String state, Limit limit, Order<City> sorts);
+    Iterable<CityId> deleteByStateName(String state, Limit limit, Order<City> sorts);
 
     @Delete
     List<CityId> deleteSome(@By("stateName") String state,

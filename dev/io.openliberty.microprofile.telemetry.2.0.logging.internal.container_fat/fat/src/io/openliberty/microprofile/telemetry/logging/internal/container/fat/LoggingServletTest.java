@@ -9,11 +9,9 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal.container.fat;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -29,13 +27,14 @@ import org.testcontainers.images.builder.ImageFromDockerfile;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @RunWith(FATRunner.class)
 public class LoggingServletTest {
@@ -57,7 +56,7 @@ public class LoggingServletTest {
                                     .copy("/etc/otelcol-contrib/config.yaml", "/etc/otelcol-contrib/config.yaml"))
                     .withFileFromFile("/etc/otelcol-contrib/config.yaml", new File(TestUtils.PATH_TO_AUTOFVT_TESTFILES + "config.yaml"), 0644))
                     .withLogConsumer(new SimpleLogConsumer(LoggingServletTest.class, "opentelemetry-collector-contrib"))
-                    .withExposedPorts(4317);
+                    .withExposedPorts(4317, 4318);
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -72,7 +71,8 @@ public class LoggingServletTest {
         ShrinkHelper.exportDropinAppToServer(server, telemetryLogApp,
                                              DeployOptions.SERVER_ONLY);
 
-        server.addEnvVar("OTEL_EXPORTER_OTLP_ENDPOINT", "http://" + container.getHost() + ":" + container.getMappedPort(4317));
+        server.addEnvVar("OTEL_EXPORTER_OTLP_PROTOCOL", "http/protobuf");
+        server.addEnvVar("OTEL_EXPORTER_OTLP_ENDPOINT", "http://" + container.getHost() + ":" + container.getMappedPort(4318));
 
         server.startServer();
 
@@ -82,33 +82,13 @@ public class LoggingServletTest {
     }
 
     /*
-     * Ensures all messages printed in the messages.log are bridged over to the otlp container.
-     */
-    @Test
-    public void testBridgedLogs() throws Exception {
-        assertTrue("The server was not started successfully.", server.isStarted());
-        TestUtils.runApp(server, "logs");
-
-        //Allow time for the collector to receive and bridge logs.
-        TimeUnit.SECONDS.sleep(5);
-
-        List<String> linesMessagesLog = server.findStringsInLogs("^(?!.*scopeInfo).*\\[.*$", server.getDefaultLogFile());
-
-        final String logs = container.getLogs();
-
-        Log.info(c, "testBridgedLogs", logs);
-
-        int bridgedLogsCount = logs.split("LogRecord #").length - 1;
-
-        assertEquals("Messages.log and Telemetry console logs don't match.", linesMessagesLog.size(), bridgedLogsCount);
-    }
-
-    /*
      * Ensures that an info message from a Liberty application are bridged over to the otlp container.
      */
     @Test
     public void testMessageLogs() throws Exception {
         assertTrue("The server was not started successfully.", server.isStarted());
+
+        TestUtils.isContainerStarted("LogsExporter", container);
 
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_ALL_SOURCES, messageLogFile, server);
@@ -120,17 +100,16 @@ public class LoggingServletTest {
 
         final String logs = container.getLogs();
 
-        Log.info(c, "testMessageLogs", logs);
-
-        assertTrue("Info message log could not be found.", logs.contains("Body: Str(info message)"));
-        assertTrue("Extension appName could not be found.", logs.contains("io.openliberty.ext.app_name: Str(MpTelemetryLogApp)"));
+        assertTrue("Info message log could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "Body: Str(info message)"));
+        assertTrue("Extension appName could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "io.openliberty.ext.app_name: Str(MpTelemetryLogApp)"));
         assertTrue("Module could not be found.",
-                   logs.contains("io.openliberty.module: Str(io.openliberty.microprofile.telemetry.logging.internal.container.fat.MpTelemetryLogApp.MpTelemetryServlet)"));
-        assertTrue("SeverityText message could not be found.", logs.contains("SeverityText: I"));
-        assertTrue("SeverityNumber message could not be found.", logs.contains("SeverityNumber: Info"));
-        assertTrue("Squence message could not be found.", logs.contains("io.openliberty.sequence: Str"));
-        assertTrue("Log type messagecould not be found.", logs.contains("io.openliberty.type: Str(liberty_message)"));
-        assertTrue("Thread ID message could not be found.", logs.contains("thread.id: Int"));
+                   TestUtils.assertLogContains("testMessageLogs", logs,
+                                               "io.openliberty.module: Str(io.openliberty.microprofile.telemetry.logging.internal.container.fat.MpTelemetryLogApp.MpTelemetryServlet)"));
+        assertTrue("SeverityText message could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "SeverityText: I"));
+        assertTrue("SeverityNumber message could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "SeverityNumber: Info"));
+        assertTrue("Squence message could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "io.openliberty.sequence: Str"));
+        assertTrue("Log type message could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "io.openliberty.type: Str(liberty_message)"));
+        assertTrue("Thread ID message could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "thread.id: Int"));
     }
 
     /*
@@ -140,6 +119,8 @@ public class LoggingServletTest {
     public void testTraceLogs() throws Exception {
 
         assertTrue("The server was not started successfully.", server.isStarted());
+
+        TestUtils.isContainerStarted("LogsExporter", container);
 
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_TRACE_SOURCE, messageLogFile, server);
@@ -151,27 +132,28 @@ public class LoggingServletTest {
 
         final String logs = container.getLogs();
 
-        Log.info(c, "testTraceLogs", logs);
-
-        assertTrue("Trace message log could not be found.", logs.contains("Body: Str(finest trace)"));
-        assertTrue("Extension appName could not be found", logs.contains("io.openliberty.ext.app_name: Str(MpTelemetryLogApp)"));
+        assertTrue("Trace message log could not be found.", TestUtils.assertLogContains("testTraceLogs", logs, "Body: Str(finest trace)"));
+        assertTrue("Extension appName could not be found", TestUtils.assertLogContains("testTraceLogs", logs, "io.openliberty.ext.app_name: Str(MpTelemetryLogApp)"));
         assertTrue("Module could not be found.",
-                   logs.contains("io.openliberty.module: Str(io.openliberty.microprofile.telemetry.logging.internal.container.fat.MpTelemetryLogApp.MpTelemetryServlet)"));
-        assertTrue("SeverityText message could not be found.", logs.contains("SeverityText: 3"));
-        assertTrue("SeverityNumber message could not be found.", logs.contains("SeverityNumber: Trace(1)"));
-        assertTrue("Sequence message could not be found.", logs.contains("io.openliberty.sequence: Str"));
-        assertTrue("Log type message could not be found.", logs.contains("io.openliberty.type: Str(liberty_trace)"));
-        assertTrue("Thread ID message could not be found.", logs.contains("thread.id: Int"));
+                   TestUtils.assertLogContains("testTraceLogs", logs,
+                                               "io.openliberty.module: Str(io.openliberty.microprofile.telemetry.logging.internal.container.fat.MpTelemetryLogApp.MpTelemetryServlet)"));
+        assertTrue("SeverityText message could not be found.", TestUtils.assertLogContains("testTraceLogs", logs, "SeverityText: 3"));
+        assertTrue("SeverityNumber message could not be found.", TestUtils.assertLogContains("testTraceLogs", logs, "SeverityNumber: Trace(1)"));
+        assertTrue("Sequence message could not be found.", TestUtils.assertLogContains("testTraceLogs", logs, "io.openliberty.sequence: Str"));
+        assertTrue("Log type message could not be found.", TestUtils.assertLogContains("testTraceLogs", logs, "io.openliberty.type: Str(liberty_trace)"));
+        assertTrue("Thread ID message could not be found.", TestUtils.assertLogContains("testTraceLogs", logs, "thread.id: Int"));
     }
 
     /*
      * Ensures that an FFDC message from a Liberty application are bridged over to the otlp container.
      */
     @Test
-    @ExpectedFFDC({ "java.lang.NullPointerException" })
+    @ExpectedFFDC({ "java.lang.ArithmeticException" })
     public void testFFDCLogs() throws Exception {
 
         assertTrue("The server was not started successfully.", server.isStarted());
+
+        TestUtils.isContainerStarted("LogsExporter", container);
 
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_FFDC_SOURCE, messageLogFile, server);
@@ -183,20 +165,29 @@ public class LoggingServletTest {
 
         final String logs = container.getLogs();
 
-        Log.info(c, "testFFDCLogs", logs);
+        assertTrue("FFDC message log could not be found.", TestUtils.assertLogContains("testFFDCLogs", logs, "Body: Str(FFDC_TEST_DOGET"));
+        assertTrue("Exception message could not be found.", TestUtils.assertLogContains("testFFDCLogs", logs, "exception.message: Str(FFDC_TEST_DOGET"));
+        assertTrue("Exception Stacktrace  could not be found.", TestUtils.assertLogContains("testFFDCLogs", logs, "exception.stacktrace: Str(java.lang.ArithmeticException"));
+        assertTrue("Exception type could not be found.", TestUtils.assertLogContains("testFFDCLogs", logs, "exception.type: Str(java.lang.ArithmeticException)"));
+        assertTrue("Probe ID could not be found.", TestUtils.assertLogContains("testFFDCLogs", logs, "io.openliberty.probe_id"));
+        assertTrue("SeverityText message could not be found.", TestUtils.assertLogContains("testFFDCLogs", logs, "SeverityText:"));
+        assertTrue("SeverityNumber message could not be found.", TestUtils.assertLogContains("testFFDCLogs", logs, "SeverityNumber: Warn(13)"));
+        assertTrue("Sequence message could not be found.", TestUtils.assertLogContains("testFFDCLogs", logs, "io.openliberty.sequence: Str"));
+        assertTrue("Log type message could not be found.", TestUtils.assertLogContains("testFFDCLogs", logs, "io.openliberty.type: Str(liberty_ffdc)"));
+        assertTrue("Thread ID message could not be found.", TestUtils.assertLogContains("testFFDCLogs", logs, "thread.id: Int"));
 
-        assertTrue("FFDC message log could not be found.", logs.contains("Body: Str(Cannot invoke"));
-        assertTrue("Exception message could not be found.", logs.contains("exception.message: Str(Cannot invoke"));
-        assertTrue("Exception Stacktrace  could not be found.", logs.contains("exception.stacktrace: Str(java.lang.NullPointerException"));
-        assertTrue("Exception type could not be found.", logs.contains("exception.type: Str(java.lang.NullPointerException)"));
-        assertTrue("Class name could not be found.", logs.contains("io.openliberty.class_name: Str(io.openliberty.http.monitor.ServletFilter)"));
-        assertTrue("Object details could not be found.", logs.contains("io.openliberty.object_details: Str(Object type = io.openliberty.http.monitor.ServletFilter"));
-        assertTrue("Probe ID could not be found.", logs.contains("io.openliberty.probe_id"));
-        assertTrue("SeverityText message could not be found.", logs.contains("SeverityText:"));
-        assertTrue("SeverityNumber message could not be found.", logs.contains("SeverityNumber: Warn(13)"));
-        assertTrue("Sequence message could not be found.", logs.contains("io.openliberty.sequence: Str"));
-        assertTrue("Log type message could not be found.", logs.contains("io.openliberty.type: Str(liberty_ffdc)"));
-        assertTrue("Thread ID message could not be found.", logs.contains("thread.id: Int"));
+        //These older repeats cause the class name and object details to display different class names.
+        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_JAVA8_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID)
+            || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID)) {
+            assertTrue("Class name could not be found.", TestUtils.assertLogContains("testFFDCLogs", logs, "io.openliberty.class_name"));
+            assertTrue("Object details could not be found.", TestUtils.assertLogContains("testFFDCLogs", logs, "io.openliberty.object_details"));
+        } else {
+            assertTrue("Class name could not be found.",
+                       TestUtils.assertLogContains("testFFDCLogs", logs, "io.openliberty.class_name: Str(com.ibm.ws.webcontainer.filter.WebAppFilterManager.invokeFilters)"));
+            assertTrue("Object details could not be found.",
+                       TestUtils.assertLogContains("testFFDCLogs", logs,
+                                                   "io.openliberty.object_details: Str(Object type = com.ibm.ws.webcontainer.osgi.filter.WebAppFilterManagerImpl"));
+        }
     }
 
     @AfterClass
@@ -212,4 +203,5 @@ public class LoggingServletTest {
         server.setServerConfigurationFile(fileName);
         return server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");
     }
+
 }

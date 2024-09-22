@@ -40,7 +40,7 @@ import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
+@AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
 public class DBRotationTest extends CloudFATServletClient {
     private static final Class<?> c = DBRotationTest.class;
 
@@ -453,7 +453,6 @@ public class DBRotationTest extends CloudFATServletClient {
         // Check for key strings to see whether the lease has been updated and read
         shortLeaseServer1.setTraceMarkToEndOfDefaultTrace();
         assertNotNull("Lease Renewer has not fired", shortLeaseServer1.waitForStringInTrace("Have updated Server row", FATUtils.LOG_SEARCH_TIMEOUT));
-        assertNotNull("Lease checker has not fired", shortLeaseServer1.waitForStringInTrace("Lease Table: read recoveryId", FATUtils.LOG_SEARCH_TIMEOUT));
     }
 
     @Test

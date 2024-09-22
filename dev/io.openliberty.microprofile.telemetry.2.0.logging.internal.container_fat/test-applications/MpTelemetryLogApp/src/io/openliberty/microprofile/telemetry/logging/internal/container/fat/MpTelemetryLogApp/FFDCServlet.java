@@ -15,11 +15,11 @@ package io.openliberty.microprofile.telemetry.logging.internal.container.fat.MpT
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/*")
 public class FFDCServlet extends HttpServlet {
@@ -49,8 +49,7 @@ public class FFDCServlet extends HttpServlet {
         PrintWriter out;
 
         if ((isFFDC != null) && isFFDC.equalsIgnoreCase("true")) {
-            String myString = null;
-            myString.toString();
+            throw new ArithmeticException("FFDC_TEST_DOGET");
         }
         String secondFFDC = req.getParameter("secondFFDC");
 

@@ -28,6 +28,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.ExtendedKafkaContainer;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.tls.KafkaTlsTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
 
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.containers.TestContainerSuite;

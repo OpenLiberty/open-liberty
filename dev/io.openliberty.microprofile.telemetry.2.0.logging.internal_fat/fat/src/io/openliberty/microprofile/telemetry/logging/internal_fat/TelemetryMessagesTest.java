@@ -9,39 +9,55 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal_fat;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @RunWith(FATRunner.class)
 public class TelemetryMessagesTest extends FATServletClient {
 
+    private static Class<?> c = TelemetryMessagesTest.class;
+
     public static final String APP_NAME = "MpTelemetryLogApp";
     public static final String SERVER_NAME = "TelemetryMessage";
+
+    @ClassRule
+    public static RepeatTests rt = TelemetryActions.telemetry20Repeats();
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
     public static final String SERVER_XML_ALL_SOURCES = "allSources.xml";
+
+    @BeforeClass
+    public static void initialSetup() throws Exception {
+        server.saveServerConfiguration();
+    }
 
     @Before
     public void testSetup() throws Exception {
@@ -50,13 +66,16 @@ public class TelemetryMessagesTest extends FATServletClient {
     }
 
     static LibertyServer setupServerApp(LibertyServer s) throws Exception {
-        ShrinkHelper.defaultApp(s, APP_NAME, "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp");
+        ShrinkHelper.defaultApp(s, APP_NAME, new DeployOptions[] { DeployOptions.SERVER_ONLY }, "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp");
         return s;
     }
 
     @After
     public void testTearDown() throws Exception {
         server.stopServer();
+
+        // Restore the server configuration, after each test case.
+        server.restoreServerConfiguration();
     }
 
     /**
@@ -69,14 +88,38 @@ public class TelemetryMessagesTest extends FATServletClient {
 
     static void testTelemetryMessages(LibertyServer s, Consumer<List<String>> consoleConsumer) throws Exception {
         String line = s.waitForStringInLog("CWWKF0011I", s.getConsoleLogFile());
-        List<String> linesMessagesLog = s.findStringsInLogs("^(?!.*scopeInfo).*\\[.*$", s.getDefaultLogFile());
-        List<String> linesConsoleLog = s.findStringsInLogs(".*scopeInfo.*", s.getConsoleLogFile());
+
+        //Sleep for 5s to ensure messages/console log files are in sync
+        TimeUnit.SECONDS.sleep(5);
+
+        RemoteFile consoleLog = s.getConsoleLogFile();
+        s.setMarkToEndOfLog(consoleLog);
+        RemoteFile messageLog = s.getDefaultLogFile();
+        s.setMarkToEndOfLog(messageLog);
+
+        List<String> linesMessagesLog = s.findStringsInLogsUsingMark("^(?!.*scopeInfo).*\\[.*$", messageLog);
+        List<String> linesConsoleLog = s.findStringsInLogsUsingMark(".*scopeInfo.*", consoleLog);
 
         if (consoleConsumer != null) {
             consoleConsumer.accept(linesConsoleLog);
         }
 
-        assertEquals("Messages.log and Telemetry console logs don't match.", linesMessagesLog.size(), linesConsoleLog.size());
+        //Check if number of lines found in messages.log and console.log match.
+        boolean logSizeMatches = (linesMessagesLog.size() == linesConsoleLog.size());
+
+        if (!logSizeMatches) {
+            if (!linesMessagesLog.isEmpty()) {
+                Log.info(c, "testTelemetryMessages", "First messages.log line: " + linesMessagesLog.get(0));
+                Log.info(c, "testTelemetryMessages", "Last messages.log line: " + linesMessagesLog.get(linesMessagesLog.size() - 1));
+            }
+
+            if (!linesConsoleLog.isEmpty()) {
+                Log.info(c, "testTelemetryMessages", "First console.log line: " + linesConsoleLog.get(0));
+                Log.info(c, "testTelemetryMessages", "Last console.log line: " + linesConsoleLog.get(linesConsoleLog.size() - 1));
+            }
+        }
+
+        assertTrue("Messages.log and Telemetry console logs don't match. messageLogSize=" + linesMessagesLog.size() + ", consoleLogSize=" + linesConsoleLog.size(), logSizeMatches);
 
         Map<String, String> myMap = new HashMap<String, String>() {
             {
@@ -131,18 +174,20 @@ public class TelemetryMessagesTest extends FATServletClient {
         setConfig(SERVER_XML_ALL_SOURCES, consoleLogFile, server);
 
         TestUtils.runApp(server, "logServlet");
+
         String infoLine = server.waitForStringInLog("info message", server.getConsoleLogFile());
-        String severeLine = server.waitForStringInLog("severe message", server.getConsoleLogFile());
-        String warningLine = server.waitForStringInLog("warning message", server.getConsoleLogFile());
-        String sysOutLine = server.waitForStringInLog("^(?=.*System.out.println)(?=.*scopeInfo).*$", server.getConsoleLogFile());
-        String sysErrLine = server.waitForStringInLog("^(?=.*System.err.println)(?=.*scopeInfo).*$", server.getConsoleLogFile());
-        String configTraceLine = server.waitForStringInLog("config trace", server.getConsoleLogFile());
-        String fineLine = server.waitForStringInLog("fine trace", server.getConsoleLogFile());
-        String finerLine = server.waitForStringInLog("finer trace", server.getConsoleLogFile());
-        String finestLine = server.waitForStringInLog("finest trace", server.getConsoleLogFile());
 
         assertNotNull("Info message could not be found.", infoLine);
         assertTrue("Incorrect log level was logged.", infoLine.contains("INFO"));
+
+        String severeLine = server.waitForStringInLog("severe message", 5000, server.getConsoleLogFile());
+        String warningLine = server.waitForStringInLog("warning message", 5000, server.getConsoleLogFile());
+        String sysOutLine = server.waitForStringInLog("^(?=.*System.out.println)(?=.*scopeInfo).*$", 5000, server.getConsoleLogFile());
+        String sysErrLine = server.waitForStringInLog("^(?=.*System.err.println)(?=.*scopeInfo).*$", 5000, server.getConsoleLogFile());
+        String configTraceLine = server.waitForStringInLog("config trace", 5000, server.getConsoleLogFile());
+        String fineLine = server.waitForStringInLog("fine trace", 5000, server.getConsoleLogFile());
+        String finerLine = server.waitForStringInLog("finer trace", 5000, server.getConsoleLogFile());
+        String finestLine = server.waitForStringInLog("finest trace", 5000, server.getConsoleLogFile());
 
         assertNotNull("Severe message could not be found.", severeLine);
         assertTrue("Incorrect log level was logged.", severeLine.contains("ERROR"));

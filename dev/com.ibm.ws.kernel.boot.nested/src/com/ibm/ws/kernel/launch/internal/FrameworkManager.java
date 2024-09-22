@@ -83,7 +83,6 @@ import com.ibm.ws.kernel.boot.internal.commands.ServerDumpUtil;
 import com.ibm.ws.kernel.boot.jmx.internal.PlatformMBeanServerBuilder;
 import com.ibm.ws.kernel.boot.jmx.internal.PlatformMBeanServerBuilderListener;
 import com.ibm.ws.kernel.boot.jmx.service.MBeanServerPipeline;
-import com.ibm.ws.kernel.boot.jmx.service.VirtualMachineHelper;
 import com.ibm.ws.kernel.launch.internal.Provisioner.InvalidBundleContextException;
 import com.ibm.ws.kernel.launch.service.ClientRunner;
 import com.ibm.ws.kernel.launch.service.ForcedServerStop;
@@ -256,14 +255,6 @@ public class FrameworkManager {
                             throw new IllegalStateException(Tr.formatMessage(tc, "error.checkpoint.securitymanager.not.supported"));
                         }
                     });
-                    // Initialize the VirtualMachineHelper here.  HotSpot Java's read the sun.jvmstat.monitor.local system property during class initialization
-                    // on Java 17 when doing Java dump or attaching for the localConnector-1.0 feature.
-                    // The permission cannot be set in security policy due to it being during class initialization.
-                    try {
-                        VirtualMachineHelper.getVirtualMachine();
-                    } catch (RuntimeException re) {
-                        // ignore the exception.
-                    }
                     if (j2secNoRethrow == null || j2secNoRethrow.equals("false")) {
                         try {
                             AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Void>() {

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2023 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -234,3 +234,7 @@ scheme.incorrect.error.useraction=Typ sch\u00e9matu mus\u00ed b\u00fdt http, htt
 upgradeHttpToWebSocket.failed=CWWKH0055E: Vol\u00e1n\u00ed jacarta.websocket.server.ServerContainer#upgradeHttpToWebSocket se nezda\u0159ilo kv\u016fli {0}. 
 upgradeHttpToWebSocket.failed.explanation=Server neupgradoval po\u017eadavek HTTP nebo HTTPS na protokol ws/wss.
 upgradeHttpToWebSocket.failed.useraction=P\u0159ezkoumejte chybu a identifikujte p\u0159\u00ed\u010dinu selh\u00e1n\u00ed upgradu po\u017eadavku.
+
+maxmessagesize.exceeded=CWWKH0056E: maxMessageSize pro metodu {0} p\u0159ekra\u010duje Integer.MAX_VALUE pro t\u0159\u00eddu {1} .
+maxmessagesize.exceeded.explanation=Parametr anotace maxMessageSize OnMessage nastavuje maxim\u00e1ln\u00ed velikost zpr\u00e1vy v bajtech pro metodu. maxMessageSize lze nastavit pouze na maxim\u00e1ln\u00ed hodnotu Integer.MAX_VALUE .
+maxmessagesize.exceeded.useraction=Sni\u017ete hodnotu parametru maxMessageSize na v\u00edce ne\u017e Integer.MAX_VALUE .

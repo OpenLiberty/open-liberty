@@ -31,10 +31,10 @@ Import-Package: \
 # Set this to 5.0.0 for now until other EE11 features such as Security, CDI and Faces update
 # to depend on Expression Language 6.0.
 Require-Capability: osgi.contract;
- filter:="(&(osgi.contract=JavaEL)(version=5.0.0))"
+ filter:="(&(osgi.contract=JakartaExpressionLanguage)(version=6.0.0))"
 
 instrument.disabled: true
 
 -buildpath: \
-    org.apache.tomcat:tomcat-jasper-el;strategy=exact;version=11.0.0.M21,\
+    org.apache.tomcat:tomcat-jasper-el;strategy=exact;version=11.0.0.M24,\
     io.openliberty.jakarta.expressionLanguage.6.0;version=latest

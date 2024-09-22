@@ -37,7 +37,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestC
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.mtls.mutliple.apps.MessagingBeanOne;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.mtls.mutliple.apps.MessagingBeanTwo;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.MtlsMultipleKeyStoresTests;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
+import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;

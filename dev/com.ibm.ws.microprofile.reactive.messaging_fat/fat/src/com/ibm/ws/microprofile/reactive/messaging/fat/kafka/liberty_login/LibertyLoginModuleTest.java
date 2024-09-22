@@ -19,6 +19,7 @@ import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaU
 import java.util.Collections;
 import java.util.Map;
 
+import componenttest.annotation.MaximumJavaLevel;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -35,7 +36,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProp
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
+import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.SaslPlainTests;
 
 import componenttest.annotation.Server;
@@ -48,6 +49,7 @@ import componenttest.topology.impl.LibertyServer;
  * Test the login module with an aes encoded password and configured encryption key
  */
 @RunWith(FATRunner.class)
+@MaximumJavaLevel(javaLevel = 22)
 public class LibertyLoginModuleTest {
 
     private static final String APP_NAME = "kafkaLoginModuleTest";

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # -------------------------------------------------------------------------------------------------
 #*******************************************************************************
-# Copyright (c) 2023 IBM Corporation and others.
+# Copyright (c) 2023, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,4 +49,40 @@ CWMOT5003.factory.used.after.shutdown.useraction=Esaminare l'applicazione per ca
 
 CWMOT5004.factory.used.without.metadata=CWMOT5004W: \u00c8 stata fatta richiesta per un OpenTelemetry oggetto ma senza metadati dell'applicazione e senza globale OpenTelemetry l'oggetto era disponibile. 
 CWMOT5004.factory.used.without.metadata.explanation=CWMOT5004.factory.used.without.metadata.explanation=If non c'\u00e8 globale OpenTelemetry oggetto Liberty'S MicroProfile Il codice di integrazione della telemetria tenter\u00e0 di trovare il file corretto OpenTelemetry oggetto per l'applicazione corrente utilizzando i metadati dell'applicazione nel thread corrente. Tuttavia, poich\u00e9 non erano presenti metadati nel thread, non \u00e8 stato possibile farlo. 
-CWMOT5004.factory.used.without.metadata.useraction=Controlla il tuo codice per vedere perch\u00e9 ha tentato di utilizzarlo MicroProfile Telemetria in assenza di metadati dell'applicazione e ambito server OpenTelemetry oggetto. Il caso pi\u00f9 probabile \u00e8 che stai creando nuovi thread senza utilizzare Liberty'S ManagedExecutorService e cercando di acquisire un OpenTelemetry oggetto dall'interno. Se stai tentando di acquisire un file OpenTemetry oggetto al di fuori di un'applicazione, garantire OpenTelemetry \u00e8 abilitato tramite una variabile di ambiente o una propriet\u00e0 di sistema.   
+CWMOT5004.factory.used.without.metadata.useraction=Rivedere il codice per capire perch\u00e9 il codice di integrazione ha tentato di usare la telemetria MicroProfile senza metadati e un oggetto OpenTelemetry con ambito server. Molto probabilmente il codice di integrazione cerca di creare nuovi thread senza utilizzare l'interfaccia ManagedExecutorService e di acquisire un oggetto OpenTelemetry dall'interno dell'applicazione. Per acquisire un oggetto OpenTemetry al di fuori di un'applicazione, abilitare OpenTelemetry tramite una variabile di ambiente o una propriet\u00e0 di sistema.
+
+CWMOT5005.mptelemetry.unknown.log.source=CWMOT5005W: La funzione di registrazione telemetrica MicroProfile non riconosce la sorgente di registro [ {0} ].
+CWMOT5005.mptelemetry.unknown.log.source.explanation=L'ambiente di runtime Liberty non fornisce la fonte di log specificata.
+CWMOT5005.mptelemetry.unknown.log.source.useraction=Controllare le informazioni di configurazione e specificare una delle fonti supportate per MicroProfile Telemetria.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+
+threadpool.activeThreads.description=Il numero di thread che stanno eseguendo attivamente le attivit\u00e0.
+threadpool.size.description=La dimensione del pool di thread.
+
+session.activeSessions.description=Il numero di sessioni attive contemporaneamente. Una sessione \u00e8 attiva quando il runtime sta elaborando una richiesta che utilizza quella sessione utente.
+session.created.description=Il numero di sessioni registrate da quando questa metrica \u00e8 stata attivata.
+session.invalidated.description=Il numero di sessioni interrotte da quando questa metrica \u00e8 stata attivata.
+session.invalidatedbyTimeout.description=Il numero di sessioni interrotte a causa di un timeout da quando questa metrica \u00e8 stata attivata.
+session.live.description=Il numero di utenti attualmente collegati.
+
+connectionpool.handle.count.description=Il numero di connessioni in uso. Questo numero pu\u00f2 includere pi\u00f9 connessioni condivise da una singola connessione gestita.
+connectionpool.connection.created.description=Il numero totale di connessioni gestite create dalla creazione del pool.
+connectionpool.connection.destroyed.description=Il numero totale di connessioni gestite che sono state distrutte dalla creazione del pool.
+connectionpool.connection.free.description=Il numero di connessioni gestite disponibili.
+connectionpool.connection.waitTime.description=Il tempo totale di attesa delle richieste di connessione.
+connectionpool.connection.useTime.description=Il tempo totale di utilizzo di tutte le connessioni all'origine dati.
+connectionpool.connection.count.description=Il numero attuale di connessioni gestite nel pool. Questo valore include le connessioni gestite disponibili e quelle in uso. Una singola connessione gestita condivisa da pi\u00f9 connessioni viene conteggiata una sola volta.
+
+requestTiming.processed.description=Il numero di richieste servlet dall'avvio del server.
+requestTiming.active.description=Il numero di richieste di servlet attualmente in esecuzione.
+requestTiming.slow.description=Il numero di richieste servlet che sono attualmente in esecuzione, ma l'esecuzione \u00e8 lenta.
+requestTiming.hung.description=Il numero di richieste di servlet attualmente in sospeso.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# HTTP Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+
+http.server.request.duration.description=Durata delle richieste del server HTTP.

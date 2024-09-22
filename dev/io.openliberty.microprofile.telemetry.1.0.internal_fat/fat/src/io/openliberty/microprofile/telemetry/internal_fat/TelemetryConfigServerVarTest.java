@@ -50,7 +50,7 @@ public class TelemetryConfigServerVarTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
+    public static RepeatTests r = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -67,7 +67,8 @@ public class TelemetryConfigServerVarTest extends FATServletClient {
 
     @Test
     //We don't throw warning related to runtime mode in versions older than the runtime mode.
-    @SkipForRepeat({ TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID, TelemetryActions.MP50_MPTEL11_ID, MicroProfileActions.MP61_ID })
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID, TelemetryActions.MP50_MPTEL11_ID, MicroProfileActions.MP61_ID,
+                     MicroProfileActions.MP60_ID })
     public void testWarningForConflictingValues() throws Exception {
         //Don't set the mark, as the warning comes from app startup.
 

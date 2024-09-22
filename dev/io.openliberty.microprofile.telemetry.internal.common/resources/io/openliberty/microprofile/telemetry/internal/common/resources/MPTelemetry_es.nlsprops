@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # -------------------------------------------------------------------------------------------------
 #*******************************************************************************
-# Copyright (c) 2023 IBM Corporation and others.
+# Copyright (c) 2023, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,4 +49,40 @@ CWMOT5003.factory.used.after.shutdown.useraction=Revise la aplicaci\u00f3n para 
 
 CWMOT5004.factory.used.without.metadata=CWMOT5004W: Se hizo una solicitud de OpenTelemetry objeto pero sin metadatos de aplicaci\u00f3n y sin global OpenTelemetry El objeto estaba disponible. 
 CWMOT5004.factory.used.without.metadata.explanation=CWMOT5004.factory.used.without.metadata.explanation=If no hay global OpenTelemetry objeto Liberty's MicroProfile El c\u00f3digo de integraci\u00f3n de telemetr\u00eda intentar\u00e1 encontrar el c\u00f3digo correcto OpenTelemetry objeto para la aplicaci\u00f3n actual utilizando los metadatos de la aplicaci\u00f3n en el hilo actual. Sin embargo, como no hab\u00eda metadatos en el hilo, no pudo hacerlo. 
-CWMOT5004.factory.used.without.metadata.useraction=Revise su c\u00f3digo para ver por qu\u00e9 intent\u00f3 usarlo. MicroProfile Telemetr\u00eda cuando no hab\u00eda metadatos de la aplicaci\u00f3n ni alcance del servidor OpenTelemetry objeto. El caso m\u00e1s probable es que est\u00e9s creando nuevos hilos sin utilizar Liberty's ManagedExecutorService y tratando de adquirir un OpenTelemetry objeto desde dentro. Si est\u00e1 intentando adquirir un OpenTemetry objeto fuera de una aplicaci\u00f3n, aseg\u00farese de OpenTelemetry se habilita a trav\u00e9s de una variable de entorno o propiedad del sistema.   
+CWMOT5004.factory.used.without.metadata.useraction=Revise su c\u00f3digo para ver por qu\u00e9 el c\u00f3digo de integraci\u00f3n intent\u00f3 utilizar MicroProfile Telemetry sin metadatos y un objeto OpenTelemetry de \u00e1mbito de servidor. Lo m\u00e1s probable es que el c\u00f3digo de integraci\u00f3n intente crear nuevos hilos sin utilizar la interfaz ManagedExecutorService y adquirir un objeto OpenTelemetry desde dentro de la aplicaci\u00f3n. Para adquirir un objeto OpenTemetry fuera de una aplicaci\u00f3n, habilite OpenTelemetry a trav\u00e9s de una variable de entorno o una propiedad del sistema.
+
+CWMOT5005.mptelemetry.unknown.log.source=CWMOT5005W: La funci\u00f3n de registro de telemetr\u00eda MicroProfile no reconoce la fuente de registro [ {0} ].
+CWMOT5005.mptelemetry.unknown.log.source.explanation=El entorno de ejecuci\u00f3n Liberty no proporciona la fuente de registro especificada.
+CWMOT5005.mptelemetry.unknown.log.source.useraction=Compruebe la informaci\u00f3n de configuraci\u00f3n y especifique una de las fuentes admitidas para MicroProfile Telemetr\u00eda.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+
+threadpool.activeThreads.description=El n\u00famero de hebras que est\u00e1n ejecutando tareas de forma activa.
+threadpool.size.description=El tama\u00f1o de la agrupaci\u00f3n de hebras.
+
+session.activeSessions.description=N\u00famero de sesiones activas al mismo tiempo. Una sesi\u00f3n est\u00e1 activa cuando el tiempo de ejecuci\u00f3n est\u00e1 procesando una solicitud que utiliza esa sesi\u00f3n de usuario.
+session.created.description=El n\u00famero de sesiones iniciadas desde que se activ\u00f3 esta m\u00e9trica.
+session.invalidated.description=El n\u00famero de sesiones cerradas desde que se activ\u00f3 esta m\u00e9trica.
+session.invalidatedbyTimeout.description=N\u00famero de sesiones que se han desconectado debido a un tiempo de espera desde que se activ\u00f3 esta m\u00e9trica.
+session.live.description=N\u00famero de usuarios con la sesi\u00f3n iniciada actualmente.
+
+connectionpool.handle.count.description=El n\u00famero de conexiones que est\u00e1n en uso. Este n\u00famero podr\u00eda incluir varias conexiones que se comparten desde una sola conexi\u00f3n gestionada.
+connectionpool.connection.created.description=El n\u00famero total de conexiones gestionadas que se han creado desde la creaci\u00f3n de la agrupaci\u00f3n.
+connectionpool.connection.destroyed.description=N\u00famero total de conexiones gestionadas que se han destruido desde la creaci\u00f3n del pool.
+connectionpool.connection.free.description=N\u00famero de conexiones gestionadas disponibles.
+connectionpool.connection.waitTime.description=La cantidad total de tiempo que las solicitudes de conexi\u00f3n esperaron una conexi\u00f3n.
+connectionpool.connection.useTime.description=La cantidad total de tiempo que todas las conexiones a la fuente de datos estuvieron en uso.
+connectionpool.connection.count.description=El n\u00famero actual de conexiones gestionadas en el pool. Este valor incluye las conexiones gestionadas que est\u00e1n disponibles y las que est\u00e1n en uso. Una \u00fanica conexi\u00f3n gestionada compartida por varias conexiones s\u00f3lo cuenta una vez.
+
+requestTiming.processed.description=N\u00famero de solicitudes de servlet desde que se ha iniciado el servidor.
+requestTiming.active.description=El n\u00famero de peticiones servlet que se est\u00e1n ejecutando actualmente.
+requestTiming.slow.description=El n\u00famero de solicitudes de servlet que se est\u00e1n ejecutando actualmente pero que son lentas.
+requestTiming.hung.description=El n\u00famero de peticiones servlet que est\u00e1n colgadas actualmente.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# HTTP Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+
+http.server.request.duration.description=Duraci\u00f3n de las peticiones del servidor HTTP.
