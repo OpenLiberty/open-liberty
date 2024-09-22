@@ -70,6 +70,13 @@ public enum CheckpointPhase {
      */
     public static final String CONDITION_PROCESS_RUNNING_ID = "io.openliberty.process.running";
 
+    /**
+     * The ID of the condition service that indicates the Liberty process will have a checkpoint done
+     * in the future. This condition will be unregistered just before the JVM goes into single-thread
+     * mode to prepare for the checkpoint.
+     */
+    public static final String CONDITION_BEFORE_CHECKPOINT_ID = "io.openliberty.before.checkpoint";
+
     private static final String SERVICE_RANKING = "service.ranking";
 
     /**
