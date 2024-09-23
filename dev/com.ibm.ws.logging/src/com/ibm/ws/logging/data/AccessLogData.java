@@ -170,8 +170,8 @@ public class AccessLogData extends GenericData {
     public void setRequestElapsedTime(long l)  { setPair(17, l); }
     public void setRequestFirstLine(String s)  { setPair(20, s); }
     public void setAccessLogDatetime(long l)   { setPair(21, l); }
-    public void setRemoteUser(String s)        { setPair(26, s); }
-    public void setRemotePort(String s)        { setPair(27, s); }
+    public void setRemoteUser(String s)        { setPair(22, s); }
+    public void setRemotePort(String s)        { setPair(23, s); }
     public void setCookies(String name, String value) {
         kvplCookies.addKeyValuePair(name, value);
         setPair(16, kvplCookies);
@@ -207,8 +207,8 @@ public class AccessLogData extends GenericData {
     public KeyValuePairList getResponseHeaders() { return getValues(19); }
     public String getRequestFirstLine()          { return getStringValue(20); }
     public long getAccessLogDatetime()           { return getLongValue(21); }
-    public String getRemoteUser()                { return getStringValue(26); }
-    public String getRemotePort()                { return getStringValue(27); }
+    public String getRemoteUser()                { return getStringValue(22); }
+    public String getRemotePort()                { return getStringValue(23); }
 
     public static String getRequestStartTimeKey(int format)   { return nameAliases[format].aliases[0]; }
     public static String getUriPathKey(int format)            { return nameAliases[format].aliases[1]; }
