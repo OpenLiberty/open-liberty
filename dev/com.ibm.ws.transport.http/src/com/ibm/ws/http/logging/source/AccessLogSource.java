@@ -15,6 +15,7 @@ package com.ibm.ws.http.logging.source;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -82,10 +83,26 @@ public class AccessLogSource implements Source {
             this.logFormat = logFormat;
             this.loggingConfig = loggingConfig;
             this.logstashConfig = logstashConfig;
+
+            StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+        System.out.println(" MSP -> Current Stack:");
+        for (int i = 2; i < stack.length; i++) {
+            System.out.println(stack[i]);
+        }
+        System.out.println("&&& Configuration(constructor): ["+this.logFormat+"]");
         }
 
         //@formatter:off
-        String getLogFormat()      { return this.logFormat; }
+        String getLogFormat()      { 
+            
+            StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+        System.out.println(" MSP -> Current Stack:");
+        for (int i = 2; i < stack.length; i++) {
+            System.out.println(stack[i]);
+        }
+        System.out.println("&&& getLogFormat: ["+this.logFormat+"]");
+            
+            return this.logFormat; }
         String getLoggingConfig()  { return this.loggingConfig; }
         String getLogstashConfig() { return this.logstashConfig; }
         //@formatter:on
@@ -298,6 +315,10 @@ public class AccessLogSource implements Source {
 
         ArrayList<AccessLogDataFieldSetter> fieldSetters = new ArrayList<AccessLogDataFieldSetter>();
         for (String f : fields.keySet()) {
+
+            System.out.println("&&& populateSetters : " + f );
+
+
             switch (f) {
                 //@formatter:off
                 case "%h": fieldSetters.add((ald, alrd) -> ald.setRemoteHost(alrd.getRemoteAddress())); break;
@@ -354,7 +375,12 @@ public class AccessLogSource implements Source {
                 case "%r": fieldSetters.add((ald, alrd) -> ald.setRequestFirstLine(AccessLogFirstLine.getFirstLineAsString(alrd.getResponse(), alrd.getRequest(), null))); break;
                 case "%t": fieldSetters.add((ald, alrd) -> ald.setRequestStartTime(AccessLogStartTime.getStartTimeAsLongForJSON(alrd.getResponse(), alrd.getRequest(), null))); break;
                 case "%{t}W": fieldSetters.add((ald, alrd) -> ald.setAccessLogDatetime(AccessLogCurrentTime.getAccessLogCurrentTimeAsLong(alrd.getResponse(), alrd.getRequest(), null))); break;
-                case "%u": fieldSetters.add((ald, alrd) -> ald.setRemoteUser(AccessLogRemoteUser.getRemoteUser(alrd.getResponse(), alrd.getRequest(), null))); break;
+                case "%u": fieldSetters.add((ald, alrd) -> 
+                {
+                    String remoteUser = AccessLogRemoteUser.getRemoteUser(alrd.getResponse(), alrd.getRequest(), null);
+                    System.out.println("### setRemoteUser called with: " + remoteUser);
+                    ald.setRemoteUser(remoteUser);
+                });break;
                 //@formatter:on
             }
         }
@@ -478,6 +504,9 @@ public class AccessLogSource implements Source {
         } else if (jsonAccessLogFieldsLogstashConfig.equals("logFormat")) {
             formatters[3] = populateCustomFormatters(fieldsToAddLogstash, CollectorConstants.KEYS_LOGSTASH);
         }
+
+        System.out.println("&&& createSetterFormatter -> " +Arrays.toString(formatters));
+
         newSF.setSettersAndFormatters(fieldSetters, formatters);
 
         return newSF;
@@ -672,8 +701,13 @@ public class AccessLogSource implements Source {
     }
 
     private static JsonFieldAdder addRemoteUserField(int format) {
+        System.out.println("addRemoteUserField -> format [" +format  +"]");
+
+
         return (jsonBuilder, ald) -> {
             if (ald.getRemoteUser() != null && !ald.getRemoteUser().isEmpty())
+                
+
                 return jsonBuilder.addField(AccessLogData.getRemoteUserKey(format), ald.getRemoteUser(), false, true);
             return jsonBuilder;
         };

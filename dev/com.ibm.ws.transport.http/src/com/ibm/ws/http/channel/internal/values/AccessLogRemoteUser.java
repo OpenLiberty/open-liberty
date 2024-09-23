@@ -40,7 +40,7 @@ public class AccessLogRemoteUser extends AccessLogData {
 
     public static String getRemoteUser(HttpResponseMessage response, HttpRequestMessage request, Object data) {
 
-        return (Objects.nonNull(data)) ? request.getRemoteUser() : null;
+        return (Objects.nonNull(request)) ? request.getRemoteUser() : null;
 
     }
 }
