@@ -3496,6 +3496,14 @@ public class LibertyServer implements LogMonitorClient {
 
                                                      "com.ibm.ws.concurrent.mp.fat.1.3.ee10", //com.ibm.ws.concurrent.mp_fat_jakarta
 
+                                                     "com.ibm.ws.security.authorization.jacc.dynamic_fat", //com.ibm.ws.ejbcontainer.security.jacc_fat.2
+                                                     "com.ibm.ws.ejbcontainer.security.jacc_fat.ejbjar.mergebindings", //com.ibm.ws.ejbcontainer.security.jacc_fat.2
+                                                     "com.ibm.ws.ejbcontainer.security.jacc_fat.ejbjar.inwar", //com.ibm.ws.ejbcontainer.security.jacc_fat.2
+                                                     "com.ibm.ws.ejbcontainer.security.jacc_fat.ejbjar.mc", //com.ibm.ws.ejbcontainer.security.jacc_fat.2
+                                                     "com.ibm.ws.ejbcontainer.security.jacc_fat", //com.ibm.ws.ejbcontainer.security.jacc_fat.2
+                                                     "com.ibm.ws.ejbcontainer.security.jacc_fat.bindings", //com.ibm.ws.ejbcontainer.security.jacc_fat.2
+                                                     "com.ibm.ws.ejbcontainer.security.jacc_fat.mergebindings", //com.ibm.ws.ejbcontainer.security.jacc_fat.2
+
                                                      "com.ibm.ws.jaxrs.fat.exceptionMappingWithOT", //com.ibm.ws.jaxrs.2.0_fat
 
                                                      "EclipseLinkServer", //com.ibm.ws.jpa.tests.eclipselink_jpa_2.1_fat
@@ -3583,6 +3591,8 @@ public class LibertyServer implements LogMonitorClient {
                                                      "com.ibm.ws.rest.handler.config.openapi.fat", //com.ibm.ws.rest.handler.config_fat
                                                      "com.ibm.ws.rest.handler.config.audit.feature.fat", //com.ibm.ws.rest.handler.config_fat
                                                      "com.ibm.ws.rest.handler.config.appdef.fat", //com.ibm.ws.rest.handler.config_fat
+                                                     "com.ibm.ws.rest.handler.config.jca.fat", //com.ibm.ws.rest.handler.config_fat
+                                                     "com.ibm.ws.rest.handler.config.jms.fat", //com.ibm.ws.rest.handler.config_fat
                                                      "com.ibm.ws.rest.handler.validator.jdbc.fat", //com.ibm.ws.rest.handler.validator_fat
                                                      "com.ibm.ws.rest.handler.validator.jca.fat", //com.ibm.ws.rest.handler.validator_fat
                                                      "com.ibm.ws.rest.handler.validator.jms.fat", //com.ibm.ws.rest.handler.validator_fat
@@ -3607,6 +3617,7 @@ public class LibertyServer implements LogMonitorClient {
                                                      "checkpointMPOpenAPIConfig", //io.openliberty.checkpoint_fat
 
                                                      "io.openliberty.jcache.internal.fat.jwt.auth.cache.1", //io.openliberty.checkpoint_fat_jcache_hazelcast
+                                                     "io.openliberty.jcache.internal.fat.jwt.auth.cache.2", //io.openliberty.checkpoint_fat_jcache_hazelcast
 
                                                      "ContainerJSPServer", //io.openliberty.http.monitor_fat
 
@@ -3703,6 +3714,7 @@ public class LibertyServer implements LogMonitorClient {
                     //check for exempt servers should eventually be removed
                     if (REPEAT_FEATURE_CHECK_ERROR) {
                         if (FAT_TEST_LOCALRUN) {
+                            message = message + "\nYou should also ensure that the test server has been removed from LibertyServer.EXEMPT_SERVERS.";
                             throw new Exception(message);
                         } else if (!EXEMPT_SERVERS_SET.contains(serverName)) {
                             throw new Exception(message);
