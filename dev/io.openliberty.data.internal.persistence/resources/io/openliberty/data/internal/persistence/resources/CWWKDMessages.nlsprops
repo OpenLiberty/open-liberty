@@ -658,7 +658,7 @@ CWWKD1067.ddlgen.emf.timeout.useraction=Reattempt DDL generation \
  when the system and database are not under load.
 
 CWWKD1068.entity.name.conflict=CWWKD1068E: The {0} repository interface has \
- multiple entities named {1} which are provided by different classes: {2}. \
+ multiple entities named {1} that are provided by different classes: {2}. \
  Use the following Jakarta Persistence entity annotations to assign a unique \
  entity name and table name to each entity class: {3}.
 CWWKD1068.entity.name.conflict.explanation=Entity names and tables names are \
