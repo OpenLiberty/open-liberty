@@ -31,6 +31,7 @@ import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
+import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http2.GrpcServletServices;
@@ -675,7 +676,12 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
      */
     @Override
     public long getStartTime() {
-        return context.getStartNanoTime();
+
+        if(nettyContext.channel().hasAttr(NettyHttpConstants.REQUEST_START_TIME)){
+            return nettyContext.channel().attr(NettyHttpConstants.REQUEST_START_TIME).get();
+        }
+        
+        return 0;
     }
 
     /**

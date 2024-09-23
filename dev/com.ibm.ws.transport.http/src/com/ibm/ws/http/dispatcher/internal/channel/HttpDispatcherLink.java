@@ -198,6 +198,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         nettyContext = context;
         this.isc = new HttpInboundServiceContextImpl(context, nettyVc);
         this.isc.setHttpConfig(config);
+        this.isc.setStartTime();
 
         nettyRequest = request;
         this.isc.setNettyRequest(request);

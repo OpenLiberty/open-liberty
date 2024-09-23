@@ -1440,7 +1440,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         if (httpsPort >= 0) {
             if (useNetty && nettyTlsProvider == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                    Tr.warning(tc, "Netty TLS provider is not available, HTTPS will not be enabled");
+                    //Tr.warning(tc, "Netty TLS provider is not available, HTTPS will not be enabled");
                 }
             } else if (!useNetty && sslFactoryProvider.getService() == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {

@@ -2121,12 +2121,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         if (0 == startTime) {
             if (getHttpConfig().isAccessLoggingEnabled()) {
 
-                if (Objects.nonNull(nettyContext) &&
-                    nettyContext.channel().hasAttr(NettyHttpConstants.REQUEST_START_TIME)) {
-                    this.startTime = nettyContext.channel().attr(NettyHttpConstants.REQUEST_START_TIME).get();
-                } else {
-                    this.startTime = System.nanoTime();
-                }
+                this.startTime = System.nanoTime();
+
+                if (Objects.nonNull(nettyContext)) {
+                    nettyContext.channel().attr(NettyHttpConstants.REQUEST_START_TIME).set(this.startTime);
+                } 
             }
         }
     }
@@ -2196,7 +2195,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     }
 
     public String getRemoteUser() {
-        return this.remoteUser;
+       return this.remoteUser;
     }
 
     public void initForwardedValues() {

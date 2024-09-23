@@ -38,9 +38,12 @@ import com.ibm.ws.http.netty.pipeline.TransportOutboundHandler;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
+import io.netty.channel.RecvByteBufAllocator;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
@@ -109,6 +112,12 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         channel.attr(NettyHttpConstants.IS_OUTBOUND_KEY).set(false);
         channel.attr(NettyHttpConstants.ENDPOINT_PID).set(chain.getEndpointPID());
+
+        RecvByteBufAllocator channelAllocator = channel.config().getRecvByteBufAllocator();
+        LoggingRecvByteBufAllocator loggingAllocator = new LoggingRecvByteBufAllocator(channelAllocator);
+        channel.config().setRecvByteBufAllocator(loggingAllocator);
+
+        pipeline.addLast("AllocatorContextSetter", new AllocatorContextSetter(loggingAllocator));
 
         if(chain.isHttps()){
             setupSecurePipeline(pipeline);
@@ -364,6 +373,25 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     public void clearConfig() {
         this.httpConfig.clear();
 
+    }
+
+    @Sharable
+    private static class AllocatorContextSetter extends ChannelInboundHandlerAdapter{
+        private final LoggingRecvByteBufAllocator loggingAllocator;
+
+        AllocatorContextSetter(LoggingRecvByteBufAllocator loggingAllocator){
+            this.loggingAllocator = loggingAllocator;
+        }
+
+        @Override
+        public void handlerAdded(ChannelHandlerContext context) throws Exception{
+            super.handlerAdded(context);
+
+            RecvByteBufAllocator.Handle handle = context.channel().unsafe().recvBufAllocHandle();
+            if(handle instanceof LoggingRecvByteBufAllocator.LoggingHandle){
+                ((LoggingRecvByteBufAllocator.LoggingHandle) handle).setChannelHandlerContext(context);
+            }
+        }
     }
 
 }

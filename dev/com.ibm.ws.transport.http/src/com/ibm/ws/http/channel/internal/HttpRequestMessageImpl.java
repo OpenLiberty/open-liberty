@@ -1917,6 +1917,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         return getServiceContext().getStartNanoTime();
     }
 
+    @Override
     public String getRemoteUser() {
         String remoteUser = "";
 
