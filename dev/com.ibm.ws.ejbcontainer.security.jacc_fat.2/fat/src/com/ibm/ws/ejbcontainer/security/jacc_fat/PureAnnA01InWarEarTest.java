@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,15 +14,16 @@
 package com.ibm.ws.ejbcontainer.security.jacc_fat;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 
 /**
  * This test variation covers packaging of EJB in WAR with all packaged in an EAR file such
@@ -38,14 +39,17 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  *
  * This test covers the positive RunAs testing while PureAnnA05Test covers the negative scenarios.
  */
-@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
+@CheckpointTest(alwaysRun = true)
 public class PureAnnA01InWarEarTest extends PureAnnA01Base {
 
     protected static Class<?> logClass = PureAnnA01InWarEarTest.class;
 
     @Rule
     public TestName name = new TestName();
+
+    @ClassRule
+    public static RepeatTests r = FATSuite.defaultAndCheckpointRepeat(Constants.SERVER_EJB);
 
     @BeforeClass
     public static void setUp() throws Exception {

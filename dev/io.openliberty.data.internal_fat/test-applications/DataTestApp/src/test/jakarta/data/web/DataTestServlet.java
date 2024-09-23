@@ -111,6 +111,9 @@ public class DataTestServlet extends FATServlet {
     Apartments apartments;
 
     @Inject
+    Cylinders cylinders;
+
+    @Inject
     EmptyRepository emptyRepo;
 
     @Inject
@@ -3403,6 +3406,9 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testMultipleAggregates() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        boolean databaseRounds = jdbcJarName.startsWith("ojdbc") || jdbcJarName.startsWith("postgre");
+
         Object[] objects = primes.minMaxSumCountAverageObject(50);
         assertEquals(Long.valueOf(2L), objects[0]); // minimum
         assertEquals(Long.valueOf(47L), objects[1]); // maximum
@@ -3449,7 +3455,10 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Long.valueOf(29L), list.get(1)); // maximum
         assertEquals(Long.valueOf(129L), list.get(2)); // sum
         assertEquals(Long.valueOf(10L), list.get(3)); // count
-        assertEquals(Long.valueOf(12L), list.get(4)); // average
+        if (databaseRounds)
+            assertEquals(Long.valueOf(13L), list.get(4)); // average - 12.9 -> 13
+        else
+            assertEquals(Long.valueOf(12L), list.get(4)); // average - 12.9 -> 12
 
         Stack<String> stack = primes.minMaxSumCountAverageStack(25);
         assertEquals("2", stack.get(0)); // minimum
@@ -3464,7 +3473,10 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Integer.valueOf(19), it.next()); // maximum
         assertEquals(Integer.valueOf(77), it.next()); // sum
         assertEquals(Integer.valueOf(8), it.next()); // count
-        assertEquals(Integer.valueOf(9), it.next()); // average
+        if (databaseRounds)
+            assertEquals(Integer.valueOf(10), it.next()); // average - 9.625 -> 10
+        else
+            assertEquals(Integer.valueOf(9), it.next()); // average - 9.625 -> 9
 
         Deque<Double> deque = primes.minMaxSumCountAverageDeque(18);
         assertEquals(2.0, deque.removeFirst(), 0.01); // minimum
@@ -3472,6 +3484,40 @@ public class DataTestServlet extends FATServlet {
         assertEquals(58.0, deque.removeFirst(), 0.01); // sum
         assertEquals(7.0, deque.removeFirst(), 0.01); // count
         assertEquals(8.0, Math.floor(deque.removeFirst()), 0.01); // average
+    }
+
+    /**
+     * Use a repository that has multiple embeddable attributes of the same type.
+     */
+    @Test
+    public void testMultipleEmbeddableAttributesOfSameType() {
+        Cylinder cyl1, cyl2, cyl3, cyl4, cyl5;
+
+        //                                    Id     a.x, a.y, b.x, b.y, c.x, c.y
+        cylinders.upsert(cyl1 = new Cylinder("CYL1", 100, 287, 372, 833, 509, 424),
+                         cyl2 = new Cylinder("CYL2", 790, 857, 942, 143, 509, 424),
+                         cyl3 = new Cylinder("CYL3", 340, 101, 100, 919, 629, 630),
+                         cyl4 = new Cylinder("CYL4", 100, 684, 974, 516, 453, 163),
+                         cyl5 = new Cylinder("CYL5", 412, 983, 276, 413, 629, 630));
+
+        assertEquals(5, cylinders.countValid());
+
+        assertEquals(List.of(cyl5.toString(), cyl3.toString()),
+                     cylinders.centeredAt(629, 630)
+                                     .map(Object::toString)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of(cyl2.toString(), cyl1.toString()),
+                     cylinders.centeredAt(509, 424)
+                                     .map(Object::toString)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of(cyl3.toString(), cyl1.toString(), cyl4.toString()),
+                     cylinders.findBySideAXOrSideBXOrderBySideBYDesc(100, 100)
+                                     .map(Object::toString)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(Long.valueOf(5), cylinders.eraseAll());
     }
 
     /**
@@ -5340,24 +5386,21 @@ public class DataTestServlet extends FATServlet {
         PageRequest page1req = PageRequest.ofSize(3).withTotal();
 
         // query with no clauses
-        // TODO blocked by 28913
-        //page1 = receipts.all(page1req, Order.by(Sort.asc(ID)));
-        //assertEquals(5, page1.totalElements());
+        page1 = receipts.all(page1req, Order.by(Sort.asc(ID)));
+        assertEquals(5, page1.totalElements());
 
         receipts.insert(new Receipt(5006, "TCFQWSCO-5", 56.56f));
 
         // query with FROM clause only
-        // TODO blocked by 28913
-        //page1 = receipts.all(page1req, Sort.desc(ID));
-        //assertEquals(6, page1.totalElements());
+        page1 = receipts.all(page1req, Sort.desc(ID));
+        assertEquals(6, page1.totalElements());
 
         receipts.insert(new Receipt(5007, "TCFQWSCO-7", 57.17f));
 
         // query with FROM clause only
-        // TODO blocked by 28913
-        //page1 = receipts.sortedByTotalIncreasing(page1req);
-        //assertEquals(7, page1.totalElements());
-        //assertEquals(5003, page1.iterator().next().purchaseId());
+        page1 = receipts.sortedByTotalIncreasing(page1req);
+        assertEquals(7, page1.totalElements());
+        assertEquals(5003, page1.iterator().next().purchaseId());
 
         receipts.insert(new Receipt(5008, "TCFQWSCO-8", 58.88f));
 

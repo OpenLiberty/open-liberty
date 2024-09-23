@@ -1468,23 +1468,8 @@
     </dependency>
     <dependency>
       <groupId>jakarta.nosql</groupId>
-      <artifactId>nosql-column</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.nosql</groupId>
-      <artifactId>nosql-core</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.nosql</groupId>
-      <artifactId>nosql-document</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.nosql</groupId>
-      <artifactId>nosql-key-value</artifactId>
-      <version>1.0.0-b6</version>
+      <artifactId>jakarta.nosql-api</artifactId>
+      <version>1.0.0-M1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.persistence</groupId>
@@ -2857,51 +2842,6 @@
       <version>8.2.0.v20160908</version>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.jnosql.communication</groupId>
-      <artifactId>jnosql-communication-core</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jnosql.communication</groupId>
-      <artifactId>jnosql-communication-document</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jnosql.communication</groupId>
-      <artifactId>jnosql-communication-driver-commons</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jnosql.communication</groupId>
-      <artifactId>jnosql-communication-query</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jnosql.communication</groupId>
-      <artifactId>jnosql-mongodb-driver</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jnosql.mapping</groupId>
-      <artifactId>jnosql-mapping-core</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jnosql.mapping</groupId>
-      <artifactId>jnosql-mapping-document</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jnosql.mapping</groupId>
-      <artifactId>jnosql-metamodel-processor-extension</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jnosql.mapping</groupId>
-      <artifactId>jnosql-mongodb-extension</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse.microprofile.config</groupId>
       <artifactId>microprofile-config-api</artifactId>
       <version>1.1</version>
@@ -3624,7 +3564,7 @@
     <dependency>
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>7.0.0.Alpha2</version>
+      <version>7.0.0.Beta1</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate.validator</groupId>

@@ -655,6 +655,12 @@ public class FrameworkManager {
 
                 }, FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, Integer.MIN_VALUE)));
 
+                final ServiceRegistration<Condition> beforeCheckpointReg = //
+                                fwkContext.registerService(Condition.class,
+                                                           Condition.INSTANCE,
+                                                           FrameworkUtil.asDictionary(Collections.singletonMap(Condition.CONDITION_ID,
+                                                                                                               CheckpointPhase.CONDITION_BEFORE_CHECKPOINT_ID)));
+
                 Hashtable<String, Object> restoredHookProps = new Hashtable<>();
                 restoredHookProps.put(Constants.SERVICE_RANKING, Integer.MIN_VALUE);
                 restoredHookProps.put(CheckpointHook.MULTI_THREADED_HOOK, Boolean.TRUE);
@@ -663,6 +669,7 @@ public class FrameworkManager {
                     public void prepare() {
                         // kick equinox to force a save before checkpoint single-threaded mode
                         saveEquinoxStateNow(fwkContext);
+                        beforeCheckpointReg.unregister();
                     }
 
                     @Override

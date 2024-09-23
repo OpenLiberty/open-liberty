@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -65,6 +65,7 @@ public abstract class RarBeanValidationTestCommon extends FATServletClient {
     protected static LibertyServer server;
     private String rarDisplayName = null;
     private String appName = null;
+    private String appName2 = null;
     protected static final String cfgFileExtn = "_server.xml";
     protected static ServerConfiguration originalServerConfig;
 
@@ -473,11 +474,16 @@ public abstract class RarBeanValidationTestCommon extends FATServletClient {
         server.updateServerConfiguration(originalServerConfig);
 
         if (appName != null) {
-            //Make sure the application stops, otherwise we may try to start it again in the next test and get:
-            //E CWWKZ0013E: It is not possible to start two applications called <appName>
-            //We are assuming each test only uses one application.
-            server.waitForConfigUpdateInLogUsingMark(null, "CWWKZ0009I.*" + appName);
+            // Make sure the application stops, otherwise we may try to start it again in the next test and get:
+            // E CWWKZ0013E: It is not possible to start two applications called <appName>
+            // Most tests only uses one application; support a few with 2 applications
+            if (appName2 != null) {
+                server.waitForConfigUpdateInLogUsingMark(null, "CWWKZ0009I.*" + appName, "CWWKZ0009I.*" + appName2);
+            } else {
+                server.waitForConfigUpdateInLogUsingMark(null, "CWWKZ0009I.*" + appName);
+            }
             appName = null;
+            appName2 = null;
         } else {
             server.waitForConfigUpdateInLogUsingMark(null);
         }
@@ -772,9 +778,11 @@ public abstract class RarBeanValidationTestCommon extends FATServletClient {
         server.setMarkToEndOfLog();
         rarDisplayName = RarTests.adapter_jca16_jbv_ActivationSpecValidation_Success;
         appName = RarTests.sampleapp_jca16_jbv_standaloneassuccessApp;
+        appName2 = RarTests.Jbvapp;
         server.setServerConfigurationFile(testName + cfgFileExtn);
         Set<String> appNames = new HashSet<String>();
         appNames.add(appName);
+        appNames.add(appName2);
         server.waitForConfigUpdateInLogUsingMark(appNames);
 
         assertNotNull("The Resource adapter with name " + rarDisplayName + " is not started",
@@ -812,9 +820,11 @@ public abstract class RarBeanValidationTestCommon extends FATServletClient {
         server.setMarkToEndOfLog();
         rarDisplayName = RarTests.adapter_jca16_jbv_ActivationSpecValidation_Failure;
         appName = RarTests.sampleapp_jca16_jbv_standaloneasfailureApp;
+        appName2 = RarTests.Jbvapp;
         server.setServerConfigurationFile(testName + cfgFileExtn);
         Set<String> appNames = new HashSet<String>();
         appNames.add(appName);
+        appNames.add(appName2);
         server.waitForConfigUpdateInLogUsingMark(appNames);
 
         assertNotNull("The Resource adapter with name " + rarDisplayName + " is not started",

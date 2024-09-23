@@ -5,8 +5,8 @@
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
-    
-    <webServiceClient enableSchemaValidation="false" />
+    <!-- Since enableDefaultValidation is true by default, to mask JAXB validation errors, enableDefaultValidation is set to false here -->
+    <webServiceClient enableSchemaValidation="false" enableDefaultValidation="false" />
     	
     <javaPermission className="java.security.AllPermission" name="*" actions="*"/>
     

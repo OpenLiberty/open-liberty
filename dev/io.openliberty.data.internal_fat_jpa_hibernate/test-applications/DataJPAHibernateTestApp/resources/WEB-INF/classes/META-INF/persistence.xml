@@ -24,6 +24,7 @@
         <properties>
             <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
             <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.allow_update_outside_transaction" value="true"/>
         </properties>
     </persistence-unit>
 

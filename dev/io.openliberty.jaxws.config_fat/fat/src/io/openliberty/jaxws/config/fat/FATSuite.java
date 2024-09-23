@@ -20,6 +20,7 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+        EnableDefaultValidationTest.class,
 	EnableSchemaValidationTest.class,
         EnableSchemaValidationWebServiceTest.class,
 	IgnoreUnexpectedElementConfigTest.class,
