@@ -33,7 +33,8 @@ Export-Package: \
   org.eclipse.angus.mail.pop3; version=${Export-Version}; thread-context=true, \
   org.eclipse.angus.mail.smtp; version=${Export-Version}; thread-context=true, \
   org.eclipse.angus.mail.util; version=${Export-Version}; thread-context=true, \
-  org.eclipse.angus.mail.util.logging; version=${Export-Version}; thread-context=true
+  org.eclipse.angus.mail.util.logging; version=${Export-Version}; thread-context=true, \
+  META-INF; version=${Export-Version}; thread-context=true
 
 Import-Package: \
   com.ibm.wsspi.classloading, \
@@ -44,25 +45,27 @@ Import-Package: \
   jakarta.mail.util;version=${Import-Version}, \
   *
 
-app-resources= \
+app-resources=\
   META-INF/services/jakarta.mail.util.StreamProvider | \
   META-INF/services/jakarta.mail.Provider | \
+  META-INF/gfprobe-provider.xml | \
+  META-INF/javamail.address.map | \
+  META-INF/javamail.charset.map | \
   META-INF/javamail.default.address.map | \
   META-INF/javamail.default.providers | \
-  META-INF/javamail.charset.map | \
+  META-INF/javamail.providers | \
   META-INF/mailcap
 
 Service-Component: \
-  io.openliberty.org.eclipse.angus.mail_${replace;${bVersion};\\.;_}.ResourceProvider; \
+  io.openliberty.org.eclipse.angus.mail_2_1_${replace;${bVersion};\\.;_}.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=ignore; \
     properties:= "resources=${app-resources}"
-
+    
 -includeresource: \
   @${repo;org.eclipse.angus:angus-mail;${Implementation-Version};EXACT}!/!(module-info.class|META-INF/maven/*|META-INF/native-image/*|org/eclipse/angus/mail/nativeimage/*)
    
 -buildpath: \
   org.eclipse.angus:angus-mail;version=${Implementation-Version};strategy=exact, \
   io.openliberty.jakarta.mail.2.1;version=latest
-     
