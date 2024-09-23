@@ -638,7 +638,7 @@ CWWKD1065.ddlgen.timeout=CWWKD1065E: DDL generation for the {0} repository \
  within {2} seconds for the following entities: {3}.
 CWWKD1065.ddlgen.timeout.explanation=The DDL generation attempt timed out \
  and did not complete.
-CWWKD1065.ddlgen.timeout.useraction=Reattempt DDL generation at a later time \
+CWWKD1065.ddlgen.timeout.useraction=Reattempt DDL generation \
  when the system and database are not under load.
 
 CWWKD1066.ddlgen.failed=CWWKD1066E: DDL generation for the {0} repository \
@@ -654,7 +654,7 @@ CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: DDL generation for the {0} repository \
  to make the following entities available within {2} seconds: {3}.
 CWWKD1067.ddlgen.emf.timeout.explanation=Acquisition of the resources needed \
  for DDL generation timed out and did not complete.
-CWWKD1067.ddlgen.emf.timeout.useraction=Reattempt DDL generation at a later time \
+CWWKD1067.ddlgen.emf.timeout.useraction=Reattempt DDL generation \
  when the system and database are not under load.
 
 CWWKD1068.entity.name.conflict=CWWKD1068E: The {0} repository interface has \
@@ -668,7 +668,7 @@ CWWKD1068.entity.name.conflict.useraction=Rename the entities or add \
  Jakarta Persistence annotations to explicitly resolve the name conflict.
 
 CWWKD1069.record.entity.name.conflict=CWWKD1069E: The {0} repository interface \
- has multiple entities named {1} which are provided by different classes: {2}. \
+ has multiple entities named {1} that are provided by different classes: {2}. \
  When Java records are used as entities, it must also be possible to append \
  a suffix of Entity to the entity name without resulting in a name conflict. \
  For example: {2}.
