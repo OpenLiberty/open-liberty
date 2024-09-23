@@ -53,8 +53,9 @@ instrument.classesExcludes: com/ibm/ws/jndi/iiop/*.class
 	com.ibm.ws.app.manager.lifecycle;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.jndi;version=latest,\
-	com.ibm.ws.transport.iiop;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.transport.iiop;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.kernel.boot.common;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

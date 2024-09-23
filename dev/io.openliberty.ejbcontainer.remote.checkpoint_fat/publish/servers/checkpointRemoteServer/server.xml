@@ -1,0 +1,33 @@
+<server>
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>ejbHome-3.2</feature>
+        <feature>ejbRemote-3.2</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <variable name="RESTORE_IIOP_PORT" defaultValue="2809" />
+    <variable name="RESTORE_IIOPS_PORT" defaultValue="2810" />
+
+    <variable name="RESTORE_IIOP_PORT_2" defaultValue="2819" />
+    <variable name="RESTORE_IIOPS_PORT_2" defaultValue="2820" />
+
+    <variable name="RESTORE_IIOP_PORT_CLIENT" defaultValue="2811" />
+    <variable name="RESTORE_IIOPS_PORT_CLIENT" defaultValue="2812" />
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${RESTORE_IIOP_PORT}" iiopsPort="${RESTORE_IIOPS_PORT}"/>
+
+    <!-- Yoko ORB bug; org.apache.yoko.rmispec.util.UtilLoader.loadServiceClass needs doPriv around getClassLoader + others -->	
+    <javaPermission codebase="${server.config.dir}/lib/global/com.ibm.ws.ejbcontainer.fat_tools.jar" className="java.net.SocketPermission" name="*" actions="listen,connect,resolve"/>
+    <javaPermission codebase="${server.config.dir}/lib/global/com.ibm.ws.ejbcontainer.fat_tools.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/lib/global/com.ibm.ws.ejbcontainer.fat_tools.jar" className="java.util.PropertyPermission" name="*" actions="read,write"/>
+    <javaPermission codebase="${server.config.dir}/lib/global/io.openliberty.ejbcontainer.jakarta.fat_tools.jar" className="java.net.SocketPermission" name="*" actions="listen,connect,resolve"/>
+    <javaPermission codebase="${server.config.dir}/lib/global/io.openliberty.ejbcontainer.jakarta.fat_tools.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/lib/global/io.openliberty.ejbcontainer.jakarta.fat_tools.jar" className="java.util.PropertyPermission" name="*" actions="read,write"/>
+    <javaPermission className="java.net.SocketPermission" name="*" actions="listen,connect,resolve"/>
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read,write"/>
+
+</server>
