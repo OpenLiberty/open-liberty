@@ -67,7 +67,7 @@ public class FeatureInfoCommandTask extends BaseCommandTask {
                 FeatureDefinition featureDefintion = entry.getValue();
                 String featureName = featureDefintion.getFeatureName();
 
-                if (featureDefintion.getVisibility() == Visibility.PUBLIC) {
+                if (featureDefintion.getVisibility() == Visibility.PUBLIC && featureName.indexOf("-") != -1) {
                     if (productName.equals(ManifestFileProcessor.CORE_PRODUCT_NAME)) {
                         commandConsole.printInfoMessage(featureName);
                     } else {
