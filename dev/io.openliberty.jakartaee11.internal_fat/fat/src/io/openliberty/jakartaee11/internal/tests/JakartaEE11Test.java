@@ -128,7 +128,6 @@ public class JakartaEE11Test extends FATServletClient {
         if (RepeatTestFilter.isRepeatActionActive(COMPAT_OL_FEATURES)) {
             toleratedWarnErrors = new String[] { "SRVE0280E", // TODO: SRVE0280E tracked by OpenLiberty issue #4857
                                                  "CWWKS5207W", // The remaining ones relate to config not done for the server / app
-                                                 "CWWWC0002W",
                                                  "CWMOT0010W",
                                                  "CWWKE0701E", // TODO: Fix this or verify that it is expected
                                                  "TRAS4352W" // Only happens when running with WebSphere Liberty image due to an auto feature
@@ -137,7 +136,6 @@ public class JakartaEE11Test extends FATServletClient {
         } else if (RepeatTestFilter.isRepeatActionActive(COMPAT_WL_FEATURES)) {
             toleratedWarnErrors = new String[] { "SRVE0280E", // TODO: SRVE0280E tracked by OpenLiberty issue #4857
                                                  "CWWKS5207W", // The remaining ones relate to config not done for the server / app
-                                                 "CWWWC0002W",
                                                  "CWMOT0010W",
                                                  "CWWKE0701E", // TODO: Fix this or verify that it is expected
                                                  "CWWKG0033W", // related to missing config for collectives
