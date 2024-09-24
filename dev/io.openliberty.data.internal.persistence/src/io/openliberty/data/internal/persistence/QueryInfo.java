@@ -1053,11 +1053,6 @@ public class QueryInfo {
             throw new MappingException("Entity property name is missing."); // TODO possibly combine with unknown entity property name
 
         String name = getAttributeName(attribute, true);
-        if (name == null) {
-            if (entityInfo.idClassAttributeAccessors != null && ID.equals(attribute))
-                generateConditionsForIdClass(condition, ignoreCase, negated, q);
-            return;
-        }
 
         StringBuilder attributeExpr = new StringBuilder();
         if (function != null)
@@ -1133,51 +1128,6 @@ public class QueryInfo {
                 q.append(attributeExpr).append(negated ? " NOT " : "").append(condition.operator);
                 generateParam(q, ignoreCase, ++paramCount);
         }
-    }
-
-    /**
-     * Generates JPQL for a *By condition on the IdClass, which expands to multiple conditions in JPQL.
-     */
-    private void generateConditionsForIdClass(Condition condition, boolean ignoreCase, boolean negate, StringBuilder q) {
-
-        String o_ = entityVar_;
-
-        q.append(negate ? "NOT (" : "(");
-
-        int count = 0;
-        for (String idClassAttr : entityInfo.idClassAttributeAccessors.keySet()) {
-            if (++count != 1)
-                q.append(" AND ");
-
-            String name = getAttributeName(idClassAttr, true);
-            if (ignoreCase)
-                q.append("LOWER(").append(o_).append(name).append(')');
-            else
-                q.append(o_).append(name);
-
-            switch (condition) {
-                case EQUALS:
-                case NOT_EQUALS:
-                    q.append(condition.operator);
-                    generateParam(q, ignoreCase, ++paramCount);
-                    if (count != 1)
-                        paramAddedCount++;
-                    break;
-                case NULL:
-                case EMPTY:
-                    q.append(Condition.NULL.operator);
-                    break;
-                case NOT_NULL:
-                case NOT_EMPTY:
-                    q.append(Condition.NOT_NULL.operator);
-                    break;
-                default:
-                    throw new MappingException("Repository keyword " + condition.name() +
-                                               " cannot be used when the Id of the entity is an IdClass."); // TODO NLS
-            }
-        }
-
-        q.append(')');
     }
 
     /**
@@ -1435,10 +1385,17 @@ public class QueryInfo {
                                 //    generateUpdatesForIdClass(queryInfo, update, first, q);
                                 throw new UnsupportedOperationException("@Assign IdClass"); // TODO
                             } else {
-                                throw new MappingException("One or more of the " + Arrays.toString(annosForAllParams[p]) +
-                                                           " annotations specifes an operation that cannot be used on parameter " +
-                                                           (p + 1) + " of the " + method.getName() + " method of the " +
-                                                           repositoryInterface.getName() + " repository when the Id is an IdClass."); // TODO NLS
+                                // Unreachable in version 1.0 and uncertain what
+                                // will be added to the spec. Deferring NLS message
+                                // until then.
+                                throw new MappingException("One or more of the " +
+                                                           Arrays.toString(annosForAllParams[p]) +
+                                                           " annotations specifes an operation" +
+                                                           " that cannot be used on parameter " +
+                                                           (p + 1) + " of the " + method.getName() +
+                                                           " method of the " +
+                                                           repositoryInterface.getName() +
+                                                           " repository when the Id is an IdClass.");
                             }
                         } else {
                             String attribute = attrAndOp[0];
@@ -1600,8 +1557,15 @@ public class QueryInfo {
         if (selections == null || selections.length == 0) {
             cols = null;
         } else if (type == Type.FIND_AND_DELETE) {
-            // TODO NLS message for error path once selections are supported function
-            throw new UnsupportedOperationException();
+            // Unreachable in version 1.0 and uncertain what will be added to
+            // the spec regarding selections. Deferring NLS message until then.
+            throw new UnsupportedOperationException //
+            ("The " + method.getName() + " method of the " +
+             repositoryInterface.getName() + " repository has a " +
+             method.getGenericReturnType().getTypeName() + " return type and" +
+             " specifies to return the " + selections + " entity properties," +
+             " but delete operations can only return void, a deletion count," +
+             " a boolean deletion indicator, or the removed entities.");
         } else {
             cols = new String[selections.length];
             for (int i = 0; i < cols.length; i++) {
@@ -1831,9 +1795,14 @@ public class QueryInfo {
                 if (op == '=') {
                     generateUpdatesForIdClass(first, q);
                 } else {
+                    // Unreachable in version 1.0 and uncertain which operations
+                    // will be chosen in future. Deferring NLS message until then.
                     String opName = op == '+' ? "Add" : op == '*' ? "Multiply" : "Divide";
-                    throw new MappingException("The " + opName +
-                                               " repository update operation cannot be used on the Id of the entity when the Id is an IdClass."); // TODO NLS
+                    throw new UnsupportedOperationException("The " + opName +
+                                                            " repository update operation" +
+                                                            " cannot be used on the Id" +
+                                                            " of the entity when the" +
+                                                            " Id is an IdClass.");
                 }
             } else {
                 q.append(first ? " " : ", ").append(o_).append(name).append("=");
@@ -2977,6 +2946,7 @@ public class QueryInfo {
      * @throws MappingException if the repository method return type is incompatible with both
      *                              delete-only and find-and-delete.
      */
+    @SuppressWarnings("unlikely-arg-type")
     @Trivial
     private boolean isFindAndDelete() {
 
@@ -3523,6 +3493,47 @@ public class QueryInfo {
     @Trivial
     final double toDouble(Object o) {
         return (Double) convert(o, double.class, true);
+    }
+
+    /**
+     * Converts a record to its generated entity equivalent,
+     * or does nothing if not a record.
+     *
+     * @param o a record that needs conversion to an entity,
+     *              or an entity that is already an entity and does not
+     *              need conversion.
+     * @return entity.
+     */
+    @Trivial
+    final Object toEntity(Object o) {
+        Object entity = o;
+        Class<?> oClass = o == null ? null : o.getClass();
+        if (o != null && oClass.isRecord())
+            try {
+                Class<?> entityClass = oClass.getClassLoader() //
+                                .loadClass(oClass.getName() + "Entity");
+                Constructor<?> ctor = entityClass.getConstructor(oClass);
+                entity = ctor.newInstance(o);
+            } catch (ClassNotFoundException | IllegalAccessException | //
+                            InstantiationException | InvocationTargetException | //
+                            NoSuchMethodException | SecurityException x) {
+                Throwable targetx = x instanceof InvocationTargetException //
+                                ? x.getCause() //
+                                : x;
+                IllegalArgumentException iax = exc(IllegalArgumentException.class,
+                                                   "CWWKD1070.record.convert.err",
+                                                   loggableAppend(oClass.getName(),
+                                                                  " (" + o + ')'),
+                                                   method.getName(),
+                                                   repositoryInterface.getName(),
+                                                   targetx.getMessage());
+                throw (IllegalArgumentException) iax.initCause(x);
+            }
+        if (entity != o &&
+            TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "toEntity " + loggable(o),
+                     oClass.getName() + " --> " + entity.getClass().getName());
+        return entity;
     }
 
     /**

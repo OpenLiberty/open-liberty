@@ -624,3 +624,79 @@ CWWKD1063.unsupported.resource.explanation=The Jakarta Persistence provider does
  not support the unwrap operation returning the specified resource type.
 CWWKD1063.unsupported.resource.useraction=Remove the unsupported resource accessor \
  method from the repository interface.
+
+CWWKD1064.datastore.error=CWWKD1064E: The {0} method of the {1} repository \
+ interface is unable to obtain the {2} data store for the repository due to \
+ the following error: {3}.
+CWWKD1064.datastore.error.explanation=An error occurred when attempting to obtain \
+ the data store.
+CWWKD1064.datastore.error.useraction=Ensure that the specified data store and all \
+ other resources it depends on exist and are correctly configured.
+
+CWWKD1065.ddlgen.timeout=CWWKD1065E: DDL generation for the {0} repository \
+ interface failed because the {1} data store did not complete DDL generation \
+ within {2} seconds for the following entities: {3}.
+CWWKD1065.ddlgen.timeout.explanation=The DDL generation attempt timed out \
+ and did not complete.
+CWWKD1065.ddlgen.timeout.useraction=Reattempt DDL generation \
+ when the system and database are not under load.
+
+CWWKD1066.ddlgen.failed=CWWKD1066E: DDL generation for the {0} repository \
+ interface that uses the {1} data store encountered an error when attempting \
+ DDL generation for the following entities: {2}. The error is: {3}.
+CWWKD1066.ddlgen.failed.explanation=The DDL generation attempt failed \
+ and did not complete.
+CWWKD1066.ddlgen.failed.useraction=Investigate the error and make corrections \
+ to the repository interface, entities, data store configuration, or database.
+
+CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: DDL generation for the {0} repository \
+ interface failed because the {1} data store was not available or was unable \
+ to make the following entities available within {2} seconds: {3}.
+CWWKD1067.ddlgen.emf.timeout.explanation=Acquisition of the resources needed \
+ for DDL generation timed out and did not complete.
+CWWKD1067.ddlgen.emf.timeout.useraction=Reattempt DDL generation \
+ when the system and database are not under load.
+
+CWWKD1068.entity.name.conflict=CWWKD1068E: The {0} repository interface has \
+ multiple entities named {1} that are provided by different classes: {2}. \
+ Use the following Jakarta Persistence entity annotations to assign a unique \
+ entity name and table name to each entity class: {3}.
+CWWKD1068.entity.name.conflict.explanation=Entity names and tables names are \
+ inferred from the unqualified class name or assigned by Jakarta Persistence \
+ annotations.
+CWWKD1068.entity.name.conflict.useraction=Rename the entities or add \
+ Jakarta Persistence annotations to explicitly resolve the name conflict.
+
+CWWKD1069.record.entity.name.conflict=CWWKD1069E: The {0} repository interface \
+ has multiple entities named {1} that are provided by different classes: {2}. \
+ When Java records are used as entities, it must also be possible to append \
+ a suffix of Entity to the entity name without resulting in a name conflict. \
+ For example: {2}.
+CWWKD1069.record.entity.name.conflict.explanation=Entity names and tables names \
+ are inferred from the unqualified class name or assigned by Jakarta Persistence \
+ annotations.
+CWWKD1069.record.entity.name.conflict.useraction=Rename the entities or switch \
+ to Jakarta Persistence entities to resolve the name conflict.
+
+CWWKD1070.record.convert.err=CWWKD1070E: The {0} record that is supplied to the \
+ {1} method of the {2} repository interface cannot be used as an entity due to \
+ the following error: {3}.
+CWWKD1070.record.convert.err.explanation=It is not possible to use the \
+ Java record as an entity.
+CWWKD1070.record.convert.err.useraction=Define the entity as a Jakarta Persistence \
+ entity instead of using a Java record entity.
+
+CWWKD1071.record.with.type.var=CWWKD1071E: The {0} record cannot be used as an \
+ entity because it has one or more type variables: {1}.
+CWWKD1071.record.with.type.var.explanation=Entity classes cannot have generic \
+ type variables.
+CWWKD1071.record.with.type.var.useraction=Remove the type variables from the \
+ record.
+
+CWWKD1072.record.comp.conflict=CWWKD1072E: The {0} record cannot be used as an \
+ entity because its {1} component and {2} component both resolve to the same \
+ entity property name.
+CWWKD1072.record.comp.conflict.explanation=Entity property names must be \
+ unique ignoring case.
+CWWKD1072.record.comp.conflict.useraction=Rename one of the record components \
+ to avoid the conflict.

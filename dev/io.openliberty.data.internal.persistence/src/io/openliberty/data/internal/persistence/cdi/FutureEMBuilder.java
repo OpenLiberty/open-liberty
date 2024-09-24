@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -193,24 +194,27 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                 return ((DDLGenerationParticipant) builder).getDDLFileName();
             }
         } catch (TimeoutException e) {
-            // TODO : translate message for exception & error (or warning)
-            // DDL generation MBean does not log errors; participants must provide meaningful messages.
-            // Log a useful error informing user to try again later after builder creation completes.
-            Tr.error(tc, "CWWKD10xxE.ddlgen.timeout", dataStore, DDLGEN_WAIT_TIME);
-
-            // Throw exception with same message so DDL generation MBean reports that a failure occurred.
-            throw new DataException("DDL file not generated for Jakarta Data repositories associated with the " + dataStore
-                                    + " DatabaseStore. The EntityManagerFactory was not created in " + DDLGEN_WAIT_TIME + " seconds. Try DDL generation again at a later time.");
+            // DDL generation MBean does not log errors; The following covers both
+            // logging the error and raising an exception with the same message.
+            throw exc(DataException.class,
+                      "CWWKD1067.ddlgen.emf.timeout",
+                      repositoryInterface.getName(),
+                      dataStore,
+                      DDLGEN_WAIT_TIME,
+                      entityTypes.stream().map(Class::getName).collect(Collectors.toList()));
         } catch (Throwable ex) {
-            // TODO : translate message for exception & error
-            // DDL generation MBean does not log errors; participants must provide meaningful messages.
-            // Log a useful error informing user to correct problems reported in the cause.
+            // DDL generation MBean does not log errors; The following covers both
+            // logging the error and raising an exception with the same message.
             Throwable cause = (ex instanceof ExecutionException) ? ex.getCause() : ex;
-            Tr.error(tc, "CWWKD10xyE.ddlgen.failed.create", dataStore, cause);
-
-            // Throw exception with same message so DDL generation MBean reports that a failure occurred.
-            throw new DataException("DDL file not generated for Jakarta Data repositories associated with the " + dataStore
-                                    + " DatabaseStore. An error occurred creating the EntityManagerFactory.", cause);
+            DataException dx = exc(DataException.class,
+                                   "CWWKD1066.ddlgen.failed",
+                                   repositoryInterface.getName(),
+                                   dataStore,
+                                   entityTypes.stream() //
+                                                   .map(Class::getName) //
+                                                   .collect(Collectors.toList()),
+                                   cause.getMessage());
+            throw (DataException) dx.initCause(ex);
         }
 
         // Not using persistence service; return null and DDL generation will skip this future
@@ -225,24 +229,27 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                 ((DDLGenerationParticipant) builder).generate(out);
             }
         } catch (TimeoutException e) {
-            // TODO : translate message for exception & error (or warning)
-            // DDL generation MBean does not log errors; participants must provide meaningful messages.
-            // Log a useful error informing user to try again later after builder creation completes.
-            Tr.error(tc, "CWWKD10xxE.ddlgen.timeout", dataStore, DDLGEN_WAIT_TIME);
-
-            // Throw exception with same message so DDL generation MBean reports that a failure occurred.
-            throw new DataException("DDL file not generated for Jakarta Data repositories associated with the " + dataStore
-                                    + " DatabaseStore. The EntityManagerFactory was not created in " + DDLGEN_WAIT_TIME + " seconds. Try DDL generation again at a later time.");
+            // DDL generation MBean does not log errors; The following covers both
+            // logging the error and raising an exception with the same message.
+            throw exc(DataException.class,
+                      "CWWKD1065.ddlgen.timeout",
+                      repositoryInterface.getName(),
+                      dataStore,
+                      DDLGEN_WAIT_TIME,
+                      entityTypes.stream().map(Class::getName).collect(Collectors.toList()));
         } catch (Throwable ex) {
-            // TODO : translate message for exception & error (or warning)
-            // DDL generation MBean does not log errors; participants must provide meaningful messages.
-            // Log a useful error informing user to correct problems reported in the cause.
+            // DDL generation MBean does not log errors; The following covers both
+            // logging the error and raising an exception with the same message.
             Throwable cause = (ex instanceof ExecutionException) ? ex.getCause() : ex;
-            Tr.error(tc, "CWWKD10xyE.ddlgen.failed.create", dataStore, cause);
-
-            // Throw exception with same message so DDL generation MBean reports that a failure occurred.
-            throw new DataException("DDL file not generated for Jakarta Data repositories associated with the " + dataStore
-                                    + " DatabaseStore. An error occurred creating the EntityManagerFactory.", cause);
+            DataException dx = exc(DataException.class,
+                                   "CWWKD1066.ddlgen.failed",
+                                   repositoryInterface.getName(),
+                                   dataStore,
+                                   entityTypes.stream() //
+                                                   .map(Class::getName) //
+                                                   .collect(Collectors.toList()),
+                                   cause.getMessage());
+            throw (DataException) dx.initCause(ex);
         }
     }
 
