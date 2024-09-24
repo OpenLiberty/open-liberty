@@ -36,7 +36,7 @@ import com.ibm.ws.ssl.JSSEProviderFactory;
  */
 public class IBMJSSEProvider extends AbstractJSSEProvider implements JSSEProvider {
     private static TraceComponent tc = Tr.register(IBMJSSEProvider.class, "SSL", "com.ibm.ws.ssl.resources.ssl");
-    public static String IBM_JCE_Plus_FIPS_PROVIDER = "com.ibm.crypto.provider.IBMJCEPlusFIPS";
+    public static String IBM_JCE_Plus_FIPS_PROVIDER = "com.ibm.crypto.plus.provider.IBMJCEPlusFIPS";
 
     private static boolean issuedBetaMessage = false;
 

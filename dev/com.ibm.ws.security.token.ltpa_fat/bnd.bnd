@@ -30,7 +30,6 @@ tested.features: appsecurity-4.0, servlet-5.0, appsecurity-5.0, servlet-6.0
     com.ibm.ws.security.token;version=latest,\
     com.ibm.ws.crypto.ltpakeyutil;version=latest,\
     com.ibm.ws.security.token.ltpa;version=latest,\
-    com.ibm.ws.crypto.common;version=latest,\
     io.openliberty.org.apache.commons.codec;version=latest,\
     io.openliberty.org.apache.commons.logging;version=latest,\
     fattest.simplicity;version=latest,\

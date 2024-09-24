@@ -40,9 +40,9 @@ public class CryptoProvider {
     public static String osName = System.getProperty("os.name");
     public static boolean isZOS = false;
     public static boolean osVersionChecked = false;
-
+    
     public static String IBMJCE_PROVIDER = "com.ibm.crypto.provider.IBMJCE";
-    public static String IBMJCE_PLUS_FIPS_PROVIDER = "com.ibm.crypto.provider.IBMJCEPlusFIPS";
+    public static String IBMJCE_PLUS_FIPS_PROVIDER = "com.ibm.crypto.plus.provider.IBMJCEPlusFIPS";
     public static String OPENJCE_PLUS_PROVIDER = "com.ibm.crypto.plus.provider.OpenJCEPlus";
     public static String OPENJCE_PLUS_FIPS_PROVIDER = "com.ibm.crypto.plus.provider.OpenJCEPlusFIPS";
 
@@ -66,7 +66,14 @@ public class CryptoProvider {
             return ibmJCEPlusFIPSAvailable;
         } else {
             ibmJCEPlusFIPSAvailable = JavaInfo.isSystemClassAvailable(IBMJCE_PLUS_FIPS_PROVIDER);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "ibmJCEPlusFIPSProvider: " +  IBMJCE_PLUS_FIPS_PROVIDER);
+            }
+
             ibmJCEPlusFIPSProviderChecked = true;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "ibmJCEPlusFIPSAvailable: " + ibmJCEPlusFIPSAvailable);
+            }
 
             if (FipsUtils.isRunningBetaMode() && ibmJCEPlusFIPSAvailable) {
                 ibmJCEPlusFIPSAvailable = true;
@@ -95,8 +102,15 @@ public class CryptoProvider {
             return openJCEPlusFIPSAvailable;
         } else {
             openJCEPlusFIPSAvailable = JavaInfo.isSystemClassAvailable(OPENJCE_PLUS_FIPS_PROVIDER);
-            openJCEPlusFIPSProviderChecked = true;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "openJCEPlusFIPSProvider: " + OPENJCE_PLUS_FIPS_PROVIDER);
+            }
 
+            openJCEPlusFIPSProviderChecked = true;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "openJCEPlusFIPSAvailable: " + openJCEPlusFIPSAvailable);
+            }
+            
             if (FipsUtils.isRunningBetaMode() && openJCEPlusFIPSAvailable) {
                 openJCEPlusFIPSAvailable = true;
             } else {
@@ -152,9 +166,9 @@ public class CryptoProvider {
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             if (provider == null) {
-                Tr.debug(tc, "getProvider" + " Provider configured by JDK is " + Security.getProviders()[0].getName());
+                Tr.debug(tc, "Provider configured by JDK is " + Security.getProviders()[0].getName());
             } else {
-                Tr.debug(tc, "getProvider" + " Provider configured is " + provider);
+                Tr.debug(tc, "Provider configured is " + provider);
             }
         }
         return provider;

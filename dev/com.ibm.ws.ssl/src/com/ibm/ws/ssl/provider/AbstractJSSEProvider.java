@@ -88,7 +88,7 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
 //    protected static final String URL_HANDLER_PROP = "java.protocol.handler.pkgs";
     private static final String PKGNAME_DELIMITER = "|";
 
-    public static String IBM_JCE_Plus_FIPS_PROVIDER = "com.ibm.crypto.provider.IBMJCEPlusFIPS";
+    public static String IBM_JCE_Plus_FIPS_PROVIDER = "com.ibm.crypto.plus.provider.IBMJCEPlusFIPS";
     private static boolean handlersInitialized = false;
     private static Object _lockObj = new Object();
 

@@ -34,8 +34,10 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.ExpectedFFDCs;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -66,9 +68,9 @@ public class FATTest {
     private static final String serverShutdownMessages = "CWWKS4106E";
     private static final LibertyServer server;
 
-    private static final boolean fipsEnabled = FipsUtils.isFIPSEnabled();
     private static final String EXPECTED_EXCEPTION_BAD_PADDING = "javax.crypto.BadPaddingException";
     private static final String EXPECTED_EXCEPTION_AEAD_BAD_TAG = "javax.crypto.AEADBadTagException";
+    private static final boolean fipsEnabled;
 
     static {
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.token.ltpa.fat");
@@ -77,6 +79,16 @@ public class FATTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    static {
+        boolean isFipsEnabled = false;
+        try {
+            isFipsEnabled = server.isFIPS140_3EnabledAndSupported();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        fipsEnabled = isFipsEnabled;
     }
 
     @Rule
@@ -183,7 +195,7 @@ public class FATTest {
      * the code will fail to properly decrypt the LTPA keys with the wrong password.
      */
     @CheckForLeakedPasswords({ PWD_WRONG, PWD_ANY_ENCODED })
-    @ExpectedFFDC({ EXPECTED_EXCEPTION_AEAD_BAD_TAG, EXPECTED_EXCEPTION_BAD_PADDING })
+    @AllowedFFDC({ EXPECTED_EXCEPTION_AEAD_BAD_TAG, EXPECTED_EXCEPTION_BAD_PADDING })
     @Test
     public void validateKeysNotReloadedAfterModificationWithWrongPassword() throws Exception {
         startServerWithConfigFileAndLog(DEFAULT_SERVER_XML, "validateKeysNotReloadedAfterModificationWithWrongPassword.log");
@@ -194,6 +206,16 @@ public class FATTest {
 
         assertNotNull("The LTPA configuration must not be reloaded.",
                       server.waitForStringInLog("CWWKS4106E:.*"));
+
+        if (!fipsEnabled){
+            // Verify EXPECTED_EXCEPTION_BAD_PADDING is thrown
+            assertNotNull("The expected exception " + EXPECTED_EXCEPTION_BAD_PADDING + " was not thrown.",
+                          server.waitForStringInTrace(EXPECTED_EXCEPTION_BAD_PADDING));
+        } else {
+            // Verify EXPECTED_EXCEPTION_AEAD_BAD_TAG is thrown
+            assertNotNull("The expected exception " + EXPECTED_EXCEPTION_AEAD_BAD_TAG + " was not thrown.",
+                          server.waitForStringInTrace(EXPECTED_EXCEPTION_AEAD_BAD_TAG));
+        }
 
         // Assert token can be created with old keys
         assertTokenCanBeCreated();

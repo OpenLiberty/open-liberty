@@ -637,7 +637,6 @@ final class LTPACrypto {
 			if (cipher.indexOf("GCM") != -1) {
 				byte[] iv = new byte[12];
 				GCMParameterSpec params = new GCMParameterSpec(128, iv);
-				System.out.println("using GCM spec");
 				ci.init(cipherMode, sKey, params);
 			} else if (cipher.indexOf("AES") != -1) {
 				if (ivs16 == null) {

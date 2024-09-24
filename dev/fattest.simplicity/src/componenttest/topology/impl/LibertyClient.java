@@ -675,7 +675,7 @@ public class LibertyClient {
             if (javaInfo.majorVersion() == 17){
                 Log.info(c, "startClientWithArgs", "FIPS 140-3 global build properties is set for Client " + getClientName()
                                                    + " with IBM Java 17, adding required JVM arguments to run with FIPS 140-3 enabled");
-
+                                                   
                 JVM_ARGS += " -Dsemeru.fips=true";
                 JVM_ARGS += " -Dsemeru.customprofile=OpenJCEPlusFIPS.FIPS140-3-withPKCS12";
                 JVM_ARGS += " -Dcom.ibm.fips.mode=140-3";
