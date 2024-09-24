@@ -3226,7 +3226,7 @@ public class LibertyServer implements LogMonitorClient {
             ProgramOutput output = null;
 
             if (!runAsAWindowService) {
-                output = machine.execute(cmd, parameters, useEnvVars);
+                output = machine.execute(cmd, parameters, machine.getWorkDir(), useEnvVars, 300);
             } else {
                 ArrayList<String> parametersList = new ArrayList<String>();
                 for (int i = 0; i < parameters.length; i++) {
@@ -3237,8 +3237,11 @@ public class LibertyServer implements LogMonitorClient {
                 String[] stopServiceParameters = stopServiceParmList.toArray(new String[] {});
                 String[] removeServiceParameters = removeServiceParmList.toArray(new String[] {});
 
-                output = machine.execute(cmd, stopServiceParameters, useEnvVars);
-                output = machine.execute(cmd, removeServiceParameters, useEnvVars);
+                try {
+                    output = machine.execute(cmd, stopServiceParameters, machine.getWorkDir(), useEnvVars, 300);
+                } finally {
+                    output = machine.execute(cmd, removeServiceParameters, machine.getWorkDir(), useEnvVars, 300);
+                }
             }
 
             String stdout = output.getStdout();
