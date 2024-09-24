@@ -32,7 +32,9 @@ tested.features: \
 	mprestclient-1.3,\
 	mpmetrics-2.0,\
 	mphealth-2.0,\
-	microprofile-3.0
+	microprofile-3.0,\
+	appSecurity-3.0,\
+	el-3.0
 
 -buildpath: \
     com.ibm.websphere.org.eclipse.microprofile.opentracing.1.1;version=latest,\
