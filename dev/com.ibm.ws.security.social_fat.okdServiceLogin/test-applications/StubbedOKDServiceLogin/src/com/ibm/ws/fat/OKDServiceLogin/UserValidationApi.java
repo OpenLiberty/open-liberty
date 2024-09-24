@@ -61,7 +61,7 @@ public class UserValidationApi extends HttpServlet {
                 String key = headerList.nextElement();
                 String val = req.getHeader(key);
                 logLine("Header element: " + key + " value: " + val);
-                if ("Authorization" == key) {
+                if ("Authorization".equalsIgnoreCase(key)) {
 
                     passedResponse = val.substring("Bearer ".length());
                     printJson(passedResponse);
