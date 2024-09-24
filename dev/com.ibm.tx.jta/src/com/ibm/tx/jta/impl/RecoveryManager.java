@@ -1429,8 +1429,6 @@ public class RecoveryManager implements Runnable {
         if (!_recoveryCompleted) {
             _recoveryCompleted = true;
             _recoveryInProgress.post();
-
-            signalRecoveryComplete();
         }
 
         if (_failureScopeController.localFailureScope()) {
@@ -1464,10 +1462,6 @@ public class RecoveryManager implements Runnable {
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "recoveryFailed");
-    }
-
-    protected void signalRecoveryComplete() {
-        // Not used in JTM
     }
 
     // Checks to see if shutdown processing has begun. If it has, this method causes signals recovery

@@ -5,7 +5,7 @@ package com.ibm.tx.jta.impl;
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,65 +17,22 @@ package com.ibm.tx.jta.impl;
  * event semaphore.
  * <p>
  * This is specifically to handle the situation where the event may have been
- * posted before the wait method is called.  This behaviour is not supported by
+ * posted before the wait method is called. This behaviour is not supported by
  * the existing wait and notify methods.
  */
-public final class EventSemaphore
-{
+public final class EventSemaphore {
     boolean _posted;
 
-    /**
-     * Default Constructor
-     */
-    public EventSemaphore() {}
-
-
-    /**
-     * Creates the event semaphore in the given posted state.
-     * 
-     * @param posted  Indicates whether the semaphore should be posted.
-     */
-    EventSemaphore( boolean posted )
-    {
-        _posted = posted;
+    public synchronized void waitEvent() throws InterruptedException {
+        while (!_posted) wait();
     }
 
-
-    /**
-     * Waits for the event to be posted.
-     *  <p>
-     *  If the event has already been posted, then the operation returns immediately.
-     * 
-     * @exception InterruptedException
-     *                   The wait was interrupted.
-     */
-    synchronized public void waitEvent() throws InterruptedException
-    {
-        while ( !_posted )
-        {
-            wait();            
-        }
-    }
-
-
-    /**
-     * Posts the event semaphore.
-     *  <p>
-     *  All waiters are notified.
-     */
-    public synchronized void post()
-    {
-        if ( !_posted )
-            notifyAll();
+    public synchronized void post() {
         _posted = true;
+        notifyAll();
     }
 
-
-    /**
-     * Clears a posted event semaphore.
-     */
-    public synchronized void clear()
-    {
+    public synchronized void clear() {
         _posted = false;
     }
 }
