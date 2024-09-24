@@ -14,15 +14,27 @@
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 ext {
-  hibernateVersion = '7.0.0.Alpha2' //TODO update to final
+  hibernateVersion = '7.0.0.Beta1' //TODO update to final
 }
 
 configurations {
   hibernateJPA32
+  derby16 // See derby/java compatibility matrix https://db.apache.org/derby/derby_downloads.html
 }
 
 dependencies {
-  hibernateJPA32 "org.hibernate.orm:hibernate-core:${hibernateVersion}"
+  def withoutJakartaAPI = { 
+  	exclude group: 'jakarta.activation', module: 'jakarta.activation-api'
+  	exclude group: 'jakarta.inject', module: 'jakarta.inject-api'
+  	exclude group: 'jakarta.persistence', module: 'jakarta.persistence-api'
+  	exclude group: 'jakarta.transaction', module: 'jakarta.transaction-api'
+  	exclude group: 'jakarta.xml.bind', module: 'jakarta.xml.bind-api'
+  }
+  
+  hibernateJPA32 "org.hibernate.orm:hibernate-community-dialects:${hibernateVersion}", withoutJakartaAPI
+  
+  derby16 "org.apache.derby:derby:10.16.1.1",
+          "org.apache.derby:derbytools:10.16.1.1"
 
   //Annotation processor - generates .java files in build/libs/generated/sources
   //Some generated .java files import hibernate dependencies, need this compileOnly dependency
@@ -30,23 +42,28 @@ dependencies {
   compileOnly "org.hibernate.orm:hibernate-core:${hibernateVersion}"
 }
 
-task addhibernateJPA32(type: Copy) {
+task addHibernateJPA32(type: Copy) {
   shouldRunAfter jar
   from configurations.hibernateJPA32
   into new File(autoFvtDir, 'publish/shared/resources/jpa32_hibernate')
 }
 
+task addDerby16(type: Copy) {
+  shouldRunAfter jar
+  from configurations.derby16
+  into new File(autoFvtDir, 'publish/shared/resources/derby16')
+  rename 'derby-.*.jar', 'derby.jar'
+  rename 'derbyshared-.*.jar', 'derbyshared.jar'
+  rename 'derbytools-.*.jar', 'derbytools.jar'
+}
+
 // Copy bundle io.openliberty.org.testcontainers to AutoFVT/lib/
 // This bundle is required both at compiletime and runtime.
 addRequiredLibraries.dependsOn copyTestContainers
-
-//TODO Hibernate does not support the current version of Derby we use for DatabaseRotation
-//HHH000511: The 10.11.1 version for [org.hibernate.dialect.DerbyDialect] is no longer supported, hence certain features may not work properly.
-//The minimum supported version is 10.15.2. Check the community dialects project for available legacy versions.
-//Nothing is currently failing, but something might fail in the future.
 addRequiredLibraries.dependsOn copyJdbcDrivers
 
-addRequiredLibraries.dependsOn addhibernateJPA32
+addRequiredLibraries.dependsOn addHibernateJPA32
+addRequiredLibraries.dependsOn addDerby16
 
 apply plugin: 'java'
 

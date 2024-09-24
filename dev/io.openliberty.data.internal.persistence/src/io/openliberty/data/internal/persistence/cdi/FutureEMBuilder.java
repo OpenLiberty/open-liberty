@@ -14,17 +14,28 @@ package io.openliberty.data.internal.persistence.cdi;
 
 import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 
+import java.io.Writer;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
@@ -35,19 +46,22 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.wsspi.persistence.DDLGenerationParticipant;
 
 import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.provider.PUnitEMBuilder;
 import io.openliberty.data.internal.persistence.service.DBStoreEMBuilder;
+import jakarta.data.exceptions.DataException;
 import jakarta.persistence.EntityManagerFactory;
 
 /**
  * A completable future for an EntityManagerBuilder that can be
  * completed by invoking the createEMBuilder method.
  */
-public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
+public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> implements DDLGenerationParticipant {
     private static final TraceComponent tc = Tr.register(FutureEMBuilder.class);
+    private static final long DDLGEN_WAIT_TIME = 15;
 
     /**
      * These are present only if needed to disambiguate a JNDI name
@@ -146,6 +160,97 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> {
             Tr.debug(this, tc, "add: " + entityClass.getName());
 
         entityTypes.add(entityClass);
+    }
+
+    /**
+     * Registers this future with the DDL generation MBean so that the ddlgen command
+     * will generate DDL for the EntityManagerBuilder produced by this future. <p>
+     *
+     * Not all EntityManagerBuilder instances will participate in DDL generation;
+     * only those that use the Persistence Service. This is not determined until the
+     * EntityManagerBuilder has been created. If not participating, a null DDL file
+     * name will be provided and the DDL generation command will skip generation.
+     *
+     * @param appName application name
+     */
+    public void registerDDLGenerationParticipant(String appName) {
+        // Register as a DDL generator for use by the ddlGen command and add to list for cleanup on application stop
+        BundleContext thisbc = FrameworkUtil.getBundle(getClass()).getBundleContext();
+        ServiceRegistration<DDLGenerationParticipant> ddlgenreg = thisbc.registerService(DDLGenerationParticipant.class, this, null);
+        Queue<ServiceRegistration<DDLGenerationParticipant>> ddlgenRegistrations = provider.ddlgeneratorsAllApps.get(appName);
+        if (ddlgenRegistrations == null) {
+            Queue<ServiceRegistration<DDLGenerationParticipant>> empty = new ConcurrentLinkedQueue<>();
+            if ((ddlgenRegistrations = provider.ddlgeneratorsAllApps.putIfAbsent(appName, empty)) == null)
+                ddlgenRegistrations = empty;
+        }
+        ddlgenRegistrations.add(ddlgenreg);
+    }
+
+    @Override
+    public String getDDLFileName() {
+        try {
+            EntityManagerBuilder builder = get(DDLGEN_WAIT_TIME, TimeUnit.SECONDS);
+            if (builder instanceof DDLGenerationParticipant) {
+                return ((DDLGenerationParticipant) builder).getDDLFileName();
+            }
+        } catch (TimeoutException e) {
+            // DDL generation MBean does not log errors; The following covers both
+            // logging the error and raising an exception with the same message.
+            throw exc(DataException.class,
+                      "CWWKD1067.ddlgen.emf.timeout",
+                      repositoryInterface.getName(),
+                      dataStore,
+                      DDLGEN_WAIT_TIME,
+                      entityTypes.stream().map(Class::getName).collect(Collectors.toList()));
+        } catch (Throwable ex) {
+            // DDL generation MBean does not log errors; The following covers both
+            // logging the error and raising an exception with the same message.
+            Throwable cause = (ex instanceof ExecutionException) ? ex.getCause() : ex;
+            DataException dx = exc(DataException.class,
+                                   "CWWKD1066.ddlgen.failed",
+                                   repositoryInterface.getName(),
+                                   dataStore,
+                                   entityTypes.stream() //
+                                                   .map(Class::getName) //
+                                                   .collect(Collectors.toList()),
+                                   cause.getMessage());
+            throw (DataException) dx.initCause(ex);
+        }
+
+        // Not using persistence service; return null and DDL generation will skip this future
+        return null;
+    }
+
+    @Override
+    public void generate(Writer out) throws Exception {
+        try {
+            EntityManagerBuilder builder = get(DDLGEN_WAIT_TIME, TimeUnit.SECONDS);
+            if (builder instanceof DDLGenerationParticipant) {
+                ((DDLGenerationParticipant) builder).generate(out);
+            }
+        } catch (TimeoutException e) {
+            // DDL generation MBean does not log errors; The following covers both
+            // logging the error and raising an exception with the same message.
+            throw exc(DataException.class,
+                      "CWWKD1065.ddlgen.timeout",
+                      repositoryInterface.getName(),
+                      dataStore,
+                      DDLGEN_WAIT_TIME,
+                      entityTypes.stream().map(Class::getName).collect(Collectors.toList()));
+        } catch (Throwable ex) {
+            // DDL generation MBean does not log errors; The following covers both
+            // logging the error and raising an exception with the same message.
+            Throwable cause = (ex instanceof ExecutionException) ? ex.getCause() : ex;
+            DataException dx = exc(DataException.class,
+                                   "CWWKD1066.ddlgen.failed",
+                                   repositoryInterface.getName(),
+                                   dataStore,
+                                   entityTypes.stream() //
+                                                   .map(Class::getName) //
+                                                   .collect(Collectors.toList()),
+                                   cause.getMessage());
+            throw (DataException) dx.initCause(ex);
+        }
     }
 
     /**

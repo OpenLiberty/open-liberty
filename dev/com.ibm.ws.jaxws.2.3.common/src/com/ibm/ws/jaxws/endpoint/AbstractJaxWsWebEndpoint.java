@@ -29,6 +29,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.helpers.DefaultValidationEventHandler;
 import javax.xml.namespace.QName;
 import javax.xml.ws.handler.Handler;
 
@@ -56,16 +57,11 @@ import com.ibm.ws.jaxws.metadata.JaxWsModuleMetaData;
 import com.ibm.ws.jaxws.support.JaxWsInstanceManager;
 import com.ibm.ws.jaxws.support.JaxWsInstanceManager.InterceptException;
 import com.ibm.ws.jaxws.support.LibertyJaxWsCompatibleWSDLGetInterceptor;
-import com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor;
-import com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor;
 import com.ibm.ws.jaxws.utils.JaxWsUtils;
 import com.ibm.ws.jaxws.utils.StringUtils;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
-import com.ibm.ws.kernel.service.util.JavaInfo;
-
 import io.openliberty.jaxws.jaxb.IgnoreUnexpectedElementValidationEventHandler;
 
-import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.Bus;
 
 public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
@@ -292,6 +288,14 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
         
         boolean debug = tc.isDebugEnabled();
         
+        // Skip execution the rest when no configuration found
+        if(!WebServicesConfigHolder.isConfigExists())      {
+            if (debug) {
+                Tr.debug(tc, "No configuration found. Returning.");
+            }
+            return;
+        }
+        
         // Use CXF's EndpointInfo to set the configuration properties
         org.apache.cxf.service.model.EndpointInfo cxfEndpointInfo = destination.getEndpointInfo();
         
@@ -307,6 +311,8 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
 
         Object ignoreUnexpectedElements = null;
 
+        Object enableDefaultValidation = null;
+                
         // if portName != null, try to get the values from configuration using it
         if (portName != null) {
             // if portName != null, try to get enableSchemaValidation value from configuration, if it's == null try it to get the default configuration value
@@ -332,24 +338,33 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
                 
             }
 
-            
+            // if portName != null, try to get enableSchemaValidation value from configuration, if it's == null try it to get the default configuration value
+            if(WebServicesConfigHolder.getEnableDefaultValidation(portName) != null) {
+                
+                enableDefaultValidation = WebServicesConfigHolder.getEnableDefaultValidation(portName);
+                
+            } else if (WebServicesConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) {
+                
+                enableDefaultValidation = WebServicesConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP);
+                
+            }
+
         } else {
             // if portName == null then try to get the global configuration values, if its not set keep values null
             enableSchemaValidation = (WebServicesConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP) : null;
 
             ignoreUnexpectedElements = (WebServicesConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) : null;            
-
+            
+            enableDefaultValidation = (WebServicesConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) ? WebServicesConfigHolder.getEnableDefaultValidation(WebServiceConfigConstants.DEFAULT_PROP) : null;
         }
         
         
-        if ((enableSchemaValidation == null && ignoreUnexpectedElements == null)) {
+        if ((enableSchemaValidation == null && ignoreUnexpectedElements == null && enableDefaultValidation == null)) {
             if (debug) {
                 Tr.debug(tc, "No webService configuration found. returning.");
             }
             return;
         }
-        
-        Map<String, String> endpointInfoProperties = endpointInfo.getEndpointProperties();
 
         // Enable or disable schema validation as long as property is non-null
         if ( enableSchemaValidation != null) {
@@ -381,13 +396,38 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
                 Tr.debug(tc, "Set JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER to  " + ignoreUnexpectedElements);
             }
 
+            if(enableDefaultValidation != null && (boolean)enableDefaultValidation == true) {
+                if (debug) {
+                    Tr.debug(tc, "Both ignoreUnexpectedElements and enableDefaultValidation are enabled. EnableDefaultValidation will be ignored.");
+                }
+                return; // skipping enableDefaultValidation 
+            }
+           
         } else {
             if (debug) {
-                Tr.debug(tc, "ignoreUnexpectedElements was " + ignoreUnexpectedElements + " not configuring ignoreUnexpectedElements on the Web Service Endpoint");
-
+                Tr.debug(tc, "IgnoreUnexpectedElements was " + ignoreUnexpectedElements + " not configuring ignoreUnexpectedElements on the Web Service Endpoint");
             }
         }
         
+        // Enable or disable default validation as long as property is non-null
+        if (enableDefaultValidation != null) {
+            if ((boolean)enableDefaultValidation == true)        {
+            cxfEndpointInfo.setProperty(JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER,  true);
+
+            // Set our custom validation event handler
+            DefaultValidationEventHandler defaultValidationEventHandler = new DefaultValidationEventHandler();
+            cxfEndpointInfo.setProperty(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER, defaultValidationEventHandler); 
+            
+            }
+            
+            if (debug) {
+                Tr.debug(tc, "Set JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER to  " + enableDefaultValidation);
+            }
+        } else {
+            if (debug) {
+                Tr.debug(tc, "enableDefaultValidation was " + enableDefaultValidation + " not configuring enableDefaultValidation on the Web Service Endpoint");
+            }
+        }
     }
 
     @SuppressWarnings("rawtypes")

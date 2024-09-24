@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -272,10 +272,7 @@ public class MPCompatibleTest {
             server.startServer();
             runGetMethod(200, "/helloworld/helloworld", MESSAGE);
         } finally {
-            //I think CWWWC0002W is a configuration error and should not appear
-            //Should be removed by issue 15496
-            server.stopServer("CWMOT0010W", //CWMOT0010W: OpenTracing cannot track JAX-RS requests because an OpentracingTracerFactory class was not provided or client libraries for tracing backend are not in the class path.
-                              "CWWWC0002W");//CWWWC0002W: No servlet definition is found for the ExecutionServlet servlet name in the AuthorizationFilter filter mapping.
+            server.stopServer("CWMOT0010W"); //CWMOT0010W: OpenTracing cannot track JAX-RS requests because an OpentracingTracerFactory class was not provided or client libraries for tracing backend are not in the class path.
         }
     }
 
@@ -299,10 +296,7 @@ public class MPCompatibleTest {
             server.startServer();
             runGetMethod(200, "/helloworld/helloworld", MESSAGE);
         } finally {
-            //I think CWWWC0002W is a configuration error and should not appear
-            //Should be removed by issue 15496
-            server.stopServer("CWMOT0010W", //CWMOT0010W: OpenTracing cannot track JAX-RS requests because an OpentracingTracerFactory class was not provided or client libraries for tracing backend are not in the class path.
-                              "CWWWC0002W");//CWWWC0002W: No servlet definition is found for the ExecutionServlet servlet name in the AuthorizationFilter filter mapping.
+            server.stopServer("CWMOT0010W"); //CWMOT0010W: OpenTracing cannot track JAX-RS requests because an OpentracingTracerFactory class was not provided or client libraries for tracing backend are not in the class path.
         }
     }
 

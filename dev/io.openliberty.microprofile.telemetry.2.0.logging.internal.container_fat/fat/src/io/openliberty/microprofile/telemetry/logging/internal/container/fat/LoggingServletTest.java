@@ -183,9 +183,10 @@ public class LoggingServletTest {
             assertTrue("Object details could not be found.", TestUtils.assertLogContains("testFFDCLogs", logs, "io.openliberty.object_details"));
         } else {
             assertTrue("Class name could not be found.",
-                       TestUtils.assertLogContains("testFFDCLogs", logs, "io.openliberty.class_name: Str(io.openliberty.http.monitor.ServletFilter)"));
+                       TestUtils.assertLogContains("testFFDCLogs", logs, "io.openliberty.class_name: Str(com.ibm.ws.webcontainer.filter.WebAppFilterManager.invokeFilters)"));
             assertTrue("Object details could not be found.",
-                       TestUtils.assertLogContains("testFFDCLogs", logs, "io.openliberty.object_details: Str(Object type = io.openliberty.http.monitor.ServletFilter"));
+                       TestUtils.assertLogContains("testFFDCLogs", logs,
+                                                   "io.openliberty.object_details: Str(Object type = com.ibm.ws.webcontainer.osgi.filter.WebAppFilterManagerImpl"));
         }
     }
 

@@ -8,13 +8,17 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
+configurations {
+  requiredLibs {
+    transitive = false
+  }
+}
+
 // Define G:A:V coordinates of each dependency
 dependencies {
   requiredLibs 'httpunit:httpunit:1.5.4',
-    'net.sf.jtidy:jtidy:9.3.8',	
     'org.apache.httpcomponents.client5:httpclient5:5.0.2',
     'org.apache.httpcomponents.core5:httpcore5:5.0.2',
-    project(':io.openliberty.org.apache.commons.logging'),
     project(':io.openliberty.org.apache.commons.codec')
 }
 

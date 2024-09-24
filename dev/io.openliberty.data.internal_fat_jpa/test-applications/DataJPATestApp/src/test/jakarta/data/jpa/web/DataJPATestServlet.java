@@ -92,6 +92,7 @@ import componenttest.app.FATServlet;
 import test.jakarta.data.jpa.web.CreditCard.CardId;
 import test.jakarta.data.jpa.web.CreditCard.Issuer;
 import test.jakarta.data.jpa.web.Mobile.OS;
+import test.jakarta.data.jpa.web.Residence.Occupant;
 
 @DataSourceDefinition(name = "java:module/jdbc/RepositoryDataStore",
                       className = "${repository.datasource.class.name}",
@@ -107,6 +108,9 @@ public class DataJPATestServlet extends FATServlet {
 
     @Inject
     Accounts accounts;
+
+    @Inject
+    Apartments apartments;
 
     @Inject
     Businesses businesses;
@@ -955,7 +959,7 @@ public class DataJPATestServlet extends FATServlet {
                      added.stream().map(a -> a.id).collect(Collectors.toSet()));
 
         assertArrayEquals(new ShippingAddress[] { a4, a2 },
-                          shippingAddresses.findByStreetNameOrderByHouseNumber("4th St SE"),
+                          shippingAddresses.findByStreetAddress_streetNameOrderByStreetAddress_houseNumber("4th St SE"),
                           Comparator.<ShippingAddress, Long> comparing(o -> o.id)
                                           .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.city))
                                           .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.state))
@@ -964,7 +968,7 @@ public class DataJPATestServlet extends FATServlet {
                                           .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.zipCode)));
 
         assertIterableEquals(List.of("200 1st Ave SW", "151 4th St SE", "201 4th St SE"),
-                             Stream.of(shippingAddresses.findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(150, 250))
+                             Stream.of(shippingAddresses.findByStreetAddress_houseNumberBetweenOrderByStreetAddress_streetNameAscStreetAddress_houseNumber(150, 250))
                                              .map(a -> a.houseNumber + " " + a.streetName)
                                              .collect(Collectors.toList()));
 
@@ -983,7 +987,7 @@ public class DataJPATestServlet extends FATServlet {
         // assertEquals(a1.streetAddress.streetName, a.streetAddress.streetName);
         // assertEquals(a1.streetAddress.recipientInfo, a.streetAddress.recipientInfo);
 
-        // assertEquals(3L, shippingAddresses.countByRecipientInfoEmpty());
+        // assertEquals(3L, shippingAddresses.countByStreetAddressRecipientInfoEmpty());
 
         // [EclipseLink-4002] Internal Exception: java.sql.SQLIntegrityConstraintViolationException:
         //                    DELETE on table 'SHIPPINGADDRESS' caused a violation of foreign key constraint 'SHPPNGSHPPNGDDRSSD' for key (1001)
@@ -1080,7 +1084,7 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testEmbeddableDepth1() {
         assertIterableEquals(List.of("Olmsted Medical", "Mayo Clinic", "Home Federal Savings Bank", "Custom Alarm"),
-                             businesses.findByLatitudeBetweenOrderByLongitudeDesc(44.0f, 44.03f)
+                             businesses.findByLocationLatitudeBetweenOrderByLocationLongitudeDesc(44.0f, 44.03f)
                                              .stream()
                                              .map(b -> b.name)
                                              .collect(Collectors.toList()));
@@ -1094,7 +1098,7 @@ public class DataJPATestServlet extends FATServlet {
         CursoredPage<Business> page;
         List<Integer> zipCodes = List.of(55906, 55902, 55901, 55976, 55905);
 
-        page = businesses.findByZipIn(zipCodes, PageRequest.ofSize(4).withoutTotal());
+        page = businesses.findByLocationAddressZipIn(zipCodes, PageRequest.ofSize(4).withoutTotal());
 
         assertIterableEquals(List.of(345, 1421, 1016, 1600),
                              page
@@ -1102,7 +1106,7 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(b -> b.location.address.houseNum)
                                              .collect(Collectors.toList()));
 
-        page = businesses.findByZipIn(zipCodes, page.nextPageRequest());
+        page = businesses.findByLocationAddressZipIn(zipCodes, page.nextPageRequest());
 
         assertIterableEquals(List.of(2800, 2960, 3100, 3428),
                              page
@@ -1113,7 +1117,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(2L, page.pageRequest().page());
         assertEquals(4, page.pageRequest().size());
 
-        page = businesses.findByZipIn(zipCodes, page.nextPageRequest());
+        page = businesses.findByLocationAddressZipIn(zipCodes, page.nextPageRequest());
 
         assertIterableEquals(List.of(5201, 1661, 3706, 200),
                              page
@@ -1123,7 +1127,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(3, page.pageRequest().page());
 
-        page = businesses.findByZipIn(zipCodes, page.nextPageRequest());
+        page = businesses.findByLocationAddressZipIn(zipCodes, page.nextPageRequest());
 
         assertIterableEquals(List.of(1402, 3008),
                              page
@@ -1135,7 +1139,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(4, page.pageRequest().page());
         assertEquals(false, page.hasNext());
 
-        page = businesses.findByZipIn(zipCodes, page.previousPageRequest());
+        page = businesses.findByLocationAddressZipIn(zipCodes, page.previousPageRequest());
 
         assertIterableEquals(List.of(5201, 1661, 3706, 200),
                              page
@@ -1180,8 +1184,7 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Use an entity with embeddable attributes that are Java records.
      */
-    // TODO enable once #29459 is fixed
-    // @Test
+    @Test
     public void testEmbeddableRecord() {
         Segment s1 = new Segment();
         s1.pointA = new Point(0, 0);
@@ -1215,29 +1218,31 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(3, segments.countByPointAXLessThan(1));
 
-        assertEquals(List.of(s3.id, s4.id, s2.id, s1.id),
-                     segments.endingSouthOf(100)
-                                     .map(s -> s.id)
-                                     .collect(Collectors.toList()));
+        // TODO enable once #29460 is fixed
+        //assertEquals(List.of(s3.id, s4.id, s2.id, s1.id),
+        //             segments.endingSouthOf(100)
+        //                             .map(s -> s.id)
+        //                             .collect(Collectors.toList()));
 
-        assertEquals(List.of(-20, 0, 24),
-                     segments.longerThan(200, Sort.asc("pointA.x"))
-                                     .stream()
-                                     .map(s -> s.pointA.x())
-                                     .collect(Collectors.toList()));
+        //assertEquals(List.of(-20, 0, 24),
+        //             segments.longerThan(200, Sort.asc("pointA.x"))
+        //                             .stream()
+        //                             .map(s -> s.pointA.x())
+        //                             .collect(Collectors.toList()));
 
-        s3.pointB = new Point(s3.pointB.x() - s3.pointA.x(), s3.pointB.y() - s3.pointA.y());
-        s3.pointA = new Point(0, 0);
-        s3 = segments.addOrModify(s3);
+        //s3.pointB = new Point(s3.pointB.x() - s3.pointA.x(), s3.pointB.y() - s3.pointA.y());
+        //s3.pointA = new Point(0, 0);
+        //s3 = segments.addOrModify(s3);
 
         // removes s1 and s3
-        assertEquals(2L, segments.removeStartingAt(0, 0));
+        //assertEquals(2L, segments.removeStartingAt(0, 0));
 
-        Point s2pointB = segments.terminalPoint(s2.id).orElseThrow();
-        assertEquals(120, s2pointB.x());
-        assertEquals(171, s2pointB.y());
+        //Point s2pointB = segments.terminalPoint(s2.id).orElseThrow();
+        //assertEquals(120, s2pointB.x());
+        //assertEquals(171, s2pointB.y());
 
-        assertEquals(4L, segments.erase());
+        assertEquals(6L, // TODO change to 4L, once #29460 is fixed
+                     segments.erase());
     }
 
     /**
@@ -1252,7 +1257,7 @@ public class DataJPATestServlet extends FATServlet {
                                      "NW Lakeridge Pl",
                                      "NW Members Parkway",
                                      "W Highway 14"),
-                             businesses.findByZip(55901)
+                             businesses.findByLocationAddressZip(55901)
                                              .map(loc -> loc.address.street.direction + " " + loc.address.street.name)
                                              .collect(Collectors.toList()));
     }
@@ -1268,7 +1273,7 @@ public class DataJPATestServlet extends FATServlet {
                                      "SW 1st St",
                                      "SW Enterprise Dr",
                                      "SW Greenview Dr"),
-                             businesses.findByZipNotAndCity(55901, "Rochester")
+                             businesses.findByLocationAddressZipNotAndLocationAddressCity(55901, "Rochester")
                                              .map(street -> street.direction + " " + street.name)
                                              .collect(Collectors.toList()));
     }
@@ -2277,7 +2282,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals("37th St NW", a.streetAddress.streetName);
         assertEquals(55901, a.zipCode);
 
-        WorkAddress[] secondFloorOfficesOn37th = shippingAddresses.findByStreetNameAndFloorNumber("37th St NW", 2);
+        WorkAddress[] secondFloorOfficesOn37th = shippingAddresses.findByStreetAddress_streetNameAndFloorNumber("37th St NW", 2);
 
         assertArrayEquals(new WorkAddress[] { work }, secondFloorOfficesOn37th,
                           Comparator.<WorkAddress, Long> comparing(o -> o.id)
@@ -2289,7 +2294,7 @@ public class DataJPATestServlet extends FATServlet {
                                           .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
                                           .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.zipCode)));
 
-        ShippingAddress[] found = shippingAddresses.findByStreetNameOrderByHouseNumber("37th St NW");
+        ShippingAddress[] found = shippingAddresses.findByStreetAddress_streetNameOrderByStreetAddress_houseNumber("37th St NW");
 
         assertArrayEquals(new ShippingAddress[] { work }, found,
                           Comparator.<ShippingAddress, Long> comparing(o -> o.id)
@@ -2301,7 +2306,7 @@ public class DataJPATestServlet extends FATServlet {
                                           .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
                                           .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.zipCode)));
 
-        StreetAddress[] streetAddresses = shippingAddresses.findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(1000, 3000);
+        StreetAddress[] streetAddresses = shippingAddresses.findByStreetAddress_houseNumberBetweenOrderByStreetAddress_streetNameAscStreetAddress_houseNumber(1000, 3000);
 
         assertArrayEquals(new StreetAddress[] { work.streetAddress, home.streetAddress }, streetAddresses,
                           Comparator.<StreetAddress, Integer> comparing(o -> o.houseNumber)
@@ -2815,7 +2820,7 @@ public class DataJPATestServlet extends FATServlet {
     // TODO Could this be achieved with @Select?
     public void testOneToManyReturnsCombinedCollectionFromMany() {
 
-        List<Long> cardNumbers = customers.findCardsByEmailEndsWith("an@tests.openliberty.io")
+        List<Long> cardNumbers = customers.findCardsByDebtorEmailEndsWith("an@tests.openliberty.io")
                         .map(card -> card.number)
                         .collect(Collectors.toList());
 
@@ -2832,7 +2837,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testOneToManyReturnsOneSetOfMany() {
-        Set<CreditCard> cards = customers.findCardsByCustomerId(9210005);
+        Set<CreditCard> cards = customers.findCardsByDebtorCustomerId(9210005);
 
         assertEquals(cards.toString(), 2, cards.size());
 
@@ -2895,7 +2900,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals("Oscar TestOneToOne", d.fullName);
 
         // Query by an attribute of the entity to which OneToOne maps:
-        d = drivers.findByLicenseNum("T121-200-200-200");
+        d = drivers.findByLicense_licenseNum("T121-200-200-200");
         assertEquals("Oliver TestOneToOne", d.fullName);
 
         // Query by and order by attributes of the entity to which OneToOne maps:
@@ -2913,7 +2918,7 @@ public class DataJPATestServlet extends FATServlet {
         assertIterableEquals(List.of("Minnesota T121-100-100-100", "Minnesota T121-300-300-300",
                                      "Wisconsin T121-500-500-500", "Wisconsin T121-200-200-200",
                                      "Iowa T121-400-400-400"),
-                             drivers.findByFullNameEndsWith(" TestOneToOne")
+                             drivers.findByDriver_fullNameEndsWith(" TestOneToOne")
                                              .map(license -> license.stateName + " " + license.licenseNum)
                                              .collect(Collectors.toList()));
 
@@ -2926,6 +2931,137 @@ public class DataJPATestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         drivers.deleteByFullNameEndsWith(" TestOneToOne");
+    }
+
+    /**
+     * Tests entity attribute names from embeddables and MappedSuperclass that
+     * can have delimiters. Includes tests for name collisions with attributes from an
+     * embeddable or superinteface.
+     */
+    @Test
+    public void testPersistentFieldNamesAndDelimiters() {
+        apartments.removeAll();
+
+        Apartment a101 = new Apartment();
+        a101.occupant = new Occupant();
+        a101.occupant.firstName = "Kyle";
+        a101.occupant.lastName = "Smith";
+        a101.isOccupied = true;
+        a101.aptId = 101L;
+        a101.quarters = new Bedroom();
+        a101.quarters.length = 10;
+        a101.quarters.width = 10;
+        a101.quartersWidth = 15;
+
+        Apartment a102 = new Apartment();
+        a102.occupant = new Occupant();
+        a102.occupant.firstName = "Brent";
+        a102.occupant.lastName = "Smith";
+        a102.isOccupied = false;
+        a102.aptId = 102L;
+        a102.quarters = new Bedroom();
+        a102.quarters.length = 11;
+        a102.quarters.width = 11;
+        a102.quartersWidth = 15;
+
+        Apartment a103 = new Apartment();
+        a103.occupant = new Occupant();
+        a103.occupant.firstName = "Brian";
+        a103.occupant.lastName = "Smith";
+        a103.isOccupied = false;
+        a103.aptId = 103L;
+        a103.quarters = new Bedroom();
+        a103.quarters.length = 11;
+        a103.quarters.width = 12;
+        a103.quartersWidth = 15;
+
+        Apartment a104 = new Apartment();
+        a104.occupant = new Occupant();
+        a104.occupant.firstName = "Scott";
+        a104.occupant.lastName = "Smith";
+        a104.isOccupied = false;
+        a104.aptId = 104L;
+        a104.quarters = new Bedroom();
+        a104.quarters.length = 12;
+        a104.quarters.width = 11;
+        a104.quartersWidth = 15;
+
+        apartments.saveAll(List.of(a101, a102, a103, a104));
+
+        List<Apartment> results;
+
+        results = apartments.findApartmentsByBedroomWidth(12);
+        assertEquals(1, results.size());
+        assertEquals("Brian", results.get(0).occupant.firstName);
+
+        results = apartments.findApartmentsByBedroom(11, 11);
+        assertEquals(1, results.size());
+        assertEquals("Brent", results.get(0).occupant.firstName);
+
+        results = apartments.findAllOrderByBedroomLength();
+        assertEquals(4, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        results = apartments.findAllOrderByBedroomWidth();
+        assertEquals(4, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(3).occupant.firstName);
+
+        results = apartments.findApartmentsByBedroomLength(10);
+        assertEquals(1, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+
+        results = apartments.findByQuarters_Width(12);
+        assertEquals(1, results.size());
+        assertEquals("Brian", results.get(0).occupant.firstName);
+
+        results = apartments.findByQuartersLength(12);
+        assertEquals(1, results.size());
+        assertEquals("Scott", results.get(0).occupant.firstName);
+
+        results = apartments.findAllSorted(Sort.asc("quarters.length"));
+        assertEquals(4, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        results = apartments.findAllSorted(Sort.asc("quarters_width"));
+        assertEquals(4, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(3).occupant.firstName);
+
+        results = apartments.findByOccupied(true);
+        assertEquals(1, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+
+        results = apartments.findByOccupantLastNameOrderByFirstName("Smith");
+        assertEquals(4, results.size());
+        assertEquals("Brent", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(1).occupant.firstName);
+        assertEquals("Kyle", results.get(2).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        // Colliding non-delimited attribute name quartersWidth, ensure we use entity attribute and not embedded attribute for query
+        results = apartments.findByQuartersWidth(15);
+        assertEquals(4, results.size());
+        assertEquals("Brent", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(1).occupant.firstName);
+        assertEquals("Kyle", results.get(2).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        try {
+            apartments.findAllCollidingEmbeddable();
+            fail("Should not have been able to execute query on an entity with colliding attibute name from embeddable");
+        } catch (MappingException e) {
+            //expected
+        }
+
+        try {
+            apartments.findAllCollidingSuperclass();
+            fail("Should not have been able to execute query on an entity with colliding attibute name from superclass");
+        } catch (MappingException e) {
+            // expected
+        }
     }
 
     /**

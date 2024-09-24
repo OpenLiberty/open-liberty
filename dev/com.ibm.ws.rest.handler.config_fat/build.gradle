@@ -11,12 +11,21 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+configurations {
+  requiredLibs {
+    transitive = false
+  }
+}
+
 addRequiredLibraries.dependsOn addDerby
 
 dependencies {
   requiredLibs project(':com.ibm.ws.microprofile.openapi')
+  requiredLibs project(':com.ibm.ws.microprofile.openapi.model')
+  requiredLibs project(':com.ibm.ws.org.apache.commons.lang3')
   requiredLibs project(path: ':com.ibm.websphere.org.eclipse.microprofile', configuration: 'openapi10')
   requiredLibs project(':com.ibm.ws.security.audit_fat.common.tooling')
+  requiredLibs project(':com.ibm.json4j')
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer

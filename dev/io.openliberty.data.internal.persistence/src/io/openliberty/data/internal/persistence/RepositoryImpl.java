@@ -16,10 +16,8 @@ import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 import static jakarta.data.repository.By.ID;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -83,12 +81,14 @@ import jakarta.data.repository.Insert;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceException;
+import jakarta.persistence.Table;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Status;
 
@@ -159,43 +159,84 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 }
             }
 
-            CompletableFuture<?>[] futures = entityInfoFutures.toArray(new CompletableFuture<?>[entityInfoFutures.size()]);
-            CompletableFuture<Map<String, CompletableFuture<EntityInfo>>> allEntityInfo = CompletableFuture.allOf(futures) //
-                            .handle((ignore, x) -> {
-                                Map<String, CompletableFuture<EntityInfo>> entityInfos = new HashMap<>();
-                                for (CompletableFuture<EntityInfo> future : entityInfoFutures) {
-                                    if (future.isCompletedExceptionally()) {
-                                        entityInfos.putIfAbsent(EntityInfo.FAILED, future);
-                                    } else if (future.isDone()) {
-                                        EntityInfo entityInfo = future.join();
-                                        CompletableFuture<EntityInfo> conflict = entityInfos.put(entityInfo.name, future);
-                                        if (entityInfo.recordClass != null && conflict == null) {
-                                            String recordName = entityInfo.name.substring(0, entityInfo.name.length() - EntityInfo.RECORD_ENTITY_SUFFIX.length());
-                                            conflict = entityInfos.put(recordName, future);
-                                        }
-                                        if (conflict != null) {
-                                            EntityInfo conflictInfo = conflict.join(); // already completed
-                                            List<String> classNames = List.of((entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName(),
-                                                                              (conflictInfo.recordClass == null ? conflictInfo.entityClass : conflictInfo.recordClass).getName());
-                                            // TODO NLS, consider splitting message for records/normal entities
-                                            MappingException conflictX = new MappingException("The " + classNames + " entities have conflicting names. " +
-                                                                                              "When using records as entities, an entity name consisting of " +
-                                                                                              "the record name suffixed with " + EntityInfo.RECORD_ENTITY_SUFFIX +
-                                                                                              " is generated.");
-                                            entityInfos.putIfAbsent(EntityInfo.FAILED, CompletableFuture.failedFuture(conflictX));
-                                        }
-                                    } else {
-                                        entityInfos.putIfAbsent(EntityInfo.FAILED, CompletableFuture.failedFuture(x));
-                                    }
-                                }
-                                return entityInfos;
-                            });
+            CompletableFuture<?>[] futures = entityInfoFutures //
+                            .toArray(new CompletableFuture<?>[entityInfoFutures.size()]);
+            CompletableFuture<Map<String, CompletableFuture<EntityInfo>>> allEntityInfo = //
+                            CompletableFuture.allOf(futures) //
+                                            .handle((VOID, x) -> x) //
+                                            .thenCombine(CompletableFuture.completedFuture(entityInfoFutures),
+                                                         this::allEntityInfoAsMap);
             for (QueryInfo queryInfo : entitylessQueryInfos) {
-                queries.put(queryInfo.method,
-                            allEntityInfo.thenCombine(CompletableFuture.completedFuture(this),
-                                                      queryInfo::init));
+                queries.put(queryInfo.method, allEntityInfo //
+                                .thenCombine(CompletableFuture.completedFuture(this),
+                                             queryInfo::init));
             }
         }
+    }
+
+    /**
+     * Constructs a map of entity name to completed EntityInfo future.
+     *
+     * @param entityInfoFutures completed futures for entity information.
+     * @param x                 failure if any.
+     * @return map of entity name to completed EntityInfo future.
+     */
+    private Map<String, CompletableFuture<EntityInfo>> //
+                    allEntityInfoAsMap(Throwable x,
+                                       List<CompletableFuture<EntityInfo>> futures) {
+        Map<String, CompletableFuture<EntityInfo>> entityInfos = new HashMap<>();
+        for (CompletableFuture<EntityInfo> future : futures) {
+            if (future.isCompletedExceptionally()) {
+                entityInfos.putIfAbsent(EntityInfo.FAILED, future);
+            } else if (future.isDone()) {
+                EntityInfo entityInfo = future.join();
+                CompletableFuture<EntityInfo> conflict = //
+                                entityInfos.put(entityInfo.name, future);
+                if (entityInfo.recordClass != null && conflict == null) {
+                    int end = entityInfo.name.length() -
+                              EntityInfo.RECORD_ENTITY_SUFFIX.length();
+                    String recordName = entityInfo.name.substring(0, end);
+                    conflict = entityInfos.put(recordName, future);
+                }
+                if (conflict != null) {
+                    MappingException conflictX;
+                    EntityInfo conflictInfo = conflict.join(); // already completed
+                    List<String> classNames = List //
+                                    .of(entityInfo.getType().getName(),
+                                        conflictInfo.getType().getName());
+                    if (entityInfo.recordClass == null &&
+                        conflictInfo.recordClass == null) {
+                        conflictX = exc(MappingException.class,
+                                        "CWWKD1068.entity.name.conflict",
+                                        repositoryInterface.getName(),
+                                        entityInfo.name,
+                                        classNames,
+                                        List.of(Entity.class.getName(),
+                                                Table.class.getName()));
+                    } else { // conflict involving one or more record entity
+                        String longerName = entityInfo.name;
+                        String shorterName = entityInfo.name;
+                        if (conflictInfo.name.length() > longerName.length())
+                            longerName = conflictInfo.name;
+                        else
+                            shorterName = conflictInfo.name;
+
+                        conflictX = exc(MappingException.class,
+                                        "CWWKD1069.record.entity.name.conflict",
+                                        repositoryInterface.getName(),
+                                        shorterName,
+                                        classNames,
+                                        longerName);
+                    }
+                    entityInfos.putIfAbsent(EntityInfo.FAILED,
+                                            CompletableFuture.failedFuture(conflictX));
+                }
+            } else {
+                entityInfos.putIfAbsent(EntityInfo.FAILED,
+                                        CompletableFuture.failedFuture(x));
+            }
+        }
+        return entityInfos;
     }
 
     /**
@@ -596,14 +637,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         List<?> results = query.getResultList();
 
-        Object entity;
         if (results.isEmpty()) {
-            entity = null;
-        } else {
-            entity = results.get(0); // TODO unused. Is this a mistake?
-            entity = em.merge(toEntity(e));
-        }
-        if (entity == null) {
             List<String> entityProps = new ArrayList<>(2);
             if (id != null)
                 entityProps.add(queryInfo.loggableAppend(idAttributeName,
@@ -619,7 +653,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                       entityProps,
                       LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES);
         }
-        return entity;
+
+        return em.merge(queryInfo.toEntity(e));
     }
 
     /**
@@ -747,7 +782,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             int length = Array.getLength(arg);
             results = resultVoid ? null : new ArrayList<>(length);
             for (int i = 0; i < length; i++) {
-                Object entity = toEntity(Array.get(arg, i));
+                Object entity = queryInfo.toEntity(Array.get(arg, i));
                 em.persist(entity);
                 if (results != null)
                     results.add(entity);
@@ -761,7 +796,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (arg instanceof Iterable) {
                 results = resultVoid ? null : new ArrayList<>();
                 for (Object e : ((Iterable<?>) arg)) {
-                    Object entity = toEntity(e);
+                    Object entity = queryInfo.toEntity(e);
                     em.persist(entity);
                     if (results != null)
                         results.add(entity);
@@ -770,7 +805,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             } else {
                 hasSingularEntityParam = true;
                 results = resultVoid ? null : new ArrayList<>(1);
-                Object entity = toEntity(arg);
+                Object entity = queryInfo.toEntity(arg);
                 em.persist(entity);
                 em.flush();
                 if (results != null)
@@ -1051,7 +1086,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         if (CursoredPage.class.equals(multiType)) {
                             returnValue = new CursoredPageImpl<>(queryInfo, pagination, args);
                         } else if (Page.class.equals(multiType)) {
-                            returnValue = new PageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
+                            PageRequest req = limit == null //
+                                            ? pagination //
+                                            : queryInfo.toPageRequest(limit);
+                            returnValue = new PageImpl<>(queryInfo, req, args);
                         } else if (pagination != null && !PageRequest.Mode.OFFSET.equals(pagination.mode())) {
                             throw exc(IllegalArgumentException.class,
                                       "CWWKD1035.incompat.page.mode",
@@ -1096,11 +1134,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 if (Stream.class.equals(multiType))
                                     returnValue = stream;
                                 else if (IntStream.class.equals(multiType))
-                                    returnValue = stream.mapToInt(RepositoryImpl::toInt);
+                                    returnValue = stream.mapToInt(queryInfo::toInt);
                                 else if (LongStream.class.equals(multiType))
-                                    returnValue = stream.mapToLong(RepositoryImpl::toLong);
+                                    returnValue = stream.mapToLong(queryInfo::toLong);
                                 else if (DoubleStream.class.equals(multiType))
-                                    returnValue = stream.mapToDouble(RepositoryImpl::toDouble);
+                                    returnValue = stream.mapToDouble(queryInfo::toDouble);
                                 else
                                     throw exc(UnsupportedOperationException.class,
                                               "CWWKD1046.result.convert.err",
@@ -1162,11 +1200,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                 value = queryInfo.convert(result,
                                                                           entityInfo.idType,
                                                                           false);
-                                                if (value == result) // unable to convert value - this should be unreachable since we validated the return type when we constructed the select query
-                                                    throw new MappingException("Results for find-and-delete repository queries must be the entity class (" +
-                                                                               (entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName() +
-                                                                               ") or the id class (" + entityInfo.idType +
-                                                                               "), not the " + result.getClass().getName() + " class."); // TODO NLS reuse CWWKD1006.delete.rtrn.err?
+                                                if (value == result)
+                                                    throw exc(MappingException.class,
+                                                              "CWWKD1006.delete.rtrn.err",
+                                                              method.getGenericReturnType().getTypeName(),
+                                                              method.getName(),
+                                                              repositoryInterface.getName(),
+                                                              entityInfo.getType().getName(),
+                                                              entityInfo.idType);
                                             }
 
                                             jakarta.persistence.Query delete = em.createQuery(queryInfo.jpqlDelete);
@@ -1520,7 +1561,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      *                       the entity (or correct version of the entity) was not found.
      */
     private int remove(Object e, QueryInfo queryInfo, EntityManager em) throws Exception {
-        Class<?> entityClass = queryInfo.entityInfo.recordClass == null ? queryInfo.entityInfo.entityClass : queryInfo.entityInfo.recordClass;
+        Class<?> entityClass = queryInfo.entityInfo.getType();
 
         if (e == null)
             throw exc(NullPointerException.class,
@@ -1611,76 +1652,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
         return numDeleted;
     }
 
-    @Trivial
-    private static final double toDouble(Object o) {
-        if (o instanceof Number)
-            return ((Number) o).doubleValue();
-        else if (o instanceof String)
-            return Double.parseDouble((String) o);
-        else
-            throw new MappingException("Not representable as a double value: " + o.getClass().getName());
-    }
-
-    /**
-     * Converts a record to its generated entity equivalent,
-     * or does nothing if not a record.
-     *
-     * @param o entity or a record that needs conversion to an entity.
-     * @return entity.
-     */
-    @Trivial
-    private static final Object toEntity(Object o) {
-        Object entity = o;
-        Class<?> oClass = o == null ? null : o.getClass();
-        if (o != null && oClass.isRecord())
-            try {
-                Class<?> entityClass = oClass.getClassLoader().loadClass(oClass.getName() + "Entity");
-                Constructor<?> ctor = entityClass.getConstructor(oClass);
-                entity = ctor.newInstance(o);
-            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | //
-                            InvocationTargetException | NoSuchMethodException | SecurityException x) {
-                throw new MappingException("Unable to convert record " + oClass + " to generated entity class.", //
-                                x instanceof InvocationTargetException ? x.getCause() : x); // TODO NLS
-            }
-        if (entity != o && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "toEntity " + oClass.getName() + " --> " + entity.getClass().getName());
-        return entity;
-    }
-
-    @Trivial
-    private static final int toInt(Object o) {
-        if (o instanceof Number)
-            return ((Number) o).intValue();
-        else if (o instanceof String)
-            return Integer.parseInt((String) o);
-        else
-            throw new MappingException("Not representable as an int value: " + o.getClass().getName());
-    }
-
-    @Trivial
-    private static final long toLong(Object o) {
-        if (o instanceof Number)
-            return ((Number) o).longValue();
-        else if (o instanceof String)
-            return Long.parseLong((String) o);
-        else
-            throw new MappingException("Not representable as a long value: " + o.getClass().getName());
-    }
-
-    /**
-     * Converts a Limit to a PageRequest if possible.
-     *
-     * @param limit Limit.
-     * @return PageRequest.
-     * @throws IllegalArgumentException if the Limit is a range with a starting point above 1.
-     */
-    private static final PageRequest toPageRequest(Limit limit) {
-        if (limit.startAt() != 1L)
-            throw new IllegalArgumentException("Limit with starting point " + limit.startAt() +
-                                               ", which is greater than 1, cannot be used to request pages."); // TODO NLS
-        return PageRequest.ofSize(limit.maxResults());
-    }
-
     /**
      * Converts an update count to the requested return type.
      *
@@ -1731,7 +1702,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             results = new ArrayList<>();
             int length = Array.getLength(arg);
             for (int i = 0; i < length; i++)
-                results.add(em.merge(toEntity(Array.get(arg, i))));
+                results.add(em.merge(queryInfo.toEntity(Array.get(arg, i))));
             em.flush();
         } else {
             arg = arg instanceof Stream //
@@ -1741,12 +1712,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (Iterable.class.isAssignableFrom(queryInfo.entityParamType)) {
                 results = new ArrayList<>();
                 for (Object e : ((Iterable<?>) arg))
-                    results.add(em.merge(toEntity(e)));
+                    results.add(em.merge(queryInfo.toEntity(e)));
                 em.flush();
             } else {
                 hasSingularEntityParam = true;
                 results = resultVoid ? null : new ArrayList<>(1);
-                Object entity = em.merge(toEntity(arg));
+                Object entity = em.merge(queryInfo.toEntity(arg));
                 if (results != null)
                     results.add(entity);
                 em.flush();
@@ -1822,7 +1793,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @throws Exception if an error occurs.
      */
     private int update(Object e, QueryInfo queryInfo, EntityManager em) throws Exception {
-        Class<?> entityClass = queryInfo.entityInfo.recordClass == null ? queryInfo.entityInfo.entityClass : queryInfo.entityInfo.recordClass;
+        Class<?> entityClass = queryInfo.entityInfo.getType();
 
         if (e == null)
             throw exc(NullPointerException.class,
