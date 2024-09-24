@@ -12,11 +12,6 @@ bVersion=1.0
 
 -sub *.bnd
 
-javac.source: 1.8
-javac.target: 1.8
-
-fat.minimum.java.level: 1.8
-
 src: \
 	fat/src,\
 	test-bundles/telemetry.user.feature/src,\
