@@ -17,8 +17,7 @@ dependencies {
                project(':com.ibm.ws.org.slf4j.jdk14'),
                project(':com.ibm.ws.security.wim.adapter.ldap_fat.krb5.1'),
                project(':com.ibm.ws.security.spnego.fat.common'),
-               project(':io.openliberty.org.apache.commons.codec'),
-               project(':io.openliberty.org.apache.commons.logging')          
+               project(':io.openliberty.org.apache.commons.codec')
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer

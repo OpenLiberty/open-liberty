@@ -12,7 +12,9 @@
  *******************************************************************************/
 
 dependencies {
-  requiredLibs project(':com.ibm.ws.org.apache.commons.compress')
+  requiredLibs(project(':com.ibm.ws.org.apache.commons.compress')) {
+    transitive = false
+  }
 }
 
 task copyBundles {

@@ -11,9 +11,16 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+configurations {
+  requiredLibs {
+    transitive = false
+  }
+}
+
 // Define G:A:V coordinates of each dependency
 dependencies {
-  requiredLibs project(":com.ibm.ws.wsat.migration_fat.4")
+  requiredLibs project(":com.ibm.ws.transaction.fat.util"),
+               project(":com.ibm.ws.wsat.migration_fat.4")
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer

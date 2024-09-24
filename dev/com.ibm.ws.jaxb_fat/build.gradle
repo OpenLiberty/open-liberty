@@ -12,10 +12,18 @@
  *******************************************************************************/
 
 configurations {
-  appLibs
-  addAppJaxb23Libs
-  addAppXmlBinding30Libs
-  addAppXmlBinding40Libs
+  appLibs {
+    transitive = false
+  }
+  addAppJaxb23Libs {
+    transitive = false
+  }
+  addAppXmlBinding30Libs {
+    transitive = false
+  }
+  addAppXmlBinding40Libs {
+    transitive = false
+  }
 }
 
 dependencies {

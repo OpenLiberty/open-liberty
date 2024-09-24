@@ -53,7 +53,6 @@ repositories {
     project(':com.ibm.ws.org.apache.commons.io'),
     project(':com.ibm.ws.org.apache.httpcomponents'),
     project(':io.openliberty.org.apache.commons.codec'),
-    project(':io.openliberty.org.apache.commons.logging'),
     project(':io.openliberty.org.apache.xercesImpl')
 }
 
