@@ -64,6 +64,8 @@ public class MpTelemetryLogMappingUtils {
             return CollectorConstants.FFDC_EVENT_TYPE;
         } else if (isBetaModeCheck() && source.endsWith(CollectorConstants.AUDIT_LOG_SOURCE)) {
             return CollectorConstants.AUDIT_LOG_EVENT_TYPE;
+        } else if (isBetaModeCheck() && source.endsWith(CollectorConstants.ACCESS_LOG_SOURCE)) {
+            return CollectorConstants.ACCESS_LOG_EVENT_TYPE;
         } else
             return "";
     }
@@ -83,6 +85,8 @@ public class MpTelemetryLogMappingUtils {
             mapFFDCToOpenTelemetry(builder, eventType, event);
         } else if (isBetaModeCheck() && eventType.equals(CollectorConstants.AUDIT_LOG_EVENT_TYPE)) {
             mapAuditLogsToOpenTelemetry(builder, eventType, event);
+        } else if (isBetaModeCheck() && eventType.equals(CollectorConstants.ACCESS_LOG_EVENT_TYPE)) {
+            mapAccessToOpenTelemetry(builder, eventType, event);
         }
     }
 
