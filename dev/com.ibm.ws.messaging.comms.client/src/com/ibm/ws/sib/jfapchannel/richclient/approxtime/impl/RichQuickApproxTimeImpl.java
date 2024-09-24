@@ -38,7 +38,7 @@ public class RichQuickApproxTimeImpl implements QuickApproxTime {
   public long getApproxTime() {
     // For performance reasons there is no trace entry statement here
     // For performance reasons there is no trace exit statement here
-      return com.ibm.wsspi.timer.QuickApproxTime.getApproxTime();
+      return System.currentTimeMillis();
   }
 
   /**

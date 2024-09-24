@@ -41,7 +41,6 @@ Service-Component: \
         sslSupport=com.ibm.wsspi.ssl.SSLSupport; \
         sslConfig=com.ibm.wsspi.ssl.SSLConfiguration; \
         eventService=com.ibm.websphere.event.EventEngine; \
-        approxTime=com.ibm.wsspi.timer.ApproximateTime; \
         configuration-policy:=ignore;\
         optional:='sslConfig';\
         multiple:='sslConfig';\
@@ -63,7 +62,6 @@ instrument.disabled: true
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.timer;version=latest,\
 	com.ibm.ws.event;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
         io.openliberty.wsoc.ssl.internal;version=latest

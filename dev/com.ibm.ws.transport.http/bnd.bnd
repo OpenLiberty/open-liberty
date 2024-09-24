@@ -136,7 +136,6 @@ instrument.classesExcludes: \
     com.ibm.ws.kernel.boot.core,\
 	com.ibm.ws.kernel.service,\
 	com.ibm.ws.kernel.boot.nested;version=latest,\
-	com.ibm.ws.timer;version=latest,\
 	com.ibm.ws.runtime.update,\
 	com.ibm.ws.threading,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
