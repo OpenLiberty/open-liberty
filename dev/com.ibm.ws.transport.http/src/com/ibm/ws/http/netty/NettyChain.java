@@ -21,6 +21,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.internal.HttpChain;
+import com.ibm.ws.http.internal.HttpChain.ActiveConfiguration;
 import com.ibm.ws.http.internal.HttpChain.ChainState;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
 import com.ibm.ws.http.internal.HttpServiceConstants;
@@ -63,7 +64,7 @@ public class NettyChain extends HttpChain {
      */
     public NettyChain(HttpEndpointImpl owner, boolean isHttps) {
         super(owner, isHttps);
-        
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "NettyChain constructor, state: " + (state != null ? state.get() : "null"));
         }
@@ -87,10 +88,11 @@ public class NettyChain extends HttpChain {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Netty Chain initialized: Endpoint ID = " + endpointId + ", Endpoint Name = " + root);
         }
-        
+
     }
 
-public synchronized void stop() {
+    @Override
+    public synchronized void stop() {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.entry(this, tc, "Stopping Netty Chain: " + endpointName + ", Current state: " + state.get());
@@ -99,7 +101,6 @@ public synchronized void stop() {
         if (state.get() == ChainState.STARTED) {
             endpointMgr.removeEndPoint(endpointName);
             state.set(ChainState.STOPPING);
-
 
             try {
                 if (Objects.nonNull(serverChannel) && serverChannel.isOpen()) {
@@ -114,12 +115,11 @@ public synchronized void stop() {
                 }
 
             } finally {
-                
-                    VirtualHostMap.notifyStopped(owner, currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
-                    currentConfig.clearActivePort();
-                    String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STOPPED;
-                    postEvent(topic, currentConfig, null);
-                
+
+                VirtualHostMap.notifyStopped(owner, currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
+                currentConfig.clearActivePort();
+                String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STOPPED;
+                postEvent(topic, currentConfig, null);
 
                 state.set(ChainState.STOPPED);
                 notifyAll();
@@ -134,7 +134,6 @@ public synchronized void stop() {
             Tr.exit(this, tc, "stop chain " + this);
         }
     }
-
 
     private void stopAndWait() {
         if (state.get() != ChainState.STOPPED && state.get() != ChainState.UNINITIALIZED) {
@@ -157,10 +156,7 @@ public synchronized void stop() {
         }
 
         final ActiveConfiguration oldConfig = currentConfig;
-        final ActiveConfiguration newConfig = new ActiveConfiguration(isHttps(), getOwner().getTcpOptions(), isHttps() ? getOwner().getSslOptions() : null, 
-                        getOwner().getHttpOptions(), getOwner().getRemoteIpConfig(), getOwner().getCompressionConfig(), 
-                        getOwner().getSamesiteConfig(), getOwner().getHeadersConfig(), getOwner().getEndpointOptions(), resolvedHostName);
-        
+        final ActiveConfiguration newConfig = new ActiveConfiguration(isHttps(), getOwner().getTcpOptions(), isHttps() ? getOwner().getSslOptions() : null, getOwner().getHttpOptions(), getOwner().getRemoteIpConfig(), getOwner().getCompressionConfig(), getOwner().getSamesiteConfig(), getOwner().getHeadersConfig(), getOwner().getEndpointOptions(), resolvedHostName);
 
         if (newConfig.configPort < 0 || !newConfig.complete()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -172,14 +168,14 @@ public synchronized void stop() {
             state.set(ChainState.UNINITIALIZED);
         }
 
-        else{
+        else {
 
             if (!newConfig.unchanged(oldConfig)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "This configuration differs and should cause an update ");
                 }
                 currentConfig = newConfig;
-                if(state.get() != ChainState.UNINITIALIZED) {
+                if (state.get() != ChainState.UNINITIALIZED) {
                     stopAndWait();
                 }
             }
@@ -190,22 +186,21 @@ public synchronized void stop() {
             Tr.debug(this, tc, "Channel restarted with new configuration");
         }
     }
-    
 
     public synchronized void startNettyChannel() {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.entry(this, tc, "Starting Netty Channel: " + endpointName + ", Current state: " + state.get() + ", Enabled: " + enabled);
         }
- 
+
         // if (currentConfig == null || !currentConfig.complete() || !enabled || FrameworkState.isStopping()) {
         //     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
         //         Tr.debug(this, tc, "Cannot start channel due to incomplete configuration or disabled state");
         //     }
         //     return;
         // }
-      
-        if (state.compareAndSet(ChainState.STOPPED, ChainState.STARTING) || state.compareAndSet(ChainState.UNINITIALIZED, ChainState.STARTING) ) {           
+
+        if (state.compareAndSet(ChainState.STOPPED, ChainState.STARTING) || state.compareAndSet(ChainState.UNINITIALIZED, ChainState.STARTING)) {
             try {
                 Map<String, Object> httpOptions = new HashMap<>(owner.getHttpOptions());
                 httpOptions.put(HttpConfigConstants.PROPNAME_ACCESSLOG_ID, owner.getName());
@@ -221,12 +216,12 @@ public synchronized void stop() {
                 tcpOptions.put(ConfigConstants.EXTERNAL_NAME, endpointName);
 
                 bootstrap = nettyFramework.createTCPBootstrap(tcpOptions);
-                HttpPipelineInitializer.HttpPipelineBuilder pipelineBuilder = new HttpPipelineInitializer.HttpPipelineBuilder(this)
-                    .with(ConfigElement.COMPRESSION, owner.getCompressionConfig())
-                    .with(ConfigElement.HTTP_OPTIONS, httpOptions)
-                    .with(ConfigElement.HEADERS, owner.getHeadersConfig())
-                    .with(ConfigElement.REMOTE_IP, owner.getRemoteIpConfig())
-                    .with(ConfigElement.SAMESITE, owner.getSamesiteConfig());
+                HttpPipelineInitializer.HttpPipelineBuilder pipelineBuilder = new HttpPipelineInitializer.HttpPipelineBuilder(this).with(ConfigElement.COMPRESSION,
+                                                                                                                                         owner.getCompressionConfig()).with(ConfigElement.HTTP_OPTIONS,
+                                                                                                                                                                            httpOptions).with(ConfigElement.HEADERS,
+                                                                                                                                                                                              owner.getHeadersConfig()).with(ConfigElement.REMOTE_IP,
+                                                                                                                                                                                                                             owner.getRemoteIpConfig()).with(ConfigElement.SAMESITE,
+                                                                                                                                                                                                                                                             owner.getSamesiteConfig());
 
                 // Add SSL options only if the chain is SSL-enabled
                 if (this.isHttps()) {
@@ -240,7 +235,6 @@ public synchronized void stop() {
                 bootstrap.childHandler(httpPipeline);
 
                 serverChannel = nettyFramework.start(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
-
 
                 VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
                 String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
@@ -261,7 +255,7 @@ public synchronized void stop() {
 
     private void channelFutureHandler(ChannelFuture future) {
         //TODO: check this synchronization behaves as intended
-        synchronized(this) {
+        synchronized (this) {
             if (future.isSuccess()) {
                 state.set(ChainState.STARTED);
                 EndPointInfo info = endpointMgr.getEndPoint(this.endpointName);
@@ -274,23 +268,21 @@ public synchronized void stop() {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Channel failed to bind to port:  " + future.cause());
                 }
-
                 handleStartupError(new NettyException(future.cause()), currentConfig);
                 // if(serverChannel != null){
                 //     serverChannel.close();
                 //     serverChannel = null;
                 // }
-
-               //TODO: check if this is needed
-                //VirtualHostMap.notifyStopped(owner, config.getResolvedHost(), config.getConfigPort(), isHTtps);
-                //config.clearActivePort();
+                // TODO: check if this is needed
+                if (currentConfig != null) {
+                    VirtualHostMap.notifyStopped(owner, currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
+                    currentConfig.clearActivePort();
+                }
                 state.set(ChainState.STOPPED);
             }
             notifyAll();
         }
     }
-
-
 
     @Override
     public void enable() {
@@ -382,17 +374,16 @@ public synchronized void stop() {
     public int getChainState() {
         return state.get().val;
     }
-    
+
     @Override
     public String toString() {
         return this.getClass().getSimpleName()
-                        + "[@=" + System.identityHashCode(this)
-                        + ",enabled=" + enabled
-                        + ",state=" + (state != null ? state.get() : "null")
-                        + ",chainName=" + chainName
-                        + ",config=" + currentConfig + "]";
+               + "[@=" + System.identityHashCode(this)
+               + ",enabled=" + enabled
+               + ",state=" + (state != null ? state.get() : "null")
+               + ",chainName=" + chainName
+               + ",config=" + currentConfig + "]";
 
     }
-
 
 }

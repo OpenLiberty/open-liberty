@@ -26,6 +26,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.util.ReferenceCountUtil;
 
 /**
  * Pipeline handler to support Liberty's <remoteIp> end point configuration.
@@ -34,6 +35,10 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
 
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(RemoteIpHandler.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
+
+    public RemoteIpHandler() {
+        super(false);
+    }
 
     /**
      * Identifies between the forwarded for and by lists
@@ -78,11 +83,8 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
         String forwardedHeader = request.headers().get(FORWARDED_HEADER);
         forwardedFor = new ArrayList<String>();
         forwardedBy = new ArrayList<String>();
-        
 
         if (!Objects.isNull(forwardedHeader)) {
-            
-            
 
             this.parseForwarded(request);
 
@@ -103,9 +105,9 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
 
             Tr.debug(tc, "channelRead0", this);
 
-        } 
+        }
 
-        context.fireChannelRead(request);
+        context.fireChannelRead(ReferenceCountUtil.retain(request, 1));
 
     }
 
@@ -149,7 +151,6 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
         String node = null;
         String nodeName = null;
         String nodeExtract = null;
-
 
         for (String param : parameters) {
             //The "for" and "by" parameters could be comma delimitted
