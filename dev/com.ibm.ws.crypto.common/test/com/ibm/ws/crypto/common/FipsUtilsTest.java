@@ -38,23 +38,33 @@ public class FipsUtilsTest {
     }
 
     @Test
-    public void testIsFIPSEnabledFalse() {
+    public void testIsFIPS140_2EnabledTrue() {
         System.setProperty(FIPS_MODE_PROPERTY, "140-2");
         FipsUtils.FIPSLevel = FipsUtils.getFipsLevel();
-        assertFalse("isFips140_3Enabled() is true", FipsUtils.isFips140_3Enabled());
+
+        if (FipsUtils.isRunningBetaMode()) {
+            assertTrue("isFips140_2Enabled() is false", FipsUtils.isFips140_2Enabled());
+        } else {
+            assertFalse("isFips140_2Enabled() is true", FipsUtils.isFips140_2Enabled());
+        }
     }
 
     @Test
     public void testIsFIPSEnabledFalsePropNotSet() {
         System.clearProperty(FIPS_MODE_PROPERTY);
         FipsUtils.FIPSLevel = FipsUtils.getFipsLevel();
-        assertFalse("isFips140_3Enabled() is true", FipsUtils.isFips140_3Enabled());
+        assertFalse("isFIPSEnabled() is true", FipsUtils.isFIPSEnabled());
     }
 
     @Test
-    public void testIsFIPSEnabledTrue() {
+    public void testIsFIPS140_3EnabledTrue() {
         System.setProperty(FIPS_MODE_PROPERTY, "140-3");
         FipsUtils.FIPSLevel = FipsUtils.getFipsLevel();
-        assertTrue("isFips140_3Enabled() is false", FipsUtils.isFips140_3Enabled());
+        
+        if (FipsUtils.isRunningBetaMode()) {
+            assertTrue("isFips140_3Enabled() is false", FipsUtils.isFips140_3Enabled());
+        } else {
+            assertFalse("isFips140_3Enabled() is true", FipsUtils.isFips140_3Enabled());
+        }
     }
 }

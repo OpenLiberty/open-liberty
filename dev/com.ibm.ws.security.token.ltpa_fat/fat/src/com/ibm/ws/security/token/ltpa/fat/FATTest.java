@@ -52,6 +52,7 @@ public class FATTest {
     private static final String DEFAULT_KEY_PATH = "resources/security/ltpa.keys";
     private static final String ALTERNATE_KEY_PATH = "resources/security/alternate/testLtpa.keys";
     private static final String REPLACEMENT_LTPA_KEYS_PATH = "alternate/ltpa.keys";
+    private static final String REPLACEMENT_FIPS_LTPA_KEYS_PATH = "alternateFIPS/ltpa.keys";
     private static final String CORRUPTED_LTPA_KEYS_PATH = "corrupted/ltpa.keys";
     private static final String DEFAULT_SERVER_XML = "server.xml";
     private static final String ALTERNATE_SERVER_XML = "alternate/server.xml";
@@ -64,6 +65,11 @@ public class FATTest {
     private static final String PWD_WRONG = "wrongPassword";
     private static final String serverShutdownMessages = "CWWKS4106E";
     private static final LibertyServer server;
+
+    private static final boolean fipsEnabled = FipsUtils.isFIPSEnabled();
+    private static final String EXPECTED_EXCEPTION_BAD_PADDING = "javax.crypto.BadPaddingException";
+    private static final String EXPECTED_EXCEPTION_AEAD_BAD_TAG = "javax.crypto.AEADBadTagException";
+
     static {
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.token.ltpa.fat");
         try {
@@ -158,8 +164,11 @@ public class FATTest {
         startServerWithConfigFileAndLog(DEFAULT_SERVER_XML, "validateKeysReloadedAfterModification.log");
         assertFeatureCompleteWithLTPAConfigAndTestApp();
         assertTokenCanBeCreated();
-
-        replaceLTPAKeysFile(ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR, REPLACEMENT_LTPA_KEYS_PATH);
+        if (!fipsEnabled){
+            replaceLTPAKeysFile(ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR, REPLACEMENT_LTPA_KEYS_PATH);
+        } else {
+            replaceLTPAKeysFile(ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR, REPLACEMENT_FIPS_LTPA_KEYS_PATH);
+        }
         assertLTPAConfigurationReady();
         assertAppDoesNotRestart();
 
@@ -170,11 +179,11 @@ public class FATTest {
     /**
      * Validate that the LTPA keys are not reloaded after modifying the LTPA keys file
      * if the server.xml has the wrong password.
-     * The FFDCs for javax.crypto.BadPaddingException exception are expected since
+     * The FFDCs for javax.crypto.BadPaddingException or javax.crypto.AEADBadTagException exception are expected since
      * the code will fail to properly decrypt the LTPA keys with the wrong password.
      */
     @CheckForLeakedPasswords({ PWD_WRONG, PWD_ANY_ENCODED })
-    @ExpectedFFDC("javax.crypto.BadPaddingException")
+    @ExpectedFFDC({ EXPECTED_EXCEPTION_AEAD_BAD_TAG, EXPECTED_EXCEPTION_BAD_PADDING })
     @Test
     public void validateKeysNotReloadedAfterModificationWithWrongPassword() throws Exception {
         startServerWithConfigFileAndLog(DEFAULT_SERVER_XML, "validateKeysNotReloadedAfterModificationWithWrongPassword.log");
