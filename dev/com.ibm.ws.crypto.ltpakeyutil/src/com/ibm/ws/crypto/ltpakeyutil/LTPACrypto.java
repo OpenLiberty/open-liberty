@@ -1047,7 +1047,7 @@ final class LTPACrypto {
 	}
 
 	@Trivial
-	static final byte[] generate3DESKey() {
+	static final byte[] generateSharedKey() {
 		byte[] rndSeed = null;
 		int len = (fipsEnabled) ? 32 : 24;
 		rndSeed = new byte[len];
