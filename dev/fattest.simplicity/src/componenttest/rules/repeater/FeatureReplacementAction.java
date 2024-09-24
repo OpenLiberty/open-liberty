@@ -153,7 +153,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private boolean forceAddFeatures = true;
     private SEVersion minJavaLevel = SEVersion.JAVA8;
     private SEVersion maxJavaLevel = null;
-    protected String currentID = null;
+    private String currentID = null;
     private final Set<String> optionsToAdd = new HashSet<String>();
     private final Set<File> optionFilesCreated = new HashSet<File>();
     private final Map<File, File> optionsFileBackupMapping = new HashMap<File, File>();
@@ -290,6 +290,24 @@ public class FeatureReplacementAction implements RepeatTestAction {
     }
 
     /**
+     * Get the set of features to add
+     *
+     * @return the set of features to add
+     */
+    public Set<String> getAddFeatures() {
+        return Collections.unmodifiableSet(this.addFeatures);
+    }
+
+    /**
+     * Get the set of features to always add
+     *
+     * @return the set of features to always add
+     */
+    public Set<String> getAlwaysAddFeatures() {
+        return Collections.unmodifiableSet(this.alwaysAddFeatures);
+    }
+
+    /**
      * Add a feature to the set to be removed
      *
      * ...to be clear, this is not the opposite of addFeature()
@@ -398,6 +416,14 @@ public class FeatureReplacementAction implements RepeatTestAction {
     }
 
     /**
+     * Return a set of server names which this feature replacement action will apply to. See {@link #forServers(String...)}.
+     * The set may contain the special ALL_SERVERS or NO_SERVERS values.
+     */
+    public Set<String> getServers() {
+        return Collections.unmodifiableSet(this.servers);
+    }
+
+    /**
      * Specify a list of server names to include in the feature replace action and any server configuration
      * files under "publish/clients/CLIENT_NAME/" will be scanned.
      * By default, all server config files in publish/clients/ will be scanned for updates.
@@ -471,6 +497,10 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     @Override
     public boolean isEnabled() {
+        return checkEnabled();
+    }
+
+    public boolean checkEnabled() {
         if (JavaInfo.forCurrentVM().majorVersion() < minJavaLevel.majorVersion()) {
             Log.info(c, "isEnabled", "Skipping action '" + toString() + "' because the java level is too low.");
             return false;
@@ -942,5 +972,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
         } else {
             return getClass().getSimpleName() + "  REMOVE " + removeFeatures + "  ADD " + addFeatures;
         }
+    }
+
+    public static boolean isCheckpointRepeatActionActive() {
+        return CheckpointEE8Action.isActive() || CheckpointEE9Action.isActive() || CheckpointEE10Action.isActive() || CheckpointEE11Action.isActive();
     }
 }

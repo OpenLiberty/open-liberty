@@ -37,10 +37,10 @@ public interface Customers extends DataRepository<Customer, Integer> {
     @OrderBy("email")
     Stream<Customer> findByPhoneIn(List<Long> phoneNumbers);
 
-    @OrderBy("phone")
-    Stream<CreditCard> findCardsByEmailEndsWith(String ending);
+    @OrderBy("debtor.phone")
+    Stream<CreditCard> findCardsByDebtorEmailEndsWith(String ending);
 
-    Set<CreditCard> findCardsByCustomerId(int customerId);
+    Set<CreditCard> findCardsByDebtorCustomerId(int customerId);
 
     @OrderBy("email")
     @Query("SELECT c.email FROM Customer c JOIN c.cards cc WHERE (cc.issuer=?1)")

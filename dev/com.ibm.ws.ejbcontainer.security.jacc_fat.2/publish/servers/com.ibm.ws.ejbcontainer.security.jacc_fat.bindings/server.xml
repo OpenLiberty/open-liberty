@@ -19,6 +19,9 @@
 	</featureManager>
 	
 	 <jaccTestProvider roleMappingFile="${server.config.dir}/resources/security/roleMapping.props" />
+	 
+	 <!--startEJBsAtAppStart is false by default. But in the case of checkpoint/restore, the default value is true. hence, setting false explicitly -->
+	<ejbContainer startEJBsAtAppStart="false"/>
 	
 	<application type="ear" id="securityejbXML" name="securityejbXML" location="securityejbXML.ear" />
     <application type="ear" id="securityejbInWarEarXML" name="securityejbInWarEarXML" location="securityejbInWarEarXML.ear" />

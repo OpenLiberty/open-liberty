@@ -76,7 +76,6 @@ dependencies {
         transitive = false
     }
     requiredLibs project(':io.openliberty.org.apache.commons.codec')
-    requiredLibs project(':io.openliberty.org.apache.commons.logging')
     requiredLibs 'xml-apis:xml-apis:1.4.01'
 }
 

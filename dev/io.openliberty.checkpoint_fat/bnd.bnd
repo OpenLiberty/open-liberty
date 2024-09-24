@@ -74,6 +74,7 @@ tested.features: \
         microProfile-4.1,\
         microProfile-5.0,\
         microProfile-6.0,\
+        microProfile-7.0,\
         mpConfig-3.1,\
         mpMetrics-5.1,\
         mpOpenAPI-2.0,\
@@ -202,12 +203,14 @@ tested.features: \
 	org.testng,\
 	com.ibm.ws.jmx,\
 	com.ibm.ws.kernel.service,\
-	io.opentelemetry:opentelemetry-opentracing-shim;version=1.19.0.alpha,\
-	io.opentracing:opentracing-api;version=0.33.0,\
+	io.opentelemetry:opentelemetry-opentracing-shim;version='1.19.0.alpha',\
+	io.opentracing:opentracing-api;version='0.33.0',\
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.boot.common;version=latest,\
 	com.ibm.ws.microprofile.openapi;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.openapi.1.0;version=latest,\
-	com.ibm.websphere.org.eclipse.microprofile.config.1.2.1;version=latest
+	com.ibm.websphere.org.eclipse.microprofile.config.1.2.1;version=latest,\
+	io.openliberty.com.fasterxml.jackson,\
+	com.fasterxml.jackson.core.jackson-databind
 
 -sub: *.bnd

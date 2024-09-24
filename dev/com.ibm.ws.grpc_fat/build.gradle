@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -134,10 +134,6 @@ dependencies {
     'com.google.code.findbugs:jsr305:3.0.2',
     'net.sourceforge.htmlunit:htmlunit:2.20'
  
-    // test
-    testImplementation 'commons-httpclient:commons-httpclient:3.1'
-    testImplementation 'junit:junit:4.12'
-
     //
     implementation 'com.google.protobuf:protobuf-java-util:3.23.4'
     // @jar is needed since some of the dependencies of java-util were overwritten
@@ -170,7 +166,6 @@ dependencies {
       'org.apache.httpcomponents:httpmime:4.5.3',
       project(':com.ibm.ws.org.apache.httpcomponents'),
       project(':io.openliberty.org.apache.commons.codec'),
-      project(':io.openliberty.org.apache.commons.logging'),
       'xml-apis:xml-apis:1.4.01',
       'io.grpc:grpc-core:' + grpcVersion,
       'io.grpc:grpc-stub:' + grpcVersion,

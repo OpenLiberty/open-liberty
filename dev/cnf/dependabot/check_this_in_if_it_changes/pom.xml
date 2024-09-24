@@ -64,12 +64,22 @@
     <dependency>
       <groupId>com.cloudant</groupId>
       <artifactId>cloudant-client</artifactId>
+      <version>2.20.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.cloudant</groupId>
+      <artifactId>cloudant-client</artifactId>
       <version>2.8.0</version>
     </dependency>
     <dependency>
       <groupId>com.cloudant</groupId>
       <artifactId>cloudant-http</artifactId>
       <version>2.16.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.cloudant</groupId>
+      <artifactId>cloudant-http</artifactId>
+      <version>2.20.1</version>
     </dependency>
     <dependency>
       <groupId>com.cloudant</groupId>
@@ -1458,23 +1468,8 @@
     </dependency>
     <dependency>
       <groupId>jakarta.nosql</groupId>
-      <artifactId>nosql-column</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.nosql</groupId>
-      <artifactId>nosql-core</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.nosql</groupId>
-      <artifactId>nosql-document</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.nosql</groupId>
-      <artifactId>nosql-key-value</artifactId>
-      <version>1.0.0-b6</version>
+      <artifactId>jakarta.nosql-api</artifactId>
+      <version>1.0.0-M1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.persistence</groupId>
@@ -2847,51 +2842,6 @@
       <version>8.2.0.v20160908</version>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.jnosql.communication</groupId>
-      <artifactId>jnosql-communication-core</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jnosql.communication</groupId>
-      <artifactId>jnosql-communication-document</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jnosql.communication</groupId>
-      <artifactId>jnosql-communication-driver-commons</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jnosql.communication</groupId>
-      <artifactId>jnosql-communication-query</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jnosql.communication</groupId>
-      <artifactId>jnosql-mongodb-driver</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jnosql.mapping</groupId>
-      <artifactId>jnosql-mapping-core</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jnosql.mapping</groupId>
-      <artifactId>jnosql-mapping-document</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jnosql.mapping</groupId>
-      <artifactId>jnosql-metamodel-processor-extension</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jnosql.mapping</groupId>
-      <artifactId>jnosql-mongodb-extension</artifactId>
-      <version>1.0.0-b6</version>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse.microprofile.config</groupId>
       <artifactId>microprofile-config-api</artifactId>
       <version>1.1</version>
@@ -3253,6 +3203,11 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
+      <artifactId>org.eclipse.persistence.core</artifactId>
+      <version>5.0.0-B03</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
       <version>2.7.15</version>
     </dependency>
@@ -3265,6 +3220,11 @@
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
       <version>4.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
+      <version>5.0.0-B03</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3283,6 +3243,11 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
+      <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
+      <version>5.0.0-B03</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa</artifactId>
       <version>2.7.15</version>
     </dependency>
@@ -3295,11 +3260,21 @@
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa</artifactId>
       <version>4.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>org.eclipse.persistence.jpa</artifactId>
+      <version>5.0.0-B03</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.json</artifactId>
       <version>4.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>org.eclipse.persistence.json</artifactId>
+      <version>5.0.0-B03</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.platform</groupId>
@@ -3589,7 +3564,7 @@
     <dependency>
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>7.0.0.Alpha2</version>
+      <version>7.0.0.Beta1</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate.validator</groupId>

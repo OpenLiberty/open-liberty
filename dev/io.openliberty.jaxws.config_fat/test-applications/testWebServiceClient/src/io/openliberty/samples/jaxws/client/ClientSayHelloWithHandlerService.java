@@ -20,19 +20,26 @@ import javax.xml.ws.WebEndpoint;
 import javax.xml.ws.WebServiceClient;
 
 @WebServiceClient(name = "SayHelloService",
-                  targetNamespace = "http://jaxws.samples.openliberty.io/",
-                  wsdlLocation = "META-INF/resources/wsdl/SayHelloService.wsdl")
+                  targetNamespace = "http://jaxws.samples.openliberty.io/")
 public class ClientSayHelloWithHandlerService extends Service {
 
     private final static URL SAYHELLOSERVICE_WSDL_LOCATION;
-
+    private static Logger logger = Logger.getLogger(ClientSayHelloWithHandlerService.class.getName());
+    
     static {
         URL url = null;
+        String urlString = null;
         try {
-            URL baseUrl = ClientSayHelloWithHandlerService.class.getClassLoader().getResource(".");
-            url = new URL(baseUrl, "SayHelloService.wsdl");
+            String host = System.getProperty("hostName");
+            if (host == null) {
+                logger.info("Failed to obtain host from system property, hostName, falling back to localhost");
+                host = "localhost";
+            }
+            urlString = new StringBuilder().append("http://" + host + ":").append(Integer.getInteger("bvt.prop.HTTP_default")).append("/testWebServiceClient/SayHelloService?wsdl").toString();   
+            logger.info("URL : " + urlString + " will be used for ClientSayHelloWithHandlerService.");
+            url = new URL(urlString);
         } catch (MalformedURLException e) {
-            Logger.getLogger(ClientSayHelloWithHandlerService.class.getName()).log(Level.INFO, "Can not initialize the default wsdl from {0}", "SayHelloService.wsdl");
+            logger.log(Level.INFO, "Can not initialize the default wsdl from {0}", urlString);
         }
         SAYHELLOSERVICE_WSDL_LOCATION = url;
     }

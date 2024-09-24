@@ -12,7 +12,9 @@
  *******************************************************************************/
 
 configurations {
-  junitdependencies
+  junitdependencies {
+    transitive = false
+  }
 }
 
 dependencies {

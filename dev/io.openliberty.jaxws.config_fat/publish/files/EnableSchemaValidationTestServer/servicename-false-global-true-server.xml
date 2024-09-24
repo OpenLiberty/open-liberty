@@ -6,7 +6,7 @@
 
     <include location="../fatTestPorts.xml"/>
     
-    <webServiceClient serviceName="SayHelloService"  enableSchemaValidation="false" />
+    <webServiceClient serviceName="SayHelloService"  enableSchemaValidation="false" enableDefaultValidation="false"/>
     
     <webServiceClient enableSchemaValidation="true" />
     

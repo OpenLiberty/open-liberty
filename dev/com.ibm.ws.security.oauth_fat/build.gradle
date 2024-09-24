@@ -26,8 +26,15 @@ repositories {
 }
 
 configurations {
-  derbyJar
-  mongoJavaDriver
+  derbyJar {
+    transitive = false
+  }
+  mongoJavaDriver {
+    transitive = false
+  }
+  requiredLibs {
+    transitive = false
+  }
 }
 
 dependencies {

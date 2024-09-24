@@ -55,8 +55,8 @@ public class Rebate {
     public LocalDateTime updatedAt;
 
     @Version
-    Integer version;
-
+    public Integer version;
+    public Rebate(){}
     public static Rebate of(double amount, String customerId, LocalTime purchaseMadeAt, LocalDate purchaseMadeOn, Status status, LocalDateTime updatedAt, int version) {
         Rebate inst = new Rebate();
         inst.amount = amount;
@@ -69,7 +69,17 @@ public class Rebate {
 
         return inst;
     }
-
+    public Rebate(Integer id, double amount, String customerId, LocalTime purchaseMadeAt, LocalDate purchaseMadeOn, Status status, LocalDateTime updatedAt, Integer version){
+        Rebate inst = new Rebate();
+        inst.id=id;
+        inst.amount = amount;
+        inst.customerId = customerId;
+        inst.purchaseMadeAt = purchaseMadeAt;
+        inst.purchaseMadeOn = purchaseMadeOn;
+        inst.status = status;
+        inst.updatedAt = updatedAt;
+        inst.version = version;
+    }
     public static enum Status {
         DENIED, SUBMITTED, VERIFIED, PAID
     }

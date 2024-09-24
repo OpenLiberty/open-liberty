@@ -7,7 +7,7 @@
         <feature>javaeeClient-7.0</feature>
     </featureManager>
     
-    <enterpriseApplication location="visTest.ear" defaultClientModule="visTestAppClient.jar" addWebModuleClassPathTo="earLoader" >
+    <enterpriseApplication location="visTest.ear" defaultClientModule="visTestAppClient.jar" webModuleClassPathLoader="ear" >
         <classloader commonLibraryRef="visTestCommonLib" privateLibraryRef="visTestPrivateLib" />
     </enterpriseApplication>
     

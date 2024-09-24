@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence.service;
 
+import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 import static org.objectweb.asm.Opcodes.ACC_PRIVATE;
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.ACC_SUPER;
@@ -135,11 +136,11 @@ public class RecordTransformer {
 
         final String _sourceFileName = entityClassName.substring(entityClassName.lastIndexOf(".") + 1) + ".java";
 
-        if (recordClass.getTypeParameters().length != 0) {
-            throw new DataException("The " + recordClass.getName() + " record has one or more generic types " +
-                                    Arrays.asList(recordClass.getTypeParameters()) + ". This record class cannot be transformed into "
-                                    + " an entity class since entity classes cannot be generic."); //TODO NLS
-        }
+        if (recordClass.getTypeParameters().length != 0)
+            throw exc(DataException.class,
+                      "CWWKD1071.record.with.type.var",
+                      recordClass.getName(),
+                      Arrays.asList(recordClass.getTypeParameters()));
 
         // Collect record component information, must preserve order
         Map<String, RecordComponentInfo> recordComponents = new LinkedHashMap<>();
@@ -147,11 +148,12 @@ public class RecordTransformer {
             RecordComponentInfo info = new RecordComponentInfo(component);
             RecordComponentInfo previous = recordComponents.put(info.getMethodName(""), info);
 
-            if (previous != null) {
-                throw new DataException("The " + recordClass.getName() + " record has two components [" +
-                                        info.name + ", " + previous.name + "] that cannot be tranformed into an entity class "
-                                        + "because the entity class getter and setter methods would be ambiguous."); //TODO NLS
-            }
+            if (previous != null)
+                throw exc(DataException.class,
+                          "CWWKD1072.record.comp.conflict",
+                          recordClass.getName(),
+                          info.name,
+                          previous.name);
 
             if (trace && tc.isDebugEnabled())
                 Tr.debug(tc, info.toString());

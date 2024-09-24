@@ -411,7 +411,7 @@ public class DataExtension implements Extension {
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, repositoryInterface.getName() + " has primary entity class " + primaryEntityClass,
+            Tr.debug(this, tc, repositoryInterface.getName() + " has primary entity " + primaryEntityClass,
                      "and methods that use the following entities:", queriesPerEntity);
 
         primaryEntityClassReturnValue[0] = primaryEntityClass;

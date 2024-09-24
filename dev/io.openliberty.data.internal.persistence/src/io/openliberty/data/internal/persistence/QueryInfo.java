@@ -584,6 +584,7 @@ public class QueryInfo {
         if (value instanceof Number &&
             (PRIMITIVE_NUMERIC_TYPES.contains(toType) ||
              Number.class.isAssignableFrom(toType))) {
+            // Conversion from one numeric type to another
             try {
                 if (BigDecimal.class.equals(fromType)) {
                     BigDecimal v = (BigDecimal) value;
@@ -681,11 +682,33 @@ public class QueryInfo {
             } catch (ArithmeticException x) {
                 cause = x;
             }
+        } else if (value instanceof CharSequence &&
+                   (PRIMITIVE_NUMERIC_TYPES.contains(toType) ||
+                    Number.class.isAssignableFrom(toType))) {
+            // Conversion from text to numeric value
+            if (int.class.equals(toType) || Integer.class.equals(toType))
+                return Integer.parseInt(value.toString());
+            else if (long.class.equals(toType) || Long.class.equals(toType))
+                return Long.parseLong(value.toString());
+            else if (short.class.equals(toType) || Short.class.equals(toType))
+                return Short.parseShort(value.toString());
+            else if (byte.class.equals(toType) || Byte.class.equals(toType))
+                return Byte.parseByte(value.toString());
+            else if (double.class.equals(toType) || Double.class.equals(toType))
+                return Double.parseDouble(value.toString());
+            else if (float.class.equals(toType) || Float.class.equals(toType))
+                return Float.parseFloat(value.toString());
+            else if (BigDecimal.class.equals(toType))
+                return new BigDecimal(value.toString());
+            else if (BigInteger.class.equals(toType))
+                return new BigInteger(value.toString());
         } else if (String.class.equals(toType) ||
                    CharSequence.class.equals(toType)) {
+            // Conversion to text
             return value.toString();
         } else if (char.class.equals(toType) ||
                    Character.class.equals(toType)) {
+            // Conversion from length 1 or 0 text to single/optional character
             if (value instanceof CharSequence) {
                 CharSequence chars = (CharSequence) value;
                 if (chars.length() == 1)
@@ -1030,11 +1053,6 @@ public class QueryInfo {
             throw new MappingException("Entity property name is missing."); // TODO possibly combine with unknown entity property name
 
         String name = getAttributeName(attribute, true);
-        if (name == null) {
-            if (entityInfo.idClassAttributeAccessors != null && ID.equals(attribute))
-                generateConditionsForIdClass(condition, ignoreCase, negated, q);
-            return;
-        }
 
         StringBuilder attributeExpr = new StringBuilder();
         if (function != null)
@@ -1110,51 +1128,6 @@ public class QueryInfo {
                 q.append(attributeExpr).append(negated ? " NOT " : "").append(condition.operator);
                 generateParam(q, ignoreCase, ++paramCount);
         }
-    }
-
-    /**
-     * Generates JPQL for a *By condition on the IdClass, which expands to multiple conditions in JPQL.
-     */
-    private void generateConditionsForIdClass(Condition condition, boolean ignoreCase, boolean negate, StringBuilder q) {
-
-        String o_ = entityVar_;
-
-        q.append(negate ? "NOT (" : "(");
-
-        int count = 0;
-        for (String idClassAttr : entityInfo.idClassAttributeAccessors.keySet()) {
-            if (++count != 1)
-                q.append(" AND ");
-
-            String name = getAttributeName(idClassAttr, true);
-            if (ignoreCase)
-                q.append("LOWER(").append(o_).append(name).append(')');
-            else
-                q.append(o_).append(name);
-
-            switch (condition) {
-                case EQUALS:
-                case NOT_EQUALS:
-                    q.append(condition.operator);
-                    generateParam(q, ignoreCase, ++paramCount);
-                    if (count != 1)
-                        paramAddedCount++;
-                    break;
-                case NULL:
-                case EMPTY:
-                    q.append(Condition.NULL.operator);
-                    break;
-                case NOT_NULL:
-                case NOT_EMPTY:
-                    q.append(Condition.NOT_NULL.operator);
-                    break;
-                default:
-                    throw new MappingException("Repository keyword " + condition.name() +
-                                               " cannot be used when the Id of the entity is an IdClass."); // TODO NLS
-            }
-        }
-
-        q.append(')');
     }
 
     /**
@@ -1412,10 +1385,17 @@ public class QueryInfo {
                                 //    generateUpdatesForIdClass(queryInfo, update, first, q);
                                 throw new UnsupportedOperationException("@Assign IdClass"); // TODO
                             } else {
-                                throw new MappingException("One or more of the " + Arrays.toString(annosForAllParams[p]) +
-                                                           " annotations specifes an operation that cannot be used on parameter " +
-                                                           (p + 1) + " of the " + method.getName() + " method of the " +
-                                                           repositoryInterface.getName() + " repository when the Id is an IdClass."); // TODO NLS
+                                // Unreachable in version 1.0 and uncertain what
+                                // will be added to the spec. Deferring NLS message
+                                // until then.
+                                throw new MappingException("One or more of the " +
+                                                           Arrays.toString(annosForAllParams[p]) +
+                                                           " annotations specifes an operation" +
+                                                           " that cannot be used on parameter " +
+                                                           (p + 1) + " of the " + method.getName() +
+                                                           " method of the " +
+                                                           repositoryInterface.getName() +
+                                                           " repository when the Id is an IdClass.");
                             }
                         } else {
                             String attribute = attrAndOp[0];
@@ -1577,8 +1557,15 @@ public class QueryInfo {
         if (selections == null || selections.length == 0) {
             cols = null;
         } else if (type == Type.FIND_AND_DELETE) {
-            // TODO NLS message for error path once selections are supported function
-            throw new UnsupportedOperationException();
+            // Unreachable in version 1.0 and uncertain what will be added to
+            // the spec regarding selections. Deferring NLS message until then.
+            throw new UnsupportedOperationException //
+            ("The " + method.getName() + " method of the " +
+             repositoryInterface.getName() + " repository has a " +
+             method.getGenericReturnType().getTypeName() + " return type and" +
+             " specifies to return the " + selections + " entity properties," +
+             " but delete operations can only return void, a deletion count," +
+             " a boolean deletion indicator, or the removed entities.");
         } else {
             cols = new String[selections.length];
             for (int i = 0; i < cols.length; i++) {
@@ -1592,18 +1579,15 @@ public class QueryInfo {
         if (singleType.isPrimitive())
             singleType = wrapperClassIfPrimitive(singleType);
 
-        if (type == Type.FIND_AND_DELETE && !(singleType.isAssignableFrom(wrapperClassIfPrimitive(entityInfo.idType)) ||
-                                              singleType.isAssignableFrom(entityInfo.entityClass) ||
-                                              (entityInfo.recordClass != null && singleType.isAssignableFrom(entityInfo.recordClass)))) {
-            Class<?> entityClass = entityInfo.recordClass == null //
-                            ? entityInfo.entityClass //
-                            : entityInfo.recordClass;
+        if (type == Type.FIND_AND_DELETE &&
+            !(singleType.isAssignableFrom(wrapperClassIfPrimitive(entityInfo.idType)) ||
+              singleType.isAssignableFrom(entityInfo.getType()))) {
             throw exc(MappingException.class,
                       "CWWKD1006.delete.rtrn.err",
                       method.getGenericReturnType().getTypeName(),
                       method.getName(),
                       repositoryInterface.getName(),
-                      entityClass.getName(),
+                      entityInfo.getType().getName(),
                       entityInfo.idType.getName());
         }
 
@@ -1811,9 +1795,14 @@ public class QueryInfo {
                 if (op == '=') {
                     generateUpdatesForIdClass(first, q);
                 } else {
+                    // Unreachable in version 1.0 and uncertain which operations
+                    // will be chosen in future. Deferring NLS message until then.
                     String opName = op == '+' ? "Add" : op == '*' ? "Multiply" : "Divide";
-                    throw new MappingException("The " + opName +
-                                               " repository update operation cannot be used on the Id of the entity when the Id is an IdClass."); // TODO NLS
+                    throw new UnsupportedOperationException("The " + opName +
+                                                            " repository update operation" +
+                                                            " cannot be used on the Id" +
+                                                            " of the entity when the" +
+                                                            " Id is an IdClass.");
                 }
             } else {
                 q.append(first ? " " : ", ").append(o_).append(name).append("=");
@@ -2482,13 +2471,6 @@ public class QueryInfo {
 
                         // TODO remove this workaround for #28931 once fixed
                         boolean insertEntityVar = !entityInfo.relationAttributeNames.isEmpty();
-                        if (!insertEntityVar)
-                            for (int i = startAt; !insertEntityVar && i < length; i++)
-                                switch (ql.charAt(i)) {
-                                    case '(': // TODO remove this workaround for #28908 once fixed
-                                        insertEntityVar = ql.regionMatches(true, i - 2, "ID", 0, 2);
-                                        break;
-                                }
                         if (insertEntityVar) {
                             entityVar = "o";
                             entityVar_ = "o.";
@@ -2752,12 +2734,6 @@ public class QueryInfo {
             if (selectLen > 0) {
                 q = new StringBuilder(ql.length() + (selectLen >= 0 ? 0 : 50) + (fromLen >= 0 ? 0 : 50) + 2);
                 String selection = ql.substring(select0, select0 + selectLen);
-                // TODO remove this workaround for #28913 once fixed
-                if (!insertEntityVar && entityVar_.length() == 0 && selection.indexOf('.') < 0
-                    && entityInfo.attributeNames.containsKey(selection.trim().toLowerCase())) {
-                    insertEntityVar = true;
-                    entityVar_ = entityVar + ".";
-                }
                 if (insertEntityVar) {
                     q.append("SELECT");
                     appendWithIdentifierName(ql, select0, select0 + selectLen, entityVar_, q);
@@ -2810,25 +2786,9 @@ public class QueryInfo {
             // TODO remove this workaround for #28874 once fixed
             else if (jpql.equals(" FROM NaturalNumber WHERE isOdd = false AND numType = ee.jakarta.tck.data.framework.read.only.NaturalNumber.NumberType.PRIME"))
                 jpql = "SELECT o FROM NaturalNumber o WHERE o.isOdd = false AND o.numType = ee.jakarta.tck.data.framework.read.only.NaturalNumber.NumberType.PRIME";
-            // TODO remove this workaround for #28913 once fixed
-            else if (jpql.equals("SELECT amount FROM RebateEntity WHERE customerId=?1")) // misses prior workaround because selection is implicit
-                jpql = "SELECT this.amount FROM RebateEntity WHERE this.customerId=?1";
-            else if (jpql.equals("SELECT DISTINCT name FROM Item WHERE name LIKE :namePattern")) // misses prior workaround due to DISTINCT
-                jpql = "SELECT DISTINCT this.name FROM Item WHERE this.name LIKE :namePattern";
             // TODO remove this workaround for #28925 once fixed
             else if (jpql.equals("SELECT ID(THIS) FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR ID(THIS)=:num)"))
                 jpql = "SELECT o.numberId FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR o.numberId=:num)";
-            // TODO remove this workaround for #28928 once fixed
-            else if (jpql.equals("SELECT MAX(price) FROM Item"))
-                jpql = "SELECT MAX(this.price) FROM Item";
-            else if (jpql.equals("SELECT MIN(price) FROM Item"))
-                jpql = "SELECT MIN(this.price) FROM Item";
-            else if (jpql.equals("SELECT AVG(price) FROM Item"))
-                jpql = "SELECT AVG(this.price) FROM Item";
-            else if (jpql.equals("SELECT SUM(DISTINCT price) FROM Item"))
-                jpql = "SELECT SUM(DISTINCT this.price) FROM Item";
-            else if (jpql.equals("SELECT NEW test.jakarta.data.experimental.web.ItemCount(COUNT(name), COUNT(description), COUNT(price)) FROM Item"))
-                jpql = "SELECT NEW test.jakarta.data.experimental.web.ItemCount(COUNT(this.name), COUNT(this.description), COUNT(this.price)) FROM Item";
         }
     }
 
@@ -2986,6 +2946,7 @@ public class QueryInfo {
      * @throws MappingException if the repository method return type is incompatible with both
      *                              delete-only and find-and-delete.
      */
+    @SuppressWarnings("unlikely-arg-type")
     @Trivial
     private boolean isFindAndDelete() {
 
@@ -3006,15 +2967,12 @@ public class QueryInfo {
                 && !type.equals(Object.class)
                 && !wrapperClassIfPrimitive(singleType) //
                                 .equals(wrapperClassIfPrimitive(entityInfo.idType))) {
-                Class<?> entityClass = entityInfo.recordClass == null //
-                                ? entityInfo.entityClass //
-                                : entityInfo.recordClass;
                 throw exc(MappingException.class,
                           "CWWKD1006.delete.rtrn.err",
                           method.getGenericReturnType().getTypeName(),
                           method.getName(),
                           repositoryInterface.getName(),
-                          entityClass.getName(),
+                          entityInfo.getType().getName(),
                           entityInfo.idType.getName());
             }
 
@@ -3524,6 +3482,102 @@ public class QueryInfo {
                 combined.add(getWithAttributeName(sort.property(), sort));
         }
         return combined;
+    }
+
+    /**
+     * Functional interface that can be supplied to stream.mapToDouble.
+     *
+     * @param o object to convert.
+     * @return double value.
+     */
+    @Trivial
+    final double toDouble(Object o) {
+        return (Double) convert(o, double.class, true);
+    }
+
+    /**
+     * Converts a record to its generated entity equivalent,
+     * or does nothing if not a record.
+     *
+     * @param o a record that needs conversion to an entity,
+     *              or an entity that is already an entity and does not
+     *              need conversion.
+     * @return entity.
+     */
+    @Trivial
+    final Object toEntity(Object o) {
+        Object entity = o;
+        Class<?> oClass = o == null ? null : o.getClass();
+        if (o != null && oClass.isRecord())
+            try {
+                Class<?> entityClass = oClass.getClassLoader() //
+                                .loadClass(oClass.getName() + "Entity");
+                Constructor<?> ctor = entityClass.getConstructor(oClass);
+                entity = ctor.newInstance(o);
+            } catch (ClassNotFoundException | IllegalAccessException | //
+                            InstantiationException | InvocationTargetException | //
+                            NoSuchMethodException | SecurityException x) {
+                Throwable targetx = x instanceof InvocationTargetException //
+                                ? x.getCause() //
+                                : x;
+                IllegalArgumentException iax = exc(IllegalArgumentException.class,
+                                                   "CWWKD1070.record.convert.err",
+                                                   loggableAppend(oClass.getName(),
+                                                                  " (" + o + ')'),
+                                                   method.getName(),
+                                                   repositoryInterface.getName(),
+                                                   targetx.getMessage());
+                throw (IllegalArgumentException) iax.initCause(x);
+            }
+        if (entity != o &&
+            TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "toEntity " + loggable(o),
+                     oClass.getName() + " --> " + entity.getClass().getName());
+        return entity;
+    }
+
+    /**
+     * Functional interface that can be supplied to stream.mapToInt.
+     *
+     * @param o object to convert.
+     * @return int value.
+     */
+    @Trivial
+    final int toInt(Object o) {
+        return (Integer) convert(o, int.class, true);
+    }
+
+    /**
+     * Functional interface that can be supplied to stream.mapToLong.
+     *
+     * @param o object to convert.
+     * @return long value.
+     */
+    @Trivial
+    final long toLong(Object o) {
+        return (Long) convert(o, long.class, true);
+    }
+
+    /**
+     * Converts a Limit to a PageRequest if possible.
+     * Some tests are relying on this. Consider if we should allow this
+     * pattern where a Limit can used in place of PageRequest if its
+     * starting result is 1.
+     *
+     * @param limit Limit.
+     * @return PageRequest.
+     * @throws IllegalArgumentException if the Limit is a range with a
+     *                                      starting point above 1.
+     */
+    final PageRequest toPageRequest(Limit limit) {
+        if (limit.startAt() != 1L)
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1041.rtrn.mismatch.pagereq",
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      method.getGenericReturnType().getTypeName());
+
+        return PageRequest.ofSize(limit.maxResults());
     }
 
     @Override

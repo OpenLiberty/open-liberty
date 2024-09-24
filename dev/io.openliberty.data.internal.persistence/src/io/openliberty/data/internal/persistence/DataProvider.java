@@ -210,13 +210,20 @@ public class DataProvider implements //
 
     @Override
     public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
-        Collection<FutureEMBuilder> futures = futureEMBuilders.remove(appInfo.getName());
+        String appName = appInfo.getName();
+        Collection<FutureEMBuilder> futures = futureEMBuilders.remove(appName);
         if (futures != null) {
             for (FutureEMBuilder futureEMBuilder : futures) {
                 // This delays createEMBuilder until restore.
                 // While this works by avoiding all connections to the data source, it does make restore much slower.
                 // TODO figure out how to do more work on restore without having to make a connection to the data source
                 CheckpointPhase.onRestore(() -> futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor));
+
+                // Application is ready for DDL generation; register with DDLGen MBean.
+                // Only those using the Persistence Service will participate, but all will
+                // be registered since that is not known until createEMBuilder completes.
+                // Those not participating will return a null DDL file name and be skipped.
+                futureEMBuilder.registerDDLGenerationParticipant(appName);
             }
         }
     }
