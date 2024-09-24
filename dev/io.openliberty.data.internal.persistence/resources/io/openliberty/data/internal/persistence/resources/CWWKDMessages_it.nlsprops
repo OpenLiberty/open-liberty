@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,5 +24,144 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWKD1100 to CWWKD1499
+# All messages must use the range CWWKD1000 to CWWKD1399
 
+CWWKD1000.repo.general.err=CWWKD1000E: Il metodo {0} dell''interfaccia del repository {1} ha riscontrato un errore. L''errore potrebbe indicare che il metodo di deposito non \u00e8 valido. L''errore \u00e8: {2}.
+CWWKD1000.repo.general.err.explanation=\u00c8 stato riscontrato un errore con il metodo di repository specificato.
+CWWKD1000.repo.general.err.useraction=Individuare l'interfaccia e il metodo del repository e determinare se sono necessarie correzioni.
+
+CWWKD1001.no.primary.entity=CWWKD1001E: Il metodo di deposito {0} richiede una classe di entit\u00e0, ma l''interfaccia di deposito {1} non specifica una classe di entit\u00e0 primaria. Per correggere questo errore, l''interfaccia del repository {1} pu\u00f2 estendere uno dei supertipi di repository incorporati, come {2}, e fornire la classe entit\u00e0 come primo parametro del tipo.
+CWWKD1001.no.primary.entity.explanation=I metodi del repository senza una classe di entit\u00e0 propria richiedono che il repository definisca una classe di entit\u00e0 primaria.
+CWWKD1001.no.primary.entity.useraction=Definire una classe di entit\u00e0 primaria per il repository.
+
+CWWKD1002.method.annos.err=CWWKD1002E: Il metodo {0} dell''interfaccia del repository {1} \u00e8 annotato con una combinazione di annotazioni non valida: {2}.
+CWWKD1002.method.annos.err.explanation=Questa combinazione di annotazioni non \u00e8 valida per un singolo metodo di deposito.
+CWWKD1002.method.annos.err.useraction=Individuare l'interfaccia e il metodo del repository e determinare la combinazione corretta di annotazioni del metodo.
+
+CWWKD1003.lifecycle.rtrn.err=CWWKD1003E: Il tipo di ritorno del metodo {0} dell''interfaccia del repository {1} non \u00e8 un tipo di ritorno valido per un metodo del repository {3}. I tipi di ritorno validi includono: {4}.
+CWWKD1003.lifecycle.rtrn.err.explanation=Il tipo di ritorno del metodo non \u00e8 uno dei tipi di ritorno supportati per i metodi Insert, Update e Save.
+CWWKD1003.lifecycle.rtrn.err.useraction=Per i tipi di ritorno validi, consultare le informazioni del Javadoc di Jakarta Data per le annotazioni Insert, Update e Save.
+
+CWWKD1004.general.rtrn.err=CWWKD1004E: Il tipo di ritorno del metodo {0} dell''interfaccia del repository {2} non \u00e8 un tipo di ritorno valido per un metodo del repository.
+CWWKD1004.general.rtrn.err.explanation=Il tipo di ritorno del metodo non \u00e8 uno dei tipi di ritorno supportati per il tipo di metodo del repository.
+CWWKD1004.general.rtrn.err.useraction=Fare riferimento alle informazioni del Javadoc di Jakarta Data per un elenco dei tipi di ritorno validi per il tipo di metodo del repository.
+
+CWWKD1005.find.rtrn.err=CWWKD1005E: Il metodo {0} dell''interfaccia del repository {1} non \u00e8 valido. Il metodo specifica un tipo di ritorno {2} che non \u00e8 convertibile dal tipo di entit\u00e0 {3}. Il tipo di risultato di un''operazione di ricerca deve essere il tipo di entit\u00e0, un tipo di propriet\u00e0 dell''entit\u00e0, un record Java composto da propriet\u00e0 dell''entit\u00e0 o un tipo costruito dal JPQL o JDQL fornito all''annotazione Query. Il tipo di ritorno del metodo find del repository pu\u00f2 essere il tipo di risultato, un array del tipo di risultato o uno dei seguenti tipi parametrizzati con il tipo di risultato: {4}.
+CWWKD1005.find.rtrn.err.explanation=Il tipo di ritorno del metodo non \u00e8 uno dei tipi di ritorno supportati per i metodi di repository find.
+CWWKD1005.find.rtrn.err.useraction=Per un elenco dei tipi di ritorno validi per i metodi di ricerca dei repository, consultare il Javadoc di Jakarta Data.
+
+CWWKD1006.delete.rtrn.err=CWWKD1006E: Il tipo di ritorno {0} del metodo {1} dell''interfaccia del repository {2} non \u00e8 un tipo di ritorno valido per un''operazione di cancellazione. Il tipo di ritorno deve essere void, long, int, boolean, array, List o Optional. Un tipo di ritorno void non restituisce alcun valore. Un tipo di ritorno long o int restituisce il conteggio delle eliminazioni. Un tipo di ritorno booleano restituisce un indicatore che indica se sono state eliminate delle entit\u00e0. Un tipo di ritorno array, Elenco o Opzionale, parametrizzato con una classe di entit\u00e0 {3} o una classe di identificatori unici {4}, restituisce le entit\u00e0 o gli ID di entit\u00e0 cancellati.
+CWWKD1006.delete.rtrn.err.explanation=Il tipo di ritorno del metodo non \u00e8 uno dei tipi di ritorno supportati per un'operazione di cancellazione.
+CWWKD1006.delete.rtrn.err.useraction=Aggiornare il metodo del repository per utilizzare uno dei tipi di ritorno supportati.
+
+CWWKD1007.updel.rtrn.err=CWWKD1007E: Il tipo di ritorno del metodo {1} dell''interfaccia del repository {2} non \u00e8 un tipo di ritorno valido per un''operazione del repository {3}. Il tipo di ritorno deve essere void, long, int o boolean. Un tipo di ritorno void non restituisce alcun valore. Un tipo di ritorno long o int restituisce un conteggio delle entit\u00e0 corrispondenti. Un tipo di ritorno booleano restituisce un indicatore di corrispondenza tra le entit\u00e0.
+CWWKD1007.updel.rtrn.err.explanation=Il tipo di ritorno del metodo non \u00e8 uno dei tipi di ritorno supportati per un'operazione di aggiornamento o cancellazione.
+CWWKD1007.updel.rtrn.err.useraction=Aggiornare il metodo del repository per utilizzare uno dei tipi di ritorno supportati.
+
+CWWKD1008.ambig.rtrn.err=CWWKD1008E: Il tipo di ritorno del metodo {0} dell''interfaccia del repository {2} \u00e8 ambiguo come tipo di ritorno perch\u00e9 corrisponde a pi\u00f9 propriet\u00e0 dell''entit\u00e0: {3}. Il metodo del repository deve passare all''annotazione Query e utilizzare una query JDQL o JPQL con una clausola SELECT che specifichi quale propriet\u00e0 dell''entit\u00e0 restituire.
+CWWKD1008.ambig.rtrn.err.explanation=Il tipo di ritorno del metodo non \u00e8 uno dei tipi di ritorno supportati per un metodo di cancellazione.
+CWWKD1008.ambig.rtrn.err.useraction=Aggiornare il metodo del repository per utilizzare l'annotazione Query per selezionare la propriet\u00e0 dell'entit\u00e0.
+
+CWWKD1009.lifecycle.param.err=CWWKD1009E: Il metodo {0} dell''interfaccia del repository {1} non pu\u00f2 avere parametri {2} perch\u00e9 il metodo \u00e8 annotato con l''annotazione {3} del ciclo di vita. I metodi del repository annotati con un''annotazione del ciclo di vita devono avere esattamente 1 parametro, che deve essere l''entit\u00e0 o un array o un elenco dell''entit\u00e0.
+CWWKD1009.lifecycle.param.err.explanation=I metodi del ciclo di vita devono avere un unico parametro di entit\u00e0.
+CWWKD1009.lifecycle.param.err.useraction=Aggiornare il metodo del repository per avere un singolo parametro che sia un'entit\u00e0 o un array di elenchi dell'entit\u00e0.
+
+CWWKD1010.unknown.entity.prop=CWWKD1010E: Il metodo {0} dell''interfaccia del repository {1} si aspetta una propriet\u00e0 dell''entit\u00e0 chiamata {2} che non si trova nella classe dell''entit\u00e0 {3}. I nomi di propriet\u00e0 validi per l''entit\u00e0 sono: {4}.
+CWWKD1010.unknown.entity.prop.explanation=Il metodo del repository sta tentando di utilizzare una propriet\u00e0 dell'entit\u00e0 che non esiste.
+CWWKD1010.unknown.entity.prop.useraction=Aggiornare il metodo del repository in modo che corrisponda a una propriet\u00e0 valida definita dall'entit\u00e0.
+
+CWWKD1011.unknown.method.pattern=CWWKD1011E: Il metodo {0} dell''interfaccia del repository {1} non corrisponde a nessuno dei modelli definiti da Jakarta Data. Un metodo del repository deve usare annotazioni, essere un metodo di accesso alle risorse o essere chiamato secondo lo schema Query by Method Name. Annotazioni come {2} sono usate per definire le operazioni. Un metodo di accesso a una risorsa non deve contenere parametri e uno dei tipi di ritorno {3}. Lo schema Query by Method Name deve iniziare con una delle parole chiave {4}, seguita da 0 o pi\u00f9 caratteri. I nomi dei metodi possono anche includere la parola chiave By e una o pi\u00f9 condizioni delimitate. Esempi di nomi di metodi di repository validi sono: {5}.
+CWWKD1011.unknown.method.pattern.explanation=I metodi del repository devono seguire i modelli definiti da Jakarta Data.
+CWWKD1011.unknown.method.pattern.useraction=Aggiornare il metodo del repository per aderire a uno dei modelli di Jakarta Data.
+
+CWWKD1012.fd.missing.param.anno=CWWKD1012E: Il parametro {0} del metodo {1} dell''interfaccia del repository {2} non corrisponde a una propriet\u00e0 dell''entit\u00e0. I parametri che non corrispondono a una propriet\u00e0 dell''entit\u00e0 devono essere annotati con l''annotazione By o avere uno dei tipi di parametro speciali: {3}. Per definire una condizione per la restrizione dei risultati della query, il parametro deve essere annotato con l''annotazione By e il valore dell''annotazione By deve essere assegnato al nome della propriet\u00e0 dell''entit\u00e0. In alternativa, si pu\u00f2 attivare l''opzione di compilazione -parameters e dare al parametro lo stesso nome della propriet\u00e0 dell''entit\u00e0.
+CWWKD1012.fd.missing.param.anno.explanation=I parametri dei metodi find e delete dei repository devono corrispondere alle propriet\u00e0 delle entit\u00e0 o essere tipi di parametri speciali definiti da Jakarta Data.
+CWWKD1012.fd.missing.param.anno.useraction=Aggiornare il metodo del repository in modo che tutti i parametri corrispondano a propriet\u00e0 dell'entit\u00e0 o abbiano uno dei tipi di parametri speciali di Jakarta Data.
+
+CWWKD1013.cde.missing.param.anno=CWWKD1013E: Il parametro {0} del metodo {1} dell''interfaccia del repository {2} non corrisponde a una propriet\u00e0 dell''entit\u00e0. I parametri che non corrispondono a una propriet\u00e0 dell''entit\u00e0 devono essere annotati con l''annotazione By e il valore dell''annotazione By deve essere assegnato al nome della propriet\u00e0 dell''entit\u00e0. In alternativa, si pu\u00f2 attivare l''opzione di compilazione -parameters e dare al parametro lo stesso nome della propriet\u00e0 dell''entit\u00e0.
+CWWKD1013.cde.missing.param.anno.explanation=I parametri dei metodi count, delete ed exists del repository devono corrispondere alle propriet\u00e0 dell'entit\u00e0.
+CWWKD1013.cde.missing.param.anno.useraction=Aggiornare il metodo del repository in modo che tutti i parametri corrispondano alle propriet\u00e0 dell'entit\u00e0.
+
+CWWKD1014.upd.missing.param.anno=CWWKD1014E: Il parametro {0} del metodo {1} dell''interfaccia del repository {2} non corrisponde a una propriet\u00e0 dell''entit\u00e0. I parametri che non corrispondono a una propriet\u00e0 dell''entit\u00e0 devono avere una delle annotazioni dei parametri: {3}. Per definire una condizione per la restrizione dei risultati della query, il parametro deve essere annotato con l''annotazione By e il valore dell''annotazione By deve essere assegnato al nome della propriet\u00e0 dell''entit\u00e0. In alternativa, si pu\u00f2 attivare l''opzione di compilazione -parameters e dare al parametro lo stesso nome della propriet\u00e0 dell''entit\u00e0.
+CWWKD1014.upd.missing.param.anno.explanation=I parametri dei metodi di aggiornamento del repository devono corrispondere alle propriet\u00e0 dell'entit\u00e0.
+CWWKD1014.upd.missing.param.anno.useraction=Aggiornare il metodo del repository in modo che tutti i parametri corrispondano alle propriet\u00e0 dell'entit\u00e0.
+
+CWWKD1015.null.entity.param=CWWKD1015E: Il metodo {0} dell''interfaccia del repository {1} non pu\u00f2 accettare un''entit\u00e0 nulla.
+CWWKD1015.null.entity.param.explanation=I metodi del ciclo di vita richiedono un'istanza di entit\u00e0 non nulla.
+CWWKD1015.null.entity.param.useraction=Aggiornare il codice dell'applicazione per evitare di fornire un valore di entit\u00e0 nullo al metodo del repository.
+
+CWWKD1016.incompat.entity.param=CWWKD1016E: Il metodo {0} dell''interfaccia del repository {1} richiede un''entit\u00e0 {0}, ma \u00e8 stato fornito un valore {1}.
+CWWKD1016.incompat.entity.param.explanation=Il metodo del ciclo di vita accetta solo valori di entit\u00e0 del tipo dichiarato.
+CWWKD1016.incompat.entity.param.useraction=Aggiornare il codice dell'applicazione per fornire un valore di entit\u00e0 dello stesso tipo di entit\u00e0 dichiarato dal metodo del repository.
+
+CWWKD1017.dup.special.param=CWWKD1017E: Il metodo {0} del repository {1} non pu\u00f2 avere pi\u00f9 parametri {2}.
+CWWKD1017.dup.special.param.explanation=Alcuni dei parametri speciali di Jakarta Data, tra cui Limit e PageRequest, non possono comparire pi\u00f9 volte nella firma del metodo di un repository.
+CWWKD1017.dup.special.param.useraction=Aggiornare la firma del metodo del repository per avere al massimo un'occorrenza del tipo di parametro speciale Jakarta Data.
+
+CWWKD1018.confl.special.param=CWWKD1018E: Il metodo {0} del deposito {1} non pu\u00f2 avere un parametro {2} e un parametro {3}.
+CWWKD1018.confl.special.param.explanation=Alcuni dei parametri speciali di Jakarta Data, come Limit e PageRequest, non possono essere combinati in una firma di metodo di un singolo repository.
+CWWKD1018.confl.special.param.useraction=Aggiornare il repository per non usare entrambi i tipi di parametri speciali di Jakarta Data nella stessa firma del metodo.
+
+CWWKD1019.mixed.positional.named=CWWKD1019E: Il metodo {0} dell''interfaccia del repository {1} non pu\u00f2 avere una query con un misto di parametri posizionali e parametri denominati.
+CWWKD1019.mixed.positional.named.explanation=Le query con parametri devono utilizzare tutti i parametri denominati o tutti i parametri posizionali, non una combinazione.
+CWWKD1019.mixed.positional.named.useraction=Aggiornare il metodo del repository per utilizzare solo parametri denominati o solo parametri posizionali.
+
+CWWKD1020.invalid.param.type=CWWKD1020E: I parametri del metodo {0} dell''interfaccia del repository {1} non devono essere del tipo {2} perch\u00e9 il metodo del repository \u00e8 un''operazione {3}.
+CWWKD1020.invalid.param.type.explanation=Il tipo di parametro non \u00e8 consentito in questo tipo di metodo.
+CWWKD1020.invalid.param.type.useraction=Aggiornare il metodo del repository per definire un parametro del metodo per ogni valore richiesto da un confronto.
+
+CWWKD1021.insufficient.params=CWWKD1021E: Il metodo {0} dell''interfaccia del repository {1} ha parametri {2}, ma le condizioni di interrogazione definite dal metodo richiedono parametri {3}. La query JPQL per il metodo \u00e8: {4}.
+CWWKD1021.insufficient.params.explanation=Le condizioni di interrogazione che definiscono confronti di valori richiedono un numero corrispondente di parametri del metodo repository per fornire i valori.
+CWWKD1021.insufficient.params.useraction=Aggiornare il metodo del repository per definire un parametro del metodo per ogni valore richiesto da un confronto.
+
+CWWKD1022.too.many.params=CWWKD1022E: Le condizioni di interrogazione del metodo {0} dell''interfaccia del repository {1} richiedono {2} parametri, ma la firma del metodo del repository ha {3} parametri. La query JPQL per il metodo \u00e8: {4}.
+CWWKD1022.too.many.params.explanation=Le condizioni di interrogazione che definiscono confronti di valori richiedono un numero corrispondente di parametri del metodo repository per fornire i valori. Non sono ammessi parametri aggiuntivi.
+CWWKD1022.too.many.params.useraction=Aggiornare la firma del metodo del repository per rimuovere i parametri extra che non corrispondono alle condizioni dichiarate.
+
+CWWKD1023.extra.param=CWWKD1023E: Le condizioni di interrogazione del metodo {0} dell''interfaccia del repository {1} richiedono {2} parametri, ma il metodo del repository ha un parametro aggiuntivo {3}. La query JPQL per il metodo \u00e8: {4}.
+CWWKD1023.extra.param.explanation=Le condizioni di interrogazione che definiscono confronti di valori richiedono un numero corrispondente di parametri del metodo repository per fornire i valori. Non sono ammessi parametri aggiuntivi.
+CWWKD1023.extra.param.useraction=Aggiornare la firma del metodo del repository per rimuovere i parametri extra che non corrispondono alle condizioni dichiarate.
+
+CWWKD1024.missing.entity.prop=CWWKD1024E: Il metodo {0} dell''interfaccia del repository {1} manca di un nome di propriet\u00e0 dell''entit\u00e0 o \u00e8 stato fornito con un parametro privo di nome di propriet\u00e0 dell''entit\u00e0. I nomi delle propriet\u00e0 validi per la classe di entit\u00e0 {2} sono: {3}.
+CWWKD1024.missing.entity.prop.explanation=Le condizioni di interrogazione e i criteri di ordinamento per un metodo di repository devono includere un nome di propriet\u00e0 dell'entit\u00e0.
+CWWKD1024.missing.entity.prop.useraction=Controllare la dichiarazione e l'uso del metodo repository per assicurarsi che venga fornito un nome di propriet\u00e0 dell'entit\u00e0 per ogni condizione di interrogazione e criterio di ordinamento.
+
+CWWKD1025.missing.id.prop=CWWKD1025E: La classe di entit\u00e0 {0} utilizzata dal metodo {1} dell''interfaccia del repository {2} non ha una propriet\u00e0 ID o un metodo di accesso.
+CWWKD1025.missing.id.prop.explanation=I metodi del repository che eliminano e restituiscono un'entit\u00e0 devono avere una propriet\u00e0 ID.
+CWWKD1025.missing.id.prop.useraction=Se l'entit\u00e0 non ha una singola propriet\u00e0 per l'ID, definire metodi separati per il repository che interrogano l'entit\u00e0 e la cancellano.
+
+CWWKD1026.ignore.case.not.text=CWWKD1026E: La propriet\u00e0 {0} dell''entit\u00e0 {1} non \u00e8 un carattere o una sequenza di caratteri; pertanto, il criterio di ordinamento {2} non deve specificare di ignorare il caso. Il tipo della propriet\u00e0 \u00e8 {3} ed \u00e8 stato fornito al metodo {4} dell''interfaccia del repository {5}.
+CWWKD1026.ignore.case.not.text.explanation=L'ordinamento con caso ignorato \u00e8 possibile solo con le propriet\u00e0 delle entit\u00e0 che rappresentano testo.
+CWWKD1026.ignore.case.not.text.useraction=Assicurarsi che i criteri di ordinamento siano applicati alla propriet\u00e0 dell'entit\u00e0 corretta e rimuovere l'istruzione di ignorare il caso se la propriet\u00e0 dell'entit\u00e0 non rappresenta un testo.
+
+CWWKD1027.anno.missing.prop.name=CWWKD1027E: Il parametro {0} del metodo {1} dell''interfaccia del repository {2} \u00e8 annotato con un''annotazione {3} che non specifica il nome di una propriet\u00e0 dell''entit\u00e0 come valore. L''annotazione deve specificare il nome della propriet\u00e0 dell''entit\u00e0 come valore, oppure deve essere abilitata l''opzione di compilazione -parameters e il parametro deve avere lo stesso nome della propriet\u00e0 dell''entit\u00e0.
+CWWKD1027.anno.missing.prop.name.explanation=I parametri dei metodi di aggiornamento del repository devono corrispondere alle propriet\u00e0 dell'entit\u00e0.
+CWWKD1027.anno.missing.prop.name.useraction=Aggiornare il metodo del repository per indicare la propriet\u00e0 dell'entit\u00e0 a cui si riferisce il parametro.
+
+CWWKD1028.first.exceeds.max=CWWKD1028E: Il metodo {0} dell''interfaccia del repository {1} richiede i primi {2} risultati, superando il numero massimo consentito di risultati: {3}.
+CWWKD1028.first.exceeds.max.explanation=Il numero massimo di risultati della query \u00e8 limitato dai vincoli del sistema e dal valore specificato.
+CWWKD1028.first.exceeds.max.useraction=Ridurre il numero massimo richiesto di risultati della query a un valore inferiore.
+
+CWWKD1029.first.neg.or.zero=CWWKD1029E: Il metodo {0} dell''interfaccia del repository {1} richiede i primi {2} risultati. Il numero massimo di risultati da restituire deve essere un numero positivo.
+CWWKD1029.first.neg.or.zero.explanation=Il numero massimo di risultati della query deve essere un numero positivo.
+CWWKD1029.first.neg.or.zero.useraction=Aggiornare il metodo del repository per specificare un numero massimo positivo di risultati.
+
+CWWKD1030.ql.lacks.entity=CWWKD1030E: Il nome dell''entit\u00e0 manca nella query {0} specificata per il metodo {1} del repository {2}. In Jakarta Data Query Language, le query {3} devono essere formate come: {4}.
+CWWKD1030.ql.lacks.entity.explanation=La query contiene una clausola che richiede il nome dell'entit\u00e0.
+CWWKD1030.ql.lacks.entity.useraction=Aggiornare il metodo query for repository per includere il nome dell'entit\u00e0.
+
+CWWKD1031.ql.similar.entity=CWWKD1031E: Il metodo {0} dell''interfaccia del repository {1} specifica una query che richiede un nome di entit\u00e0 {2} che non \u00e8 stato trovato ma che corrisponde al nome di un''entit\u00e0 {3}. La query \u00e8: {4}.
+CWWKD1031.ql.similar.entity.explanation=La query potrebbe avere un errore tipografico nel riferimento al nome dell'entit\u00e0.
+CWWKD1031.ql.similar.entity.useraction=Rivedere la query per verificare che venga utilizzato il nome corretto dell'entit\u00e0.
+
+CWWKD1032.ql.unknown.entity=CWWKD1032E: Il metodo {0} dell''interfaccia del repository {1} specifica una query che richiede un nome di entit\u00e0 {2} che non viene trovato. Assicurarsi che {2} sia il nome di un''entit\u00e0 valida. Per consentire di trovare l''entit\u00e0, dare al repository un metodo del ciclo di vita annotato con una delle annotazioni {3} e fornire l''entit\u00e0 come parametro. In alternativa, il repository deve estendere l''interfaccia DataRepository o un''altra interfaccia di repository integrata, con la classe entit\u00e0 come prima variabile di tipo. La query \u00e8: {4}.
+CWWKD1032.ql.unknown.entity.explanation=La query potrebbe avere un errore tipografico nel riferimento al nome dell'entit\u00e0, oppure il repository non specifica la classe primaria dell'entit\u00e0.
+CWWKD1032.ql.unknown.entity.useraction=Rivedere la query per verificare che venga utilizzato il nome corretto dell'entit\u00e0. Rivedere la definizione del repository per assicurarsi che sia specificata la classe di entit\u00e0 primaria corretta.
+
+CWWKD1033.ql.orderby.disallowed=CWWKD1033E: Il metodo {0} dell''interfaccia del repository {1} non pu\u00f2 specificare una query che include una clausola ORDER BY perch\u00e9 il metodo restituisce {2}. Eliminare la clausola ORDER BY e utilizzare invece l''annotazione {3} per specificare i criteri di ordinamento statici. La query \u00e8: {4}.
+CWWKD1033.ql.orderby.disallowed.explanation=La clausola ORDER BY \u00e8 incompatibile con la paginazione a cursore.
+CWWKD1033.ql.orderby.disallowed.useraction=Sostituire la clausola ORDER BY con annotazioni che specificano i criteri di ordinamento.
+
+CWWKD1034.ql.where.required=CWWKD1034E: La query specificata dal metodo {0} dell''interfaccia del repository {1} deve terminare con una clausola WHERE perch\u00e9 il metodo restituisce {2}. La clausola WHERE termina alla posizione {3}, ma la lunghezza della query \u00e8 {4}. La query \u00e8: {5}.
+CWWKD1034.ql.where.required.explanation=Una clausola WHERE \u00e8 necessaria quando si utilizza la paginazione a cursore.
+CWWKD1034.ql.where.required.useraction=Aggiungere una clausola WHERE alla query.

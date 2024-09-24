@@ -55,6 +55,15 @@ CWMOT5005.mptelemetry.unknown.log.source=CWMOT5005W: La funzione di registrazion
 CWMOT5005.mptelemetry.unknown.log.source.explanation=L'ambiente di runtime Liberty non fornisce la fonte di log specificata.
 CWMOT5005.mptelemetry.unknown.log.source.useraction=Controllare le informazioni di configurazione e specificare una delle fonti supportate per MicroProfile Telemetria.
 
+CWMOT5006.tel.enabled.conflict=CWMOT5006W: Configurazione conflittuale per la propriet\u00e0 di configurazione otel.sdk.disabled rilevata per l'applicazione {0}. Il valore finale \u00e8 otel.sdk.disabled=false. La telemetria non pu\u00f2 essere disabilitata per un'applicazione quando \u00e8 abilitata per il runtime.
+CWMOT5006.tel.enabled.conflict.explanation: MicroProfile La telemetria pu\u00f2 essere attivata per l'intero server utilizzando le propriet\u00e0 di sistema o le variabili d'ambiente. Se non \u00e8 abilitato per l'intero server, pu\u00f2 essere abilitato per ogni applicazione impostando le propriet\u00e0 di configurazione MicroProfile; ad esempio, impostando le variabili nel file server.xml. Questo avviso viene dato se c'\u00e8 una configurazione esplicita che disabilita la telemetria per l'intero server, che viene sovrascritta da una propriet\u00e0 di MP Config che abilita la telemetria per un'applicazione.
+CWMOT5006.tel.enabled.conflict.useraction: Specificare le impostazioni per abilitare o disabilitare le istanze di OpenTelemetry utilizzando le variabili d'ambiente e le propriet\u00e0 del sistema o altre fonti di MP Config, ma non entrambe.
+
+CWMOT5007.tel.enabled.conflict=CWMOT5007W: Configurazione conflittuale per la propriet\u00e0 di configurazione otel.sdk.disabled rilevata per l'applicazione {0}. Il valore finale \u00e8 otel.sdk.disabled=false perch\u00e9 la propriet\u00e0 che abilita la telemetria per l'applicazione prevale sulla propriet\u00e0 che disabilita la telemetria per il runtime.
+CWMOT5007.tel.enabled.conflict.explanation: MicroProfile La telemetria pu\u00f2 essere attivata per l'intero server utilizzando le propriet\u00e0 di sistema o le variabili d'ambiente. Se non \u00e8 abilitato per l'intero server, pu\u00f2 essere abilitato per un'applicazione impostando le propriet\u00e0 di configurazione MicroProfile; ad esempio, impostando le variabili nel file server.xml. Questo avviso viene dato se la telemetria \u00e8 abilitata per l'intero server, ma le propriet\u00e0 di configurazione MicroProfile disabilitano la telemetria per un'applicazione. Poich\u00e9 la telemetria \u00e8 abilitata per l'intero server, la configurazione di questa applicazione viene ignorata.
+CWMOT5007.tel.enabled.conflict.useraction: Specificare le impostazioni per abilitare o disabilitare le istanze di OpenTelemetry utilizzando le variabili d'ambiente e le propriet\u00e0 del sistema o altre fonti di MP Config, ma non entrambe.
+
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
 #-----------------------------------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,5 +24,144 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWKD1100 to CWWKD1499
+# All messages must use the range CWWKD1000 to CWWKD1399
 
+CWWKD1000.repo.general.err=CWWKD1000E: La m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} a rencontr\u00e9 une erreur. L''erreur peut indiquer que la m\u00e9thode de d\u00e9p\u00f4t n''est pas valide. Erreur : {2}.
+CWWKD1000.repo.general.err.explanation=Une erreur a \u00e9t\u00e9 trouv\u00e9e avec la m\u00e9thode de d\u00e9p\u00f4t sp\u00e9cifi\u00e9e.
+CWWKD1000.repo.general.err.useraction=Localiser l'interface et la m\u00e9thode du r\u00e9f\u00e9rentiel et d\u00e9terminer si des corrections sont n\u00e9cessaires.
+
+CWWKD1001.no.primary.entity=CWWKD1001E: La m\u00e9thode de d\u00e9p\u00f4t {0} n\u00e9cessite une classe d''entit\u00e9 mais l''interface de d\u00e9p\u00f4t {1} ne sp\u00e9cifie pas de classe d''entit\u00e9 primaire. Pour corriger cette erreur, l''interface de d\u00e9p\u00f4t peut \u00e9tendre l''un des sous-types de d\u00e9p\u00f4t int\u00e9gr\u00e9s, tels que {2}, et fournir la classe d''entit\u00e9 comme premier param\u00e8tre de type.
+CWWKD1001.no.primary.entity.explanation=Les m\u00e9thodes du r\u00e9f\u00e9rentiel qui n'ont pas de classe d'entit\u00e9 propre exigent que le r\u00e9f\u00e9rentiel d\u00e9finisse une classe d'entit\u00e9 primaire.
+CWWKD1001.no.primary.entity.useraction=D\u00e9finir une classe d'entit\u00e9 primaire pour le r\u00e9f\u00e9rentiel.
+
+CWWKD1002.method.annos.err=CWWKD1002E: La m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} est annot\u00e9e avec une combinaison d''annotations qui n''est pas valide : {2}.
+CWWKD1002.method.annos.err.explanation=Cette combinaison d'annotations n'est pas valable pour une seule m\u00e9thode de d\u00e9p\u00f4t.
+CWWKD1002.method.annos.err.useraction=Localisez l'interface et la m\u00e9thode du r\u00e9f\u00e9rentiel et d\u00e9terminez la bonne combinaison d'annotations de m\u00e9thode.
+
+CWWKD1003.lifecycle.rtrn.err=CWWKD1003E: Le type de retour {0} de la m\u00e9thode {1} de l''interface de r\u00e9f\u00e9rentiel {2} n''est pas un type de retour valide pour une m\u00e9thode de r\u00e9f\u00e9rentiel {3}. Les types de retour valides sont les suivants : {4}.
+CWWKD1003.lifecycle.rtrn.err.explanation=Le type de retour de la m\u00e9thode ne fait pas partie des types de retour pris en charge pour les m\u00e9thodes Insert, Update et Save.
+CWWKD1003.lifecycle.rtrn.err.useraction=Reportez-vous aux informations Javadoc de Jakarta Data pour les annotations Insert, Update et Save pour conna\u00eetre les types de retour valides.
+
+CWWKD1004.general.rtrn.err=CWWKD1004E: Le type de retour {0} de la m\u00e9thode {1} de l''interface de r\u00e9f\u00e9rentiel {2} n''est pas un type de retour valide pour une m\u00e9thode de r\u00e9f\u00e9rentiel.
+CWWKD1004.general.rtrn.err.explanation=Le type de retour de la m\u00e9thode ne fait pas partie des types de retour pris en charge pour le type de m\u00e9thode du r\u00e9f\u00e9rentiel.
+CWWKD1004.general.rtrn.err.useraction=Reportez-vous aux informations Javadoc de Jakarta Data pour obtenir une liste des types de retour valides pour le type de m\u00e9thode de r\u00e9f\u00e9rentiel.
+
+CWWKD1005.find.rtrn.err=CWWKD1005E: La m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} n''est pas valide. La m\u00e9thode sp\u00e9cifie un type de retour {2} qui n''est pas convertible \u00e0 partir du type d''entit\u00e9 {3}. Le type de r\u00e9sultat d''une op\u00e9ration de recherche doit \u00eatre le type d''entit\u00e9, un type de propri\u00e9t\u00e9 d''entit\u00e9, un enregistrement Java compos\u00e9 de propri\u00e9t\u00e9s d''entit\u00e9, ou un type construit par JPQL ou JDQL qui est fourni \u00e0 l''annotation Query. Le type de retour de la m\u00e9thode de recherche du r\u00e9f\u00e9rentiel peut \u00eatre le type de r\u00e9sultat, un tableau du type de r\u00e9sultat ou l''un des types suivants param\u00e9tr\u00e9s avec le type de r\u00e9sultat : {4}.
+CWWKD1005.find.rtrn.err.explanation=Le type de retour de la m\u00e9thode ne fait pas partie des types de retour pris en charge pour les m\u00e9thodes de recherche de r\u00e9f\u00e9rentiel.
+CWWKD1005.find.rtrn.err.useraction=Reportez-vous aux informations Javadoc de Jakarta Data pour obtenir une liste des types de retour valides pour les m\u00e9thodes de recherche de r\u00e9f\u00e9rentiel.
+
+CWWKD1006.delete.rtrn.err=CWWKD1006E: Le type de retour de la m\u00e9thode {1} de l''interface de r\u00e9f\u00e9rentiel {2} n''est pas un type de retour valide pour une op\u00e9ration de suppression. Le type de retour doit \u00eatre soit void, long, int, boolean, array, List ou Optional. Un type de retour de type void ne renvoie aucune valeur. Un type de retour de type long ou int renvoie un nombre de suppressions. Un type de retour bool\u00e9en indique si des entit\u00e9s ont \u00e9t\u00e9 supprim\u00e9es. Un type de retour de type tableau, liste ou optionnel, param\u00e9tr\u00e9 avec une classe d''entit\u00e9 {3} ou une classe d''identifiant unique {4} renvoie les entit\u00e9s supprim\u00e9es ou les identifiants d''entit\u00e9.
+CWWKD1006.delete.rtrn.err.explanation=Le type de retour de la m\u00e9thode ne fait pas partie des types de retour pris en charge pour une op\u00e9ration de suppression.
+CWWKD1006.delete.rtrn.err.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel pour utiliser l'un des types de retour pris en charge.
+
+CWWKD1007.updel.rtrn.err=CWWKD1007E: Le type de retour de la m\u00e9thode {1} de l''interface de r\u00e9f\u00e9rentiel {2} n''est pas un type de retour valide pour une op\u00e9ration de r\u00e9f\u00e9rentiel {3}. Le type de retour doit \u00eatre soit void, long, int ou boolean. Un type de retour de type void ne renvoie aucune valeur. Un type de retour long ou int renvoie un nombre d''entit\u00e9s correspondantes. Un type de retour de type bool\u00e9en renvoie un indicateur indiquant si des entit\u00e9s correspondent.
+CWWKD1007.updel.rtrn.err.explanation=Le type de retour de la m\u00e9thode ne fait pas partie des types de retour pris en charge pour une op\u00e9ration de mise \u00e0 jour ou de suppression.
+CWWKD1007.updel.rtrn.err.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel pour utiliser l'un des types de retour pris en charge.
+
+CWWKD1008.ambig.rtrn.err=CWWKD1008E: Le type de retour de la m\u00e9thode {1} de l''interface de r\u00e9f\u00e9rentiel {2} est ambigu en tant que type de retour car il correspond \u00e0 plusieurs propri\u00e9t\u00e9s d''entit\u00e9 : {3}. La m\u00e9thode de r\u00e9f\u00e9rentiel doit passer \u00e0 l''annotation Query et utiliser une requ\u00eate JDQL ou JPQL avec une clause SELECT qui sp\u00e9cifie quelle propri\u00e9t\u00e9 de l''entit\u00e9 doit \u00eatre retourn\u00e9e.
+CWWKD1008.ambig.rtrn.err.explanation=Le type de retour de la m\u00e9thode ne fait pas partie des types de retour pris en charge pour une m\u00e9thode de suppression.
+CWWKD1008.ambig.rtrn.err.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel afin d'utiliser l'annotation Query pour s\u00e9lectionner la propri\u00e9t\u00e9 de l'entit\u00e9.
+
+CWWKD1009.lifecycle.param.err=CWWKD1009E: La m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} ne peut pas avoir de param\u00e8tres {2} parce que la m\u00e9thode est annot\u00e9e avec l''annotation {3} de cycle de vie. Les m\u00e9thodes du r\u00e9f\u00e9rentiel qui sont annot\u00e9es avec une annotation de cycle de vie doivent avoir exactement 1 param\u00e8tre, qui doit \u00eatre l''entit\u00e9 ou un tableau ou une liste de l''entit\u00e9.
+CWWKD1009.lifecycle.param.err.explanation=Les m\u00e9thodes de cycle de vie doivent avoir un seul param\u00e8tre d'entit\u00e9.
+CWWKD1009.lifecycle.param.err.useraction=Mise \u00e0 jour de la m\u00e9thode de d\u00e9p\u00f4t pour avoir un seul param\u00e8tre qui est une entit\u00e9 ou un tableau de listes de l'entit\u00e9.
+
+CWWKD1010.unknown.entity.prop=CWWKD1010E: La m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} attend une propri\u00e9t\u00e9 d''entit\u00e9 nomm\u00e9e {2} qui ne se trouve pas dans la classe d''entit\u00e9 {3}. Les noms de propri\u00e9t\u00e9s valables pour l''entit\u00e9 sont les suivants : {4}.
+CWWKD1010.unknown.entity.prop.explanation=La m\u00e9thode du r\u00e9f\u00e9rentiel tente d'utiliser une propri\u00e9t\u00e9 d'entit\u00e9 qui n'existe pas.
+CWWKD1010.unknown.entity.prop.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel pour qu'elle corresponde \u00e0 une propri\u00e9t\u00e9 valide d\u00e9finie par l'entit\u00e9.
+
+CWWKD1011.unknown.method.pattern=CWWKD1011E: La m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} ne correspond \u00e0 aucun des mod\u00e8les d\u00e9finis par Jakarta Data. Une m\u00e9thode de r\u00e9f\u00e9rentiel doit soit utiliser des annotations, soit \u00eatre une m\u00e9thode d''acc\u00e8s aux ressources, soit \u00eatre nomm\u00e9e selon le mod\u00e8le "Query by Method Name". Des annotations telles que {2} sont utilis\u00e9es pour d\u00e9finir les op\u00e9rations. Une m\u00e9thode d''acc\u00e8s \u00e0 une ressource ne doit contenir aucun param\u00e8tre et aucun des types de retour {3}. Le mod\u00e8le d''interrogation par nom de m\u00e9thode doit commencer par l''un des mots-cl\u00e9s {4}, suivi de 0 ou plusieurs caract\u00e8res. Les noms de m\u00e9thodes peuvent \u00e9galement inclure le mot-cl\u00e9 By et une ou plusieurs conditions d\u00e9limit\u00e9es. Voici des exemples de noms de m\u00e9thodes de r\u00e9f\u00e9rentiel valides : {5}.
+CWWKD1011.unknown.method.pattern.explanation=Les m\u00e9thodes de d\u00e9p\u00f4t doivent suivre les mod\u00e8les d\u00e9finis par Jakarta Data.
+CWWKD1011.unknown.method.pattern.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel pour qu'elle soit conforme \u00e0 l'un des mod\u00e8les de Jakarta Data.
+
+CWWKD1012.fd.missing.param.anno=CWWKD1012E: Le param\u00e8tre {0} de la m\u00e9thode {1} de l''interface du r\u00e9f\u00e9rentiel {2} ne correspond pas \u00e0 une propri\u00e9t\u00e9 de l''entit\u00e9. Les param\u00e8tres qui ne correspondent pas \u00e0 une propri\u00e9t\u00e9 d''entit\u00e9 doivent \u00eatre annot\u00e9s avec l''annotation By ou avoir l''un des types de param\u00e8tres sp\u00e9ciaux : {3}. Pour d\u00e9finir une condition de restriction des r\u00e9sultats de la requ\u00eate, le param\u00e8tre doit \u00eatre annot\u00e9 avec l''annotation By et la valeur de l''annotation By doit \u00eatre assign\u00e9e au nom de la propri\u00e9t\u00e9 de l''entit\u00e9. Vous pouvez \u00e9galement activer l''option de compilation -parameters et donner au param\u00e8tre le m\u00eame nom que la propri\u00e9t\u00e9 de l''entit\u00e9.
+CWWKD1012.fd.missing.param.anno.explanation=Les param\u00e8tres des m\u00e9thodes de recherche et de suppression du r\u00e9f\u00e9rentiel doivent correspondre aux propri\u00e9t\u00e9s de l'entit\u00e9 ou \u00eatre des types de param\u00e8tres sp\u00e9ciaux d\u00e9finis par Jakarta Data.
+CWWKD1012.fd.missing.param.anno.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel de sorte que tous les param\u00e8tres correspondent \u00e0 des propri\u00e9t\u00e9s de l'entit\u00e9 ou aient l'un des types de param\u00e8tres sp\u00e9ciaux de Jakarta Data.
+
+CWWKD1013.cde.missing.param.anno=CWWKD1013E: Le param\u00e8tre {0} de la m\u00e9thode {1} de l''interface du r\u00e9f\u00e9rentiel {2} ne correspond pas \u00e0 une propri\u00e9t\u00e9 de l''entit\u00e9. Les param\u00e8tres qui ne correspondent pas \u00e0 une propri\u00e9t\u00e9 d''entit\u00e9 doivent \u00eatre annot\u00e9s avec l''annotation By et la valeur de l''annotation By doit \u00eatre assign\u00e9e au nom de la propri\u00e9t\u00e9 d''entit\u00e9. Vous pouvez \u00e9galement activer l''option de compilation -parameters et donner au param\u00e8tre le m\u00eame nom que la propri\u00e9t\u00e9 de l''entit\u00e9.
+CWWKD1013.cde.missing.param.anno.explanation=Les param\u00e8tres des m\u00e9thodes count, delete et exists du r\u00e9f\u00e9rentiel doivent correspondre aux propri\u00e9t\u00e9s de l'entit\u00e9.
+CWWKD1013.cde.missing.param.anno.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel afin que tous les param\u00e8tres correspondent aux propri\u00e9t\u00e9s de l'entit\u00e9.
+
+CWWKD1014.upd.missing.param.anno=CWWKD1014E: Le param\u00e8tre {0} de la m\u00e9thode {1} de l''interface du r\u00e9f\u00e9rentiel {2} ne correspond pas \u00e0 une propri\u00e9t\u00e9 de l''entit\u00e9. Les param\u00e8tres qui ne correspondent pas \u00e0 une propri\u00e9t\u00e9 d''entit\u00e9 doivent avoir l''une des annotations de param\u00e8tre : {3}. Pour d\u00e9finir une condition de restriction des r\u00e9sultats de la requ\u00eate, le param\u00e8tre doit \u00eatre annot\u00e9 avec l''annotation By et la valeur de l''annotation By doit \u00eatre assign\u00e9e au nom de la propri\u00e9t\u00e9 de l''entit\u00e9. Vous pouvez \u00e9galement activer l''option de compilation -parameters et donner au param\u00e8tre le m\u00eame nom que la propri\u00e9t\u00e9 de l''entit\u00e9.
+CWWKD1014.upd.missing.param.anno.explanation=Les param\u00e8tres des m\u00e9thodes de mise \u00e0 jour du r\u00e9f\u00e9rentiel doivent correspondre aux propri\u00e9t\u00e9s de l'entit\u00e9.
+CWWKD1014.upd.missing.param.anno.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel afin que tous les param\u00e8tres correspondent aux propri\u00e9t\u00e9s de l'entit\u00e9.
+
+CWWKD1015.null.entity.param=CWWKD1015E: La m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} ne peut pas accepter une entit\u00e9 nulle.
+CWWKD1015.null.entity.param.explanation=Les m\u00e9thodes de cycle de vie n\u00e9cessitent une instance d'entit\u00e9 non nulle.
+CWWKD1015.null.entity.param.useraction=Mise \u00e0 jour du code de l'application pour \u00e9viter de fournir une valeur d'entit\u00e9 nulle \u00e0 la m\u00e9thode de d\u00e9p\u00f4t.
+
+CWWKD1016.incompat.entity.param=CWWKD1016E: La m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} n\u00e9cessite une entit\u00e9 {0}, mais une valeur {1} a \u00e9t\u00e9 fournie.
+CWWKD1016.incompat.entity.param.explanation=La m\u00e9thode de cycle de vie n'accepte que les valeurs d'entit\u00e9 du type d\u00e9clar\u00e9.
+CWWKD1016.incompat.entity.param.useraction=Mettre \u00e0 jour le code de l'application pour fournir une valeur d'entit\u00e9 du m\u00eame type que celui d\u00e9clar\u00e9 par la m\u00e9thode du r\u00e9f\u00e9rentiel.
+
+CWWKD1017.dup.special.param=CWWKD1017E: La m\u00e9thode {0} du r\u00e9f\u00e9rentiel {1} ne peut pas avoir plusieurs param\u00e8tres {2}.
+CWWKD1017.dup.special.param.explanation=Certains param\u00e8tres sp\u00e9ciaux de Jakarta Data, notamment Limit et PageRequest, ne peuvent pas appara\u00eetre plusieurs fois dans la signature d'une m\u00e9thode de r\u00e9f\u00e9rentiel.
+CWWKD1017.dup.special.param.useraction=Mettre \u00e0 jour la signature de la m\u00e9thode du r\u00e9f\u00e9rentiel pour qu'elle contienne au plus une occurrence du type de param\u00e8tre sp\u00e9cial Jakarta Data.
+
+CWWKD1018.confl.special.param=CWWKD1018E: La m\u00e9thode {0} du r\u00e9f\u00e9rentiel {1} ne peut pas avoir un param\u00e8tre {2} et un param\u00e8tre {3}.
+CWWKD1018.confl.special.param.explanation=Certains param\u00e8tres sp\u00e9ciaux de Jakarta Data, tels que Limit et PageRequest, ne peuvent pas \u00eatre combin\u00e9s dans une m\u00eame signature de m\u00e9thode de r\u00e9f\u00e9rentiel.
+CWWKD1018.confl.special.param.useraction=Mise \u00e0 jour du r\u00e9f\u00e9rentiel pour ne pas utiliser les deux types de param\u00e8tres sp\u00e9ciaux de Jakarta Data dans la m\u00eame signature de m\u00e9thode.
+
+CWWKD1019.mixed.positional.named=CWWKD1019E: La m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} ne peut pas avoir une requ\u00eate avec un m\u00e9lange de param\u00e8tres positionnels et de param\u00e8tres nomm\u00e9s.
+CWWKD1019.mixed.positional.named.explanation=Les requ\u00eates avec param\u00e8tres doivent utiliser tous les param\u00e8tres nomm\u00e9s ou tous les param\u00e8tres positionnels, et non une combinaison.
+CWWKD1019.mixed.positional.named.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel pour n'utiliser que des param\u00e8tres nomm\u00e9s ou des param\u00e8tres positionnels.
+
+CWWKD1020.invalid.param.type=CWWKD1020E: Les param\u00e8tres de la m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} ne doivent pas \u00eatre du type {2} car la m\u00e9thode de d\u00e9p\u00f4t est une op\u00e9ration {3}.
+CWWKD1020.invalid.param.type.explanation=Le type de param\u00e8tre n'est pas autoris\u00e9 pour ce type de m\u00e9thode.
+CWWKD1020.invalid.param.type.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel pour d\u00e9finir un param\u00e8tre de m\u00e9thode pour chaque valeur requise par une comparaison.
+
+CWWKD1021.insufficient.params=CWWKD1021E: La m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} a des param\u00e8tres {2}, mais les conditions d''interrogation d\u00e9finies par la m\u00e9thode requi\u00e8rent des param\u00e8tres {3}. La requ\u00eate JPQL pour la m\u00e9thode est : {4}.
+CWWKD1021.insufficient.params.explanation=Les conditions d'interrogation qui d\u00e9finissent des comparaisons de valeurs requi\u00e8rent un nombre correspondant de param\u00e8tres de m\u00e9thode du r\u00e9f\u00e9rentiel pour fournir les valeurs.
+CWWKD1021.insufficient.params.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel pour d\u00e9finir un param\u00e8tre de m\u00e9thode pour chaque valeur requise par une comparaison.
+
+CWWKD1022.too.many.params=CWWKD1022E: Les conditions d''interrogation de la m\u00e9thode {0} de l''interface de r\u00e9f\u00e9rentiel {1} n\u00e9cessitent des param\u00e8tres {2}, mais la signature de la m\u00e9thode de r\u00e9f\u00e9rentiel a des param\u00e8tres {3}. La requ\u00eate JPQL pour la m\u00e9thode est : {4}.
+CWWKD1022.too.many.params.explanation=Les conditions d'interrogation qui d\u00e9finissent des comparaisons de valeurs requi\u00e8rent un nombre correspondant de param\u00e8tres de m\u00e9thode du r\u00e9f\u00e9rentiel pour fournir les valeurs. Les param\u00e8tres suppl\u00e9mentaires ne sont pas autoris\u00e9s.
+CWWKD1022.too.many.params.useraction=Mettre \u00e0 jour la signature de la m\u00e9thode du r\u00e9f\u00e9rentiel pour supprimer les param\u00e8tres suppl\u00e9mentaires qui ne correspondent pas aux conditions d\u00e9clar\u00e9es.
+
+CWWKD1023.extra.param=CWWKD1023E: Les conditions d''interrogation de la m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} n\u00e9cessitent des param\u00e8tres {2}, mais la m\u00e9thode de d\u00e9p\u00f4t a un param\u00e8tre suppl\u00e9mentaire {3}. La requ\u00eate JPQL pour la m\u00e9thode est : {4}.
+CWWKD1023.extra.param.explanation=Les conditions d'interrogation qui d\u00e9finissent des comparaisons de valeurs requi\u00e8rent un nombre correspondant de param\u00e8tres de m\u00e9thode du r\u00e9f\u00e9rentiel pour fournir les valeurs. Les param\u00e8tres suppl\u00e9mentaires ne sont pas autoris\u00e9s.
+CWWKD1023.extra.param.useraction=Mettre \u00e0 jour la signature de la m\u00e9thode du r\u00e9f\u00e9rentiel pour supprimer les param\u00e8tres suppl\u00e9mentaires qui ne correspondent pas aux conditions d\u00e9clar\u00e9es.
+
+CWWKD1024.missing.entity.prop=CWWKD1024E: La m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} ne comporte pas de nom de propri\u00e9t\u00e9 d''entit\u00e9 ou a \u00e9t\u00e9 fournie avec un param\u00e8tre ne comportant pas de nom de propri\u00e9t\u00e9 d''entit\u00e9. Les noms de propri\u00e9t\u00e9s valables pour la classe d''entit\u00e9s {2} sont les suivants : {3}.
+CWWKD1024.missing.entity.prop.explanation=Les conditions d'interrogation et les crit\u00e8res de tri d'une m\u00e9thode de d\u00e9p\u00f4t doivent inclure un nom de propri\u00e9t\u00e9 d'entit\u00e9.
+CWWKD1024.missing.entity.prop.useraction=Inspectez la d\u00e9claration et l'utilisation de la m\u00e9thode du r\u00e9f\u00e9rentiel pour vous assurer qu'un nom de propri\u00e9t\u00e9 d'entit\u00e9 est fourni pour chaque condition de requ\u00eate et crit\u00e8re de tri.
+
+CWWKD1025.missing.id.prop=CWWKD1025E: La classe d''entit\u00e9 {0} utilis\u00e9e par la m\u00e9thode {1} de l''interface de r\u00e9f\u00e9rentiel {2} n''a pas de propri\u00e9t\u00e9 ID ni de m\u00e9thode d''acc\u00e8s.
+CWWKD1025.missing.id.prop.explanation=Les m\u00e9thodes du r\u00e9f\u00e9rentiel qui suppriment et renvoient une entit\u00e9 doivent avoir une propri\u00e9t\u00e9 ID.
+CWWKD1025.missing.id.prop.useraction=Si l'entit\u00e9 n'a pas de propri\u00e9t\u00e9 unique pour l'identifiant, d\u00e9finissez des m\u00e9thodes de r\u00e9f\u00e9rentiel distinctes qui recherchent l'entit\u00e9 et la suppriment.
+
+CWWKD1026.ignore.case.not.text=CWWKD1026E: La propri\u00e9t\u00e9 {0} de l''entit\u00e9 {1} n''est pas un caract\u00e8re ou une s\u00e9quence de caract\u00e8res ; par cons\u00e9quent, le crit\u00e8re de tri {2} ne doit pas sp\u00e9cifier d''ignorer la casse. Le type de la propri\u00e9t\u00e9 est {3}, et elle a \u00e9t\u00e9 fournie \u00e0 la m\u00e9thode {4} de l''interface de d\u00e9p\u00f4t {5}.
+CWWKD1026.ignore.case.not.text.explanation=Le tri sans tenir compte de la casse n'est possible qu'avec les propri\u00e9t\u00e9s d'entit\u00e9s qui repr\u00e9sentent du texte.
+CWWKD1026.ignore.case.not.text.useraction=S'assurer que les crit\u00e8res de tri sont appliqu\u00e9s \u00e0 la propri\u00e9t\u00e9 d'entit\u00e9 correcte et supprimer l'instruction d'ignorer la casse si la propri\u00e9t\u00e9 d'entit\u00e9 ne repr\u00e9sente pas du texte.
+
+CWWKD1027.anno.missing.prop.name=CWWKD1027E: Le param\u00e8tre {0} de la m\u00e9thode {1} de l''interface de d\u00e9p\u00f4t {2} est annot\u00e9 avec une annotation {3} qui ne sp\u00e9cifie pas de nom de propri\u00e9t\u00e9 d''entit\u00e9 comme valeur. L''annotation doit soit sp\u00e9cifier le nom de la propri\u00e9t\u00e9 de l''entit\u00e9 comme valeur, soit l''option de compilation -parameters doit \u00eatre activ\u00e9e et le param\u00e8tre doit avoir le m\u00eame nom que la propri\u00e9t\u00e9 de l''entit\u00e9.
+CWWKD1027.anno.missing.prop.name.explanation=Les param\u00e8tres des m\u00e9thodes de mise \u00e0 jour du r\u00e9f\u00e9rentiel doivent correspondre aux propri\u00e9t\u00e9s de l'entit\u00e9.
+CWWKD1027.anno.missing.prop.name.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel pour indiquer la propri\u00e9t\u00e9 de l'entit\u00e9 \u00e0 laquelle le param\u00e8tre se rapporte.
+
+CWWKD1028.first.exceeds.max=CWWKD1028E: La m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} demande les premiers r\u00e9sultats {2}, ce qui d\u00e9passe le nombre maximum de r\u00e9sultats autoris\u00e9 : {3}.
+CWWKD1028.first.exceeds.max.explanation=Le nombre maximum de r\u00e9sultats de la requ\u00eate est limit\u00e9 par les contraintes du syst\u00e8me et la valeur sp\u00e9cifi\u00e9e.
+CWWKD1028.first.exceeds.max.useraction=R\u00e9duire le nombre maximal de r\u00e9sultats de la requ\u00eate \u00e0 une valeur inf\u00e9rieure.
+
+CWWKD1029.first.neg.or.zero=CWWKD1029E: La m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} demande les premiers {2} r\u00e9sultats. Le nombre maximum de r\u00e9sultats \u00e0 renvoyer doit \u00eatre un nombre positif.
+CWWKD1029.first.neg.or.zero.explanation=Le nombre maximum de r\u00e9sultats de la requ\u00eate doit \u00eatre un nombre positif.
+CWWKD1029.first.neg.or.zero.useraction=Mise \u00e0 jour de la m\u00e9thode de d\u00e9p\u00f4t pour sp\u00e9cifier un nombre maximum positif de r\u00e9sultats.
+
+CWWKD1030.ql.lacks.entity=CWWKD1030E: Le nom de l''entit\u00e9 est absent de la requ\u00eate {0} sp\u00e9cifi\u00e9e pour la m\u00e9thode {1} du r\u00e9f\u00e9rentiel {2}. In Jakarta Data Query Language, {3} queries should be formed like: {4}.
+CWWKD1030.ql.lacks.entity.explanation=La requ\u00eate contient une clause qui demande le nom de l'entit\u00e9.
+CWWKD1030.ql.lacks.entity.useraction=Mise \u00e0 jour de la requ\u00eate pour la m\u00e9thode du r\u00e9f\u00e9rentiel afin d'inclure le nom de l'entit\u00e9.
+
+CWWKD1031.ql.similar.entity=CWWKD1031E: La m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} sp\u00e9cifie une requ\u00eate qui n\u00e9cessite un nom d''entit\u00e9 {2} qui n''a pas \u00e9t\u00e9 trouv\u00e9 mais qui est proche du nom d''entit\u00e9 {3}. La requ\u00eate est la suivante : {4}.
+CWWKD1031.ql.similar.entity.explanation=La requ\u00eate peut contenir une erreur typographique dans sa r\u00e9f\u00e9rence au nom de l'entit\u00e9.
+CWWKD1031.ql.similar.entity.useraction=Examinez la requ\u00eate pour vous assurer que le nom de l'entit\u00e9 utilis\u00e9 est correct.
+
+CWWKD1032.ql.unknown.entity=CWWKD1032E: La m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} sp\u00e9cifie une requ\u00eate qui requiert un nom d''entit\u00e9 {2} introuvable. Assurez-vous que {2} est le nom d''une entit\u00e9 valide. Pour permettre la recherche de l''entit\u00e9, donnez au r\u00e9f\u00e9rentiel une m\u00e9thode de cycle de vie qui est annot\u00e9e avec l''une des annotations {3} et fournissez l''entit\u00e9 en tant que param\u00e8tre. Le r\u00e9f\u00e9rentiel peut \u00e9galement \u00e9tendre l''interface DataRepository ou une autre interface de r\u00e9f\u00e9rentiel int\u00e9gr\u00e9e, avec la classe d''entit\u00e9 comme premi\u00e8re variable de type. La requ\u00eate est la suivante : {4}.
+CWWKD1032.ql.unknown.entity.explanation=La requ\u00eate peut contenir une erreur typographique dans sa r\u00e9f\u00e9rence au nom de l'entit\u00e9, ou le r\u00e9f\u00e9rentiel ne sp\u00e9cifie pas sa classe d'entit\u00e9 primaire.
+CWWKD1032.ql.unknown.entity.useraction=Examinez la requ\u00eate pour vous assurer que le nom de l'entit\u00e9 utilis\u00e9 est correct. Examinez la d\u00e9finition du r\u00e9f\u00e9rentiel pour vous assurer que la classe d'entit\u00e9 primaire correcte est sp\u00e9cifi\u00e9e.
+
+CWWKD1033.ql.orderby.disallowed=CWWKD1033E: La m\u00e9thode {0} de l''interface de r\u00e9f\u00e9rentiel {1} ne peut pas sp\u00e9cifier une requ\u00eate qui inclut une clause ORDER BY car la m\u00e9thode renvoie {2}. Supprimez la clause ORDER BY et utilisez plut\u00f4t l''annotation {3} pour sp\u00e9cifier des crit\u00e8res de tri statiques. La requ\u00eate est la suivante : {4}.
+CWWKD1033.ql.orderby.disallowed.explanation=La clause ORDER BY est incompatible avec la pagination bas\u00e9e sur le curseur.
+CWWKD1033.ql.orderby.disallowed.useraction=Remplacer la clause ORDER BY par des annotations sp\u00e9cifiant les crit\u00e8res de tri.
+
+CWWKD1034.ql.where.required=CWWKD1034E: La requ\u00eate sp\u00e9cifi\u00e9e par la m\u00e9thode {0} de l''interface de r\u00e9f\u00e9rentiel {1} doit se terminer par une clause WHERE car la m\u00e9thode renvoie {2}. La clause WHERE se termine \u00e0 la position {3}, mais la longueur de la requ\u00eate est {4}. La requ\u00eate est la suivante : {5}.
+CWWKD1034.ql.where.required.explanation=Une clause WHERE est n\u00e9cessaire lors de l'utilisation de la pagination bas\u00e9e sur le curseur.
+CWWKD1034.ql.where.required.useraction=Ajoutez une clause WHERE \u00e0 la requ\u00eate.
