@@ -247,22 +247,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
-     * Compute the zero-based offset to use as a starting point for a Limit range.
-     *
-     * @param limit limit that was specified by the application.
-     * @return offset value.
-     * @throws IllegalArgumentException if the starting point for the limited range
-     *                                      is not positive or would overflow Integer.MAX_VALUE.
-     */
-    static int computeOffset(Limit range) {
-        long startIndex = range.startAt() - 1;
-        if (startIndex >= 0 && startIndex <= Integer.MAX_VALUE)
-            return (int) startIndex;
-        else
-            throw new IllegalArgumentException("The starting point for " + range + " is not within 1 to Integer.MAX_VALUE (2147483647)."); // TODO
-    }
-
-    /**
      * Execute a repository count query.
      *
      * @param em        entity manager.
@@ -902,9 +886,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
                      provider.loggable(repositoryInterface, method, args));
         try {
             if (isDisposed.get())
-                throw new IllegalStateException("Repository instance " + repositoryInterface.getName() +
-                                                "(Proxy)@" + Integer.toHexString(System.identityHashCode(proxy)) +
-                                                " is no longer in scope."); // TODO
+                throw exc(IllegalStateException.class,
+                          "CWWKD1076.repo.disposed",
+                          method.getName(),
+                          repositoryInterface.getName(),
+                          new StringBuilder("RepositoryImpl@") //
+                                          .append(Integer.toHexString(hashCode())) //
+                                          .append("/(proxy)@") //
+                                          .append(Integer.toHexString(System.identityHashCode(proxy))));
 
             if (isDefaultMethod) {
                 Deque<AutoCloseable> resourceStack = defaultMethodResources.get();
@@ -1114,7 +1103,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                             : pagination != null ? pagination.size() //
                                                             : queryInfo.maxResults;
 
-                            int startAt = limit != null ? computeOffset(limit) //
+                            int startAt = limit != null ? queryInfo.computeOffset(limit) //
                                             : pagination != null ? queryInfo.computeOffset(pagination) //
                                                             : 0;
 

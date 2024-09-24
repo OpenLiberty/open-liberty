@@ -515,6 +515,30 @@ public class QueryInfo {
     }
 
     /**
+     * Compute the zero-based offset to use as a starting point for a Limit range.
+     *
+     * @param limit limit that was specified by the application.
+     * @return offset value.
+     * @throws IllegalArgumentException if the starting point for the limited range
+     *                                      is not positive or would overflow
+     *                                      Integer.MAX_VALUE.
+     */
+    int computeOffset(Limit range) {
+        long startIndex = range.startAt() - 1;
+        if (startIndex <= Integer.MAX_VALUE)
+            // The Limit constructor disallows values less than 1.
+            return (int) startIndex;
+        else
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1073.offset.exceeds.max",
+                      startIndex + 1,
+                      range,
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      "Integer.MAX_VALUE (" + Integer.MAX_VALUE + ")");
+    }
+
+    /**
      * Compute the zero-based offset for the start of a page.
      *
      * @param pagination requested pagination.
@@ -1050,7 +1074,7 @@ public class QueryInfo {
         String attribute = methodName.substring(start, endBefore);
 
         if (attribute.length() == 0)
-            throw new MappingException("Entity property name is missing."); // TODO possibly combine with unknown entity property name
+            throw excUnsupportedMethod();
 
         String name = getAttributeName(attribute, true);
 
@@ -1123,7 +1147,12 @@ public class QueryInfo {
                 break;
             case IN:
                 if (ignoreCase)
-                    throw new MappingException(new UnsupportedOperationException("Repository keyword IgnoreCase cannot be combined with the In keyword.")); // TODO
+                    throw exc(UnsupportedOperationException.class,
+                              "CWWKD1074.qbmn.incompat.keywords",
+                              method.getName(),
+                              repositoryInterface.getName(),
+                              "IgnoreCase",
+                              "In");
             default:
                 q.append(attributeExpr).append(negated ? " NOT " : "").append(condition.operator);
                 generateParam(q, ignoreCase, ++paramCount);
