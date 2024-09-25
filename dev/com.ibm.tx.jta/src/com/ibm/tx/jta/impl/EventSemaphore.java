@@ -24,15 +24,12 @@ public final class EventSemaphore {
     boolean _posted;
 
     public synchronized void waitEvent() throws InterruptedException {
-        while (!_posted) wait();
+        while (!_posted)
+            wait();
     }
 
     public synchronized void post() {
         _posted = true;
         notifyAll();
-    }
-
-    public synchronized void clear() {
-        _posted = false;
     }
 }

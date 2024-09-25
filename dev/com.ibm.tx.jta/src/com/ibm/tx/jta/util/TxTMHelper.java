@@ -529,7 +529,6 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                     _asyncRecoverySemaphore.waitEvent();
                 } catch (InterruptedException e) {}
                 setResyncException(null);
-                _asyncRecoverySemaphore.clear();
             }
 
             ConfigurationProviderManager.stop(true);
