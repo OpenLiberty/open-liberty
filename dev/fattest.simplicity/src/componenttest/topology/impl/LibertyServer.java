@@ -3522,12 +3522,6 @@ public class LibertyServer implements LogMonitorClient {
 
                                                      "Config13TCKServer", //com.ibm.ws.microprofile.config.1.3_fat_tck
 
-                                                     "CDIFaultTolerance", //com.ibm.ws.microprofile.faulttolerance.cdi_fat
-                                                     "FaultToleranceMultiModule", //com.ibm.ws.microprofile.faulttolerance.cdi_fat
-                                                     "AsyncFaultTolerance", //com.ibm.ws.microprofile.faulttolerance.cdi_fat
-                                                     "FaultToleranceEJB", //com.ibm.ws.microprofile.faulttolerance.cdi_fat
-                                                     "JaxRsFaultTolerance", //com.ibm.ws.microprofile.faulttolerance.cdi_fat
-
                                                      "mpGraphQL10.basicQuery", //com.ibm.ws.microprofile.graphql.1.0_fat
                                                      "mpGraphQL10.defaultvalue", //com.ibm.ws.microprofile.graphql.1.0_fat
                                                      "mpGraphQL10.graphQLInterface", //com.ibm.ws.microprofile.graphql.1.0_fat
