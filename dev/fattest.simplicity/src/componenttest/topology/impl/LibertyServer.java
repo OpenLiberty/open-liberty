@@ -3683,25 +3683,7 @@ public class LibertyServer implements LogMonitorClient {
                 Set<String> installedFeatures = getInstalledFeatures(); //the features actually installed at runtime
 
                 //expected feature -> actual feature
-                Map<String, String> unexpectedFeatures = new HashMap<>();
-
-                //compare each installed feature to the expected ones
-                for (String installedFeature : installedFeatures) {
-                    //ignore versionless features
-                    int dash = installedFeature.indexOf("-");
-                    if (dash > -1) {
-                        String versionlessInstalledFeature = removeFeatureVersion(installedFeature);
-                        for (String replacementFeature : expectedFeatures) {
-                            String versionlessReplacementFeature = removeFeatureVersion(replacementFeature);
-                            if (versionlessReplacementFeature.equalsIgnoreCase(versionlessInstalledFeature)) {
-                                //if the base feature name matches but the version does not, throw an exception.
-                                if (!replacementFeature.equalsIgnoreCase(installedFeature)) {
-                                    unexpectedFeatures.put(replacementFeature, installedFeature);
-                                }
-                            }
-                        }
-                    }
-                }
+                Map<String, String> unexpectedFeatures = getUnexpectedFeatures(expectedFeatures, installedFeatures);
 
                 if (unexpectedFeatures.size() > 0) {
                     String message = "Runtime features were not of the expected version for repeat action (Server: " + serverName + ", Action: " + action.getID() + ").\n";
@@ -3732,6 +3714,61 @@ public class LibertyServer implements LogMonitorClient {
         }
         //re-instate this message once the exempt servers are removed
         //Log.info(c, method, "No invalid replacement features found.");
+    }
+
+    /**
+     * Get a map of any features which are not at the expected version. e.g.
+     *
+     * if the expected features are
+     * mpConfig-1.2, cdi-2.0, servlet-3.0, appSecurity-3.0
+     *
+     * and the installed features are
+     * mpConfig-1.2, cdi-3.0, servlet-3.0, appSecurity-2.0, appSecurity-3.0
+     *
+     * then the returned map would only contain one element of
+     * cdi-2.0 -> cdi-3.0
+     *
+     * Note that more than one version of appSecurity was installed but one of them was the expected version, so it was not flagged.
+     *
+     * @param  expectedFeatures
+     * @param  installedFeatures
+     * @return
+     */
+    public static Map<String, String> getUnexpectedFeatures(Collection<String> expectedFeatures, Collection<String> installedFeatures) {
+        Map<String, String> featureMap = new HashMap<>();
+
+        //compare each installed feature to the expected ones
+        for (String installedFeature : installedFeatures) {
+            //ignore versionless features
+            int dash = installedFeature.indexOf("-");
+            if (dash > -1) {
+                String versionlessInstalledFeature = removeFeatureVersion(installedFeature);
+                for (String replacementFeature : expectedFeatures) {
+                    String versionlessReplacementFeature = removeFeatureVersion(replacementFeature);
+                    if (versionlessReplacementFeature.equalsIgnoreCase(versionlessInstalledFeature)) {
+                        //if the featureMap does not yet contain an entry for the replacementFeature then add it
+                        if (!featureMap.containsKey(replacementFeature)) {
+                            featureMap.put(replacementFeature, installedFeature);
+                        } //if the feature is already in the featureMap, replace it if the installed feature did not match
+                        else if (!featureMap.get(replacementFeature).equalsIgnoreCase(replacementFeature)) {
+                            featureMap.put(replacementFeature, installedFeature);
+                        }
+                    }
+                }
+            }
+        }
+
+        //now extract the features which don't match
+        Map<String, String> unexpectedFeatures = new HashMap<>();
+        for (Entry<String, String> entry : featureMap.entrySet()) {
+            String replacementFeature = entry.getKey();
+            String installedFeature = entry.getValue();
+            if (!replacementFeature.equalsIgnoreCase(installedFeature)) {
+                unexpectedFeatures.put(replacementFeature, installedFeature);
+            }
+        }
+
+        return unexpectedFeatures;
     }
 
     /**
