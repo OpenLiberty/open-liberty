@@ -14,8 +14,10 @@ import jakarta.data.repository.Delete;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 
-@Repository(provider = "OpenLiberty", //TODO temporary provider name, switch to final provider name once decided
-            dataStore = "jpa/LibertyProvider") //NOTE: Liberty requires use of PersistenceUnit reference (not name)
+@Repository(provider = "Liberty",
+            // NOTE: Repository API JavaDoc requires use of a
+            // PersistenceUnit reference (not name)
+            dataStore = "jpa/LibertyProvider")
 public interface Segments {
 
     @Delete

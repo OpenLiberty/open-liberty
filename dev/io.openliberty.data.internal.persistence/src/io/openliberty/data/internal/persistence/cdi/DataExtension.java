@@ -86,6 +86,11 @@ public class DataExtension implements Extension {
     static final String DEFAULT_DATA_STORE = "defaultDatabaseStore";
 
     /**
+     * Name of the built-in Jakarta Data provider.
+     */
+    public static final String PROVIDER_NAME = "Liberty";
+
+    /**
      * Map of repository annotated type to Repository annotation.
      * Entries are removed as they are processed to allow for the CDI extension methods to be invoked again
      * for different applications or the same application being restarted.
@@ -100,7 +105,8 @@ public class DataExtension implements Extension {
         Repository repository = type.getAnnotation(Repository.class);
 
         String dataProvider = repository.provider();
-        boolean provide = Repository.ANY_PROVIDER.equals(dataProvider) || "OpenLiberty".equalsIgnoreCase(dataProvider); // TODO provider name
+        boolean provide = Repository.ANY_PROVIDER.equals(dataProvider) ||
+                          PROVIDER_NAME.equalsIgnoreCase(dataProvider);
 
         if (trace && tc.isDebugEnabled())
             Tr.debug(this, tc, "annotatedRepository to " + (provide ? "provide" : "ignore"),
