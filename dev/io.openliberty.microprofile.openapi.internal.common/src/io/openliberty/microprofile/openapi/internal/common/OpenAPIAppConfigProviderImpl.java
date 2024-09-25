@@ -10,10 +10,10 @@
 
 package io.openliberty.microprofile.openapi.internal.common;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -39,8 +39,7 @@ public class OpenAPIAppConfigProviderImpl implements OpenAPIAppConfigProvider {
     private Optional<String> includedModules = null;
     private Optional<String> excludedModules = null;
 
-    //Using Runnable to avoid a circular dependency
-    private final Set<Runnable> changeListeners = new HashSet<Runnable>();
+    private final Set<OpenAPIAppConfigListener> openAPIAppConfigListeners = new TreeSet<OpenAPIAppConfigListener>();
 
     private boolean issuedBetaMessage;
 
@@ -61,8 +60,8 @@ public class OpenAPIAppConfigProviderImpl implements OpenAPIAppConfigProvider {
                 Tr.event(tc, "Processing update to server.xml");
             }
             processModuleConfig(properties);
-            for (Runnable changeListener : changeListeners) {
-                changeListener.run();
+            for (OpenAPIAppConfigListener listener : openAPIAppConfigListeners) {
+                listener.processConfigUpdate();
             }
         }
     }
@@ -108,6 +107,16 @@ public class OpenAPIAppConfigProviderImpl implements OpenAPIAppConfigProvider {
         return excludedModules;
     }
 
+    @Override
+    public void registerAppConfigListener(OpenAPIAppConfigListener listener) {
+        openAPIAppConfigListeners.add(listener);
+    }
+
+    @Override
+    public void unregisterAppConfigListener(OpenAPIAppConfigListener listener) {
+        openAPIAppConfigListeners.add(listener);
+    }
+
     /**
      * @param includedModulesString
      * @param excludedModulesString
@@ -123,12 +132,6 @@ public class OpenAPIAppConfigProviderImpl implements OpenAPIAppConfigProvider {
                          + "found the following configuration string for excluded modules {1}",
                      includedModules, excludedModules);
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void addListener(Runnable configUpdateListener) {
-        changeListeners.add(configUpdateListener);
     }
 
 }

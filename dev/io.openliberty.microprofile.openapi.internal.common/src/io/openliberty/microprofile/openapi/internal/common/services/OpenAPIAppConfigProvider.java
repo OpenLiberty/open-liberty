@@ -36,8 +36,19 @@ public interface OpenAPIAppConfigProvider {
      */
     Optional<String> getExcludedModules();
 
+    public static interface OpenAPIAppConfigListener extends Comparable<OpenAPIAppConfigListener> {
+        public void processConfigUpdate();
+
+        public int getConfigListenerPriority();
+    }
+
     /**
-     * @param configUpdateListener
+     * @param listener
      */
-    void addListener(Runnable configUpdateListener);
+    void registerAppConfigListener(OpenAPIAppConfigListener listener);
+
+    /**
+     * @param listener
+     */
+    void unregisterAppConfigListener(OpenAPIAppConfigListener listener);
 }

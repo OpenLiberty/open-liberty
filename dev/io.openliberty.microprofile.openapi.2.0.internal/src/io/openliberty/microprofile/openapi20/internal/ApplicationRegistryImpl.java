@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -37,8 +36,10 @@ import com.ibm.ws.kernel.feature.ServerStartedPhase2;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 import io.openliberty.microprofile.openapi.internal.common.services.OpenAPIAppConfigProvider;
+import io.openliberty.microprofile.openapi.internal.common.services.OpenAPIAppConfigProvider.OpenAPIAppConfigListener;
 import io.openliberty.microprofile.openapi20.internal.services.ApplicationRegistry;
 import io.openliberty.microprofile.openapi20.internal.services.MergeProcessor;
+import io.openliberty.microprofile.openapi20.internal.services.ModuleSelectionConfig;
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
 import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
@@ -53,8 +54,8 @@ import io.openliberty.microprofile.openapi20.internal.utils.ModuleUtils;
  * OpenAPI documentation is generated for each web module and then merged together if merging is enabled. If merging is not enabled,
  * then documentation is only generated for the first web module found.
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = ApplicationRegistry.class)
-public class ApplicationRegistryImpl implements ApplicationRegistry {
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
+public class ApplicationRegistryImpl implements ApplicationRegistry, OpenAPIAppConfigProvider.OpenAPIAppConfigListener {
 
     private static final TraceComponent tc = Tr.register(ApplicationRegistryImpl.class);
 
@@ -67,18 +68,24 @@ public class ApplicationRegistryImpl implements ApplicationRegistry {
     @Reference
     private MergeProcessor mergeProcessor;
 
-    private Runnable configUpdateListener;
+    @SuppressWarnings("unused")
     private OpenAPIAppConfigProvider openAPIAppConfigProvider;
 
-//    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.DYNAMIC,
-//               policyOption = ReferencePolicyOption.GREEDY, unbind = "unbindAppConfigProvider")
-    @Reference
-    private void bindAppConfigProvider(OpenAPIAppConfigProvider openAPIAppConfigProvider) {
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, unbind = "unbindAppConfigListener")
+    public void bindAppConfigListener(OpenAPIAppConfigProvider openAPIAppConfigProvider) {
         this.openAPIAppConfigProvider = openAPIAppConfigProvider;
-        this.configUpdateListener = () -> {
-            refreshAfterConfigUpdate();
-        };
-        openAPIAppConfigProvider.addListener(configUpdateListener);
+        openAPIAppConfigProvider.registerAppConfigListener(this);
+    }
+
+    public void unbindAppConfigListener(OpenAPIAppConfigProvider openAPIAppConfigProvider) {
+        openAPIAppConfigProvider.unregisterAppConfigListener(this);
+        this.openAPIAppConfigProvider = null;
+    }
+
+    @Reference
+    public void bindOpenAPIAppConfigProvider(OpenAPIAppConfigProvider openAPIAppConfigProvider) {
+        this.openAPIAppConfigProvider = null;
+        openAPIAppConfigProvider.registerAppConfigListener(this);
     }
 
     // Thread safety: access to these fields must be synchronized on this
@@ -86,8 +93,8 @@ public class ApplicationRegistryImpl implements ApplicationRegistry {
 
     private OpenAPIProvider cachedProvider = null;
 
-    // Lazily initialized, use getModuleSelectionConfig() instead
-    private ModuleSelectionConfig moduleSelectionConfig = null;
+    @Reference
+    private ModuleSelectionConfig moduleSelectionConfig;
 
     /**
      * The addApplication method is invoked by the {@link ApplicationListener} when it is notified that an application
@@ -110,13 +117,13 @@ public class ApplicationRegistryImpl implements ApplicationRegistry {
 
             OpenAPIProvider firstProvider = getFirstProvider();
 
-            if (getModuleSelectionConfig().useFirstModuleOnly() && firstProvider != null) {
+            if (moduleSelectionConfig.useFirstModuleOnly() && firstProvider != null) {
                 if (LoggingUtils.isEventEnabled(tc)) {
                     Tr.event(this, tc, "Application Processor: useFirstModuleOnly is configured and we already have a module. Not processing. appInfo=" + newAppInfo);
                 }
                 mergeDisabledAlerter.setUsingMultiModulesWithoutConfig(firstProvider);
             } else {
-                Collection<OpenAPIProvider> openApiProviders = applicationProcessor.processApplication(newAppInfo, getModuleSelectionConfig());
+                Collection<OpenAPIProvider> openApiProviders = applicationProcessor.processApplication(newAppInfo, moduleSelectionConfig);
 
                 if (!openApiProviders.isEmpty()) {
                     // If the new application has any providers, invalidate the model cache
@@ -154,7 +161,7 @@ public class ApplicationRegistryImpl implements ApplicationRegistry {
                 // If the removed application had any providers, invalidate the provider cache
                 cachedProvider = null;
 
-                if (getModuleSelectionConfig().useFirstModuleOnly() && !FrameworkState.isStopping()) {
+                if (moduleSelectionConfig.useFirstModuleOnly() && !FrameworkState.isStopping()) {
                     if (LoggingUtils.isEventEnabled(tc)) {
                         Tr.event(this, tc, "Application Processor: Current OpenAPI application removed, looking for another application to document.");
                     }
@@ -162,7 +169,7 @@ public class ApplicationRegistryImpl implements ApplicationRegistry {
                     // We just removed the module used for the OpenAPI document and the server is not shutting down.
                     // We need to find a new module to use if there is one
                     for (ApplicationRecord app : applications.values()) {
-                        Collection<OpenAPIProvider> providers = applicationProcessor.processApplication(app.info, getModuleSelectionConfig());
+                        Collection<OpenAPIProvider> providers = applicationProcessor.processApplication(app.info, moduleSelectionConfig);
                         if (!providers.isEmpty()) {
                             app.providers.addAll(providers);
                             break;
@@ -207,7 +214,7 @@ public class ApplicationRegistryImpl implements ApplicationRegistry {
                     // Couldn't read this application for some reason, but that means we can't have been able to include modules from it anyway.
                 }
             }
-            for (String unmatchedInclude : getModuleSelectionConfig().findIncludesNotMatchingAnything(modules)) {
+            for (String unmatchedInclude : moduleSelectionConfig.findIncludesNotMatchingAnything(modules)) {
                 Tr.warning(tc, MessageConstants.OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W, Constants.MERGE_INCLUDE_CONFIG, unmatchedInclude);
             }
         }
@@ -272,19 +279,6 @@ public class ApplicationRegistryImpl implements ApplicationRegistry {
     /**
      * Thread safety: Caller must hold lock on {@code this}
      *
-     * @return the module selection config
-     */
-    private ModuleSelectionConfig getModuleSelectionConfig() {
-        if (moduleSelectionConfig == null) {
-            // Lazy initialization to avoid calling getConfig() before Config is ready
-            moduleSelectionConfig = ModuleSelectionConfig.fromConfig(ConfigProvider.getConfig(ApplicationRegistryImpl.class.getClassLoader()), openAPIAppConfigProvider);
-        }
-        return moduleSelectionConfig;
-    }
-
-    /**
-     * Thread safety: Caller must hold lock on {@code this}
-     *
      * @return {@code null} if {@link #applications} contains no providers
      */
     private OpenAPIProvider getFirstProvider() {
@@ -297,7 +291,8 @@ public class ApplicationRegistryImpl implements ApplicationRegistry {
         return null;
     }
 
-    private synchronized void refreshAfterConfigUpdate() {
+    @Override
+    public synchronized void processConfigUpdate() {
         Map<String, ApplicationRecord> oldApps = applications;
         applications = new LinkedHashMap<>();
         for (ApplicationRecord record : oldApps.values()) {
@@ -306,7 +301,6 @@ public class ApplicationRegistryImpl implements ApplicationRegistry {
             addApplication(record.info);
         }
         cachedProvider = null;
-        moduleSelectionConfig = null;
     }
 
     private static class ApplicationRecord {
@@ -316,6 +310,20 @@ public class ApplicationRegistryImpl implements ApplicationRegistry {
 
         private final ApplicationInfo info;
         private final List<OpenAPIProvider> providers = new ArrayList<>();
+    }
+
+    @Override
+    public int compareTo(OpenAPIAppConfigListener o) {
+        if (this == o || this.equals(o)) {
+            return 0;
+        } else {
+            return this.getConfigListenerPriority() - o.getConfigListenerPriority();
+        }
+    }
+
+    @Override
+    public int getConfigListenerPriority() {
+        return 2;
     }
 
 }

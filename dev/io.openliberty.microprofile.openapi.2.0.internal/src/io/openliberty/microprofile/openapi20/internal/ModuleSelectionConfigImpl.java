@@ -23,6 +23,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -30,32 +36,55 @@ import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.microprofile.openapi.internal.common.services.OpenAPIAppConfigProvider;
+import io.openliberty.microprofile.openapi.internal.common.services.OpenAPIAppConfigProvider.OpenAPIAppConfigListener;
+import io.openliberty.microprofile.openapi20.internal.services.ModuleSelectionConfig;
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
 import io.openliberty.microprofile.openapi20.internal.utils.MessageConstants;
 
 /**
  * Handles reading the merge include/exclude configuration properties and indicating whether a particular module should be included or excluded.
  */
-public class ModuleSelectionConfig {
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
+public class ModuleSelectionConfigImpl implements ModuleSelectionConfig, OpenAPIAppConfigProvider.OpenAPIAppConfigListener {
 
-    private static final TraceComponent tc = Tr.register(ModuleSelectionConfig.class);
+    private static final TraceComponent tc = Tr.register(ModuleSelectionConfigImpl.class);
 
+    private boolean hasBeenInit = false;
     private boolean isAll = false;
     private boolean isFirst = false;
     private List<ModuleName> included;
     private List<ModuleName> excluded;
 
+    private OpenAPIAppConfigProvider configFromServerXML;
+
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, unbind = "unbindAppConfigListener")
+    public void bindAppConfigListener(OpenAPIAppConfigProvider openAPIAppConfigProvider) {
+        this.configFromServerXML = openAPIAppConfigProvider;
+        openAPIAppConfigProvider.registerAppConfigListener(this);
+    }
+
+    public void unbindAppConfigListener(OpenAPIAppConfigProvider openAPIAppConfigProvider) {
+        openAPIAppConfigProvider.unregisterAppConfigListener(this);
+        this.configFromServerXML = null;
+    }
+
     /**
-     * Builds a {@code ModuleSelectionConfig} based on the given {@code Config}
+     * Builds a {@code ModuleSelectionConfig}
      * <p>
-     * This will read and parse the {@value Constants#MERGE_INCLUDE_CONFIG} and {@value Constants#MERGE_EXCLUDE_CONFIG} config properties.
+     * This will read and parse the {@value Constants#MERGE_INCLUDE_CONFIG} and {@value Constants#MERGE_EXCLUDE_CONFIG} config properties from mpConfig.
+     * <p>
+     * TODO doc what it reads from server.xml
      * <p>
      * If the config is invalid, this method will output warning messages but still return a usable result object.
      *
      * @return the module selection config
      */
-    public static ModuleSelectionConfig fromConfig(Config configFromMPConfig, OpenAPIAppConfigProvider configFromServerXML) {
-        ModuleSelectionConfig result = new ModuleSelectionConfig();
+    private synchronized void lazyInit() {
+        if (hasBeenInit) {
+            return;
+        }
+
+        Config configFromMPConfig = ConfigProvider.getConfig(ApplicationRegistryImpl.class.getClassLoader());
 
         String inclusion;
         if (!ProductInfo.getBetaEdition()) {
@@ -73,13 +102,13 @@ public class ModuleSelectionConfig {
         }
 
         if (inclusion.equals("none")) {
-            result.included = Collections.emptyList();
+            included = Collections.emptyList();
         } else if (inclusion.equals("all")) {
-            result.isAll = true;
+            isAll = true;
         } else if (inclusion.equals("first")) {
-            result.isFirst = true;
+            isFirst = true;
         } else {
-            result.included = parseModuleNames(inclusion, Constants.MERGE_INCLUDE_CONFIG);
+            included = parseModuleNames(inclusion, Constants.MERGE_INCLUDE_CONFIG);
         }
 
         String exclusion;
@@ -98,16 +127,20 @@ public class ModuleSelectionConfig {
         }
 
         if (exclusion.equals("none")) {
-            result.excluded = Collections.emptyList();
+            excluded = Collections.emptyList();
         } else {
-            result.excluded = parseModuleNames(exclusion, Constants.MERGE_EXCLUDE_CONFIG);
+            excluded = parseModuleNames(exclusion, Constants.MERGE_EXCLUDE_CONFIG);
         }
 
-        return result;
+        hasBeenInit = true;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "lazyInit", toString());
+        }
     }
 
     @Override
     public String toString() {
+        lazyInit();
         StringBuilder sb = new StringBuilder("Module Selection Config[");
         if (isFirst) {
             sb.append("useFirstModuleOnly");
@@ -131,7 +164,9 @@ public class ModuleSelectionConfig {
      *
      * @return {@code true} if only the first module found should be processed for OpenAPI annotations, {@code false} otherwise.
      */
+    @Override
     public boolean useFirstModuleOnly() {
+        lazyInit();
         return isFirst;
     }
 
@@ -141,7 +176,9 @@ public class ModuleSelectionConfig {
      * @param module the module to check
      * @return {@code true} if the module should be used, {@code false} otherwise
      */
+    @Override
     public boolean isIncluded(ModuleInfo module) {
+        lazyInit();
         if (isFirst) {
             return true;
         }
@@ -176,7 +213,9 @@ public class ModuleSelectionConfig {
      * @param moduleInfos the deployed module infos
      * @return the list of include configuration entries which was unused
      */
+    @Override
     public List<String> findIncludesNotMatchingAnything(Collection<? extends ModuleInfo> moduleInfos) {
+        lazyInit();
         if (isAll || isFirst) {
             return Collections.emptyList();
         }
@@ -196,6 +235,7 @@ public class ModuleSelectionConfig {
     }
 
     private boolean matches(ModuleName name, ModuleInfo module) {
+        lazyInit();
         if (name.moduleName != null && !name.moduleName.equals(module.getName())) {
             return false;
         }
@@ -237,6 +277,11 @@ public class ModuleSelectionConfig {
         }
     }
 
+    @Override
+    public void processConfigUpdate() {
+        hasBeenInit = false;
+    }
+
     private static final Pattern CONFIG_VALUE_NAME_REFERENCE = Pattern.compile("(.+?)(/(.+))?");
 
     /**
@@ -272,6 +317,20 @@ public class ModuleSelectionConfig {
         }
 
         return result;
+    }
+
+    @Override
+    public int compareTo(OpenAPIAppConfigListener o) {
+        if (this == o || this.equals(o)) {
+            return 0;
+        } else {
+            return this.getConfigListenerPriority() - o.getConfigListenerPriority();
+        }
+    }
+
+    @Override
+    public int getConfigListenerPriority() {
+        return 1;
     }
 
 }
