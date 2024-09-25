@@ -37,8 +37,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -54,9 +54,9 @@ public class FacesTest {
     @Rule
     public TestName testName = new TestName();
 
+    // TODO this doesn't work currently; need to investigate if persistence.xml is transformed correctly
     //@ClassRule
-    //public static RepeatTests repeatTest = MicroProfileActions.repeat(FRONTEND_SERVER_NAME, TestMode.LITE,
-    //                                                                  MicroProfileActions.MP41, MicroProfileActions.MP50);
+    //public static RepeatTests repeatTest = FATSuite.defaultMPRepeat(FRONTEND_SERVER_NAME, BACKEND_SERVER_NAME);
 
     @Server(FRONTEND_SERVER_NAME)
     public static LibertyServer frontendUI;
