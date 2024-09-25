@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.RecordComponent;
 import java.math.BigDecimal;
@@ -31,10 +32,12 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -76,6 +79,11 @@ public class QueryInfo {
         COUNT, DELETE, DELETE_WITH_ENTITY_PARAM, EXISTS, FIND, FIND_AND_DELETE, INSERT, SAVE, RESOURCE_ACCESS,
         UPDATE, UPDATE_WITH_ENTITY_PARAM, UPDATE_WITH_ENTITY_PARAM_AND_RESULT
     }
+
+    /**
+     * Commonly used result types that are not entities.
+     */
+    private static final Set<Class<?>> NON_ENTITY_RESULT_TYPES = new HashSet<>();
 
     /**
      * Primitive types for numeric values.
@@ -135,6 +143,17 @@ public class QueryInfo {
                            long.class, Long.class,
                            short.class, Short.class,
                            void.class, Void.class);
+
+    static {
+        for (Entry<Class<?>, Class<?>> e : WRAPPER_CLASSES.entrySet()) {
+            NON_ENTITY_RESULT_TYPES.add(e.getKey()); // primitive classes
+            NON_ENTITY_RESULT_TYPES.add(e.getValue()); // wrapper classes
+        }
+        NON_ENTITY_RESULT_TYPES.add(BigDecimal.class);
+        NON_ENTITY_RESULT_TYPES.add(BigInteger.class);
+        NON_ENTITY_RESULT_TYPES.add(Object.class);
+        NON_ENTITY_RESULT_TYPES.add(String.class);
+    }
 
     /**
      * Information about the type of entity to which the query pertains.
@@ -512,6 +531,24 @@ public class QueryInfo {
         }
 
         return q;
+    }
+
+    /**
+     * Returns true if it is certain the class cannot be an entity
+     * because it is one of the common non-entity result types
+     * or it is an enumeration, interface, or abstract class.
+     * Otherwise, returns false.
+     *
+     * @param c class of result.
+     * @return true if a result of the type might be an entity, otherwise false.
+     */
+    @Trivial
+    public static boolean cannotBeEntity(Class<?> c) {
+        int modifiers;
+        return NON_ENTITY_RESULT_TYPES.contains(c) ||
+               c.isEnum() ||
+               Modifier.isInterface(modifiers = c.getModifiers()) ||
+               Modifier.isAbstract(modifiers);
     }
 
     /**

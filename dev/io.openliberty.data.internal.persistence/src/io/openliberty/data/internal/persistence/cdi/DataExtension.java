@@ -236,7 +236,7 @@ public class DataExtension implements Extension {
                     type = null;
                 } else if (type instanceof GenericArrayType) {
                     // The built-in repositories from the spec only allow generics
-                    // for the Entity class and Key/Id class of of these only uses
+                    // for the Entity class and Key/Id class, and of these only uses
                     // the Entity class in return types, not the key.
                     // Custom repository interfaces are not allowed to use generics.
                     Class<?> arrayComponentType = //
@@ -245,7 +245,8 @@ public class DataExtension implements Extension {
                                                          method);
                     returnTypeAtDepth.add(arrayComponentType.arrayType());
                     if (returnArrayComponentType == null) {
-                        returnTypeAtDepth.add(returnArrayComponentType = arrayComponentType);
+                        returnArrayComponentType = arrayComponentType;
+                        returnTypeAtDepth.add(returnArrayComponentType);
                         depth++;
                     }
                     type = null;
@@ -279,7 +280,7 @@ public class DataExtension implements Extension {
                         Type[] typeParams = ((ParameterizedType) type).getActualTypeArguments();
                         if (typeParams.length == 1 && typeParams[0] instanceof Class) // for example, List<Product>
                             c = (Class<?>) typeParams[0];
-                        else { // could be a method like BasicRepository.saveAll(Iterable<S> entity) {
+                        else { // could be a method like BasicRepository.saveAll(Iterable<S> entity)
                             entityParamType = c;
                             c = null;
                         }
@@ -321,23 +322,18 @@ public class DataExtension implements Extension {
 
             List<QueryInfo> queries;
 
-            if (entityClass == null) {
-                queries = hasQueryAnno ? queriesWithQueryAnno : additionalQueriesForPrimaryEntity;
+            // For efficiency, detect some obvious non-entity types.
+            // Other non-entity types will be detected later.
+            if (QueryInfo.cannotBeEntity(entityClass)) {
+                queries = hasQueryAnno //
+                                ? queriesWithQueryAnno //
+                                : additionalQueriesForPrimaryEntity;
             } else {
-                // TODO find better ways of determining non-entities ******** require @Entity unless found on lifecycle method!!!!!!
-                String packageName = entityClass.getPackageName();
-                if (packageName.startsWith("java.")
-                    || packageName.startsWith("jakarta.")
-                    || entityClass.isPrimitive()
-                    || entityClass.isInterface()) {
-                    queries = hasQueryAnno ? queriesWithQueryAnno : additionalQueriesForPrimaryEntity;
-                } else {
-                    queries = queriesPerEntity.get(entityClass);
-                    if (queries == null)
-                        queriesPerEntity.put(entityClass, queries = new ArrayList<>());
-                    if (hasQueryAnno)
-                        queries = queriesWithQueryAnno;
-                }
+                queries = queriesPerEntity.get(entityClass);
+                if (queries == null)
+                    queriesPerEntity.put(entityClass, queries = new ArrayList<>());
+                if (hasQueryAnno)
+                    queries = queriesWithQueryAnno;
             }
 
             queries.add(new QueryInfo( //
@@ -459,7 +455,7 @@ public class DataExtension implements Extension {
      * public interface MyRepository extends DataRepository<MyEntity, IdType>
      *
      * @param repositoryInterface the interface that is annotated with Repository.
-     * @return
+     * @return primary entity type if found. Otherwise null.
      */
     private static Class<?> getPrimaryEntityType(Class<?> repositoryInterface) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
