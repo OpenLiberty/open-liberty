@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2005, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -45,6 +45,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.websphere.ssl.SSLException;
+import com.ibm.ws.crypto.common.MessageDigestUtils;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ssl.core.WSPKCSInKeyStore;
 import com.ibm.ws.ssl.core.WSPKCSInKeyStoreList;
@@ -76,7 +77,8 @@ public class KeyStoreManager {
     /**
      * Do nothing constructor, used to enforce singleton model.
      */
-    private KeyStoreManager() {}
+    private KeyStoreManager() {
+    }
 
     /**
      * Access the singleton instance of the key store manager.
@@ -140,8 +142,8 @@ public class KeyStoreManager {
             Tr.entry(tc, "checkIfSignerAlreadyExistsInTrustStore");
 
         try {
-            String signerMD5Digest = generateDigest("MD5", signer);
-            if (signerMD5Digest == null) {
+            String signerDigest = generateDigest(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, signer);
+            if (signerDigest == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                     Tr.exit(tc, "checkIfSignerAlreadyExistsInTrustStore -> false (could not generate digest)");
                 return false;
@@ -155,9 +157,9 @@ public class KeyStoreManager {
                 if (trustStore.containsAlias(alias)) {
                     X509Certificate cert = (X509Certificate) trustStore.getCertificate(alias);
 
-                    String certMD5Digest = generateDigest("MD5", cert);
+                    String certDigest = generateDigest(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, cert);
 
-                    if (signerMD5Digest.equals(certMD5Digest)) {
+                    if (signerDigest.equals(certDigest)) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                             Tr.exit(tc, "checkIfSignerAlreadyExistsInTrustStore -> true (digest matches)");
                         return true;
@@ -224,13 +226,13 @@ public class KeyStoreManager {
      *
      * @param name
      * @param type
-     *            the type of keystore
+     *                      the type of keystore
      * @param provider
-     *            provider associated with the key store
+     *                      provider associated with the key store
      * @param fileName
-     *            location of the key store file
+     *                      location of the key store file
      * @param password
-     *            used to access the key store
+     *                      used to access the key store
      * @param create
      * @param sslConfig
      * @return resulting key store
@@ -550,8 +552,8 @@ public class KeyStoreManager {
     }
 
     /***
-     * This method is used to create a "SHA-1" or "MD5" digest on an
-     * X509Certificate as the "fingerprint".
+     * This method is used to create a digest on an X509Certificate
+     * as the "fingerprint".
      *
      * @param algorithmName
      * @param cert
@@ -564,7 +566,7 @@ public class KeyStoreManager {
         String rc = null;
         if (cert != null) {
             try {
-                MessageDigest md = MessageDigest.getInstance(algorithmName);
+                MessageDigest md = MessageDigestUtils.getMessageDigest(algorithmName);
                 md.update(cert.getEncoded());
                 byte data[] = md.digest();
                 StringBuilder buffer = new StringBuilder(3 * data.length);
@@ -762,7 +764,7 @@ public class KeyStoreManager {
      * @param keyStoreName
      * @return WSKeyStore
      * @throws SSLException
-     *             - if the input name is null
+     *                          - if the input name is null
      */
     public WSKeyStore getWSKeyStore(String keyStoreName) throws SSLException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
