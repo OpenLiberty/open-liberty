@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.testing.opentracing.test;
 
 import java.io.IOException;
@@ -8,7 +17,9 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
@@ -26,6 +37,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * {@link FATUtilsSpans} will need to be updated to match.</p>
  */
 @Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
 public class TestSpanUtils {
     /**
      * <p>Completed spans for span print string and parse verification.</p>
