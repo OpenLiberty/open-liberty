@@ -1,11 +1,11 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.globalhandler1.0.internal.ee-10.0
+symbolicName=io.openliberty.globalhandler1.0.internal.ee-11.0
 singleton=true
 visibility = private
 -features=\
-  com.ibm.websphere.appserver.servlet-6.0
+  com.ibm.websphere.appserver.servlet-6.1
 -bundles=\
   io.openliberty.webservices.handler
-kind=ga
+kind=beta
 edition=core
 WLP-Activation-Type: parallel

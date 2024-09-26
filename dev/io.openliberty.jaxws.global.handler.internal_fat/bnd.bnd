@@ -65,7 +65,10 @@ tested.features=appSecurity-3.0, \
   cdi-4.0, \
   restfulwsclient-3.1, \
   jsonp-2.1, \
-  restfulws-3.1
+  restfulws-3.1, \
+  restfulws-4.0, \
+  appsecurity-6.0, \
+  pages-4.0
 
 -buildpath: \
 	io.openliberty.jakarta.enterpriseBeans.4.0;version=latest,\

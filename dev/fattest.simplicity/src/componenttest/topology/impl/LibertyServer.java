@@ -3602,16 +3602,10 @@ public class LibertyServer implements LogMonitorClient {
 
                                                      "ContainerJSPServer", //io.openliberty.http.monitor_fat
 
-                                                     "RSTestServer", //io.openliberty.jaxrs.global.handler.internal_fat
-
                                                      "EnableSchemaValidationTestServer", //io.openliberty.jaxws.config_fat
                                                      "EnableSchemaValidationWebServiceTestServer", //io.openliberty.jaxws.config_fat
                                                      "IgnoreUnexpectedElementConfigTestServer", //io.openliberty.jaxws.config_fat
                                                      "GzipInterceptorsTestServer", //io.openliberty.jaxws.config_fat
-
-                                                     "AddNumbersTestServer", //io.openliberty.jaxws.global.handler.internal_fat
-                                                     "EJBServiceRefBndTestServer", //io.openliberty.jaxws.global.handler.internal_fat
-                                                     "HandlerChainTestServerAlternate", //io.openliberty.jaxws.global.handler.internal_fat
 
                                                      "simpleWar", //io.openliberty.jee.internal_fat
                                                      "simpleEar", //io.openliberty.jee.internal_fat
