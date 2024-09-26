@@ -12,7 +12,10 @@ package componenttest.topology.impl.test;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
@@ -65,6 +68,38 @@ public class LibertyServerTest {
         String feature = "cdi"; //versionless feature short name
         String expected = "cdi";
         String actual = LibertyServer.removeFeatureVersion(feature);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testUnexpectedFeatures() {
+        List<String> expectedFeatures = Arrays.asList("cdi-4.1",
+                                                      "componenttest-2.0",
+                                                      "localConnector-1.0",
+                                                      "mpConfig-3.1",
+                                                      "mpReactiveMessaging-3.0",
+                                                      "mpReactiveStreams-3.0",
+                                                      "osgiConsole-1.0",
+                                                      "servlet-6.1",
+                                                      "timedexit-1.0");
+
+        List<String> installedFeatures = Arrays.asList("cdi-4.1",
+                                                       "componenttest-2.0",
+                                                       "localConnector-1.0",
+                                                       "mpConfig-4.0", // This one is different... but...
+                                                       "mpConfig-3.1", // This one is a match and so should negate the unexpected version above
+                                                       "mpConfig-5.0", // Different again but should be ignored
+                                                       "mpReactiveMessaging-3.0",
+                                                       "mpReactiveStreams-4.0", // This one is different, unexpected version
+                                                       "osgiConsole-1.0",
+                                                       "servlet-6.1",
+                                                       "timedexit-1.0");
+
+        Map<String, String> expected = new HashMap<>();
+        expected.put("mpReactiveStreams-3.0", "mpReactiveStreams-4.0");
+
+        Map<String, String> actual = LibertyServer.getUnexpectedFeatures(expectedFeatures, installedFeatures);
+
         assertEquals(expected, actual);
     }
 
