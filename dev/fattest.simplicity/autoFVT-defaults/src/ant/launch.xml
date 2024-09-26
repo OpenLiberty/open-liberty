@@ -43,7 +43,7 @@
 				<property name="ascii.file.encoding" value="iso8859-1" />
 			</then>
 			<else>
-				<property name="ascii.file.encoding" value="ISO8859_1" />
+				<property name="ascii.file.encoding" value="UTF-8" />
 			</else>
 		</iff>
 
