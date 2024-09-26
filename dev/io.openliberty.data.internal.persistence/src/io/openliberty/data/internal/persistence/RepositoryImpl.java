@@ -109,17 +109,41 @@ public class RepositoryImpl<R> implements InvocationHandler {
     final Class<R> repositoryInterface;
     final EntityValidator validator;
 
-    public RepositoryImpl(DataProvider provider, DataExtension extension, FutureEMBuilder futureEMBuilder,
-                          Class<R> repositoryInterface, Class<?> primaryEntityClass,
+    @FFDCIgnore(CompletionException.class)
+    public RepositoryImpl(DataProvider provider,
+                          DataExtension extension,
+                          FutureEMBuilder futureEMBuilder,
+                          Class<R> repositoryInterface,
+                          Class<?> primaryEntityClass,
                           Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
-        EntityManagerBuilder builder = futureEMBuilder.join();
+        EntityManagerBuilder builder;
+        try {
+            builder = futureEMBuilder.join();
+        } catch (CompletionException x) {
+            // The CompletionException does not have the current stack. Replace it.
+            Throwable cause = x.getCause();
+            if (cause != null)
+                x = new CompletionException(cause.getMessage(), cause);
+            throw x;
+        }
+
         // EntityManagerBuilder implementations guarantee that the future
         // in the following map will be completed even if an error occurs
-        this.primaryEntityInfoFuture = primaryEntityClass == null ? null : builder.entityInfoMap.computeIfAbsent(primaryEntityClass, EntityInfo::newFuture);
+        this.primaryEntityInfoFuture = primaryEntityClass == null //
+                        ? null //
+                        : builder.entityInfoMap.computeIfAbsent(primaryEntityClass,
+                                                                EntityInfo::newFuture);
         this.provider = provider;
         this.repositoryInterface = repositoryInterface;
         Object validation = provider.validationService;
-        this.validator = validation == null ? null : EntityValidator.newInstance(validation, repositoryInterface);
+        this.validator = validation == null //
+                        ? null //
+                        : EntityValidator.newInstance(validation, repositoryInterface);
+
+        // reusable instance for supplying this instance to completion stages:
+        CompletableFuture<RepositoryImpl<?>> thisCF = queriesPerEntityClass.isEmpty() //
+                        ? null //
+                        : CompletableFuture.completedFuture(this);
 
         List<CompletableFuture<EntityInfo>> entityInfoFutures = new ArrayList<>();
         List<QueryInfo> entitylessQueryInfos = null;
@@ -132,16 +156,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
             } else {
                 boolean inheritance = entityClass.getAnnotation(Inheritance.class) != null; // TODO what do we need to do this with?
 
-                CompletableFuture<EntityInfo> entityInfoFuture = builder.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
+                CompletableFuture<EntityInfo> entityInfoFuture = //
+                                builder.entityInfoMap.computeIfAbsent(entityClass,
+                                                                      EntityInfo::newFuture);
                 entityInfoFutures.add(entityInfoFuture);
 
                 for (QueryInfo queryInfo : entry.getValue()) {
                     if (queryInfo.type == QueryInfo.Type.RESOURCE_ACCESS) {
-                        queryInfo.validateParams = validator != null && validator.isValidatable(queryInfo.method)[1];
-                        queries.put(queryInfo.method, CompletableFuture.completedFuture(queryInfo));
+                        queryInfo.validateParams = validator != null &&
+                                                   validator.isValidatable(queryInfo.method)[1];
+                        queries.put(queryInfo.method,
+                                    CompletableFuture.completedFuture(queryInfo));
                     } else {
-                        queries.put(queryInfo.method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(this),
-                                                                                   queryInfo::init));
+                        queries.put(queryInfo.method,
+                                    entityInfoFuture.thenCombine(thisCF,
+                                                                 queryInfo::init));
                     }
                 }
             }
@@ -923,37 +952,36 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 }
             }
 
-            QueryInfo queryInfo = queryInfoFuture.join();
-            EntityInfo entityInfo = queryInfo.entityInfo;
-
-            if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, queryInfo.toString());
-
-            if (queryInfo.validateParams)
-                validator.validateParameters(proxy, method, args);
-
             LocalTransactionCoordinator suspendedLTC = null;
             EntityManager em = null;
             Object returnValue;
             Class<?> returnType = method.getReturnType();
             boolean failed = true;
-
-            boolean requiresTransaction;
-            switch (queryInfo.type) {
-                case FIND:
-                case COUNT:
-                case EXISTS:
-                case RESOURCE_ACCESS:
-                    requiresTransaction = false;
-                    break;
-                default:
-                    requiresTransaction = Status.STATUS_NO_TRANSACTION == provider.tranMgr.getStatus();
-            }
+            Type queryType = null;
+            boolean startedTransaction = false;
 
             try {
-                if (requiresTransaction) {
-                    suspendedLTC = provider.localTranCurrent.suspend();
-                    provider.tranMgr.begin();
+                QueryInfo queryInfo = queryInfoFuture.join();
+                EntityInfo entityInfo = queryInfo.entityInfo;
+
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, queryInfo.toString());
+
+                if (queryInfo.validateParams)
+                    validator.validateParameters(proxy, method, args);
+
+                switch (queryType = queryInfo.type) {
+                    case FIND:
+                    case COUNT:
+                    case EXISTS:
+                    case RESOURCE_ACCESS:
+                        break;
+                    default:
+                        if (Status.STATUS_NO_TRANSACTION == provider.tranMgr.getStatus()) {
+                            suspendedLTC = provider.localTranCurrent.suspend();
+                            provider.tranMgr.begin();
+                            startedTransaction = true;
+                        }
                 }
 
                 switch (queryInfo.type) {
@@ -1462,7 +1490,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 if (em != null)
                     em.close();
 
-                if (requiresTransaction) {
+                if (startedTransaction) {
                     try {
                         int status = provider.tranMgr.getStatus();
                         if (status == Status.STATUS_MARKED_ROLLBACK || failed)
@@ -1480,11 +1508,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
             }
 
             if (trace && tc.isEntryEnabled()) {
-                boolean hideValue = queryInfo.type == Type.FIND
-                                    || queryInfo.type == Type.FIND_AND_DELETE
-                                    || queryInfo.type == Type.INSERT
-                                    || queryInfo.type == Type.SAVE
-                                    || queryInfo.type == Type.UPDATE_WITH_ENTITY_PARAM_AND_RESULT;
+                boolean hideValue = queryType == Type.FIND ||
+                                    queryType == Type.FIND_AND_DELETE ||
+                                    queryType == Type.INSERT ||
+                                    queryType == Type.SAVE ||
+                                    queryType == Type.UPDATE_WITH_ENTITY_PARAM_AND_RESULT;
                 Object valueToLog = hideValue //
                                 ? provider.loggable(repositoryInterface, method, returnValue) //
                                 : returnValue;

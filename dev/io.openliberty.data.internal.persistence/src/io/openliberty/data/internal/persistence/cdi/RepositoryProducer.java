@@ -24,10 +24,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.QueryInfo;
 import io.openliberty.data.internal.persistence.RepositoryImpl;
+import jakarta.data.exceptions.DataException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.Any;
@@ -133,6 +135,7 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
         return false;
     }
 
+    @FFDCIgnore(Throwable.class)
     @Override
     @Trivial
     public R produce(CreationalContext<R> cc) {
@@ -143,41 +146,51 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "produce", cc, repositoryInterface.getName());
 
-        InterceptionFactory<R> interception = beanMgr.createInterceptionFactory(cc, repositoryInterface);
+        try {
+            InterceptionFactory<R> interception = beanMgr.createInterceptionFactory(cc, repositoryInterface);
 
-        boolean intercept = false;
-        AnnotatedTypeConfigurator<R> configurator = interception.configure();
-        for (Annotation anno : configurator.getAnnotated().getAnnotations())
-            if (beanMgr.isInterceptorBinding(anno.annotationType())) {
-                intercept = true;
-                configurator.add(anno);
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "add " + anno + " for " + configurator.getAnnotated().getJavaClass());
-            }
-        for (AnnotatedMethodConfigurator<? super R> method : configurator.methods())
-            for (Annotation anno : method.getAnnotated().getAnnotations())
+            boolean intercept = false;
+            AnnotatedTypeConfigurator<R> configurator = interception.configure();
+            for (Annotation anno : configurator.getAnnotated().getAnnotations())
                 if (beanMgr.isInterceptorBinding(anno.annotationType())) {
                     intercept = true;
-                    method.add(anno);
+                    configurator.add(anno);
                     if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "add " + anno + " for " + method.getAnnotated().getJavaMember());
+                        Tr.debug(this, tc, "add " + anno + " for " + configurator.getAnnotated().getJavaClass());
                 }
+            for (AnnotatedMethodConfigurator<? super R> method : configurator.methods())
+                for (Annotation anno : method.getAnnotated().getAnnotations())
+                    if (beanMgr.isInterceptorBinding(anno.annotationType())) {
+                        intercept = true;
+                        method.add(anno);
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "add " + anno + " for " + method.getAnnotated().getJavaMember());
+                    }
 
-        RepositoryImpl<?> handler = new RepositoryImpl<>(provider, extension, futureEMBuilder, //
-                        repositoryInterface, primaryEntityClass, queriesPerEntityClass);
+            RepositoryImpl<?> handler = new RepositoryImpl<>(provider, extension, futureEMBuilder, //
+                            repositoryInterface, primaryEntityClass, queriesPerEntityClass);
 
-        R instance = repositoryInterface.cast(Proxy.newProxyInstance(repositoryInterface.getClassLoader(),
-                                                                     new Class<?>[] { repositoryInterface },
-                                                                     handler));
+            R instance = repositoryInterface.cast(Proxy.newProxyInstance(repositoryInterface.getClassLoader(),
+                                                                         new Class<?>[] { repositoryInterface },
+                                                                         handler));
 
-        if (intercept) {
-            R r = interception.createInterceptedInstance(instance);
-            intercepted.put(r, instance);
-            instance = r;
+            if (intercept) {
+                R r = interception.createInterceptedInstance(instance);
+                intercepted.put(r, instance);
+                instance = r;
+            }
+
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "produce", instance.toString());
+            return instance;
+        } catch (Throwable x) {
+            if (x instanceof DataException || x.getCause() instanceof DataException)
+                ; // already logged the error
+            else
+                x.printStackTrace(); // TODO NLS error message
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "produce", x);
+            throw x;
         }
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "produce", instance.toString());
-        return instance;
     }
 }

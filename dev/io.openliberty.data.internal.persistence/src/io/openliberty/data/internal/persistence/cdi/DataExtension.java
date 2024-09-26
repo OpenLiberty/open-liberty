@@ -81,9 +81,9 @@ public class DataExtension implements Extension {
     private static final TraceComponent tc = Tr.register(DataExtension.class);
 
     /**
-     * Id of the default databaseStore configuration element.
+     * JNDI name of the Jakarta EE Default DataSource.
      */
-    static final String DEFAULT_DATA_STORE = "defaultDatabaseStore";
+    static final String DEFAULT_DATA_SOURCE = "java:comp/DefaultDataSource";
 
     /**
      * Name of the built-in Jakarta Data provider.
@@ -135,7 +135,7 @@ public class DataExtension implements Extension {
             Repository repository = repositoryType.getAnnotation(Repository.class);
             String dataStore = repository.dataStore();
             if (dataStore.length() == 0)
-                dataStore = DEFAULT_DATA_STORE;
+                dataStore = DEFAULT_DATA_SOURCE;
             // else
             // Determining whether it is JNDI name for a data source or
             // persistence unit requires attempting to look up the resource.
@@ -463,7 +463,7 @@ public class DataExtension implements Extension {
      * @param repositoryInterface the interface that is annotated with Repository.
      * @return primary entity type if found. Otherwise null.
      */
-    private static Class<?> getPrimaryEntityType(Class<?> repositoryInterface) {
+    static Class<?> getPrimaryEntityType(Class<?> repositoryInterface) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         Class<?>[] interfaceClasses = repositoryInterface.getInterfaces();
         for (java.lang.reflect.Type interfaceType : repositoryInterface.getGenericInterfaces()) {
