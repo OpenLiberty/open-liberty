@@ -3522,12 +3522,6 @@ public class LibertyServer implements LogMonitorClient {
 
                                                      "Config13TCKServer", //com.ibm.ws.microprofile.config.1.3_fat_tck
 
-                                                     "CDIFaultTolerance", //com.ibm.ws.microprofile.faulttolerance.cdi_fat
-                                                     "FaultToleranceMultiModule", //com.ibm.ws.microprofile.faulttolerance.cdi_fat
-                                                     "AsyncFaultTolerance", //com.ibm.ws.microprofile.faulttolerance.cdi_fat
-                                                     "FaultToleranceEJB", //com.ibm.ws.microprofile.faulttolerance.cdi_fat
-                                                     "JaxRsFaultTolerance", //com.ibm.ws.microprofile.faulttolerance.cdi_fat
-
                                                      "mpGraphQL10.basicQuery", //com.ibm.ws.microprofile.graphql.1.0_fat
                                                      "mpGraphQL10.defaultvalue", //com.ibm.ws.microprofile.graphql.1.0_fat
                                                      "mpGraphQL10.graphQLInterface", //com.ibm.ws.microprofile.graphql.1.0_fat
@@ -3540,21 +3534,6 @@ public class LibertyServer implements LogMonitorClient {
                                                      "mpGraphQL10.types", //com.ibm.ws.microprofile.graphql.1.0_fat
                                                      "mpGraphQL10.ui", //com.ibm.ws.microprofile.graphql.1.0_fat
                                                      "mpGraphQL10.voidQuery", //com.ibm.ws.microprofile.graphql.1.0_fat
-
-                                                     "validationServerOne", //com.ibm.ws.microprofile.openapi_fat
-                                                     "validationServerTwo", //com.ibm.ws.microprofile.openapi_fat
-                                                     "validationServerThree", //com.ibm.ws.microprofile.openapi_fat
-                                                     "validationServerFour", //com.ibm.ws.microprofile.openapi_fat
-                                                     "validationServerFive", //com.ibm.ws.microprofile.openapi_fat
-                                                     "OpenAPIConfigServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "AnnotationProcessingServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "ApplicationProcessorServletServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "ApplicationProcessorServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "FilterServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "ProxySupportServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "EndpointAvailabilityServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "UICustomizationServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "CorsServer", //com.ibm.ws.microprofile.openapi_fat
 
                                                      "ApplicationProcessorServer", //io.openliberty.microprofile.openapi.2.0.internal_fat
                                                      "OpenAPITestServer", //io.openliberty.microprofile.openapi.2.0.internal_fat
