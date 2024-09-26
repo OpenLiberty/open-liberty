@@ -3537,21 +3537,6 @@ public class LibertyServer implements LogMonitorClient {
 
                                                      "FATServer", //com.ibm.ws.microprofile.graphql_fat_tck
 
-                                                     "validationServerOne", //com.ibm.ws.microprofile.openapi_fat
-                                                     "validationServerTwo", //com.ibm.ws.microprofile.openapi_fat
-                                                     "validationServerThree", //com.ibm.ws.microprofile.openapi_fat
-                                                     "validationServerFour", //com.ibm.ws.microprofile.openapi_fat
-                                                     "validationServerFive", //com.ibm.ws.microprofile.openapi_fat
-                                                     "OpenAPIConfigServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "AnnotationProcessingServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "ApplicationProcessorServletServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "ApplicationProcessorServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "FilterServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "ProxySupportServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "EndpointAvailabilityServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "UICustomizationServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "CorsServer", //com.ibm.ws.microprofile.openapi_fat
-
                                                      "ApplicationProcessorServer", //io.openliberty.microprofile.openapi.2.0.internal_fat
                                                      "OpenAPITestServer", //io.openliberty.microprofile.openapi.2.0.internal_fat
                                                      "OpenAPIMergeTestServer", //io.openliberty.microprofile.openapi.2.0.internal_fat
