@@ -3535,8 +3535,6 @@ public class LibertyServer implements LogMonitorClient {
                                                      "mpGraphQL10.ui", //com.ibm.ws.microprofile.graphql.1.0_fat
                                                      "mpGraphQL10.voidQuery", //com.ibm.ws.microprofile.graphql.1.0_fat
 
-                                                     "FATServer", //com.ibm.ws.microprofile.graphql_fat_tck
-
                                                      "ApplicationProcessorServer", //io.openliberty.microprofile.openapi.2.0.internal_fat
                                                      "OpenAPITestServer", //io.openliberty.microprofile.openapi.2.0.internal_fat
                                                      "OpenAPIMergeTestServer", //io.openliberty.microprofile.openapi.2.0.internal_fat
@@ -3617,22 +3615,8 @@ public class LibertyServer implements LogMonitorClient {
                                                      "simpleWar", //io.openliberty.jee.internal_fat
                                                      "simpleEar", //io.openliberty.jee.internal_fat
 
-                                                     "Health40TCKServer", //io.openliberty.microprofile.health.4.0.internal_fat_tck
-                                                     "ConfigAdminDropinsCheck", //io.openliberty.microprofile.health.3.1.internal_fat
-                                                     "ConfigAdminWrongAppCheck", //io.openliberty.microprofile.health.3.1.internal_fat
-                                                     "ConfigAdminXmlCheck", //io.openliberty.microprofile.health.3.1.internal_fat
-                                                     "DefaultStartupOverallStatusHealthCheck", //io.openliberty.microprofile.health.3.1.internal_fat
-                                                     "FailedConfigAdminApplicationStateHealthCheck", //io.openliberty.microprofile.health.3.1.internal_fat
-                                                     "InvalidDefaultStartupOverallStatusProperty", //io.openliberty.microprofile.health.3.1.internal_fat
-                                                     "SlowAppStartupHealthCheck", //io.openliberty.microprofile.health.3.1.internal_fat
-
                                                      "MPServer41", //io.openliberty.microprofile41.internal_fat
                                                      "MPServer", //io.openliberty.microprofile.internal_fat
-
-                                                     "crossFeatureOpenTracingServer", //io.openliberty.microprofile.telemetry.1.0.internal.container_fat
-                                                     "crossFeatureOpenTracingZipkinServer", //io.openliberty.microprofile.telemetry.1.0.internal.container_fat
-                                                     "crossFeatureTelemetryServer", //io.openliberty.microprofile.telemetry.1.0.internal.container_fat
-                                                     "spanTestServer", //io.openliberty.microprofile.telemetry.1.0.internal.container_fat
 
     };
     private static final Set<String> EXEMPT_SERVERS_SET = new HashSet<String>(Arrays.asList(EXEMPT_SERVERS));
