@@ -34,11 +34,9 @@ public class FipsUtils {
                 return (propertyValue == null) ? "disabled" : propertyValue.trim().toLowerCase();
             }
         });
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "fipsLevel:" + fipsLevel);
         }
-        
         return fipsLevel;
     }
 
