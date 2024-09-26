@@ -46,8 +46,6 @@ import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.ee.behaviors.HttpBehavior;
 import com.ibm.wsspi.http.ee7.HttpTransportBehavior;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
-import com.ibm.wsspi.timer.ApproximateTime;
-import com.ibm.wsspi.timer.QuickApproxTime;
 
 /**
  * Component that handles configuration for the dispatching of inbound
@@ -556,29 +554,7 @@ public class HttpDispatcher {
      * @return the approximate time service instance to use within the channel framework
      */
     public static long getApproxTime() {
-        return QuickApproxTime.getApproxTime();
-    }
-
-    /**
-     * Set the approximate time service reference.
-     * This is a required reference: will be called before activation.
-     * It is also dynamic: it may be replaced-- but we will always have one.
-     *
-     * @param ref new ApproximateTime service instance/provider
-     */
-    @Reference(name = "approxTime", policy = ReferencePolicy.DYNAMIC)
-    protected void setApproxTime(ApproximateTime ref) {
-        // do nothing: need the ref for activation of service
-    }
-
-    /**
-     * Remove the reference to the approximate time service.
-     * This is a required reference, will be called after deactivate.
-     *
-     * @param ref ApproximateTime service instance/provider to remove
-     */
-    protected void unsetApproxTime(ApproximateTime ref) {
-        // do nothing: need the ref for activation of service
+        return System.currentTimeMillis();
     }
 
     /**
