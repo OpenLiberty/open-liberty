@@ -1429,18 +1429,18 @@ public class DataJPATestServlet extends FATServlet {
         orders.delete(o4);
 
         // cannot delete when the version number doesn't match
+        o1 = orders.findById(o1.id).orElseThrow();
+        UUID o1id = o1.id;
+
+        // Update on another thread:
+        CompletableFuture.supplyAsync(() -> {
+            PurchaseOrder o1updated = orders.findById(o1id).orElseThrow();
+            o1updated.total = 11.99f;
+            return orders.save(o1updated);
+        }).get(2, TimeUnit.MINUTES);
+
         tran.begin();
         try {
-            o1 = orders.findById(o1.id).orElseThrow();
-            UUID o1id = o1.id;
-
-            // Update in separate transaction:
-            CompletableFuture.supplyAsync(() -> {
-                PurchaseOrder o1updated = orders.findById(o1id).orElseThrow();
-                o1updated.total = 11.99f;
-                return orders.save(o1updated);
-            }).get(30, TimeUnit.SECONDS);
-
             try {
                 orders.delete(o1);
                 fail("Deletion must be rejected when the version doesn't match.");

@@ -984,7 +984,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         }
                 }
 
-                switch (queryInfo.type) {
+                switch (queryType) {
                     case SAVE: {
                         em = entityInfo.builder.createEntityManager();
                         returnValue = save(args[0], queryInfo, em);
@@ -1490,20 +1490,20 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 if (em != null)
                     em.close();
 
-                if (startedTransaction) {
-                    try {
+                try {
+                    if (startedTransaction) {
                         int status = provider.tranMgr.getStatus();
                         if (status == Status.STATUS_MARKED_ROLLBACK || failed)
                             provider.tranMgr.rollback();
                         else if (status != Status.STATUS_NO_TRANSACTION)
                             provider.tranMgr.commit();
-                    } finally {
-                        if (suspendedLTC != null)
-                            provider.localTranCurrent.resume(suspendedLTC);
+                    } else {
+                        if (failed && Status.STATUS_ACTIVE == provider.tranMgr.getStatus())
+                            provider.tranMgr.setRollbackOnly();
                     }
-                } else {
-                    if (failed && Status.STATUS_ACTIVE == provider.tranMgr.getStatus())
-                        provider.tranMgr.setRollbackOnly();
+                } finally {
+                    if (suspendedLTC != null)
+                        provider.localTranCurrent.resume(suspendedLTC);
                 }
             }
 
