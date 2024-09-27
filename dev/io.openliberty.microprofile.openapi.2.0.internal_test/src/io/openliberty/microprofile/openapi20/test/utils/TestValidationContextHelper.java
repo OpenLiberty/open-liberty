@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,14 +19,13 @@ import java.util.Iterator;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
-import io.smallrye.openapi.api.models.OpenAPIImpl;
 
 public class TestValidationContextHelper implements Context {
 
-    private final OpenAPIImpl openAPI;
+    private final OpenAPI openAPI;
     private final Deque<String> pathSegments = new ArrayDeque<>();
 
-    public TestValidationContextHelper(OpenAPIImpl openAPI) {
+    public TestValidationContextHelper(OpenAPI openAPI) {
         this.openAPI = openAPI;
     }
 

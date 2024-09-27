@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2022 IBM Corporation and others.
+# Copyright (c) 2020, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -51,9 +51,11 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
     io.openliberty.microprofile.openapi20.internal.ApplicationProcessor,\
     io.openliberty.microprofile.openapi20.internal.MergeDisabledAlerter,\
     io.openliberty.microprofile.openapi20.internal.OLOASFactoryResolverImpl,\
+    io.openliberty.microprofile.openapi20.internal.ValidationComponent,\
     io.openliberty.microprofile.openapi20.internal.css.CustomCSSProcessor,\
     io.openliberty.microprofile.openapi20.internal.DefaultHostListenerImpl,\
-    io.openliberty.microprofile.openapi20.internal.cache.ConfigSerializer
+    io.openliberty.microprofile.openapi20.internal.cache.ConfigSerializer,\
+    io.openliberty.microprofile.openapi20.internal.validation.OASValidator30Impl
 
 WS-TraceGroup: MPOPENAPI
 

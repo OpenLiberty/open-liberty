@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,10 +12,14 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.validation.test;
 
+import static io.openliberty.microprofile.openapi20.test.utils.ValidationResultMatcher.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.microprofile.openapi.models.Components;
+import org.eclipse.microprofile.openapi.models.PathItem;
 import org.eclipse.microprofile.openapi.models.parameters.Parameter;
 import org.eclipse.microprofile.openapi.models.parameters.Parameter.In;
 import org.junit.Assert;
@@ -23,6 +27,7 @@ import org.junit.Test;
 
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
 import io.openliberty.microprofile.openapi20.internal.validation.PathItemValidator;
+import io.openliberty.microprofile.openapi20.internal.validation.TypeValidator;
 import io.openliberty.microprofile.openapi20.test.utils.TestValidationContextHelper;
 import io.openliberty.microprofile.openapi20.test.utils.TestValidationHelper;
 import io.smallrye.openapi.api.models.ComponentsImpl;
@@ -38,19 +43,19 @@ import io.smallrye.openapi.api.models.responses.APIResponsesImpl;
  */
 public class PathItemValidatorTest {
 
-    OpenAPIImpl model = new OpenAPIImpl();
-    Context context = new TestValidationContextHelper(model);
+    protected OpenAPIImpl model = new OpenAPIImpl();
+    protected Context context = new TestValidationContextHelper(model);
 
     @Test
     public void testCorrectPathItem() {
 
         String key = "{username}";
 
-        PathItemValidator validator = PathItemValidator.getInstance();
+        TypeValidator<PathItem> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         PathItemImpl pathItem = new PathItemImpl();
-        pathItem.setSummary("This is a correctly set pathItem for testing of PathItemValidator.");
+        pathItem.setSummary("This is a correctly set pathItem for testing of TypeValidator<PathItem>.");
 
         ParameterImpl pathParamHeader = new ParameterImpl();
         pathParamHeader.in(In.HEADER).name("token");
@@ -142,11 +147,15 @@ public class PathItemValidatorTest {
         Assert.assertEquals(0, vh.getEventsSize());
     }
 
+    protected TypeValidator<PathItem> getValidator() {
+        return PathItemValidator.getInstance();
+    }
+
     @Test
     public void testNullPathItem() {
         String key = "{username}";
 
-        PathItemValidator validator = PathItemValidator.getInstance();
+        TypeValidator<PathItem> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         PathItemImpl pathItem = null;
@@ -159,7 +168,7 @@ public class PathItemValidatorTest {
     public void testNullRefInPathItem() {
         String key = "{username}";
 
-        PathItemValidator validator = PathItemValidator.getInstance();
+        TypeValidator<PathItem> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         PathItemImpl pathItem = new PathItemImpl();
@@ -173,21 +182,21 @@ public class PathItemValidatorTest {
     public void testExternalRefInPathItem() {
         String key = "{username}";
 
-        PathItemValidator validator = PathItemValidator.getInstance();
+        TypeValidator<PathItem> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         PathItemImpl pathItem = new PathItemImpl();
         pathItem.ref("http://test-this-ref.com");
 
         validator.validate(vh, context, key, pathItem);
-        Assert.assertEquals(0, vh.getEventsSize());
+        assertThat(vh.getResult(), successful());
     }
 
     @Test
     public void testInternalRefInPathItem() {
         String key = "{username}";
 
-        PathItemValidator validator = PathItemValidator.getInstance();
+        TypeValidator<PathItem> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         PathItemImpl pathItem = new PathItemImpl();
@@ -201,7 +210,7 @@ public class PathItemValidatorTest {
     public void testPathItemWithVar() {
         String key = "{$request.query.callbackUrl}/data";
 
-        PathItemValidator validator = PathItemValidator.getInstance();
+        TypeValidator<PathItem> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         PathItemImpl pathItem = new PathItemImpl();
@@ -214,7 +223,7 @@ public class PathItemValidatorTest {
     public void testPathItemWithPathParamAndRequiredFalse() {
         String key = "{username}";
 
-        PathItemValidator validator = PathItemValidator.getInstance();
+        TypeValidator<PathItem> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         PathItemImpl pathItem = new PathItemImpl();
@@ -248,7 +257,7 @@ public class PathItemValidatorTest {
     public void testPathItemWithDuplicateParams() {
         String key = "{username}";
 
-        PathItemValidator validator = PathItemValidator.getInstance();
+        TypeValidator<PathItem> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         PathItemImpl pathItem = new PathItemImpl();
@@ -287,7 +296,7 @@ public class PathItemValidatorTest {
     public void testPathItemWithInvalidPathStrOne() {
         String key = "username}";
 
-        PathItemValidator validator = PathItemValidator.getInstance();
+        TypeValidator<PathItem> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         PathItemImpl pathItem = new PathItemImpl();
@@ -324,7 +333,7 @@ public class PathItemValidatorTest {
     public void testPathItemWithInvalidPathStrTwo() {
         String key = "{username";
 
-        PathItemValidator validator = PathItemValidator.getInstance();
+        TypeValidator<PathItem> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         PathItemImpl pathItem = new PathItemImpl();
@@ -361,7 +370,7 @@ public class PathItemValidatorTest {
     public void testPathItemWithInvalidPathStrThree() {
         String key = "}username{";
 
-        PathItemValidator validator = PathItemValidator.getInstance();
+        TypeValidator<PathItem> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         PathItemImpl pathItem = new PathItemImpl();
@@ -398,7 +407,7 @@ public class PathItemValidatorTest {
     public void testPathItemWithInvalidPathStrFour() {
         String key = "{}";
 
-        PathItemValidator validator = PathItemValidator.getInstance();
+        TypeValidator<PathItem> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         PathItemImpl pathItem = new PathItemImpl();
@@ -435,7 +444,7 @@ public class PathItemValidatorTest {
     public void testPathItemWithInvalidPathStrFive() {
         String key = "{us{ername}";
 
-        PathItemValidator validator = PathItemValidator.getInstance();
+        TypeValidator<PathItem> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         PathItemImpl pathItem = new PathItemImpl();
@@ -472,7 +481,7 @@ public class PathItemValidatorTest {
     public void testPathItemWithInvalidPathStrSix() {
         String key = "{username/}";
 
-        PathItemValidator validator = PathItemValidator.getInstance();
+        TypeValidator<PathItem> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         PathItemImpl pathItem = new PathItemImpl();
@@ -509,7 +518,7 @@ public class PathItemValidatorTest {
     public void testPathItemWithDeclaredMultiplePathParam() {
         String key = "{username}/{id}";
 
-        PathItemValidator validator = PathItemValidator.getInstance();
+        TypeValidator<PathItem> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         PathItemImpl pathItem = new PathItemImpl();
@@ -548,7 +557,7 @@ public class PathItemValidatorTest {
     public void testPathItemWithUndeclaredPathParam() {
         String key = "{username}";
 
-        PathItemValidator validator = PathItemValidator.getInstance();
+        TypeValidator<PathItem> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         PathItemImpl pathItem = new PathItemImpl();
@@ -589,7 +598,7 @@ public class PathItemValidatorTest {
     public void testPathItemWithMultipleUndeclaredPathParam() {
         String key = "{username}";
 
-        PathItemValidator validator = PathItemValidator.getInstance();
+        TypeValidator<PathItem> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         PathItemImpl pathItem = new PathItemImpl();
@@ -635,7 +644,7 @@ public class PathItemValidatorTest {
     public void testPathItemWithOperationPathParamAndRequiredFalse() {
         String key = "{username}";
 
-        PathItemValidator validator = PathItemValidator.getInstance();
+        TypeValidator<PathItem> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         PathItemImpl pathItem = new PathItemImpl();
@@ -739,7 +748,7 @@ public class PathItemValidatorTest {
         model.setComponents(component);
         Context context = new TestValidationContextHelper(model);
 
-        PathItemValidator validator = PathItemValidator.getInstance();
+        TypeValidator<PathItem> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         PathItemImpl pathItem = new PathItemImpl();
@@ -775,7 +784,7 @@ public class PathItemValidatorTest {
         model.setComponents(component);
         Context context = new TestValidationContextHelper(model);
 
-        PathItemValidator validator = PathItemValidator.getInstance();
+        TypeValidator<PathItem> validator = getValidator();
         TestValidationHelper vh = new TestValidationHelper();
 
         PathItemImpl pathItem = new PathItemImpl();

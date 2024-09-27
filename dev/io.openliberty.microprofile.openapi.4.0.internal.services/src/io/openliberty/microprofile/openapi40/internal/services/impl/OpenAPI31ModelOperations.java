@@ -9,8 +9,12 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi40.internal.services.impl;
 
+import java.util.List;
+
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.eclipse.microprofile.openapi.models.info.Info;
+import org.eclipse.microprofile.openapi.models.media.Schema;
+import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
@@ -92,4 +96,8 @@ public class OpenAPI31ModelOperations extends OpenAPIModelOperationsImpl {
         return openAPI;
     }
 
+    @Override
+    public List<SchemaType> getTypes(Schema schema) {
+        return schema.getType();
+    }
 }
