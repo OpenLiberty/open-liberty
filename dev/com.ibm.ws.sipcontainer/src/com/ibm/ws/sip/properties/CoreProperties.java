@@ -34,7 +34,13 @@ public class CoreProperties
 	 */
 	 public static final String MAX_APP_SESSIONS = "maxAppSessions";
 	 public static final int MAX_APP_SESSIONS_DEFAULT = 120000;
-	 
+	
+	/**
+	 * Save original TUwrapper in derived TUwrapper
+	 */
+	public static final String SAVE_ORIGTUWRAPPER_IN_DERIVEDTUWRAPPER = "saveOriginalTUWrapperInDerivedTUWrapper";
+	public static final boolean SAVE_ORIGTUWRAPPER_IN_DERIVEDTUWRAPPER_DEFAULT = false;
+ 
 	 /**
 	  * Maximum traffic allowed per averaging period.
 	  */
@@ -800,6 +806,7 @@ public class CoreProperties
 		properties.setInt(MAX_MSG_QUEUE_SIZE, MAX_MSG_QUEUE_SIZE_DEFAULT,CustPropSource.DEFAULT);
 		properties.setBoolean(PMI_COUNT_ALL_MESSAGES, PMI_COUNT_ALL_MESSAGES_DEFAULT,CustPropSource.DEFAULT);
 		properties.setBoolean(ENABLE_LOAD_MONITORING, ENABLE_LOAD_MONITORING_DEFAULT,CustPropSource.DEFAULT);
+		properties.setBoolean(SAVE_ORIGTUWRAPPER_IN_DERIVEDTUWRAPPER, SAVE_ORIGTUWRAPPER_IN_DERIVEDTUWRAPPER_DEFAULT, CustPropSource.DEFAULT);
 		properties.setBoolean(PMI_PRINT_TO_TRACE, PMI_PRINT_TO_TRACE_DEFAULT, CustPropSource.DEFAULT);
 		properties.setInt(GENERATED_CONTAINER_ERROR_ON_TO_TAG_DUPLICATION, GENERATED_CONTAINER_ERROR_ON_TO_TAG_DUPLICATION_DEFAULT, CustPropSource.DEFAULT);
 		properties.setInt(MSG_QUEUE_INITIAL_SIZE, MSG_QUEUE_INITIAL_SIZE_DEFAULT,CustPropSource.DEFAULT);
