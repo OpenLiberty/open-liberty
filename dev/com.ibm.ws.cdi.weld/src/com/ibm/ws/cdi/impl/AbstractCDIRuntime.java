@@ -13,6 +13,9 @@
 package com.ibm.ws.cdi.impl;
 
 import java.lang.annotation.Annotation;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
@@ -28,21 +31,34 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.impl.weld.WebSphereEEModuleDescriptor;
+import com.ibm.ws.cdi.internal.archive.liberty.RuntimeFactory;
+import com.ibm.ws.cdi.internal.interfaces.Application;
 import com.ibm.ws.cdi.internal.interfaces.ArchiveType;
 import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
+import com.ibm.ws.classloading.LibertyClassLoadingService;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
+import com.ibm.ws.util.ThreadContextAccessor;
 
 /**
  * This abstract class generally holds methods which simply pass through to the CDIContainerImpl
  */
 public abstract class AbstractCDIRuntime implements CDIService, CDIRuntime, CDIProvider {
 
+    private final static ThreadContextAccessor THREAD_CONTEXT_ACCESSOR = ThreadContextAccessor.getThreadContextAccessor();
+
+    //Using this because it should have better performance than the getServiceWithException paradigm on CDIRuntimeImpl
+    @SuppressWarnings("rawtypes")
+    private static final ServiceCaller<LibertyClassLoadingService> classLoadingServiceCaller = new ServiceCaller<LibertyClassLoadingService>(AbstractCDIRuntime.class,
+                                                                                                                                             LibertyClassLoadingService.class);
+
     private CDIContainerImpl cdiContainer;
+    protected RuntimeFactory runtimeFactory;
 
     protected void start() {
         this.cdiContainer = new CDIContainerImpl(this);
@@ -156,12 +172,33 @@ public abstract class AbstractCDIRuntime implements CDIService, CDIRuntime, CDIP
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings({ "removal", "deprecation" })
     @Override
     public CDI<Object> getCDI() {
         CDI<Object> cdi = null;
         WebSphereCDIDeployment deployment = getCDIContainer().getCurrentDeployment();
         if (deployment != null) {
             cdi = deployment.getCDI();
+        }
+
+        //If we can't get CDI from the thread context metadata, fallback to matching the TCCL against apps.
+        if (cdi == null) {
+            Collection<Application> applications = runtimeFactory.getApplications();
+
+            ClassLoader tccl = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
+                return THREAD_CONTEXT_ACCESSOR.getContextClassLoader(Thread.currentThread());
+            });
+
+            //Doing it this way for performance reasons. Saves us spinning up a lambda every loop iteration
+            LibertyClassLoadingService<?> classLoadingService = classLoadingServiceCaller.current().get();
+            for (Application application : applications) {
+                if (application.getClassLoader().equals(tccl)
+                    || classLoadingService.isThreadContextClassLoaderForAppClassLoader(tccl, application.getClassLoader())) {
+                    WebSphereCDIDeployment deploymnet = cdiContainer.getDeployment(application);
+                    cdi = deploymnet.getCDI();
+                    break;
+                }
+            }
         }
 
         if (cdi == null) {
