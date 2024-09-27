@@ -3,6 +3,7 @@ package io.openliberty.microprofile.openapi20.fat.deployments.test1;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -17,6 +18,16 @@ public class DeploymentTestResource {
     @APIResponse(responseCode = "200", description = "constant \"OK\" response")
     @Produces(value = MediaType.TEXT_PLAIN)
     public String test() {
+        return "OK";
+    }
+
+    @GET
+    @Path("/log")
+    @Operation(summary = "log method", hidden = true)
+    @APIResponse(responseCode = "200", description = "logs the queryparam message")
+    @Produces(value = MediaType.TEXT_PLAIN)
+    public String log(@QueryParam("message") String message) {
+        System.out.println(message);
         return "OK";
     }
 
