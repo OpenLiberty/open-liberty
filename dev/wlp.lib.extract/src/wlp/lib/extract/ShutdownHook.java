@@ -139,7 +139,7 @@ public class ShutdownHook implements Runnable {
         } else if (platformType == SelfExtractUtils.PlatformType_OS400) {
             scriptFile = writeCleanupFile(SelfExtractUtils.PlatformType_OS400);
             rt.exec("chmod 750 " + scriptFile.getAbsolutePath());
-            rt.exec("/usr/bin/qsh -c " + scriptFile.getAbsolutePath());
+            rt.exec("/usr/bin/qsh -c " + scriptFile.getAbsolutePath() + " &");
         } else if (platformType == SelfExtractUtils.PlatformType_WINDOWS) {
             scriptFile = writeCleanupFile(SelfExtractUtils.PlatformType_WINDOWS);
             // Note: must redirect output in order for script to run on windows.
