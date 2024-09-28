@@ -77,6 +77,8 @@ import org.apache.cxf.workqueue.SynchronousExecutor;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
+import org.apache.cxf.transport.common.gzip.GZIPOutInterceptor;
+import org.apache.cxf.transport.common.gzip.GZIPInInterceptor;
 
 // Liberty Changes - Could potentially be removed when updating to CXF 3.5.5 
 // Trace changes could be removed for instrumentation disabled in bundle file
@@ -95,6 +97,9 @@ public class ClientImpl
     public static final String FINISHED = "exchange.finished";
 
     private static final Logger LOG = LogUtils.getL7dLogger(ClientImpl.class);
+
+    private static final String GZIP_OUT_INTERCEPTOR = "cxf.add.gzip.out.interceptor";
+    private static final String GZIP_IN_INTERCEPTOR =  "cxf.add.gzip.in.interceptor";
 
     protected Bus bus;
     protected ConduitSelector conduitSelector;
@@ -496,14 +501,44 @@ public class ClientImpl
                 reqContext = new HashMap<>(getRequestContext());
                 context.put(REQUEST_CONTEXT, reqContext);
             }
+            // Liberty Change start
+            if (isFineEnabled) { 
+               LOG.fine("Printing ReqContext properties...");
+               for (Map.Entry<String, Object> ctx1 : reqContext.entrySet()) {
+                  LOG.fine("ReqContext prop: " + ctx1.getKey() + " : " + ctx1.getValue());
+               }
+            }
+
+            boolean addGzipOutInt = PropertyUtils.isTrue(reqContext, GZIP_OUT_INTERCEPTOR);
+            boolean addGzipInInt = PropertyUtils.isTrue(reqContext, GZIP_IN_INTERCEPTOR);
+            if (isFineEnabled) {
+               LOG.fine("doInvoke: cxf.add.gzip.out.interceptor property is set to: " + addGzipOutInt);
+               LOG.fine("doInvoke: cxf.add.gzip.in.interceptor property is set to: " +  addGzipInInt);
+            }
+            // Liberty Change end
+
             if (resContext == null) {
+                // Liberty Change start
+                if (isFineEnabled) { 
+                   LOG.fine("doInvoke: Creating new resContext..."); 
+                }
+                // Liberty Change end
                 resContext = new ResponseContext(responseContext);
                 context.put(RESPONSE_CONTEXT, resContext);
             }
 
-            if(isFineEnabled) { // Liberty Change
-                LOG.fine("Setting following requestContext on message: " + reqContext);  // Liberty Change
+            // Liberty Change start
+            if (addGzipInInt) {
+               if (isFineEnabled) { 
+                  LOG.fine("doInvoke: Adding cxf.add.gzip.in.interceptor property to responseContext...");
+               }
+               resContext.put(GZIP_IN_INTERCEPTOR, "true");
             }
+            if(isFineEnabled) { 
+                LOG.fine("Setting following requestContext on message: " + reqContext);  
+            }
+            // Liberty Change end
+
             message.put(Message.INVOCATION_CONTEXT, context);
             setContext(reqContext, message);
             exchange.putAll(reqContext);
@@ -549,6 +584,15 @@ public class ClientImpl
             prepareConduitSelector(message);
 
             // add additional interceptors and such
+            // Liberty Change start
+            if (addGzipOutInt) {
+               if (isFineEnabled) { 
+                  LOG.fine("Adding GZIPOutInterceptor...");
+               }
+               final GZIPOutInterceptor out1 = new GZIPOutInterceptor();
+               chain.add(out1);
+            }
+            // Liberty Change end
             modifyChain(chain, message, false);
             try {
                 chain.doIntercept(message);
@@ -787,9 +831,16 @@ public class ClientImpl
     }
 
     public void onMessage(Message message) {
+
+        // Liberty Change start
+        boolean addGzipInInt = false;
+        boolean isFineEnabled = LOG.isLoggable(Level.FINE); 
+        // Liberty Change end
+
         if (bus == null) {
             throw new IllegalStateException("Message received on a Client that has been closed or destroyed.");
         }
+
         Endpoint endpoint = message.getExchange().getEndpoint();
         if (endpoint == null) {
             // in this case correlation will occur outside the transport,
@@ -805,6 +856,21 @@ public class ClientImpl
         message.put(Message.REQUESTOR_ROLE, Boolean.TRUE);
         message.put(Message.INBOUND_MESSAGE, Boolean.TRUE);
         PhaseManager pm = bus.getExtension(PhaseManager.class);
+
+        // Liberty Change start
+        Map<String, Object> resCtx1 = CastUtils.cast((Map<?, ?>) message.getExchange().getOutMessage().get(Message.INVOCATION_CONTEXT));
+        resCtx1 = CastUtils.cast((Map<?, ?>) resCtx1.get(RESPONSE_CONTEXT));
+        if (resCtx1 != null) {
+            addGzipInInt = PropertyUtils.isTrue(resCtx1, GZIP_IN_INTERCEPTOR);
+            LOG.fine("OnMessage: ResponeContext is not null and addGzipInInt: " + addGzipInInt);
+            if (isFineEnabled) { 
+               LOG.fine("onMessage: Printing RespContext properties...");
+               for (Map.Entry<String, Object> ctx2 : resCtx1.entrySet()) {
+                   LOG.fine("RespContext prop: " + ctx2.getKey() + " : " + ctx2.getValue());
+               }
+            }
+        }
+        // Liberty Change end
 
         List<Interceptor<? extends Message>> i1 = bus.getInInterceptors();
         if (LOG.isLoggable(Level.FINE)) {
@@ -888,6 +954,15 @@ public class ClientImpl
                         }
                     }
                 } else {
+                    // Liberty Change start
+                    if (addGzipInInt) {
+                       if (isFineEnabled) { 
+                          LOG.fine("ClientImpl: Adding GZIPInInterceptor...");
+                       }
+                       final GZIPInInterceptor in1 = new GZIPInInterceptor();
+                       chain.add(in1);
+                    }
+                    // Liberty Change end
                     chain.doIntercept(message);
                 }
 
