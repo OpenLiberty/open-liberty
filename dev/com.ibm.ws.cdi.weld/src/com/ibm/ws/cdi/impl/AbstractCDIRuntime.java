@@ -182,7 +182,7 @@ public abstract class AbstractCDIRuntime implements CDIService, CDIRuntime, CDIP
         }
 
         //If we can't get CDI from the thread context metadata, fallback to matching the TCCL against apps.
-        if (cdi == null) {
+        if (runtimeFactory != null && cdi == null) {
             Collection<Application> applications = runtimeFactory.getApplications();
 
             ClassLoader tccl = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
@@ -194,15 +194,22 @@ public abstract class AbstractCDIRuntime implements CDIService, CDIRuntime, CDIP
             for (Application application : applications) {
                 if (application.getClassLoader().equals(tccl)
                     || classLoadingService.isThreadContextClassLoaderForAppClassLoader(tccl, application.getClassLoader())) {
-                    WebSphereCDIDeployment deploymnet = cdiContainer.getDeployment(application);
-                    cdi = deploymnet.getCDI();
+                    deployment = cdiContainer.getDeployment(application);
+                    //We found the correct app but it has no deployment, this happens if CDI is disabled.
+                    if (deployment != null) {
+                        cdi = deployment.getCDI();
+                    }
                     break;
                 }
             }
         }
 
-        if (cdi == null) {
+        if (deployment == null) {
             throw new IllegalStateException("Could not find deployment");
+        }
+
+        if (cdi == null) {
+            throw new IllegalStateException("Could not find CDI");
         }
 
         return cdi;
