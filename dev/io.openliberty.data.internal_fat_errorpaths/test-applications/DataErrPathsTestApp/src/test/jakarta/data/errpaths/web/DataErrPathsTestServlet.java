@@ -16,6 +16,7 @@ import static org.junit.Assert.fail;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionException;
 
@@ -51,6 +52,12 @@ public class DataErrPathsTestServlet extends FATServlet {
     @Inject
     RepoWithoutDataStore errDefaultDataSourceNotConfigured;
 
+    @Inject
+    InvalidNonJNDIRepo errIncorrectDataStoreName;
+
+    @Inject
+    InvalidJNDIRepo errIncorrectJNDIName;
+
     @Resource
     UserTransaction tx;
 
@@ -84,6 +91,47 @@ public class DataErrPathsTestServlet extends FATServlet {
             }
         } catch (Exception x) {
             throw new ServletException(x);
+        }
+    }
+
+    /**
+     * Tests an error path where the application specifies the repository dataStore
+     * to be a JNDI name that does not exist.
+     */
+    @Test
+    public void testRepositoryWithIncorrectDataStoreJNDIName() {
+        try {
+            List<Voter> found = errIncorrectJNDIName //
+                            .bornOn(LocalDate.of(1977, Month.SEPTEMBER, 26));
+            fail("Should not be able to use repository that sets the dataStore " +
+                 "to a JNDI name that does not exist. Found: " + found);
+        } catch (CompletionException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1079E:") ||
+                !x.getMessage().contains("<persistence-unit name=\"MyPersistenceUnit\">"))
+                throw x;
+        }
+    }
+
+    /**
+     * Tests an error path where the application specifies the repository dataStore
+     * to be a name that does not exist as a dataSource id, a databaseStore id, or
+     * a JNDI name.
+     */
+    @Test
+    public void testRepositoryWithIncorrectDataStoreName() {
+        try {
+            Voter added = errIncorrectDataStoreName //
+                            .addNew(new Voter(876554321, "Vanessa", //
+                                            LocalDate.of(1955, Month.JULY, 5), //
+                                            "5455 W River Rd NW, Rochester, MN 55901"));
+            fail("Should not be able to use repository that sets the dataStore " +
+                 "to a name that does not exist. Added: " + added);
+        } catch (CompletionException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1078E:") ||
+                !x.getMessage().contains("<dataSource id=\"MyDataSource\" jndiName=\"jdbc/ds\""))
+                throw x;
         }
     }
 

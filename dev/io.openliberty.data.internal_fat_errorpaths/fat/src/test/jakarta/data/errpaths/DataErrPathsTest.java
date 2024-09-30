@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,9 @@ public class DataErrPathsTest extends FATServletClient {
      */
     private static final String[] EXPECTED_ERROR_MESSAGES = //
                     new String[] {
-                                   "CWWKD1077E.*test.jakarta.data.errpaths.web.RepoWithoutDataStore"
+                                   "CWWKD1077E.*test.jakarta.data.errpaths.web.RepoWithoutDataStore",
+                                   "CWWKD1078E.*test.jakarta.data.errpaths.web.InvalidNonJNDIRepo",
+                                   "CWWKD1079E.*test.jakarta.data.errpaths.web.InvalidJNDIRepo"
                     };
 
     @Server("io.openliberty.data.internal.fat.errpaths")
