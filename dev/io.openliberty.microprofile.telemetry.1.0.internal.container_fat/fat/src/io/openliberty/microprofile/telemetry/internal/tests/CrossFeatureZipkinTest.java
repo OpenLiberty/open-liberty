@@ -150,7 +150,7 @@ public class CrossFeatureZipkinTest {
             Log.info(c, "testCrossFeatureFromTelemetry", span.toString());
         }
         //OpenTracing, MpTelemetry-1.0 and MpTelemetry-1.1 use HTTP_URL while MpTelemetry 2.0 uses URL_FULL
-        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
+        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP61_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
             ZipkinSpan server1 = findOneFrom(spans, hasTag(HTTP_ROUTE.getKey(), "/crossFeature/1"));
             ZipkinSpan client2 = findOneFrom(spans, span().withKind(SpanKind.CLIENT)
                                                         .withTag(URL_FULL.getKey(), getUrl(opentracingServer) + "/2"));
@@ -197,7 +197,7 @@ public class CrossFeatureZipkinTest {
             Log.info(c, "testCrossFeatureFromOpenTracing", span.toString());
         }
         //OpenTracing, MpTelemetry-1.0 and MpTelemetry-1.1 use HTTP_URL while MpTelemetry 2.0 uses URL_FULL
-        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
+        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP61_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
             ZipkinSpan server1 = findOneFrom(spans, span().withTag(Tags.HTTP_URL.getKey(), getUrl(opentracingServer) + "/1"));
             ZipkinSpan client2 = findOneFrom(spans, span().withTag(Tags.HTTP_URL.getKey(), getUrl(telemetryServer) + "/2"));
             ZipkinSpan server2 = findOneFrom(spans, hasTag(HTTP_ROUTE.getKey(), "/crossFeature/2"));
