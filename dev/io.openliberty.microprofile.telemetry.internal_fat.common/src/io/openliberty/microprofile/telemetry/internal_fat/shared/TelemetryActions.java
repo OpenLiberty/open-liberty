@@ -139,7 +139,7 @@ public class TelemetryActions {
 
     public static RepeatTests telemetry20Repeats(String serverName) {
         return repeat(serverName, MicroProfileActions.MP70_EE11, MP14_MPTEL20, MP41_MPTEL20, MP50_MPTEL20,
-                      MP50_MPTEL20_JAVA8, MicroProfileActions.MP70_EE10);
+                      MP50_MPTEL20_JAVA8, MP61_MPTEL20, MicroProfileActions.MP70_EE10);
     }
 
     public static RepeatTests telemetry20Repeats() {
@@ -154,7 +154,6 @@ public class TelemetryActions {
         return repeat(serverName,
                       MicroProfileActions.MP70_EE11,
                       MicroProfileActions.MP70_EE10,
-                      MP61_MPTEL20,
                       MicroProfileActions.MP61,
                       MicroProfileActions.MP60);
     }
