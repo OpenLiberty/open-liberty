@@ -171,7 +171,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
     @Trivial
     void addRepositoryInterface(Class<?> repositoryInterface) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "FutureEMBuilder@" + Integer.toHexString(hashCode()) + " addRepositoryInterface: " + repositoryInterface.getName());
+            Tr.debug(this, tc, "addRepositoryInterface: " + repositoryInterface.getName());
 
         repositoryInterfaces.add(repositoryInterface);
     }
