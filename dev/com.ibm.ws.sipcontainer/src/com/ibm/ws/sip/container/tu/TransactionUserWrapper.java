@@ -385,8 +385,11 @@ ClientTransactionListener, Serializable, SipServletInvokerListener,SipDialogCont
     	// set the flag to indicate that this transaction is derived
     	_derived = true;
     	
+    	if(PropertiesStore.getInstance().getProperties().getBoolean(CoreProperties.SAVE_ORIGTUWRAPPER_IN_DERIVEDTUWRAPPER))
+    	{
     	// Save the original TUWrapper
     	_origTUWrapper = originalTU;
+    	}
     }
 	
     
