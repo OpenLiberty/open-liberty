@@ -1,0 +1,54 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+# TODO: this should be a test.project, but when we set to true the ivy build fails
+# test.project: true
+
+Bundle-Name: WAS Security JACC Proxy Provider 1.5
+Bundle-SymbolicName: com.ibm.ws.security.authorization.jacc.proxyprovider
+Bundle-Description: WAS Security JACC Proxy Provider, version=${bVersion}
+Bundle-ActivationPolicy: lazy
+
+WS-TraceGroup: Authorization
+
+# For each exported package, create (in that package) a package-info.java...
+# file, and place an @version javadoc tag in package-level javadoc.
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+
+Export-Package: \
+ com.ibm.ws.security.authorization.jacc.proxy.service;provide:=true
+
+Import-Package: \
+  com.ibm.websphere.ras, \
+  com.ibm.wsspi.library, \
+  com.ibm.wsspi.security.authorization.jacc, \
+  com.ibm.ws.ffdc, \
+  javax.security.jacc
+
+Include-Resource: \
+    OSGI-INF=resources/OSGI-INF
+
+-dsannotations: \
+  com.ibm.ws.security.authorization.jacc.proxy.service.ProviderServiceImpl
+
+-buildpath: \
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.websphere.javaee.jacc.1.5;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.security.authorization;version=latest,\
+	com.ibm.ws.classloading;version=latest,\
+	com.ibm.ws.security.authorization.jacc;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest	
