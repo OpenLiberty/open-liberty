@@ -55,6 +55,7 @@ import componenttest.rules.repeater.RepeatTests;
         CDITestCheckpoint.class,
         ChunkTest.class,
         JdbcConfigTest.class,
+        JdbcConfigTestCheckpoint.class,
         LocalServerJobRecoveryAtStartUpTest.class,
         MiscTest.class,
         TranTimeoutTest.class,
