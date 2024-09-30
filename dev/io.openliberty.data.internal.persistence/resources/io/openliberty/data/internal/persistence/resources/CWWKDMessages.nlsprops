@@ -600,7 +600,7 @@ CWWKD1060.name.out.of.scope.useraction=Update the Repository annotation to \
  specify a data store name that is visible to the module or library \
  providing the repository interface.
 
-CWWKD1061.comp.name.in.ejb=CWWKD1061E: The {0} repository interface which is \
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: The {0} repository interfaces which are \
  defined in the {1} enterprise bean module of the {2} application configures \
  a {2} value for the {3} attribute. However,  {4} names are not accessible to \
  enterprise bean modules. Use a name from one of the following \

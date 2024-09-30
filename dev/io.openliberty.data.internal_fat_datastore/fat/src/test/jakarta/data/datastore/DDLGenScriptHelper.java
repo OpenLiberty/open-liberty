@@ -30,7 +30,6 @@ import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -100,8 +99,8 @@ public abstract class DDLGenScriptHelper {
      * @param type - The type of database
      * @return The expected ddl file names.
      */
-    public static List<String> getExpectedDDLFiles(DatabaseContainerType type) {
-        File ddlDir = new File("test-resources/ddl/" + type.name() + "/");
+    public static List<String> getExpectedDDLFiles() {
+        File ddlDir = new File("test-resources/ddl/");
         assertTrue(ddlDir.isDirectory());
         return Stream.of(ddlDir.listFiles()).map(file -> file.getName()).toList();
     }
@@ -151,8 +150,8 @@ public abstract class DDLGenScriptHelper {
      * @throws IOException If an error occurs reading the specified DDL file.
      *
      */
-    public static List<String> readSQLFromExpectedDDLFile(DatabaseContainerType type, String ddlFileName) throws IOException {
-        File ddlFile = new File("test-resources/ddl/" + type.name() + "/" + ddlFileName);
+    public static List<String> readSQLFromExpectedDDLFile(String ddlFileName) throws IOException {
+        File ddlFile = new File("test-resources/ddl/" + ddlFileName);
         assertTrue(ddlFile.isFile());
         return Files.lines(ddlFile.toPath()).toList();
     }

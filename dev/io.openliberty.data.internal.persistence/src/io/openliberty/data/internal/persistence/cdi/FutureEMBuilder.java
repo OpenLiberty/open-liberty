@@ -101,9 +101,9 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
     private final ClassLoader repositoryClassLoader;
 
     /**
-     * Interface that is annotated with the Repository annotation.
+     * Interfaces that are annotated with the Repository annotation.
      */
-    private final Class<?> repositoryInterface;
+    private final Set<Class<?>> repositoryInterfaces = new HashSet<>();
 
     /**
      * Obtains entity manager instances from a persistence unit reference /
@@ -119,7 +119,6 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                     ClassLoader repositoryClassLoader,
                     String dataStore) {
         this.provider = provider;
-        this.repositoryInterface = repositoryInterface;
         this.repositoryClassLoader = repositoryClassLoader;
         this.dataStore = dataStore;
         this.moduleName = getModuleName(repositoryInterface, repositoryClassLoader, provider);
@@ -145,6 +144,8 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                               "java:app");
             }
         }
+
+        this.addRepositoryInterface(repositoryInterface);
     }
 
     /**
@@ -155,11 +156,24 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
      * @param entityClass entity class.
      */
     @Trivial
-    void add(Class<?> entityClass) {
+    void addEntity(Class<?> entityClass) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "add: " + entityClass.getName());
+            Tr.debug(this, tc, "FutureEMBuilder@" + Integer.toHexString(hashCode()) + " addEntity: " + entityClass.getName());
 
         entityTypes.add(entityClass);
+    }
+
+    /**
+     * Adds a Repository interface represented by this FutureEmBuilder
+     *
+     * @param repositoryInterface repository interface
+     */
+    @Trivial
+    void addRepositoryInterface(Class<?> repositoryInterface) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "FutureEMBuilder@" + Integer.toHexString(hashCode()) + " addRepositoryInterface: " + repositoryInterface.getName());
+
+        repositoryInterfaces.add(repositoryInterface);
     }
 
     /**
@@ -286,7 +300,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
             if (namespace == Namespace.COMP && metadataIdentifier.startsWith("EJB#"))
                 throw exc(DataException.class,
                           "CWWKD1061.comp.name.in.ejb",
-                          repositoryInterface.getName(),
+                      repositoryInterfaces,
                           repoMetadata.getJ2EEName().getModule(),
                           repoMetadata.getJ2EEName().getApplication(),
                           resourceName,
@@ -649,10 +663,31 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
         return b.toString();
     }
 
-    // Ensures order of DDL generation based on repository interface name
+    // Ensures order of DDL generation based on fields
     @Override
-	@Trivial
+    @Trivial
     public int compareTo(FutureEMBuilder o) {
-        return this.repositoryInterface.getCanonicalName().compareTo(o.repositoryInterface.getCanonicalName());
+        if (this.equals(o)) {
+            return 0;
+        }
+
+        if (this.application != null && o.application != null && !this.application.equals(o.application)) {
+            return this.application.compareTo(o.application);
+        }
+
+        if (this.module != null && o.module != null && !this.module.equals(o.module)) {
+            return this.module.compareTo(o.module);
+        }
+
+        if (!this.dataStore.equals(o.dataStore)) {
+            return this.dataStore.compareTo(o.dataStore);
+        }
+
+        // We know the repository classloaders are different but with no natural ording.  Therefore,
+        // the only other comparison we can make would be based off of the repository interfaces
+        String r0 = this.repositoryInterfaces.stream().map(c -> c.getCanonicalName()).sorted().collect(Collectors.joining());
+        String r1 = o.repositoryInterfaces.stream().map(c -> c.getCanonicalName()).sorted().collect(Collectors.joining());
+
+        return r0.compareTo(r1);
     }
 }

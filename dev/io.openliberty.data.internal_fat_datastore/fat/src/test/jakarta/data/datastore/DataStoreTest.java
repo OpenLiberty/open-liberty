@@ -115,11 +115,10 @@ public class DataStoreTest extends FATServletClient {
 
     @Test
     public void testDDLGeneration() throws Exception {
-        DatabaseContainerType type = DatabaseContainerType.valueOf(FATSuite.testContainer);
 
         // Run the ddlgen command and obtain the list of generated files
         List<String> ddlGeneratedFileNames = DDLGenScriptHelper.getGeneratedDDLFiles(server);
-        List<String> ddlExpectedFileNames = DDLGenScriptHelper.getExpectedDDLFiles(type);
+        List<String> ddlExpectedFileNames = DDLGenScriptHelper.getExpectedDDLFiles();
 
         // Verify that all the generated DDL files were expected
         assertEquals("Incorrect number of generated DDL files", ddlExpectedFileNames.size(), ddlGeneratedFileNames.size());
@@ -129,7 +128,7 @@ public class DataStoreTest extends FATServletClient {
             assertEquals("Incorrect name of generated DDL file", ddlExpectedFileNames.get(i), ddlGeneratedFileNames.get(i));
 
             List<String> sqlLinesGeneratedDDL = DDLGenScriptHelper.readSQLFromGeneratedDDLFile(server, ddlGeneratedFileNames.get(i));
-            List<String> sqlLinesExpectedDDL = DDLGenScriptHelper.readSQLFromExpectedDDLFile(type, ddlExpectedFileNames.get(i));
+            List<String> sqlLinesExpectedDDL = DDLGenScriptHelper.readSQLFromExpectedDDLFile(ddlExpectedFileNames.get(i));
 
             // Verify that all the generated DDL files had the correct number of lines
             assertEquals("Incorrect number of lines in generated DDL file " + ddlGeneratedFileNames.get(i),
