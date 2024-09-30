@@ -158,7 +158,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
     @Trivial
     void addEntity(Class<?> entityClass) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "FutureEMBuilder@" + Integer.toHexString(hashCode()) + " addEntity: " + entityClass.getName());
+            Tr.debug(this, tc, "addEntity: " + entityClass.getName());
 
         entityTypes.add(entityClass);
     }
