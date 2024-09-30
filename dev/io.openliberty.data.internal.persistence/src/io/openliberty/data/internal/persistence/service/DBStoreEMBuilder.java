@@ -118,8 +118,8 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
      *
      * @param provider              OSGi service that provides the CDI extension.
      * @param repositoryClassLoader class loader of the repository interface.
-     * @param dataStore             dataStore name specified on the Repository annotation, or
-     *                                  if obtained from CDI then the config.displayId of a dataSource.
+     * @param dataStore             dataStore value from the Repository annotation,
+     *                                  or the value with java:comp/env added.
      * @param isJNDIName            indicates if the dataStore name is a JNDI name (begins with java: or is inferred to be java:comp/env/...)
      * @param metaDataIdentifier    metadata identifier for the class loader of the repository interface.
      * @param jeeName               application/module/component in which the repository interface is defined.
@@ -131,7 +131,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                             String dataStore, boolean isJNDIName,
                             String metadataIdentifier, J2EEName jeeName,
                             Set<Class<?>> entityTypes) throws Exception {
-        super(provider, repositoryClassLoader);
+        super(provider, repositoryClassLoader, dataStore);
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         String qualifiedName = null;

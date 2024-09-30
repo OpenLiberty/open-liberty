@@ -41,7 +41,8 @@ public class DataErrPathsTest extends FATServletClient {
                     new String[] {
                                    "CWWKD1077E.*test.jakarta.data.errpaths.web.RepoWithoutDataStore",
                                    "CWWKD1078E.*test.jakarta.data.errpaths.web.InvalidNonJNDIRepo",
-                                   "CWWKD1079E.*test.jakarta.data.errpaths.web.InvalidJNDIRepo"
+                                   "CWWKD1079E.*test.jakarta.data.errpaths.web.InvalidJNDIRepo",
+                                   "CWWKD1080E.*test.jakarta.data.errpaths.web.InvalidDatabaseRepo"
                     };
 
     @Server("io.openliberty.data.internal.fat.errpaths")
@@ -54,6 +55,10 @@ public class DataErrPathsTest extends FATServletClient {
                                                       "test.jakarta.data.errpaths.web");
         ShrinkHelper.exportAppToServer(server, war);
         server.startServer();
+
+        // Cause errors that will log FFDC prior to running tests
+        // so that FFDC doesn't intermittently fail tests
+        FATServletClient.runTest(server, APP_NAME, "forceFFDC");
     }
 
     @AfterClass

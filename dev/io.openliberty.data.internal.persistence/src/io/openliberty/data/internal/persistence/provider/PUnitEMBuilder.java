@@ -35,8 +35,6 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
 
     private final EntityManagerFactory emf;
 
-    private final String persistenceUnitRef;
-
     /**
      * Obtains entity manager instances from a persistence unit reference /
      * EntityManagerFactory.
@@ -55,9 +53,8 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
                           String persistenceUnitRef,
                           String metadataIdentifier,
                           Set<Class<?>> entityTypes) throws Exception {
-        super(provider, repositoryClassLoader);
+        super(provider, repositoryClassLoader, persistenceUnitRef);
         this.emf = emf;
-        this.persistenceUnitRef = persistenceUnitRef;
 
         collectEntityInfo(entityTypes);
     }
@@ -90,10 +87,10 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
     @Override
     @Trivial
     public String toString() {
-        return new StringBuilder(27 + persistenceUnitRef.length()) //
+        return new StringBuilder(27 + dataStore.length()) //
                         .append("PUnitEMBuilder@") //
                         .append(Integer.toHexString(hashCode())) //
-                        .append(":").append(persistenceUnitRef) //
+                        .append(":").append(dataStore) //
                         .toString();
     }
 }

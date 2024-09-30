@@ -68,7 +68,9 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
     private final String application, module;
 
     /**
-     * The configured dataStore value of the Repository annotation.
+     * The configured dataStore value of the Repository annotation,
+     * or that value prefixed with java:comp,
+     * or if unspecified, then java:comp/DefaultDataSource.
      */
     private final String dataStore;
 
@@ -343,12 +345,13 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                             javacolon, //
                             metadataIdentifier, jeeName, entityTypes);
         } catch (Throwable x) {
+            // The error is logged to Tr.error rather than FFDC
+            ComponentMetaData metadata = repoMetadata == null //
+                            ? extMetadata //
+                            : repoMetadata;
             if (x instanceof DataException) { // already logged
                 throw (DataException) x;
             } else if (x instanceof NamingException) {
-                ComponentMetaData metadata = repoMetadata == null //
-                                ? extMetadata //
-                                : repoMetadata;
                 if (namespace == null)
                     throw excDataStoreNotFound(metadata, x);
                 else if (DataExtension.DEFAULT_DATA_SOURCE.equals(dataStore))
@@ -356,7 +359,12 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                 else
                     throw excJNDINameNotFound(metadata, x);
             } else {
-                throw new DataException(x.getMessage(), x); // TODO NLS message
+                throw (DataException) exc(DataException.class,
+                                          "CWWKD1080.datastore.general.err",
+                                          repositoryInterface.getName(),
+                                          metadata,
+                                          dataStore,
+                                          x.getMessage()).initCause(x);
             }
         }
     }

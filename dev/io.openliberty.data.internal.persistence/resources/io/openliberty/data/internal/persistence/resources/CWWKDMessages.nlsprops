@@ -802,3 +802,20 @@ CWWKD1079.jndi.not.found.explanation=When the data store of a Jakarta Data \
 CWWKD1079.jndi.not.found.useraction=Ensure that the resource is configured \
  correctly, and ensure that the scope of the JNDI name makes the resource \
  accessible to the application artifact that provides the repository.
+
+CWWKD1080.datastore.general.err=CWWKD1080E: The {0} repository interfaces from \
+ the {1} application artifact are not available because of an error. \
+ The error might be due to a configuration problem, or the {2} data store for \
+ the repository might not be available. The error is: {3}.
+CWWKD1080.datastore.general.err.explanation=An error was found that prevents \
+ the specified repositories from being used.
+CWWKD1080.datastore.general.err.useraction=Locate the repository interfaces and \
+ the data store configuration and determine whether corrections are needed.
+
+CWWKD1081.entity.general.err=CWWKD1081E: Due to an error, the {0} entity is \
+ not available to the {1} repository interfaces that use the {2} data store. \
+ The error is {3}.
+CWWKD1081.entity.general.err.explanation=An error was found that prevents the \
+ specified entity from being used.
+CWWKD1081.entity.general.err.useraction=Locate the entity and determine whether \
+ corrections are needed.
