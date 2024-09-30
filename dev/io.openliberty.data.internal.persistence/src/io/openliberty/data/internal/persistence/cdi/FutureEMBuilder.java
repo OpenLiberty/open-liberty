@@ -300,7 +300,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
             if (namespace == Namespace.COMP && metadataIdentifier.startsWith("EJB#"))
                 throw exc(DataException.class,
                           "CWWKD1061.comp.name.in.ejb",
-                      repositoryInterfaces,
+                      repositoryInterfaces.get(0).getName(), // TODO revisit this and other NLS messages
                           repoMetadata.getJ2EEName().getModule(),
                           repoMetadata.getJ2EEName().getApplication(),
                           resourceName,
