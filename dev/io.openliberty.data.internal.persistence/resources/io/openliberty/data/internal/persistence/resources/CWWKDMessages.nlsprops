@@ -755,3 +755,50 @@ CWWKD1077.defaultds.not.found.explanation=Jakarta Data repositories default to \
  configuration.
 CWWKD1077.defaultds.not.found.useraction=Configure the Jakarta EE default \
  data source or specify a different data store for the repository.
+
+CWWKD1078.datastore.not.found=CWWKD1078E: The {0} application artifact has a \
+ {1} repository interface with a {2} data store that does not match the Id of a \
+ dataSource element or a databaseStore element in server configuration, or it does \
+ not match the JNDI name of a data source, a data source resource reference, or \
+ a persistence unit reference that is accessible to the application artifact, \
+ or one of the related resources is not configured correctly. \
+ A dataSource element can be defined in server configuration. For example, {3} \
+ A databaseStore element can be defined in server configuration. For example, {4} \
+ An application component can use the Resource annotation to define a \
+ data source resource reference. For example, {5}, which requires server \
+ configuration to have a dataSource configuration element with a {6} attribute. \
+ An application component can use the PersistenceUnit annotation to define a \
+ persistence unit reference. For example, {7}, which requires the persistence.xml \
+ file to have a persistence-unit element with a matching name attribute. \
+ For example, {8}
+CWWKD1078.datastore.not.found.explanation=The data store of a Jakarta Data \
+ repository can be the Id of a dataSource element or databaseStore element \
+ in server configuration, or it can be a JNDI name of a data source, data source \
+ resource reference, or persistence unit reference.
+CWWKD1078.datastore.not.found.useraction=Ensure that the resource is configured \
+ correctly. If using a JNDI name, ensure that the scope of the JNDI name makes \
+ the resource accessible to the application artifact that provides the repository.
+
+CWWKD1079.jndi.not.found=CWWKD1079E: The {0} application artifact has a \
+ {1} repository interface with its data store assigned to the {2} JNDI name, \
+ but a data source, data source resource reference, or persistence unit reference \
+ with that JNDI name is not accessible to the application artifact, \
+ or one of the related resources is not configured correctly. \
+ An application component can use the Resource annotation to define a \
+ data source resource reference. For example, {3}, which points to a \
+ dataSource server configuration element with a {4} attribute. \
+ An application component can use the PersistenceUnit annotation to define a \
+ persistence unit reference. For example, {5}, which requires the persistence.xml \
+ file to have a persistence-unit element with a matching name attribute. \
+ For example, {6} \
+ An application component can use the DataSourceDefinition annotation \
+ to define a data source. Alternatively, a dataSource element can define a \
+ data source in the server configuration. For example, {7}
+CWWKD1079.jndi.not.found.explanation=When the data store of a Jakarta Data \
+ repository is set to a JNDI name of a data source, a data source resource \
+ reference, or a persistence unit reference, the JNDI name must be accessible \
+ to the application artifact that provides the repository, and the data source \
+ or persistence unit must be configured correctly.
+CWWKD1079.jndi.not.found.useraction=Ensure that the resource is configured \
+ correctly, and ensure that the scope of the JNDI name makes the resource \
+ accessible to the application artifact that provides the repository.
