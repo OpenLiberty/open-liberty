@@ -490,10 +490,10 @@ org.apache.thrift:libthrift:0.14.1
 org.apache.tomcat.embed:tomcat-embed-websocket:8.5.23
 org.apache.tomcat:tomcat-el-api:10.0.27
 org.apache.tomcat:tomcat-el-api:10.1.11
-org.apache.tomcat:tomcat-el-api:11.0.0-M24
+org.apache.tomcat:tomcat-el-api:11.0.0-M26
 org.apache.tomcat:tomcat-jasper-el:10.0.27
 org.apache.tomcat:tomcat-jasper-el:10.1.11
-org.apache.tomcat:tomcat-jasper-el:11.0.0-M24
+org.apache.tomcat:tomcat-jasper-el:11.0.0-M26
 org.apache.wink:wink-client-apache-httpclient:1.4
 org.apache.wink:wink-client:1.4
 org.apache.wink:wink-common:1.4
