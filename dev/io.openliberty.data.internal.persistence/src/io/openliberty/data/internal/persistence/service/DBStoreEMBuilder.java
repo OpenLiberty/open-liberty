@@ -817,6 +817,6 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
 
     @Override
     public String getDDLFileName() {
-        return configDisplayId + "_jakartaData";
+        return configDisplayId + "_JakartaData";
     }
 }
