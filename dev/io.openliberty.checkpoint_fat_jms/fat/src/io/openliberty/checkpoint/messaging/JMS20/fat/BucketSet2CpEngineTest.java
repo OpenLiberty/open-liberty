@@ -101,7 +101,7 @@ public class BucketSet2CpEngineTest {
         // to those of the runtime environment.
         FATSuite.PortSetting setting = new FATSuite.PortSetting("bvt.prop.jms.1", 17010, "jms_port_1");
         Consumer<LibertyServer> postCheckpointLogic = checkpointServer -> {
-            FATSuite.addServerEnvPorts(checkpointServer, new ArrayList<>(Collections.singletonList(setting)));
+            FATSuite.addServerEnvPorts(checkpointServer, new ArrayList<>(Collections.singletonList(setting)), Collections.emptyMap());
         };
 
         // Start both servers. Start the engine first, so that its resources
@@ -110,7 +110,7 @@ public class BucketSet2CpEngineTest {
         engineServer.startServer("LiteBucketSet2_Engine.log");
         // Specify ports for client
 
-        FATSuite.addServerEnvPorts(clientServer, new ArrayList<>(Collections.singletonList(setting)));
+        FATSuite.addServerEnvPorts(clientServer, new ArrayList<>(Collections.singletonList(setting)), Collections.emptyMap());
         clientServer.startServer("LiteBucketSet2_Client.log");
     }
 
