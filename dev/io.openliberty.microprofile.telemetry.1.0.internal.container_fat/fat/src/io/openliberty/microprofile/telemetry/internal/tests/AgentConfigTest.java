@@ -80,7 +80,7 @@ public class AgentConfigTest {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
+    public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(AgentConfigTest.class, "jaeger"));
     public static RepeatTests repeat = TelemetryActions.allMPRepeats(SERVER_NAME);
 
     @ClassRule

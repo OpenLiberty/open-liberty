@@ -60,7 +60,7 @@ public class JaegerSecureOtelCollectorTest extends JaegerBaseTest {
     public static Network network = Network.newNetwork();
 
     public static JaegerContainer jaegerContainer = new JaegerContainer()
-                                                                         .withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"))
+                                                                         .withLogConsumer(new SimpleLogConsumer(JaegerSecureOtelCollectorTest.class, "jaeger"))
                                                                          .withNetwork(network)
                                                                          .withNetworkAliases("jaeger-all-in-one");
 

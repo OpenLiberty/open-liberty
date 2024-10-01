@@ -54,7 +54,7 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
 
     public JaegerContainer(DockerImageName imageName) {
         super(imageName);
-        Log.info(c, "JaegerContainer", "creating JaegerContainer with imageName");
+        Log.info(c, "JaegerContainer", "creating JaegerContainer with " + imageName);
 
         withExposedPorts(OTLP_GRPC_PORT,
                          OTLP_HTTP_PORT,

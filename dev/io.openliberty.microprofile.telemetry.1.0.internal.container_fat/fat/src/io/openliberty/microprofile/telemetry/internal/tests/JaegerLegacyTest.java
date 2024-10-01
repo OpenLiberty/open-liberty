@@ -42,7 +42,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 @Mode(TestMode.FULL)
 public class JaegerLegacyTest extends JaegerBaseTest {
 
-    public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
+    public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerLegacyTest.class, "jaeger"));
     //The native Jaeger exporter has been discontinued and is not supported in MpTelemetry-2.0. OTLP is used for Jaeger instead
     public static RepeatTests repeat = TelemetryActions.telemetry10and11Repeats(SERVER_NAME);
 

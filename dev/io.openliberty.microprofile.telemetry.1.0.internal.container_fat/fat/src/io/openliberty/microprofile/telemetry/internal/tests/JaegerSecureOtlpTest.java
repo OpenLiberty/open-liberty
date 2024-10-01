@@ -47,7 +47,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 @RunWith(FATRunner.class)
 public class JaegerSecureOtlpTest extends JaegerBaseTest {
 
-    public static JaegerContainer jaegerContainer = new JaegerContainer(getCertificate(), getKey()).withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
+    public static JaegerContainer jaegerContainer = new JaegerContainer(getCertificate(), getKey()).withLogConsumer(new SimpleLogConsumer(JaegerSecureOtlpTest.class, "jaeger"));
     public static RepeatTests repeat = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
     @ClassRule
