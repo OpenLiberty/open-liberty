@@ -150,7 +150,7 @@
 						<jakarta.tck.database.name>${jakarta.tck.database.name}</jakarta.tck.database.name>
 					</systemPropertyVariables>
 					<groups><![CDATA[persistence & ${jakarta.tck.platform}]]></groups>
-					<reportNameSuffix>${jakarta.tck.platform}</reportNameSuffix>
+					<reportNameSuffix>${jakarta.profile}-${jakarta.tck.database.type}</reportNameSuffix>
 					<testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
 				</configuration>
 			</plugin>

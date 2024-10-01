@@ -22,27 +22,6 @@
 	<artifactId>tck.runner.platform</artifactId>
 	<name>Jakarta Data TCK Runner TCK Module</name>
 
-	<repositories>
-		<!-- For artifacts not yet in Maven Central -->
-		<repository>
-			<id>sonatype-nexus-staging</id>
-			<name>Sonatype Nexus Staging</name>
-			<url>https://jakarta.oss.sonatype.org/content/repositories/jakartadata-1027/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<!-- For artifacts not yet in Staging repo use DHE -->
-		<repository>
-			<name>IBM DHE Maven repository</name>
-			<id>DHE</id>
-			<url>https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
-		</repository>
-	</repositories>
-
 	<properties>
 		<!-- Used in arquillian.xml passed from test suite -->
 		<wlp>${wlp}</wlp>
@@ -200,7 +179,7 @@
 						<exclude>${excluded.tests}</exclude>
 					</excludes>
 					<groups>${included.groups}</groups>
-					<reportNameSuffix>${jakarta.profile}</reportNameSuffix>
+					<reportNameSuffix>${jakarta.profile}-${jakarta.tck.database.type}</reportNameSuffix>
 					<testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
 				</configuration>
 			</plugin>

@@ -86,7 +86,7 @@ public class DataCoreTckLauncher {
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckCorePersistence";
         Type type = Type.JAKARTA;
-        String specName = "Data(Core-Persistence)";
+        String specName = "Data (Core, Persistence)";
         String relativeTckRunner = "publish/tckRunner/platform/";
         TCKRunner.runTCK(persistenceServer, bucketName, testName, type, specName, null, relativeTckRunner, additionalProps);
     }
@@ -125,7 +125,7 @@ public class DataCoreTckLauncher {
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckCoreNoSQL";
         Type type = Type.JAKARTA;
-        String specName = "Data-(Core-NoSQL)";
+        String specName = "Data (Core, NoSQL)";
         String relativeTckRunner = "publish/tckRunner/platform/";
         TCKRunner.runTCK(noSQLServer, bucketName, testName, type, specName, null, relativeTckRunner, additionalProps);
     }
