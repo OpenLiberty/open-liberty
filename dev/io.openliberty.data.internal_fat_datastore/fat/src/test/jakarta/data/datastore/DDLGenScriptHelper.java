@@ -20,6 +20,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Stream;
@@ -90,6 +91,8 @@ public abstract class DDLGenScriptHelper {
             Log.info(DDLGenScriptHelper.class, methodName, "    " + fileName);
         }
 
+        Collections.sort(ddlFileNames);
+
         return ddlFileNames;
     }
 
@@ -102,7 +105,7 @@ public abstract class DDLGenScriptHelper {
     public static List<String> getExpectedDDLFiles() {
         File ddlDir = new File("test-resources/ddl/");
         assertTrue(ddlDir.isDirectory());
-        return Stream.of(ddlDir.listFiles()).map(file -> file.getName()).toList();
+        return Stream.of(ddlDir.listFiles()).map(file -> file.getName()).sorted().toList();
     }
 
     /**
