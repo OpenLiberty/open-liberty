@@ -313,7 +313,7 @@ public class DDLGenerationMBeanImpl extends StandardMBean implements DDLGenerati
             // Now we have to compare two DDLGenerationParticipant implementations of the same type,
             // but do not provide a comparator. Always put the new participant after the current participant
             // (o1 > o2) This will maintain insertion order which matches the previous behavior.
-            return 1;
+            return 1; // TODO avoid this by making DDLGenerationParticipant extend Comparable and update implementations
         }
 
     }
