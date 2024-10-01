@@ -3590,13 +3590,6 @@ public class LibertyServer implements LogMonitorClient {
 
                                                      "RequestTimingServer", //com.ibm.ws.request.timing_fat
 
-                                                     "checkpointMPJWT", //io.openliberty.checkpoint_fat
-                                                     "checkpointMPHealth", //io.openliberty.checkpoint_fat
-                                                     "checkpointPasswordUtilities", //io.openliberty.checkpoint_fat
-                                                     "timeoutServer", //io.openliberty.checkpoint_fat
-                                                     "checkpointMPMetrics", //io.openliberty.checkpoint_fat
-                                                     "checkpointMPOpenAPIConfig", //io.openliberty.checkpoint_fat
-
                                                      "io.openliberty.jcache.internal.fat.jwt.auth.cache.1", //io.openliberty.checkpoint_fat_jcache_hazelcast
                                                      "io.openliberty.jcache.internal.fat.jwt.auth.cache.2", //io.openliberty.checkpoint_fat_jcache_hazelcast
 
