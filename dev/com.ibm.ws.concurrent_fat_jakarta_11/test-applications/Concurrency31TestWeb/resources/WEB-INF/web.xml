@@ -16,6 +16,19 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_1.xsd">
 
+  <env-entry>
+    <env-entry-name>java:comp/env/TestEntry</env-entry-name>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-value>TestValue1</env-entry-value>
+  </env-entry>
+
+  <context-service>
+    <name>java:app/concurrent/AppAndTimeZoneCtx</name>
+    <propagated>Application</propagated>
+    <propagated>TimeZone</propagated>
+    <unchanged>Remaining</unchanged>
+  </context-service>
+
   <!-- TODO concurrency resources with virtual=true -->
 
   <managed-thread-factory>
@@ -26,6 +39,7 @@
 
   <managed-thread-factory>
     <name>java:comp/concurrent/webdd/virtual-thread-factory</name>
+    <context-service-ref>java:app/concurrent/AppAndTimeZoneCtx</context-service-ref>
     <virtual>true</virtual>
   </managed-thread-factory>
 
