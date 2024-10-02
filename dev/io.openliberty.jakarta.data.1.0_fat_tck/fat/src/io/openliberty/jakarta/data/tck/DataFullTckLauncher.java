@@ -65,15 +65,17 @@ public class DataFullTckLauncher {
         additionalProps.put("jimage.dir", server.getServerSharedPath() + "jimage/output/");
         additionalProps.put("tck_protocol", "servlet");
         additionalProps.put("jakarta.profile", "full");
+        additionalProps.put("jakarta.tck.database.type", "relational");
+        additionalProps.put("jakarta.tck.database.name", FATSuite.relationalDatabase.getClass().getSimpleName());
 
         //Always skip signature tests on full profile (already tested in core profile)
-        additionalProps.put("included.groups", "full & persistence & !signature");
+        additionalProps.put("included.groups", "platform & persistence & !signature");
 
         additionalProps.put("excluded.tests", FATSuite.getExcludedTestByDatabase(DatabaseContainerType.valueOf(FATSuite.relationalDatabase)));
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.0-RC1");
+        additionalProps.put("jakarta.data.tck.version", "1.0.1");
 
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckFull";
