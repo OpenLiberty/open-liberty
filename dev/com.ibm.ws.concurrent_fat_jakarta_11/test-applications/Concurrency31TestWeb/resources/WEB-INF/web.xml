@@ -23,13 +23,18 @@
   </env-entry>
 
   <context-service>
-    <name>java:app/concurrent/AppAndTimeZoneCtx</name>
+    <name>java:app/concurrent/webdd/AppAndTimeZoneCtx</name>
     <propagated>Application</propagated>
     <propagated>TimeZone</propagated>
     <unchanged>Remaining</unchanged>
   </context-service>
 
-  <!-- TODO concurrency resources with virtual=true -->
+  <managed-scheduled-executor>
+    <name>java:comp/concurrent/webdd/managed-scheduled-executor</name>
+    <context-service-ref>java:app/concurrent/webdd/AppAndTimeZoneCtx</context-service-ref>
+    <max-async>2</max-async>
+    <virtual>true</virtual>
+  </managed-scheduled-executor>
 
   <managed-thread-factory>
     <name>java:global/concurrent/webdd/platform-thread-factory</name>
@@ -39,7 +44,7 @@
 
   <managed-thread-factory>
     <name>java:comp/concurrent/webdd/virtual-thread-factory</name>
-    <context-service-ref>java:app/concurrent/AppAndTimeZoneCtx</context-service-ref>
+    <context-service-ref>java:app/concurrent/webdd/AppAndTimeZoneCtx</context-service-ref>
     <virtual>true</virtual>
   </managed-thread-factory>
 
