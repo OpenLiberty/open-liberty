@@ -756,7 +756,7 @@ CWWKD1077.defaultds.not.found.explanation=Jakarta Data repositories default to \
 CWWKD1077.defaultds.not.found.useraction=Configure the Jakarta EE default \
  data source or specify a different data store for the repository.
 
-CWWKD1078.datastore.not.found=CWWKD1078E: The {0} repository interface(s) from the \
+CWWKD1078.datastore.not.found=CWWKD1078E: The {0} repository interfaces from the \
  {1} application artifact specify a {2} data store that does not match the ID of a \
  dataSource element or a databaseStore element in server configuration, or it does \
  not match the JNDI name of a data source, a data source resource reference, or \
@@ -779,7 +779,7 @@ CWWKD1078.datastore.not.found.useraction=Ensure that the resource is configured 
  correctly. If using a JNDI name, ensure that the scope of the JNDI name makes \
  the resource accessible to the application artifact that provides the repository.
 
-CWWKD1079.jndi.not.found=CWWKD1079E: The {0} repository interface(s) from the \
+CWWKD1079.jndi.not.found=CWWKD1079E: The {0} repository interfaces from the \
  {1} application artifact specify a data store with the {2} JNDI name, \
  but a data source, data source resource reference, or persistence unit reference \
  with that JNDI name is not accessible to the application artifact, \
@@ -803,7 +803,7 @@ CWWKD1079.jndi.not.found.useraction=Ensure that the resource is configured \
  correctly, and ensure that the scope of the JNDI name makes the resource \
  accessible to the application artifact that provides the repository.
 
-CWWKD1080.datastore.general.err=CWWKD1080E: The {0} repository interface(s) from \
+CWWKD1080.datastore.general.err=CWWKD1080E: The {0} repository interfaces from \
  the {1} application artifact are not available because of an error. \
  The error might be due to a configuration problem, or the {2} data store for \
  the repository might not be available. The error is: {3}.
@@ -813,7 +813,7 @@ CWWKD1080.datastore.general.err.useraction=Locate the repository interfaces and 
  the data store configuration make corrections if needed.
 
 CWWKD1081.entity.general.err=CWWKD1081E: Due to an error, the {0} entity is \
- not available to the {1} repository interface(s) that use the {2} data store. \
+ not available to the {1} repository interfaces that use the {2} data store. \
  The error is {3}.
 CWWKD1081.entity.general.err.explanation=An error prevents the \
  specified entity from being used.
