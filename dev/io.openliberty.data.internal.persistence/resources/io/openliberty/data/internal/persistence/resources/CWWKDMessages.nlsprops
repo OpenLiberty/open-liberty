@@ -756,8 +756,8 @@ CWWKD1077.defaultds.not.found.explanation=Jakarta Data repositories default to \
 CWWKD1077.defaultds.not.found.useraction=Configure the Jakarta EE default \
  data source or specify a different data store for the repository.
 
-CWWKD1078.datastore.not.found=CWWKD1078E: The {0} application artifact has a \
- {1} repository interface with a {2} data store that does not match the Id of a \
+CWWKD1078.datastore.not.found=CWWKD1078E: The {0} repository interface(s) from the \
+ {1} application artifact specify a {2} data store that does not match the ID of a \
  dataSource element or a databaseStore element in server configuration, or it does \
  not match the JNDI name of a data source, a data source resource reference, or \
  a persistence unit reference that is accessible to the application artifact, \
@@ -772,15 +772,15 @@ CWWKD1078.datastore.not.found=CWWKD1078E: The {0} application artifact has a \
  file to have a persistence-unit element with a matching name attribute. \
  For example, {8}
 CWWKD1078.datastore.not.found.explanation=The data store of a Jakarta Data \
- repository can be the Id of a dataSource element or databaseStore element \
+ repository can be the ID of a dataSource element or databaseStore element \
  in server configuration, or it can be a JNDI name of a data source, data source \
  resource reference, or persistence unit reference.
 CWWKD1078.datastore.not.found.useraction=Ensure that the resource is configured \
  correctly. If using a JNDI name, ensure that the scope of the JNDI name makes \
  the resource accessible to the application artifact that provides the repository.
 
-CWWKD1079.jndi.not.found=CWWKD1079E: The {0} application artifact has a \
- {1} repository interface with its data store assigned to the {2} JNDI name, \
+CWWKD1079.jndi.not.found=CWWKD1079E: The {0} repository interface(s) from the \
+ {1} application artifact specify a data store with the {2} JNDI name, \
  but a data source, data source resource reference, or persistence unit reference \
  with that JNDI name is not accessible to the application artifact, \
  or one of the related resources is not configured correctly. \
@@ -803,19 +803,19 @@ CWWKD1079.jndi.not.found.useraction=Ensure that the resource is configured \
  correctly, and ensure that the scope of the JNDI name makes the resource \
  accessible to the application artifact that provides the repository.
 
-CWWKD1080.datastore.general.err=CWWKD1080E: The {0} repository interfaces from \
+CWWKD1080.datastore.general.err=CWWKD1080E: The {0} repository interface(s) from \
  the {1} application artifact are not available because of an error. \
  The error might be due to a configuration problem, or the {2} data store for \
  the repository might not be available. The error is: {3}.
-CWWKD1080.datastore.general.err.explanation=An error was found that prevents \
+CWWKD1080.datastore.general.err.explanation=An error prevents \
  the specified repositories from being used.
 CWWKD1080.datastore.general.err.useraction=Locate the repository interfaces and \
- the data store configuration and determine whether corrections are needed.
+ the data store configuration make corrections if needed.
 
 CWWKD1081.entity.general.err=CWWKD1081E: Due to an error, the {0} entity is \
- not available to the {1} repository interfaces that use the {2} data store. \
+ not available to the {1} repository interface(s) that use the {2} data store. \
  The error is {3}.
-CWWKD1081.entity.general.err.explanation=An error was found that prevents the \
+CWWKD1081.entity.general.err.explanation=An error prevents the \
  specified entity from being used.
-CWWKD1081.entity.general.err.useraction=Locate the entity and determine whether \
- corrections are needed.
+CWWKD1081.entity.general.err.useraction=Locate the entity and make \
+ corrections if needed.

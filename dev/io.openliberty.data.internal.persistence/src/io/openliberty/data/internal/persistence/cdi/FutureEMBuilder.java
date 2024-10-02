@@ -430,8 +430,8 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
 
         DataException x = exc(DataException.class,
                               "CWWKD1078.datastore.not.found",
-                              metadata.getJ2EEName(),
                               repositoryInterface.getName(),
+                              metadata.getJ2EEName(),
                               dataStore,
                               dataSourceConfigExample,
                               databaseStoreConfigExample,
@@ -548,8 +548,8 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
 
         DataException x = exc(DataException.class,
                               "CWWKD1079.jndi.not.found",
-                              metadata.getJ2EEName(),
                               repositoryInterface.getName(),
+                              metadata.getJ2EEName(),
                               dataStore,
                               "@Resource(name=\"java:app/env/jdbc/dsRef\",lookup=\"jdbc/ds\")",
                               "jndiName=\"jdbc/ds\"",
