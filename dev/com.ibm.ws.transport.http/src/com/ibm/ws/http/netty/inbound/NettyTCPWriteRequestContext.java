@@ -327,6 +327,10 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
             } else {
 
                 if (lastWriteFuture != null) {
+                    // We don't have to do the callback if everything wrote properly
+                    if (lastWriteFuture.isDone()) {
+                        return vc;
+                    }
                     lastWriteFuture.addListener((ChannelFutureListener) future -> {
                         if (future.isSuccess()) {
                             callback.complete(vc, this);
