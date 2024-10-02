@@ -68,7 +68,7 @@ public class JdbcConfigTestCheckpoint extends BatchFATHelper {
      * tests (against all configurations) have run.
      */
     @ClassRule
-    public static DynamicConfigRule dynamicConfigRule = new DynamicConfigRule().setServer(server).setInitialSetup(initialSetup).setFinalTearDown(finalTearDown).setAfterEach(afterEach).addServerXml("JDBCPersistence/jdbc.config.myschema1.server.xml").addServerXml("JDBCPersistence/jdbc.config.myschema2.server.xml").addServerXml("JDBCPersistence/jdbc.config.myschema1.tp1.server.xml").addServerXml("JDBCPersistence/jdbc.config.myschema1.tp2.server.xml");
+    public static DynamicConfigRule dynamicConfigRule = new DynamicConfigRule().setServer(server).setInitialSetup(initialSetup).setFinalTearDown(finalTearDown).setAfterEach(afterEach).addServerXml("JDBCPersistenceCheckpoint/jdbc.config.myschema1.server.xml").addServerXml("JDBCPersistenceCheckpoint/jdbc.config.myschema2.server.xml").addServerXml("JDBCPersistenceCheckpoint/jdbc.config.myschema1.tp1.server.xml").addServerXml("JDBCPersistenceCheckpoint/jdbc.config.myschema1.tp2.server.xml");
 
     /**
      * Start the server and setup the DB.
@@ -83,9 +83,9 @@ public class JdbcConfigTestCheckpoint extends BatchFATHelper {
         BatchAppUtils.addDropinsDbServletAppWar(server);
 
         // Start server
-        server.setServerConfigurationFile("JDBCPersistence/jdbc.config.myschema1.server.xml");
-        server.startServer("JdbcConfig.log");
+        server.setServerConfigurationFile("JDBCPersistenceCheckpoint/jdbc.config.myschema1.server.xml");
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, null);
+        server.startServer("JdbcConfig.log");
         server.waitForStringInLog("CWWKF0011I", 20000);
         FatUtils.waitForSmarterPlanet(server);
 
@@ -139,7 +139,7 @@ public class JdbcConfigTestCheckpoint extends BatchFATHelper {
      * Log helper.
      */
     public static void log(String method, String msg) {
-        Log.info(JdbcConfigTest.class, method, msg);
+        Log.info(JdbcConfigTestCheckpoint .class, method, msg);
     }
 
 }
