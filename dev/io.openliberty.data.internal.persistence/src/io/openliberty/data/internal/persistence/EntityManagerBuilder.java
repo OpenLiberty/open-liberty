@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 import static jakarta.data.repository.By.ID;
 
 import java.beans.IntrospectionException;
@@ -122,6 +123,10 @@ public abstract class EntityManagerBuilder {
                 Class<?> jpaEntityClass = entityType.getJavaType();
                 Class<?> userEntityClass = recordClass == null ? jpaEntityClass : recordClass;
 
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "collecting info for " +
+                                       userEntityClass.getName());
+
                 try {
                     for (Attribute<?, ?> attr : entityType.getAttributes()) {
                         String attributeName = attr.getName();
@@ -221,10 +226,11 @@ public abstract class EntityManagerBuilder {
                             String conflictingAttribute = attributeNames.putIfAbsent(relationAttributeName_, fullAttributeName);
 
                             if (conflictingAttribute != null)
-                                throw new MappingException("The entity " + entityType.getName() + " defines a basic attribute " + conflictingAttribute
-                                                           + " and a relational attribute " + prefix
-                                                           + " which results in an overloaded path expression " + relationAttributeName_
-                                                           + " necessary for queries and sorting."); //TODO NLS
+                                throw exc(MappingException.class,
+                                          "CWWKD1075.entity.prop.conflict",
+                                          userEntityClass.getName(),
+                                          fullAttributeName,
+                                          conflictingAttribute);
 
                             // Allow a qualified name such as findByAddressStreetName if it doesn't overlap
                             // Check for conflicts with attributes defined on the entity to avoid ambiguous queries and sorts
@@ -234,11 +240,15 @@ public abstract class EntityManagerBuilder {
                             // TODO need to handle the situation where a field name on the base entity conflicts with the column name
                             // of an embeddable.  See issue: https://github.com/OpenLiberty/open-liberty/issues/29643
 
-                            if (conflictingAttribute != null && trace && tc.isWarningEnabled())
-                                Tr.debug(tc, "The entity " + entityType.getName() + " defines a basic attribute " + conflictingAttribute
-                                             + " and a relational attribute " + prefix
-                                             + " which results in an overloaded path expression " + relationAttributeNameUndelimited
-                                             + " the relational attribute will be ignored."); //TODO NLS swap to warning
+                            // Precedence for this valid scenario is defined under
+                            // 2.9.2. Scenario 2: Customer Repository with
+                            // Resolution that requires a Delimiter
+                            if (conflictingAttribute != null && trace && tc.isDebugEnabled())
+                                Tr.debug(tc, "overlapping undelimited name " +
+                                             relationAttributeNameUndelimited +
+                                             " will resolve to basic attribute " +
+                                             conflictingAttribute + " instead of " +
+                                             fullAttributeName);
 
                             attributeAccessors.put(fullAttributeName, relAccessors);
 

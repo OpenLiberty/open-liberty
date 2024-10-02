@@ -16,7 +16,7 @@ configurations {
 }
 
 dependencies {
-    sourceJar 'org.apache.tomcat:tomcat-jasper-el:11.0.0-M24:sources'
+    sourceJar 'org.apache.tomcat:tomcat-jasper-el:11.0.0-M26:sources'
 }
 
 task copySource(type: Copy) {

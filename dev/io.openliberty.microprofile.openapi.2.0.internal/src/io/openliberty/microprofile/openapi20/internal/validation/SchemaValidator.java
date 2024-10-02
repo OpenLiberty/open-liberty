@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,15 +12,21 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.internal.validation;
 
+import static java.util.stream.Collectors.joining;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.openapi.models.media.Schema;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
 
 import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult.ValidationEvent;
+import io.openliberty.microprofile.openapi20.internal.services.OpenAPIModelOperations;
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
 import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
@@ -32,6 +38,9 @@ import io.smallrye.openapi.runtime.io.schema.SchemaConstant;
 public class SchemaValidator extends TypeValidator<Schema> {
 
     private static final TraceComponent tc = Tr.register(SchemaValidator.class);
+
+    // Non-final for unit testing
+    private static ServiceCaller<OpenAPIModelOperations> MODEL_OPS = new ServiceCaller<>(SchemaValidator.class, OpenAPIModelOperations.class);
 
     private static final SchemaValidator INSTANCE = new SchemaValidator();
 
@@ -49,11 +58,17 @@ public class SchemaValidator extends TypeValidator<Schema> {
 
             String reference = t.getRef();
             if (reference != null && !reference.isEmpty()) {
-                ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
+                helper.validateReference(context, key, reference, Schema.class);
                 return;
             }
 
-            if (t.getType() != null && Constants.SCHEMA_TYPE_ARRAY.equals(t.getType().toString()) && t.getItems() == null) {
+            Set<String> types = MODEL_OPS.run(s -> s.getTypes(t))
+                                         .map(typeList -> typeList.stream()
+                                                                  .map(Object::toString)
+                                                                  .collect(Collectors.toSet()))
+                                         .orElse(null);
+
+            if (types != null && types.contains(Constants.SCHEMA_TYPE_ARRAY) && t.getItems() == null) {
                 final String message = Tr.formatMessage(tc, ValidationMessageConstants.SCHEMA_TYPE_ARRAY_NULL_ITEMS);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
@@ -68,14 +83,13 @@ public class SchemaValidator extends TypeValidator<Schema> {
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
 
-            String type = (t.getType() != null) ? t.getType().toString() : Constants.SCHEMA_TYPE_NULL;
             ArrayList<String> propertiesInvalidValue = new ArrayList<>();
             ArrayList<String> propertiesNotForSchemaType = new ArrayList<>();
             if (t.getMaxLength() != null) {
                 if (t.getMaxLength().intValue() < 0) {
                     propertiesInvalidValue.add(SchemaConstant.PROP_MAX_LENGTH);
                 }
-                if (!type.equals(Constants.SCHEMA_TYPE_STRING)) {
+                if (types != null && !types.contains(Constants.SCHEMA_TYPE_STRING)) {
                     propertiesNotForSchemaType.add(SchemaConstant.PROP_MAX_LENGTH);
                 }
             }
@@ -84,7 +98,7 @@ public class SchemaValidator extends TypeValidator<Schema> {
                 if (t.getMinLength().intValue() < 0) {
                     propertiesInvalidValue.add(SchemaConstant.PROP_MIN_LENGTH);
                 }
-                if (!type.equals(Constants.SCHEMA_TYPE_STRING)) {
+                if (types != null && !types.contains(Constants.SCHEMA_TYPE_STRING)) {
                     propertiesNotForSchemaType.add(SchemaConstant.PROP_MIN_LENGTH);
                 }
             }
@@ -93,7 +107,7 @@ public class SchemaValidator extends TypeValidator<Schema> {
                 if (t.getMinItems().intValue() < 0) {
                     propertiesInvalidValue.add(SchemaConstant.PROP_MIN_ITEMS);
                 }
-                if (!type.equals(Constants.SCHEMA_TYPE_ARRAY)) {
+                if (types != null && !types.contains(Constants.SCHEMA_TYPE_ARRAY)) {
                     propertiesNotForSchemaType.add(SchemaConstant.PROP_MIN_ITEMS);
                 }
             }
@@ -102,12 +116,12 @@ public class SchemaValidator extends TypeValidator<Schema> {
                 if (t.getMaxItems().intValue() < 0) {
                     propertiesInvalidValue.add(SchemaConstant.PROP_MAX_ITEMS);
                 }
-                if (!type.equals(Constants.SCHEMA_TYPE_ARRAY)) {
+                if (types != null && !types.contains(Constants.SCHEMA_TYPE_ARRAY)) {
                     propertiesNotForSchemaType.add(SchemaConstant.PROP_MAX_ITEMS);
                 }
             }
 
-            if (t.getUniqueItems() != null && !type.equals(Constants.SCHEMA_TYPE_ARRAY)) {
+            if (t.getUniqueItems() != null && types != null && !types.contains(Constants.SCHEMA_TYPE_ARRAY)) {
                 propertiesNotForSchemaType.add(SchemaConstant.PROP_UNIQUE_ITEMS);
             }
 
@@ -115,7 +129,7 @@ public class SchemaValidator extends TypeValidator<Schema> {
                 if (t.getMinProperties().intValue() < 0) {
                     propertiesInvalidValue.add(SchemaConstant.PROP_MIN_PROPERTIES);
                 }
-                if (!type.equals(Constants.SCHEMA_TYPE_OBJECT)) {
+                if (types != null && !types.contains(Constants.SCHEMA_TYPE_OBJECT)) {
                     propertiesNotForSchemaType.add(SchemaConstant.PROP_MIN_PROPERTIES);
                 }
             }
@@ -124,7 +138,7 @@ public class SchemaValidator extends TypeValidator<Schema> {
                 if (t.getMaxProperties().intValue() < 0) {
                     propertiesInvalidValue.add(SchemaConstant.PROP_MAX_PROPERTIES);
                 }
-                if (!type.equals(Constants.SCHEMA_TYPE_OBJECT)) {
+                if (types != null && !types.contains(Constants.SCHEMA_TYPE_OBJECT)) {
                     propertiesNotForSchemaType.add(SchemaConstant.PROP_MAX_PROPERTIES);
                 }
             }
@@ -138,7 +152,8 @@ public class SchemaValidator extends TypeValidator<Schema> {
 
             if (!propertiesNotForSchemaType.isEmpty()) {
                 for (String s : propertiesNotForSchemaType) {
-                    final String message = Tr.formatMessage(tc, ValidationMessageConstants.SCHEMA_TYPE_DOES_NOT_MATCH_PROPERTY, s, type);
+                    String typeString = types.size() == 1 ? types.iterator().next() : types.stream().collect(joining(",", "[", "]"));
+                    final String message = Tr.formatMessage(tc, ValidationMessageConstants.SCHEMA_TYPE_DOES_NOT_MATCH_PROPERTY, s, typeString);
                     helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
                 }
             }

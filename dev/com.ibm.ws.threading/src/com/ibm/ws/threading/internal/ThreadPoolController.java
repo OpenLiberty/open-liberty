@@ -773,15 +773,20 @@ public final class ThreadPoolController {
     /**
      * Switch to regular pool sizing after startup completes
      */
-    void startupCompleted() {
+    synchronized void startupCompleted() {
         // if pool hung during startup, we will already have moved out of startup
         // pool size mode, so check that first
         if (!initialStartupCompleted) {
             initialStartupCompleted = true;
+            if (threadPool == null) {
+                // not expected, but we can just return quietly
+                return;
+            }
             setPoolSize(coreThreads);
-            // no need to run the controller cycle if there will be no pool size changes
+            // make sure the controller cycle is running or not, as per core/max thread values
             if (coreThreads < maxThreads) {
-                if (activeTask == null) {
+                // cycle should already be running? anyway check and start if needed
+                if (activeTask == null && !paused) {
                     activeTask = new IntervalTask(this);
                     timer.schedule(activeTask, interval, interval);
                 }

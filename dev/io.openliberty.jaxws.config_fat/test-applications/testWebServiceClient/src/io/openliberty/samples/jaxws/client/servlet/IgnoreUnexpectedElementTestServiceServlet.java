@@ -11,6 +11,7 @@ package io.openliberty.samples.jaxws.client.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -37,11 +38,20 @@ public class IgnoreUnexpectedElementTestServiceServlet extends HttpServlet {
         resp.setCharacterEncoding("utf-8");
 
         SayHelloService portWithHandler = service.getHelloServicePort();
+        String target = req.getParameter("target");
+
+	if (target.equals("AddReqContextProps"))  {
+           System.out.println("REQ_CTX: Need to add reqcontext properties...");
+           BindingProvider bp1 = (BindingProvider) portWithHandler;
+           Map<String, Object> requestContext = bp1.getRequestContext();
+           requestContext.put("cxf.add.gzip.out.interceptor", "true");
+           requestContext.put("cxf.add.gzip.in.interceptor", "true");
+           target = "AddedElement";
+        }
 
         reConfigPorts(req, (BindingProvider) portWithHandler, "SayHelloService");
 
         PrintWriter out = null;
-        String target = req.getParameter("target");
 
         try {
             out = resp.getWriter();

@@ -44,6 +44,7 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
+import org.apache.cxf.common.util.PropertyUtils;
 
 /**
  * CXF interceptor that compresses outgoing messages using gzip and sets the
@@ -134,14 +135,21 @@ public class GZIPOutInterceptor extends AbstractPhaseInterceptor<Message> {
     }
 
     public void handleMessage(Message message) {
-        // Liberty Change begin
+        // Liberty Change start
         boolean isLoggableFine = LOG.isLoggable(Level.FINE);
         if (isLoggableFine) {
            LOG.fine("Inside handleMessage of GZIPOutInterceptor");
         }
+        boolean isGzipProp =  PropertyUtils.isTrue(message.getContextualProperty("cxf.add.gzip.out.interceptor"));
+        if (isLoggableFine) {
+           LOG.fine("isGzipProp: " + isGzipProp);
+        }
         UseGzip use = gzipPermitted(message);
         if (isLoggableFine) {
            LOG.fine("Is gzipPermitted?: " + use);
+        }
+        if (isGzipProp) {
+           use = UseGzip.YES;
         }
         // Liberty Change end
         if (use != UseGzip.NO) {

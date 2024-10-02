@@ -53,12 +53,13 @@ public class DataStandaloneTckLauncher {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("jimage.dir", "/jimage/output/");
         additionalProps.put("jakarta.profile", "none");
-
+        additionalProps.put("jakarta.tck.database.type", "document");
+        additionalProps.put("jakarta.tck.database.name", FATSuite.noSQLDatabase.getClass().getSimpleName());
         additionalProps.put("included.groups", "standalone & nosql");
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.0-RC1");
+        additionalProps.put("jakarta.data.tck.version", "1.0.1");
 
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckStandaloneNoSQL";

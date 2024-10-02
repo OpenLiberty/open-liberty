@@ -10,10 +10,14 @@
 package io.openliberty.microprofile.openapi20.internal.utils;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.eclipse.microprofile.openapi.models.info.Info;
+import org.eclipse.microprofile.openapi.models.media.Schema;
+import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -124,6 +128,12 @@ public class OpenAPIModelOperationsImpl implements OpenAPIModelOperations {
             Tr.event(tc, "Created base OpenAPI document");
         }
         return openAPI;
+    }
+
+    @Override
+    public List<SchemaType> getTypes(Schema schema) {
+        SchemaType type = schema.getType();
+        return type == null ? null : Collections.singletonList(type);
     }
 
 }

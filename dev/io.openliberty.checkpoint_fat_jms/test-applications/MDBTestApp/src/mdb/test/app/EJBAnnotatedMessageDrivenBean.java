@@ -27,11 +27,6 @@ import javax.jms.TextMessage;
                                                        @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge"),
 
                                                        @ActivationConfigProperty(propertyName = "connectionFactoryLookup", propertyValue = "newQCF"),
-
-                                                       @ActivationConfigProperty(propertyName = "userName", propertyValue = "user1"),
-
-                                                       @ActivationConfigProperty(propertyName = "password", propertyValue = "user1pwd")
-
 })
 public class EJBAnnotatedMessageDrivenBean implements MessageListener {
 

@@ -93,6 +93,7 @@ public class GzipInterceptorsTest {
     @Test
     public void testEnableGZIPInterceptors() throws Exception {
 
+        gzipServer.reconfigureServer("GzipInterceptorsTestServer/server.xml", "CWWKG0017I");
         String response = runTest(gzipServer, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
         // Log response to output.txt
 	LOG.info("testEnableGZIPInterceptors - Response = " + response);
@@ -131,6 +132,59 @@ public class GzipInterceptorsTest {
 
     }
 
+    /**
+     * 1. Test the default behavior of CXF for GZIPOutInterceptor and GZIPInInterceptor interceptors, which are
+     *    not enabled. The handleMessage() methods of the GZIP interceptors should not be invoked.
+     * 2. Test the requestcontext properties: cxf.add.gzip.out.interceptor=true and cxf.add.gzip.in.interceptor=true, 
+     *    which should enable the GZIP interceptors and cause the handleMessage() methods of GZIPOutInterceptor and 
+     *    GZIPInInterceptor to be invoked.
+     * 
+     * Server config - server.xml
+     * Expected response -  Hello, AddedElement
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testEnableGZIPUsingReqContextProps() throws Exception {
+
+        // Test default behavior - gzip interceptors should not be enabled, make sure JVM props are disabled.
+	Map<String, String> gzipOptions = new HashMap<>();
+        gzipOptions.put("-Dcom.ibm.ws.beta.edition", "true");
+        gzipOptions.put(GZIP_OUT_INTERCEPTOR_PROP, "false");
+        gzipOptions.put(GZIP_IN_INTERCEPTOR_PROP, "false");
+	gzipServer.setJvmOptions(gzipOptions);
+	gzipServer.stopServer();
+        gzipServer.startServer("EnableGZIPUsingReqContextProps.log");
+        gzipServer.waitForStringInLog("CWWKZ0001I:.*" + APP_NAME);
+
+        String response = runTest(gzipServer, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
+        // Log response to output.txt
+	LOG.info("testEnableGZIPInterceptors - Response = " + response);
+
+	assertTrue("Expected successful response, but response was " + response,
+			response.contains("Hello, AddedElement"));
+
+	String findStr1 = gzipServer.waitForStringInTrace(GZIPOUT_INTERCEPTOR_INVOKED);
+	String findStr2 = gzipServer.waitForStringInTrace(GZIPIN_INTERCEPTOR_INVOKED);
+	assertTrue("Unexpeced output [" + GZIPOUT_INTERCEPTOR_INVOKED + "]  found in the server log", findStr1 == null);
+	assertTrue("Unexpeced output [" + GZIPIN_INTERCEPTOR_INVOKED + "]  found in the server log", findStr2 == null);
+
+        // Test enabling gzip interceptors by setting requestcontext properties on client request
+
+        response = runTest(gzipServer, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=AddReqContextProps");
+        // Log response to output.txt
+	LOG.info("testEnableGZIPInterceptors - Response 2 = " + response);
+
+	assertTrue("Expected successful response 2, but response was " + response,
+			response.contains("Hello, AddedElement"));
+
+	findStr1 = gzipServer.waitForStringInTrace(GZIPOUT_INTERCEPTOR_INVOKED);
+	findStr2 = gzipServer.waitForStringInTrace(GZIPIN_INTERCEPTOR_INVOKED);
+
+	assertTrue("Unable to find the output [" + GZIPOUT_INTERCEPTOR_INVOKED + "]  in the server log", findStr1 != null);
+	assertTrue("Unable to find the output [" + GZIPIN_INTERCEPTOR_INVOKED + "]  in the server log", findStr2 != null);
+
+    }
 
     private String runTest(LibertyServer server, String pathAndParams) throws ProtocolException, IOException {
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + pathAndParams);

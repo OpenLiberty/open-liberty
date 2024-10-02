@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.RecordComponent;
 import java.math.BigDecimal;
@@ -31,10 +32,12 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -76,6 +79,11 @@ public class QueryInfo {
         COUNT, DELETE, DELETE_WITH_ENTITY_PARAM, EXISTS, FIND, FIND_AND_DELETE, INSERT, SAVE, RESOURCE_ACCESS,
         UPDATE, UPDATE_WITH_ENTITY_PARAM, UPDATE_WITH_ENTITY_PARAM_AND_RESULT
     }
+
+    /**
+     * Commonly used result types that are not entities.
+     */
+    private static final Set<Class<?>> NON_ENTITY_RESULT_TYPES = new HashSet<>();
 
     /**
      * Primitive types for numeric values.
@@ -135,6 +143,17 @@ public class QueryInfo {
                            long.class, Long.class,
                            short.class, Short.class,
                            void.class, Void.class);
+
+    static {
+        for (Entry<Class<?>, Class<?>> e : WRAPPER_CLASSES.entrySet()) {
+            NON_ENTITY_RESULT_TYPES.add(e.getKey()); // primitive classes
+            NON_ENTITY_RESULT_TYPES.add(e.getValue()); // wrapper classes
+        }
+        NON_ENTITY_RESULT_TYPES.add(BigDecimal.class);
+        NON_ENTITY_RESULT_TYPES.add(BigInteger.class);
+        NON_ENTITY_RESULT_TYPES.add(Object.class);
+        NON_ENTITY_RESULT_TYPES.add(String.class);
+    }
 
     /**
      * Information about the type of entity to which the query pertains.
@@ -512,6 +531,48 @@ public class QueryInfo {
         }
 
         return q;
+    }
+
+    /**
+     * Returns true if it is certain the class cannot be an entity
+     * because it is one of the common non-entity result types
+     * or it is an enumeration, interface, or abstract class.
+     * Otherwise, returns false.
+     *
+     * @param c class of result.
+     * @return true if a result of the type might be an entity, otherwise false.
+     */
+    @Trivial
+    public static boolean cannotBeEntity(Class<?> c) {
+        int modifiers;
+        return NON_ENTITY_RESULT_TYPES.contains(c) ||
+               c.isEnum() ||
+               Modifier.isInterface(modifiers = c.getModifiers()) ||
+               Modifier.isAbstract(modifiers);
+    }
+
+    /**
+     * Compute the zero-based offset to use as a starting point for a Limit range.
+     *
+     * @param limit limit that was specified by the application.
+     * @return offset value.
+     * @throws IllegalArgumentException if the starting point for the limited range
+     *                                      is not positive or would overflow
+     *                                      Integer.MAX_VALUE.
+     */
+    int computeOffset(Limit range) {
+        long startIndex = range.startAt() - 1;
+        if (startIndex <= Integer.MAX_VALUE)
+            // The Limit constructor disallows values less than 1.
+            return (int) startIndex;
+        else
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1073.offset.exceeds.max",
+                      startIndex + 1,
+                      range,
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      "Integer.MAX_VALUE (" + Integer.MAX_VALUE + ")");
     }
 
     /**
@@ -1050,7 +1111,7 @@ public class QueryInfo {
         String attribute = methodName.substring(start, endBefore);
 
         if (attribute.length() == 0)
-            throw new MappingException("Entity property name is missing."); // TODO possibly combine with unknown entity property name
+            throw excUnsupportedMethod();
 
         String name = getAttributeName(attribute, true);
 
@@ -1123,7 +1184,12 @@ public class QueryInfo {
                 break;
             case IN:
                 if (ignoreCase)
-                    throw new MappingException(new UnsupportedOperationException("Repository keyword IgnoreCase cannot be combined with the In keyword.")); // TODO
+                    throw exc(UnsupportedOperationException.class,
+                              "CWWKD1074.qbmn.incompat.keywords",
+                              method.getName(),
+                              repositoryInterface.getName(),
+                              "IgnoreCase",
+                              "In");
             default:
                 q.append(attributeExpr).append(negated ? " NOT " : "").append(condition.operator);
                 generateParam(q, ignoreCase, ++paramCount);
@@ -2780,14 +2846,8 @@ public class QueryInfo {
 
             jpql = q.toString();
 
-            // TODO remove this workaround for #28874 and #28920 once fixed
-            if (jpql.equals("SELECT NEW test.jakarta.data.jpa.web.Rebate(id, amount, customerId, purchaseMadeAt, purchaseMadeOn, status, updatedAt, version) FROM RebateEntity WHERE customerId=?1 AND status=test.jakarta.data.jpa.web.Rebate.Status.PAID ORDER BY amount DESC, id ASC"))
-                jpql = "SELECT NEW test.jakarta.data.jpa.web.Rebate(o.id, o.amount, o.customerId, o.purchaseMadeAt, o.purchaseMadeOn, o.status, o.updatedAt, o.version) FROM RebateEntity o WHERE o.customerId=?1 AND o.status=test.jakarta.data.jpa.web.Rebate.Status.PAID ORDER BY o.amount DESC, o.id ASC";
-            // TODO remove this workaround for #28874 once fixed
-            else if (jpql.equals(" FROM NaturalNumber WHERE isOdd = false AND numType = ee.jakarta.tck.data.framework.read.only.NaturalNumber.NumberType.PRIME"))
-                jpql = "SELECT o FROM NaturalNumber o WHERE o.isOdd = false AND o.numType = ee.jakarta.tck.data.framework.read.only.NaturalNumber.NumberType.PRIME";
             // TODO remove this workaround for #28925 once fixed
-            else if (jpql.equals("SELECT ID(THIS) FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR ID(THIS)=:num)"))
+            if (jpql.equals("SELECT ID(THIS) FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR ID(THIS)=:num)"))
                 jpql = "SELECT o.numberId FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR o.numberId=:num)";
         }
     }

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,8 +23,8 @@ import org.eclipse.microprofile.openapi.models.security.SecurityScheme;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
 import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult.ValidationEvent;
+import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
 import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.smallrye.openapi.runtime.io.securityscheme.SecuritySchemeConstant;
 
@@ -50,7 +50,7 @@ public class SecuritySchemeValidator extends TypeValidator<SecurityScheme> {
         String reference = t.getRef();
 
         if (reference != null && !reference.isEmpty()) {
-            ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
+            helper.validateReference(context, key, reference, SecurityScheme.class);
             return;
         }
 

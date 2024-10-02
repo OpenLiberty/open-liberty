@@ -772,8 +772,10 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                             xml.append(name.toUpperCase()) //
                                             .append("\"/>").append(EOLN);
                             xml.append("    </attribute-override>").append(EOLN);
-                            // TODO reject column name collisions?
-                            // collisions are currently only possible if an attribute name includes _
+
+                            // Table name collision detection is unnecessary because
+                            // the same collisions would already be caught by entity
+                            // attribute name collision detection.
                         } else {
                             Map<String, Class<?>> a = embeddableTypes.get(type);
                             if (a == null)

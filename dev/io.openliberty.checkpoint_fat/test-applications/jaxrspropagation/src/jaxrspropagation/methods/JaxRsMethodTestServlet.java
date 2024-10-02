@@ -9,8 +9,8 @@
  *******************************************************************************/
 package jaxrspropagation.methods;
 
+import static javax.ws.rs.client.Entity.text;
 import static jaxrspropagation.spanexporter.SpanDataMatcher.isSpan;
-import static jakarta.ws.rs.client.Entity.text;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
@@ -18,23 +18,25 @@ import static org.hamcrest.Matchers.is;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-import jaxrspropagation.spanexporter.TestSpans;
-import jaxrspropagation.spanexporter.InMemorySpanExporter;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
-import jakarta.inject.Inject;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.Response;
+import jaxrspropagation.spanexporter.InMemorySpanExporter;
+import jaxrspropagation.spanexporter.TestSpans;
 
 /**
  * Test tracing requests of each JAX-RS method type
@@ -56,8 +58,11 @@ public class JaxRsMethodTestServlet extends FATServlet {
     public void testGet() {
         URI testUri = getUri();
         Span span = utils.withTestSpan(() -> {
-            Response response = ClientBuilder.newClient().target(testUri).request()
-                            .build("GET").invoke();
+            Response response = ClientBuilder.newClient()
+                            .target(testUri)
+                            .request()
+                            .build("GET")
+                            .invoke();
             assertThat(response.getStatus(), equalTo(200));
             assertThat(response.readEntity(String.class), equalTo("get"));
         });
@@ -84,7 +89,9 @@ public class JaxRsMethodTestServlet extends FATServlet {
     public void testPost() {
         URI testUri = getUri();
         Span span = utils.withTestSpan(() -> {
-            Response response = ClientBuilder.newClient().target(testUri).request()
+            Response response = ClientBuilder.newClient()
+                            .target(testUri)
+                            .request()
                             .buildPost(text("test"))
                             .invoke();
             assertThat(response.getStatus(), equalTo(200));
@@ -113,7 +120,9 @@ public class JaxRsMethodTestServlet extends FATServlet {
     public void testPut() {
         URI testUri = getUri();
         Span span = utils.withTestSpan(() -> {
-            Response response = ClientBuilder.newClient().target(testUri).request()
+            Response response = ClientBuilder.newClient()
+                            .target(testUri)
+                            .request()
                             .buildPut(text("test"))
                             .invoke();
             assertThat(response.getStatus(), equalTo(200));
@@ -142,7 +151,9 @@ public class JaxRsMethodTestServlet extends FATServlet {
     public void testHead() {
         URI testUri = getUri();
         Span span = utils.withTestSpan(() -> {
-            Response response = ClientBuilder.newClient().target(testUri).request()
+            Response response = ClientBuilder.newClient()
+                            .target(testUri)
+                            .request()
                             .build("HEAD")
                             .invoke();
             assertThat(response.getStatus(), equalTo(204));
@@ -172,7 +183,9 @@ public class JaxRsMethodTestServlet extends FATServlet {
     public void testDelete() {
         URI testUri = getUri();
         Span span = utils.withTestSpan(() -> {
-            Response response = ClientBuilder.newClient().target(testUri).request()
+            Response response = ClientBuilder.newClient()
+                            .target(testUri)
+                            .request()
                             .build("DELETE")
                             .invoke();
             assertThat(response.getStatus(), equalTo(200));
@@ -201,7 +214,9 @@ public class JaxRsMethodTestServlet extends FATServlet {
     public void testPatch() {
         URI testUri = getUri();
         Span span = utils.withTestSpan(() -> {
-            Response response = ClientBuilder.newClient().target(testUri).request()
+            Response response = ClientBuilder.newClient()
+                            .target(testUri)
+                            .request()
                             .build("PATCH", text("test"))
                             .invoke();
             assertThat(response.getStatus(), equalTo(200));
@@ -230,12 +245,25 @@ public class JaxRsMethodTestServlet extends FATServlet {
     public void testOptions() {
         URI testUri = getUri();
         Span span = utils.withTestSpan(() -> {
-            Response response = ClientBuilder.newClient().target(testUri).request()
+            Response response = ClientBuilder.newClient()
+                            .target(testUri)
+                            .request()
                             .build("OPTIONS")
                             .invoke();
             assertThat(response.getStatus(), equalTo(200));
             assertThat(response.readEntity(String.class), equalTo("options"));
-            assertThat(response.getStringHeaders().get(HttpHeaders.ALLOW), containsInAnyOrder("GET", "HEAD", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+            List<String> result = response.getStringHeaders().get(HttpHeaders.ALLOW);
+            try {
+                assertThat(result, containsInAnyOrder("GET", "HEAD", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+            } catch (Throwable e) {
+                if (result.size() == 1) {
+                    // jaxrs in EE8 returns a list of 1 with a comma separated value
+                    result = Arrays.asList(result.get(0).split(","));
+                } else {
+                    throw e;
+                }
+                assertThat(result, containsInAnyOrder("GET", "HEAD", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+            }
         });
 
         List<SpanData> spans = exporter.getFinishedSpanItems(3, span.getSpanContext().getTraceId());

@@ -1669,6 +1669,7 @@ public class LibertyServer implements LogMonitorClient {
         if (info.VENDOR == Vendor.IBM) {
             JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#ServiceFactoryUse.<init>*\"";
             JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#org/eclipse/osgi/internal/serviceregistry/ServiceFactoryUse.<init>*\"";
+            JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/NoClassDefFoundError\",msg_filter=\"com.ibm.ws.classloading.internal.providers.Providers\",request=exclusive+prepwalk+serial+preempt";
         }
 
         // Add JaCoCo java agent to generate code coverage for FAT test run
@@ -3237,7 +3238,7 @@ public class LibertyServer implements LogMonitorClient {
             ProgramOutput output = null;
 
             if (!runAsAWindowService) {
-                output = machine.execute(cmd, parameters, useEnvVars);
+                output = machine.execute(cmd, parameters, machine.getWorkDir(), useEnvVars, 300);
             } else {
                 ArrayList<String> parametersList = new ArrayList<String>();
                 for (int i = 0; i < parameters.length; i++) {
@@ -3248,8 +3249,11 @@ public class LibertyServer implements LogMonitorClient {
                 String[] stopServiceParameters = stopServiceParmList.toArray(new String[] {});
                 String[] removeServiceParameters = removeServiceParmList.toArray(new String[] {});
 
-                output = machine.execute(cmd, stopServiceParameters, useEnvVars);
-                output = machine.execute(cmd, removeServiceParameters, useEnvVars);
+                try {
+                    output = machine.execute(cmd, stopServiceParameters, machine.getWorkDir(), useEnvVars, 300);
+                } finally {
+                    output = machine.execute(cmd, removeServiceParameters, machine.getWorkDir(), useEnvVars, 300);
+                }
             }
 
             String stdout = output.getStdout();
@@ -3530,12 +3534,6 @@ public class LibertyServer implements LogMonitorClient {
 
                                                      "Config13TCKServer", //com.ibm.ws.microprofile.config.1.3_fat_tck
 
-                                                     "CDIFaultTolerance", //com.ibm.ws.microprofile.faulttolerance.cdi_fat
-                                                     "FaultToleranceMultiModule", //com.ibm.ws.microprofile.faulttolerance.cdi_fat
-                                                     "AsyncFaultTolerance", //com.ibm.ws.microprofile.faulttolerance.cdi_fat
-                                                     "FaultToleranceEJB", //com.ibm.ws.microprofile.faulttolerance.cdi_fat
-                                                     "JaxRsFaultTolerance", //com.ibm.ws.microprofile.faulttolerance.cdi_fat
-
                                                      "mpGraphQL10.basicQuery", //com.ibm.ws.microprofile.graphql.1.0_fat
                                                      "mpGraphQL10.defaultvalue", //com.ibm.ws.microprofile.graphql.1.0_fat
                                                      "mpGraphQL10.graphQLInterface", //com.ibm.ws.microprofile.graphql.1.0_fat
@@ -3548,23 +3546,6 @@ public class LibertyServer implements LogMonitorClient {
                                                      "mpGraphQL10.types", //com.ibm.ws.microprofile.graphql.1.0_fat
                                                      "mpGraphQL10.ui", //com.ibm.ws.microprofile.graphql.1.0_fat
                                                      "mpGraphQL10.voidQuery", //com.ibm.ws.microprofile.graphql.1.0_fat
-
-                                                     "FATServer", //com.ibm.ws.microprofile.graphql_fat_tck
-
-                                                     "validationServerOne", //com.ibm.ws.microprofile.openapi_fat
-                                                     "validationServerTwo", //com.ibm.ws.microprofile.openapi_fat
-                                                     "validationServerThree", //com.ibm.ws.microprofile.openapi_fat
-                                                     "validationServerFour", //com.ibm.ws.microprofile.openapi_fat
-                                                     "validationServerFive", //com.ibm.ws.microprofile.openapi_fat
-                                                     "OpenAPIConfigServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "AnnotationProcessingServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "ApplicationProcessorServletServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "ApplicationProcessorServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "FilterServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "ProxySupportServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "EndpointAvailabilityServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "UICustomizationServer", //com.ibm.ws.microprofile.openapi_fat
-                                                     "CorsServer", //com.ibm.ws.microprofile.openapi_fat
 
                                                      "ApplicationProcessorServer", //io.openliberty.microprofile.openapi.2.0.internal_fat
                                                      "OpenAPITestServer", //io.openliberty.microprofile.openapi.2.0.internal_fat
@@ -3620,48 +3601,13 @@ public class LibertyServer implements LogMonitorClient {
 
                                                      "RequestTimingServer", //com.ibm.ws.request.timing_fat
 
-                                                     "checkpointMPJWT", //io.openliberty.checkpoint_fat
-                                                     "checkpointMPHealth", //io.openliberty.checkpoint_fat
-                                                     "checkpointPasswordUtilities", //io.openliberty.checkpoint_fat
-                                                     "timeoutServer", //io.openliberty.checkpoint_fat
-                                                     "checkpointMPMetrics", //io.openliberty.checkpoint_fat
-                                                     "checkpointMPOpenAPIConfig", //io.openliberty.checkpoint_fat
-
                                                      "io.openliberty.jcache.internal.fat.jwt.auth.cache.1", //io.openliberty.checkpoint_fat_jcache_hazelcast
                                                      "io.openliberty.jcache.internal.fat.jwt.auth.cache.2", //io.openliberty.checkpoint_fat_jcache_hazelcast
 
                                                      "ContainerJSPServer", //io.openliberty.http.monitor_fat
 
-                                                     "RSTestServer", //io.openliberty.jaxrs.global.handler.internal_fat
-
-                                                     "EnableSchemaValidationTestServer", //io.openliberty.jaxws.config_fat
-                                                     "EnableSchemaValidationWebServiceTestServer", //io.openliberty.jaxws.config_fat
-                                                     "IgnoreUnexpectedElementConfigTestServer", //io.openliberty.jaxws.config_fat
-                                                     "GzipInterceptorsTestServer", //io.openliberty.jaxws.config_fat
-
-                                                     "AddNumbersTestServer", //io.openliberty.jaxws.global.handler.internal_fat
-                                                     "EJBServiceRefBndTestServer", //io.openliberty.jaxws.global.handler.internal_fat
-                                                     "HandlerChainTestServerAlternate", //io.openliberty.jaxws.global.handler.internal_fat
-
-                                                     "simpleWar", //io.openliberty.jee.internal_fat
-                                                     "simpleEar", //io.openliberty.jee.internal_fat
-
-                                                     "Health40TCKServer", //io.openliberty.microprofile.health.4.0.internal_fat_tck
-                                                     "ConfigAdminDropinsCheck", //io.openliberty.microprofile.health.3.1.internal_fat
-                                                     "ConfigAdminWrongAppCheck", //io.openliberty.microprofile.health.3.1.internal_fat
-                                                     "ConfigAdminXmlCheck", //io.openliberty.microprofile.health.3.1.internal_fat
-                                                     "DefaultStartupOverallStatusHealthCheck", //io.openliberty.microprofile.health.3.1.internal_fat
-                                                     "FailedConfigAdminApplicationStateHealthCheck", //io.openliberty.microprofile.health.3.1.internal_fat
-                                                     "InvalidDefaultStartupOverallStatusProperty", //io.openliberty.microprofile.health.3.1.internal_fat
-                                                     "SlowAppStartupHealthCheck", //io.openliberty.microprofile.health.3.1.internal_fat
-
                                                      "MPServer41", //io.openliberty.microprofile41.internal_fat
                                                      "MPServer", //io.openliberty.microprofile.internal_fat
-
-                                                     "crossFeatureOpenTracingServer", //io.openliberty.microprofile.telemetry.1.0.internal.container_fat
-                                                     "crossFeatureOpenTracingZipkinServer", //io.openliberty.microprofile.telemetry.1.0.internal.container_fat
-                                                     "crossFeatureTelemetryServer", //io.openliberty.microprofile.telemetry.1.0.internal.container_fat
-                                                     "spanTestServer", //io.openliberty.microprofile.telemetry.1.0.internal.container_fat
 
     };
     private static final Set<String> EXEMPT_SERVERS_SET = new HashSet<String>(Arrays.asList(EXEMPT_SERVERS));
@@ -3691,25 +3637,7 @@ public class LibertyServer implements LogMonitorClient {
                 Set<String> installedFeatures = getInstalledFeatures(); //the features actually installed at runtime
 
                 //expected feature -> actual feature
-                Map<String, String> unexpectedFeatures = new HashMap<>();
-
-                //compare each installed feature to the expected ones
-                for (String installedFeature : installedFeatures) {
-                    //ignore versionless features
-                    int dash = installedFeature.indexOf("-");
-                    if (dash > -1) {
-                        String versionlessInstalledFeature = removeFeatureVersion(installedFeature);
-                        for (String replacementFeature : expectedFeatures) {
-                            String versionlessReplacementFeature = removeFeatureVersion(replacementFeature);
-                            if (versionlessReplacementFeature.equalsIgnoreCase(versionlessInstalledFeature)) {
-                                //if the base feature name matches but the version does not, throw an exception.
-                                if (!replacementFeature.equalsIgnoreCase(installedFeature)) {
-                                    unexpectedFeatures.put(replacementFeature, installedFeature);
-                                }
-                            }
-                        }
-                    }
-                }
+                Map<String, String> unexpectedFeatures = getUnexpectedFeatures(expectedFeatures, installedFeatures);
 
                 if (unexpectedFeatures.size() > 0) {
                     String message = "Runtime features were not of the expected version for repeat action (Server: " + serverName + ", Action: " + action.getID() + ").\n";
@@ -3740,6 +3668,61 @@ public class LibertyServer implements LogMonitorClient {
         }
         //re-instate this message once the exempt servers are removed
         //Log.info(c, method, "No invalid replacement features found.");
+    }
+
+    /**
+     * Get a map of any features which are not at the expected version. e.g.
+     *
+     * if the expected features are
+     * mpConfig-1.2, cdi-2.0, servlet-3.0, appSecurity-3.0
+     *
+     * and the installed features are
+     * mpConfig-1.2, cdi-3.0, servlet-3.0, appSecurity-2.0, appSecurity-3.0
+     *
+     * then the returned map would only contain one element of
+     * cdi-2.0 -> cdi-3.0
+     *
+     * Note that more than one version of appSecurity was installed but one of them was the expected version, so it was not flagged.
+     *
+     * @param  expectedFeatures
+     * @param  installedFeatures
+     * @return
+     */
+    public static Map<String, String> getUnexpectedFeatures(Collection<String> expectedFeatures, Collection<String> installedFeatures) {
+        Map<String, String> featureMap = new HashMap<>();
+
+        //compare each installed feature to the expected ones
+        for (String installedFeature : installedFeatures) {
+            //ignore versionless features
+            int dash = installedFeature.indexOf("-");
+            if (dash > -1) {
+                String versionlessInstalledFeature = removeFeatureVersion(installedFeature);
+                for (String replacementFeature : expectedFeatures) {
+                    String versionlessReplacementFeature = removeFeatureVersion(replacementFeature);
+                    if (versionlessReplacementFeature.equalsIgnoreCase(versionlessInstalledFeature)) {
+                        //if the featureMap does not yet contain an entry for the replacementFeature then add it
+                        if (!featureMap.containsKey(replacementFeature)) {
+                            featureMap.put(replacementFeature, installedFeature);
+                        } //if the feature is already in the featureMap, replace it if the installed feature did not match
+                        else if (!featureMap.get(replacementFeature).equalsIgnoreCase(replacementFeature)) {
+                            featureMap.put(replacementFeature, installedFeature);
+                        }
+                    }
+                }
+            }
+        }
+
+        //now extract the features which don't match
+        Map<String, String> unexpectedFeatures = new HashMap<>();
+        for (Entry<String, String> entry : featureMap.entrySet()) {
+            String replacementFeature = entry.getKey();
+            String installedFeature = entry.getValue();
+            if (!replacementFeature.equalsIgnoreCase(installedFeature)) {
+                unexpectedFeatures.put(replacementFeature, installedFeature);
+            }
+        }
+
+        return unexpectedFeatures;
     }
 
     /**

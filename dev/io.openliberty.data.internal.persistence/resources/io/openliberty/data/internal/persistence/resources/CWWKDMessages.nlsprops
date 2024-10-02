@@ -700,3 +700,58 @@ CWWKD1072.record.comp.conflict.explanation=Entity property names must be \
  unique ignoring case.
 CWWKD1072.record.comp.conflict.useraction=Rename one of the record components \
  to avoid the conflict.
+
+CWWKD1073.offset.exceeds.max=CWWKD1073E: The {0} starting point of the \
+ {1} limit that is supplied to the {2} method of the {3} repository interface \
+ exceeds the maximum allowed value of {4}.
+CWWKD1073.offset.exceeds.max.explanation=The starting point for the limit is \
+ too large.
+CWWKD1073.offset.exceeds.max.useraction=Add restrictions to the query to reduce \
+ the number of matching results.
+
+CWWKD1074.qbmn.incompat.keywords=CWWKD1074E: The {0} method of the {1} repository \
+ interface must not combine the {2} keyword with the {3} keyword on the same \
+ Query by Method Name condition.
+CWWKD1074.qbmn.incompat.keywords.explanation=The specified Query by Method Name \
+ keywords are not compatible with each other.
+CWWKD1074.qbmn.incompat.keywords.useraction=Rename the method to not combine \
+ the keywords on the same condition.
+
+CWWKD1075.entity.prop.conflict=CWWKD1075E: The {0} entity cannot have a property \
+ named {1} and a property named {2} because the Jakarta Data specification \
+ considers these names to be aliases for the same entity property.
+CWWKD1075.entity.prop.conflict.explanation=There is a collision between the \
+ names of two entity properties due to the underscore character.
+CWWKD1075.entity.prop.conflict.useraction=Do not use the underscore character \
+ in entity property names.
+
+CWWKD1076.repo.disposed=CWWKD1076E: The {0} method of the {1} repository \
+ interface cannot be invoked because the application that defines the repository \
+ has stopped. The repository instance is {2}.
+CWWKD1076.repo.disposed.explanation=Repository methods must not be used outside \
+ of the lifecycle of the application that defines the repository.
+CWWKD1076.repo.disposed.useraction=Ensure that the repository method is not \
+ used outside of the scope of the application that defines the repository.
+
+CWWKD1077.defaultds.not.found=CWWKD1077E: The {0} application artifact \
+ has a {1} repository interface that uses or defaults to the \
+ {2} data store, which must be configured in server configuration \
+ by defining a dataSource element that has an identifier of \
+ DefaultDataSource. For example, {3} \
+ Alternatively, assign the dataStore value of the Repository annotation \
+ to be the identifier of a databaseStore element or the JNDI name of \
+ a data source resource reference or persistence unit reference \
+ that is accessible to the application artifact. A databaseStore element \
+ can be defined in server configuration. For example, {4} \
+ An application component can use the Resource annotation to define a \
+ data source resource reference. For example, {5}, which requires server \
+ configuration to have a dataSource configuration element with a {6} attribute. \
+ An application component can use the PersistenceUnit annotation to define a \
+ persistence unit reference. For example, {7}, which requires the persistence.xml \
+ file to have a persistence-unit element with a matching name attribute. \
+ For example, {8}
+CWWKD1077.defaultds.not.found.explanation=Jakarta Data repositories default to \
+ the Jakarta EE default data source, which must be configured in server \
+ configuration.
+CWWKD1077.defaultds.not.found.useraction=Configure the Jakarta EE default \
+ data source or specify a different data store for the repository.

@@ -102,6 +102,11 @@ public class DataProvider implements //
 
     private static final Set<Class<? extends Extension>> extensions = Collections.singleton(DataExtension.class);
 
+    /**
+     * Maximum number of array or list elements to output.
+     */
+    private static final int MAX_OUTPUT = 20;
+
     @Reference
     public CDIService cdiService;
 
@@ -476,7 +481,7 @@ public class DataProvider implements //
         if (a != null) {
             StringBuilder s = new StringBuilder();
             int len = Array.getLength(value);
-            int maxOutput = len <= 20 ? len : 20;
+            int maxOutput = len <= MAX_OUTPUT ? len : MAX_OUTPUT;
             s.append(a.getName()).append('[').append(len).append("]: {");
             for (int i = 0; i < maxOutput; i++) {
                 Object v = loggable(Array.get(value, i));
@@ -501,7 +506,7 @@ public class DataProvider implements //
         } else if (value instanceof Iterable) {
             StringBuilder s = new StringBuilder();
             int len = value instanceof Collection ? ((Collection<?>) value).size() : -1;
-            int maxOutput = 20;
+            int maxOutput = MAX_OUTPUT;
             s.append(c.getName());
             if (len >= 0)
                 s.append('(').append(len).append("): {");
@@ -552,7 +557,19 @@ public class DataProvider implements //
              logValues.contains(className = repoClass.getName()) ||
              logValues.contains(className + '.' + method.getName())))
             for (Object s : possibleSuffix)
-                b.append(s);
+                if (s != null && s.getClass().isArray()) {
+                    int len = Array.getLength(s);
+                    int maxOutput = len <= MAX_OUTPUT ? len : MAX_OUTPUT;
+                    b.append(s.getClass().getComponentType()) //
+                                    .append('[').append(len).append("] {");
+                    for (int i = 0; i < maxOutput; i++)
+                        b.append(i == 0 ? " " : ", ").append(Array.get(s, i));
+                    if (len > maxOutput)
+                        b.append(", ...");
+                    b.append(" }");
+                } else {
+                    b.append(s);
+                }
 
         return b.toString();
     }

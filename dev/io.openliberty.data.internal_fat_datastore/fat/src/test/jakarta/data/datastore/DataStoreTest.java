@@ -132,7 +132,7 @@ public class DataStoreTest extends FATServletClient {
         expectedSQLPerFile.put("application[DataStoreTestApp].module[DataStoreTestEJB.jar].databaseStore[java.module.jdbc.DataSourceDef]_repository.ddl", //
                                Arrays.asList("CREATE TABLE EJBModuleDSDEntity"));
         expectedSQLPerFile.put("application[DataStoreTestApp].module[DataStoreTestWeb1.war].databaseStore[java.comp.DefaultDataSource]_repository.ddl", //
-                               Arrays.asList("CREATE TABLE DefDSEntity", "CREATE TABLE DefDSEntity2"));
+                               Arrays.asList("CREATE TABLE PersistenceUnitEntity", "CREATE TABLE DefDSEntity", "CREATE TABLE DefDSEntity2"));
         expectedSQLPerFile.put("application[DataStoreTestApp].module[DataStoreTestWeb1.war].databaseStore[java.module.env.jdbc.ServerDataSourceRef]_repository.ddl", //
                                Arrays.asList("CREATE TABLE ServerDSEntity"));
         expectedSQLPerFile.put("application[DataStoreTestApp].module[DataStoreTestWeb2.war].databaseStore[java.comp.DefaultDataSource]_repository.ddl", //
@@ -143,8 +143,6 @@ public class DataStoreTest extends FATServletClient {
                                Arrays.asList("CREATE TABLE WLPPART", "CREATE TABLE WLPTASK", "CREATE TABLE WLPPROP", "ALTER TABLE WLPPART"));
         expectedSQLPerFile.put("databaseStore[java.global.env.jdbc.ServerDataSourceRef]_repository.ddl", //
                                Arrays.asList("CREATE TABLE GlobalLibEntity"));
-        expectedSQLPerFile.put("defaultDatabaseStore_repository.ddl", //
-                               Arrays.asList("CREATE TABLE WLPPersistenceUnitEntity", "CREATE TABLE WLPDefDSEntity"));
 
         // Run the ddlgen command and obtain the list of generated files
         List<String> ddlFileNames = DDLGenScriptHelper.getDDLFiles(server);
