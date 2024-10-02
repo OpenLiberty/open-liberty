@@ -318,6 +318,7 @@ public class JSSEProviderFactory {
             Tr.entry(tc, "initializeFips");
 
         if (!fipsInitialized) {
+            //TODO: update OPENJCEPlusFIPs
             int ibmjcefips_position = 0;
             int ibmjceplusfips_position = 0;
             Provider[] provider_list = null;

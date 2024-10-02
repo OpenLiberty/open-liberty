@@ -52,6 +52,8 @@ import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEProvider;
 import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.websphere.ssl.SSLException;
+import com.ibm.ws.crypto.common.CryptoProvider;
+import com.ibm.ws.crypto.common.FipsUtils;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.runtime.util.StreamHandlerUtils;
@@ -88,7 +90,7 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
 //    protected static final String URL_HANDLER_PROP = "java.protocol.handler.pkgs";
     private static final String PKGNAME_DELIMITER = "|";
 
-    public static String IBM_JCE_Plus_FIPS_PROVIDER = "com.ibm.crypto.plus.provider.IBMJCEPlusFIPS";
+    //public static String IBM_JCE_Plus_FIPS_PROVIDER = "com.ibm.crypto.plus.provider.IBMJCEPlusFIPS";
     private static boolean handlersInitialized = false;
     private static Object _lockObj = new Object();
 
@@ -117,20 +119,33 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "defaultProtocol: " + defaultProtocol);
         }
-
-        if (JavaInfo.isSystemClassAvailable(IBM_JCE_Plus_FIPS_PROVIDER))
-
-        {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "jce plus fips available");
+        if (FipsUtils.isFIPSEnabled()) {
+            if (FipsUtils.isFips140_3Enabled()) {
+                if (CryptoProvider.isIBMJCEPlusFIPSAvailable() || CryptoProvider.isOpenJCEPlusFIPSAvailable()) {
+                    try {
+                        com.ibm.ws.ssl.JSSEProviderFactory.initializeFips();
+                    } catch (Exception e) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Exception caught initializing FIPS.", new Object[] { e });
+                    }
+                }
             }
-            try {
-                com.ibm.ws.ssl.JSSEProviderFactory.initializeFips();
-            } catch (Exception e) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Exception caught initializing FIPS.", new Object[] { e });
-            }
+            //Need to add code to support Semeru (java 17)
         }
+
+//        if (JavaInfo.isSystemClassAvailable(IBM_JCE_Plus_FIPS_PROVIDER))
+//
+//        {
+//            if (tc.isDebugEnabled()) {
+//                Tr.debug(tc, "jce plus fips available");
+//            }
+//            try {
+//                com.ibm.ws.ssl.JSSEProviderFactory.initializeFips();
+//            } catch (Exception e) {
+//                if (tc.isDebugEnabled())
+//                    Tr.debug(tc, "Exception caught initializing FIPS.", new Object[] { e });
+//            }
+//        }
 
         if (!handlersInitialized && System.getProperty("os.name").equalsIgnoreCase("z/OS")
             && JavaInfo.majorVersion() < 11)
