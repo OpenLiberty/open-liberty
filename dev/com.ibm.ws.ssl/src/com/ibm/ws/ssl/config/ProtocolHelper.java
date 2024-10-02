@@ -18,6 +18,7 @@ import java.util.List;
 
 import javax.net.ssl.SSLContext;
 
+import com.ibm.ws.crypto.common.FipsUtils;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
@@ -67,18 +68,38 @@ public class ProtocolHelper {
         String[] protocols = sslProtocol.split(",");
 
         if (protocols.length > 1) {
-            // multi list we only allow TLSv1, TLSv1.1, TLSv1.2, and TLSv1.3 as possible values
-            for (String protocol : protocols) {
-                if (Constants.MULTI_PROTOCOL_LIST.contains(protocol)) {
-                    if (goodProtocols.contains(protocol))
-                        continue;
-                    else {
-                        checkProtocol(protocol);
-                        goodProtocols.add(protocol);
+            // If FIPS is enabled then we only allow TLSv1.2 and TLSv1.3
+            if (FipsUtils.isFIPSEnabled()) {
+                Tr.debug(tc, "FIPS is enabled, only allowing TLSv1.2 and TLSv1.3");
+                for (String protocol : protocols) {
+                    if (Constants.FIPS_PROTOCOL_LIST.contains(protocol)) {
+                        if (goodProtocols.contains(protocol))
+                            continue;
+                        else {
+                            checkProtocol(protocol);
+                            goodProtocols.add(protocol);
+                        }
+                    } else {
+                        Tr.error(tc, "ssl.protocol.error.CWPKI0832E", protocol);
+                        throw new SSLException("Protocol provided is not appropriate for a protocol list.");
                     }
-                } else {
-                    Tr.error(tc, "ssl.protocol.error.CWPKI0832E", protocol);
-                    throw new SSLException("Protocol provided is not appropriate for a protocol list.");
+                }
+            }
+
+            // Else, multi list we only allow TLSv1, TLSv1.1, TLSv1.2, and TLSv1.3 as possible values
+            else {
+                for (String protocol : protocols) {
+                    if (Constants.MULTI_PROTOCOL_LIST.contains(protocol)) {
+                        if (goodProtocols.contains(protocol))
+                            continue;
+                        else {
+                            checkProtocol(protocol);
+                            goodProtocols.add(protocol);
+                        }
+                    } else {
+                        Tr.error(tc, "ssl.protocol.error.CWPKI0832E", protocol);
+                        throw new SSLException("Protocol provided is not appropriate for a protocol list.");
+                    }
                 }
             }
         } else {
