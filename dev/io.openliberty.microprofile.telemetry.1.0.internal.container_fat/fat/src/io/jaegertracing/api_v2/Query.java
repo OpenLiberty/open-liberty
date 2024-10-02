@@ -4672,7 +4672,7 @@ public final class Query {
                 if (!result.isInitialized()) {
                     throw newUninitializedMessageException(result);
                 }
-                Log.info(c, "result initialized", "returning " + resulttoString());
+                Log.info(c, "result initialized", "returning " + result.toString());
                 return result;
             }
 
