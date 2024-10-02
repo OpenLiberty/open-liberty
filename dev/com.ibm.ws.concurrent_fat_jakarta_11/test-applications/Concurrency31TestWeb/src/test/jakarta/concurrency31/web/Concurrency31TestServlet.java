@@ -17,6 +17,7 @@ import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.time.ZoneId;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,6 +45,7 @@ import javax.naming.InitialContext;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import test.context.timezone.TimeZone;
 
 @ContextServiceDefinition(name = "java:module/concurrent/my-context",
                           propagated = APPLICATION,
@@ -81,7 +83,7 @@ public class Concurrency31TestServlet extends FATServlet {
         LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
         Runnable action = () -> {
             try {
-                results.add(InitialContext.doLookup("java:comp/concurrent/webdd/virtual-thread-factory"));
+                results.add(InitialContext.doLookup("java:comp/env/TestEntry"));
             } catch (Throwable x) {
                 results.add(x);
             }
@@ -97,6 +99,7 @@ public class Concurrency31TestServlet extends FATServlet {
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (result instanceof Throwable)
             throw new AssertionError("An error occurred on the thread.", (Throwable) result);
+        assertEquals("TestValue1", result);
     }
 
     /**
@@ -120,7 +123,7 @@ public class Concurrency31TestServlet extends FATServlet {
 
             results.add(curThread);
             try {
-                results.add(InitialContext.doLookup("java:comp/concurrent/virtual-scheduled-executor"));
+                results.add(InitialContext.doLookup("java:comp/env/TestEntry"));
             } catch (Throwable x) {
                 results.add(x);
             }
@@ -140,6 +143,7 @@ public class Concurrency31TestServlet extends FATServlet {
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (result instanceof Throwable)
             throw new AssertionError("Lookup failed on first execution", (Throwable) result);
+        assertEquals("TestValue1", result);
 
         // execution 2
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
@@ -149,6 +153,7 @@ public class Concurrency31TestServlet extends FATServlet {
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (result instanceof Throwable)
             throw new AssertionError("Lookup failed on first execution", (Throwable) result);
+        assertEquals("TestValue1", result);
 
         // execution 3
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
@@ -158,6 +163,7 @@ public class Concurrency31TestServlet extends FATServlet {
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (result instanceof Throwable)
             throw new AssertionError("Lookup failed on first execution", (Throwable) result);
+        assertEquals("TestValue1", result);
 
         // each execution must use a different virtual thread
         assertEquals(uniqueVirtualThreads.toString(), 3, uniqueVirtualThreads.size());
@@ -197,7 +203,7 @@ public class Concurrency31TestServlet extends FATServlet {
     public void testTimedInvokeAllOnVirtualThreads() throws Exception {
         Callable<Object> task = () -> {
             try {
-                InitialContext.doLookup("java:module/concurrent/virtual-executor");
+                InitialContext.doLookup("java:comp/env/TestEntry");
             } catch (Throwable x) {
                 return x;
             }
@@ -248,7 +254,7 @@ public class Concurrency31TestServlet extends FATServlet {
     public void testUntimedInvokeAnyOnVirtualThreads() throws Exception {
         Callable<Object> anyTask = () -> {
             try {
-                InitialContext.doLookup("java:module/concurrent/virtual-executor");
+                InitialContext.doLookup("java:comp/env/TestEntry");
             } catch (Throwable x) {
                 return x;
             }
@@ -270,21 +276,32 @@ public class Concurrency31TestServlet extends FATServlet {
     // TODO after the workaround is removed, write: public void testUntimedInvokeAnyOneOnVirtualThread() throws Exception {
 
     /**
-     * Use ManagedThreadFactoryDefinition with virtual=true to request virtual threads.
-     * TODO It can also define custom context to propagate to the managed virtual thread.
+     * Use ManagedThreadFactoryDefinition with virtual=true to request virtual
+     * threads. Also covers propagating a cleared custom thread context to a
+     * virtual thread.
      */
     @Test
     public void testVirtualThreadFactoryAnno() throws Exception {
+        LinkedBlockingQueue<ZoneId> timeZones = new LinkedBlockingQueue<>();
         LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
         Runnable action = () -> {
             try {
-                results.add(InitialContext.doLookup("java:module/concurrent/virtual-thread-factory"));
+                ZoneId zoneId = TimeZone.get();
+                if (zoneId == null)
+                    timeZones.add(ZoneId.of("UTC"));
+                else
+                    timeZones.add(zoneId);
+
+                results.add(InitialContext.doLookup("java:comp/env/TestEntry"));
             } catch (Throwable x) {
                 results.add(x);
             }
         };
 
-        ManagedThreadFactory threadFactory = InitialContext.doLookup("java:module/concurrent/virtual-thread-factory");
+        TimeZone.set(ZoneId.of("America/New_York"));
+
+        ManagedThreadFactory threadFactory = InitialContext //
+                        .doLookup("java:module/concurrent/virtual-thread-factory");
         Thread thread1 = threadFactory.newThread(action);
         assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(thread1));
         thread1.start();
@@ -292,6 +309,12 @@ public class Concurrency31TestServlet extends FATServlet {
         Thread thread2 = threadFactory.newThread(action);
         assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(thread2));
         thread2.start();
+
+        assertEquals(ZoneId.of("UTC"),
+                     timeZones.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals(ZoneId.of("UTC"),
+                     timeZones.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
         Object result;
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
@@ -301,19 +324,22 @@ public class Concurrency31TestServlet extends FATServlet {
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (result instanceof Throwable)
             throw new AssertionError("An error occurred on the other virtual thread.", (Throwable) result);
+        assertEquals("TestValue1", result);
+
+        assertEquals(ZoneId.of("America/New_York"), TimeZone.get());
+        TimeZone.remove();
     }
 
     /**
      * Use a managed-thread-factory from the application.xml deployment descriptor with virtual=true
      * to request virtual threads.
-     * TODO It can also define custom context to propagate to the managed virtual thread.
      */
     @Test
     public void testVirtualThreadFactoryAppDD() throws Exception {
         LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
         Runnable action = () -> {
             try {
-                results.add(InitialContext.doLookup("java:app/concurrent/appdd/virtual-thread-factory"));
+                results.add(InitialContext.doLookup("java:comp/env/TestEntry"));
             } catch (Throwable x) {
                 results.add(x);
             }
@@ -329,33 +355,79 @@ public class Concurrency31TestServlet extends FATServlet {
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (result instanceof Throwable)
             throw new AssertionError("An error occurred on the virtual thread.", (Throwable) result);
+        assertEquals("TestValue1", result);
     }
 
     /**
-     * Use a managed-thread-factory from the web.xml deployment descriptor with virtual=true
-     * to request virtual threads.
-     * TODO It can also define custom context to propagate to the managed virtual thread.
+     * Use a managed-thread-factory from the web.xml deployment descriptor with
+     * virtual=true to request virtual threads. Verify that application context
+     * and a custom thread context are propagated to the managed thread, being
+     * captured from the main thread upon lookup of the ManagedThreadFactory.
      */
     @Test
     public void testVirtualThreadFactoryWebDD() throws Exception {
         LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
         Runnable action = () -> {
             try {
-                results.add(InitialContext.doLookup("java:comp/concurrent/webdd/virtual-thread-factory"));
+                ZoneId zoneId = TimeZone.get();
+                if (zoneId == null)
+                    results.add(ZoneId.of("UTC"));
+                else
+                    results.add(zoneId);
+
+                results.add(InitialContext.doLookup("java:comp/env/TestEntry"));
             } catch (Throwable x) {
                 results.add(x);
             }
         };
 
-        ManagedThreadFactory threadFactory = InitialContext.doLookup("java:comp/concurrent/webdd/virtual-thread-factory");
-        Thread thread1 = threadFactory.newThread(action);
+        TimeZone.set(ZoneId.of("America/Denver"));
+
+        ManagedThreadFactory threadFactory1 = InitialContext //
+                        .doLookup("java:comp/concurrent/webdd/virtual-thread-factory");
+
+        TimeZone.set(ZoneId.of("America/Los_Angeles"));
+
+        Thread thread1 = threadFactory1.newThread(action);
         assertEquals(Thread.NORM_PRIORITY, thread1.getPriority());
-        assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(thread1));
+        assertEquals(Boolean.TRUE, //
+                     Thread.class.getMethod("isVirtual").invoke(thread1));
+
+        ManagedThreadFactory threadFactory2 = InitialContext //
+                        .doLookup("java:comp/concurrent/webdd/virtual-thread-factory");
+
+        TimeZone.set(ZoneId.of("America/Juneau"));
+
         thread1.start();
 
         Object result;
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(ZoneId.of("America/Denver"), result);
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (result instanceof Throwable)
-            throw new AssertionError("An error occurred on the virtual thread.", (Throwable) result);
+            throw new AssertionError("An error occurred on the virtual thread.", //
+                            (Throwable) result);
+        assertEquals("TestValue1", result);
+
+        Thread thread2 = threadFactory2.newThread(action);
+        assertEquals(Thread.NORM_PRIORITY, thread2.getPriority());
+        assertEquals(Boolean.TRUE, //
+                     Thread.class.getMethod("isVirtual").invoke(thread2));
+
+        thread2.start();
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(ZoneId.of("America/Los_Angeles"), result);
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (result instanceof Throwable)
+            throw new AssertionError("An error occurred on the virtual thread.", //
+                            (Throwable) result);
+        assertEquals("TestValue1", result);
+
+        assertEquals(ZoneId.of("America/Juneau"), TimeZone.get());
+
+        TimeZone.remove();
     }
 }

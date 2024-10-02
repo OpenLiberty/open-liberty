@@ -26,15 +26,8 @@
     <classloader commonLibraryRef="ThirdPartyLibrariesWithCustomContext"/>
   </application>
 
-  <!-- third-party context provider that is available to all applications -->
-  <bell>
-    <library id="PriorityContextLib">
-      <file name="${server.config.dir}/lib/priority-context.jar"/>
-    </library>
-  </bell>
-
   <library id="ThirdPartyLibrariesWithCustomContext">
-    <fileset dir="${server.config.dir}/lib" include="location-utils.jar,stat-utils.jar"/>
+    <fileset dir="${server.config.dir}/lib" include="time-zone-context.jar"/>
   </library>
 
 </server>
