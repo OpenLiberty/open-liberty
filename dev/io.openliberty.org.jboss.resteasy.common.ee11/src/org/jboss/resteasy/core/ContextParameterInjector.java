@@ -39,7 +39,6 @@ import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.ext.Providers;
 import jakarta.ws.rs.sse.Sse;
 import jakarta.ws.rs.sse.SseEventSink;
-
 import org.jboss.resteasy.plugins.providers.sse.SseImpl;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyContextParameters;
 import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
@@ -50,6 +49,7 @@ import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.ValueInjector;
 import org.jboss.resteasy.spi.util.Types;
+import org.eclipse.osgi.internal.loader.EquinoxClassLoader;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -58,6 +58,7 @@ import org.jboss.resteasy.spi.util.Types;
 @SuppressWarnings("unchecked")
 public class ContextParameterInjector implements ValueInjector {
     private static Constructor<?> constructor;
+    private static final ClassLoader myClassLoader; // liberty change
 
     private Class<?> rawType;
     private Class<?> proxy;
@@ -80,6 +81,14 @@ public class ContextParameterInjector implements ValueInjector {
                 }
             }
         });
+        // liberty change start
+        myClassLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            @Override
+            public ClassLoader run() {
+                return ContextParameterInjector.class.getClassLoader();
+            }
+        });
+        // liberty change end
     }
 
     public ContextParameterInjector(final Class<?> proxy, final Class<?> rawType, final Type genericType,
@@ -207,30 +216,36 @@ public class ContextParameterInjector implements ValueInjector {
             ClassLoader clazzLoader = null;
             final SecurityManager sm = System.getSecurityManager();
             if (sm == null) {
-                // liberty change - use this classloader
                 clazzLoader = delegate == null ? rawType.getClassLoader() : delegate.getClass().getClassLoader();
+                // Liberty change start
+                
                 // The class loader may be null for primitives, void or the type was loaded from the bootstrap class loader.
                 // In such cases we should use the TCCL.
-                if (clazzLoader == null) {
-                   clazzLoader = Thread.currentThread().getContextClassLoader();
+                //if (clazzLoader == null) {
+                //   clazzLoader = Thread.currentThread().getContextClassLoader();
+                //}
+                if (clazzLoader == null || clazzLoader instanceof EquinoxClassLoader) {
+                    clazzLoader = myClassLoader;
                 }
-                if (clazzLoader == null) {
-                   clazzLoader = this.getClass().getClassLoader();
-                }
+                //Liberty change end
             } else {
                 clazzLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
                     @Override
                     public ClassLoader run() {
                         ClassLoader result = delegate == null ? rawType.getClassLoader() : delegate.getClass().getClassLoader();
+                        //Liberty change start 
+                        
                         // The class loader may be null for primitives, void or the type was loaded from the bootstrap class loader.
                         // In such cases we should use the TCCL.
-                        if (result == null) {
-                        result = Thread.currentThread().getContextClassLoader();
-                        }
-                        if (result == null) {
-                        result = this.getClass().getClassLoader(); //liberty change
+                        //if (result == null) {
+                        //result = Thread.currentThread().getContextClassLoader();
+                        //}
+                        //return result;
+                        if (result == null || result instanceof EquinoxClassLoader) {
+                            result = myClassLoader;
                         }
                         return result;
+                        //Liberty change end
                     }
                 });
             }
