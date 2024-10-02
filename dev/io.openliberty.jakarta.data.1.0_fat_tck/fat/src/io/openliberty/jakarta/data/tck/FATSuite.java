@@ -94,7 +94,7 @@ public class FATSuite extends TestContainerSuite {
             case DerbyClient:
                 return ""; // Derby client currently not tested during DB Rotation
             case Oracle:
-                return ""; // All tests pasing on Oracle
+                return ""; // All tests passing on Oracle
             case Postgres:
                 //TODO testInsertEntityThatAlreadyExists PostgreSQL throws org.postgresql.util.PSQLException which is not a subclass of SQLIntegrityConstraintViolationException
                 exclude.add("ee.jakarta.tck.data.standalone.persistence.PersistenceEntityTests");

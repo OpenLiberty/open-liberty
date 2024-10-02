@@ -53,7 +53,7 @@ public class RestConnectorTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests repeatTest = FATSuite.defaultMPRepeat(SERVER_NAME);
+    public static RepeatTests repeatTest = FATSuite.defaultEERepeat(SERVER_NAME);
 
     private HttpsRequest createHttpsRequestWithAdminUser(LibertyServer server, String path) {
         return new HttpsRequest(server, path).allowInsecure().basicAuth("adminuser", "adminpwd");

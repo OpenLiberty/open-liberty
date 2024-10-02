@@ -302,11 +302,19 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                                         resourceName, metadataIdentifier, entityTypes);
 
                 } catch (NamingException x) {
-                    FFDCFilter.processException(x, this.getClass().getName() + ".createEMBuilder", "155", this, new Object[] { (switchMetadata ? repoMetadata : extMetadata) });
-                    throw new CompletionException("Unable to find " + dataStore + " from " +
-                                                  (switchMetadata ? repoMetadata : extMetadata).getJ2EEName(), x);
+                    ComponentMetaData metadata = switchMetadata //
+                                    ? repoMetadata //
+                                    : extMetadata;
+                    if (DataExtension.DEFAULT_DATA_SOURCE.equals(dataStore))
+                        throw excDefaultDataSourceNotFound(metadata, x);
+                    else {
+                        // TODO better error message
+                        FFDCFilter.processException(x, this.getClass().getName() + ".createEMBuilder", "155", this, new Object[] { (switchMetadata ? repoMetadata : extMetadata) });
+                        throw new CompletionException("Unable to find " + dataStore + " from " +
+                                                      (switchMetadata ? repoMetadata : extMetadata).getJ2EEName(), x);
+                    }
                 }
-            } else if (!DataExtension.DEFAULT_DATA_STORE.equals(resourceName)) {
+            } else {
                 // Check for resource references and persistence unit references where java:comp/env/ is omitted:
                 String javaCompName = "java:comp/env/" + resourceName;
                 try {
@@ -354,6 +362,68 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                             && Objects.equals(application, b.application)
                             && Objects.equals(module, b.module)
                             && Objects.equals(repositoryClassLoader, b.repositoryClassLoader);
+    }
+
+    /**
+     * Creates an exception for a Repository that uses java:comp/DefaultDataSource
+     * (the default if unspecified) but it is not configured.
+     *
+     * @param metadata metadata that is on the thread.
+     * @param cause    cause for the exception, typically NamingException.
+     * @return DataException.
+     */
+    @Trivial
+    private DataException excDefaultDataSourceNotFound(ComponentMetaData metadata,
+                                                       Throwable cause) {
+        Class<?> primary = DataExtension.getPrimaryEntityType(repositoryInterface);
+        String exampleEntityClassName = primary == null //
+                        ? "org.example.MyEntity" //
+                        : primary.getName();
+
+        String persistenceUnitExample = """
+
+                        <persistence-unit name="MyPersistenceUnit">
+                          <jta-data-source>jdbc/ds</jta-data-source>
+                          <class>""" + exampleEntityClassName + """
+                        </class>
+                          <properties>
+                            <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
+                          </properties>
+                        </persistence-unit>
+                        """;
+
+        String dataSourceConfigExample = """
+
+                        <dataSource id="DefaultDataSource" jndiName="jdbc/ds">
+                          <jdbcDriver libraryRef="PostgresLib"/>
+                          <properties.postgresql databaseName="exampledb" serverName="localhost" portNumber="5432"/>
+                          <containerAuthData user=*** password=***/>
+                        </dataSource>
+                        <library id="PostgresLib">
+                          <fileset dir="${server.config.dir}/lib/postgres" includes="*.jar"/>
+                        </library>
+                        """;
+
+        String databaseStoreConfigExample = """
+
+                        <databaseStore id="MyDatabaseStore" dataSourceRef="DefaultDataSource" createTables="true" tablePrefix="">
+                          <authData user="***" password="***"/>
+                        </databaseStore>
+                        """;
+
+        DataException x = exc(DataException.class,
+                              "CWWKD1077.defaultds.not.found",
+                              metadata.getJ2EEName(),
+                              repositoryInterface.getName(),
+                              dataStore,
+                              dataSourceConfigExample,
+                              databaseStoreConfigExample,
+                              "@Resource(name=\"java:app/env/jdbc/dsRef\",lookup=\"jdbc/ds\")",
+                              "jndiName=\"jdbc/ds\"",
+                              "@PersistenceUnit(name=\"java:app/env/MyPersistenceUnitRef\",unitName=\"MyPersistenceUnit\")",
+                              persistenceUnitExample);
+
+        return (DataException) x.initCause(cause);
     }
 
     /**

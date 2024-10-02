@@ -85,6 +85,9 @@ public class ApplicationProcessor {
     @Reference
     private ModelGenerator modelGenerator;
 
+    @Reference
+    private ValidationComponent validationComponent;
+
     /**
      * The processApplication method processes applications that are added to the OpenLiberty instance.
      *
@@ -283,7 +286,7 @@ public class ApplicationProcessor {
                         if (LoggingUtils.isEventEnabled(tc)) {
                             Tr.event(tc, "Validate document");
                         }
-                        OpenAPIUtils.validateDocument(openAPIModel);
+                        validationComponent.validateAndReportErrors(openAPIModel);
                     } catch (Throwable e) {
                         if (LoggingUtils.isEventEnabled(tc)) {
                             Tr.event(tc, "Failed to call OASValidator: " + e.getMessage());

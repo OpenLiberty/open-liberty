@@ -12,7 +12,6 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import static componenttest.annotation.SkipIfSysProp.DB_DB2;
 import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
 import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
@@ -1737,7 +1736,6 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     @SkipIfSysProp({
-                     DB_DB2, //TODO Failing on Db2 due to eclipselink issue.  OL Issue #28289
                      DB_Oracle //TODO Eclipse link SQL Generation bug on Oracle: https://github.com/OpenLiberty/open-liberty/issues/28545
     })
     public void testFindAndDeleteReturnsObjects() {
@@ -1746,9 +1744,10 @@ public class DataTestServlet extends FATServlet {
 
         packages.deleteAll();
 
-        packages.save(new Package(70071, 17.0f, 17.1f, 7.7f, "testFindAndDeleteReturnsObjects#70071"));
+        //                        id     length width height description
+        packages.save(new Package(70071, 17.0f, 17.1f, 7.7f, "testFindAndDeleteReturnsObjects#multi"));
         packages.save(new Package(70070, 70.0f, 70.0f, 7.0f, "testFindAndDeleteReturnsObjects#70070"));
-        packages.save(new Package(70077, 77.0f, 17.7f, 7.7f, "testFindAndDeleteReturnsObjects#70077"));
+        packages.save(new Package(70077, 77.0f, 17.7f, 7.7f, "testFindAndDeleteReturnsObjects#multi"));
         packages.save(new Package(70007, 70.0f, 10.7f, 0.7f, "testFindAndDeleteReturnsObjects#70007"));
 
         Set<Integer> remaining = new TreeSet<>();
@@ -1767,7 +1766,16 @@ public class DataTestServlet extends FATServlet {
         }
         assertEquals("Found " + p.id + "; expected one of " + remaining, true, remaining.remove(p.id));
 
-        Sort<?>[] sorts = supportsOrderByForUpdate ? new Sort[] { Sort.desc("height"), Sort.asc("length") } : null;
+        // It is not deterministic to order on height when multiple entities
+        // have a floating point value that looks the same (7.7), but which is
+        // not exact and can vary slightly, intermittently ordering the entities
+        // differently. Instead, we are using the description column, which can
+        // be reliably compared.
+        // It is okay to order on length because the other entity with length=70.0
+        // was previously removed.
+        Sort<?>[] sorts = supportsOrderByForUpdate //
+                        ? new Sort[] { Sort.desc("description"), Sort.asc("length") } //
+                        : null;
         LinkedList<?> deletesList = packages.delete2ByHeightLessThan(8.0f, Limit.of(2), sorts);
         assertEquals("Deleted " + deletesList, 2, deletesList.size());
         Package p0 = (Package) deletesList.get(0);
@@ -1777,12 +1785,12 @@ public class DataTestServlet extends FATServlet {
             assertEquals(17.0f, p0.length, 0.001f);
             assertEquals(17.1f, p0.width, 0.001f);
             assertEquals(7.7f, p0.height, 0.001f);
-            assertEquals("testFindAndDeleteReturnsObjects#70071", p0.description);
+            assertEquals("testFindAndDeleteReturnsObjects#multi", p0.description);
             assertEquals(70077, p1.id);
             assertEquals(77.0f, p1.length, 0.001f);
             assertEquals(17.7f, p1.width, 0.001f);
             assertEquals(7.7f, p1.height, 0.001f);
-            assertEquals("testFindAndDeleteReturnsObjects#70077", p1.description);
+            assertEquals("testFindAndDeleteReturnsObjects#multi", p1.description);
         }
         assertEquals("Found " + p0.id + "; expected one of " + remaining, true, remaining.remove(p0.id));
         assertEquals("Found " + p1.id + "; expected one of " + remaining, true, remaining.remove(p1.id));

@@ -27,6 +27,7 @@ import static test.jakarta.data.jpa.web.Assertions.assertIterableEquals;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -1429,18 +1430,18 @@ public class DataJPATestServlet extends FATServlet {
         orders.delete(o4);
 
         // cannot delete when the version number doesn't match
+        o1 = orders.findById(o1.id).orElseThrow();
+        UUID o1id = o1.id;
+
+        // Update on another thread:
+        CompletableFuture.supplyAsync(() -> {
+            PurchaseOrder o1updated = orders.findById(o1id).orElseThrow();
+            o1updated.total = 11.99f;
+            return orders.save(o1updated);
+        }).get(2, TimeUnit.MINUTES);
+
         tran.begin();
         try {
-            o1 = orders.findById(o1.id).orElseThrow();
-            UUID o1id = o1.id;
-
-            // Update in separate transaction:
-            CompletableFuture.supplyAsync(() -> {
-                PurchaseOrder o1updated = orders.findById(o1id).orElseThrow();
-                o1updated.total = 11.99f;
-                return orders.save(o1updated);
-            }).get(30, TimeUnit.SECONDS);
-
             try {
                 orders.delete(o1);
                 fail("Deletion must be rejected when the version doesn't match.");
@@ -3802,7 +3803,16 @@ public class DataJPATestServlet extends FATServlet {
      * Use an Entity which has a version attribute of type Timestamp.
      */
     @Test
-    public void testTimestampAsVersion(HttpServletRequest request, HttpServletResponse response) {
+    public void testTimestampAsVersion(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        /*
+         * Reference Issue: https://github.com/eclipse-ee4j/eclipselink/issues/205
+         * Without using the Eclipselink Oracle plugin the precision of Timestamp is 1 second
+         * Therefore, we need to ensure 1 second has passed between queries where we expect
+         * the timestamp/version to be different.
+         */
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        boolean secondPercision = jdbcJarName.startsWith("ojdbc");
+
         assertEquals(0, counties.deleteByNameIn(List.of("Dodge", "Mower")));
 
         int[] dodgeZipCodes = new int[] { 55924, 55927, 55940, 55944, 55955, 55985 };
@@ -3814,6 +3824,9 @@ public class DataJPATestServlet extends FATServlet {
         counties.save(dodge, mower);
 
         dodge = counties.findByName("Dodge").orElseThrow();
+
+        if (secondPercision)
+            Thread.sleep(Duration.ofSeconds(1).toMillis());
 
         assertEquals(true, counties.updateByNameSetZipCodes("Dodge",
                                                             dodgeZipCodes = new int[] { 55917, 55924, 55927, 55940, 55944, 55955, 55963, 55985 }));
@@ -3830,6 +3843,10 @@ public class DataJPATestServlet extends FATServlet {
         // Update the version/timestamp and retry:
         Timestamp timestamp = dodge.lastUpdated = counties.findLastUpdatedByName("Dodge");
         dodge.population = 20981;
+
+        if (secondPercision)
+            Thread.sleep(Duration.ofSeconds(1).toMillis());
+
         counties.save(dodge);
 
         // Try to delete by previous version/timestamp,

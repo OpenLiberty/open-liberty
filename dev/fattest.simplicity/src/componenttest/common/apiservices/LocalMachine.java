@@ -16,7 +16,6 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.Properties;
 
-import com.ibm.websphere.simplicity.AsyncProgramOutput;
 import com.ibm.websphere.simplicity.ConnectionInfo;
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.OperatingSystem;
@@ -53,20 +52,8 @@ public class LocalMachine extends Machine {
     @Override
     public void disconnect() throws Exception {}
 
-    @Override
-    public ProgramOutput execute(String cmd, String[] parameters,
-                                 String workDir, Properties envVars) throws Exception {
-        return LocalProvider.executeCommand(this, cmd, parameters, workDir,
-                                            envVars);
-    }
-
     public void executeAsync(String cmd, String[] parameters, String workDir, Properties envVars, OutputStream redirect) throws Exception {
         LocalProvider.executeCommandAsync(this, cmd, parameters, workDir, envVars, redirect);
-    }
-
-    @Override
-    public AsyncProgramOutput executeAsync(String cmd, String[] parameters) throws Exception {
-        return LocalProvider.executeCommandAsync(this, cmd, parameters, workDir, null);
     }
 
     @Override

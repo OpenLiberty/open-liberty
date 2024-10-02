@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.UncheckedIOException;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -39,7 +40,7 @@ import componenttest.topology.impl.LibertyServer;
 
 public class FATSuite {
 
-    public static void addServerEnvPorts(LibertyServer server, List<PortSetting> portSettings) {
+    public static void addServerEnvPorts(LibertyServer server, List<PortSetting> portSettings, Map<String, String> envSettings) {
 
         File serverEnvFile = new File(server.getServerRoot() + "/server.env");
         try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile, true))) {
@@ -49,6 +50,7 @@ public class FATSuite {
                                    setting.lookupName + " defaults to " + setting.defaultValue);
                 serverEnvWriter.println(setting.newEnvName + "=" + port);
             });
+            envSettings.forEach((k, v) -> serverEnvWriter.println(k + "=" + v));
         } catch (FileNotFoundException e) {
             throw new UncheckedIOException(e);
         }

@@ -1519,7 +1519,7 @@
     <dependency>
       <groupId>jakarta.servlet.jsp.jstl</groupId>
       <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-      <version>3.0.0</version>
+      <version>3.0.2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.servlet.jsp</groupId>
@@ -2474,7 +2474,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-el-api</artifactId>
-      <version>11.0.0-M24</version>
+      <version>11.0.0-M26</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
@@ -2489,7 +2489,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper-el</artifactId>
-      <version>11.0.0-M24</version>
+      <version>11.0.0-M26</version>
     </dependency>
     <dependency>
       <groupId>org.apache.wink</groupId>
@@ -3724,12 +3724,12 @@
     <dependency>
       <groupId>org.jboss.resteasy.microprofile</groupId>
       <artifactId>microprofile-rest-client-base</artifactId>
-      <version>3.0.0.Beta1</version>
+      <version>3.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy.microprofile</groupId>
       <artifactId>microprofile-rest-client</artifactId>
-      <version>3.0.0.Beta1</version>
+      <version>3.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>

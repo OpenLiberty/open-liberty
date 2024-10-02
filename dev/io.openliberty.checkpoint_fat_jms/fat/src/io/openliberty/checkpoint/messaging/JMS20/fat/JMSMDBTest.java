@@ -22,6 +22,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -109,7 +111,10 @@ public class JMSMDBTest {
 
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer("JMSMDBTest.log");
-        FATSuite.addServerEnvPorts(server, Arrays.asList(JMSPortSetting, JMSPortSSLSetting));
+        Map<String, String> credentials = new HashMap<>();
+        credentials.put("USER_NAME", "user1");
+        credentials.put("USER_PASSWORD", "user1pwd");
+        FATSuite.addServerEnvPorts(server, Arrays.asList(JMSPortSetting, JMSPortSSLSetting), credentials);
         server.checkpointRestore();
 
         String waitFor = server.waitForStringInLog("CWWKZ0001I:.*MDBTestWeb", server.getMatchingLogFile("messages.log"));
@@ -140,4 +145,55 @@ public class JMSMDBTest {
 
     }
 
+    @Test
+    public void testP2P_B_SecOn() throws Exception {
+        val = runInServlet("testP2P_B_SecOn");
+        assertTrue("testP2P_B_SecOn failed ", val);
+    }
+
+    @Test
+    public void testP2P_TCP_SecOn() throws Exception {
+        val = runInServlet("testP2P_TCP_SecOn");
+        assertTrue("testP2P_TCP_SecOn failed ", val);
+    }
+
+    @Test
+    public void testPubSub_B_SecOn() throws Exception {
+        val = runInServlet("testPubSub_B_SecOn");
+        assertTrue("testPubSub_B_SecOn failed ", val);
+    }
+
+    @Test
+    public void testPubSub_TCP_SecOn() throws Exception {
+        val = runInServlet("testPubSub_TCP_SecOn");
+        assertTrue("testPubSub_TCP_SecOn failed ", val);
+    }
+
+    @Test
+    public void testPubSubDurable_B_SecOn() throws Exception {
+        val = runInServlet("testPubSubDurable_B_SecOn");
+        assertTrue("testPubSubDurable_B_SecOn failed ", val);
+    }
+
+    @Test
+    public void testPubSubDurable_TCP_SecOn() throws Exception {
+        val = runInServlet("testPubSubDurable_TCP_SecOn");
+        assertTrue("testPubSubDurable_TCP_SecOn failed ", val);
+    }
+
+    @Test
+    public void testNegativeSetters_B_SecOn() throws Exception {
+
+        val = runInServlet("testNegativeSetters_B_SecOn");
+        assertTrue("testNegativeSetters_B_SecOn failed ", val);
+
+    }
+
+    @Test
+    public void testNegativeSetters_TCP_SecOn() throws Exception {
+
+        val = runInServlet("testNegativeSetters_TCP_SecOn");
+        assertTrue("testNegativeSetters_TCP_SecOn failed ", val);
+
+    }
 }

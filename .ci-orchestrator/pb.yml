@@ -18,16 +18,23 @@ triggers:
     - name: fat.buckets.to.run
       defaultValue: ${PR Changes:fat.buckets.to.run}
       steps:
-      - stepName: Compile Liberty Images
-      - stepName: Compile FATs
-      - stepName: Determine FATs Needed
-      - stepName: Distributed Lite FATs
+        - stepName: Compile Liberty Images
+        - stepName: Compile FATs
+        - stepName: Determine FATs Needed
+        - stepName: Distributed Lite FATs
     # Enable the testing of the checkpoint feature which additionally runs any compiled FATs declaring that they test the checkpoint feature in a CRIU environment.
     # Note: The FATs will run in this step will *only* run the test cases annotated with CheckpointTest. The FATs will also run in the standard FAT steps where they will only run un-annotated test cases.
     - name: spawn.checkpoint
       defaultValue: "true"
       steps:
-      - stepName: Checkpoint FATs (Lite)
+        - stepName: Checkpoint FATs (Lite)
+    # Allow user to override ebc.shortlist for only parent steps.
+    - name: ebc.shortlist
+      defaultValue: parentbuild-personal.yml
+      steps:
+        - stepName: Compile Liberty Images
+        - stepName: Unittest Open Liberty
+        - stepName: Compile FATs
 
 - type: manual
   triggerName: "ol-pbbeta-manual"
@@ -54,7 +61,14 @@ triggers:
     - name: spawn.checkpoint
       defaultValue: "true"
       steps:
-      - stepName: Checkpoint FATs (Lite)
+        - stepName: Checkpoint FATs (Lite)
+    # Allow user to override ebc.shortlist for only parent steps.
+    - name: ebc.shortlist
+      defaultValue: parentbuild-personal.yml
+      steps:
+        - stepName: Compile Liberty Images
+        - stepName: Unittest Open Liberty
+        - stepName: Compile FATs
 
 - type: github
   triggerName: "ol-fullpbbeta"
@@ -91,6 +105,13 @@ triggers:
       defaultValue: "true"
       steps:
         - stepName: Checkpoint FATs (Lite)
+    # Allow user to override ebc.shortlist for only parent steps.
+    - name: ebc.shortlist
+      defaultValue: parentbuild-personal.yml
+      steps:
+        - stepName: Compile Liberty Images
+        - stepName: Unittest Open Liberty
+        - stepName: Compile FATs
 
 steps:
 - stepName: PR Changes
