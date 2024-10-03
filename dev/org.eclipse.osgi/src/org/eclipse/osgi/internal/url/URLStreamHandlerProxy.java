@@ -234,7 +234,7 @@ public class URLStreamHandlerProxy extends URLStreamHandler {
 		@Override
 		public synchronized URLStreamHandlerService get() {
 			if (service == null && !disposed) {
-				service = bundleContext.getService(reference);
+				service = URLStreamHandlerFactoryImpl.secureAction.getService(reference, bundleContext);
 			}
 			return service;
 		}
