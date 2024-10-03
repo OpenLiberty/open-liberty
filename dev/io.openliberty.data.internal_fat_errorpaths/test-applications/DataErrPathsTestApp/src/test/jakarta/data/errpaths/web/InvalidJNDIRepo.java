@@ -12,13 +12,19 @@
  *******************************************************************************/
 package test.jakarta.data.errpaths.web;
 
-import jakarta.data.repository.BasicRepository;
+import java.time.LocalDate;
+import java.util.List;
+
+import jakarta.data.repository.By;
+import jakarta.data.repository.DataRepository;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.Repository;
 
 /**
- * Repository with a valid entity.
+ * Repository where the dataStore is configured to a JNDI name that does not exist.
  */
-@Repository(dataStore = "java:app/jdbc/DerbyDataSource")
-public interface Voters extends BasicRepository<Voter, Integer> {
-
+@Repository(dataStore = "java:module/env/DoesNotExist")
+public interface InvalidJNDIRepo extends DataRepository<Voter, Integer> {
+    @Find
+    List<Voter> bornOn(@By("birthday") LocalDate d);
 }

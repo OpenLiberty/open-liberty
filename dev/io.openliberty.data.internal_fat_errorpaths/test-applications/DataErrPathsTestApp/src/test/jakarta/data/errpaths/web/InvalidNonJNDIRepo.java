@@ -12,13 +12,16 @@
  *******************************************************************************/
 package test.jakarta.data.errpaths.web;
 
-import jakarta.data.repository.BasicRepository;
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.Repository;
 
 /**
- * Repository with a valid entity.
+ * Repository where the dataStore is configured to be a name that does not match
+ * a dataSource or databaseStore, and is not a JNDI name of a resource reference
+ * or persistence unit reference.
  */
-@Repository(dataStore = "java:app/jdbc/DerbyDataSource")
-public interface Voters extends BasicRepository<Voter, Integer> {
-
+@Repository(dataStore = "AbsentFromConfig")
+public interface InvalidNonJNDIRepo {
+    @Insert
+    Voter addNew(Voter v);
 }

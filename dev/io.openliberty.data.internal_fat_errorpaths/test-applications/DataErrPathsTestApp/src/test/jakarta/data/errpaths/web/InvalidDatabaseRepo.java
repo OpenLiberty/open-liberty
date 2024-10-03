@@ -12,13 +12,19 @@
  *******************************************************************************/
 package test.jakarta.data.errpaths.web;
 
-import jakarta.data.repository.BasicRepository;
+import java.util.List;
+
+import jakarta.data.repository.By;
+import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.Repository;
 
 /**
- * Repository with a valid entity.
+ * Repository where the dataStore is configured to a DataSource that is configured
+ * to use a database that does not exist.
  */
-@Repository(dataStore = "java:app/jdbc/DerbyDataSource")
-public interface Voters extends BasicRepository<Voter, Integer> {
-
+@Repository(dataStore = "java:comp/jdbc/InvalidDatabase")
+public interface InvalidDatabaseRepo extends CrudRepository<Voter, Integer> {
+    @Find
+    List<Voter> livesAt(@By("address") String streetAddress);
 }

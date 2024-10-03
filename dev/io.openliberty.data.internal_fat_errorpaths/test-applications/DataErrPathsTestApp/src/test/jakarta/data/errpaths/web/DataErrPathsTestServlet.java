@@ -16,6 +16,7 @@ import static org.junit.Assert.fail;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionException;
 
@@ -31,6 +32,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.UserTransaction;
 
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.junit.Test;
 
@@ -42,6 +44,17 @@ import componenttest.app.FATServlet;
                       user = "dbuser1",
                       password = "dbpwd1",
                       properties = "createDatabase=create")
+@DataSourceDefinition(name = "java:module/jdbc/DataSourceForInvalidEntity",
+                      className = "org.apache.derby.jdbc.EmbeddedXADataSource",
+                      databaseName = "memory:testdb",
+                      user = "dbuser1",
+                      password = "dbpwd1",
+                      properties = "createDatabase=create")
+@DataSourceDefinition(name = "java:comp/jdbc/InvalidDatabase",
+                      className = "org.apache.derby.jdbc.EmbeddedXADataSource",
+                      databaseName = "notfounddb",
+                      user = "dbuser1",
+                      password = "dbpwd1")
 @PersistenceUnit(name = "java:app/env/VoterPersistenceUnitRef",
                  unitName = "VoterPersistenceUnit")
 @SuppressWarnings("serial")
@@ -49,13 +62,34 @@ import componenttest.app.FATServlet;
 public class DataErrPathsTestServlet extends FATServlet {
 
     @Inject
+    InvalidDatabaseRepo errDatabaseNotFound;
+
+    @Inject
     RepoWithoutDataStore errDefaultDataSourceNotConfigured;
+
+    @Inject
+    InvalidNonJNDIRepo errIncorrectDataStoreName;
+
+    @Inject
+    InvalidJNDIRepo errIncorrectJNDIName;
 
     @Resource
     UserTransaction tx;
 
     @Inject
     Voters voters;
+
+    /**
+     * Preemptively cause errors that will result in FFDC to keep them from
+     * failing test cases.
+     */
+    public void forceFFDC() throws Exception {
+        try {
+            InitialContext.doLookup("java:comp/jdbc/InvalidDataSource");
+        } catch (NamingException x) {
+            // expected; the database doesn't exist
+        }
+    }
 
     /**
      * Initialize the database with some data that other tests can try to read.
@@ -84,6 +118,67 @@ public class DataErrPathsTestServlet extends FATServlet {
             }
         } catch (Exception x) {
             throw new ServletException(x);
+        }
+    }
+
+    /**
+     * Tests an error path where the application specifies the repository dataStore
+     * to be a JNDI name that does not exist.
+     */
+    @Test
+    public void testRepositoryWithIncorrectDataStoreJNDIName() {
+        try {
+            List<Voter> found = errIncorrectJNDIName //
+                            .bornOn(LocalDate.of(1977, Month.SEPTEMBER, 26));
+            fail("Should not be able to use repository that sets the dataStore " +
+                 "to a JNDI name that does not exist. Found: " + found);
+        } catch (CompletionException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1079E:") ||
+                !x.getMessage().contains("<persistence-unit name=\"MyPersistenceUnit\">"))
+                throw x;
+        }
+    }
+
+    /**
+     * Tests an error path where the application specifies the repository dataStore
+     * to be a name that does not exist as a dataSource id, a databaseStore id, or
+     * a JNDI name.
+     */
+    @Test
+    public void testRepositoryWithIncorrectDataStoreName() {
+        try {
+            Voter added = errIncorrectDataStoreName //
+                            .addNew(new Voter(876554321, "Vanessa", //
+                                            LocalDate.of(1955, Month.JULY, 5), //
+                                            "5455 W River Rd NW, Rochester, MN 55901"));
+            fail("Should not be able to use repository that sets the dataStore " +
+                 "to a name that does not exist. Added: " + added);
+        } catch (CompletionException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1078E:") ||
+                !x.getMessage().contains("<dataSource id=\"MyDataSource\" jndiName=\"jdbc/ds\""))
+                throw x;
+        }
+    }
+
+    /**
+     * Tests an error path where the application specifies the repository dataStore
+     * to be a DataSource that is configured to use a database that does not exist.
+     */
+    @Test
+    public void testRepositoryWithInvalidDatabaseName() {
+        try {
+            List<Voter> found = errDatabaseNotFound //
+                            .livesAt("2800 37th St NW, Rochester, MN 55901");
+            fail("Should not be able to use repository that sets the dataStore" +
+                 " to a DataSource that is configured to use a database that does" +
+                 " not exist. Found: " + found);
+        } catch (CompletionException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1080E:") ||
+                !x.getMessage().contains(InvalidDatabaseRepo.class.getName()))
+                throw x;
         }
     }
 

@@ -23,6 +23,7 @@
     <persistence-unit name="VoterPersistenceUnit">
         <jta-data-source>java:app/jdbc/DerbyDataSource</jta-data-source>
         <class>test.jakarta.data.errpaths.web.Voter</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="eclipselink.logging.parameters"
                       value="true"/>

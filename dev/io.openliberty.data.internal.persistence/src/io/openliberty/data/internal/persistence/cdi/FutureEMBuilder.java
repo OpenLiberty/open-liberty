@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -41,7 +40,6 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -70,7 +68,9 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
     private final String application, module;
 
     /**
-     * The configured dataStore value of the Repository annotation.
+     * The configured dataStore value of the Repository annotation,
+     * or that value prefixed with java:comp,
+     * or if unspecified, then java:comp/DefaultDataSource.
      */
     private final String dataStore;
 
@@ -258,99 +258,115 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
      *
      * @return PUnitEMBuilder (for persistence unit references) or
      *         DBStoreEMBuilder (data sources, databaseStore)
-     * @throws Exception if an error occurs.
      */
-    @FFDCIgnore(NamingException.class)
+    @FFDCIgnore({ NamingException.class, Throwable.class })
     public EntityManagerBuilder createEMBuilder() {
-        String resourceName = dataStore;
-        String metadataIdentifier = getMetadataIdentifier();
-
-        // metadataIdentifier examples:
-        // WEB#MyApp#MyWebModule.war
-        // EJB#MyApp#MyEJBModule.jar#MyEJB
-        // DATA#MyApp
-
-        ComponentMetaDataAccessorImpl accessor = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor();
-        ComponentMetaData extMetadata = accessor.getComponentMetaData();
-        ComponentMetaData repoMetadata = (ComponentMetaData) provider.metadataIdSvc.getMetaData(metadataIdentifier);
-        boolean switchMetadata = repoMetadata != null &&
-                                 (extMetadata == null || !extMetadata.getJ2EEName().equals(repoMetadata.getJ2EEName()));
-
-        if (namespace == Namespace.COMP && metadataIdentifier.startsWith("EJB#"))
-            throw exc(IllegalArgumentException.class,
-                      "CWWKD1061.comp.name.in.ejb",
-                      repositoryInterface.getName(),
-                      repoMetadata.getJ2EEName().getModule(),
-                      repoMetadata.getJ2EEName().getApplication(),
-                      resourceName,
-                      "dataStore",
-                      "java:comp",
-                      List.of("java:app", "java:module"));
-
-        if (switchMetadata)
-            accessor.beginContext(repoMetadata);
+        // metadata of DataExtension thread (runs from an application module)
+        ComponentMetaData extMetadata = null;
+        // metadata of the class loader of the repository interface
+        ComponentMetaData repoMetadata = null;
         try {
-            if (namespace != null) {
-                try {
+            String resourceName = dataStore;
+            String metadataIdentifier = getMetadataIdentifier();
+
+            // metadataIdentifier examples:
+            // WEB#MyApp#MyWebModule.war
+            // EJB#MyApp#MyEJBModule.jar#MyEJB
+            // DATA#MyApp
+
+            ComponentMetaDataAccessorImpl accessor = ComponentMetaDataAccessorImpl //
+                            .getComponentMetaDataAccessor();
+            extMetadata = accessor.getComponentMetaData();
+            repoMetadata = (ComponentMetaData) provider.metadataIdSvc //
+                            .getMetaData(metadataIdentifier);
+            boolean switchMetadata = repoMetadata != null && //
+                                     (extMetadata == null || //
+                                      !extMetadata.getJ2EEName().equals(repoMetadata.getJ2EEName()));
+
+            if (namespace == Namespace.COMP && metadataIdentifier.startsWith("EJB#"))
+                throw exc(DataException.class,
+                          "CWWKD1061.comp.name.in.ejb",
+                          repositoryInterface.getName(),
+                          repoMetadata.getJ2EEName().getModule(),
+                          repoMetadata.getJ2EEName().getApplication(),
+                          resourceName,
+                          "dataStore",
+                          "java:comp",
+                          List.of("java:app", "java:module"));
+
+            if (switchMetadata)
+                accessor.beginContext(repoMetadata);
+            try {
+                if (namespace != null) {
                     Object resource = InitialContext.doLookup(dataStore);
 
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, dataStore + " is the JNDI name for " + resource);
 
                     if (resource instanceof EntityManagerFactory)
-                        return new PUnitEMBuilder(provider, repositoryClassLoader, (EntityManagerFactory) resource, //
-                                        resourceName, metadataIdentifier, entityTypes);
-
-                } catch (NamingException x) {
-                    ComponentMetaData metadata = switchMetadata //
-                                    ? repoMetadata //
-                                    : extMetadata;
-                    if (DataExtension.DEFAULT_DATA_SOURCE.equals(dataStore))
-                        throw excDefaultDataSourceNotFound(metadata, x);
-                    else {
-                        // TODO better error message
-                        FFDCFilter.processException(x, this.getClass().getName() + ".createEMBuilder", "155", this, new Object[] { (switchMetadata ? repoMetadata : extMetadata) });
-                        throw new CompletionException("Unable to find " + dataStore + " from " +
-                                                      (switchMetadata ? repoMetadata : extMetadata).getJ2EEName(), x);
-                    }
-                }
-            } else {
-                // Check for resource references and persistence unit references where java:comp/env/ is omitted:
-                String javaCompName = "java:comp/env/" + resourceName;
-                try {
-                    Object resource = InitialContext.doLookup(javaCompName);
-
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(this, tc, javaCompName + " is the JNDI name for " + resource);
-
-                    if (resource instanceof EntityManagerFactory)
                         return new PUnitEMBuilder(provider, repositoryClassLoader, //
                                         (EntityManagerFactory) resource, //
-                                        javaCompName, metadataIdentifier, //
-                                        entityTypes);
+                                        resourceName, metadataIdentifier, entityTypes);
+                } else {
+                    // Check for resource references and persistence unit references where java:comp/env/ is omitted:
+                    String javaCompName = "java:comp/env/" + resourceName;
+                    try {
+                        Object resource = InitialContext.doLookup(javaCompName);
 
-                    if (resource instanceof DataSource)
-                        resourceName = javaCompName;
-                } catch (NamingException x) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(this, tc, javaCompName + " is not available in JNDI, ensure dataStore = "
-                                           + resourceName + " refers to a resource reference or persistence unit reference. "
-                                           + "Otherwise, we will assume this property refers to a datasource.");
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(this, tc, javaCompName + " is the JNDI name for " + resource);
+
+                        if (resource instanceof EntityManagerFactory)
+                            return new PUnitEMBuilder(provider, repositoryClassLoader, //
+                                            (EntityManagerFactory) resource, //
+                                            javaCompName, metadataIdentifier, //
+                                            entityTypes);
+
+                        if (resource instanceof DataSource)
+                            resourceName = javaCompName;
+                    } catch (NamingException x) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(this, tc, javaCompName + " is not available in JNDI, ensure dataStore = "
+                                               + resourceName + " refers to a resource reference or persistence unit reference. "
+                                               + "Otherwise, we will assume this property refers to a datasource.");
+                    }
                 }
+            } finally {
+                if (switchMetadata)
+                    accessor.endContext();
             }
-        } finally {
-            if (switchMetadata)
-                accessor.endContext();
-        }
 
-        ComponentMetaData mdata = (ComponentMetaData) provider.metadataIdSvc.getMetaData(metadataIdentifier);
-        J2EEName jeeName = mdata == null ? null : mdata.getJ2EEName();
-        boolean javacolon = namespace != null || // any java: namespace
-                            resourceName != dataStore; // implicit java:comp
-        return new DBStoreEMBuilder(provider, repositoryClassLoader, //
-                        resourceName, //
-                        javacolon, //
-                        metadataIdentifier, jeeName, entityTypes);
+            J2EEName jeeName = repoMetadata == null ? null : repoMetadata.getJ2EEName();
+            boolean javacolon = namespace != null || // any java: namespace
+                                resourceName != dataStore; // implicit java:comp
+
+            return new DBStoreEMBuilder(provider, repositoryClassLoader, //
+                            resourceName, //
+                            javacolon, //
+                            metadataIdentifier, jeeName, entityTypes);
+        } catch (Throwable x) {
+            // The error is logged to Tr.error rather than FFDC
+            ComponentMetaData metadata = repoMetadata == null //
+                            ? extMetadata //
+                            : repoMetadata;
+            if (x instanceof DataException) { // already logged
+                throw (DataException) x;
+            } else if (x instanceof NamingException) {
+                if (namespace == null)
+                    throw excDataStoreNotFound(metadata, x);
+                else if (DataExtension.DEFAULT_DATA_SOURCE.equals(dataStore))
+                    throw excDefaultDataSourceNotFound(metadata, x);
+                else
+                    throw excJNDINameNotFound(metadata, x);
+            } else {
+                throw (DataException) exc(DataException.class,
+                                          "CWWKD1080.datastore.general.err",
+                                          repositoryInterface.getName(),
+                                          metadata,
+                                          dataStore,
+                                          x.getMessage()).initCause(x);
+            }
+        }
     }
 
     @Override
@@ -362,6 +378,69 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                             && Objects.equals(application, b.application)
                             && Objects.equals(module, b.module)
                             && Objects.equals(repositoryClassLoader, b.repositoryClassLoader);
+    }
+
+    /**
+     * Creates an exception for a Repository that sets the dataStore to a
+     * value that is not found as an id or JNDI name, or is not accessible,
+     * or the resource is misconfigured.
+     *
+     * @param metadata metadata that is on the thread.
+     * @param cause    cause for the exception.
+     * @return DataException.
+     */
+    @Trivial
+    private DataException excDataStoreNotFound(ComponentMetaData metadata,
+                                               Throwable cause) {
+        Class<?> primary = DataExtension.getPrimaryEntityType(repositoryInterface);
+        String exampleEntityClassName = primary == null //
+                        ? "org.example.MyEntity" //
+                        : primary.getName();
+
+        String persistenceUnitExample = """
+
+                        <persistence-unit name="MyPersistenceUnit">
+                          <jta-data-source>jdbc/ds</jta-data-source>
+                          <class>""" + exampleEntityClassName + """
+                        </class>
+                          <properties>
+                            <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
+                          </properties>
+                        </persistence-unit>
+                        """;
+
+        String dataSourceConfigExample = """
+
+                        <dataSource id="MyDataSource" jndiName="jdbc/ds">
+                          <jdbcDriver libraryRef="PostgresLib"/>
+                          <properties.postgresql databaseName="exampledb" serverName="localhost" portNumber="5432"/>
+                          <containerAuthData user=*** password=***/>
+                        </dataSource>
+                        <library id="PostgresLib">
+                          <fileset dir="${server.config.dir}/lib/postgres" includes="*.jar"/>
+                        </library>
+                        """;
+
+        String databaseStoreConfigExample = """
+
+                        <databaseStore id="MyDatabaseStore" dataSourceRef="MyDataSource" createTables="true" tablePrefix="">
+                          <authData user="***" password="***"/>
+                        </databaseStore>
+                        """;
+
+        DataException x = exc(DataException.class,
+                              "CWWKD1078.datastore.not.found",
+                              repositoryInterface.getName(),
+                              metadata.getJ2EEName(),
+                              dataStore,
+                              dataSourceConfigExample,
+                              databaseStoreConfigExample,
+                              "@Resource(name=\"java:app/env/jdbc/dsRef\",lookup=\"jdbc/ds\")",
+                              "jndiName=\"jdbc/ds\"",
+                              "@PersistenceUnit(name=\"java:app/env/MyPersistenceUnitRef\",unitName=\"MyPersistenceUnit\")",
+                              persistenceUnitExample);
+
+        return (DataException) x.initCause(cause);
     }
 
     /**
@@ -422,6 +501,61 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                               "jndiName=\"jdbc/ds\"",
                               "@PersistenceUnit(name=\"java:app/env/MyPersistenceUnitRef\",unitName=\"MyPersistenceUnit\")",
                               persistenceUnitExample);
+
+        return (DataException) x.initCause(cause);
+    }
+
+    /**
+     * Creates an exception for a Repository that sets the dataStore to a
+     * JNDI name that is not found, not accessible, or the resource is
+     * misconfigured.
+     *
+     * @param metadata metadata that is on the thread.
+     * @param cause    cause for the exception, typically NamingException.
+     * @return DataException.
+     */
+    @Trivial
+    private DataException excJNDINameNotFound(ComponentMetaData metadata,
+                                              Throwable cause) {
+        Class<?> primary = DataExtension.getPrimaryEntityType(repositoryInterface);
+        String exampleEntityClassName = primary == null //
+                        ? "org.example.MyEntity" //
+                        : primary.getName();
+
+        String persistenceUnitExample = """
+
+                        <persistence-unit name="MyPersistenceUnit">
+                          <jta-data-source>jdbc/ds</jta-data-source>
+                          <class>""" + exampleEntityClassName + """
+                        </class>
+                          <properties>
+                            <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
+                          </properties>
+                        </persistence-unit>
+                        """;
+
+        String dataSourceConfigExample = """
+
+                        <dataSource jndiName="jdbc/ds">
+                          <jdbcDriver libraryRef="PostgresLib"/>
+                          <properties.postgresql databaseName="exampledb" serverName="localhost" portNumber="5432"/>
+                          <containerAuthData user=*** password=***/>
+                        </dataSource>
+                        <library id="PostgresLib">
+                          <fileset dir="${server.config.dir}/lib/postgres" includes="*.jar"/>
+                        </library>
+                        """;
+
+        DataException x = exc(DataException.class,
+                              "CWWKD1079.jndi.not.found",
+                              repositoryInterface.getName(),
+                              metadata.getJ2EEName(),
+                              dataStore,
+                              "@Resource(name=\"java:app/env/jdbc/dsRef\",lookup=\"jdbc/ds\")",
+                              "jndiName=\"jdbc/ds\"",
+                              "@PersistenceUnit(name=\"java:app/env/MyPersistenceUnitRef\",unitName=\"MyPersistenceUnit\")",
+                              persistenceUnitExample,
+                              dataSourceConfigExample);
 
         return (DataException) x.initCause(cause);
     }
