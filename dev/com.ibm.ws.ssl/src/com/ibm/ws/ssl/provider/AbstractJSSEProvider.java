@@ -671,6 +671,7 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         }
 
         // now generate a new SSLContext
+        //final String ctxtProvider = Constants.IBMJCEPlusFIPS_NAME;
         final String ctxtProvider = config.getProperty(Constants.SSLPROP_CONTEXT_PROVIDER);
         final String alias = config.getProperty(Constants.SSLPROP_ALIAS);
         final String configURL = config.getProperty(Constants.SSLPROP_CONFIGURL_LOADED_FROM);
@@ -690,6 +691,7 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "protocol:  " + protocolVal);
+            Tr.debug(tc, "ctxtProvider:  " + ctxtProvider);
         }
 
         try {

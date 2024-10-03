@@ -201,6 +201,7 @@ public class Constants {
     public static final String PROTOCOL_TLSV1_1 = "TLSv1.1";
     public static final String PROTOCOL_TLSV1_2 = "TLSv1.2";
     public static final String PROTOCOL_TLSV1_3 = "TLSv1.3";
+    public static final String PROTOCOL_TLS_FIPS = PROTOCOL_TLSV1_2 + "," + PROTOCOL_TLSV1_3;
 
     /*** SECURITY LEVEL CONSTANTS ***/
     public static final String SECURITY_LEVEL_HIGH = "HIGH";

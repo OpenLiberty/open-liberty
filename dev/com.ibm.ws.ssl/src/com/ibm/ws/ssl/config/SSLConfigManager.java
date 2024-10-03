@@ -47,6 +47,7 @@ import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.internal.LibertyConstants;
 import com.ibm.ws.ssl.provider.AbstractJSSEProvider;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
+import com.ibm.ws.crypto.common.FipsUtils;
 
 /**
  * Class that reads and controls access to SSL configuration objects. It
@@ -378,8 +379,18 @@ public class SSLConfigManager {
 
         // Obtain miscellaneous attributes from system properties
         String sslProtocol = getSystemProperty(Constants.SSLPROP_PROTOCOL);
-        if (sslProtocol != null && !sslProtocol.equals(""))
-            sslprops.setProperty(Constants.SSLPROP_PROTOCOL, sslProtocol);
+        if (sslProtocol != null && !sslProtocol.equals("")) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Setting default SSLProtocol: " + sslProtocol);
+            
+            // Use PROTOCOL_TLSV1_2 if FIPS is enabled
+            if (FipsUtils.isFIPSEnabled()) {
+                sslprops.setProperty(Constants.SSLPROP_PROTOCOL, Constants.PROTOCOL_TLSV1_2);
+                
+            } else {
+                sslprops.setProperty(Constants.SSLPROP_PROTOCOL, sslProtocol);
+            }
+        }
 
         String contextProvider = getSystemProperty(Constants.SSLPROP_CONTEXT_PROVIDER);
         if (contextProvider != null && !contextProvider.equals("")) {
@@ -503,6 +514,8 @@ public class SSLConfigManager {
         String sslProtocol = (String) map.get("sslProtocol");
         if (sslProtocol != null && !sslProtocol.isEmpty()) {
             try {
+                Tr.debug(tc, "Malhar, sslProtocol: " + sslProtocol);
+                //Print stack trace
                 protocolHelper.checkProtocolValueGood(sslProtocol);
                 sslprops.setProperty(Constants.SSLPROP_PROTOCOL, sslProtocol);
             } catch (Exception e) {
