@@ -300,7 +300,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
             if (namespace == Namespace.COMP && metadataIdentifier.startsWith("EJB#"))
                 throw exc(DataException.class,
                           "CWWKD1061.comp.name.in.ejb",
-                      repositoryInterfaces.stream().findFirst().get().getName(), // TODO revisit this and other NLS messages
+                          repositoryInterfaces.stream().findFirst().get().getName(), // TODO revisit this and other NLS messages
                           repoMetadata.getJ2EEName().getModule(),
                           repoMetadata.getJ2EEName().getApplication(),
                           resourceName,
@@ -375,7 +375,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
             } else {
                 throw (DataException) exc(DataException.class,
                                           "CWWKD1080.datastore.general.err",
-                                          repositoryInterface.getName(),
+                                          repositoryInterfaces.stream().findFirst().get().getName(), // TODO revisit this and other NLS messages
                                           metadata,
                                           dataStore,
                                           x.getMessage()).initCause(x);
@@ -406,7 +406,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
     @Trivial
     private DataException excDataStoreNotFound(ComponentMetaData metadata,
                                                Throwable cause) {
-        Class<?> primary = DataExtension.getPrimaryEntityType(repositoryInterface);
+        Class<?> primary = DataExtension.getPrimaryEntityType(repositoryInterfaces.stream().findFirst().get());
         String exampleEntityClassName = primary == null //
                         ? "org.example.MyEntity" //
                         : primary.getName();
@@ -444,7 +444,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
 
         DataException x = exc(DataException.class,
                               "CWWKD1078.datastore.not.found",
-                              repositoryInterface.getName(),
+                              repositoryInterfaces.stream().findFirst().get().getName(), // TODO revisit this and other NLS messages
                               metadata.getJ2EEName(),
                               dataStore,
                               dataSourceConfigExample,
@@ -531,7 +531,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
     @Trivial
     private DataException excJNDINameNotFound(ComponentMetaData metadata,
                                               Throwable cause) {
-        Class<?> primary = DataExtension.getPrimaryEntityType(repositoryInterface);
+        Class<?> primary = DataExtension.getPrimaryEntityType(repositoryInterfaces.stream().findFirst().get());
         String exampleEntityClassName = primary == null //
                         ? "org.example.MyEntity" //
                         : primary.getName();
@@ -562,7 +562,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
 
         DataException x = exc(DataException.class,
                               "CWWKD1079.jndi.not.found",
-                              repositoryInterface.getName(),
+                              repositoryInterfaces.stream().findFirst().get().getName(), // TODO revisit this and other NLS messages
                               metadata.getJ2EEName(),
                               dataStore,
                               "@Resource(name=\"java:app/env/jdbc/dsRef\",lookup=\"jdbc/ds\")",
