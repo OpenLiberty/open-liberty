@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -295,6 +295,8 @@ public class GenerateJspVisitor extends GenerateVisitor {
             GeneratorUtils.generate_tagCleanUp_methods(writer, !jspOptions.isDisableResourceInjection()); // PH49514
         }
 
+        GeneratorUtils.generate_finalCleanUp_method(writer, jspOptions);
+
         if(!jspOptions.isDisableResourceInjection()){
             GeneratorUtils.generate_tagPostConstruct_method(writer);
         }
@@ -561,14 +563,9 @@ public class GenerateJspVisitor extends GenerateVisitor {
 
         writer.println("} finally {");
 
-        if (!(jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool())) {
-            writer.println("_jsp_cleanUpTagArrayList(_jspTagList);");
-        }
+        writer.println("this._jsp_performFinalCleanUp(_jspTagList, pageContext);");
 
-        //writer.println("if (_jspxFactory != null) _jspxFactory.releasePageContext(pageContext);");
-        writer.println("_jspxFactory.releasePageContext(pageContext);");
-
-        //247815 Start
+        //247815 Start 
         if (jspOptions.isUsePageTagPool()) {
             writer.println("cleanupTaglibLookup(_jspx_TagLookup);");
         } else if (jspOptions.isUseThreadTagPool()) {
