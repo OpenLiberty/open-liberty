@@ -180,7 +180,7 @@ public class CDIAPITests extends FATServletClient {
 
     @Test
     @Mode(TestMode.FULL)
-    public void testCDICurrentInUnmanagedThreads() throws Exception {
+    public void testCDICurrentInUnmanagedThreadsAndTCCLMatching() throws Exception {
 
         List<String> messages = new ArrayList<String>();
         messages.add("found beanmanager in ProcessAnnotatedType : true");
@@ -194,10 +194,22 @@ public class CDIAPITests extends FATServletClient {
         messages.add("found beanmanager in AfterBeanDiscovery : true");
         messages.add("found beanmanager in AfterDeploymentValidation : true");
 
+        messages.add("Found the correct classloader in ProcessAnnotatedType");
+        messages.add("Found the correct classloader in BeforeBeanDiscovery");
+        messages.add("Found the correct classloader in ProcessInjectionTarget");
+        messages.add("Found the correct classloader in ProcessBeanAttributes");
+        messages.add("Found the correct classloader in ProcessBean");
+        messages.add("Found the correct classloader in ProcessManagedBean");
+        messages.add("Found the correct classloader in ProcessInjectionPoint");
+        messages.add("Found the correct classloader in AfterTypeDiscovery");
+        messages.add("Found the correct classloader in AfterBeanDiscovery");
+        messages.add("Found the correct classloader in AfterDeploymentValidation");
+
         server.setMarkToEndOfLog();
 
         WebArchive cdiCurrentTheads = ShrinkWrap.create(WebArchive.class, CDI_CURRENT_THREADS_APP_NAME + ".war")
                                                 .addPackage(CDIExtension.class.getPackage());
+        cdiCurrentTheads.addAsManifestResource(CDIExtension.class.getPackage(), "permissions.xml", "permissions.xml");
         CDIArchiveHelper.addCDIExtensionFile(cdiCurrentTheads, CDIExtension.class.getPackage());
         ShrinkHelper.exportToServer(server, "dropins", cdiCurrentTheads, DeployOptions.SERVER_ONLY);
         server.waitForStringsInLogUsingMark(messages);
