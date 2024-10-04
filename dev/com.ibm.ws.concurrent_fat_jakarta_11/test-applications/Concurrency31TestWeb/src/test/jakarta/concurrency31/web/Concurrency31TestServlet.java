@@ -16,12 +16,16 @@ import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINI
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledFuture;
@@ -30,17 +34,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
+import jakarta.enterprise.concurrent.CronTrigger;
+import jakarta.enterprise.concurrent.LastExecution;
 import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
+import jakarta.enterprise.concurrent.Trigger;
+import jakarta.enterprise.concurrent.ZonedTrigger;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.junit.Test;
 
@@ -274,6 +283,238 @@ public class Concurrency31TestServlet extends FATServlet {
     }
 
     // TODO after the workaround is removed, write: public void testUntimedInvokeAnyOneOnVirtualThread() throws Exception {
+
+    /**
+     * Use a managed-executor from the application.xml deployment descriptor with
+     * virtual=true to request that tasks run on virtual threads.
+     */
+    @Test
+    public void testVirtualManagedExecutorAppDD() throws Exception {
+        LinkedBlockingQueue<Thread> threads = new LinkedBlockingQueue<>();
+        LinkedBlockingQueue<ZoneId> zoneIds = new LinkedBlockingQueue<>();
+        Callable<Object> action = () -> {
+            threads.add(Thread.currentThread());
+
+            ZoneId zoneId = TimeZone.get();
+            if (zoneId == null)
+                zoneIds.add(ZoneId.of("UTC"));
+            else
+                zoneIds.add(zoneId);
+
+            return InitialContext.doLookup("java:comp/env/TestEntry");
+        };
+
+        ManagedExecutorService executor = InitialContext //
+                        .doLookup("java:global/concurrent/appdd/managed-executor");
+
+        final ZoneId CENTRAL = ZoneId.of("America/Chicago");
+        TimeZone.set(CENTRAL);
+        try {
+            Future<Object> future1 = executor.submit(action);
+            Future<Object> future2 = executor.submit(action);
+            Future<Object> future3 = executor.submit(action);
+            Future<Object> future4 = executor.submit(action);
+            Future<Object> future5 = executor.submit(action);
+
+            TimeZone.set(ZoneId.of("America/New_York"));
+
+            Set<Thread> uniqueVirtualThreads = new HashSet<Thread>();
+
+            Thread thread;
+            thread = threads.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(Boolean.TRUE,
+                         Thread.class.getMethod("isVirtual").invoke(thread));
+            uniqueVirtualThreads.add(thread);
+
+            thread = threads.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(Boolean.TRUE,
+                         Thread.class.getMethod("isVirtual").invoke(thread));
+            uniqueVirtualThreads.add(thread);
+
+            thread = threads.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(Boolean.TRUE,
+                         Thread.class.getMethod("isVirtual").invoke(thread));
+            uniqueVirtualThreads.add(thread);
+
+            thread = threads.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(Boolean.TRUE,
+                         Thread.class.getMethod("isVirtual").invoke(thread));
+            uniqueVirtualThreads.add(thread);
+
+            thread = threads.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(Boolean.TRUE,
+                         Thread.class.getMethod("isVirtual").invoke(thread));
+            uniqueVirtualThreads.add(thread);
+
+            // each execution must use a different virtual thread
+            assertEquals(uniqueVirtualThreads.toString(),
+                         5,
+                         uniqueVirtualThreads.size());
+
+            assertEquals(CENTRAL, zoneIds.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(CENTRAL, zoneIds.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(CENTRAL, zoneIds.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(CENTRAL, zoneIds.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(CENTRAL, zoneIds.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            try {
+                Object found = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Should not be able to look up java:comp name because" +
+                     " application context should be cleared. Found: " + found);
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof NamingException))
+                    throw x;
+            }
+
+            try {
+                Object found = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Should not be able to look up java:comp name because" +
+                     " application context should be cleared. Found: " + found);
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof NamingException))
+                    throw x;
+            }
+
+            try {
+                Object found = future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Should not be able to look up java:comp name because" +
+                     " application context should be cleared. Found: " + found);
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof NamingException))
+                    throw x;
+            }
+
+            try {
+                Object found = future4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Should not be able to look up java:comp name because" +
+                     " application context should be cleared. Found: " + found);
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof NamingException))
+                    throw x;
+            }
+
+            try {
+                Object found = future5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Should not be able to look up java:comp name because" +
+                     " application context should be cleared. Found: " + found);
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof NamingException))
+                    throw x;
+            }
+        } finally {
+            TimeZone.remove();
+        }
+    }
+
+    /**
+     * Use a managed-scheduled-executor from the web.xml deployment descriptor with
+     * virtual=true to request that tasks run on virtual threads.
+     */
+    @Test
+    public void testVirtualManagedScheduledExecutorWebDD() throws Exception {
+        Callable<Object[]> action = () -> {
+            return new Object[] {
+                                  Thread.currentThread(),
+                                  TimeZone.get(),
+                                  InitialContext.doLookup("java:comp/env/TestEntry")
+            };
+        };
+
+        ManagedScheduledExecutorService executor = InitialContext //
+                        .doLookup("java:comp/concurrent/webdd/managed-scheduled-executor");
+
+        TimeZone.set(ZoneId.of("America/Chicago"));
+        try {
+            Trigger trigger1 = new CronTrigger( //
+                            "0-59 0-59 0-23 * JAN-DEC SUN-SAT", //
+                            ZoneId.of("America/Chicago")) {
+                @Override
+                public ZonedDateTime getNextRunTime(LastExecution lastExec,
+                                                    ZonedDateTime scheduledAt) {
+                    if (lastExec == null)
+                        return super.getNextRunTime(lastExec, scheduledAt);
+                    else
+                        return null; // only run once
+                }
+            };
+            ScheduledFuture<Object[]> future1 = executor //
+                            .schedule(action, trigger1);
+
+            Trigger trigger2 = new ZonedTrigger() {
+                @Override
+                public ZonedDateTime getNextRunTime(LastExecution lastExec,
+                                                    ZonedDateTime scheduledAt) {
+                    if (lastExec == null)
+                        return ZonedDateTime.now().plus(20, ChronoUnit.MILLIS);
+                    else
+                        return null; // only run once
+                }
+            };
+            TimeZone.set(ZoneId.of("America/Denver"));
+            ScheduledFuture<Object[]> future2 = executor //
+                            .schedule(action, trigger2);
+
+            TimeZone.set(ZoneId.of("America/Juneau"));
+            ScheduledFuture<Object[]> future3 = executor //
+                            .schedule(action, 30, TimeUnit.MILLISECONDS);
+
+            TimeZone.set(ZoneId.of("Pacific/Honolulu"));
+            ScheduledFuture<Object[]> future4 = executor //
+                            .schedule(action, 40, TimeUnit.MILLISECONDS);
+
+            TimeZone.set(ZoneId.of("America/Los_Angeles"));
+
+            Set<Thread> uniqueVirtualThreads = new HashSet<Thread>();
+
+            Object[] results;
+            Thread thread;
+
+            results = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            assertEquals(ZoneId.of("America/Chicago"), results[1]);
+            assertEquals("TestValue1", results[2]);
+            thread = (Thread) results[0];
+            assertEquals(Boolean.TRUE,
+                         Thread.class.getMethod("isVirtual").invoke(thread));
+            uniqueVirtualThreads.add(thread);
+
+            results = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            assertEquals(ZoneId.of("America/Denver"), results[1]);
+            assertEquals("TestValue1", results[2]);
+            thread = (Thread) results[0];
+            assertEquals(Boolean.TRUE,
+                         Thread.class.getMethod("isVirtual").invoke(thread));
+            uniqueVirtualThreads.add(thread);
+
+            results = future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            assertEquals(ZoneId.of("America/Juneau"), results[1]);
+            assertEquals("TestValue1", results[2]);
+            thread = (Thread) results[0];
+            assertEquals(Boolean.TRUE,
+                         Thread.class.getMethod("isVirtual").invoke(thread));
+            uniqueVirtualThreads.add(thread);
+
+            results = future4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            assertEquals(ZoneId.of("Pacific/Honolulu"), results[1]);
+            assertEquals("TestValue1", results[2]);
+            thread = (Thread) results[0];
+            assertEquals(Boolean.TRUE,
+                         Thread.class.getMethod("isVirtual").invoke(thread));
+            uniqueVirtualThreads.add(thread);
+
+            // each execution must use a different virtual thread
+            assertEquals(uniqueVirtualThreads.toString(),
+                         4,
+                         uniqueVirtualThreads.size());
+
+            assertEquals(ZoneId.of("America/Los_Angeles"), TimeZone.get());
+        } finally {
+            TimeZone.remove();
+        }
+    }
 
     /**
      * Use ManagedThreadFactoryDefinition with virtual=true to request virtual
