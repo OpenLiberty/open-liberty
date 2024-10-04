@@ -222,11 +222,10 @@ public class ManagedScheduledExecutorResourceFactoryBuilder implements ResourceF
         concurrencyPolicyProps.put("maxWaitForEnqueue", 0L);
         concurrencyPolicyProps.put("runIfQueueFull", false);
 
-        if (Boolean.TRUE.equals(virtual) && JavaInfo.majorVersion() >= 21) { // only available in Concurrency 3.1+ and Java 21+
+        if (Boolean.TRUE.equals(virtual) && JavaInfo.majorVersion() >= 21) {
+            // only available in Concurrency 3.1+ and Java 21+
             concurrencyPolicyProps.put("virtual", virtual);
-            // maxPolicy unspecified makes the policy conditional on whether or not the submitter thread is virtual
-            // TODO remove the following once unspecified is supported
-            concurrencyPolicyProps.put("maxPolicy", "loose");
+            concurrencyPolicyProps.put("maxPolicy", "strict");
         } else {
             if (Boolean.TRUE.equals(virtual))
                 Tr.info(tc, "CWWKC1217.no.virtual.threads",
