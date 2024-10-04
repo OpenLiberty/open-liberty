@@ -62,6 +62,7 @@ import com.ibm.ws.cdi.internal.interfaces.WeldDevelopmentMode;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.injectionengine.InjectionException;
@@ -522,6 +523,10 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
 
     public BeanManager getCurrentBeanManager() {
         WebSphereCDIDeployment cdiDeployment = getCurrentDeployment();
+        return getCurrentBeanManager(cdiDeployment);
+    }
+
+    public BeanManager getCurrentBeanManager(WebSphereCDIDeployment cdiDeployment) {
 
         // Try to walk the stack back to find the bean class and lookup the bean manager via the class.
         BeanManager beanManager = getCurrentBeanManagerViaStackWalk(cdiDeployment);
@@ -791,7 +796,8 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
     public WebSphereCDIDeployment getDeployment(ApplicationMetaData applicationMetaData) {
         WebSphereCDIDeployment deployment = null;
         if (applicationMetaData != null) {
-            deployment = (WebSphereCDIDeployment) applicationMetaData.getMetaData(cdiRuntime.getApplicationSlot());
+            MetaDataSlot slot = cdiRuntime.getApplicationSlot();
+            deployment = (WebSphereCDIDeployment) applicationMetaData.getMetaData(slot);
         }
         return deployment;
     }
@@ -858,7 +864,8 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
 
     public void setDeployment(Application application, WebSphereCDIDeployment webSphereCDIDeployment) throws CDIException {
         ApplicationMetaData applicationMetaData = application.getApplicationMetaData();
-        applicationMetaData.setMetaData(cdiRuntime.getApplicationSlot(), webSphereCDIDeployment);
+        MetaDataSlot slot = cdiRuntime.getApplicationSlot();
+        applicationMetaData.setMetaData(slot, webSphereCDIDeployment);
     }
 
     public void unsetDeployment(Application application) throws CDIException {
