@@ -339,7 +339,7 @@ public class AuditPE implements ProbeExtension {
 						sessionID = AccessController.doPrivileged(new PrivilegedAction<String>() {
 							@Override
 							public String run() {
-								HttpSession session = f_req.getSession();
+								HttpSession session = f_req.getSession(false);
 								if (session != null) {
 									return session.getId();
 								} else {
