@@ -55,6 +55,7 @@ public class Repository {
                                                          "com.ibm.ws:xalan:2.7.1",
                                                          "com.ibm.ws:xalan:1.0.2",
                                                          "io.netty:netty-codec-http:4.1.107.Final",
+                                                         "io.netty:netty-codec-http:4.1.93.Final",
                                                          "io.netty:netty-codec-http:4.1.94.Final",
                                                          "io.netty:netty-codec-http:4.1.90.Final",
                                                          "org.bouncycastle:bcprov-jdk18on:1.77",
