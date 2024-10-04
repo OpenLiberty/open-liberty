@@ -214,7 +214,6 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28874")
     public void testOLGH28874() throws Exception {
         NaturalNumber two = NaturalNumber.of(2);
         NaturalNumber three = NaturalNumber.of(3);
