@@ -3590,9 +3590,6 @@ public class LibertyServer implements LogMonitorClient {
 
                                                      "RequestTimingServer", //com.ibm.ws.request.timing_fat
 
-                                                     "io.openliberty.jcache.internal.fat.jwt.auth.cache.1", //io.openliberty.checkpoint_fat_jcache_hazelcast
-                                                     "io.openliberty.jcache.internal.fat.jwt.auth.cache.2", //io.openliberty.checkpoint_fat_jcache_hazelcast
-
                                                      "ContainerJSPServer", //io.openliberty.http.monitor_fat
 
                                                      "MPServer41", //io.openliberty.microprofile41.internal_fat
