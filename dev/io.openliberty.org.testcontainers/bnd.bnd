@@ -14,8 +14,8 @@
 bVersion: 1.0
 
 #Common Versions
-testContainerVersion: 1.19.5
-dockerJavaVersion: 3.3.4
+testContainerVersion: 1.20.2
+dockerJavaVersion: 3.4.0
 
 Bundle-Name: FAT Testcontainer Bundle
 Bundle-SymbolicName: io.openliberty.org.testcontainers
