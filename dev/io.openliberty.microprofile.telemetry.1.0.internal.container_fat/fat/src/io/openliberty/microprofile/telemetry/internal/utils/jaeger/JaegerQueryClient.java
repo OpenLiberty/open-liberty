@@ -76,6 +76,8 @@ public class JaegerQueryClient implements AutoCloseable {
                 ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
                 client = QueryServiceGrpc.newBlockingStub(channel);
             }
+            Log.info(c, "getRawClient()", "host " + host);
+            Log.info(c, "getRawClient()", "port " + port);
             return client;
         }
     }
@@ -129,8 +131,11 @@ public class JaegerQueryClient implements AutoCloseable {
     public List<Span> getSpansForServiceName(String serviceName) {
         Log.info(c, "getSpansForServiceName", "Starting Jaeger query");
         TraceQueryParameters params = TraceQueryParameters.newBuilder().setServiceName(serviceName).build();
+        Log.info(c, "getSpansForServiceName", "TraceQueryParameters " + params.toString());
         FindTracesRequest req = FindTracesRequest.newBuilder().setQuery(params).build();
+        Log.info(c, "getSpansForServiceName", "FindTracesRequest " + req.toString());
         Iterator<SpansResponseChunk> result = getRawClient().findTraces(req);
+        Log.info(c, "getSpansForServiceName", "Iterator<SpansResponseChunk> result " + result.toString());
         List<Span> spans = consumeChunkedResult(result, chunk -> chunk.getSpansList());
         Log.info(c, "getSpansForServiceName", "Returning spans");
         return spans;
