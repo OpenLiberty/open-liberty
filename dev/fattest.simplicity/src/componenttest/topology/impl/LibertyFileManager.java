@@ -15,6 +15,7 @@ package componenttest.topology.impl;
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -268,7 +269,13 @@ public class LibertyFileManager {
                 totalSkipped += skipped;
             }
 
-            UnbufferedInputStreamReader rawReader = new UnbufferedInputStreamReader(input, StandardCharsets.UTF_8);
+            OperatingSystem os = fileToSearch.getMachine().getOperatingSystem();
+            Charset fileEncoding = StandardCharsets.UTF_8;
+            if (os == OperatingSystem.ZOS) {
+                fileEncoding = fileToSearch.getEncoding();
+            }
+
+            UnbufferedInputStreamReader rawReader = new UnbufferedInputStreamReader(input, fileEncoding);
             reader = new LineReader(rawReader);
 
             Log.finer(CLASS, method, "Now looking for strings " + regexpList
