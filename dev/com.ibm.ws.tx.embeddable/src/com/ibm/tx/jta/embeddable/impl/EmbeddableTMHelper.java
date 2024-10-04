@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,15 +13,19 @@
 package com.ibm.tx.jta.embeddable.impl;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Component;
 
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.jta.impl.TxRecoveryAgentImpl;
 import com.ibm.tx.jta.util.TxBundleTools;
 import com.ibm.tx.jta.util.TxTMHelper;
+import com.ibm.tx.util.TMService;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.recoverylog.spi.RecoveryDirector;
+import com.ibm.ws.uow.UOWScopeCallbackAgent;
 
+@Component(name = "TMService", service = { TMService.class, UOWScopeCallbackAgent.class })
 public class EmbeddableTMHelper extends TxTMHelper {
 
     private static final TraceComponent tc = Tr.register(EmbeddableTMHelper.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
