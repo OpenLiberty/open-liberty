@@ -75,7 +75,7 @@ public class ClientWithNoCdi {
     //I'm putting it in here to avoid creating an extra server that enables trace. And in an existing method because
     //Our version of junit doesn't allow fixed test ordering.
     @Test
-    @SkipForRepeat({ MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_JAVA8_ID, TelemetryActions.MP41_MPTEL20_ID,
+    @SkipForRepeat({ MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP61_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_JAVA8_ID, TelemetryActions.MP41_MPTEL20_ID,
         TelemetryActions.MP14_MPTEL20_ID })
     public void testClientWithNoCDIAndLifecycleStarupShutdownCalled() throws Exception {
         HttpRequest httpRequest = new HttpRequest(server, "/" + NO_CDI_APP_NAME + "/ClientTriggeringServlet");

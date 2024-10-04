@@ -45,7 +45,7 @@ public class ResourceTestServlet extends FATServlet {
     private InMemorySpanExporter exporter;
 
     @Test
-    @SkipForRepeat({ MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_JAVA8_ID, TelemetryActions.MP41_MPTEL20_ID,
+    @SkipForRepeat({ MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP61_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_JAVA8_ID, TelemetryActions.MP41_MPTEL20_ID,
                      TelemetryActions.MP14_MPTEL20_ID })
     public void testResource() {
         Span span = tracer.spanBuilder("span").startSpan();
