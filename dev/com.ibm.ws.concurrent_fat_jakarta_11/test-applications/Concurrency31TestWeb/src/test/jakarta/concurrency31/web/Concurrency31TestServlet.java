@@ -16,6 +16,7 @@ import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINI
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.fail;
 
 import java.time.ZoneId;
@@ -25,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -253,7 +255,119 @@ public class Concurrency31TestServlet extends FATServlet {
         assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(thread));
     }
 
-    // TODO after the workaround is removed, write: public void testUntimedInvokeAllOnVirtualThreads() throws Exception {
+    /**
+     * Use ManagedExecutorDefinition with virtual=true to submit multiple task
+     * to run on a virtual thread via the untimed invokeAll method.
+     */
+    @Test
+    public void testUntimedInvokeAllOnVirtualThreads() throws Exception {
+        Callable<Thread> task = () -> {
+            InitialContext.doLookup("java:comp/env/TestEntry");
+            return Thread.currentThread();
+        };
+
+        ManagedExecutorService executor = InitialContext //
+                        .doLookup("java:module/concurrent/virtual-executor");
+
+        List<Future<Thread>> futures = executor.invokeAll(List.of(task, task, task));
+
+        assertEquals(futures.toString(), 3, futures.size());
+
+        Set<Thread> uniqueThreads = new HashSet<Thread>();
+        uniqueThreads.add(Thread.currentThread());
+
+        Thread thread;
+        assertNotNull(thread = futures.get(0).get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Boolean.TRUE,
+                     Thread.class.getMethod("isVirtual").invoke(thread));
+        uniqueThreads.add(thread);
+
+        assertNotNull(thread = futures.get(1).get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Boolean.TRUE,
+                     Thread.class.getMethod("isVirtual").invoke(thread));
+        uniqueThreads.add(thread);
+
+        assertNotNull(thread = futures.get(2).get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Boolean.TRUE,
+                     Thread.class.getMethod("isVirtual").invoke(thread));
+        uniqueThreads.add(thread);
+
+        assertEquals(uniqueThreads.toString(), 4, uniqueThreads.size());
+        uniqueThreads.clear();
+
+        // run from a virtual thread:
+        CompletableFuture<List<Future<Thread>>> ff = new CompletableFuture<>();
+        ManagedThreadFactory threadFactory = InitialContext //
+                        .doLookup("java:module/concurrent/virtual-thread-factory");
+        threadFactory.newThread(() -> {
+            try {
+                uniqueThreads.add(Thread.currentThread());
+                ff.complete(executor.invokeAll(List.of(task, task, task)));
+            } catch (Throwable x) {
+                ff.completeExceptionally(x);
+            }
+        }).start();
+
+        futures = ff.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        assertEquals(futures.toString(), 3, futures.size());
+
+        assertNotNull(thread = futures.get(0).get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Boolean.TRUE,
+                     Thread.class.getMethod("isVirtual").invoke(thread));
+        uniqueThreads.add(thread);
+
+        assertNotNull(thread = futures.get(1).get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Boolean.TRUE,
+                     Thread.class.getMethod("isVirtual").invoke(thread));
+        uniqueThreads.add(thread);
+
+        assertNotNull(thread = futures.get(2).get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Boolean.TRUE,
+                     Thread.class.getMethod("isVirtual").invoke(thread));
+        uniqueThreads.add(thread);
+
+        assertEquals(uniqueThreads.toString(), 4, uniqueThreads.size());
+    }
+
+    /**
+     * Use ManagedExecutorDefinition with virtual=true to submit a single task
+     * to run on a virtual thread via the untimed invokeAny method.
+     */
+    @Test
+    public void testUntimedInvokeAnyOneOnVirtualThread() throws Exception {
+        Callable<Thread> anyTask = () -> {
+            InitialContext.doLookup("java:comp/env/TestEntry");
+            return Thread.currentThread();
+        };
+
+        ManagedExecutorService executor = InitialContext //
+                        .doLookup("java:module/concurrent/virtual-executor");
+
+        Thread thread = executor.invokeAny(List.of(anyTask));
+
+        assertNotSame(Thread.currentThread(), thread); // does not run inline
+        assertEquals(Boolean.TRUE,
+                     Thread.class.getMethod("isVirtual").invoke(thread));
+
+        // run from a virtual thread:
+        CompletableFuture<Thread> futureThread = new CompletableFuture<>();
+        ManagedThreadFactory threadFactory = InitialContext //
+                        .doLookup("java:module/concurrent/virtual-thread-factory");
+        Thread newThread = threadFactory.newThread(() -> {
+            try {
+                futureThread.complete(executor.invokeAny(List.of(anyTask)));
+            } catch (Throwable x) {
+                futureThread.completeExceptionally(x);
+            }
+        });
+        newThread.start();
+
+        thread = futureThread.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertNotSame(newThread, thread); // does not run inline
+        assertEquals(Boolean.TRUE,
+                     Thread.class.getMethod("isVirtual").invoke(thread));
+    }
 
     /**
      * Use ManagedExecutorDefinition with virtual=true to submit multiple tasks to run on virtual threads,
@@ -281,8 +395,6 @@ public class Concurrency31TestServlet extends FATServlet {
 
         assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(thread));
     }
-
-    // TODO after the workaround is removed, write: public void testUntimedInvokeAnyOneOnVirtualThread() throws Exception {
 
     /**
      * Use a managed-executor from the application.xml deployment descriptor with
