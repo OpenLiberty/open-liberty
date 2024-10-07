@@ -53,6 +53,27 @@ CWWKC1205.qualifiers.require.cdi.explanation=The CDI feature is a prerequisite o
  specifying qualifiers on a resource definition.
 CWWKC1205.qualifiers.require.cdi.useraction=Enable the CDI feature.
 
+CWWKC1206.qualifier.must.be.anno=CWWKC1206E: The {0} application artifact \
+ specifies a {1} annotation or {2} deployment descriptor element that has the \
+ {3} name and {4} qualifiers list. The qualifiers list includes a {5} value \
+ that is not an annotation. All elements in the list must be annotation classes \
+ that are annotated with @Qualifier and @Retention(RUNTIME). For example, {6}
+CWWKC1206.qualifier.must.be.anno.explanation=Each value in the qualifiers \
+ list must be an annotation class.
+CWWKC1206.qualifier.must.be.anno.useraction=Ensure that all values in the \
+ qualifiers list are annotation classes.
+
+CWWKC1207.lacks.qualifier.anno=CWWKC1207E: The {0} application artifact \
+ specifies a {1} annotation or {2} deployment descriptor element that has the \
+ {3} name and {4} qualifiers list. The qualifiers list includes the \
+ {5} annotation, which is not annotated with @jakarta.inject.Qualifier and \
+ @Retention(RUNTIME). An example of a valid qualifier is: {6}
+CWWKC1207.lacks.qualifier.anno.explanation=The Qualifier annotation indicates \
+ that the annotation is a qualifier. The Retention annotation controls the \
+ availability of annotations.
+CWWKC1207.lacks.qualifier.anno.useraction=Add the @Qualifier and \
+ @Retention(RUNTIME) annotations to the qualifier class.
+
 CWWKC1217.no.virtual.threads=CWWKC1217I: The Concurrency specification requires \
  virtual=true to be ignored on the {0} application artifact's \
  {1} annotation or {2} deployment descriptor element with the {3} name \

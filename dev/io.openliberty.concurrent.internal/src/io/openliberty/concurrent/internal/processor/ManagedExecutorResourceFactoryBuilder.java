@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.concurrent.internal.processor;
 
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -29,6 +30,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.kernel.service.util.JavaInfo;
@@ -50,7 +52,8 @@ import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 /**
  * Creates, modifies, and removes ManagedExecutorService resource factories that are defined via ManagedExecutorDefinition.
  */
-public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBuilder {
+public class ManagedExecutorResourceFactoryBuilder implements //
+                ConcurrencyResourceFactoryBuilder, ResourceFactoryBuilder {
     private static final TraceComponent tc = Tr.register(ManagedExecutorResourceFactoryBuilder.class);
 
     /**
@@ -226,8 +229,8 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
             if (Boolean.TRUE.equals(virtual))
                 Tr.info(tc, "CWWKC1217.no.virtual.threads",
                         declaringMetadata.getName(),
-                        ManagedExecutorDefinition.class.getSimpleName(),
-                        "managed-executor",
+                        getDefinitionAnnotationClass().getSimpleName(),
+                        getDDElementName(),
                         jndiName,
                         JavaInfo.majorVersion());
 
@@ -273,8 +276,8 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
                                                    "CWWKC1205.qualifiers.require.cdi",
                                                    jeeName,
                                                    qualifierNames,
-                                                   ManagedExecutorDefinition.class.getSimpleName(),
-                                                   "managed-executor",
+                                                   getDefinitionAnnotationClass().getSimpleName(),
+                                                   getDDElementName(),
                                                    jndiName,
                                                    ContextServiceDefinitionProvider.getCDIFeatureName()));
 
@@ -303,6 +306,18 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
     protected void deactivate(ComponentContext context) {
         configAdminRef.deactivate(context);
         variableRegistryRef.deactivate(context);
+    }
+
+    @Override
+    @Trivial
+    public final String getDDElementName() {
+        return "managed-executor";
+    }
+
+    @Override
+    @Trivial
+    public final Class<? extends Annotation> getDefinitionAnnotationClass() {
+        return ManagedExecutorDefinition.class;
     }
 
     /**

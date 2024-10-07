@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.concurrent.internal.processor;
 
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -29,6 +30,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.resource.ResourceFactory;
@@ -49,7 +51,8 @@ import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 /**
  * Creates, modifies, and removes ManagedThreadFactory resource factories that are defined via ManagedThreadFactoryDefinition.
  */
-public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFactoryBuilder {
+public class ManagedThreadFactoryResourceFactoryBuilder implements //
+                ConcurrencyResourceFactoryBuilder, ResourceFactoryBuilder {
     private static final TraceComponent tc = Tr.register(ManagedThreadFactoryResourceFactoryBuilder.class);
 
     /**
@@ -171,8 +174,8 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
             threadFactoryProps.put("virtual", Boolean.FALSE);
             Tr.info(tc, "CWWKC1217.no.virtual.threads",
                     declaringMetadata.getName(),
-                    ManagedThreadFactoryDefinition.class.getSimpleName(),
-                    "managed-thread-factory",
+                    getDefinitionAnnotationClass().getSimpleName(),
+                    getDDElementName(),
                     jndiName,
                     JavaInfo.majorVersion());
         }
@@ -239,8 +242,8 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
                                                    "CWWKC1205.qualifiers.require.cdi",
                                                    jeeName,
                                                    qualifierNames,
-                                                   ManagedThreadFactoryDefinition.class.getSimpleName(),
-                                                   "managed-thread-factory",
+                                                   getDefinitionAnnotationClass().getSimpleName(),
+                                                   getDDElementName(),
                                                    jndiName,
                                                    ContextServiceDefinitionProvider.getCDIFeatureName()));
 
@@ -269,6 +272,18 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
     protected void deactivate(ComponentContext context) {
         configAdminRef.deactivate(context);
         variableRegistryRef.deactivate(context);
+    }
+
+    @Override
+    @Trivial
+    public final String getDDElementName() {
+        return "managed-thread-factory";
+    }
+
+    @Override
+    @Trivial
+    public final Class<? extends Annotation> getDefinitionAnnotationClass() {
+        return ManagedThreadFactoryDefinition.class;
     }
 
     /**
