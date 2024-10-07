@@ -19,8 +19,7 @@ fat.project: true
 fat.test.container.images: \
     jaegertracing/all-in-one:1.54, \
     openzipkin/zipkin-slim:2.23, \
-    otel/opentelemetry-collector:0.74.0 ,\
-    alpine:3.16
+    otel/opentelemetry-collector:0.74.0
 
 grpcVersion=1.57.2
 

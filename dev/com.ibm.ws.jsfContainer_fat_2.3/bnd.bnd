@@ -14,8 +14,7 @@ quietTransformer=true
 
 fat.test.container.images:\
     seleniarm/standalone-chromium:4.8.3,\
-    selenium/standalone-chrome:4.8.3,\
-    alpine:3.16
+    selenium/standalone-chrome:4.8.3
 
 tested.features: \
   enterprisebeanslite-4.0, \
