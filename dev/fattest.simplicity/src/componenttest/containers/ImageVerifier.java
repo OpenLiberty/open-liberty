@@ -13,6 +13,8 @@
 package componenttest.containers;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,6 +22,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerType;
 
 /**
@@ -29,24 +32,33 @@ import componenttest.topology.database.container.DatabaseContainerType;
 public final class ImageVerifier {
     static final Class<?> c = ImageVerifier.class;
 
-    static final Set<String> forgottenImages = ConcurrentHashMap.newKeySet();
-    static final Set<String> knownImages = ConcurrentHashMap.newKeySet();
+    static final Set<DockerImageName> forgottenImages = ConcurrentHashMap.newKeySet();
+    static final Set<DockerImageName> knownImages;
 
     static final String imageProperty = "fat.test.container.images";
 
     static {
         String images = System.getProperty(imageProperty);
+        String[] imageList = images == null ? new String[] {} : images.replaceAll("\\s", "").split(",");
 
-        if (images != null) {
-            //Add images from the test project
-            knownImages.addAll(Arrays.asList(images.replaceAll("\\s", "").split(",")));
+        final Set<DockerImageName> expectedImages = ConcurrentHashMap.newKeySet();
+
+        //Collect the set of images set in <test-bucket>/bnd.bnd
+        for (String image : imageList) {
+            expectedImages.add(DockerImageName.parse(image));
         }
 
-        //Add images from the fattest.simplicity project
-        knownImages.addAll(DatabaseContainerType.images());
+        //Add images from the fattest.simplicity project (tracked in fattest.simplicity/bnd.bnd)
+        for (String image : DatabaseContainerType.images()) {
+            expectedImages.add(DockerImageName.parse(image));
+        }
 
-        //Add images from the testcontainers project
-        knownImages.addAll(Arrays.asList("testcontainers/ryuk:0.6.0", "testcontainers/sshd:1.1.0", "testcontainers/vnc-recorder:1.3.0"));
+        //Add images from the testcontainers project (tracked in fattest.simplicity/bnd.bnd)
+        for (String image : Arrays.asList("testcontainers/ryuk:0.9.0", "testcontainers/sshd:1.2.0", "testcontainers/vnc-recorder:1.3.0", "alpine:3.17")) {
+            expectedImages.add(DockerImageName.parse(image));
+        }
+
+        knownImages = Collections.unmodifiableSet(expectedImages);
     }
 
     public static DockerImageName collectImage(DockerImageName image) {
@@ -54,9 +66,9 @@ public final class ImageVerifier {
     }
 
     public static DockerImageName collectImage(DockerImageName image, DockerImageName output) {
-        if (!knownImages.contains(image.asCanonicalNameString())) {
-            Log.info(c, "collectImage", "Found an undocumented image: " + image.asCanonicalNameString());
-            forgottenImages.add(image.asCanonicalNameString());
+        if (!knownImages.contains(image)) {
+            Log.info(c, "collectImage", "Found an undocumented image: " + image);
+            forgottenImages.add(image);
         }
 
         return output != null ? output : image;
@@ -66,30 +78,49 @@ public final class ImageVerifier {
         if (forgottenImages.isEmpty())
             return;
 
-        //Prevent a build break because of a testcontainer image update.
-        //This will allow us to update OL and WL asynchronously in the future.
-        for (String image : forgottenImages) {
-            if (image.startsWith("testcontainers")) {
-                Log.warning(c,
-                            "A testcontainer image used an unknown version."
-                               + " This means the version of testcontainers in Open Liberty was updated and WebSphere Liberty needs to be updated,"
-                               + " or WebSphere Liberty has already been updated and the version of testcontainers in Open Liberty needs to be updated. "
-                               + " Image: " + image);
+        String knownImagesNeedUpdate = "";
+
+        // Find compatible known images that are out of date, likely an image was updated by the testcontainer library that we have to update.
+        for (DockerImageName image : forgottenImages) {
+            Optional<DockerImageName> needsUpdate = knownImages.stream().filter(i -> updateImageVersionRequired(i, image)).findFirst();
+            if (needsUpdate.isPresent()) {
+                knownImagesNeedUpdate += "A testcontainer image used an unknown version. Update " + needsUpdate.get() + " to " + image
+                                         + " in the fattest.simplicity source code and/or the " + imageProperty
+                                         + " property of the fattest.simplicity/bnd.bnd file";
                 forgottenImages.remove(image);
+            }
+
+        }
+
+        if (!knownImagesNeedUpdate.isEmpty()) {
+            if (FATRunner.FAT_TEST_LOCALRUN) {
+                // Throw a failure here during local run so it gets updated
+                throw new RuntimeException(knownImagesNeedUpdate);
+            } else {
+                // Only throw a warning here, so that OL and WL can be updated asynchronously
+                Log.warning(c, knownImagesNeedUpdate);
             }
         }
 
         if (forgottenImages.isEmpty())
             return;
 
-        IllegalStateException e = new IllegalStateException("Used testcontainer image(s) " + forgottenImages.toString() +
+        IllegalStateException e = new IllegalStateException("Used testcontainer image(s) " + forgottenImages +
                                                             " were not found in the " + imageProperty + " property!" +
                                                             " To correct this, add " + imageProperty + ": " + forgottenImages.toString().replace("[", "").replace("]", "") +
-                                                            " to the bnd.bnd file or add <property name=\"" + imageProperty + "\" value=\"" +
-                                                            forgottenImages.toString().replace("[", "").replace("]", "") + "\" />" +
-                                                            " to the build-test.xml file for this FAT so that a testcontainer image" +
+                                                            " to the bnd.bnd file for this FAT so that a testcontainer image" +
                                                             " graph can be generated in the future.");
         Log.error(c, "assertImages", e);
         throw e;
+    }
+
+    /**
+     * Returns true iff the two images are equal except for their version
+     */
+    private static boolean updateImageVersionRequired(DockerImageName a, DockerImageName b) {
+        if (a.equals(b))
+            return false;
+
+        return a.getUnversionedPart().equals(b.getUnversionedPart());
     }
 }
