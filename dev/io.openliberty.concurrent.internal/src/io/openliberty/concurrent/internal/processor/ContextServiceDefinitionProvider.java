@@ -16,7 +16,10 @@ import java.lang.reflect.Member;
 import java.security.AccessController;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -46,6 +49,15 @@ public class ContextServiceDefinitionProvider extends InjectionProcessorProvider
 
     private static final TraceComponent tc = Tr.register(ContextServiceDefinitionProvider.class);
 
+    /**
+     * Map of Jakarta EE level to CDI level.
+     * TODO update with each new version.
+     */
+    private static final Map<Object, String> CDI_FEATURES = Map.of("11.0", "cdi-4.1",
+                                                                   "10.0", "cdi-4.0",
+                                                                   "9.0", "cdi-3.1",
+                                                                   "8.0", "cdi-3.0");
+
     private static final List<Class<? extends JNDIEnvironmentRef>> REF_CLASSES = //
                     Collections.<Class<? extends JNDIEnvironmentRef>> singletonList(ContextService.class);
 
@@ -64,6 +76,27 @@ public class ContextServiceDefinitionProvider extends InjectionProcessorProvider
     @Trivial
     public Class<ContextServiceDefinition.List> getAnnotationsClass() {
         return ContextServiceDefinition.List.class;
+    }
+
+    /**
+     * Returns the CDI feature name for the current Jakarta EE version
+     * if it can be determined. Otherwise, returns "cdi".
+     *
+     * @return CDI feature name.
+     */
+    @Trivial
+    static final String getCDIFeatureName() {
+        BundleContext bundleContext = priv.getBundleContext(FrameworkUtil //
+                        .getBundle(ContextServiceDefinitionProvider.class));
+
+        ServiceReference<JavaEEVersion> ref = priv //
+                        .getServiceReference(bundleContext, JavaEEVersion.class);
+
+        String featureName = ref == null //
+                        ? null //
+                        : CDI_FEATURES.get(ref.getProperty("version"));
+
+        return featureName == null ? "cdi" : featureName;
     }
 
     @Override
