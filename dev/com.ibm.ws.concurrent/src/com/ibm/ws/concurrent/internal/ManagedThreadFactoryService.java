@@ -294,8 +294,14 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
                                                                " of type " + mData.getClass().getName()); // internal error
 
                         cData = webMetadataFactory.createComponentMetaData(webMetadataIdentifier);
-                        if (cData == null)
-                            throw new IllegalStateException("Web module " + mData.getJ2EEName() + " is not available."); // TODO NLS
+                        if (cData == null) {
+                            J2EEName jeeName = mData.getJ2EEName();
+                            String err = Tr.formatMessage(tc,
+                                                          "CWWKC1122.mod.unavail",
+                                                          jeeName.getModule(),
+                                                          jeeName.getApplication());
+                            throw new IllegalStateException(err);
+                        }
                     }
                 } else {
                     // Should be unreachable because mock ComponentMetaData is created for resources defined in application.xml.
@@ -308,9 +314,6 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
                 identifier = cData instanceof IdentifiableComponentMetaData //
                                 ? metadataIdentifierService.getMetaDataIdentifier(cData) //
                                 : null;
-                System.out.println("MTF createResource for " + identifier);
-                System.out.println("     with " + (cData == null ? null : cData.getClass().getSimpleName()) + " metadata " + cData);
-                System.out.println("     and class loader " + beanInfo.getDeclaringClassLoader());
 
                 // push class loader onto the thread for context capture
                 ClassLoader declaringClassLoader = beanInfo.getDeclaringClassLoader();
@@ -559,9 +562,12 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
 
         @Override
         public Thread newThread(Runnable r) {
-            throw new UnsupportedOperationException("The " + name + " ManagedThreadFactory is configured with" +
-                                                    " virtual=true, but virtual threads are not available prior" +
-                                                    " to Java 21."); // TODO NLS
+            throw new UnsupportedOperationException(Tr //
+                            .formatMessage(tc,
+                                           "CWWKC1121.virtual.invalid",
+                                           "ManagedThreadFactoryDefinition",
+                                           "managed-thread-factory",
+                                           name));
         }
     }
 }

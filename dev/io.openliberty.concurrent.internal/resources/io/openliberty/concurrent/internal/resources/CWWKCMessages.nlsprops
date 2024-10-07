@@ -46,9 +46,17 @@ CWWKC1204.not.serializable=CWWKC1204E: Cannot create a serializable contextual p
 CWWKC1204.not.serializable.explanation=Third-party thread context types are not compatible with serialization and cannot be configured to be propagated for serializable contextual proxies.
 CWWKC1204.not.serializable.useraction=Update the application to request a non-serializable contextual proxy or ensure that no third-party context types are configured to be propagated.
 
+CWWKC1205.qualifiers.require.cdi=CWWKC1205E: The {0} application artifact cannot \
+ specify the {1} qualifiers on the {2} annotation or {3} deployment descriptor \
+ element that has the {4} name because the {5} feature is not enabled.
+CWWKC1205.qualifiers.require.cdi.explanation=The CDI feature is a prerequisite of \
+ specifying qualifiers on a resource definition.
+CWWKC1205.qualifiers.require.cdi.useraction=Enable the CDI feature.
+
 CWWKC1217.no.virtual.threads=CWWKC1217I: The Concurrency specification requires \
- virtual=true to be ignored on the {0} {1} definition in the {2} application \
- artifact because Java {3} does not support virtual threads.
+ virtual=true to be ignored on the {0} application artifact's \
+ {1} annotation or {2} deployment descriptor element with the {3} name \
+ because Java {4} does not support virtual threads.
 CWWKC1217.no.virtual.threads.explanation=Virtual threads are available only \
  in Java 21 and later.
 CWWKC1217.no.virtual.threads.useraction=Update to Java 21 or later to enable the \

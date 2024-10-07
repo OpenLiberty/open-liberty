@@ -44,7 +44,6 @@ import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
-import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 
 @Component(service = ResourceFactoryBuilder.class,
            property = "creates.objectClass=jakarta.enterprise.concurrent.ManagedScheduledExecutorService") //  TODO more types?
@@ -229,9 +228,10 @@ public class ManagedScheduledExecutorResourceFactoryBuilder implements ResourceF
         } else {
             if (Boolean.TRUE.equals(virtual))
                 Tr.info(tc, "CWWKC1217.no.virtual.threads",
-                        jndiName,
-                        ManagedScheduledExecutorService.class.getSimpleName(),
                         declaringMetadata.getName(),
+                        ManagedScheduledExecutorDefinition.class.getSimpleName(),
+                        "managed-scheduled-executor",
+                        jndiName,
                         JavaInfo.majorVersion());
 
             // virtual = false is the default
@@ -270,11 +270,16 @@ public class ManagedScheduledExecutorResourceFactoryBuilder implements ResourceF
 
                 ServiceReference<QualifiedResourceFactories> ref = concurrencyBundleCtx.getServiceReference(QualifiedResourceFactories.class);
 
-                if (ref == null) // TODO message should include possibility of deployment descriptor element
-                    throw new UnsupportedOperationException("The " + jeeName + " application artifact cannot specify the " +
-                                                            qualifierNames + " qualifiers on the " +
-                                                            jndiName + " " + ManagedScheduledExecutorDefinition.class.getSimpleName() +
-                                                            " because the " + "CDI" + " feature is not enabled."); // TODO NLS
+                if (ref == null)
+                    throw new UnsupportedOperationException(Tr //
+                                    .formatMessage(tc,
+                                                   "CWWKC1205.qualifiers.require.cdi",
+                                                   jeeName,
+                                                   qualifierNames,
+                                                   ManagedScheduledExecutorDefinition.class.getSimpleName(),
+                                                   "managed-scheduled-executor",
+                                                   jndiName,
+                                                   ContextServiceDefinitionProvider.getCDIFeatureName()));
 
                 QualifiedResourceFactories qrf = concurrencyBundleCtx.getService(ref);
                 qrf.add(jeeName, QualifiedResourceFactory.Type.ManagedScheduledExecutorService, qualifierNames, factory);

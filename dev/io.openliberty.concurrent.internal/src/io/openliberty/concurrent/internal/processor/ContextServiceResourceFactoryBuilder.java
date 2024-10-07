@@ -398,11 +398,16 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
 
                 ServiceReference<QualifiedResourceFactories> ref = bundleContext.getServiceReference(QualifiedResourceFactories.class);
 
-                if (ref == null) // TODO message should include possibility of deployment descriptor element
-                    throw new UnsupportedOperationException("The " + jeeName + " application artifact cannot specify the " +
-                                                            qualifierNames + " qualifiers on the " +
-                                                            jndiName + " " + ContextServiceDefinition.class.getSimpleName() +
-                                                            " because the " + "CDI" + " feature is not enabled."); // TODO NLS
+                if (ref == null)
+                    throw new UnsupportedOperationException(Tr //
+                                    .formatMessage(tc,
+                                                   "CWWKC1205.qualifiers.require.cdi",
+                                                   jeeName,
+                                                   qualifierNames,
+                                                   ContextServiceDefinition.class.getSimpleName(),
+                                                   "context-service",
+                                                   jndiName,
+                                                   ContextServiceDefinitionProvider.getCDIFeatureName()));
 
                 QualifiedResourceFactories qrf = bundleContext.getService(ref);
                 qrf.add(jeeName, QualifiedResourceFactory.Type.ContextService, qualifierNames, factory);

@@ -42,7 +42,6 @@ import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
-import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 
 @Component(service = ResourceFactoryBuilder.class,
@@ -171,9 +170,10 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
             JavaInfo.majorVersion() < 21) {
             threadFactoryProps.put("virtual", Boolean.FALSE);
             Tr.info(tc, "CWWKC1217.no.virtual.threads",
-                    jndiName,
-                    ManagedThreadFactory.class.getSimpleName(),
                     declaringMetadata.getName(),
+                    ManagedThreadFactoryDefinition.class.getSimpleName(),
+                    "managed-thread-factory",
+                    jndiName,
                     JavaInfo.majorVersion());
         }
 
@@ -233,11 +233,16 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
 
                 ServiceReference<QualifiedResourceFactories> ref = bundleContext.getServiceReference(QualifiedResourceFactories.class);
 
-                if (ref == null) // TODO message should include possibility of deployment descriptor element
-                    throw new UnsupportedOperationException("The " + jeeName + " application artifact cannot specify the " +
-                                                            qualifierNames + " qualifiers on the " +
-                                                            jndiName + " " + ManagedThreadFactoryDefinition.class.getSimpleName() +
-                                                            " because the " + "CDI" + " feature is not enabled."); // TODO NLS
+                if (ref == null)
+                    throw new UnsupportedOperationException(Tr //
+                                    .formatMessage(tc,
+                                                   "CWWKC1205.qualifiers.require.cdi",
+                                                   jeeName,
+                                                   qualifierNames,
+                                                   ManagedThreadFactoryDefinition.class.getSimpleName(),
+                                                   "managed-thread-factory",
+                                                   jndiName,
+                                                   ContextServiceDefinitionProvider.getCDIFeatureName()));
 
                 QualifiedResourceFactories qrf = bundleContext.getService(ref);
                 qrf.add(jeeName, QualifiedResourceFactory.Type.ManagedThreadFactory, qualifierNames, factory);
