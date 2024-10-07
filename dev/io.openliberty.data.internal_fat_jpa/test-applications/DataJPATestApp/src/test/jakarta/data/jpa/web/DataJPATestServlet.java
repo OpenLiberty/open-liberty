@@ -14,6 +14,7 @@ package test.jakarta.data.jpa.web;
 
 import static componenttest.annotation.SkipIfSysProp.DB_DB2;
 import static componenttest.annotation.SkipIfSysProp.DB_Not_Default;
+import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
 import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import static jakarta.data.repository.By.ID;
@@ -2349,7 +2350,9 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Repository method that queries by the year component of an Instant attribute.
      */
-    @SkipIfSysProp(DB_Postgres) //TODO Failing due to Eclipselink Issue on PostgreSQL: https://github.com/OpenLiberty/open-liberty/issues/29440
+    @SkipIfSysProp({ DB_Postgres, //TODO Failing due to Eclipselink Issue on PostgreSQL: https://github.com/OpenLiberty/open-liberty/issues/29440
+                     DB_Oracle // //TODO Failing due to Eclipselink Issue on Oracle: https://github.com/OpenLiberty/open-liberty/issues/29440
+    })
     @Test
     public void testInstantExtractYear() {
 
