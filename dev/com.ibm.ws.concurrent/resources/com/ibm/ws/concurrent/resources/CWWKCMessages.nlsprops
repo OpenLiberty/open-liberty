@@ -63,7 +63,7 @@ CWWKC1103.skip.run.failed.explanation=The skipRun operation for the Trigger has 
 CWWKC1103.skip.run.failed.useraction=Correct the cause of the failure and decide whether or not to resubmit the task.
 
 CWWKC1110.task.canceled=CWWKC1110I: The task {0}, which was submitted to executor service {1}, is canceled.
-CWWKC1110.task.canceled.explanation=Execution of the task was canceled.
+CWWKC1110.task.canceled.explanation=The task was canceled.
 CWWKC1110.task.canceled.useraction=No action is required.
 
 CWWKC1111.task.invalid=CWWKC1111E: The task {0} is not valid.
