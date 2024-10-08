@@ -64,6 +64,7 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
                          HTTP_QUERY_PORT);
 
         withEnv("COLLECTOR_OTLP_ENABLED", "true");
+        withEnv("GODEBUG=http2debug","2");
         withEnv("COLLECTOR.OTLP.GRPC.MAX-CONNECTION-AGE", "120s");
     }
 
@@ -90,6 +91,7 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
         withEnv("COLLECTOR_OTLP_ENABLED", "true");
         withEnv("COLLECTOR.OTLP.GRPC.MAX-CONNECTION-AGE", "120s");
         withEnv("COLLECTOR_OTLP_GRPC_TLS_ENABLED", "true");
+        withEnv("GODEBUG=http2debug","2");
         withEnv("COLLECTOR_OTLP_GRPC_TLS_CERT", "/etc/certificate.crt");
         withEnv("COLLECTOR_OTLP_GRPC_TLS_KEY", "/etc/private.key");
 
