@@ -21,6 +21,7 @@
         <AD id="excludeApplication" name="%excludeApplication" description="%excludeApplication.desc" required="false" type="String" cardinality="40000" ibm:beta="true"/>
         <AD id="includeModule" name="%includeModule" description="%includeModule.desc" required="false" type="String" cardinality="40000" ibm:beta="true"/>
         <AD id="excludeModule" name="%excludeModule" description="%excludeModule.desc" required="false" type="String" cardinality="40000" ibm:beta="true"/>
+        <AD id="openAPIVersion" name="%openAPIVersion" description="%openAPIVersion.desc" required="false" type="String" ibm:beta="true"/>
     </OCD>
 
     <Designate pid="io.openliberty.microprofile.openapi">
