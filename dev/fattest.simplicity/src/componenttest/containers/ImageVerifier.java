@@ -120,19 +120,19 @@ public final class ImageVerifier {
                 continue;
             }
 
-            String[] knownLocations = new String[] { "the " + imageProperty + " of the fattest.simplicity bnd or build-noship.xml file",
-                                                     "the " + imageProperty + " of the test project bnd or build.xml file" };
+            String[] knownLocations = new String[] { "the " + imageProperty + " of the fattest.simplicity bnd.bnd/build-noship.xml file",
+                                                     "the " + imageProperty + " of the test project bnd.bnd/build.xml file" };
             String[] forgotLocations = new String[] { "fattest.simplicity source code",
                                                       "test project source code" };
 
             if (known.size() == 1) {
-                knownImagesNeedUpdate.add("The testcontainer image " + forgot + " used an unknown version."
-                                          + " Update " + forgot + " to " + known.get(0) + " in either " + Arrays.asList(forgotLocations) + "."
-                                          + " Or update " + known.get(0) + " to " + forgot + " in either " + Arrays.asList(knownLocations) + ".");
+                knownImagesNeedUpdate.add("The testcontainer image '" + forgot + "' used an unknown version."
+                                          + " Update '" + known.get(0) + "' to '" + forgot + "' in either " + String.join(" or ", knownLocations) + "."
+                                          + " Or update '" + forgot + "' to '" + known.get(0) + "' in either " + String.join(" or ", forgotLocations) + ".");
             } else {
-                knownImagesNeedUpdate.add("The testcontainer image " + forgot + " used an unknown version."
-                                          + " Update " + forgot + " to one of " + known + " in either " + Arrays.asList(forgotLocations) + "."
-                                          + " Or update one of " + known.get(0) + " to " + forgot + " in either " + Arrays.asList(knownLocations) + ".");
+                knownImagesNeedUpdate.add("The testcontainer image '" + forgot + "' used an unknown version."
+                                          + " Update one of " + known + " to '" + forgot + "' in either " + String.join(" or ", knownLocations) + "."
+                                          + " Or update '" + forgot + "' to one of " + known + " in either " + String.join(" or ", forgotLocations) + ".");
             }
 
             imagesToRemove.add(forgot);
