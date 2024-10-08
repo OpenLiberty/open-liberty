@@ -62,7 +62,7 @@ CWWKC1103.skip.run.failed=CWWKC1103E: Execution of task {0}, which was submitted
 CWWKC1103.skip.run.failed.explanation=The skipRun operation for the Trigger has failed, causing the current execution attempt for the task to be skipped.
 CWWKC1103.skip.run.failed.useraction=Correct the cause of the failure and decide whether or not to resubmit the task.
 
-CWWKC1110.task.canceled=CWWKC1110I: The task {0}, which was submitted to executor service {1}, is canceled.
+CWWKC1110.task.canceled=CWWKC1110I: The {0} task, which was submitted to the {1} executor service, is canceled.
 CWWKC1110.task.canceled.explanation=The task was canceled.
 CWWKC1110.task.canceled.useraction=No action is required.
 
