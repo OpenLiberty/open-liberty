@@ -244,11 +244,11 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 String dataSourceId = (String) dsRef.getProperty("id");
                 boolean nonJTA = Boolean.FALSE.equals(dsRef.getProperty("transactional"));
 
-                    configDisplayId = dbStoreId;
+                configDisplayId = dbStoreId;
 
                 Hashtable<String, Object> svcProps = new Hashtable<String, Object>();
-                    svcProps.put("id", configDisplayId);
-                    svcProps.put("config.displayId", configDisplayId);
+                svcProps.put("id", configDisplayId);
+                svcProps.put("config.displayId", configDisplayId);
 
                 if (dataSourceId == null)
                     dsFactoryFilter = "(jndiName=" + dsRef.getProperty("jndiName") + ')';
@@ -275,15 +275,15 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 dbStoreConfig.update(svcProps);
                 dbStoreConfigurations.put(isJNDIName ? qualifiedName : dataStore, dbStoreConfig);
             } else if (dsRef != null) {
-                    configDisplayId = (String) dsRef.getProperty("config.displayId");
-                    dsFactoryFilter = "(config.displayId=" + configDisplayId + ')';
-                } else {
-                    configDisplayId = "databaseStore[" + dbStoreId + "]";
+                configDisplayId = (String) dsRef.getProperty("config.displayId");
+                dsFactoryFilter = "(config.displayId=" + configDisplayId + ')';
+            } else {
+                configDisplayId = "databaseStore[" + dbStoreId + "]";
             }
             dataSourceFactoryFilter = dsFactoryFilter;
         } else {
             dataSourceFactoryFilter = (String) dbStoreConfigProps.get("DataSourceFactory.target");
-                configDisplayId = dbStoreId;
+            configDisplayId = dbStoreId;
         }
 
         databaseStoreId = dbStoreId;
@@ -300,7 +300,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                         Tr.debug(this, tc, "Wait " + poll_ms + " ms for service reference to become available...");
                     TimeUnit.MILLISECONDS.sleep(poll_ms);
                 } else {
-                        throw new IllegalStateException("The " + configDisplayId + " service component did not become available within " +
+                    throw new IllegalStateException("The " + configDisplayId + " service component did not become available within " +
                                                     TimeUnit.NANOSECONDS.toSeconds(MAX_WAIT_FOR_SERVICE_NS) + " seconds.");
                 }
             } else {
@@ -311,7 +311,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
         String tablePrefix = (String) ref.getProperty("tablePrefix");
 
         if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, configDisplayId + " databaseStore reference", ref);
+            Tr.debug(this, tc, configDisplayId + " databaseStore reference", ref);
 
         // Classes explicitly annotated with JPA @Entity:
         Set<String> entityClassNames = new LinkedHashSet<>(entityTypes.size() * 2);

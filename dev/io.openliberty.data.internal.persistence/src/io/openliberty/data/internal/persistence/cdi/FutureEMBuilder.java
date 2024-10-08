@@ -201,6 +201,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
     }
 
     @Override
+    @Trivial // defer to EntityManagerBuilder
     public String getDDLFileName() {
         try {
             EntityManagerBuilder builder = get(DDLGEN_WAIT_TIME, TimeUnit.SECONDS);
@@ -236,6 +237,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
     }
 
     @Override
+    @Trivial // defer to EntityManagerBuilder
     public void generate(Writer out) throws Exception {
         try {
             EntityManagerBuilder builder = get(DDLGEN_WAIT_TIME, TimeUnit.SECONDS);
