@@ -40,6 +40,24 @@ public class FipsUtils {
         return fipsLevel;
     }
 
+    static boolean isSemeruFips() {
+        boolean result = false;
+        String semeruFips = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                String propertyValue = System.getProperty("semeru.fips");
+                return (propertyValue == null) ? "false" : propertyValue.trim().toLowerCase();
+            }
+        });
+        if ("true".equals(semeruFips))
+            result = true;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "semeruFips:" + result);
+        }
+        return result;
+    }
+
     public static boolean isFips140_3Enabled() {
         return isRunningBetaMode() && "140-3".equals(FIPSLevel);
     }

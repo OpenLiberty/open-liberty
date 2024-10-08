@@ -323,10 +323,13 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
     private void getWSTrustmanager(List<TrustManager> tmHolder, Map<String, Object> connectionInfo, SSLConfig sslConfig) throws Exception {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "getSSLContext", new Object[] { tmHolder, connectionInfo, sslConfig });
+            Tr.entry(tc, "getWSTrustmanager", new Object[] { tmHolder, connectionInfo, sslConfig });
 
         String direction = Constants.DIRECTION_UNKNOWN;
         String ctxtProvider = getSSLContextProperty(Constants.SSLPROP_CONTEXT_PROVIDER, sslConfig);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "ctxtProvider: " + ctxtProvider);
+        }
         String clientAuthentication = getSSLContextProperty(Constants.SSLPROP_CLIENT_AUTHENTICATION, sslConfig);
         String trustStoreName = getSSLContextProperty(Constants.SSLPROP_TRUST_STORE_NAME, sslConfig);
         String trustStoreLocation = getSSLContextProperty(Constants.SSLPROP_TRUST_STORE, sslConfig);

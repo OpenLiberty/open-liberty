@@ -452,6 +452,16 @@ public class Constants {
                                                                                         PROTOCOL_TLSV1_3
     });
 
+    public static final List<String> FIPS_140_2_PROTOCOLS = Arrays.asList(new String[] {
+                                                                                         PROTOCOL_TLSV1,
+                                                                                         PROTOCOL_TLSV1_1
+    });
+
+    public static final List<String> FIPS_140_3_PROTOCOLS = Arrays.asList(new String[] {
+                                                                                         PROTOCOL_TLSV1_2,
+                                                                                         PROTOCOL_TLSV1_3
+    });
+
     public boolean resolveDisableHostnameVerification(String targetHostname, String disabledVerifyHostname, Properties sslProps) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "resolveDisableHostnameVerification:  ", targetHostname, disabledVerifyHostname, sslProps);
