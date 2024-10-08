@@ -514,7 +514,7 @@ public class SSLConfigManager {
         String sslProtocol = (String) map.get("sslProtocol");
         if (sslProtocol != null && !sslProtocol.isEmpty()) {
             try {
-                Tr.debug(tc, "Malhar, sslProtocol: " + sslProtocol);
+                Tr.debug(tc, "sslProtocol: " + sslProtocol);
                 //Print stack trace
                 protocolHelper.checkProtocolValueGood(sslProtocol);
                 sslprops.setProperty(Constants.SSLPROP_PROTOCOL, sslProtocol);

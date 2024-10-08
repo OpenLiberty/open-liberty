@@ -40,7 +40,7 @@ public class CryptoProvider {
     public static String osName = System.getProperty("os.name");
     public static boolean isZOS = false;
     public static boolean osVersionChecked = false;
-    
+
     public static String IBMJCE_PROVIDER = "com.ibm.crypto.provider.IBMJCE";
     public static String IBMJCE_PLUS_FIPS_PROVIDER = "com.ibm.crypto.plus.provider.IBMJCEPlusFIPS";
     public static String OPENJCE_PLUS_PROVIDER = "com.ibm.crypto.plus.provider.OpenJCEPlus";
@@ -67,7 +67,7 @@ public class CryptoProvider {
         } else {
             ibmJCEPlusFIPSAvailable = JavaInfo.isSystemClassAvailable(IBMJCE_PLUS_FIPS_PROVIDER);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "ibmJCEPlusFIPSProvider: " +  IBMJCE_PLUS_FIPS_PROVIDER);
+                Tr.debug(tc, "ibmJCEPlusFIPSProvider: " + IBMJCE_PLUS_FIPS_PROVIDER);
             }
 
             ibmJCEPlusFIPSProviderChecked = true;
@@ -78,7 +78,7 @@ public class CryptoProvider {
             if (FipsUtils.isRunningBetaMode() && ibmJCEPlusFIPSAvailable) {
                 ibmJCEPlusFIPSAvailable = true;
             } else {
-                if (fipsEnabled) {
+                if (fipsEnabled && !FipsUtils.isSemeruFips()) {
                     Tr.error(tc, "FIPS is enabled but the IBMJCEPlusFIPS provider is not available.");
                 }
                 ibmJCEPlusFIPSAvailable = false;
@@ -110,12 +110,12 @@ public class CryptoProvider {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "openJCEPlusFIPSAvailable: " + openJCEPlusFIPSAvailable);
             }
-            
+
             if (FipsUtils.isRunningBetaMode() && openJCEPlusFIPSAvailable) {
                 openJCEPlusFIPSAvailable = true;
             } else {
-                if (fipsEnabled) {
-                    Tr.error(tc, "FIPS is enabled but the OpenJCEPlusFIPS provider is not available.");
+                if (fipsEnabled && FipsUtils.isSemeruFips()) {
+                    Tr.error(tc, "Semeru FIPS is enabled but the  OpenJCEPlusFIPS provider is not available.");
                 }
                 openJCEPlusFIPSAvailable = false;
             }

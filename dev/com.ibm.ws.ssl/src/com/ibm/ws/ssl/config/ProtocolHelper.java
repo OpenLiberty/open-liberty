@@ -72,7 +72,7 @@ public class ProtocolHelper {
             if (FipsUtils.isFIPSEnabled()) {
                 Tr.debug(tc, "FIPS is enabled, only allowing TLSv1.2 and TLSv1.3");
                 for (String protocol : protocols) {
-                    if (Constants.FIPS_PROTOCOL_LIST.contains(protocol)) {
+                    if (Constants.FIPS_140_3_PROTOCOLS.contains(protocol)) {
                         if (goodProtocols.contains(protocol))
                             continue;
                         else {
