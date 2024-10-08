@@ -90,7 +90,7 @@ CWWKC1121.virtual.invalid.useraction=Update to a newer Java version that support
 CWWKC1122.mod.unavail=CWWKC1122E: The {0} application or its {1} module is not \
  available.
 CWWKC1122.mod.unavail.explanation=The application and module that define the \
- ManagedThreadFactory configuration must be available when obtaining a \
+ ManagedThreadFactory configuration must be available to obtain a \
  ManagedThreadFactory instance.
 CWWKC1122.mod.unavail.useraction=Ensure the application is started and that \
  the application includes the module that defines the ManagedThreadFactory \
