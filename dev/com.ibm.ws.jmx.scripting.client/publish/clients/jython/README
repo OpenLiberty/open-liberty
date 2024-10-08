@@ -11,9 +11,9 @@ a. Set the classpath to include the restConnector.jar
 
 b. Set the jython path to include the restConnector.py
    e.g) WINDOWS
-   set JYTHONPATH=${wlp.install.dir}\clients\jython\restConnector.py
+   set JYTHONPATH=${wlp.install.dir}\clients\jython\
    e.g) LINUX / UNIX
-   export JYTHONPATH=${wlp.install.dir}/clients/jython/restConnector.py
+   export JYTHONPATH=${wlp.install.dir}/clients/jython/
 
 
 2) Examples
