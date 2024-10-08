@@ -4,7 +4,7 @@ name: Open Liberty Delivery Requirements Verification
 description: "Examines Open Liberty code changes for delivery standards compliance"
 triggers:
 - type: github
-  description: "Runs CI Orchestrator-managed Jenkins jobs to examine pull request changes and create the required copyright header check"
+  description: "Runs CI Orchestrator-managed Jenkins jobs to examine pull request changes and create required status checks"
   triggerName: "libby"
   triggerRank: 50
   groups: ["LibertyDev"]
@@ -23,7 +23,7 @@ triggers:
 
 - type: manual
   triggerName: "libby-manual"
-  description: "Runs CI Orchestrator-managed Jenkins jobs to examine pull request changes and create the required copyright header check"
+  description: "Runs CI Orchestrator-managed Jenkins jobs to examine pull request changes and create required status checks"
   triggerRank: 50
   groups: ["LibertyDev"]
   propertyDefinitions:
