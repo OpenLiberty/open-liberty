@@ -26,6 +26,15 @@ public class FipsUtils {
 
     static String FIPSLevel = getFipsLevel();
 
+    public static String getProperty(final String prop, final String defaultValue) {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return System.getProperty(prop, defaultValue);
+            }
+        });
+    }
+
     static String getFipsLevel() {
         String fipsLevel = AccessController.doPrivileged(new PrivilegedAction<String>() {
             @Override
@@ -40,7 +49,7 @@ public class FipsUtils {
         return fipsLevel;
     }
 
-    static boolean isSemeruFips() {
+    public static boolean isSemeruFips() {
         boolean result = false;
         String semeruFips = AccessController.doPrivileged(new PrivilegedAction<String>() {
             @Override

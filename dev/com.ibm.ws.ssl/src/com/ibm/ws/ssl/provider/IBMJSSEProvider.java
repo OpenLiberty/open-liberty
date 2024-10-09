@@ -77,24 +77,32 @@ public class IBMJSSEProvider extends AbstractJSSEProvider implements JSSEProvide
 //            initialize(JSSEProviderFactory.getKeyManagerFactoryAlgorithm(), JSSEProviderFactory.getTrustManagerFactoryAlgorithm(), Constants.IBMJSSE2_NAME, null,
 //                       Constants.SOCKET_FACTORY_WAS_DEFAULT, null, Constants.PROTOCOL_SSL_TLS_V2);
 //        }
+        String protocol = Constants.PROTOCOL_SSL;
+        if (FipsUtils.isFIPSEnabled() && CryptoProvider.isIBMJCEPlusFIPSAvailable()) {
+            protocol = Constants.PROTOCOL_TLS;
+        }
 
-        if (FipsUtils.isFIPSEnabled()) {
-            if (CryptoProvider.isIBMJCEPlusFIPSAvailable() || CryptoProvider.isOpenJCEPlusFIPSAvailable()) {
-                initialize(JSSEProviderFactory.getKeyManagerFactoryAlgorithm(), JSSEProviderFactory.getTrustManagerFactoryAlgorithm(), Constants.IBMJSSE2_NAME, null,
-                           Constants.SOCKET_FACTORY_WAS_DEFAULT, null, Constants.PROTOCOL_TLS);
-            }
-            //TODO - do we want to fallback to other provider or use the JDK default provider ??
+//        if (FipsUtils.isFIPSEnabled()) {
+//        initialize(JSSEProviderFactory.getKeyManagerFactoryAlgorithm(), JSSEProviderFactory.getTrustManagerFactoryAlgorithm(), Constants.IBMJSSE2_NAME, null,
+//                   Constants.SOCKET_FACTORY_WAS_DEFAULT, null, Constants.PROTOCOL_TLS);
+//
+//            //TODO - do we want to fallback to other provider or use the JDK default provider ??
+//
+//        } else {
+//            if (tc.isDebugEnabled()) {
+//                Tr.debug(tc, "protocol: " + Constants.PROTOCOL_SSL_TLS_V2);
+//            }
+//            initialize(JSSEProviderFactory.getKeyManagerFactoryAlgorithm(), JSSEProviderFactory.getTrustManagerFactoryAlgorithm(), Constants.IBMJSSE2_NAME, null,
+//                       Constants.SOCKET_FACTORY_WAS_DEFAULT, null, Constants.PROTOCOL_SSL_TLS_V2);
+//        }
 
-        } else {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "protocol: " + Constants.PROTOCOL_SSL_TLS_V2);
-            }
+        if (CryptoProvider.isIBMJCEPlusFIPSAvailable()) {
             initialize(JSSEProviderFactory.getKeyManagerFactoryAlgorithm(), JSSEProviderFactory.getTrustManagerFactoryAlgorithm(), Constants.IBMJSSE2_NAME, null,
-                       Constants.SOCKET_FACTORY_WAS_DEFAULT, null, Constants.PROTOCOL_SSL_TLS_V2);
+                       Constants.SOCKET_FACTORY_WAS_DEFAULT, null, protocol);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Created an IBM JSSE provider");
+            Tr.debug(tc, "Created an IBM JSSE provider with protocol " + protocol);
         }
     }
 
