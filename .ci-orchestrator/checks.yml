@@ -16,6 +16,9 @@ triggers:
   propertyDefinitions:
     - name: githubPRNumber
       defaultValue: ${github_pr_number}
+      steps:
+      - stepName: Copyright Header Check
+      - stepName: Prohibited Terms Check
     - name: githubPRApi
       defaultValue: ${github_pr_api}
       steps:
@@ -32,6 +35,9 @@ triggers:
       isRequired: true
       defaultValue: "Number of Open Liberty pull request to verify"
       description: "Number of Open Liberty pull request to verify"
+      steps:
+      - stepName: Copyright Header Check
+      - stepName: Prohibited Terms Check
     - name: githubPRApi
       defaultValue: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${github_pr_number}"
       steps:
