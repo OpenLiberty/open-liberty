@@ -54,8 +54,8 @@ public class MultiRecoveryTest5 extends MultiRecoveryTest {
 	}
 
 	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
-	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
+	@ExpectedFFDC(value = {"javax.transaction.xa.XAException"})
+	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException", "javax.transaction.RollbackException"})
 	public void WSTXMPR012AFVT() throws Exception {
 		recoveryTest(server1, server2, "1201","server1");
 	}

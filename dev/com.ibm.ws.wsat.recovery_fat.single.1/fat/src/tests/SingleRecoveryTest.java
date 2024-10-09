@@ -89,9 +89,7 @@ public class SingleRecoveryTest {
 			Log.info(this.getClass(), method, "setupRec" + id + " failed to return. This is what we expected.");
 		}
 
-		System.out.println(logKeyword + "waitForStringInLog Dump State start");
         assertNotNull(server1.getServerName() + " didn't crash properly", server1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
-		System.out.println(logKeyword + "waitForStringInLog Dump State end");
         server1.postStopServerArchive(); // must explicitly collect since server start failed
 
 		ProgramOutput po;

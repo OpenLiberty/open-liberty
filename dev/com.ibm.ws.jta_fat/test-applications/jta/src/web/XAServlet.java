@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,6 +24,7 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
+
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -406,7 +407,7 @@ public class XAServlet extends HttpServlet {
                 Thread.sleep(1000 * ((1 + commitRepeatCount) * HEURISTIC_RETRY_INTERVAL + SUITABLE_DELAY));
                 System.out.println("testXA015: recheck state of XAResources");
                 if (!XAResourceImpl.allInState(XAResourceImpl.COMMITTED))
-                    throw new Exception("Committed count: " + XAResourceImpl.committedCount());
+                    throw new Exception("Committed count: " + XAResourceImpl.countInState(XAResourceImpl.COMMITTED));
             }
         }
     }
