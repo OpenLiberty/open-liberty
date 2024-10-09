@@ -42,6 +42,7 @@ public class NpTimerConfigRetryServlet extends FATServlet {
     private static final boolean isMacOSX = System.getProperty("os.name", "unknown").toLowerCase().indexOf("mac os x") >= 0;
 
     private static final int TIMER_DELAY = 2500;
+    private static final int MIN_TIMER_DELAY = isMacOSX ? 15000 : TIMER_DELAY;
     private static final int LONG_TIMER_DELAY = isMacOSX ? 150000 : 5000;
     private static final long NO_CANCEL_DELAY = 0;
 
@@ -80,7 +81,7 @@ public class NpTimerConfigRetryServlet extends FATServlet {
     private boolean verifyRetryIntervalAcceptable(long timestampForFirstAttempt, long timestampForSecondAttempt, long minimumDifference) {
         long difference = timestampForSecondAttempt - timestampForFirstAttempt;
         // allow longer timer delay for longer minimum differences; especially on Mac OS X
-        long timer_delay = (minimumDifference < 2 * TIMER_DELAY) ? TIMER_DELAY : LONG_TIMER_DELAY;
+        long timer_delay = (minimumDifference < 2 * TIMER_DELAY) ? MIN_TIMER_DELAY : LONG_TIMER_DELAY;
         // 500 ms fudge factor for Windows time math and preInvoke delays
         long maxDifference = minimumDifference + timer_delay + 500;
         minimumDifference = minimumDifference - 500;
