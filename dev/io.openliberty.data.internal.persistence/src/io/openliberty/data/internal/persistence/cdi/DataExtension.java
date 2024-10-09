@@ -149,11 +149,15 @@ public class DataExtension implements Extension {
             Map<Class<?>, List<QueryInfo>> queriesPerEntityClass = new HashMap<>();
             if (discoverEntityClasses(repositoryType, queriesPerEntityClass, primaryEntityClassReturnValue)) {
                 FutureEMBuilder previous = entityGroups.putIfAbsent(futureEMBuilder, futureEMBuilder);
-                futureEMBuilder = previous == null ? futureEMBuilder : previous;
+
+                if (previous != null) {
+                    futureEMBuilder = previous;
+                    futureEMBuilder.addRepositoryInterface(repositoryInterface);
+                }
 
                 for (Class<?> entityClass : queriesPerEntityClass.keySet())
                     if (!Query.class.equals(entityClass))
-                        futureEMBuilder.add(entityClass);
+                        futureEMBuilder.addEntity(entityClass);
 
                 RepositoryProducer<Object> producer = new RepositoryProducer<>( //
                                 repositoryInterface, beanMgr, provider, this, //

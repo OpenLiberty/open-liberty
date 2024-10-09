@@ -97,6 +97,11 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
     private final String databaseStoreId;
 
     /**
+     * The config display id of a databaseStore which may be the same as the databaseStoreId.
+     */
+    private final String configDisplayId;
+
+    /**
      * DataSourceFactory.target property of the databaseStore configuration element.
      */
     private final String dataSourceFactoryFilter;
@@ -239,9 +244,11 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 String dataSourceId = (String) dsRef.getProperty("id");
                 boolean nonJTA = Boolean.FALSE.equals(dsRef.getProperty("transactional"));
 
+                configDisplayId = dbStoreId;
+
                 Hashtable<String, Object> svcProps = new Hashtable<String, Object>();
-                svcProps.put("id", dbStoreId);
-                svcProps.put("config.displayId", dbStoreId);
+                svcProps.put("id", configDisplayId);
+                svcProps.put("config.displayId", configDisplayId);
 
                 if (dataSourceId == null)
                     dsFactoryFilter = "(jndiName=" + dsRef.getProperty("jndiName") + ')';
@@ -268,11 +275,15 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 dbStoreConfig.update(svcProps);
                 dbStoreConfigurations.put(isJNDIName ? qualifiedName : dataStore, dbStoreConfig);
             } else if (dsRef != null) {
-                dsFactoryFilter = "(config.displayId=" + dsRef.getProperty("config.displayId") + ')';
+                configDisplayId = (String) dsRef.getProperty("config.displayId");
+                dsFactoryFilter = "(config.displayId=" + configDisplayId + ')';
+            } else {
+                configDisplayId = "databaseStore[" + dbStoreId + "]";
             }
             dataSourceFactoryFilter = dsFactoryFilter;
         } else {
             dataSourceFactoryFilter = (String) dbStoreConfigProps.get("DataSourceFactory.target");
+            configDisplayId = dbStoreId;
         }
 
         databaseStoreId = dbStoreId;
@@ -289,7 +300,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                         Tr.debug(this, tc, "Wait " + poll_ms + " ms for service reference to become available...");
                     TimeUnit.MILLISECONDS.sleep(poll_ms);
                 } else {
-                    throw new IllegalStateException("The " + databaseStoreId + " service component did not become available within " +
+                    throw new IllegalStateException("The " + configDisplayId + " service component did not become available within " +
                                                     TimeUnit.NANOSECONDS.toSeconds(MAX_WAIT_FOR_SERVICE_NS) + " seconds.");
                 }
             } else {
@@ -300,7 +311,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
         String tablePrefix = (String) ref.getProperty("tablePrefix");
 
         if (trace && tc.isDebugEnabled())
-            Tr.debug(this, tc, databaseStoreId + " databaseStore reference", ref);
+            Tr.debug(this, tc, configDisplayId + " databaseStore reference", ref);
 
         // Classes explicitly annotated with JPA @Entity:
         Set<String> entityClassNames = new LinkedHashSet<>(entityTypes.size() * 2);
@@ -659,10 +670,10 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
     @Override
     @Trivial
     public String toString() {
-        return new StringBuilder(26 + databaseStoreId.length()) //
+        return new StringBuilder(26 + configDisplayId.length()) //
                         .append("DBStoreEMBuilder@") //
                         .append(Integer.toHexString(hashCode())) //
-                        .append(":").append(databaseStoreId) //
+                        .append(":").append(configDisplayId) //
                         .toString();
     }
 
@@ -799,13 +810,13 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
         // Note that exceptions thrown here or by the persistence service will be logged by the
         // direct caller (FutureEMBuilder) or the DDL generation MBean.
         if (persistenceServiceUnit == null) {
-            throw new IllegalStateException("EntityManagerFactory for Jakarta Data repository has not been initialized for the " + databaseStoreId + " DatabaseStore.");
+            throw new IllegalStateException("EntityManagerFactory for Jakarta Data repository has not been initialized for the " + configDisplayId + " DatabaseStore.");
         }
         persistenceServiceUnit.generateDDL(out);
     }
 
     @Override
     public String getDDLFileName() {
-        return databaseStoreId + "_repository";
+        return configDisplayId + "_JakartaData";
     }
 }

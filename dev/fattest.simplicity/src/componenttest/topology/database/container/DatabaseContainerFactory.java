@@ -53,6 +53,8 @@ public class DatabaseContainerFactory {
     // Features in fat-metadata.json are transformed to lowercase by default
     private static final String databaseRotationTestFeature = "databaserotation";
 
+    private static final String databaseRotationDatabaseType = "fat.bucket.db.type";
+
     /**
      * Used for <b>database rotation testing</b>.
      *
@@ -80,7 +82,7 @@ public class DatabaseContainerFactory {
      */
     public static JdbcDatabaseContainer<?> create(DatabaseContainerType defaultType) throws IllegalArgumentException {
         Path testedFeatures = new File("fat-metadata.json").toPath();
-        String dbProperty = System.getProperty("fat.bucket.db.type", defaultType.name());
+        String dbProperty = System.getProperty(databaseRotationDatabaseType, defaultType.name());
 
         boolean validateDatabaseRotationFeature;
         try {
@@ -101,7 +103,7 @@ public class DatabaseContainerFactory {
 
         DatabaseContainerType type = null;
         try {
-            type = DatabaseContainerType.valueOf(dbProperty);
+            type = DatabaseContainerType.valueOfAlias(dbProperty);
             Log.info(c, "create", "FOUND: database test-container type: " + type);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("No database test-container supported for " + dbProperty, e);
