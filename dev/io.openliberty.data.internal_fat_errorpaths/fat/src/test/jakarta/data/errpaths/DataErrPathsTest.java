@@ -43,6 +43,7 @@ public class DataErrPathsTest extends FATServletClient {
                                    "CWWKD1078E.*test.jakarta.data.errpaths.web.InvalidNonJNDIRepo",
                                    "CWWKD1079E.*test.jakarta.data.errpaths.web.InvalidJNDIRepo",
                                    "CWWKD1080E.*test.jakarta.data.errpaths.web.InvalidDatabaseRepo",
+                                   "CWWKD1082E.*test.jakarta.data.errpaths.web.WrongPersistenceUnitRefRepo",
                                    "CWWJP9991W.*4002" // 2 persistence units attempt to autocreate same table
                     };
 

@@ -22,6 +22,11 @@ import java.util.concurrent.CompletionException;
 
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
+import jakarta.data.Order;
+import jakarta.data.Sort;
+import jakarta.data.exceptions.DataException;
+import jakarta.data.page.Page;
+import jakarta.data.page.PageRequest;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -57,6 +62,10 @@ import componenttest.app.FATServlet;
                       password = "dbpwd1")
 @PersistenceUnit(name = "java:app/env/VoterPersistenceUnitRef",
                  unitName = "VoterPersistenceUnit")
+// The following is intentionally invalidly used by repositories that specify
+// a different entity type that is not in the persistence unit.
+@PersistenceUnit(name = "java:app/env/WrongPersistenceUnitRef",
+                 unitName = "VoterPersistenceUnit")
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataErrPathsTestServlet extends FATServlet {
@@ -72,6 +81,9 @@ public class DataErrPathsTestServlet extends FATServlet {
 
     @Inject
     InvalidJNDIRepo errIncorrectJNDIName;
+
+    @Inject
+    WrongPersistenceUnitRefRepo errWrongPersistenceUnitRef;
 
     @Resource
     UserTransaction tx;
@@ -199,6 +211,29 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1077E:") ||
                 !x.getMessage().contains("<dataSource id=\"DefaultDataSource\""))
+                throw x;
+        }
+    }
+
+    /**
+     * Attempt to use a repository that has a persistence unit reference to a
+     * persistence unit that lacks the entity class that is needed by the
+     * repository. Expect an error.
+     */
+    @Test
+    public void testWrongPersistenceUnitRef() {
+        try {
+            Page<Volunteer> page;
+            page = errWrongPersistenceUnitRef.findAll(PageRequest.ofSize(5),
+                                                      Order.by(Sort.asc("name")));
+            fail("Should not be able to use a repository that has a persistence" +
+                 " unit reference to a persistence unit that does not include the" +
+                 " entity that is used by the repository. Found: " + page);
+        } catch (DataException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1082E:") ||
+                !x.getMessage().contains("(test.jakarta.data.errpaths.web.Volunteer)") ||
+                !x.getMessage().contains("(test.jakarta.data.errpaths.web.WrongPersistenceUnitRefRepo)"))
                 throw x;
         }
     }
