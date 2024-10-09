@@ -820,3 +820,12 @@ CWWKD1081.entity.general.err.explanation=An error prevents the \
  specified entity from being used.
 CWWKD1081.entity.general.err.useraction=Locate the entity and make \
  corrections if needed.
+
+CWWKD1082.entity.classes.missing=CWWKD1082E: The persistence unit for the \
+ {0} data store does not define one or more entity classes ({1}) \
+ that are required by one or more repository interfaces ({2}) \
+ that use the data store.
+CWWKD1082.entity.classes.missing.explanation=All entity classes that are \
+ used by the repositories must be defined in the persistence unit.
+CWWKD1082.entity.classes.missing.useraction=Include all of the entity classes \
+ in the persistence unit.

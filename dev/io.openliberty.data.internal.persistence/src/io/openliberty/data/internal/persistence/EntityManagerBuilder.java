@@ -88,19 +88,27 @@ public abstract class EntityManagerBuilder {
     protected final ClassLoader repositoryClassLoader;
 
     /**
+     * The repository interfaces that require the entity manager.
+     */
+    protected final Set<Class<?>> repositoryInterfaces;
+
+    /**
      * Common constructor for subclasses.
      *
      * @param provider              core OSGi service for our built-in provider
-     * @param repositoryClassLoader class loader of repository interface
+     * @param repositoryClassLoader class loader of repository interfaces
+     * @param repositoryInterface   repository interfaces
      * @param dataStore             value derived from the dataStore of the
      *                                  Repository annotation
      */
     @Trivial
     protected EntityManagerBuilder(DataProvider provider,
                                    ClassLoader repositoryClassLoader,
+                                   Set<Class<?>> repositoryInterfaces,
                                    String dataStore) {
         this.provider = provider;
         this.repositoryClassLoader = repositoryClassLoader;
+        this.repositoryInterfaces = repositoryInterfaces;
         this.dataStore = dataStore;
     }
 
@@ -118,6 +126,7 @@ public abstract class EntityManagerBuilder {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         EntityManager em = createEntityManager();
         try {
+            Set<Class<?>> missingEntityTypes = new HashSet<>(entityTypes);
             Metamodel model = em.getMetamodel();
             for (EntityType<?> entityType : model.getEntities()) {
                 Map<String, String> attributeNames = new HashMap<>();
@@ -136,6 +145,7 @@ public abstract class EntityManagerBuilder {
 
                 Class<?> jpaEntityClass = entityType.getJavaType();
                 Class<?> userEntityClass = recordClass == null ? jpaEntityClass : recordClass;
+                missingEntityTypes.remove(userEntityClass);
 
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "collecting info for " +
@@ -325,12 +335,23 @@ public abstract class EntityManagerBuilder {
                         x = exc(CompletionException.class,
                                 "CWWKD1081.entity.general.err",
                                 userEntityClass.getName(),
-                                "", // TODO repository interfaces
+                                getClassNames(repositoryInterfaces),
                                 dataStore,
                                 x.getMessage()).initCause(x);
                     entityInfoMap.computeIfAbsent(userEntityClass, EntityInfo::newFuture) //
                                     .completeExceptionally(x);
                 }
+            }
+
+            if (!missingEntityTypes.isEmpty()) {
+                DataException x = exc(DataException.class,
+                                      "CWWKD1082.entity.classes.missing",
+                                      dataStore,
+                                      getClassNames(missingEntityTypes),
+                                      getClassNames(repositoryInterfaces));
+                for (Class<?> ec : missingEntityTypes)
+                    entityInfoMap.computeIfAbsent(ec, EntityInfo::newFuture) //
+                                    .completeExceptionally(x);
             }
         } finally {
             if (em != null)
@@ -344,6 +365,31 @@ public abstract class EntityManagerBuilder {
      * @return a new EntityManager instance.
      */
     public abstract EntityManager createEntityManager();
+
+    /**
+     * Returns an alphabetized comma-delimited list of the class names as text
+     * that can be used in NLS messages. For example:
+     * org.example.MyEntity1, org.example.MyEntity2, org.example.MyEntity3
+     *
+     * @param classes the list of classes.
+     * @return an alphabetized comma-delimited list of the class names as text.
+     */
+    @Trivial
+    private static final String getClassNames(Iterable<Class<?>> classes) {
+        TreeSet<String> names = new TreeSet<>();
+        for (Class<?> c : classes)
+            names.add(c.getName());
+        StringBuilder s = new StringBuilder();
+        boolean first = true;
+        for (String name : names)
+            if (first) {
+                s.append(name);
+                first = false;
+            } else {
+                s.append(", ").append(name);
+            }
+        return s.toString();
+    }
 
     /**
      * Obtains the DataSource that is used by the EntityManager.
