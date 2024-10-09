@@ -46,9 +46,38 @@ CWWKC1204.not.serializable=CWWKC1204E: Cannot create a serializable contextual p
 CWWKC1204.not.serializable.explanation=Third-party thread context types are not compatible with serialization and cannot be configured to be propagated for serializable contextual proxies.
 CWWKC1204.not.serializable.useraction=Update the application to request a non-serializable contextual proxy or ensure that no third-party context types are configured to be propagated.
 
+CWWKC1205.qualifiers.require.cdi=CWWKC1205E: The {0} application artifact cannot \
+ specify the {1} qualifiers on the {2} annotation or {3} deployment descriptor \
+ element that has the {4} name because the {5} feature is not enabled.
+CWWKC1205.qualifiers.require.cdi.explanation=The CDI feature is a prerequisite of \
+ specifying qualifiers on a resource definition.
+CWWKC1205.qualifiers.require.cdi.useraction=Enable the CDI feature.
+
+CWWKC1206.qualifier.must.be.anno=CWWKC1206E: The {0} application artifact \
+ specifies a {1} annotation or {2} deployment descriptor element that has the \
+ {3} name and {4} qualifiers list. The qualifiers list includes a {5} value \
+ that is not an annotation. All elements in the list must be annotation classes \
+ that are annotated with @Qualifier and @Retention(RUNTIME). For example, {6}
+CWWKC1206.qualifier.must.be.anno.explanation=Each value in the qualifiers \
+ list must be an annotation class.
+CWWKC1206.qualifier.must.be.anno.useraction=Ensure that all values in the \
+ qualifiers list are annotation classes.
+
+CWWKC1207.lacks.qualifier.anno=CWWKC1207E: The {0} application artifact \
+ specifies a {1} annotation or {2} deployment descriptor element that has the \
+ {3} name and {4} qualifiers list. The qualifiers list includes the \
+ {5} annotation, which is not annotated with @jakarta.inject.Qualifier and \
+ @Retention(RUNTIME). An example of a valid qualifier is: {6}
+CWWKC1207.lacks.qualifier.anno.explanation=The Qualifier annotation indicates \
+ that the annotation is a qualifier. The Retention annotation controls the \
+ availability of annotations.
+CWWKC1207.lacks.qualifier.anno.useraction=Add the @Qualifier and \
+ @Retention(RUNTIME) annotations to the qualifier class.
+
 CWWKC1217.no.virtual.threads=CWWKC1217I: The Concurrency specification requires \
- virtual=true to be ignored on the {0} {1} definition in the {2} application \
- artifact because Java {3} does not support virtual threads.
+ virtual=true to be ignored on the {0} application artifact's \
+ {1} annotation or {2} deployment descriptor element with the {3} name \
+ because Java {4} does not support virtual threads.
 CWWKC1217.no.virtual.threads.explanation=Virtual threads are available only \
  in Java 21 and later.
 CWWKC1217.no.virtual.threads.useraction=Update to Java 21 or later to enable the \
