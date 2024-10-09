@@ -1,6 +1,6 @@
 # NOTICE: This file was automatically updated to reflect changes made to test projects.
 # Please check these changes into GitHub.
-alpine:3.16
+alpine:3.17
 confluentinc/cp-kafka:7.1.1
 elastic/logstash:7.16.3
 fbicodex/spnego-kdc-server:1.0
@@ -39,8 +39,8 @@ postgres:16.0-alpine
 ryanesch/acme-boulder:1.2
 seleniarm/standalone-chromium:4.8.3
 selenium/standalone-chrome:4.8.3
-testcontainers/ryuk:0.6.0
-testcontainers/sshd:1.1.0
+testcontainers/ryuk:0.9.0
+testcontainers/sshd:1.2.0
 testcontainers/vnc-recorder:1.3.0
 zachhein/krb5-server:0.2
 zachhein/ldap-server:0.5

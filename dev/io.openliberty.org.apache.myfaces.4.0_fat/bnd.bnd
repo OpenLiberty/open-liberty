@@ -12,8 +12,7 @@ bVersion=1.0
 
 fat.test.container.images:\
 	seleniarm/standalone-chromium:4.8.3,\
-	selenium/standalone-chrome:4.8.3,\
-	alpine:3.16
+	selenium/standalone-chrome:4.8.3
 
 src: \
 	fat/src,\
