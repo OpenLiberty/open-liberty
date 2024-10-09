@@ -20,6 +20,7 @@ triggers:
       defaultValue: ${github_pr_api}
       steps:
       - stepName: Copyright Header Check
+      - stepName: Prohibited Terms Check
 
 - type: manual
   triggerName: "libby-manual"
@@ -35,9 +36,14 @@ triggers:
       defaultValue: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${github_pr_number}"
       steps:
       - stepName: Copyright Header Check
+      - stepName: Prohibited Terms Check
 
 steps:
 - stepName: Copyright Header Check
   workType: Jenkins
   projectName: copyrightHeaderCheck
+  timeoutInMinutes: 30
+- stepName: Prohibited Terms Check
+  workType: Jenkins
+  projectName: prohibitedTermsCheck
   timeoutInMinutes: 30
