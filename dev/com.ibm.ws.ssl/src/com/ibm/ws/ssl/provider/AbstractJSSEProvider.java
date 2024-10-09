@@ -89,10 +89,8 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
 
     private static final WSPKCSInKeyStoreList pkcsStoreList = new WSPKCSInKeyStoreList();
     private static final Map<SSLConfig, SSLContext> sslContextCacheJAVAX = new HashMap<SSLConfig, SSLContext>();
-//    protected static final String URL_HANDLER_PROP = "java.protocol.handler.pkgs";
     private static final String PKGNAME_DELIMITER = "|";
 
-    //public static String IBM_JCE_Plus_FIPS_PROVIDER = "com.ibm.crypto.plus.provider.IBMJCEPlusFIPS";
     private static boolean handlersInitialized = false;
     private static Object _lockObj = new Object();
 
@@ -146,22 +144,7 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
                     }
                 }
             }
-            //Need to add code to support Semeru (java 17)
         }
-
-//        if (JavaInfo.isSystemClassAvailable(IBM_JCE_Plus_FIPS_PROVIDER))
-//
-//        {
-//            if (tc.isDebugEnabled()) {
-//                Tr.debug(tc, "jce plus fips available");
-//            }
-//            try {
-//                com.ibm.ws.ssl.JSSEProviderFactory.initializeFips();
-//            } catch (Exception e) {
-//                if (tc.isDebugEnabled())
-//                    Tr.debug(tc, "Exception caught initializing FIPS.", new Object[] { e });
-//            }
-//        }
 
         if (!handlersInitialized && System.getProperty("os.name").equalsIgnoreCase("z/OS")
             && JavaInfo.majorVersion() < 11)
