@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,8 +27,8 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
-import io.openliberty.microprofile.config.fat.repeat.ConfigRepeatActions;
 import componenttest.topology.utils.tck.TCKRunner;
+import io.openliberty.microprofile.config.fat.repeat.ConfigRepeatActions;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -61,10 +61,11 @@ public class Config31TCKLauncher {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchConfig31Tck() throws Exception {
-        String bucketName = "io.openliberty.microprofile.config.3.1.internal_fat_tck";
-        String testName = this.getClass() + ":launchConfig31Tck";
-        Type type = Type.MICROPROFILE;
-        String specName = "Config";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName);
+        TCKRunner.build()
+                        .withServer(server)
+                        .withType(Type.MICROPROFILE)
+                        .withSpecName("Config")
+                        .withDefaultSuiteFileName()
+                        .runTCK();
     }
 }

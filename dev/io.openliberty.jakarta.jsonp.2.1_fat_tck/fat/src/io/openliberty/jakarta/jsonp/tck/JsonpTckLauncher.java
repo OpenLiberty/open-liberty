@@ -68,11 +68,13 @@ public class JsonpTckLauncher {
         // Persist the java.io.tempdir property from this test client to the TCK.
         additionalProps.put("java.io.tmpdir", PrivHelper.getProperty("java.io.tmpdir", "/tmp"));
 
-        String bucketName = "io.openliberty.jakarta.jsonp.2.1_fat_tck";
-        String testName = this.getClass() + ":launchJsonp21TCK";
-        Type type = Type.JAKARTA;
-        String specName = "JSON Processing";
-        TCKRunner.runTCK(DONOTSTART, bucketName, testName, type, specName, additionalProps);
+        TCKRunner.build()
+                        .withServer(DONOTSTART)
+                        .withType(Type.JAKARTA)
+                        .withPlatfromVersion("10")
+                        .withSpecName("jsonp")
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 
     /**
@@ -82,21 +84,19 @@ public class JsonpTckLauncher {
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchJsonp21PluggabilityTCK() throws Exception {
 
-        /**
-         * The runTCKMvnCmd will set the following properties for use by arquillian
-         * [ wlp, tck_server, tck_port, tck_failSafeUndeployment, tck_appDeployTimeout, tck_appUndeployTimeout ]
-         * and then run the mvn test command.
-         */
         // Including jakarta.json-tck-tests and jakarta.json-tck-tests-pluggability together causes
         // exceptions due to collisions, so created 2 separate profiles which are then
         // run individually
         Map<String, String> additionalPluggabilityProps = new HashMap<>();
         additionalPluggabilityProps.put("run-tck-tests-pluggability", "true");
 
-        String bucketName = "io.openliberty.jakarta.jsonp.2.1_fat_tck";
-        String testName = this.getClass() + ":launchJsonp21PluggabilityTCK";
-        Type type = Type.JAKARTA;
-        String specName = "JSON Processing";
-        TCKRunner.runTCK(DONOTSTART, bucketName, testName, type, specName, additionalPluggabilityProps);
+        TCKRunner.build()
+                        .withServer(DONOTSTART)
+                        .withType(Type.JAKARTA)
+                        .withPlatfromVersion("10")
+                        .withSpecName("jsonb")
+                        .withAdditionalMvnProps(additionalPluggabilityProps)
+                        .withQualifiers("pluggability")
+                        .runTCK();
     }
 }

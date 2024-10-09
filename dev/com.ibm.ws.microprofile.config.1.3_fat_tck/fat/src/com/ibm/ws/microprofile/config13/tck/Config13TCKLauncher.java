@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018,2022 IBM Corporation and others.
+ * Copyright (c) 2018,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -50,10 +50,11 @@ public class Config13TCKLauncher {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchConfig13Tck() throws Exception {
-        String bucketName = "com.ibm.ws.microprofile.config.1.3_fat_tck";
-        String testName = this.getClass() + ":launchConfig13Tck";
-        Type type = Type.MICROPROFILE;
-        String specName = "Config";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName);
+        TCKRunner.build()
+                        .withServer(server)
+                        .withType(Type.MICROPROFILE)
+                        .withSpecName("Config")
+                        .withDefaultSuiteFileName()
+                        .runTCK();
     }
 }

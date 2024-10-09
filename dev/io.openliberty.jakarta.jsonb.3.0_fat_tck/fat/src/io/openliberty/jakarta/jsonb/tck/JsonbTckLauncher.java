@@ -83,12 +83,13 @@ public class JsonbTckLauncher {
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchJsonb30TCK() throws Exception {
-
-        String bucketName = "io.openliberty.jakarta.jsonb.3.0_fat_tck";
-        String testName = this.getClass() + ":launchJsonb30TCK";
-        Type type = Type.JAKARTA;
-        String specName = "JSON Binding";
-        TCKRunner.runTCK(DONOTSTART, bucketName, testName, type, specName, additionalProps);
+        TCKRunner.build()
+                        .withServer(DONOTSTART)
+                        .withType(Type.JAKARTA)
+                        .withPlatfromVersion("10")
+                        .withSpecName("jsonb")
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
 
     }
 }

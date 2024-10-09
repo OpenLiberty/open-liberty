@@ -75,12 +75,15 @@ public class DataWebTckLauncher {
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
         additionalProps.put("jakarta.data.tck.version", "1.0.1");
 
-        String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
-        String testName = this.getClass() + ":launchDataTckWeb";
-        Type type = Type.JAKARTA;
-        String specName = "Data (Web - Persistence)";
-        String relativeTckRunner = "publish/tckRunner/platform/";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, null, relativeTckRunner, additionalProps);
+        TCKRunner.build()
+                        .withServer(server)
+                        .withType(Type.JAKARTA)
+                        .withSpecName("Data")
+                        .withRelativeTCKRunner("publish/tckRunner/platform/")
+                        .withAdditionalMvnProps(additionalProps)
+                        .withPlatfromVersion("11")
+                        .withQualifiers("Web", "Persistence")
+                        .runTCK();
     }
 
     // Cannot test NoSQL database on Web profile since the persistence feature is automatically included

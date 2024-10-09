@@ -94,11 +94,13 @@ public class JakartaRest31TckPackageTest {
                 props.put("excludedGroups","se_bootstrap");
             }
             
-            String bucketName = "io.openliberty.jakarta.rest.3.1.internal_fat_tck";
-            String testName = this.getClass() + ":testJakarta31RestTck";
-            Type type = Type.JAKARTA;
-            String specName = "Restful Web Services";
-            TCKRunner.runTCK(server, bucketName, testName, type, specName, props);
+            TCKRunner.build()
+                .withServer(server)
+                .withType(Type.JAKARTA)
+                .withPlatfromVersion("10")
+                .withSpecName("Restful Web Services")
+                .withAdditionalMvnProps(props)
+                .runTCK();
         }
     }
 }

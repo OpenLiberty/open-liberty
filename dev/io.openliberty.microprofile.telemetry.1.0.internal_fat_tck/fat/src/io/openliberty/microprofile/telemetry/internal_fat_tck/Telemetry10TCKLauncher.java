@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -53,10 +53,11 @@ public class Telemetry10TCKLauncher {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchTelemetry10Tck() throws Exception {
-        String bucketName = "io.openliberty.microprofile.telemetry.1.0.internal_fat_tck";
-        String testName = this.getClass() + ":launchTelemetry10Tck";
-        Type type = Type.MICROPROFILE;
-        String specName = "Telemetry";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName);
+        TCKRunner.build()
+                        .withServer(server)
+                        .withType(Type.MICROPROFILE)
+                        .withSpecName("Telemetry")
+                        .withDefaultSuiteFileName()
+                        .runTCK();
     }
 }

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -50,10 +50,12 @@ public class Mpjwt21TCKLauncher_noaud_noenv {
     //@AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchMpjwt21TCK_noaud_noenv() throws Exception {
         String suiteName = "tck_suite_noaud_noenv.xml";
-        String bucketName = "io.openliberty.microprofile.jwt.2.1.internal_fat_tck";
-        String testName = this.getClass() + ":launchMpjwt21TCK_noaud_noenv";
-        Type type = Type.MICROPROFILE;
-        String specName = "JWT Auth";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, suiteName);
+
+        TCKRunner.build()
+                        .withServer(server)
+                        .withType(Type.MICROPROFILE)
+                        .withSpecName("JWT Auth")
+                        .withSuiteFileName(suiteName)
+                        .runTCK();
     }
 }

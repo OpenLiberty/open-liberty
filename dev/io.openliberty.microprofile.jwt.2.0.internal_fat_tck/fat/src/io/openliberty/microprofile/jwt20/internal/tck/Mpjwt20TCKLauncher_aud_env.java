@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -52,10 +52,12 @@ public class Mpjwt20TCKLauncher_aud_env {
     @AllowedFFDC("org.jose4j.jwt.consumer.InvalidJwtSignatureException")
     public void launchMpjwt20TCK_aud_env() throws Exception {
         String suiteName = "tck_suite_aud_env.xml";
-        String bucketName = "io.openliberty.microprofile.jwt.2.0.internal_fat_tck";
-        String testName = this.getClass() + ":launchMpjwt20TCK_aud_env";
-        Type type = Type.MICROPROFILE;
-        String specName = "JWT Auth";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, suiteName);
+
+        TCKRunner.build()
+                        .withServer(server)
+                        .withType(Type.MICROPROFILE)
+                        .withSpecName("JWT Auth")
+                        .withSuiteFileName(suiteName)
+                        .runTCK();
     }
 }

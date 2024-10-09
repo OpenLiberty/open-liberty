@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -129,11 +129,13 @@ public class FaultToleranceTck40Launcher {
             additionalProps.put("timeoutMultiplier", "1.0");
         }
 
-        String bucketName = "io.openliberty.microprofile.faulttolerance.4.0.internal_fat_tck";
-        String testName = this.getClass() + ":launchFaultTolerance40TCK";
-        Type type = Type.MICROPROFILE;
-        String specName = "Fault Tolerance";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, suiteFileName, additionalProps);
+        TCKRunner.build()
+                        .withServer(server)
+                        .withType(Type.MICROPROFILE)
+                        .withSpecName("Fault Tolerance")
+                        .withSuiteFileName(suiteFileName)
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 
 }

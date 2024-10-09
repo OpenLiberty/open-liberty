@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -58,11 +58,12 @@ public class ReactiveStreams30TCKLauncher {
 
     @Test
     public void launchReactiveStreams30Tck() throws Exception {
-        String bucketName = "io.openliberty.microprofile.reactive.streams.operators30.internal_fat_tck";
-        String testName = this.getClass() + ":launchReactiveStreams30Tck";
-        Type type = Type.MICROPROFILE;
-        String specName = "Reactive Streams";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName);
+        TCKRunner.build()
+                        .withServer(server)
+                        .withType(Type.MICROPROFILE)
+                        .withSpecName("Reactive Streams")
+                        .withDefaultSuiteFileName()
+                        .runTCK();
     }
 
 }

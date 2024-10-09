@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018,2022 IBM Corporation and others.
+ * Copyright (c) 2018,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -68,11 +68,13 @@ public class MetricsTCKLauncher {
         additionalProps.put("test.user", "theUser");
         additionalProps.put("test.pwd", "thePassword");
 
-        String bucketName = "com.ibm.ws.microprofile.metrics.1.1_fat_tck";
-        String testName = this.getClass() + ":launchMetrics11Tck";
-        Type type = Type.MICROPROFILE;
-        String specName = "Metrics";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, additionalProps);
+        TCKRunner.build()
+                        .withServer(server)
+                        .withType(Type.MICROPROFILE)
+                        .withSpecName("Metrics")
+                        .withDefaultSuiteFileName()
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 
 }

@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.rules.repeater.MicroProfileActions;
@@ -130,11 +129,13 @@ public class FaultToleranceTck41Launcher {
             additionalProps.put("timeoutMultiplier", "1.0");
         }
 
-        String bucketName = "io.openliberty.microprofile.faulttolerance.4.1.internal_fat_tck";
-        String testName = this.getClass() + ":launchFaultTolerance41TCK";
-        Type type = Type.MICROPROFILE;
-        String specName = "Fault Tolerance";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, suiteFileName, additionalProps);
+        TCKRunner.build()
+                        .withServer(server)
+                        .withType(Type.MICROPROFILE)
+                        .withSpecName("Fault Tolerance")
+                        .withSuiteFileName(suiteFileName)
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 
 }

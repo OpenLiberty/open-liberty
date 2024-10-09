@@ -86,11 +86,13 @@ public class ConcurrentTckLauncherFull {
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchConcurrent31TCKFull() throws Exception {
-
-        String bucketName = "io.openliberty.jakarta.concurrency.3.1_fat_tck";
-        String testName = this.getClass() + ":launchConcurrent31TCKFull";
-        Type type = Type.JAKARTA;
-        String specName = "Concurrency (Full)";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, null, additionalProps);
+        TCKRunner.build()
+                        .withServer(server)
+                        .withType(Type.JAKARTA)
+                        .withPlatfromVersion("11")
+                        .withSpecName("Concurrency")
+                        .withQualifiers("Full")
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 }

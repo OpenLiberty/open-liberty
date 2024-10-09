@@ -155,6 +155,17 @@ public class TCKRunner {
     }
 
     /**
+     * Sets suiteFileName to tck-suite.xml
+     *
+     * @return this TCKRunner
+     */
+    public TCKRunner withDefaultSuiteFileName() {
+        this.suiteFileName = "tck-suite.xml";
+        this.isTestNG = true;
+        return this;
+    }
+
+    /**
      * @param  additionalMvnProps java properties to set when running the mvn command
      * @return                    this TCKRunner
      */

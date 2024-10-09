@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -101,14 +101,12 @@ public class FaultToleranceTckLauncher {
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchFaultTolerance10TCK() throws Exception {
         boolean isFullMode = TestModeFilter.shouldRun(TestMode.FULL);
-
-        String suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
-
-        String bucketName = "com.ibm.ws.microprofile.faulttolerance_fat_tck";
-        String testName = this.getClass() + ":launchFaultTolerance10TCK";
-        Type type = Type.MICROPROFILE;
-        String specName = "Fault Tolerance";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, suiteFileName);
+        TCKRunner.build()
+                        .withServer(server)
+                        .withType(Type.MICROPROFILE)
+                        .withSpecName("Fault Tolerance")
+                        .withSuiteFileName(isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml")
+                        .runTCK();
     }
 
 }

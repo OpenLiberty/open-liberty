@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019,2022 IBM Corporation and others.
+ * Copyright (c) 2019,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -58,11 +58,12 @@ public class ReactiveStreamsTCKLauncher {
     @Mode(TestMode.FULL)
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchReactiveStreams10Tck() throws Exception {
-        String bucketName = "com.ibm.ws.microprofile.reactive.streams.operators_fat_tck";
-        String testName = this.getClass() + ":launchReactiveStreams10Tck";
-        Type type = Type.MICROPROFILE;
-        String specName = "Reactive Streams";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName);
+        TCKRunner.build()
+                        .withServer(server)
+                        .withType(Type.MICROPROFILE)
+                        .withSpecName("Reactive Streams")
+                        .withDefaultSuiteFileName()
+                        .runTCK();
     }
 
 }

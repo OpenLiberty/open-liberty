@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020,2022 IBM Corporation and others.
+ * Copyright (c) 2020,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -59,11 +59,13 @@ public class Health22TCKLauncher {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
 
-        String bucketName = "com.ibm.ws.microprofile.health.2.2_fat_tck";
-        String testName = this.getClass() + ":launchHealth22Tck";
-        Type type = Type.MICROPROFILE;
-        String specName = "Health";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, additionalProps);
+        TCKRunner.build()
+                        .withServer(server)
+                        .withType(Type.MICROPROFILE)
+                        .withSpecName("Health")
+                        .withDefaultSuiteFileName()
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 
 }

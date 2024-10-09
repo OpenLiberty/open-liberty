@@ -103,11 +103,13 @@ public class MetricsTCKLauncher {
         additionalProps.put("test.user", "theUser");
         additionalProps.put("test.pwd", "thePassword");
 
-        String bucketName = "io.openliberty.microprofile.metrics.internal.5.1_fat_tck";
-        String testName = this.getClass() + ":launchMetrics51Tck";
-        Type type = Type.MICROPROFILE;
-        String specName = "Metrics";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, additionalProps);
+        TCKRunner.build()
+                        .withServer(server)
+                        .withType(Type.MICROPROFILE)
+                        .withSpecName("Metrics")
+                        .withDefaultSuiteFileName()
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 
 }

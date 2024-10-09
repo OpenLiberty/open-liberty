@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -57,10 +57,12 @@ public class OpentracingRestClientTCKLauncher {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchOpenTracing20RestClientTck() throws Exception {
         String suiteName = "rest-client-tck-suite.xml";
-        String bucketName = "io.openliberty.opentracing.2.0.internal_fat_tck";
-        String testName = this.getClass() + ":launchOpenTracing20RestClientTck";
-        Type type = Type.MICROPROFILE;
-        String specName = "Open Tracing";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, suiteName);
+        
+        TCKRunner.build()
+        	.withServer(server)
+        	.withType(Type.MICROPROFILE)
+        	.withSpecName("Open Tracing")
+        	.withSuiteFileName(suiteName)
+        	.runTCK();
     }
 }

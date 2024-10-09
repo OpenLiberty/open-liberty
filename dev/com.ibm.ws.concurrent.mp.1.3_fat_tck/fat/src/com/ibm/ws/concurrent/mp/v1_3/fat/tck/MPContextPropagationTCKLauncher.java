@@ -55,12 +55,11 @@ public class MPContextPropagationTCKLauncher {
     })
     @Test
     public void launchMPContextPropagation_1_3_Tck() throws Exception {
-        // TODO use this to only test with local build (when tckRunner/tck.pom.xml specifies a #.#-SNAPSHOT version)
-        //if (FATRunner.FAT_TEST_LOCALRUN)
-        String bucketName = "com.ibm.ws.concurrency.mp.1.3_fat_tck";
-        String testName = this.getClass() + ":launchMPContextPropagation_1_3_Tck";
-        Type type = Type.MICROPROFILE;
-        String specName = "Context Propogation";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName);
+        TCKRunner.build()
+                        .withServer(server)
+                        .withType(Type.MICROPROFILE)
+                        .withSpecName("Context Propogation")
+                        .withDefaultSuiteFileName()
+                        .runTCK();
     }
 }

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -60,11 +60,14 @@ public class Mpjwt21TCKLauncher_aud_noenv {
         additionalProps.put("mp.jwt.tck.jwks.baseURL", "http://localhost:" + port + "/PublicKeyAsPEMLocationURLTest/");
 
         String suiteName = "tck_suite_aud_noenv.xml";
-        String bucketName = "io.openliberty.microprofile.jwt.2.1.internal_fat_tck";
-        String testName = this.getClass() + ":launchMpjwt21TCK_aud_env";
-        Type type = Type.MICROPROFILE;
-        String specName = "JWT Auth";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, suiteName, additionalProps);
+
+        TCKRunner.build()
+                        .withServer(server)
+                        .withType(Type.MICROPROFILE)
+                        .withSpecName("JWT Auth")
+                        .withSuiteFileName(suiteName)
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
 
     }
 }

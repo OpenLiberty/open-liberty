@@ -54,11 +54,12 @@ public class GraphQLTckPackageTest {
     }
 
     @Test
-    public void testGraphQL20Tck() throws Exception {
-        String bucketName = "io.openliberty.microprofile.graphql.2.0.internal_fat_tck";
-        String testName = this.getClass() + ":testGraphQL20Tck";
-        Type type = Type.MICROPROFILE;
-        String specName = "GraphQL";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName);
+    public void testGraphQL20Tck() throws Exception {        
+        TCKRunner.build()
+        	.withServer(server)
+        	.withType(Type.MICROPROFILE)
+        	.withSpecName("GraphQL")
+        	.withDefaultSuiteFileName()
+        	.runTCK();
     }
 }

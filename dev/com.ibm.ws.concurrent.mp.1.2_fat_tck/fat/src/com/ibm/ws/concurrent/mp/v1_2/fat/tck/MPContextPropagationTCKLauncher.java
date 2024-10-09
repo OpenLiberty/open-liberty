@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018,2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,12 +46,11 @@ public class MPContextPropagationTCKLauncher {
     })
     @Test
     public void launchMPContextPropagation_1_2_Tck() throws Exception {
-        // TODO use this to only test with local build
-        // if (FATRunner.FAT_TEST_LOCALRUN)
-        String bucketName = "com.ibm.ws.concurrency.mp.1.2_fat_tck";
-        String testName = this.getClass() + ":launchMPContextPropagation_1_2_Tck";
-        Type type = Type.MICROPROFILE;
-        String specName = "Context Propogation";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName);
+        TCKRunner.build()
+                        .withServer(server)
+                        .withType(Type.MICROPROFILE)
+                        .withSpecName("Context Propogation")
+                        .withDefaultSuiteFileName()
+                        .runTCK();
     }
 }
