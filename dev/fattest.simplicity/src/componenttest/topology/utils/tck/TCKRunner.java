@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -101,14 +102,14 @@ public class TCKRunner {
     private static final long startNanos = System.nanoTime();
 
     // Builder settings
-    private String bucketName; // Required
-    private String testName; // Required
     private LibertyServer server; // Required
     private Type type; // Required
     private String specName; // Required
 
     private String suiteFileName; // Optional
-    private Map<String, String> additionalMvnProps; // Optional
+    private Map<String, String> additionalMvnProps = Collections.emptyMap(); // Optional
+    private String platformVersion = ""; // Optional
+    private String[] qualifiers = new String[] {}; //Optional
 
     //Artifactory settings
     private File mavenUserHome;
@@ -128,28 +129,6 @@ public class TCKRunner {
      */
     public static TCKRunner build() {
         return new TCKRunner();
-    }
-
-    /**
-     * @param  bucketName the name of the test project
-     * @return            this TCKRunner
-     */
-    public TCKRunner withBucketName(String bucketName) {
-        Objects.requireNonNull(bucketName);
-
-        this.bucketName = bucketName;
-        return this;
-    }
-
-    /**
-     * @param  testName the name of the method that's being used to launch the TCK
-     * @return          this TCKRunner
-     */
-    public TCKRunner withTestName(String testName) {
-        Objects.requireNonNull(testName);
-
-        this.testName = testName;
-        return this;
     }
 
     /**
@@ -219,6 +198,29 @@ public class TCKRunner {
         return this;
     }
 
+    /**
+     * @param  platformVersion the version of the Jakarta EE Platform this TCK tests
+     * @return                 this TCKRunner
+     */
+    public TCKRunner withPlatfromVersion(String platformVersion) {
+        Objects.requireNonNull(platformVersion);
+
+        this.platformVersion = platformVersion;
+        return this;
+    }
+
+    /**
+     *
+     * @param  qualifiers necessary to distinguish repeats of a TCK not represented by a RepeatAction, Such as core / web profile.
+     * @return            this TCKRunner
+     */
+    public TCKRunner withQualifiers(String... qualifiers) {
+        Objects.requireNonNull(qualifiers);
+
+        this.qualifiers = qualifiers;
+        return this;
+    }
+
     /////////// Run method //////////////////
 
     /**
@@ -228,15 +230,14 @@ public class TCKRunner {
      * runs "mvn clean test" in the tck folder,
      * passing through all the required properties
      *
-     * @throws IOException
+     * @throws IOException If any error occurs writing tck results to the file system.
+     * @throws Exception   If any error occurs running mvn commands.
      */
-    public void runTCK() throws IOException {
+    public void runTCK() throws IOException, Exception {
         // Assumptions that will prevent TCK from running
         Assume.assumeThat(System.getProperty("os.name"), CoreMatchers.not("OS/400")); // skip tests on IBM i due to mvn issue.
 
         // Validate required settings
-        Objects.requireNonNull(bucketName, "TCKRunner was build without a configured bucketName");
-        Objects.requireNonNull(testName, "TCKRunner was build without a configured testName");
         Objects.requireNonNull(server, "TCKRunner was build without a configured server");
         Objects.requireNonNull(type, "TCKRunner was build without a configured type");
         Objects.requireNonNull(specName, "TCKRunner was build without a configured specName");
@@ -279,6 +280,11 @@ public class TCKRunner {
 
         //TODO validate resultsInfo especially certification file name prior to writing
         TCKResultsInfo resultsInfo = new TCKResultsInfo(this.type, this.specName, this.server, tckJarInfo);
+        if (qualifiers.length > 0)
+            resultsInfo.withQualifiers(this.qualifiers);
+        if (!platformVersion.isEmpty())
+            resultsInfo.withPlatformVersion(this.platformVersion);
+
         TCKResultsWriter.preparePublicationFile(resultsInfo);
     }
 
@@ -412,7 +418,7 @@ public class TCKRunner {
         // based on examining the TCK jar) in which case the value for suiteXmlFile would
         // be different.
         if (isTestNG)
-            stringArrayList.add("-DsuiteXmlFile=" + getSuiteFileName());
+            stringArrayList.add("-DsuiteXmlFile=" + this.suiteFileName);
 
         // Batch mode, gives better output when logged to a file and allows timestamps to be enabled
         stringArrayList.add("-B");
@@ -493,25 +499,13 @@ public class TCKRunner {
     }
 
     /**
-     * Get the name of the suite xml file. Normally this defaults to tck-suite.xml.
-     *
-     * @return the name of the suite xml file
-     */
-    private String getSuiteFileName() {
-        if (isTestNG)
-            return this.suiteFileName;
-        else
-            throw new UnsupportedOperationException("Suite XML file was never set, therefore we assume this is a Junit test.");
-    }
-
-    /**
      * Get the name of the suite. This is generated from the suite xml file name and made unique by adding the repeat ID, if any.
      *
      * @return the name of the suite
      */
     private String getSuiteName() {
         if (isTestNG)
-            return getSuiteFileName().replace(".xml", "") + RepeatTestFilter.getRepeatActionsAsString();
+            return this.suiteFileName.replace(".xml", "") + RepeatTestFilter.getRepeatActionsAsString();
         else //When using junit just use the server name
             return getServerName() + RepeatTestFilter.getRepeatActionsAsString();
     }
