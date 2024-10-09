@@ -121,6 +121,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
         this.provider = provider;
         this.repositoryClassLoader = repositoryClassLoader;
         this.dataStore = dataStore;
+        // TODO getModuleName will show wrong hash code, so suppress it from trace?
         this.moduleName = getModuleName(repositoryInterface, repositoryClassLoader, provider);
         this.namespace = Namespace.of(dataStore);
 
@@ -320,9 +321,13 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                         Tr.debug(this, tc, dataStore + " is the JNDI name for " + resource);
 
                     if (resource instanceof EntityManagerFactory)
-                        return new PUnitEMBuilder(provider, repositoryClassLoader, //
+                        return new PUnitEMBuilder(provider, //
+                                        repositoryClassLoader, //
+                                        repositoryInterfaces, //
                                         (EntityManagerFactory) resource, //
-                                        resourceName, metadataIdentifier, entityTypes);
+                                        resourceName, //
+                                        metadataIdentifier, //
+                                        entityTypes);
                 } else {
                     // Check for resource references and persistence unit references where java:comp/env/ is omitted:
                     String javaCompName = "java:comp/env/" + resourceName;
@@ -333,9 +338,12 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                             Tr.debug(this, tc, javaCompName + " is the JNDI name for " + resource);
 
                         if (resource instanceof EntityManagerFactory)
-                            return new PUnitEMBuilder(provider, repositoryClassLoader, //
+                            return new PUnitEMBuilder(provider, //
+                                            repositoryClassLoader, //
+                                            repositoryInterfaces, //
                                             (EntityManagerFactory) resource, //
-                                            javaCompName, metadataIdentifier, //
+                                            javaCompName, //
+                                            metadataIdentifier, //
                                             entityTypes);
 
                         if (resource instanceof DataSource)
@@ -356,10 +364,14 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
             boolean javacolon = namespace != null || // any java: namespace
                                 resourceName != dataStore; // implicit java:comp
 
-            return new DBStoreEMBuilder(provider, repositoryClassLoader, //
+            return new DBStoreEMBuilder(provider, //
+                            repositoryClassLoader, //
+                            repositoryInterfaces, //
                             resourceName, //
                             javacolon, //
-                            metadataIdentifier, jeeName, entityTypes);
+                            metadataIdentifier, //
+                            jeeName, //
+                            entityTypes);
         } catch (Throwable x) {
             // The error is logged to Tr.error rather than FFDC
             ComponentMetaData metadata = repoMetadata == null //

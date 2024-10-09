@@ -41,6 +41,7 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
      *
      * @param provider              OSGi service that provides the CDI extension.
      * @param repositoryClassLoader class loader of the repository interface.
+     * @param repositoryInterfaces  repository interfaces that use the entities.
      * @param emf                   entity manager factory.
      * @param pesistenceUnitRef     persistence unit reference.
      * @param metaDataIdentifier    metadata identifier for the class loader of the repository interface.
@@ -49,11 +50,15 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
      */
     public PUnitEMBuilder(DataProvider provider,
                           ClassLoader repositoryClassLoader,
+                          Set<Class<?>> repositoryInterfaces,
                           EntityManagerFactory emf,
                           String persistenceUnitRef,
                           String metadataIdentifier,
                           Set<Class<?>> entityTypes) throws Exception {
-        super(provider, repositoryClassLoader, persistenceUnitRef);
+        super(provider, //
+              repositoryClassLoader, //
+              repositoryInterfaces, //
+              persistenceUnitRef);
         this.emf = emf;
 
         collectEntityInfo(entityTypes);
