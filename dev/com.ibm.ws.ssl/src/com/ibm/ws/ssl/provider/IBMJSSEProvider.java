@@ -79,7 +79,7 @@ public class IBMJSSEProvider extends AbstractJSSEProvider implements JSSEProvide
 //        }
 
         if (FipsUtils.isFIPSEnabled()) {
-            if (CryptoProvider.isIBMJCEPlusFIPSAvailable() || CryptoProvider.isIBMJCEPlusFIPSAvailable()) {
+            if (CryptoProvider.isIBMJCEPlusFIPSAvailable() || CryptoProvider.isOpenJCEPlusFIPSAvailable()) {
                 initialize(JSSEProviderFactory.getKeyManagerFactoryAlgorithm(), JSSEProviderFactory.getTrustManagerFactoryAlgorithm(), Constants.IBMJSSE2_NAME, null,
                            Constants.SOCKET_FACTORY_WAS_DEFAULT, null, Constants.PROTOCOL_TLS);
             }

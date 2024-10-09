@@ -117,6 +117,7 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         this.defaultProtocol = protocolType;
 
         if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "contextProvider: " + contextProvider);
             Tr.debug(tc, "defaultProtocol: " + defaultProtocol);
         }
         if (FipsUtils.isFIPSEnabled()) {
