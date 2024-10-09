@@ -15,7 +15,9 @@ package com.ibm.ws.http.channel.internal.inbound;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
+import java.util.zip.DataFormatException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -24,11 +26,17 @@ import com.ibm.ws.http.channel.inputstream.HttpInputStreamObserver;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
+import com.ibm.wsspi.http.channel.compression.DecompressionHandler;
+import com.ibm.wsspi.http.channel.compression.DeflateInputHandler;
+import com.ibm.wsspi.http.channel.compression.GzipInputHandler;
+import com.ibm.wsspi.http.channel.compression.IdentityInputHandler;
 import com.ibm.wsspi.http.channel.exception.IllegalHttpBodyException;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
+import com.ibm.wsspi.http.channel.values.ContentEncodingValues;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaderNames;
 
 /**
  * Wrapper for an incoming HTTP request message body that provides the input
@@ -76,7 +84,56 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         this.nettyRequest = request;
         this.nettyBody = nettyRequest.content();
         buffer = ChannelFrameworkFactory.getBufferManager().wrap(nettyBody.nioBuffer()).position(nettyBody.readerIndex());
+        // Check if the request content is compressed
+        String contentEncoding = nettyRequest.headers().get(HttpHeaderNames.CONTENT_ENCODING);
+    
+        // If the content is compressed, use legacy decompression handler
+        if (contentEncoding != null && isCompressed(contentEncoding)) {
+            // Use the existing legacy decompression handler to decompress the buffer
+            
+            DecompressionHandler decompressHandler ;
+            if(this.isc instanceof HttpInboundServiceContextImpl && !((HttpInboundServiceContextImpl)this.isc).getHttpConfig().isAutoDecompressionEnabled()){
+                decompressHandler = new IdentityInputHandler();
+            } else {
+                ContentEncodingValues encoding = ContentEncodingValues.find(contentEncoding);
+                if (ContentEncodingValues.GZIP.equals(encoding)) {
+                    decompressHandler = new GzipInputHandler();
+                } else if (ContentEncodingValues.XGZIP.equals(encoding)) {
+                    decompressHandler = new GzipInputHandler();
+                } else if (ContentEncodingValues.DEFLATE.equals(encoding)) {
+                    decompressHandler = new DeflateInputHandler();
+                } else {
+                    // unknown encoding
+                    decompressHandler = new IdentityInputHandler();
+                }
+            }
+            // Decompress the buffer
+            if (decompressHandler != null) {
+                try{
+                    List<WsByteBuffer> buffers = decompressHandler.decompress(buffer);
+                    int totalSize = buffers.stream().mapToInt(WsByteBuffer::remaining).sum();
+                    WsByteBuffer combinedBuffer = ChannelFrameworkFactory.getBufferManager().allocate(totalSize);
+                    for(WsByteBuffer buffer: buffers) {
+                        combinedBuffer.put(buffer);
+                    }
+                    combinedBuffer.flip();
+                    this.buffer = combinedBuffer;
+                }catch (DataFormatException dfe) {
+                        //FFDCFilter.processException(dfe, getClass().getName() + ".moveBuffers", "1");
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Received exception during decompress; " + dfe);
+                        }
+                        //throw new IllegalHttpBodyException(dfe.getMessage());
+                        
+                    }
+                
+            }
+        }
         this.bytesRead += buffer.remaining();
+    }
+
+    private boolean isCompressed(String encoding) {
+        return "gzip".equalsIgnoreCase(encoding) || "deflate".equalsIgnoreCase(encoding);
     }
 
     /*
