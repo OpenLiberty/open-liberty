@@ -9,7 +9,7 @@
  *******************************************************************************/
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
-def grpcVersion='1.57.2'
+def grpcVersion='1.68.0'
 
 configurations {
   telemetryAgent
