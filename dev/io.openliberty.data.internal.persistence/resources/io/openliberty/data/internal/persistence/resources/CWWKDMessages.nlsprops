@@ -823,7 +823,7 @@ CWWKD1081.entity.general.err.useraction=Locate the entity and make \
 
 CWWKD1082.entity.classes.missing=CWWKD1082E: The persistence unit for the \
  {0} data store does not define one or more entity classes ({1}) \
- that one or more repository interfaces ({2}) that use the data store require.
+ that one or more repository interfaces ({2}), which use the data store, require.
 CWWKD1082.entity.classes.missing.explanation=Repositories use entity classes \
  that must be defined in the persistence unit.
 CWWKD1082.entity.classes.missing.useraction=Include all entity classes \
