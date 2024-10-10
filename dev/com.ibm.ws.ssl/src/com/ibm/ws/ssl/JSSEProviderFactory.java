@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2006 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,9 +52,7 @@ public class JSSEProviderFactory {
     private static String defaultSSLSocketFactory = null;
     private static String defaultSSLServerSocketFactory = null;
     private static boolean fipsInitialized = false;
-    // TODO currently unused
-    // private static List<String> fipsJCEProvidersObjectList = null;
-    // private static List<String> fipsJSSEProvidersObjectList = null;
+
     private static String providerFromProviderList = null;
 
     /**
@@ -416,10 +414,6 @@ public class JSSEProviderFactory {
 //        }
 
         if (!fipsInitialized) {
-            //TODO: maybe check the provider list to make sure we have the right order of the provider.
-            // IBM JDK: IBMJSEE2, IBMJCEPlusFips
-            // Semeru JDK: OPenJCE, OPenJCEPlustFips
-            // SUN JDK:
             fipsInitialized = true;
             Provider[] provider_list = Security.getProviders();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

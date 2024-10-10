@@ -79,7 +79,7 @@ public class CryptoProvider {
                 ibmJCEPlusFIPSAvailable = true;
             } else {
                 if (fipsEnabled && !FipsUtils.isSemeruFips()) {
-                    Tr.error(tc, "FIPS is enabled but the IBMJCEPlusFIPS provider is not available.");
+                    Tr.error(tc, "FIPS is enabled but the " + IBMJCE_PLUS_FIPS_PROVIDER + " provider is not available.");
                 }
                 ibmJCEPlusFIPSAvailable = false;
             }
@@ -115,7 +115,7 @@ public class CryptoProvider {
                 openJCEPlusFIPSAvailable = true;
             } else {
                 if (fipsEnabled && FipsUtils.isSemeruFips()) {
-                    Tr.error(tc, "Semeru FIPS is enabled but the  OpenJCEPlusFIPS provider is not available.");
+                    Tr.error(tc, "Semeru FIPS is enabled but the " + OPENJCE_PLUS_FIPS_PROVIDER + " provider is not available.");
                 }
                 openJCEPlusFIPSAvailable = false;
             }

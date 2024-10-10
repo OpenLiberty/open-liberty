@@ -30,51 +30,23 @@ public class FipsUtils {
         return AccessController.doPrivileged(new PrivilegedAction<String>() {
             @Override
             public String run() {
-                return System.getProperty(prop, defaultValue);
+                return System.getProperty(prop, defaultValue).toLowerCase();
             }
         });
     }
 
     static String getFipsLevel() {
-        String fipsLevel = AccessController.doPrivileged(new PrivilegedAction<String>() {
-            @Override
-            public String run() {
-                String propertyValue = System.getProperty("com.ibm.fips.mode");
-                if (propertyValue == null) {
-                    String result = System.getProperty("global.fips_140-3");
-                    if ("true".equalsIgnoreCase(result)) {
-                        propertyValue = "140-3";
-                    }
-                }
-                return (propertyValue == null) ? "disabled" : propertyValue.trim().toLowerCase();
-            }
-        });
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "fipsLevel:" + fipsLevel);
-        }
-        return fipsLevel;
+        return getProperty("com.ibm.fips.mode", "disabled");
     }
 
     public static boolean isSemeruFips() {
-        boolean result = false;
-        String semeruFips = AccessController.doPrivileged(new PrivilegedAction<String>() {
-            @Override
-            public String run() {
-                String propertyValue = System.getProperty("semeru.fips");
-                return (propertyValue == null) ? "false" : propertyValue.trim().toLowerCase();
-            }
-        });
-        if ("true".equals(semeruFips))
-            result = true;
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "semeruFips:" + result);
-        }
-        return result;
+        return "true".equals(getProperty("semeru.fips", "false"));
     }
 
     public static boolean isFips140_3Enabled() {
-        return isRunningBetaMode() && "140-3".equals(FIPSLevel);
+
+        return isRunningBetaMode() &&
+               "140-3".equals(FIPSLevel) || "true".equalsIgnoreCase(getProperty("global.fips_140-3", "false")) || isSemeruFips();
     }
 
     public static boolean isFips140_2Enabled() {
@@ -105,5 +77,4 @@ public class FipsUtils {
             return true;
         }
     }
-
 }
