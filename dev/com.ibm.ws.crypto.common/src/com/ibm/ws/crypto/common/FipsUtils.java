@@ -40,6 +40,12 @@ public class FipsUtils {
             @Override
             public String run() {
                 String propertyValue = System.getProperty("com.ibm.fips.mode");
+                if (propertyValue == null) {
+                    String result = System.getProperty("global.fips_140-3");
+                    if ("true".equalsIgnoreCase(result)) {
+                        propertyValue = "140-3";
+                    }
+                }
                 return (propertyValue == null) ? "disabled" : propertyValue.trim().toLowerCase();
             }
         });
