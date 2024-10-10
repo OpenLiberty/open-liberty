@@ -27,6 +27,7 @@ import io.openliberty.microprofile.openapi20.fat.deployments.MergeTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeWithServletTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.StartupWarningMessagesTest;
 import io.openliberty.microprofile.openapi20.fat.shutdown.ShutdownTest;
+import io.openliberty.microprofile.openapi20.fat.version.OpenAPIVersionTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -38,6 +39,7 @@ import io.openliberty.microprofile.openapi20.fat.shutdown.ShutdownTest;
     MergeServerXMLTestWithUpdate.class,
     MergeTest.class,
     MergeWithServletTest.class,
+    OpenAPIVersionTest.class,
     ShutdownTest.class,
     StartupWarningMessagesTest.class
 })
