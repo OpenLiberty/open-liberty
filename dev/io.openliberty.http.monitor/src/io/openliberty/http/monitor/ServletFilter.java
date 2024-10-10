@@ -22,10 +22,8 @@ import com.ibm.websphere.servlet.error.ServletErrorReport;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext;
-//import com.ibm.ws.webcontainer40.osgi.webapp.WebAppDispatcherContext40;
 import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
 
-import javax.faces.context.FacesContext;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -48,7 +46,6 @@ public class ServletFilter implements Filter {
 	
     @Override
     public void init(FilterConfig config) {
-
     }
 	
 	@Override
@@ -323,11 +320,17 @@ public class ServletFilter implements Filter {
 					}
 				}
 				
-				//Deal with resources loaded by JSF / Jakarta Faces
+				/*
+				 * Explicitly deal with resources loaded by JSF / Jakarta Faces
+				 * 
+				 * URL for resources request will end with the file extension of the original requesting 
+				 * 
+				 * i.e., page.xhtml -> /jakarta.faces.resource/someFile.file.xhtml
+				 */
 				else if (servletPath.startsWith("/jakarta.faces.resource") || servletPath.startsWith("/javax.faces.resource")) {
 					String[] arr = servletPath.split("\\.");
 					String extension = arr[arr.length-1];
-					httpRoute = contextPath + "/*."+extension;
+					httpRoute = contextPath + "/*." + extension;
 				}
 
 				else {

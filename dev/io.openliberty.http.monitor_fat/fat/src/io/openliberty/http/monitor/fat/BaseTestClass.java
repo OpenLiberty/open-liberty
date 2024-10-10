@@ -211,18 +211,45 @@ public abstract class BaseTestClass {
         return containerCollectorMetrics;
     }
 
-    /*
-     * MP Metrics
+    /**
+     *
+     * @param vendorMetricsOutput Provide /metrics output to use for regex matching
+     * @param route               Specified http route to check in regex matching.
+     * @param responseStatus      Specified response status to check in regex matching.
+     * @param requestMethod       Specified requestMethod to check in regex matching.
+     * @return
      */
     protected boolean validateMpMetricsHttp(String vendorMetricsOutput, String route, String responseStatus, String requestMethod) {
         return validateMpMetricsHttp(vendorMetricsOutput, route, responseStatus, requestMethod, null);
     }
 
+    /**
+     *
+     * @param vendorMetricsOutput Provide /metrics output to use for regex matching
+     * @param route               Specified http route to check in regex matching.
+     * @param responseStatus      Specified response status to check in regex matching.
+     * @param requestMethod       Specified requestMethod to check in regex matching.
+     * @param errorType           Specified errorType to check in regex matching.
+     * @return
+     */
     protected boolean validateMpMetricsHttp(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType) {
         return validateMpMetricsHttp(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, null, null);
     }
 
-    protected boolean validateMpMetricsHttp(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType, String expectedCount, String expectedSum) {
+    /**
+     *
+     * @param vendorMetricsOutput Provide /metrics output to use for regex matching
+     * @param route               Specified http route to check in regex matching.
+     * @param responseStatus      Specified response status to check in regex matching.
+     * @param requestMethod       Specified requestMethod to check in regex matching.
+     * @param errorType           Specified errorType to check in regex matching.
+     * @param expectedCount       Specify the regex to match with or use ">number" (i.e., ">5") to check if value is greater than number. If null will default to checking greater
+     *                                than zero
+     * @param expectedSum         Specify the regex to match for the sum value of the http metric
+     * @return
+     */
+    protected boolean validateMpMetricsHttp(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType, String expectedCount,
+                                            String expectedSum) {
         if (errorType == null) {
             errorType = "";
         }
@@ -245,17 +272,46 @@ public abstract class BaseTestClass {
                validatePrometheusHTTPMetricSum(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, expectedSum, sumMatchString);
     }
 
-    /*
-     * MP Telemetry
+    /**
+     *
+     * @param appName             Specified app name (or service name)
+     * @param vendorMetricsOutput Provide /metrics output to use for regex matching
+     * @param route               Specified http route to check in regex matching.
+     * @param responseStatus      Specified response status to check in regex matching.
+     * @param requestMethod       Specified requestMethod to check in regex matching.
+     * @return
      */
     protected boolean validateMpTelemetryHttp(String appName, String vendorMetricsOutput, String route, String responseStatus, String requestMethod) {
         return validateMpTelemetryHttp(appName, vendorMetricsOutput, route, responseStatus, requestMethod, null);
     }
 
+    /**
+     *
+     * @param appName             Specified app name (or service name)
+     * @param vendorMetricsOutput Provide /metrics output to use for regex matching
+     * @param route               Specified http route to check in regex matching.
+     * @param responseStatus      Specified response status to check in regex matching.
+     * @param requestMethod       Specified requestMethod to check in regex matching.
+     * @param errorType           Specified errorType to check in regex matching.
+     * @return
+     */
     protected boolean validateMpTelemetryHttp(String appName, String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType) {
         return validateMpTelemetryHttp(appName, vendorMetricsOutput, route, responseStatus, requestMethod, errorType, null, null);
     }
 
+    /**
+     *
+     * @param appName             Specified app name (or service name)
+     * @param vendorMetricsOutput Provide /metrics output to use for regex matching
+     * @param route               Specified http route to check in regex matching.
+     * @param responseStatus      Specified response status to check in regex matching.
+     * @param requestMethod       Specified requestMethod to check in regex matching.
+     * @param errorType           Specified errorType to check in regex matching.
+     * @param expectedCount       Specify the regex to match with or use ">number" (i.e., ">5") to check if value is greater than number. If null will default to checking greater
+     *                                than zero
+     * @param expectedSum         Specify the regex to match for the sum value of the http metric
+     * @return
+     */
     protected boolean validateMpTelemetryHttp(String appName, String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType,
                                               String expectedCount, String expectedSum) {
         String countMatchString = null;
@@ -304,9 +360,6 @@ public abstract class BaseTestClass {
                && validatePrometheusHTTPMetricSum(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, expectedSum, sumMatchString);
     }
 
-    /*
-     * For all
-     */
     private boolean validatePrometheusHTTPMetricCount(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType, String expectedCount,
                                                       String matchString) {
         boolean isGreaterThanCountCheck = false;
