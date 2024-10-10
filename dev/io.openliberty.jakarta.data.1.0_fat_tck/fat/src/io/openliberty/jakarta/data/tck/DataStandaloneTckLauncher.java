@@ -64,7 +64,7 @@ public class DataStandaloneTckLauncher {
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckStandaloneNoSQL";
         Type type = Type.JAKARTA;
-        String specName = "Data (Standalone, NoSQL)";
+        String specName = "Data (Standalone - NoSQL)";
         String relativeTckRunner = "publish/tckRunner/standalone/";
         TCKRunner.runTCK(DONOTSTART, bucketName, testName, type, specName, null, relativeTckRunner, additionalProps);
     }

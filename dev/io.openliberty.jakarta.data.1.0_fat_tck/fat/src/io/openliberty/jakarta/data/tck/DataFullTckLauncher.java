@@ -80,7 +80,7 @@ public class DataFullTckLauncher {
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckFull";
         Type type = Type.JAKARTA;
-        String specName = "Data (Full, Persistence)";
+        String specName = "Data (Full - Persistence)";
         String relativeTckRunner = "publish/tckRunner/platform/";
         TCKRunner.runTCK(server, bucketName, testName, type, specName, null, relativeTckRunner, additionalProps);
     }
