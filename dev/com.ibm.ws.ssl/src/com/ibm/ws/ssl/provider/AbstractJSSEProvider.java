@@ -25,6 +25,8 @@ import java.security.NoSuchProviderException;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.security.Provider;
+import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -115,13 +117,26 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         this.keyStoreProvider = keyProvider;
         this.socketFactory = factory;
         this.defaultProtocol = protocolType;
-
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "contextProvider: " + contextProvider);
-            Tr.debug(tc, "defaultProtocol: " + defaultProtocol);
+            Tr.entry(tc, "initialize ", keyMgr, trustMgr, cxtProvider, keyProvider);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            String javaSecurityFile = AccessController.doPrivileged(new PrivilegedAction<String>() {
+                @Override
+                public String run() {
+                    return Security.getProperty("java.security.policy");
+                }
+            });
+
+            Tr.debug(tc, "java security policy file: " + javaSecurityFile);
+            Provider[] provider_list = Security.getProviders();
+            for (int i = 0; i < provider_list.length; i++) {
+                Tr.debug(tc, "Provider[" + i + "]: " + provider_list[i].getName() + ", info: " + provider_list[i].getInfo());
+            }
         }
         if (FipsUtils.isFIPSEnabled()) {
-            if (FipsUtils.isFips140_3Enabled()) {
+            if (FipsUtils.isFips140_2Enabled() || FipsUtils.isFips140_3Enabled()) {
                 if (CryptoProvider.isIBMJCEPlusFIPSAvailable() || CryptoProvider.isOpenJCEPlusFIPSAvailable()) {
                     try {
                         com.ibm.ws.ssl.JSSEProviderFactory.initializeFips();

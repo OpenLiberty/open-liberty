@@ -414,6 +414,7 @@ public class JSSEProviderFactory {
 //                throw e;
 //            }
 //        }
+
         if (!fipsInitialized) {
             //TODO: maybe check the provider list to make sure we have the right order of the provider.
             // IBM JDK: IBMJSEE2, IBMJCEPlusFips

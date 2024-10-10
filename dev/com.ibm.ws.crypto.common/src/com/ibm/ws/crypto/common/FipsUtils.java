@@ -26,11 +26,26 @@ public class FipsUtils {
 
     static String FIPSLevel = getFipsLevel();
 
+    public static String getProperty(final String prop, final String defaultValue) {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return System.getProperty(prop, defaultValue);
+            }
+        });
+    }
+
     static String getFipsLevel() {
         String fipsLevel = AccessController.doPrivileged(new PrivilegedAction<String>() {
             @Override
             public String run() {
                 String propertyValue = System.getProperty("com.ibm.fips.mode");
+                if (propertyValue == null) {
+                    String result = System.getProperty("global.fips_140-3");
+                    if ("true".equalsIgnoreCase(result)) {
+                        propertyValue = "140-3";
+                    }
+                }
                 return (propertyValue == null) ? "disabled" : propertyValue.trim().toLowerCase();
             }
         });
@@ -40,7 +55,7 @@ public class FipsUtils {
         return fipsLevel;
     }
 
-    static boolean isSemeruFips() {
+    public static boolean isSemeruFips() {
         boolean result = false;
         String semeruFips = AccessController.doPrivileged(new PrivilegedAction<String>() {
             @Override
