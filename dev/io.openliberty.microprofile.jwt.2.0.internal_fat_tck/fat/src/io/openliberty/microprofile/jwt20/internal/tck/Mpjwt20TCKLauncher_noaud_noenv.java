@@ -57,7 +57,6 @@ public class Mpjwt20TCKLauncher_noaud_noenv {
                         .withType(Type.MICROPROFILE)
                         .withSpecName("JWT Auth")
                         .withSuiteFileName(suiteName)
-                        .withAdditionalMvnProps(additionalProps)
                         .runTCK();
     }
 }

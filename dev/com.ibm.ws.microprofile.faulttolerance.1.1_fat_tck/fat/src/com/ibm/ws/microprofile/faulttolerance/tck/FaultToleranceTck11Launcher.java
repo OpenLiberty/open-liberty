@@ -109,11 +109,12 @@ public class FaultToleranceTck11Launcher {
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchFaultTolerance11TCK() throws Exception {
         boolean isFullMode = TestModeFilter.shouldRun(TestMode.FULL);
+        String suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
         TCKRunner.build()
                         .withServer(server)
                         .withType(Type.MICROPROFILE)
                         .withSpecName("Fault Tolerance")
-                        .withSuiteFileName(isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml")
+                        .withSuiteFileName(suiteFileName)
                         .runTCK();
     }
 

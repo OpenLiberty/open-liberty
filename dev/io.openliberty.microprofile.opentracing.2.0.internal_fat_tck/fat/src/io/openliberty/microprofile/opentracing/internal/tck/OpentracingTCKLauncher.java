@@ -30,30 +30,31 @@ import componenttest.topology.utils.tck.TCKRunner;
 @RunWith(FATRunner.class)
 public class OpentracingTCKLauncher {
 
-    @Server("OpentracingTCKServer")
-    public static LibertyServer server;
+	@Server("OpentracingTCKServer")
+	public static LibertyServer server;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        server.startServer();
-    }
+	@BeforeClass
+	public static void setUp() throws Exception {
+		server.startServer();
+	}
 
-    /*
-     * CWWKG0014E - Ignore due to server.xml intermittently missing
-     */
-    @AfterClass
-    public static void tearDown() throws Exception {
-        server.stopServer("CWMOT0009W", "CWWKG0014E", "CWPMI2005W");
-    }
+	/*
+	 * CWWKG0014E - Ignore due to server.xml intermittently missing
+	 */
+	@AfterClass
+	public static void tearDown() throws Exception {
+		server.stopServer("CWMOT0009W", "CWWKG0014E", "CWPMI2005W");
+	}
 
-    @Test
-    @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void launchOpenTracing20Tck() throws Exception {        
-        TCKRunner.build()
-    		.withServer(server)
-    		.withType(Type.MICROPROFILE)
-    		.withSpecName("Open Tracing")
-    		.withDefaultSuiteFileName()
-    		.runTCK();
-    }
+	@Test
+	@AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
+	public void launchOpenTracing20Tck() throws Exception {
+		
+		TCKRunner.build()
+			.withServer(server)
+			.withType(Type.MICROPROFILE)
+			.withSpecName("Open Tracing")
+			.withDefaultSuiteFileName()
+			.runTCK();
+	}
 }
