@@ -32,7 +32,7 @@ Export-Package: \
     io.smallrye.openapi.*;version=4.0
 
 -buildpath: \
-    io.smallrye:smallrye-open-api-core;version=4.0.0.alpha5,\
+    io.smallrye:smallrye-open-api-core;version=4.0.0.alpha6,\
     io.openliberty.jakarta.validation.3.0;version=latest,\
     io.openliberty.org.eclipse.microprofile.openapi.4.0;version=latest,\
     io.openliberty.org.eclipse.microprofile.config.3.1;version=latest,\
