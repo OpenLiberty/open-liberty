@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,14 +29,14 @@ import componenttest.topology.utils.tck.TCKRunner;
  */
 @RunWith(FATRunner.class)
 public class OpentracingRestClientTCKLauncher {
-	
-	final static String SERVER_NAME = "OpentracingRestClientTCKServer";
+
+    final static String SERVER_NAME = "OpentracingRestClientTCKServer";
 
 //    @ClassRule
 //    public static RepeatTests r = RepeatTests.withoutModification()
 //        .andWith(FATSuite.MP_REST_CLIENT("1.3", SERVER_NAME))
 //        .andWith(FATSuite.MP_REST_CLIENT("1.4", SERVER_NAME));
-    
+
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
@@ -57,9 +57,9 @@ public class OpentracingRestClientTCKLauncher {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchOpenTracing20RestClientTck() throws Exception {
         String suiteName = "rest-client-tck-suite.xml";
-        
+
         TCKRunner.build(server, Type.MICROPROFILE, "Open Tracing")
-        	.withSuiteFileName(suiteName)
-        	.runTCK();
+                        .withSuiteFileName(suiteName)
+                        .runTCK();
     }
 }

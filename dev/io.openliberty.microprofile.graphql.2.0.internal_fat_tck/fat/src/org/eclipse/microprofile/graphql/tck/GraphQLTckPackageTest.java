@@ -49,14 +49,14 @@ public class GraphQLTckPackageTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-        	server.stopServer("CWNEN0047W", "CWNEN0049W", "CWWKZ0014W");
+            server.stopServer("CWNEN0047W", "CWNEN0049W", "CWWKZ0014W");
         }
     }
 
     @Test
-    public void testGraphQL20Tck() throws Exception {        
+    public void testGraphQL20Tck() throws Exception {
         TCKRunner.build(server, Type.MICROPROFILE, "GraphQL")
-        	.withDefaultSuiteFileName()
-        	.runTCK();
+                        .withDefaultSuiteFileName()
+                        .runTCK();
     }
 }

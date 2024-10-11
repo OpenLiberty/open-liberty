@@ -60,10 +60,9 @@ public class OpenAPITckTest {
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
 
         TCKRunner.build(server, Type.MICROPROFILE, "Open API")
-        .withDefaultSuiteFileName()
-        .withAdditionalMvnProps(additionalProps)
-        .runTCK();
+                        .withDefaultSuiteFileName()
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 
 }
-

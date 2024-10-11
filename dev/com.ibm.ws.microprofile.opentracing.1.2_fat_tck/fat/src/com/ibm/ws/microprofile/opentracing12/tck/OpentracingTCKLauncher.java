@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,7 +29,7 @@ import componenttest.topology.utils.tck.TCKRunner;
  */
 @RunWith(FATRunner.class)
 public class OpentracingTCKLauncher {
-    
+
     @Server("OpentracingTCKServer")
     public static LibertyServer server;
 
@@ -50,7 +50,7 @@ public class OpentracingTCKLauncher {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchOpenTracing12Tck() throws Exception {
         TCKRunner.build(server, Type.MICROPROFILE, "Open Tracing")
-    		.withDefaultSuiteFileName()
-    		.runTCK();
+                        .withDefaultSuiteFileName()
+                        .runTCK();
     }
 }

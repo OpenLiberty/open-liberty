@@ -4,14 +4,13 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.jakarta.rest40.tck;
-
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,7 +43,7 @@ import componenttest.topology.utils.tck.TCKRunner;
 public class JakartaRest40TckPackageTest {
 
     private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
-    
+
     private static final Set<String> featuresToRemove = new HashSet<>();
     static {
         featuresToRemove.add("appSecurity-6.0");
@@ -54,10 +53,10 @@ public class JakartaRest40TckPackageTest {
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().
-        andWith(new FeatureReplacementAction().removeFeatures(featuresToRemove).addFeature("webProfile-11.0").withID("webProfile").fullFATOnly()).
-        andWith(new FeatureReplacementAction().removeFeatures(featuresToRemove).withID("coreProfile").fullFATOnly()).
-        andWith(new FeatureReplacementAction().removeFeatures(featuresToRemove).addFeature("microProfile-7.0").withID("microProfile").fullFATOnly());
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new FeatureReplacementAction().removeFeatures(featuresToRemove).addFeature("webProfile-11.0").withID("webProfile").fullFATOnly())
+                    .andWith(new FeatureReplacementAction().removeFeatures(featuresToRemove).withID("coreProfile").fullFATOnly())
+                    .andWith(new FeatureReplacementAction().removeFeatures(featuresToRemove).addFeature("microProfile-7.0").withID("microProfile").fullFATOnly());
 
     @Server("FATServer")
     public static LibertyServer server;
@@ -82,22 +81,22 @@ public class JakartaRest40TckPackageTest {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void testJakarta40RestTck() throws Exception {
         // Skip running on the windows platform when not running locally.
-        if (!(isWindows) || FATRunner.FAT_TEST_LOCALRUN) { 
-            HashMap<String, String> props = new HashMap<String, String>(); 
-            // The Java Se Bootstrap API added in EE10 is optional and not supported by Open Liberty.   So the 
+        if (!(isWindows) || FATRunner.FAT_TEST_LOCALRUN) {
+            HashMap<String, String> props = new HashMap<String, String>();
+            // The Java Se Bootstrap API added in EE10 is optional and not supported by Open Liberty.   So the
             // following property is being added to exclude those tests.
             if (RepeatTestFilter.isRepeatActionActive("webProfile")) {
-                props.put("excludedGroups","se_bootstrap,xml_binding");
+                props.put("excludedGroups", "se_bootstrap,xml_binding");
             } else if (RepeatTestFilter.isRepeatActionActive("coreProfile") || RepeatTestFilter.isRepeatActionActive("microProfile")) {
-                props.put("excludedGroups","se_bootstrap,xml_binding,servlet,security");
+                props.put("excludedGroups", "se_bootstrap,xml_binding,servlet,security");
             } else {
-                props.put("excludedGroups","se_bootstrap");
+                props.put("excludedGroups", "se_bootstrap");
             }
-            
+
             TCKRunner.build(server, Type.JAKARTA, "Restful Web Services")
-                .withPlatfromVersion("11")
-                .withAdditionalMvnProps(props)
-                .runTCK();
+                            .withPlatfromVersion("11")
+                            .withAdditionalMvnProps(props)
+                            .runTCK();
         }
     }
 }

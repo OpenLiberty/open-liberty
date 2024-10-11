@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -28,6 +28,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
+
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
  * There is a detailed output on specific
@@ -45,7 +46,7 @@ public class OpenAPITckTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKO1650E", "CWWKO1651W"); 
+        server.stopServer("CWWKO1650E", "CWWKO1651W");
     }
 
     @Test
@@ -54,14 +55,14 @@ public class OpenAPITckTest {
         String protocol = "http";
         String host = server.getHostname();
         String port = Integer.toString(server.getPort(PortType.WC_defaulthost));
-        
+
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
-        
+
         TCKRunner.build(server, Type.MICROPROFILE, "Open API")
-        	.withDefaultSuiteFileName()
-        	.withAdditionalMvnProps(additionalProps)
-        	.runTCK();
-   }
+                        .withDefaultSuiteFileName()
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
+    }
 
 }

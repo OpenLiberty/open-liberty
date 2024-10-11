@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -39,9 +39,8 @@ public class RestClientTckPackageTest {
     private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
 
     @ClassRule
-    public static RepeatTests r =
-        RepeatTests.withoutModification()
-                   .andWith(FeatureReplacementAction.EE8_FEATURES());
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE8_FEATURES());
 
     @Server("FATServer")
     public static LibertyServer server;
@@ -61,12 +60,12 @@ public class RestClientTckPackageTest {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void testRestClient11Tck() throws Exception {
-    	// Skip running on the windows platform when not running locally.
-    	if (!(isWindows) || FATRunner.FAT_TEST_LOCALRUN) { 
+        // Skip running on the windows platform when not running locally.
+        if (!(isWindows) || FATRunner.FAT_TEST_LOCALRUN) {
             TCKRunner.build(server, Type.MICROPROFILE, "Rest Client")
-            	.withDefaultSuiteFileName()
-            	.runTCK();
-    	}
+                            .withDefaultSuiteFileName()
+                            .runTCK();
+        }
     }
 
 }
