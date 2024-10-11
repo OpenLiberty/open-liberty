@@ -39,6 +39,8 @@ import com.ibm.sip.util.log.LogMgr;
 import com.ibm.sip.util.log.Situation;
 import com.ibm.ws.jain.protocol.ip.sip.extensions.RSeqHeader;
 import com.ibm.ws.sip.container.pmi.PerformanceMgr;
+import com.ibm.ws.sip.properties.CoreProperties;
+import com.ibm.ws.sip.container.properties.PropertiesStore;
 import com.ibm.ws.sip.container.proxy.SipProxyInfo;
 import com.ibm.ws.sip.container.proxy.StatefullProxy;
 import com.ibm.ws.sip.container.router.SipRouter;
@@ -191,6 +193,7 @@ public class OutgoingSipServletResponse extends SipServletResponseImpl
     			
     			TransactionUserWrapper derivedTransactionUser = transactionUser;
         		transactionUser = transactionUser.getOrigTUWrapper();
+			
             	if (c_logger.isTraceDebugEnabled()){
             		c_logger.traceDebug(this,"continueToSend1", "override transactionUser");
             	}
@@ -221,7 +224,10 @@ public class OutgoingSipServletResponse extends SipServletResponseImpl
     		c_logger.traceDebug(this,"continueToSend1",getCallId() + " ,status = " + getStatus());
     	}
 
-    	sendOnOriginalRatherOnDerivedTCK_SIP_SERVLET_1_1();
+		if(PropertiesStore.getInstance().getProperties().getBoolean(CoreProperties.SAVE_ORIGTUWRAPPER_IN_DERIVEDTUWRAPPER)) {
+
+    		sendOnOriginalRatherOnDerivedTCK_SIP_SERVLET_1_1();
+		}
     	
     	TransactionUserWrapper transactionUser = getTransactionUser();
 
