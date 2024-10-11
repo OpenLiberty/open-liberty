@@ -53,10 +53,7 @@ public class Mpjwt10TCKLauncher_mpjwt_roles {
     public void launchMpjwt10TCK_mpjwt_roles() throws Exception {
         String suiteName = "tck_suite_mpjwt_roles.xml";
 
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.MICROPROFILE)
-                        .withSpecName("JWT Auth")
+        TCKRunner.build(server, Type.MICROPROFILE, "JWT Auth")
                         .withSuiteFileName(suiteName)
                         .runTCK();
     }

@@ -52,10 +52,7 @@ public class Mpjwt11TCKLauncher_aud_env {
     @AllowedFFDC("org.jose4j.jwt.consumer.InvalidJwtSignatureException")
     public void launchMpjwt11TCK_aud_env() throws Exception {
         String suiteName = "tck_suite_aud_env.xml";
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.MICROPROFILE)
-                        .withSpecName("JWT Auth")
+        TCKRunner.build(server, Type.MICROPROFILE, "JWT Auth")
                         .withSuiteFileName(suiteName)
                         .runTCK();
     }

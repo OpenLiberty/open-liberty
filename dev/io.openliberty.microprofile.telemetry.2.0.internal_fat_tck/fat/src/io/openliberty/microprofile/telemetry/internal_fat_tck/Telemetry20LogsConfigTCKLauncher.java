@@ -59,10 +59,7 @@ public class Telemetry20LogsConfigTCKLauncher {
     public void launchTelemetry20LogsConfigTck() throws Exception {
         String suiteName = "tck-suite-logs-server-config.xml";
 
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.MICROPROFILE)
-                        .withSpecName("Telemetry")
+        TCKRunner.build(server, Type.MICROPROFILE, "Telemetry")
                         .withSuiteFileName(suiteName)
                         .runTCK();
     }

@@ -49,10 +49,7 @@ public class ReactiveMessagingTCKLauncher {
     @Mode(TestMode.FULL)
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchReactiveMessaging10Tck() throws Exception {
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.MICROPROFILE)
-                        .withSpecName("Reactive Messaging")
+        TCKRunner.build(server, Type.MICROPROFILE, "Reactive Messaging")
                         .withDefaultSuiteFileName()
                         .runTCK();
     }

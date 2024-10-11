@@ -58,10 +58,7 @@ public class ReactiveStreams30TCKLauncher {
 
     @Test
     public void launchReactiveStreams30Tck() throws Exception {
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.MICROPROFILE)
-                        .withSpecName("Reactive Streams")
+        TCKRunner.build(server, Type.MICROPROFILE, "Reactive Streams")
                         .withDefaultSuiteFileName()
                         .runTCK();
     }

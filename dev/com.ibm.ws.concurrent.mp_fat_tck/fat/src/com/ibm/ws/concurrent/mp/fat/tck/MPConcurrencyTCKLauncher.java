@@ -46,10 +46,7 @@ public class MPConcurrencyTCKLauncher {
     })
     @Test
     public void launchMPConcurrency10Tck() throws Exception {
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.MICROPROFILE)
-                        .withSpecName("Concurrency")
+        TCKRunner.build(server, Type.MICROPROFILE, "Concurrency")
                         .withDefaultSuiteFileName()
                         .runTCK();
     }

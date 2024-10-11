@@ -36,10 +36,7 @@ public class Mpjwt10TCKLauncher_mpjwt_testUtils {
     @AllowedFFDC("org.jose4j.jwt.consumer.InvalidJwtSignatureException")
     public void launchMpjwt10TCK_mpjwt_testUtils() throws Exception {
         String suiteName = "tck_suite_mpjwt_testUtils.xml";
-        TCKRunner.build()
-                        .withServer(DONOTSTART)
-                        .withType(Type.MICROPROFILE)
-                        .withSpecName("JWT Auth")
+        TCKRunner.build(DONOTSTART, Type.MICROPROFILE, "JWT Auth")
                         .withSuiteFileName(suiteName)
                         .runTCK();
     }

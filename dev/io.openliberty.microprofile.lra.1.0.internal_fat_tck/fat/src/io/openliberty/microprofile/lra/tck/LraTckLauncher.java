@@ -98,10 +98,7 @@ public class LraTckLauncher {
         // This is the currently passing test methods from TckTests
         additionalProps.put("test", "TckTests#*LRA*+join*");
 
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.MICROPROFILE)
-                        .withSpecName("LRA")
+        TCKRunner.build(server, Type.MICROPROFILE, "LRA")
                         .withDefaultSuiteFileName()
                         .withAdditionalMvnProps(additionalProps)
                         .runTCK();
@@ -126,10 +123,7 @@ public class LraTckLauncher {
         additionalProps.put("lra.tck.base.url", protocol + "://" + host + ":" + port);
         additionalProps.put("lraTestsToRun", "**/*Test*.java");
 
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.MICROPROFILE)
-                        .withSpecName("LRA")
+        TCKRunner.build(server, Type.MICROPROFILE, "LRA")
                         .withDefaultSuiteFileName()
                         .withAdditionalMvnProps(additionalProps)
                         .runTCK();

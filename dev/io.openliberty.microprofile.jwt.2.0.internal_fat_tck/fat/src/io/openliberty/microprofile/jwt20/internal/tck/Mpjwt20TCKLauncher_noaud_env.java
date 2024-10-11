@@ -56,10 +56,7 @@ public class Mpjwt20TCKLauncher_noaud_env {
     @AllowedFFDC("com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException")
     public void launchMpjwt20TCK_noaud_env() throws Exception {
         String suiteName = "tck_suite_noaud_env.xml";
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.MICROPROFILE)
-                        .withSpecName("JWT Auth")
+        TCKRunner.build(server, Type.MICROPROFILE, "JWT Auth")
                         .withSuiteFileName(suiteName)
                         .runTCK();
     }

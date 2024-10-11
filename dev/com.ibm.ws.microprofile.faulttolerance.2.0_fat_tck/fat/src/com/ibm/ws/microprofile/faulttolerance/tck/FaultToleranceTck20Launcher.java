@@ -146,10 +146,7 @@ public class FaultToleranceTck20Launcher {
                 suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
         }
 
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.MICROPROFILE)
-                        .withSpecName("Fault Tolerance")
+        TCKRunner.build(server, Type.MICROPROFILE, "Fault Tolerance")
                         .withSuiteFileName(suiteFileName)
                         .runTCK();
     }

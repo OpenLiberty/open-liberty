@@ -49,10 +49,7 @@ public class OpentracingTCKLauncher {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchOpenTracing13Tck() throws Exception {
-        TCKRunner.build()
-    		.withServer(server)
-    		.withType(Type.MICROPROFILE)
-    		.withSpecName("Open Tracing")
+        TCKRunner.build(server, Type.MICROPROFILE, "Open Tracing")
     		.withDefaultSuiteFileName()
     		.runTCK();
     }

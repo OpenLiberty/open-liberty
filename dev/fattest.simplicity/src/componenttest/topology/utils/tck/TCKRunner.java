@@ -56,6 +56,7 @@ import javax.xml.xpath.XPathFactory;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Assume;
+import org.openqa.selenium.InvalidArgumentException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -102,9 +103,9 @@ public class TCKRunner {
     private static final long startNanos = System.nanoTime();
 
     // Builder settings
-    private LibertyServer server; // Required
-    private Type type; // Required
-    private String specName; // Required
+    private final LibertyServer server; // Required
+    private final Type type; // Required
+    private final String specName; // Required
 
     private String suiteFileName; // Optional
     private Map<String, String> additionalMvnProps = Collections.emptyMap(); // Optional
@@ -127,19 +128,8 @@ public class TCKRunner {
      *
      * @return an non-configured TCKRunner
      */
-    public static TCKRunner build() {
-        return new TCKRunner();
-    }
-
-    /**
-     * @param  server the liberty server which should be used to run the TCK
-     * @return        this TCKRunner
-     */
-    public TCKRunner withServer(LibertyServer server) {
-        Objects.requireNonNull(server);
-
-        this.server = server;
-        return this;
+    public static TCKRunner build(LibertyServer server, Type type, String specName) {
+        return new TCKRunner(server, type, specName);
     }
 
     /**
@@ -173,28 +163,6 @@ public class TCKRunner {
         Objects.requireNonNull(additionalMvnProps);
 
         this.additionalMvnProps = additionalMvnProps;
-        return this;
-    }
-
-    /**
-     * @param  type the type of TCK (either MICROPROFILE or JAKARTA)
-     * @return      this TCKRunner
-     */
-    public TCKRunner withType(Type type) {
-        Objects.requireNonNull(type);
-
-        this.type = type;
-        return this;
-    }
-
-    /**
-     * @param  specName the formal name for the specification being tested
-     * @return          this TCKRunner
-     */
-    public TCKRunner withSpecName(String specName) {
-        Objects.requireNonNull(specName);
-
-        this.specName = specName;
         return this;
     }
 
@@ -248,11 +216,6 @@ public class TCKRunner {
         // Assumptions that will prevent TCK from running
         Assume.assumeThat(System.getProperty("os.name"), CoreMatchers.not("OS/400")); // skip tests on IBM i due to mvn issue.
 
-        // Validate required settings
-        Objects.requireNonNull(server, "TCKRunner was build without a configured server");
-        Objects.requireNonNull(type, "TCKRunner was build without a configured type");
-        Objects.requireNonNull(specName, "TCKRunner was build without a configured specName");
-
         // Validate configured settings
         TCKUtilities.requireDirectory(tckRunnerDir);
 
@@ -299,8 +262,21 @@ public class TCKRunner {
 
     /////////// Constructor //////////////////
 
-    private TCKRunner() {
-        // Builder class - use private constructor
+    private TCKRunner(LibertyServer server, Type type, String specName) {
+        // Validate required settings
+        Objects.requireNonNull(server, "TCKRunner was build without a configured server");
+        Objects.requireNonNull(type, "TCKRunner was build without a configured type");
+        Objects.requireNonNull(specName, "TCKRunner was build without a configured specName");
+
+        // Validate spec name field
+        if (Pattern.compile("^[ A-Za-z]+$").matcher(specName).matches()) {
+            throw new InvalidArgumentException("The specName " + specName
+                                               + " is an invalid name as it contains characters other than letters and spaces, or no information at all.");
+        }
+
+        this.server = server;
+        this.type = type;
+        this.specName = specName;
     }
 
     /////////// Private helper methods //////////////////

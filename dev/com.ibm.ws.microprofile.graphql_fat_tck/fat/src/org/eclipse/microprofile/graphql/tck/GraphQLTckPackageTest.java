@@ -57,10 +57,7 @@ public class GraphQLTckPackageTest {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void testGraphQL10Tck() throws Exception {        
-        TCKRunner.build()
-        	.withServer(server)
-        	.withType(Type.MICROPROFILE)
-        	.withSpecName("GraphQL")
+        TCKRunner.build(server, Type.MICROPROFILE, "GraphQL")
         	.withDefaultSuiteFileName()
         	.runTCK();
     }

@@ -110,10 +110,7 @@ public class FaultToleranceTck11Launcher {
     public void launchFaultTolerance11TCK() throws Exception {
         boolean isFullMode = TestModeFilter.shouldRun(TestMode.FULL);
         String suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.MICROPROFILE)
-                        .withSpecName("Fault Tolerance")
+        TCKRunner.build(server, Type.MICROPROFILE, "Fault Tolerance")
                         .withSuiteFileName(suiteFileName)
                         .runTCK();
     }

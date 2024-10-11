@@ -62,10 +62,7 @@ public class Mpjwt20TCKLauncher_aud_noenv {
 
         String suiteName = "tck_suite_aud_noenv.xml";
 
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.MICROPROFILE)
-                        .withSpecName("JWT Auth")
+        TCKRunner.build(server, Type.MICROPROFILE, "JWT Auth")
                         .withSuiteFileName(suiteName)
                         .withAdditionalMvnProps(additionalProps)
                         .runTCK();

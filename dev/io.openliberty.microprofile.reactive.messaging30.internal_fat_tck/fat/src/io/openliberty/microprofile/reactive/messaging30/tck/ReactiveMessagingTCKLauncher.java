@@ -62,10 +62,7 @@ public class ReactiveMessagingTCKLauncher {
     // InstanceNotFoundException is allowed as it is possible for mpmetrics to be queried during server shutdown when
     // the MBean is not present, this is an expected FFDC in the metrics FAT so we must allow for it here as these tests interact with metrics.
     public void launchReactiveMessaging30Tck() throws Exception {
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.MICROPROFILE)
-                        .withSpecName("Reactive Messaging")
+        TCKRunner.build(server, Type.MICROPROFILE, "Reactive Messaging")
                         .withDefaultSuiteFileName()
                         .runTCK();
     }

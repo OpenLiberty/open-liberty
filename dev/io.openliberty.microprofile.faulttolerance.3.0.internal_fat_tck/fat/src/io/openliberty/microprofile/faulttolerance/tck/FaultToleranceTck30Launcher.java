@@ -123,10 +123,7 @@ public class FaultToleranceTck30Launcher {
             additionalProps.put("timeoutMultiplier", "1.0");
         }
 
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.MICROPROFILE)
-                        .withSpecName("Fault Tolerance")
+        TCKRunner.build(server, Type.MICROPROFILE, "Fault Tolerance")
                         .withSuiteFileName(suiteFileName)
                         .withAdditionalMvnProps(additionalProps)
                         .runTCK();

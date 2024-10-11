@@ -55,10 +55,7 @@ public class GraphQLTckPackageTest {
 
     @Test
     public void testGraphQL20Tck() throws Exception {        
-        TCKRunner.build()
-        	.withServer(server)
-        	.withType(Type.MICROPROFILE)
-        	.withSpecName("GraphQL")
+        TCKRunner.build(server, Type.MICROPROFILE, "GraphQL")
         	.withDefaultSuiteFileName()
         	.runTCK();
     }

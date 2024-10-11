@@ -58,10 +58,7 @@ public class OpentracingRestClientTCKLauncher {
     public void launchOpenTracing20RestClientTck() throws Exception {
         String suiteName = "rest-client-tck-suite.xml";
         
-        TCKRunner.build()
-        	.withServer(server)
-        	.withType(Type.MICROPROFILE)
-        	.withSpecName("Open Tracing")
+        TCKRunner.build(server, Type.MICROPROFILE, "Open Tracing")
         	.withSuiteFileName(suiteName)
         	.runTCK();
     }

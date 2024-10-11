@@ -59,10 +59,7 @@ public class HealthTCKLauncher {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
 
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.MICROPROFILE)
-                        .withSpecName("Health")
+        TCKRunner.build(server, Type.MICROPROFILE, "Health")
                         .withDefaultSuiteFileName()
                         .withAdditionalMvnProps(additionalProps)
                         .runTCK();

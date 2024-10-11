@@ -99,11 +99,8 @@ public class ValidationTckLauncher {
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchValidation31TCK() throws Exception {
 
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.JAKARTA)
+        TCKRunner.build(server, Type.JAKARTA, "Validation")
                         .withPlatfromVersion("11")
-                        .withSpecName("Validation")
                         .withSuiteFileName("tck-tests.xml")
                         .withAdditionalMvnProps(additionalProps)
                         .runTCK();

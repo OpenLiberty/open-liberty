@@ -61,14 +61,11 @@ public class DataStandaloneTckLauncher {
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
         additionalProps.put("jakarta.data.tck.version", "1.0.1");
 
-        TCKRunner.build()
-                        .withServer(DONOTSTART)
-                        .withType(Type.JAKARTA)
-                        .withSpecName("Data")
+        TCKRunner.build(DONOTSTART, Type.JAKARTA, "Data")
+                        .withPlatfromVersion("11")
+                        .withQualifiers("standalone", "NoSQL")
                         .withRelativeTCKRunner("publish/tckRunner/platform/")
                         .withAdditionalMvnProps(additionalProps)
-                        .withPlatfromVersion("11")
-                        .withQualifiers("Standalone", "NoSQL")
                         .runTCK();
     }
 }

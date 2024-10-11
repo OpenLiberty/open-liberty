@@ -68,11 +68,8 @@ public class JsonpTckLauncher {
         // Persist the java.io.tempdir property from this test client to the TCK.
         additionalProps.put("java.io.tmpdir", PrivHelper.getProperty("java.io.tmpdir", "/tmp"));
 
-        TCKRunner.build()
-                        .withServer(DONOTSTART)
-                        .withType(Type.JAKARTA)
+        TCKRunner.build(DONOTSTART, Type.JAKARTA, "jsonp")
                         .withPlatfromVersion("10")
-                        .withSpecName("jsonp")
                         .withAdditionalMvnProps(additionalProps)
                         .runTCK();
     }
@@ -90,13 +87,10 @@ public class JsonpTckLauncher {
         Map<String, String> additionalPluggabilityProps = new HashMap<>();
         additionalPluggabilityProps.put("run-tck-tests-pluggability", "true");
 
-        TCKRunner.build()
-                        .withServer(DONOTSTART)
-                        .withType(Type.JAKARTA)
+        TCKRunner.build(DONOTSTART, Type.JAKARTA, "jsonp")
                         .withPlatfromVersion("10")
-                        .withSpecName("jsonb")
-                        .withAdditionalMvnProps(additionalPluggabilityProps)
                         .withQualifiers("pluggability")
+                        .withAdditionalMvnProps(additionalPluggabilityProps)
                         .runTCK();
     }
 }

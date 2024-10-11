@@ -51,10 +51,7 @@ public class Mpjwt11TCKLauncher_noaud_noenv {
     //@AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchMpjwt11TCK_noaud_noenv() throws Exception {
         String suiteName = "tck_suite_noaud_noenv.xml";
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.MICROPROFILE)
-                        .withSpecName("JWT Auth")
+        TCKRunner.build(server, Type.MICROPROFILE, "JWT Auth")
                         .withSuiteFileName(suiteName)
                         .runTCK();
     }

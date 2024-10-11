@@ -59,10 +59,7 @@ public class OpentracingRestClientTCKLauncher {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchOpenTracing13RestClientTck() throws Exception {
         String suiteName = "rest-client-tck-suite.xml";
-        TCKRunner.build()
-    		.withServer(server)
-    		.withType(Type.MICROPROFILE)
-    		.withSpecName("Open Tracing")
+        TCKRunner.build(server, Type.MICROPROFILE, "Open Tracing")
     		.withSuiteFileName(suiteName)
     		.runTCK();
     }

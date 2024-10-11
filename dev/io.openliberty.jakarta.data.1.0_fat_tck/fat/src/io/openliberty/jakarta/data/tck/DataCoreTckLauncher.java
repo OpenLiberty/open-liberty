@@ -83,14 +83,11 @@ public class DataCoreTckLauncher {
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
         additionalProps.put("jakarta.data.tck.version", "1.0.1");
 
-        TCKRunner.build()
-                        .withServer(persistenceServer)
-                        .withType(Type.JAKARTA)
-                        .withSpecName("Data")
+        TCKRunner.build(persistenceServer, Type.JAKARTA, "Data")
+                        .withPlatfromVersion("11")
+                        .withQualifiers("core", "persistence")
                         .withRelativeTCKRunner("publish/tckRunner/platform/")
                         .withAdditionalMvnProps(additionalProps)
-                        .withPlatfromVersion("11")
-                        .withQualifiers("Core", "Persistence")
                         .runTCK();
     }
 
@@ -125,14 +122,11 @@ public class DataCoreTckLauncher {
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
         additionalProps.put("jakarta.data.tck.version", "1.0.1");
 
-        TCKRunner.build()
-                        .withServer(noSQLServer)
-                        .withType(Type.JAKARTA)
-                        .withSpecName("Data")
+        TCKRunner.build(noSQLServer, Type.JAKARTA, "Data")
+                        .withPlatfromVersion("11")
+                        .withQualifiers("core", "NoSQL")
                         .withRelativeTCKRunner("publish/tckRunner/platform/")
                         .withAdditionalMvnProps(additionalProps)
-                        .withPlatfromVersion("11")
-                        .withQualifiers("Core", "NoSQL")
                         .runTCK();
     }
 }

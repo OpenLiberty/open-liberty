@@ -53,10 +53,7 @@ public class Mpjwt12TCKLauncher_noaud_noenv {
     public void launchMpjwt12TCK_noaud_noenv() throws Exception {
         String suiteName = JavaInfo.JAVA_VERSION < 19 ? "tck_suite_noaud_noenv.xml" : "tck_suite_noaud_noenv_java19.xml";
 
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.MICROPROFILE)
-                        .withSpecName("JWT Auth")
+        TCKRunner.build(server, Type.MICROPROFILE, "JWT Auth")
                         .withSuiteFileName(suiteName)
                         .runTCK();
     }

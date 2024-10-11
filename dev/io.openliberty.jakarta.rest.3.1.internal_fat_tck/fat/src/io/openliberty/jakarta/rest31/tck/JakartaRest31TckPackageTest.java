@@ -94,11 +94,8 @@ public class JakartaRest31TckPackageTest {
                 props.put("excludedGroups","se_bootstrap");
             }
             
-            TCKRunner.build()
-                .withServer(server)
-                .withType(Type.JAKARTA)
+            TCKRunner.build(server, Type.JAKARTA, "Restful Web Services")
                 .withPlatfromVersion("10")
-                .withSpecName("Restful Web Services")
                 .withAdditionalMvnProps(props)
                 .runTCK();
         }

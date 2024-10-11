@@ -58,10 +58,7 @@ public class OpenAPITckTest {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
 
-        TCKRunner.build()
-    		.withServer(server)
-    		.withType(Type.MICROPROFILE)
-    		.withSpecName("Open API")
+        TCKRunner.build(server, Type.MICROPROFILE, "Open API")
     		.withDefaultSuiteFileName()
     		.withAdditionalMvnProps(additionalProps)
     		.runTCK();

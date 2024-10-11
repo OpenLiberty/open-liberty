@@ -79,13 +79,10 @@ public class ConcurrentTckLauncherWeb {
 
         suiteXmlFile = FATSuite.createSuiteXML(FATSuite.PROFILE.WEB);
 
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.JAKARTA)
+        TCKRunner.build(server, Type.JAKARTA, "Concurrency")
                         .withPlatfromVersion("10")
-                        .withSpecName("Concurrency")
+                        .withQualifiers("web")
                         .withSuiteFileName(suiteXmlFile)
-                        .withQualifiers("Web")
                         .withAdditionalMvnProps(additionalProps)
                         .runTCK();
     }

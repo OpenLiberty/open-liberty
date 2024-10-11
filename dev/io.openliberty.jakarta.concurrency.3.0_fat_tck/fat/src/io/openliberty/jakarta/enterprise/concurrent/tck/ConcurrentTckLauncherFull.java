@@ -81,13 +81,10 @@ public class ConcurrentTckLauncherFull {
     public void launchConcurrent30TCKFull() throws Exception {
         suiteXmlFile = FATSuite.createSuiteXML(FATSuite.PROFILE.FULL);
 
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.JAKARTA)
+        TCKRunner.build(server, Type.JAKARTA, "Concurrency")
                         .withPlatfromVersion("10")
-                        .withSpecName("Concurrency")
+                        .withQualifiers("full")
                         .withSuiteFileName(suiteXmlFile)
-                        .withQualifiers("Full")
                         .withAdditionalMvnProps(additionalProps)
                         .runTCK();
     }

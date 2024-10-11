@@ -77,14 +77,11 @@ public class DataFullTckLauncher {
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
         additionalProps.put("jakarta.data.tck.version", "1.0.1");
 
-        TCKRunner.build()
-                        .withServer(server)
-                        .withType(Type.JAKARTA)
-                        .withSpecName("Data")
+        TCKRunner.build(server, Type.JAKARTA, "Data")
+                        .withPlatfromVersion("11")
+                        .withQualifiers("full", "persistence")
                         .withRelativeTCKRunner("publish/tckRunner/platform/")
                         .withAdditionalMvnProps(additionalProps)
-                        .withPlatfromVersion("11")
-                        .withQualifiers("Full", "Persistence")
                         .runTCK();
     }
 

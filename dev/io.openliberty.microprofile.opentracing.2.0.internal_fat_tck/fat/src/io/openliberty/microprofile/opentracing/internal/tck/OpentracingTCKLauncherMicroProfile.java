@@ -51,10 +51,7 @@ public class OpentracingTCKLauncherMicroProfile {
     public void launchOpenTracing20TckMP() throws Exception {
         String suiteName = "tck-and-rest-client-tck.xml";
 
-        TCKRunner.build()
-    		.withServer(server)
-    		.withType(Type.MICROPROFILE)
-    		.withSpecName("Open Tracing")
+        TCKRunner.build(server, Type.MICROPROFILE, "Open Tracing")
     		.withSuiteFileName(suiteName)
     		.runTCK();
 
