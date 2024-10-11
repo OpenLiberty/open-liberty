@@ -372,8 +372,7 @@ public class ServletFilter implements Filter {
 					else {
 						
 						/*
-						 * Hard coded to deal with the typical file extensions of JSF files : `.jsf`, `.faces` or `.xhtml`. This
-						 * is will catch.
+						 * Hard coded to deal with the typical file extensions of JSF files : `.jsf`, `.faces` or `.xhtml`.
 						 * 
 						 * Unfortunately, won't be able to catch any servlet mappings where they mapped the JSF servlet to some
 						 * random extension (i.e., *.abc)
