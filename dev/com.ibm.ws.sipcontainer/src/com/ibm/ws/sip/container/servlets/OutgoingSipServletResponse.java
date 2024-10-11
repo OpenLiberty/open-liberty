@@ -45,6 +45,8 @@ import com.ibm.ws.sip.container.router.SipRouter;
 import com.ibm.ws.sip.container.transaction.ServerTransaction;
 import com.ibm.ws.sip.container.tu.TransactionUserWrapper;
 import com.ibm.ws.sip.container.util.SipUtil;
+import com.ibm.ws.sip.properties.CoreProperties;
+import com.ibm.ws.sip.container.properties.PropertiesStore;
 
 /**
  * @author Amir Perlman, Feb 24, 2003
@@ -221,7 +223,10 @@ public class OutgoingSipServletResponse extends SipServletResponseImpl
     		c_logger.traceDebug(this,"continueToSend1",getCallId() + " ,status = " + getStatus());
     	}
 
-    	sendOnOriginalRatherOnDerivedTCK_SIP_SERVLET_1_1();
+
+		if(PropertiesStore.getInstance().getProperties().getBoolean(CoreProperties.SAVE_ORIGTUWRAPPER_IN_DERIVEDTUWRAPPER)){
+    		sendOnOriginalRatherOnDerivedTCK_SIP_SERVLET_1_1();
+		}
     	
     	TransactionUserWrapper transactionUser = getTransactionUser();
 

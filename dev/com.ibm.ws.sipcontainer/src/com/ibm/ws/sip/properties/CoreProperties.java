@@ -30,6 +30,11 @@ public class CoreProperties
 	private static final transient LogMgr c_logger = Log
 			.get(CoreProperties.class);
 	/**
+	 * Save original TUwrapper in derived TUwrapper
+	 */
+	public static final String SAVE_ORIGTUWRAPPER_IN_DERIVEDTUWRAPPER = "saveOriginalTUWrapperInDerivedTUWrapper";
+	public static final boolean SAVE_ORIGTUWRAPPER_IN_DERIVEDTUWRAPPER_DEFAULT = false;
+	/**
 	 * Maximum sipAppSessions allowed. 
 	 */
 	 public static final String MAX_APP_SESSIONS = "maxAppSessions";
@@ -790,8 +795,9 @@ public class CoreProperties
 			c_logger.traceEntry(CoreProperties.class.getName(),
 					"loadDefaultProperties");
 		}
-    	
-    	properties.setInt(MAX_APP_SESSIONS, MAX_APP_SESSIONS_DEFAULT,CustPropSource.DEFAULT);
+    	properties.setBoolean(SAVE_ORIGTUWRAPPER_IN_DERIVEDTUWRAPPER, SAVE_ORIGTUWRAPPER_IN_DERIVEDTUWRAPPER_DEFAULT, CustPropSource.DEFAULT);
+    	    	
+		properties.setInt(MAX_APP_SESSIONS, MAX_APP_SESSIONS_DEFAULT,CustPropSource.DEFAULT);
 		properties.setInt(MAX_MESSAGE_RATE, MAX_MESSAGE_RATE_DEFAULT,CustPropSource.DEFAULT);
 		properties.setInt(MAX_RESPONSE_TIME, MAX_RESPONSE_TIME_DEFAULT,CustPropSource.DEFAULT);
 		properties.setInt(STAT_UPDATE_RANGE, STAT_UPDATE_RANGE_DEFAULT,CustPropSource.DEFAULT);
