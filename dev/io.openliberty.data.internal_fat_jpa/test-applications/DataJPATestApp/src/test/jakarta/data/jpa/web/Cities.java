@@ -27,6 +27,7 @@ import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 
@@ -101,6 +102,11 @@ public interface Cities {
     CursoredPage<City> findByStateNameNotStartsWith(String prefix, PageRequest pagination);
 
     CityId findFirstByNameOrderByPopulationDesc(String name);
+
+    @Query("SELECT " + ID)
+    @OrderBy("stateName")
+    @OrderBy("name")
+    Stream<CityId> ids();
 
     @Delete
     void remove(City city);

@@ -3664,6 +3664,26 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Repository method that queries for the IdClass using id(this)
+     * and sorts based on the attributes of the IdClass.
+     */
+    // @Test // TODO enable once #29073 is fixed
+    public void testSelectIdClass() {
+        assertEquals(List.of("Illinois:Springfield",
+                             "Kansas:Kansas City",
+                             "Massachusetts:Springfield",
+                             "Minnesota:Rochester",
+                             "Missouri:Kansas City",
+                             "Missouri:Springfield",
+                             "New York:Rochester",
+                             "Ohio:Springfield",
+                             "Oregon:Springfield"),
+                     cities.ids()
+                                     .map(id -> id.getStateName() + ":" + id.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
      * Use the JPQL version(entityVar) function as the sort property to perform
      * an ascending sort.
      */
@@ -3725,6 +3745,9 @@ public class DataJPATestServlet extends FATServlet {
                                      .stream()
                                      .map(o -> o.purchasedBy)
                                      .collect(Collectors.toList()));
+
+        assertEquals(List.of(1, 2, 3, 4),
+                     orders.versions());
 
         orders.deleteAll();
     }
@@ -4018,6 +4041,51 @@ public class DataJPATestServlet extends FATServlet {
                      Arrays.toString(counties.findZipCodesByName("Wabasha").orElseThrow()));
 
         assertEquals(4, counties.deleteByNameIn(List.of("Olmsted", "Fillmore", "Winona", "Wabasha")));
+    }
+
+    /**
+     * Update an entity that has an IdClass.
+     */
+    @Test
+    public void testUpdateEntityWithIdClass() {
+        CreditCard original = creditCards
+                        .findByIssuedOnWithMonthIn(Set.of(Month.MAY.getValue()))
+                        .findFirst()
+                        .orElseThrow();
+
+        CreditCard replacement = new CreditCard( //
+                        original.debtor, //
+                        original.number, //
+                        551, // new security code
+                        LocalDate.of(2024, Month.MAY, 10), //
+                        LocalDate.of(2028, Month.MAY, 10), //
+                        original.issuer);
+
+        replacement = creditCards.replace(replacement);
+
+        assertEquals(original.debtor.customerId, replacement.debtor.customerId);
+        assertEquals(original.number, replacement.number);
+        assertEquals(551, replacement.securityCode);
+        assertEquals(LocalDate.of(2024, Month.MAY, 10), replacement.issuedOn);
+        assertEquals(LocalDate.of(2028, Month.MAY, 10), replacement.expiresOn);
+        assertEquals(original.issuer, replacement.issuer);
+
+        CreditCard card = creditCards
+                        .findByIssuedOnWithMonthIn(Set.of(Month.MAY.getValue()))
+                        .findFirst()
+                        .orElseThrow();
+
+        assertEquals(original.debtor.customerId, card.debtor.customerId);
+        assertEquals(original.number, card.number);
+        assertEquals(551, card.securityCode);
+        assertEquals(LocalDate.of(2024, Month.MAY, 10), card.issuedOn);
+        assertEquals(LocalDate.of(2028, Month.MAY, 10), card.expiresOn);
+        assertEquals(original.issuer, card.issuer);
+
+        // TODO use a different method to put the original value back where no value is returned.
+        // In that case it will force a different code path which also needs to be implemented.
+        // restore original value
+        creditCards.replace(original);
     }
 
     /**
