@@ -254,7 +254,12 @@ public interface Primes {
     Page<String> lengthBasedQuery(PageRequest pageRequest);
 
     @OrderBy(ID)
-    @Query("SELECT ID(THIS) FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR ID(THIS)=:num)")
+    @Query("SELECT ID(THIS)" +
+           "  FROM Prime" +
+           " WHERE (name = :numberName" +
+           "     OR :numeral=romanNumeral" +
+           "     OR hex =:hex" +
+           "     OR ID(THIS)=:num)")
     long[] matchAny(long num, String numeral, String hex, String numberName);
 
     @OrderBy(ID)

@@ -611,12 +611,16 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
         }
 
-        String idAttributeName = queryInfo.getAttributeName(ID, true);
-        Object id = queryInfo.getAttribute(e, idAttributeName);
-        if (id == null) {
-            jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
-            if (version != null)
-                jpql = jpql.replace("=?" + versionParamIndex, "=?" + (versionParamIndex - 1));
+        Object id = null;
+        String idAttributeName = null;
+        if (entityInfo.idClassAttributeAccessors == null) {
+            idAttributeName = entityInfo.attributeNames.get(ID);
+            id = queryInfo.getAttribute(e, idAttributeName);
+            if (id == null) {
+                jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
+                if (version != null)
+                    jpql = jpql.replace("=?" + versionParamIndex, "=?" + (versionParamIndex - 1));
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && jpql != queryInfo.jpql)
@@ -629,23 +633,20 @@ public class RepositoryImpl<R> implements InvocationHandler {
         TypedQuery<?> query = em.createQuery(jpql, entityClass);
         query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
 
-        // id parameter(s)
-
-        int p = 0;
-        if (entityInfo.idClassAttributeAccessors != null) {
-            throw new UnsupportedOperationException(); // TODO
-        } else if (id != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "set ?" + (p + 1) + ' ' + queryInfo.loggable(id));
-            query.setParameter(++p, id);
-        }
-
-        // version parameter
-
-        if (entityInfo.versionAttributeName != null && version != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "set ?" + (p + 1) + ' ' + queryInfo.loggable(version));
-            query.setParameter(++p, version);
+        if (entityInfo.idClassAttributeAccessors == null) {
+            int p = 1;
+            if (id != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "set ?" + p + ' ' + queryInfo.loggable(id));
+                query.setParameter(p++, id);
+            }
+            if (version != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "set ?" + p + ' ' + queryInfo.loggable(version));
+                query.setParameter(p, version);
+            }
+        } else {
+            queryInfo.setParametersFromIdClassAndVersion(query, e, version);
         }
 
         List<?> results = query.getResultList();
@@ -1643,12 +1644,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (numDeleted == 0) {
             Class<?> returnType = queryInfo.method.getReturnType();
             if (void.class.equals(returnType) || Void.class.equals(returnType)) {
-                // TODO IdClass is not covered. Ideally, it will be handled the same
-                // as other ids via id(this) if EclipseLink will allow that.
-                // Otherwise, we should add the id attributes/values here
-                // and in other places where this message is used
+                if (idAttributeName == null)
+                    idAttributeName = ID;
                 List<String> entityProps = new ArrayList<>(2);
-                if (idAttributeName != null && id != null)
+                if (id != null)
                     entityProps.add(queryInfo.loggableAppend(idAttributeName,
                                                              "=", id));
                 if (entityInfo.versionAttributeName != null && version != null)

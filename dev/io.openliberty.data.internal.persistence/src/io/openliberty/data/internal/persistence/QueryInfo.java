@@ -167,7 +167,7 @@ public class QueryInfo {
 
     /**
      * Entity identifier variable name if an identifier variable is used.
-     * Otherwise "*". "o" is used as the default in generated queries.
+     * Otherwise "this". "o" is used as the default in generated queries.
      */
     private String entityVar = "o";
 
@@ -1324,8 +1324,10 @@ public class QueryInfo {
 
             q.append(" WHERE (");
 
-            String idName = getAttributeName(ID, true);
+            String idName = entityInfo.attributeNames.get(ID);
             if (idName == null && entityInfo.idClassAttributeAccessors != null) {
+                // IdClass cannot be a single query parameter because there is
+                // no way to obtain an IdClass object from an entity instance.
                 boolean first = true;
                 for (String name : entityInfo.idClassAttributeAccessors.keySet()) {
                     if (first)
@@ -1904,18 +1906,12 @@ public class QueryInfo {
         String o_ = entityVar_;
         StringBuilder q;
 
-        String idName = getAttributeName(ID, true);
-        if (idName == null && entityInfo.idClassAttributeAccessors != null) {
-            // TODO support this similar to what generateDeleteEntity does
-            throw new MappingException("Update operations cannot be used on entities with composite IDs."); // TODO NLS
-        }
-
         if (UPDATE_COUNT_TYPES.contains(singleType)) {
             setType(Update.class, Type.UPDATE_WITH_ENTITY_PARAM);
-            hasWhere = true;
 
             q = new StringBuilder(100) //
-                            .append("UPDATE ").append(entityInfo.name).append(' ').append(o) //
+                            .append("UPDATE ").append(entityInfo.name) //
+                            .append(' ').append(o) //
                             .append(" SET ");
 
             boolean first = true;
@@ -1927,23 +1923,44 @@ public class QueryInfo {
 
                 q.append(o_).append(name).append("=?").append(++paramCount);
             }
-
-            q.append(" WHERE ").append(o_).append(idName).append("=?").append(++paramCount);
-
-            if (entityInfo.versionAttributeName != null)
-                q.append(" AND ").append(o_).append(entityInfo.versionAttributeName).append("=?").append(++paramCount);
         } else {
-            // Update that returns an entity - perform a find operation first so that em.merge can be used
+            // Update that returns an entity
+            // Perform a find operation first so that em.merge can be used
             setType(Update.class, Type.UPDATE_WITH_ENTITY_PARAM_AND_RESULT);
-            hasWhere = true;
 
             q = new StringBuilder(100) //
-                            .append("SELECT ").append(o).append(" FROM ").append(entityInfo.name).append(' ').append(o) //
-                            .append(" WHERE ").append(o_).append(idName).append("=?").append(++paramCount);
-
-            if (entityInfo.versionAttributeName != null)
-                q.append(" AND ").append(o_).append(entityInfo.versionAttributeName).append("=?").append(++paramCount);
+                            .append("SELECT ").append(o) //
+                            .append(" FROM ").append(entityInfo.name) //
+                            .append(' ').append(o);
         }
+
+        hasWhere = true;
+
+        q.append(" WHERE (");
+
+        String idName = entityInfo.attributeNames.get(ID);
+        if (idName == null && entityInfo.idClassAttributeAccessors != null) {
+            // IdClass cannot be a single query parameter because there is
+            // no way to obtain an IdClass object from an entity instance.
+            boolean first = true;
+            for (String name : entityInfo.idClassAttributeAccessors.keySet()) {
+                if (first)
+                    first = false;
+                else
+                    q.append(" AND ");
+
+                name = entityInfo.attributeNames.get(name);
+                q.append(o_).append(name).append("=?").append(++paramCount);
+            }
+        } else {
+            q.append(o_).append(idName).append("=?").append(++paramCount);
+        }
+
+        if (entityInfo.versionAttributeName != null)
+            q.append(" AND ").append(o_).append(entityInfo.versionAttributeName) //
+                            .append("=?").append(++paramCount);
+
+        q.append(')');
 
         return q;
     }
@@ -2035,19 +2052,24 @@ public class QueryInfo {
         String attributeName;
         int len = name.length();
         if (len > 6 && name.charAt(len - 1) == ')') {
-            // TODO It should be unnecessary to replace the id() and version() functions once #28925 is fixed
+            // id(this) and version(this) can be supplied in Sort parameters, but the
+            // query might use an entity identification variable instead of "this".
             if (name.regionMatches(true, len - 6, "(this", 0, 5))
-                if (len == 8 && name.toLowerCase().regionMatches(true, 0, "id", 0, 2))
+                if (len == 8 && name.regionMatches(true, 0, "id", 0, 2))
+                    // id(this)
                     if (entityInfo.idClassAttributeAccessors == null) {
                         attributeName = entityInfo.attributeNames.get(By.ID);
                         if (attributeName == null && failIfNotFound)
                             throw new MappingException("Entity class " + entityInfo.getType().getName() +
                                                        " does not have a property named " + name +
                                                        " or which is designated as the @Id."); // TODO NLS
-                    } else {
-                        attributeName = null; // Special case for IdClass // TODO should be unnecessary
+                    } else { // with IdClass
+                        throw new IllegalArgumentException(name);
+                        // TODO better message that id(this) cannot be used on an IdClass
+                        // because IdClass represents a composite id rather than a single attribute.
                     }
-                else if (len == 13 && name.toLowerCase().regionMatches(true, 0, "version", 0, 7))
+                else if (len == 13 && name.regionMatches(true, 0, "version", 0, 7))
+                    // version(this)
                     if (entityInfo.versionAttributeName == null && failIfNotFound)
                         throw new MappingException("Entity class " + entityInfo.getType().getName() +
                                                    " does not have a property named " + name +
@@ -2055,6 +2077,7 @@ public class QueryInfo {
                     else
                         attributeName = entityInfo.versionAttributeName;
                 else
+                    // other function with (this): switch this to entity variable // TODO should we do this?
                     attributeName = new StringBuilder(len - 4 + entityVar.length()) //
                                     .append(name.substring(0, len - 5)) //
                                     .append(entityVar) //
@@ -2845,10 +2868,6 @@ public class QueryInfo {
                     q.append(ql.substring(order0, order0 + orderLen));
 
             jpql = q.toString();
-
-            // TODO remove this workaround for #28925 once fixed
-            if (jpql.equals("SELECT ID(THIS) FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR ID(THIS)=:num)"))
-                jpql = "SELECT o.numberId FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR o.numberId=:num)";
         }
     }
 
@@ -3509,7 +3528,7 @@ public class QueryInfo {
             Sort<Object> sort = addIt.next();
             if (sort == null)
                 throw new IllegalArgumentException("Sort: null");
-            else if (hasIdClass && ID.equals(sort.property()))
+            else if (hasIdClass && ID.equalsIgnoreCase(sort.property()))
                 for (String name : entityInfo.idClassAttributeAccessors.keySet())
                     combined.add(getWithAttributeName(getAttributeName(name, true), sort));
             else
@@ -3535,7 +3554,7 @@ public class QueryInfo {
         for (Sort<Object> sort : additional) {
             if (sort == null)
                 throw new IllegalArgumentException("Sort: null");
-            else if (hasIdClass && ID.equals(sort.property()))
+            else if (hasIdClass && ID.equalsIgnoreCase(sort.property()))
                 for (String name : entityInfo.idClassAttributeAccessors.keySet())
                     combined.add(getWithAttributeName(getAttributeName(name, true), sort));
             else
