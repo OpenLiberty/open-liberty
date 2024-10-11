@@ -531,11 +531,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
         }
         em.flush();
 
+        Class<?> returnType = queryInfo.method.getReturnType();
+        if (void.class.equals(returnType) || Void.class.equals(returnType))
+            return null;
+
         if (queryInfo.entityInfo.recordClass != null)
             for (int i = 0; i < results.size(); i++)
                 results.set(i, queryInfo.entityInfo.toRecord(results.get(i)));
 
-        Class<?> returnType = queryInfo.method.getReturnType();
         Object returnValue;
         if (queryInfo.returnArrayType != null) {
             Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
@@ -603,7 +606,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
         String jpql = queryInfo.jpql;
         EntityInfo entityInfo = queryInfo.entityInfo;
 
-        int versionParamIndex = 2;
+        int versionParamIndex = entityInfo.idClassAttributeAccessors == null //
+                        ? 2 //
+                        : (entityInfo.idClassAttributeAccessors.size() + 1);
         Object version = null;
         if (entityInfo.versionAttributeName != null) {
             version = queryInfo.getAttribute(e, entityInfo.versionAttributeName);
@@ -646,7 +651,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 query.setParameter(p, version);
             }
         } else {
-            queryInfo.setParametersFromIdClassAndVersion(query, e, version);
+            queryInfo.setParametersFromIdClassAndVersion(1, query, e, version);
         }
 
         List<?> results = query.getResultList();
@@ -1636,7 +1641,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 delete.setParameter(p, version);
             }
         } else {
-            queryInfo.setParametersFromIdClassAndVersion(delete, e, version);
+            queryInfo.setParametersFromIdClassAndVersion(1, delete, e, version);
         }
 
         int numDeleted = delete.executeUpdate();
@@ -1829,7 +1834,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
         EntityInfo entityInfo = queryInfo.entityInfo;
         Set<String> attrsToUpdate = entityInfo.attributeNamesForEntityUpdate;
 
-        int versionParamIndex = attrsToUpdate.size() + 2;
+        int versionParamIndex = entityInfo.idClassAttributeAccessors == null //
+                        ? (attrsToUpdate.size() + 2) //
+                        : (attrsToUpdate.size() +
+                           entityInfo.idClassAttributeAccessors.size() + 1);
         Object version = null;
         if (entityInfo.versionAttributeName != null) {
             version = queryInfo.getAttribute(e, entityInfo.versionAttributeName);
@@ -1837,11 +1845,16 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
         }
 
-        Object id = queryInfo.getAttribute(e, queryInfo.getAttributeName(ID, true));
-        if (id == null) {
-            jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
-            if (version != null)
-                jpql = jpql.replace("=?" + versionParamIndex, "=?" + (versionParamIndex - 1));
+        Object id = null;
+        String idAttributeName = null;
+        if (entityInfo.idClassAttributeAccessors == null) {
+            idAttributeName = entityInfo.attributeNames.get(ID);
+            id = queryInfo.getAttribute(e, idAttributeName);
+            if (id == null) {
+                jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
+                if (version != null)
+                    jpql = jpql.replace("=?" + versionParamIndex, "=?" + (versionParamIndex - 1));
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && jpql != queryInfo.jpql)
@@ -1850,27 +1863,25 @@ public class RepositoryImpl<R> implements InvocationHandler {
         TypedQuery<?> update = em.createQuery(jpql, entityInfo.entityClass);
 
         // parameters for entity attributes to update:
-
-        int p = 0;
+        int p = 1;
         for (String attrName : attrsToUpdate)
-            queryInfo.setParameter(++p, update, e, attrName);
+            queryInfo.setParameter(p++, update, e, attrName);
 
-        // id parameter(s)
+        // id and version parameters
+        if (entityInfo.idClassAttributeAccessors == null) {
+            if (id != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "set ?" + p + ' ' + queryInfo.loggable(id));
+                update.setParameter(p++, id);
+            }
 
-        if (entityInfo.idClassAttributeAccessors != null) {
-            throw new UnsupportedOperationException(); // TODO
-        } else if (id != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "set ?" + (p + 1) + ' ' + queryInfo.loggable(id));
-            update.setParameter(++p, id);
-        }
-
-        // version parameter
-
-        if (entityInfo.versionAttributeName != null && version != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "set ?" + (p + 1) + ' ' + queryInfo.loggable(version));
-            update.setParameter(++p, version);
+            if (entityInfo.versionAttributeName != null && version != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "set ?" + p + ' ' + queryInfo.loggable(version));
+                update.setParameter(p++, version);
+            }
+        } else { // has IdClass
+            queryInfo.setParametersFromIdClassAndVersion(p, update, e, version);
         }
 
         int numUpdated = update.executeUpdate();

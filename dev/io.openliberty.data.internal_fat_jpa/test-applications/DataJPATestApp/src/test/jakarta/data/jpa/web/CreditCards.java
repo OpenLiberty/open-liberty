@@ -84,6 +84,9 @@ public interface CreditCards extends DataRepository<CreditCard, CardId> {
     @Update
     CreditCard replace(CreditCard newCard);
 
+    @Update
+    void revert(CreditCard previousCard);
+
     @Save
     void save(CreditCard... cards);
 

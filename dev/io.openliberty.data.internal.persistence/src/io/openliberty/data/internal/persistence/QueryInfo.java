@@ -1906,7 +1906,8 @@ public class QueryInfo {
         String o_ = entityVar_;
         StringBuilder q;
 
-        if (UPDATE_COUNT_TYPES.contains(singleType)) {
+        if (entityInfo.attributeNamesForEntityUpdate != null &&
+            UPDATE_COUNT_TYPES.contains(singleType)) {
             setType(Update.class, Type.UPDATE_WITH_ENTITY_PARAM);
 
             q = new StringBuilder(100) //
@@ -1924,8 +1925,9 @@ public class QueryInfo {
                 q.append(o_).append(name).append("=?").append(++paramCount);
             }
         } else {
-            // Update that returns an entity
-            // Perform a find operation first so that em.merge can be used
+            // Update that returns an entity. And also used when an entity
+            // has relation attributes that require using em.merge.
+            // Perform a find operation first so that em.merge can be used.
             setType(Update.class, Type.UPDATE_WITH_ENTITY_PARAM_AND_RESULT);
 
             q = new StringBuilder(100) //
@@ -3471,22 +3473,26 @@ public class QueryInfo {
     /**
      * Sets query parameters for DELETE_WITH_ENTITY_PARAM where the entity has an IdClass.
      *
-     * @param query   the query
-     * @param entity  the entity
-     * @param version the version if versioned, otherwise null.
+     * @param startingParamIndex index of first parameter to set.
+     * @param query              the query
+     * @param entity             the entity
+     * @param version            the version if versioned, otherwise null.
      * @throws Exception if an error occurs
      */
-    void setParametersFromIdClassAndVersion(jakarta.persistence.Query query, Object entity, Object version) throws Exception {
+    void setParametersFromIdClassAndVersion(int startingParamIndex,
+                                            jakarta.persistence.Query query,
+                                            Object entity,
+                                            Object version) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        int p = 0;
+        int p = startingParamIndex;
         for (String idClassAttr : entityInfo.idClassAttributeAccessors.keySet())
-            setParameter(++p, query, entity, getAttributeName(idClassAttr, true));
+            setParameter(p++, query, entity, getAttributeName(idClassAttr, true));
 
         if (version != null) {
             if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + version);
-            query.setParameter(++p, version);
+                Tr.debug(this, tc, "set ?" + p + ' ' + version);
+            query.setParameter(p++, version);
         }
     }
 

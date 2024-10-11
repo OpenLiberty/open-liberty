@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence.cdi;
 
+import static io.openliberty.data.internal.persistence.EntityManagerBuilder.getClassNames;
 import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 
 import java.io.Writer;
@@ -121,7 +122,6 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
         this.provider = provider;
         this.repositoryClassLoader = repositoryClassLoader;
         this.dataStore = dataStore;
-        // TODO getModuleName will show wrong hash code, so suppress it from trace?
         this.moduleName = getModuleName(repositoryInterface, repositoryClassLoader, provider);
         this.namespace = Namespace.of(dataStore);
 
@@ -389,8 +389,8 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
             } else {
                 throw (DataException) exc(DataException.class,
                                           "CWWKD1080.datastore.general.err",
-                                          repositoryInterfaces.stream().findFirst().get().getName(), // TODO revisit this and other NLS messages
-                                          metadata,
+                                          getClassNames(repositoryInterfaces),
+                                          metadata.getName(),
                                           dataStore,
                                           x.getMessage()).initCause(x);
             }
@@ -458,8 +458,8 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
 
         DataException x = exc(DataException.class,
                               "CWWKD1078.datastore.not.found",
-                              repositoryInterfaces.stream().findFirst().get().getName(), // TODO revisit this and other NLS messages
-                              metadata.getJ2EEName(),
+                              getClassNames(repositoryInterfaces),
+                              metadata.getName(),
                               dataStore,
                               dataSourceConfigExample,
                               databaseStoreConfigExample,
@@ -576,8 +576,8 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
 
         DataException x = exc(DataException.class,
                               "CWWKD1079.jndi.not.found",
-                              repositoryInterfaces.stream().findFirst().get().getName(), // TODO revisit this and other NLS messages
-                              metadata.getJ2EEName(),
+                              getClassNames(repositoryInterfaces),
+                              metadata.getName(),
                               dataStore,
                               "@Resource(name=\"java:app/env/jdbc/dsRef\",lookup=\"jdbc/ds\")",
                               "jndiName=\"jdbc/ds\"",
@@ -665,13 +665,18 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
     @Override
     @Trivial
     public String toString() {
-        int len = 27 + dataStore.length() +
+        int len = 40 + dataStore.length() +
                   (application == null ? 4 : application.length()) +
                   (module == null ? 4 : module.length());
+        // Both hashCode and identityHashCode are included so that we can correlate
+        // output in Liberty trace, which prints toString for values and method args
+        // but uses uses identityHashCode (id=...) when printing trace for a class
         StringBuilder b = new StringBuilder(len) //
                         .append("FutureEMBuilder@") //
                         .append(Integer.toHexString(hashCode())) //
-                        .append(":").append(dataStore) //
+                        .append("(id=") //
+                        .append(Integer.toHexString(System.identityHashCode(this))) //
+                        .append(") ").append(dataStore) //
                         .append(' ').append(application) //
                         .append('#').append(module);
         return b.toString();

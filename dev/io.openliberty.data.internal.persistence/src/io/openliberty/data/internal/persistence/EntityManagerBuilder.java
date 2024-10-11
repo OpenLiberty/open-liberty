@@ -158,11 +158,14 @@ public abstract class EntityManagerBuilder {
                         switch (attributeType) {
                             case BASIC:
                             case ELEMENT_COLLECTION:
-                                attributeNamesForUpdate.add(attributeName);
+                                if (attributeNamesForUpdate != null)
+                                    attributeNamesForUpdate.add(attributeName);
                                 break;
-                            case EMBEDDED:
                             case ONE_TO_ONE:
                             case MANY_TO_ONE:
+                                attributeNamesForUpdate = null; // must use merge instead
+                                // continue
+                            case EMBEDDED:
                                 relationAttributeNames.put(attr.getJavaType(), new ArrayList<>());
                                 relationships.add(attr);
                                 relationPrefixes.add(attributeName);
@@ -170,7 +173,7 @@ public abstract class EntityManagerBuilder {
                                 break;
                             case ONE_TO_MANY:
                             case MANY_TO_MANY:
-                                attributeNamesForUpdate.add(attributeName); // TODO is this correct?
+                                attributeNamesForUpdate = null; // must use merge instead
                                 break;
                             default:
                                 throw new RuntimeException(); // unreachable unless more types are added
@@ -221,11 +224,14 @@ public abstract class EntityManagerBuilder {
                             switch (attributeType) {
                                 case BASIC:
                                 case ELEMENT_COLLECTION:
-                                    attributeNamesForUpdate.add(fullAttributeName);
+                                    if (attributeNamesForUpdate != null)
+                                        attributeNamesForUpdate.add(fullAttributeName);
                                     break;
-                                case EMBEDDED:
                                 case ONE_TO_ONE:
                                 case MANY_TO_ONE:
+                                    attributeNamesForUpdate = null; // must use merge instead
+                                    // continue
+                                case EMBEDDED:
                                     relationAttributeNames.put(relAttr.getJavaType(), new ArrayList<>());
                                     relationships.add(relAttr);
                                     relationPrefixes.add(fullAttributeName);
@@ -233,7 +239,7 @@ public abstract class EntityManagerBuilder {
                                     break;
                                 case ONE_TO_MANY:
                                 case MANY_TO_MANY:
-                                    attributeNamesForUpdate.add(fullAttributeName); // TODO is this correct?
+                                    attributeNamesForUpdate = null; // must use merge instead
                                     break;
                                 default:
                                     throw new RuntimeException(); // unreachable unless more types are added
@@ -291,12 +297,15 @@ public abstract class EntityManagerBuilder {
                         }
                     }
 
-                    attributeNamesForUpdate.remove(ID);
                     String idAttrName = attributeNames.get(ID);
-                    if (idAttrName != null)
-                        attributeNamesForUpdate.remove(idAttrName);
-                    if (versionAttrName != null)
-                        attributeNamesForUpdate.remove(versionAttrName);
+
+                    if (attributeNamesForUpdate != null) {
+                        attributeNamesForUpdate.remove(ID);
+                        if (idAttrName != null)
+                            attributeNamesForUpdate.remove(idAttrName);
+                        if (versionAttrName != null)
+                            attributeNamesForUpdate.remove(versionAttrName);
+                    }
 
                     if (!entityType.hasSingleIdAttribute()) {
                         // Per JavaDoc, the above means there is an IdClass.
@@ -375,7 +384,7 @@ public abstract class EntityManagerBuilder {
      * @return an alphabetized comma-delimited list of the class names as text.
      */
     @Trivial
-    private static final String getClassNames(Iterable<Class<?>> classes) {
+    public static final String getClassNames(Iterable<Class<?>> classes) {
         TreeSet<String> names = new TreeSet<>();
         for (Class<?> c : classes)
             names.add(c.getName());

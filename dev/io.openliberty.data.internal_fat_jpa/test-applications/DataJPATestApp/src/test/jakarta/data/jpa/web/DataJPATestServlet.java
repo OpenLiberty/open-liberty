@@ -2934,6 +2934,22 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(driver -> driver.fullName)
                                              .collect(Collectors.toList()));
 
+        drivers.setInfo(new Driver("Oscar TestOneToOne", //
+                        100404000, //
+                        LocalDate.of(2004, 4, 4), //
+                        75, // height updated
+                        242, // weight updated
+                        "T121-400-400-400", //
+                        "Iowa", //
+                        LocalDate.of(2020, 4, 4), //
+                        LocalDate.of(2024, 4, 4)));
+        d4 = drivers.findById(100404000).orElseThrow();
+        assertEquals("Oscar TestOneToOne", d4.fullName);
+        assertEquals(75, d4.heightInInches);
+        assertEquals(242, d4.weightInPounds);
+        assertEquals("Iowa", d4.license.stateName);
+        assertEquals(LocalDate.of(2020, 4, 4), d4.license.issuedOn);
+
         drivers.deleteByFullNameEndsWith(" TestOneToOne");
     }
 
@@ -4045,6 +4061,9 @@ public class DataJPATestServlet extends FATServlet {
 
     /**
      * Update an entity that has an IdClass.
+     * This covers update that returns the updated value
+     * and update that returns no value,
+     * which are different code paths.
      */
     @Test
     public void testUpdateEntityWithIdClass() {
@@ -4082,10 +4101,54 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(LocalDate.of(2028, Month.MAY, 10), card.expiresOn);
         assertEquals(original.issuer, card.issuer);
 
-        // TODO use a different method to put the original value back where no value is returned.
-        // In that case it will force a different code path which also needs to be implemented.
-        // restore original value
-        creditCards.replace(original);
+        // Put the original value back to avoid impacting other tests.
+        // This also tests an Update method with void return.
+        creditCards.revert(original);
+    }
+
+    /**
+     * Update an entity that has an IdClass and Version.
+     * This covers update that returns the updated value
+     * and update that returns no value,
+     * which are different code paths.
+     */
+    @Test
+    public void testUpdateEntityWithIdClassAndVersion() {
+        CityId mnId = CityId.of("Rochester", "Minnesota");
+        CityId nyId = CityId.of("Rochester", "New York");
+
+        long mnVer = cities.currentVersion(mnId.name, mnId.getStateName());
+        long nyVer = cities.currentVersion(nyId.name, nyId.getStateName());
+        // TODO
+        //long mnVer = cities.currentVersion(mnId);
+        //long nyVer = cities.currentVersion(nyId);
+
+        // TODO allow this test to run once 28589 is fixed
+        // and verify that EclipseLink does not corrupt the area code value
+        // for the following subsequent tests:
+        // testCollectionAttribute, testIdClassOrderBySorts, testIdClassOrderByAnnotationWithCursorPagination,
+        // testIdClassOrderByNamePatternWithCursorPagination, testIdClassOrderByAnnotationReverseDirection
+        if (true)
+            return;
+
+        City[] updated = cities.modifyData(City.of(mnId, 122413, Set.of(507, 924), mnVer),
+                                           City.of(nyId, 208546, Set.of(585), nyVer));
+        assertEquals(Arrays.toString(updated), 2, updated.length);
+        assertEquals("Rochester", updated[0].name);
+        assertEquals("Minnesota", updated[0].stateName);
+        assertEquals(122413, updated[0].population);
+        assertEquals(Set.of(507, 924), updated[0].areaCodes);
+        assertEquals(mnVer + 1, updated[0].changeCount);
+
+        assertEquals("Rochester", updated[1].name);
+        assertEquals("New York", updated[1].stateName);
+        assertEquals(208546, updated[1].population);
+        assertEquals(Set.of(585), updated[1].areaCodes);
+        assertEquals(nyVer + 1, updated[1].changeCount);
+
+        // restore original data
+        cities.modifyStats(City.of(mnId, 121395, Set.of(507), mnVer + 1),
+                           City.of(nyId, 211328, Set.of(585), nyVer + 1));
     }
 
     /**
