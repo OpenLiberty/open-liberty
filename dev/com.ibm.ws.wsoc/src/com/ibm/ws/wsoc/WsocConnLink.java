@@ -682,6 +682,7 @@ public class WsocConnLink {
             }
 
             //close down the link
+            
             deviceConnLink.close(vConnection, null);
         }
     }

@@ -42,6 +42,8 @@
         <AD id="sslOptions.target" name="internal" description="internal use only" 
             ibm:final="true" required="false" type="String" 
             default="(|(service.pid=${sslOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.sslchannel.options)(|(id=com.ibm.ws.wsoc.outbound.wsocOutbound-${id}/*)(id=defaultSSLOptions))))" />
+            
+		<AD id="useNettyTransport" name="internal" description="internal" required="false" type="Boolean" default="true"/>
 
    </OCD>
 

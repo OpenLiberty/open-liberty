@@ -220,6 +220,16 @@ public class HttpHeaderKeys extends HeaderKeys {
     public static final HttpHeaderKeys HDR_$WSODRINFO = new HttpHeaderKeys("$WSODRINFO");
     /** Cache related header */
     public static final HttpHeaderKeys HDR_EDGE_CONTROL = new HttpHeaderKeys("Edge-control");
+
+    public static final HttpHeaderKeys HDR_FORWARDED = new HttpHeaderKeys("Forwarded");
+
+    public static final HttpHeaderKeys HDR_X_FORWARDED_BY = new HttpHeaderKeys("X-Forwarded-By");
+
+    public static final HttpHeaderKeys HDR_X_FORWARDED_FOR = new HttpHeaderKeys("X-Forwarded-For");
+
+    public static final HttpHeaderKeys HDR_X_FORWARDED_HOST = new HttpHeaderKeys("X-Forwarded-Host");
+
+    public static final HttpHeaderKeys HDR_X_FORWARDED_PORT = new HttpHeaderKeys("X-Forwarded-Port");
     /** De facto standard header for original protocol (similar to $WSIS) */
     public static final HttpHeaderKeys HDR_X_FORWARDED_PROTO = new HttpHeaderKeys("X-Forwarded-Proto");
     /** Private WAS header used by the HTTP Session Manager to determine if a request is failed over */

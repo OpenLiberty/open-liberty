@@ -165,7 +165,7 @@ public class ClientHeaderPropagationTests extends FATServletClient {
             }
 
             //Make sure the testHeader is not displayed by the Interceptor
-            String headerFound = GrpcServer.verifyStringNotInLogUsingMark("testHeader=123", SHORT_TIMEOUT);
+            String headerFound = GrpcServer.verifyStringNotInLogUsingMark("test[H|h]eader=123", SHORT_TIMEOUT);
             if (headerFound != null) {
                 Assert.fail(c + ": testHeader found in nomatch case when it should not have");
             }
@@ -230,7 +230,7 @@ public class ClientHeaderPropagationTests extends FATServletClient {
             }
 
             // make sure expected header was found
-            String headerFound = GrpcServer.waitForStringInLog("testHeader=123", SHORT_TIMEOUT);
+            String headerFound = GrpcServer.waitForStringInLog("test[H|h]eader=123", SHORT_TIMEOUT);
             if (headerFound == null) {
                 Assert.fail(c + ": testHeader=123 not found when it should have in " + SHORT_TIMEOUT + "ms");
             }
@@ -297,12 +297,12 @@ public class ClientHeaderPropagationTests extends FATServletClient {
             }
 
             // make sure expected headers were found
-            String headerFound = GrpcServer.waitForStringInLog("testHeader1=456,testHeader2=789", SHORT_TIMEOUT);
+            String headerFound = GrpcServer.waitForStringInLog("test[H|h]eader1=456,test[H|h]eader2=789", SHORT_TIMEOUT);
             if (headerFound == null) {
                 Assert.fail(c + ": testHeader1 or testHeader2 not found when it should have in " + SHORT_TIMEOUT + "ms");
             }
             //Make sure the testHeader is not displayed by the Interceptor
-            headerFound = GrpcServer.verifyStringNotInLogUsingMark("testHeader=123", SHORT_TIMEOUT);
+            headerFound = GrpcServer.verifyStringNotInLogUsingMark("test[H|h]eader=123", SHORT_TIMEOUT);
             if (headerFound != null) {
                 Assert.fail(c + ": testHeader found when it should not have");
             }
@@ -428,7 +428,7 @@ public class ClientHeaderPropagationTests extends FATServletClient {
             }
 
             // make sure expected header was found
-            String headerFound = GrpcServer.waitForStringInLog("User-Agent=Agent456", SHORT_TIMEOUT);
+            String headerFound = GrpcServer.waitForStringInLog("[U|u]ser-[A|a]gent=Agent456", SHORT_TIMEOUT);
             if (headerFound == null) {
                 Assert.fail(c + ": userAgent not found when it should have in " + SHORT_TIMEOUT + "ms");
             }
