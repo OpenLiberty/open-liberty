@@ -72,9 +72,6 @@ public class OpenAPIConfigTest extends FATServletClient {
 
     @BeforeClass
     public static void deployApp() throws Exception {
-        // Set guards
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
-
         // Deploy test app
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addClass(OpenAPIConfigTestResource.class);
