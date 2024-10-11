@@ -18,11 +18,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.management.DynamicMBean;
@@ -45,6 +45,7 @@ import com.ibm.websphere.persistence.mbean.DDLGenerationMBean;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.location.WsResource;
@@ -132,7 +133,7 @@ public class DDLGenerationMBeanImpl extends StandardMBean implements DDLGenerati
         boolean success = true;
         int fileCount = 0;
 
-        Map<String, List<DDLGenerationParticipant>> participants = new HashMap<String, List<DDLGenerationParticipant>>();
+        Map<String, TreeSet<DDLGenerationParticipant>> participants = new HashMap<String, TreeSet<DDLGenerationParticipant>>();
         Iterator<ServiceAndServiceReferencePair<DDLGenerationParticipant>> i = generators.getServicesWithReferences();
         while (i.hasNext()) {
             // We'll request the DDL be written to a file whose name is chosen by the component providing the service.
@@ -164,10 +165,12 @@ public class DDLGenerationMBeanImpl extends StandardMBean implements DDLGenerati
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "Service " + generator.toString() + " DDL file name: " + id);
 
+                DDLGenerationParticipantComparator comparator = new DDLGenerationParticipantComparator();
+
                 // Support multiple participants choosing the same file name
-                List<DDLGenerationParticipant> participantList = participants.get(id);
+                TreeSet<DDLGenerationParticipant> participantList = participants.get(id);
                 if (participantList == null) {
-                    participantList = new ArrayList<DDLGenerationParticipant>();
+                    participantList = new TreeSet<DDLGenerationParticipant>(comparator);
                     participants.put(id, participantList);
                 }
                 participantList.add(generator);
@@ -177,9 +180,9 @@ public class DDLGenerationMBeanImpl extends StandardMBean implements DDLGenerati
             }
         }
 
-        for (Map.Entry<String, List<DDLGenerationParticipant>> entry : participants.entrySet()) {
+        for (Map.Entry<String, TreeSet<DDLGenerationParticipant>> entry : participants.entrySet()) {
             String id = entry.getKey();
-            List<DDLGenerationParticipant> participantList = entry.getValue();
+            TreeSet<DDLGenerationParticipant> participantList = entry.getValue();
 
             // The path to the file is in the server's output directory.
             WsResource ddlOutputResource = locationService.get().resolveResource(OUTPUT_DIR + id + ".ddl");
@@ -207,6 +210,8 @@ public class DDLGenerationMBeanImpl extends StandardMBean implements DDLGenerati
                 OutputStream os = f.createOutputStream(ddlOutputResource.asFile(), false);
                 BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
                 DDLGenerationWriter out = new DDLGenerationWriter(bw);
+
+                // Iterate over treeset in natural order (ascending)
                 for (DDLGenerationParticipant participant : participantList) {
                     participant.generate(out);
                 }
@@ -278,6 +283,39 @@ public class DDLGenerationMBeanImpl extends StandardMBean implements DDLGenerati
         }
 
         return description;
+    }
+
+    @Trivial
+    private static final class DDLGenerationParticipantComparator implements Comparator<DDLGenerationParticipant> {
+
+        /** {@inheritDoc} */
+        @Override
+        public int compare(DDLGenerationParticipant o1, DDLGenerationParticipant o2) {
+            // Handle the case when two DDLGenerationParticipant instances are equal
+            if (o1.equals(o2)) {
+                return 0;
+            }
+
+            // If the DDLGenerationParticipant implementation types are the same
+            // and implement Comparable then defer to the compareTo method of the type.
+            boolean matchedTypes = o1.getClass() == o2.getClass();
+            if (matchedTypes && o1 instanceof Comparable && o2 instanceof Comparable) {
+                return ((Comparable) o1).compareTo(o2);
+            }
+
+            // If the DDLGenerationParticipant implementation types are different
+            // then order based on the type name (left / right branch of tree).  Therefore,
+            // all the SQL statements for each feature will always be grouped together.
+            if (!matchedTypes) {
+                return o1.getClass().getCanonicalName().compareTo(o2.getClass().getCanonicalName());
+            }
+
+            // Now we have to compare two DDLGenerationParticipant implementations of the same type,
+            // but do not provide a comparator. Always put the new participant after the current participant
+            // (o1 > o2) This will maintain insertion order which matches the previous behavior.
+            return 1; // TODO avoid this by making DDLGenerationParticipant extend Comparable and update implementations
+        }
+
     }
 
 }

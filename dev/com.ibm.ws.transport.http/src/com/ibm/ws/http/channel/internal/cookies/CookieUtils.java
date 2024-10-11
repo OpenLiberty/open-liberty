@@ -333,14 +333,14 @@ public class CookieUtils {
 
         // check for optional max-age/expires
         int expires = cookie.getMaxAge();
+        String expireDateFormat = isRFC1123DateEnabled ? longAgoRFC1123 : longAgo;
+
         if (-1 < expires) {
             if (0 == expires) {
-                if (HttpDispatcher.useEE10Cookies()) { //Since Servlet 6.0 - RFC 6265
-                    buffer.append("; max-age=0");
-                } else if (!isRFC1123DateEnabled) {
-                    buffer.append(longAgo);
-                } else {
-                    buffer.append(longAgoRFC1123);
+                if (HttpDispatcher.isEE11() || !HttpDispatcher.useEE10Cookies()) {
+                    buffer.append(expireDateFormat);
+                } else if (HttpDispatcher.useEE10Cookies()) { //EE10 - has both Max-Age=0 and Expires=
+                    buffer.append("; Max-Age=0" + expireDateFormat);
                 }
             } else {
                 buffer.append("; Expires=");
@@ -352,11 +352,7 @@ public class CookieUtils {
             }
         } else if (cookie.isDiscard()) {
             // convert discard to immediate expiration
-            if (!isRFC1123DateEnabled) {
-                buffer.append(longAgo);
-            } else {
-                buffer.append(longAgoRFC1123);
-            }
+            buffer.append(expireDateFormat);
         }
 
         // check for optional path
@@ -595,7 +591,7 @@ public class CookieUtils {
             String key, value;
             for (Entry<String, String> entry : cookieAttrs.entrySet()) {
                 key = entry.getKey();
-                if (!(key.equals("samesite") || key.equals("port") || key.equals("commenturl") || key.equals("partitioned")) ) {
+                if (!(key.equals("samesite") || key.equals("port") || key.equals("commenturl") || key.equals("partitioned"))) {
                     value = entry.getValue();
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "setAttribute (" + key + " , " + value + ")");

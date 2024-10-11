@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.concurrent.internal.processor;
 
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -29,6 +30,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.kernel.service.util.JavaInfo;
@@ -44,14 +46,14 @@ import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
-import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 
 @Component(service = ResourceFactoryBuilder.class,
            property = "creates.objectClass=jakarta.enterprise.concurrent.ManagedScheduledExecutorService") //  TODO more types?
 /**
  * Creates, modifies, and removes ManagedScheduledExecutorService resource factories that are defined via ManagedScheduledExecutorDefinition.
  */
-public class ManagedScheduledExecutorResourceFactoryBuilder implements ResourceFactoryBuilder {
+public class ManagedScheduledExecutorResourceFactoryBuilder //
+                implements ConcurrencyResourceFactoryBuilder, ResourceFactoryBuilder {
     private static final TraceComponent tc = Tr.register(ManagedScheduledExecutorResourceFactoryBuilder.class);
 
     /**
@@ -222,17 +224,17 @@ public class ManagedScheduledExecutorResourceFactoryBuilder implements ResourceF
         concurrencyPolicyProps.put("maxWaitForEnqueue", 0L);
         concurrencyPolicyProps.put("runIfQueueFull", false);
 
-        if (Boolean.TRUE.equals(virtual) && JavaInfo.majorVersion() >= 21) { // only available in Concurrency 3.1+ and Java 21+
+        if (Boolean.TRUE.equals(virtual) && JavaInfo.majorVersion() >= 21) {
+            // only available in Concurrency 3.1+ and Java 21+
             concurrencyPolicyProps.put("virtual", virtual);
-            // maxPolicy unspecified makes the policy conditional on whether or not the submitter thread is virtual
-            // TODO remove the following once unspecified is supported
-            concurrencyPolicyProps.put("maxPolicy", "loose");
+            concurrencyPolicyProps.put("maxPolicy", "strict");
         } else {
             if (Boolean.TRUE.equals(virtual))
                 Tr.info(tc, "CWWKC1217.no.virtual.threads",
-                        jndiName,
-                        ManagedScheduledExecutorService.class.getSimpleName(),
                         declaringMetadata.getName(),
+                        getDefinitionAnnotationClass().getSimpleName(),
+                        getDDElementName(),
+                        jndiName,
                         JavaInfo.majorVersion());
 
             // virtual = false is the default
@@ -271,11 +273,16 @@ public class ManagedScheduledExecutorResourceFactoryBuilder implements ResourceF
 
                 ServiceReference<QualifiedResourceFactories> ref = concurrencyBundleCtx.getServiceReference(QualifiedResourceFactories.class);
 
-                if (ref == null) // TODO message should include possibility of deployment descriptor element
-                    throw new UnsupportedOperationException("The " + jeeName + " application artifact cannot specify the " +
-                                                            qualifierNames + " qualifiers on the " +
-                                                            jndiName + " " + ManagedScheduledExecutorDefinition.class.getSimpleName() +
-                                                            " because the " + "CDI" + " feature is not enabled."); // TODO NLS
+                if (ref == null)
+                    throw new UnsupportedOperationException(Tr //
+                                    .formatMessage(tc,
+                                                   "CWWKC1205.qualifiers.require.cdi",
+                                                   jeeName,
+                                                   qualifierNames,
+                                                   getDefinitionAnnotationClass().getSimpleName(),
+                                                   getDDElementName(),
+                                                   jndiName,
+                                                   ContextServiceDefinitionProvider.getCDIFeatureName()));
 
                 QualifiedResourceFactories qrf = concurrencyBundleCtx.getService(ref);
                 qrf.add(jeeName, QualifiedResourceFactory.Type.ManagedScheduledExecutorService, qualifierNames, factory);
@@ -302,6 +309,18 @@ public class ManagedScheduledExecutorResourceFactoryBuilder implements ResourceF
     protected void deactivate(ComponentContext context) {
         configAdminRef.deactivate(context);
         variableRegistryRef.deactivate(context);
+    }
+
+    @Override
+    @Trivial
+    public final String getDDElementName() {
+        return "managed-scheduled-executor";
+    }
+
+    @Override
+    @Trivial
+    public final Class<? extends Annotation> getDefinitionAnnotationClass() {
+        return ManagedScheduledExecutorDefinition.class;
     }
 
     /**

@@ -69,16 +69,15 @@ public class Rebate {
 
         return inst;
     }
-    public Rebate(Integer id, double amount, String customerId, LocalTime purchaseMadeAt, LocalDate purchaseMadeOn, Status status, LocalDateTime updatedAt, Integer version){
-        Rebate inst = new Rebate();
-        inst.id=id;
-        inst.amount = amount;
-        inst.customerId = customerId;
-        inst.purchaseMadeAt = purchaseMadeAt;
-        inst.purchaseMadeOn = purchaseMadeOn;
-        inst.status = status;
-        inst.updatedAt = updatedAt;
-        inst.version = version;
+    public Rebate(Integer id, double amount, String customerId, LocalTime purchaseMadeAt, LocalDate purchaseMadeOn, Status status, LocalDateTime updatedAt, Integer version) {
+        this.id = id; 
+        this.amount = amount;
+        this.customerId = customerId;
+        this.purchaseMadeAt = purchaseMadeAt;
+        this.purchaseMadeOn = purchaseMadeOn;
+        this.status = status;
+        this.updatedAt = updatedAt;
+        this.version = version;
     }
     public static enum Status {
         DENIED, SUBMITTED, VERIFIED, PAID

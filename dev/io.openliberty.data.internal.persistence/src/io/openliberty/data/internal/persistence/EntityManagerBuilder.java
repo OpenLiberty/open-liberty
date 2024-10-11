@@ -35,6 +35,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
@@ -44,6 +45,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.Attribute;
@@ -63,6 +65,13 @@ public abstract class EntityManagerBuilder {
     private static final TraceComponent tc = Tr.register(EntityManagerBuilder.class);
 
     /**
+     * The dataStore value of the Repository annotation,
+     * or that value prefixed with java:comp/env,
+     * or if unspecified, then java:comp/DefaultDataSource
+     */
+    protected final String dataStore;
+
+    /**
      * Mapping of entity class (as seen by the user, not a generated record entity class)
      * to entity information.
      */
@@ -79,16 +88,28 @@ public abstract class EntityManagerBuilder {
     protected final ClassLoader repositoryClassLoader;
 
     /**
+     * The repository interfaces that require the entity manager.
+     */
+    protected final Set<Class<?>> repositoryInterfaces;
+
+    /**
      * Common constructor for subclasses.
      *
-     * @param provider
-     * @param repositoryClassLoader
-     * @param entityTypes
+     * @param provider              core OSGi service for our built-in provider
+     * @param repositoryClassLoader class loader of repository interfaces
+     * @param repositoryInterface   repository interfaces
+     * @param dataStore             value derived from the dataStore of the
+     *                                  Repository annotation
      */
     @Trivial
-    protected EntityManagerBuilder(DataProvider provider, ClassLoader repositoryClassLoader) {
+    protected EntityManagerBuilder(DataProvider provider,
+                                   ClassLoader repositoryClassLoader,
+                                   Set<Class<?>> repositoryInterfaces,
+                                   String dataStore) {
         this.provider = provider;
         this.repositoryClassLoader = repositoryClassLoader;
+        this.repositoryInterfaces = repositoryInterfaces;
+        this.dataStore = dataStore;
     }
 
     /**
@@ -98,12 +119,14 @@ public abstract class EntityManagerBuilder {
      * @param entityTypes entity classes as known by the user, not generated.
      * @throws Exception if an error occurs.
      */
-    // Exceptions we expect to catch should ignore FFDC as they will be re-thrown upon CompletableFuture<EntityInfo>.get()
-    @FFDCIgnore({ MappingException.class })
+    // FFDC is not needed because exceptions are logged to Tr.error
+    // and also re-thrown upon CompletableFuture<EntityInfo>.get()
+    @FFDCIgnore(Throwable.class)
     protected void collectEntityInfo(Set<Class<?>> entityTypes) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         EntityManager em = createEntityManager();
         try {
+            Set<Class<?>> missingEntityTypes = new HashSet<>(entityTypes);
             Metamodel model = em.getMetamodel();
             for (EntityType<?> entityType : model.getEntities()) {
                 Map<String, String> attributeNames = new HashMap<>();
@@ -122,6 +145,7 @@ public abstract class EntityManagerBuilder {
 
                 Class<?> jpaEntityClass = entityType.getJavaType();
                 Class<?> userEntityClass = recordClass == null ? jpaEntityClass : recordClass;
+                missingEntityTypes.remove(userEntityClass);
 
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "collecting info for " +
@@ -306,11 +330,28 @@ public abstract class EntityManagerBuilder {
                                     this);
 
                     entityInfoMap.computeIfAbsent(userEntityClass, EntityInfo::newFuture).complete(entityInfo);
-                } catch (MappingException e) { // Ignored FFDC
-                    entityInfoMap.computeIfAbsent(userEntityClass, EntityInfo::newFuture).completeExceptionally(e);
-                } catch (Exception e) { // Produce FFDC
-                    entityInfoMap.computeIfAbsent(userEntityClass, EntityInfo::newFuture).completeExceptionally(e);
+                } catch (Throwable x) { // Ignored FFDC
+                    if (!(x instanceof DataException))
+                        x = exc(CompletionException.class,
+                                "CWWKD1081.entity.general.err",
+                                userEntityClass.getName(),
+                                getClassNames(repositoryInterfaces),
+                                dataStore,
+                                x.getMessage()).initCause(x);
+                    entityInfoMap.computeIfAbsent(userEntityClass, EntityInfo::newFuture) //
+                                    .completeExceptionally(x);
                 }
+            }
+
+            if (!missingEntityTypes.isEmpty()) {
+                DataException x = exc(DataException.class,
+                                      "CWWKD1082.entity.classes.missing",
+                                      dataStore,
+                                      getClassNames(missingEntityTypes),
+                                      getClassNames(repositoryInterfaces));
+                for (Class<?> ec : missingEntityTypes)
+                    entityInfoMap.computeIfAbsent(ec, EntityInfo::newFuture) //
+                                    .completeExceptionally(x);
             }
         } finally {
             if (em != null)
@@ -324,6 +365,31 @@ public abstract class EntityManagerBuilder {
      * @return a new EntityManager instance.
      */
     public abstract EntityManager createEntityManager();
+
+    /**
+     * Returns an alphabetized comma-delimited list of the class names as text
+     * that can be used in NLS messages. For example:
+     * org.example.MyEntity1, org.example.MyEntity2, org.example.MyEntity3
+     *
+     * @param classes the list of classes.
+     * @return an alphabetized comma-delimited list of the class names as text.
+     */
+    @Trivial
+    private static final String getClassNames(Iterable<Class<?>> classes) {
+        TreeSet<String> names = new TreeSet<>();
+        for (Class<?> c : classes)
+            names.add(c.getName());
+        StringBuilder s = new StringBuilder();
+        boolean first = true;
+        for (String name : names)
+            if (first) {
+                s.append(name);
+                first = false;
+            } else {
+                s.append(", ").append(name);
+            }
+        return s.toString();
+    }
 
     /**
      * Obtains the DataSource that is used by the EntityManager.

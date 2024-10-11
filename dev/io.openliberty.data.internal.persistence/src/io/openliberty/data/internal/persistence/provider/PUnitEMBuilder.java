@@ -16,7 +16,6 @@ import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 
 import java.lang.reflect.Method;
 import java.util.Set;
-import java.util.concurrent.CompletionException;
 
 import javax.sql.DataSource;
 
@@ -24,7 +23,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.data.internal.persistence.DataProvider;
-import io.openliberty.data.internal.persistence.EntityInfo;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -37,44 +35,33 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
 
     private final EntityManagerFactory emf;
 
-    private final String persistenceUnitRef;
-
     /**
      * Obtains entity manager instances from a persistence unit reference /
      * EntityManagerFactory.
      *
      * @param provider              OSGi service that provides the CDI extension.
      * @param repositoryClassLoader class loader of the repository interface.
+     * @param repositoryInterfaces  repository interfaces that use the entities.
      * @param emf                   entity manager factory.
      * @param pesistenceUnitRef     persistence unit reference.
      * @param metaDataIdentifier    metadata identifier for the class loader of the repository interface.
      * @param entityTypes           entity classes as known by the user, not generated.
+     * @throws Exception if an error occurs.
      */
     public PUnitEMBuilder(DataProvider provider,
                           ClassLoader repositoryClassLoader,
+                          Set<Class<?>> repositoryInterfaces,
                           EntityManagerFactory emf,
                           String persistenceUnitRef,
                           String metadataIdentifier,
-                          Set<Class<?>> entityTypes) {
-        super(provider, repositoryClassLoader);
+                          Set<Class<?>> entityTypes) throws Exception {
+        super(provider, //
+              repositoryClassLoader, //
+              repositoryInterfaces, //
+              persistenceUnitRef);
         this.emf = emf;
-        this.persistenceUnitRef = persistenceUnitRef;
 
-        try {
-            collectEntityInfo(entityTypes);
-        } catch (RuntimeException x) {
-            for (Class<?> entityClass : entityTypes)
-                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
-            throw x;
-        } catch (Exception x) {
-            for (Class<?> entityClass : entityTypes)
-                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
-            throw new CompletionException(x);
-        } catch (Error x) {
-            for (Class<?> entityClass : entityTypes)
-                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
-            throw x;
-        }
+        collectEntityInfo(entityTypes);
     }
 
     @Override
@@ -105,10 +92,10 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
     @Override
     @Trivial
     public String toString() {
-        return new StringBuilder(27 + persistenceUnitRef.length()) //
+        return new StringBuilder(27 + dataStore.length()) //
                         .append("PUnitEMBuilder@") //
                         .append(Integer.toHexString(hashCode())) //
-                        .append(":").append(persistenceUnitRef) //
+                        .append(":").append(dataStore) //
                         .toString();
     }
 }

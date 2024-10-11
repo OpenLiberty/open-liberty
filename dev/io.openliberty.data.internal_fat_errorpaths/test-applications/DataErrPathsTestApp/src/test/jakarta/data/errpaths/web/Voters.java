@@ -16,7 +16,7 @@ import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.Repository;
 
 /**
- * Repository ...
+ * Repository with a valid entity.
  */
 @Repository(dataStore = "java:app/jdbc/DerbyDataSource")
 public interface Voters extends BasicRepository<Voter, Integer> {

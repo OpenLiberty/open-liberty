@@ -27,9 +27,8 @@ import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.tck.TCKRunner;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
-
+import componenttest.topology.utils.tck.TCKRunner;
 
 /**
  * This is a test class that runs the entire Jakarta Validation TCK against Full
@@ -53,6 +52,8 @@ public class ValidationTckLauncher {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        final OperatingSystem os = server.getMachine().getOperatingSystem();
         /*
          * Server config:
          * - Path that jimage will output modules for signature testing
@@ -67,7 +68,7 @@ public class ValidationTckLauncher {
          * - exclude.tests used for skipping tests if we find a TCK bug that needs a service release
          */
         additionalProps.put("validation.provider", validationProvider);
-        if (server.getMachine().getOperatingSystem() == OperatingSystem.LINUX){
+        if (os == OperatingSystem.LINUX || os == OperatingSystem.AIX || os == OperatingSystem.ZOS) {
             additionalProps.put("javafx.platform", "linux");
         }
         additionalProps.put("exclude.tests", "");
@@ -83,10 +84,10 @@ public class ValidationTckLauncher {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer( //ignoring warnings due to Hibernate Validator CDI integration and annotations
-                "CWNBV0200W",
-                "CWNEN0047W",
-                "CWNEN0049W",
-                "CWNEN0048W");
+                          "CWNBV0200W",
+                          "CWNEN0047W",
+                          "CWNEN0049W",
+                          "CWNEN0048W");
 
         server.uninstallSystemFeature(validationCustomFeature);
     }

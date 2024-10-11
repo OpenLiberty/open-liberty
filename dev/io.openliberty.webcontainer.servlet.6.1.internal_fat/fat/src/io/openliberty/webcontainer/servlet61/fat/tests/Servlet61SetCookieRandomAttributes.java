@@ -40,6 +40,8 @@ import componenttest.topology.impl.LibertyServer;
  * Verify that attribute name with EMPTY value will show up with just the attribute name (there is no = trailing)
  * Verify that attribute name with NULL value will : (1) remove the existing attribute with same name. (2) remove itself
  *
+ * Request Cookie : Verify surrounding quotes are part of the cookie's value
+ *
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -53,7 +55,6 @@ public class Servlet61SetCookieRandomAttributes {
 
     private int EXPECTED_COOKIE_HEADERS = 3;
 
-    //These attributes in all tests
     final String COOKIE_EXPECTED_ATT = "cookie_att_name=cookie_att_value";
     final String SETHEADER_EXPECTED_ATT = "set_att_name=set_att_value";
     final String ADDHEADER_EXPECTED_ATT = "add_att_name=add_att_value";
@@ -195,6 +196,58 @@ public class Servlet61SetCookieRandomAttributes {
         //nothing to assert explicitly here
         // expectedErrors.add("CWWKT0047E:.*") in setup will validate and error out the test if CWWKT0047E is not there
         // ExpectedFFDC above will complaint if it is not found
+    }
+
+    /*
+     * Test Request Cookie with surrounding quotes in the value.
+     * Verify that surrounding quotes are part of the cookie value itself.
+     * (Only surrounding quotes is affected by EE11)
+     *
+     * Response Text:
+     *  Cookie name [name] , value ["twoQuotesValue"]
+     *  Cookie name [name2] , value ["beginQuoteValue]
+     *  Cookie name [name3] , value [endQuoteValue"]
+     *  Cookie name [name4] , value [middleQuote"Value]
+     *  Cookie name [name5] , value ['three'SingleQuotesValue']
+     */
+    @Test
+    public void test_RequestCookie_QuotedValue() throws Exception {
+        LOG.info("====== <test_RequestCookie_ValueQuotedTest> ======");
+
+        String testToRun = "test_RequestCookie_QuotedValue";
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/TestSetCookieAttributesViaResponseHeader";
+        HttpGet httpMethod = new HttpGet(url);
+
+        String two_Quotes_Value = "\"twoQuotesValue\"";
+        String begin_Quote_Value = "\"beginQuoteValue";
+        String end_Quote_Value = "endQuoteValue\"";
+        String middle_Quote_Value = "middleQuote\"Value";
+        String three_Single_Quotes_Value = "\'three\'SingleQuotesValue\'";
+
+        httpMethod.addHeader("runTest", testToRun);
+        httpMethod.addHeader("Cookie", "name1=" + two_Quotes_Value);
+        httpMethod.addHeader("Cookie", "name2=" + begin_Quote_Value);
+        httpMethod.addHeader("Cookie", "name3=" + end_Quote_Value);
+        httpMethod.addHeader("Cookie", "name4=" + middle_Quote_Value);
+        httpMethod.addHeader("Cookie", "name5=" + three_Single_Quotes_Value);
+
+        LOG.info("====== <runTest> [" + testToRun + "] ENTRY ======");
+        LOG.info("Sending [" + url + "]");
+
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(httpMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text: \n[" + responseText + "]");
+
+                assertTrue("Cookie - Expected two quotes value not found [" + two_Quotes_Value + "]" , responseText.contains(two_Quotes_Value));
+                assertTrue("Cookie - Expected beginning quote value not found [" + begin_Quote_Value + "]" , responseText.contains(begin_Quote_Value));
+                assertTrue("Cookie - Expected ending quote value not found [" + end_Quote_Value + "]" , responseText.contains(end_Quote_Value));
+                assertTrue("Cookie - Expected middling quote value not found [" + middle_Quote_Value + "]" , responseText.contains(middle_Quote_Value));
+                assertTrue("Cookie - Expected three single quotes value not found [" + three_Single_Quotes_Value + "]" , responseText.contains(three_Single_Quotes_Value));
+            }
+        }
+
+        LOG.info("====== <runTest> [" + testToRun + "] RETURN ======");
     }
 
     //Common attribute names and values that should be found in all tests

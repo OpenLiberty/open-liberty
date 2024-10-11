@@ -119,7 +119,7 @@ public class ZipkinOtelCollectorTest {
 
     @Test
     @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_JAVA8_ID,
-                     MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID })
+                     TelemetryActions.MP61_MPTEL20_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID })
     public void testBasicTelemetry1() throws Exception {
         HttpRequest request = new HttpRequest(server, "/spanTest");
 

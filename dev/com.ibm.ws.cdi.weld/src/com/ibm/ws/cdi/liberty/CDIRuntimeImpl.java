@@ -143,7 +143,6 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
 
     private MetaDataSlot applicationSlot;
     private boolean isClientProcess;
-    private RuntimeFactory runtimeFactory;
     private ProxyServicesImpl proxyServices;
 
     public void activate(ComponentContext cc) {

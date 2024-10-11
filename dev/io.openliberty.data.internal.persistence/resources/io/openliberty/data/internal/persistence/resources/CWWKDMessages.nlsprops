@@ -755,3 +755,76 @@ CWWKD1077.defaultds.not.found.explanation=Jakarta Data repositories default to \
  configuration.
 CWWKD1077.defaultds.not.found.useraction=Configure the Jakarta EE default \
  data source or specify a different data store for the repository.
+
+CWWKD1078.datastore.not.found=CWWKD1078E: One or more repository interfaces \
+ ({0}) from the {1} application artifact \
+ specify a {2} data store that does not match the ID of a \
+ dataSource element or a databaseStore element in server configuration, or it does \
+ not match the JNDI name of a data source, a data source resource reference, or \
+ a persistence unit reference that is accessible to the application artifact, \
+ or one of the related resources is not configured correctly. \
+ A dataSource element can be defined in server configuration. For example, {3} \
+ A databaseStore element can be defined in server configuration. For example, {4} \
+ An application component can use the Resource annotation to define a \
+ data source resource reference. For example, {5}, which requires server \
+ configuration to have a dataSource configuration element with a {6} attribute. \
+ An application component can use the PersistenceUnit annotation to define a \
+ persistence unit reference. For example, {7}, which requires the persistence.xml \
+ file to have a persistence-unit element with a matching name attribute. \
+ For example, {8}
+CWWKD1078.datastore.not.found.explanation=The data store of a Jakarta Data \
+ repository can be the ID of a dataSource element or databaseStore element \
+ in server configuration, or it can be a JNDI name of a data source, data source \
+ resource reference, or persistence unit reference.
+CWWKD1078.datastore.not.found.useraction=Ensure that the resource is configured \
+ correctly. If using a JNDI name, ensure that the scope of the JNDI name makes \
+ the resource accessible to the application artifact that provides the repository.
+
+CWWKD1079.jndi.not.found=CWWKD1079E: One or more repository interfaces ({0}) from \
+ the {1} application artifact specify a data store with the {2} JNDI name, \
+ but a data source, data source resource reference, or persistence unit reference \
+ with that JNDI name is not accessible to the application artifact, \
+ or one of the related resources is not configured correctly. \
+ An application component can use the Resource annotation to define a \
+ data source resource reference. For example, {3}, which points to a \
+ dataSource server configuration element with a {4} attribute. \
+ An application component can use the PersistenceUnit annotation to define a \
+ persistence unit reference. For example, {5}, which requires the persistence.xml \
+ file to have a persistence-unit element with a matching name attribute. \
+ For example, {6} \
+ An application component can use the DataSourceDefinition annotation \
+ to define a data source. Alternatively, a dataSource element can define a \
+ data source in the server configuration. For example, {7}
+CWWKD1079.jndi.not.found.explanation=When the data store of a Jakarta Data \
+ repository is set to a JNDI name of a data source, a data source resource \
+ reference, or a persistence unit reference, the JNDI name must be accessible \
+ to the application artifact that provides the repository, and the data source \
+ or persistence unit must be configured correctly.
+CWWKD1079.jndi.not.found.useraction=Ensure that the resource is configured \
+ correctly, and ensure that the scope of the JNDI name makes the resource \
+ accessible to the application artifact that provides the repository.
+
+CWWKD1080.datastore.general.err=CWWKD1080E: One or more repository interfaces \
+ ({0}) from the {1} application artifact are not available because of an error. \
+ The error might be due to a configuration problem, or the {2} data store for \
+ the repository might not be available. The error is: {3}.
+CWWKD1080.datastore.general.err.explanation=An error prevents \
+ the specified repositories from being used.
+CWWKD1080.datastore.general.err.useraction=Locate the repository interfaces and \
+ the data store configuration make corrections if needed.
+
+CWWKD1081.entity.general.err=CWWKD1081E: Due to an error, the {0} entity is \
+ not available to one or more repository interfaces ({1}) that use the \
+ {2} data store. The error is {3}.
+CWWKD1081.entity.general.err.explanation=An error prevents the \
+ specified entity from being used.
+CWWKD1081.entity.general.err.useraction=Locate the entity and make \
+ corrections if needed.
+
+CWWKD1082.entity.classes.missing=CWWKD1082E: The persistence unit for the \
+ {0} data store does not define one or more entity classes ({1}) \
+ that one or more repository interfaces ({2}), which use the data store, require.
+CWWKD1082.entity.classes.missing.explanation=Repositories use entity classes \
+ that must be defined in the persistence unit.
+CWWKD1082.entity.classes.missing.useraction=Include all entity classes \
+ in the persistence unit.

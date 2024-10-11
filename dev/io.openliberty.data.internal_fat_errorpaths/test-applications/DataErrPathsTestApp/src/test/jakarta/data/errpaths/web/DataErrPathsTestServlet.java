@@ -16,11 +16,17 @@ import static org.junit.Assert.fail;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionException;
 
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
+import jakarta.data.Order;
+import jakarta.data.Sort;
+import jakarta.data.exceptions.DataException;
+import jakarta.data.page.Page;
+import jakarta.data.page.PageRequest;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -31,6 +37,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.UserTransaction;
 
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.junit.Test;
 
@@ -42,20 +49,59 @@ import componenttest.app.FATServlet;
                       user = "dbuser1",
                       password = "dbpwd1",
                       properties = "createDatabase=create")
+@DataSourceDefinition(name = "java:module/jdbc/DataSourceForInvalidEntity",
+                      className = "org.apache.derby.jdbc.EmbeddedXADataSource",
+                      databaseName = "memory:testdb",
+                      user = "dbuser1",
+                      password = "dbpwd1",
+                      properties = "createDatabase=create")
+@DataSourceDefinition(name = "java:comp/jdbc/InvalidDatabase",
+                      className = "org.apache.derby.jdbc.EmbeddedXADataSource",
+                      databaseName = "notfounddb",
+                      user = "dbuser1",
+                      password = "dbpwd1")
 @PersistenceUnit(name = "java:app/env/VoterPersistenceUnitRef",
+                 unitName = "VoterPersistenceUnit")
+// The following is intentionally invalidly used by repositories that specify
+// a different entity type that is not in the persistence unit.
+@PersistenceUnit(name = "java:app/env/WrongPersistenceUnitRef",
                  unitName = "VoterPersistenceUnit")
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataErrPathsTestServlet extends FATServlet {
 
     @Inject
+    InvalidDatabaseRepo errDatabaseNotFound;
+
+    @Inject
     RepoWithoutDataStore errDefaultDataSourceNotConfigured;
+
+    @Inject
+    InvalidNonJNDIRepo errIncorrectDataStoreName;
+
+    @Inject
+    InvalidJNDIRepo errIncorrectJNDIName;
+
+    @Inject
+    WrongPersistenceUnitRefRepo errWrongPersistenceUnitRef;
 
     @Resource
     UserTransaction tx;
 
     @Inject
     Voters voters;
+
+    /**
+     * Preemptively cause errors that will result in FFDC to keep them from
+     * failing test cases.
+     */
+    public void forceFFDC() throws Exception {
+        try {
+            InitialContext.doLookup("java:comp/jdbc/InvalidDataSource");
+        } catch (NamingException x) {
+            // expected; the database doesn't exist
+        }
+    }
 
     /**
      * Initialize the database with some data that other tests can try to read.
@@ -88,6 +134,67 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Tests an error path where the application specifies the repository dataStore
+     * to be a JNDI name that does not exist.
+     */
+    @Test
+    public void testRepositoryWithIncorrectDataStoreJNDIName() {
+        try {
+            List<Voter> found = errIncorrectJNDIName //
+                            .bornOn(LocalDate.of(1977, Month.SEPTEMBER, 26));
+            fail("Should not be able to use repository that sets the dataStore " +
+                 "to a JNDI name that does not exist. Found: " + found);
+        } catch (CompletionException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1079E:") ||
+                !x.getMessage().contains("<persistence-unit name=\"MyPersistenceUnit\">"))
+                throw x;
+        }
+    }
+
+    /**
+     * Tests an error path where the application specifies the repository dataStore
+     * to be a name that does not exist as a dataSource id, a databaseStore id, or
+     * a JNDI name.
+     */
+    @Test
+    public void testRepositoryWithIncorrectDataStoreName() {
+        try {
+            Voter added = errIncorrectDataStoreName //
+                            .addNew(new Voter(876554321, "Vanessa", //
+                                            LocalDate.of(1955, Month.JULY, 5), //
+                                            "5455 W River Rd NW, Rochester, MN 55901"));
+            fail("Should not be able to use repository that sets the dataStore " +
+                 "to a name that does not exist. Added: " + added);
+        } catch (CompletionException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1078E:") ||
+                !x.getMessage().contains("<dataSource id=\"MyDataSource\" jndiName=\"jdbc/ds\""))
+                throw x;
+        }
+    }
+
+    /**
+     * Tests an error path where the application specifies the repository dataStore
+     * to be a DataSource that is configured to use a database that does not exist.
+     */
+    @Test
+    public void testRepositoryWithInvalidDatabaseName() {
+        try {
+            List<Voter> found = errDatabaseNotFound //
+                            .livesAt("2800 37th St NW, Rochester, MN 55901");
+            fail("Should not be able to use repository that sets the dataStore" +
+                 " to a DataSource that is configured to use a database that does" +
+                 " not exist. Found: " + found);
+        } catch (CompletionException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1080E:") ||
+                !x.getMessage().contains(InvalidDatabaseRepo.class.getName()))
+                throw x;
+        }
+    }
+
+    /**
      * Tests a basic error path that is very likely to occur where a Repository
      * lets the dataStore default to java:comp/DefaultDataSource, but the
      * default data source is not configured. This tests for the error message
@@ -104,6 +211,29 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1077E:") ||
                 !x.getMessage().contains("<dataSource id=\"DefaultDataSource\""))
+                throw x;
+        }
+    }
+
+    /**
+     * Attempt to use a repository that has a persistence unit reference to a
+     * persistence unit that lacks the entity class that is needed by the
+     * repository. Expect an error.
+     */
+    @Test
+    public void testWrongPersistenceUnitRef() {
+        try {
+            Page<Volunteer> page;
+            page = errWrongPersistenceUnitRef.findAll(PageRequest.ofSize(5),
+                                                      Order.by(Sort.asc("name")));
+            fail("Should not be able to use a repository that has a persistence" +
+                 " unit reference to a persistence unit that does not include the" +
+                 " entity that is used by the repository. Found: " + page);
+        } catch (DataException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1082E:") ||
+                !x.getMessage().contains("(test.jakarta.data.errpaths.web.Volunteer)") ||
+                !x.getMessage().contains("(test.jakarta.data.errpaths.web.WrongPersistenceUnitRefRepo)"))
                 throw x;
         }
     }

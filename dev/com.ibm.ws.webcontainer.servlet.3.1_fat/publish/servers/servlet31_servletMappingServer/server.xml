@@ -10,7 +10,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="Server for testing DecodeUrlPlusSignTests">
+<server description="Server for testing ServletMappingTests">
 
     <include location="../fatTestPorts.xml"/>
 
