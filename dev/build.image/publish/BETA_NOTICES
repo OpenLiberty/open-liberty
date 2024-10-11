@@ -1,12 +1,12 @@
 Begin NOTICES AND INFORMATION FOR Open Liberty @LIBERTY_VERSION@
-Copyright 1999-2024 IBM Corporation and others
+Copyright 2022-2024 IBM Corporation and others
 This product includes software developed at
 The Open Liberty @LIBERTY_VERSION@ Project (https://openliberty.io/).
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TABLE OF CONTENTS
 
-THIS NOTICES FILE CONSISTS OF THE FOLLOWING SECTIONS:
+THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING SECTIONS:
 
 Apache License, Version 2.0 (APACHE V2)
 BSD 2 Clause license (BSD-2-CLAUSE)
@@ -109,13 +109,9 @@ Apache James :: Mime4j :: Storage [apache-mime4j-storage],
 Apache Kafka [kafka-clients],
 Apache MyFaces Buildtools Maven2 Builder Annotations [myfaces-builder-annotations],
 Apache MyFaces Core 4.0 - API [myfaces-api],
-Apache MyFaces Core 4.0 - Impl [myfaces-impl],
 Apache MyFaces Core 4.1 - API [myfaces-api],
-Apache MyFaces Core 4.1 - Impl [myfaces-impl],
 Apache MyFaces JSF-2.3 Core API [myfaces-api],
-Apache MyFaces JSF-2.3 Core Impl [myfaces-impl],
-Apache MyFaces JSF-3.0 Core API [myfaces-api],
-Apache MyFaces JSF-3.0 Core Impl [myfaces-impl], Apache Neethi [neethi],
+Apache MyFaces JSF-3.0 Core API [myfaces-api], Apache Neethi [neethi],
 Apache Velocity [velocity], Apache Velocity - Engine [velocity-engine-core],
 Apache WSS4J DOM WS-Security [wss4j-ws-security-dom],
 Apache WSS4J Streaming WS-Security [wss4j-ws-security-stax],
@@ -384,8 +380,7 @@ smallrye-reactive-messaging-provider, smallrye-reactive-streams-operators,
 snappy-java, swagger-client [swagger-client-3.28.3.tgz],
 swagger-ui [swagger-ui-5.17.14.tgz], tomcat-el-api, tomcat-jasper-el,
 ts-toolbelt [ts-toolbelt-9.6.0.tgz], tunnel-agent [tunnel-agent-0.6.0.tgz],
-vertx-codegen,yoko-core, yoko-osgi, yoko-rmi-impl, yoko-rmi-spec,
-yoko-spec-corba, yoko-util
+vertx-codegen
 
 
 Apache License
@@ -654,7 +649,7 @@ Jakarta Activation [jakarta.activation] (Copyright 1997-2020 Oracle and/or its a
 Jakarta Activation [jakarta.activation] (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 Jakarta Persistence API [jakarta.persistence-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2018-2020 Oracle and/or its affiliates) (Copyright 2019 Oracle and/or its affiliates)
 Jakarta Persistence API [jakarta.persistence-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2018-2022 Oracle and/or its affiliates)
-Jakarta Persistence [jakarta.persistence] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2007-2018 Oracle and/or its affiliates)
+Jakarta Persistence [jakarta.persistence] (Copyright 2007-2018 Oracle and/or its affiliates)
 Jakarta SOAP Implementation [saaj-impl] (Copyright 2011-2021 Oracle and) (Copyright 2011-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 Jakarta SOAP Implementation [saaj-impl] (Copyright 2011-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 Jakarta SOAP with Attachments API [jakarta.xml.soap-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2019 Oracle and/or its affiliates) (Copyright 2019-2020 Eclipse Foundation)
@@ -789,7 +784,7 @@ COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1
 The Program includes some or all of the following that IBM obtained
 under the COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1:
 
-JSR 374 (JSON Processing) Default Provider [javax.json] https://javaee.github.io/jsonp
+JSR 374 (JSON Processing) Default Provider [javax.json] http://www.oracle.com
 activation (https://github.com/javaee/activation/tree/JAF-1_2_0)
 connector (https://mvnrepository.com/artifact/javax.resource/connector-api)
 el (https://github.com/javaee/uel-ri)
@@ -815,49 +810,46 @@ COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1.1
 The Program includes some or all of the following that IBM obtained
 under the COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1.1:
 
-Expression Language 3.0 API [javax.el-api] http://uel-spec.java.net
+Expression Language 3.0 API [javax.el-api] http://glassfish.org
 Expression Language 3.0 API [jboss-el-api_3.0_spec] http://www.jboss.org
 Extended StAX API [stax-ex] http://stax-ex.java.net/
-JAX-WS API [jaxws-api] https://github.com/javaee/jax-ws-spec
+JAX-WS API [jaxws-api] http://www.oracle.com
 JMS API [javax.jms-api] http://java.net/projects/jms-spec/pages/Home
-JSR 353 (JSON Processing) API [javax.json-api] http://json-processing-spec.java.net
-JSR 353 (JSON Processing) Default Provider [javax.json] http://jsonp.java.net
-JSR 374 (JSON Processing) API [javax.json-api] https://javaee.github.io/jsonp
-Java Architecture for XML Binding [jaxb-api] http://jaxb.java.net/
-Java Authentication Service Provider Interface for Containers API 1.1 [javax.security.auth.message-api] http://jcp.org/en/jsr/detail?id=196
-Java Authorization Contract for Containers API 1.5 [javax.security.jacc-api] http://jcp.org/en/jsr/detail?id=115
+JSR 353 (JSON Processing) API [javax.json-api] http://www.oracle.com
+JSR 353 (JSON Processing) Default Provider [javax.json] http://www.oracle.com
+JSR 374 (JSON Processing) API [javax.json-api] http://www.oracle.com
+Java Architecture for XML Binding [jaxb-api] http://www.oracle.com/
+Java Authentication Service Provider Interface for Containers API 1.1 [javax.security.auth.message-api] https://jaspic-spec.java.net
+Java Authorization Contract for Containers API 1.5 [javax.security.jacc-api] https://jacc-spec.java.net
 Java EE Security API [javax.security.enterprise-api] https://repo.maven.apache.org/maven2/javax/security/enterprise/javax.security.enterprise-api/1.0
-Java Servlet API [javax.servlet-api] http://servlet-spec.java.net
-Java Servlet API [javax.servlet-api] https://javaee.github.io/servlet-spec/
+Java Servlet API [javax.servlet-api] https://glassfish.dev.java.net
+Java Servlet API [javax.servlet-api] https://javaee.github.io
 Java(TM) EE Interceptors 1.2 API [jboss-interceptors-api_1.2_spec] http://www.jboss.org
 JavaBeans Activation Framework (JAF) [activation] http://java.sun.com/products/javabeans/jaf/index.jsp
-JavaBeans Activation Framework [javax.activation] https://repo.maven.apache.org/maven2/com/sun/activation/javax.activation/1.2.0
-JavaMail API [javax.mail] http://javaee.github.io/javamail
-JavaMail API [javax.mail] http://javamail.java.net
-JavaMail API jar [javax.mail-api] https://repo.maven.apache.org/maven2/javax/mail/javax.mail-api/1.5.6
-JavaMail API jar [javax.mail-api] https://repo.maven.apache.org/maven2/javax/mail/javax.mail-api/1.6.2
-JavaServer Pages(TM) API [javax.servlet.jsp-api] http://jsp.java.net
-MIME streaming extension [mimepull] http://mimepull.java.net
-Old JAXB Core [jaxb-core] https://repo.maven.apache.org/maven2/com/sun/xml/bind/jaxb-core/2.2.11
-Old JAXB XJC [jaxb-xjc] https://repo.maven.apache.org/maven2/com/sun/xml/bind/jaxb-xjc/2.2.11
+JavaBeans Activation Framework [javax.activation] http://www.oracle.com
+JavaMail API [javax.mail] http://www.oracle.com
+JavaMail API jar [javax.mail-api] http://www.oracle.com
+JavaServer Pages(TM) API [javax.servlet.jsp-api] http://glassfish.org
+MIME streaming extension [mimepull] http://www.oracle.com/
+Old JAXB Core [jaxb-core] http://www.oracle.com/
+Old JAXB XJC [jaxb-xjc] http://www.oracle.com/
 Streaming API for XML [stax-api] https://repo.maven.apache.org/maven2/javax/xml/stream/stax-api/1.0-2
-TXW2 Runtime [txw2] http://txw.java.net/
-WebSocket server API [javax.websocket-api] http://websocket-spec.java.net
+TXW2 Runtime [txw2] http://www.oracle.com/
+WebSocket server API [javax.websocket-api] http://www.oracle.com
 istack common utility code runtime [istack-commons-runtime] https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/2.4
-javax.annotation API [javax.annotation-api] http://jcp.org/en/jsr/detail?id=250
-javax.ejb API [javax.ejb-api] http://ejb-spec.java.net
-javax.enterprise.concurrent-api http://concurrency-ee-spec.java.net
-javax.interceptor API [javax.interceptor-api] http://interceptors-spec.java.net
-javax.json.bind-api https://javaee.github.io/jsonb-spec
-javax.resource API [javax.resource-api] http://connector-spec.java.net
-javax.ws.rs-api http://jax-rs-spec.java.net
+javax.annotation API [javax.annotation-api] https://glassfish.java.net
+javax.annotation API [javax.annotation-api] https://javaee.github.io/glassfish
+javax.ejb API [javax.ejb-api] https://glassfish.java.net
+javax.enterprise.concurrent-api http://www.oracle.com/
+javax.interceptor API [javax.interceptor-api] https://glassfish.java.net
+javax.json.bind-api http://www.oracle.com
+javax.resource API [javax.resource-api] https://glassfish.java.net
 javax.ws.rs-api http://www.oracle.com/
-javax.xml.soap API [javax.xml.soap-api] https://javaee.github.io/javaee-spec/
+javax.xml.soap API [javax.xml.soap-api] http://www.oracle.com
 jdeparser http://www.jboss.org
 jsr181-api (https://github.com/javaee/javax.jws)
-policy http://policy.java.net/
-saaj-impl https://repo.maven.apache.org/maven2/com/sun/xml/messaging/saaj/saaj-impl/1.4.0
-saaj-impl https://repo.maven.apache.org/maven2/com/sun/xml/messaging/saaj/saaj-impl/1.4.0-b03
+policy http://www.oracle.com/
+saaj-impl http://www.oracle.com/
 xmlstreambuffer [streambuffer] http://xmlstreambuffer.java.net/
 
 
@@ -870,7 +862,7 @@ COMMON PUBLIC LICENSE
 The Program includes some or all of the following that IBM obtained
 under the COMMON PUBLIC LICENSE:
 
-JUnit [junit] http://junit.org
+JUnit [junit] http://www.junit.org
 WSDL4J [wsdl4j] http://sf.net/projects/wsdl4j
 
 
@@ -895,69 +887,58 @@ ECLIPSE PUBLIC LICENSE, VERSION 2
 The Program includes some or all of the following that IBM obtained
 under the ECLIPSE PUBLIC LICENSE, VERSION 2:
 
-Angus Mail Provider [angus-mail] http://eclipse-ee4j.github.io/angus-mail
-Angus Mail Provider [angus-mail] http://eclipse-ee4j.github.io/mail
-Console plug-in [org.eclipse.equinox.console] http://www.eclipse.org/platform
-Coordinator [org.eclipse.equinox.coordinator] http://www.eclipse.org/platform
-Eclipse Compiler for Java(TM) [ecj] http://www.eclipse.org/jdt
-Eclipse Compiler for Java(TM) [ecj] https://projects.eclipse.org/projects/eclipse.jdt
+Angus Mail Provider [angus-mail] https://www.eclipse.org
+Console plug-in [org.eclipse.equinox.console] http://www.eclipse.org/
+Coordinator [org.eclipse.equinox.coordinator] http://www.eclipse.org/
+Eclipse Compiler for Java(TM) [ecj] http://www.eclipse.org/
+Eclipse Compiler for Java(TM) [ecj] https://www.eclipse.org/
 EclipseLink ASM [org.eclipse.persistence.asm] http://www.eclipse.org/eclipselink
 EclipseLink Core [org.eclipse.persistence.core] http://www.eclipse.org/eclipselink
 EclipseLink Hermes Parser [org.eclipse.persistence.jpa.jpql] http://www.eclipse.org/eclipselink
 EclipseLink JPA [org.eclipse.persistence.jpa] http://www.eclipse.org/eclipselink
-Expression Language 3.0 API [jboss-el-api_3.0_spec] https://projects.eclipse.org/projects/ee4j.el
-GlassFish High Availability APIs and SPI [ha-api] https://repo.maven.apache.org/maven2/org/glassfish/ha/ha-api/3.1.13
-JBoss Jakarta Annotations API [jboss-annotations-api_1.3_spec] https://github.com/jboss/jboss-jakarta-annotations-api_spec
-JSON-B API [jakarta.json.bind-api] https://eclipse-ee4j.github.io/jsonb-api
-JSON-B API [jakarta.json.bind-api] https://jakartaee.github.io/jsonb-api
-JSON-P Default Provider [jakarta.json] https://github.com/eclipse-ee4j/jsonp
-Jakarta Annotations API [jakarta.annotation-api] https://projects.eclipse.org/projects/ee4j.ca
+Expression Language 3.0 API [jboss-el-api_3.0_spec] http://www.jboss.org
+GlassFish High Availability APIs and SPI [ha-api] https://www.eclipse.org
+JBoss Jakarta Annotations API [jboss-annotations-api_1.3_spec] http://www.jboss.org
+JSON-B API [jakarta.json.bind-api] https://www.eclipse.org
+JSON-P Default Provider [jakarta.json] https://www.eclipse.org
+Jakarta Annotations API [jakarta.annotation-api] https://www.eclipse.org
 Jakarta Authentication [jakarta.authentication-api] https://github.com/eclipse-ee4j/authentication
-Jakarta Authentication [jakarta.authentication-api] https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0
-Jakarta Authorization [jakarta.authorization-api] https://github.com/
-Jakarta Authorization [jakarta.authorization-api] https://repo.maven.apache.org/maven2/jakarta/authorization/jakarta.authorization-api/2.1.0
-Jakarta Enterprise Beans API [jakarta.ejb-api] https://github.com/eclipse-ee4j/ejb-api
-Jakarta Enterprise Beans API [jakarta.ejb-api] https://repo.maven.apache.org/maven2/jakarta/ejb/jakarta.ejb-api/4.0.1
-Jakarta Expression Language API [jakarta.el-api] https://projects.eclipse.org/projects/ee4j.el
-Jakarta Interceptors [jakarta.interceptor-api] https://github.com/eclipse-ee4j/interceptor-api
+Jakarta Authorization [jakarta.authorization-api] http://www.oracle.com
+Jakarta Enterprise Beans API [jakarta.ejb-api] https://projects.eclipse.org/projects/ee4j.ejb
+Jakarta Expression Language API [jakarta.el-api] https://www.eclipse.org
 Jakarta Interceptors [jakarta.interceptor-api] https://github.com/jakartaee/interceptors
-Jakarta Interceptors [jakarta.interceptor-api] https://repo.maven.apache.org/maven2/jakarta/interceptor/jakarta.interceptor-api/2.0.1
-Jakarta JSON Processing API [jakarta.json-api] https://github.com/eclipse-ee4j/jsonp
-Jakarta JSON Processing API [jakarta.json-api] https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/2.0.2
-Jakarta JSON Processing API [jakarta.json-api] https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/2.1.0
-Jakarta Mail API [jakarta.mail-api] http://nexus-importer-index-private.internal.whitesource.io:8081/nexus/service/local/repositories/index-importer-maven-central-mirror/content/jakarta/mail/jakarta.mail-api/2.1.2
-Jakarta Mail API [jakarta.mail-api] https://repo.maven.apache.org/maven2/jakarta/mail/jakarta.mail-api/2.1.1
-Jakarta Mail API [jakarta.mail] http://eclipse-ee4j.github.io/mail
-Jakarta Mail API jar [jakarta.mail-api] https://repo.maven.apache.org/maven2/jakarta/mail/jakarta.mail-api/2.0.1
-Jakarta Messaging API [jakarta.jms-api] https://projects.eclipse.org/projects/ee4j.jms
-Jakarta RESTful WS API [jakarta.ws.rs-api] https://github.com/eclipse-ee4j/
-Jakarta Security [jakarta.security.enterprise-api] https://repo.maven.apache.org/maven2/jakarta/security/enterprise/jakarta.security.enterprise-api/2.0.0
-Jakarta Security [jakarta.security.enterprise-api] https://repo.maven.apache.org/maven2/jakarta/security/enterprise/jakarta.security.enterprise-api/3.0.0
-Jakarta Server Pages API [jakarta.servlet.jsp-api] https://projects.eclipse.org/projects/ee4j.jsp
-Jakarta Servlet [jakarta.servlet-api] https://projects.eclipse.org/projects/ee4j.servlet
-Jakarta Standard Tag Library API [jakarta.servlet.jsp.jstl-api] https://projects.eclipse.org/projects/ee4j.jstl
-Jakarta Standard Tag Library Implementation [jakarta.servlet.jsp.jstl] https://projects.eclipse.org/projects/ee4j.jstl
-Jakarta WebSocket - Client API [jakarta.websocket-client-api] https://projects.eclipse.org/projects/ee4j.websocket
-Jakarta WebSocket - Server API [jakarta.websocket-api] https://projects.eclipse.org/projects/ee4j.websocket
-Meta Type [org.eclipse.equinox.metatype] http://www.eclipse.org/platform
-OSGi System Bundle [org.eclipse.osgi] https://projects.eclipse.org/projects/eclipse.equinox
-OSGi resource locator [osgi-resource-locator] https://repo.maven.apache.org/maven2/org/glassfish/hk2/osgi-resource-locator/1.0.3
-RESTEasy Tracing API [resteasy-tracing-api] https://resteasy.github.io/
-Region Digraph [org.eclipse.equinox.region] http://www.eclipse.org/platform
+Jakarta Interceptors [jakarta.interceptor-api] https://www.eclipse.org
+Jakarta JSON Processing API [jakarta.json-api] https://www.eclipse.org
+Jakarta Mail API [jakarta.mail-api] https://www.eclipse.org
+Jakarta Mail API [jakarta.mail] http://www.oracle.com
+Jakarta Mail API jar [jakarta.mail-api] http://www.oracle.com
+Jakarta Messaging API [jakarta.jms-api] https://www.eclipse.org
+Jakarta RESTful WS API [jakarta.ws.rs-api] https://www.eclipse.org/org/foundation/
+Jakarta Security [jakarta.security.enterprise-api] https://www.eclipse.org
+Jakarta Server Pages API [jakarta.servlet.jsp-api] https://www.eclipse.org
+Jakarta Servlet [jakarta.servlet-api] https://www.eclipse.org
+Jakarta Standard Tag Library API [jakarta.servlet.jsp.jstl-api] https://www.eclipse.org
+Jakarta Standard Tag Library Implementation [jakarta.servlet.jsp.jstl] https://www.eclipse.org
+Jakarta WebSocket - Client API [jakarta.websocket-client-api] https://www.eclipse.org
+Jakarta WebSocket - Server API [jakarta.websocket-api] https://www.eclipse.org
+Meta Type [org.eclipse.equinox.metatype] http://www.eclipse.org/
+OSGi System Bundle [org.eclipse.osgi] https://www.eclipse.org/
+OSGi resource locator [osgi-resource-locator] https://www.eclipse.org
+RESTEasy Tracing API [resteasy-tracing-api] http://www.jboss.org
+Region Digraph [org.eclipse.equinox.region] http://www.eclipse.org/
 che-lib7.0.0-rc-4.0 [che-lib] https://github.com/eclipse-che/che-lib.git
-jakarta.enterprise.concurrent-api https://github.com/eclipse-ee4j/concurrency-api
+jakarta.enterprise.concurrent-api http://www.oracle.com/
 jakarta.json (https://github.com/jakartaee/jsonp-api)
-jakarta.resource API [jakarta.resource-api] https://github.com/
-jakarta.resource API [jakarta.resource-api] https://repo.maven.apache.org/maven2/jakarta/resource/jakarta.resource-api/2.1.0
-jakarta.transaction API [jakarta.transaction-api] https://projects.eclipse.org/projects/ee4j.jta
-jakarta.ws.rs-api https://github.com/eclipse-ee4j/jaxrs-api
+jakarta.resource API [jakarta.resource-api] https://www.eclipse.org
+jakarta.transaction API [jakarta.transaction-api] https://github.com/eclipse-ee4j
+jakarta.ws.rs-api https://www.eclipse.org/org/foundation/
 jakarta.xml.soap-api (https://github.com/javaee/javax.xml.soap)
-javax.transaction API [jakarta.transaction-api] https://projects.eclipse.org/projects/ee4j.jta
-javax.transaction API [jboss-transaction-api_1.3_spec] https://projects.eclipse.org/projects/ee4j.jta
-javax.ws.rs-api [jakarta.ws.rs-api] https://github.com/eclipse-ee4j/jaxrs-api
-jboss-jakarta-ejb-api_spec [jboss-ejb-api_3.2_spec] https://github.com/eclipse-ee4j/ejb-api
+javax.transaction API [jakarta.transaction-api] https://github.com/eclipse-ee4j
+javax.transaction API [jboss-transaction-api_1.3_spec] https://github.com/eclipse-ee4j
+javax.ws.rs-api [jakarta.ws.rs-api] https://www.eclipse.org/org/foundation/
+jboss-jakarta-ejb-api_spec [jboss-ejb-api_3.2_spec] http://www.jboss.org
 org.eclipse.persistence.jpa (https://github.com/jakartaee/persistence)
-org.eclipse.yasson [yasson] https://projects.eclipse.org/projects/ee4j.yasson
+org.eclipse.yasson [yasson] http://www.oracle.com/
 
 
 
@@ -1108,7 +1089,6 @@ react-inspector [react-inspector-6.0.2.tgz] (Copyright 2017 Xiaoyi Chen)
 react-is [react-is-16.13.1.tgz] (Copyright Facebook, Inc. and its affiliates)
 react-redux [react-redux-9.1.2.tgz] (Copyright 2015 Dan Abramov)
 react-syntax-highlighter [react-syntax-highlighter-15.5.0.tgz] (Copyright 2019 Conor Hastings)
-reactive-streams (Copyright 5000 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and as)
 readable-stream [readable-stream-3.6.2.tgz] (Copyright Node.js contributors)
 redux [redux-5.0.1.tgz] (Copyright 2015 Dan Abramov)
 refractor [refractor-3.6.0.tgz] (Copyright 2017 Titus Wormer <tituswormer@gmail.com>)
@@ -1337,4 +1317,5 @@ END OF THE OPEN LIBERTY BETA PROJECT NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 END OF NOTICES AND INFORMATION FILE
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
