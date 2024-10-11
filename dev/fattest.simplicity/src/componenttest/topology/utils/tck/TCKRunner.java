@@ -288,8 +288,6 @@ public class TCKRunner {
 
         // Compile and publish results
         TCKJarInfo tckJarInfo = TCKUtilities.getTCKJarInfo(this.type, dependencyOutput);
-
-        //TODO validate resultsInfo especially certification file name prior to writing
         TCKResultsInfo resultsInfo = new TCKResultsInfo(this.type, this.specName, this.server, tckJarInfo);
         if (qualifiers.length > 0)
             resultsInfo.withQualifiers(this.qualifiers);
