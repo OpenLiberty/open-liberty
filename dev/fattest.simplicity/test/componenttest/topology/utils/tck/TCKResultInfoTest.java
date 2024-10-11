@@ -11,6 +11,8 @@ package componenttest.topology.utils.tck;
 
 import static org.junit.Assert.assertEquals;
 
+import java.lang.reflect.Method;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -31,17 +33,17 @@ public class TCKResultInfoTest {
         TCKResultsInfo microprofile = new TCKResultsInfo(Type.MICROPROFILE, "Config", null, VERSION_1_0_0);
         TCKResultsInfo jakarta = new TCKResultsInfo(Type.JAKARTA, "Data", null, VERSION_1_0_0);
 
-        assertEquals("Microprofile Config 1.0.0", microprofile.getFullSpecName());
+        assertEquals("MicroProfile Config 1.0.0", microprofile.getFullSpecName());
         assertEquals("Jakarta Data 1.0.0", jakarta.getFullSpecName());
     }
 
     @Test
-    public void getSpecNameForURLTest() {
+    public void getSpecNameForURLTest() throws Exception {
         TCKResultsInfo microprofile = new TCKResultsInfo(Type.MICROPROFILE, "Fault Tolerance", null, VERSION_1_0_0);
         TCKResultsInfo jakarta = new TCKResultsInfo(Type.JAKARTA, "Dependency Injection", null, VERSION_1_0_0);
 
-        assertEquals("fault-tolerance", microprofile.getSpecNameForURL());
-        assertEquals("dependency-injection", jakarta.getSpecNameForURL());
+        assertEquals("fault-tolerance", getSpecNameForURL().invoke(microprofile));
+        assertEquals("dependency-injection", getSpecNameForURL().invoke(jakarta));
     }
 
     @Test
@@ -66,5 +68,11 @@ public class TCKResultInfoTest {
                      jakartaWithOutVersion.getTCKURL());
         assertEquals("https://download.eclipse.org/ee4j/dependency-injection/jakartaee10/promoted/eftl/dependency-injection-tck-1.0.0.zip",
                      jakartaWithVersion.getTCKURL());
+    }
+
+    private Method getSpecNameForURL() throws Exception {
+        Method getSpecNameForURL = TCKResultsInfo.class.getDeclaredMethod("getSpecNameForURL");
+        getSpecNameForURL.setAccessible(true);
+        return getSpecNameForURL;
     }
 }

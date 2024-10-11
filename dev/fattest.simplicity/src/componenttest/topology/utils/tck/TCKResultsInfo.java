@@ -199,14 +199,14 @@ public class TCKResultsInfo {
             case JAKARTA:
                 return "Jakarta " + specName + " " + getSpecVersion();
             case MICROPROFILE:
-                return "Microprofile " + specName + " " + getSpecVersion();
+                return "MicroProfile " + specName + " " + getSpecVersion();
             default:
-                return "UKNOWN";
+                return "UNKNOWN";
 
         }
     }
 
-    String getSpecNameForURL() {
+    private String getSpecNameForURL() {
         return specName.toLowerCase().replace(" ", "-");
     }
 
@@ -260,10 +260,10 @@ public class TCKResultsInfo {
     }
 
     public String getReadableRepeatName() {
-        String redeableRepeatName = getRepeat();
+        String readableRepeatName = getRepeat();
 
-        if (redeableRepeatName.contains("FeatureReplacementAction")) {
-            redeableRepeatName = redeableRepeatName.replaceAll("FeatureReplacementAction.*REMOVE", "remove")
+        if (readableRepeatName.contains("FeatureReplacementAction")) {
+            readableRepeatName = readableRepeatName.replaceAll("FeatureReplacementAction.*REMOVE", "remove")
                             .replaceAll("\\[", "")
                             .replaceAll("\\]", "")
                             .replaceAll("ADD", "add")
@@ -272,7 +272,7 @@ public class TCKResultsInfo {
                             .replaceAll(" ", "_");
         }
 
-        return redeableRepeatName;
+        return readableRepeatName;
     }
 
 }
