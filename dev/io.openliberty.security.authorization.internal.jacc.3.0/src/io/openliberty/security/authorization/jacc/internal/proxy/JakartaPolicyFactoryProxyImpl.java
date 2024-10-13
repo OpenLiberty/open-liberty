@@ -10,25 +10,22 @@
 package io.openliberty.security.authorization.jacc.internal.proxy;
 
 import java.security.Permission;
-import java.security.PermissionCollection;
 
 import javax.security.auth.Subject;
 
 import com.ibm.ws.security.authorization.jacc.common.PolicyProxy;
 
 import jakarta.security.jacc.Policy;
+import jakarta.security.jacc.PolicyFactory;
 
-public class JakartaPolicyProxyImpl implements PolicyProxy {
+public class JakartaPolicyFactoryProxyImpl implements PolicyProxy {
 
-    private final Policy policy;
-
-    JakartaPolicyProxyImpl(Policy p) {
-        policy = p;
+    JakartaPolicyFactoryProxyImpl(PolicyFactory policyFactory) {
+        PolicyFactory.setPolicyFactory(policyFactory);
     }
 
     @Override
     public void refresh() {
-        policy.refresh();
     }
 
     @Override
@@ -36,8 +33,15 @@ public class JakartaPolicyProxyImpl implements PolicyProxy {
     }
 
     @Override
-    public boolean implies(Subject subject, Permission permission) {
-        PermissionCollection permCollection = policy.getPermissionCollection(subject);
-        return permCollection.implies(permission);
+    public boolean implies(String contextId, Subject subject, Permission permission) {
+        PolicyFactory policyFactory = PolicyFactory.getPolicyFactory();
+        if (policyFactory == null) {
+            return false;
+        }
+        Policy policy = policyFactory.getPolicy(contextId);
+        if (policy == null) {
+            return false;
+        }
+        return policy.implies(permission, subject);
     }
 }

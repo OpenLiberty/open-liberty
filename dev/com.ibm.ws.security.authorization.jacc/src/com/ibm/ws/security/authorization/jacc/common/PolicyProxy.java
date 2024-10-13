@@ -22,5 +22,5 @@ public interface PolicyProxy {
 
     public void setPolicy();
 
-    public boolean implies(Subject subject, Permission permission);
+    public boolean implies(String contextId, Subject subject, Permission permission);
 }

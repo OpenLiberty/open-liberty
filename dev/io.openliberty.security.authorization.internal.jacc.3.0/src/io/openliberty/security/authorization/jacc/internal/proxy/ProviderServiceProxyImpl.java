@@ -23,8 +23,8 @@ import com.ibm.ws.security.authorization.jacc.common.ProviderServiceProxy;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.authorization.jacc.ProviderService;
 
-import jakarta.security.jacc.Policy;
 import jakarta.security.jacc.PolicyConfigurationFactory;
+import jakarta.security.jacc.PolicyFactory;
 
 @Component(service = ProviderServiceProxy.class, immediate = true, name = "io.openliberty.security.authorization.jacc.provider.proxy",
            configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
@@ -32,10 +32,6 @@ public class ProviderServiceProxyImpl implements ProviderServiceProxy {
 
     private static final TraceComponent tc = Tr.register(ProviderServiceProxyImpl.class);
 
-    private static final String JACC_FACTORY = "javax.security.jacc.PolicyConfigurationFactory.provider";
-    private static final String JACC_FACTORY_EE9 = "jakarta.security.jacc.PolicyConfigurationFactory.provider";
-    private static final String JACC_POLICY_PROVIDER = "javax.security.jacc.policy.provider";
-    private static final String JACC_POLICY_PROVIDER_EE9 = "jakarta.security.jacc.policy.provider";
     static final String KEY_JACC_PROVIDER_SERVICE = "jaccProviderService";
     private final AtomicServiceReference<ProviderService> jaccProviderService = new AtomicServiceReference<ProviderService>(KEY_JACC_PROVIDER_SERVICE);
 
@@ -62,8 +58,8 @@ public class ProviderServiceProxyImpl implements ProviderServiceProxy {
         if (providerService == null) {
             return null;
         }
-        Policy policy = providerService.getPolicy();
-        return policy == null ? null : new JakartaPolicyProxyImpl(policy);
+        PolicyFactory policyFactory = providerService.getPolicyFactory();
+        return policyFactory == null ? null : new JakartaPolicyFactoryProxyImpl(policyFactory);
     }
 
     @Override
@@ -97,26 +93,14 @@ public class ProviderServiceProxyImpl implements ProviderServiceProxy {
     }
 
     private void initializeSystemProperties(ServiceReference<ProviderService> reference) {
-        Object obj = reference.getProperty(JACC_POLICY_PROVIDER);
+        Object obj = reference.getProperty(PolicyFactory.FACTORY_NAME);
         if (obj != null && obj instanceof String) {
             policyName = (String) obj;
         }
-        if (policyName == null) {
-            obj = reference.getProperty(JACC_POLICY_PROVIDER_EE9);
-            if (obj != null && obj instanceof String) {
-                policyName = (String) obj;
-            }
-        }
 
-        obj = reference.getProperty(JACC_FACTORY);
+        obj = reference.getProperty(PolicyConfigurationFactory.FACTORY_NAME);
         if (obj != null && obj instanceof String) {
             factoryName = (String) obj;
-        }
-        if (factoryName == null) {
-            obj = reference.getProperty(JACC_FACTORY_EE9);
-            if (obj != null && obj instanceof String) {
-                factoryName = (String) obj;
-            }
         }
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Meta data : policyName : " + policyName + " factoryName : " + factoryName);
@@ -124,23 +108,16 @@ public class ProviderServiceProxyImpl implements ProviderServiceProxy {
         originalSystemPolicyName = null;
         originalSystemFactoryName = null;
 
-        String systemPolicyName = System.getProperty(JACC_POLICY_PROVIDER);
-        if (systemPolicyName == null) {
-            systemPolicyName = System.getProperty(JACC_POLICY_PROVIDER_EE9);
-        }
+        String systemPolicyName = System.getProperty(PolicyFactory.FACTORY_NAME);
 
-        String systemFactoryName = System.getProperty(JACC_FACTORY);
-        if (systemFactoryName == null) {
-            systemFactoryName = System.getProperty(JACC_FACTORY_EE9);
-        }
+        String systemFactoryName = System.getProperty(PolicyConfigurationFactory.FACTORY_NAME);
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "System properties : policyName : " + systemPolicyName + " factoryName : " + systemFactoryName);
         }
         if (systemPolicyName == null) {
             if (policyName != null) {
-                System.setProperty(JACC_POLICY_PROVIDER, policyName);
-                System.setProperty(JACC_POLICY_PROVIDER_EE9, policyName);
+                System.setProperty(PolicyFactory.FACTORY_NAME, policyName);
             } else if (policyName == null) {
                 Tr.error(tc, "JACC_POLICY_IS_NOT_SET");
                 return;
@@ -150,15 +127,13 @@ public class ProviderServiceProxyImpl implements ProviderServiceProxy {
                 policyName = systemPolicyName;
             } else if (!systemPolicyName.equals(policyName)) {
                 Tr.warning(tc, "JACC_INCONSISTENT_POLICY_CLASS", new Object[] { systemPolicyName, policyName });
-                System.setProperty(JACC_POLICY_PROVIDER, policyName);
-                System.setProperty(JACC_POLICY_PROVIDER_EE9, policyName);
+                System.setProperty(PolicyFactory.FACTORY_NAME, policyName);
                 originalSystemPolicyName = systemPolicyName;
             }
         }
         if (systemFactoryName == null) {
             if (factoryName != null) {
-                System.setProperty(JACC_FACTORY, factoryName);
-                System.setProperty(JACC_FACTORY_EE9, factoryName);
+                System.setProperty(PolicyConfigurationFactory.FACTORY_NAME, factoryName);
             } else if (factoryName == null) {
                 Tr.error(tc, "JACC_FACTORY_IS_NOT_SET");
                 return;
@@ -168,8 +143,7 @@ public class ProviderServiceProxyImpl implements ProviderServiceProxy {
                 factoryName = systemFactoryName;
             } else if (!systemFactoryName.equals(factoryName)) {
                 Tr.warning(tc, "JACC_INCONSISTENT_FACTORY_CLASS", new Object[] { systemFactoryName, factoryName });
-                System.setProperty(JACC_FACTORY, factoryName);
-                System.setProperty(JACC_FACTORY_EE9, factoryName);
+                System.setProperty(PolicyConfigurationFactory.FACTORY_NAME, factoryName);
                 originalSystemFactoryName = systemFactoryName;
             }
         }
@@ -177,15 +151,13 @@ public class ProviderServiceProxyImpl implements ProviderServiceProxy {
 
     private void restoreSystemProperties() {
         if (originalSystemPolicyName != null) {
-            System.setProperty(JACC_POLICY_PROVIDER, originalSystemPolicyName);
-            System.setProperty(JACC_POLICY_PROVIDER_EE9, originalSystemPolicyName);
+            System.setProperty(PolicyFactory.FACTORY_NAME, originalSystemPolicyName);
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "PolicyName system property is restored by : " + originalSystemPolicyName);
             }
         }
         if (originalSystemFactoryName != null) {
-            System.setProperty(JACC_FACTORY, originalSystemFactoryName);
-            System.setProperty(JACC_FACTORY_EE9, originalSystemFactoryName);
+            System.setProperty(PolicyConfigurationFactory.FACTORY_NAME, originalSystemFactoryName);
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "PolicyName system property is restored by : " + originalSystemFactoryName);
             }

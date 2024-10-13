@@ -74,7 +74,7 @@ public class WebSecurityValidatorImpl implements WebSecurityValidator {
                     PolicyContext.setHandlerData(handlerObjects);
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Calling JACC implies");
-                    return Boolean.valueOf(policyProxy.implies(null, wudp));
+                    return Boolean.valueOf(policyProxy.implies(contextId, null, wudp));
                 }
             });
 
@@ -145,7 +145,7 @@ public class WebSecurityValidatorImpl implements WebSecurityValidator {
                                                        PolicyContext.setHandlerData(handlerObjects);
                                                        if (tc.isDebugEnabled())
                                                            Tr.debug(tc, "Calling JACC implies. Subject : " + subject);
-                                                       return policyProxy.implies(subject, permission);
+                                                       return policyProxy.implies(contextId, subject, permission);
                                                    }
                                                });
         return result.booleanValue();

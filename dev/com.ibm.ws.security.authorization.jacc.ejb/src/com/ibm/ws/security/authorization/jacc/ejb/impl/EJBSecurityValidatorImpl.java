@@ -147,7 +147,7 @@ public class EJBSecurityValidatorImpl implements EJBSecurityValidator {
                                                        PolicyContext.setHandlerData(handlerObjects);
                                                        if (tc.isDebugEnabled())
                                                            Tr.debug(tc, "Calling JACC implies. subject : " + subject);
-                                                       return policyProxy.implies(subject, permission);
+                                                       return policyProxy.implies(contextId, subject, permission);
                                                    }
                                                });
         return result.booleanValue();
