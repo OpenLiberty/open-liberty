@@ -642,7 +642,7 @@ CWWKD1065.ddlgen.timeout.useraction=Reattempt DDL generation \
  when the system and database are not under load.
 
 CWWKD1066.ddlgen.failed=CWWKD1066E: DDL generation for one or more repository \
- interfaces ({0}) that use the {1} data store encountered an error when attempting \
+ interfaces ({0}) that use the {1} data store encountered an error during \
  DDL generation for the following entities: {2}. The error is: {3}.
 CWWKD1066.ddlgen.failed.explanation=The DDL generation attempt failed \
  and did not complete.
