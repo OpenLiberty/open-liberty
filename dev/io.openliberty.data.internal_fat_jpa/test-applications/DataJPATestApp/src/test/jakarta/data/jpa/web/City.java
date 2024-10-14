@@ -12,15 +12,13 @@ package test.jakarta.data.jpa.web;
 
 import java.util.Set;
 
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Version;
 
 /**
- *
+ * Entity with a composite id (using IdClass) and version.
  */
 @Entity
 @IdClass(CityId.class)
@@ -48,6 +46,12 @@ public class City {
         this.stateName = state;
         this.population = population;
         this.areaCodes = areaCodes;
+    }
+
+    static City of(CityId id, int population, Set<Integer> areaCodes, long version) {
+        City city = new City(id.name, id.getStateName(), population, areaCodes);
+        city.changeCount = version;
+        return city;
     }
 
     @Override

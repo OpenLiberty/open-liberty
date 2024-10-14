@@ -27,8 +27,10 @@ import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
 
 /**
  *
@@ -41,6 +43,12 @@ public interface Cities {
     @Find
     @OrderBy("name")
     Stream<AreaInfo> areaInfo(String stateName);
+
+    @Query("SELECT VERSION(THIS) WHERE name = ?1 AND stateName = ?2")
+    long currentVersion(String city, String state);
+    // TODO: IdClass as query parameter
+    //@Query("SELECT VERSION(THIS) WHERE ID(THIS) = ?1")
+    //long currentVersion(CityId id);
 
     @Delete
     void delete(City city); // copied from BasicRepository
@@ -101,6 +109,17 @@ public interface Cities {
     CursoredPage<City> findByStateNameNotStartsWith(String prefix, PageRequest pagination);
 
     CityId findFirstByNameOrderByPopulationDesc(String name);
+
+    @Query("SELECT " + ID)
+    @OrderBy("stateName")
+    @OrderBy("name")
+    Stream<CityId> ids();
+
+    @Update
+    City[] modifyData(City... citiesToUpdate);
+
+    @Update
+    void modifyStats(City... citiesToUpdate);
 
     @Delete
     void remove(City city);

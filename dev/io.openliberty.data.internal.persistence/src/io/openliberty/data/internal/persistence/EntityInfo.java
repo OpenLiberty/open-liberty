@@ -62,10 +62,13 @@ public class EntityInfo {
     // lower case attribute name --> properly cased/qualified JPQL attribute name
     final Map<String, String> attributeNames;
 
-    // names of attributes to use for entity update.
-    // excludes id and version.
-    // excludes inner relation attributes, such as location.address when there is also a location.address.zipcode
-    // TODO updates (and probably deletes) of entities with an embeddable id is not implemented yet.
+    /**
+     * Names of attributes to use for entity update,
+     * or null if em.merge must be used instead.
+     * Excludes id and version.
+     * Excludes inner relation attributes, such as location.address
+     * when there is also a location.address.zipcode
+     */
     final SortedSet<String> attributeNamesForEntityUpdate;
 
     // properly cased/qualified JPQL attribute name --> type
