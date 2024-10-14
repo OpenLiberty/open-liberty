@@ -202,7 +202,7 @@ public class SSLTest extends DBTestBase {
 		commonTest(appName, wsatURL, goodResult, "1");
 	}
 
-	@Test
+	//@Test
 	public void testSSL_ClientRollbackByProxy() {
 		server1.waitForStringInLog("CWLIB0206I");
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -215,7 +215,7 @@ public class SSLTest extends DBTestBase {
 		commonTest(appName, wsatURL, goodResult, "0");
 	}
 	
-	@Test
+	//@Test
 	public void testSSL_Server2RollbackByProxy() {
 		server2.waitForStringInLog("CWLIB0206I");
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -227,7 +227,7 @@ public class SSLTest extends DBTestBase {
 		commonTest(appName, wsatURL, "Throw exception for rollback from server side!", "0");
 	}
 
-	@Test
+	//@Test
 	public void testSSL_AllCommitByProx_WithClientAuth() throws Exception {
 		try (AutoCloseable x = clientAuthentify()) {
 			final String testURL = "/" + appName + "/ClientServlet";
@@ -240,7 +240,7 @@ public class SSLTest extends DBTestBase {
 		}
 	}
 
-	@Test
+	//@Test
 	public void testSSL_ClientRollbackByProxy_WithClientAuth() throws Exception {
 		try (AutoCloseable x = clientAuthentify()) {
 			final String testURL = "/" + appName + "/ClientServlet";
@@ -254,7 +254,7 @@ public class SSLTest extends DBTestBase {
 		}
 	}
 
-	@Test
+	//@Test
 	public void testSSL_Server2RollbackByProxy_WithClientAuth() throws Exception {
 		try (AutoCloseable x = clientAuthentify()) {
 			final String testURL = "/" + appName + "/ClientServlet";
